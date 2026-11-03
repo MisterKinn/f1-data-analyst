@@ -121,6 +121,10 @@ export const translations = {
  '현재 순위를 불러오지 못했습니다.':'Unable to load the current standings.',
  '잠정':'Provisional','조회':'Retrieved','이후':'after','마지막 확인 순위 · 최신 자료 갱신 중':'Last verified standings · refreshing','최신 확인 순위':'Latest verified standings'
 };
+Object.assign(translations,{
+ '레이스별 순위':'Race results','레이스':'Race','클래스':'Class',
+ '레이스 결과를 불러오는 중…':'Loading race results…','결과 출처 ↗':'Results source ↗','전략 출처 ↗':'Strategy source ↗'
+});
 export function chooseLanguage(request){
  const cookie=request.headers.get('cookie')||'';
  const saved=cookie.match(/(?:^|;\s*)kongboda_lang=(ko|en)(?:;|$)/)?.[1];
