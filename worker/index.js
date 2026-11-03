@@ -11,6 +11,7 @@ import {WEC_LIVE_TOOLS,WEC_LIVE_INSTRUCTIONS,wecLiveCall} from './wec_live.js';
 import {RESEARCH_TOOLS,RESEARCH_INSTRUCTIONS,researchCall} from './research.js';
 import {websiteRoute} from './website.js';
 import {standingsRoute,STANDINGS_TOOLS,standingsCall} from './standings.js';
+import {raceResultsRoute} from './race-results.js';
 import {LIVE_TOOLS,LIVE_INSTRUCTIONS,BEST_LAP_INSTRUCTIONS,liveRead,readBestLaps,readTelemetry,liveRoutes,cloudConfigured} from './live.js';
 import {WEC_TOOLS,WEC_INSTRUCTIONS,wecCall} from './wec.js';
 import {FIA_TOOLS,FIA_INSTRUCTIONS,fiaCall} from './fia.js';
@@ -60,6 +61,7 @@ export default{async fetch(request,env,ctx){
  const live=await liveRoutes(request,env,firebase);if(live)return live;
  if(path==='/api/mcp')return new Response(JSON.stringify({error:EXTERNAL_MCP_UNAVAILABLE}),{status:401,headers:{'content-type':'application/json','cache-control':'no-store'}});
  const standings=await standingsRoute(request,env,ctx);if(standings)return standings;
+ const raceResults=await raceResultsRoute(request,env);if(raceResults)return raceResults;
  const auth=await googleAuthRoute(request,env);if(auth)return auth;
  const google=firebase||(!path.startsWith('/assets/')&&!path.startsWith('/api/')&&path!=='/mcp'?await googleIdentity(request,env):null);
  const accountResponse=await accountRoute(request,env,google,ctx);if(accountResponse)return accountResponse;
