@@ -57,7 +57,7 @@ export async function accountIdentity(request,env,google,{create=false}={}){
  return {account,chatgpt,google,canLink:!!(google&&chatgpt&&google.email.trim().toLowerCase()===chatgpt.email.trim().toLowerCase())};
 }
 export async function sharedLiveAllowed(request,env,google=null){
- const email=request.headers.get('oai-authenticated-user-email');
+ const email=google?.email||request.headers.get('oai-authenticated-user-email');
  if(email&&env.DEPLOY_OWNER_EMAIL&&email.toLowerCase()===env.DEPLOY_OWNER_EMAIL.toLowerCase())return true;
  const info=await accountIdentity(request,env,google);
  return !!(info?.account&&!info.account.deleted&&info.account.liveAnalysisAccess?.revision===(env.LIVE_ANALYSIS_KEY_REVISION||'1'));
@@ -163,6 +163,8 @@ export async function accountRoute(request,env,google,ctx){
  if(u.pathname==='/account/delete'){
   if((await request.formData()).get('confirmation')!=='탈퇴')return reply('확인란에 탈퇴를 입력하세요.',400);
   const a=info.account;
+  if(await env.BUCKET.get('personal-f1-session/'+a.id+'.json')){try{const {cloudRequest}=await import('./live.js');await cloudRequest({...env,F1_PERSONAL_ACCOUNT:a.id},'/logout');}catch{return reply('개인 F1 연결을 종료하지 못했습니다. 잠시 후 다시 탈퇴해 주세요.',503);}}
+  const {clearPersonalF1}=await import('./personal-f1.js');await clearPersonalF1(env,a.id);await env.BUCKET.delete('personal-f1-session/'+a.id+'.json');
   // No personal data retained in tombstones. Every linked identity loses the site account.
   for(const i of a.identities)await write(env,i.key,{deleted:true,deletedAt:Date.now()});
   const googleSubs=a.identities.filter(i=>i.provider==='google').map(i=>i.sub);
