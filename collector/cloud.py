@@ -209,6 +209,7 @@ def record(window):
             return lambda: get_token().value
 
         def _on_message(self, message):
+            entered_wall, entered = time.time(), time.perf_counter()
             try:
                 if isinstance(message, CompletionMessage):
                     payload = message.result
@@ -221,6 +222,10 @@ def record(window):
                         state.telemetry = LiveTelemetry(DATA / 'telemetry', payload['SessionInfo'], session_dir / 'timing-raw.txt')
                     for topic in sorted(payload, key=lambda k: k != 'SessionInfo'):
                         state.apply(topic, payload[topic], initial=True)
+                    if state.diagnostics is None:
+                        from diagnostics import PerformanceRecorder
+                        state.diagnostics = PerformanceRecorder(DATA / 'diagnostics', payload['SessionInfo']['Key'], state.run_id)
+                        state.diagnostics.start()
                 elif isinstance(message, list) and len(message) >= 2 and accepted.is_set():
                     if message[0] == 'SessionInfo':
                         from collector import merge
@@ -235,6 +240,13 @@ def record(window):
             except (ValueError, TypeError, KeyError, zlib.error):
                 with state.lock:
                     state.errors += 1
+            finally:
+                if state.diagnostics:
+                    topic = message[0] if isinstance(message, list) and len(message) >= 2 else 'initial'
+                    source = message[2] if isinstance(message, list) and len(message) > 2 else ''
+                    state.diagnostics.observe(topic, source, entered_wall, (time.perf_counter() - entered) * 1000)
+                    state.diagnostics.out_of_order = state.out_of_order_packets
+                    state.diagnostics.write_errors = state.telemetry.write_errors if state.telemetry else 0
 
         def _on_connect(self):
             super()._on_connect()
@@ -297,6 +309,8 @@ def record(window):
             pass
         with state.lock:
             state.connected = False
+        if state.diagnostics:
+            state.diagnostics.close()
         if accepted.is_set():
             snapshot = state.snapshot()
             atomic_json(DATA / 'snapshot.json', snapshot)

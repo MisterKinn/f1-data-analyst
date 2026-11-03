@@ -6,6 +6,7 @@ import math
 from pathlib import Path
 import threading
 import time
+from contextlib import closing
 from datetime import datetime, timezone
 from lap_archive import timestamp, milliseconds
 from recovery import session_path, BASE
@@ -64,8 +65,11 @@ class LiveTelemetry:
             'session_key': info['Key'], 'ended_at': None, 'raw_path': str(raw_path) if raw_path else None}
         self.db = None
         self.write_errors = 0
+        self.last_commit = time.monotonic()
         if not self.meta.get('purged_at'):
             self.db = sqlite3.connect(self.path, check_same_thread=False)
+            self.db.execute('PRAGMA journal_mode=WAL')
+            self.db.execute('PRAGMA synchronous=NORMAL')
             self.db.execute('CREATE TABLE IF NOT EXISTS samples (driver TEXT, utc REAL, speed REAL, throttle REAL, brake INTEGER, gear INTEGER, rpm REAL, PRIMARY KEY(driver,utc))')
             self.db.commit()
             self.save_meta()
@@ -102,9 +106,16 @@ class LiveTelemetry:
                     except (KeyError, TypeError, ValueError):
                         continue
             self.db.executemany('INSERT OR REPLACE INTO samples VALUES (?,?,?,?,?,?,?)', rows)
-            self.db.commit()
+            self.flush()
+
+    def flush(self, force=False):
+        with self.lock:
+            if self.db is not None and (force or time.monotonic() - self.last_commit >= 1):
+                self.db.commit()
+                self.last_commit = time.monotonic()
 
     def summary(self):
+        self.flush(force=True)
         if self.db is not None and self.meta.get('ended_at') and time.time() >= self.meta['ended_at'] + 300:
             self.db.close()
             self.db = None
@@ -122,7 +133,7 @@ class LiveTelemetry:
         if not path.exists() or meta.get('purged_at') or (meta.get('ended_at') and time.time() >= meta['ended_at'] + 300):
             return None
         output = []
-        with sqlite3.connect('file:' + str(path) + '?mode=ro', uri=True) as db:
+        with closing(sqlite3.connect('file:' + str(path) + '?mode=ro', uri=True)) as db:
             for lap in laps:
                 end = timestamp(lap['sector_source_times'][2])
                 start = end - milliseconds(lap['lap_time']) / 1000

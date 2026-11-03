@@ -142,6 +142,7 @@ class RecoveryTelemetryTests(unittest.TestCase):
             entries.append({'Utc': '2026-10-30T22:01:00Z', 'Cars': entries[0]['Cars']})
             store.append('CarData.z', {'Entries': entries})
             store.append('CarData.z', {'Entries': entries})
+            store.flush(force=True)
             self.assertEqual(store.db.execute('SELECT COUNT(*) FROM samples').fetchone()[0], 61)
             result = LiveTelemetry.laps(d, INFO, [LAP])[0]
             self.assertTrue(result['complete_coverage'])
