@@ -16,7 +16,7 @@ test('registered crew read one shared collector through ChatGPT MCP and Google w
  await accountIdentity(platform,env,google,{create:true});
  data.set('website-auth/google/session/'+await digest(token)+'.json',JSON.stringify({...google,issuedAt:Date.now(),expires:Date.now()+60000}));
  const googleHeaders={cookie:'__Host-kongboda-google='+token};
- const now=new Date().toISOString(),snapshot={schema_version:1,producer:'fastf1-live-bridge',run_id:'crew-test',sequence:1,generated_at:now,last_message_at:now,connected:true,topics:{SessionInfo:{Key:123,Name:'Practice 1',Meeting:{Name:'Mexico City Grand Prix'}},SessionStatus:{Status:'Started'}},recent_events:[]};
+ const now=new Date().toISOString(),snapshot={schema_version:1,producer:'fastf1-live-bridge',run_id:'crew-test',sequence:1,generated_at:now,last_message_at:now,connected:true,topic_times:{Heartbeat:{source_time:now,initial_snapshot:false},TimingData:{source_time:now,initial_snapshot:false}},topics:{Heartbeat:{},TimingData:{Lines:{}},SessionInfo:{Key:123,Name:'Practice 1',Meeting:{Name:'Mexico City Grand Prix'}},SessionStatus:{Status:'Started'}},recent_events:[]};
  const realFetch=globalThis.fetch;let reads=0;
  globalThis.fetch=async(url,options)=>{assert.equal(String(url),'https://collector.example/snapshot');assert.equal(options.method,'GET');assert.equal(options.headers.Authorization,'Bearer test');reads++;return Response.json({snapshot,collector:{automatic_collection:true,collection_enabled:true}});};
  try{
@@ -39,6 +39,6 @@ test('registered crew read one shared collector through ChatGPT MCP and Google w
   assert.equal((await worker.fetch(new Request(origin+'/api/live/cloud/stop',{method:'POST',headers:{...googleHeaders,origin}}),env)).status,403);
   snapshot.generated_at=new Date(Date.now()-120000).toISOString();
   const stale=await (await worker.fetch(new Request(origin+'/api/live/snapshot',{headers:googleHeaders}),env)).json();
-  assert.equal(stale.freshness.live,false);
+  assert.equal(stale.synchronization.ok,false);assert.equal(stale.freshness.live,true);
  }finally{globalThis.fetch=realFetch;}
 });

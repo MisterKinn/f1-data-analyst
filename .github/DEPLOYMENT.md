@@ -1,4 +1,19 @@
-# Shared deployment — automatic publication disabled
+# Vercel production and legacy Sites deployment
+
+The current production repository is `MisterKinn/f1-data-analyst`. The existing
+Vercel Git integration deploys `main` to `kinn/kongboda-motorsports` at
+https://kongboda-motorsports.vercel.app. Preserve this integration; no additional
+deployment workflow, deploy hook, polling task or manual Vercel release is needed
+for normal source changes. Check the resulting Vercel commit status and production
+behavior separately from CI. A blocked deployment is not a successful release.
+
+This Vercel project runs the Node website/API. `collector/cloud.py` is a separate
+Python process and is not launched by `vercel.json` or `scripts/build.mjs`.
+Changing the website does not prove that a collector is running. The discontinued
+Render service must not be restarted or redeployed. See
+`docs/brazil-fp1-diagnostics.md` for the current test requirements.
+
+## Legacy Sites — automatic publication disabled
 
 As requested by the owner on 2026-10-30, GitHub Actions runs tests and build/artifact validation only. The `notify` job has been removed: main pushes do not send plugin.release_ready events, wait for an owner subscription, or publish the Site. Do not restore automatic publication or repository polling without an explicit owner request.
 

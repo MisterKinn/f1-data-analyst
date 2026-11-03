@@ -4,6 +4,7 @@ import worker from '../worker/index.js';
 import {firebaseAdmin} from '../server/firebase-admin.js';
 import {createFirestoreBucket} from '../server/firestore-bucket.js';
 import {authenticateMcpBearer,mcpOAuthRoute} from '../server/mcp-oauth.js';
+import {beginRequestMeasurement,saveRequestMeasurement} from '../server/request-diagnostics.js';
 
 const SESSION='__Host-kongboda-firebase',CSRF='__Host-kongboda-csrf',SESSION_AGE=5*24*60*60;
 const cookie=(name,value,age,httpOnly=true)=>`${name}=${value}; Path=/; Secure; ${httpOnly?'HttpOnly; ':''}SameSite=Lax; Max-Age=${age}`;
@@ -73,10 +74,12 @@ async function webRequest(req){
 async function send(response,res){res.statusCode=response.status;for(const [key,value] of response.headers){if(key==='set-cookie'&&response.headers.getSetCookie)continue;res.setHeader(key,value);}if(response.headers.getSetCookie){const values=response.headers.getSetCookie();if(values.length)res.setHeader('set-cookie',values);}res.end(Buffer.from(await response.arrayBuffer()));}
 
 export default async function handler(req,res){
+ const measurement=beginRequestMeasurement();let diagnosticsBucket=null,measure=false;
  try{
   let request=await webRequest(req);const firebaseReady=['FIREBASE_WEB_API_KEY','FIREBASE_WEB_AUTH_DOMAIN','FIREBASE_PROJECT_ID','FIREBASE_WEB_APP_ID'].every(key=>process.env[key]);
   const runtimeEnv={...process.env,APP_ORIGIN:new URL(request.url).origin,FIREBASE_AUTH_CONFIGURED:String(firebaseReady)};
   runtimeEnv.BUCKET=createFirestoreBucket(firebaseAdmin().firestore);
+  diagnosticsBucket=runtimeEnv.BUCKET;
   const direct=await authRoute(request,runtimeEnv);if(direct)return send(direct,res);
   const headers=new Headers(request.headers),requestUrl=new URL(request.url),accountCsrf=firebaseReady&&request.method==='GET'&&requestUrl.pathname==='/account'?randomBytes(32).toString('base64url'):null,session=readCookie(headers.get('cookie'),SESSION);let firebaseUser=null;
   if(accountCsrf)headers.set('x-kongboda-firebase-csrf',accountCsrf);
@@ -87,6 +90,8 @@ export default async function handler(req,res){
    const profile=await authenticateMcpBearer(request,runtimeEnv);
    if(profile){headers.set('oai-authenticated-user-id','oauth:'+profile.sub);headers.set('oai-authenticated-user-email',profile.email);headers.set('oai-authenticated-user-full-name',encodeURIComponent(profile.name||''));headers.set('oai-authenticated-user-full-name-encoding','percent-encoded-utf-8');headers.set('x-kongboda-firebase-user-id',profile.sub);headers.set('x-kongboda-firebase-user-email',profile.email);headers.set('x-kongboda-firebase-user-name',encodeURIComponent(profile.name||''));headers.set('x-kongboda-firebase-user-name-encoding','percent-encoded-utf-8');request=new Request(request,{headers});}
   }
+  const measuredPath=new URL(request.url).pathname;
+  measure=(firebaseUser||headers.has('oai-authenticated-user-id'))&&(measuredPath==='/mcp'||measuredPath.startsWith('/api/live/'));
   const response=await worker.fetch(request,runtimeEnv,{waitUntil});
   if(accountCsrf){const responseHeaders=new Headers(response.headers);responseHeaders.append('set-cookie',cookie(CSRF,accountCsrf,600));return send(new Response(response.body,{status:response.status,statusText:response.statusText,headers:responseHeaders}),res);}
   return send(response,res);
@@ -95,5 +100,7 @@ export default async function handler(req,res){
   const incoming=new URL(req.url,'https://kongboda.invalid'),path=incoming.searchParams.get('__path')||incoming.pathname;
   if(path==='/auth/firebase/session')return send(firebaseSessionFailure('auth/session-internal-error',500),res);
   return send(new Response('Internal Server Error',{status:500}),res);
+ }finally{
+  if(measure&&diagnosticsBucket)waitUntil(saveRequestMeasurement(diagnosticsBucket,measurement,process.env.VERCEL_GIT_COMMIT_SHA).catch(()=>{console.error('live-diagnostics persistence-failed');}));
  }
 }

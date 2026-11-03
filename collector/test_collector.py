@@ -13,7 +13,10 @@ class CollectorTests(unittest.TestCase):
         s.apply('SessionInfo',{'Key':1},initial=True)
         s.apply('SessionStatus',{'Status':'Started'},initial=True)
         self.assertFalse(s.snapshot()['feed_fresh'])
-        s.apply('Heartbeat',{'Utc':'test'},'test')
+        from datetime import datetime, timezone
+        now=datetime.now(timezone.utc).isoformat()
+        s.apply('Heartbeat',{'Utc':now},now)
+        s.apply('TimingData',{'Lines':{}},now)
         self.assertTrue(s.snapshot()['feed_fresh'])
 
     def test_session_reset_and_event_bound(self):

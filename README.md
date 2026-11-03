@@ -20,7 +20,7 @@
 
 기존 ChatGPT Sites 운영 서비스는 DNS를 바꾸기 전까지 그대로 유지합니다. 새 경로는 Vercel Node 함수, Firebase Authentication, 서버 전용 Firestore 저장소로 구성하며 Firebase 웹 로그인을 ChatGPT MCP 인증으로 승격하지 않습니다. 현재 이전 상태, 사람이 해야 할 콘솔 설정, 전환 조건은 [Vercel + Firebase 이전 문서](docs/vercel-firebase-migration.md)를 따릅니다.
 
-One authenticated MCP server with 64 tools (version 2.0.0), including a read-only MCP Apps live briefing card and account-scoped preference updates. FastF1 supplies live session timing through the owner's PC collector or authenticated free-cloud polling page; Hyprace remains primary for published records. FIA official documents provide authoritative regulations, technical submissions, PU usage, driver meeting notes, steward decisions and public ADUO announcements.
+One authenticated MCP server with 65 tools (version 2.0.0), including a read-only MCP Apps live briefing card and account-scoped preference updates. FastF1 supplies live session timing through the owner's PC collector or authenticated free-cloud polling page; Hyprace remains primary for published records. FIA official documents provide authoritative regulations, technical submissions, PU usage, driver meeting notes, steward decisions and public ADUO announcements.
 
 Live session requests go directly to `fastf1_live_snapshot`. Check session identity, freshness, topic timestamps, raw event order and race-control deletions before analysis. Missing, disconnected or stale feeds are reported explicitly. This deployment has no telemetry-provider fallback. The previous TracingInsights tools and combined-event resolver have been removed.
 

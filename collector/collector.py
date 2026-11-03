@@ -16,6 +16,7 @@ import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 from lap_archive import LapArchive
+from lap_archive import timestamp
 
 # All 20 FastF1 SignalRClient default topics. Commentary is not an upstream topic.
 TOPICS = ['Heartbeat', 'AudioStreams', 'DriverList', 'ExtrapolatedClock',
@@ -61,6 +62,32 @@ def merge(old, patch):
     return result
 
 
+def merge_owned(old, patch):
+    """Update collector-owned state without copying its whole previous tree."""
+    if isinstance(patch, list):
+        patch = {str(i): value for i, value in enumerate(patch)}
+    if not isinstance(patch, dict):
+        return copy.deepcopy(patch)
+    result = old if isinstance(old, dict) else {}
+    for key, value in patch.items():
+        if key not in ('__proto__', 'constructor', 'prototype'):
+            result[key] = merge_owned(result.get(key), value)
+    return result
+
+
+def source_fresh(topic_times, at):
+    def age(topic):
+        entry = topic_times.get(topic, {})
+        try:
+            parsed = datetime.fromisoformat(entry.get('source_time', '').replace('Z', '+00:00'))
+            source = parsed.timestamp() if parsed.tzinfo is not None else None
+        except (ValueError, TypeError, AttributeError):
+            source = None
+        return at - source if entry.get('initial_snapshot') is False and source is not None else None
+    clocks = [age(topic) for topic in ('Heartbeat', 'ExtrapolatedClock')]
+    return any(value is not None and -10 <= value <= 45 for value in clocks) and (lambda value: value is not None and -10 <= value <= 45)(age('TimingData'))
+
+
 class State:
     def __init__(self, saved_archive=None):
         self.lock = threading.RLock()
@@ -75,6 +102,8 @@ class State:
         self.errors = 0
         self.laps = LapArchive(saved_archive)
         self.telemetry = None
+        self.diagnostics = None
+        self.out_of_order_packets = 0
 
     def apply(self, topic, payload, source_time='', initial=False):
         if topic not in TOPICS:
@@ -91,6 +120,19 @@ class State:
                     self.last_message_at = None
                     self.last_feed_monotonic = None
                     self.run_id = str(uuid.uuid4())
+            prior_time = self.topic_times.get(topic, {})
+            prior = timestamp(prior_time.get('source_time'))
+            incoming = timestamp(source_time)
+            if not initial and not prior_time.get('initial_snapshot') and prior is not None and incoming is not None and incoming < prior:
+                self.out_of_order_packets += 1
+                # Old telemetry can fill a genuine sample gap, but cannot move
+                # rolling state or its freshness clock backward.
+                if self.telemetry and topic == 'CarData.z':
+                    try:
+                        self.telemetry.append(topic, payload)
+                    except (OSError, ValueError, sqlite3.Error):
+                        self.telemetry.write_errors += 1
+                return
             self.sequence += 1
             received = utcnow()
             if self.telemetry:
@@ -101,8 +143,8 @@ class State:
             # High-frequency batches have ephemeral indexes: never merge across batches.
             # The SignalR raw recording retains the complete received history.
             self.topics[topic] = (merge({}, payload) if initial else copy.deepcopy(payload) if topic.endswith('.z')
-                                  else merge(self.topics.get(topic), payload))
-            self.laps.apply(topic, merge({}, payload), self.topics, source_time, self.sequence, initial)
+                                  else merge_owned(self.topics.get(topic), payload))
+            self.laps.apply(topic, merge({}, payload) if topic == 'TimingData' else {}, self.topics, source_time, self.sequence, initial)
             # An initial snapshot is not evidence that the feed is currently live.
             self.topic_times[topic] = {'received_at': received,
                                        'source_time': source_time,
@@ -132,7 +174,7 @@ class State:
                 'run_id': self.run_id, 'sequence': self.sequence,
                 'generated_at': utcnow(), 'last_message_at': self.last_message_at,
                 'connected': self.connected, 'feed_age_seconds': age,
-                'feed_fresh': self.connected and age is not None and age <= 30,
+                'feed_fresh': self.connected and age is not None and age <= 30 and source_fresh(self.topic_times, time.time()),
                 'session_active': active, 'parse_errors': self.errors,
                 'topics': self.topics, 'topic_times': self.topic_times,
                 'subscription': {'requested_topics': TOPICS, 'received_topics': list(self.topics),
@@ -140,6 +182,8 @@ class State:
                 'recent_events': self.events,
                 'lap_archive': self.laps.export(self.topics),
                 'telemetry_capture': capture,
+                'out_of_order_packets': self.out_of_order_packets,
+                **({'diagnostics': self.diagnostics.snapshot()} if self.diagnostics else {}),
                 'limitations': [
                     'Incremental raw timing state, not FastF1 finalized Session.laps.',
                     'Lap/sector/tyre updates may arrive separately; verify event sequence.',
@@ -188,8 +232,17 @@ def main():
         saved_archive = None
     state = State(saved_archive)
 
+    def monitor(info):
+        if info.get('Key') is not None and (state.diagnostics is None or state.diagnostics.session_key != info['Key']):
+            if state.diagnostics:
+                state.diagnostics.close()
+            from diagnostics import PerformanceRecorder
+            state.diagnostics = PerformanceRecorder(directory / 'diagnostics', info['Key'], state.run_id)
+            state.diagnostics.start()
+
     class Client(SignalRClient):
         def _on_message(self, msg):
+            entered_wall, entered = time.time(), time.perf_counter()
             super()._on_message(msg)
             try:
                 if isinstance(msg, CompletionMessage):
@@ -201,11 +254,19 @@ def main():
                         state.telemetry = LiveTelemetry(directory / 'telemetry', info, directory / 'timing-raw.txt')
                     for topic in sorted(result, key=lambda k: k != 'SessionInfo'):
                         state.apply(topic, result[topic], initial=True)
+                    monitor(info)
                 elif isinstance(msg, list) and len(msg) >= 2:
                     state.apply(msg[0], msg[1], msg[2] if len(msg) > 2 else '')
             except (ValueError, TypeError, KeyError, zlib.error):
                 with state.lock:
                     state.errors += 1
+            finally:
+                if state.diagnostics:
+                    topic = msg[0] if isinstance(msg, list) and len(msg) >= 2 else 'initial'
+                    source = msg[2] if isinstance(msg, list) and len(msg) > 2 else ''
+                    state.diagnostics.observe(topic, source, entered_wall, (time.perf_counter() - entered) * 1000)
+                    state.diagnostics.out_of_order = state.out_of_order_packets
+                    state.diagnostics.write_errors = state.telemetry.write_errors if state.telemetry else 0
 
         def _on_connect(self):
             super()._on_connect()
@@ -242,6 +303,12 @@ def main():
         except Exception:
             pass
     finally:
+        try:
+            client._exit()
+        except Exception:
+            pass
+        if state.diagnostics:
+            state.diagnostics.close()
         with state.lock:
             state.connected = False
         write_snapshot(state, directory / 'snapshot.json')

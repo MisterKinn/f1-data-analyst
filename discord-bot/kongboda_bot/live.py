@@ -2,8 +2,9 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+import math
 
-LIVE_MAX_AGE_SECONDS = 60
+LIVE_MAX_AGE_SECONDS = 45
 FINISHED = {'Finished', 'Finalised', 'Ends'}
 
 
@@ -27,9 +28,26 @@ def freshness(payload: dict) -> tuple[bool, str]:
     age = snap.get('feed_age_seconds')
     if not snap.get('connected'):
         return False, '수집기가 피드에 연결되어 있지 않습니다. 마지막 기록이며 라이브가 아닙니다.'
-    if age is None or age > LIVE_MAX_AGE_SECONDS:
-        shown = '알 수 없음' if age is None else f'{int(age)}초'
+    valid = lambda value: isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value) and -10 <= value <= LIVE_MAX_AGE_SECONDS
+    if not valid(age):
+        shown = f'{int(age)}초' if isinstance(age, (int, float)) and math.isfinite(age) else '알 수 없음'
         return False, f'마지막 수신이 {shown} 전입니다. 라이브로 볼 수 없습니다.'
+    if (_topics(payload).get('SessionStatus') or {}).get('Status') not in ('Started', 'Resumed'):
+        return False, '진행 중인 세션으로 확인되지 않습니다.'
+    def clock_age(value):
+        try:
+            parsed = datetime.fromisoformat(value.replace('Z', '+00:00'))
+            return (datetime.now(timezone.utc) - parsed).total_seconds() if parsed.tzinfo else None
+        except (ValueError, TypeError, AttributeError):
+            return None
+    if not all(valid(clock_age(snap.get(key))) for key in ('generated_at', 'last_message_at')):
+        return False, '스냅샷 생성·수신 시각이 최신으로 확인되지 않습니다.'
+    times = snap.get('topic_times') or {}
+    def source_age(topic):
+        row = times.get(topic) or {}
+        return clock_age(row.get('source_time')) if topic in _topics(payload) and row.get('initial_snapshot') is False else None
+    if not any(valid(source_age(topic)) for topic in ('Heartbeat', 'ExtrapolatedClock')) or not valid(source_age('TimingData')):
+        return False, '원본 타이밍이 오래됐거나 원본 시각을 확인할 수 없습니다. 라이브가 아닙니다.'
     return True, f'피드 수신 {int(age)}초 전'
 
 
