@@ -44,8 +44,8 @@ for(const age of [0,3,50])for(const n of [1,2,19]){
 assert.equal(pitScenario({...a,current_slope_seconds_per_lap:0,next_slope_seconds_per_lap:0}).pit_minus_stay_seconds,22);
 assert.throws(()=>pitScenario({...a,coefficient_basis:''}));assert.throws(()=>pitScenario({...a,remaining_laps:1.5}));assert.throws(()=>pitScenario({...a,pit_loss_seconds:NaN}));assert.throws(()=>pitScenario({...a,next_age:undefined}));
 const now=Date.now(), iso=new Date(now).toISOString();
-const topicTimes=Object.fromEntries(['TimingData','TimingAppData','WeatherData','TrackStatus','RaceControlMessages'].map(t=>[t,{received_at:iso,source_time:'00:10:00',initial_snapshot:false}]));
-const snapshot={generated_at:iso,connected:true,last_message_at:iso,topics:{SessionInfo:{Key:123,Name:'TEST'},SessionStatus:{Status:'Started'},TimingData:{Lines:{}},TimingAppData:{Lines:{}},WeatherData:{},TrackStatus:{Status:'1'},RaceControlMessages:{}},topic_times:topicTimes,recent_events:[]};
+const topicTimes=Object.fromEntries(['Heartbeat','TimingData','TimingAppData','WeatherData','TrackStatus','RaceControlMessages'].map(t=>[t,{received_at:iso,source_time:iso,initial_snapshot:false}]));
+const snapshot={generated_at:iso,connected:true,last_message_at:iso,topics:{Heartbeat:{},SessionInfo:{Key:123,Name:'TEST'},SessionStatus:{Status:'Started'},TimingData:{Lines:{}},TimingAppData:{Lines:{}},WeatherData:{},TrackStatus:{Status:'1'},RaceControlMessages:{}},topic_times:topicTimes,recent_events:[]};
 const ctx=buildResearchContext(snapshot,{live:true},now);
 assert.equal(ctx.mode,'conditional_interpretation');assert.equal(ctx.causal_conclusions.length,0);assert.ok(ctx.methods.every(m=>m.application_status==='check_lap_and_field_alignment'));
 assert.ok(ctx.citations.every(c=>!c.id.startsWith('R')));
