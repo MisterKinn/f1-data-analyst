@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import aiohttp
+import asyncio
+from urllib.parse import urlencode
 
 
 class CollectorError(RuntimeError):
@@ -24,8 +26,8 @@ class Collector:
                 if r.status >= 400:
                     raise CollectorError(f'수집기 응답 오류 HTTP {r.status}')
                 return await r.json()
-        except aiohttp.ClientError as exc:
-            raise CollectorError('수집기에 연결하지 못했습니다. 무료 호스트가 잠들어 있을 수 있습니다.') from exc
+        except (aiohttp.ClientError, asyncio.TimeoutError, ValueError) as exc:
+            raise CollectorError('수집기 연결이 지연되거나 응답을 읽지 못했습니다. 잠시 후 다시 시도해 주세요.') from exc
         finally:
             if self._session is None:
                 await session.close()
@@ -40,3 +42,15 @@ class Collector:
 
     async def wec_snapshot(self) -> dict:
         return await self._get('/wec/snapshot')
+
+    async def session_results(self, year: int, event: int, session: str) -> dict:
+        if session not in ('FP1', 'FP2', 'FP3', 'Q', 'SQ', 'R', 'S') or not 2018 <= year <= 2100 or not 1 <= event <= 30:
+            raise ValueError('Invalid session selection')
+        path = '/session-results?' + urlencode({'year': year, 'event': event, 'session': session})
+        for attempt in range(9):
+            data = await self._get(path)
+            if data.get('state') != 'pending' or attempt == 8:
+                return data
+            await asyncio.sleep(5)
+        raise AssertionError('unreachable')
+

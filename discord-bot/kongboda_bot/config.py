@@ -23,6 +23,7 @@ class Config:
     anthropic_model: str
     state_path: Path
     schedule_path: Path
+    website_url: str = 'https://kongboda-motorsports.vercel.app'
 
     @property
     def ask_enabled(self) -> bool:
@@ -59,6 +60,12 @@ def load(env: dict | None = None) -> Config:
             or parsed.query or parsed.fragment or parsed.path not in ('', '/')):
         raise ConfigError('COLLECTOR_URL must be a bare HTTPS origin without credentials, path, query or fragment.')
     base = Path(__file__).resolve().parent.parent
+    if os.environ.get('ANTHROPIC_API_KEY', '').strip() and not os.environ.get('ANTHROPIC_MODEL', '').strip():
+        raise ConfigError('ANTHROPIC_MODEL is required when ANTHROPIC_API_KEY is set.')
+    website = os.environ.get('KONGBODA_WEBSITE_URL', 'https://kongboda-motorsports.vercel.app').rstrip('/')
+    site = urlsplit(website)
+    if site.scheme != 'https' or not site.hostname or site.username or site.password or site.path or site.query or site.fragment:
+        raise ConfigError('KONGBODA_WEBSITE_URL must be a bare HTTPS origin.')
     return Config(
         discord_token=token,
         owner_id=_int('DISCORD_OWNER_ID', required=True),
@@ -67,7 +74,9 @@ def load(env: dict | None = None) -> Config:
         collector_url=url,
         collector_key=key,
         anthropic_key=os.environ.get('ANTHROPIC_API_KEY', '').strip() or None,
-        anthropic_model=os.environ.get('ANTHROPIC_MODEL', 'claude-sonnet-5-5').strip(),
+        anthropic_model=os.environ.get('ANTHROPIC_MODEL', '').strip(),
         state_path=Path(os.environ.get('BOT_STATE_PATH', str(base / 'state.json'))),
         schedule_path=Path(os.environ.get('BOT_SCHEDULE_PATH', str(base / 'schedule.json'))),
+        website_url=website,
     )
+
