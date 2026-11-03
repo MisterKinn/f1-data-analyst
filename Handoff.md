@@ -1,5 +1,7 @@
 # F1 Data Analyst 최종 배포 Handoff
 
+> 2026-11-03 갱신: 정식 저장소는 `MisterKinn/f1-data-analyst`이며, Vercel 프로젝트 `kinn/kongboda-motorsports`가 `main` 변경을 Production에 자동 배포한다. 아래 2026-11-02 기록의 저장소·배포 상태는 당시 이관 과정의 이력이다. ChatGPT Sites 배포는 Vercel 배포와 별개로 계속 수동 승인한다.
+
 ## 한눈에 보는 현재 상태
 
 - 기준 시각: 2026-11-02 11:17 KST
