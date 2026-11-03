@@ -479,6 +479,17 @@ class Handler(BaseHTTPRequestHandler):
             return self.reply({'ok': age < 180, 'wec_browser': WEC_RUNTIME, 'commit_sha': os.environ.get('RENDER_GIT_COMMIT')}, 200 if age < 180 else 503)
         if not self.authorized():
             return self.reply({'error': 'Unauthorized'}, 401)
+        if self.path.startswith('/session-results?'):
+            from urllib.parse import urlsplit, parse_qs
+            from session_results import RESULTS
+            try:
+                query = parse_qs(urlsplit(self.path).query, strict_parsing=True)
+                if set(query) != {'year', 'event', 'session'} or any(len(v) != 1 for v in query.values()):
+                    raise ValueError('Invalid selection')
+                result = RESULTS.request(query['year'][0], query['event'][0], query['session'][0])
+                return self.reply(result, 202 if result['state'] == 'pending' else 200)
+            except (ValueError, TypeError):
+                return self.reply({'error': 'Invalid session selection'}, 400)
         if self.path.startswith('/official/published?'):
             from urllib.parse import urlsplit, parse_qs
             from official_published import published_file
@@ -645,3 +656,4 @@ def main():
 
 if __name__ == '__main__':
     sys.exit(main())
+
