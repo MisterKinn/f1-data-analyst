@@ -1,0 +1,9 @@
+.git
+**/.env
+**/.env.*
+**/state.json
+**/.venv
+**/__pycache__
+**/node_modules
+**/*.pem
+**/*.key
