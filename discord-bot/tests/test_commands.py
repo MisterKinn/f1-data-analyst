@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, Mock
 
 from kongboda_bot.bot import KongbodaBot
 from kongboda_bot.config import Config
@@ -54,3 +54,13 @@ class CommandTests(unittest.IsolatedAsyncioTestCase):
         await self.bot.tree.get_command('briefing').callback(self.interaction, action='stop')
         self.assertIsNone(self.bot.briefing_channel_id)
         self.assertIsNone(self.bot.briefing_message)
+
+    async def test_stop_during_collector_request_does_not_send_to_old_channel(self):
+        self.bot.briefing_channel_id = 10
+        async def snapshot():
+            self.bot.briefing_channel_id = None
+            return {}
+        self.bot.collector.snapshot = snapshot
+        self.bot.get_channel = Mock()
+        await self.bot.briefing_loop.coro(self.bot)
+        self.bot.get_channel.assert_not_called()
