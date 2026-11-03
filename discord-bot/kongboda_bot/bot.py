@@ -120,17 +120,22 @@ class KongbodaBot(discord.Client):
 
     @tasks.loop(seconds=30)
     async def briefing_loop(self):
-        if self.briefing_channel_id is None:
+        channel_id = self.briefing_channel_id
+        if channel_id is None:
             return
         try:
             payload = await self.collector.snapshot()
             text = live.summarize(payload, limit=5)[:1900]
         except CollectorError:
             text = '⚪ 수집기 응답 지연 · 실시간 브리핑을 확인할 수 없습니다.'
+        if channel_id != self.briefing_channel_id:
+            return  # The owner may stop or move the briefing while I/O is pending.
         if text == self.briefing_last_text:
             return
         try:
-            channel = self.get_channel(self.briefing_channel_id) or await self.fetch_channel(self.briefing_channel_id)
+            channel = self.get_channel(channel_id) or await self.fetch_channel(channel_id)
+            if channel_id != self.briefing_channel_id:
+                return
             if self.briefing_message is None:
                 self.briefing_message = await channel.send(text)
             else:
@@ -208,6 +213,7 @@ def register_commands(bot: KongbodaBot) -> None:
             bot.briefing_message = None
             bot.briefing_last_text = None
             await interaction.followup.send('이 채널의 브리핑 메시지를 30초마다 갱신합니다. /briefing stop으로 중지할 수 있습니다.')
+            return
         try:
             await interaction.followup.send(live.summarize(await bot.collector.snapshot(), limit=5)[:1900])
         except CollectorError as exc:
