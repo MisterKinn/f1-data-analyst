@@ -2,6 +2,12 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {analysisDemo,demoCases,demoClient,demoCss} from '../worker/homepage-examples.js';
 
+test('shared website script safely skips examples on other pages',()=>{
+ const previous=globalThis.document;
+ try{globalThis.document={getElementById:()=>null};assert.doesNotThrow(()=>demoClient(demoCases));}
+ finally{if(previous===undefined)delete globalThis.document;else globalThis.document=previous;}
+});
+
 test('homepage carries ten sourced reconstructions per tab and preserves measured telemetry',()=>{
  const html=analysisDemo();
  assert.equal((html.match(/data-card="live"/g)||[]).length,10);
