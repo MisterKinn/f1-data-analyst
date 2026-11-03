@@ -31,3 +31,5 @@ jobs:
       - run: cd discord-bot && python -m unittest discover -s tests
       - run: node scripts/build.mjs
       - run: node scripts/validate-artifact.mjs
+      - name: Validate Discord image
+        run: docker build -f discord-bot/Dockerfile -t kongboda-discord:ci .
