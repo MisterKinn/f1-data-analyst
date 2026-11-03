@@ -8,7 +8,7 @@ import {raceResultsSection,raceResultsCss,raceResultsClient} from './race-result
 import {seriesVectorAssets} from './series-vector-assets.js';
 import {fontAssets} from './font-assets.js';
 import {englishWordmark} from './english-wordmark.js';
-import {analysisDemo,demoCss,demoClient,demoCases} from './analysis-demo.js';
+import {analysisDemo,demoCss,demoClient,demoCases} from './homepage-examples.js';
 import {platformIdentity,displayName,localizedAccountName} from './accounts.js';
 import {gtwcLogo,leMansCupLogo} from './new-series-assets.js';
 import {trackMaps} from './track-map-data.js';

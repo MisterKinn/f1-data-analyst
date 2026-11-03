@@ -4,7 +4,11 @@ import {websiteRoute,safeReturnPath,raceDescriptions} from '../worker/website.js
 import {teamLogoFor} from '../worker/team-logos.js';
 const page=async(path,headers={})=>websiteRoute(new Request('https://test'+path,{headers})).text();
 test('both groups remain visible and each series has its own explanation',async()=>{
- const home=await page('/');assert.doesNotMatch(home,/role="tablist"|data-series-tab/);
+ const home=await page('/');
+ // The analysis examples have their own tabs; championship groups stay visible together.
+ assert.doesNotMatch(home,/data-series-tab/);
+ const series=home.slice(home.indexOf('<section id="championships">'));
+ assert.doesNotMatch(series,/role="tablist"/);
  assert.match(home,/compact-series/);assert.ok(home.indexOf('href="/championships/wec"')<home.indexOf('href="/championships/imsa"'));
  for(const [series,description] of Object.entries(raceDescriptions)){
   const html=await page('/championships/'+series);assert.ok(html.includes(description));
