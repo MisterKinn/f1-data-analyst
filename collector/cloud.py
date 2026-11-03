@@ -22,6 +22,7 @@ WEC_RUNTIME = "not_checked"
 WEC = None  # Initialized only by serve; F1 recording stays independent.
 TELEMETRY = None
 HISTORY = None
+PERSONAL = None
 SUPPORTED_SESSIONS = ('Practice 1', 'Practice 2', 'Practice 3', 'Qualifying',
                       'Sprint Qualifying', 'Sprint Shootout', 'Sprint', 'Race')
 TERMINAL_SESSION_STATUSES = frozenset(('Finished', 'Finalised', 'Cancelled', 'Canceled', 'Aborted'))
@@ -479,6 +480,8 @@ class Handler(BaseHTTPRequestHandler):
             return self.reply({'ok': age < 180, 'wec_browser': WEC_RUNTIME, 'commit_sha': os.environ.get('RENDER_GIT_COMMIT')}, 200 if age < 180 else 503)
         if not self.authorized():
             return self.reply({'error': 'Unauthorized'}, 401)
+        if self.path.startswith('/personal/'):
+            return self.personal('GET')
         if self.path.startswith('/session-results?'):
             from urllib.parse import urlsplit, parse_qs
             from session_results import RESULTS
@@ -531,6 +534,8 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         if not self.authorized():
             return self.reply({'error': 'Unauthorized'}, 401)
+        if self.path.startswith('/personal/'):
+            return self.personal('POST')
         if self.path == '/telemetry/laps':
             try:
                 size = int(self.headers.get('Content-Length', '0'))
@@ -570,6 +575,26 @@ class Handler(BaseHTTPRequestHandler):
             return self.reply({'ok': True})
         return self.reply({'error': 'Not found'}, 404)
 
+    def personal(self, method):
+        if PERSONAL is None:
+            return self.reply({'error': 'Personal collectors unavailable'}, 503)
+        parts = self.path.split('/', 3)
+        if len(parts) != 4:
+            return self.reply({'error': 'Invalid path'}, 400)
+        body = None
+        if method == 'POST':
+            try:
+                size = int(self.headers.get('Content-Length', '0'))
+                if not 0 <= size <= 200000:
+                    raise ValueError()
+                body = json.loads(self.rfile.read(size)) if size else {}
+                if not isinstance(body, dict):
+                    raise ValueError()
+            except (ValueError, TypeError):
+                return self.reply({'error': 'Invalid body'}, 400)
+        result, status = PERSONAL.request(parts[2], '/' + parts[3], method, body)
+        return self.reply(result, status)
+
     def current(self):
         snapshot = read_json(DATA / 'snapshot.json')
         status = read_json(DATA / 'status.json', {})
@@ -604,7 +629,7 @@ def prepare_wec():
 
 
 def main():
-    global WEC, WEC_RUNTIME, TELEMETRY, HISTORY
+    global WEC, WEC_RUNTIME, TELEMETRY, HISTORY, PERSONAL
     parser = argparse.ArgumentParser()
     parser.add_argument('mode', choices=['serve', 'schedule', 'record', 'auth'], default='serve', nargs='?')
     parser.add_argument('--window')
@@ -643,12 +668,17 @@ def main():
         threading.Thread(target=supervisor, daemon=True).start()
         # F1 scheduling and HTTP health start immediately, even when WEC needs
         # a browser download or its optional runtime cannot be prepared.
-        threading.Thread(target=prepare_wec, daemon=True).start()
-        server = ThreadingHTTPServer(('0.0.0.0', int(os.environ.get('PORT', '8080'))), Handler)
+        if os.environ.get('PERSONAL_F1_CHILD') != '1':
+            from personal import PersonalSessions
+            PERSONAL = PersonalSessions()
+            threading.Thread(target=prepare_wec, daemon=True).start()
+        server = ThreadingHTTPServer(('127.0.0.1' if os.environ.get('PERSONAL_F1_CHILD') == '1' else '0.0.0.0', int(os.environ.get('PORT', '8080'))), Handler)
         server.timeout = 1
         while not STOP.is_set():
             server.handle_request()
         server.server_close()
+        if PERSONAL:
+            PERSONAL.close()
         if WEC:
             WEC.close()
     return 0

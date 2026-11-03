@@ -1,3 +1,4 @@
+import {f1Access,clearPersonalF1} from './personal-f1.js';
 import {TELEMETRY_TOOL,telemetryRead} from './telemetry.js';
 import {sharedLiveAllowed} from './accounts.js';
 import {googleIdentity} from './google-auth.js';
@@ -118,6 +119,7 @@ export async function liveRead(env,args={}) {
   try{
    const data=await cloudRequest(env,'/snapshot','GET');
    synchronization={ok:true,collector:publicCollector(data.collector)};
+   if(env.F1_PERSONAL_ACCOUNT&&data.collector?.auth_state==='credentials_required')return {available:false,synchronization,reason:'개인 F1 로그인이 필요합니다. 사이트 /live에서 연결하세요.'};
    if(data.snapshot){const accepted=await storeSnapshot(env,validateSnapshot(data.snapshot),new Date().toISOString(),'Cloud / FastF1 live recorder + custom patch adapter');if(!accepted)synchronization={...synchronization,ok:false,error:'Older collector snapshot rejected; retained newer saved data.'};}
   }catch(e){synchronization={ok:false,error:'Collector synchronization failed; saved data may be stale.'};}
  }
@@ -134,7 +136,7 @@ export async function cloudRequest(env,path,method='POST',body) {
  if(!cloudConfigured(env))throw Error('무료 수집 서버 연결이 아직 설정되지 않았습니다.');
  const url=new URL(env.FASTF1_CLOUD_URL);
  if(url.protocol!=='https:'||url.username||url.password||url.pathname!=='/'||url.search||url.hash)throw Error('수집 서버 주소 설정을 확인해 주세요.');
- const response=await fetch(new URL(path,url),{method,headers:{Authorization:`Bearer ${env.FASTF1_CLOUD_KEY}`,...(body?{'content-type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{}),redirect:'manual',signal:AbortSignal.timeout(20000)});
+ const response=await fetch(new URL(env.F1_PERSONAL_ACCOUNT?'/personal/'+encodeURIComponent(env.F1_PERSONAL_ACCOUNT)+path:path,url),{method,headers:{Authorization:`Bearer ${env.FASTF1_CLOUD_KEY}`,...(body?{'content-type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{}),redirect:'manual',signal:AbortSignal.timeout(20000)});
  if(!response.ok)throw Error(response.status===401?'수집 서버 연결 인증을 확인해 주세요.':'서버가 시작 중이거나 응답하지 않습니다. 잠시 후 다시 시도합니다.');
  const text=await response.text();
  if(text.length>(path.startsWith('/official/published?')?4100000:path==='/telemetry/laps'?2000000:1100000))throw Error('수집 데이터 크기 제한을 초과했습니다.');
@@ -153,15 +155,29 @@ function publicCollector(raw={}) {
 
 export async function liveRoutes(request,env,websiteIdentity=null) {
  const url=new URL(request.url),path=url.pathname;
- if(!['/live','/api/live/snapshot','/api/live/diagnostics','/api/live/cloud','/api/live/cloud/poll','/api/live/cloud/stop','/download/fastf1-live.zip'].includes(path))return null;
+ if(!['/live','/api/live/snapshot','/api/live/diagnostics','/api/live/cloud','/api/live/cloud/poll','/api/live/cloud/stop','/download/fastf1-live.zip','/api/live/f1/login','/api/live/f1/logout'].includes(path))return null;
  const google=websiteIdentity||await googleIdentity(request,env);
  if(!request.headers.get('oai-authenticated-user-id')&&!google)return reply({error:'사이트 계정으로 로그인해 주세요.'},401);
- if(env.LIVE_ANALYSIS_KEY_HASH&&!await sharedLiveAllowed(request,env,google))return reply({error:'선원 등록 후 공용 수집기의 라이브타이밍을 읽을 수 있습니다. 본인 F1·FIAWEC+ 계정 연결은 준비 중입니다.'},403);
- // Google website sessions may read the crew feed; collector mutations keep the
- // existing ChatGPT authentication requirement. Never forward website cookies to MCP.
- if(!request.headers.get('oai-authenticated-user-id')&&request.method!=='GET')return reply({error:'수집기 조작은 ChatGPT 로그인이 필요합니다.'},403);
+ const access=await f1Access(request,env,google);
+ if(!access)return reply({error:'유효한 꽁보다 계정으로 로그인해 주세요.'},401);
+ const baseEnv=env;env=access.env;
+ if(access.mode==='crew'&&!request.headers.get('oai-authenticated-user-id')&&request.method!=='GET')return reply({error:'수집기 조작은 ChatGPT 로그인이 필요합니다.'},403);
+ if(['/api/live/f1/login','/api/live/f1/logout'].includes(path)){
+  if(request.method!=='POST')return reply({error:'POST required'},405);
+  if(request.headers.get('origin')!==url.origin||request.headers.get('sec-fetch-site')==='cross-site')return reply({error:'Same-origin request required'},403);
+  if(access.mode!=='personal')return reply({error:'등록된 선원은 공용 수집기를 사용합니다.'},409);
+  try{
+   if(path.endsWith('/logout')){await cloudRequest(env,'/logout');await clearPersonalF1(baseEnv,access.accountId);await baseEnv.BUCKET.delete('personal-f1-session/'+access.accountId+'.json');return reply({ok:true,state:'signed_out'});}
+   const text=await request.text();if(text.length>4096)return reply({error:'Request too large'},413);
+   const body=JSON.parse(text);
+   if(typeof body.username!=='string'||!body.username.trim()||body.username.length>254||typeof body.password!=='string'||!body.password||body.password.length>1024)return reply({error:'F1 이메일과 비밀번호를 확인하세요.'},400);
+   const result=await cloudRequest(env,'/login','POST',{username:body.username.trim(),password:body.password});
+   if(result.state==='authenticated')await baseEnv.BUCKET.put('personal-f1-session/'+access.accountId+'.json',JSON.stringify({expiresAt:Date.now()+8*3600000}));
+   return reply(result);
+  }catch{return reply({error:'개인 F1 연결 실패. 수집기 지원 여부, 로그인 정보와 구독을 확인하세요.'},502);}
+ }
  if(path==='/api/live/diagnostics'&&request.method==='GET')return reply(await readDiagnostics(env,url.searchParams));
- if(path==='/api/live/cloud'&&request.method==='GET')return reply({configured:cloudConfigured(env)});
+ if(path==='/api/live/cloud'&&request.method==='GET')return reply({configured:cloudConfigured(env),mode:access.mode});
  if(['/api/live/cloud/poll','/api/live/cloud/stop'].includes(path)&&request.method==='POST'){
   if(request.headers.get('origin')!==url.origin)return reply({error:'Same-origin request required'},403);
   if(!env.BUCKET)return reply({error:'Live storage unavailable'},503);
@@ -184,7 +200,7 @@ export async function liveRoutes(request,env,websiteIdentity=null) {
   }catch(e){return reply({error:e.name==='TimeoutError'?'무료 서버를 깨우는 중입니다. 최대 1분 정도 기다려 주세요.':e.message},502);}
  }
  if(path==='/download/fastf1-live.zip'&&request.method==='GET')return new Response(Uint8Array.from(atob(COLLECTOR_ZIP),c=>c.charCodeAt(0)),{headers:{'content-type':'application/zip','content-disposition':'attachment; filename=FastF1-Live.zip','cache-control':'no-store'}});
- if(path==='/live'&&request.method==='GET')return new Response(LIVE_PAGE,{headers:{'content-type':'text/html; charset=utf-8','cache-control':'no-store','content-security-policy':"default-src 'self'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'self'; frame-ancestors 'self' https://chatgpt.com"}});
+ if(path==='/live'&&request.method==='GET')return new Response(LIVE_PAGE.replace('__ACCESS_MODE__',access.mode),{headers:{'content-type':'text/html; charset=utf-8','cache-control':'no-store','content-security-policy':"default-src 'self'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'self'; frame-ancestors 'self' https://chatgpt.com"}});
  if(path==='/api/live/snapshot'&&request.method==='GET')return reply(await liveRead(env,{recent_events:0}));
  if(path==='/api/live/snapshot'&&request.method==='POST'){
   if(request.headers.get('origin')!==url.origin)return reply({error:'Same-origin upload required'},403);
@@ -204,7 +220,7 @@ export async function liveRoutes(request,env,websiteIdentity=null) {
 const LIVE_PAGE = `<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>FastF1 라이브 연결</title>
 <style>body{font-family:system-ui,sans-serif;background:#0b1018;color:#eef3fa;max-width:780px;margin:6vh auto;padding:24px;line-height:1.7}h1{font-size:32px}button,a{color:#60e3c7}button{background:#15312e;border:1px solid #47ad99;border-radius:8px;padding:12px 20px;cursor:pointer;margin:6px 8px 6px 0}button:disabled{opacity:.45}pre{white-space:pre-wrap;background:#151e2b;padding:20px;border-radius:10px}.muted{color:#a5b4c8}#status{border-left:4px solid #60e3c7;padding:12px 18px;background:#151e2b}</style>
 <a href="/">← Kongboda Motorsports</a><h1>FastF1 라이브 연결</h1>
-<section><h2>전체 세션 자동 수집</h2><p>업데이트된 수집 서버는 프랙티스·스프린트 예선·스프린트·본 예선·레이스 일정을 따라 자동 수집합니다. 아래에서 서버 상태 확인과 수집 재개·일시정지를 할 수 있습니다.</p>
+<section id="personalLogin" hidden><h2>내 F1 계정 연결</h2><p>본인의 F1 계정으로 별도 수집합니다. 유효한 라이브타이밍 구독이 필요할 수 있습니다. 비밀번호는 계정 저장소에 저장하지 않으며, 연결은 최대 8시간 유지됩니다. 서버 재시작 후 다시 로그인하세요.</p><form id="f1Login"><label>F1 이메일 <input name="username" type="email" autocomplete="username" required maxlength="254"></label><label>F1 비밀번호 <input name="password" type="password" autocomplete="current-password" required maxlength="1024"></label><button type="submit">내 F1 계정으로 연결</button><button type="button" id="f1Logout">F1 연결 해제·개인 기록 삭제</button></form><p id="f1Status" role="status"></p></section><section><h2>전체 세션 자동 수집</h2><p>업데이트된 수집 서버는 프랙티스·스프린트 예선·스프린트·본 예선·레이스 일정을 따라 자동 수집합니다. 아래에서 서버 상태 확인과 수집 재개·일시정지를 할 수 있습니다.</p>
 <button id="cloudStart" disabled>상태 확인·수집 재개</button><button id="cloudStop" disabled>자동 수집 일시정지</button><p id="cloudStatus" role="status">서버 설정 확인 중…</p><pre id="cloudDetails">수신 대기</pre>
 <p class="muted">자동 시작은 수집 서버가 실행 중일 때 작동합니다. 잠드는 무료 호스팅에서는 정시 시작을 보장하지 못합니다. 구버전 서버 또는 AUTO_COLLECT=false 모드는 페이지를 닫으면 약 90초 후 수집이 멈춥니다. 최신 데이터는 이 페이지 또는 ChatGPT 조회 시 사이트에 동기화됩니다.</p></section>
 <details><summary>PC 파일 업로드 방식</summary><p>PC 수집기의 <strong>snapshot.json</strong>을 선택하면 이 개인 플러그인으로 타이밍 데이터가 전달됩니다. F1 비밀번호나 로그인 파일은 선택하지 마세요.</p>
@@ -212,6 +228,10 @@ const LIVE_PAGE = `<!doctype html><html lang="ko"><meta charset="utf-8"><meta na
 <button id="connect">수집 파일 연결</button><button id="stop" disabled>연결 해제</button><p id="status" aria-live="polite">아직 연결하지 않았습니다.</p>
 <p class="muted">10초 간격으로 전달합니다. 브라우저 절전·탭 종료 시 전송이 중단됩니다. 45초 이상 지난 자료는 실시간으로 표시하지 않습니다. AI 해설은 ChatGPT에서 요청할 때 제공됩니다.</p><pre id="details">수신 대기</pre></details>
 <script>
+const accessMode='__ACCESS_MODE__';
+if(accessMode==='personal')document.getElementById('personalLogin').hidden=false;
+document.getElementById('f1Login').onsubmit=async event=>{event.preventDefault();const form=event.currentTarget,button=form.querySelector('button'),status=document.getElementById('f1Status');button.disabled=true;status.textContent='F1 로그인 확인 중…';try{const response=await fetch('/api/live/f1/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({username:form.username.value,password:form.password.value})});const data=await response.json();status.textContent=response.ok?(data.state==='authenticated'?'F1 인증 완료 · 상태 확인·수집 재개를 누르세요.':'F1 인증 확인 대기'):data.error;}catch{status.textContent='연결에 실패했습니다. 다시 시도하세요.';}finally{form.password.value='';button.disabled=false;}};
+document.getElementById('f1Logout').onclick=async()=>{cloudOn=false;clearTimeout(cloudTimer);const r=await fetch('/api/live/f1/logout',{method:'POST'});document.getElementById('f1Status').textContent=r.ok?'F1 연결과 개인 수집 기록을 삭제했습니다.':'연결 해제에 실패했습니다. 다시 시도하세요.';};
 let handle=null,timer=null,busy=false,generation=0;const status=document.getElementById('status'),details=document.getElementById('details'),connect=document.getElementById('connect'),stop=document.getElementById('stop');
 const cloudStart=document.getElementById('cloudStart'),cloudStop=document.getElementById('cloudStop'),cloudStatus=document.getElementById('cloudStatus'),cloudDetails=document.getElementById('cloudDetails');
 let cloudOn=false,cloudTimer=null,wake=null,cloudBusy=false;

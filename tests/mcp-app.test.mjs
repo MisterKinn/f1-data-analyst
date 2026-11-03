@@ -4,7 +4,7 @@ import worker,{buildLiveBriefing} from '../worker/index.js';
 import {LIVE_APP_MIME,LIVE_APP_URI} from '../worker/mcp-app.js';
 
 const rpc=(method,params={},id=1)=>new Request('https://example.test/mcp',{
- method:'POST',headers:{'content-type':'application/json','oai-authenticated-user-id':'owner'},
+ method:'POST',headers:{'content-type':'application/json','oai-authenticated-user-id':'owner','oai-authenticated-user-email':'owner@test'},
  body:JSON.stringify({jsonrpc:'2.0',id,method,params})
 });
 
@@ -35,7 +35,7 @@ assert.deepEqual(tool._meta.securitySchemes,[{type:'oauth2',scopes:['mcp:read']}
 const unauthenticated=await (await worker.fetch(new Request('https://example.test/mcp',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:9,method:'tools/call',params:{name:'kongboda_live_briefing',arguments:{}}})}),{})).json();
 assert.equal(unauthenticated.result.isError,true);
 assert.match(unauthenticated.result._meta['mcp/www_authenticate'][0],/resource_metadata=.*oauth-protected-resource.*error="insufficient_scope"/);
-response=await worker.fetch(rpc('tools/call',{name:'kongboda_live_briefing',arguments:{recent_events:0}}),{BUCKET:{get:async()=>null}});
+response=await worker.fetch(rpc('tools/call',{name:'kongboda_live_briefing',arguments:{recent_events:0}}),{DEPLOY_OWNER_EMAIL:'owner@test',BUCKET:{put:async()=>{},get:async()=>null}});
 payload=await response.json();
 assert.equal(payload.result.isError,false);
 assert.equal(payload.result.structuredContent.available,false);

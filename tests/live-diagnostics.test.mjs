@@ -26,7 +26,7 @@ test('recent receipt cannot disguise 35-minute-old source, missing/initial clock
 });
 
 test('cloud sync archives CPU history, exposes summary and refuses stale generated times and sequences',async()=>{
- const store=bucket(),env={BUCKET:store,FASTF1_CLOUD_URL:'https://collector.example/',FASTF1_CLOUD_KEY:'test'};
+ const store=bucket(),env={DEPLOY_OWNER_EMAIL:'owner@test',BUCKET:store,FASTF1_CLOUD_URL:'https://collector.example/',FASTF1_CLOUD_KEY:'test'};
  const s=base();s.diagnostics=record();const original=globalThis.fetch;
  globalThis.fetch=async()=>Response.json({snapshot:s});
  try{
@@ -37,8 +37,8 @@ test('cloud sync archives CPU history, exposes summary and refuses stale generat
   s.generated_at=now;s.sequence=1;assert.equal((await liveRead(env)).synchronization.ok,false);
   saved=(await (await store.get('live/current.json')).json()).snapshot;assert.equal(saved.sequence,2);
   const unauth=await liveRoutes(new Request('https://site.test/api/live/diagnostics?session_key=123'),env);assert.equal(unauth.status,401);
-  const denied=await worker.fetch(new Request('https://site.test/api/live/diagnostics?session_key=123',{headers:{'oai-authenticated-user-id':'outsider'}}),{...env,LIVE_ANALYSIS_KEY_HASH:'configured'});assert.equal(denied.status,403);
-  const rpc=new Request('https://site.test/mcp',{method:'POST',headers:{'oai-authenticated-user-id':'owner','content-type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'fastf1_diagnostics',arguments:{session_key:123}}})});
+  const denied=await worker.fetch(new Request('https://site.test/api/live/diagnostics?session_key=123',{headers:{'oai-authenticated-user-id':'outsider'}}),{...env,LIVE_ANALYSIS_KEY_HASH:'configured'});assert.equal(denied.status,401);
+  const rpc=new Request('https://site.test/mcp',{method:'POST',headers:{'oai-authenticated-user-id':'owner','oai-authenticated-user-email':'owner@test','content-type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'fastf1_diagnostics',arguments:{session_key:123}}})});
   assert.equal(JSON.parse((await (await worker.fetch(rpc,env)).json()).result.content[0].text).samples.length,1);
  }finally{globalThis.fetch=original;}
 });
@@ -56,8 +56,8 @@ test('a concurrent newer write wins and an older upload reports conflict',async(
   if(key==='live/current.json'&&!injected){injected=true;await put(key,JSON.stringify({snapshot:{...s,sequence:4},received_at:now}));}
   return put(key,body,options);
  };
- const request=new Request('https://site.test/api/live/snapshot',{method:'POST',headers:{'content-type':'application/json','origin':'https://site.test','oai-authenticated-user-id':'owner'},body:JSON.stringify({...s,sequence:3})});
- assert.equal((await liveRoutes(request,{BUCKET:store})).status,409);
+ const request=new Request('https://site.test/api/live/snapshot',{method:'POST',headers:{'content-type':'application/json','origin':'https://site.test','oai-authenticated-user-id':'owner','oai-authenticated-user-email':'owner@test'},body:JSON.stringify({...s,sequence:3})});
+ assert.equal((await liveRoutes(request,{DEPLOY_OWNER_EMAIL:'owner@test',BUCKET:store})).status,409);
  assert.equal((await (await store.get('live/current.json')).json()).snapshot.sequence,4);
 });
 
@@ -67,14 +67,14 @@ test('a CPU-history storage failure does not block otherwise valid timing',async
  const s=base();s.diagnostics=record();const original=globalThis.fetch;
  globalThis.fetch=async()=>Response.json({snapshot:s});
  try{
-  const result=await liveRead({BUCKET:store,FASTF1_CLOUD_URL:'https://collector.example/',FASTF1_CLOUD_KEY:'test'});
+  const result=await liveRead({DEPLOY_OWNER_EMAIL:'owner@test',BUCKET:store,FASTF1_CLOUD_URL:'https://collector.example/',FASTF1_CLOUD_KEY:'test'});
   assert.equal(result.available,true);assert.equal(result.diagnostics.persistence.ok,false);
  }finally{globalThis.fetch=original;}
 });
 
 test('Vercel request CPU survives in bucket and has an explicit process-only scope',async()=>{
  const store=bucket(),start=beginRequestMeasurement();await saveRequestMeasurement(store,start,'a'.repeat(40));
- const result=await readDiagnostics({BUCKET:store},new URLSearchParams({scope:'vercel',date:start.at.slice(0,10)}));
+ const result=await readDiagnostics({DEPLOY_OWNER_EMAIL:'owner@test',BUCKET:store},new URLSearchParams({scope:'vercel',date:start.at.slice(0,10)}));
  assert.equal(result.samples.length,1);assert.ok(result.samples[0].process_cpu_user_ms>=0);assert.match(result.samples[0].scope,/Not host CPU saturation/);
  assert.equal(JSON.stringify(result).includes('Authorization'),false);
 });
