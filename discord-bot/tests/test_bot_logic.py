@@ -10,9 +10,13 @@ from kongboda_bot.state import State
 
 
 def payload(connected=True, age=5, status='Started'):
+    stamp=datetime.now(timezone.utc).isoformat()
     return {'snapshot': {
         'connected': connected, 'feed_age_seconds': age,
+        'generated_at': stamp, 'last_message_at': stamp,
+        'topic_times': {topic: {'source_time': stamp, 'initial_snapshot': False} for topic in ('Heartbeat','TimingData')},
         'topics': {
+            'Heartbeat': {},
             'SessionInfo': {'Key': 9, 'StartDate': '2026-10-31T15:00:00', 'Meeting': {'Name': 'Mexico City GP'}, 'Name': 'Qualifying'},
             'SessionStatus': {'Status': status},
             'DriverList': {'1': {'Tla': 'VER'}, '4': {'Tla': 'NOR'}},
@@ -24,6 +28,14 @@ def payload(connected=True, age=5, status='Started'):
 
 
 class LiveTests(unittest.TestCase):
+    def test_recent_receipt_cannot_hide_old_or_missing_source_clock(self):
+        p=payload();p['snapshot']['topic_times']['TimingData']['source_time']=(datetime.now(timezone.utc)-timedelta(minutes=35)).isoformat()
+        self.assertFalse(live.freshness(p)[0])
+        p=payload();p['snapshot']['topic_times']={};self.assertFalse(live.freshness(p)[0])
+        self.assertFalse(live.freshness(payload(status='Finished'))[0])
+        for age in (-100, float('nan'), float('inf'), '5'):
+            self.assertFalse(live.freshness(payload(age=age))[0])
+
     def test_orders_by_position_and_labels_live(self):
         text = live.summarize(payload())
         self.assertIn('🟢 라이브', text)
