@@ -1,0 +1,28 @@
+{
+  "name": "f1-hyprace-analysis",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "22.x"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "validate": "node scripts/validate-artifact.mjs",
+    "dev": "node scripts/dev-preview.mjs"
+  },
+  "dependencies": {
+    "@google-cloud/firestore": "^9.4.0",
+    "@vercel/functions": "^3.10.5",
+    "firebase-admin": "^14.5.0",
+    "oauth4webapi": "3.8.8",
+    "unpdf": "1.8.1"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2"
+  },
+  "overrides": {
+    "jwks-rsa": {
+      "jose": "4.15.9"
+    }
+  }
+}

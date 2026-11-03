@@ -1,0 +1,6 @@
+allowBuilds:
+  '@firebase/util': true
+  esbuild: true
+  protobufjs: true
+overrides:
+  jwks-rsa>jose: 4.15.9

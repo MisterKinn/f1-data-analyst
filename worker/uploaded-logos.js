@@ -1,0 +1,10 @@
+import a0 from "./uploaded-logos/imsa-0.js";
+import a1 from "./uploaded-logos/formula-e-0.js";
+import a2 from "./uploaded-logos/nls-0.js";
+import a3 from "./uploaded-logos/nls-1.js";
+import a4 from "./uploaded-logos/nls-2.js";
+import a5 from "./uploaded-logos/nls-3.js";
+import a6 from "./uploaded-logos/mercedes-0.js";
+import a7 from "./uploaded-logos/mercedes-1.js";
+import a8 from "./uploaded-logos/mercedes-2.js";
+export const uploadedLogos={"imsa":{type:"image/svg+xml",svg:()=>`<svg xmlns="http://www.w3.org/2000/svg" viewBox="20 57 215 60"><image width="250" height="169" href="data:image/png;base64,${a0}"/></svg>`},"formula-e":{type:"image/svg+xml",svg:()=>`<svg xmlns="http://www.w3.org/2000/svg" viewBox="42 279 249 40"><image width="335" height="597" href="data:image/jpeg;base64,${a1}"/></svg>`},"nls":{type:"image/svg+xml",svg:()=>`<svg xmlns="http://www.w3.org/2000/svg" viewBox="30 95 485 195"><image width="547" height="387" href="data:image/jpeg;base64,${a2+a3+a4+a5}"/></svg>`},"mercedes":{type:"image/svg+xml",svg:()=>`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 315 315"><image width="315" height="315" href="data:image/png;base64,${a6+a7+a8}"/></svg>`}};
