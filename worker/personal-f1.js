@@ -1,0 +1,18 @@
+import {accountIdentity,sharedLiveAllowed} from './accounts.js';
+
+// Scope is derived from verified identity only, never a request field.
+export async function f1Access(request,env,google=null){
+ if(await sharedLiveAllowed(request,env,google))return {mode:'crew',env};
+ const account=(await accountIdentity(request,env,google,{create:true}))?.account;
+ if(!account||account.deleted)return null;
+ const prefix=`personal-f1/${account.id}/`;
+ const bucket=env.BUCKET;
+ const scoped={get:key=>bucket.get(prefix+key),put:(key,value,options)=>bucket.put(prefix+key,value,options),delete:key=>bucket.delete(prefix+key)};
+ return {mode:'personal',accountId:account.id,env:{...env,BUCKET:scoped,F1_PERSONAL_ACCOUNT:account.id}};
+}
+export async function clearPersonalF1(env,id){
+ if(!env.BUCKET?.list)return;
+ const prefix=`personal-f1/${id}/`;
+ let cursor;
+ do {const page=await env.BUCKET.list({prefix,...(cursor?{cursor}:{})});for(const item of page.objects)await env.BUCKET.delete(item.key);cursor=page.truncated?page.cursor:null;}while(cursor);
+}

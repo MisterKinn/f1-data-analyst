@@ -8,6 +8,12 @@ const call=async(method,params={},headers={})=>{
  body:JSON.stringify({jsonrpc:'2.0',id:1,method,params})});
  return (await worker.fetch(request,{})).json();
 };
+
+test('Claude-compatible initialization preserves the requested supported protocol and advertises MCP Apps',async()=>{
+ const payload=await call('initialize',{protocolVersion:'2025-11-25',clientInfo:{name:'Claude',version:'test'},capabilities:{extensions:{'io.modelcontextprotocol/ui':{mimeTypes:['text/html;profile=mcp-app']}}}});
+ assert.equal(payload.result.protocolVersion,'2025-11-25');
+ assert.deepEqual(payload.result.capabilities.extensions['io.modelcontextprotocol/ui'].mimeTypes,['text/html;profile=mcp-app']);
+});
 test('modern UI resource reads have the required complete discriminator',async()=>{
  for(const params of [{uri:LIVE_APP_URI},{uri:LIVE_APP_URI,_meta:{'io.modelcontextprotocol/protocolVersion':'2026-07-28'}}]){
   const result=await call('resources/read',params,params._meta?{}:{'mcp-protocol-version':'2026-07-28'});

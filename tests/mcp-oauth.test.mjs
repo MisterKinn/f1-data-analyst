@@ -21,9 +21,9 @@ test('metadata advertises OAuth 2.1 PKCE, DCR, refresh tokens and the canonical 
  assert.equal(metadata.registration_endpoint,origin+'/oauth/register');assert.equal(resource.resource,origin);assert.deepEqual(resource.authorization_servers,[origin]);
 });
 
-test('DCR, Google consent, authorization code PKCE, refresh rotation and revocation work end to end',async()=>{
- const env=environment(),redirect='https://chatgpt.com/connector_platform_oauth_redirect';
- let response=await mcpOAuthRoute(request('/oauth/register',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({client_name:'ChatGPT',redirect_uris:[redirect],token_endpoint_auth_method:'none',grant_types:['authorization_code','refresh_token'],response_types:['code']})}),env);
+for(const [clientName,redirect] of [['ChatGPT','https://chatgpt.com/connector_platform_oauth_redirect'],['Claude','https://claude.ai/api/mcp/auth_callback']])test(clientName+' DCR, Google consent, PKCE, refresh rotation and revocation work end to end',async()=>{
+ const env=environment();
+ let response=await mcpOAuthRoute(request('/oauth/register',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({client_name:clientName,redirect_uris:[redirect],token_endpoint_auth_method:'none',grant_types:['authorization_code','refresh_token'],response_types:['code']})}),env);
  assert.equal(response.status,201);const registration=await response.json();assert.match(registration.client_id,/^kbc_/);assert.equal(registration.client_secret,undefined);
  const verifier='v'.repeat(64),challenge=createHash('sha256').update(verifier).digest('base64url');
  const query=new URLSearchParams({response_type:'code',client_id:registration.client_id,redirect_uri:redirect,state:'state-123',resource:origin,code_challenge:challenge,code_challenge_method:'S256',scope:'mcp:read offline_access'});

@@ -1,9 +1,12 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {chooseLanguage,translateHtml} from '../worker/localization.js';
-import {weekBounds,weeklyEventVisible} from '../worker/race-features.js';
+import {weekBounds,weeklyEventVisible,compactSessionName} from '../worker/race-features.js';
 import {websiteRoute} from '../worker/website.js';
 import {calendarEvents,circuitInfo} from '../worker/race-calendar-data.js';
+test('compact session labels preserve class and round while shortening qualifying and hyperpole',()=>{
+ for(const [full,short] of [['LMGT3 퀄리파잉','LMGT3 Q'],['LMGT3 Hyperpole','LMGT3 HP'],['Rd.3 GT300 퀄리파잉','Rd.3 GT300 Q'],['Hypercar Qualifying','Hypercar Q'],['퀄리파잉 2','Q2'],['Pre-qualifying','Pre-Q'],['FP3','FP3'],['Rd.8 GT500 레이스','Rd.8 GT500 레이스']])assert.equal(compactSessionName(full),short);
+});
 test('saved language overrides country; country overrides browser language',()=>{
  const make=(country,headers={})=>{const r=new Request('https://test',{headers});r.cf={country};return r;};
  assert.equal(chooseLanguage(make('KR',{'accept-language':'en-US'})),'ko');

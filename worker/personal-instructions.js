@@ -1,6 +1,7 @@
 const key=id=>'website-accounts/instructions/'+id+'.json';
 export const MAX_INSTRUCTIONS=4000;
-export const DEFAULT_INSTRUCTIONS='F1과 WEC의 주요 FIA 문서를 확인해 핵심 변경사항과 경기 영향을 알림으로 보내줘.';
+// Personal text starts empty. FIA document review belongs to shared policy.
+export const DEFAULT_INSTRUCTIONS='';
 export function validateInstructions(text){
  if(typeof text!=='string'||text.length>MAX_INSTRUCTIONS||/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/.test(text))throw Error('개인 지침은 4,000자 이하의 텍스트로 입력하세요.');
  return text.trim();

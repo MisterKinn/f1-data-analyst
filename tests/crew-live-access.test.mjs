@@ -29,11 +29,11 @@ test('registered crew read one shared collector through ChatGPT MCP and Google w
   assert.equal(first.run_id,second.run_id);assert.equal(second.freshness.live,true);assert.equal(second.synchronization.collector.automatic_collection,true);assert.equal(reads,2);
   assert.equal((await worker.fetch(new Request(origin+'/api/live/snapshot'),env)).status,401);
   const outsider={'oai-authenticated-user-id':'outsider','oai-authenticated-user-email':'other@example.test'};
-  assert.equal((await worker.fetch(new Request(origin+'/api/live/snapshot',{headers:outsider}),env)).status,403);
-  assert.equal((await (await worker.fetch(rpc(outsider),env)).json()).result.isError,true);
+  const outsiderResponse=await (await worker.fetch(new Request(origin+'/api/live/snapshot',{headers:outsider}),env)).json();assert.equal(outsiderResponse.available,false);
+  assert.equal(JSON.parse((await (await worker.fetch(rpc(outsider),env)).json()).result.content[0].text).available,false);
   assert.equal(reads,2);
   env.LIVE_ANALYSIS_KEY_REVISION='2';
-  assert.equal((await worker.fetch(new Request(origin+'/api/live/snapshot',{headers:googleHeaders}),env)).status,403);
+  assert.equal((await (await worker.fetch(new Request(origin+'/api/live/snapshot',{headers:googleHeaders}),env)).json()).available,false);
   assert.equal(reads,2);
   env.LIVE_ANALYSIS_KEY_REVISION='1';
   assert.equal((await worker.fetch(new Request(origin+'/api/live/cloud/stop',{method:'POST',headers:{...googleHeaders,origin}}),env)).status,403);

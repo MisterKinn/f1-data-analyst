@@ -18,6 +18,7 @@ test('homepage carries ten sourced reconstructions per tab and preserves measure
  assert.deepEqual([...html.matchAll(/data-telemetry="(.*?)"/g)].map(m=>m[1]),['speed','throttle','brake','delta','gear']);
  for(const card of html.matchAll(/<article\b[\s\S]*?<\/article>/g)){
   assert.match(card[0],/2026/);assert.match(card[0],/href="https:\/\//);
+  if(card[0].includes('data-card="live"'))assert.match(card[0],/class="kb-series">(?:F1|WEC) ·/);
  }
  for(const driver of demoCases.drivers){
   assert.ok(driver.data.length>250);
