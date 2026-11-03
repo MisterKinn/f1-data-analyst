@@ -9,8 +9,8 @@ assert.equal(validateSnapshot(sample).lap_archive.best_laps.Q2[16].status,'compl
 assert.throws(()=>validateSnapshot({...sample,lap_archive:{...sample.lap_archive,session_key:999}}));
 const bad=structuredClone(sample);bad.lap_archive.best_laps.Q2[16].sectors.S1='20.000';assert.throws(()=>validateSnapshot(bad));
 const practice=structuredClone(sample);practice.topics.TimingData.Lines[16]={BestLapTimes:{},BestLapTime:{Value:'1:34.198',Lap:8}};practice.lap_archive.best_laps={session:{16:{...row,session_part:0}}};assert.equal(preserveBestLaps(practice,null).lap_archive.best_laps.session[16].status,'complete');
-const entries=new Map();const env={BUCKET:{put:async(k,v)=>entries.set(k,v),get:async k=>entries.has(k)?{json:async()=>JSON.parse(entries.get(k))}:null}};
-const req=s=>new Request('https://test.example/api/live/snapshot',{method:'POST',headers:{'oai-authenticated-user-id':'owner',origin:'https://test.example','content-type':'application/json'},body:JSON.stringify(s)});
+const entries=new Map();const env={DEPLOY_OWNER_EMAIL:'owner@test',BUCKET:{put:async(k,v)=>entries.set(k,v),get:async k=>entries.has(k)?{json:async()=>JSON.parse(entries.get(k))}:null}};
+const req=s=>new Request('https://test.example/api/live/snapshot',{method:'POST',headers:{'oai-authenticated-user-id':'owner','oai-authenticated-user-email':'owner@test',origin:'https://test.example','content-type':'application/json'},body:JSON.stringify(s)});
 assert.equal((await liveRoutes(req(sample),env)).status,200);
 assert.ok(entries.has('live/sessions/123.json'));
 let result=await readBestLaps(env,{session_part:'Q2'});
@@ -28,7 +28,7 @@ assert.equal((await readBestLaps(env,{session_part:'Q2'})).best_laps[0].status,'
 assert.equal((await readBestLaps(env,{session_part:'Q2',session_key:123})).session.Key,123);
 assert.equal((await readBestLaps(env,{session_part:'Q2',session_key:999})).available,false);
 await assert.rejects(()=>readBestLaps(env,{session_part:'Q2',driver_number:'../123'}));
-const rpc=auth=>new Request('https://test.example/mcp',{method:'POST',headers:{'content-type':'application/json',...(auth?{'oai-authenticated-user-id':'owner'}:{})},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'fastf1_best_laps',arguments:{session_part:'Q2'}}})});
+const rpc=auth=>new Request('https://test.example/mcp',{method:'POST',headers:{'content-type':'application/json',...(auth?{'oai-authenticated-user-id':'owner','oai-authenticated-user-email':'owner@test'}:{})},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'fastf1_best_laps',arguments:{session_part:'Q2'}}})});
 const blocked=await worker.fetch(rpc(false),env);assert.equal(blocked.status,200);const challenge=await blocked.json();assert.equal(challenge.result.isError,true);assert.ok(challenge.result._meta['mcp/www_authenticate']);
 const tool=await (await worker.fetch(rpc(true),env)).json();assert.equal(tool.result.isError,false);assert.equal(JSON.parse(tool.result.content[0].text).session.Key,124);
 console.log('PASS: best-lap sum/identity validation, reconnect retention, superseded/deleted lap rejection, session archive, authentication and MCP routing');

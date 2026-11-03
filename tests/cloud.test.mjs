@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
 import {liveRoutes,liveRead} from '../worker/live.js';
 const entries=new Map();
-const env={FASTF1_CLOUD_URL:'https://collector.example',FASTF1_CLOUD_KEY:'TEST-KEY',BUCKET:{put:async(k,v)=>entries.set(k,v),get:async k=>entries.has(k)?{json:async()=>JSON.parse(entries.get(k))}:null}};
+const env={DEPLOY_OWNER_EMAIL:'owner@test',FASTF1_CLOUD_URL:'https://collector.example',FASTF1_CLOUD_KEY:'TEST-KEY',BUCKET:{put:async(k,v)=>entries.set(k,v),get:async k=>entries.has(k)?{json:async()=>JSON.parse(entries.get(k))}:null}};
 const now=new Date().toISOString();
 const snapshot={schema_version:1,producer:'fastf1-live-bridge',run_id:'test',sequence:1,generated_at:now,last_message_at:now,connected:true,topic_times:{Heartbeat:{source_time:now,initial_snapshot:false},TimingData:{source_time:now,initial_snapshot:false}},topics:{Heartbeat:{},TimingData:{Lines:{}},SessionInfo:{Key:123},SessionStatus:{Status:'Started'}},recent_events:[]};
-const request=(path,auth=true,origin='https://site.example')=>new Request('https://site.example/api/live/cloud/'+path,{method:'POST',headers:{origin,...(auth?{'oai-authenticated-user-id':'owner'}:{})}});
+const request=(path,auth=true,origin='https://site.example')=>new Request('https://site.example/api/live/cloud/'+path,{method:'POST',headers:{origin,...(auth?{'oai-authenticated-user-id':'owner','oai-authenticated-user-email':'owner@test'}:{})}});
 let calls=0;
 globalThis.fetch=async(url,options)=>{
  calls++;
