@@ -49,7 +49,8 @@ export const demoCss=`
 
 /* Card controls stay outside the animated content. */
 #kb-recorded .card-slot{overflow:clip}
-#kb-recorded #record-post .side-arrow{top:320px}
+/* Same arrow height for live and post-race cards (post-race position). */
+#kb-recorded .side-arrow,#kb-recorded #record-post .side-arrow{top:320px}
 #kb-recorded .briefing-followup{font-size:13px;line-height:1.7}
 #kb-recorded figure{margin:0;min-width:0}
 #kb-recorded figcaption{font-size:14px;font-weight:650;color:var(--ink);margin-bottom:8px}
@@ -61,7 +62,7 @@ export const demoCss=`
 #kb-recorded .sector-value.gain::before{background:#183d36}
 #kb-recorded .post-longrun{display:grid;gap:10px}
 #kb-recorded .post-longrun .longrun{height:180px}
-@media(max-width:700px){#kb-recorded #record-post .side-arrow{top:280px}#kb-recorded .strategy-comparison table{font-size:12px}#kb-recorded .strategy-comparison th,#kb-recorded .strategy-comparison td{padding:8px 3px}}
+@media(max-width:700px){#kb-recorded .side-arrow,#kb-recorded #record-post .side-arrow{top:280px}#kb-recorded .strategy-comparison table{font-size:12px}#kb-recorded .strategy-comparison th,#kb-recorded .strategy-comparison td{padding:8px 3px}}
 
 /* Align the live briefing with the rest of the homepage. */
 #kb-recorded{max-width:none}
@@ -104,6 +105,11 @@ export const demoCss=`
  #kb-recorded .post-evidence{align-self:start}
 }
 @media(max-width:500px){#kb-recorded .gap-row{grid-template-columns:92px minmax(0,1fr) 54px}#kb-recorded .flow{grid-template-columns:1fr 1fr}#kb-recorded .flow li+li::before{display:none}}
+
+/* Hero lead and example disclaimer share one size; heading slightly larger. */
+body .hero .lead,#kb-recorded .example-disclaimer{font-size:clamp(15px,14px + .3vw,17px)!important;line-height:1.75}
+#kb-recorded .example-heading h2{font-size:26px}
+@media(max-width:700px){#kb-recorded .example-heading h2{font-size:24px}}
 `;
 const markup=`<div id="kb-recorded" lang="ko" data-example-count="20">
 <section class="example-shell" aria-label="실제 기록 기반 꽁보다 분석 카드">
