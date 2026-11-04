@@ -148,7 +148,8 @@ async function wecResults(year,event,category,files,env){
 }
 export async function raceResultsRoute(request,env={}){
  const u=new URL(request.url);if(u.pathname!=='/api/race-results')return null;
- const respond=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:jsonHeaders});
+ // Only successful public results are cacheable by the CDN.
+ const respond=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:status===200?{...jsonHeaders,'cache-control':'public, max-age=60, s-maxage=120, stale-while-revalidate=300'}:jsonHeaders});
  if(request.method!=='GET')return respond({error:'GET only'},405);
  const series=u.searchParams.get('series'),event=u.searchParams.get('event'),category=u.searchParams.get('category'),year=Number(u.searchParams.get('season')||new Date().getUTCFullYear());
  if(!['f1','wec'].includes(series)||!Number.isInteger(year)||year<2018||year>new Date().getUTCFullYear()||event&&!/^\d{1,2}$/.test(event)||category&&(!/^[A-Za-z0-9 -]{1,40}$/.test(category)||series==='f1'))return respond({error:'Invalid race selection'},400);

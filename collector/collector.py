@@ -108,6 +108,7 @@ class State:
     def apply(self, topic, payload, source_time='', initial=False):
         if topic not in TOPICS:
             return
+        raw = payload
         payload = decode_payload(topic, payload)
         with self.lock:
             if topic == 'SessionInfo' and isinstance(payload, dict):
@@ -142,7 +143,10 @@ class State:
                     self.telemetry.write_errors += 1
             # High-frequency batches have ephemeral indexes: never merge across batches.
             # The SignalR raw recording retains the complete received history.
-            self.topics[topic] = (merge({}, payload) if initial else copy.deepcopy(payload) if topic.endswith('.z')
+            # A decoded .z batch is a fresh object nothing else keeps, so it is stored
+            # without a deep copy (the costliest per-packet step before this change).
+            fresh = topic.endswith('.z') and payload is not raw
+            self.topics[topic] = (merge({}, payload) if initial else (payload if fresh else copy.deepcopy(payload)) if topic.endswith('.z')
                                   else merge_owned(self.topics.get(topic), payload))
             self.laps.apply(topic, merge({}, payload) if topic == 'TimingData' else {}, self.topics, source_time, self.sequence, initial)
             # An initial snapshot is not evidence that the feed is currently live.
@@ -154,12 +158,25 @@ class State:
                 self.last_feed_monotonic = time.monotonic()
             if topic in ['TimingData', 'TimingAppData', 'RaceControlMessages',
                          'SessionStatus', 'TrackStatus', 'TeamRadio', 'Commentary']:
+                # A payload parsed here from a string is owned by this state; a dict
+                # passed in by the caller is still copied, as before.
                 self.events.append({'sequence': self.sequence, 'topic': topic,
                                     'source_time': source_time, 'received_at': received,
-                                    'initial_snapshot': initial, 'patch': copy.deepcopy(payload)})
+                                    'initial_snapshot': initial,
+                                    'patch': payload if payload is not raw else copy.deepcopy(payload)})
                 self.events = self.events[-400:]
 
+    def session_info(self):
+        with self.lock:
+            return copy.deepcopy(self.topics.get('SessionInfo', {}))
+
     def snapshot(self):
+        """Independent dict copy of the current state (same content as the JSON file)."""
+        return json.loads(self.snapshot_text())
+
+    def snapshot_text(self):
+        """Serialize the state once under the lock with C json, instead of a
+        pure-Python deep copy followed by one or more json.dumps calls."""
         with self.lock:
             capture = self.telemetry.summary() if self.telemetry else None
             if capture and capture['purged']:
@@ -169,7 +186,7 @@ class State:
             age = None if self.last_feed_monotonic is None else time.monotonic() - self.last_feed_monotonic
             status = self.topics.get('SessionStatus', {}).get('Status')
             active = status in ('Started', 'Resumed')
-            return copy.deepcopy({
+            return json.dumps({
                 'schema_version': 1, 'producer': 'fastf1-live-bridge',
                 'run_id': self.run_id, 'sequence': self.sequence,
                 'generated_at': utcnow(), 'last_message_at': self.last_message_at,
@@ -191,25 +208,54 @@ class State:
                     'Fuel load, battery SOC and tyre temperatures are unavailable. CarData.z/Position.z contain only the latest decoded batch; full received history is in the raw recording. TeamRadio/AudioStreams are metadata and links, not audio transcription.',
                     'A fresh heartbeat does not mean every driver field was updated recently.',
                     'Race-control deletion messages must be checked before ranking laps.'
-                ]})
+                ]}, ensure_ascii=False)
+
+
+def bounded_snapshot_text(state, limit=900_000):
+    """Snapshot JSON of at most `limit` bytes. Drops the oldest events in blocks
+    of 20 (same rule as before) but sizes them once instead of re-encoding the
+    whole snapshot for every block."""
+    text = state.snapshot_text()
+    size = len(text.encode())
+    if size <= limit:
+        return text
+    data = json.loads(text)
+    events = data['recent_events']
+    drop = 0
+    while size > limit and drop < len(events):
+        # Each removed event also removes one ', ' separator (2 bytes).
+        size -= sum(len(json.dumps(e, ensure_ascii=False).encode()) + 2 for e in events[drop:drop + 20])
+        drop += 20
+    data['recent_events'] = events[drop:]
+    text = json.dumps(data, ensure_ascii=False)
+    # Exact check (the estimate can be off by a separator): continue the old rule if needed.
+    while len(text.encode()) > limit and data['recent_events']:
+        data['recent_events'] = data['recent_events'][20:]
+        text = json.dumps(data, ensure_ascii=False)
+    return text
+
+
+def checkpoint_text(state):
+    with state.lock:
+        return json.dumps(state.laps.checkpoint(), ensure_ascii=False)
 
 
 def write_snapshot(state, path):
     from telemetry import purge_expired
     purge_expired(path.parent)
-    data = state.snapshot()
     # Bound uploads without silently discarding the latest state.
-    while len(json.dumps(data, ensure_ascii=False).encode()) > 900_000 and data['recent_events']:
-        data['recent_events'] = data['recent_events'][20:]
+    text = bounded_snapshot_text(state)
     # Keep the same file identity for the browser's FileSystemFileHandle.
     # The uploader retries if it reads during this short write.
-    path.write_text(json.dumps(data, ensure_ascii=False), encoding='utf-8')
-    with state.lock:
-        saved = copy.deepcopy(state.laps.checkpoint())
+    path.write_text(text, encoding='utf-8')
+    saved = checkpoint_text(state)
     checkpoint = path.parent / 'lap-archive.json'
+    if getattr(state, 'last_checkpoint_text', None) == saved and checkpoint.exists():
+        return  # lap archive unchanged since the last write
     temporary = checkpoint.with_suffix('.tmp')
-    temporary.write_text(json.dumps(saved, ensure_ascii=False), encoding='utf-8')
+    temporary.write_text(saved, encoding='utf-8')
     temporary.replace(checkpoint)
+    state.last_checkpoint_text = saved
 
 
 def main():

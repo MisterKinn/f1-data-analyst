@@ -28,7 +28,7 @@ header .header-actions{flex-shrink:0}.approved-brand{width:clamp(9.375rem,18vw,1
 #kb-recorded h3{font-size:clamp(1.1875rem,1.02rem + .5vw,1.375rem)}
 #kb-recorded .sector-value{min-width:0;overflow-wrap:anywhere}
 #kb-recorded .analysis table{table-layout:fixed}
-#kb-recorded .analysis th,#kb-recorded .analysis td{overflow-wrap:anywhere;word-break:normal}
+#kb-recorded .analysis th,#kb-recorded .analysis td{overflow-wrap:anywhere;word-break:keep-all}
 #kb-recorded .analysis.live{display:flex;grid-template-columns:none}
 #kb-recorded .carousel-stage{padding-inline:clamp(25px,3vw,38px)}
 #kb-recorded .side-arrow.prev{left:-10px}#kb-recorded .side-arrow.next{right:-10px}

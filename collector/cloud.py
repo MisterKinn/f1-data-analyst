@@ -58,11 +58,35 @@ def read_json(path, default=None):
         return default
 
 
-def atomic_json(path, value):
+def atomic_text(path, text):
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + '.tmp')
-    temporary.write_text(json.dumps(value, ensure_ascii=False), encoding='utf-8')
+    temporary.write_text(text, encoding='utf-8')
     temporary.replace(path)
+
+
+def atomic_json(path, value):
+    atomic_text(path, json.dumps(value, ensure_ascii=False))
+
+
+def persist_snapshot(state, data, session_dir=None, include_checkpoint=True):
+    """Write snapshot.json, the per-session copy and the lap checkpoint from one
+    serialization. Returns the session status. Same files and content as the
+    previous loop, which deep-copied the state and re-encoded it 3-4 times."""
+    from collector import bounded_snapshot_text, checkpoint_text
+    text = bounded_snapshot_text(state)
+    atomic_text(data / 'snapshot.json', text)
+    with state.lock:
+        info = state.topics.get('SessionInfo', {})
+        key = info.get('Key')
+        status = state.topics.get('SessionStatus', {}).get('Status')
+    if include_checkpoint:
+        saved = checkpoint_text(state)
+        if getattr(state, 'last_checkpoint_text', None) != saved or not (data / 'lap-archive.json').exists():
+            atomic_text(data / 'lap-archive.json', saved)
+            state.last_checkpoint_text = saved
+    atomic_text(session_dir / 'snapshot.json' if session_dir else data / 'sessions' / str(key) / 'snapshot.json', text)
+    return status
 
 
 def automatic_collection():
@@ -230,7 +254,8 @@ def record(window):
                 elif isinstance(message, list) and len(message) >= 2 and accepted.is_set():
                     if message[0] == 'SessionInfo':
                         from collector import merge
-                        info = merge(state.snapshot()['topics'].get('SessionInfo', {}), message[1])
+                        # Only SessionInfo is needed here, not a full state snapshot.
+                        info = merge(state.session_info(), message[1])
                         if not session_matches(info, window):
                             failed.set()
                             return
@@ -278,7 +303,6 @@ def record(window):
     finished = False
     try:
         while not STOP.wait(2) and not failed.is_set():
-            snapshot = state.snapshot()
             if accepted.is_set():
                 # Rebuild historical laps off-thread without holding up live reception.
                 # Fixed official session path; replay never updates live freshness.
@@ -286,15 +310,9 @@ def record(window):
                     from recovery import recover
                     recover_at = time.monotonic() + 120
                     recovery_job = threading.Thread(target=recover, args=(state,
-                        snapshot['topics']['SessionInfo'], session_dir / 'timing-raw.txt'), daemon=True)
+                        state.session_info(), session_dir / 'timing-raw.txt'), daemon=True)
                     recovery_job.start()
-                while len(json.dumps(snapshot).encode()) > 900_000 and snapshot['recent_events']:
-                    snapshot['recent_events'] = snapshot['recent_events'][20:]
-                atomic_json(DATA / 'snapshot.json', snapshot)
-                with state.lock:
-                    atomic_json(DATA / 'lap-archive.json', state.laps.checkpoint())
-                atomic_json(DATA / 'sessions' / str(snapshot['topics']['SessionInfo']['Key']) / 'snapshot.json', snapshot)
-                status = snapshot['topics'].get('SessionStatus', {}).get('Status')
+                status = persist_snapshot(state, DATA)
                 if terminal_session_status(status):
                     finished = True
                     break
@@ -313,11 +331,8 @@ def record(window):
         if state.diagnostics:
             state.diagnostics.close()
         if accepted.is_set():
-            snapshot = state.snapshot()
-            atomic_json(DATA / 'snapshot.json', snapshot)
-            atomic_json(session_dir / 'snapshot.json', snapshot)
-            with state.lock:
-                atomic_json(DATA / 'lap-archive.json', state.laps.checkpoint())
+            state.last_checkpoint_text = None  # always write the final checkpoint
+            persist_snapshot(state, DATA, session_dir=session_dir)
     return 0 if finished else 22
 
 

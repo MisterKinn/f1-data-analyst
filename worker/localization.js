@@ -1,6 +1,9 @@
 // Explicit translations shared by server markup and dynamic browser updates.
 export const translations = {
  '로그인 후 연결 주소 복사':'Sign in to copy the connection address',
+ '질문 예시':'Example questions',
+ '실제 기록으로 재구성한 분석 예시는 홈에서 볼 수 있습니다.':'Analysis examples rebuilt from recorded data are on the homepage.',
+ '분석 예시 보기':'See analysis examples',
  '이 기기에서 로그아웃':'Log out this device',
  '모든 기기에서 로그아웃':'Log out all devices',
  '화면 테마':'Appearance',

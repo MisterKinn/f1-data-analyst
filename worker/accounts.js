@@ -39,8 +39,20 @@ async function find(env,identity,create=false){
  if(claimed===null){await env.BUCKET.delete(accountKey(account.id));return find(env,identity,false);}
  return account;
 }
+// True when accountIdentity({create:true}) would rewrite the account's display name.
+const nameNeedsUpdate=(account,identity,chatgpt)=>{
+ const name=displayName(identity.name)||displayName(chatgpt?.name),nameEn=localizedAccountName('en',identity,chatgpt,account);
+ return !!(name&&(account.name!==name||(/[A-Za-z]/.test(nameEn)&&!/[가-힣]/.test(nameEn)&&account.nameEn!==nameEn)));
+};
 export async function accountIdentity(request,env,google,{create=false}={}){
- if(create&&env.BUCKET?.atomic)return env.BUCKET.atomic(bucket=>accountIdentity(request,{...env,BUCKET:bucket},google,{create}));
+ if(create&&env.BUCKET?.atomic){
+  // Most requests come from an existing account with nothing to change. Read it
+  // without a Firestore transaction first; fall back to the transaction only when
+  // the account must be created, linked or renamed (same result either way).
+  const quick=await accountIdentity(request,env,google,{create:false});
+  if(quick?.account&&!quick.account.deleted&&!quick.canLink&&!nameNeedsUpdate(quick.account,google||quick.chatgpt,quick.chatgpt))return quick;
+  return env.BUCKET.atomic(bucket=>accountIdentity(request,{...env,BUCKET:bucket},google,{create}));
+ }
  if(!env.BUCKET)return null;const chatgpt=platformIdentity(request);
  const identity=google||chatgpt;if(!identity)return null;
  let account=await find(env,identity,create);

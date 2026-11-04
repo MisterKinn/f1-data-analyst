@@ -16,7 +16,8 @@ export function normalizeOfficialEvents(records,series,url,existing=calendarEven
   const start=day(record.startDate),end=day(record.endDate||record.startDate),name=String(record.name||'').trim();
   if(!validDay(start)||!validDay(end)||end<start||!name||name.length>240||!/^20\d\d/.test(start))continue;
   const old=matchEvent(series,name,start,existing),sameDates=old?.start===start&&old?.end===end;
-  const sessions=Array.isArray(record.sessions)?record.sessions.filter(s=>s.name&&stamp(s.start)).map(s=>({...s,source:url,verifiedAt:new Date(now).toISOString()})):sameDates?(old?.sessions||sessionSchedule[old?.id]||[]):[];
+  const fresh=Array.isArray(record.sessions)?record.sessions.filter(s=>s.name&&stamp(s.start)).map(s=>({...s,source:url,verifiedAt:new Date(now).toISOString()})):[];
+  const sessions=fresh.length?fresh:sameDates?(old?.sessions||sessionSchedule[old?.id]||[]):[];
   const race=sessions.find(s=>/^(?:race|경기)$/i.test(s.nameEn||s.name));
   result.push({...old,raceStart:race?.start||(sameDates?old?.raceStart:null),id:old?.id||series+'-official-'+slug(name)+'-'+start,series,name:old?.name||name,nameEn:name,start,end,timezone:old?.timezone||null,url,precision:race?'time':'date',sessions,reviewedAt:new Date(now).toISOString().slice(0,10),verifiedAt:new Date(now).toISOString()});
  }
@@ -36,7 +37,7 @@ export function parseICalendar(text){
 export function parseFastF1Schedule(raw){
  const rows=Array.isArray(raw)?raw:Object.keys(raw.round_number||{}).map(i=>Object.fromEntries(Object.entries(raw).map(([key,values])=>[key,values?.[i]])));
  return rows.filter(r=>Number(r.round_number)>0).map(r=>{
-  const sessions=[];for(let i=1;i<=5;i++){const name=r['session'+i],value=r['session'+i+'_date_utc'];if(!name||!value)continue;const start=stamp(value)?value:/^\d{4}-\d\d-\d\dT/.test(value)?value+'Z':null;if(start&&stamp(start))sessions.push({name,nameEn:name,start});}
+  const offset=/^[+-]\d\d:\d\d/.exec(String(r.gmt_offset||''))?.[0];const sessions=[];for(let i=1;i<=5;i++){const name=r['session'+i],utc=r['session'+i+'_date_utc'],local=r['session'+i+'_date'];if(!name||!(utc||local))continue;const value=utc||local;const start=stamp(value)?value:/^\d{4}-\d\d-\d\dT\d\d:\d\d(:\d\d)?$/.test(value)?value+(utc?'Z':offset||''):null;if(start&&stamp(start))sessions.push({name,nameEn:name,start});}
   const end=day(r.event_date),start=day(r.session1_date)||(sessions.length?sessions.map(s=>day(s.start)).sort()[0]:end);
   return {name:r.event_name||r.official_event_name,startDate:start,endDate:end,sessions};
  });
@@ -71,7 +72,10 @@ export async function calendarRoute(request,env={},ctx={},now=Date.now()){
   const record=records[i],name=series[i],age=record?.checkedAt?now-record.checkedAt:now-Date.parse(calendarReviewedAt+'T00:00:00Z');
   const available=age>=0&&age<MAX_AGE;
   const base=calendarEvents.filter(e=>e.series===name).map(e=>({...e,sessions:sessionSchedule[e.id]||[],seriesIds:[e.series,...(e.seriesAliases||[])]}));
-  if(available)events.push(...(record?.events||base));
+  // A failed official refresh must not hide the schedule. Fall back to the last
+  // saved or checked-in events and mark them unverified for the page.
+  if(available)events.push(...(record?.events?.length?record.events:base));
+  else events.push(...(record?.events?.length?record.events:base).map(event=>({...event,verified:false})));
   statuses.push({series:name,source:record?.source||calendarSources[name],lastVerifiedAt:record?.checkedAt?new Date(record.checkedAt).toISOString():calendarReviewedAt,lastAttemptAt:record?.attemptedAt?new Date(record.attemptedAt).toISOString():null,available,stale:!!record?.error||!record?.checkedAt,error:record?.error||(!record?.checkedAt?'Using checked-in schedule snapshot':null)});
  }
  if(env.BUCKET&&ctx?.waitUntil){
@@ -82,5 +86,7 @@ export async function calendarRoute(request,env={},ctx={},now=Date.now()){
  }
  const verified=statuses.filter(s=>s.available).map(s=>s.lastVerifiedAt).sort();
  const payload={events,supported:championships.filter(c=>c.group!=='reference').map(c=>c.slug),circuits:circuitInfo,trackMaps,checkedAt:verified[0]||null,sourceStatus:statuses,stale:statuses.some(s=>s.stale),unavailable:!events.length,refreshing:!!env.BUCKET,maximumStaleSeconds:86400};
- return new Response(request.method==='HEAD'?null:JSON.stringify(payload),{headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store'}});
+ // Public data, identical for every visitor: let the CDN serve it for 5 minutes
+ // (and stale for 10 more while it refreshes) instead of rebuilding 250 KB per view.
+ return new Response(request.method==='HEAD'?null:JSON.stringify(payload),{headers:{'content-type':'application/json; charset=utf-8','cache-control':'public, max-age=60, s-maxage=300, stale-while-revalidate=600'}});
 }
