@@ -86,5 +86,7 @@ export async function calendarRoute(request,env={},ctx={},now=Date.now()){
  }
  const verified=statuses.filter(s=>s.available).map(s=>s.lastVerifiedAt).sort();
  const payload={events,supported:championships.filter(c=>c.group!=='reference').map(c=>c.slug),circuits:circuitInfo,trackMaps,checkedAt:verified[0]||null,sourceStatus:statuses,stale:statuses.some(s=>s.stale),unavailable:!events.length,refreshing:!!env.BUCKET,maximumStaleSeconds:86400};
- return new Response(request.method==='HEAD'?null:JSON.stringify(payload),{headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store'}});
+ // Public data, identical for every visitor: let the CDN serve it for 5 minutes
+ // (and stale for 10 more while it refreshes) instead of rebuilding 250 KB per view.
+ return new Response(request.method==='HEAD'?null:JSON.stringify(payload),{headers:{'content-type':'application/json; charset=utf-8','cache-control':'public, max-age=60, s-maxage=300, stale-while-revalidate=600'}});
 }

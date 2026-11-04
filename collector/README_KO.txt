@@ -5,12 +5,12 @@ FastF1 라이브 연결 (Windows)
 3. 프로그램이 요구하는 F1 이메일/비밀번호는 PC 터미널에 직접 입력합니다.
    ChatGPT에 비밀번호/토큰을 보내지 마세요. F1 구독 권한은 별도로 필요합니다.
    브라우저 인증을 원하면 터미널에서 .venv\Scripts\python.exe collector.py --auth-method browser 를 실행하세요.
-4. 일반 Chrome/Edge에서 아래 개인 페이지에 ChatGPT 계정으로 로그인합니다.
-   https://kongboda-motorsports.nuttycabin128.chatgpt.site/live
+4. 일반 Chrome/Edge에서 아래 페이지에 꽁보다 계정(Google)으로 로그인합니다.
+   https://kongboda-motorsports.vercel.app/live
 5. '수집 파일 연결'을 눌러 output 폴더의 snapshot.json을 선택합니다.
    이 페이지와 수집기 창을 열어 두면 데이터가 10초 간격으로 전달됩니다.
    브라우저 절전/탭 정지/페이지 종료 시 전달이 멈춥니다.
-6. ChatGPT에서 F1 Data Analyst 플러그인을 사용하여 '지금 프랙티스 분석해줘'라고 요청합니다.
+6. ChatGPT에서 Kongboda Motorsports 연결을 사용하여 '지금 프랙티스 분석해줘'라고 요청합니다.
    이 프로그램은 스스로 AI 해설 메시지를 발송하지 않습니다.
 
 종료: 페이지의 '연결 해제'와 수집기에서 Ctrl+C.

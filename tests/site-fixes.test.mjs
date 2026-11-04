@@ -69,3 +69,21 @@ test('IMSA categories read as class and kind, not Al Kamel file names',()=>{
  assert.equal(imsaCategoryLabel('VP Fuels Front Runner Award - IWSC 02 LMP2'),'VP Fuels 프런트러너 상 · LMP2');
  assert.equal(imsaCategoryLabel('S01 Jim Trueman Award'),'Jim Trueman 상');
 });
+
+test('the public calendar response can be cached by the CDN for a few minutes',async()=>{
+ const response=await calendarRoute(new Request('https://site.test/api/race-calendar'),{},{});
+ assert.match(response.headers.get('cache-control'),/public/);
+ assert.match(response.headers.get('cache-control'),/s-maxage=300/);
+});
+
+import {readFileSync} from 'node:fs';
+test('the daily refresh also pre-loads standings for official-record series',()=>{
+ const script=readFileSync(new URL('../scripts/refresh-published-calendars.mjs',import.meta.url),'utf8');
+ for(const series of ['imsa','formula-e','nls','elms','alms','lemanscup'])assert.match(script,new RegExp("'"+series+"'"));
+ assert.match(script,/\/api\/championship-standings\?series=/);
+});
+test('the PC collector guide points at the current site',()=>{
+ const guide=readFileSync(new URL('../collector/README_KO.txt',import.meta.url),'utf8');
+ assert.doesNotMatch(guide,/chatgpt\.site/);
+ assert.match(guide,/https:\/\/kongboda-motorsports\.vercel\.app\/live/);
+});
