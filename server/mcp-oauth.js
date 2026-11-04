@@ -67,19 +67,19 @@ async function register(request,env){
  return json({client_id:clientId,client_id_issued_at:now,redirect_uris:redirectUris,client_name:record.clientName,token_endpoint_auth_method:'none',grant_types:['authorization_code','refresh_token'],response_types:['code']},201);
 }
 
-function consentPage(params,identity,csrf){
+function consentPage(params,identity,csrf,note=''){
  const fields=['clientId','redirectUri','state','resource','challenge','scope'].map(name=>formField(name,params[name])).join('');
- return new Response(`<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Kongboda 연결 승인</title><style>body{font:16px system-ui;background:#0b0d12;color:#fff;display:grid;place-items:center;min-height:100vh;margin:0}main{max-width:520px;padding:36px}section{background:#151923;border:1px solid #2c3342;border-radius:14px;padding:26px}p,li{color:#c4cad5;line-height:1.6}.actions{display:flex;gap:10px;margin-top:24px}button{font:inherit;padding:11px 16px;border:0;border-radius:8px;cursor:pointer}.approve{background:#df1738;color:#fff}</style><main><section><h1>Kongboda Motorsports 연결</h1><p><b>${escape(identity.email)}</b> 계정으로 <b>${escape(params.client.clientName)}</b>의 MCP 연결을 승인합니다.</p><ul><li>모터스포츠 기록·문서·라이브 분석 조회</li><li>이 계정의 개인 설정 조회 및 본인이 요청한 설정 저장</li><li>언제든 계정에서 연결을 해제할 수 있습니다</li></ul><form method="post" action="/oauth/authorize">${fields}${formField('csrf',csrf)}<div class="actions"><button class="approve" name="decision" value="approve">연결 승인</button><button name="decision" value="deny">취소</button></div></form></section></main>`,{headers:{'content-type':'text/html; charset=utf-8','cache-control':'no-store','content-security-policy':"default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",'set-cookie':cookie(csrf,600),'x-frame-options':'DENY'}});
+ return new Response(`<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Kongboda 연결 승인</title><style>body{font:16px system-ui;background:#0b0d12;color:#fff;display:grid;place-items:center;min-height:100vh;margin:0}main{max-width:520px;padding:36px}section{background:#151923;border:1px solid #2c3342;border-radius:14px;padding:26px}p,li{color:#c4cad5;line-height:1.6}.actions{display:flex;gap:10px;margin-top:24px}button{font:inherit;padding:11px 16px;border:0;border-radius:8px;cursor:pointer}.approve{background:#df1738;color:#fff}</style><main><section><h1>Kongboda Motorsports 연결</h1>${note?`<p role="alert" style="color:#ffc66d">${escape(note)}</p>`:''}<p><b>${escape(identity.email)}</b> 계정으로 <b>${escape(params.client.clientName)}</b>의 MCP 연결을 승인합니다.</p><ul><li>모터스포츠 기록·문서·라이브 분석 조회</li><li>이 계정의 개인 설정 조회 및 본인이 요청한 설정 저장</li><li>언제든 계정에서 연결을 해제할 수 있습니다</li></ul><form method="post" action="/oauth/authorize">${fields}${formField('csrf',csrf)}<div class="actions"><button class="approve" name="decision" value="approve">연결 승인</button><button name="decision" value="deny">취소</button></div></form></section></main>`,{headers:{'content-type':'text/html; charset=utf-8','cache-control':'no-store','content-security-policy':"default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",'set-cookie':cookie(csrf,600),'x-frame-options':'DENY'}});
 }
 
 async function authorize(request,env,identity){
  const url=new URL(request.url),isPost=request.method==='POST';
- let values,decision='';
+ let values,decision='',values_csrf='';
  if(isPost){
   if(request.headers.get('origin')!==url.origin)return oauthError('access_denied',403,'Invalid request origin');
   const form=await request.formData();
   decision=String(form.get('decision')||'');
-  if(!readCookie(request.headers.get('cookie'),CSRF)||form.get('csrf')!==readCookie(request.headers.get('cookie'),CSRF))return oauthError('access_denied',403,'Authorization confirmation expired');
+  values_csrf=String(form.get('csrf')||'');
   values=new URLSearchParams({client_id:String(form.get('clientId')||''),redirect_uri:String(form.get('redirectUri')||''),state:String(form.get('state')||''),resource:String(form.get('resource')||''),code_challenge:String(form.get('challenge')||''),code_challenge_method:'S256',scope:String(form.get('scope')||''),response_type:'code'});
  }else values=url.searchParams;
  const params=await authorizationParams(values,request,env),iss=issuer(request,env);
@@ -93,7 +93,14 @@ async function authorize(request,env,identity){
  }
  const accountState=await oauthAccountState(env,identity.sub);
  if(!accountState.active)return oauthError('access_denied',403,'This account was deleted. Rejoin from the account page before connecting.');
- if(!isPost)return consentPage(params,identity,random('csrf_'));
+ // The approval token is stored server-side for the signed-in user and used once.
+ // A cookie alone failed when a second consent tab, a reload or a double click
+ // replaced it; a stale or reused token now shows the approval page again.
+ const freshConsent=async(note='')=>{const csrf=random('csrf_');await write(env,'consent',csrf,{sub:identity.sub,expiresAt:Date.now()+30*60*1000});return consentPage(params,identity,csrf,note);};
+ if(!isPost)return freshConsent();
+ const consent=values_csrf?await read(env,'consent',values_csrf):null;
+ if(!consent||consent.sub!==identity.sub||Date.now()>consent.expiresAt)return freshConsent('승인 확인 시간이 지났거나 이미 처리된 요청입니다. 아래에서 한 번 더 승인해 주세요.');
+ await remove(env,'consent',values_csrf);
  if(decision!=='approve')return new Response(null,{status:303,headers:{location:addAuthorizationResult(params.redirectUri,{error:'access_denied',error_description:'The user declined the connection',state:params.state},iss),'cache-control':'no-store','set-cookie':cookie('',0)}});
  const code=random('kbo_code_');
  await write(env,'code',code,{clientId:params.clientId,redirectUri:params.redirectUri,resource:params.resource,scope:params.scope,challenge:params.challenge,accountGeneration:accountState.generation,profile:{sub:identity.sub,email:identity.email,name:identity.name||''},issuer:iss,expiresAt:Date.now()+CODE_AGE*1000});

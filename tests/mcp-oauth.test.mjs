@@ -52,3 +52,26 @@ test('DCR rejects arbitrary callbacks and token exchange rejects the wrong resou
  let response=await mcpOAuthRoute(request('/oauth/register',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({redirect_uris:['https://evil.example/callback']})}),env);assert.equal(response.status,400);assert.equal((await response.json()).error,'invalid_redirect_uri');
  response=await mcpOAuthRoute(request('/oauth/token',{method:'POST',headers:{'content-type':'application/x-www-form-urlencoded'},body:new URLSearchParams({grant_type:'authorization_code',client_id:'unknown',resource:'https://evil.example'})}),env);assert.equal(response.status,401);
 });
+
+test('a stale, replaced or reused approval shows the consent page again instead of an error',async()=>{
+ const env=environment(),redirect='https://claude.ai/api/mcp/auth_callback';
+ let response=await mcpOAuthRoute(request('/oauth/register',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({client_name:'Claude',redirect_uris:[redirect],token_endpoint_auth_method:'none'})}),env);
+ const {client_id}=await response.json();
+ const challenge=createHash('sha256').update('v'.repeat(64)).digest('base64url');
+ const query=new URLSearchParams({response_type:'code',client_id,redirect_uri:redirect,state:'s',resource:origin,code_challenge:challenge,code_challenge_method:'S256',scope:'mcp:read offline_access'});
+ const identity={sub:'google-user',email:'driver@example.test',name:'Driver'};
+ const tokenOf=async r=>(await r.text()).match(/name="csrf" value="([^"]+)"/)[1];
+ const first=await tokenOf(await mcpOAuthRoute(request('/oauth/authorize?'+query),env,identity));
+ const second=await tokenOf(await mcpOAuthRoute(request('/oauth/authorize?'+query),env,identity));
+ const post=(csrf,cookie='')=>mcpOAuthRoute(request('/oauth/authorize',{method:'POST',headers:{origin,'content-type':'application/x-www-form-urlencoded',...(cookie?{cookie}:{})},body:new URLSearchParams({clientId:client_id,redirectUri:redirect,state:'s',resource:origin,challenge,scope:'mcp:read offline_access',csrf,decision:'approve'})}),env,identity);
+ // Two consent tabs: approving the older one still works (no cookie needed).
+ response=await post(first);assert.equal(response.status,303);assert.ok(new URL(response.headers.get('location')).searchParams.get('code'));
+ // Double submit of the same tab: shows the page again rather than a JSON error.
+ response=await post(first);assert.equal(response.status,200);assert.match(await response.text(),/한 번 더 승인/);
+ // Another user's token is never accepted.
+ response=await mcpOAuthRoute(request('/oauth/authorize',{method:'POST',headers:{origin,'content-type':'application/x-www-form-urlencoded'},body:new URLSearchParams({clientId:client_id,redirectUri:redirect,state:'s',resource:origin,challenge,scope:'mcp:read offline_access',csrf:second,decision:'approve'})}),env,{...identity,sub:'someone-else'});
+ assert.equal(response.status,200);
+ // Cross-origin posts stay rejected.
+ response=await mcpOAuthRoute(request('/oauth/authorize',{method:'POST',headers:{origin:'https://evil.test','content-type':'application/x-www-form-urlencoded'},body:new URLSearchParams({csrf:second,decision:'approve'})}),env,identity);
+ assert.equal(response.status,403);
+});
