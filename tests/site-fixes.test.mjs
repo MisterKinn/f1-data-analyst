@@ -45,19 +45,19 @@ test('sign-in is Google only on every host; no ChatGPT sign-in or account-link b
   assert.doesNotMatch(page,/signin-with-chatgpt|ChatGPT로 로그인|Google · ChatGPT 계정 연결/);
  }
 });
-test('the MCP address can be copied without signing in on the guide; the home links to the guide only',async()=>{
+test('the MCP address is shown on the guide only after Google sign-in; the home links to the guide only',async()=>{
  const home=await html('https://kongboda-motorsports.vercel.app/');
  assert.doesNotMatch(home.slice(home.indexOf('class="connect-section"'),home.indexOf('id="championships"')),/data-copy=/);
  assert.match(home,/<a class="button primary" href="\/guide">연결 방법 보기<\/a>/);
  for(const path of ['/guide']){
   const page=await html('https://kongboda-motorsports.vercel.app'+path);
-  assert.match(page,/data-copy="https:\/\/kongboda-motorsports\.vercel\.app\/mcp"/,path);
+  assert.doesNotMatch(page,/kongboda-motorsports\.vercel\.app\/mcp/,path);assert.match(page,/auth\/google\/start\?return_to=%2Fguide/);
   assert.doesNotMatch(page,/로그인 후 연결 주소 복사/,path);
  }
 });
 test('the guide is a three-step setup, shows the same example cards as the home, and drops clutter',async()=>{
  const guide=await html('https://kongboda-motorsports.vercel.app/guide');
- assert.equal((guide.match(/<ol class="guide-steps">[\s\S]*?<\/ol>/)[0].match(/<li>/g)||[]).length,3);
+ assert.equal((guide.match(/<ol class="guide-steps">[\s\S]*?<\/ol>/)[0].match(/<li>/g)||[]).length,4);assert.match(guide,/본인의 F1 TV 계정/);
  assert.match(guide,/id="kb-recorded"/);
  assert.match(guide,/묻지 않아도 먼저/);
  assert.doesNotMatch(guide,/인터랙티브 카드 읽는 법|첫 질문 복사|대회·연도·세션을 함께 말하면/);
@@ -91,4 +91,14 @@ test('the PC collector guide points at the current site',()=>{
  const guide=readFileSync(new URL('../collector/README_KO.txt',import.meta.url),'utf8');
  assert.doesNotMatch(guide,/chatgpt\.site/);
  assert.match(guide,/https:\/\/kongboda-motorsports\.vercel\.app\/live/);
+});
+
+test('signed-in users see the MCP address; crew are told they connect automatically',async()=>{
+ const {websiteRoute}=await import('../worker/website.js');
+ const google={sub:'g',email:'g@example.invalid',name:'G'};
+ const account={id:'a',name:'G',identities:[{provider:'google'}]};
+ const member=await websiteRoute(new Request('https://kongboda-motorsports.vercel.app/guide'),{google,accountInfo:{account}}).text();
+ assert.match(member,/data-copy="https:\/\/kongboda-motorsports\.vercel\.app\/mcp"/);assert.match(member,/본인의 F1 TV 계정/);
+ const crew=await websiteRoute(new Request('https://kongboda-motorsports.vercel.app/guide'),{google,accountInfo:{account},crewRegistered:true}).text();
+ assert.match(crew,/운영자 계정의 실시간 수집에 자동으로 연결/);assert.doesNotMatch(crew,/본인의 F1 TV 계정/);
 });

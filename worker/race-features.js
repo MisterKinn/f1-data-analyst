@@ -251,8 +251,9 @@ export function raceFeaturesClient(dictionary,translateText,weekBounds,sessionSt
     button.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="'+(step<0?'M15 5l-7 7 7 7':'M9 5l7 7-7 7')+'"/></svg>';
     button.addEventListener('click',()=>scroll(step));controls.append(button);buttons.push(button);
    }
-   cards.before(controls);
-   syncWeekControls=()=>{const max=cards.scrollWidth-cards.clientWidth;controls.hidden=max<=1;buttons[0].disabled=cards.scrollLeft<=1;buttons[1].disabled=cards.scrollLeft>=max-1;};
+   // Arrow buttons removed (2026-11-04): the row scrolls by swipe, trackpad, scrollbar and arrow keys.
+   controls.hidden=true;controls.style.display='none';cards.before(controls);
+   syncWeekControls=()=>{const max=cards.scrollWidth-cards.clientWidth;controls.hidden=true;buttons[0].disabled=cards.scrollLeft<=1;buttons[1].disabled=cards.scrollLeft>=max-1;};
    cards.onscroll=syncWeekControls;
    cards.onkeydown=event=>{if(event.target===cards&&['ArrowLeft','ArrowRight'].includes(event.key)){event.preventDefault();scroll(event.key==='ArrowLeft'?-1:1);}};
    carouselObserver=new ResizeObserver(syncWeekControls);carouselObserver.observe(cards);
@@ -387,7 +388,7 @@ export function raceFeaturesClient(dictionary,translateText,weekBounds,sessionSt
    copy.addEventListener('click',async()=>{const text=textFor();let ok=false;try{await navigator.clipboard.writeText(text);ok=true;}catch{const area=node('textarea');area.value=text;area.setAttribute('readonly','');area.style.position='fixed';area.style.opacity='0';document.body.append(area);area.select();try{ok=document.execCommand('copy');}catch{}area.remove();}feedback.textContent=ok?t('시간표를 복사했습니다','Schedule copied'):t('복사하지 못했습니다. 다시 시도하세요.','Could not copy. Try again.');setTimeout(()=>{feedback.textContent='';},2500);});
    function apply(){
     for(const b of views)b.setAttribute('aria-pressed',String(b.dataset.view===weekView));
-    const time=weekView==='time';cards.hidden=time;if(controls)controls.style.display=time?'none':'';timeline.hidden=!time;
+    const time=weekView==='time';cards.hidden=time;timeline.hidden=!time;
     for(const {row,event} of timelineRows)row.hidden=hiddenSeries.has(event.series);
     for(const g of list.querySelectorAll('.week-day'))g.hidden=![...g.querySelectorAll('.week-slot')].some(r=>!r.hidden);
     if(!time)requestAnimationFrame(syncWeekControls);
