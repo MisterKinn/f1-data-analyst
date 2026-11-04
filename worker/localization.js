@@ -306,12 +306,12 @@ Object.assign(translations,{
  'WEC는 본인 FIAWEC+ 계정 연결을 준비 중입니다. 지금은 선원만 WEC 실시간 수집을 이용할 수 있습니다. 비밀키를 받은 선원은 계정 설정에서 등록하면 F1·WEC 모두 운영자 계정으로 자동 연결됩니다. 사후 분석은 계정 연결 없이 이용할 수 있습니다.':'Connecting your own FIAWEC+ account for WEC is coming; for now only crew get live WEC data. Crew who register their access key in account settings are linked to the operator’s collector for both F1 and WEC automatically. Post-race analysis needs no motorsport account.',
  '선원으로 등록돼 있어 운영자 계정의 실시간 수집에 자동으로 연결됩니다. 따로 F1 계정을 등록하지 않아도 됩니다.':'You are registered crew, so you are linked to the operator’s live collector automatically. No F1 account needed.',
  'Claude에서는 ‘커스텀 커넥터’를 만들어 꽁보다의 FIA 문서 확인, 실시간 브리핑, 사후 분석 기능을 사용할 수 있습니다.':'In Claude, you create a ‘custom connector’ to use Kongboda’s FIA document checks, live briefings and post-race analysis.',
- 'claude.ai 웹이나 데스크톱 앱에서 ‘Customize → Connectors’를 엽니다.':'On claude.ai or the desktop app, open ‘Customize → Connectors’.',
- '‘+ Add’를 누른 뒤 ‘Add custom connector’를 고릅니다.':'Click ‘+ Add’, then choose ‘Add custom connector’.',
- '이름에 ‘Kongboda Motorsports’, 원격 MCP 서버 URL에 2단계에서 복사한 주소를 넣고 ‘Continue’를 누릅니다.':'Enter ‘Kongboda Motorsports’ as the name and the address you copied in step 2 as the remote MCP server URL, then click ‘Continue’.',
- '인증 화면에서 OAuth client는 ‘Register automatically’를 고릅니다. Request headers는 비워 두고 ‘Add’를 누릅니다.':'On the authentication screen, set OAuth client to ‘Register automatically’. Leave Request headers empty and click ‘Add’.',
- 'Google 로그인 창이 열리면 꽁보다에 로그인한 Google 계정으로 승인합니다.':'When the Google sign-in window opens, approve with the Google account you use for Kongboda.',
- '새 대화의 왼쪽 아래 ‘+’ → ‘Connectors’에서 Kongboda Motorsports를 켜고 질문합니다.':'In a new chat, click ‘+’ at the bottom left → ‘Connectors’, turn on Kongboda Motorsports and ask away.',
+ 'claude.ai 웹이나 데스크톱 앱에서 ‘사용자 지정 → 커넥터’를 엽니다.':'On claude.ai or the desktop app, open ‘Customize → Connectors’.',
+ '‘+ 추가’를 누른 뒤 ‘커스텀 커넥터 추가’를 고릅니다.':'Click ‘+ Add’, then choose ‘Add custom connector’.',
+ '‘이름’에 ‘Kongboda Motorsports’, ‘MCP 서버 URL’에 2단계에서 복사한 주소를 넣고 ‘계속’을 누릅니다.':'Enter ‘Kongboda Motorsports’ as the Name and the address you copied in step 2 as the MCP server URL, then click ‘Continue’.',
+ '‘인증’은 ‘지금 로그인’, ‘OAuth 클라이언트’는 ‘자동으로 등록’을 고릅니다. ‘로그인 없음’이 미리 선택돼 있어도 꼭 바꿔 주세요. ‘요청 헤더’는 비워 두고 ‘추가’를 누릅니다.':'Set Authentication to ‘Sign in now’ and OAuth client to ‘Register automatically’. Change it even if ‘No sign in’ is preselected. Leave Request headers empty and click ‘Add’.',
+ '커넥터 화면에서 ‘연결’을 한 번 누르고, 꽁보다에 로그인한 Google 계정으로 ‘연결 승인’을 누릅니다.':'On the connector screen, click ‘Connect’ once, then approve with the red button using the Google account you use for Kongboda.',
+ '새 대화의 왼쪽 아래 ‘+’ → ‘커넥터’에서 Kongboda Motorsports를 켜고 질문합니다.':'In a new chat, click ‘+’ at the bottom left → ‘Connectors’, turn on Kongboda Motorsports and ask away.',
  'Team·Enterprise 요금제는 조직 소유자가 먼저 커스텀 커넥터를 추가해야 할 수 있습니다. 커넥터를 추가하기 전에 열려 있던 대화에는 나타나지 않으니 새 대화에서 사용하세요.':'On Team and Enterprise plans, an organisation owner may need to add the custom connector first. It doesn’t appear in chats that were already open, so use a new chat.'
 });
 for(const [ko,en] of [['홈','Home'],['이용 방법','How to use'],['유용한 사이트','Useful Websites'],['꽁보다 소개','About Kongboda Motorsports'],['계정','Account'],['화면 보기','Display mode'],...['Formula 1','FIA WEC','IMSA','Formula E','NLS','Michelin Le Mans Cup','European Le Mans Series','Asian Le Mans Series'].map(s=>[s,s])])translations[ko+' · 꽁보다 모터스포츠']=en+' · KONGBODA MOTORSPORTS';
