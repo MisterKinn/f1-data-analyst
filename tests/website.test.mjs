@@ -25,7 +25,7 @@ test('each registered championship card reaches its working page and unknown rou
 });
 test('introduction and local logo/script work without changing data authentication',async()=>{
  const about=await (await get('/about')).text();
- assert.match(about,/꽁 — 알아가는 수고를 덜다/);assert.match(about,/보다 — 알고 보면 더 보이는 레이스/);
+ assert.match(about,/꽁 — 인사이트를 ‘꽁’으로 얻다/);assert.match(about,/보다 — 알고 보면 더 보이는 레이스/);
  const guide=await (await get('/guide')).text();
  assert.match(guide,/https:\/\/chatgpt.com\/plugins/);
  assert.match(guide,/이렇게 알려 드립니다/);assert.match(guide,/레이스 중에는 짧게/);assert.match(guide,/경기가 끝나면 자세히/);
