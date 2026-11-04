@@ -55,12 +55,12 @@ test('the MCP address can be copied without signing in on the guide; the home li
   assert.doesNotMatch(page,/로그인 후 연결 주소 복사/,path);
  }
 });
-test('the guide numbers its MCP steps from 01 and does not repeat the homepage examples',async()=>{
+test('the guide is a three-step setup, shows the same example cards as the home, and drops clutter',async()=>{
  const guide=await html('https://kongboda-motorsports.vercel.app/guide');
- const section=guide.slice(guide.indexOf('id="mcp-guide"'),guide.indexOf('</section>',guide.indexOf('id="mcp-guide"')));
- assert.deepEqual([...section.matchAll(/step-number">(\d\d)\//g)].map(m=>m[1]),['01','02']);
- assert.doesNotMatch(guide,/id="kb-recorded"/);
- assert.match(guide,/href="\/#kb-recorded"/,'links to the examples on the homepage instead');
+ assert.equal((guide.match(/<ol class="guide-steps">[\s\S]*?<\/ol>/)[0].match(/<li>/g)||[]).length,3);
+ assert.match(guide,/id="kb-recorded"/);
+ assert.match(guide,/묻지 않아도 먼저/);
+ assert.doesNotMatch(guide,/인터랙티브 카드 읽는 법|첫 질문 복사|대회·연도·세션을 함께 말하면/);
  assert.match(await html('https://kongboda-motorsports.vercel.app/'),/id="kb-recorded"/);
 });
 

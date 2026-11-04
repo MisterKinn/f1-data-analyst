@@ -267,7 +267,35 @@ Object.assign(translations,{
  '화면 모드':'Appearance',
  '기본값은 기기의 시스템 설정을 따릅니다. 이 브라우저에서만 바꾸려면 선택하세요.':'By default this follows your device setting. Choose another mode to change it in this browser only.',
  '꽁보다 계정과 연결 정보를 삭제합니다. Google 계정과 다른 이용자의 기록은 삭제되지 않습니다.':'Deletes your Kongboda account and its connections. Your Google account and other users’ records are not affected.',
- 'WEC 하이퍼카':'WEC Hypercar'
+ 'WEC 하이퍼카':'WEC Hypercar',
+ // 2026-11-04: simplified guide page.
+ '찾아보기 번거로운 기록을':'Records that are hard to dig through,',
+ '대신 읽고, 쉽게 설명합니다':'read and explained for you',
+ 'Claude나 ChatGPT에 꽁보다를 연결하면 레이스 중에는 핵심만 짧게, 경기가 끝나면 원인까지 자세히 알려 드립니다.':'Connect Kongboda to Claude or ChatGPT. During a race you get the key points in brief; after it, the full story of why.',
+ '연결하기':'Connect',
+ '연결 주소를 복사하세요':'Copy the connection address',
+ '사용하는 AI에 추가하세요':'Add it to your AI',
+ 'Customize → Connectors에서':'In Customize → Connectors, click',
+ '를 누르고 이름과 주소를 넣습니다. OAuth 클라이언트는':', then enter the name and address. For the OAuth client, choose',
+ '를 고릅니다.':'.',
+ 'Claude 커넥터 설정 열기 ↗':'Open Claude connectors ↗',
+ 'Plugins에서':'In Plugins, click',
+ '를 누르고 이름과 주소를 넣은 뒤 인증은':', enter the name and address, and choose',
+ 'ChatGPT 플러그인 열기 ↗':'Open ChatGPT plugins ↗',
+ 'Google로 로그인하면 끝입니다':'Sign in with Google and you’re done',
+ '연결 승인 화면에서 Google 계정으로 로그인하세요. 이후 대화에서 꽁보다를 켜고 바로 물어보면 됩니다.':'Sign in with your Google account on the approval screen. Then turn Kongboda on in a chat and ask.',
+ '이렇게 알려 드립니다':'What you get',
+ '레이스 중에는 짧게':'Short during a race',
+ '순위·격차·타이어·피트처럼 지금 필요한 것만 두세 문장으로 답합니다. 실시간 수신이 확인된 F1·WEC 세션에서 이용할 수 있습니다.':'Only what matters now—order, gaps, tyres, pit stops—in two or three sentences. Available for F1 and WEC sessions with a confirmed live feed.',
+ '경기가 끝나면 자세히':'Detailed after the race',
+ '왜 그런 결과가 나왔는지 랩·섹터 그래프, 전략 비교, 규정 원문과 함께 설명합니다. IMSA·Formula E 등 다른 대회도 공식 기록으로 분석합니다.':'Why it turned out that way, with lap and sector charts, strategy comparisons and the rule text. IMSA, Formula E and other series are analysed from official records.',
+ '묻지 않아도 먼저':'Told before you ask',
+ '꽁보다를 켠 대화에서는 페널티·그리드 변경, 트랙 보수, 레이스 디렉터 지시처럼 결과에 영향을 주는 FIA 공식 문서를 먼저 확인해 알려 드립니다.':'In a chat with Kongboda on, it checks FIA documents that can change the result—penalties, grid changes, track repairs, race director notes—and tells you first.',
+ 'AI 앱을 닫아 둔 동안 보내는 알림은 아닙니다. 데이터가 오래됐거나 수신이 끊기면 순위를 추측하지 않고 그 상태를 알려 드립니다.':'This is not a notification sent while the AI app is closed. If data is stale or the feed drops, it tells you so instead of guessing the order.',
+ '연결이 안 될 때':'If it doesn’t connect',
+ 'AI의 커넥터·플러그인 설정에서 Kongboda Motorsports가 켜져 있는지 확인하고 다시 로그인하세요. 계속 실패하면 연결을 지운 뒤 처음부터 다시 추가하세요.':'Check that Kongboda Motorsports is on in your AI’s connector or plugin settings and sign in again. If it still fails, remove it and add it again.',
+ '분석 카드 대신 글만 보인다면 그 AI 앱이 카드 표시를 지원하지 않는 경우입니다. 같은 기록과 수신 시각은 글로 제공됩니다.':'If you see text instead of an analysis card, that app doesn’t show cards. You still get the same records and receive time as text.',
+ '메뉴 이름은 앱과 요금제에 따라 다를 수 있고, Team·Enterprise 계정은 관리자 허용이 필요할 수 있습니다.':'Menu names vary by app and plan. Team and Enterprise accounts may need an admin to allow it.'
 });
 for(const [ko,en] of [['홈','Home'],['이용 방법','How to use'],['유용한 사이트','Useful Websites'],['꽁보다 소개','About Kongboda Motorsports'],['계정','Account'],['화면 보기','Display mode'],...['Formula 1','FIA WEC','IMSA','Formula E','NLS','Michelin Le Mans Cup','European Le Mans Series','Asian Le Mans Series'].map(s=>[s,s])])translations[ko+' · 꽁보다 모터스포츠']=en+' · KONGBODA MOTORSPORTS';
 for(const [ko,en] of [['유럽','Europe'],['아시아','Asia'],['아메리카','America'],['오스트레일리아','Australia']]){
