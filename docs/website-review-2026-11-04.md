@@ -136,6 +136,10 @@
 - 실제 iPhone Safari·Android·Firefox·Edge, 200% zoom/스크린리더 전수, 실제 clipboard 권한, live session 수신은 미검증.
 - source detector 재확인: `audit/resize-detector-final.json` 빈 배열. 정적 pattern detector이며 accessibility 전체 인증이 아님.
 
+### GitHub CI에서 추가 확인한 날짜 경계
+
+CI가 한국시간 11월 4일에 실행되면서 스냅샷의 24시간 한도가 지나 기존 일정 테스트가 실패했다. 프로덕션의 만료 조건은 유지하고, 스냅샷 내용 테스트의 시계를 해당 검증일로 고정했다. 정확히 24시간에 자료를 숨기는 별도 회귀 검사는 유지한다. 오프라인 프리뷰는 날짜가 표시된 소스 스냅샷을 명시적으로 읽어, 프리뷰를 여는 날짜 때문에 검토 자료가 사라지지 않게 수정했다.
+
 ## 9. 보존과 전달
 
 원격 기준 tree와 실제 파일의 Git blob 해시를 비교해 줄바꿈만 다른 파일은 업로드에서 제외한다. collector 전체·crew/live 정책·Firebase 설정·환경 변수·연결 설정·기존 배포 workflow를 보존한다. API adapter와 Firestore adapter는 이번 로그아웃/transaction 구현 때문에 의도적으로 변경했다. 이를 변경하지 않았다고 보고하지 않는다.
