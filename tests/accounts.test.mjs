@@ -117,3 +117,25 @@ test('live key is server-verified, rate limited, scoped to account and preserved
  assert.equal((await accountRoute(req('/account/live-access',{access_key:'test-only-key'}),e,google)).status,429);
  assert.equal((await accountRoute(req('/account/live-access',{access_key:'test-only-key'},{origin}),e,null)).status,401);
 });
+
+test('Firebase site deletion clears current site session and returns to a working account page',async()=>{
+ const e=env();e.FIREBASE_AUTH_CONFIGURED='true';e.APP_ORIGIN='https://kongboda-motorsports.vercel.app';
+ const request=new Request(e.APP_ORIGIN+'/account/delete',{method:'POST',headers:{...headers,origin:e.APP_ORIGIN},body:new URLSearchParams({confirmation:'탈퇴'})});
+ await accountIdentity(request,e,google,{create:true});
+ const response=await accountRoute(request,e,google);
+ assert.equal(response.status,303);assert.equal(response.headers.get('location'),'/account?deleted=1');
+ const cookies=response.headers.getSetCookie();
+ assert.ok(cookies.some(c=>c.startsWith('__Host-kongboda-firebase=;')&&c.includes('Max-Age=0')));
+ assert.ok(cookies.some(c=>c.startsWith('__Host-kongboda-csrf=;')&&c.includes('Max-Age=0')));
+ assert.equal((await accountIdentity(request,e,google)).account.deleted,true);
+});
+
+test('simultaneous first logins claim one provider identity and remove the losing account',async()=>{
+ const e=env();let reads=0,release;const gate=new Promise(resolve=>{release=resolve;});
+ e.BUCKET.get=async key=>{const value=e.data.get(key);if(key.startsWith('website-accounts/identity/')&&reads<2){reads++;if(reads===2)release();await gate;}return value===undefined?null:{json:async()=>JSON.parse(value)};};
+ e.BUCKET.put=async(key,value,options={})=>{if(options.onlyIf?.etagDoesNotMatch==='*'&&e.data.has(key))return null;e.data.set(key,value);return{etag:'fixture'};};
+ const request=new Request(origin+'/account');
+ const [a,b]=await Promise.all([accountIdentity(request,e,google,{create:true}),accountIdentity(request,e,google,{create:true})]);
+ assert.equal(a.account.id,b.account.id);
+ assert.equal([...e.data.keys()].filter(key=>key.startsWith('website-accounts/account/')).length,1);
+});
