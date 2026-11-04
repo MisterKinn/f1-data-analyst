@@ -1,3 +1,4 @@
+import {firebaseAuthDomain} from './firebase-auth-domain.js';
 import {calendarRoute} from './calendar-refresh.js';
 import {f1Access} from './personal-f1.js';
 import {publishCatalog,catalogStream} from './mcp-updates.js';
@@ -71,7 +72,7 @@ export default{async fetch(request,env,ctx){
  const accountResponse=await accountRoute(request,env,google,ctx);if(accountResponse)return accountResponse;
  const accountInfo=!path.startsWith('/assets/')&&!path.startsWith('/api/')&&(google||request.headers.get('oai-authenticated-user-id'))?await accountIdentity(request,env,google,{create:true}):null;
  const googleReady=env.FIREBASE_AUTH_CONFIGURED==='true'||googleConfigured(env);
- const firebaseConfig=googleReady?{apiKey:env.FIREBASE_WEB_API_KEY,authDomain:env.FIREBASE_WEB_AUTH_DOMAIN,projectId:env.FIREBASE_PROJECT_ID,appId:env.FIREBASE_WEB_APP_ID}:null;
+ const firebaseConfig=googleReady?{apiKey:env.FIREBASE_WEB_API_KEY,authDomain:firebaseAuthDomain(env,new URL(request.url).host),projectId:env.FIREBASE_PROJECT_ID,appId:env.FIREBASE_WEB_APP_ID}:null;
  const aiConnections=path==='/account'&&request.method==='GET'&&google?.sub&&accountInfo?.account&&!accountInfo.account.deleted?await aiConnectionStatus(env,google.sub).catch(()=>null):null;
  const website=websiteRoute(request,{aiConnections,google,googleReady,firebaseConfig,firebaseCsrf:request.headers.get('x-kongboda-firebase-csrf'),accountInfo,crewRegistered:hasCrewAccess(accountInfo?.account,env)});if(website)return website;
  if(path==='/api/status'&&request.method==='GET'){if(!request.headers.get('oai-authenticated-user-id'))return json({error:'Authentication required'},401);return json({configured:!!env.RAPIDAPI_KEY,tools:SPECS.length+FIA_TOOLS.length+LIVE_TOOLS.length+WEC_TOOLS.length+WEC_LIVE_TOOLS.length+RESEARCH_TOOLS.length+OFFICIAL_TOOLS.length+STANDINGS_TOOLS.length+PREFERENCE_TOOLS.length+CREW_TOOLS.length+1,provider:'Hyprace + FastF1 + FIA + Al Kamel',live_storage_configured:!!env.BUCKET,live_feed_connected:null,telemetry:true,telemetry_mode:'session_accumulation_and_fastf1_historical_reload',source_policy:{...SOURCE_POLICY,requires_local_collector:!cloudConfigured(env),cloud_configured:cloudConfigured(env)}});}
