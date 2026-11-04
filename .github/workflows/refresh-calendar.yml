@@ -1,0 +1,21 @@
+name: Refresh published calendars
+on:
+  schedule:
+    - cron: '0 21 * * *' # 06:00 Korea time
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: refresh-published-calendars
+  cancel-in-progress: false
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Refresh and verify published calendar timestamps
+        run: node scripts/refresh-published-calendars.mjs
