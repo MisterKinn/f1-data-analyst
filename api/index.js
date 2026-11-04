@@ -1,3 +1,4 @@
+import {invalidateAccountOAuth} from '../worker/oauth-account-state.js';
 import {randomBytes} from 'node:crypto';
 import {waitUntil} from '@vercel/functions';
 import worker from '../worker/index.js';
@@ -35,7 +36,7 @@ button.onclick=async()=>{button.disabled=true;s.textContent='Google 로그인 �
 </script></html>`,{headers:{'content-type':'text/html; charset=utf-8','cache-control':'no-store','content-security-policy':"default-src 'none'; script-src 'unsafe-inline' https://www.gstatic.com https://apis.google.com; connect-src https://*.googleapis.com https://*.firebaseapp.com https://*.firebaseio.com; frame-src https://accounts.google.com https://apis.google.com https://*.firebaseapp.com; style-src 'unsafe-inline'; img-src data: https:; base-uri 'none'; form-action 'self'",'set-cookie':cookie(CSRF,csrf,600)}});
 }
 
-async function authRoute(request,env){
+export async function authRoute(request,env,{admin=firebaseAdmin}={}){
  const url=new URL(request.url);
  if(url.pathname==='/auth/google/start'&&request.method==='GET'){
   const back=safeBack(url.searchParams.get('return_to'));
@@ -45,7 +46,7 @@ async function authRoute(request,env){
  if(url.pathname==='/auth/firebase/session'&&request.method==='POST'){
   const body=await request.json().catch(()=>null),expected=readCookie(request.headers.get('cookie'),CSRF);
   if(!body||!expected||body.csrf!==expected||request.headers.get('x-csrf-token')!==expected||request.headers.get('origin')!==url.origin)return firebaseSessionFailure('auth/request-validation-failed',403);
-  const {auth}=firebaseAdmin();let decoded;
+  const {auth}=admin();let decoded;
   try{decoded=await auth.verifyIdToken(body.token,true);}catch(error){console.error('firebase-session token-verification-failed',error?.code||error?.name||'unknown');return firebaseSessionFailure('auth/token-verification-failed',401);}
   if(!decoded.email||decoded.email_verified!==true||decoded.firebase?.sign_in_provider!=='google.com'||!firebaseGoogleSubject(decoded))return firebaseSessionFailure('auth/google-claims-invalid',403);
   const issued=Number(decoded.auth_time)*1000;if(!Number.isFinite(issued)||Date.now()-issued>5*60*1000)return firebaseSessionFailure('auth/login-too-old',401);
@@ -53,6 +54,19 @@ async function authRoute(request,env){
   try{session=await auth.createSessionCookie(body.token,{expiresIn:SESSION_AGE*1000});}catch(error){console.error('firebase-session cookie-creation-failed',error?.code||error?.name||'unknown');return firebaseSessionFailure('auth/session-cookie-failed',500);}
   const headers=new Headers({'content-type':'application/json; charset=utf-8','cache-control':'no-store'});headers.append('set-cookie',cookie(SESSION,session,SESSION_AGE));headers.append('set-cookie',cookie(CSRF,'',0));
   return new Response(JSON.stringify({location:safeBack(body.returnTo)}),{headers});
+ }
+ if(url.pathname==='/auth/google/logout-all'&&request.method==='POST'){
+  if(request.headers.get('origin')!==url.origin)return firebaseSessionFailure('auth/request-validation-failed',403);
+  const session=readCookie(request.headers.get('cookie'),SESSION);if(!session)return firebaseSessionFailure('auth/login-required',401);
+  const {auth}=admin();let identity;
+  try{identity=await auth.verifySessionCookie(session,true);}catch{return firebaseSessionFailure('auth/login-required',401);}
+  const sub=firebaseGoogleSubject(identity);if(!sub||!identity.uid||!identity.email_verified)return firebaseSessionFailure('auth/google-claims-invalid',403);
+  // Revoke this app's Firebase sessions and OAuth grants, never crew permission.
+  await auth.revokeRefreshTokens(identity.uid);await invalidateAccountOAuth(env,sub);
+  if(env.BUCKET?.list){let cursor;do{const page=await env.BUCKET.list({prefix:'website-auth/google/session/',...(cursor?{cursor}:{})});for(const item of page.objects){const object=await env.BUCKET.get(item.key);if(object&&(await object.json()).sub===sub)await env.BUCKET.delete(item.key);}cursor=page.truncated?page.cursor:null;}while(cursor);}
+  const headers=new Headers({location:'/account?logged_out=all','cache-control':'no-store'});
+  for(const name of [SESSION,CSRF,'__Host-kongboda-google'])headers.append('set-cookie',cookie(name,'',0));
+  return new Response(null,{status:303,headers});
  }
  if(url.pathname==='/auth/google/logout'&&request.method==='POST'){
   if(request.headers.get('origin')!==url.origin)return new Response('허용되지 않은 요청입니다.',{status:403});
