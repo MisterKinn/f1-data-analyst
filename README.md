@@ -20,7 +20,7 @@
 
 기존 ChatGPT Sites 운영 서비스는 DNS를 바꾸기 전까지 그대로 유지합니다. 새 경로는 Vercel Node 함수, Firebase Authentication, 서버 전용 Firestore 저장소로 구성하며 Firebase 웹 로그인을 ChatGPT MCP 인증으로 승격하지 않습니다. 현재 이전 상태, 사람이 해야 할 콘솔 설정, 전환 조건은 [Vercel + Firebase 이전 문서](docs/vercel-firebase-migration.md)를 따릅니다.
 
-One authenticated MCP server with 65 tools (version 2.0.0), including a read-only MCP Apps live briefing card and account-scoped preference updates. FastF1 supplies live session timing through the owner's PC collector or authenticated free-cloud polling page; Hyprace remains primary for published records. FIA official documents provide authoritative regulations, technical submissions, PU usage, driver meeting notes, steward decisions and public ADUO announcements.
+One authenticated MCP server with 65 tools (version 2.0.0), including a read-only MCP Apps live briefing card and account-scoped preference updates. FastF1 supplies live session timing through the owner's PC collector or authenticated free-cloud polling page; published F1 records come from FIA documents, championship standings and cited web search. FIA official documents provide authoritative regulations, technical submissions, PU usage, driver meeting notes, steward decisions and public ADUO announcements.
 
 Live session requests go directly to `fastf1_live_snapshot`. Check session identity, freshness, topic timestamps, raw event order and race-control deletions before analysis. Missing, disconnected or stale feeds are reported explicitly. This deployment has no telemetry-provider fallback. The previous TracingInsights tools and combined-event resolver have been removed.
 
@@ -28,7 +28,7 @@ The FastF1 bridge supports raw lap/sector state, tyre stints, session status, we
 
 FIA tools discover actual archive season/event URLs, list event documents and regulation versions, list one news index page, and extract official PDF/HTML content. No additional FIA key is required. PDF extraction returns numbered pages and approximate positioned cells (no OCR). Follow next_page/next_offset; cite original URL, publication date, document/version and page. Recalled documents default to excluded; versions are retained for applicability checks. ADUO private measurements and performance gains are never inferred from public summaries. News filtering is per page, not a comprehensive search; older announcements can be found through FIA-restricted web search and read with fia_read_document.
 
-RAPIDAPI_KEY is a runtime secret for Hyprace. FIA retrieval permits only official FIA HTTPS hosts and checks redirects, response sizes and page limits. ChatGPT platform authentication remains required for data-bearing MCP calls.
+FIA retrieval permits only official FIA HTTPS hosts and checks redirects, response sizes and page limits. ChatGPT platform authentication remains required for data-bearing MCP calls.
 
 Install pinned dependencies from package-lock.json, run node --test tests/*.test.mjs, then node scripts/build.mjs and node scripts/validate-artifact.mjs. esbuild bundles the serverless unpdf/PDF.js parser and worker into dist/server/index.js; .openai/hosting.json preserves the existing project. The legacy Sites workflow remains available until the Vercel preview is accepted and a separate production cutover is approved.
 
@@ -58,7 +58,7 @@ Race support requires deploying the updated `collector/cloud.py` to the existing
 
 ## WEC 종료 세션: Al Kamel 공식 결과
 
-WEC 경기·연습·예선·하이퍼폴이 끝난 뒤에는 Al Kamel 공식 WEC 결과 아카이브를 사용합니다. F1은 기존 Hyprace/FastF1/FIA 경로를 유지합니다.
+WEC 경기·연습·예선·하이퍼폴이 끝난 뒤에는 Al Kamel 공식 WEC 결과 아카이브를 사용합니다. F1은 FastF1·FIA 경로를 쓰고, 부족한 사후 기록은 출처를 밝힌 웹 검색으로 보완합니다.
 
 1. wec_list_archive로 공개 시즌 ID를 확인하고 season_id로 이벤트의 정확한 이름을 조회합니다.
 2. wec_list_documents에 시즌 ID와 이벤트를 지정합니다. session, query, format 필터와 next_offset을 사용해 Classification, Analysis, PitStops, Weather, TrackLimits와 포인트 자료 중 필요한 파일을 찾습니다.
