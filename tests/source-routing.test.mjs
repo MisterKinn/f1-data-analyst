@@ -6,14 +6,13 @@ const {result:info}=await call('initialize');
 assert.equal(info.serverInfo.version,'2.0.0');
 assert.match(info.instructions,/FastF1 is the source/);
 assert.doesNotMatch(info.instructions,/TracingInsights/);
-const {result:{tools}}=await call('tools/list',{},{RAPIDAPI_KEY:'test'});
-assert.equal(tools.length,65);
-const {result:{tools:keyless}}=await call('tools/list');
-assert.equal(keyless.length,23);
-assert.ok(!keyless.some(t=>t.name==='get_driver_standings'));
-assert.ok(keyless.some(t=>t.name==='motorsport_championship_standings'));
+const {result:{tools}}=await call('tools/list');
+assert.equal(tools.length,23);
+assert.ok(!tools.some(t=>t.name==='get_driver_standings'));
+assert.ok(tools.some(t=>t.name==='motorsport_championship_standings'));
 assert.ok(tools.some(t=>t.name==='fastf1_live_snapshot'));
-assert.ok(tools.some(t=>t.name==='get_grands_prix_practices_results'));
+assert.match(info.instructions,/POST-RACE GAPS: .*search the web/);
+assert.doesNotMatch(info.instructions,/Hyprace/);
 assert.ok(tools.some(t=>t.name==='fia_read_document'));
 assert.ok(!tools.some(t=>t.name.startsWith('tracing_')||t.name==='resolve_combined_event'));
 assert.equal((await call('tools/call',{name:'tracing_driver_laps',arguments:{}})).error.code,-32602);
@@ -29,4 +28,4 @@ try{
 }finally{globalThis.fetch=original;}
 const page=await (await worker.fetch(new Request('https://test/championships/f1'),{})).text();
 assert.match(page,/FastF1/);assert.doesNotMatch(page,/TracingInsights|TRACINGINSIGHTS/);
-console.log('PASS: FastF1 live routing, old tools removed, Hyprace/FIA preserved, no stale/missing-feed fallback');
+console.log('PASS: FastF1 live routing, old tools removed, Hyprace removed, FIA preserved, no stale/missing-feed fallback');
