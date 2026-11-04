@@ -139,3 +139,14 @@ test('simultaneous first logins claim one provider identity and remove the losin
  assert.equal(a.account.id,b.account.id);
  assert.equal([...e.data.keys()].filter(key=>key.startsWith('website-accounts/account/')).length,1);
 });
+test('a ChatGPT-only legacy account is reached by the first Google login with the same email',async()=>{
+ const e=env(),legacy=await accountIdentity(new Request(origin+'/account',{headers}),e,null,{create:true});
+ const viaGoogle=await accountIdentity(new Request('https://kongboda-motorsports.vercel.app/'),e,{sub:'g-legacy',email:'A@Example.com',provider:'google'},{create:true});
+ assert.equal(viaGoogle.account.id,legacy.account.id);
+ assert.deepEqual(viaGoogle.account.identities.map(i=>i.provider).sort(),['chatgpt','google']);
+ const other=await accountIdentity(new Request('https://kongboda-motorsports.vercel.app/'),e,{sub:'g-other',email:'b@example.com',provider:'google'},{create:true});
+ assert.notEqual(other.account.id,legacy.account.id);
+ // A second Google identity with the same email does not take over the adopted account.
+ const second=await accountIdentity(new Request('https://kongboda-motorsports.vercel.app/'),e,{sub:'g-second',email:'a@example.com',provider:'google'},{create:true});
+ assert.notEqual(second.account.id,legacy.account.id);
+});

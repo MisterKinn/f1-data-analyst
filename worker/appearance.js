@@ -24,7 +24,7 @@ html,body{background:var(--bg);color:var(--text)}
 .appearance-control{display:inline-flex;align-items:center;gap:7px;min-width:0;flex:0 0 auto;color:var(--muted);font-size:13px}
 .appearance-control select{min-width:0;max-width:120px;min-height:44px;padding:8px;background:var(--surface);color:var(--text)}
 header nav{min-width:0;flex-wrap:wrap}
-@media(min-width:801px) and (max-width:1300px){header{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px 24px}header>.brand{grid-column:1;grid-row:1}header>.header-actions{grid-column:2;grid-row:1}header nav{grid-column:1/-1;grid-row:2;flex-direction:row;flex-wrap:wrap;justify-content:flex-start}}
+/* PC: the menu always sits on the logo row, right of the logo. */@media(min-width:801px){header{display:flex;flex-wrap:nowrap;align-items:center;justify-content:flex-start;gap:clamp(16px,3vw,48px)}header>.brand{flex:0 0 auto}header nav{order:2;flex:1 1 auto;flex-wrap:nowrap;justify-content:flex-start;min-width:0;gap:clamp(12px,2vw,28px)}header nav a{white-space:nowrap}header>.header-actions{order:3;flex:0 0 auto;margin-left:auto}}@media(min-width:801px) and (max-width:1100px){header nav a{font-size:14px}header .signed-in-name{display:none}}
 .button.primary,.primary{color:var(--on-accent)}
 #kb-recorded{--bg:var(--surface);--paper:var(--bg);--ink:var(--text);--muted:inherit;--line:inherit;--mint:inherit;--blue:inherit;--soft:inherit;color-scheme:inherit}
 /* Rebind explicit demo colors without inheriting unresolved custom-property cycles. */

@@ -29,7 +29,7 @@ test('introduction and local logo/script work without changing data authenticati
  const guide=await (await get('/guide')).text();
  assert.match(guide,/https:\/\/chatgpt.com\/plugins/);
  assert.match(guide,/MCP 라이브 분석 활용 가이드/);assert.match(guide,/요약<\/b>은 현재 흐름/);assert.match(guide,/순위<\/b>는 드라이버별 랩·격차/);assert.match(guide,/전략·환경<\/b>은 타이어/);assert.match(guide,/지금 기준으로 다시 확인해줘/);
- assert.match(guide,/https:\/\/kongboda-motorsports\.vercel\.app\/mcp/);assert.match(guide,/원격 MCP 서버 추가 화면/);
+ assert.match(guide,/https:\/\/kongboda-motorsports\.vercel\.app\/mcp/);assert.match(guide,/Add custom connector/);assert.match(guide,/사용자 지정 MCP 서버 추가/);
  assert.ok(!about.includes('01 / INSTALL'));assert.ok(guide.includes('<span class="step-number">01/</span>'));assert.ok(!guide.includes('HOW TO USE'));assert.ok(!guide.includes('01 / INSTALL'));
  assert.match(about,/Kongboda Motorsports/);
  const svg=await get('/assets/brand-mark.svg');assert.match(svg.headers.get('content-type'),/image\/svg/);assert.match(await svg.text(),/viewBox="250 230 1250 440"/);

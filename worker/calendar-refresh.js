@@ -23,6 +23,25 @@ export function normalizeOfficialEvents(records,series,url,existing=calendarEven
  }
  return [...new Map(result.map(e=>[e.id,e])).values()];
 }
+// Saved refresh records can be older than the checked-in schedule, or list only part
+// of a season. Never let one replace the other wholesale: keep every checked-in event,
+// let a refreshed record update matching events, and keep whichever session timetable
+// is more complete. Both sources are official; a shorter list is never an upgrade.
+const overlaps=(a,b)=>a.start<=(b.end||b.start)&&b.start<=(a.end||a.start);
+export function mergeCalendarEvents(base,refreshed=[]){
+ const merged=new Map(base.map(e=>[e.id,e]));
+ for(const event of refreshed||[]){
+  const target=slug(event.nameEn||event.name);
+  const match=merged.get(event.id)||[...merged.values()].find(b=>b.series===event.series&&overlaps(b,event)&&[b.name,b.nameEn].some(v=>slug(v)===target))||[...merged.values()].find(b=>b.series===event.series&&b.start===event.start);
+  if(!match){merged.set(event.id,event);continue;}
+  const fresh=event.sessions||[],saved=match.sessions||[];
+  const sessions=fresh.length>=saved.length&&fresh.length?fresh:saved;
+  const race=sessions.find(s=>/^(?:race|경기|레이스)$/i.test(s.nameEn||s.name));
+  merged.set(match.id,{...match,...event,id:match.id,name:match.name||event.name,nameEn:match.nameEn||event.nameEn,sessions,raceStart:race?.start||event.raceStart||match.raceStart||null,precision:sessions.length?'time':(event.precision||match.precision)});
+ }
+ return [...merged.values()].sort((a,b)=>a.start.localeCompare(b.start)||a.id.localeCompare(b.id));
+}
+export {missingSessionCoverage} from './calendar-coverage.js';
 export function parseJsonLdEvents(html){
  const found=[];const walk=value=>{if(Array.isArray(value))return value.forEach(walk);if(!value||typeof value!=='object')return;const type=[value['@type']].flat();if(type.some(t=>['Event','SportsEvent','MotorSportsEvent'].includes(t))&&value.name&&value.startDate)found.push(value);if(value['@graph'])walk(value['@graph']);if(value.subEvent)walk(value.subEvent);if(value.itemListElement)walk(value.itemListElement);if(value.item)walk(value.item);};
  for(const m of html.matchAll(/<script\b[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi))try{walk(JSON.parse(m[1]));}catch{}
@@ -69,13 +88,14 @@ export async function calendarRoute(request,env={},ctx={},now=Date.now()){
  const selected=url.searchParams.get('series');if(selected&&!Object.hasOwn(calendarSources,selected))return Response.json({error:'Invalid calendar series'},{status:400});
  const series=Object.keys(calendarSources),records=await Promise.all(series.map(s=>read(env,s)));let events=[],statuses=[];
  for(let i=0;i<series.length;i++){
-  const record=records[i],name=series[i],age=record?.checkedAt?now-record.checkedAt:now-Date.parse(calendarReviewedAt+'T00:00:00Z');
+  const record=records[i],name=series[i],reviewed=Date.parse(calendarReviewedAt+'T00:00:00Z'),age=now-Math.max(record?.checkedAt||0,reviewed);
   const available=age>=0&&age<MAX_AGE;
   const base=calendarEvents.filter(e=>e.series===name).map(e=>({...e,sessions:sessionSchedule[e.id]||[],seriesIds:[e.series,...(e.seriesAliases||[])]}));
   // A failed official refresh must not hide the schedule. Fall back to the last
   // saved or checked-in events and mark them unverified for the page.
-  if(available)events.push(...(record?.events?.length?record.events:base));
-  else events.push(...(record?.events?.length?record.events:base).map(event=>({...event,verified:false})));
+  const combined=mergeCalendarEvents(base,record?.events);
+  if(available)events.push(...combined);
+  else events.push(...combined.map(event=>({...event,verified:false})));
   statuses.push({series:name,source:record?.source||calendarSources[name],lastVerifiedAt:record?.checkedAt?new Date(record.checkedAt).toISOString():calendarReviewedAt,lastAttemptAt:record?.attemptedAt?new Date(record.attemptedAt).toISOString():null,available,stale:!!record?.error||!record?.checkedAt,error:record?.error||(!record?.checkedAt?'Using checked-in schedule snapshot':null)});
  }
  if(env.BUCKET&&ctx?.waitUntil){

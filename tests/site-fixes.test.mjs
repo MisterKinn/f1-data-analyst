@@ -39,9 +39,11 @@ test('calendar status uses a readable local time, not a raw ISO stamp',()=>{
 
 import {websiteRoute} from '../worker/website.js';
 const html=async(url,headers={})=>websiteRoute(new Request(url,{headers})).text();
-test('ChatGPT sign-in button only appears where the ChatGPT platform serves it',async()=>{
- assert.doesNotMatch(await html('https://kongboda-motorsports.vercel.app/account'),/signin-with-chatgpt/);
- assert.match(await html('https://kongboda.nuttycabin128.chatgpt.site/account'),/href="\/signin-with-chatgpt\?return_to=%2Faccount"/);
+test('sign-in is Google only on every host; no ChatGPT sign-in or account-link buttons',async()=>{
+ for(const host of ['https://kongboda-motorsports.vercel.app','https://kongboda.nuttycabin128.chatgpt.site']){
+  const page=await html(host+'/account');
+  assert.doesNotMatch(page,/signin-with-chatgpt|ChatGPT로 로그인|Google · ChatGPT 계정 연결/);
+ }
 });
 test('the MCP address can be copied without signing in',async()=>{
  for(const path of ['/','/guide']){

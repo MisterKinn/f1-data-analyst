@@ -36,7 +36,9 @@ export function createFirestoreBucket(db,{collection='objectStore'}={}){
       writes.set(key,{key,body,contentType:options.httpMetadata?.contentType||'application/json; charset=utf-8',etag,updatedAt:Date.now()});
       return {key,etag};
      },
-     async delete(key){await current(key);writes.set(key,null);}
+     async delete(key){await current(key);writes.set(key,null);},
+     // Key listing is not transactional; documents found are re-read through the transaction.
+     list:options=>listKeys(options)
     };
     const result=await callback(bucket);
     if(writes.size>450)throw Error('Account transaction exceeds document limit');
@@ -60,14 +62,15 @@ export function createFirestoreBucket(db,{collection='objectStore'}={}){
    });
   },
   async delete(key){await ref(key).delete();},
-  async list({prefix='',limit=1000,cursor}={}){
+  list:options=>listKeys(options)
+ };
+ async function listKeys({prefix='',limit=1000,cursor}={}){
    const size=Math.max(1,Math.min(Number(limit)||1000,1000));
    let query=store.where('key','>=',prefix).where('key','<',prefix+'\uf8ff').orderBy('key').limit(size+1);
    if(cursor){const last=dec(cursor);if(!last.startsWith(prefix))throw new Error('Invalid cursor');query=query.startAfter(last);}
    const snap=await query.get(),docs=snap.docs.slice(0,size),truncated=snap.docs.length>size;
    return {objects:docs.map(doc=>({key:doc.data().key})),truncated,cursor:truncated&&docs.length?enc(docs.at(-1).data().key):undefined};
-  }
- };
+ }
 }
 
 export const FIRESTORE_BUCKET_MAX_BODY_BYTES=MAX_BODY_BYTES;

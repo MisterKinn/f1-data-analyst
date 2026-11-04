@@ -32,12 +32,39 @@ async function find(env,identity,create=false){
  if(mapping?.deleted)return {deleted:true};
  if(mapping){const account=await read(env,accountKey(mapping.accountId));return account&&!account.deleted?account:null;}
  if(!create)return null;
+ if(identity.provider==='google'){const legacy=await adoptLegacyChatgptAccount(env,identity,key);if(legacy)return legacy;}
  const account={id:crypto.randomUUID(),email:identity.email,identities:[{provider:identity.provider,sub:identity.sub,key}],name:displayName(identity.name),nameEn:/[A-Za-z]/.test(identity.name||'')&&!/[가-힣]/.test(identity.name||'')?displayName(identity.name):undefined,createdAt:Date.now()};
  await write(env,accountKey(account.id),account);
  // Claim this provider identity atomically. Concurrent first logins reuse the winner.
  const claimed=await env.BUCKET.put(key,JSON.stringify({accountId:account.id}),{onlyIf:{etagDoesNotMatch:'*'}});
  if(claimed===null){await env.BUCKET.delete(accountKey(account.id));return find(env,identity,false);}
  return account;
+}
+// ChatGPT sign-in has been retired. An account that only ever signed in with ChatGPT
+// is reached by the first Google login with the same (provider-verified) email.
+// Accounts with an explicit unlink opt-out, deleted accounts and accounts that
+// already have a Google identity are never adopted.
+async function adoptLegacyChatgptAccount(env,identity,key){
+ if(typeof env.BUCKET?.list!=='function')return null;
+ const email=String(identity.email||'').trim().toLowerCase();if(!email)return null;
+ let cursor;
+ for(let page=0;page<20;page++){
+  const listing=await env.BUCKET.list({prefix:'website-accounts/account/',limit:1000,...(cursor?{cursor}:{})});
+  for(const {key:accountPath} of listing.objects||[]){
+   const account=await read(env,accountPath);
+   if(!account||account.deleted||String(account.email||'').trim().toLowerCase()!==email)continue;
+   const ids=account.identities||[];
+   if(!ids.length||ids.some(i=>i.provider!=='chatgpt'))continue;
+   const mappings=await Promise.all(ids.map(i=>read(env,i.key)));
+   if(mappings.some(m=>m?.disableAutoLink||m?.deleted||(m&&m.accountId!==account.id)))continue;
+   const claimed=await env.BUCKET.put(key,JSON.stringify({accountId:account.id}),{onlyIf:{etagDoesNotMatch:'*'}});
+   if(claimed===null)return null;
+   const updated={...account,identities:[...ids,{provider:'google',sub:identity.sub,key}]};
+   await write(env,accountKey(account.id),updated);return updated;
+  }
+  if(!listing.truncated||!listing.cursor)break;cursor=listing.cursor;
+ }
+ return null;
 }
 // True when accountIdentity({create:true}) would rewrite the account's display name.
 const nameNeedsUpdate=(account,identity,chatgpt)=>{

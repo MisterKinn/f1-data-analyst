@@ -19,7 +19,8 @@ test('account controls use platform top-level auth and never accept an external 
  for(const path of ['//evil.test','https://evil.test','/\\\\evil.test','/callback','/signin-with-chatgpt'])assert.equal(safeReturnPath(path),'/');
  assert.equal(safeReturnPath('/championships/imsa?x=1'),'/championships/imsa?x=1');
  const anonymous=await websiteRoute(new Request("https://kongboda.nuttycabin128.chatgpt.site/account?return_to=%2Fchampionships%2Fimsa")).text();
- assert.match(anonymous,/target="_top" href="\/signin-with-chatgpt\?return_to=%2Faccount/);
+ // Sign-in is Google only; ChatGPT sign-in was retired on every host.
+ assert.doesNotMatch(anonymous,/signin-with-chatgpt/);
  assert.doesNotMatch(anonymous,/로그인되어 있습니다/);
  const signed=await page('/account',{'oai-authenticated-user-id':'u1','oai-authenticated-user-email':'a<b@example.com'});
  assert.match(signed,/내 계정/);assert.doesNotMatch(signed,/a&lt;b@example.com/);assert.match(signed,/signout-with-chatgpt/);

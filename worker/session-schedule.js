@@ -25,6 +25,10 @@ export const sessionSchedule={
  'gtwc-asia-2026-10-30-shanghai':rows(gtSource,[
   ['공식 테스트','Official test','2026-10-30T08:30:00+08:00'],['공식 연습','Official practice','2026-10-30T10:48:00+08:00'],['브론즈 세션','Bronze session','2026-10-30T11:55:00+08:00'],['프리 퀄리파잉','Pre-qualifying','2026-10-30T14:55:00+08:00'],['퀄리파잉 1','Qualifying 1','2026-10-31T09:35:00+08:00','6SgbGMvRLHQ'],['퀄리파잉 2','Qualifying 2','2026-10-31T09:57:00+08:00','6SgbGMvRLHQ'],['레이스 1','Race 1','2026-10-31T12:50:00+08:00','aBoh1l00hFg'],['레이스 2','Race 2','2026-11-01T13:05:00+08:00','-W7hBM0O_tE']
  ]),
+ // Official NASCAR weekend page, checked 2026-11-04. ET after DST ends = -05:00.
+ 'nascar-2026-11-06-homestead':rows('https://www.nascar.com/weekend-schedule/weekend-schedule-for-2026-homestead-miami-speedway-championship-race/',[
+  ['트럭 · 연습','Truck · practice','2026-11-05T18:30:00-05:00'],['트럭 · 예선','Truck · qualifying','2026-11-06T14:30:00-05:00'],['오라일리 · 연습','O’Reilly · practice','2026-11-06T16:00:00-05:00'],['컵 · 연습','Cup · practice','2026-11-06T17:30:00-05:00'],['트럭 · 레이스','Truck · race','2026-11-06T19:30:00-05:00'],['오라일리 · 예선','O’Reilly · qualifying','2026-11-07T13:00:00-05:00'],['컵 · 예선','Cup · qualifying','2026-11-07T14:30:00-05:00'],['오라일리 · 레이스','O’Reilly · race','2026-11-07T17:00:00-05:00'],['컵 · 레이스','Cup · race','2026-11-08T15:00:00-05:00']
+ ]),
  'nascar-2026-10-30-martinsville':rows(nascarSource,[
   ['트럭 · 연습','Truck · practice','2026-10-30T12:30:00-04:00'],['트럭 · 예선','Truck · qualifying','2026-10-30T13:35:00-04:00'],['오라일리 · 연습','O’Reilly · practice','2026-10-30T15:00:00-04:00'],['오라일리 · 예선','O’Reilly · qualifying','2026-10-30T16:05:00-04:00'],['트럭 · 레이스','Truck · race','2026-10-30T18:00:00-04:00'],['컵 · 연습','Cup · practice','2026-10-31T13:00:00-04:00'],['컵 · 예선','Cup · qualifying','2026-10-31T14:05:00-04:00'],['오라일리 · 레이스','O’Reilly · race','2026-10-31T16:00:00-04:00'],['컵 · 레이스','Cup · race','2026-11-01T14:00:00-05:00']
  ])
