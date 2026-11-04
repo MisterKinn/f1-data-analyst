@@ -10,6 +10,10 @@
     }
   },
   "rewrites": [
+    {
+      "source": "/__/auth/:path*",
+      "destination": "https://kongboda-motorsports-2026.firebaseapp.com/__/auth/:path*"
+    },
     { "source": "/", "destination": "/api/index?__path=" },
     { "source": "/:path*", "destination": "/api/index?__path=:path" }
   ]

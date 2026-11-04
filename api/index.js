@@ -2,6 +2,8 @@ import {invalidateAccountOAuth} from '../worker/oauth-account-state.js';
 import {randomBytes} from 'node:crypto';
 import {waitUntil} from '@vercel/functions';
 import worker from '../worker/index.js';
+import {firebaseAuthDomain} from '../worker/firebase-auth-domain.js';
+import {googleLoginScript} from '../worker/google-login-script.js';
 import {firebaseAdmin} from '../server/firebase-admin.js';
 import {createFirestoreBucket} from '../server/firestore-bucket.js';
 import {authenticateMcpBearer,mcpOAuthRoute} from '../server/mcp-oauth.js';
@@ -26,20 +28,11 @@ export const firebaseGoogleSubject=claims=>{
 };
 export const firebaseSessionFailure=(code,status)=>Response.json({error:code},{status,headers:{'cache-control':'no-store'}});
 
-function loginPage(env,csrf,back){
- const config={apiKey:env.FIREBASE_WEB_API_KEY,authDomain:env.FIREBASE_WEB_AUTH_DOMAIN,projectId:env.FIREBASE_PROJECT_ID,appId:env.FIREBASE_WEB_APP_ID};
+function loginPage(env,csrf,back,host=''){
+ const config={apiKey:env.FIREBASE_WEB_API_KEY,authDomain:firebaseAuthDomain(env,host),projectId:env.FIREBASE_PROJECT_ID,appId:env.FIREBASE_WEB_APP_ID};
  if(Object.values(config).some(v=>!v))return new Response('Firebase 웹 로그인이 아직 설정되지 않았습니다.',{status:503});
  const data=JSON.stringify({config,csrf,back}).replace(/</g,'\\u003c');
- return new Response(`<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Google 로그인</title><style>body{font:16px system-ui;background:#0b0d12;color:#fff;display:grid;place-items:center;min-height:100vh;margin:0}main{max-width:420px;padding:32px;text-align:center}button{font:inherit;padding:12px 18px;border:0;border-radius:8px;cursor:pointer}p{color:#b8bfcc}</style><main><h1>Google로 로그인</h1><p>계속하려면 아래 버튼을 눌러 주세요.</p><button id="login">Google로 로그인</button><p id="status" role="status" aria-live="polite"></p></main><script type="module">
-import{initializeApp}from'https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js';
-import{getAuth,GoogleAuthProvider,signInWithPopup}from'https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js';
-const d=${data},s=document.querySelector('#status'),button=document.querySelector('#login');
-const auth=getAuth(initializeApp(d.config)),provider=new GoogleAuthProvider();
-const codeOf=e=>typeof e?.code==='string'?e.code:'auth/session-failed';
-const showError=e=>{const code=codeOf(e);s.textContent='로그인을 완료하지 못했습니다. ('+code+')';button.disabled=false;console.error(e)};
-const finish=async result=>{if(!result)return false;const token=await result.user.getIdToken();const q=await fetch('/auth/firebase/session',{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json','x-csrf-token':d.csrf},body:JSON.stringify({token,csrf:d.csrf,returnTo:d.back})});const payload=await q.json().catch(()=>({}));if(!q.ok)throw Object.assign(Error(payload.error||'auth/session-failed'),{code:payload.error||'auth/session-failed'});location.assign(payload.location);return true};
-button.onclick=async()=>{button.disabled=true;s.textContent='Google 로그인 중…';try{const pending=signInWithPopup(auth,provider);await finish(await pending)}catch(error){showError(error)}};
-</script></html>`,{headers:{'content-type':'text/html; charset=utf-8','cache-control':'no-store','content-security-policy':"default-src 'none'; script-src 'unsafe-inline' https://www.gstatic.com https://apis.google.com; connect-src https://*.googleapis.com https://*.firebaseapp.com https://*.firebaseio.com; frame-src https://accounts.google.com https://apis.google.com https://*.firebaseapp.com; style-src 'unsafe-inline'; img-src data: https:; base-uri 'none'; form-action 'self'",'set-cookie':cookie(CSRF,csrf,600)}});
+ return new Response(`<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Google 로그인</title><style>body{font:16px system-ui;background:#0b0d12;color:#fff;display:grid;place-items:center;min-height:100vh;margin:0}main{max-width:420px;padding:32px;text-align:center}button{font:inherit;padding:12px 18px;border:0;border-radius:8px;cursor:pointer}p{color:#b8bfcc}</style><main><h1>Google로 로그인</h1><p>계속하려면 아래 버튼을 눌러 주세요.</p><button id="login">Google로 로그인</button><p id="status" role="status" aria-live="polite"></p></main>${googleLoginScript(data,{button:'#login',status:'#status'})}</html>`,{headers:{'content-type':'text/html; charset=utf-8','cache-control':'no-store','content-security-policy':"default-src 'none'; script-src 'unsafe-inline' https://www.gstatic.com https://apis.google.com; connect-src 'self' https://*.googleapis.com https://*.firebaseapp.com https://*.firebaseio.com; frame-src 'self' https://accounts.google.com https://apis.google.com https://*.firebaseapp.com; style-src 'unsafe-inline'; img-src data: https:; base-uri 'none'; form-action 'self'",'set-cookie':cookie(CSRF,csrf,600)}});
 }
 
 export async function authRoute(request,env,{admin=firebaseAdmin}={}){
@@ -47,7 +40,7 @@ export async function authRoute(request,env,{admin=firebaseAdmin}={}){
  if(url.pathname==='/auth/google/start'&&request.method==='GET'){
   const back=safeBack(url.searchParams.get('return_to'));
   if(request.headers.get('sec-fetch-site')==='cross-site'&&!crossSiteGoogleLoginAllowed(back))return new Response('사이트의 로그인 버튼을 이용해 주세요.',{status:403});
-  const csrf=randomBytes(32).toString('base64url');return loginPage(env,csrf,back);
+  const csrf=randomBytes(32).toString('base64url');return loginPage(env,csrf,back,url.host);
  }
  if(url.pathname==='/auth/firebase/session'&&request.method==='POST'){
   const body=await request.json().catch(()=>null),expected=readCookie(request.headers.get('cookie'),CSRF);
