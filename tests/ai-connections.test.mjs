@@ -73,7 +73,7 @@ test('a storage failure in status tracking never blocks token issuance',async()=
 test('account page lists both AIs with their verified state and a refresh link',async()=>{
  const {websiteRoute}=await import('../worker/website.js');
  const html=await (await websiteRoute(new Request('https://example.test/account'),{google:{name:'T',email:'t@example.invalid',sub:'s'},googleReady:true,accountInfo:{account:{id:'a',name:'T',preferences:{},identities:[{provider:'google'}]}},aiConnections:[{id:'claude',label:'Claude',state:'connected',lastActiveAt:Date.UTC(2026,10,4,7,28)},{id:'chatgpt',label:'ChatGPT',state:'none'}]})).text();
- assert.match(html,/data-ai="claude"><strong>Claude<\/strong><span class="ai-badge">연결됨<\/span><small><span>마지막 확인<\/span> <time[^>]*>2026-11-04 16:28 KST/);
+ assert.match(html,/data-ai="claude"><strong>Claude<\/strong><span class="ai-badge">연결됨<\/span><small><span>마지막 확인<\/span> <time[^>]*>2026-11-04 07:28 UTC/);
  assert.match(html,/class="ai-connection is-none" data-ai="chatgpt"><strong>ChatGPT<\/strong><span class="ai-badge">연결 기록 없음/);
  assert.match(html,/data-ai-refresh aria-label="연결 상태 새로고침"/);
 });

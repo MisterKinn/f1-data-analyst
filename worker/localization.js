@@ -312,7 +312,17 @@ Object.assign(translations,{
  'chatgpt.com 웹에서 ‘플러그인’을 열고 ‘사용자 지정 MCP 서버 추가’를 누릅니다.':'On chatgpt.com, open ‘Plugins’ and choose ‘Add custom MCP server’.',
  '‘이름’에 ‘Kongboda Motorsports’, ‘서버 URL’에 3단계에서 복사한 주소를 넣습니다.':'Enter ‘Kongboda Motorsports’ as the name and the address from step 3 as the server URL.',
  '‘인증’은 ‘OAuth’를 고릅니다. ‘고급 OAuth 설정’은 그대로 둡니다.':'Choose ‘OAuth’ for authentication. Leave ‘Advanced OAuth settings’ as they are.',
- '‘이해했으며 계속 진행하겠습니다’에 체크하고 ‘만들기’를 누릅니다.':'Tick ‘I understand and want to continue’, then choose ‘Create’.',
+ 'ChatGPT에서는 ‘사용자 지정 MCP 서버’를 추가해 꽁보다의 기능을 사용할 수 있습니다.':'In ChatGPT, add Kongboda as a ‘custom MCP server’.',
+'꽁보다 CI':'Kongboda CI',
+'레이스카와 민짜 깃발 심볼에 한글·영문 워드마크를 함께 씁니다. 라이트 모드는 로쏘 코르사, 다크 모드는 페트로나스 그린을 포인트 색으로 사용합니다.':'The symbol is a race car with a plain flag, paired with Korean and English wordmarks. Light mode uses Rosso Corsa and dark mode uses Petronas Green as the accent colour.',
+'꽁보다 모터스포츠 로고 (라이트)':'Kongboda Motorsports logo (light)',
+'꽁보다 모터스포츠 로고 (다크)':'Kongboda Motorsports logo (dark)',
+'라이트 · 로쏘 코르사 #D40000':'Light · Rosso Corsa #D40000',
+'다크 · 페트로나스 그린 #00D2BE':'Dark · Petronas Green #00D2BE',
+'글꼴: 페이퍼로지(한글), Barlow Semi Condensed(영문) · 모두 SIL 오픈 폰트 라이선스':'Typefaces: Paperlogy (Korean) and Barlow Semi Condensed (English), both under the SIL Open Font License',
+'‘만들기’를 누릅니다.':'Choose ‘Create’.',
+'Business·Enterprise·Edu 워크스페이스는 관리자가 먼저 허용해야 할 수 있습니다. 연결 전에 열려 있던 대화에는 나타나지 않으니 새 대화에서 사용하세요.':'Business, Enterprise and Edu workspaces may need an admin to allow it first. It will not appear in chats opened before you connected, so use a new chat.',
+'‘이해했으며 계속 진행하겠습니다’에 체크하고 ‘만들기’를 누릅니다.':'Tick ‘I understand and want to continue’, then choose ‘Create’.',
  '열리는 화면에서 꽁보다에 로그인한 Google 계정으로 로그인하고 ‘연결 승인’을 누릅니다.':'In the window that opens, sign in with the Google account you use for Kongboda and approve the connection.',
  '새 대화에서 ‘+’ 메뉴나 ‘@’로 Kongboda Motorsports를 고른 뒤 질문합니다.':'In a new chat, pick Kongboda Motorsports from the ‘+’ menu or with ‘@’, then ask.',
  '아직 저장하지 않은 변경사항이 있습니다.':'You have unsaved changes.','주소 복사':'Copy address','복사했습니다':'Copied',
@@ -367,10 +377,10 @@ export function translateHtml(html,lang){
   const open=part.match(/^<\s*([\w:-]+)/);if(!open)return part;
   const tag=open[1].toLowerCase(),skip=!!stack.at(-1)?.skip||/\bdata-no-translate(?:\s|=|\/?>)/i.test(part)||/\btranslate\s*=\s*["']?no(?:["'\s>])/i.test(part);
   if(!voidTags.has(tag)&&!part.endsWith('/>'))stack.push({tag,skip});
-  if(skip)return tag==='img'?part.replace(/\bsrc=("|')\/assets\/brand-mark\.svg([?#][^"']*)?\1/,(_,quote,suffix='')=>'src='+quote+'/assets/brand-mark-en.svg'+suffix+quote):part;
+  if(skip)return tag==='img'?part.replace(/\bsrc=("|')\/assets\/brand-mark(-light)?\.svg([?#][^"']*)?\1/,(_,quote,light='',suffix='')=>'src='+quote+'/assets/brand-mark'+light+'-en.svg'+suffix+quote):part;
   let translated=part.replace(/\b(alt|title|aria-label|placeholder|content)=("([^"]*)"|'([^']*)')/g,(attribute,key,quoted,double,single)=>{const old=double??single,value=translateText(old);if(value===old)return attribute;const quote=quoted[0],safe=value.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(quote==='"'?/"/g:/'/g,quote==='"'?'&quot;':'&#39;');return key+'='+quote+safe+quote;});
   if(tag==='html')translated=translated.replace(/\blang=("ko"|'ko')/,'lang="en"');
-  if(tag==='img')translated=translated.replace(/\bsrc=("|')\/assets\/brand-mark\.svg([?#][^"']*)?\1/,(_,quote,suffix='')=>'src='+quote+'/assets/brand-mark-en.svg'+suffix+quote);
+  if(tag==='img')translated=translated.replace(/\bsrc=("|')\/assets\/brand-mark(-light)?\.svg([?#][^"']*)?\1/,(_,quote,light='',suffix='')=>'src='+quote+'/assets/brand-mark'+light+'-en.svg'+suffix+quote);
   return translated;
  });
 }
