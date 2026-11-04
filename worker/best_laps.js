@@ -93,6 +93,22 @@ export async function bestLapsRead(env,args,freshness){
   rows.push(usable?saved:{driver_number:driver,driver:snapshot.topics.DriverList?.[driver]?.Tla,team:snapshot.topics.DriverList?.[driver]?.TeamName,lap_time:ref.Value,timing_lap_reference:ref.Lap,status:deletionState(snapshot,driver,ref.Value)??'unavailable',sectors:null,reason:saved?.reason??'No verified sectors for this published best lap. Older collector or incomplete lap coverage.'});
  }
  return {available:true,source:stored.source??'FastF1 collector',received_at:stored.received_at,session:snapshot.topics.SessionInfo,session_part:args.session_part,
-  freshness:freshness(snapshot,stored.received_at),archive_supported:!!archive,best_laps:rows,
+  freshness:freshness(snapshot,stored.received_at),archive_supported:!!archive,finalisation:sessionFinalisation(snapshot,stored.received_at),best_laps:rows,
   limitations:['Only each driver\'s actual published best lap; no ideal-sector sums.','Compare tyres and run conditions. No corner telemetry.','Completed saved laps remain usable as historical records even when the feed is no longer live.']};
+}
+
+// A collector that stops early (PC asleep, crash) never records the terminal session
+// status, so saved sessions kept showing "Started"/"Generating" and recovery
+// "pending" forever. Label such records as ended instead of in progress.
+const TERMINAL=new Set(['Finished','Finalised','Ends','Aborted']);
+export const STALE_SESSION_MS=6*60*60*1000;
+export function sessionFinalisation(snapshot,receivedAt,now=Date.now()){
+ const status=snapshot?.topics?.SessionStatus?.Status??snapshot?.topics?.SessionInfo?.SessionStatus??null;
+ const archive=snapshot?.topics?.SessionInfo?.ArchiveStatus?.Status??null;
+ const recovery=snapshot?.lap_archive?.recovery?.state??null;
+ const age=now-Date.parse(receivedAt||0);
+ if(TERMINAL.has(status)&&archive!=='Generating')return {state:'final',session_status:status,archive_status:archive,recovery:recovery??'not_run'};
+ if(!(age>STALE_SESSION_MS))return {state:'in_progress',session_status:status,archive_status:archive,recovery:recovery??'pending'};
+ return {state:'ended_without_final_status',session_status:status,archive_status:archive,recovery:recovery&&recovery!=='running'?recovery:'not_run',
+  note:'The collector stopped before this session finished. Status fields are the last values it saw, not the current state. Saved laps remain usable; results after the last upload are missing. Use official classification documents for the final result.'};
 }

@@ -1,7 +1,8 @@
 const key='mcp/tool-catalog-v1.json';
 export async function publishCatalog(env,tools){
  const version=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(tools)))),n=>n.toString(16).padStart(2,'0')).join('');
- if(env.BUCKET){const old=await env.BUCKET.get(key);const value=old?await old.json():null;if(value?.version!==version)await env.BUCKET.put(key,JSON.stringify({version,updatedAt:Date.now()}));}
+ // Recording the version is optional: a storage failure must never break tools/list discovery.
+ if(env.BUCKET){try{const old=await env.BUCKET.get(key);const value=old?await old.json():null;if(value?.version!==version)await env.BUCKET.put(key,JSON.stringify({version,updatedAt:Date.now()}));}catch{console.error('mcp-catalog persistence-failed');}}
  return version;
 }
 export function catalogStream(request,env,{interval=15000,lifetime=60000}={}){
