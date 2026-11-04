@@ -295,7 +295,16 @@ Object.assign(translations,{
  '연결이 안 될 때':'If it doesn’t connect',
  'AI의 커넥터·플러그인 설정에서 Kongboda Motorsports가 켜져 있는지 확인하고 다시 로그인하세요. 계속 실패하면 연결을 지운 뒤 처음부터 다시 추가하세요.':'Check that Kongboda Motorsports is on in your AI’s connector or plugin settings and sign in again. If it still fails, remove it and add it again.',
  '분석 카드 대신 글만 보인다면 그 AI 앱이 카드 표시를 지원하지 않는 경우입니다. 같은 기록과 수신 시각은 글로 제공됩니다.':'If you see text instead of an analysis card, that app doesn’t show cards. You still get the same records and receive time as text.',
- '메뉴 이름은 앱과 요금제에 따라 다를 수 있고, Team·Enterprise 계정은 관리자 허용이 필요할 수 있습니다.':'Menu names vary by app and plan. Team and Enterprise accounts may need an admin to allow it.'
+ '메뉴 이름은 앱과 요금제에 따라 다를 수 있고, Team·Enterprise 계정은 관리자 허용이 필요할 수 있습니다.':'Menu names vary by app and plan. Team and Enterprise accounts may need an admin to allow it.',
+ 'Google로 로그인하세요':'Sign in with Google',
+ '꽁보다는 Google 계정으로 이용합니다. 로그인하면 연결 주소가 나타납니다.':'Kongboda uses your Google account. Sign in to see the connection address.',
+ '1단계에서 로그인하면 이곳에 연결 주소와 복사 버튼이 표시됩니다.':'Sign in at step 1 to see the address and a copy button here.',
+ '연결 승인 화면에서도 같은 Google 계정으로 로그인하세요.':'Use the same Google account on the approval screen.',
+ '실시간 분석용 F1 계정을 연결하세요':'Connect your F1 account for live analysis',
+ '실시간 브리핑을 받으려면 본인의 F1 TV 계정으로 로그인해야 합니다.':'Live briefings need you to sign in with your own F1 TV account.',
+ 'F1 계정 연결 ↗':'Connect F1 account ↗',
+ 'WEC는 본인 FIAWEC+ 계정 연결을 준비 중입니다. 지금은 선원만 WEC 실시간 수집을 이용할 수 있습니다. 비밀키를 받은 선원은 계정 설정에서 등록하면 F1·WEC 모두 운영자 계정으로 자동 연결됩니다. 사후 분석은 계정 연결 없이 이용할 수 있습니다.':'Connecting your own FIAWEC+ account for WEC is coming; for now only crew get live WEC data. Crew who register their access key in account settings are linked to the operator’s collector for both F1 and WEC automatically. Post-race analysis needs no motorsport account.',
+ '선원으로 등록돼 있어 운영자 계정의 실시간 수집에 자동으로 연결됩니다. 따로 F1 계정을 등록하지 않아도 됩니다.':'You are registered crew, so you are linked to the operator’s live collector automatically. No F1 account needed.'
 });
 for(const [ko,en] of [['홈','Home'],['이용 방법','How to use'],['유용한 사이트','Useful Websites'],['꽁보다 소개','About Kongboda Motorsports'],['계정','Account'],['화면 보기','Display mode'],...['Formula 1','FIA WEC','IMSA','Formula E','NLS','Michelin Le Mans Cup','European Le Mans Series','Asian Le Mans Series'].map(s=>[s,s])])translations[ko+' · 꽁보다 모터스포츠']=en+' · KONGBODA MOTORSPORTS';
 for(const [ko,en] of [['유럽','Europe'],['아시아','Asia'],['아메리카','America'],['오스트레일리아','Australia']]){
