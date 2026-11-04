@@ -34,6 +34,8 @@ header .header-actions{flex-shrink:0}.approved-brand{width:clamp(9.375rem,18vw,1
 #kb-recorded .carousel-stage{padding-inline:clamp(25px,3vw,38px)}
 #kb-recorded .side-arrow.prev{left:-10px}#kb-recorded .side-arrow.next{right:-10px}
 #kb-recorded .barrow{grid-template-columns:minmax(0,86px) minmax(0,1fr) minmax(0,66px)}
+/* Live briefing cards open without an example question; post-race cards keep theirs. */
+#kb-recorded .analysis.live .demo-question{display:none}
 @container examples (min-width:860px){
  #kb-recorded .analysis.live{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:18px 28px;align-content:start}
  #kb-recorded .live>.foot{grid-column:1/-1}
