@@ -1,19 +1,27 @@
 export const appearanceControl=`<label class="appearance-control"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.6"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span class="sr-only">화면 테마</span><select id="appearance" aria-label="화면 테마"><option value="system">시스템 설정</option><option value="light">라이트</option><option value="dark">다크</option></select></label>`;
-// Runs before styles paint. Storage denial must never prevent reading the page.
-export function appearanceBoot(){
- let preference='system';try{const saved=localStorage.getItem('kongboda-appearance');if(['system','light','dark'].includes(saved))preference=saved;}catch{}
+// Runs before styles paint. The server passes the signed-in account's saved mode;
+// visitors who are not signed in always follow the device setting.
+export function appearanceBoot(saved){
+ const preference=['system','light','dark'].includes(saved)?saved:'system';
+ try{localStorage.removeItem('kongboda-appearance');}catch{}
  const light=typeof matchMedia==='function'&&matchMedia('(prefers-color-scheme: light)').matches;
  document.documentElement.dataset.appearance=preference;
  document.documentElement.dataset.theme=preference==='system'?(light?'light':'dark'):preference;
 }
 export function appearanceClient(){
- const root=document.documentElement,select=document.querySelector('#appearance');if(!select)return;
+ const root=document.documentElement,select=document.querySelector('#appearance'),status=document.querySelector('#appearance-status');
  const media=matchMedia('(prefers-color-scheme: light)');
- const apply=preference=>{if(!['system','light','dark'].includes(preference))preference='system';root.dataset.appearance=preference;root.dataset.theme=preference==='system'?(media.matches?'light':'dark'):preference;select.value=preference;};
+ const apply=preference=>{if(!['system','light','dark'].includes(preference))preference='system';root.dataset.appearance=preference;root.dataset.theme=preference==='system'?(media.matches?'light':'dark'):preference;if(select)select.value=preference;};
  apply(root.dataset.appearance||'system');
- select.addEventListener('change',()=>{apply(select.value);try{localStorage.setItem('kongboda-appearance',select.value);}catch{}});
  media.addEventListener('change',()=>{if(root.dataset.appearance==='system')apply('system');});
- window.addEventListener('storage',event=>{if(event.key==='kongboda-appearance')apply(event.newValue||'system');});
+ if(!select)return;
+ const say=(ko,en)=>{if(status)status.textContent=root.lang==='en'?en:ko;};
+ select.addEventListener('change',async()=>{
+  const previous=root.dataset.appearance||'system',value=select.value;apply(value);say('저장 중…','Saving…');select.disabled=true;
+  try{const body=new FormData();body.set('appearance',value);const response=await fetch('/account/appearance',{method:'POST',body,credentials:'same-origin',headers:{Accept:'application/json'}});if(!response.ok)throw new Error(String(response.status));say('저장했습니다. 로그인한 모든 기기에 적용됩니다.','Saved. It applies on every device where you are signed in.');}
+  catch{apply(previous);say('저장하지 못했습니다. 다시 시도하세요.','Could not save. Please try again.');}
+  finally{select.disabled=false;}
+ });
 }
 const lightTokens=`--bg:#f6f8f7;--surface:#ffffff;--line:#cbd7d2;--text:#17252a;--muted:#52636a;--mint:#006b58;--blue:#245d9c;--soft:#e8f1ed;--paper:#ffffff;--on-accent:#ffffff;--analysis-surface:#ffffff;color-scheme:light;`;
 export const appearanceCss=`
