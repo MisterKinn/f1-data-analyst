@@ -38,12 +38,16 @@ Claude와 같은 주소·같은 OAuth 경로를 쓴다.
 | 사용자 지정 MCP 메뉴가 없음 | Free 플랜이거나 개발자 모드가 꺼짐, 또는 모바일 앱 | 웹에서 유료 플랜으로 개발자 모드를 켠다. |
 | `redirect_uri is not registered` | 연결 도중 클라이언트 정보가 바뀜 | 앱을 삭제하고 1단계부터 다시 만든다. |
 | 연결은 됐지만 도구가 없음 | 대화에서 앱이 꺼져 있음 | **+** 메뉴에서 Kongboda Motorsports를 켠다. |
+| 연결은 됐지만 계정 설정을 못 가져옴 | 도구가 많아 ChatGPT가 목록 뒤쪽의 계정 도구를 놓침(2026-11-04 수정: 계정·라이브 도구를 목록 맨 앞으로 이동) | 새 대화를 열어 다시 시도한다. 그래도 안 되면 앱 설정에서 새로고침하거나 앱을 다시 연결한다. |
+| 도구 결과에 `API key is not configured` | 운영 서버에 Hyprace용 `RAPIDAPI_KEY`가 없어 F1 기록 도구 42개가 동작하지 않음(2026-11-04 수정: 키가 없으면 이 도구들을 목록에서 숨기고 FastF1·FIA·Al Kamel 도구로 안내) | 새 대화에서 다시 질문한다. Hyprace 기록이 필요하면 운영자가 Vercel에 `RAPIDAPI_KEY`를 등록한다. |
+| 1시간쯤 뒤 다시 로그인하라고 함 | ChatGPT가 `offline_access`를 요청하지 않아 갱신 토큰이 없었음(2026-11-04 수정: 항상 발급) | 앱을 한 번 다시 연결한다. |
 
 ## 서버 측 확인 사항
 
 - OAuth 콜백은 `chatgpt.com`·`openai.com`·`claude.ai`·`claude.com`의 HTTPS 주소만 허용한다
   (`server/mcp-oauth.js`의 `CLIENT_REDIRECT_HOSTS`).
-- 익명 `/mcp` 요청은 HTTP 401과 OAuth resource metadata 안내를 반환한다.
+- 익명 `GET /mcp`는 HTTP 401과 OAuth resource metadata 안내를 반환한다. `tools/list`는 로그인 없이도 도구 목록을 주며,
+  `tools/call`에는 OAuth 토큰이 필요하다. 목록 순서는 계정·라이브·공식 문서 도구가 먼저, Hyprace 기록 도구가 마지막이다.
 - 실제 ChatGPT 계정의 연결 완료는 사용자가 직접 확인해야 한다. 운영 인증 우회나 권한 변경은 하지 않는다.
 
 ## 공식 참고 자료
