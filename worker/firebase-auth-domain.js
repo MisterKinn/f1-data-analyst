@@ -6,7 +6,9 @@
 // first-party on these hosts. Other hosts (previews) keep the default domain.
 // Each proxied host needs https://<host>/__/auth/handler as an authorized
 // redirect URI on the Firebase project's Google OAuth client.
-const PROXIED_HOSTS=['kongboda-motorsports.vercel.app'];
+// Off until https://kongboda-motorsports.vercel.app/__/auth/handler is added to
+// the OAuth client; then add 'kongboda-motorsports.vercel.app' here.
+const PROXIED_HOSTS=[];
 export function firebaseAuthDomain(env,host){
  const extra=String(env?.FIREBASE_AUTH_PROXY_HOSTS||'').split(',').map(v=>v.trim().toLowerCase()).filter(Boolean);
  const value=String(host||'').toLowerCase();
