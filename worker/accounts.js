@@ -5,6 +5,11 @@ import {revokeMcpToken,EXTERNAL_MCP_UNAVAILABLE} from './external-mcp.js';
 import {readInstructions,saveInstructions,mergeInstructions,deleteInstructions} from './personal-instructions.js';
 // Website accounts only: never manufacture Sites identity headers or MCP privileges.
 const ORIGIN='https://kongboda-motorsports.jeongmin480.chatgpt.site';
+// Crew key attempts: 5 wrong in a row locks 5 minutes; after that every wrong
+// key locks 10 minutes. A correct key clears the record; 24h without a wrong
+// key starts the count over.
+export const KEY_FREE_ATTEMPTS=5,KEY_FAILURE_RESET_MS=24*60*60*1000;
+export const keyLockMs=failures=>failures<KEY_FREE_ATTEMPTS?0:failures===KEY_FREE_ATTEMPTS?5*60*1000:10*60*1000;
 const hash=async s=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s))),n=>n.toString(16).padStart(2,'0')).join('');
 const read=async(env,k)=>{const o=await env.BUCKET.get(k);return o?o.json():null;};
 const write=(env,k,v)=>env.BUCKET.put(k,JSON.stringify(v));
@@ -155,12 +160,16 @@ export async function accountRoute(request,env,google,ctx){
   if(typeof value!=='string'||!value||value.length>256)return reply('비밀 키를 확인해 주세요.',400);
   const rateKey='website-accounts/key-attempts/'+info.account.id+'.json';
   const previous=await read(env,rateKey),now=Date.now();
-  const attempts=previous&&now-previous.startedAt<900000?previous:{startedAt:now,count:0};
-  if(attempts.count>=5)return reply('입력 횟수를 초과했습니다. 15분 후 다시 시도해 주세요.',429);
-  await write(env,rateKey,{...attempts,count:attempts.count+1});
+  const attempts=previous?.failures!=null&&now-(previous.lastFailureAt||0)<KEY_FAILURE_RESET_MS?previous:{failures:0,lockedUntil:0,lastFailureAt:0};
+  if(attempts.lockedUntil>now)return reply(`입력 횟수를 초과했습니다. ${Math.ceil((attempts.lockedUntil-now)/60000)}분 후 다시 시도해 주세요.`,429);
   const digest=await hash(value),expected=env.LIVE_ANALYSIS_KEY_HASH;
   let different=digest.length^expected.length;for(let i=0;i<64;i++)different|=(digest.charCodeAt(i)||0)^(expected.charCodeAt(i)||0);
-  if(different)return reply('비밀 키가 올바르지 않습니다. 뒤로 돌아가 다시 입력해 주세요.',403);
+  if(different){
+   const failures=attempts.failures+1,lockMs=keyLockMs(failures);
+   await write(env,rateKey,{failures,lastFailureAt:now,lockedUntil:lockMs?now+lockMs:0});
+   if(lockMs)return reply(`비밀 키가 ${failures}번 틀렸습니다. ${lockMs/60000}분 후 다시 시도해 주세요.`,429);
+   return reply(`비밀 키가 올바르지 않습니다. 뒤로 돌아가 다시 입력해 주세요. (${KEY_FREE_ATTEMPTS-failures}번 더 틀리면 5분 동안 입력할 수 없습니다.)`,403);
+  }
   await write(env,accountKey(info.account.id),{...info.account,liveAnalysisAccess:{revision:env.LIVE_ANALYSIS_KEY_REVISION||'1',activatedAt:info.account.liveAnalysisAccess?.activatedAt||now}});
   await env.BUCKET.delete(rateKey);
   if(!info.account.liveAnalysisAccess?.activatedAt){await queueCrewEvent(env,info.account.id,now);const delivery=deliverCrewEvents(env).catch(()=>console.error('Crew notification pending retry'));if(ctx?.waitUntil)ctx.waitUntil(delivery);else await delivery;}
