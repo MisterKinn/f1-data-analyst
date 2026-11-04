@@ -16,8 +16,8 @@ test('homepage offers a direct setup path before examples and separates the cale
  assert.doesNotMatch(deleted,/data-copy="https:\/\/kongboda-motorsports.vercel.app\/mcp"/);
  assert.ok(html.indexOf('hero-actions')<html.indexOf('id="kb-recorded"'));
  assert.ok(html.indexOf('id="championships"')<html.indexOf('class="home-calendar"'));
- assert.match(html,/분석 예시 · 현재 라이브 아님/);
- assert.equal((html.match(/data-copy="[^\"]+"/g)||[]).length>=10,true);
+ assert.doesNotMatch(html,/분석 예시 · 현재 라이브 아님|2026 시즌 · 실제 기록 기반 재구성|공식 기록과 언론 보도는 구분해/);
+ assert.doesNotMatch(html,/질문 복사|class="demo-question"><p>[^<]*<\/p><button/);
  assert.match(html,/class="skip-link" href="#main-content"/);
 });
 
