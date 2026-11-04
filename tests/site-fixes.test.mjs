@@ -55,9 +55,9 @@ test('the MCP address is shown on the guide only after Google sign-in; the home 
   assert.doesNotMatch(page,/로그인 후 연결 주소 복사/,path);
  }
 });
-test('the guide is a three-step setup, shows the same example cards as the home, and drops clutter',async()=>{
+test('the guide is a four-step setup with a detailed Claude custom connector card, shows the same example cards as the home, and drops clutter',async()=>{
  const guide=await html('https://kongboda-motorsports.vercel.app/guide');
- assert.equal((guide.match(/<ol class="guide-steps">[\s\S]*?<\/ol>/)[0].match(/<li>/g)||[]).length,4);assert.match(guide,/본인의 F1 TV 계정/);
+ const steps=guide.slice(guide.indexOf('<ol class="guide-steps">'),guide.indexOf('</section>',guide.indexOf('<ol class="guide-steps">')));assert.equal((steps.match(/<li><h3>/g)||[]).length,4);assert.match(guide,/‘커스텀 커넥터’를 만들어/);assert.equal((guide.match(/<ol class="connector-steps">[\s\S]*?<\/ol>/)[0].match(/<li>/g)||[]).length,6);assert.match(guide,/본인의 F1 TV 계정/);
  assert.match(guide,/id="kb-recorded"/);
  assert.match(guide,/묻지 않아도 먼저/);
  assert.doesNotMatch(guide,/인터랙티브 카드 읽는 법|첫 질문 복사|대회·연도·세션을 함께 말하면/);
