@@ -39,8 +39,11 @@ function validate(spec,args){
   if(p.minimum!==undefined&&v<p.minimum||p.maximum!==undefined&&v>p.maximum)throw Error(k+' is outside the supported range.');
  }
 }
+// Without RAPIDAPI_KEY the 42 Hyprace record tools cannot work, so tools/list hides
+// them and AI clients pick the FastF1, FIA and Al Kamel tools instead.
+const HYPRACE_UNAVAILABLE='Hyprace F1 records are not available on this server right now. Use motorsport_championship_standings for current F1/WEC standings, fia_list_documents or fia_read_document for official documents, and fastf1_best_laps, fastf1_lap_telemetry or kongboda_live_briefing for session timing.';
 async function upstream(spec,args,env){
- if(!env.RAPIDAPI_KEY)return toolError('API key is not configured.');
+ if(!env.RAPIDAPI_KEY)return toolError(HYPRACE_UNAVAILABLE);
  let response;try{response=await fetch('https://mcp.rapidapi.com',{method:'POST',headers:{'content-type':'application/json','accept':'application/json, text/event-stream','x-api-host':'hyprace-api.p.rapidapi.com','x-api-key':env.RAPIDAPI_KEY},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:spec.upstreamName,arguments:{...args,_endpoint:spec.endpoint,_method:'GET'}}}),signal:AbortSignal.timeout(25000)});}catch{return toolError('Hyprace request failed or timed out. Retry later.');}
  if(!response.ok)return toolError('Hyprace HTTP '+response.status+'. '+(response.status===429?'Rate limit reached.':response.status===401||response.status===403?'Check API key and subscription.':'Provider request failed.'));
  const raw=(await response.text()).split(env.RAPIDAPI_KEY).join('[redacted]');if(raw.length>1500000)return toolError('Result too large. Request a smaller page.');
@@ -95,7 +98,7 @@ export default{async fetch(request,env,ctx){
  case 'ping':result={};break;
  case 'resources/list':result=listAppResources();break;
  case 'resources/read':try{result=readAppResource(b.params?.uri);}catch(e){return rpcError(b.id,-32602,e.message);}break;
- case 'tools/list':result={tools:[...SPECS.map(({upstreamName,endpoint,...tool})=>({...tool,description:'PUBLISHED F1 RECORDS: use Hyprace for this data; current-session live timing uses FastF1. '+tool.description})),...FIA_TOOLS,...LIVE_TOOLS,LIVE_APP_TOOL,...WEC_TOOLS,...WEC_LIVE_TOOLS,...RESEARCH_TOOLS,...OFFICIAL_TOOLS,...STANDINGS_TOOLS,...PREFERENCE_TOOLS,...CREW_TOOLS].map(securedTool)};await publishCatalog(env,result.tools.filter(t=>t.name!=='kongboda_list_crew'));break;
+ case 'tools/list':result={tools:[...PREFERENCE_TOOLS,LIVE_APP_TOOL,...LIVE_TOOLS,...STANDINGS_TOOLS,...FIA_TOOLS,...OFFICIAL_TOOLS,...WEC_TOOLS,...WEC_LIVE_TOOLS,...RESEARCH_TOOLS,...CREW_TOOLS,...(env.RAPIDAPI_KEY?SPECS.map(({upstreamName,endpoint,...tool})=>({...tool,description:'PUBLISHED F1 RECORDS: use Hyprace for this data; current-session live timing uses FastF1. '+tool.description})):[])].map(securedTool)};await publishCatalog(env,result.tools.filter(t=>t.name!=='kongboda_list_crew'));break;
  case 'tools/call':{
  if(!request.headers.get('oai-authenticated-user-id'))return authenticationRequired(request,b.id);
  const spec=[...SPECS,...FIA_TOOLS,...LIVE_TOOLS,LIVE_APP_TOOL,...WEC_TOOLS,...WEC_LIVE_TOOLS,...RESEARCH_TOOLS,...OFFICIAL_TOOLS,...STANDINGS_TOOLS,...PREFERENCE_TOOLS,...CREW_TOOLS].find(s=>s.name===b.params?.name);if(!spec)return rpcError(b.id,-32602,'Unknown tool');

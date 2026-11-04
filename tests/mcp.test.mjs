@@ -3,7 +3,7 @@ import worker from '../worker/index.js';
 const req=(body,auth=true)=>new Request('https://test/mcp',{method:'POST',headers:{'content-type':'application/json',...(auth?{'oai-authenticated-user-id':'test-owner'}:{})},body:JSON.stringify(body)});
 const rpc=(method,params={},id=1)=>({jsonrpc:'2.0',id,method,params});
 let r=await worker.fetch(req(rpc('initialize',{protocolVersion:'2025-03-26'})),{});assert.equal((await r.json()).result.protocolVersion,'2025-03-26');
-r=await worker.fetch(req(rpc('tools/list')),{});const tools=(await r.json()).result.tools;assert.equal(tools.length,65);assert.ok(tools.every(t=>['wec_discover_live','kongboda_update_my_instructions'].includes(t.name)?!t.annotations.readOnlyHint:t.annotations.readOnlyHint));assert.ok(tools.every(t=>!('upstreamName'in t)&&!('_endpoint'in t.inputSchema.properties)));
+r=await worker.fetch(req(rpc('tools/list')),{RAPIDAPI_KEY:'test'});const tools=(await r.json()).result.tools;assert.equal(tools.length,65);assert.ok(tools.every(t=>['wec_discover_live','kongboda_update_my_instructions'].includes(t.name)?!t.annotations.readOnlyHint:t.annotations.readOnlyHint));assert.ok(tools.every(t=>!('upstreamName'in t)&&!('_endpoint'in t.inputSchema.properties)));
 const seasons=tools.find(t=>t.name==='list_seasons');assert.ok(seasons);
 r=await worker.fetch(req(rpc('tools/call',{name:seasons.name}),false),{});assert.equal(r.status,200);const challenge=await r.json();assert.equal(challenge.result.isError,true);assert.ok(challenge.result._meta['mcp/www_authenticate']);
 r=await worker.fetch(req(rpc('tools/call',{name:seasons.name,arguments:{pageSize:26}})),{});assert.equal((await r.json()).error.code,-32602);
