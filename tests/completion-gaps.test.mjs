@@ -72,6 +72,6 @@ test('automatic calendar refresh persists verified updates and refuses expired o
  t.mock.method(globalThis,'fetch',async()=>Response.json([{round_number:1,event_name:'Fixture GP',event_date:'2026-11-08',session1:'Race',session1_date:'2026-11-08T14:00:00',session1_date_utc:'2026-11-08T14:00:00Z'}]));
  const refreshed=await refreshCalendarSource(env,'f1',now);assert.equal(refreshed.events[0].nameEn,'Fixture GP');
  const response=await calendarRoute(new Request(origin+'/api/race-calendar'),env,{},now);const data=await response.json();assert.ok(data.events.some(e=>e.nameEn==='Fixture GP'));assert.equal(data.maximumStaleSeconds,86400);
- const expired=await(await calendarRoute(new Request(origin+'/api/race-calendar'),env,{},now+86400000)).json();assert.equal(expired.unavailable,true);assert.deepEqual(expired.events,[]);
+ const expired=await(await calendarRoute(new Request(origin+'/api/race-calendar'),env,{},now+86400000)).json();assert.equal(expired.unavailable,false);assert.ok(expired.events.length>0&&expired.events.every(e=>e.verified===false),'expired sources stay visible, marked unverified');assert.ok(expired.sourceStatus.every(s=>!s.available));
  assert.equal((await calendarRoute(new Request(origin+'/api/race-calendar?series=https://evil.invalid'),env)).status,400);
 });

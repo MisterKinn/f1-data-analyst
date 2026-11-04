@@ -18,7 +18,7 @@ test('both groups remain visible and each series has its own explanation',async(
 test('account controls use platform top-level auth and never accept an external return path',async()=>{
  for(const path of ['//evil.test','https://evil.test','/\\\\evil.test','/callback','/signin-with-chatgpt'])assert.equal(safeReturnPath(path),'/');
  assert.equal(safeReturnPath('/championships/imsa?x=1'),'/championships/imsa?x=1');
- const anonymous=await page('/account?return_to=%2Fchampionships%2Fimsa');
+ const anonymous=await websiteRoute(new Request("https://kongboda.nuttycabin128.chatgpt.site/account?return_to=%2Fchampionships%2Fimsa")).text();
  assert.match(anonymous,/target="_top" href="\/signin-with-chatgpt\?return_to=%2Faccount/);
  assert.doesNotMatch(anonymous,/로그인되어 있습니다/);
  const signed=await page('/account',{'oai-authenticated-user-id':'u1','oai-authenticated-user-email':'a<b@example.com'});

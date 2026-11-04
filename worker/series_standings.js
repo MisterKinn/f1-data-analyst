@@ -5,6 +5,16 @@ const memoCache=new Map();
 async function memo(k,fn){let v=memoCache.get(k);if(v&&Date.now()-v.at<300000)return v.value;const value=await fn();memoCache.set(k,{at:Date.now(),value});return value;}
 const slug=s=>s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
 const label=s=>s.replace(/Drivers?/gi,'드라이버').replace(/Teams?/gi,'팀').replace(/Manufacturers?/gi,'매뉴팩처러').replace(/_/g,' ');
+// IMSA Al Kamel file titles -> "class · kind" labels people can scan.
+export function imsaCategoryLabel(title){
+ const cls=t=>t.replace(/GT\s*Daytona\s*PRO|GTDPRO/i,'GTD PRO').replace(/GT\s*Daytona/i,'GTD').trim();
+ const kind=t=>/Drivers?/i.test(t)?'드라이버':/Teams?/i.test(t)?'팀':/Manufacturers?/i.test(t)?'매뉴팩처러':'';
+ let m=title.match(/^VP Fuels Front Runner Award\s*-\s*IWSC\s*\d+\s+(.+)$/i);if(m)return 'VP Fuels 프런트러너 상 · '+cls(m[1]);
+ m=title.match(/^S\d+\s+(.+?)\s+Award$/i);if(m)return m[1]+' 상';
+ m=title.match(/^IWSC\s*\d+\s+(.+?)\s+(Drivers?|Teams?|Manufacturers?)$/i);if(m)return cls(m[1])+' · '+kind(m[2]);
+ m=title.match(/^\d+\s+IMEC\s+(.+?)\s+(Drivers?|Teams?|Manufacturers?)\b/i);if(m)return '엔듀런스컵 · '+cls(m[1])+' · '+kind(m[2]);
+ return label(title);
+}
 function checkRows(rows){if(!rows.length||rows.some(r=>!r.name||!Number.isFinite(r.points)||!Number.isFinite(r.position)||r.position<1))throw Error('공식 순위 형식을 확인하지 못했습니다.');return rows;}
 export function parseFormulaE(html){
  const categories=[];
@@ -70,7 +80,7 @@ export async function newSeriesStandings(series,requested,year,env){
    if(series==='imsa'){
     const events=[...page.events].sort((a,b)=>Number(b.id.split('_')[0])-Number(a.id.split('_')[0]));
     for(const e of events.slice(0,8)){const p=await officialArchive(series,season.id,e.id,env);const points=p.files.filter(f=>/IMSA WeatherTech SportsCar Championship\/POINTS DATA - Official\//i.test(decodeURIComponent(f.url))&&/\.json$/i.test(f.url)&&!(/IMEC/i.test(f.title)&&!/Overall/i.test(f.title)));
-     if(points.length){return {season:season.name,event:e.name,categories:points.sort((a,b)=>Number(!/IWSC/.test(a.title))-Number(!/IWSC/.test(b.title))||a.title.localeCompare(b.title)).map(f=>{const title=decodeURIComponent(new URL(f.url).pathname).split('/').at(-1).replace(/\.json$/i,'');return {...f,id:slug(title),label:label(title)};})};}}
+     if(points.length){return {season:season.name,event:e.name,categories:points.sort((a,b)=>Number(!/IWSC/.test(a.title))-Number(!/IWSC/.test(b.title))||a.title.localeCompare(b.title)).map(f=>{const title=decodeURIComponent(new URL(f.url).pathname).split('/').at(-1).replace(/\.json$/i,'');return {...f,id:slug(title),label:series==='imsa'?imsaCategoryLabel(title):label(title)};})};}}
     throw Error('IMSA 시즌 누적 순위 문서 미확인');
    }
    const points=files.filter(f=>/champio/i.test(f.folders.join(' '))&&f.format==='pdf');if(!points.length)continue;
