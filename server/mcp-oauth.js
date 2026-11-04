@@ -135,7 +135,9 @@ async function token(request,env){
   if(!await oauthGrantActive(env,record))return oauthError('invalid_grant');
   if(!await claim(env,'code',code,record.expiresAt))return oauthError('invalid_grant');
   await remove(env,'code',code);
-  return json(await issueTokens(env,record,{refresh:record.scope.split(' ').includes('offline_access')}));
+  // Many MCP clients (ChatGPT included) request only mcp:read; without a refresh
+  // token their connection silently breaks when the 1-hour access token expires.
+  return json(await issueTokens(env,record));
  }
  if(grant==='refresh_token'){
   const refreshToken=String(form.get('refresh_token')||''),record=refreshToken?await read(env,'refresh',refreshToken):null;
