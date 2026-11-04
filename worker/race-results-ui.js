@@ -30,14 +30,14 @@ export function raceResultsClient(teamLogoFor,gtTeamLogoFor,koreanStandingName,s
  }
  function pitSummary(row){return t('피트 ','Pit visits ')+(row.pit_stops??'—')+' · '+t('총 시간 ','Total time ')+formatTime(row.pit_time_seconds);}
  function safeLink(link,url){try{const u=new URL(url);if(u.protocol!=='https:')throw Error();link.href=u.href;link.hidden=false;}catch{link.hidden=true;}}
- let seq=0,controller=null,timer=null,loading=false,lastLoaded=0;
+ let seq=0,controller=null,timer=null,loading=false,lastLoaded=0,lastVerified=0;
  function schedule(){clearTimeout(timer);timer=setTimeout(()=>{if(document.visibilityState!=='hidden')load(true);},300000);}
  async function load(background=false){
   const id=++seq;controller?.abort();controller=new AbortController();loading=true;clearTimeout(timer);retry.hidden=true;
   const selected=event.value,cls=category.value;const q=new URLSearchParams({series});if(selected)q.set('event',selected);if(series==='wec'&&cls)q.set('category',cls);
   target.setAttribute('aria-busy','true');if(!background){status.textContent=t('레이스 결과를 불러오는 중…','Loading race results…');target.replaceChildren();source.hidden=true;detailSource.hidden=true;}
   try{
-   const r=await fetch('/api/race-results?'+q,{cache:'no-store',signal:controller.signal});const data=await r.json();if(id!==seq)return;if(!r.ok)throw Error();
+   const {response:r,data}=await publicJsonRequest('/api/race-results?'+q,{cache:'no-store',signal:controller.signal,timeoutMs:45000});if(id!==seq)return;if(!r.ok)throw Error();
    event.replaceChildren(...data.events.map(e=>new Option((e.round?'R'+e.round+' · ':'')+localName(e.name),e.id)));event.disabled=!data.events.length;if(data.selected_event)event.value=data.selected_event;
    $('[data-result-season]').textContent=data.season+' SEASON';
    if(data.empty){target.replaceChildren();status.textContent=t('공식 레이스 결과가 아직 없습니다.','No published race results yet.');schedule();return;}
@@ -49,8 +49,8 @@ export function raceResultsClient(teamLogoFor,gtTeamLogoFor,koreanStandingName,s
    for(const row of data.rows){
     const tr=body.insertRow();tr.insertCell().textContent=row.position??'—';const name=tr.insertCell(),participant=node('div',undefined,'participant');
     const logo=series==='f1'?teamLogoFor('f1','drivers',row):gtTeamLogoFor('wec',data.selected_category,row)||teamLogoFor('wec',data.selected_category,row);
-    if(logo){const slot=node('span',undefined,'team-logo-slot');slot.setAttribute('aria-hidden','true');const img=node('img',undefined,'team-logo logo-'+logo);img.src='/assets/team/'+logo+'.svg';img.alt='';img.width=48;img.height=30;img.onerror=()=>slot.remove();slot.append(img);participant.append(slot);}
-    const label=node('div',localName(series==='f1'?row.name:'#'+row.number+' '+row.name),'participant-text');
+    if(logo){const mark=node('span',undefined,'team-color-mark');mark.setAttribute('aria-hidden','true');const colors={mclaren:'#ff9d42',ferrari:'#ff6974',mercedes:'#50dfc1',redbull:'#92b6ff',williams:'#8db5ff',alpine:'#f3a4d7',astonmartin:'#66c9a4',haas:'#e0e7eb',audi:'#ff8c8c',cadillac:'#d4c6ff',toyota:'#ff8b8b',bmw:'#93bfff',porsche:'#d4c6a2'};mark.style.setProperty('--team-color',colors[logo]||'#a8bac5');participant.append(mark);}
+    const label=node('div',localName(series==='f1'?row.name:'#'+row.number+' '+row.name),'participant-text');label.setAttribute('data-no-translate','');
     label.append(node('small',series==='f1'?[row.number,localName(row.team)].filter(Boolean).join(' · '):localName(row.team)));
     if(series==='wec'&&row.drivers)label.append(node('small',localName(row.drivers)));
     const mobile=node('div',undefined,'race-mobile-detail');mobile.append(series==='f1'?tyres(row.stints):node('span',pitSummary(row)));label.append(mobile);participant.append(label);name.append(participant);
@@ -63,8 +63,8 @@ export function raceResultsClient(teamLogoFor,gtTeamLogoFor,koreanStandingName,s
    if(data.rows.length>10){let expanded=false;const more=node('button',undefined,'standings-more');more.type='button';const update=()=>{[...body.rows].forEach((r,i)=>r.hidden=!expanded&&i>=10);more.textContent=expanded?t('접기','Show less'):t('더보기','Show all')+' ('+data.rows.length+')';more.setAttribute('aria-expanded',String(expanded));};more.onclick=()=>{expanded=!expanded;update();};update();target.append(more);}
    safeLink(source,data.source);safeLink(detailSource,series==='f1'?data.strategy_source:data.pit_source);detailSource.textContent=series==='f1'?t('타이어 기록 · FastF1 / TracingInsights ↗','Tyre records · FastF1 / TracingInsights ↗'):t('피트 기록 출처 ↗','Pit records source ↗');
    $('[data-result-legend]').textContent=series==='f1'?t('S 소프트 · M 미디엄 · H 하드 · I 인터미디어트 · W 웨트. 굵게: 새 타이어 · 보통: 헌 타이어 · ?: 상태 미확인. 숫자는 이 레이스에서 해당 스틴트로 완주한 랩 수입니다. —: 기록 미확인.','S Soft · M Medium · H Hard · I Intermediate · W Wet. Bold: new · regular: used · ?: freshness unknown. Numbers show laps completed in each race stint. —: data unavailable.')+(data.strategy_state!=='available'?t(' 일부 타이어 기록 확인 중.',' Some tyre records are unavailable.'):''):t('갭은 선택한 클래스 리더 기준입니다. 피트 수는 기록된 피트 방문이며, 시간은 공식 PIT_TIME 합계로 피트레인 주행·작업·페널티 시간이 포함될 수 있습니다. 미완료 방문 또는 누락 기록이 있으면 총 시간은 —로 표시합니다.','Gaps are to the selected class leader. Pit visits count recorded visits; total time sums official PIT_TIME and may include lane transit, service and penalties. Incomplete visits or missing records show —.');
-   status.textContent=localName(data.event)+' · '+data.provider+(data.classification==='PROVISIONAL'?t(' · 잠정',' · Provisional'):'')+' · '+t('조회 ','Retrieved ')+new Date(data.retrieved_at).toLocaleString(en?'en-GB':'ko-KR');lastLoaded=Date.now();schedule();
-  }catch(e){if(id!==seq||e.name==='AbortError')return;status.textContent=background?t('최신 결과 확인 실패 · 이전 조회 결과 표시 중','Refresh failed · showing the previous result'):t('레이스 결과를 불러오지 못했습니다. 다시 시도해 주세요.','Could not load race results. Please retry.');retry.hidden=false;schedule();}
+   status.textContent=localName(data.event)+' · '+data.provider+(data.classification==='PROVISIONAL'?t(' · 잠정',' · Provisional'):'')+' · '+t('조회 ','Retrieved ')+new Date(data.retrieved_at).toLocaleString(en?'en-GB':'ko-KR');if(data.stale){status.textContent+=t(' · 갱신 실패 · 24시간 이내 이전 확인 결과',' · Refresh failed · last verified result, under 24 hours old');retry.hidden=false;}lastLoaded=Date.now();lastVerified=lastLoaded-(Number(data.cache_age_seconds)||0)*1000;schedule();
+  }catch(e){if(id!==seq||e.name==='AbortError')return;if(lastVerified&&Date.now()-lastVerified>=86400000){target.replaceChildren();source.hidden=true;detailSource.hidden=true;}status.textContent=background&&target.querySelector('table')?t('최신 결과 확인 실패 · 이전 조회 결과 표시 중','Refresh failed · showing the previous result'):t('레이스 결과를 불러오지 못했습니다. 다시 시도해 주세요.','Could not load race results. Please retry.');retry.hidden=false;schedule();}
   finally{if(id===seq){target.removeAttribute('aria-busy');loading=false;}}
  }
  event.addEventListener('change',()=>{category.value='';load();});category.addEventListener('change',()=>load());retry.addEventListener('click',()=>load());

@@ -12,13 +12,14 @@ test('each registered championship card reaches its working page and unknown rou
   const r=await get(url);assert.equal(r.status,200);
   const html=await r.text();assert.ok(html.includes(c.name));
   assert.ok(html.includes((c.mode.startsWith('gtwc-')?'data-race-calendar':'data-championship')+'="'+c.mode+'"'));
-  assert.ok(home.includes('src="'+c.logo+'"'));
+  const renderedHome=home.replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/g,'');
+  assert.ok(!renderedHome.includes('src="'+c.logo+'"'),'championship cards use plain names rather than third-party marks');
   const logo=await get(c.logo);assert.equal(logo.status,200);
   assert.match(logo.headers.get('content-type'),/^image\//);
-  assert.ok((await logo.arrayBuffer()).byteLength>100);
+  assert.match(await logo.text(),/<text\b/,'legacy image URLs remain compatible as plain text labels');
  }
  assert.doesNotMatch(await (await get('/championships/f1')).text(),/href="\/live"/);
- assert.match(await (await get('/championships/wec')).text(),/MCP 설치 안내/);
+ assert.match(await (await get('/championships/wec')).text(),/href="\/guide"/);
  assert.equal((await get('/championships/unlisted')).status,404);
  assert.equal((await get('/championships/f1','POST')).status,404);
 });

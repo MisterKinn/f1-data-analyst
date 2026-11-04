@@ -1,3 +1,4 @@
+import {cachedPublished} from './published-cache.js';
 import {archive,readDocument} from './wec.js';
 
 const TTL=300000, memory=new Map(), pending=new Map();
@@ -152,12 +153,14 @@ export async function raceResultsRoute(request,env={}){
  const series=u.searchParams.get('series'),event=u.searchParams.get('event'),category=u.searchParams.get('category'),year=Number(u.searchParams.get('season')||new Date().getUTCFullYear());
  if(!['f1','wec'].includes(series)||!Number.isInteger(year)||year<2018||year>new Date().getUTCFullYear()||event&&!/^\d{1,2}$/.test(event)||category&&(!/^[A-Za-z0-9 -]{1,40}$/.test(category)||series==='f1'))return respond({error:'Invalid race selection'},400);
  try{
+  const result=await cachedPublished(env,`race-results/${series}/${year}/${event||'latest'}/${category||'default'}`,async()=>{
   const index=await memo(series+'-races-'+year,()=>series==='f1'?f1Catalog(year):wecIndex(year,env));
   const races=series==='f1'?index:index.races;
-  if(!races.length)return respond({series,season:year,events:[],rows:[],categories:[],empty:true});
-  const selected=event?races.find(r=>r.id===event):races[0];if(!selected)return respond({error:'Race results not published'},404);
+  if(!races.length)return {series,season:year,events:[],rows:[],categories:[],empty:true};
+  const selected=event?races.find(r=>r.id===event):races[0];if(!selected)throw Object.assign(Error('Race results not published'),{status:404});
   const key=`race-results/v1/${series}/${year}/${selected.id}/${category||'default'}`;
   const data=await memo(key,()=>series==='f1'?f1Results(year,selected):wecResults(year,selected,category,index.files,env));
-  return respond({...data,selected_event:selected.id,events:races.map(({id,name,date,round})=>({id,name,date,round}))});
- }catch{return respond({error:'Published race results are temporarily unavailable. Please retry.'},502);}
+  return {...data,selected_event:selected.id,events:races.map(({id,name,date,round})=>({id,name,date,round}))};
+  });return respond(result);
+ }catch(error){return respond({error:error.status===404?'Race results not published':'Published race results are temporarily unavailable. Please retry.'},error.status===404?404:502);}
 }

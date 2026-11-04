@@ -5,14 +5,14 @@ import {weekBounds} from '../worker/race-features.js';
 import {ANSWER_POLICY} from '../worker/answer-policy.js';
 import {demoCases} from '../worker/analysis-demo.js';
 
-test('Dakar and Macau appear in their event weeks with official logos, without analysis support',async()=>{
+test('Dakar and Macau appear in their event weeks with plain identity labels, without analysis support',async()=>{
  const data=await websiteRoute(new Request('https://test/api/race-calendar')).json();
  for(const [series,date] of [['dakar','2027-01-09T12:00:00'],['macau','2026-11-22T12:00:00']]){
   const events=data.events.filter(e=>e.series===series);assert.equal(events.length,1);
   const e=events[0],week=weekBounds(new Date(date));
   assert.ok(new Date(e.start+'T12:00:00')<week.end&&new Date(e.end+'T12:00:00')>=week.start);
   assert.equal(data.supported.includes(series),false);
-  const logo=websiteRoute(new Request('https://test/assets/schedule/'+series));assert.equal(logo.status,200);assert.ok((await logo.arrayBuffer()).byteLength>1000);
+  const label=websiteRoute(new Request('https://test/assets/schedule/'+series));assert.equal(label.status,200);assert.match(label.headers.get('content-type'),/^image\/svg\+xml/);assert.match(await label.text(),/<text\b/);
  }
  const dakar=data.events.find(e=>e.series==='dakar');assert.equal(dakar.start,'2027-01-09');assert.equal(dakar.end,'2027-01-23');assert.equal(dakar.raceStart,undefined);
 });

@@ -13,6 +13,37 @@ export function createFirestoreBucket(db,{collection='objectStore'}={}){
   text:async()=>data.body,json:async()=>JSON.parse(data.body),arrayBuffer:async()=>{const value=Buffer.from(data.body);return value.buffer.slice(value.byteOffset,value.byteOffset+value.byteLength);}
  });
  return {
+  // Buffer writes until the callback finishes: Firestore requires all reads first.
+  // Native retries rerun the whole callback against one consistent account state.
+  async atomic(callback){
+   return db.runTransaction(async transaction=>{
+    const reads=new Map(),writes=new Map();
+    const current=async key=>{
+     if(writes.has(key))return writes.get(key);
+     if(!reads.has(key)){const snap=await transaction.get(ref(key));reads.set(key,snap.exists?snap.data():null);}
+     return reads.get(key);
+    };
+    const bucket={
+     async get(key){const value=await current(key);return value?object(value):null;},
+     async put(key,value,options={}){
+      const body=typeof value==='string'?value:Buffer.from(value).toString('utf8');
+      if(Buffer.byteLength(body)>MAX_BODY_BYTES)throw Error('Firestore object exceeds size limit');
+      const previous=await current(key),condition=options.onlyIf;
+      if(condition?.etagMatches!==undefined&&previous?.etag!==condition.etagMatches)return null;
+      if(condition?.etagDoesNotMatch==='*'&&previous)return null;
+      if(condition?.etagDoesNotMatch!==undefined&&condition.etagDoesNotMatch!=='*'&&previous?.etag===condition.etagDoesNotMatch)return null;
+      const etag=digest(`${key}\0${body}\0${Date.now()}\0${Math.random()}`);
+      writes.set(key,{key,body,contentType:options.httpMetadata?.contentType||'application/json; charset=utf-8',etag,updatedAt:Date.now()});
+      return {key,etag};
+     },
+     async delete(key){await current(key);writes.set(key,null);}
+    };
+    const result=await callback(bucket);
+    if(writes.size>450)throw Error('Account transaction exceeds document limit');
+    for(const [key,value]of writes){if(value===null)transaction.delete(ref(key));else transaction.set(ref(key),value);}
+    return result;
+   });
+  },
   async get(key){const snap=await ref(key).get();return snap.exists?object(snap.data()):null;},
   async put(key,value,options={}){
    const body=typeof value==='string'?value:Buffer.from(value).toString('utf8');

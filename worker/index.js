@@ -1,3 +1,4 @@
+import {calendarRoute} from './calendar-refresh.js';
 import {f1Access} from './personal-f1.js';
 import {publishCatalog,catalogStream} from './mcp-updates.js';
 import {ANSWER_POLICY} from './answer-policy.js';
@@ -61,6 +62,7 @@ export default{async fetch(request,env,ctx){
  const firebase=firebaseIdentity(request);
  const live=await liveRoutes(request,env,firebase);if(live)return live;
  if(path==='/api/mcp')return new Response(JSON.stringify({error:EXTERNAL_MCP_UNAVAILABLE}),{status:401,headers:{'content-type':'application/json','cache-control':'no-store'}});
+ const calendar=await calendarRoute(request,env,ctx);if(calendar)return calendar;
  const standings=await standingsRoute(request,env,ctx);if(standings)return standings;
  const raceResults=await raceResultsRoute(request,env);if(raceResults)return raceResults;
  const auth=await googleAuthRoute(request,env);if(auth)return auth;

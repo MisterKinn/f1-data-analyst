@@ -1,3 +1,4 @@
+import {invalidateAccountOAuth} from './oauth-account-state.js';
 import {readMemberCrew} from './crew.js';
 import {queueCrewEvent,deliverCrewEvents} from './deploy_events.js';
 import {revokeMcpToken,EXTERNAL_MCP_UNAVAILABLE} from './external-mcp.js';
@@ -32,9 +33,14 @@ async function find(env,identity,create=false){
  if(mapping){const account=await read(env,accountKey(mapping.accountId));return account&&!account.deleted?account:null;}
  if(!create)return null;
  const account={id:crypto.randomUUID(),email:identity.email,identities:[{provider:identity.provider,sub:identity.sub,key}],name:displayName(identity.name),nameEn:/[A-Za-z]/.test(identity.name||'')&&!/[가-힣]/.test(identity.name||'')?displayName(identity.name):undefined,createdAt:Date.now()};
- await write(env,accountKey(account.id),account);await write(env,key,{accountId:account.id});return account;
+ await write(env,accountKey(account.id),account);
+ // Claim this provider identity atomically. Concurrent first logins reuse the winner.
+ const claimed=await env.BUCKET.put(key,JSON.stringify({accountId:account.id}),{onlyIf:{etagDoesNotMatch:'*'}});
+ if(claimed===null){await env.BUCKET.delete(accountKey(account.id));return find(env,identity,false);}
+ return account;
 }
 export async function accountIdentity(request,env,google,{create=false}={}){
+ if(create&&env.BUCKET?.atomic)return env.BUCKET.atomic(bucket=>accountIdentity(request,{...env,BUCKET:bucket},google,{create}));
  if(!env.BUCKET)return null;const chatgpt=platformIdentity(request);
  const identity=google||chatgpt;if(!identity)return null;
  let account=await find(env,identity,create);
@@ -85,6 +91,7 @@ export async function accountRoute(request,env,google,ctx){
  const allowedOrigin=env.APP_ORIGIN||ORIGIN;
  if(u.origin!==allowedOrigin||request.headers.get('origin')!==allowedOrigin||request.headers.get('sec-fetch-site')==='cross-site')return reply('허용되지 않은 요청입니다.',403);
  if(!env.BUCKET)return reply('계정 저장소를 사용할 수 없습니다.',503);
+ if(env.BUCKET.atomic&&['/account/preferences','/account/wec-preference','/account/link','/account/unlink','/account/rejoin'].includes(u.pathname))return env.BUCKET.atomic(bucket=>accountRoute(request.clone(),{...env,BUCKET:bucket},google,ctx));
  const info=await accountIdentity(request,env,google,{create:true});if(!info)return reply('로그인이 필요합니다.',401);
  const back=()=>new Response(null,{status:303,headers:{location:'/account','cache-control':'no-store'}});
  if(u.pathname==='/account/rejoin'){
@@ -167,11 +174,17 @@ export async function accountRoute(request,env,google,ctx){
   const {clearPersonalF1}=await import('./personal-f1.js');await clearPersonalF1(env,a.id);await env.BUCKET.delete('personal-f1-session/'+a.id+'.json');
   // No personal data retained in tombstones. Every linked identity loses the site account.
   for(const i of a.identities)await write(env,i.key,{deleted:true,deletedAt:Date.now()});
+  for(const identity of a.identities.filter(i=>i.provider==='google'))await invalidateAccountOAuth(env,identity.sub);
   const googleSubs=a.identities.filter(i=>i.provider==='google').map(i=>i.sub);
   if(googleSubs.length&&env.BUCKET.list){let cursor;do{const page=await env.BUCKET.list({prefix:'website-auth/google/session/',...(cursor?{cursor}:{})});for(const item of page.objects){const session=await read(env,item.key);if(googleSubs.includes(session?.sub))await env.BUCKET.delete(item.key);}cursor=page.truncated?page.cursor:null;}while(cursor);}
   await deleteInstructions(env,a.id);
   await env.BUCKET.delete(accountKey(a.id));await env.BUCKET.delete('website-accounts/key-attempts/'+a.id+'.json');
-  const headers=new Headers({location:'/signout-with-chatgpt?return_to=%2Faccount%3Fdeleted%3D1','cache-control':'no-store'});
+  const firebaseWebsite=env.FIREBASE_AUTH_CONFIGURED==='true';
+  const headers=new Headers({location:firebaseWebsite?'/account?deleted=1':'/signout-with-chatgpt?return_to=%2Faccount%3Fdeleted%3D1','cache-control':'no-store'});
+  if(firebaseWebsite){
+   headers.append('set-cookie','__Host-kongboda-firebase=; Path=/; Secure; HttpOnly; SameSite=Lax; Max-Age=0');
+   headers.append('set-cookie','__Host-kongboda-csrf=; Path=/; Secure; HttpOnly; SameSite=Lax; Max-Age=0');
+  }
   headers.append('set-cookie','__Host-kongboda-google=; Path=/; Secure; HttpOnly; SameSite=Lax; Max-Age=0');
   return new Response(null,{status:303,headers});
  }

@@ -1,3 +1,4 @@
+import {oauthAccountState,oauthGrantActive} from '../worker/oauth-account-state.js';
 import {createHash,randomBytes} from 'node:crypto';
 
 const CSRF='__Host-kongboda-oauth-csrf';
@@ -68,7 +69,7 @@ async function register(request,env){
 
 function consentPage(params,identity,csrf){
  const fields=['clientId','redirectUri','state','resource','challenge','scope'].map(name=>formField(name,params[name])).join('');
- return new Response(`<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Kongboda 연결 승인</title><style>body{font:16px system-ui;background:#0b0d12;color:#fff;display:grid;place-items:center;min-height:100vh;margin:0}main{max-width:520px;padding:36px}section{background:#151923;border:1px solid #2c3342;border-radius:14px;padding:26px}p,li{color:#c4cad5;line-height:1.6}.actions{display:flex;gap:10px;margin-top:24px}button{font:inherit;padding:11px 16px;border:0;border-radius:8px;cursor:pointer}.approve{background:#df1738;color:#fff}</style><main><section><h1>Kongboda Motorsports 연결</h1><p><b>${escape(identity.email)}</b> 계정으로 <b>${escape(params.client.clientName)}</b>의 읽기 전용 MCP 연결을 승인합니다.</p><ul><li>모터스포츠 기록·문서·라이브 분석 조회</li><li>이 계정의 개인 설정 조회 및 본인이 요청한 설정 저장</li><li>언제든 계정에서 연결을 해제할 수 있습니다</li></ul><form method="post" action="/oauth/authorize">${fields}${formField('csrf',csrf)}<div class="actions"><button class="approve" name="decision" value="approve">연결 승인</button><button name="decision" value="deny">취소</button></div></form></section></main>`,{headers:{'content-type':'text/html; charset=utf-8','cache-control':'no-store','content-security-policy':"default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",'set-cookie':cookie(csrf,600),'x-frame-options':'DENY'}});
+ return new Response(`<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Kongboda 연결 승인</title><style>body{font:16px system-ui;background:#0b0d12;color:#fff;display:grid;place-items:center;min-height:100vh;margin:0}main{max-width:520px;padding:36px}section{background:#151923;border:1px solid #2c3342;border-radius:14px;padding:26px}p,li{color:#c4cad5;line-height:1.6}.actions{display:flex;gap:10px;margin-top:24px}button{font:inherit;padding:11px 16px;border:0;border-radius:8px;cursor:pointer}.approve{background:#df1738;color:#fff}</style><main><section><h1>Kongboda Motorsports 연결</h1><p><b>${escape(identity.email)}</b> 계정으로 <b>${escape(params.client.clientName)}</b>의 MCP 연결을 승인합니다.</p><ul><li>모터스포츠 기록·문서·라이브 분석 조회</li><li>이 계정의 개인 설정 조회 및 본인이 요청한 설정 저장</li><li>언제든 계정에서 연결을 해제할 수 있습니다</li></ul><form method="post" action="/oauth/authorize">${fields}${formField('csrf',csrf)}<div class="actions"><button class="approve" name="decision" value="approve">연결 승인</button><button name="decision" value="deny">취소</button></div></form></section></main>`,{headers:{'content-type':'text/html; charset=utf-8','cache-control':'no-store','content-security-policy':"default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",'set-cookie':cookie(csrf,600),'x-frame-options':'DENY'}});
 }
 
 async function authorize(request,env,identity){
@@ -90,10 +91,12 @@ async function authorize(request,env,identity){
   if(isPost)return oauthError('access_denied',401,'Google login is required');
   const back=url.pathname+url.search;return new Response(null,{status:303,headers:{location:'/auth/google/start?return_to='+encodeURIComponent(back),'cache-control':'no-store'}});
  }
+ const accountState=await oauthAccountState(env,identity.sub);
+ if(!accountState.active)return oauthError('access_denied',403,'This account was deleted. Rejoin from the account page before connecting.');
  if(!isPost)return consentPage(params,identity,random('csrf_'));
  if(decision!=='approve')return new Response(null,{status:303,headers:{location:addAuthorizationResult(params.redirectUri,{error:'access_denied',error_description:'The user declined the connection',state:params.state},iss),'cache-control':'no-store','set-cookie':cookie('',0)}});
  const code=random('kbo_code_');
- await write(env,'code',code,{clientId:params.clientId,redirectUri:params.redirectUri,resource:params.resource,scope:params.scope,challenge:params.challenge,profile:{sub:identity.sub,email:identity.email,name:identity.name||''},issuer:iss,expiresAt:Date.now()+CODE_AGE*1000});
+ await write(env,'code',code,{clientId:params.clientId,redirectUri:params.redirectUri,resource:params.resource,scope:params.scope,challenge:params.challenge,accountGeneration:accountState.generation,profile:{sub:identity.sub,email:identity.email,name:identity.name||''},issuer:iss,expiresAt:Date.now()+CODE_AGE*1000});
  return new Response(null,{status:303,headers:{location:addAuthorizationResult(params.redirectUri,{code,state:params.state},iss),'cache-control':'no-store','set-cookie':cookie('',0)}});
 }
 
@@ -115,6 +118,7 @@ async function token(request,env){
   const code=String(form.get('code')||''),record=code?await read(env,'code',code):null;
   const verifier=String(form.get('code_verifier')||''),challenge=createHash('sha256').update(verifier).digest('base64url');
   if(!record||record.expiresAt<=Date.now()||record.clientId!==clientId||record.redirectUri!==String(form.get('redirect_uri')||'')||record.resource!==resource||record.issuer!==expectedIssuer||challenge!==record.challenge)return oauthError('invalid_grant');
+  if(!await oauthGrantActive(env,record))return oauthError('invalid_grant');
   if(!await claim(env,'code',code,record.expiresAt))return oauthError('invalid_grant');
   await remove(env,'code',code);
   return json(await issueTokens(env,record,{refresh:record.scope.split(' ').includes('offline_access')}));
@@ -122,6 +126,7 @@ async function token(request,env){
  if(grant==='refresh_token'){
   const refreshToken=String(form.get('refresh_token')||''),record=refreshToken?await read(env,'refresh',refreshToken):null;
   if(!record||record.expiresAt<=Date.now()||record.clientId!==clientId||record.resource!==(resource||expectedIssuer)||record.issuer!==expectedIssuer)return oauthError('invalid_grant');
+  if(!await oauthGrantActive(env,record))return oauthError('invalid_grant');
   if(!await claim(env,'refresh',refreshToken,record.expiresAt))return oauthError('invalid_grant');
   await remove(env,'refresh',refreshToken);
   return json(await issueTokens(env,record));
@@ -157,6 +162,7 @@ export async function authenticateMcpBearer(request,env){
  const match=request.headers.get('authorization')?.match(/^Bearer ([A-Za-z0-9_-]{32,256})$/);if(!match||!env.BUCKET)return null;
  const record=await read(env,'access',match[1]),base=issuer(request,env);
  if(!record||record.expiresAt<=Date.now()||record.issuer!==base||record.resource!==base||!record.scope?.split(' ').includes('mcp:read')||!record.profile?.sub||!record.profile?.email){if(record)await remove(env,'access',match[1]);return null;}
+ if(!await oauthGrantActive(env,record))return null;
  return record.profile;
 }
 

@@ -1,5 +1,12 @@
 // Explicit translations shared by server markup and dynamic browser updates.
 export const translations = {
+ '로그인 후 연결 주소 복사':'Sign in to copy the connection address',
+ '이 기기에서 로그아웃':'Log out this device',
+ '모든 기기에서 로그아웃':'Log out all devices',
+ '화면 테마':'Appearance',
+ '시스템 설정':'System',
+ '라이트':'Light',
+ '다크':'Dark',
  'F1 차량 구조·공기역학·팀별 업데이트를 살펴보는 기술 도해 참고자료. 공식 발표와 도해의 해석을 구분해 확인하세요.':'Technical illustrations covering F1 car design, aerodynamics and team updates. Distinguish official announcements from interpretation of the drawings.',
  '꽁보다(Kongboda)는 한국어의 ‘꽁’과 ‘보다’를 결합한 이름입니다.':'Kongboda is a Korean name combining “kkong” (effortlessly, as if for free) and “boda” (to watch or see).',
 
@@ -125,6 +132,114 @@ Object.assign(translations,{
  '레이스별 순위':'Race results','레이스':'Race','클래스':'Class',
  '레이스 결과를 불러오는 중…':'Loading race results…','결과 출처 ↗':'Results source ↗','전략 출처 ↗':'Strategy source ↗'
 });
+// Translate complete authored messages, including text segments separated by
+// semantic markup. Keep provider records and unknown prose unchanged.
+Object.assign(translations,{
+ 'ChatGPT에서 시작하기':'Start in ChatGPT','분석 예시 보기':'See analysis examples',
+ '본문으로 건너뛰기':'Skip to main content','첫 질문 복사':'Copy your first question',
+ '연결 주소를 붙여넣고 인증은 OAuth를 선택하세요. 별도 API 키는 필요하지 않습니다.':'Paste the connection URL and select OAuth authentication. No separate API key is required.',
+ '연결 승인 뒤 새 대화에서 @Kongboda Motorsports를 선택하고 대회·연도·세션과 함께 질문하세요.':'After approving the connection, select @Kongboda Motorsports in a new chat and ask a question with the event, year and session.',
+ '연결 설정의 이름과 제공 여부는 사용하는 AI와 계정에 따라 다를 수 있습니다.':'The names and availability of connection settings may vary by AI client and account.',
+ 'OAuth 2.1, PKCE, 갱신 토큰을 사용하는 읽기 중심 연결입니다. Claude의 원격 MCP 설정에서도 같은 주소와 OAuth를 사용하고, OAuth 클라이언트는 자동 등록을 선택합니다. 실제 Claude 연결과 인터랙티브 카드 표시는 별도 확인이 필요합니다.':'This read-oriented connection uses OAuth 2.1, PKCE and refresh tokens. In Claude’s remote MCP settings, use the same URL and OAuth, and select automatic client registration. Actual Claude connectivity and interactive card rendering still require verification.',
+ '사이트 계정 로그인과 AI 연결은 별개입니다. 비밀키는 허용된 선원의 운영자 공용 수집 권한용이며, 일반 연결 주소를 대신하지 않습니다.':'Site sign-in and AI connections are separate. Access keys grant authorised crew members access to the operator’s shared collector; they do not replace the public connection URL.',
+ 'ChatGPT에 한 번 연결하면 대화로 이용합니다.':'Connect to ChatGPT once, then use Kongboda in your conversations.',
+ '질문할 때 최신 수신 여부를 확인합니다. 홈페이지는 실시간 타이밍 화면이 아닙니다.':'We check for fresh data when you ask. This homepage is not a live timing feed.',
+ '레이스를 보다가 궁금한 순간, 물어보세요.':'Ask whenever a moment in the race makes you curious.',
+ '첫 질문까지, 세 단계면 됩니다':'Three steps to your first question','연결 방법 보기':'See how to connect',
+ '라이브 연결 확인 후 분석':'Analysis after verifying the live connection','공식 기록으로 사후 분석':'Post-race analysis using official records',
+ '분석 예시 · 현재 라이브 아님':'Analysis example · not a current live feed',
+ '실제 기록을 재구성한 예시입니다. 질문할 때 최신 수신 여부를 따로 확인합니다.':'These examples reconstruct recorded data. Fresh data availability is checked separately when you ask.',
+ '질문 복사':'Copy question','연결 주소 복사':'Copy connection URL','연결 상세 정보와 다른 AI':'Connection details and other AI clients',
+ '홈으로 돌아가기':'Return home','페이지를 찾을 수 없습니다':'Page not found',
+ '주소가 바뀌었거나 현재 제공하지 않는 페이지입니다.':'The address may have changed, or this page is not currently available.',
+ '독립 분석 서비스 · 공식 주최 측과 별개입니다.':'Independent analysis service · separate from official organisers.',
+ '사용하는 AI에':'In your AI,','꽁보다 모터스포츠 MCP를 연결':'connect Kongboda Motorsports',
+ '자동':'Automatic','모바일':'Mobile','화면 보기':'Display mode','모바일 화면으로 전환':'Switch to mobile view','PC 화면으로 전환':'Switch to desktop view',
+ 'Kongboda Motorsports 홈':'Kongboda Motorsports home','공식 기록과 함께 레이스의 흐름을 읽는 꽁보다 모터스포츠.':'Understand how a race unfolds with Kongboda Motorsports and official records.',
+ 'ChatGPT에 꽁보다를 연결하세요':'Connect Kongboda to ChatGPT',
+ 'ChatGPT 연결 설정을 여세요':'Open ChatGPT connection settings',
+ '플러그인에서':'In Plugins, select',
+ '사용자 지정 MCP 서버 추가':'Add custom MCP server',
+ '를 선택하고 이름을 Kongboda Motorsports로 입력하세요.':'and enter Kongboda Motorsports as the name.',
+ 'MCP 주소와 인증을 설정하세요':'Set the MCP URL and authentication',
+ '연결 주소는':'Use this connection URL:',
+ '이며 인증은 OAuth를 선택합니다. 별도 API 키는 필요하지 않습니다.':'and select OAuth authentication. No separate API key is required.',
+ 'Google 로그인 후 질문하세요':'Sign in with Google, then ask a question',
+ '연결 승인 뒤 새 대화에서 @Kongboda Motorsports를 선택하고 “지금 선두권의 랩·섹터 흐름을 설명해줘”라고 물어보세요.':'After approving the connection, select @Kongboda Motorsports in a new chat and ask: “Explain the leaders’ current lap and sector trends.”',
+ 'ChatGPT 연결 설정 ↗':'ChatGPT connection settings ↗','계정 설정':'Account settings',
+ 'OAuth 2.1, PKCE, 갱신 토큰을 사용하는 읽기 중심 연결입니다. ChatGPT 웹에서 검증하며 Claude의 원격 MCP 연결 화면에서도 같은 주소와 OAuth를 사용할 수 있도록 표준 규격을 제공합니다. Claude에서는 사용자 지정 커넥터에 같은 주소를 입력하고, OAuth 클라이언트는 ‘자동 등록(Register automatically)’을 선택하세요. 이후 Google 로그인과 연결 승인을 완료합니다. 실제 Claude에서의 최종 연결·앱 표시는 별도 확인이 필요합니다. 비밀키 등록 선원만 운영자의 공용 라이브 수집 권한을 사용합니다.':'This read-oriented connection uses OAuth 2.1, PKCE and refresh tokens. Validation focuses on ChatGPT web. The same URL and OAuth standard are provided for remote MCP clients such as Claude. In Claude, add the URL as a custom connector, select “Register automatically”, then complete Google sign-in and connection approval. Final connection and app rendering in Claude still require verification. Only crew members with a registered access key can use the operator’s shared live collector.',
+ 'MCP 라이브 분석 활용 가이드':'Using MCP live analysis',
+ '연결한 ChatGPT가 라이브 도구를 호출하면 대화 안에 인터랙티브 분석 카드가 열립니다. 데이터가 오래됐거나 세션 연결이 확인되지 않으면 현재 순위를 추측하지 않고 상태와 확인 방법만 안내합니다.':'When connected ChatGPT calls a live tool, an interactive analysis card opens in the chat. If data is stale or the session connection is unverified, it explains the status and next checks instead of guessing current positions.',
+ '먼저 연결하세요':'Connect first','ChatGPT 플러그인에서 사용자 지정 MCP 서버를 추가하고':'Add a custom MCP server in ChatGPT Plugins using',
+ '를 입력한 뒤 OAuth 로그인을 승인합니다.':'then approve OAuth sign-in.',
+ '대회와 세션을 알려주세요':'Specify the event and session',
+ '“F1 일본 GP 레이스 라이브 상황 보여줘”처럼 대회·시즌·세션을 함께 말하면 정확한 데이터를 고르기 쉽습니다.':'Include the event, season and session, for example: “Show the live F1 Japanese GP race situation.” This helps select the correct records.',
+ '최신 정보는 다시 질문하세요':'Ask again for the latest information',
+ '카드는 처음 호출한 시점의 스냅샷입니다. “지금 기준으로 다시 확인해줘”라고 말하면 도구를 새로 호출해 최신 수신 시각과 데이터 상태를 다시 검사합니다.':'Each card is a snapshot from the time it was requested. Ask “Check again as of now” to call the tool again and verify the latest receipt time and data status.',
+ '바로 써볼 질문':'Questions to try','레이스 흐름':'Race flow','전략 비교':'Compare strategies','변수 확인':'Check race variables','근거 확인':'Check the evidence',
+ '“지금 선두권 격차와 최근 랩 흐름을 요약해줘.”':'“Summarise the leaders’ current gaps and recent lap trends.”',
+ '“상위 5명의 타이어와 피트 상황을 비교해줘.”':'“Compare the top five drivers’ tyres and pit situations.”',
+ '“날씨와 레이스 컨트롤 메시지가 전략에 줄 영향을 설명해줘.”':'“Explain how weather and race-control messages could affect strategy.”',
+ '“수신 시각과 데이터 신선도를 먼저 확인하고 답해줘.”':'“Check the receipt time and data freshness before answering.”',
+ '화면이 나오지 않을 때':'If the card does not appear','LIVE가 아닌 경우':'If the status is not LIVE',
+ '세션 시작 전·종료 후이거나 최신 수신이 끊긴 상태일 수 있습니다. 대회와 세션을 확인한 뒤 다시 요청하세요.':'The session may not have started, may have ended, or fresh data may have stopped arriving. Check the event and session, then request again.',
+ '연결 오류가 보이는 경우':'If a connection error appears',
+ 'ChatGPT 연결 설정에서 Kongboda Motorsports가 활성화되어 있는지 확인하고 다시 로그인하세요. 계속 실패하면 연결을 삭제한 뒤 OAuth 로그인을 다시 진행하세요.':'Check that Kongboda Motorsports is enabled in ChatGPT connection settings, then sign in again. If it still fails, remove the connection and repeat OAuth sign-in.',
+ 'Claude에서 사용하는 경우':'When using Claude',
+ '원격 MCP 서버 추가 화면에 같은 주소를 입력하고 OAuth를 선택하세요. 인터랙티브 카드 렌더링 여부는 Claude 클라이언트의 MCP Apps 지원 범위에 따라 달라질 수 있습니다.':'Enter the same URL when adding a remote MCP server and select OAuth. Interactive card rendering depends on the Claude client’s MCP Apps support.',
+ 'AI의 해설은 공식 판정이 아닙니다. 중요한 판단은 카드에 표시된 수신 시각과 원자료 범위를 함께 확인하세요.':'AI commentary is not an official ruling. For important judgments, check the card’s receipt time and the scope of the source records.',
+ '인터랙티브 카드 읽는 법':'Reading the interactive card','요약':'Summary','전략·환경':'Strategy and conditions',
+ '은 현재 흐름,':'shows the current race flow;','는 드라이버별 랩·격차,':'shows drivers’ laps and gaps;',
+ '은 타이어·피트·날씨·레이스 컨트롤 정보를 보여줍니다. 자료가 없는 항목은 임의로 채우지 않습니다.':'shows tyres, pits, weather and race control. Missing data is never filled in with guesses.',
+ '공식 문서·경기 기록과 모터스포츠 전문 취재를 찾아보세요.':'Find official documents, race records and specialist motorsport reporting.',
+ '공식 기록과 언론 보도는 구분해 확인하세요. 기사 속 해석은 공식 판정·타이밍 기록 자체가 아닙니다.':'Distinguish official records from reporting. An article’s interpretation is not itself an official ruling or timing record.',
+ 'Formula 1 공식 무료 팬 멤버십. 일부 라이브타이밍 기능은 무료로 체험할 수 있지만, 전체 기능·영상은 국가별 유료 구독이 필요할 수 있습니다.':'Formula 1’s official free fan membership. Some live-timing features may be available to try for free; full features and video may require a paid subscription depending on your country.',
+ '자동차·모터스포츠 공학 자료와 학술·기술 정보.':'Automotive and motorsport engineering research and technical resources.',
+ '공식 경기 운영 지침, 심판 판정과 세션 결과.':'Official race-operation instructions, steward decisions and session results.',
+ 'F1부터 다양한 모터스포츠까지 취재하는 전문 매체. 일부 기사는 구독이 필요합니다.':'Specialist reporting on Formula 1 and other motorsport. Some articles require a subscription.',
+ 'WEC·IMSA·ELMS·Asian Le Mans Series·Michelin Le Mans Cup의 공식 결과와 랩·섹터·피트 기록.':'Official results and lap, sector and pit records for WEC, IMSA, ELMS, Asian Le Mans Series and Michelin Le Mans Cup.',
+ 'WEC·IMSA·GT 레이스 중심의 스포츠카·내구레이스 전문 보도.':'Specialist sportscar and endurance reporting focused on WEC, IMSA and GT racing.',
+ '내구레이스와 GT·프로토타입 경기의 뉴스, 인터뷰와 현장 취재.':'News, interviews and trackside reporting on endurance, GT and prototype racing.',
+ '공식 자료와 전문 매체':'Official sources and specialist media','계정 연결':'Account connections',
+ 'Google 또는 ChatGPT로 로그인할 수 있습니다.':'Sign in with Google or ChatGPT.',
+ '동일한 이메일의 두 계정에 로그인하면 자동으로 연결됩니다. 연결 후에는 다음부터 어느 쪽으로 로그인해도 같은 꽁보다 계정을 사용합니다. ChatGPT 자체의 로그인 상태나 AI 연결 권한은 별개입니다.':'Signing in to both accounts with the same email links them automatically. After linking, either sign-in method uses the same Kongboda account. ChatGPT sign-in status and AI connection permissions are separate.',
+ '두 로그인 이메일이 달라 연결할 수 없습니다. 같은 이메일의 계정으로 다시 로그인하세요.':'These sign-in emails differ and cannot be linked. Sign in again with accounts that use the same email.',
+ 'Google · ChatGPT 계정 연결':'Link Google and ChatGPT accounts','Google 연결 해제':'Unlink Google','ChatGPT 연결 해제':'Unlink ChatGPT',
+ '탈퇴한 꽁보다 계정입니다.':'This Kongboda account has been deleted.','꽁보다 다시 가입':'Rejoin Kongboda',
+ '연결된 로그인 수단: Google':'Connected sign-in method: Google','연결된 로그인 수단: ChatGPT':'Connected sign-in method: ChatGPT',
+ '연결된 로그인 수단: Google · ChatGPT':'Connected sign-in methods: Google and ChatGPT','연결된 로그인 수단: ChatGPT · Google':'Connected sign-in methods: ChatGPT and Google',
+ 'AI 연결 상태':'AI connection status','ChatGPT와 원격 MCP 클라이언트에서 OAuth 연결을 사용할 수 있습니다.':'OAuth connections are available for ChatGPT and remote MCP clients.',
+ '접속 키를 복사하는 방식이 아니라 Google 로그인과 연결 승인으로 인증합니다. 연결 해제는 해당 AI의 플러그인 또는 MCP 설정에서 진행하세요.':'Authenticate with Google sign-in and connection approval. To disconnect, use the AI client’s plugin or MCP settings.',
+ 'F1 라이브 연결':'F1 live connection','F1 연결 관리':'Manage F1 connection',
+ '등록된 선원은 운영자 계정의 공용 수집기를 사용합니다.':'Registered crew members use the operator’s shared collector.',
+ '내 F1 계정으로 로그인하여 개인 수집기를 연결하세요. 공용 수집기와 별도로 동작합니다.':'Sign in with your F1 account to connect a personal collector. It operates separately from the shared collector.',
+ '나만의 MCP 지침':'My MCP instructions','개인 지침':'Personal instructions','최대 4,000자':'Up to 4,000 characters',
+ '답변 언어·길이·관심 주제 등을 적어 주세요. 홈페이지와 AI에서 수정한 내용은 같은 꽁보다 계정에 함께 적용됩니다.':'Specify your preferred answer language, length and topics. Changes made here or through AI apply to the same Kongboda account.',
+ '개인 지침을 불러오는 중…':'Loading personal instructions…','개인 지침 저장':'Save personal instructions',
+ 'F1·WEC 주요 FIA 문서 확인은 공통 기본 지침입니다. 이 칸에는 내가 원하는 답변 방식만 적어 주세요. WEC 문서 자동 수집은 준비 중이며, 앱을 닫은 동안의 푸시는 별도 예약이 필요합니다.':'Checking major F1 and WEC FIA documents is a shared default instruction. Enter only your preferred response style here. Automatic WEC document collection is in preparation; notifications while the app is closed require a separate scheduled task.',
+ '선택 안 함':'None','선택 목록을 불러오는 중…':'Loading choices…','목록 다시 불러오기':'Reload choices',
+ '회원 탈퇴':'Delete account','탈퇴 진행':'Continue account deletion','꽁보다 계정 삭제':'Delete Kongboda account',
+ '꽁보다 계정과 연결 정보를 삭제합니다. Google·ChatGPT 계정 및 다른 이용자의 기록은 삭제되지 않습니다.':'Delete your Kongboda account and its connections. Your Google and ChatGPT accounts and other users’ records are unaffected.',
+ '확인하려면 ‘탈퇴’를 입력하세요':'To confirm, enter the Korean word “탈퇴”',
+ '비밀키 등록됨 · 변경':'Access key registered · change','비밀키 등록':'Register access key','비밀키':'Access key','비밀키 입력':'Enter access key','등록':'Register',
+ '선원 목록':'Crew members','선원 목록 보기':'View crew members','비밀키를 등록한 선원들의 이름을 확인할 수 있습니다.':'View the names of crew members with registered access keys.',
+ '더보기':'Show more','다시 시도':'Retry','확인':'OK','야, 기분좋다~!':'Welcome aboard!','선원이 되신 것을 환영합니다.':'Welcome to the crew.',
+ '홈페이지와 AI에서 같은 개인 지침을 사용합니다.':'The website and AI use the same personal instructions.','개인 지침을 불러오지 못했습니다.':'Could not load personal instructions.',
+ '저장 중…':'Saving…','저장했습니다. AI의 다음 지침 조회에도 적용됩니다.':'Saved. The AI will receive these instructions on its next preferences request.',
+ '저장 결과를 확인하지 못했습니다.':'Could not verify the saved result.','다른 곳에서 변경됐습니다. 다시 불러와 확인하세요.':'These instructions changed elsewhere. Reload them before continuing.','저장하지 못했습니다.':'Could not save.',
+ '목록을 불러오지 못했습니다.':'Could not load the list.','선원 목록을 불러오는 중…':'Loading crew members…',
+ 'Michelin Le Mans Cup의 LMP3·LMP3 Pro/Am·GT3 결과를 클래스별로 읽습니다. Al Kamel 공개 기록에서 랩·섹터·피트스톱과 챔피언십 포인트를 조회합니다. 사후 분석을 지원합니다.':'Explore Michelin Le Mans Cup LMP3, LMP3 Pro/Am and GT3 results by class. Public Al Kamel records provide laps, sectors, pit stops and championship points for post-race analysis.',
+ '공식 경기 기록':'Official race records','대회 일정과 공식 결과를 확인하세요.':'Check the championship schedule and official results.','공식 사이트 · 결과 보기 ↗':'Official website and results ↗',
+ '실제 기록 기반 꽁보다 분석 카드':'Kongboda analysis examples based on recorded sessions','실제 기록을 쉽게 풀어낸 분석 예시':'Example explanations of recorded race data','분석 종류':'Analysis type','실시간 브리핑':'Live briefing example','사후 분석':'Post-race analysis',
+ '이전 실시간 브리핑':'Previous live briefing example','다음 실시간 브리핑':'Next live briefing example','이전 사후 분석':'Previous post-race analysis','다음 사후 분석':'Next post-race analysis',
+ '2026 시즌 · 실제 기록 기반 재구성':'2026 season · reconstructed from recorded data'
+});
+for(const [ko,en] of [['홈','Home'],['이용 방법','How to use'],['유용한 사이트','Useful Websites'],['꽁보다 소개','About Kongboda Motorsports'],['계정','Account'],['화면 보기','Display mode'],...['Formula 1','FIA WEC','IMSA','Formula E','NLS','Michelin Le Mans Cup','European Le Mans Series','Asian Le Mans Series'].map(s=>[s,s])])translations[ko+' · 꽁보다 모터스포츠']=en+' · KONGBODA MOTORSPORTS';
+for(const [ko,en] of [['유럽','Europe'],['아시아','Asia'],['아메리카','America'],['오스트레일리아','Australia']]){
+ translations['GT World Challenge '+ko]='GT World Challenge '+en;
+ translations['/ GT World Challenge '+ko]='/ GT World Challenge '+en;
+ translations['GT World Challenge '+ko+' · 꽁보다 모터스포츠']='GT World Challenge '+en+' · KONGBODA MOTORSPORTS';
+}
 export function chooseLanguage(request){
  const cookie=request.headers.get('cookie')||'';
  const saved=cookie.match(/(?:^|;\s*)kongboda_lang=(ko|en)(?:;|$)/)?.[1];
@@ -137,13 +252,30 @@ export function chooseLanguage(request){
  return !accepted||/^ko(?:-|,|;|$)/i.test(accepted)?'ko':'en';
 }
 export function translateText(text,dictionary=translations){
- if(!/[가-힣]/.test(text))return text;
- if(dictionary[text])return dictionary[text];
- let out=text;
- for(const key of Object.keys(dictionary).sort((a,b)=>b.length-a.length))out=out.split(key).join(dictionary[key]);
- return out;
+ if(typeof text!=='string'||!/[가-힣]/.test(text))return text;
+ if(Object.hasOwn(dictionary,text))return dictionary[text];
+ const trimmed=text.trim();
+ if(Object.hasOwn(dictionary,trimmed))return text.slice(0,text.indexOf(trimmed))+dictionary[trimmed]+text.slice(text.indexOf(trimmed)+trimmed.length);
+ // Unknown records, names and sentences remain intact. Replacing words inside
+ // arbitrary text corrupts names (for example, 김팀장 became 김Teams장).
+ return text;
 }
 export function translateHtml(html,lang){
  if(lang!=='en')return html;
- return html.split(/(<[^>]+>)/g).map(part=>part.startsWith('<')?part.replace(/\b(alt|title|aria-label|content)="([^"]*)"/g,(_,key,value)=>key+'="'+translateText(value)+'"'):translateText(part)).join('').replace('<html lang="ko">','<html lang="en">').replace('/assets/brand-mark.svg','/assets/brand-mark-en.svg');
+ const stack=[],voidTags=new Set(['area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr']);
+ const tokens=/<(script|style|textarea)\b[^>]*>[\s\S]*?<\/\1\s*>|<!--[\s\S]*?-->|<(?:"[^"]*"|'[^']*'|[^'">])*>|[^<]+|</gi;
+ return html.replace(tokens,(part,rawTag)=>{
+  if(rawTag||part.startsWith('<!--'))return part;
+  if(!part.startsWith('<'))return stack.at(-1)?.skip?part:translateText(part);
+  const close=part.match(/^<\/\s*([\w:-]+)/);
+  if(close){const tag=close[1].toLowerCase();for(let i=stack.length-1;i>=0;i--)if(stack[i].tag===tag){stack.length=i;break;}return part;}
+  const open=part.match(/^<\s*([\w:-]+)/);if(!open)return part;
+  const tag=open[1].toLowerCase(),skip=!!stack.at(-1)?.skip||/\bdata-no-translate(?:\s|=|\/?>)/i.test(part)||/\btranslate\s*=\s*["']?no(?:["'\s>])/i.test(part);
+  if(!voidTags.has(tag)&&!part.endsWith('/>'))stack.push({tag,skip});
+  if(skip)return tag==='img'?part.replace(/\bsrc=("|')\/assets\/brand-mark\.svg([?#][^"']*)?\1/,(_,quote,suffix='')=>'src='+quote+'/assets/brand-mark-en.svg'+suffix+quote):part;
+  let translated=part.replace(/\b(alt|title|aria-label|placeholder|content)=("([^"]*)"|'([^']*)')/g,(attribute,key,quoted,double,single)=>{const old=double??single,value=translateText(old);if(value===old)return attribute;const quote=quoted[0],safe=value.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(quote==='"'?/"/g:/'/g,quote==='"'?'&quot;':'&#39;');return key+'='+quote+safe+quote;});
+  if(tag==='html')translated=translated.replace(/\blang=("ko"|'ko')/,'lang="en"');
+  if(tag==='img')translated=translated.replace(/\bsrc=("|')\/assets\/brand-mark\.svg([?#][^"']*)?\1/,(_,quote,suffix='')=>'src='+quote+'/assets/brand-mark-en.svg'+suffix+quote);
+  return translated;
+ });
 }

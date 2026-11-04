@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {sessionState} from '../worker/session-state.js';
 import {sessionSchedule} from '../worker/session-schedule.js';
 import {websiteRoute} from '../worker/website.js';
+import {scheduledSessionStatus} from '../worker/race-features.js';
 
 test('Mexico FP1 badge begins ten minutes before scheduled start and ends on time, independent of device timezone',()=>{
  const sessions=sessionSchedule['f1-2026-10-30-mexico'],event={series:'f1',sessions};
@@ -33,4 +34,33 @@ test('home exposes independent F1/WEC badge anchors and client updates row state
  const script=await websiteRoute(new Request('https://test/assets/race-features.js')).text();
  new Function(script);
  assert.match(script,/refreshSessionStates/);assert.match(script,/visibilitychange/);assert.match(script,/15000/);
+});
+
+test('visible session badges distinguish published schedule phases from feed connectivity',()=>{
+ const event={series:'f1',sessions:[{name:'FP1',start:'2026-10-30T18:30:00Z',end:'2026-10-30T19:30:00Z'}]};
+ for(const [time,phase,label] of [
+  ['2026-10-30T18:19:59Z',null,''],
+  ['2026-10-30T18:20:00Z','starting-soon','곧 시작 · 일정 기준'],
+  ['2026-10-30T18:30:00Z','live','세션 진행 중 · 일정 기준'],
+  ['2026-10-30T19:30:00Z',null,'']
+ ]){
+  const status=scheduledSessionStatus(event,Date.parse(time),'ko');
+  assert.equal(status.phase,phase);assert.equal(status.label,label);assert.equal(status.visible,phase!==null);
+  assert.match(status.description,/실시간 수집기 연결 상태를 뜻하지 않습니다/);
+ }
+ const active=scheduledSessionStatus(event,Date.parse('2026-10-30T18:45:00Z'),'en');
+ assert.equal(active.label,'Session in progress · scheduled');assert.match(active.description,/connection is not confirmed/);
+ event.sessions.push({name:'FP2',start:'2026-10-30T18:50:00Z',end:'2026-10-30T19:50:00Z'});
+ assert.equal(scheduledSessionStatus(event,Date.parse('2026-10-30T18:45:00Z')).phase,'live','an active session takes precedence over another imminent session');
+ assert.equal(scheduledSessionStatus({series:'unknown',sessions:[{start:'invalid'}]},Date.now()).visible,false);
+});
+
+test('calendar client uses text series names and never blindly rewrites record or user text',async()=>{
+ const script=await websiteRoute(new Request('https://test/assets/race-features.js')).text();
+ assert.match(script,/race-series-name/);assert.match(script,/data-no-translate/);
+ assert.doesNotMatch(script,/NASCAR_logo|race-series-logo|new MutationObserver|node\('span','LIVE'/);
+ assert.match(script,/titleLink=link\(heading.textContent,destination\)/);
+ assert.doesNotMatch(script,/card\.setAttribute\('role','link'\)|card\.tabIndex=0/);
+ const html=await websiteRoute(new Request('https://test/')).text();
+ assert.doesNotMatch(html,/animation:session-live-pulse|@keyframes session-live-pulse/);
 });
