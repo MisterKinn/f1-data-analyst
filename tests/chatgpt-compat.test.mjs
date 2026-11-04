@@ -46,3 +46,10 @@ test('saved sessions whose collector stopped early are labelled ended, not in pr
  assert.equal(sessionFinalisation(snap,new Date().toISOString()).state,'in_progress');
  assert.equal(sessionFinalisation({topics:{SessionStatus:{Status:'Finalised'},SessionInfo:{ArchiveStatus:{Status:'Complete'}}}},old).state,'final');
 });
+
+test('NLS event list has one entry per event with the descriptive title',async()=>{
+ const {nlsEvents}=await import('../worker/official.js');
+ const link=(d,title)=>({url:'https://teilnehmer.vln.de/onb.php?d='+d,title});
+ const out=nlsEvents([link('2026-10-10','10.10.2026'),link('2026-10-10','10.10.2026'),link('2026-03-14','14.03.2026 – NLS1'),link('2026-10-10','10.10.2026 – NLS10'),{url:'https://teilnehmer.vln.de/download.php?file=onb/2026-10-10/a.pdf',title:'a'}]);
+ assert.deepEqual(out,[{id:'2026-10-10',name:'10.10.2026 – NLS10'},{id:'2026-03-14',name:'14.03.2026 – NLS1'}]);
+});
