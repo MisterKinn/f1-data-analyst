@@ -19,7 +19,7 @@ test('WEC discovery uses existing authenticated collector and status is a separa
   assert.equal(JSON.parse(calls[0].options.body).event,'Monza');assert.equal(calls[0].options.headers.Authorization,'Bearer fixture-key');
   assert.equal(calls[1].options.method,'GET');assert.equal(calls[1].options.body,undefined);
   globalThis.fetch=async()=>new Response('missing',{status:404});
-  await assert.rejects(wecLiveCall('wec_live_status',{},env),/Render/);
+  await assert.rejects(wecLiveCall('wec_live_status',{},env),/수집 서버/);
  }finally{globalThis.fetch=original;}
 });
 test('MCP requires existing visitor authentication for WEC discovery',async()=>{

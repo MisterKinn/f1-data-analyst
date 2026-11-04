@@ -1,0 +1,36 @@
+name: F1 live collector
+# Records F1 sessions without a host computer: every 10 minutes GitHub checks the
+# FastF1 schedule and, when a session is about to start or running, records it and
+# pushes snapshots to the site with this job's OIDC token (no shared secret).
+# Needs repository secrets F1_USERNAME and F1_PASSWORD (the F1 account for live timing).
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+  id-token: write
+concurrency:
+  group: f1-live-collector
+  cancel-in-progress: false
+jobs:
+  collect:
+    if: github.repository == 'MisterKinn/f1-data-analyst'
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: collector/requirements.txt
+      - name: Install FastF1
+        run: pip install fastf1==3.9.0 signalrcore==1.0.2
+      - name: Record scheduled session
+        working-directory: collector
+        env:
+          DATA_DIR: ${{ runner.temp }}/f1
+          F1_USERNAME: ${{ secrets.F1_USERNAME }}
+          F1_PASSWORD: ${{ secrets.F1_PASSWORD }}
+        run: python actions_runner.py
