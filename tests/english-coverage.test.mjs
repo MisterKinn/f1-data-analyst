@@ -60,3 +60,11 @@ test('homepage examples open on a random tab and the server marks the chosen tab
  const modes=new Set(Array.from({length:40},()=>analysisDemo('ko').match(/data-initial-mode="(\w+)"/)[1]));
  assert.deepEqual([...modes].sort(),['live','post']);
 });
+
+test('page scripts are content-versioned so a deploy is never hidden by a cached script',async()=>{
+ const html=await websiteRoute(new Request('https://example.test/')).text();
+ const urls=[...html.matchAll(/src="(\/assets\/(?:website|race-features|examples)\.js\?v=[a-z0-9]+)"/g)].map(m=>m[1]);
+ assert.equal(urls.length,3);
+ for(const url of urls){const r=websiteRoute(new Request('https://example.test'+url));assert.equal(r.status,200);assert.match(r.headers.get('cache-control'),/immutable/);}
+ const stale=websiteRoute(new Request('https://example.test/assets/examples.js?v=old'));assert.doesNotMatch(stale.headers.get('cache-control'),/immutable/);
+});
