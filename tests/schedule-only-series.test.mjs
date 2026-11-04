@@ -1,5 +1,7 @@
 import {test} from 'node:test';import assert from 'node:assert/strict';import worker from '../worker/index.js';
-test('schedule-only series have verified sessions and plain local labels but no analysis routes',async()=>{
+import {calendarReviewedAt} from '../worker/race-calendar-data.js';
+test('schedule-only series have verified sessions and plain local labels but no analysis routes',async t=>{
+ t.mock.timers.enable({apis:['Date'],now:Date.parse(calendarReviewedAt+'T01:00:00Z')});
  const data=await (await worker.fetch(new Request('https://site/api/race-calendar'),{},{})).json();
  for(const series of ['24h-series','wrc','super-taikyu']){
   assert.ok(!data.supported.includes(series));assert.ok(data.events.some(e=>e.series===series&&e.sessions.length));
