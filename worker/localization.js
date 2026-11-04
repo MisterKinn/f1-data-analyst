@@ -270,7 +270,7 @@ Object.assign(translations,{
  'WEC 하이퍼카':'WEC Hypercar',
  // 2026-11-04: simplified guide page.
  '찾아보기 번거로운 기록을':'Records that are hard to dig through,',
- '대신 읽고, 쉽게 설명합니다':'read and explained for you',
+ '연결됨':'Connected','연결 기록 없음':'No connection record','다시 연결 필요':'Reconnect needed','연결 해제됨':'Disconnected','상태 확인 실패':'Status unavailable','마지막 확인':'Last confirmed','연결 상태 새로고침':'Refresh connection status','‘연결됨’은 최근 30일 안에 이 계정으로 인증하거나 꽁보다 도구를 사용한 기록이 있다는 뜻입니다. AI에서 연결을 삭제해도 바로 반영되지 않을 수 있습니다. 이미 연결했는데 기록이 없다면 해당 AI에서 꽁보다 도구를 한 번 사용한 뒤 새로고침하세요.':'“Connected” means this account signed in or used a Kongboda tool within the last 30 days. Removing the connection in an AI may not show here right away. If you already connected but see no record, use a Kongboda tool once in that AI and refresh.','새로고침':'Refresh','일정 새로고침':'Refresh schedule','대신 읽고, 쉽게 설명합니다':'read and explained for you',
  'Claude나 ChatGPT에 꽁보다를 연결하면 레이스 중에는 핵심만 짧게, 경기가 끝나면 원인까지 자세히 알려 드립니다.':'Connect Kongboda to Claude or ChatGPT. During a race you get the key points in brief; after it, the full story of why.',
  '연결하기':'Connect',
  '연결 주소를 복사하세요':'Copy the connection address',
