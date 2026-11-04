@@ -5,8 +5,8 @@ import {firebaseAuthDomain} from '../worker/firebase-auth-domain.js';
 
 const env={FIREBASE_WEB_AUTH_DOMAIN:'kongboda-motorsports-2026.firebaseapp.com'};
 
-test('production host serves the Firebase auth handler first-party', () => {
- assert.equal(firebaseAuthDomain(env,'kongboda-motorsports.vercel.app'),'kongboda-motorsports.vercel.app');
+test('first-party auth handler stays off until the OAuth redirect URI is registered', () => {
+ assert.equal(firebaseAuthDomain(env,'kongboda-motorsports.vercel.app'),env.FIREBASE_WEB_AUTH_DOMAIN);
 });
 
 test('other hosts keep the configured firebaseapp.com domain', () => {
