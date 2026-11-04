@@ -1,3 +1,27 @@
+import {calendarEvents} from './race-calendar-data.js';
+import {sessionSchedule} from './session-schedule.js';
+
+const kst=(ms,options)=>new Date(ms).toLocaleString('ko-KR',{timeZone:'Asia/Seoul',hour12:false,...options});
+const sessionLabel=name=>({'Sprint Qualifying':'스프린트 퀄리파잉','Sprint Shootout':'스프린트 퀄리파잉','Sprint':'스프린트','Qualifying':'퀄리파잉','Race':'레이스'})[name]||name;
+// Next official F1 session from the checked-in schedule (Korean time).
+export function nextF1Session(now=Date.now()){
+ for(const event of calendarEvents.filter(e=>e.series==='f1')){
+  for(const session of sessionSchedule[event.id]||[]){
+   const at=Date.parse(session.start);
+   if(Number.isFinite(at)&&at>now)return {event:event.name,session:sessionLabel(session.nameEn||session.name),start:session.start,
+    text:`${event.name} ${sessionLabel(session.nameEn||session.name)} · ${kst(at,{month:'numeric',day:'numeric'})} ${kst(at,{hour:'2-digit',minute:'2-digit'})} (한국시간)`};
+  }
+ }
+ return null;
+}
+// "3일 전 (11. 2. 07:05)" — how old the saved data is, with its date.
+export function dataAgeText(receivedAt,now=Date.now()){
+ const at=Date.parse(receivedAt);if(!Number.isFinite(at))return null;
+ const s=Math.max(0,(now-at)/1000);
+ const ago=s<90?`${Math.round(s)}초 전`:s<5400?`${Math.round(s/60)}분 전`:s<172800?`${Math.round(s/3600)}시간 전`:`${Math.round(s/86400)}일 전`;
+ return `${ago} (${kst(at,{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'})})`;
+}
+
 const valueOf=value=>{
  if(value==null)return null;
  if(typeof value==='object')return value.Value??value.DisplayValue??null;
@@ -46,7 +70,7 @@ const currentStint=(timingApp,number)=>{
  };
 };
 
-export function buildLiveBriefing(snapshot){
+export function buildLiveBriefing(snapshot,{now=Date.now(),accessMode=null}={}){
  const topics=snapshot?.topics||{}, info=topics.SessionInfo||{}, f=snapshot?.freshness||{}, collector=snapshot?.synchronization?.collector||{};
  const sessionName=[info.Meeting?.Name,info.Name].filter(Boolean).join(' · ');
  const feedAge=typeof f.feed_age_seconds==='number'?f.feed_age_seconds:NaN;
@@ -70,6 +94,11 @@ export function buildLiveBriefing(snapshot){
   };
  }).filter(Boolean).sort((a,b)=>a.position-b.position).slice(0,20);
  const leaderboard=live?observedLeaderboard:[];
+ // After the session ends, the last received order is shown as a final record, never as live.
+ const ended=['Finished','Finalised','Ends'].includes(sessionStatus);
+ const finalLeaderboard=!live&&ended&&snapshot?.available?observedLeaderboard:[];
+ const age=snapshot?.available?dataAgeText(snapshot?.received_at,now):null;
+ const next=nextF1Session(now);
  const leaders=leaderboard.slice(0,3).map(row=>`${row.position}위 ${row.code}`);
  const count=topics.LapCount||{}, lap=finite(count.CurrentLap), total=finite(count.TotalLaps);
  const validLap=Number.isInteger(lap)&&lap>0&&Number.isInteger(total)&&total>=lap;
@@ -79,8 +108,8 @@ export function buildLiveBriefing(snapshot){
   {label:'랩 진행',value:lapText||'미확인'},
   {label:'트랙 상태',value:trackStatusLabel(topics.TrackStatus?.Status)},
   {label:'수집 상태',value:clean(collector.state)||'미확인'},
-  {label:'원본 지연',value:timing.age!=null?`${Math.round(timing.age)}초`:'미확인'},
-  {label:'순위 수신',value:leaderboard.length?`${leaderboard.length}대`:'미확인'}
+  live?{label:'원본 지연',value:timing.age!=null?`${Math.round(timing.age)}초`:'미확인'}:{label:'자료 시각',value:age||'저장된 자료 없음'},
+  live?{label:'순위 수신',value:`${leaderboard.length}대`}:{label:'다음 세션',value:next?.text||'일정 확인 필요'}
  ];
  const weather={
   air_temperature:weatherValue(topics.WeatherData,'AirTemp','°C'),track_temperature:weatherValue(topics.WeatherData,'TrackTemp','°C'),
@@ -100,11 +129,14 @@ export function buildLiveBriefing(snapshot){
  if(raceControl?.message)analysis.push(`레이스 컨트롤: ${raceControl.message}`);
  const briefing=live?
   [sessionName||'F1 세션',lapText,leaders.length?`실시간 순위 ${leaders.join(' · ')}`:null,'원본 타이밍 수신 확인'].filter(Boolean).join(' / '):
-  (timing.age!=null&&timing.age>limit?`원본 타이밍이 ${Math.round(timing.age)}초 지연됐습니다. 현재 경기로 표시하지 않습니다.`:snapshot?.reason||'최신 레이스 수신이 검증되지 않았습니다. 연결 상태만으로 LIVE를 표시하지 않습니다.');
+  snapshot?.available===false&&accessMode==='personal'?'공용 라이브 데이터는 등록된 선원만 볼 수 있습니다. 사이트의 /live에서 본인 F1 계정을 연결하거나 운영자에게 선원 등록을 요청하세요.':
+  snapshot?.available===false?`아직 수집된 세션이 없습니다.${next?` 다음 세션은 ${next.text}입니다.`:''}`:
+  ended?`${sessionName?sessionName+' 세션이':'이 세션은'} 끝났습니다. 지금은 라이브 중계가 아닙니다.${next?` 다음 세션: ${next.text}.`:''}`:
+  (timing.age!=null&&timing.age>limit?`원본 타이밍이 ${Math.round(timing.age)}초 지연됐습니다. 현재 경기로 표시하지 않습니다.`:'최신 레이스 수신이 검증되지 않았습니다. 연결 상태만으로 LIVE를 표시하지 않습니다.');
  const topic_times={};
  for(const key of ['TimingData','TimingAppData','RaceControlMessages','TrackStatus','WeatherData'])if(snapshot?.topic_times?.[key])topic_times[key]=snapshot.topic_times[key].received_at;
  return {
-  schema_version:4,available:!!snapshot?.available,status,briefing,analysis,details,leaderboard,strategy,weather,race_control:raceControl,
+  schema_version:4,available:!!snapshot?.available,status,briefing,analysis,details,leaderboard,final_leaderboard:finalLeaderboard,next_session:next,data_age:age,reason:snapshot?.reason||null,strategy,weather,race_control:raceControl,
   track_status:{code:clean(topics.TrackStatus?.Status,12),label:trackStatusLabel(topics.TrackStatus?.Status)},
   session:{key:info.Key??null,name:sessionName||null,session_status:sessionStatus},
   freshness:{live,source_age_seconds:timing.age,feed_age_seconds:Number.isFinite(feedAge)?feedAge:null,stale_after_seconds:limit},
@@ -115,6 +147,7 @@ export function buildLiveBriefing(snapshot){
 }
 
 export function liveBriefingText(payload){
- const rows=payload.leaderboard.slice(0,10).map(row=>`${row.position}. ${row.code}${row.gap?` ${row.gap}`:''}${row.compound?` · ${row.compound}${row.tyre_laps!=null?` ${row.tyre_laps}랩`:''}`:''}`);
- return [payload.briefing,...payload.analysis,rows.length?'순위\n'+rows.join('\n'):null,payload.details.map(item=>`${item.label}: ${item.value}`).join(' / ')].filter(Boolean).join('\n');
+ const final=!payload.leaderboard.length&&payload.final_leaderboard?.length;
+ const rows=(final?payload.final_leaderboard:payload.leaderboard).slice(0,10).map(row=>`${row.position}. ${row.code}${row.gap?` ${row.gap}`:''}${row.compound?` · ${row.compound}${row.tyre_laps!=null?` ${row.tyre_laps}랩`:''}`:''}`);
+ return [payload.briefing,...payload.analysis,rows.length?(final?'최종 기록 (실시간 아님)\n':'순위\n')+rows.join('\n'):null,payload.details.map(item=>`${item.label}: ${item.value}`).join(' / ')].filter(Boolean).join('\n');
 }

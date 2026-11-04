@@ -73,7 +73,7 @@ assert.equal(stale.strategy.length,0);
 const noAge=buildLiveBriefing({...sample,freshness:{live:true,stale_after_seconds:45}});
 assert.equal(noAge.freshness.live,false);
 assert.match(content.text,/ui\/notifications\/size-changed/);
-assert.match(LIVE_APP_URI,/live-analysis-v4/);
+assert.match(LIVE_APP_URI,/live-analysis-v5/);
 const el=()=>({textContent:'',className:'',hidden:false,children:[],attributes:{},listeners:{},classList:{toggle(){}},append(...xs){this.children.push(...xs);},replaceChildren(...xs){this.children=[...xs];},setAttribute(key,value){this.attributes[key]=value;},addEventListener(name,fn){this.listeners[name]=fn;}});
 const nodes={};
 let handler;const posted=[];
