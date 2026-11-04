@@ -19,6 +19,11 @@ import cloud
 SITE = os.environ.get('SITE_URL', 'https://kongboda-motorsports.vercel.app').rstrip('/')
 AUDIENCE = 'kongboda-motorsports'
 LOOKAHEAD = timedelta(minutes=int(os.environ.get('LOOKAHEAD_MINUTES', '45')))
+# Scheduled runs can start late or be skipped, so key sessions get a longer lookahead:
+# about seven 10-minute chances before the window opens. A race job then waits up to
+# 80 minutes plus its 4h05 window = 325 minutes, inside the job's 340-minute timeout.
+KEY_SESSIONS = frozenset(('Qualifying', 'Sprint Qualifying', 'Sprint Shootout', 'Sprint', 'Race'))
+KEY_LOOKAHEAD = timedelta(minutes=int(os.environ.get('KEY_LOOKAHEAD_MINUTES', '75')))
 PUSH_INTERVAL = 10
 
 
@@ -26,9 +31,14 @@ def at(value):
     return datetime.fromisoformat(value)
 
 
-def next_window(windows, now, lookahead=LOOKAHEAD):
-    """The window that is open now or opens within the lookahead, earliest first."""
-    return next((w for w in windows if now < at(w['close']) and at(w['open']) - lookahead <= now), None)
+def lookahead_for(window):
+    return KEY_LOOKAHEAD if window.get('name') in KEY_SESSIONS else LOOKAHEAD
+
+
+def next_window(windows, now, lookahead=None):
+    """The window that is open now or opens within its lookahead, earliest first."""
+    return next((w for w in windows if now < at(w['close'])
+                 and at(w['open']) - (lookahead or lookahead_for(w)) <= now), None)
 
 
 def oidc_token():
@@ -76,25 +86,34 @@ def main():
         print('Session already recorded:', window['event'], window['name'])
         return 0
     print('Session:', window['event'], window['name'], 'start', window['start'])
+    cloud.run_log({'event': 'job_start', 'window': window['id'], 'session': window['name'],
+                   'session_start': window['start'], 'close': window['close']})
     while cloud.now() < at(window['open']):
         time.sleep(min(30, max(1, (at(window['open']) - cloud.now()).total_seconds())))
 
     stop = threading.Event()
 
     def pusher():
-        last = None
+        last, last_status = None, 'start'
         while not stop.wait(PUSH_INTERVAL):
             try:
                 stamp = (cloud.DATA / 'snapshot.json').stat().st_mtime
             except OSError:
                 continue
-            if stamp != last and push(window['id']) in (200, 409):
+            if stamp == last:
+                continue
+            status = push(window['id'])
+            if status in (200, 409):
                 last = stamp
+            if status != last_status:  # log only changes, not every 10 s push
+                cloud.run_log({'event': 'push_status', 'window': window['id'], 'status': status})
+                last_status = status
 
     threading.Thread(target=pusher, daemon=True).start()
     attempt, finished = 0, False
     while cloud.now() < at(window['close']):
         code = cloud.record(window)
+        cloud.run_log({'event': 'record_exit', 'window': window['id'], 'code': code, 'attempt': attempt + 1})
         if code == 0:
             finished = True
             break
@@ -105,7 +124,10 @@ def main():
         attempt += 1
         time.sleep(delay)
     stop.set()
-    print('Final push:', push(window['id'], final=finished), 'finished' if finished else 'window closed')
+    final = push(window['id'], final=finished)
+    print('Final push:', final, 'finished' if finished else 'window closed')
+    cloud.run_log({'event': 'job_end', 'window': window['id'], 'finished': finished,
+                   'attempts': attempt + (1 if finished else 0), 'final_push': final})
     return 0
 
 

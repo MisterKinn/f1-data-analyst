@@ -34,3 +34,14 @@ jobs:
           F1_USERNAME: ${{ secrets.F1_USERNAME }}
           F1_PASSWORD: ${{ secrets.F1_PASSWORD }}
         run: python actions_runner.py
+      - name: Keep run log and diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: f1-collector-run-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/f1/run-log.jsonl
+            ${{ runner.temp }}/f1/diagnostics/
+            ${{ runner.temp }}/f1/snapshot.json
+          if-no-files-found: ignore
+          retention-days: 30
