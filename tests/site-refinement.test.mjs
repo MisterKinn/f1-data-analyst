@@ -41,8 +41,8 @@ test('large recorded telemetry is loaded only on pages that display examples',as
  const examples=await page('/assets/examples.js').text();
  assert.doesNotMatch(common,/"integrated_distance_m"|"sample_count":269/);
  assert.match(examples,/"sample_count":269/);
- assert.match(await page('/').text(),/src="\/assets\/examples.js"/);
- assert.doesNotMatch(await page('/resources').text(),/src="\/assets\/examples.js"/);
+ assert.match(await page("/").text(),/src="\/assets\/examples.js\?v=/);
+ assert.doesNotMatch(await page("/resources").text(),/src="\/assets\/examples.js/);
 });
 
 test('bad public URLs have a usable 404 page without intercepting APIs',async()=>{
