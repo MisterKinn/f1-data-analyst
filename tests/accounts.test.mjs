@@ -113,7 +113,8 @@ test('live key is server-verified, rate limited, scoped to account and preserved
  assert.equal(await sharedLiveAllowed(new Request(origin+'/mcp',{headers:{'oai-authenticated-user-id':'other','oai-authenticated-user-email':'other@example.com'}}),e),false);
  assert.ok(![...e.data.values()].join('').includes('test-only-key'));
  e.LIVE_ANALYSIS_KEY_REVISION='2';assert.equal(await sharedLiveAllowed(r,e),false);
- for(let i=0;i<5;i++)assert.equal((await accountRoute(req('/account/live-access',{access_key:'bad'}),e,google)).status,403);
+ for(let i=0;i<4;i++)assert.equal((await accountRoute(req('/account/live-access',{access_key:'bad'}),e,google)).status,403);
+ assert.equal((await accountRoute(req('/account/live-access',{access_key:'bad'}),e,google)).status,429);
  assert.equal((await accountRoute(req('/account/live-access',{access_key:'test-only-key'}),e,google)).status,429);
  assert.equal((await accountRoute(req('/account/live-access',{access_key:'test-only-key'},{origin}),e,null)).status,401);
 });
@@ -149,4 +150,22 @@ test('a ChatGPT-only legacy account is reached by the first Google login with th
  // A second Google identity with the same email does not take over the adopted account.
  const second=await accountIdentity(new Request('https://kongboda-motorsports.vercel.app/'),e,{sub:'g-second',email:'a@example.com',provider:'google'},{create:true});
  assert.notEqual(second.account.id,legacy.account.id);
+});
+
+test('crew key lock: 5 wrong locks 5 minutes, each later wrong locks 10 minutes, success resets',async()=>{
+ const {keyLockMs}=await import('../worker/accounts.js');
+ assert.deepEqual([1,2,3,4,5,6,9].map(keyLockMs),[0,0,0,0,300000,600000,600000]);
+ const e=env();e.LIVE_ANALYSIS_KEY_HASH=Buffer.from(await crypto.subtle.digest('SHA-256',new TextEncoder().encode('test-only-key'))).toString('hex');
+ const realNow=Date.now;let now=realNow();Date.now=()=>now;
+ try{
+  const tryKey=async key=>{const r=await accountRoute(req('/account/live-access',{access_key:key}),e,google);return [r.status,await r.text()]};
+  for(let i=0;i<4;i++)assert.equal((await tryKey('bad'))[0],403);
+  let [status,text]=await tryKey('bad');assert.equal(status,429);assert.match(text,/5분 후/);
+  now+=4*60*1000;[status,text]=await tryKey('test-only-key');assert.equal(status,429);assert.match(text,/1분 후/);
+  now+=60*1000+1;[status,text]=await tryKey('bad');assert.equal(status,429);assert.match(text,/10분 후/);
+  now+=9*60*1000;assert.equal((await tryKey('test-only-key'))[0],429);
+  now+=60*1000+1;[status,text]=await tryKey('bad');assert.match(text,/10분 후/);
+  now+=10*60*1000+1;assert.equal((await tryKey('test-only-key'))[0],303);
+  assert.equal((await tryKey('bad'))[0],403);
+ }finally{Date.now=realNow;}
 });
