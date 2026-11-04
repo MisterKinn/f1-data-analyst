@@ -182,8 +182,17 @@ export function weeklyEventVisible(event,now,weekBounds,sessionState){
  const venueDate=new Intl.DateTimeFormat('en-CA',{timeZone:event.timezone||'UTC',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(clock));
  return eventOverlaps&&(event.end||event.start)>=venueDate;
 }
-export function compactSessionName(name){
- return String(name||'').replace(/프리 퀄리파잉|Pre-qualifying/gi,'Pre-Q')
+export function compactSessionName(name,lang='ko'){
+ // F1-style standalone sessions keep fixed labels: 퀄리파잉 (spelled out), SQ for sprint
+ // qualifying/shootout, 스프린트 for the sprint race. 'Q' stays only inside longer names
+ // such as 'LMGT3 Q' or 'Truck · Q' so multi-class cards stay compact.
+ const raw=String(name||'').trim(),en=lang==='en';
+ if(/^(?:스프린트\s*(?:퀄리파잉|예선|슛아웃)|Sprint\s*(?:Qualifying|Shootout))$/i.test(raw))return 'SQ';
+ if(/^(?:스프린트(?:\s*레이스)?|Sprint(?:\s*Race)?)$/i.test(raw))return en?'Sprint':'스프린트';
+ if(/^(?:퀄리파잉|예선|Qualifying)$/i.test(raw))return en?'Qualifying':'퀄리파잉';
+ if(/^(?:레이스|결승|Race)$/i.test(raw))return en?'Race':'레이스';
+ const practice=/^(?:Practice|Free Practice|FP|연습)\s*([123])$/i.exec(raw);if(practice)return 'FP'+practice[1];
+ return raw.replace(/프리 퀄리파잉|Pre-qualifying/gi,'Pre-Q')
   .replace(/퀄리파잉|Qualifying|Qualification|예선/gi,'Q')
   .replace(/하이퍼폴|Hyperpole/gi,'HP')
   .replace(/공식 연습|Official practice|Free practice|practice|연습/gi,'FP')
@@ -225,6 +234,9 @@ export function raceFeaturesClient(dictionary,translateText,weekBounds,sessionSt
  const display=(value)=>date(value).toLocaleDateString(locale,{year:'numeric',month:'short',day:'numeric'});
  const empty=t('공식 자료로 확인된 해당 기간의 대회가 없습니다.','No events verified from official sources for this period.');
  let carouselObserver=null;
+ // Full session names by default; switch a label to its short form only when the
+ // full name would wrap or overflow its column (2026-11-04 rule: abbreviate only to fit).
+ function fitSessionLabels(){for(const abbr of root.querySelectorAll('abbr[data-short]')){abbr.textContent=abbr.dataset.full;const box=abbr.parentElement;if(!box||!box.clientWidth)continue;const line=parseFloat(getComputedStyle(box).lineHeight)||16;if(box.scrollWidth>box.clientWidth+1||abbr.getBoundingClientRect().height>line*1.5)abbr.textContent=abbr.dataset.short;}}
  // Weekly view state survives re-renders (refresh, week change): 'series' cards or 'time' list.
  let weekView='series',hiddenSeries=new Set();
  function loadCalendar(){return publicJsonRequest('/api/race-calendar',{cache:'no-store',timeoutMs:15000}).then(({response:r,data})=>{if(!r.ok)throw Error();return data;}).then(data=>{
@@ -256,7 +268,7 @@ export function raceFeaturesClient(dictionary,translateText,weekBounds,sessionSt
    syncWeekControls=()=>{const max=cards.scrollWidth-cards.clientWidth;controls.hidden=true;buttons[0].disabled=cards.scrollLeft<=1;buttons[1].disabled=cards.scrollLeft>=max-1;};
    cards.onscroll=syncWeekControls;
    cards.onkeydown=event=>{if(event.target===cards&&['ArrowLeft','ArrowRight'].includes(event.key)){event.preventDefault();scroll(event.key==='ArrowLeft'?-1:1);}};
-   carouselObserver=new ResizeObserver(syncWeekControls);carouselObserver.observe(cards);
+   carouselObserver=new ResizeObserver(()=>{syncWeekControls();fitSessionLabels();});carouselObserver.observe(cards);
   }
   const period=series==='week'?display(week.start.toISOString())+' – '+display(new Date(week.end-1).toISOString())+' · ':'';
   status.textContent=calendarStatusText(data,{lang,zone});
@@ -272,7 +284,7 @@ export function raceFeaturesClient(dictionary,translateText,weekBounds,sessionSt
    const sessions=e.sessions?.length?e.sessions:(e.raceStart?[{name:'레이스',nameEn:'Race',start:e.raceStart,source:e.raceTimeSource}]:[]);
    const timedRows=[];
    const sessionList=node('div',undefined,'session-times');
-   for(const session of sessions){const row=node('div',undefined,'session-time');const time=node('time',new Date(session.start).toLocaleString(locale,{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit',hour12:false}));time.dateTime=session.start;const fullName=(lang==='en'?session.nameEn:session.name)||session.name||session.nameEn||'',label=node('span');if(series==='week'){const abbr=node('abbr',compactSessionName(fullName));abbr.title=fullName;label.append(abbr);}else label.textContent=shortSession(fullName);row.append(time,label);if(session.watchUrl){const a=link('',session.watchUrl);a.className='youtube-link';a.setAttribute('aria-label',shortSession(lang==='en'?session.nameEn:session.name)+' · YouTube');a.title='YouTube';a.innerHTML='<svg viewBox="0 0 24 18" width="19" height="14" aria-hidden="true"><path fill="white" d="M23.5 3s-.3-2.1-1.2-3C21.2-.9 3-.9 1.7 0 .5.9.2 3 .2 3S0 5.5 0 8v2c0 2.5.2 5 .2 5s.3 2.1 1.5 3c1 .9 19.4.9 20.6 0 1-.9 1.2-3 1.2-3s.5-2.5.5-5V8c0-2.5-.5-5-.5-5Z" transform="translate(0 1) scale(1 .85)"/><path fill="#0b1014" d="m10 5 6 4-6 4z"/></svg>';row.append(a);}sessionList.append(row);}
+   for(const session of sessions){const row=node('div',undefined,'session-time');const time=node('time',new Date(session.start).toLocaleString(locale,{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit',hour12:false}));time.dateTime=session.start;const fullName=(lang==='en'?session.nameEn:session.name)||session.name||session.nameEn||'',label=node('span');if(series==='week'){const short=compactSessionName(fullName,lang),fixed=/^(?:FP\d|SQ|스프린트|Sprint|퀄리파잉|Qualifying|레이스|Race)$/.test(short);const abbr=node('abbr',fixed?short:fullName);abbr.title=fullName;if(!fixed&&short!==fullName){abbr.dataset.short=short;abbr.dataset.full=fullName;}label.append(abbr);}else label.textContent=shortSession(fullName);row.append(time,label);if(session.watchUrl){const a=link('',session.watchUrl);a.className='youtube-link';a.setAttribute('aria-label',shortSession(lang==='en'?session.nameEn:session.name)+' · YouTube');a.title='YouTube';a.innerHTML='<svg viewBox="0 0 24 18" width="19" height="14" aria-hidden="true"><path fill="white" d="M23.5 3s-.3-2.1-1.2-3C21.2-.9 3-.9 1.7 0 .5.9.2 3 .2 3S0 5.5 0 8v2c0 2.5.2 5 .2 5s.3 2.1 1.5 3c1 .9 19.4.9 20.6 0 1-.9 1.2-3 1.2-3s.5-2.5.5-5V8c0-2.5-.5-5-.5-5Z" transform="translate(0 1) scale(1 .85)"/><path fill="#0b1014" d="m10 5 6 4-6 4z"/></svg>';row.append(a);}sessionList.append(row);}
    for(let i=0;i<sessions.length;i++)timedRows.push({row:sessionList.children[i],session:sessions[i]});
    if(sessions.length)card.append(sessionList);else card.append(node('p',display(e.start)+(e.end&&e.end!==e.start?' – '+display(e.end):'')+' · '+t('세부 시작 시각은 공식 발표 후 안내','Session times pending the official itinerary'),'fine'));
    const info=data.circuits[e.circuit]||{};card.append(node('p',info.name||e.circuit));
@@ -407,7 +419,7 @@ export function raceFeaturesClient(dictionary,translateText,weekBounds,sessionSt
    if(series==='week'){const visible=timedEvents.some(entry=>!entry.card.hidden);if(!visible&&!emptyMessage){emptyMessage=node('p',empty,'fine');cards.append(emptyMessage);}if(emptyMessage)emptyMessage.hidden=visible;requestAnimationFrame(syncWeekControls);}
    for(const {badge,series} of homeCards){const info=active.get(series);badge.hidden=!info;badge.textContent=info?.label||'';badge.title=info?.description||'';badge.setAttribute('aria-label',info?info.label+' · '+info.description:'');}
   }
-  refreshSessionStates();return refreshSessionStates;
+  refreshSessionStates();requestAnimationFrame(fitSessionLabels);document.fonts?.ready?.then(fitSessionLabels);return refreshSessionStates;
   }
   let refresh=render(),weekStart=+weekBounds(new Date()).start,lastFetch=Date.now(),fetching=false;
   function tick(){

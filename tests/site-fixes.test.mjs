@@ -102,3 +102,20 @@ test('signed-in users see the MCP address; crew are told they connect automatica
  const crew=await websiteRoute(new Request('https://kongboda-motorsports.vercel.app/guide'),{google,accountInfo:{account},crewRegistered:true}).text();
  assert.match(crew,/운영자 계정의 실시간 수집에 자동으로 연결/);assert.doesNotMatch(crew,/본인의 F1 TV 계정/);
 });
+
+test('home post-race cards drop the support label; a standalone qualifying is spelled out',async()=>{
+ const home=await html('https://kongboda-motorsports.vercel.app/');
+ const post=home.slice(home.indexOf('class="compact-series"'),home.indexOf('</div>',home.indexOf('class="compact-series"')));
+ assert.doesNotMatch(post,/공식 기록으로 사후 분석/);
+ const {compactSessionName}=await import('../worker/race-features.js');
+ assert.equal(compactSessionName('퀄리파잉'),'퀄리파잉');assert.equal(compactSessionName('Qualifying','en'),'Qualifying');assert.equal(compactSessionName('Qualifying','ko'),'퀄리파잉');for(const n of ['Sprint Qualifying','Sprint Shootout','스프린트 퀄리파잉'])assert.equal(compactSessionName(n),'SQ');assert.equal(compactSessionName('Sprint'),'스프린트');assert.equal(compactSessionName('Sprint','en'),'Sprint');assert.equal(compactSessionName('스프린트 레이스'),'스프린트');assert.equal(compactSessionName('Practice 1'),'FP1');assert.equal(compactSessionName('Race'),'레이스');assert.equal(compactSessionName('LMGT3 Qualifying'),'LMGT3 Q');
+});
+
+test('WEC manufacturer marks use their own colours while F1 colours stay',async()=>{
+ const {readFile}=await import('node:fs/promises');
+ for(const file of ['worker/website.js','worker/race-results-ui.js']){
+  const source=await readFile(new URL('../'+file,import.meta.url),'utf8');
+  assert.match(source,/wecColors=\{genesis:'#ff7a1a',peugeot:'#b5e61d',alpine:'#3b82f6',astonmartin:'#00806f',cadillac:'#d4a72c',toyota:'#ffffff'\}/,file);
+  assert.match(source,/cadillac:'#d4c6ff'/,file+' keeps the F1 Cadillac colour');
+ }
+});
