@@ -84,7 +84,11 @@ async function webRequest(req){
  return new Request(url,init);
 }
 
-async function send(response,res){res.statusCode=response.status;for(const [key,value] of response.headers){if(key==='set-cookie'&&response.headers.getSetCookie)continue;res.setHeader(key,value);}if(response.headers.getSetCookie){const values=response.headers.getSetCookie();if(values.length)res.setHeader('set-cookie',values);}res.end(Buffer.from(await response.arrayBuffer()));}
+export async function send(response,res){res.statusCode=response.status;for(const [key,value] of response.headers){if(key==='set-cookie'&&response.headers.getSetCookie)continue;res.setHeader(key,value);}if(response.headers.getSetCookie){const values=response.headers.getSetCookie();if(values.length)res.setHeader('set-cookie',values);}if(!response.body){res.end();return;}
+ // Stream the body so MCP SSE comments and keepalives reach the client immediately instead of after the stream closes.
+ res.flushHeaders?.();const reader=response.body.getReader();let gone=false;const stop=()=>{gone=true;reader.cancel().catch(()=>{});};res.once?.('close',stop);
+ try{for(;;){const {done,value}=await reader.read();if(done||gone)break;if(!res.write(Buffer.from(value)))await new Promise(resolve=>{res.once('drain',resolve);res.once('close',resolve);});}}
+ catch{stop();}finally{res.off?.('close',stop);if(!res.writableEnded)res.end();}}
 
 export default async function handler(req,res){
  const measurement=beginRequestMeasurement();let diagnosticsBucket=null,measure=false;
