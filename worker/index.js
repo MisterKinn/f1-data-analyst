@@ -95,7 +95,7 @@ export default{async fetch(request,env,ctx){
  case 'ping':result={};break;
  case 'resources/list':result=listAppResources();break;
  case 'resources/read':try{result=readAppResource(b.params?.uri);}catch(e){return rpcError(b.id,-32602,e.message);}break;
- case 'tools/list':result={tools:[...SPECS.map(({upstreamName,endpoint,...tool})=>({...tool,description:'PUBLISHED F1 RECORDS: use Hyprace for this data; current-session live timing uses FastF1. '+tool.description})),...FIA_TOOLS,...LIVE_TOOLS,LIVE_APP_TOOL,...WEC_TOOLS,...WEC_LIVE_TOOLS,...RESEARCH_TOOLS,...OFFICIAL_TOOLS,...STANDINGS_TOOLS,...PREFERENCE_TOOLS,...CREW_TOOLS].map(securedTool)};await publishCatalog(env,result.tools.filter(t=>t.name!=='kongboda_list_crew'));break;
+ case 'tools/list':result={tools:[...PREFERENCE_TOOLS,LIVE_APP_TOOL,...LIVE_TOOLS,...STANDINGS_TOOLS,...FIA_TOOLS,...OFFICIAL_TOOLS,...WEC_TOOLS,...WEC_LIVE_TOOLS,...RESEARCH_TOOLS,...CREW_TOOLS,...SPECS.map(({upstreamName,endpoint,...tool})=>({...tool,description:'PUBLISHED F1 RECORDS: use Hyprace for this data; current-session live timing uses FastF1. '+tool.description}))].map(securedTool)};await publishCatalog(env,result.tools.filter(t=>t.name!=='kongboda_list_crew'));break;
  case 'tools/call':{
  if(!request.headers.get('oai-authenticated-user-id'))return authenticationRequired(request,b.id);
  const spec=[...SPECS,...FIA_TOOLS,...LIVE_TOOLS,LIVE_APP_TOOL,...WEC_TOOLS,...WEC_LIVE_TOOLS,...RESEARCH_TOOLS,...OFFICIAL_TOOLS,...STANDINGS_TOOLS,...PREFERENCE_TOOLS,...CREW_TOOLS].find(s=>s.name===b.params?.name);if(!spec)return rpcError(b.id,-32602,'Unknown tool');
