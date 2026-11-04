@@ -119,3 +119,14 @@ test('WEC manufacturer marks use their own colours while F1 colours stay',async(
   assert.match(source,/cadillac:'#d4c6ff'/,file+' keeps the F1 Cadillac colour');
  }
 });
+
+test('the public guide never mentions crew; only signed-in crew see their own status',async()=>{
+ const {websiteRoute}=await import('../worker/website.js');
+ for(const lang of ['ko','en']){
+  const anon=await websiteRoute(new Request('https://kongboda-motorsports.vercel.app/guide',{headers:{cookie:'kongboda_lang='+lang}}),{crewRegistered:true}).text();
+  const visible=anon.replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/g,'');
+  assert.doesNotMatch(visible,/선원|crew/i,lang);
+  const member=await websiteRoute(new Request('https://kongboda-motorsports.vercel.app/guide',{headers:{cookie:'kongboda_lang='+lang}}),{google:{sub:'g',email:'g@example.invalid'},accountInfo:{account:{id:'a',identities:[{provider:'google'}]}}}).text();
+  assert.doesNotMatch(member.replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/g,''),/선원|crew/i,lang+' non-crew member');
+ }
+});
