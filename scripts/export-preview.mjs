@@ -3,7 +3,7 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import {resolve,dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import worker from '../worker/index.js';
-import {championships} from '../worker/website.js';
+import {championships,websiteRoute} from '../worker/website.js';
 
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const at=process.argv.indexOf('--output');
@@ -23,7 +23,8 @@ async function asset(path){
  const value='data:'+response.headers.get('content-type')+';base64,'+bytes.toString('base64');
  assetCache.set(path,value);return value;
 }
-const calendar=await (await get('/api/race-calendar')).json();
+// An offline review shows the explicitly dated source fixture, not runtime freshness.
+const calendar=await websiteRoute(new Request(origin+'/api/race-calendar')).json();
 const scripts=[];
 for(const path of ['/assets/race-features.js','/assets/website.js','/assets/examples.js']){
  const response=await get(path);if(response.ok)scripts.push({path,source:await response.text()});
@@ -51,7 +52,7 @@ for(const language of ['ko','en'])for(const path of paths){
   if(target==='/display'){target=url.searchParams.get('path')||path;query='?view='+url.searchParams.get('mode');}
   if(routeFiles[target])html=html.replace(match[0],'href="'+routeFiles[target][language]+query+url.hash+'"');
  }
- const message=language==='en'?'Review preview · Sign-in and live data require the production connection':'검토용 프리뷰 · 로그인/실시간 조회는 운영 연결 후 확인';
+ const message=language==='en'?'Review preview · Calendar snapshot: '+calendar.checkedAt+' · Sign-in and live data require the production connection':'검토용 프리뷰 · 일정 스냅샷: '+calendar.checkedAt+' · 로그인/실시간 조회는 운영 연결 후 확인';
  const config={language,path,routes:routeFiles,assets:Object.fromEntries(assetCache),calendar,message};
  const bootstrap='('+previewRuntime.toString()+')('+JSON.stringify(config).replaceAll('<','\\u003c')+');';
  const payload=inlineScripts.map(url=>{
