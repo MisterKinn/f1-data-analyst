@@ -27,6 +27,9 @@ SUPPORTED_SESSIONS = ('Practice 1', 'Practice 2', 'Practice 3', 'Qualifying',
                       'Sprint Qualifying', 'Sprint Shootout', 'Sprint', 'Race')
 TERMINAL_SESSION_STATUSES = frozenset(('Finished', 'Finalised', 'Cancelled', 'Canceled', 'Aborted'))
 RETRY_DELAYS = (30, 60, 120, 240)
+# FastF1's client exits after 90 s without data. If it ever hangs instead, this
+# watchdog ends the attempt so the runner reconnects rather than serving a frozen feed.
+FEED_STALL_SECONDS = 150
 RETRY_BUDGET_SECONDS = 300
 
 
@@ -328,6 +331,9 @@ def record(window):
                     break
             if time.monotonic() - began > 120 and not accepted.is_set():
                 stop_reason.insert(0, 'no_initial_data_120s')
+                break
+            if accepted.is_set() and last_message[0] and time.time() - last_message[0] > FEED_STALL_SECONDS:
+                stop_reason.insert(0, f'watchdog_no_data_{FEED_STALL_SECONDS}s')
                 break
             if now() >= datetime.fromisoformat(window['close']):
                 stop_reason.insert(0, 'window_closed')
