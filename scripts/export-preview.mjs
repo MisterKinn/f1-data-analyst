@@ -26,7 +26,7 @@ async function asset(path){
 // An offline review shows the explicitly dated source fixture, not runtime freshness.
 const calendar=await websiteRoute(new Request(origin+'/api/race-calendar')).json();
 const scripts=[];
-for(const path of ['/assets/race-features.js','/assets/website.js','/assets/examples.js']){
+for(const path of ['/assets/race-features.js','/assets/website.js','/assets/examples.js','/assets/i18n.js']){
  const response=await get(path);if(response.ok)scripts.push({path,source:await response.text()});
 }
 // Include literal local assets used by dynamically created calendar elements.
