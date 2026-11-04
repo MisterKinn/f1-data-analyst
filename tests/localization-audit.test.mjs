@@ -35,7 +35,7 @@ test('English resources and first-use instructions have complete authored transl
  const beforeExamples=guide.split('<div id="kb-recorded"')[0].replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/g,'').replace(/<[^>]*>/g,'');
  assert.equal(/[가-힣]/.test(beforeExamples.replaceAll('한국어','')),false);
  assert.ok(guide.includes('Each card is a snapshot from the time it was requested.'));
- assert.ok(guide.includes('Actual Claude connectivity and interactive card rendering still require verification.'));
+ assert.ok(guide.includes('Connect Kongboda to Claude or ChatGPT'));
 });
 
 test('English account interface preserves names and explains the exact deletion confirmation',async()=>{

@@ -127,6 +127,8 @@ export const raceFeatureCss=`
 [data-race-calendar="week"] .week-scroll-controls svg{width:20px;height:20px}
 [data-race-calendar="week"] .week-scroll-controls button:disabled{opacity:.35;cursor:default}
 
+/* The confirmation note spans the card; it was squeezed into the 80px tag column. */
+[data-race-calendar="week"] .race-card .race-unverified{grid-column:1/-1;align-self:end;margin-top:auto;line-height:1.45}
 `;
 
 // Restrained motion and compact badges keep titles and mobile cards readable.
