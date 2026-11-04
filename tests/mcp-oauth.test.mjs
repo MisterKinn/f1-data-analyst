@@ -75,3 +75,15 @@ test('a stale, replaced or reused approval shows the consent page again instead 
  response=await mcpOAuthRoute(request('/oauth/authorize',{method:'POST',headers:{origin:'https://evil.test','content-type':'application/x-www-form-urlencoded'},body:new URLSearchParams({csrf:second,decision:'approve'})}),env,identity);
  assert.equal(response.status,403);
 });
+
+test('the consent page lets the browser follow the redirect back to Claude and ChatGPT',async()=>{
+ const env=environment(),redirect='https://claude.ai/api/mcp/auth_callback';
+ const {client_id}=await (await mcpOAuthRoute(request('/oauth/register',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({client_name:'Claude',redirect_uris:[redirect],token_endpoint_auth_method:'none'})}),env)).json();
+ const challenge=createHash('sha256').update('v'.repeat(64)).digest('base64url');
+ const query=new URLSearchParams({response_type:'code',client_id,redirect_uri:redirect,state:'s',resource:origin,code_challenge:challenge,code_challenge_method:'S256',scope:'mcp:read offline_access'});
+ const page=await mcpOAuthRoute(request('/oauth/authorize?'+query),env,{sub:'u',email:'u@example.test'});
+ const csp=page.headers.get('content-security-policy');
+ const formAction=csp.split(';').map(x=>x.trim()).find(x=>x.startsWith('form-action'));
+ for(const host of ['https://claude.ai','https://chatgpt.com'])assert.ok(formAction.split(' ').includes(host),host);
+ assert.doesNotMatch(formAction,/\*(?!\.)/);
+});
