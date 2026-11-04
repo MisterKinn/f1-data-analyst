@@ -250,11 +250,10 @@ export async function liveRoutes(request,env,websiteIdentity=null) {
  if(!access)return reply({error:'유효한 꽁보다 계정으로 로그인해 주세요.'},401);
  const baseEnv=env;env=access.env;
  if(access.mode==='crew'&&!request.headers.get('oai-authenticated-user-id')&&request.method!=='GET')return reply({error:'수집기 조작은 ChatGPT 로그인이 필요합니다.'},403);
- if(access.mode==='member'&&request.method!=='GET'&&!['/api/live/f1/login','/api/live/f1/logout'].includes(path))return reply({error:'수집기 조작은 선원만 할 수 있습니다. 라이브 데이터는 로그인만으로 볼 수 있습니다.'},403);
  if(['/api/live/f1/login','/api/live/f1/logout'].includes(path)){
   if(request.method!=='POST')return reply({error:'POST required'},405);
   if(request.headers.get('origin')!==url.origin||request.headers.get('sec-fetch-site')==='cross-site')return reply({error:'Same-origin request required'},403);
-  if(access.mode!=='personal')return reply({error:'개인 F1 로그인은 필요 없습니다. 로그인한 모든 계정이 공용 F1 데이터를 봅니다.'},409);
+  if(access.mode!=='personal')return reply({error:'등록된 선원은 공용 수집기를 사용합니다.'},409);
   try{
    if(path.endsWith('/logout')){await cloudRequest(env,'/logout');await clearPersonalF1(baseEnv,access.accountId);await baseEnv.BUCKET.delete('personal-f1-session/'+access.accountId+'.json');return reply({ok:true,state:'signed_out'});}
    const text=await request.text();if(text.length>4096)return reply({error:'Request too large'},413);

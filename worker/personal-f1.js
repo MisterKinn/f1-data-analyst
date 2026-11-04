@@ -1,16 +1,8 @@
 import {accountIdentity,sharedLiveAllowed} from './accounts.js';
 
 // Scope is derived from verified identity only, never a request field.
-// Every signed-in Kongboda account reads the same shared F1 data (recorded by the
-// GitHub Actions collector). Crew additionally keep collector controls.
 export async function f1Access(request,env,google=null){
  if(await sharedLiveAllowed(request,env,google))return {mode:'crew',env};
- const account=(await accountIdentity(request,env,google,{create:true}))?.account;
- if(!account||account.deleted)return null;
- return {mode:'member',accountId:account.id,env};
-}
-// Legacy per-account isolation, kept only for cleanup of previously stored data.
-export async function personalF1Access(request,env,google=null){
  const account=(await accountIdentity(request,env,google,{create:true}))?.account;
  if(!account||account.deleted)return null;
  const prefix=`personal-f1/${account.id}/`;
