@@ -37,6 +37,7 @@ Claude와 같은 주소·같은 OAuth 경로를 쓴다.
 | OpenAI 화면에 `Authentication Error`, `3p_login_account_type_policy_check_failed` | OpenAI가 이 계정 유형의 외부 앱 로그인을 막음. 주로 Business·Enterprise·Edu 워크스페이스 정책이며 꽁보다 서버까지 요청이 오지 않는다. | 계정 메뉴에서 개인 계정으로 전환해 다시 연결하거나, 워크스페이스 관리자에게 사용자 지정 앱 허용을 요청한다. 예전 `chatgpt.site` 링크가 아니라 위 1단계 경로로 시작했는지 확인한다. |
 | 사용자 지정 MCP 메뉴가 없음 | Free 플랜이거나 개발자 모드가 꺼짐, 또는 모바일 앱 | 웹에서 유료 플랜으로 개발자 모드를 켠다. |
 | `redirect_uri is not registered` | 연결 도중 클라이언트 정보가 바뀜 | 앱을 삭제하고 1단계부터 다시 만든다. |
+| ChatGPT가 ‘도구 없음’ 또는 `tools.kongboda_my_preferences is not a function` | 플러그인이 도구 목록을 아직 가져오지 않음(2026-11-04 실제 해결 순서) | Plugins → Kongboda Motorsports → Manage → **Refresh tools**를 끝까지 기다리고, Permission을 **Allow read-only tools**로 바꾼 뒤, Work 모드가 아닌 일반 **새 대화**에서 `@Kongboda Motorsports`로 질문한다. 그래도 안 되면 앱을 삭제하고 다시 연결한다. |
 | 연결은 됐지만 도구가 없음 | 대화에서 앱이 꺼져 있음 | **+** 메뉴에서 Kongboda Motorsports를 켠다. |
 | 연결은 됐지만 계정 설정을 못 가져옴 | 도구가 많아 ChatGPT가 목록 뒤쪽의 계정 도구를 놓침(2026-11-04 수정: 계정·라이브 도구를 목록 맨 앞으로 이동) | 새 대화를 열어 다시 시도한다. 그래도 안 되면 앱 설정에서 새로고침하거나 앱을 다시 연결한다. |
 | 도구 결과에 `API key is not configured` | 예전 Hyprace F1 기록 도구 42개가 운영 키 없이 남아 있었음(2026-11-04 수정: Hyprace 도구 삭제, 부족한 사후 기록은 출처를 밝힌 웹 검색으로 보완) | 새 대화에서 다시 질문한다. |
