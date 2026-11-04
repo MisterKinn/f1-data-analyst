@@ -3,6 +3,7 @@ import {accountIdentity,accountRoute,googleAccountDeleted,displayName,localizedA
 const origin='https://kongboda-motorsports.jeongmin480.chatgpt.site';
 function env(){const data=new Map();return {data,BUCKET:{get:async k=>data.has(k)?{json:async()=>JSON.parse(data.get(k))}:null,put:async(k,v)=>data.set(k,v),delete:async k=>data.delete(k),list:async({prefix})=>({objects:[...data.keys()].filter(k=>k.startsWith(prefix)).map(key=>({key})),truncated:false})}};}
 const headers={'oai-authenticated-user-id':'chat-id','oai-authenticated-user-email':'a@example.com',origin};
+const testKeyRecord=async(value,iterations=1000)=>{const salt=crypto.getRandomValues(new Uint8Array(16)),key=await crypto.subtle.importKey('raw',new TextEncoder().encode(value),'PBKDF2',false,['deriveBits']),bits=await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt,iterations},key,256);return Buffer.from(salt).toString('hex')+':'+iterations+':'+Buffer.from(bits).toString('hex')};
 const req=(path,body,hs=headers)=>new Request(origin+path,{method:'POST',headers:hs,body:new URLSearchParams(body)});
 const google={sub:'google-id',email:'a@example.com',provider:'google'};
 test('verified dual identities link to the existing ChatGPT site account; unlink keeps current login',async()=>{
@@ -104,7 +105,7 @@ test('preference save returns JSON then independently reloads all fields for the
 });
 test('live key is server-verified, rate limited, scoped to account and preserved across linking',async()=>{
  const {sharedLiveAllowed}=await import('../worker/accounts.js');const e=env();
- e.LIVE_ANALYSIS_KEY_HASH=Buffer.from(await crypto.subtle.digest('SHA-256',new TextEncoder().encode('test-only-key'))).toString('hex');
+ e.LIVE_ANALYSIS_KEY_HASH='configured';e.LIVE_ANALYSIS_KEY_PBKDF2=await testKeyRecord('test-only-key');
  const r=new Request(origin+'/account',{headers});
  assert.equal(await sharedLiveAllowed(r,e),false);
  assert.equal((await accountRoute(req('/account/live-access',{access_key:'wrong'}),e,google)).status,403);
@@ -155,7 +156,7 @@ test('a ChatGPT-only legacy account is reached by the first Google login with th
 test('crew key lock: 5 wrong locks 5 minutes, each later wrong locks 10 minutes, success resets',async()=>{
  const {keyLockMs}=await import('../worker/accounts.js');
  assert.deepEqual([1,2,3,4,5,6,9].map(keyLockMs),[0,0,0,0,300000,600000,600000]);
- const e=env();e.LIVE_ANALYSIS_KEY_HASH=Buffer.from(await crypto.subtle.digest('SHA-256',new TextEncoder().encode('test-only-key'))).toString('hex');
+ const e=env();e.LIVE_ANALYSIS_KEY_HASH='configured';e.LIVE_ANALYSIS_KEY_PBKDF2=await testKeyRecord('test-only-key');
  const realNow=Date.now;let now=realNow();Date.now=()=>now;
  try{
   const tryKey=async key=>{const r=await accountRoute(req('/account/live-access',{access_key:key}),e,google);return [r.status,await r.text()]};
@@ -168,4 +169,12 @@ test('crew key lock: 5 wrong locks 5 minutes, each later wrong locks 10 minutes,
   now+=10*60*1000+1;assert.equal((await tryKey('test-only-key'))[0],303);
   assert.equal((await tryKey('bad'))[0],403);
  }finally{Date.now=realNow;}
+});
+
+test('crew key is stored hashed and accepts phone keyboard capitalisation and spaces',async()=>{
+ const {crewKeyMatches,CREW_KEY_PBKDF2}=await import('../worker/accounts.js');
+ assert.match(CREW_KEY_PBKDF2,/^[0-9a-f]{32}:\d{6,}:[0-9a-f]{64}$/);
+ const env={LIVE_ANALYSIS_KEY_PBKDF2:await testKeyRecord('sample-crew-key')};
+ for(const key of ['sample-crew-key','Sample-crew-key',' sample-crew-key ','SAMPLE-CREW-KEY'])assert.equal(await crewKeyMatches(key,env),true,key);
+ for(const key of ['sample-crew-ke','sample-crew-key1',''])assert.equal(await crewKeyMatches(key,env),false,key);
 });
