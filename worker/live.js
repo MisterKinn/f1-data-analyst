@@ -1,3 +1,4 @@
+import {verifyCollectorToken} from './github-oidc.js';
 import {f1Access,clearPersonalF1} from './personal-f1.js';
 import {TELEMETRY_TOOL,telemetryRead} from './telemetry.js';
 import {sharedLiveAllowed} from './accounts.js';
@@ -166,7 +167,7 @@ export async function liveRead(env,args={}) {
   stored=await object.json();
  }
  const snapshot=stored.snapshot;
- return {research_context:buildResearchContext(snapshot,freshness(snapshot,stored.received_at)),available:true,synchronization,source:stored.source??'User PC / FastF1 live recorder + custom patch adapter',received_at:stored.received_at,freshness:freshness(snapshot,stored.received_at),...snapshot,...boundedTopics(snapshot.topics,args.topics),recent_events:args.recent_events===0?[]:snapshot.recent_events.slice(-(args.recent_events??60))};
+ return {research_context:buildResearchContext(snapshot,freshness(snapshot,stored.received_at)),available:true,synchronization,source:(stored.source??'User PC / FastF1 live recorder + custom patch adapter').replace(/^Render \//,'Cloud /'),received_at:stored.received_at,freshness:freshness(snapshot,stored.received_at),...snapshot,...boundedTopics(snapshot.topics,args.topics),recent_events:args.recent_events===0?[]:snapshot.recent_events.slice(-(args.recent_events??60))};
 }
 // Raw FastF1 topics can reach ~140k characters, beyond what AI clients read in one
 // tool result. By default only small topics are returned; large ones are listed with
@@ -218,8 +219,30 @@ function publicCollector(raw={}) {
    supported_sessions:Array.isArray(raw.supported_sessions)?raw.supported_sessions.filter(v=>typeof v==='string').slice(0,12).map(v=>v.slice(0,40)):[],collector_running:raw.collector_running===true,page_connected:raw.page_connected===true};
 }
 
+// The F1 collector runs as a scheduled GitHub Actions job (no host computer). It
+// authenticates with a GitHub OIDC token and pushes snapshots here. `window` marks a
+// schedule window; `final=1` records that the session finished so later scheduled
+// runs skip it. GET with the same token reports whether a window is already done.
+const WINDOW_ID=/^20\d{2}-\d{1,2}-[1-5]$/;
+export async function actionsPush(request,env,{verify=verifyCollectorToken}={}){
+ const url=new URL(request.url),windowId=url.searchParams.get('window');
+ if(!['GET','POST'].includes(request.method))return reply({error:'Method not allowed'},405);
+ if(windowId!==null&&!WINDOW_ID.test(windowId))return reply({error:'Invalid window id'},400);
+ try{await verify((request.headers.get('authorization')||'').replace(/^Bearer /,''));}catch{return reply({error:'Collector token rejected'},401);}
+ if(!env.BUCKET)return reply({error:'Live storage unavailable'},503);
+ const doneKey=windowId?'live/actions-windows/'+windowId+'.json':null;
+ if(request.method==='GET')return reply({window:windowId,done:!!(doneKey&&await env.BUCKET.get(doneKey))});
+ if(!request.headers.get('content-type')?.startsWith('application/json'))return reply({error:'JSON required'},415);
+ const text=await request.text();if(text.length>1000000)return reply({error:'Snapshot exceeds 1 MB'},413);
+ let snapshot;try{snapshot=validateSnapshot(JSON.parse(text));}catch(e){return reply({error:e.message},400);}
+ const received_at=new Date().toISOString();
+ const accepted=await storeSnapshot(env,snapshot,received_at,'Cloud / FastF1 live recorder + custom patch adapter',true,{skipUnchanged:true});
+ if(doneKey&&url.searchParams.get('final')==='1')await env.BUCKET.put(doneKey,JSON.stringify({done:true,at:received_at,session_key:snapshot.topics.SessionInfo?.Key??null}));
+ return reply({ok:!!accepted,received_at},accepted?200:409);
+}
 export async function liveRoutes(request,env,websiteIdentity=null) {
  const url=new URL(request.url),path=url.pathname;
+ if(path==='/api/live/actions-push')return actionsPush(request,env);
  if(!['/live','/api/live/snapshot','/api/live/diagnostics','/api/live/cloud','/api/live/cloud/poll','/api/live/cloud/stop','/download/fastf1-live.zip','/api/live/f1/login','/api/live/f1/logout'].includes(path))return null;
  const google=websiteIdentity||await googleIdentity(request,env);
  if(!request.headers.get('oai-authenticated-user-id')&&!google)return reply({error:'사이트 계정으로 로그인해 주세요.'},401);
