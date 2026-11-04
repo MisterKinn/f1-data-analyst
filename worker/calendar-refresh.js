@@ -2,6 +2,9 @@ import {championships} from './website.js';
 import{calendarEvents,calendarSources,circuitInfo,calendarReviewedAt}from'./race-calendar-data.js';
 import{sessionSchedule}from'./session-schedule.js';import{trackMaps}from'./track-map-data.js';
 const TTL=6*3600000,MAX_AGE=86400000,RETRY=60000;
+// A visitor-pressed refresh re-checks a source at most once per 5 minutes, waits up
+// to 12 seconds, then returns whatever is saved so the button never hangs the page.
+export const MANUAL_REFRESH_COOLDOWN=5*60000;const MANUAL_REFRESH_BUDGET=12000;
 const inflight=new WeakMap();
 const slug=s=>String(s||'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
 const day=value=>String(value||'').slice(0,10);
@@ -77,16 +80,23 @@ async function loadSource(series,now){
 }
 const key=series=>'calendar-refresh/v1/'+series+'.json';
 async function read(env,series){try{const object=await env.BUCKET?.get(key(series));return object?await object.json():null;}catch{return null;}}
-export async function refreshCalendarSource(env,series,now=Date.now()){
+export async function refreshCalendarSource(env,series,now=Date.now(),{minAge}={}){
  if(!Object.hasOwn(calendarSources,series))throw Error('Unknown calendar series');
- const old=await read(env,series);if(old&&now-(old.attemptedAt||old.checkedAt)<(old.error?RETRY:TTL))return old;
+ const old=await read(env,series);if(old&&now-(old.attemptedAt||old.checkedAt)<(minAge??(old.error?RETRY:TTL)))return old;
  try{const result={...await loadSource(series,now),attemptedAt:now,error:null};await env.BUCKET.put(key(series),JSON.stringify(result));return result;}
  catch(error){const result={...old,attemptedAt:now,error:'Official schedule refresh unavailable'};await env.BUCKET.put(key(series),JSON.stringify(result));return result;}
 }
 export async function calendarRoute(request,env={},ctx={},now=Date.now()){
  const url=new URL(request.url);if(url.pathname!=='/api/race-calendar')return null;if(!['GET','HEAD'].includes(request.method))return Response.json({error:'GET only'},{status:405});
  const selected=url.searchParams.get('series');if(selected&&!Object.hasOwn(calendarSources,selected))return Response.json({error:'Invalid calendar series'},{status:400});
- const series=Object.keys(calendarSources),records=await Promise.all(series.map(s=>read(env,s)));let events=[],statuses=[];
+ const series=Object.keys(calendarSources),manual=url.searchParams.get('refresh')==='1'&&!!env.BUCKET;
+ if(manual){
+  const targets=selected?[selected]:series,initial=await Promise.all(targets.map(s=>read(env,s)));
+  const due=targets.filter((s,i)=>{const old=initial[i];return !old||now-(old.attemptedAt||old.checkedAt||0)>=MANUAL_REFRESH_COOLDOWN;});
+  let cursor=0;const work=Promise.all(Array.from({length:Math.min(4,due.length)},async()=>{while(cursor<due.length){const s=due[cursor++];await refreshCalendarSource(env,s,now,{minAge:MANUAL_REFRESH_COOLDOWN}).catch(()=>null);}}));
+  if(due.length)await Promise.race([work,new Promise(resolve=>setTimeout(resolve,MANUAL_REFRESH_BUDGET))]);
+ }
+ const records=await Promise.all(series.map(s=>read(env,s)));let events=[],statuses=[];
  for(let i=0;i<series.length;i++){
   const record=records[i],name=series[i],reviewed=Date.parse(calendarReviewedAt+'T00:00:00Z'),age=now-Math.max(record?.checkedAt||0,reviewed);
   const available=age>=0&&age<MAX_AGE;
@@ -108,5 +118,5 @@ export async function calendarRoute(request,env={},ctx={},now=Date.now()){
  const payload={events,supported:championships.filter(c=>c.group!=='reference').map(c=>c.slug),circuits:circuitInfo,trackMaps,checkedAt:verified[0]||null,sourceStatus:statuses,stale:statuses.some(s=>s.stale),unavailable:!events.length,refreshing:!!env.BUCKET,maximumStaleSeconds:86400};
  // Public data, identical for every visitor: let the CDN serve it for 5 minutes
  // (and stale for 10 more while it refreshes) instead of rebuilding 250 KB per view.
- return new Response(request.method==='HEAD'?null:JSON.stringify(payload),{headers:{'content-type':'application/json; charset=utf-8','cache-control':'public, max-age=60, s-maxage=300, stale-while-revalidate=600'}});
+ return new Response(request.method==='HEAD'?null:JSON.stringify(payload),{headers:{'content-type':'application/json; charset=utf-8','cache-control':manual?'no-store':'public, max-age=60, s-maxage=300, stale-while-revalidate=600'}});
 }

@@ -1,5 +1,6 @@
 import {oauthAccountState,oauthGrantActive} from '../worker/oauth-account-state.js';
 import {createHash,randomBytes} from 'node:crypto';
+import {recordAiConnection} from '../worker/ai-connections.js';
 
 const CSRF='__Host-kongboda-oauth-csrf';
 const ACCESS_AGE=60*60;
@@ -22,6 +23,8 @@ const escape=value=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&l
 const issuer=(request,env)=>env.APP_ORIGIN||new URL(request.url).origin;
 const oauthHeaders={'cache-control':'no-store','pragma':'no-cache','content-type':'application/json; charset=utf-8'};
 const oauthError=(error,status=400,description)=>new Response(JSON.stringify({error,...(description?{error_description:description}:{})}),{status,headers:oauthHeaders});
+// Connection status is informational; a storage failure must never block sign-in or tool calls.
+const trackConnection=(env,record,event)=>recordAiConnection(env,record,event).catch(()=>{console.error('ai-connection-record-failed',event);});
 const json=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:oauthHeaders});
 
 function validRedirect(value){
@@ -116,6 +119,7 @@ async function issueTokens(env,record,{refresh=true}={}){
  await write(env,'access',accessToken,{...record,issuedAt:now,expiresAt:now+ACCESS_AGE*1000});
  const result={access_token:accessToken,token_type:'Bearer',expires_in:ACCESS_AGE,scope:record.scope};
  if(refresh){const refreshToken=random('kbo_refresh_');await write(env,'refresh',refreshToken,{...record,issuedAt:now,expiresAt:now+REFRESH_AGE*1000});result.refresh_token=refreshToken;}
+ await trackConnection(env,record,'token');
  return result;
 }
 async function token(request,env){
@@ -146,7 +150,7 @@ async function token(request,env){
 
 async function revoke(request,env){
  const form=await request.formData().catch(()=>null),value=String(form?.get('token')||'');
- if(value){await Promise.all([remove(env,'access',value),remove(env,'refresh',value)]);}
+ if(value){const record=await read(env,'refresh',value);await Promise.all([remove(env,'access',value),remove(env,'refresh',value)]);if(record)await trackConnection(env,record,'revoke');}
  return new Response(null,{status:200,headers:{'cache-control':'no-store'}});
 }
 
@@ -173,6 +177,7 @@ export async function authenticateMcpBearer(request,env){
  const record=await read(env,'access',match[1]),base=issuer(request,env);
  if(!record||record.expiresAt<=Date.now()||record.issuer!==base||record.resource!==base||!record.scope?.split(' ').includes('mcp:read')||!record.profile?.sub||!record.profile?.email){if(record)await remove(env,'access',match[1]);return null;}
  if(!await oauthGrantActive(env,record))return null;
+ await trackConnection(env,record,'use');
  return record.profile;
 }
 

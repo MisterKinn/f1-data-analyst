@@ -12,6 +12,7 @@ import {OFFICIAL_TOOLS,officialCall} from './official.js';
 import {WEC_LIVE_TOOLS,WEC_LIVE_INSTRUCTIONS,wecLiveCall} from './wec_live.js';
 import {RESEARCH_TOOLS,RESEARCH_INSTRUCTIONS,researchCall} from './research.js';
 import {websiteRoute} from './website.js';
+import {aiConnectionStatus} from './ai-connections.js';
 import {standingsRoute,STANDINGS_TOOLS,standingsCall} from './standings.js';
 import {raceResultsRoute} from './race-results.js';
 import {LIVE_TOOLS,LIVE_INSTRUCTIONS,BEST_LAP_INSTRUCTIONS,liveRead,readBestLaps,readTelemetry,liveRoutes,cloudConfigured,diagnosticsRead} from './live.js';
@@ -71,7 +72,8 @@ export default{async fetch(request,env,ctx){
  const accountInfo=!path.startsWith('/assets/')&&!path.startsWith('/api/')&&(google||request.headers.get('oai-authenticated-user-id'))?await accountIdentity(request,env,google,{create:true}):null;
  const googleReady=env.FIREBASE_AUTH_CONFIGURED==='true'||googleConfigured(env);
  const firebaseConfig=googleReady?{apiKey:env.FIREBASE_WEB_API_KEY,authDomain:env.FIREBASE_WEB_AUTH_DOMAIN,projectId:env.FIREBASE_PROJECT_ID,appId:env.FIREBASE_WEB_APP_ID}:null;
- const website=websiteRoute(request,{google,googleReady,firebaseConfig,firebaseCsrf:request.headers.get('x-kongboda-firebase-csrf'),accountInfo,crewRegistered:hasCrewAccess(accountInfo?.account,env)});if(website)return website;
+ const aiConnections=path==='/account'&&request.method==='GET'&&google?.sub&&accountInfo?.account&&!accountInfo.account.deleted?await aiConnectionStatus(env,google.sub).catch(()=>null):null;
+ const website=websiteRoute(request,{aiConnections,google,googleReady,firebaseConfig,firebaseCsrf:request.headers.get('x-kongboda-firebase-csrf'),accountInfo,crewRegistered:hasCrewAccess(accountInfo?.account,env)});if(website)return website;
  if(path==='/api/status'&&request.method==='GET'){if(!request.headers.get('oai-authenticated-user-id'))return json({error:'Authentication required'},401);return json({configured:!!env.RAPIDAPI_KEY,tools:SPECS.length+FIA_TOOLS.length+LIVE_TOOLS.length+WEC_TOOLS.length+WEC_LIVE_TOOLS.length+RESEARCH_TOOLS.length+OFFICIAL_TOOLS.length+STANDINGS_TOOLS.length+PREFERENCE_TOOLS.length+CREW_TOOLS.length+1,provider:'Hyprace + FastF1 + FIA + Al Kamel',live_storage_configured:!!env.BUCKET,live_feed_connected:null,telemetry:true,telemetry_mode:'session_accumulation_and_fastf1_historical_reload',source_policy:{...SOURCE_POLICY,requires_local_collector:!cloudConfigured(env),cloud_configured:cloudConfigured(env)}});}
  if(path!=='/mcp')return json({error:'Not found'},404);
  if(request.method==='GET'){

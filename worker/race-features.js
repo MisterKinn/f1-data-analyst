@@ -5,6 +5,7 @@ export const raceFeatureCss=`
 .track-map{margin:8px 0;min-width:0}.track-map img{display:block;width:100%;height:120px;object-fit:contain;padding:8px;background:#11171c;border-radius:8px}.track-map figcaption{font-size:11px;color:var(--muted);line-height:1.5}.track-map-links{display:flex;gap:10px;flex-wrap:wrap}.sm-zones{font-size:12px;line-height:1.6;padding:0;list-style:none}.sm-zones li{margin:6px 0}
 
 [data-race-calendar="week"] .race-card[hidden]{display:none!important}
+.race-status-row{display:flex;align-items:center;gap:8px 12px;flex-wrap:wrap;margin:8px 0 16px}.race-status-row .race-timezone{margin:0}.race-refresh{font:inherit;font-size:12px;line-height:1;padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--text,inherit);cursor:pointer}.race-refresh:hover:not(:disabled){border-color:var(--mint);color:var(--mint)}.race-refresh:disabled{opacity:.6;cursor:progress}.race-refresh[hidden]{display:none}
 [data-race-calendar="week"] .race-cards{display:flex;flex-direction:column;gap:0;border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:4px 16px}
 [data-race-calendar="week"] .race-card{display:grid;grid-template-columns:110px minmax(0,1fr) auto;align-items:center;gap:6px 16px;width:100%;border:0;border-bottom:1px solid var(--line);border-radius:0;padding:13px 0;background:none}
 [data-race-calendar="week"] .race-card:last-child{border-bottom:0}
@@ -164,7 +165,7 @@ export const sessionStateCss=`
 `;
 
 export const scheduleLogoCss='[data-race-calendar="week"] .race-series-logo[src="/assets/schedule/24h-series"]{object-fit:cover;object-position:left;width:80px;height:38px;filter:grayscale(1) contrast(100);mix-blend-mode:screen}';
-export function calendarSection(series){return `<section class="race-section" data-race-calendar="${series||'week'}"><h2>${series?'레이스 캘린더':'이번 주의 모터스포츠'}</h2><p class="fine race-timezone" data-race-status>일정 확인 중…</p><div class="${series?'calendar-strip':'race-cards'}" data-race-cards></div></section>`;}
+export function calendarSection(series){return `<section class="race-section" data-race-calendar="${series||'week'}"><h2>${series?'레이스 캘린더':'이번 주의 모터스포츠'}</h2><div class="race-status-row"><p class="fine race-timezone" data-race-status>일정 확인 중…</p><button type="button" class="race-refresh" data-race-refresh hidden aria-label="일정 새로고침">새로고침</button></div><div class="${series?'calendar-strip':'race-cards'}" data-race-cards></div></section>`;}
 export function weekBounds(now=new Date()){
  const start=new Date(now);start.setHours(0,0,0,0);start.setDate(start.getDate()-(start.getDay()+6)%7);
  const end=new Date(start);end.setDate(end.getDate()+7);return {start,end};
@@ -428,6 +429,8 @@ export function raceFeaturesClient(dictionary,translateText,weekBounds,sessionSt
    refresh();
    if(!fetching&&Date.now()-lastFetch>=300000){fetching=true;publicJsonRequest('/api/race-calendar',{cache:'no-store',timeoutMs:15000}).then(({response:r,data:next})=>{if(!r.ok)throw Error();data=next;lastFetch=Date.now();refresh=render();}).catch(()=>{lastFetch=Date.now()-240000;if(Date.now()-Date.parse(data.checkedAt)>=86400000){data={...data,events:[],unavailable:true};refresh=render();}status.textContent=t('최신 일정 확인 실패 · 이전 조회 일정 표시 중','Refresh failed · showing the previous schedule');}).finally(()=>{fetching=false;});}
   }
+  const refreshButton=root.querySelector('[data-race-refresh]');
+  if(refreshButton){refreshButton.hidden=false;refreshButton.addEventListener('click',()=>{if(fetching)return;fetching=true;refreshButton.disabled=true;refreshButton.textContent=t('확인 중…','Checking…');status.textContent=t('공식 일정을 다시 확인하는 중…','Re-checking official schedules…');publicJsonRequest('/api/race-calendar?refresh=1',{cache:'no-store',timeoutMs:20000}).then(({response:r,data:next})=>{if(!r.ok)throw Error();data=next;lastFetch=Date.now();refresh=render();}).catch(()=>{status.textContent=t('새로고침 실패 · 이전 조회 일정 표시 중','Refresh failed · showing the previous schedule');}).finally(()=>{fetching=false;refreshButton.disabled=false;refreshButton.textContent=t('새로고침','Refresh');});});}
   setInterval(()=>{if(document.visibilityState!=='hidden')tick();},15000);
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')tick();});
   window.addEventListener('pageshow',tick);
