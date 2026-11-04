@@ -29,7 +29,7 @@ test('introduction and local logo/script work without changing data authenticati
  const guide=await (await get('/guide')).text();
  assert.match(guide,/https:\/\/chatgpt.com\/plugins/);
  assert.match(guide,/이렇게 알려 드립니다/);assert.match(guide,/레이스 중에는 짧게/);assert.match(guide,/경기가 끝나면 자세히/);
- assert.doesNotMatch(guide,/kongboda-motorsports\.vercel\.app\/mcp/);assert.match(guide,/Add custom connector/);assert.match(guide,/사용자 지정 MCP 서버 추가/);
+ assert.doesNotMatch(guide,/kongboda-motorsports\.vercel\.app\/mcp/);assert.match(guide,/커스텀 커넥터 추가/);assert.match(guide,/사용자 지정 MCP 서버 추가/);
  assert.ok(!about.includes('01 / INSTALL'));assert.ok(guide.includes('<ol class="guide-steps">'));assert.ok(!guide.includes('HOW TO USE'));assert.ok(!guide.includes('01 / INSTALL'));
  assert.match(about,/Kongboda Motorsports/);
  const svg=await get('/assets/brand-mark.svg');assert.match(svg.headers.get('content-type'),/image\/svg/);assert.match(await svg.text(),/viewBox="250 230 1250 440"/);
