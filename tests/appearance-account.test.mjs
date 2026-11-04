@@ -21,7 +21,8 @@ test('a signed-in account mode is applied on every page before paint',async()=>{
  assert.equal(boot(system),'null');
  const page=await websiteRoute(new Request('https://kongboda-motorsports.vercel.app/account'),account()).text();
  assert.match(page,/id="appearance"/);
- assert.match(page,/로그인한 모든 기기에 적용됩니다/);
+ assert.doesNotMatch(page,/로그인한 모든 기기에 적용됩니다/);
+ assert.ok(page.indexOf('appearance-panel')<page.indexOf('<h2>계정 연결</h2>'),'appearance comes first');
 });
 
 test('the account stores the chosen mode and rejects unknown values',async()=>{
