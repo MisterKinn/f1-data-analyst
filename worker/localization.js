@@ -265,7 +265,7 @@ Object.assign(translations,{
  '이 계정은 이전 로그인 방식으로 연결돼 있습니다. 같은 이메일의 Google 계정으로 로그인하면 기존 설정을 그대로 사용합니다.':'This account uses a retired sign-in method. Sign in with the Google account that has the same email to keep your settings.',
  'Claude와 ChatGPT에서 같은 주소와 Google 로그인으로 연결할 수 있습니다.':'Connect from Claude or ChatGPT with the same address and Google sign-in.',
  '화면 모드':'Appearance',
- '기본값은 기기의 시스템 설정을 따릅니다. 이 브라우저에서만 바꾸려면 선택하세요.':'By default this follows your device setting. Choose another mode to change it in this browser only.',
+ '기본값은 기기의 시스템 설정을 따릅니다. 바꾸면 로그인한 모든 기기에 적용됩니다.':'By default this follows your device setting. A change applies on every device where you are signed in.',
  '꽁보다 계정과 연결 정보를 삭제합니다. Google 계정과 다른 이용자의 기록은 삭제되지 않습니다.':'Deletes your Kongboda account and its connections. Your Google account and other users’ records are not affected.',
  'WEC 하이퍼카':'WEC Hypercar'
 });

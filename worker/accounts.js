@@ -130,7 +130,7 @@ export async function accountRoute(request,env,google,ctx){
  const allowedOrigin=env.APP_ORIGIN||ORIGIN;
  if(u.origin!==allowedOrigin||request.headers.get('origin')!==allowedOrigin||request.headers.get('sec-fetch-site')==='cross-site')return reply('허용되지 않은 요청입니다.',403);
  if(!env.BUCKET)return reply('계정 저장소를 사용할 수 없습니다.',503);
- if(env.BUCKET.atomic&&['/account/preferences','/account/wec-preference','/account/link','/account/unlink','/account/rejoin'].includes(u.pathname))return env.BUCKET.atomic(bucket=>accountRoute(request.clone(),{...env,BUCKET:bucket},google,ctx));
+ if(env.BUCKET.atomic&&['/account/preferences','/account/wec-preference','/account/appearance','/account/link','/account/unlink','/account/rejoin'].includes(u.pathname))return env.BUCKET.atomic(bucket=>accountRoute(request.clone(),{...env,BUCKET:bucket},google,ctx));
  const info=await accountIdentity(request,env,google,{create:true});if(!info)return reply('로그인이 필요합니다.',401);
  const back=()=>new Response(null,{status:303,headers:{location:'/account','cache-control':'no-store'}});
  if(u.pathname==='/account/rejoin'){
@@ -165,6 +165,13 @@ export async function accountRoute(request,env,google,ctx){
   await env.BUCKET.delete(rateKey);
   if(!info.account.liveAnalysisAccess?.activatedAt){await queueCrewEvent(env,info.account.id,now);const delivery=deliverCrewEvents(env).catch(()=>console.error('Crew notification pending retry'));if(ctx?.waitUntil)ctx.waitUntil(delivery);else await delivery;}
   return new Response(null,{status:303,headers:{location:'/account?live_access=activated','cache-control':'no-store'}});
+ }
+ if(u.pathname==='/account/appearance'){
+  const value=String((await request.formData()).get('appearance')||'');
+  if(!['system','light','dark'].includes(value))return reply('화면 모드를 확인해 주세요.',400);
+  await write(env,accountKey(info.account.id),{...info.account,appearance:value});
+  if(request.headers.get('accept')?.includes('application/json'))return new Response(JSON.stringify({saved:true,appearance:value}),{headers:{'content-type':'application/json; charset=utf-8','cache-control':'private, no-store'}});
+  return back();
  }
  if(u.pathname==='/account/wec-preference'){
   const form=await request.formData(),values=form.getAll('manufacturer');
