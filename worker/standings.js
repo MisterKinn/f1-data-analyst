@@ -87,20 +87,20 @@ export async function standingsRoute(request,env,ctx){
  if(series==='f1'){
   let saved;try{const object=await env.BUCKET?.get(key);if(object)saved=await object.json();}catch{console.error('Standings cache read failed');}
   const age=saved?Date.now()-saved.checked_at:Infinity;
-  if(valid(saved?.data)&&age>=0&&age<TTL)return respond({...saved.data,cached:true});
+  if(valid(saved?.data)&&age>=0&&age<TTL)return respond({...saved.data,cached:true,cache_age_seconds:Math.floor(age/1000)});
   try{return respond(await refresh());}
   catch{
-   if(valid(saved?.data)&&age>=0&&age<7*86400000)return respond({...saved.data,cached:true,stale:true,refreshing:false});
+   if(valid(saved?.data)&&age>=0&&age<86400000)return respond({...saved.data,cached:true,stale:true,refreshing:false,cache_age_seconds:Math.floor(age/1000)});
    return new Response(JSON.stringify({error:'FastF1 챔피언십 순위를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.'}),{status:502,headers});
   }
  }
  if(env.BUCKET&&ctx?.waitUntil){
   let saved;try{const object=await env.BUCKET.get(key);if(object)saved=await object.json();}catch{console.error('Standings cache read failed');}
   const age=saved?Date.now()-saved.checked_at:Infinity;
-  if(valid(saved?.data)&&age>=0&&age<7*86400000){
+  if(valid(saved?.data)&&age>=0&&age<86400000){
    const stale=age>=TTL;
    if(stale)ctx.waitUntil(refresh().catch(()=>console.error('Standings refresh unavailable',series,selected)));
-   return respond({...saved.data,refreshing:stale,cached:true});
+   return respond({...saved.data,stale,refreshing:stale,cached:true,cache_age_seconds:Math.floor(age/1000)});
   }
   ctx.waitUntil(refresh().catch(()=>console.error('Standings initial fetch unavailable',series,selected)));
   return new Response(JSON.stringify({pending:true,message:'수집 서버를 준비하고 공식 순위를 확인하고 있습니다. 잠시만 기다려 주세요.'}),{status:202,headers:{...headers,'retry-after':'3'}});
