@@ -34,6 +34,16 @@ header .header-actions{flex-shrink:0}.approved-brand{width:clamp(9.375rem,18vw,1
 #kb-recorded .carousel-stage{padding-inline:clamp(25px,3vw,38px)}
 #kb-recorded .side-arrow.prev{left:-10px}#kb-recorded .side-arrow.next{right:-10px}
 #kb-recorded .barrow{grid-template-columns:minmax(0,86px) minmax(0,1fr) minmax(0,66px)}
+/* Arrows sit mid-card on short cards and near the top of tall ones; switching tabs glides them (glideArrows). */
+#kb-recorded #record-live .carousel-stage>.side-arrow,#kb-recorded #record-post .carousel-stage>.side-arrow{top:min(320px,calc(50% - 26px))}
+@media(max-width:700px){#kb-recorded #record-live .carousel-stage>.side-arrow,#kb-recorded #record-post .carousel-stage>.side-arrow{top:min(280px,calc(50% - 26px))}}
+/* Snappy, soft feedback across the site: quick colour changes and a light press. */
+a,button,.button,summary,select,input,.week-view-tab,#kb-recorded .mode{transition:background-color .14s cubic-bezier(.2,0,0,1),border-color .14s cubic-bezier(.2,0,0,1),color .14s cubic-bezier(.2,0,0,1),box-shadow .14s cubic-bezier(.2,0,0,1),opacity .14s cubic-bezier(.2,0,0,1),transform .1s cubic-bezier(.2,0,0,1)}
+.button:not(:disabled):active,summary.button:active,.week-view-tab:active,#kb-recorded .mode:active,.week-copy:active{transform:scale(.97)}
+details[open]>summary~*{animation:kb-reveal .16s cubic-bezier(.2,0,0,1)}
+/* Empty status lines keep their live region but take no space until they have a message. */
+.account-settings p[role=status]:empty{margin:0;min-height:0}
+@keyframes kb-reveal{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
 /* Live briefing cards open without an example question; post-race cards keep theirs. */
 #kb-recorded .analysis.live .demo-question{display:none}
 @container examples (min-width:860px){
