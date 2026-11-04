@@ -14,6 +14,12 @@ const safeBack=value=>typeof value==='string'&&value.startsWith('/')&&!value.sta
 export const crossSiteGoogleLoginAllowed=back=>{
  try{const base='https://kongboda.invalid',url=new URL(back,base);return url.origin===base&&url.pathname==='/oauth/authorize';}catch{return false;}
 };
+// Session check strength per request. Static assets never use the login, so they
+// skip verification. Public page views (GET/HEAD) verify the cookie signature
+// locally. Account, OAuth, MCP and live-data routes, and every non-GET request,
+// keep the full check that also asks Firebase whether the session was revoked.
+const STRICT_SESSION_PATHS=/^\/(?:account|oauth|auth|mcp|api\/live|api\/status|live|download)(?:\/|$)/;
+export const sessionCheck=(method,path)=>path.startsWith('/assets/')?'skip':['GET','HEAD'].includes(method)&&!STRICT_SESSION_PATHS.test(path)?'signature':'revocation';
 export const firebaseGoogleSubject=claims=>{
  const values=claims?.firebase?.identities?.['google.com'];
  return Array.isArray(values)&&typeof values[0]==='string'&&values[0]?values[0]:null;
@@ -97,7 +103,8 @@ export default async function handler(req,res){
   const direct=await authRoute(request,runtimeEnv);if(direct)return send(direct,res);
   const headers=new Headers(request.headers),requestUrl=new URL(request.url),accountCsrf=firebaseReady&&request.method==='GET'&&requestUrl.pathname==='/account'?randomBytes(32).toString('base64url'):null,session=readCookie(headers.get('cookie'),SESSION);let firebaseUser=null;
   if(accountCsrf)headers.set('x-kongboda-firebase-csrf',accountCsrf);
-  if(session){try{const user=await firebaseAdmin().auth.verifySessionCookie(session,true),subject=firebaseGoogleSubject(user);if(user.email&&user.email_verified&&subject){firebaseUser={sub:subject,email:user.email,name:user.name||''};headers.set('x-kongboda-firebase-user-id',subject);headers.set('x-kongboda-firebase-user-email',user.email);headers.set('x-kongboda-firebase-user-name',encodeURIComponent(user.name||''));headers.set('x-kongboda-firebase-user-name-encoding','percent-encoded-utf-8');}}catch{/* Invalid sessions are anonymous. */}}
+  const check=sessionCheck(request.method,requestUrl.pathname);
+  if(session&&check!=='skip'){try{const user=await firebaseAdmin().auth.verifySessionCookie(session,check==='revocation'),subject=firebaseGoogleSubject(user);if(user.email&&user.email_verified&&subject){firebaseUser={sub:subject,email:user.email,name:user.name||''};headers.set('x-kongboda-firebase-user-id',subject);headers.set('x-kongboda-firebase-user-email',user.email);headers.set('x-kongboda-firebase-user-name',encodeURIComponent(user.name||''));headers.set('x-kongboda-firebase-user-name-encoding','percent-encoded-utf-8');}}catch{/* Invalid sessions are anonymous. */}}
   request=new Request(request,{headers});
   const oauth=await mcpOAuthRoute(request,runtimeEnv,firebaseUser);if(oauth)return send(oauth,res);
   if(new URL(request.url).pathname==='/mcp'){

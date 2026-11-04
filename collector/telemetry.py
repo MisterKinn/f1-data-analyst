@@ -114,6 +114,18 @@ class LiveTelemetry:
                 self.db.commit()
                 self.last_commit = time.monotonic()
 
+    def sample_count(self, max_age=30):
+        """Row count for status display. COUNT(*) scans the whole table, which
+        grows to hundreds of thousands of rows in a race, so it is refreshed at
+        most every `max_age` seconds instead of on every 2-second snapshot."""
+        if self.db is None:
+            return 0
+        cached = getattr(self, '_count_cache', None)
+        if cached is None or time.monotonic() - cached[0] >= max_age or self.meta.get('ended_at'):
+            cached = (time.monotonic(), self.db.execute('SELECT COUNT(*) FROM samples').fetchone()[0])
+            self._count_cache = cached
+        return cached[1]
+
     def summary(self):
         self.flush(force=True)
         if self.db is not None and self.meta.get('ended_at') and time.time() >= self.meta['ended_at'] + 300:
@@ -121,7 +133,7 @@ class LiveTelemetry:
             self.db = None
         return {'mode': 'session_accumulation', 'session_key': self.info['Key'],
                 'ended_at': self.meta.get('ended_at'),
-                'sample_count': self.db.execute('SELECT COUNT(*) FROM samples').fetchone()[0] if self.db else 0,
+                'sample_count': self.sample_count(),
                 'delete_after_seconds': 300, 'write_errors': self.write_errors, 'purged': bool(self.meta.get('purged_at')) or bool(self.meta.get('ended_at') and time.time() >= self.meta['ended_at'] + 300),
                 'post_session_source': 'FastF1 Session.load, official archived session data'}
 

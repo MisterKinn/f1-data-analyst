@@ -67,7 +67,7 @@ export async function readBestLaps(env,args){
  return {...result,...(recovery?{history_recovery:{state:recovery.state,retry_after_seconds:recovery.retry_after_seconds,recovery:recovery.recovery}}:{}),...(telemetry?{telemetry}:{})};
 }
 
-async function storeSnapshot(env,snapshot,received_at,source,updateCurrent=true){
+async function storeSnapshot(env,snapshot,received_at,source,updateCurrent=true,{skipUnchanged=false,onCurrent=null}={}){
  // Telemetry has its own expiring collector store. Never retain batch copies in R2.
  snapshot=structuredClone(snapshot);
  if(Array.isArray(snapshot.diagnostics?.samples)){
@@ -83,24 +83,42 @@ async function storeSnapshot(env,snapshot,received_at,source,updateCurrent=true)
  const write=async key=>{
   for(let attempt=0;attempt<4;attempt++){
    const object=await env.BUCKET.get(key),old=object?await object.json():null,previous=old?.snapshot;
-   if(previous&&(Date.parse(snapshot.generated_at)<Date.parse(previous.generated_at)||(snapshot.run_id===previous.run_id&&snapshot.sequence<previous.sequence)))return false;
+   if(previous&&(Date.parse(snapshot.generated_at)<Date.parse(previous.generated_at)||(snapshot.run_id===previous.run_id&&snapshot.sequence<previous.sequence)))return {accepted:false};
+   // The collector has received nothing new since the saved copy: rewriting the
+   // same timing (up to 840 KB, twice) would only cost CPU and Firestore writes.
+   if(skipUnchanged&&previous&&snapshot.run_id===previous.run_id&&snapshot.sequence===previous.sequence&&snapshot.connected===previous.connected)return {accepted:true,stored:old};
    const candidate=preserveBestLaps(structuredClone(snapshot),previous);
-   let stored=JSON.stringify({received_at,source,snapshot:candidate});
-   // Leave room below Firestore's 850 KB object limit, including UTF-8 text.
-   while(new TextEncoder().encode(stored).length>840000&&candidate.recent_events.length){
-    candidate.recent_events=candidate.recent_events.slice(20);
-    stored=JSON.stringify({received_at,source,snapshot:candidate});
-   }
-   if(new TextEncoder().encode(stored).length>840000)throw Error('Timing snapshot exceeds storage limit');
+   const stored=boundedStoredText({received_at,source,snapshot:candidate});
    const result=await env.BUCKET.put(key,stored,{httpMetadata:{contentType:'application/json'},onlyIf:object?.etag?{etagMatches:object.etag}:object?undefined:{etagDoesNotMatch:'*'}});
-   if(result!==null)return true;
+   if(result!==null)return {accepted:true,stored:{received_at,source,snapshot:candidate}};
   }
   throw Error('Concurrent timing update; retry synchronization');
  };
- const accepted=updateCurrent?await write(KEY):true;
+ const current=updateCurrent?await write(KEY):{accepted:true};
  if(sessionKey)await write(sessionKey);
- if(!accepted)return null;
+ if(!current.accepted)return null;
+ if(current.stored)onCurrent?.(current.stored);
  return snapshot;
+}
+
+// Leave room below Firestore's 850 KB object limit, including UTF-8 text.
+// Drops the oldest events in blocks of 20 like before, but sizes each event once
+// instead of re-encoding the whole snapshot for every block. Mutates value.snapshot.
+const STORE_LIMIT=840000,encoder=new TextEncoder();
+export function boundedStoredText(value){
+ let stored=JSON.stringify(value),size=encoder.encode(stored).length;
+ const events=value.snapshot.recent_events;
+ if(size>STORE_LIMIT&&events.length){
+  let drop=0;
+  // Each removed event also removes one ',' separator.
+  while(size>STORE_LIMIT&&drop<events.length){for(const event of events.slice(drop,drop+20))size-=encoder.encode(JSON.stringify(event)).length+1;drop+=20;}
+  value.snapshot.recent_events=events.slice(drop);
+  stored=JSON.stringify(value);size=encoder.encode(stored).length;
+  // Exact check; continue the original rule if the estimate fell short.
+  while(size>STORE_LIMIT&&value.snapshot.recent_events.length){value.snapshot.recent_events=value.snapshot.recent_events.slice(20);stored=JSON.stringify(value);size=encoder.encode(stored).length;}
+ }
+ if(size>STORE_LIMIT)throw Error('Timing snapshot exceeds storage limit');
+ return stored;
 }
 
 export function freshness(s,receivedAt,now=Date.now()) {
@@ -114,18 +132,22 @@ export function freshness(s,receivedAt,now=Date.now()) {
 
 export async function liveRead(env,args={}) {
  if(!env.BUCKET)throw Error('Live storage is not configured');
- let synchronization=null;
+ let synchronization=null,current=null;
  if(cloudConfigured(env)){
   try{
    const data=await cloudRequest(env,'/snapshot','GET');
    synchronization={ok:true,collector:publicCollector(data.collector)};
    if(env.F1_PERSONAL_ACCOUNT&&data.collector?.auth_state==='credentials_required')return {available:false,synchronization,reason:'개인 F1 로그인이 필요합니다. 사이트 /live에서 연결하세요.'};
-   if(data.snapshot){const accepted=await storeSnapshot(env,validateSnapshot(data.snapshot),new Date().toISOString(),'Cloud / FastF1 live recorder + custom patch adapter');if(!accepted)synchronization={...synchronization,ok:false,error:'Older collector snapshot rejected; retained newer saved data.'};}
-  }catch(e){synchronization={ok:false,error:'Collector synchronization failed; saved data may be stale.'};}
+   if(data.snapshot){const accepted=await storeSnapshot(env,validateSnapshot(data.snapshot),new Date().toISOString(),'Cloud / FastF1 live recorder + custom patch adapter',true,{skipUnchanged:true,onCurrent:value=>{current=value;}});if(!accepted)synchronization={...synchronization,ok:false,error:'Older collector snapshot rejected; retained newer saved data.'};}
+  }catch(e){current=null;synchronization={ok:false,error:'Collector synchronization failed; saved data may be stale.'};}
  }
- const object=await env.BUCKET.get(KEY);
- if(!object)return {available:false,synchronization,reason:'No collector snapshot saved. Check collector deployment, schedule and authentication; legacy collectors require /live polling.'};
- const stored=await object.json();
+ // Reuse what was just saved instead of downloading and parsing it again.
+ let stored=current;
+ if(!stored){
+  const object=await env.BUCKET.get(KEY);
+  if(!object)return {available:false,synchronization,reason:'No collector snapshot saved. Check collector deployment, schedule and authentication; legacy collectors require /live polling.'};
+  stored=await object.json();
+ }
  const snapshot=stored.snapshot;
  return {research_context:buildResearchContext(snapshot,freshness(snapshot,stored.received_at)),available:true,synchronization,source:stored.source??'User PC / FastF1 live recorder + custom patch adapter',received_at:stored.received_at,freshness:freshness(snapshot,stored.received_at),...snapshot,recent_events:args.recent_events===0?[]:snapshot.recent_events.slice(-(args.recent_events??60))};
 }
