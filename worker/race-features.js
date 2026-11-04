@@ -236,10 +236,9 @@ export function scheduledSessionStatus(event,clock,language='ko',resolveState=se
 
 // Calendar status line: zone + readable check time + pending sources. Self-contained (shipped via toString).
 export function calendarStatusText(data,{lang='ko',zone='UTC'}={}){
- const ko=lang!=='en',korea=['Asia/Seoul','Etc/GMT-9'].includes(zone),parts=[korea?(ko?'한국시간 기준':'Korea time'):(ko?'기기 현지시간 기준':'Your local time')];
+ const ko=lang!=='en',parts=[ko?'현재 위치 시간 기준':'Your local time'];
  const at=Date.parse(data?.checkedAt||'');
  if(Number.isFinite(at)){const opts={timeZone:zone,month:ko?'long':'short',day:'numeric',hour:'2-digit',minute:'2-digit',hour12:false};const text=new Intl.DateTimeFormat(ko?'ko-KR':'en-GB',opts).format(at).replace(/\s+(\d\d:\d\d)$/,' $1');parts.push(ko?text+' 확인':'checked '+text);}
- if(data?.stale)parts.push(ko?(Number.isFinite(at)?'일부 대회는 공식 확인 대기':'공식 확인 대기'):'some events awaiting official confirmation');
  return parts.join(' · ');
 }
 export function raceFeaturesClient(dictionary,translateText,weekBounds,sessionState,weeklyEventVisible,compactSessionName,scheduledSessionStatus,calendarStatusText){
@@ -308,7 +307,6 @@ export function raceFeaturesClient(dictionary,translateText,weekBounds,sessionSt
    const card=node('article',undefined,'race-card');if(['nascar','super-taikyu'].includes(e.series))card.classList.add('long-session-names');
    if(series==='week')card.append(node('p',e.seriesLabel||e.series.toUpperCase(),'tag'));
    card.append(node('h3',lang==='en'?(e.nameEn||e.name):e.name));
-   if(e.verified===false){const pending=node('p',t('공식 일정 확인 대기 · 저장된 일정 표시 중','Awaiting official confirmation · showing saved schedule'),'race-unverified');card.append(pending);}
    if(series!=='week')card.append(node('p',display(e.start)+(e.end&&e.end!==e.start?' – '+display(e.end):''),'race-meta'));
    const sessions=e.sessions?.length?e.sessions:(e.raceStart?[{name:'레이스',nameEn:'Race',start:e.raceStart,source:e.raceTimeSource}]:[]);
    const timedRows=[];

@@ -31,10 +31,10 @@ import {calendarStatusText} from '../worker/race-features.js';
 test('calendar status uses a readable local time, not a raw ISO stamp',()=>{
  const data={checkedAt:'2026-11-04T02:32:39.984Z',stale:true};
  const ko=calendarStatusText(data,{lang:'ko',zone:'Asia/Seoul'});
- assert.equal(ko,'한국시간 기준 · 11월 4일 11:32 확인 · 일부 대회는 공식 확인 대기');
+ assert.equal(ko,'현재 위치 시간 기준 · 11월 4일 11:32 확인');
  assert.doesNotMatch(ko,/T\d\d:|Z$/);
  assert.equal(calendarStatusText({checkedAt:'2026-11-04T02:32:39.984Z',stale:false},{lang:'en',zone:'Europe/London'}),'Your local time · checked 4 Nov, 02:32');
- assert.equal(calendarStatusText({checkedAt:null,stale:true},{lang:'ko',zone:'Asia/Seoul'}),'한국시간 기준 · 공식 확인 대기');
+ assert.equal(calendarStatusText({checkedAt:null,stale:true},{lang:'ko',zone:'Asia/Seoul'}),'현재 위치 시간 기준');
 });
 
 import {websiteRoute} from '../worker/website.js';
