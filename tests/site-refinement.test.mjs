@@ -8,10 +8,10 @@ test('homepage offers a direct setup path before examples and separates the cale
  const html=await page('/').text();
  assert.match(html,/<a class="button primary" href="\/auth\/google\/start\?return_to=%2F">Google로 로그인<\/a>/);
  assert.doesNotMatch(html,/class="nav-start"|>분석 예시 보기</);
- // The MCP address is public: anyone can copy it before signing in.
- assert.match(html,/data-copy="https:\/\/kongboda-motorsports.vercel.app\/mcp"/);
+ // The home keeps one connection action (the guide); the public MCP address is copied there.
+ assert.match(html,/href="\/guide">연결 방법 보기/);
  const signedIn=await page('/',{google:{sub:'verified',email:'verified@example.invalid'}}).text();
- assert.match(signedIn,/data-copy="https:\/\/kongboda-motorsports.vercel.app\/mcp"/);
+ assert.doesNotMatch(signedIn,/account-dot|>계정 설정<\/a><\/div>/);
  const deleted=await page('/guide',{google:{sub:'verified'},accountInfo:{account:{deleted:true}}}).text();
  assert.doesNotMatch(deleted,/data-copy="https:\/\/kongboda-motorsports.vercel.app\/mcp"/);
  assert.ok(html.indexOf('hero-actions')<html.indexOf('id="kb-recorded"'));

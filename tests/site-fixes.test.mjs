@@ -45,8 +45,11 @@ test('sign-in is Google only on every host; no ChatGPT sign-in or account-link b
   assert.doesNotMatch(page,/signin-with-chatgpt|ChatGPT로 로그인|Google · ChatGPT 계정 연결/);
  }
 });
-test('the MCP address can be copied without signing in',async()=>{
- for(const path of ['/','/guide']){
+test('the MCP address can be copied without signing in on the guide; the home links to the guide only',async()=>{
+ const home=await html('https://kongboda-motorsports.vercel.app/');
+ assert.doesNotMatch(home.slice(home.indexOf('class="connect-section"'),home.indexOf('id="championships"')),/data-copy=/);
+ assert.match(home,/<a class="button primary" href="\/guide">연결 방법 보기<\/a>/);
+ for(const path of ['/guide']){
   const page=await html('https://kongboda-motorsports.vercel.app'+path);
   assert.match(page,/data-copy="https:\/\/kongboda-motorsports\.vercel\.app\/mcp"/,path);
   assert.doesNotMatch(page,/로그인 후 연결 주소 복사/,path);

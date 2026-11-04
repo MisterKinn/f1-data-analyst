@@ -43,9 +43,20 @@ test('the homepage examples are fully English on the English page, not word-subs
  const html=await websiteRoute(request('/')).text();
  const start=html.indexOf('<div id="kb-recorded"');
  assert.ok(start>0);
- assert.match(html.slice(start,start+120),/lang="en"/);
+ assert.match(html.slice(start,html.indexOf('>',start)),/lang="en"/);
  const examples=html.slice(start,html.indexOf('<section class="connect-section"',start));
  assert.equal(/[가-힣]/.test(examples.replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/g,'')),false);
  const korean=await websiteRoute(new Request('https://example.test/',{headers:{cookie:'kongboda_lang=ko'}})).text();
- assert.match(korean,/<div id="kb-recorded" lang="ko"/);
+ assert.match(korean,/<div id="kb-recorded"[^>]*lang="ko"/);
+});
+
+test('homepage examples open on a random tab and the server marks the chosen tab',async()=>{
+ const {analysisDemo}=await import('../worker/homepage-examples.js');
+ for(const lang of ['ko','en']){
+  const post=analysisDemo(lang,'post'),live=analysisDemo(lang,'live');
+  assert.match(post,/data-initial-mode="post"/);assert.match(post,/id="record-live"[^>]*hidden/);assert.doesNotMatch(post,/id="record-post"[^>]*hidden/);
+  assert.match(live,/data-initial-mode="live"/);assert.match(live,/id="record-post"[^>]*hidden/);
+ }
+ const modes=new Set(Array.from({length:40},()=>analysisDemo('ko').match(/data-initial-mode="(\w+)"/)[1]));
+ assert.deepEqual([...modes].sort(),['live','post']);
 });
