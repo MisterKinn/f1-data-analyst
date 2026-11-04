@@ -67,6 +67,14 @@ export async function readBestLaps(env,args){
  return {...result,...(recovery?{history_recovery:{state:recovery.state,retry_after_seconds:recovery.retry_after_seconds,recovery:recovery.recovery}}:{}),...(telemetry?{telemetry}:{})};
 }
 
+const WRITE_INTERVAL_MS=5000,COLLECTOR_PAUSE_MS=30000;
+// Per-instance guards for the collector call: concurrent questions share one
+// request (single-flight), and a collector that just failed is not called again
+// for 30 s (circuit breaker) so questions get saved data without a 20 s wait.
+const guards={inflight:new Map(),pausedUntil:new Map()};
+export function resetLiveGuards(){guards.inflight.clear();guards.pausedUntil.clear();}
+const guardKey=env=>env.FASTF1_CLOUD_URL+'|'+(env.F1_PERSONAL_ACCOUNT||'shared');
+
 async function storeSnapshot(env,snapshot,received_at,source,updateCurrent=true,{skipUnchanged=false,onCurrent=null}={}){
  // Telemetry has its own expiring collector store. Never retain batch copies in R2.
  snapshot=structuredClone(snapshot);
@@ -88,9 +96,14 @@ async function storeSnapshot(env,snapshot,received_at,source,updateCurrent=true,
    // same timing (up to 840 KB, twice) would only cost CPU and Firestore writes.
    if(skipUnchanged&&previous&&snapshot.run_id===previous.run_id&&snapshot.sequence===previous.sequence&&snapshot.connected===previous.connected)return {accepted:true,stored:old};
    const candidate=preserveBestLaps(structuredClone(snapshot),previous);
+   // One Firestore document sustains about one write per second. During a busy
+   // session, answer from the newest data but persist it at most every 5 s.
+   if(skipUnchanged&&previous&&snapshot.run_id===previous.run_id&&snapshot.connected===previous.connected&&Date.parse(received_at)-Date.parse(old.received_at)<WRITE_INTERVAL_MS)return {accepted:true,stored:{received_at,source,snapshot:candidate}};
    const stored=boundedStoredText({received_at,source,snapshot:candidate});
    const result=await env.BUCKET.put(key,stored,{httpMetadata:{contentType:'application/json'},onlyIf:object?.etag?{etagMatches:object.etag}:object?undefined:{etagDoesNotMatch:'*'}});
    if(result!==null)return {accepted:true,stored:{received_at,source,snapshot:candidate}};
+   // Lost a race with another writer: back off with jitter before re-reading.
+   await new Promise(resolve=>setTimeout(resolve,25*(attempt+1)+Math.random()*50));
   }
   throw Error('Concurrent timing update; retry synchronization');
  };
@@ -134,12 +147,16 @@ export async function liveRead(env,args={}) {
  if(!env.BUCKET)throw Error('Live storage is not configured');
  let synchronization=null,current=null;
  if(cloudConfigured(env)){
-  try{
-   const data=await cloudRequest(env,'/snapshot','GET');
-   synchronization={ok:true,collector:publicCollector(data.collector)};
-   if(env.F1_PERSONAL_ACCOUNT&&data.collector?.auth_state==='credentials_required')return {available:false,synchronization,reason:'개인 F1 로그인이 필요합니다. 사이트 /live에서 연결하세요.'};
-   if(data.snapshot){const accepted=await storeSnapshot(env,validateSnapshot(data.snapshot),new Date().toISOString(),'Cloud / FastF1 live recorder + custom patch adapter',true,{skipUnchanged:true,onCurrent:value=>{current=value;}});if(!accepted)synchronization={...synchronization,ok:false,error:'Older collector snapshot rejected; retained newer saved data.'};}
-  }catch(e){current=null;synchronization={ok:false,error:'Collector synchronization failed; saved data may be stale.'};}
+  const key=guardKey(env);
+  if(Date.now()<(guards.pausedUntil.get(key)||0))synchronization={ok:false,paused:true,error:'수집기가 방금 응답하지 않아 30초 동안 다시 묻지 않습니다(일시 중지). 저장된 자료를 보여줍니다.'};
+  else{
+   let task=guards.inflight.get(key);
+   if(!task){task=synchronizeCollector(env).finally(()=>guards.inflight.delete(key));guards.inflight.set(key,task);}
+   const result=await task;
+   if(result.early)return result.early;
+   ({synchronization,current}=result);
+   if(result.failed)guards.pausedUntil.set(key,Date.now()+COLLECTOR_PAUSE_MS);
+  }
  }
  // Reuse what was just saved instead of downloading and parsing it again.
  let stored=current;
@@ -150,6 +167,17 @@ export async function liveRead(env,args={}) {
  }
  const snapshot=stored.snapshot;
  return {research_context:buildResearchContext(snapshot,freshness(snapshot,stored.received_at)),available:true,synchronization,source:stored.source??'User PC / FastF1 live recorder + custom patch adapter',received_at:stored.received_at,freshness:freshness(snapshot,stored.received_at),...snapshot,recent_events:args.recent_events===0?[]:snapshot.recent_events.slice(-(args.recent_events??60))};
+}
+
+async function synchronizeCollector(env){
+ let current=null;
+ try{
+  const data=await cloudRequest(env,'/snapshot','GET');
+  let synchronization={ok:true,collector:publicCollector(data.collector)};
+  if(env.F1_PERSONAL_ACCOUNT&&data.collector?.auth_state==='credentials_required')return {early:{available:false,synchronization,reason:'개인 F1 로그인이 필요합니다. 사이트 /live에서 연결하세요.'}};
+  if(data.snapshot){const accepted=await storeSnapshot(env,validateSnapshot(data.snapshot),new Date().toISOString(),'Cloud / FastF1 live recorder + custom patch adapter',true,{skipUnchanged:true,onCurrent:value=>{current=value;}});if(!accepted)synchronization={...synchronization,ok:false,error:'Older collector snapshot rejected; retained newer saved data.'};}
+  return {synchronization,current};
+ }catch{return {failed:true,current:null,synchronization:{ok:false,error:'Collector synchronization failed; saved data may be stale.'}};}
 }
 
 export function cloudConfigured(env) { return !!(env.FASTF1_CLOUD_URL && env.FASTF1_CLOUD_KEY); }

@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {liveRead,boundedStoredText} from '../worker/live.js';
+import {liveRead,boundedStoredText,resetLiveGuards} from '../worker/live.js';
 import {sessionCheck} from '../api/index.js';
 import {accountIdentity} from '../worker/accounts.js';
 
@@ -33,17 +33,25 @@ let snapshot={schema_version:1,producer:'fastf1-live-bridge',run_id:'r',sequence
  topic_times:{Heartbeat:{source_time:now,initial_snapshot:false},TimingData:{source_time:now,initial_snapshot:false}},
  topics:{Heartbeat:{},TimingData:{Lines:{}},SessionInfo:{Key:77},SessionStatus:{Status:'Started'}},recent_events:[]};
 globalThis.fetch=async()=>new Response(JSON.stringify({snapshot,collector:{state:'recording'}}));
+resetLiveGuards();
 const first=await liveRead(env);
 assert.equal(first.available,true);
 assert.equal(puts,2,'first sync writes current + session copy');
+resetLiveGuards();
 const second=await liveRead(env);
 assert.equal(puts,2,'same sequence: no rewrite');
 assert.equal(second.received_at,first.received_at);
 assert.equal(second.sequence,5);
+resetLiveGuards();
 snapshot={...snapshot,sequence:6,generated_at:new Date(Date.now()+1000).toISOString()};
 const third=await liveRead(env);
-assert.equal(puts,4,'new data is written');
-assert.equal(third.sequence,6);
+assert.equal(third.sequence,6,'answers use the new data immediately');
+assert.equal(puts,2,'but the shared document is written at most every 5 s');
+for(const [k,v] of entries){const d=JSON.parse(v.body);d.received_at=new Date(Date.now()-6000).toISOString();entries.set(k,{...v,body:JSON.stringify(d)});}
+resetLiveGuards();
+await liveRead(env);
+assert.equal(puts,4,'new data is written once 5 s have passed');
+resetLiveGuards();
 snapshot={...snapshot,connected:false};
 await liveRead(env);
 assert.equal(puts,6,'a connection change is written even without new packets');

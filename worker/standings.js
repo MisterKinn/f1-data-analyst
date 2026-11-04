@@ -76,7 +76,8 @@ export async function standingsRoute(request,env,ctx){
  if(!['f1','wec',...NEW_SERIES].includes(series)||!['drivers','constructors'].includes(kind)||category&&(series==='wec'?!labels[category]:!/^[-a-z0-9]{1,100}$/.test(category)))return new Response(JSON.stringify({error:'Invalid championship'}),{status:400,headers});
  const selected=series==='f1'?kind:(category||(series==='wec'?'hypercar-manufacturers':'default'));
  const key='standings/'+(series==='f1'?'v2':'v1')+'/'+year+'/'+series+'/'+selected+'.json';
- const respond=data=>new Response(JSON.stringify(data),{headers});
+ // Successful answers are public and identical for every visitor; 202/errors keep no-store.
+ const respond=data=>new Response(JSON.stringify(data),{headers:{...headers,'cache-control':'public, max-age=60, s-maxage=120, stale-while-revalidate=300'}});
  const valid=data=>(NEW_SERIES.includes(series)?String(data?.season).includes(String(year)):data?.season===year)&&data?.series===series&&data.categories?.some(c=>(c.id===selected||selected==='default')&&c.rows?.length)&&Number.isFinite(Date.parse(data.retrieved_at));
  const refresh=()=>memo('refresh-'+key,async()=>{
   const data=NEW_SERIES.includes(series)?await newSeriesStandings(series,selected,year,env):series==='wec'?await wecStandings(year,selected,env):await f1Standings(kind,year,env);
