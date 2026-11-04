@@ -65,8 +65,15 @@ async function formulaArchive(id,env){
  if(!Array.isArray(data.items))throw Error('Invalid Formula E index');
  return {source:source.url,retrieved_at:source.retrieved_at,catalogs:data.items.filter(i=>i.extention==='catalog'&&!i.passwordProtected).map(i=>({id:i.id,name:i.title})),files:data.items.filter(i=>i.extention!=='catalog'&&!i.passwordProtected&&i.url&&/\.(csv|pdf)$/i.test(i.url)).map(i=>({url:officialUrl(i.url,'https://results.formulae.fia.com'),title:i.title||i.fileName,format:i.extention,folders:[id],published_at:i.lastModified}))};
 }
+// The VLN page links each event many times (one per document), so keep one entry per
+// event id and prefer the most descriptive title ("10.10.2026 – NLS10").
+export function nlsEvents(links){
+ const events=new Map();
+ for(const l of links){const u=new URL(l.url);if(u.pathname!=='/onb.php'||!u.searchParams.has('d'))continue;const id=u.searchParams.get('d'),old=events.get(id);if(!old||(l.title||'').length>old.name.length)events.set(id,{id,name:l.title||id});}
+ return [...events.values()];
+}
 async function nlsArchive(event,env){
  if(event&&!/^(?:\d{4}-\d{2}-\d{2}|\d{1,6})$/.test(event))throw Error('Invalid NLS event ID');
  const source=await officialSource('https://teilnehmer.vln.de/'+(event?'onb.php?d='+encodeURIComponent(event):''),env),all=links(textOf(source),source.url);
- return {source:source.url,retrieved_at:source.retrieved_at,events:all.filter(l=>new URL(l.url).pathname==='/onb.php'&&new URL(l.url).searchParams.has('d')).map(l=>({id:new URL(l.url).searchParams.get('d'),name:l.title})),files:all.filter(l=>new URL(l.url).pathname==='/download.php').map(l=>({...l,folders:[event||'NLS'],format:new URL(l.url).searchParams.get('file').split('.').at(-1).toLowerCase()}))};
+ return {source:source.url,retrieved_at:source.retrieved_at,events:nlsEvents(all),files:all.filter(l=>new URL(l.url).pathname==='/download.php').map(l=>({...l,folders:[event||'NLS'],format:new URL(l.url).searchParams.get('file').split('.').at(-1).toLowerCase()}))};
 }
