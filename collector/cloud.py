@@ -224,6 +224,13 @@ def record(window):
         atomic_json(DATA / 'snapshot.json', previous)
     accepted = threading.Event()
     failed = threading.Event()
+    stop_reason = []  # first cause wins; written to the run log, never credentials
+    last_message = [None]
+
+    def fail(reason):
+        if not stop_reason:
+            stop_reason.append(reason)
+        failed.set()
     session_dir = DATA / 'sessions' / window['id']
     session_dir.mkdir(parents=True, exist_ok=True)
 
@@ -235,11 +242,12 @@ def record(window):
 
         def _on_message(self, message):
             entered_wall, entered = time.time(), time.perf_counter()
+            last_message[0] = entered_wall
             try:
                 if isinstance(message, CompletionMessage):
                     payload = message.result
                     if not isinstance(payload, dict) or not session_matches(payload.get('SessionInfo', {}), window):
-                        failed.set()
+                        fail('session_mismatch')
                         return
                     accepted.set()
                     if state.telemetry is None or state.telemetry.info['Key'] != payload['SessionInfo']['Key']:
@@ -257,7 +265,7 @@ def record(window):
                         # Only SessionInfo is needed here, not a full state snapshot.
                         info = merge(state.session_info(), message[1])
                         if not session_matches(info, window):
-                            failed.set()
+                            fail('session_info_changed')
                             return
                     state.apply(message[0], message[1], message[2] if len(message) > 2 else '')
                 else:
@@ -283,7 +291,7 @@ def record(window):
             super()._on_close()
             with state.lock:
                 state.connected = False
-            failed.set()
+            fail('socket_closed')
 
     client = Client(str(session_dir / 'timing-raw.txt'), filemode='a', timeout=90)
     client.topics = TOPICS
@@ -291,10 +299,11 @@ def record(window):
     def run_client():
         try:
             client.start()
-        except Exception:
-            pass
+        except Exception as error:
+            fail('client_error:' + type(error).__name__)
         finally:
-            failed.set()
+            # FastF1's client also returns here after 90 s without any data.
+            fail('client_stopped_or_feed_silent_90s')
 
     threading.Thread(target=run_client, daemon=True).start()
     began = time.monotonic()
@@ -315,11 +324,16 @@ def record(window):
                 status = persist_snapshot(state, DATA)
                 if terminal_session_status(status):
                     finished = True
+                    stop_reason.insert(0, 'finished:' + str(status))
                     break
             if time.monotonic() - began > 120 and not accepted.is_set():
+                stop_reason.insert(0, 'no_initial_data_120s')
                 break
             if now() >= datetime.fromisoformat(window['close']):
+                stop_reason.insert(0, 'window_closed')
                 break
+        if STOP.is_set():
+            stop_reason.insert(0, 'stop_requested')
     finally:
         # Stop the producer before persisting its final state; no post-checkpoint packets.
         try:
@@ -333,7 +347,24 @@ def record(window):
         if accepted.is_set():
             state.last_checkpoint_text = None  # always write the final checkpoint
             persist_snapshot(state, DATA, session_dir=session_dir)
+        run_log({'event': 'record_end', 'window': window['id'], 'session': window['name'],
+                 'reason': stop_reason[0] if stop_reason else 'unknown', 'accepted': accepted.is_set(),
+                 'seconds': round(time.monotonic() - began), 'parse_errors': state.errors,
+                 'out_of_order': state.out_of_order_packets,
+                 'last_message_at': datetime.fromtimestamp(last_message[0], UTC).isoformat() if last_message[0] else None})
     return 0 if finished else 22
+
+
+def run_log(entry):
+    """Append one safe line (no credentials or payloads) to the run log and stdout."""
+    line = json.dumps({'at': now().isoformat(), **entry}, ensure_ascii=False, default=str)
+    print('[run-log]', line, flush=True)
+    try:
+        DATA.mkdir(parents=True, exist_ok=True)
+        with open(DATA / 'run-log.jsonl', 'a', encoding='utf-8') as handle:
+            handle.write(line + '\n')
+    except OSError:
+        pass
 
 
 def child(*args, **kwargs):
