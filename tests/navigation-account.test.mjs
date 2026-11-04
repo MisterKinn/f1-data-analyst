@@ -49,6 +49,6 @@ test('Google availability is explicit and website identities never masquerade as
  const req=new Request('https://test/account');
  assert.match(await websiteRoute(req).text(),/Google 로그인 · 준비 중/);
  const ready=await websiteRoute(req,{googleReady:true,firebaseConfig:{apiKey:'public-key',authDomain:'test.firebaseapp.com',projectId:'test',appId:'app'},firebaseCsrf:'csrf'}).text();
- assert.match(ready,/id="google-login"/);assert.match(ready,/signInWithPopup/);assert.doesNotMatch(ready,/signInWithRedirect|href="\/auth\/google\/start/);
+ assert.match(ready,/id="google-login"/);assert.match(ready,/signInWithPopup/);assert.match(ready,/firstParty&&REDIRECT_CODES/);assert.doesNotMatch(ready,/href="\/auth\/google\/start/);
  const html=await websiteRoute(req,{google:{email:'a<b@example.com'},googleReady:true}).text();assert.match(html,/내 계정/);assert.match(html,/method="post" action="\/auth\/google\/logout"/);assert.doesNotMatch(html,/signout-with-chatgpt/);assert.doesNotMatch(html,/>ChatGPT로 로그인</);
 });
