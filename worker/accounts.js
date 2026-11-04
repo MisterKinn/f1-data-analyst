@@ -10,6 +10,22 @@ const ORIGIN='https://kongboda-motorsports.jeongmin480.chatgpt.site';
 // key starts the count over.
 export const KEY_FREE_ATTEMPTS=5,KEY_FAILURE_RESET_MS=24*60*60*1000;
 export const keyLockMs=failures=>failures<KEY_FREE_ATTEMPTS?0:failures===KEY_FREE_ATTEMPTS?5*60*1000:10*60*1000;
+// Crew secret key, stored as a salted PBKDF2 record (salt:iterations:hash), never
+// in plain text. LIVE_ANALYSIS_KEY_PBKDF2 can override it without a code change.
+// Input is trimmed, NFC-normalised and lower-cased so phone keyboards that
+// capitalise the first letter or add a space do not reject a correct key.
+export const CREW_KEY_PBKDF2='ebc4c40d305504b193b2906993dce213:310000:dc188508bf3b49a7ab1aea1009500b0b14800ddb7eb394d54631431554505bbb';
+export const normalizeCrewKey=value=>String(value).normalize('NFC').trim().toLowerCase();
+export async function crewKeyMatches(value,env={}){
+ const [saltHex,iterText,expected]=String(env.LIVE_ANALYSIS_KEY_PBKDF2||CREW_KEY_PBKDF2).split(':'),iterations=Number(iterText);
+ if(!saltHex||!expected||!Number.isInteger(iterations)||iterations<1)return false;
+ const salt=Uint8Array.from(saltHex.match(/../g),h=>parseInt(h,16));
+ const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(normalizeCrewKey(value)),'PBKDF2',false,['deriveBits']);
+ const bits=new Uint8Array(await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt,iterations},key,256));
+ const digest=Array.from(bits,n=>n.toString(16).padStart(2,'0')).join('');
+ let different=digest.length^expected.length;for(let i=0;i<64;i++)different|=(digest.charCodeAt(i)||0)^(expected.charCodeAt(i)||0);
+ return different===0;
+}
 const hash=async s=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s))),n=>n.toString(16).padStart(2,'0')).join('');
 const read=async(env,k)=>{const o=await env.BUCKET.get(k);return o?o.json():null;};
 const write=(env,k,v)=>env.BUCKET.put(k,JSON.stringify(v));
@@ -155,16 +171,13 @@ export async function accountRoute(request,env,google,ctx){
  }
  if(u.pathname==='/account/mcp-revoke'){await revokeMcpToken(env,info.account);return back();}
  if(u.pathname==='/account/live-access'){
-  if(!env.LIVE_ANALYSIS_KEY_HASH)return reply('실시간 분석 키 설정을 준비 중입니다.',503);
   const form=await request.formData(),value=form.get('access_key');
   if(typeof value!=='string'||!value||value.length>256)return reply('비밀 키를 확인해 주세요.',400);
   const rateKey='website-accounts/key-attempts/'+info.account.id+'.json';
   const previous=await read(env,rateKey),now=Date.now();
   const attempts=previous?.failures!=null&&now-(previous.lastFailureAt||0)<KEY_FAILURE_RESET_MS?previous:{failures:0,lockedUntil:0,lastFailureAt:0};
   if(attempts.lockedUntil>now)return reply(`입력 횟수를 초과했습니다. ${Math.ceil((attempts.lockedUntil-now)/60000)}분 후 다시 시도해 주세요.`,429);
-  const digest=await hash(value),expected=env.LIVE_ANALYSIS_KEY_HASH;
-  let different=digest.length^expected.length;for(let i=0;i<64;i++)different|=(digest.charCodeAt(i)||0)^(expected.charCodeAt(i)||0);
-  if(different){
+  if(!await crewKeyMatches(value,env)){
    const failures=attempts.failures+1,lockMs=keyLockMs(failures);
    await write(env,rateKey,{failures,lastFailureAt:now,lockedUntil:lockMs?now+lockMs:0});
    if(lockMs)return reply(`비밀 키가 ${failures}번 틀렸습니다. ${lockMs/60000}분 후 다시 시도해 주세요.`,429);
