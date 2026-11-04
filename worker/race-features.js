@@ -5,7 +5,7 @@ export const raceFeatureCss=`
 .track-map{margin:8px 0;min-width:0}.track-map img{display:block;width:100%;height:120px;object-fit:contain;padding:8px;background:#11171c;border-radius:8px}.track-map figcaption{font-size:11px;color:var(--muted);line-height:1.5}.track-map-links{display:flex;gap:10px;flex-wrap:wrap}.sm-zones{font-size:12px;line-height:1.6;padding:0;list-style:none}.sm-zones li{margin:6px 0}
 
 [data-race-calendar="week"] .race-card[hidden]{display:none!important}
-.race-status-row{display:flex;align-items:center;gap:8px 12px;flex-wrap:wrap;margin:8px 0 16px}.race-status-row .race-timezone{margin:0}.race-refresh{font:inherit;font-size:12px;line-height:1;padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--text,inherit);cursor:pointer}.race-refresh:hover:not(:disabled){border-color:var(--mint);color:var(--mint)}.race-refresh:disabled{opacity:.6;cursor:progress}.race-refresh[hidden]{display:none}
+.race-status-row{display:flex;align-items:center;gap:8px 12px;flex-wrap:wrap;margin:8px 0 16px}.race-status-row .race-timezone{margin:0}.race-refresh{font:inherit;font-size:12px;line-height:1;padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--text,inherit);cursor:pointer}.race-refresh:hover:not(:disabled){border-color:var(--mint);color:var(--mint)}.race-refresh:disabled{opacity:.6;cursor:progress}.race-refresh[hidden]{display:none}.race-refresh{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;min-height:32px;padding:0;border-radius:50%}.race-refresh svg{width:16px;height:16px}.race-refresh.is-spinning svg{animation:race-refresh-spin .8s linear infinite}@keyframes race-refresh-spin{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.race-refresh.is-spinning svg{animation:none}}
 [data-race-calendar="week"] .race-cards{display:flex;flex-direction:column;gap:0;border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:4px 16px}
 [data-race-calendar="week"] .race-card{display:grid;grid-template-columns:110px minmax(0,1fr) auto;align-items:center;gap:6px 16px;width:100%;border:0;border-bottom:1px solid var(--line);border-radius:0;padding:13px 0;background:none}
 [data-race-calendar="week"] .race-card:last-child{border-bottom:0}
@@ -128,6 +128,30 @@ export const raceFeatureCss=`
 [data-race-calendar="week"] .week-scroll-controls svg{width:20px;height:20px}
 [data-race-calendar="week"] .week-scroll-controls button:disabled{opacity:.35;cursor:default}
 
+/* Side chevrons for the weekly cards. */
+[data-race-calendar="week"] .week-carousel{position:relative}
+[data-race-calendar="week"] .week-arrow{position:absolute;top:calc(50% - 6px);transform:translateY(-50%);z-index:2;display:flex;align-items:center;justify-content:center;width:40px;height:40px;min-height:40px;padding:0;border:1px solid var(--line);border-radius:50%;background:var(--surface);color:var(--text);box-shadow:0 4px 14px rgba(0,0,0,.22);cursor:pointer;transition:background .15s,transform .15s}
+[data-race-calendar="week"] .week-arrow:hover{background:var(--line)}
+[data-race-calendar="week"] .week-arrow:active{transform:translateY(-50%) scale(.92)}
+[data-race-calendar="week"] .week-arrow:focus-visible{outline:2px solid var(--mint);outline-offset:2px}
+[data-race-calendar="week"] .week-arrow[hidden]{display:none}
+[data-race-calendar="week"] .week-arrow svg{width:20px;height:20px}
+[data-race-calendar="week"] .week-arrow-prev{left:-10px}
+[data-race-calendar="week"] .week-arrow-next{right:-10px}
+@media(max-width:700px){[data-race-calendar="week"] .week-arrow{width:34px;height:34px;min-height:34px}[data-race-calendar="week"] .week-arrow-prev{left:-4px}[data-race-calendar="week"] .week-arrow-next{right:-4px}}
+/* Championship filter chips and session fade in/out. */
+.week-filter{padding:4px 10px 4px 8px;border:1px solid var(--line);border-radius:999px;transition:border-color .18s,background-color .18s,opacity .18s}
+.week-filter:has(input:checked){border-color:var(--mint);background:color-mix(in srgb,var(--mint) 12%,transparent)}
+.week-filter:not(:has(input:checked)){opacity:.6}
+.week-filter:not(:has(input:checked)) span{text-decoration:line-through;text-decoration-thickness:1px}
+.week-filter.is-toggled{animation:week-filter-pop .22s ease-out}
+.week-slot.slot-enter,.week-day.slot-enter{animation:week-slot-in .2s ease-out}
+.week-slot.slot-leave,.week-day.slot-leave{animation:week-slot-out .18s ease-in forwards}
+@keyframes week-filter-pop{0%{transform:scale(1)}45%{transform:scale(.93)}100%{transform:scale(1)}}
+@keyframes week-slot-in{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+@keyframes week-slot-out{from{opacity:1;transform:none}to{opacity:0;transform:translateY(-4px)}}
+@media(prefers-reduced-motion:reduce){.week-filter.is-toggled,.week-slot.slot-enter,.week-day.slot-enter,.week-slot.slot-leave,.week-day.slot-leave{animation:none}}
+
 /* The confirmation note spans the card; it was squeezed into the 80px tag column. */
 [data-race-calendar="week"] .race-card .race-unverified{grid-column:1/-1;align-self:end;margin-top:auto;line-height:1.45}
 /* Weekly view switch (by championship / by time), copy as text, and the time list. */
@@ -165,7 +189,7 @@ export const sessionStateCss=`
 `;
 
 export const scheduleLogoCss='[data-race-calendar="week"] .race-series-logo[src="/assets/schedule/24h-series"]{object-fit:cover;object-position:left;width:80px;height:38px;filter:grayscale(1) contrast(100);mix-blend-mode:screen}';
-export function calendarSection(series){return `<section class="race-section" data-race-calendar="${series||'week'}"><h2>${series?'레이스 캘린더':'이번 주의 모터스포츠'}</h2><div class="race-status-row"><p class="fine race-timezone" data-race-status>일정 확인 중…</p><button type="button" class="race-refresh" data-race-refresh hidden aria-label="일정 새로고침">새로고침</button></div><div class="${series?'calendar-strip':'race-cards'}" data-race-cards></div></section>`;}
+export function calendarSection(series){return `<section class="race-section" data-race-calendar="${series||'week'}"><h2>${series?'레이스 캘린더':'이번 주의 모터스포츠'}</h2><div class="race-status-row"><p class="fine race-timezone" data-race-status>일정 확인 중…</p><button type="button" class="race-refresh" data-race-refresh hidden aria-label="일정 새로고침" title="일정 새로고침"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg></button></div><div class="${series?'calendar-strip':'race-cards'}" data-race-cards></div></section>`;}
 export function weekBounds(now=new Date()){
  const start=new Date(now);start.setHours(0,0,0,0);start.setDate(start.getDate()-(start.getDay()+6)%7);
  const end=new Date(start);end.setDate(end.getDate()+7);return {start,end};
@@ -243,7 +267,7 @@ export function raceFeaturesClient(dictionary,translateText,weekBounds,sessionSt
  function loadCalendar(){return publicJsonRequest('/api/race-calendar',{cache:'no-store',timeoutMs:15000}).then(({response:r,data})=>{if(!r.ok)throw Error();return data;}).then(data=>{
   function render(){
   if(data.unavailable){cards.replaceChildren();status.textContent=t('24시간 이내 확인된 일정이 없습니다. 공식 일정 갱신을 다시 확인하고 있습니다.','No schedule verified within 24 hours. Checking the official sources again.');return ()=>{};}
-  carouselObserver?.disconnect();cards.onscroll=null;cards.onkeydown=null;cards.replaceChildren();root.querySelector('.week-scroll-controls')?.remove();root.querySelector('.week-view-bar')?.remove();root.querySelector('.week-timeline')?.remove();cards.hidden=false;
+  carouselObserver?.disconnect();cards.onscroll=null;cards.onkeydown=null;cards.replaceChildren();{const carousel=root.querySelector('.week-carousel');if(carousel){carousel.before(cards);carousel.remove();}}root.querySelector('.week-scroll-controls')?.remove();root.querySelector('.week-view-bar')?.remove();root.querySelector('.week-timeline')?.remove();cards.hidden=false;
   const now=new Date(),week=weekBounds(now),series=root.dataset.raceCalendar;
   let events=data.events.filter(e=>series==='week'?weeklyEventVisible(e,now,weekBounds,sessionState):e.series===series||(e.seriesIds||[]).includes(series));
   if(series!=='week'){
@@ -257,16 +281,20 @@ export function raceFeaturesClient(dictionary,translateText,weekBounds,sessionSt
   let syncWeekControls=()=>{};
   if(series==='week'){
    cards.tabIndex=0;cards.setAttribute('role','region');cards.setAttribute('aria-label',t('이번 주 대회 · 좌우 스크롤','This week’s events · scroll horizontally'));
-   const controls=node('div',undefined,'week-scroll-controls'),buttons=[];
-   const scroll=step=>cards.scrollBy({left:step*((cards.querySelector('.race-card:not([hidden])')?.getBoundingClientRect().width||280)+14),behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
-   for(const [step,label] of [[-1,t('이전 대회','Previous events')],[1,t('다음 대회','Next events')]]){
-    const button=node('button');button.type='button';button.setAttribute('aria-label',label);
-    button.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8"><path d="'+(step<0?'M15 5l-7 7 7 7':'M9 5l7 7-7 7')+'"/></svg>';
-    button.addEventListener('click',()=>scroll(step));controls.append(button);buttons.push(button);
+   // Chevron arrows on both sides of the row page through the cards; each
+   // hides when the row cannot scroll further that way.
+   const carousel=node('div',undefined,'week-carousel'),buttons=[];
+   const smooth=()=>matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth';
+   const cardStep=()=>(cards.querySelector('.race-card:not([hidden])')?.getBoundingClientRect().width||280)+14;
+   const scroll=step=>cards.scrollBy({left:step*cardStep(),behavior:smooth()});
+   const page=step=>cards.scrollBy({left:step*Math.max(cardStep(),Math.floor(cards.clientWidth/cardStep())*cardStep()),behavior:smooth()});
+   cards.before(carousel);carousel.append(cards);
+   for(const [step,label,side] of [[-1,t('이전 대회','Previous events'),'prev'],[1,t('다음 대회','Next events'),'next']]){
+    const button=node('button',undefined,'week-arrow week-arrow-'+side);button.type='button';button.setAttribute('aria-label',label);
+    button.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="'+(step<0?'M15 5l-7 7 7 7':'M9 5l7 7-7 7')+'"/></svg>';
+    button.addEventListener('click',()=>page(step));carousel.append(button);buttons.push(button);
    }
-   // Arrow buttons removed (2026-11-04): the row scrolls by swipe, trackpad, scrollbar and arrow keys.
-   controls.hidden=true;controls.style.display='none';cards.before(controls);
-   syncWeekControls=()=>{const max=cards.scrollWidth-cards.clientWidth;controls.hidden=true;buttons[0].disabled=cards.scrollLeft<=1;buttons[1].disabled=cards.scrollLeft>=max-1;};
+   syncWeekControls=()=>{const max=cards.scrollWidth-cards.clientWidth,off=cards.hidden||max<=1;buttons[0].hidden=off||cards.scrollLeft<=1;buttons[1].hidden=off||cards.scrollLeft>=max-1;};
    cards.onscroll=syncWeekControls;
    cards.onkeydown=event=>{if(event.target===cards&&['ArrowLeft','ArrowRight'].includes(event.key)){event.preventDefault();scroll(event.key==='ArrowLeft'?-1:1);}};
    carouselObserver=new ResizeObserver(()=>{syncWeekControls();fitSessionLabels();});carouselObserver.observe(cards);
@@ -371,7 +399,7 @@ export function raceFeaturesClient(dictionary,translateText,weekBounds,sessionSt
    const timeline=node('div',undefined,'week-timeline');
    const filters=node('fieldset',undefined,'week-filters');filters.append(node('legend',t('보고 싶은 대회','Show championships')));
    const seriesIds=[...new Set(visibleEvents.map(x=>x.event.series))];
-   for(const id of seriesIds){const e=visibleEvents.find(x=>x.event.series===id).event;const box=node('label',undefined,'week-filter');const input=node('input');input.type='checkbox';input.checked=!hiddenSeries.has(id);input.addEventListener('change',()=>{input.checked?hiddenSeries.delete(id):hiddenSeries.add(id);apply();});const name=node('span',label(e));name.setAttribute('data-no-translate','');box.append(input,name);filters.append(box);}
+   for(const id of seriesIds){const e=visibleEvents.find(x=>x.event.series===id).event;const box=node('label',undefined,'week-filter');const input=node('input');input.type='checkbox';input.checked=!hiddenSeries.has(id);input.addEventListener('change',()=>{input.checked?hiddenSeries.delete(id):hiddenSeries.add(id);box.classList.remove('is-toggled');void box.offsetWidth;box.classList.add('is-toggled');apply(true);});const name=node('span',label(e));name.setAttribute('data-no-translate','');box.append(input,name);filters.append(box);}
    const list=node('div',undefined,'week-timeline-list');
    const rows=visibleEvents.flatMap(({event})=>event.sessions.map(session=>({event,session}))).sort((a,b)=>Date.parse(a.session.start)-Date.parse(b.session.start));
    let lastDay='',group=null;
@@ -386,8 +414,7 @@ export function raceFeaturesClient(dictionary,translateText,weekBounds,sessionSt
    }
    if(!rows.length)list.append(node('p',empty,'fine'));
    timeline.append(filters,list);
-   const controls=root.querySelector('.week-scroll-controls');
-   (controls||cards).before(bar);cards.after(timeline);
+   (root.querySelector('.week-carousel')||cards).before(bar);cards.after(timeline);
    function textFor(){
     if(weekView==='time'){
      const out=[t('이번 주의 모터스포츠','This week in motorsport')+' · '+zoneLabel];let day='';
@@ -399,12 +426,21 @@ export function raceFeaturesClient(dictionary,translateText,weekBounds,sessionSt
     return out.join('\n');
    }
    copy.addEventListener('click',async()=>{const text=textFor();let ok=false;try{await navigator.clipboard.writeText(text);ok=true;}catch{const area=node('textarea');area.value=text;area.setAttribute('readonly','');area.style.position='fixed';area.style.opacity='0';document.body.append(area);area.select();try{ok=document.execCommand('copy');}catch{}area.remove();}feedback.textContent=ok?t('시간표를 복사했습니다','Schedule copied'):t('복사하지 못했습니다. 다시 시도하세요.','Could not copy. Try again.');setTimeout(()=>{feedback.textContent='';},2500);});
-   function apply(){
+   // Checking a championship fades its sessions in; unchecking fades them out
+   // before they collapse. Reduced motion switches instantly.
+   const show=(el,visible,animate)=>{
+    clearTimeout(el._leave);el.classList.remove('slot-leave');
+    if(!animate){el.hidden=!visible;el.classList.remove('slot-enter');return;}
+    if(visible&&el.hidden){el.hidden=false;el.classList.remove('slot-enter');void el.offsetWidth;el.classList.add('slot-enter');}
+    else if(!visible&&!el.hidden){el.classList.add('slot-leave');el._leave=setTimeout(()=>{el.hidden=true;el.classList.remove('slot-leave');},180);}
+   };
+   function apply(animate=false){
     for(const b of views)b.setAttribute('aria-pressed',String(b.dataset.view===weekView));
     const time=weekView==='time';cards.hidden=time;timeline.hidden=!time;
-    for(const {row,event} of timelineRows)row.hidden=hiddenSeries.has(event.series);
-    for(const g of list.querySelectorAll('.week-day'))g.hidden=![...g.querySelectorAll('.week-slot')].some(r=>!r.hidden);
-    if(!time)requestAnimationFrame(syncWeekControls);
+    const motion=animate&&time&&!matchMedia('(prefers-reduced-motion: reduce)').matches;
+    for(const {row,event} of timelineRows)show(row,!hiddenSeries.has(event.series),motion);
+    for(const g of list.querySelectorAll('.week-day'))show(g,[...g.querySelectorAll('.week-slot')].some(r=>!hiddenSeries.has(r.dataset.series)),motion);
+    requestAnimationFrame(syncWeekControls);
    }
    apply();
   }
@@ -430,7 +466,7 @@ export function raceFeaturesClient(dictionary,translateText,weekBounds,sessionSt
    if(!fetching&&Date.now()-lastFetch>=300000){fetching=true;publicJsonRequest('/api/race-calendar',{cache:'no-store',timeoutMs:15000}).then(({response:r,data:next})=>{if(!r.ok)throw Error();data=next;lastFetch=Date.now();refresh=render();}).catch(()=>{lastFetch=Date.now()-240000;if(Date.now()-Date.parse(data.checkedAt)>=86400000){data={...data,events:[],unavailable:true};refresh=render();}status.textContent=t('최신 일정 확인 실패 · 이전 조회 일정 표시 중','Refresh failed · showing the previous schedule');}).finally(()=>{fetching=false;});}
   }
   const refreshButton=root.querySelector('[data-race-refresh]');
-  if(refreshButton){refreshButton.hidden=false;refreshButton.addEventListener('click',()=>{if(fetching)return;fetching=true;refreshButton.disabled=true;refreshButton.textContent=t('확인 중…','Checking…');status.textContent=t('공식 일정을 다시 확인하는 중…','Re-checking official schedules…');publicJsonRequest('/api/race-calendar?refresh=1',{cache:'no-store',timeoutMs:20000}).then(({response:r,data:next})=>{if(!r.ok)throw Error();data=next;lastFetch=Date.now();refresh=render();}).catch(()=>{status.textContent=t('새로고침 실패 · 이전 조회 일정 표시 중','Refresh failed · showing the previous schedule');}).finally(()=>{fetching=false;refreshButton.disabled=false;refreshButton.textContent=t('새로고침','Refresh');});});}
+  if(refreshButton){refreshButton.hidden=false;refreshButton.addEventListener('click',()=>{if(fetching)return;fetching=true;refreshButton.disabled=true;refreshButton.classList.add('is-spinning');refreshButton.setAttribute('aria-busy','true');status.textContent=t('공식 일정을 다시 확인하는 중…','Re-checking official schedules…');publicJsonRequest('/api/race-calendar?refresh=1',{cache:'no-store',timeoutMs:20000}).then(({response:r,data:next})=>{if(!r.ok)throw Error();data=next;lastFetch=Date.now();refresh=render();}).catch(()=>{status.textContent=t('새로고침 실패 · 이전 조회 일정 표시 중','Refresh failed · showing the previous schedule');}).finally(()=>{fetching=false;refreshButton.disabled=false;refreshButton.classList.remove('is-spinning');refreshButton.removeAttribute('aria-busy');});});}
   setInterval(()=>{if(document.visibilityState!=='hidden')tick();},15000);
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')tick();});
   window.addEventListener('pageshow',tick);
