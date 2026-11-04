@@ -130,12 +130,12 @@ export const raceFeatureCss=`
 
 /* Side chevrons for the weekly cards. */
 [data-race-calendar="week"] .week-carousel{position:relative}
-[data-race-calendar="week"] .week-arrow{position:absolute;top:calc(50% - 6px);transform:translateY(-50%);z-index:2;display:flex;align-items:center;justify-content:center;width:40px;height:40px;min-height:40px;padding:0;border:1px solid var(--line);border-radius:50%;background:var(--surface);color:var(--text);box-shadow:0 4px 14px rgba(0,0,0,.22);cursor:pointer;transition:background .15s,transform .15s}
-[data-race-calendar="week"] .week-arrow:hover{background:var(--line)}
-[data-race-calendar="week"] .week-arrow:active{transform:translateY(-50%) scale(.92)}
+[data-race-calendar="week"] .week-arrow{position:absolute;top:calc(50% - 6px);transform:translateY(-50%);z-index:2;display:flex;align-items:center;justify-content:center;width:48px;height:52px;min-height:52px;padding:0;border:0;border-radius:0;background:transparent;color:var(--muted);box-shadow:none;cursor:pointer;transition:color .15s}
+[data-race-calendar="week"] .week-arrow:hover{background:transparent;color:var(--mint)}
+[data-race-calendar="week"] .week-arrow:active{color:var(--mint)}
 [data-race-calendar="week"] .week-arrow:focus-visible{outline:2px solid var(--mint);outline-offset:2px}
 [data-race-calendar="week"] .week-arrow[hidden]{display:none}
-[data-race-calendar="week"] .week-arrow svg{width:20px;height:20px}
+[data-race-calendar="week"] .week-arrow .chevron{display:block;width:20px;height:20px;border-bottom:3px solid currentColor;border-right:3px solid currentColor;transform:rotate(-45deg)}[data-race-calendar="week"] .week-arrow-prev .chevron{transform:rotate(135deg)}
 [data-race-calendar="week"] .week-arrow-prev{left:-10px}
 [data-race-calendar="week"] .week-arrow-next{right:-10px}
 @media(max-width:700px){[data-race-calendar="week"] .week-arrow{width:34px;height:34px;min-height:34px}[data-race-calendar="week"] .week-arrow-prev{left:-4px}[data-race-calendar="week"] .week-arrow-next{right:-4px}}
@@ -291,7 +291,7 @@ export function raceFeaturesClient(dictionary,translateText,weekBounds,sessionSt
    cards.before(carousel);carousel.append(cards);
    for(const [step,label,side] of [[-1,t('이전 대회','Previous events'),'prev'],[1,t('다음 대회','Next events'),'next']]){
     const button=node('button',undefined,'week-arrow week-arrow-'+side);button.type='button';button.setAttribute('aria-label',label);
-    button.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="'+(step<0?'M15 5l-7 7 7 7':'M9 5l7 7-7 7')+'"/></svg>';
+    button.innerHTML='<i class="chevron" aria-hidden="true"></i>';
     button.addEventListener('click',()=>page(step));carousel.append(button);buttons.push(button);
    }
    syncWeekControls=()=>{const max=cards.scrollWidth-cards.clientWidth,off=cards.hidden||max<=1;buttons[0].hidden=off||cards.scrollLeft<=1;buttons[1].hidden=off||cards.scrollLeft>=max-1;};
