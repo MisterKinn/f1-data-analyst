@@ -2,7 +2,7 @@ import {sessionState} from './session-state.js';
 
 export const raceFeatureCss=`
 .race-unverified{margin:2px 0 0;font-size:12px;color:var(--muted)}
-.track-map{margin:8px 0;min-width:0}.track-map img{display:block;width:100%;height:120px;object-fit:contain;padding:8px;background:#11171c;border-radius:8px}.track-map figcaption{font-size:11px;color:var(--muted);line-height:1.5}.track-map-links{display:flex;gap:10px;flex-wrap:wrap}.sm-zones{font-size:12px;line-height:1.6;padding:0;list-style:none}.sm-zones li{margin:6px 0}
+.track-map{margin:8px 0;min-width:0}.track-map img{display:block;width:100%;height:120px;object-fit:contain;padding:8px;background:#16181a;border-radius:8px}.track-map figcaption{font-size:11px;color:var(--muted);line-height:1.5}.track-map-links{display:flex;gap:10px;flex-wrap:wrap}.sm-zones{font-size:12px;line-height:1.6;padding:0;list-style:none}.sm-zones li{margin:6px 0}
 
 [data-race-calendar="week"] .race-card[hidden]{display:none!important}
 .race-status-row{display:flex;align-items:center;gap:8px 12px;flex-wrap:wrap;margin:8px 0 16px}.race-status-row .race-timezone{margin:0}.race-refresh{font:inherit;font-size:12px;line-height:1;padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--text,inherit);cursor:pointer}.race-refresh:hover:not(:disabled){border-color:var(--mint);color:var(--mint)}.race-refresh:disabled{opacity:.6;cursor:progress}.race-refresh[hidden]{display:none}.race-refresh{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;min-height:32px;padding:0;border-radius:50%}.race-refresh svg{width:16px;height:16px}.race-refresh.is-spinning svg{animation:race-refresh-spin .8s linear infinite}@keyframes race-refresh-spin{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.race-refresh.is-spinning svg{animation:none}}
@@ -94,7 +94,7 @@ export const raceFeatureCss=`
 .map-switches{display:flex;gap:6px;margin:0 0 6px}.map-switches button{font-size:12px;min-height:32px;padding:5px 12px;border-radius:999px}.map-switches button[aria-pressed="true"]{color:var(--bg);background:var(--mint)}.track-map.zone-map-active img{height:320px;background:#fff}.track-map figcaption a{margin-left:6px}
 .week-scroll-controls{display:none}
 @media(min-width:901px){
- [data-race-calendar="week"] .race-cards{overscroll-behavior-x:contain;scrollbar-width:thin;scrollbar-color:#52656f #11171c;scroll-padding:2px}
+ [data-race-calendar="week"] .race-cards{overscroll-behavior-x:contain;scrollbar-width:thin;scrollbar-color:#52656f #16181a;scroll-padding:2px}
  [data-race-calendar="week"] .race-card .week-session-columns{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
  [data-race-calendar="week"] .race-card .session-time{display:flex;flex-wrap:wrap;justify-content:flex-start;gap:2px 4px;min-height:22px;font-size:11px}
  [data-race-calendar="week"] .race-card .session-time time{width:auto;font-size:11px;letter-spacing:-.35px;flex:none}
@@ -109,7 +109,7 @@ export const raceFeatureCss=`
 
 /* One horizontal weekly layout at every viewport size. Card widths change
    continuously; the schedule never switches into a vertical list. */
-[data-race-calendar="week"] .race-cards{display:flex;flex-direction:row;align-items:stretch;gap:14px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x proximity;scrollbar-width:thin;scrollbar-color:#52656f #11171c;scroll-padding:2px;border:0;background:none;padding:3px 2px 12px}
+[data-race-calendar="week"] .race-cards{display:flex;flex-direction:row;align-items:stretch;gap:14px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x proximity;scrollbar-width:thin;scrollbar-color:#52656f #16181a;scroll-padding:2px;border:0;background:none;padding:3px 2px 12px}
 [data-race-calendar="week"] .race-card{display:grid;grid-template-columns:72px minmax(0,1fr);grid-template-rows:auto 1fr;align-content:start;align-items:start;flex:0 0 clamp(280px,calc((100% - 28px)/3),420px);width:auto;min-width:0;padding:14px;gap:12px 10px;border:1px solid var(--line);border-radius:12px;background:var(--surface);scroll-snap-align:start}
 [data-race-calendar="week"] .race-card:last-child{border-bottom:1px solid var(--line)}
 [data-race-calendar="week"] .race-card>.tag{grid-column:1;grid-row:1;align-self:center;margin:0}

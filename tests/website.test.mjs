@@ -32,7 +32,9 @@ test('introduction and local logo/script work without changing data authenticati
  assert.doesNotMatch(guide,/kongboda-motorsports\.vercel\.app\/mcp/);assert.match(guide,/커스텀 커넥터 추가/);assert.match(guide,/사용자 지정 MCP 서버 추가/);
  assert.ok(!about.includes('01 / INSTALL'));assert.ok(guide.includes('<ol class="guide-steps">'));assert.ok(!guide.includes('HOW TO USE'));assert.ok(!guide.includes('01 / INSTALL'));
  assert.match(about,/Kongboda Motorsports/);
- const svg=await get('/assets/brand-mark.svg');assert.match(svg.headers.get('content-type'),/image\/svg/);assert.match(await svg.text(),/viewBox="250 230 1250 440"/);
+ const svg=await get('/assets/brand-mark.svg');assert.match(svg.headers.get('content-type'),/image\/svg/);const svgText=await svg.text();assert.match(svgText,/<svg[^>]*viewBox="/);assert.match(svgText,/#00d2be/);
+ const light=await get('/assets/brand-mark-light.svg');assert.match(await light.text(),/#d40000/);
+ const tab=await (await get('/assets/brand-icon.svg')).text();assert.match(tab,/prefers-color-scheme:dark/);
  const icon=await get('/assets/brand-icon.png');assert.equal(icon.status,200);assert.equal(icon.headers.get('content-type'),'image/png');assert.equal((await icon.arrayBuffer()).byteLength,283770);
  const script=await get('/assets/website.js');assert.match(script.headers.get('content-type'),/javascript/);new Function(await script.text());
  const head=await get('/','HEAD');assert.equal(head.status,200);assert.equal(await head.text(),'');

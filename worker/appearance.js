@@ -23,7 +23,7 @@ export function appearanceClient(){
   finally{select.disabled=false;}
  });
 }
-const lightTokens=`--bg:#f6f8f7;--surface:#ffffff;--line:#cbd7d2;--text:#17252a;--muted:#52636a;--mint:#006b58;--blue:#245d9c;--soft:#e8f1ed;--paper:#ffffff;--on-accent:#ffffff;--analysis-surface:#ffffff;color-scheme:light;`;
+const lightTokens=`--bg:#faf8f5;--surface:#ffffff;--line:#e2dcd3;--text:#1a1a1a;--muted:#5c5c5c;--mint:#d40000;--blue:#245d9c;--soft:#fbeaea;--paper:#ffffff;--on-accent:#ffffff;--analysis-surface:#ffffff;color-scheme:light;`;
 export const appearanceCss=`
 :root{--blue:#92b6ff;--on-accent:#09110f;--analysis-surface:linear-gradient(140deg,#141e23,#0c1216);--soft:#18262c;--paper:#0c1216}
 :root[data-theme="light"]{${lightTokens}}
@@ -36,12 +36,12 @@ header nav{min-width:0;flex-wrap:wrap}
 .button.primary,.primary{color:var(--on-accent)}
 #kb-recorded{--bg:var(--surface);--paper:var(--bg);--ink:var(--text);--muted:inherit;--line:inherit;--mint:inherit;--blue:inherit;--soft:inherit;color-scheme:inherit}
 /* Rebind explicit demo colors without inheriting unresolved custom-property cycles. */
-:root[data-theme="light"] #kb-recorded{--bg:#ffffff;--paper:#f6f8f7;--ink:#17252a;--muted:#52636a;--line:#cbd7d2;--mint:#006b58;--blue:#245d9c;--soft:#e8f1ed}
+:root[data-theme="light"] #kb-recorded{--bg:#ffffff;--paper:#faf8f5;--ink:#1a1a1a;--muted:#5c5c5c;--line:#e2dcd3;--mint:#d40000;--blue:#245d9c;--soft:#fbeaea}
 #kb-recorded .analysis{background:var(--analysis-surface)}
 :root[data-theme="light"] button,:root[data-theme="light"] .button{background:var(--soft);color:var(--text)}
 :root[data-theme="light"] .button.primary,:root[data-theme="light"] .primary{background:var(--mint);color:var(--on-accent)}
 :root[data-theme="light"] input,:root[data-theme="light"] select,:root[data-theme="light"] option{background:var(--surface);color:var(--text)}
-:root[data-theme="light"] .approved-brand{filter:brightness(0) saturate(100%) invert(28%) sepia(39%) saturate(1282%) hue-rotate(121deg) brightness(91%) contrast(101%)!important}
+.brand-light{display:none!important}:root[data-theme="light"] .brand-light{display:block!important}:root[data-theme="light"] .brand-dark{display:none!important}@media(prefers-color-scheme:light){:root:not([data-theme]) .brand-light{display:block!important}:root:not([data-theme]) .brand-dark{display:none!important}}
 :root[data-theme="light"] #kb-recorded .sector-value.loss::before{background:#e4edf7}
 :root[data-theme="light"] #kb-recorded .sector-value.gain::before{background:#dceee5}
 :root[data-theme="light"] .track-map img{background:#eef2f0}
@@ -52,7 +52,7 @@ header nav{min-width:0;flex-wrap:wrap}
 :root[data-theme="light"] .race-tyre.tyre-W{color:#245d9c}
 :root[data-theme="light"] .session-live-badge{color:#a52235;border-color:#bd6974;background:#fff1f2}
 :root[data-theme="light"] .calendar-strip,:root[data-theme="light"] [data-race-calendar="week"] .race-cards{scrollbar-color:#8da59a #edf3ef}
-:root[data-theme="light"] ::selection{background:#bce9db;color:#17252a}
+:root[data-theme="light"] ::selection{background:#f6c9c9;color:#1a1a1a}
 `;
 
 // Apply the same palette when scripts are disabled and the OS requests light mode.
