@@ -37,6 +37,35 @@ const beatKey=(name,series=IDLE)=>'collector/beat/'+name+'/'+series+'.json';
 const batonKey=(series,windowId)=>'collector/baton/'+series+'/'+windowId+'.json';
 
 async function readJson(env,key){const o=await env.BUCKET.get(key);return o?await o.json():null;}
+// Shared F1 login: the owner's computer (a built-in host) sends its F1 login token with its
+// heartbeat; approved hosts without their own F1 account receive it with theirs. Only the
+// token is kept (it expires after a few days), never a password.
+const TOKEN_KEY='collector/f1-shared-token.json';
+export function tokenExpiry(value){
+ try{
+  const parts=typeof value==='string'&&value.length<8000?value.split('.'):[];
+  if(parts.length!==3)return null;
+  const b64=parts[1].replace(/-/g,'+').replace(/_/g,'/');
+  const claims=JSON.parse(atob(b64+'='.repeat((4-b64.length%4)%4)));
+  return Number.isFinite(claims.exp)?claims.exp:null;
+ }catch{return null;}
+}
+async function sharedLogin(env,me,data,now){
+ if(me?.builtin&&typeof data.f1_token==='string'){
+  const exp=tokenExpiry(data.f1_token);
+  if(exp&&exp*1000>now+600000){
+   const prev=await readJson(env,TOKEN_KEY).catch(()=>null);
+   if(!prev||!(prev.expires_at>=exp))await env.BUCKET.put(TOKEN_KEY,JSON.stringify({value:data.f1_token,expires_at:exp,from:me.name,at:new Date(now).toISOString()}));
+  }
+ }
+ if(!data.want_token||!me||me.status!=='approved'||me.enabled===false)return null;
+ const saved=await readJson(env,TOKEN_KEY).catch(()=>null);
+ return saved&&saved.expires_at*1000>now+300000?{value:saved.value,expires_at:saved.expires_at}:null;
+}
+export async function sharedLoginStatus(env,now=Date.now()){
+ const saved=await readJson(env,TOKEN_KEY).catch(()=>null);
+ return saved?{expires_at:new Date(saved.expires_at*1000).toISOString(),from:saved.from,valid:saved.expires_at*1000>now}:null;
+}
 const clean=v=>typeof v==='string'?v.slice(0,40):null;
 
 // Saved fleet merged with the built-in hosts (built-ins first unless the owner reordered).
@@ -127,7 +156,8 @@ export async function hostBeat(env,name,body,now=Date.now()){
   holder=next.holder;warm=next.warm.has(name);retired=next.state.retired.includes(name);
  }
  const update_at=[fleet.update_at,me?.update_at].filter(Boolean).sort().at(-1)||null;
- return [200,{host:name,enabled:me?.enabled!==false,cold:!!me?.cold,jobs:me?jobsOf(me):['f1'],update_at,
+ const f1Token=await sharedLogin(env,me,data,now);
+ return [200,{host:name,token_source:!!me?.builtin,...(f1Token?{f1_token:f1Token}:{}),enabled:me?.enabled!==false,cold:!!me?.cold,jobs:me?jobsOf(me):['f1'],update_at,
   priority:hosts.filter(h=>h.status==='approved').findIndex(h=>h.name===name)+1,
   series:windowId?series:null,window:windowId,holder,active:!!windowId&&holder===name,warm,retired,lead,is_lead:lead===name}];
 }
@@ -176,7 +206,8 @@ export async function fleetStatus(env,now=Date.now()){
   holders[series+':'+w]=next.holder;warmSets[series+':'+w]=next.warm;
  }
  const lead=chooseLead(hosts,beats,now);
- return {revision,lead,holders,update_at,warm_count,series:KNOWN_SERIES,now:new Date(now).toISOString(),hosts:hosts.map((h,i)=>{
+ const shared_login=await sharedLoginStatus(env,now);
+ return {revision,lead,holders,update_at,warm_count,shared_login,series:KNOWN_SERIES,now:new Date(now).toISOString(),hosts:hosts.map((h,i)=>{
   const last=lastBeat(beats,h.name),age=last?now-Date.parse(last.at):null;
   const live=SERIES.map(series=>{const b=beats[h.name]?.[series],k=series+':'+b?.window;return fresh(b,now,BEAT_FRESH_MS)&&b.window?{series,window:b.window,ready:!!b.ready,holder:holders[k]===h.name,recording:!!warmSets[k]?.has(h.name)}:null;}).filter(Boolean);
   const state=h.status==='pending'?'pending':h.enabled===false?'paused':live.some(j=>j.holder)?'publishing':live.some(j=>j.recording)?'standby':live.length?'reserve':age!==null&&age<ONLINE_MS?'online':'offline';

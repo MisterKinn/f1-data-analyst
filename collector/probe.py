@@ -39,11 +39,21 @@ def main():
     except OSError:
         result['network'] = None
     fastf1.set_auth_method('password')
-    try:
-        auth = get_token().authorization_header
-        result['sign_in'] = 'ok'
-    except Exception as exc:
-        auth, result['sign_in'] = None, type(exc).__name__
+    shared = not cloud.f1_login_ready()
+    if shared:  # no F1 account on this computer: use the owner's shared login token
+        try:
+            import host_runner
+            host_runner.fetch_shared_token()
+        except Exception:
+            pass
+    if not cloud.f1_login_ready():
+        auth, result['sign_in'] = None, 'shared_pending'
+    else:
+        try:
+            auth = get_token().authorization_header
+            result['sign_in'] = 'shared' if shared else 'ok'
+        except Exception as exc:
+            auth, result['sign_in'] = None, type(exc).__name__
     for name, method, path in CHECKS:
         result[name] = {'no_token': status(method, path), 'token': status(method, path, auth) if auth else None}
     print(json.dumps(result))

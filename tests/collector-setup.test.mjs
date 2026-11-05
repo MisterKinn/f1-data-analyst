@@ -7,7 +7,7 @@ test('install helper tool is read-only and asks for the OS when unknown',()=>{
  const g=collectorSetupGuide();assert.ok(g.ask);assert.match(g.windows_kit,/\/download\/kongboda-collector-setup\.zip$/);
 });
 test('windows and mac guides give steps, commands and never handle passwords',()=>{
- const w=collectorSetupGuide('windows','install');assert.ok(w.steps.length>=4);assert.match(w.commands.install,/collector-kit\.ps1/);assert.match(w.for_assistants_with_computer_control,/user type the F1/);
+ const w=collectorSetupGuide('windows','install');assert.ok(w.steps.length>=4);assert.match(w.commands.install,/collector-kit\.ps1/);assert.match(w.for_assistants_with_computer_control,/No F1 account is needed/);assert.match(w.commands.one_file_installer,/kongboda-collector-setup\.cmd$/);
  const m=collectorSetupGuide('mac','remove');assert.match(m.commands.remove,/kit-mac\.sh\)" - uninstall$/);
  for(const g of [w,m])assert.ok(!/password=|F1_PASSWORD/.test(JSON.stringify(g)));
 });
@@ -16,6 +16,11 @@ test('my collectors are added for a signed-in account',async()=>{
  store.set('collector/fleet.json',JSON.stringify({revision:1,hosts:[{name:'pc-a',key:'A'.repeat(43),status:'approved',enabled:true,account:{id:'acc-1',name:'민수'}}]}));
  const r=await collectorSetupCall(new Request('https://x/mcp'),env,{os:'windows',action:'check'},{identity:async()=>({account:{id:'acc-1'}})});
  assert.equal(r.structuredContent.my_collectors.length,1);assert.equal(r.structuredContent.my_collectors[0].name,'pc-a');
+});
+test('one-file installer downloads the kit script and installs',async()=>{
+ const r=collectorKitRoute(new Request('https://x/download/kongboda-collector-setup.cmd'));
+ assert.match(r.headers.get('content-disposition'),/kongboda-collector-setup\.cmd/);
+ const t=await r.text();assert.match(t,/^@echo off\r\n/);assert.match(t,/collector-kit\.ps1/);assert.match(t,/-Action install/);assert.ok(/^[\x00-\x7f]*$/.test(t),'ASCII only for cmd.exe');
 });
 test('kit downloads are served with the right types',async()=>{
  const zip=collectorKitRoute(new Request('https://x/download/kongboda-collector-setup.zip'));

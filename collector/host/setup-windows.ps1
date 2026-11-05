@@ -1,11 +1,11 @@
 # Kongboda collector host setup for Windows (run once; safe to run again).
 #   One line in PowerShell:
 #   irm https://raw.githubusercontent.com/MisterKinn/f1-data-analyst/main/collector/host/setup-windows.ps1 -OutFile $env:TEMP\kb.ps1; powershell -ExecutionPolicy Bypass -File $env:TEMP\kb.ps1
-# Installs into %LOCALAPPDATA%\Kongboda, asks for the F1 login (typed only here), creates
+# Installs into %LOCALAPPDATA%\Kongboda (F1 login: the owner's shared login, or -OwnF1), creates
 # this computer's upload key, keeps the PC awake on AC power and starts the collector at logon.
 # The collector registers itself on the site; the owner approves it and sets its priority
 # in Account settings. (-Role is accepted for older launchers and ignored.)
-param([string]$Name = $env:COMPUTERNAME.ToLower(), [string]$Role = '')
+param([string]$Name = $env:COMPUTERNAME.ToLower(), [string]$Role = '', [switch]$OwnF1)
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'  # PowerShell 5.1 downloads crawl while drawing a progress bar
 $Root = Join-Path $env:LOCALAPPDATA 'Kongboda'
@@ -49,12 +49,18 @@ if (-not (Test-Path (Join-Path $Root 'venv\Scripts\python.exe'))) { & cmd /c "$p
 & "$Root\venv\Scripts\python.exe" -m pip install --upgrade pip -q
 & "$Root\venv\Scripts\python.exe" -m pip install -q fastf1==3.9.0 signalrcore==1.0.2 keyring
 
-Write-Host '[3/6] F1 account (typed here only, stored for this Windows user)'
+# Hosts use the owner's shared F1 login (sent by the site after the account link), so no
+# F1 account is asked. Only the owner's own computer passes -OwnF1 to type one.
+Write-Host '[3/6] Settings'
 if (-not (Test-Path $EnvFile)) {
-  $user = Read-Host 'F1 account email'
-  $secure = Read-Host 'F1 account password' -AsSecureString
-  $plain = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure))
-  [IO.File]::WriteAllLines($EnvFile, [string[]]@("F1_USERNAME=$user", "F1_PASSWORD=$plain", "HOST_NAME=$Name", "DATA_DIR=$Data", "HOST_KEY_FILE=$Root\host-key.pem"))
+  $lines = @("HOST_NAME=$Name", "DATA_DIR=$Data", "HOST_KEY_FILE=$Root\host-key.pem")
+  if ($OwnF1) {
+    $user = Read-Host 'F1 account email'
+    $secure = Read-Host 'F1 account password' -AsSecureString
+    $plain = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure))
+    $lines = @("F1_USERNAME=$user", "F1_PASSWORD=$plain") + $lines
+  }
+  [IO.File]::WriteAllLines($EnvFile, [string[]]$lines)
   icacls $EnvFile /inheritance:r /grant:r "${env:USERNAME}:(R,W)" | Out-Null
 }
 

@@ -219,7 +219,7 @@ def record(window):
     from fastf1.livetiming.client import SignalRClient
     from signalrcore.messages.completion_message import CompletionMessage
 
-    if not os.environ.get('F1_USERNAME') or not os.environ.get('F1_PASSWORD'):
+    if not f1_login_ready():
         return 20
     # Keep library exception bodies and authentication payloads out of host logs.
     logging.disable(logging.CRITICAL)
@@ -686,6 +686,19 @@ def prepare_wec():
     except Exception:
         WEC_RUNTIME = 'unavailable'
         print('WEC runtime unavailable; F1 collector continues independently.', flush=True)
+
+
+def f1_login_ready():
+    """An F1 account on this computer, or a valid shared login token stored by the
+    collector host (home hosts without their own F1 account)."""
+    if os.environ.get('F1_USERNAME') and os.environ.get('F1_PASSWORD'):
+        return True
+    try:
+        from fastf1.internals.f1account import token_manager
+        token = token_manager.get_stored()
+        return bool(token and token.is_valid())
+    except Exception:
+        return False
 
 
 def main():

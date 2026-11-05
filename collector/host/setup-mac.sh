@@ -1,8 +1,8 @@
 #!/bin/bash
 # Kongboda collector host setup for macOS (run once; safe to run again).
 #   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/MisterKinn/f1-data-analyst/main/collector/host/setup-mac.sh)"
-# Installs into ~/Library/Application Support/Kongboda, asks for the F1 login (typed only
-# here), creates this Mac's upload key, keeps the Mac awake on the charger and starts the
+# Installs into ~/Library/Application Support/Kongboda (F1 login: the owner's shared login),
+# creates this Mac's upload key, keeps the Mac awake on the charger and starts the
 # collector at login (launchd). The collector registers itself on the site; the owner
 # approves it in Account settings.
 set -euo pipefail
@@ -57,12 +57,19 @@ rm -rf "$TMP"
 "$ROOT/venv/bin/python" -m pip install --upgrade pip -q
 "$ROOT/venv/bin/python" -m pip install -q fastf1==3.9.0 signalrcore==1.0.2 certifi keyring
 
-echo '[3/6] F1 account (typed here only, stored for this Mac user)'
+# Hosts use the owner's shared F1 login (sent by the site after the account link); only the
+# owner's own Mac sets KONGBODA_OWN_F1=1 to type an F1 account.
+echo '[3/6] Settings'
 if [ ! -f "$ENVF" ]; then
-  read -r -p 'F1 account email: ' F1_USER </dev/tty
-  read -r -s -p 'F1 account password: ' F1_PASS </dev/tty; echo
   umask 077
-  printf '%s\n' "F1_USERNAME=$F1_USER" "F1_PASSWORD=$F1_PASS" "HOST_NAME=$NAME" "DATA_DIR=$DATA" "HOST_KEY_FILE=$ROOT/host-key.pem" > "$ENVF"
+  if [ "${KONGBODA_OWN_F1:-}" = 1 ]; then
+    read -r -p 'F1 account email: ' F1_USER </dev/tty
+    read -r -s -p 'F1 account password: ' F1_PASS </dev/tty; echo
+    printf '%s\n' "F1_USERNAME=$F1_USER" "F1_PASSWORD=$F1_PASS" > "$ENVF"
+  else
+    : > "$ENVF"
+  fi
+  printf '%s\n' "HOST_NAME=$NAME" "DATA_DIR=$DATA" "HOST_KEY_FILE=$ROOT/host-key.pem" >> "$ENVF"
   chmod 600 "$ENVF"
 fi
 

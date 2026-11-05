@@ -9,6 +9,7 @@ from pathlib import Path
 from unittest import mock
 
 import actions_runner
+import cloud
 import host_auth
 import host_jobs
 import host_runner
@@ -80,7 +81,8 @@ class HostRunner(unittest.TestCase):
     def test_reports_missing_setup(self):
         with mock.patch.dict(os.environ, {'HOST_KEY_FILE': '/nonexistent/key.pem'}, clear=True):
             missing = host_runner.check_setup()
-        self.assertIn('F1_USERNAME', missing)
+        self.assertIn('HOST_NAME', missing)
+        self.assertNotIn('F1_USERNAME', missing)  # hosts may use the owner's shared F1 login
         self.assertTrue(any(m.startswith('host key') for m in missing))
 
 
@@ -366,6 +368,63 @@ class MacSupport(unittest.TestCase):
     def test_os_label(self):
         with mock.patch.object(host_runner.sys, 'platform', 'darwin'), mock.patch.object(host_runner.platform, 'mac_ver', return_value=('15.1', '', '')):
             self.assertEqual(host_runner.os_label(), 'macOS 15.1')
+
+
+
+
+class SharedLogin(unittest.TestCase):
+    """Hosts without an F1 account use the owner's login token from the site."""
+
+    def token(self, seconds):
+        import base64
+        claims = base64.urlsafe_b64encode(json.dumps({'exp': int(time.time()) + seconds}).encode()).rstrip(b'=').decode()
+        return 'eyJhbGciOiJub25lIn0.' + claims + '.sig'
+
+    def setUp(self):
+        from fastf1.internals.f1account import token_manager
+        self.tm = token_manager
+        self.tmp = tempfile.TemporaryDirectory()
+        self.saved = (token_manager._token_path, token_manager._token)
+        token_manager._token_path = Path(self.tmp.name) / 'tok.json'
+        token_manager._token = None
+
+    def tearDown(self):
+        self.tm._token_path, self.tm._token = self.saved
+        self.tmp.cleanup()
+
+    def test_host_without_account_asks_and_stores_token(self):
+        with mock.patch.dict(os.environ, {}, clear=True):
+            self.assertEqual(host_runner.token_fields({}), {'want_token': True})
+            value = self.token(4 * 86400)
+            host_runner.take_token({'f1_token': {'value': value, 'expires_at': 0}})
+            self.assertEqual(self.tm.get_stored().value, value)
+            self.assertEqual(host_runner.token_fields({}), {})  # plenty of time left: no request
+            self.assertTrue(cloud.f1_login_ready())
+
+    def test_expired_or_broken_tokens_are_ignored(self):
+        self.assertFalse(host_runner.install_shared_token({'value': self.token(-10)}))
+        self.assertFalse(host_runner.install_shared_token({'value': 'not-a-jwt'}))
+        with mock.patch.dict(os.environ, {}, clear=True):
+            self.assertFalse(cloud.f1_login_ready())
+
+    def test_owner_shares_only_when_site_says_it_is_the_source(self):
+        env = {'F1_USERNAME': 'owner@example.com', 'F1_PASSWORD': 'x'}
+        with mock.patch.dict(os.environ, env, clear=True), \
+                mock.patch.object(host_runner, 'owner_token', return_value='TOKEN'):
+            self.assertEqual(host_runner.token_fields({}), {})
+            self.assertEqual(host_runner.token_fields({'token_source': True}), {'f1_token': 'TOKEN'})
+
+    def test_fetch_before_recording(self):
+        calls = []
+        def call(path, payload):
+            calls.append(payload)
+            return 200, {'f1_token': {'value': self.token(86400)}}
+        with mock.patch.dict(os.environ, {}, clear=True), mock.patch.object(host_runner.runner, 'host_call', call), \
+                mock.patch.object(host_runner.cloud, 'run_log'):
+            host_runner.fetch_shared_token()
+            host_runner.fetch_shared_token()  # now valid: no second request
+        self.assertEqual(len(calls), 1)
+        self.assertTrue(calls[0]['want_token'])
 
 
 if __name__ == '__main__':
