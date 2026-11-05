@@ -3,7 +3,7 @@ import worker from '../worker/index.js';
 const req=(body,auth=true)=>new Request('https://test/mcp',{method:'POST',headers:{'content-type':'application/json',...(auth?{'oai-authenticated-user-id':'test-owner'}:{})},body:JSON.stringify(body)});
 const rpc=(method,params={},id=1)=>({jsonrpc:'2.0',id,method,params});
 let r=await worker.fetch(req(rpc('initialize',{protocolVersion:'2025-03-26'})),{});assert.equal((await r.json()).result.protocolVersion,'2025-03-26');
-r=await worker.fetch(req(rpc('tools/list')),{});const tools=(await r.json()).result.tools;assert.equal(tools.length,26);assert.ok(tools.every(t=>['wec_discover_live','kongboda_update_my_instructions'].includes(t.name)?!t.annotations.readOnlyHint:t.annotations.readOnlyHint));assert.ok(!tools.some(t=>/hyprace/i.test(t.description)||t.name==='list_seasons'));
+r=await worker.fetch(req(rpc('tools/list')),{});const tools=(await r.json()).result.tools;assert.equal(tools.length,28);assert.ok(tools.every(t=>['wec_discover_live','kongboda_update_my_instructions'].includes(t.name)?!t.annotations.readOnlyHint:t.annotations.readOnlyHint));assert.ok(!tools.some(t=>/hyprace/i.test(t.description)||t.name==='list_seasons'));
 r=await worker.fetch(req(rpc('tools/call',{name:'fia_list_documents'}),false),{});assert.equal(r.status,200);const challenge=await r.json();assert.equal(challenge.result.isError,true);assert.ok(challenge.result._meta['mcp/www_authenticate']);
 r=await worker.fetch(req(rpc('tools/call',{name:'list_seasons',arguments:{}})),{});assert.equal((await r.json()).error.code,-32602);
 r=await worker.fetch(req({jsonrpc:'2.0',method:'notifications/initialized'}),{});assert.equal(r.status,202);
