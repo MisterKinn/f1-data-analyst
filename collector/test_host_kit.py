@@ -45,5 +45,10 @@ class HostKit(unittest.TestCase):
         self.assertTrue((ROOT / 'collector' / 'host' / 'kit-mac.sh').exists())
 
 
+    def test_site_download_module_is_current(self):
+        current = (ROOT / 'worker' / 'collector-kit.js').read_text(encoding='utf-8')
+        self.assertEqual(current, kit.site_module(), 'run: python scripts/build-host-kit.py --write-js')
+
+
 if __name__ == '__main__':
     unittest.main()
