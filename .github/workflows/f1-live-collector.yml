@@ -7,6 +7,11 @@ on:
   schedule:
     - cron: '*/10 * * * *'
   workflow_dispatch:
+    inputs:
+      history_hours:
+        description: 'Look back this many hours for a finished session to publish with FastF1 (default 36)'
+        required: false
+        default: '36'
 permissions:
   contents: read
   id-token: write
@@ -33,6 +38,7 @@ jobs:
           DATA_DIR: ${{ runner.temp }}/f1
           F1_USERNAME: ${{ secrets.F1_USERNAME }}
           F1_PASSWORD: ${{ secrets.F1_PASSWORD }}
+          HISTORY_RETRY_HOURS: ${{ inputs.history_hours || '36' }}
         run: python actions_runner.py
       - name: Keep run log and diagnostics
         if: always()
