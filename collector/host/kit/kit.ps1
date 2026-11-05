@@ -37,7 +37,8 @@ function Check([switch]$Wait) {
     $ok = ($p.negotiate.token -and $p.negotiate.token[0] -eq 200) -and ($p.session_info.token -and $p.session_info.token[0] -eq 200)
     Write-Host ("회선: {0}" -f $p.network)
     if ($ok) { Write-Host 'F1 실시간 타이밍 접속: 가능' -ForegroundColor Green }
-    elseif ($p.sign_in -eq 'shared_pending') { Write-Host 'F1 로그인: 계정 연결이 끝나면 정민이 계정 로그인을 자동으로 받아요.' -ForegroundColor Yellow }
+    elseif ($p.sign_in -eq 'shared_pending') { Write-Host 'F1 로그인: 선원 계정에 연결되면 정민이 계정 로그인을 자동으로 받아요.' -ForegroundColor Yellow }
+    elseif ($p.sign_in -eq 'own_account_required') { Write-Host 'F1 로그인: 선원이 아니라서 자기 F1 TV 계정이 필요해요. 1_설치하기 를 다시 실행해서 F1 이메일과 비밀번호를 넣어 주세요.' -ForegroundColor Red }
     else { Write-Host 'F1 실시간 타이밍 접속: 불가 (VPN·회사·학교망이면 집 회선에서 다시 시도하세요)' -ForegroundColor Red }
   } else { Write-Host 'F1 점검 결과를 읽지 못했습니다. 이 화면을 사진 찍어 정민이한테 보내 주세요.' -ForegroundColor Red }
   Pop-Location
@@ -49,7 +50,8 @@ function Check([switch]$Wait) {
 switch ($Action) {
   'install' {
     Title '1. 수집기 설치 (몇 분 걸립니다)'
-    Write-Host '기다리기만 하면 돼요. 마지막에 인터넷 창에서 "내 계정에 이 컴퓨터 연결" 버튼만 누르세요.' -ForegroundColor Yellow
+    Write-Host 'F1 account email 이 나오면: 꽁보다 선원이면 그냥 Enter, 선원이 아니면 자기 F1 TV 이메일과 비밀번호를 치세요. (비밀번호는 쳐도 안 보여요, 정상)' -ForegroundColor Yellow
+    Write-Host '마지막에 인터넷 창에서 "내 계정에 이 컴퓨터 연결" 버튼을 누르면 끝나요.' -ForegroundColor Yellow
     $setup = Join-Path $env:TEMP 'kongboda-setup-windows.ps1'
     Invoke-WebRequest -UseBasicParsing 'https://raw.githubusercontent.com/MisterKinn/f1-data-analyst/main/collector/host/setup-windows.ps1' -OutFile $setup
     try { & $setup } catch { Write-Host "설치 중 오류: $_" -ForegroundColor Red; Write-Host '이 화면을 사진 찍어 정민이한테 보내 주세요.'; break }

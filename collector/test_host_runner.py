@@ -414,6 +414,15 @@ class SharedLogin(unittest.TestCase):
             self.assertEqual(host_runner.token_fields({}), {})
             self.assertEqual(host_runner.token_fields({'token_source': True}), {'f1_token': 'TOKEN'})
 
+    def test_not_crew_is_told_to_use_its_own_account(self):
+        with mock.patch.dict(os.environ, {}, clear=True), mock.patch.object(host_runner.runner, 'host_call', return_value=(200, {'shared_login': 'not_crew'})), \
+                mock.patch.object(host_runner.cloud, 'run_log') as log:
+            host_runner.TOKEN_NOTES.clear()
+            self.assertEqual(host_runner.fetch_shared_token(), 'not_crew')
+            self.assertEqual(host_runner.fetch_shared_token(), 'not_crew')
+        self.assertEqual([c.args[0]['event'] for c in log.call_args_list], ['own_account_required'], 'noted once')
+        self.assertFalse(cloud.f1_login_ready())
+
     def test_fetch_before_recording(self):
         calls = []
         def call(path, payload):

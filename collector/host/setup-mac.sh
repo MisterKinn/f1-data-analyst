@@ -1,7 +1,7 @@
 #!/bin/bash
 # Kongboda collector host setup for macOS (run once; safe to run again).
 #   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/MisterKinn/f1-data-analyst/main/collector/host/setup-mac.sh)"
-# Installs into ~/Library/Application Support/Kongboda (F1 login: the owner's shared login),
+# Installs into ~/Library/Application Support/Kongboda (F1 login: own account, or Enter for crew),
 # creates this Mac's upload key, keeps the Mac awake on the charger and starts the
 # collector at login (launchd). The collector registers itself on the site; the owner
 # approves it in Account settings.
@@ -57,20 +57,23 @@ rm -rf "$TMP"
 "$ROOT/venv/bin/python" -m pip install --upgrade pip -q
 "$ROOT/venv/bin/python" -m pip install -q fastf1==3.9.0 signalrcore==1.0.2 certifi keyring
 
-# Hosts use the owner's shared F1 login (sent by the site after the account link); only the
-# owner's own Mac sets KONGBODA_OWN_F1=1 to type an F1 account.
-echo '[3/6] Settings'
+# Crew members collect with the owner's shared F1 login (sent by the site once the Mac is
+# linked to a crew account), so they just press Enter. Others type their own F1 TV account.
+# Running setup again asks again while no F1 account is saved.
+echo '[3/6] F1 account'
+umask 077
 if [ ! -f "$ENVF" ]; then
-  umask 077
-  if [ "${KONGBODA_OWN_F1:-}" = 1 ]; then
-    read -r -p 'F1 account email: ' F1_USER </dev/tty
+  printf '%s\n' "HOST_NAME=$NAME" "DATA_DIR=$DATA" "HOST_KEY_FILE=$ROOT/host-key.pem" > "$ENVF"
+fi
+chmod 600 "$ENVF"
+if ! grep -q '^F1_USERNAME=.' "$ENVF"; then
+  echo 'Kongboda crew (secret key registered): just press Enter. Not crew: type your F1 TV account.'
+  read -r -p 'F1 account email (crew: Enter): ' F1_USER </dev/tty || F1_USER=''
+  if [ -n "$F1_USER" ]; then
     read -r -s -p 'F1 account password: ' F1_PASS </dev/tty; echo
-    printf '%s\n' "F1_USERNAME=$F1_USER" "F1_PASSWORD=$F1_PASS" > "$ENVF"
-  else
-    : > "$ENVF"
+    KEPT=$(grep -v -E '^F1_(USERNAME|PASSWORD)=' "$ENVF" || true)
+    printf '%s\n' "F1_USERNAME=$F1_USER" "F1_PASSWORD=$F1_PASS" "$KEPT" > "$ENVF"
   fi
-  printf '%s\n' "HOST_NAME=$NAME" "DATA_DIR=$DATA" "HOST_KEY_FILE=$ROOT/host-key.pem" >> "$ENVF"
-  chmod 600 "$ENVF"
 fi
 
 echo '[4/6] Upload key'

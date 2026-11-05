@@ -42,11 +42,12 @@ check() {
   line=$(HOST_ENV_FILE="$ROOT/host.env" XDG_DATA_HOME="$ROOT/data/auth" PROBE=1 "$ROOT/venv/bin/python" host_runner.py 2>/dev/null | grep '^{"event": "probe"' | head -n 1)
   if [ -n "$line" ]; then
     local result
-    result=$(printf '%s' "$line" | "$ROOT/venv/bin/python" -c 'import json,sys; p=json.load(sys.stdin); ok=(p.get("negotiate") or {}).get("token",[0])[0]==200 and (p.get("session_info") or {}).get("token",[0])[0]==200; print(("OK" if ok else "WAIT" if p.get("sign_in")=="shared_pending" else "NO")+" "+str(p.get("network")))')
+    result=$(printf '%s' "$line" | "$ROOT/venv/bin/python" -c 'import json,sys; p=json.load(sys.stdin); ok=(p.get("negotiate") or {}).get("token",[0])[0]==200 and (p.get("session_info") or {}).get("token",[0])[0]==200; print(("OK" if ok else "WAIT" if p.get("sign_in")=="shared_pending" else "OWN" if p.get("sign_in")=="own_account_required" else "NO")+" "+str(p.get("network")))')
     echo "회선: ${result#* }"
     case "${result%% *}" in
       OK) green 'F1 실시간 타이밍 접속: 가능';;
-      WAIT) yellow 'F1 로그인: 계정 연결이 끝나면 정민이 계정 로그인을 자동으로 받아요.';;
+      WAIT) yellow 'F1 로그인: 선원 계정에 연결되면 정민이 계정 로그인을 자동으로 받아요.';;
+      OWN) red 'F1 로그인: 선원이 아니라서 자기 F1 TV 계정이 필요해요. 설치 줄을 다시 실행해서 F1 이메일과 비밀번호를 넣어 주세요.';;
       *) red 'F1 실시간 타이밍 접속: 불가 (VPN·회사·학교망이면 집 인터넷에서 다시 시도하세요)';;
     esac
   else red 'F1 점검 결과를 읽지 못했습니다. 이 화면을 사진 찍어 정민이한테 보내 주세요.'; fi
@@ -57,6 +58,7 @@ check() {
 case "$ACTION" in
   install)
     title '1. 수집기 설치 (몇 분 걸립니다)'
+    yellow 'F1 account email 이 나오면: 꽁보다 선원이면 그냥 Enter, 선원이 아니면 자기 F1 TV 이메일과 비밀번호를 치세요.'
     yellow 'Password 라고 물으면 Mac 로그인 비밀번호를 치고 Enter 하세요. (쳐도 안 보여요, 정상)'
     yellow '마지막에 인터넷 창에서 "내 계정에 이 컴퓨터 연결" 버튼만 누르면 끝나요.'
     if ! /bin/bash -c "$(curl -fsSL "$RAW/setup-mac.sh")"; then red '설치 중 오류가 났어요. 이 화면을 사진 찍어 정민이한테 보내 주세요.'; exit 1; fi

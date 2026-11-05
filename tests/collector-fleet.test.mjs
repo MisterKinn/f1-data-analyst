@@ -203,14 +203,16 @@ test('public collector status: numbers for everyone, owners only for crew and re
  assert.equal(await collectorStatusRoute(new Request(SITE+'/status'),env,null),null);
 });
 
-test('shared F1 login: only the owner host shares; only approved hosts receive; tokens expire',async()=>{
+test('shared F1 login: only the owner host shares; only approved crew hosts receive; tokens expire',async()=>{
  const {env,store}=memoryEnv();
- const mine=await makeHost('mine'),friend=await makeHost('friend'),paused=await makeHost('paused');
+ const mine=await makeHost('mine'),friend=await makeHost('friend'),paused=await makeHost('paused'),outsider=await makeHost('outsider');
+ store.set('website-accounts/account/a.json',JSON.stringify({id:'a',liveAnalysisAccess:{activatedAt:Date.now(),revision:'1'}}));
+ store.set('website-accounts/account/c.json',JSON.stringify({id:'c'}));
  const jwt=sec=>'eyJhbGciOiJub25lIn0.'+b64u(JSON.stringify({exp:Math.floor(Date.now()/1000)+sec}))+'.sig';
  assert.equal(tokenExpiry('x.y'),null);assert.ok(tokenExpiry(jwt(100))>Date.now()/1000);
  const {COLLECTOR_HOSTS}=await import('../worker/collector-hosts.js');
  const saved=COLLECTOR_HOSTS.splice(0,COLLECTOR_HOSTS.length,{name:'mine',key:mine.key});
- store.set('collector/fleet.json',JSON.stringify({revision:1,hosts:[{name:'friend',key:friend.key,status:'approved',enabled:true,account:{id:'a'}},{name:'paused',key:paused.key,status:'approved',enabled:false,account:{id:'b'}}]}));
+ store.set('collector/fleet.json',JSON.stringify({revision:1,hosts:[{name:'friend',key:friend.key,status:'approved',enabled:true,account:{id:'a'}},{name:'paused',key:paused.key,status:'approved',enabled:false,account:{id:'b'}},{name:'outsider',key:outsider.key,status:'approved',enabled:true,account:{id:'c'}}]}));
  try{
   let [s,r]=await friend.call(env,'POST','/api/live/host-beat',{window:null,want_token:true});
   assert.equal(s,200);assert.equal(r.f1_token,undefined,'nothing shared yet');assert.equal(r.token_source,false);
@@ -222,12 +224,18 @@ test('shared F1 login: only the owner host shares; only approved hosts receive; 
   [s,r]=await friend.call(env,'POST','/api/live/host-beat',{window:null,want_token:true});assert.equal(r.f1_token.value,t1);
   assert.equal((await friend.call(env,'POST','/api/live/host-beat',{window:null}))[1].f1_token,undefined,'only when asked');
   assert.equal((await paused.call(env,'POST','/api/live/host-beat',{window:null,want_token:true}))[1].f1_token,undefined,'paused hosts get nothing');
+  [s,r]=await outsider.call(env,'POST','/api/live/host-beat',{window:null,want_token:true,own_login:false});
+  assert.equal(r.f1_token,undefined,'not crew: uses its own F1 account');assert.equal(r.shared_login,'not_crew');
+  [s,r]=await friend.call(env,'POST','/api/live/host-beat',{window:null,want_token:true,own_login:false});assert.equal(r.shared_login,'crew');
+  await outsider.call(env,'POST','/api/live/host-beat',{window:null,own_login:true});
   // An older or nearly expired token never replaces a newer one.
   await mine.call(env,'POST','/api/live/host-beat',{window:null,f1_token:jwt(86400)});
   assert.equal(JSON.parse(store.get('collector/f1-shared-token.json')).value,t1);
   await mine.call(env,'POST','/api/live/host-beat',{window:null,f1_token:jwt(60)});
   assert.equal(JSON.parse(store.get('collector/f1-shared-token.json')).value,t1);
   const status=await fleetStatus(env);assert.equal(status.shared_login.from,'mine');assert.equal(status.shared_login.valid,true);
+  const mode=Object.fromEntries(status.hosts.map(h=>[h.name,h.login]));
+  assert.equal(mode.mine,'shared');assert.equal(mode.friend,'shared');assert.equal(mode.outsider,'own');
   assert.ok(!JSON.stringify(status).includes(t1),'the owner panel never shows the token');
   // Expired: nobody receives it.
   store.set('collector/f1-shared-token.json',JSON.stringify({value:t1,expires_at:Math.floor(Date.now()/1000)+100,from:'mine'}));

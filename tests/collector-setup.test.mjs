@@ -7,7 +7,7 @@ test('install helper tool is read-only and asks for the OS when unknown',()=>{
  const g=collectorSetupGuide();assert.ok(g.ask);assert.match(g.windows_kit,/\/download\/kongboda-collector-setup\.zip$/);
 });
 test('windows and mac guides give steps, commands and never handle passwords',()=>{
- const w=collectorSetupGuide('windows','install');assert.ok(w.steps.length>=4);assert.match(w.commands.install,/collector-kit\.ps1/);assert.match(w.for_assistants_with_computer_control,/No F1 account is needed/);assert.match(w.commands.one_file_installer,/kongboda-collector-setup\.cmd$/);
+ const w=collectorSetupGuide('windows','install');assert.ok(w.steps.length>=4);assert.match(w.commands.install,/collector-kit\.ps1/);assert.match(w.for_assistants_with_computer_control,/Crew members/);assert.match(w.commands.one_file_installer,/kongboda-collector-setup\.cmd$/);
  const m=collectorSetupGuide('mac','remove');assert.match(m.commands.remove,/kit-mac\.sh\)" - uninstall$/);
  for(const g of [w,m])assert.ok(!/password=|F1_PASSWORD/.test(JSON.stringify(g)));
 });

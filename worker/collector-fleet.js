@@ -50,6 +50,16 @@ export function tokenExpiry(value){
   return Number.isFinite(claims.exp)?claims.exp:null;
  }catch{return null;}
 }
+// Crew members (accounts that registered the secret key) and the owner's built-in hosts
+// collect with the owner's F1 login; other hosts use their own F1 account.
+export async function crewHost(env,host){
+ if(host?.builtin)return true;
+ const id=host?.account?.id;
+ if(typeof id!=='string'||!/^[\w-]{1,128}$/.test(id))return false;
+ const account=await readJson(env,'website-accounts/account/'+id+'.json').catch(()=>null);
+ const {hasCrewAccess}=await import('./crew.js');
+ return hasCrewAccess(account,env);
+}
 async function sharedLogin(env,me,data,now){
  if(me?.builtin&&typeof data.f1_token==='string'){
   const exp=tokenExpiry(data.f1_token);
@@ -59,8 +69,9 @@ async function sharedLogin(env,me,data,now){
   }
  }
  if(!data.want_token||!me||me.status!=='approved'||me.enabled===false)return null;
+ if(!await crewHost(env,me))return {mode:'not_crew'};
  const saved=await readJson(env,TOKEN_KEY).catch(()=>null);
- return saved&&saved.expires_at*1000>now+300000?{value:saved.value,expires_at:saved.expires_at}:null;
+ return {mode:'crew',...(saved&&saved.expires_at*1000>now+300000?{token:{value:saved.value,expires_at:saved.expires_at}}:{})};
 }
 export async function sharedLoginStatus(env,now=Date.now()){
  const saved=await readJson(env,TOKEN_KEY).catch(()=>null);
@@ -139,6 +150,7 @@ export async function hostBeat(env,name,body,now=Date.now()){
  const beat={at:new Date(now).toISOString(),window:windowId,ready:!!data.ready,recording:!!data.recording,os:clean(data.os),version:clean(data.version),
   ...(typeof data.started_at==='string'?{started_at:clean(data.started_at)}:{}),
   ...(Array.isArray(data.jobs_available)?{jobs_available:data.jobs_available.filter(j=>typeof j==='string').slice(0,10).map(clean)}:{}),
+  ...(typeof data.own_login==='boolean'?{own_login:data.own_login}:{}),
   ...(data.error?{error:clean(String(data.error))}:{})};
  await env.BUCKET.put(beatKey(name,series),JSON.stringify(beat));
  // A session beat (every 5 s) reads only that series' beats; idle beats (every minute) read the rest.
@@ -156,8 +168,8 @@ export async function hostBeat(env,name,body,now=Date.now()){
   holder=next.holder;warm=next.warm.has(name);retired=next.state.retired.includes(name);
  }
  const update_at=[fleet.update_at,me?.update_at].filter(Boolean).sort().at(-1)||null;
- const f1Token=await sharedLogin(env,me,data,now);
- return [200,{host:name,token_source:!!me?.builtin,...(f1Token?{f1_token:f1Token}:{}),enabled:me?.enabled!==false,cold:!!me?.cold,jobs:me?jobsOf(me):['f1'],update_at,
+ const shared=await sharedLogin(env,me,data,now);
+ return [200,{host:name,token_source:!!me?.builtin,...(shared?{shared_login:shared.mode}:{}),...(shared?.token?{f1_token:shared.token}:{}),enabled:me?.enabled!==false,cold:!!me?.cold,jobs:me?jobsOf(me):['f1'],update_at,
   priority:hosts.filter(h=>h.status==='approved').findIndex(h=>h.name===name)+1,
   series:windowId?series:null,window:windowId,holder,active:!!windowId&&holder===name,warm,retired,lead,is_lead:lead===name}];
 }
@@ -207,6 +219,7 @@ export async function fleetStatus(env,now=Date.now()){
  }
  const lead=chooseLead(hosts,beats,now);
  const shared_login=await sharedLoginStatus(env,now);
+ const crew=Object.fromEntries(await Promise.all(hosts.map(async h=>[h.name,await crewHost(env,h).catch(()=>false)])));
  return {revision,lead,holders,update_at,warm_count,shared_login,series:KNOWN_SERIES,now:new Date(now).toISOString(),hosts:hosts.map((h,i)=>{
   const last=lastBeat(beats,h.name),age=last?now-Date.parse(last.at):null;
   const live=SERIES.map(series=>{const b=beats[h.name]?.[series],k=series+':'+b?.window;return fresh(b,now,BEAT_FRESH_MS)&&b.window?{series,window:b.window,ready:!!b.ready,holder:holders[k]===h.name,recording:!!warmSets[k]?.has(h.name)}:null;}).filter(Boolean);
@@ -214,6 +227,7 @@ export async function fleetStatus(env,now=Date.now()){
   const idle=beats[h.name]?.[IDLE];
   return {name:h.name,priority:i+1,status:h.status,enabled:h.enabled!==false,builtin:!!h.builtin,cold:!!h.cold,state,jobs:jobsOf(h),live,
    jobs_available:idle?.jobs_available||null,
+   login:idle?.own_login?'own':crew[h.name]?'shared':'needs_account',
    account:h.account?{name:h.account.name,email:h.account.email}:h.builtin?{name:'운영자 (기본 호스트)',email:null}:null,
    os:last?.os||h.os||null,version:last?.version||null,started_at:last?.started_at||null,last_seen:last?.at||null,
    update_requested:[update_at,h.update_at].filter(Boolean).sort().at(-1)||null,
