@@ -61,6 +61,7 @@ case "$ACTION" in
     launchctl bootout "gui/$(id -u)" "$AGENT" 2>/dev/null || true
     rm -f "$AGENT"
     pkill -f "$ROOT/collector" 2>/dev/null || true
+    (cd "$ROOT/collector" 2>/dev/null && HOST_ENV_FILE="$ROOT/host.env" "$ROOT/venv/bin/python" host_runner.py --forget-credentials >/dev/null 2>&1) || true
     rm -rf "$ROOT"
     green '제거했습니다. 정민이한테 "지웠어" 라고 알려 주세요.'
     echo '절전 설정은 시스템 설정 > 배터리 > 옵션에서 되돌릴 수 있습니다.'

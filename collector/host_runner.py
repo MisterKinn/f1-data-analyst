@@ -192,7 +192,63 @@ def load_env_file(path=None):
         if sep and name.strip() and not name.lstrip().startswith('#') and not os.environ.get(name.strip()):
             os.environ[name.strip()] = value
     ensure_certificates()
+    secure_credentials(path, lines)
     return True
+
+
+KEYRING_SERVICE = 'kongboda-collector'
+
+
+def _keyring():
+    """The OS password store (Windows Credential Manager / macOS Keychain), or None."""
+    try:
+        import keyring
+        from keyring.backends import fail
+        backend = keyring.get_keyring()
+        return None if isinstance(backend, fail.Keyring) or getattr(backend, 'priority', 1) <= 0 else keyring
+    except Exception:
+        return None
+
+
+def secure_credentials(path, lines):
+    """Keep the F1 password in the OS password store, not in host.env.
+
+    A password still in host.env (older installs, fresh setup) is moved to the store and
+    removed from the file; later starts read it from the store."""
+    user = os.environ.get('F1_USERNAME')
+    store = _keyring()
+    if not user or store is None:
+        return False
+    in_file = [l for l in lines if l.startswith('F1_PASSWORD=')]
+    try:
+        if in_file:
+            store.set_password(KEYRING_SERVICE, user, in_file[0].partition('=')[2])
+            if store.get_password(KEYRING_SERVICE, user) != in_file[0].partition('=')[2]:
+                return False  # store did not keep it: leave the file alone
+            kept = [l for l in lines if not l.startswith('F1_PASSWORD=')]
+            with open(path, 'w', encoding='utf-8', newline='\n') as handle:
+                handle.write('\n'.join(kept) + '\n')
+            print('F1 password moved to the system password store (' + type(store.get_keyring()).__name__ + ').')
+        elif not os.environ.get('F1_PASSWORD'):
+            secret = store.get_password(KEYRING_SERVICE, user)
+            if secret:
+                os.environ['F1_PASSWORD'] = secret
+        return True
+    except Exception as exc:
+        print('Password store unavailable (' + type(exc).__name__ + '); using host.env.')
+        return False
+
+
+def forget_credentials():
+    """Remove this computer's F1 password from the OS password store (uninstall)."""
+    load_env_file()
+    store, user = _keyring(), os.environ.get('F1_USERNAME')
+    if store and user:
+        try:
+            store.delete_password(KEYRING_SERVICE, user)
+        except Exception:
+            pass
+    return 0
 
 
 def ensure_certificates():
@@ -389,4 +445,4 @@ def main():
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    sys.exit(forget_credentials() if sys.argv[1:] == ['--forget-credentials'] else main())

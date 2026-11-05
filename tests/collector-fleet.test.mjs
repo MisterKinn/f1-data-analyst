@@ -31,14 +31,12 @@ test('baton: two hosts record, one publishes; failover is sticky and retires the
  // Rank 1 loses power: its beat ages out -> rank 2 publishes, rank 3 becomes the new spare.
  now+=BEAT_FRESH_MS+1000;for(const n of ['h2','h3','h4'])beat(n);
  r=run(r.state);assert.equal(r.holder,'h2');assert.deepEqual([...r.warm],['h2','h3']);assert.deepEqual(r.state.retired,['h1']);
- // Rank 1 comes back: no switch mid-session, and it stays off F1.
- beat('h1');r=run(r.state);assert.equal(r.holder,'h2');assert.ok(!r.warm.has('h1'));
+ // Rank 1 comes back (e.g. a network blip): no switch mid-session, but it records again as the spare.
+ beat('h1');r=run(r.state);assert.equal(r.holder,'h2');assert.deepEqual([...r.warm],['h2','h1']);
  // Rank 2 dies too: rank 3 publishes, rank 4 is the spare.
  now+=BEAT_FRESH_MS+1000;for(const n of ['h1','h3','h4'])beat(n);
- r=run(r.state);assert.equal(r.holder,'h3');assert.deepEqual([...r.warm],['h3','h4']);
- // Rank 3 publishes with no fresh spare left: retired rank 1 fills the spare slot.
- r=run(r.state);assert.deepEqual([...r.warm],['h3','h4']);
- now+=BEAT_FRESH_MS+1000;for(const n of ['h1','h3'])beat(n);r=run(r.state);assert.deepEqual([...r.warm],['h3','h1']);
+ r=run(r.state);assert.equal(r.holder,'h3');assert.deepEqual([...r.warm],['h3','h1'],'retired rank 1 is still the best spare');
+ assert.deepEqual(r.state.retired,['h1','h2']);
  // Everyone but the retired rank 1 is gone: it is the last resort.
  now+=BEAT_FRESH_MS+1000;beat('h1');r=run(r.state);assert.equal(r.holder,'h1');
  // A single computer is enough.
