@@ -1,6 +1,5 @@
 import {NEW_SERIES,newSeriesStandings} from './series_standings.js';
 import {archive,readDocument} from './wec.js';
-import {cloudRequest} from './live.js';
 const TTL=300000,cache=new Map(),pending=new Map();
 export const STANDINGS_TOOLS=[{name:'motorsport_championship_standings',description:'Read current published championship points for F1 (FastF1), WEC (Al Kamel), IMSA, Formula E, NLS, ELMS or Asian Le Mans. Start without category; use returned category IDs to switch driver/team/manufacturer/cup standings. Preserve actual cross-year season, provisional status, class labels, source and retrieved time.',inputSchema:{type:'object',properties:{series:{type:'string',enum:['f1','wec','imsa','formula-e','nls','elms','alms']},category:{type:'string'}},required:['series'],additionalProperties:false},annotations:{readOnlyHint:true,destructiveHint:false,idempotentHint:true,openWorldHint:true}}];
 export async function standingsCall(args,env){const u=new URL('https://internal/api/championship-standings');u.searchParams.set('series',args.series);if(args.category)u.searchParams.set(args.series==='f1'?'kind':'category',args.category);const r=await standingsRoute(new Request(u),env);return {content:[{type:'text',text:await r.text()}],isError:!r.ok};}
@@ -63,9 +62,7 @@ async function f1Standings(kind,year,env){
   if(!response.ok)throw Error('FastF1 database unavailable');
   return normalizeF1Standings(await response.json(),kind,year);
  }catch{
-  const data=await cloudRequest(env,'/championship/'+kind,'GET');
-  if(!/FastF1|Jolpica/i.test(data.provider||'')||!Number.isInteger(data.round)||data.round<1||Date.now()-Date.parse(data.retrieved_at)>TTL*2)throw Error('Outdated FastF1 collector standings');
-  return data;
+  throw Error('FastF1 standings database is unavailable right now. Use web search for the current standings and cite the source.');
  }
 }
 export async function standingsRoute(request,env,ctx){
