@@ -19,7 +19,7 @@ mkdir -p "$ROOT" "$DATA"
 echo '[1/6] System packages (Python 3.12+, venv, unzip, rsync)'
 if command -v apt-get >/dev/null 2>&1; then
   $SUDO apt-get update -qq
-  $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y -qq python3 python3-venv python3-pip unzip rsync curl ca-certificates >/dev/null
+  $SUDO env DEBIAN_FRONTEND=noninteractive apt-get install -y -qq python3 python3-venv python3-pip unzip rsync curl ca-certificates >/dev/null
 elif command -v dnf >/dev/null 2>&1; then
   $SUDO dnf install -y -q python3.12 python3.12-pip unzip rsync curl ca-certificates || $SUDO dnf install -y -q python3 python3-pip unzip rsync curl
 fi
