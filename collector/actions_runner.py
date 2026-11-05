@@ -27,6 +27,7 @@ JOB_BUDGET = timedelta(minutes=int(os.environ.get('JOB_BUDGET_MINUTES', '330')))
 MAX_LOOKAHEAD = timedelta(minutes=150)
 KEY_SESSIONS = frozenset(('Qualifying', 'Sprint Qualifying', 'Sprint Shootout', 'Sprint', 'Race'))
 PUSH_INTERVAL = 10
+LAST_HISTORY_ATTEMPT = {}
 
 
 def at(value):
@@ -47,6 +48,14 @@ def next_window(windows, now, lookahead=None):
                  and at(w['open']) - (lookahead or lookahead_for(w)) <= now), None)
 
 
+def auth_header(method, url, body=None):
+    """GitHub Actions uses its OIDC token; a home host signs with its registered key."""
+    if os.environ.get('ACTIONS_ID_TOKEN_REQUEST_URL'):
+        return 'Bearer ' + oidc_token()
+    import host_auth
+    return host_auth.header(method, url, body or b'')
+
+
 def oidc_token():
     url = os.environ['ACTIONS_ID_TOKEN_REQUEST_URL'] + '&audience=' + AUDIENCE
     request = urllib.request.Request(url, headers={'Authorization': 'Bearer ' + os.environ['ACTIONS_ID_TOKEN_REQUEST_TOKEN']})
@@ -56,9 +65,10 @@ def oidc_token():
 
 def site(method, window_id, body=None, final=False, flush=False):
     query = {'window': window_id, **({'final': '1'} if final else {}), **({'flush': '1'} if flush else {})}
-    request = urllib.request.Request(SITE + '/api/live/actions-push?' + urllib.parse.urlencode(query), data=body, method=method,
-                                     headers={'authorization': 'Bearer ' + oidc_token(), 'content-type': 'application/json'})
+    url = SITE + '/api/live/actions-push?' + urllib.parse.urlencode(query)
     try:
+        request = urllib.request.Request(url, data=body, method=method,
+                                         headers={'authorization': auth_header(method, url, body), 'content-type': 'application/json'})
         with urllib.request.urlopen(request, timeout=30) as response:
             return response.status, json.load(response)
     except urllib.error.HTTPError as error:
@@ -71,9 +81,10 @@ def history(method, window_id, query=None, body=None):
     """Post-session FastF1 upload endpoint (same OIDC authentication as live pushes)."""
     params = {'window': window_id, **(query or {})}
     data = json.dumps(body).encode() if body is not None else None
-    request = urllib.request.Request(SITE + '/api/live/actions-history?' + urllib.parse.urlencode(params), data=data, method=method,
-                                     headers={'authorization': 'Bearer ' + oidc_token(), 'content-type': 'application/json'})
+    url = SITE + '/api/live/actions-history?' + urllib.parse.urlencode(params)
     try:
+        request = urllib.request.Request(url, data=data, method=method,
+                                         headers={'authorization': auth_header(method, url, data), 'content-type': 'application/json'})
         with urllib.request.urlopen(request, timeout=60) as response:
             return response.status, json.load(response)
     except urllib.error.HTTPError as error:
@@ -88,13 +99,14 @@ def history_done(window_id):
     return status != 200 or bool(data and data.get('done'))
 
 
-def post_session(windows):
+def post_session(windows, skip=None):
     """No live window: publish FastF1 best laps and telemetry for the latest finished session."""
     import post_session as post
-    window = post.pending_window(windows, cloud.now(), history_done)
+    window = post.pending_window(windows, cloud.now(), lambda wid: (skip and skip(wid)) or history_done(wid))
     if not window:
         print('No F1 session window now.')
         return 0
+    LAST_HISTORY_ATTEMPT[window['id']] = time.monotonic()
     cloud.run_log({'event': 'history_start', 'window': window['id'], 'session': window['name']})
     try:
         session, info = post.load(window)
@@ -137,6 +149,11 @@ def main():
     window = next_window(windows, cloud.now())
     if not window:
         return post_session(windows)
+    return record_window(window)
+
+
+def record_window(window, should_start=None):
+    """Wait for the window to open, record it and push snapshots until it closes."""
     status, data = site('GET', window['id'])
     if status == 200 and data and data.get('done'):
         print('Session already recorded:', window['event'], window['name'])
@@ -146,6 +163,8 @@ def main():
                    'session_start': window['start'], 'close': window['close']})
     while cloud.now() < at(window['open']):
         time.sleep(min(30, max(1, (at(window['open']) - cloud.now()).total_seconds())))
+    if should_start and not should_start(window):
+        return 0
 
     stop = threading.Event()
 
