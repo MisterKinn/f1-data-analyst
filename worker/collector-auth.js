@@ -11,15 +11,26 @@ const hex=buffer=>[...new Uint8Array(buffer)].map(b=>b.toString(16).padStart(2,'
 
 export function hostMessage(method,pathAndQuery,ts,bodyHash){return `${method}\n${pathAndQuery}\n${ts}\n${bodyHash}`;}
 
-export async function verifyHostSignature(header,{method,pathAndQuery,body='',hosts=COLLECTOR_HOSTS,now=Date.now()}){
+const reject=(reason,message)=>Object.assign(Error(message),{reason});
+// Hosting rewrites can add their own query parameters, so a host also sends the query it
+// signed (q=<base64url>). Every signed parameter must match the request exactly; extra
+// parameters added in transit are not signed and are ignored by the handlers.
+export function signedPath(fields,url){
+ if(fields.q===undefined)return url.pathname+url.search;
+ const query=new TextDecoder().decode(b64u(fields.q)),signed=new URLSearchParams(query);
+ for(const name of new Set(signed.keys())){const a=signed.getAll(name),b=url.searchParams.getAll(name);if(a.length!==b.length||a.some((v,i)=>v!==b[i]))throw reject('query_mismatch','Signed query does not match the request');}
+ return url.pathname+(query?'?'+query:'');
+}
+export async function verifyHostSignature(header,{method,pathAndQuery,url,body='',hosts=COLLECTOR_HOSTS,now=Date.now()}){
  const fields=Object.fromEntries(String(header).replace(/^KongbodaHost\s+/,'').split(',').map(p=>p.trim().split('=')).filter(p=>p.length===2));
  const host=hosts.find(h=>h&&h.name===fields.name);
- if(!host)throw Error('Unknown collector host');
+ if(!host)throw reject('unknown_host','Unknown collector host');
  const ts=Number(fields.ts);
- if(!Number.isInteger(ts)||Math.abs(Math.floor(now/1000)-ts)>HOST_CLOCK_SKEW_SECONDS)throw Error('Stale host signature');
+ if(!Number.isInteger(ts)||Math.abs(Math.floor(now/1000)-ts)>HOST_CLOCK_SKEW_SECONDS)throw reject('stale','Stale host signature');
+ const path=url?signedPath(fields,url):pathAndQuery;
  const bodyHash=hex(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(body)));
- const key=await crypto.subtle.importKey('raw',b64u(host.key),{name:'Ed25519'},false,['verify']);
- if(!await crypto.subtle.verify({name:'Ed25519'},key,b64u(fields.sig||''),new TextEncoder().encode(hostMessage(method,pathAndQuery,fields.ts,bodyHash))))throw Error('Bad host signature');
+ let key;try{key=await crypto.subtle.importKey('raw',b64u(host.key),{name:'Ed25519'},false,['verify']);}catch{throw reject('ed25519_unavailable','Ed25519 is not available');}
+ if(!await crypto.subtle.verify({name:'Ed25519'},key,b64u(fields.sig||''),new TextEncoder().encode(hostMessage(method,path,fields.ts,bodyHash))))throw reject('bad_signature','Bad host signature');
  return {host:host.name};
 }
 
@@ -33,8 +44,8 @@ export async function hostCollectorRoute(request,env,{hosts=COLLECTOR_HOSTS,now=
  if(!['GET','POST'].includes(request.method))return json({error:'Method not allowed'},405);
  const body=request.method==='POST'?await request.text():'';
  if(body.length>1000000)return json({error:'Payload too large'},413);
- try{await verifyHostSignature(request.headers.get('authorization'),{method:request.method,pathAndQuery:url.pathname+url.search,body,hosts,now});}
- catch{return json({error:'Collector token rejected'},401);}
+ try{await verifyHostSignature(request.headers.get('authorization'),{method:request.method,url,body,hosts,now});}
+ catch(e){return json({error:'Collector token rejected',reason:e.reason||'invalid'},401);}
  const {actionsPush,actionsHistory}=handlers||await import('./live.js');
  const forwarded=new Request(request.url,{method:request.method,headers:request.headers,...(request.method==='POST'?{body}:{})});
  const trusted={verify:async()=>({host:true})};
