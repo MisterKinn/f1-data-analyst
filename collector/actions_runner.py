@@ -48,8 +48,8 @@ def oidc_token():
         return json.load(response)['value']
 
 
-def site(method, window_id, body=None, final=False):
-    query = {'window': window_id, **({'final': '1'} if final else {})}
+def site(method, window_id, body=None, final=False, flush=False):
+    query = {'window': window_id, **({'final': '1'} if final else {}), **({'flush': '1'} if flush else {})}
     request = urllib.request.Request(SITE + '/api/live/actions-push?' + urllib.parse.urlencode(query), data=body, method=method,
                                      headers={'authorization': 'Bearer ' + oidc_token(), 'content-type': 'application/json'})
     try:
@@ -61,13 +61,13 @@ def site(method, window_id, body=None, final=False):
         return None, None
 
 
-def push(window_id, final=False):
+def push(window_id, final=False, flush=False):
     path = cloud.DATA / 'snapshot.json'
     try:
         body = path.read_bytes()
     except OSError:
         return None
-    return site('POST', window_id, body, final)[0]
+    return site('POST', window_id, body, final, flush)[0]
 
 
 def main():
@@ -124,7 +124,7 @@ def main():
         attempt += 1
         time.sleep(delay)
     stop.set()
-    final = push(window['id'], final=finished)
+    final = push(window['id'], final=finished, flush=True)  # the last push must be saved
     print('Final push:', final, 'finished' if finished else 'window closed')
     cloud.run_log({'event': 'job_end', 'window': window['id'], 'finished': finished,
                    'attempts': attempt + (1 if finished else 0), 'final_push': final})
