@@ -28,4 +28,6 @@ rsync -a --delete "$SRC/" "$ROOT/collector/"
 [ -f "$MANIFEST" ] && cp "$MANIFEST" "$ROOT/data/release.json"
 # Packages added in later versions (keyring keeps the F1 password in the macOS Keychain).
 if [ -x "$PY" ] && ! "$PY" -c 'import keyring' 2>/dev/null; then "$PY" -m pip install -q keyring || true; fi
+# Power-saving AWS servers book their own wake-up with boto3 (collector/power.py).
+if [ -x "$PY" ] && grep -q '^POWER_SAVE=aws' "$ROOT/host.env" 2>/dev/null && ! "$PY" -c 'import boto3' 2>/dev/null; then "$PY" -m pip install -q boto3 || true; fi
 echo 'Collector code updated.'
