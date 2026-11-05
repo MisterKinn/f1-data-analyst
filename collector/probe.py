@@ -39,15 +39,15 @@ def main():
     except OSError:
         result['network'] = None
     fastf1.set_auth_method('password')
-    shared = not cloud.f1_login_ready()
-    if shared:  # no F1 account on this computer: use the owner's shared login token
+    shared, verdict = not cloud.f1_login_ready(), None
+    if shared:  # no F1 account on this computer: crew members use the owner's shared login
         try:
             import host_runner
-            host_runner.fetch_shared_token()
+            verdict = host_runner.fetch_shared_token()
         except Exception:
             pass
     if not cloud.f1_login_ready():
-        auth, result['sign_in'] = None, 'shared_pending'
+        auth, result['sign_in'] = None, 'own_account_required' if verdict == 'not_crew' else 'shared_pending'
     else:
         try:
             auth = get_token().authorization_header

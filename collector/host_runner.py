@@ -350,19 +350,37 @@ def token_fields(state):
     return {'want_token': True} if stored_token_left() < TOKEN_WANT_LEFT else {}
 
 
+NOT_CREW_NOTE = ('This computer is linked to a Kongboda account that is not crew, so it needs its own F1 account: '
+                 'run the installer again and type the F1 email and password.')
+
+
 def take_token(data):
-    if isinstance(data, dict) and isinstance(data.get('f1_token'), dict) and install_shared_token(data['f1_token']):
+    """Store a shared token from a heartbeat answer; returns the site's verdict
+    ('crew', 'not_crew') or None."""
+    if not isinstance(data, dict):
+        return None
+    if isinstance(data.get('f1_token'), dict) and install_shared_token(data['f1_token']):
         cloud.run_log({'event': 'shared_login', 'expires_at': int(data['f1_token'].get('expires_at') or 0)})
+    mode = data.get('shared_login')
+    if mode == 'not_crew' and not TOKEN_NOTES.get('not_crew'):
+        TOKEN_NOTES['not_crew'] = True
+        print(NOT_CREW_NOTE)
+        cloud.run_log({'event': 'own_account_required'})
+    return mode
+
+
+TOKEN_NOTES = {}
 
 
 def fetch_shared_token():
-    """Before recording without an own F1 account: make sure a valid shared token is here."""
+    """Before recording without an own F1 account: make sure a valid shared token is here.
+    Returns the site's verdict ('crew', 'not_crew'), 'ready' or None (site unreachable /
+    computer not linked yet)."""
     if own_login() or stored_token_left() > 3600:
-        return
+        return 'ready'
     status, data = runner.host_call('/api/live/host-beat', {'window': None, 'os': os_label(), 'version': COLLECTOR_VERSION,
-                                                            'started_at': STARTED_AT, 'want_token': True})
-    if status == 200:
-        take_token(data)
+                                                            'started_at': STARTED_AT, 'want_token': True, 'own_login': False})
+    return take_token(data) if status == 200 else None
 
 
 def idle_beat(state):
@@ -372,7 +390,7 @@ def idle_beat(state):
         state['idle_beat_at'] = time.monotonic()
         status, data = runner.host_call('/api/live/host-beat', {'window': None, 'os': os_label(), 'version': COLLECTOR_VERSION,
                                                                 'started_at': STARTED_AT, 'jobs_available': sorted(host_jobs.JOBS),
-                                                                **token_fields(state)})
+                                                                'own_login': own_login(), **token_fields(state)})
         if status == 200 and data:
             state['token_source'] = bool(data.get('token_source'))
             take_token(data)
