@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
-import {liveRead,resetLiveGuards} from '../worker/live.js';
+import {liveRead,actionsPush} from '../worker/live.js';
+import {standingsRoute} from '../worker/standings.js';
+import {raceResultsRoute} from '../worker/race-results.js';
 
 function setup(){
  const entries=new Map();let puts=0,collectorCalls=0,seq=10;
@@ -10,38 +12,28 @@ function setup(){
  const snap=()=>{const now=new Date().toISOString();return {schema_version:1,producer:'fastf1-live-bridge',run_id:'r',sequence:seq++,generated_at:now,last_message_at:now,connected:true,
   topic_times:{Heartbeat:{source_time:now,initial_snapshot:false},TimingData:{source_time:now,initial_snapshot:false}},
   topics:{Heartbeat:{},TimingData:{Lines:{}},SessionInfo:{Key:5},SessionStatus:{Status:'Started'}},recent_events:[]};};
+ nextSnapshot=snap;
  let behaviour='ok';
  globalThis.fetch=async()=>{collectorCalls++;if(behaviour==='down')throw Error('down');await new Promise(r=>setTimeout(r,20));return new Response(JSON.stringify({snapshot:snap(),collector:{state:'recording'}}));};
  return {env,stats:()=>({puts,collectorCalls}),set:b=>{behaviour=b;}};
 }
-
-test('questions arriving together share one collector request',async()=>{
- resetLiveGuards();const {env,stats}=setup();
- const answers=await Promise.all(Array.from({length:5},()=>liveRead(env)));
- assert.equal(stats().collectorCalls,1);
- assert.ok(answers.every(a=>a.available&&a.sequence===answers[0].sequence));
-});
+let nextSnapshot=null;
 
 test('a busy session writes the shared document at most once every 5 seconds',async()=>{
- resetLiveGuards();const {env,stats}=setup();
- await liveRead(env);const first=stats().puts;
- for(let i=0;i<4;i++){await new Promise(r=>setTimeout(r,1200));const a=await liveRead(env);assert.equal(a.available,true);assert.equal(a.freshness.live,true,'answers still use the newest data');}
+ const {env,stats}=setup();
+ const push=()=>actionsPush(new Request('https://site.example/api/live/actions-push?window=2026-21-1',{method:'POST',headers:{authorization:'Bearer ok','content-type':'application/json'},body:JSON.stringify(nextSnapshot())}),env,{verify:async()=>{}});
+ await push();const first=stats().puts;
+ for(let i=0;i<3;i++){await new Promise(r=>setTimeout(r,1200));assert.equal((await push()).status,200);}
  assert.equal(stats().puts,first,'no extra writes within 5 s');
+ assert.equal((await liveRead(env)).available,true);
 });
 
-test('a collector that is down is skipped for 30 seconds instead of retried on every question',async()=>{
- resetLiveGuards();const {env,stats,set}=setup();
- await liveRead(env);set('down');
- const a=await liveRead(env);assert.equal(a.synchronization.ok,false);
- const calls=stats().collectorCalls;
- const b=await liveRead(env);
- assert.equal(stats().collectorCalls,calls,'not called again while paused');
- assert.equal(b.available,true,'saved data is still served');
- assert.match(b.synchronization.error,/일시|paused|skipped/i);
+test('F1 live reads never call the old pull server',async()=>{
+ const {env,stats}=setup();
+ await liveRead(env);await liveRead(env);
+ assert.equal(stats().collectorCalls,0);
 });
 
-import {standingsRoute} from '../worker/standings.js';
-import {raceResultsRoute} from '../worker/race-results.js';
 test('successful public standings and results may be cached briefly; waiting or errors never',async()=>{
  const cached={get:async()=>({json:async()=>({checked_at:Date.now(),data:{series:'f1',season:new Date().getUTCFullYear(),round:19,provider:'Jolpica',retrieved_at:new Date().toISOString(),categories:[{id:'drivers',label:'드라이버',rows:[{position:1,name:'A',points:1}]}]}})}),put:async()=>{}};
  const ok=await standingsRoute(new Request('https://t/api/championship-standings?series=f1&kind=drivers'),{BUCKET:cached},{});

@@ -18,7 +18,9 @@ test('registered crew read one shared collector through ChatGPT MCP and Google w
  const googleHeaders={cookie:'__Host-kongboda-google='+token};
  const now=new Date().toISOString(),snapshot={schema_version:1,producer:'fastf1-live-bridge',run_id:'crew-test',sequence:1,generated_at:now,last_message_at:now,connected:true,topic_times:{Heartbeat:{source_time:now,initial_snapshot:false},TimingData:{source_time:now,initial_snapshot:false}},topics:{Heartbeat:{},TimingData:{Lines:{}},SessionInfo:{Key:123,Name:'Practice 1',Meeting:{Name:'Mexico City Grand Prix'}},SessionStatus:{Status:'Started'}},recent_events:[]};
  const realFetch=globalThis.fetch;let reads=0;
- globalThis.fetch=async(url,options)=>{assert.equal(String(url),'https://collector.example/snapshot');assert.equal(options.method,'GET');assert.equal(options.headers.Authorization,'Bearer test');reads++;return Response.json({snapshot,collector:{automatic_collection:true,collection_enabled:true}});};
+ // The shared snapshot arrives from the GitHub collector; F1 reads never call the old server.
+ data.set('live/current.json',JSON.stringify({received_at:now,source:'Cloud / FastF1 live recorder + custom patch adapter',snapshot}));
+ globalThis.fetch=async()=>{reads++;throw Error('old server must not be called');};
  try{
   const rpc=headers=>new Request(origin+'/mcp',{method:'POST',headers:{...headers,'content-type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'fastf1_live_snapshot',arguments:{recent_events:0}}})});
   const mcp=await (await worker.fetch(rpc(platformHeaders),env)).json();
@@ -26,19 +28,16 @@ test('registered crew read one shared collector through ChatGPT MCP and Google w
   const first=JSON.parse(mcp.result.content[0].text);
   const website=await worker.fetch(new Request(origin+'/api/live/snapshot',{headers:googleHeaders}),env);
   assert.equal(website.status,200);const second=await website.json();
-  assert.equal(first.run_id,second.run_id);assert.equal(second.freshness.live,true);assert.equal(second.synchronization.collector.automatic_collection,true);assert.equal(reads,2);
+  assert.equal(first.run_id,second.run_id);assert.equal(second.freshness.live,true);assert.equal(reads,0);
   assert.equal((await worker.fetch(new Request(origin+'/api/live/snapshot'),env)).status,401);
   const outsider={'oai-authenticated-user-id':'outsider','oai-authenticated-user-email':'other@example.test'};
   const outsiderResponse=await (await worker.fetch(new Request(origin+'/api/live/snapshot',{headers:outsider}),env)).json();assert.equal(outsiderResponse.available,false);
   assert.equal(JSON.parse((await (await worker.fetch(rpc(outsider),env)).json()).result.content[0].text).available,false);
-  assert.equal(reads,2);
+  assert.equal(reads,0);
   env.LIVE_ANALYSIS_KEY_REVISION='2';
   assert.equal((await (await worker.fetch(new Request(origin+'/api/live/snapshot',{headers:googleHeaders}),env)).json()).available,false);
-  assert.equal(reads,2);
+  assert.equal(reads,0);
   env.LIVE_ANALYSIS_KEY_REVISION='1';
   assert.equal((await worker.fetch(new Request(origin+'/api/live/cloud/stop',{method:'POST',headers:{...googleHeaders,origin}}),env)).status,403);
-  snapshot.generated_at=new Date(Date.now()-120000).toISOString();
-  const stale=await (await worker.fetch(new Request(origin+'/api/live/snapshot',{headers:googleHeaders}),env)).json();
-  assert.equal(stale.synchronization.ok,false);assert.equal(stale.freshness.live,true);
  }finally{globalThis.fetch=realFetch;}
 });
