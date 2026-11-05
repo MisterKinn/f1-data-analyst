@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {openf1Call,openf1Get,clearOpenf1Cache,telemetryRows,OPENF1_TOOLS} from '../worker/openf1.js';
+import {openf1Call,openf1Get,clearOpenf1Cache,openf1CacheStats,CACHE_POLICY,telemetryRows,OPENF1_TOOLS} from '../worker/openf1.js';
 
 // Shapes copied from real OpenF1 answers (2026 Mexico City GP race, session 11404, Russell #63).
 const lap1={meeting_key:1298,session_key:11404,driver_number:63,lap_number:1,date_start:'2026-11-01T20:03:25.510000+00:00',duration_sector_1:33.161,duration_sector_2:33.747,duration_sector_3:21.358,is_pit_out_lap:true,lap_duration:88.266,st_speed:292};
@@ -54,6 +54,50 @@ test('cache: a repeated question does not call OpenF1 again; 429 is retried then
  assert.equal(calls.length,1);
  let n=0;const busy={fetchImpl:async()=>{n++;return new Response('{}',{status:429});},wait:async()=>{}};
  await assert.rejects(openf1Get('laps',{session_key:1},busy),/rate-limiting/);assert.equal(n,3);
+});
+
+// Session metadata as OpenF1 returns it; date_end is the scheduled end.
+function sessionFetch(calls,dateEnd){
+ const base=fakeFetch(calls);
+ return async url=>new URL(url).pathname.endsWith('/sessions')&&url.includes('session_key=')?(calls.push(url),new Response(JSON.stringify([{session_key:11404,date_end:dateEnd}]),{status:200})):base(url);
+}
+const END=Date.parse('2026-11-01T22:00:00Z');
+
+test('settled session: one driver question fills the cache for every driver for 30 min',async()=>{
+ clearOpenf1Cache();const calls=[];const io={fetchImpl:sessionFetch(calls,'2026-11-01T22:00:00+00:00'),now:END+3*3600_000};
+ const first=parse(await openf1Call('openf1_laps',{session_key:11404,driver_number:'63'},io));
+ assert.equal(first.cache.policy,'settled session: kept up to 30 min');
+ const n=calls.length;
+ const second=parse(await openf1Call('openf1_laps',{session_key:11404,driver_number:'44'},{...io,now:io.now+20*60_000}));
+ assert.equal(calls.length,n,'another driver in the same session needs no new OpenF1 request');
+ assert.equal(second.cache.fetched_from_openf1,0);assert.ok(second.cache.served_from_memory>0);
+ assert.ok(!calls.some(c=>c.includes('/laps?')&&c.includes('driver_number')),'laps are fetched for the whole session');
+ await openf1Call('openf1_laps',{session_key:11404,driver_number:'63'},{...io,now:io.now+31*60_000});
+ assert.ok(calls.length>n,'after 30 min the data is fetched again');
+});
+
+test('running or just-finished session is kept only 1 min',async()=>{
+ clearOpenf1Cache();const calls=[];const io={fetchImpl:sessionFetch(calls,'2026-11-01T22:00:00+00:00'),now:END+30*60_000};
+ const out=parse(await openf1Call('openf1_laps',{session_key:11404,driver_number:'63'},io));
+ assert.equal(out.cache.policy,'running or just-finished session: kept up to 1 min');
+ const n=calls.length;
+ await openf1Call('openf1_laps',{session_key:11404,driver_number:'63'},{...io,now:io.now+30_000});
+ assert.equal(calls.length,n,'a burst within a minute is served from memory');
+ await openf1Call('openf1_laps',{session_key:11404,driver_number:'63'},{...io,now:io.now+90_000});
+ assert.ok(calls.length>n,'late corrections are picked up after a minute');
+});
+
+test('cache is capped by size; oversized answers are not kept',async()=>{
+ clearOpenf1Cache();const calls=[];
+ const huge='['+'1,'.repeat(4*1024*1024)+'1]';
+ const io={fetchImpl:async u=>{calls.push(u);return new Response(huge,{status:200});}};
+ await openf1Get('car_data',{session_key:1},io,60_000);await openf1Get('car_data',{session_key:1},io,60_000);
+ assert.equal(calls.length,2,'a single answer over a quarter of the cap is never cached');
+ assert.equal(openf1CacheStats().entries,0);
+ const small={fetchImpl:fakeFetch([])};
+ for(let i=0;i<CACHE_POLICY.MAX_ENTRIES+5;i++)await openf1Get('laps',{session_key:i},small,60_000);
+ assert.equal(openf1CacheStats().entries,CACHE_POLICY.MAX_ENTRIES);
+ assert.ok(openf1CacheStats().bytes<=CACHE_POLICY.MAX_BYTES);
 });
 
 test('bad driver numbers are refused',async()=>{
