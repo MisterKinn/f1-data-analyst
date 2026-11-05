@@ -1,6 +1,7 @@
 import io
 import json
 import os
+os.environ.setdefault('KONGBODA_NO_PIP', '1')  # tests never pip-install
 import sys
 import tempfile
 import types

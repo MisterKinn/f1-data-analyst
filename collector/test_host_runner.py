@@ -1,5 +1,6 @@
 import json
 import os
+os.environ.setdefault('KONGBODA_NO_PIP', '1')  # tests never pip-install
 import tempfile
 import time
 import unittest
