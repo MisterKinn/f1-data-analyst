@@ -76,7 +76,7 @@ const guards={inflight:new Map(),pausedUntil:new Map()};
 export function resetLiveGuards(){guards.inflight.clear();guards.pausedUntil.clear();}
 const guardKey=env=>env.FASTF1_CLOUD_URL+'|'+(env.F1_PERSONAL_ACCOUNT||'shared');
 
-async function storeSnapshot(env,snapshot,received_at,source,updateCurrent=true,{skipUnchanged=false,onCurrent=null}={}){
+async function storeSnapshot(env,snapshot,received_at,source,updateCurrent=true,{skipUnchanged=false,onCurrent=null,flush=false}={}){
  // Telemetry has its own expiring collector store. Never retain batch copies in R2.
  snapshot=structuredClone(snapshot);
  if(Array.isArray(snapshot.diagnostics?.samples)){
@@ -99,7 +99,8 @@ async function storeSnapshot(env,snapshot,received_at,source,updateCurrent=true,
    const candidate=preserveBestLaps(structuredClone(snapshot),previous);
    // One Firestore document sustains about one write per second. During a busy
    // session, answer from the newest data but persist it at most every 5 s.
-   if(skipUnchanged&&previous&&snapshot.run_id===previous.run_id&&snapshot.connected===previous.connected&&Date.parse(received_at)-Date.parse(old.received_at)<WRITE_INTERVAL_MS)return {accepted:true,stored:{received_at,source,snapshot:candidate}};
+   // A collector's last push (session end or window close) is never followed by another, so it is always saved.
+   if(!flush&&skipUnchanged&&previous&&snapshot.run_id===previous.run_id&&snapshot.connected===previous.connected&&Date.parse(received_at)-Date.parse(old.received_at)<WRITE_INTERVAL_MS)return {accepted:true,stored:{received_at,source,snapshot:candidate}};
    const stored=boundedStoredText({received_at,source,snapshot:candidate});
    const result=await env.BUCKET.put(key,stored,{httpMetadata:{contentType:'application/json'},onlyIf:object?.etag?{etagMatches:object.etag}:object?undefined:{etagDoesNotMatch:'*'}});
    if(result!==null)return {accepted:true,stored:{received_at,source,snapshot:candidate}};
@@ -236,7 +237,8 @@ export async function actionsPush(request,env,{verify=verifyCollectorToken}={}){
  const text=await request.text();if(text.length>1000000)return reply({error:'Snapshot exceeds 1 MB'},413);
  let snapshot;try{snapshot=validateSnapshot(JSON.parse(text));}catch(e){return reply({error:e.message},400);}
  const received_at=new Date().toISOString();
- const accepted=await storeSnapshot(env,snapshot,received_at,'Cloud / FastF1 live recorder + custom patch adapter',true,{skipUnchanged:true});
+ const flush=url.searchParams.get('final')==='1'||url.searchParams.get('flush')==='1';
+ const accepted=await storeSnapshot(env,snapshot,received_at,'Cloud / FastF1 live recorder + custom patch adapter',true,{skipUnchanged:true,flush});
  if(doneKey&&url.searchParams.get('final')==='1')await env.BUCKET.put(doneKey,JSON.stringify({done:true,at:received_at,session_key:snapshot.topics.SessionInfo?.Key??null}));
  return reply({ok:!!accepted,received_at},accepted?200:409);
 }
