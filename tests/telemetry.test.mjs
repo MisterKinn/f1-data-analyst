@@ -20,7 +20,7 @@ const store=entries=>({BUCKET:{get:async k=>entries.has(k)?{json:async()=>JSON.p
 test('FastF1 lap telemetry tool is gone: completed sessions are OpenF1 only',async()=>{
  const request=new Request('https://test/mcp',{method:'POST',headers:{'content-type':'application/json','oai-authenticated-user-id':'owner'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'fastf1_lap_telemetry',arguments:{session_key:123,session_part:'session',driver_number:'63'}}})});
  const response=await (await worker.fetch(request,env)).json();
- assert.equal(response.error.code,-32602);
+ assert.equal(response.error.code,-32602);assert.match(response.error.message,/kongboda_tools/);
 });
 test('shared snapshot storage never retains high-frequency telemetry copies',async()=>{
  const entries=new Map();

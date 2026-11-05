@@ -7,7 +7,7 @@ assert.equal(info.serverInfo.version,'2.0.0');
 assert.match(info.instructions,/FastF1 is the source/);
 assert.doesNotMatch(info.instructions,/TracingInsights/);
 const {result:{tools}}=await call('tools/list');
-assert.equal(tools.length,26);
+assert.equal(tools.length,28);
 assert.ok(!tools.some(t=>t.name==='get_driver_standings'));
 assert.ok(tools.some(t=>t.name==='motorsport_championship_standings'));
 assert.ok(tools.some(t=>t.name==='fastf1_live_snapshot'));
