@@ -6,3 +6,9 @@
 export const COLLECTOR_HOSTS=[
  {name:'desktop-568ditg',key:'X0nVoYozkWCoAvQnmd_pfQEIAxhXMxTm0foQn0AI8TY'}, // Jeongmin's HP PC (primary until a mini PC arrives)
 ];
+
+// Who manages collector hosts in Account settings: SHA-256 of the lower-case Google
+// email (the address itself is not stored in this public repository).
+export const COLLECTOR_ADMIN_SHA256=[
+ '1d7c0ab810031e3f2ce3caec33d87a66e3541595b4ffa5d939534545186af907', // Jeongmin
+];

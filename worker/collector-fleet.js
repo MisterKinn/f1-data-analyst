@@ -14,7 +14,7 @@
 // links the computer to their Kongboda account. Linking registers it: from then on it
 // collects at session time without further approval (added last in the order), and every
 // collector shows whose it is. The owner can reorder, pause or remove it.
-import {COLLECTOR_HOSTS} from './collector-hosts.js';
+import {COLLECTOR_HOSTS,COLLECTOR_ADMIN_SHA256} from './collector-hosts.js';
 import {accountIdentity} from './accounts.js';
 
 export const FLEET_KEY='collector/fleet.json';
@@ -214,15 +214,20 @@ export async function fleetAction(env,action){
  return fleetStatus(env);
 }
 
-export function isOwner(env,google){
- const email=google?.email;
- return !!(email&&env.DEPLOY_OWNER_EMAIL&&google.email_verified!==false&&email.toLowerCase()===env.DEPLOY_OWNER_EMAIL.toLowerCase());
+// The collector admin: a signed-in Google account whose email hash is listed in
+// collector-hosts.js (or env.COLLECTOR_ADMIN_SHA256, comma-separated, for tests/overrides).
+export async function isOwner(env,google){
+ const email=String(google?.email||'').trim().toLowerCase();
+ if(!email||google.email_verified===false)return false;
+ const allowed=(env.COLLECTOR_ADMIN_SHA256?String(env.COLLECTOR_ADMIN_SHA256).split(','):COLLECTOR_ADMIN_SHA256).map(x=>x.trim().toLowerCase());
+ const hash=[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(email)))].map(b=>b.toString(16).padStart(2,'0')).join('');
+ return allowed.includes(hash);
 }
 // /account/hosts: owner-only JSON API behind the account page panel.
 export async function fleetAdminRoute(request,env,google,{origin}={}){
  const u=new URL(request.url);if(u.pathname!=='/account/hosts')return null;
  const json=(value,status=200)=>new Response(JSON.stringify(value),{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'private, no-store'}});
- if(!isOwner(env,google))return json({error:'운영자만 사용할 수 있습니다.'},403);
+ if(!await isOwner(env,google))return json({error:'운영자만 사용할 수 있습니다.'},403);
  if(!env.BUCKET)return json({error:'저장소를 사용할 수 없습니다.'},503);
  if(request.method==='GET')return json(await fleetStatus(env));
  if(request.method!=='POST')return json({error:'지원하지 않는 요청입니다.'},405);
