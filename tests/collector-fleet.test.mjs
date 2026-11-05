@@ -182,3 +182,25 @@ test('link codes expire and linking needs a signed-in account',async()=>{
  assert.equal(r.status,401);
  assert.equal(await hostLinkRoute(new Request(SITE+'/account/other'),env,null),null);
 });
+
+test('public collector status: numbers for everyone, owners only for crew and registered people',async()=>{
+ const {publicStatus,collectorStatusRoute}=await import('../worker/collector-fleet.js');
+ const {env,store}=memoryEnv();
+ const K=c=>c.repeat(43);
+ store.set('collector/fleet.json',JSON.stringify({revision:1,hosts:[
+  {name:'pc-a',key:K('A'),status:'approved',enabled:true,account:{id:'acc-a',name:'민수'}},
+  {name:'pc-b',key:K('B'),status:'pending',enabled:true}]}));
+ const now=Date.now();
+ store.set('collector/beat/pc-a/f1.json',JSON.stringify({at:new Date(now-2000).toISOString(),window:W,ready:true}));
+ const anon=await publicStatus(env,{},now);
+ const names=anon.hosts.map(h=>h.number);
+ assert.ok(!JSON.stringify(anon).includes('민수')&&!JSON.stringify(anon).includes('pc-a'),'no owner or machine names for the public');
+ assert.ok(!JSON.stringify(anon).includes('pc-b'),'unlinked computers are not listed');
+ assert.equal(anon.hosts.at(-1).state,'publishing');assert.deepEqual(anon.collecting.map(c=>c.series),['f1']);
+ const crew=await publicStatus(env,{showOwners:true,accountId:'acc-a'},now);
+ assert.equal(crew.hosts.at(-1).owner,'민수');assert.equal(crew.hosts.at(-1).mine,true);
+ assert.equal(names.length,crew.hosts.length);
+ const r=await collectorStatusRoute(new Request(SITE+'/status/data'),env,null);
+ assert.equal(r.status,200);assert.equal((await r.json()).show_owners,false);
+ assert.equal(await collectorStatusRoute(new Request(SITE+'/status'),env,null),null);
+});

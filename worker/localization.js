@@ -1,5 +1,11 @@
 // Explicit translations shared by server markup and dynamic browser updates.
 export const translations = {
+ "수집기 상태":"Collector status",
+ "수집기 상태 보기":"View collector status",
+ "F1 실시간 데이터는 집 컴퓨터(수집기)들이 받아서 꽁보다로 보냅니다. 지금 어떤 컴퓨터가 데이터를 받고 있는지 확인할 수 있습니다.":"Home computers (collectors) receive F1 live data and send it to Kongboda. See which computer is receiving data right now.",
+ "F1 실시간 데이터는 집 컴퓨터(수집기)들이 받아서 꽁보다로 보냅니다. 위 순서대로 두 대가 같이 받고, 한 대가 사이트에 올립니다. 올리던 컴퓨터가 꺼지면 15초 안에 다음 컴퓨터가 이어받습니다.":"Home computers (collectors) receive F1 live data and send it to Kongboda. Two computers in this order receive together and one publishes to the site. If the publishing computer goes off, the next one takes over within 15 seconds.",
+ "선원이나 수집기를 등록한 분께는 각 컴퓨터의 주인이 표시됩니다.":"Crew members and people who registered a collector can see whose computer each one is.",
+ "호스트 순서 관리하기":"Manage host order",
  "개발자 설정 · 수집기 호스트":"Developer settings · Collector hosts",
  "운영자 계정에만 보입니다. 순위가 높을수록 먼저 수집합니다(순위 선택, 끌어서 놓기, ▲▼). 세션마다 위에서부터 두 대가 같이 기록하고 한 대만 올립니다. 올리던 컴퓨터가 꺼지면 같이 기록하던 컴퓨터가 15초 안에 이어서 올리고, 다음 순위가 새 예비로 들어옵니다. 꺼졌던 컴퓨터는 그 세션에서 다시 맡지 않습니다.":"Only the owner account sees this. Higher-priority computers collect first (choose a rank, drag and drop, or use ▲▼). In each session the top two computers record together and one publishes. If the publishing computer goes off, the other one continues within 15 seconds and the next computer becomes the new spare. A computer that went off does not take over again during that session.",
  "새로고침":"Refresh",

@@ -17,5 +17,12 @@ class WindowsScripts(unittest.TestCase):
             self.assertIn("$ProgressPreference = 'SilentlyContinue'", (HOST / name).read_text(encoding='utf-8'))
 
 
+    def test_task_has_a_watchdog_trigger(self):
+        setup = (HOST / 'setup-windows.ps1').read_text(encoding='utf-8')
+        run = (HOST / 'run-windows.ps1').read_text(encoding='utf-8')
+        self.assertIn('-RepetitionInterval (New-TimeSpan -Minutes 5)', setup)
+        self.assertIn('Set-ScheduledTask', run)  # added to older installs on start
+
+
 if __name__ == '__main__':
     unittest.main()
