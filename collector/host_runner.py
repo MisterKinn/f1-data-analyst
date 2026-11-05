@@ -199,10 +199,21 @@ def load_env_file(path=None):
 KEYRING_SERVICE = 'kongboda-collector'
 
 
-def _keyring():
-    """The OS password store (Windows Credential Manager / macOS Keychain), or None."""
+def _keyring(install=True):
+    """The OS password store (Windows Credential Manager / macOS Keychain), or None.
+    Installs the keyring package once if an older setup does not have it yet."""
     try:
         import keyring
+    except ImportError:
+        if not install or os.environ.get('KONGBODA_NO_PIP') == '1':
+            return None
+        try:
+            subprocess.run([sys.executable, '-m', 'pip', 'install', '-q', 'keyring'], timeout=300,
+                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
+        except Exception:
+            return None
+        return _keyring(install=False)
+    try:
         from keyring.backends import fail
         backend = keyring.get_keyring()
         return None if isinstance(backend, fail.Keyring) or getattr(backend, 'priority', 1) <= 0 else keyring

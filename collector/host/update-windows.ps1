@@ -30,14 +30,22 @@ if (-not $same) {
   New-Item -ItemType Directory -Force -Path $dst | Out-Null
   robocopy $src $dst /MIR /NFL /NDL /NJH /NJS /NP | Out-Null
   if (Test-Path $manifest) { Copy-Item -Force $manifest $installed }
-  # Packages added in later versions (keyring keeps the F1 password in Windows Credential Manager).
-  if (Test-Path $python) { & $python -c "import keyring" 2>$null; if ($LASTEXITCODE -ne 0) { & $python -m pip install -q keyring 2>$null | Out-Null } }
   Write-Host 'Collector code updated.'
 } else { Write-Host 'Collector code is current.' }
+# Packages added in later versions (keyring keeps the F1 password in Windows Credential Manager).
+# Native stderr would stop the script under 'Stop', so these two run with 'Continue'.
+if (Test-Path $python) {
+  $ErrorActionPreference = 'Continue'
+  & $python -c "import keyring" 2>&1 | Out-Null
+  if ($LASTEXITCODE -ne 0) { & $python -m pip install -q keyring 2>&1 | Out-Null }
+  $ErrorActionPreference = 'Stop'
+}
 Remove-Item -Recurse -Force $tmp, $zip
 # Optional: keep the owner's kit folder current (KIT_FOLDER=... in host.env, UTF-8).
 $kit = (Get-Content (Join-Path $Root 'host.env') -Encoding UTF8 -ErrorAction SilentlyContinue | Where-Object { $_ -like 'KIT_FOLDER=*' } | Select-Object -First 1)
-if ($kit -and -not $same) {
+$kitMark = Join-Path $Root 'data\kit-release.json'
+$kitDone = (Test-Path $kitMark) -and (Test-Path $installed) -and ((Get-Content $kitMark -Raw) -eq (Get-Content $installed -Raw))
+if ($kit -and -not $kitDone) {
   try {
     $folder = $kit.Substring(11).Trim()
     $kz = Join-Path $env:TEMP 'kongboda-kit.zip'; $kt = Join-Path $env:TEMP 'kongboda-kit'
@@ -49,6 +57,7 @@ if ($kit -and -not $same) {
     New-Item -ItemType Directory -Force -Path $dist | Out-Null
     Copy-Item -Force $kz (Join-Path $dist 'kongboda-collector-setup.zip')
     Remove-Item -Recurse -Force $kt, $kz
+    if (Test-Path $installed) { Copy-Item -Force $installed $kitMark }
     Write-Host 'Kit folder refreshed.'
   } catch { Write-Host "Kit folder refresh skipped: $_" }
 }
