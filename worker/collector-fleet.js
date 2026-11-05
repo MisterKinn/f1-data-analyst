@@ -9,6 +9,9 @@
 // publishing for the rest of that session (it may record again as a spare; it publishes
 // again only as a last resort). A host marked "cold"
 // is picked as a spare only after the others. One live host is enough to collect.
+// A host on a network F1 refuses (a cloud server, F1 answers 403 before sign-in) says so
+// in its heartbeat (f1_blocked): it never holds the baton or does post-session data while
+// any unblocked host is alive, and it is the last pick as a spare.
 //
 // Hosts listed in collector-hosts.js are built in. Any other host registers itself with
 // its public key, gets a one-time link code, and its installer signs in to the site and
@@ -105,16 +108,18 @@ export async function readBeats(env,hosts,only=[IDLE,...SERIES]){
  return beats;
 }
 const fresh=(b,now,ms)=>!!b&&now-Date.parse(b.at)<ms;
+// Hosts whose own check found F1 refusing their network go last (used only if nobody else is left).
+const unblockedFirst=(list,blocked)=>[...list.filter(h=>!blocked(h.name)),...list.filter(h=>blocked(h.name))];
 // Pure baton decision for one series window. prev is the stored baton state
 // ({holder,since,retired}); returns the next state, the holder and the recording set.
 export function decideBaton(hosts,beats,series,windowId,prev,{warmCount=WARM_DEFAULT,now=Date.now()}={}){
  const beatOf=name=>beats[name]?.[series];
  const alive=hosts.filter(h=>h.status==='approved'&&h.enabled!==false&&jobsOf(h).includes(series)).filter(h=>{const b=beatOf(h.name);return fresh(b,now,BEAT_FRESH_MS)&&b.window===windowId;});
- const isAlive=n=>alive.some(h=>h.name===n),ready=n=>!!beatOf(n)?.ready;
+ const isAlive=n=>alive.some(h=>h.name===n),ready=n=>!!beatOf(n)?.ready,blocked=n=>!!beatOf(n)?.f1_blocked&&!ready(n);
  const state={holder:prev?.holder??null,since:prev?.since??null,retired:Array.isArray(prev?.retired)?[...prev.retired]:[]};
  // The holder went quiet (power cut, crash, network): retire it for this session.
  if(state.holder&&!isAlive(state.holder)){if(!state.retired.includes(state.holder))state.retired.push(state.holder);state.holder=null;}
- const fresh_=alive.filter(h=>!state.retired.includes(h.name)),candidates=fresh_.length?fresh_:alive; // retired hosts only as a last resort
+ const fresh_=alive.filter(h=>!state.retired.includes(h.name)),candidates=unblockedFirst(fresh_.length?fresh_:alive,blocked); // retired hosts only as a last resort
  const pick=()=>(candidates.find(h=>ready(h.name))||candidates[0])?.name??null;
  // Until the holder receives data, the best candidate may still take the baton (session start,
  // a holder whose F1 login fails). Once it receives data, it keeps the baton for the session.
@@ -122,7 +127,7 @@ export function decideBaton(hosts,beats,series,windowId,prev,{warmCount=WARM_DEF
  // Spares follow the owner's order (cold ones last). A retired host may record again as a
  // spare once it is back (a network blip should not cost the session its best computer),
  // but it never publishes again in that session unless nobody else is left.
- const order=[...alive.filter(h=>!h.cold),...alive.filter(h=>h.cold)].map(h=>h.name);
+ const order=unblockedFirst([...alive.filter(h=>!h.cold),...alive.filter(h=>h.cold)],blocked).map(h=>h.name);
  const warm=new Set(state.holder?[state.holder]:[]);
  for(const name of order){if(warm.size>=warmCount)break;warm.add(name);}
  return {state,holder:state.holder,warm};
@@ -132,7 +137,8 @@ export function chooseHolder(hosts,beats,series,windowId,now=Date.now()){return 
 const lastBeat=(beats,name)=>Object.values(beats[name]||{}).reduce((a,b)=>!a||Date.parse(b.at)>Date.parse(a.at)?b:a,null);
 // First enabled host that is online at all: it publishes post-session data.
 export function chooseLead(hosts,beats,now=Date.now()){
- return hosts.find(h=>h.status==='approved'&&h.enabled!==false&&fresh(lastBeat(beats,h.name),now,ONLINE_MS))?.name??null;
+ const online=hosts.filter(h=>h.status==='approved'&&h.enabled!==false&&fresh(lastBeat(beats,h.name),now,ONLINE_MS));
+ return unblockedFirst(online,n=>!!beats[n]?.[IDLE]?.f1_blocked)[0]?.name??null;
 }
 export async function readBaton(env,series,windowId){return readJson(env,batonKey(series,windowId)).catch(()=>null);}
 // For any upload endpoint: may this signed host publish this series window now?
@@ -151,6 +157,7 @@ export async function hostBeat(env,name,body,now=Date.now()){
   ...(typeof data.started_at==='string'?{started_at:clean(data.started_at)}:{}),
   ...(Array.isArray(data.jobs_available)?{jobs_available:data.jobs_available.filter(j=>typeof j==='string').slice(0,10).map(clean)}:{}),
   ...(typeof data.own_login==='boolean'?{own_login:data.own_login}:{}),
+  ...(data.f1_blocked===true?{f1_blocked:true}:{}),
   ...(data.error?{error:clean(String(data.error))}:{})};
  await env.BUCKET.put(beatKey(name,series),JSON.stringify(beat));
  // A session beat (every 5 s) reads only that series' beats; idle beats (every minute) read the rest.
@@ -231,7 +238,7 @@ export async function fleetStatus(env,now=Date.now()){
    account:h.account?{name:h.account.name,email:h.account.email}:h.builtin?{name:'운영자 (기본 호스트)',email:null}:null,
    os:last?.os||h.os||null,version:last?.version||null,started_at:last?.started_at||null,last_seen:last?.at||null,
    update_requested:[update_at,h.update_at].filter(Boolean).sort().at(-1)||null,
-   error:last?.error||null,key_hint:h.key.slice(0,8)};})};
+   f1_blocked:!!last?.f1_blocked,error:(last?.f1_blocked?'F1이 이 네트워크를 막음(403) · 다른 호스트가 없을 때만 사용':null)||last?.error||null,key_hint:h.key.slice(0,8)};})};
 }
 
 // Owner actions: approve, pause, resume, remove, move up/down or set the full order.
