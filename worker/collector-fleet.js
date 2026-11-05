@@ -264,3 +264,32 @@ export async function hostLinkRoute(request,env,google){
   return new Response(null,{status:303,headers:{location:'/account?host_linked='+encodeURIComponent(name)+'#my-hosts','cache-control':'no-store'}});}
  catch(e){return text(e.message,e.status||500);}
 }
+
+// Public collector status (/status/data). Everyone sees host numbers, states and who
+// publishes; crew members and people who registered a collector also see whose computer
+// each one is (account name only). Pending (not yet linked) computers are not listed.
+export async function publicStatus(env,{showOwners=false,accountId=null,admin=false}={},now=Date.now()){
+ const status=await fleetStatus(env,now),{hosts}=await readFleet(env);
+ const mine=new Set(accountId?hosts.filter(h=>h.account?.id===accountId).map(h=>h.name):[]);
+ const listed=status.hosts.filter(h=>h.status==='approved');
+ const number=new Map(listed.map((h,i)=>[h.name,i+1]));
+ const collecting=Object.entries(status.holders).map(([key,name])=>{const [series,...w]=key.split(':');return {series,window:w.join(':'),host:name?number.get(name)??null:null};});
+ return {now:status.now,warm_count:status.warm_count,series:KNOWN_SERIES,collecting,show_owners:!!showOwners,admin:!!admin,
+  hosts:listed.map(h=>({number:number.get(h.name),state:h.state,enabled:h.enabled,os:h.os,last_seen:h.last_seen,
+   live:(h.live||[]).map(({series,window,ready,holder,recording})=>({series,window,ready,holder,recording})),mine:mine.has(h.name),
+   ...(showOwners?{owner:h.account?.name||null}:{})}))};
+}
+export async function collectorStatusRoute(request,env,google){
+ const u=new URL(request.url);if(u.pathname!=='/status/data')return null;
+ const json=(value,status=200)=>new Response(JSON.stringify(value),{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'private, no-store'}});
+ if(request.method!=='GET')return json({error:'Method not allowed'},405);
+ if(!env.BUCKET)return json({error:'저장소를 사용할 수 없습니다.'},503);
+ const admin=await isOwner(env,google);
+ let account=null;
+ if(google||request.headers.get('oai-authenticated-user-id')){try{account=(await accountIdentity(request,env,google))?.account||null;}catch{}}
+ if(account?.deleted)account=null;
+ const {hosts}=await readFleet(env);
+ const registered=!!account&&hosts.some(h=>h.account?.id===account.id);
+ const {hasCrewAccess}=await import('./crew.js');
+ return json(await publicStatus(env,{showOwners:admin||registered||hasCrewAccess(account,env),accountId:account?.id||null,admin}));
+}

@@ -71,7 +71,10 @@ powercfg /setactive SCHEME_CURRENT
 Write-Host '[6/6] Start at logon'
 $runner = Join-Path $Code 'host\run-windows.ps1'
 $action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument "-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File ""$runner"" -Root ""$Root"""
-$trigger = New-ScheduledTaskTrigger -AtLogOn -User $env:USERNAME
+# At logon, plus a 5-minute watchdog: if the collector ever stops, the task starts it
+# again (a running instance is left alone).
+$trigger = @((New-ScheduledTaskTrigger -AtLogOn -User $env:USERNAME),
+  (New-ScheduledTaskTrigger -Once -At (Get-Date).Date -RepetitionInterval (New-TimeSpan -Minutes 5) -RepetitionDuration (New-TimeSpan -Days 3650)))
 $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -ExecutionTimeLimit ([TimeSpan]::Zero) -RestartCount 999 -RestartInterval (New-TimeSpan -Minutes 1) -StartWhenAvailable
 Register-ScheduledTask -TaskName 'Kongboda Collector' -Action $action -Trigger $trigger -Settings $settings -Force | Out-Null
 Write-Host ''

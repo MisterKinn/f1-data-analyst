@@ -17,7 +17,7 @@ import {aiConnectionStatus} from './ai-connections.js';
 import {standingsRoute,STANDINGS_TOOLS,standingsCall} from './standings.js';
 import {raceResultsRoute} from './race-results.js';
 import {hostCollectorRoute} from './collector-auth.js';
-import {fleetAdminRoute,hostLinkRoute,findLinkCode,isOwner} from './collector-fleet.js';
+import {fleetAdminRoute,hostLinkRoute,findLinkCode,isOwner,collectorStatusRoute} from './collector-fleet.js';
 import {LIVE_TOOLS,LIVE_INSTRUCTIONS,BEST_LAP_INSTRUCTIONS,liveRead,readBestLaps,readTelemetry,liveRoutes,cloudConfigured,diagnosticsRead} from './live.js';
 import {WEC_TOOLS,WEC_INSTRUCTIONS,wecCall} from './wec.js';
 import {FIA_TOOLS,FIA_INSTRUCTIONS,fiaCall} from './fia.js';
@@ -60,6 +60,7 @@ export default{async fetch(request,env,ctx){
  const auth=await googleAuthRoute(request,env);if(auth)return auth;
  const google=firebase||(!path.startsWith('/assets/')&&!path.startsWith('/api/')&&path!=='/mcp'?await googleIdentity(request,env):null);
  const fleetAdmin=await fleetAdminRoute(request,env,google);if(fleetAdmin)return fleetAdmin;
+ const collectorStatus=await collectorStatusRoute(request,env,google);if(collectorStatus)return collectorStatus;
  const hostLinking=await hostLinkRoute(request,env,google);if(hostLinking)return hostLinking;
  const accountResponse=await accountRoute(request,env,google,ctx);if(accountResponse)return accountResponse;
  const accountInfo=!path.startsWith('/assets/')&&!path.startsWith('/api/')&&(google||request.headers.get('oai-authenticated-user-id'))?await accountIdentity(request,env,google,{create:true}):null;
