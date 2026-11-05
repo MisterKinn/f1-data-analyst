@@ -33,7 +33,7 @@ HISTORY_RETRY_SECONDS = host_jobs.HISTORY_RETRY_SECONDS
 BEAT_SECONDS = int(os.environ.get('BEAT_SECONDS', '5'))
 IDLE_BEAT_SECONDS = int(os.environ.get('IDLE_BEAT_SECONDS', '60'))  # also how fast an update request is seen
 STARTED_AT = datetime.now(timezone.utc).isoformat(timespec='seconds')
-COLLECTOR_VERSION = '2026.11.05'
+COLLECTOR_VERSION = '2026.11.05.1'
 # Exit while idle after this long so the launcher can pull new code and restart.
 RESTART_AFTER_SECONDS = int(os.environ.get('RESTART_AFTER_SECONDS', str(6 * 3600)))
 # After a failed F1 login, wait this long before trying the same session again.
@@ -44,6 +44,36 @@ LOGIN_RETRY_SECONDS = int(os.environ.get('LOGIN_RETRY_SECONDS', '600'))
 TOKEN_RENEW_LEFT = int(os.environ.get('TOKEN_RENEW_LEFT', str(36 * 3600)))  # owner renews below this
 TOKEN_WANT_LEFT = int(os.environ.get('TOKEN_WANT_LEFT', str(24 * 3600)))    # others ask below this
 TOKEN_SHARE_EVERY = 600  # the owner re-reads its token at most this often (seconds)
+# F1 refuses some networks (cloud servers) before sign-in with a CloudFront 403. Each host
+# checks its own network now and then and tells the site, which then uses it only when no
+# other host is left (FastF1 issue #988). No token is sent: 401 = reachable, 403 = refused.
+ACCESS_CHECK_SECONDS = int(os.environ.get('ACCESS_CHECK_SECONDS', str(3 * 3600)))
+F1_ACCESS = {'blocked': None, 'at': None}
+
+
+def check_f1_access(force=False, fetch=None):
+    """Returns True when F1 refuses this network, False when it answers, None if unknown."""
+    if not force and F1_ACCESS['at'] is not None and time.monotonic() - F1_ACCESS['at'] < ACCESS_CHECK_SECONDS:
+        return F1_ACCESS['blocked']
+    if fetch is None:
+        import probe
+        fetch = lambda: probe.status('GET', 'static/2026/Index.json')
+    try:
+        code, cache = fetch()
+    except Exception:
+        code, cache = None, None
+    blocked = True if code == 403 else False if code in (200, 401) else None
+    if blocked is not None or F1_ACCESS['at'] is None:
+        if blocked != F1_ACCESS['blocked']:
+            cloud.run_log({'event': 'f1_access', 'status': code, 'cache': cache, 'blocked': blocked})
+            if blocked:
+                print('F1 refuses this network (403 before sign-in). Other hosts collect first; this one waits as a last resort.')
+        F1_ACCESS.update(blocked=blocked, at=time.monotonic())
+    return F1_ACCESS['blocked']
+
+
+def access_fields():
+    return {'f1_blocked': True} if F1_ACCESS['blocked'] else {}
 
 
 # Windows SetThreadExecutionState flags: keep the system (not the display) awake.
@@ -115,7 +145,7 @@ class Baton:
 
     def beat(self):
         payload = {'series': self.job.series, 'window': self.window['id'], 'ready': bool(self.job.ready(self.window)), 'recording': True,
-                   'os': os_label(), 'version': COLLECTOR_VERSION, 'started_at': STARTED_AT}
+                   'os': os_label(), 'version': COLLECTOR_VERSION, 'started_at': STARTED_AT, **access_fields()}
         status, data = runner.host_call('/api/live/host-beat', payload)
         if status in (404, 405):
             self.legacy = True
@@ -388,9 +418,11 @@ def idle_beat(state):
     remembers which series the owner assigned to this computer."""
     if time.monotonic() - state.get('idle_beat_at', -IDLE_BEAT_SECONDS) >= IDLE_BEAT_SECONDS:
         state['idle_beat_at'] = time.monotonic()
+        check_f1_access()
         status, data = runner.host_call('/api/live/host-beat', {'window': None, 'os': os_label(), 'version': COLLECTOR_VERSION,
                                                                 'started_at': STARTED_AT, 'jobs_available': sorted(host_jobs.JOBS),
-                                                                'own_login': own_login(), **token_fields(state)})
+                                                                'own_login': own_login(), **token_fields(state),
+                                                                **access_fields()})
         if status == 200 and data:
             state['token_source'] = bool(data.get('token_source'))
             take_token(data)
@@ -417,6 +449,8 @@ def assigned_jobs(state):
 def run_window(job, window, job_state):
     """One session window of one job, in its own thread."""
     try:
+        # Fresh network check for the site's baton choice, without delaying the recording.
+        threading.Thread(target=check_f1_access, kwargs={'force': True}, daemon=True, name='f1-access').start()
         fetch_shared_token()
         with keep_awake(), Baton(window, job) as baton:
             result = job.record(window, baton.gate, baton.hold)
