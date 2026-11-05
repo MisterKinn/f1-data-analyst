@@ -15,6 +15,8 @@
 - 운영자 화면: 계정 설정 → ‘개발자 설정 · 수집기 호스트’(collector-hosts.js의 관리자 이메일 해시와 같은 계정에만 보임). 상태·주인 계정·마지막 신호·OS·버전을 보고 순서 변경(순위 선택·끌어서 놓기·▲▼), 일시정지, 삭제, 수집 항목(F1·WEC), 대기 방식, 지금 업데이트를 한다. 저장은 `collector/fleet.json`, 신호는 `collector/beat/<이름>.json`.
 - 코드 갱신: 호스트는 쉬는 동안 6시간마다(또는 관리 화면의 ‘지금 업데이트’로) GitHub main을 받아 온다. 세션 수집 중에는 갱신하지 않는다.
 - 서명된 릴리스만 설치: 받은 collector/ 파일 전체의 SHA-256에 대해 저장소 루트 `collector-release.json`의 Ed25519 서명을 확인하고, 이미 설치된 `release_verify.py`와 `collector/host/release-keys.txt`(운영자 공개키)로 검사한다. 서명이 없거나 파일이 바뀌었으면 설치하지 않는다(main에 누가 코드를 넣어도 참여자 PC에서 실행되지 않음). 서명은 운영자 PC의 업로드 스크립트가 `%APPDATA%\Kongboda-release\release-key.pem`으로 한다. 이 키를 잃으면 새 키를 넣은 릴리스를 각 PC에 다시 설치해야 하므로 따로 백업한다.
+- F1 공유 로그인: F1 계정은 운영자 컴퓨터(기본 호스트)에만 있다. 운영자 컴퓨터가 heartbeat에 F1 로그인 토큰을 실어 보내고(36시간 미만 남으면 비밀번호로 갱신), 승인·활성 상태의 다른 호스트는 토큰이 24시간 미만 남았거나 녹화 직전에 heartbeat로 받아 FastF1 토큰 저장소에 넣는다. 비밀번호는 운영자 컴퓨터 밖으로 나가지 않고, 토큰은 며칠 뒤 저절로 만료된다. 운영자 컴퓨터가 며칠 꺼져 있으면 토큰이 만료되므로 가끔 켜 둔다. 상태는 계정 설정의 호스트 관리 줄에 표시된다. 자기 F1 계정으로 돌리려면 Windows는 setup-windows.ps1 -OwnF1, Mac은 KONGBODA_OWN_F1=1.
+- 한 파일 설치: /download/kongboda-collector-setup.cmd 를 두 번 클릭하면 사이트에서 kit.ps1을 받아 설치하고, 계정 연결 버튼을 누를 때까지 기다린 뒤 F1 접속을 점검한다.
 - F1 비밀번호: 처음 시작할 때 host.env에서 Windows 자격 증명 관리자 / macOS 키체인(keyring)으로 옮기고 파일에서 지운다. 제거할 때 함께 지운다.
 
 ## Windows 설치

@@ -38,6 +38,12 @@ COLLECTOR_VERSION = '2026.11.05'
 RESTART_AFTER_SECONDS = int(os.environ.get('RESTART_AFTER_SECONDS', str(6 * 3600)))
 # After a failed F1 login, wait this long before trying the same session again.
 LOGIN_RETRY_SECONDS = int(os.environ.get('LOGIN_RETRY_SECONDS', '600'))
+# Shared F1 login: the owner's computer (built-in host with the F1 account) sends its F1
+# login token with its heartbeat; other hosts receive it with theirs. Only the token
+# travels, never the password, and it expires on its own after a few days.
+TOKEN_RENEW_LEFT = int(os.environ.get('TOKEN_RENEW_LEFT', str(36 * 3600)))  # owner renews below this
+TOKEN_WANT_LEFT = int(os.environ.get('TOKEN_WANT_LEFT', str(24 * 3600)))    # others ask below this
+TOKEN_SHARE_EVERY = 600  # the owner re-reads its token at most this often (seconds)
 
 
 # Windows SetThreadExecutionState flags: keep the system (not the display) awake.
@@ -273,7 +279,8 @@ def ensure_certificates():
 
 
 def check_setup():
-    missing = [name for name in ('F1_USERNAME', 'F1_PASSWORD', 'HOST_NAME') if not os.environ.get(name)]
+    # No F1 account here is fine: the owner's shared login token is used instead.
+    missing = [name for name in ('HOST_NAME',) if not os.environ.get(name)]
     import host_auth
     if not host_auth.key_path().exists():
         missing.append('host key (' + str(host_auth.key_path()) + ')')
@@ -287,13 +294,88 @@ def skipped(state, window_id):
     return time.monotonic() < state.setdefault('retry_at', {}).get(window_id, 0)
 
 
+def own_login():
+    return bool(os.environ.get('F1_USERNAME') and os.environ.get('F1_PASSWORD'))
+
+
+def stored_token_left():
+    """Seconds until the F1 login token stored on this computer expires (0 if none)."""
+    try:
+        from fastf1.internals.f1account import token_manager
+        token = token_manager.get_stored()
+        return max(0, token.expires_at - time.time()) if token else 0
+    except Exception:
+        return 0
+
+
+def owner_token(state):
+    """The owner's computer: its current F1 login token to share, renewed with the
+    password when less than TOKEN_RENEW_LEFT remains (checked at most every 10 minutes)."""
+    if time.monotonic() - state.get('token_read_at', -TOKEN_SHARE_EVERY) < TOKEN_SHARE_EVERY:
+        return state.get('token_value')
+    state['token_read_at'] = time.monotonic()
+    try:
+        import logging
+        import fastf1
+        from fastf1.internals.f1account import get_token
+        logging.getLogger('fastf1').setLevel(logging.CRITICAL)
+        fastf1.set_auth_method('password')
+        state['token_value'] = get_token(force_renew=stored_token_left() < TOKEN_RENEW_LEFT).value
+    except Exception as exc:
+        cloud.run_log({'event': 'token_share_error', 'error': type(exc).__name__})
+        state['token_value'] = None
+    return state['token_value']
+
+
+def install_shared_token(shared):
+    """Store the owner's login token where FastF1 looks for it."""
+    try:
+        from fastf1.internals.f1account import token_manager
+        from fastf1.internals.f1account.tokens import SubscriptionToken
+        token = SubscriptionToken.from_jwt(shared['value'])
+        if not token.is_valid():
+            return False
+        token_manager._token = token  # the in-memory copy wins over the file
+        token_manager.store(token)
+        return True
+    except Exception:
+        return False
+
+
+def token_fields(state):
+    """Extra heartbeat fields for the shared F1 login."""
+    if own_login():
+        value = owner_token(state) if state.get('token_source') else None
+        return {'f1_token': value} if value else {}
+    return {'want_token': True} if stored_token_left() < TOKEN_WANT_LEFT else {}
+
+
+def take_token(data):
+    if isinstance(data, dict) and isinstance(data.get('f1_token'), dict) and install_shared_token(data['f1_token']):
+        cloud.run_log({'event': 'shared_login', 'expires_at': int(data['f1_token'].get('expires_at') or 0)})
+
+
+def fetch_shared_token():
+    """Before recording without an own F1 account: make sure a valid shared token is here."""
+    if own_login() or stored_token_left() > 3600:
+        return
+    status, data = runner.host_call('/api/live/host-beat', {'window': None, 'os': os_label(), 'version': COLLECTOR_VERSION,
+                                                            'started_at': STARTED_AT, 'want_token': True})
+    if status == 200:
+        take_token(data)
+
+
 def idle_beat(state):
     """Every few minutes outside sessions: show this host as online. Returns is_lead and
     remembers which series the owner assigned to this computer."""
     if time.monotonic() - state.get('idle_beat_at', -IDLE_BEAT_SECONDS) >= IDLE_BEAT_SECONDS:
         state['idle_beat_at'] = time.monotonic()
         status, data = runner.host_call('/api/live/host-beat', {'window': None, 'os': os_label(), 'version': COLLECTOR_VERSION,
-                                                                'started_at': STARTED_AT, 'jobs_available': sorted(host_jobs.JOBS)})
+                                                                'started_at': STARTED_AT, 'jobs_available': sorted(host_jobs.JOBS),
+                                                                **token_fields(state)})
+        if status == 200 and data:
+            state['token_source'] = bool(data.get('token_source'))
+            take_token(data)
         # Older site or no answer: behave as before (any host may publish post-session data).
         state['is_lead'] = bool(data.get('is_lead')) if status == 200 and data else status not in (401,)
         if status == 200 and data and isinstance(data.get('jobs'), list):
@@ -317,6 +399,7 @@ def assigned_jobs(state):
 def run_window(job, window, job_state):
     """One session window of one job, in its own thread."""
     try:
+        fetch_shared_token()
         with keep_awake(), Baton(window, job) as baton:
             result = job.record(window, baton.gate, baton.hold)
     except Exception as exc:  # a failed job must not stop the host
