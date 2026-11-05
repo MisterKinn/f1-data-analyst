@@ -37,6 +37,26 @@ class HostAuth(unittest.TestCase):
             signer.assert_called_once()
 
 
+class SignedQuery(unittest.TestCase):
+    def test_header_carries_the_signed_query(self):
+        import base64
+        from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+        value = host_auth.header('GET', 'https://x.app/api/live/actions-push?window=2026-21-1', name='pc', private=Ed25519PrivateKey.generate())
+        fields = dict(p.split('=', 1) for p in value.removeprefix('KongbodaHost ').split(','))
+        self.assertEqual(base64.urlsafe_b64decode(fields['q'] + '=='), b'window=2026-21-1')
+
+
+class EnvFile(unittest.TestCase):
+    def test_fills_missing_settings_only(self):
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder) / 'host.env'
+            path.write_text('\ufeffF1_USERNAME=a@b.c\r\nF1_PASSWORD=x=y\r\nHOST_NAME=file-name\r\n', encoding='utf-8')
+            with mock.patch.dict(os.environ, {'HOST_NAME': 'set'}, clear=True):
+                self.assertTrue(host_runner.load_env_file(str(path)))
+                self.assertEqual((os.environ['F1_USERNAME'], os.environ['F1_PASSWORD'], os.environ['HOST_NAME']), ('a@b.c', 'x=y', 'set'))
+        self.assertFalse(host_runner.load_env_file('/nonexistent/host.env'))
+
+
 class HostRunner(unittest.TestCase):
     def test_backup_stands_by_while_another_host_pushes(self):
         now = datetime(2026, 11, 6, 15, 40, tzinfo=UTC)

@@ -46,7 +46,9 @@ def header(method, url, body=b'', name=None, private=None, now=None):
     ts = str(int(now if now is not None else time.time()))
     private = private or load_key()
     signature = private.sign(message(method, path, ts, body))
-    return f"KongbodaHost name={name or os.environ['HOST_NAME']},ts={ts},sig={b64u(signature)}"
+    # q carries the signed query: hosting rewrites may add their own query parameters.
+    return (f"KongbodaHost name={name or os.environ['HOST_NAME']},ts={ts},"
+            f"q={b64u(parsed.query.encode())},sig={b64u(signature)}")
 
 
 def keygen(name, path):

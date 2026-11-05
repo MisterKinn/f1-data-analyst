@@ -60,6 +60,25 @@ def backup_should_start(window):
     return True
 
 
+def default_env_file():
+    local = os.environ.get('LOCALAPPDATA')
+    return os.path.join(local, 'Kongboda', 'host.env') if local else '/etc/kongboda/host.env'
+
+
+def load_env_file(path=None):
+    """Fill missing settings from host.env (KEY=VALUE lines) so any launcher works."""
+    path = path or os.environ.get('HOST_ENV_FILE') or default_env_file()
+    try:
+        lines = open(path, encoding='utf-8-sig').read().splitlines()
+    except OSError:
+        return False
+    for line in lines:
+        name, sep, value = line.partition('=')
+        if sep and name.strip() and not name.lstrip().startswith('#') and not os.environ.get(name.strip()):
+            os.environ[name.strip()] = value
+    return True
+
+
 def check_setup():
     missing = [name for name in ('F1_USERNAME', 'F1_PASSWORD', 'HOST_NAME') if not os.environ.get(name)]
     import host_auth
@@ -86,6 +105,9 @@ def cycle(state):
 
 
 def main():
+    load_env_file()
+    if os.environ.get('DATA_DIR'):
+        cloud.DATA = cloud.Path(os.environ['DATA_DIR'])
     missing = check_setup()
     if missing:
         print('Collector host is not set up; missing: ' + ', '.join(missing))
@@ -96,7 +118,12 @@ def main():
         import probe
         return probe.main()
     print('Kongboda collector host', os.environ['HOST_NAME'], 'role', os.environ.get('HOST_ROLE', 'primary'))
-    cloud.run_log({'event': 'host_start', 'host': os.environ['HOST_NAME'], 'role': os.environ.get('HOST_ROLE', 'primary')})
+    # Signed request with a dummy window: 200 means this host's key is registered and accepted.
+    status, _ = runner.site('GET', '2000-1-1')
+    cloud.run_log({'event': 'host_start', 'host': os.environ['HOST_NAME'], 'role': os.environ.get('HOST_ROLE', 'primary'),
+                   'upload_auth': status})
+    if status != 200:
+        print('Upload check failed (HTTP %s). Is this host listed in worker/collector-hosts.js?' % status)
     state, started = {}, time.monotonic()
     while True:
         if time.monotonic() - started > RESTART_AFTER_SECONDS:

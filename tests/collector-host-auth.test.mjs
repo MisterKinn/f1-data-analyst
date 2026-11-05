@@ -48,3 +48,19 @@ test('bearer requests are left to the existing OIDC handler',async()=>{
  assert.equal(await hostCollectorRoute(r,{}),null);
  assert.equal(await hostCollectorRoute(new Request('https://x.app/api/other',{headers:{authorization:'KongbodaHost name=a'}}),{}),null);
 });
+
+test('a hosting rewrite may add query parameters; signed ones must still match',async()=>{
+ const {hosts}=await host('pc');const {subtle}=crypto;
+ const {publicKey,privateKey}=await subtle.generateKey({name:'Ed25519'},true,['sign','verify']);
+ const key=Buffer.from(await subtle.exportKey('raw',publicKey)).toString('base64url');
+ const sign=async(method,path,query,ts=Math.floor(Date.now()/1000))=>{const msg=hostMessage(method,path+(query?'?'+query:''),String(ts),createHash('sha256').update('').digest('hex'));const sig=Buffer.from(await subtle.sign({name:'Ed25519'},privateKey,new TextEncoder().encode(msg))).toString('base64url');return `KongbodaHost name=pc,ts=${ts},q=${Buffer.from(query).toString('base64url')},sig=${sig}`;};
+ const reg=[{name:'pc',key}],header=await sign('GET','/api/live/actions-push','window=2026-21-1');
+ await verifyHostSignature(header,{method:'GET',url:new URL('https://x.app/api/live/actions-push?path=api%2Flive%2Factions-push&window=2026-21-1'),hosts:reg});
+ await assert.rejects(verifyHostSignature(header,{method:'GET',url:new URL('https://x.app/api/live/actions-push?window=2026-21-2'),hosts:reg}),e=>e.reason==='query_mismatch');
+ await assert.rejects(verifyHostSignature(header,{method:'GET',url:new URL('https://x.app/api/live/actions-push?window=2026-21-1&window=2026-21-2'),hosts:reg}),e=>e.reason==='query_mismatch');
+ const env={BUCKET:{get:async()=>null,put:async()=>{}}};
+ const r=await hostCollectorRoute(new Request('https://x.app/api/live/actions-push?path=x&window=2026-21-1',{headers:{authorization:header}}),env,{hosts:reg});
+ assert.equal(r.status,200);
+ const bad=await hostCollectorRoute(new Request('https://x.app/api/live/actions-push?window=2026-21-1',{headers:{authorization:'KongbodaHost name=nobody,ts=1,sig=AA'}}),env,{hosts:reg});
+ assert.equal((await bad.json()).reason,'unknown_host');
+});
