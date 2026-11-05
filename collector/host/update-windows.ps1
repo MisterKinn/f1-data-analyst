@@ -2,6 +2,7 @@
 # being recorded (data\active-window.json exists) unless -Force.
 param([string]$Root = (Join-Path $env:LOCALAPPDATA 'Kongboda'), [switch]$Force)
 $ErrorActionPreference = 'Stop'
+$ProgressPreference = 'SilentlyContinue'  # PowerShell 5.1 downloads crawl while drawing a progress bar
 $active = Join-Path $Root 'data\active-window.json'
 if ((Test-Path $active) -and -not $Force) { Write-Host 'Recording in progress; update skipped.'; exit 0 }
 $zip = Join-Path $env:TEMP 'kongboda-main.zip'
