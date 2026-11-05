@@ -28,6 +28,9 @@ MAX_LOOKAHEAD = timedelta(minutes=150)
 KEY_SESSIONS = frozenset(('Qualifying', 'Sprint Qualifying', 'Sprint Shootout', 'Sprint', 'Race'))
 PUSH_INTERVAL = 10
 LAST_HISTORY_ATTEMPT = {}
+HISTORY_DONE = set()  # windows whose post-session upload the site confirmed
+LAST_RESULT = {}  # window id -> finished | already_done | standby | login_failed | closed
+_IDLE = [False]
 
 
 def at(value):
@@ -93,10 +96,36 @@ def history(method, window_id, query=None, body=None):
         return None, None
 
 
+def host_call(path, payload):
+    """Signed JSON POST for home-host endpoints (heartbeat, registration).
+
+    Returns (status, data); data carries the error body on HTTP errors and is None when
+    the site cannot be reached."""
+    body = json.dumps(payload).encode()
+    url = SITE + path
+    try:
+        request = urllib.request.Request(url, data=body, method='POST',
+                                         headers={'authorization': auth_header('POST', url, body), 'content-type': 'application/json'})
+        with urllib.request.urlopen(request, timeout=20) as response:
+            return response.status, json.load(response)
+    except urllib.error.HTTPError as error:
+        try:
+            return error.code, json.load(error)
+        except (OSError, ValueError):
+            return error.code, None
+    except (OSError, ValueError):
+        return None, None
+
+
 def history_done(window_id):
+    if window_id in HISTORY_DONE:
+        return True
     status, data = history('GET', window_id)
+    if status == 200 and data and data.get('done'):
+        HISTORY_DONE.add(window_id)
+        return True
     # If the site cannot answer, skip the heavy FastF1 load this run.
-    return status != 200 or bool(data and data.get('done'))
+    return status != 200
 
 
 def post_session(windows, skip=None):
@@ -104,8 +133,11 @@ def post_session(windows, skip=None):
     import post_session as post
     window = post.pending_window(windows, cloud.now(), lambda wid: (skip and skip(wid)) or history_done(wid))
     if not window:
-        print('No F1 session window now.')
+        if not _IDLE[0]:  # say it once, not every minute on a host
+            print('No F1 session window now.')
+            _IDLE[0] = True
         return 0
+    _IDLE[0] = False
     LAST_HISTORY_ATTEMPT[window['id']] = time.monotonic()
     cloud.run_log({'event': 'history_start', 'window': window['id'], 'session': window['name']})
     try:
@@ -152,30 +184,50 @@ def main():
     return record_window(window)
 
 
-def record_window(window, should_start=None):
-    """Wait for the window to open, record it and push snapshots until it closes."""
+def record_window(window, should_start=None, gate=None, hold=None):
+    """Wait for the window to open, record it and push snapshots until it closes.
+
+    gate() is False while another home host holds the baton: this host keeps recording
+    (so it can take over at once) but does not publish. hold() is True for a cold-standby
+    host that should not connect to F1 until it holds the baton."""
     status, data = site('GET', window['id'])
     if status == 200 and data and data.get('done'):
         print('Session already recorded:', window['event'], window['name'])
+        LAST_RESULT[window['id']] = 'already_done'
         return 0
-    print('Session:', window['event'], window['name'], 'start', window['start'])
-    cloud.run_log({'event': 'job_start', 'window': window['id'], 'session': window['name'],
-                   'session_start': window['start'], 'close': window['close']})
+    _IDLE[0] = False
+    if LAST_RESULT.get(window['id']) != 'standby':  # a standing-by backup re-checks every minute quietly
+        print('Session:', window['event'], window['name'], 'start', window['start'])
+        cloud.run_log({'event': 'job_start', 'window': window['id'], 'session': window['name'],
+                       'session_start': window['start'], 'close': window['close']})
     while cloud.now() < at(window['open']):
         time.sleep(min(30, max(1, (at(window['open']) - cloud.now()).total_seconds())))
     if should_start and not should_start(window):
+        LAST_RESULT[window['id']] = 'standby'
         return 0
 
     stop = threading.Event()
 
     def pusher():
-        last, last_status = None, 'start'
-        while not stop.wait(PUSH_INTERVAL):
+        last, last_status, pushed_at, was_open = None, 'start', 0.0, True
+        while not stop.wait(1):
+            opened = gate() if gate else True
+            took_over = opened and not was_open  # just got the baton: publish at once
+            was_open = opened
+            if not took_over and time.monotonic() - pushed_at < PUSH_INTERVAL:
+                continue
             try:
                 stamp = (cloud.DATA / 'snapshot.json').stat().st_mtime
             except OSError:
                 continue
-            if stamp == last:
+            if stamp == last and not took_over:
+                continue
+            pushed_at = time.monotonic()
+            if not opened:
+                status = 'standby'
+                if status != last_status:
+                    cloud.run_log({'event': 'push_status', 'window': window['id'], 'status': status})
+                    last_status = status
                 continue
             status = push(window['id'])
             if status in (200, 409):
@@ -187,6 +239,9 @@ def record_window(window, should_start=None):
     threading.Thread(target=pusher, daemon=True).start()
     attempt, finished = 0, False
     while cloud.now() < at(window['close']):
+        if hold and hold():
+            time.sleep(max(0.1, min(10, (at(window['close']) - cloud.now()).total_seconds())))
+            continue
         code = cloud.record(window)
         cloud.run_log({'event': 'record_exit', 'window': window['id'], 'code': code, 'attempt': attempt + 1})
         if code == 0:
@@ -194,12 +249,18 @@ def record_window(window, should_start=None):
             break
         if code in (20, 21):
             print('F1 login failed; check the F1_USERNAME / F1_PASSWORD secrets.')
+            LAST_RESULT[window['id']] = 'login_failed'
             break
         delay = cloud.RETRY_DELAYS[min(attempt, len(cloud.RETRY_DELAYS) - 1)]
         attempt += 1
         time.sleep(delay)
     stop.set()
-    final = push(window['id'], final=finished, flush=True)  # the last push must be saved
+    if finished or LAST_RESULT.get(window['id']) != 'login_failed':
+        LAST_RESULT[window['id']] = 'finished' if finished else 'closed'
+    if gate and not gate():
+        final = 'standby'  # the baton holder publishes and marks the session done
+    else:
+        final = push(window['id'], final=finished, flush=True)  # the last push must be saved
     print('Final push:', final, 'finished' if finished else 'window closed')
     cloud.run_log({'event': 'job_end', 'window': window['id'], 'finished': finished,
                    'attempts': attempt + (1 if finished else 0), 'final_push': final})
