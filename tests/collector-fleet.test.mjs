@@ -14,7 +14,7 @@ async function makeHost(name){
   const r=await hostCollectorRoute(new Request(url,{method,headers:{authorization:await sign(method,url,text),'content-type':'application/json'},...(method==='POST'?{body:text}:{})}),env);return [r.status,await r.json()];};
  return {name,key,sign,call};
 }
-function memoryEnv(extra={}){const store=new Map();return {store,env:{DEPLOY_OWNER_EMAIL:'Owner@Example.com',BUCKET:{get:async k=>store.has(k)?{json:async()=>JSON.parse(store.get(k))}:null,put:async(k,v)=>{store.set(k,typeof v==='string'?v:JSON.stringify(v));},delete:async k=>{store.delete(k);}},...extra}};}
+function memoryEnv(extra={}){const store=new Map();return {store,env:{COLLECTOR_ADMIN_SHA256:'c8cd3c6427301eaf6665bccacd65ddb614527acc843a15463e3faba57124c351',BUCKET:{get:async k=>store.has(k)?{json:async()=>JSON.parse(store.get(k))}:null,put:async(k,v)=>{store.set(k,typeof v==='string'?v:JSON.stringify(v));},delete:async k=>{store.delete(k);}},...extra}};}
 const snapshot=seq=>JSON.stringify({schema_version:1,producer:'fastf1-live-bridge',run_id:'r1',sequence:seq,generated_at:new Date(Date.now()+seq).toISOString(),last_message_at:new Date().toISOString(),connected:true,topics:{SessionInfo:{Key:9999,Name:'Practice 1'},SessionStatus:{Status:'Started'}},recent_events:[]});
 const W='2026-20-1';
 
@@ -157,11 +157,13 @@ test('hosts without heartbeats (older collector code) are not gated',async()=>{
  try{assert.equal((await mine.call(env,'POST','/api/live/actions-push?window='+W,snapshot(1)))[0],200);}finally{COLLECTOR_HOSTS.pop();}
 });
 
-test('owner check needs the deploy owner email',()=>{
- assert.equal(isOwner({DEPLOY_OWNER_EMAIL:'a@b.c'},{email:'A@B.C'}),true);
- assert.equal(isOwner({DEPLOY_OWNER_EMAIL:'a@b.c'},{email:'x@b.c'}),false);
- assert.equal(isOwner({},{email:'a@b.c'}),false);
- assert.equal(isOwner({DEPLOY_OWNER_EMAIL:'a@b.c'},null),false);
+test('only the listed collector admin manages hosts',async()=>{
+ const env={COLLECTOR_ADMIN_SHA256:'d648b243a3e817eaa3309e00e183483f2867baadf522099f0c2121770536b25a'};
+ assert.equal(await isOwner(env,{email:' A@B.C '}),true);
+ assert.equal(await isOwner(env,{email:'x@b.c'}),false);
+ assert.equal(await isOwner(env,{email:'a@b.c',email_verified:false}),false);
+ assert.equal(await isOwner(env,null),false);
+ assert.equal(await isOwner({DEPLOY_OWNER_EMAIL:'x@b.c'},{email:'x@b.c'}),false,'the deploy owner is not automatically the collector admin');
 });
 
 test('admin writes need the site origin',async()=>{
