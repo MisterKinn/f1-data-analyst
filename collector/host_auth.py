@@ -66,7 +66,7 @@ def keygen(name, path):
             os.chmod(path, 0o600)
         except OSError:
             pass
-    print("Add this line to worker/collector-hosts.js:")
+    print("Host key (the collector registers it on the site automatically):")
     print(f" {{name:'{name}',key:'{public_key(private)}'}},")
     return 0
 

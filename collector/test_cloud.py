@@ -150,6 +150,26 @@ class CloudTests(unittest.TestCase):
         self.assertFalse(status['page_connected'])
 
 
+class MeetingNames(unittest.TestCase):
+    window = {'name': 'Practice 1', 'event': 'São Paulo Grand Prix', 'start': '2026-11-06T15:30:00+00:00'}
+
+    def info(self, meeting, start='2026-11-06T12:30:00', name='Practice 1'):
+        return {'Name': name, 'Meeting': {'Name': meeting}, 'StartDate': start, 'GmtOffset': '-03:00:00'}
+
+    def test_accents_case_and_spaces(self):
+        self.assertTrue(session_matches(self.info('Sao Paulo  grand prix'), self.window))
+        self.assertTrue(session_matches(self.info('SÃO PAULO GRAND PRIX'), self.window))
+
+    def test_renamed_meeting_needs_close_start(self):
+        self.assertTrue(session_matches(self.info('Brazilian Grand Prix'), self.window))
+        self.assertTrue(session_matches(self.info('Brazilian Grand Prix', '2026-11-06T12:55:00'), self.window))
+        self.assertFalse(session_matches(self.info('Brazilian Grand Prix', '2026-11-06T13:31:00'), self.window))
+        self.assertTrue(session_matches(self.info('São Paulo Grand Prix', '2026-11-06T14:00:00'), self.window))
+
+    def test_session_name_still_required(self):
+        self.assertFalse(session_matches(self.info('São Paulo Grand Prix', name='Practice 2'), self.window))
+
+
 if __name__ == '__main__':
     unittest.main()
 

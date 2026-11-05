@@ -9,6 +9,8 @@ $log = Join-Path $Root 'data\host.log'
 if ($Probe) { $env:PROBE = '1'; & $python (Join-Path $Root 'collector\host_runner.py'); exit $LASTEXITCODE }
 while ($true) {
   try { & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $Root 'collector\host\update-windows.ps1') -Root $Root *>> $log } catch {}
+  # Keep the log small: past 5 MB the old log becomes host.log.1 (one generation kept).
+  if ((Test-Path $log) -and ((Get-Item $log).Length -gt 5MB)) { Move-Item $log "$log.1" -Force }
   & $python (Join-Path $Root 'collector\host_runner.py') *>> $log
   Start-Sleep -Seconds 30
 }

@@ -9,6 +9,7 @@ import subprocess
 import sys
 import threading
 import time
+import unicodedata
 from datetime import datetime, timedelta, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -158,12 +159,18 @@ def eligible(windows, at, completed):
                  < datetime.fromisoformat(w['close'])), None)
 
 
+def _norm(name):
+    """Compare names loosely: 'São Paulo Grand Prix' == 'Sao Paulo  grand prix'."""
+    text = unicodedata.normalize('NFKD', str(name or ''))
+    return ' '.join(''.join(c for c in text if not unicodedata.combining(c)).casefold().split())
+
+
 def session_matches(info, window):
-    if info.get('Name') != window['name']:
+    if _norm(info.get('Name')) != _norm(window['name']):
         return False
-    if info.get('Meeting', {}).get('Name') != window['event']:
-        return False
-    # Never accept a previous weekend's cached SessionInfo.
+    same_meeting = _norm(info.get('Meeting', {}).get('Name')) == _norm(window['event'])
+    # Never accept a previous weekend's cached SessionInfo. If F1 names the meeting
+    # differently from the FastF1 schedule, accept only a start within 30 minutes.
     try:
         stamp = datetime.fromisoformat(info['StartDate'])
         if stamp.tzinfo is None:
@@ -171,7 +178,8 @@ def session_matches(info, window):
             sign = -1 if offset.startswith('-') else 1
             hh, mm, *_ = map(int, offset.lstrip('+-').split(':'))
             stamp = stamp.replace(tzinfo=timezone(sign * timedelta(hours=hh, minutes=mm)))
-        return abs((stamp.astimezone(UTC) - datetime.fromisoformat(window['start'])).total_seconds()) <= 3 * 3600
+        gap = abs((stamp.astimezone(UTC) - datetime.fromisoformat(window['start'])).total_seconds())
+        return gap <= (3 * 3600 if same_meeting else 30 * 60)
     except (KeyError, TypeError, ValueError):
         return False
 

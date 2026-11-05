@@ -1,5 +1,17 @@
 // Explicit translations shared by server markup and dynamic browser updates.
 export const translations = {
+ "개발자 설정 · 수집기 호스트":"Developer settings · Collector hosts",
+ "운영자 계정에만 보입니다. 순위가 높을수록 먼저 수집합니다(순위 선택, 끌어서 놓기, ▲▼). 세션마다 위에서부터 두 대가 같이 기록하고 한 대만 올립니다. 올리던 컴퓨터가 꺼지면 같이 기록하던 컴퓨터가 15초 안에 이어서 올리고, 다음 순위가 새 예비로 들어옵니다. 꺼졌던 컴퓨터는 그 세션에서 다시 맡지 않습니다.":"Only the owner account sees this. Higher-priority computers collect first (choose a rank, drag and drop, or use ▲▼). In each session the top two computers record together and one publishes. If the publishing computer goes off, the other one continues within 15 seconds and the next computer becomes the new spare. A computer that went off does not take over again during that session.",
+ "새로고침":"Refresh",
+ "모든 수집기 지금 업데이트":"Update all collectors now",
+ "업데이트는 수집 중이 아닐 때 1분 안에 적용됩니다. 수집 중이면 세션이 끝난 뒤 적용됩니다.":"Updates apply within a minute when a collector is not recording, otherwise after the session ends.",
+ "수집기 컴퓨터 연결":"Link a collector computer",
+ "연결 코드가 없거나 만료됐습니다. 수집기 상태 확인을 다시 실행하면 새 주소가 열립니다.":"This link code is missing or expired. Run the collector status check again to open a new link.",
+ "이 컴퓨터를 내 꽁보다 계정에 연결하려면 먼저 아래에서 Google로 로그인하세요. 로그인하면 이 화면으로 돌아옵니다.":"To link this computer to your Kongboda account, first sign in with Google below. You will come back to this page.",
+ "아래 컴퓨터를 지금 로그인한 꽁보다 계정에 연결합니다. 연결하면 바로 수집기로 등록되고, 세션 시간이 되면 자동으로 수집합니다.":"This links the computer below to the Kongboda account you are signed in with. It is registered as a collector right away and collects automatically at session time.",
+ "내 계정에 이 컴퓨터 연결":"Link this computer to my account",
+ "컴퓨터를 내 계정에 연결했습니다. 세션 시간이 되면 자동으로 수집합니다.":"The computer is linked to your account. It collects automatically at session time.",
+ "내 수집기":"My collectors",
  '로그인 후 연결 주소 복사':'Sign in to copy the connection address',
  '질문 예시':'Example questions',
  '실제 기록으로 재구성한 분석 예시는 홈에서 볼 수 있습니다.':'Analysis examples rebuilt from recorded data are on the homepage.',

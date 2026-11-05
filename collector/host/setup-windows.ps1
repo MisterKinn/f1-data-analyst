@@ -3,7 +3,9 @@
 #   irm https://raw.githubusercontent.com/MisterKinn/f1-data-analyst/main/collector/host/setup-windows.ps1 -OutFile $env:TEMP\kb.ps1; powershell -ExecutionPolicy Bypass -File $env:TEMP\kb.ps1
 # Installs into %LOCALAPPDATA%\Kongboda, asks for the F1 login (typed only here), creates
 # this computer's upload key, keeps the PC awake on AC power and starts the collector at logon.
-param([string]$Name = $env:COMPUTERNAME.ToLower(), [ValidateSet('primary','backup')][string]$Role = 'primary')
+# The collector registers itself on the site; the owner approves it and sets its priority
+# in Account settings. (-Role is accepted for older launchers and ignored.)
+param([string]$Name = $env:COMPUTERNAME.ToLower(), [string]$Role = '')
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'  # PowerShell 5.1 downloads crawl while drawing a progress bar
 $Root = Join-Path $env:LOCALAPPDATA 'Kongboda'
@@ -52,7 +54,7 @@ if (-not (Test-Path $EnvFile)) {
   $user = Read-Host 'F1 account email'
   $secure = Read-Host 'F1 account password' -AsSecureString
   $plain = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure))
-  [IO.File]::WriteAllLines($EnvFile, [string[]]@("F1_USERNAME=$user", "F1_PASSWORD=$plain", "HOST_NAME=$Name", "HOST_ROLE=$Role", "DATA_DIR=$Data", "HOST_KEY_FILE=$Root\host-key.pem"))
+  [IO.File]::WriteAllLines($EnvFile, [string[]]@("F1_USERNAME=$user", "F1_PASSWORD=$plain", "HOST_NAME=$Name", "DATA_DIR=$Data", "HOST_KEY_FILE=$Root\host-key.pem"))
   icacls $EnvFile /inheritance:r /grant:r "${env:USERNAME}:(R,W)" | Out-Null
 }
 
@@ -73,5 +75,5 @@ $trigger = New-ScheduledTaskTrigger -AtLogOn -User $env:USERNAME
 $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -ExecutionTimeLimit ([TimeSpan]::Zero) -RestartCount 999 -RestartInterval (New-TimeSpan -Minutes 1) -StartWhenAvailable
 Register-ScheduledTask -TaskName 'Kongboda Collector' -Action $action -Trigger $trigger -Settings $settings -Force | Out-Null
 Write-Host ''
-Write-Host 'Done. Send the line above (name + key) to be added to worker/collector-hosts.js.'
+Write-Host "Done. This PC is '$Name'. It asks the site for approval on its first start."
 Write-Host 'Check F1 access now:  powershell -ExecutionPolicy Bypass -File "' (Join-Path $Code 'host\run-windows.ps1') '" -Root "' $Root '" -Probe'
