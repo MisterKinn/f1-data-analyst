@@ -83,3 +83,15 @@ export async function fiaCall(name,args){
  }else result=await readDocument(args);
  return {content:[{type:'text',text:JSON.stringify(result)}],isError:false};
 }
+// Used by the document alert watcher (doc-alerts.js).
+export async function eventDocuments(year,name){
+ const index=await events(year),want=String(name||'').trim().toLowerCase();
+ const event=index.records.find(x=>x.event.toLowerCase()===want)||index.records.find(x=>want&&x.event.toLowerCase().startsWith(want.split(' ')[0]));
+ if(!event)return null;
+ const s=await htmlSource(event.url);
+ return {event:event.event,url:event.url,records:parseDocuments(s.html,s.url)};
+}
+export async function fiaDocumentText(url,pages=4){
+ const r=await readDocument({url,start_page:1,page_count:pages});
+ return r.format==='pdf'?r.pages.map(p=>`[page ${p.page}]\n${p.text}`).join('\n\n'):r.text;
+}
