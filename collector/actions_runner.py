@@ -80,10 +80,24 @@ def site(method, window_id, body=None, final=False, flush=False):
         return None, None
 
 
+def json_value(value):
+    """FastF1 session data holds datetimes, timedeltas and numpy numbers that json cannot
+    write: StartDate -> '2026-11-01T14:00:00', GmtOffset -> '-06:00:00', numbers stay numbers."""
+    if isinstance(value, timedelta):
+        seconds = int(value.total_seconds())
+        sign, seconds = ('-' if seconds < 0 else ''), abs(seconds)
+        return '%s%02d:%02d:%02d' % (sign, seconds // 3600, seconds % 3600 // 60, seconds % 60)
+    if hasattr(value, 'isoformat'):
+        return value.isoformat()
+    if hasattr(value, 'item'):
+        return value.item()
+    return str(value)
+
+
 def history(method, window_id, query=None, body=None):
     """Post-session FastF1 upload endpoint (same OIDC authentication as live pushes)."""
     params = {'window': window_id, **(query or {})}
-    data = json.dumps(body).encode() if body is not None else None
+    data = json.dumps(body, default=json_value).encode() if body is not None else None
     url = SITE + '/api/live/actions-history?' + urllib.parse.urlencode(params)
     try:
         request = urllib.request.Request(url, data=data, method=method,
