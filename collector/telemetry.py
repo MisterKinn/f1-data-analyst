@@ -200,6 +200,12 @@ def historical_laps(info, requested):
     if session.api_path.strip('/') != ('static/' + session_path(info)).strip('/'):
         raise ValueError('FastF1 session identity mismatch')
     session.load(laps=True, telemetry=True, weather=False, messages=True)
+    return laps_from_session(session, requested)
+
+
+def laps_from_session(session, requested):
+    """Best-lap telemetry from an already loaded FastF1 session."""
+    import pandas as pd
     output = []
     for record in requested:
         laps = session.laps.pick_drivers(record['driver_number'])

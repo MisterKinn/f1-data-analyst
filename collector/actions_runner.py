@@ -67,6 +67,54 @@ def site(method, window_id, body=None, final=False, flush=False):
         return None, None
 
 
+def history(method, window_id, query=None, body=None):
+    """Post-session FastF1 upload endpoint (same OIDC authentication as live pushes)."""
+    params = {'window': window_id, **(query or {})}
+    data = json.dumps(body).encode() if body is not None else None
+    request = urllib.request.Request(SITE + '/api/live/actions-history?' + urllib.parse.urlencode(params), data=data, method=method,
+                                     headers={'authorization': 'Bearer ' + oidc_token(), 'content-type': 'application/json'})
+    try:
+        with urllib.request.urlopen(request, timeout=60) as response:
+            return response.status, json.load(response)
+    except urllib.error.HTTPError as error:
+        return error.code, None
+    except (OSError, ValueError):
+        return None, None
+
+
+def history_done(window_id):
+    status, data = history('GET', window_id)
+    # If the site cannot answer, skip the heavy FastF1 load this run.
+    return status != 200 or bool(data and data.get('done'))
+
+
+def post_session(windows):
+    """No live window: publish FastF1 best laps and telemetry for the latest finished session."""
+    import post_session as post
+    window = post.pending_window(windows, cloud.now(), history_done)
+    if not window:
+        print('No F1 session window now.')
+        return 0
+    cloud.run_log({'event': 'history_start', 'window': window['id'], 'session': window['name']})
+    try:
+        session, info = post.load(window)
+    except Exception as exc:
+        # Not published yet (or a temporary FastF1 failure): the next scheduled run retries.
+        cloud.run_log({'event': 'history_not_ready', 'window': window['id'], 'error': type(exc).__name__})
+        return 0
+    payload, laps = post.build(session, info)
+    key = str(info['Key'])
+    archive, _ = history('POST', window['id'], {'kind': 'archive', 'session_key': key}, payload)
+    sent = 0
+    for part, driver, lap in laps if archive == 200 else []:
+        status, _ = history('POST', window['id'], {'kind': 'telemetry', 'session_key': key, 'part': part, 'driver': driver}, lap)
+        sent += status == 200
+    done = history('POST', window['id'], {'kind': 'done', 'session_key': key}, {'telemetry_laps': sent})[0] if archive == 200 else None
+    cloud.run_log({'event': 'history_end', 'window': window['id'], 'session_key': key, 'archive': archive,
+                   'telemetry_laps': sent, 'of': len(laps), 'done': done})
+    return 0
+
+
 def push(window_id, final=False, flush=False):
     path = cloud.DATA / 'snapshot.json'
     try:
@@ -85,8 +133,7 @@ def main():
     windows = cloud.read_json(cloud.DATA / 'schedule.json', {}).get('windows', [])
     window = next_window(windows, cloud.now())
     if not window:
-        print('No F1 session window now.')
-        return 0
+        return post_session(windows)
     status, data = site('GET', window['id'])
     if status == 200 and data and data.get('done'):
         print('Session already recorded:', window['event'], window['name'])
