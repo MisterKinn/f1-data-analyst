@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import worker from '../worker/index.js';
-import {distanceDelta,telemetryRead} from '../worker/telemetry.js';
+import {distanceDelta} from '../worker/telemetry.js';
 import {readBestLaps,actionsPush,actionsHistory} from '../worker/live.js';
 
 test('distance delta stays inside common distance and refuses missing coverage',()=>{
@@ -17,23 +17,10 @@ const snapshot={topics:{SessionInfo:info,TimingData:{Lines:{63:{BestLapTime:{Val
 const env={BUCKET:{get:async()=>({json:async()=>({snapshot})})}};
 const lap={driver_number:'63',complete_coverage:true,samples:[[0,0],[1,50],[2,100]]};
 const store=entries=>({BUCKET:{get:async k=>entries.has(k)?{json:async()=>JSON.parse(entries.get(k))}:null}});
-test('after a session, telemetry comes from the published FastF1 archive',async()=>{
- const entries=new Map([['live/sessions/123.json',JSON.stringify({snapshot})],['live/history/123/archive.json','{}'],['live/history/123/telemetry/session-63.json',JSON.stringify({lap})]]);
- const result=await telemetryRead(store(entries),{session_key:123,session_part:'session',driver_number:'63'});
- assert.equal(result.state,'ready');assert.equal(result.laps[0].driver_number,'63');assert.match(result.source,/FastF1/);
-});
-test('before FastF1 publishes, telemetry says so and points to web search',async()=>{
- const s=structuredClone(snapshot);s.topics.SessionStatus={Status:'Finished'};
- const result=await telemetryRead(store(new Map([['live/sessions/123.json',JSON.stringify({snapshot:s})]])),{session_key:123,session_part:'session',driver_number:'63'});
- assert.equal(result.state,'not_published_yet');assert.match(result.reason,/web search/);
- const missing=await telemetryRead(store(new Map([['live/sessions/123.json',JSON.stringify({snapshot})],['live/history/123/archive.json','{}']])),{session_key:123,session_part:'session',driver_number:'63'});
- assert.equal(missing.state,'unavailable');assert.match(missing.reason,/web search/);
-});
-test('telemetry tool keeps authentication and crew boundaries',async()=>{
- const request=auth=>new Request('https://test/mcp',{method:'POST',headers:{'content-type':'application/json',...(auth?{'oai-authenticated-user-id':'owner'}:{})},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'fastf1_lap_telemetry',arguments:{session_key:123,session_part:'session',driver_number:'63'}}})});
- const blocked=await worker.fetch(request(false),env);assert.equal(blocked.status,200);const challenge=await blocked.json();assert.equal(challenge.result.isError,true);assert.ok(challenge.result._meta['mcp/www_authenticate']);
- const response=await (await worker.fetch(request(true),{...env,LIVE_ANALYSIS_KEY_HASH:'configured'})).json();
- assert.equal(response.result.isError,true);
+test('FastF1 lap telemetry tool is gone: completed sessions are OpenF1 only',async()=>{
+ const request=new Request('https://test/mcp',{method:'POST',headers:{'content-type':'application/json','oai-authenticated-user-id':'owner'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'fastf1_lap_telemetry',arguments:{session_key:123,session_part:'session',driver_number:'63'}}})});
+ const response=await (await worker.fetch(request,env)).json();
+ assert.equal(response.error.code,-32602);
 });
 test('shared snapshot storage never retains high-frequency telemetry copies',async()=>{
  const entries=new Map();
@@ -53,7 +40,7 @@ test('published FastF1 history does not replace another current session',async()
  assert.equal((await post('kind=telemetry&part=session&driver=63',{...lap,samples:[]})).status,200);
  assert.equal((await post('kind=telemetry&part=Q9&driver=63',lap)).status,400);
  const result=await readBestLaps(env,{session_key:123,session_part:'session'});
- assert.equal(result.best_laps[0].status,'complete');assert.equal(result.freshness.live,false);assert.equal(result.history_recovery.state,'complete');
+ assert.equal(result.best_laps[0].status,'complete');assert.equal(result.freshness.live,false);
  assert.equal(JSON.parse(entries.get('live/current.json')).snapshot.topics.SessionInfo.Key,124);
  assert.equal((await post('kind=done',{telemetry_laps:1})).status,200);
  const done=await actionsHistory(new Request('https://test/api/live/actions-history?window=2026-21-1',{headers:{authorization:'Bearer ok'}}),env,{verify:async()=>{}});
