@@ -35,3 +35,19 @@ test('actions push stores snapshots and marks finished windows',async()=>{
  assert.equal((await (await actionsPush(req('GET','?window=2026-21-1'),env,{verify})).json()).done,true);
  assert.equal((await actionsPush(req('POST','?window=2026-21-1',JSON.stringify({...snapshot,producer:'x'})),env,{verify})).status,400);
 });
+
+test('the final push is saved even right after another push',async()=>{
+ const store=new Map();const BUCKET={get:async k=>store.has(k)?{json:async()=>JSON.parse(store.get(k))}:null,put:async(k,v)=>{store.set(k,v);}};
+ const env={BUCKET},verify=async()=>{};
+ const post=(q,s)=>actionsPush(new Request('https://kongboda-motorsports.vercel.app/api/live/actions-push'+q,{method:'POST',headers:{authorization:'Bearer ok','content-type':'application/json'},body:JSON.stringify(s)}),env,{verify});
+ assert.equal((await post('?window=2026-21-1',snapshot)).status,200);
+ const later={...snapshot,sequence:6,generated_at:'2026-11-06T15:40:01Z'};
+ await post('?window=2026-21-1',later); // within 5 s: may be held back
+ assert.equal(JSON.parse(store.get('live/current.json')).snapshot.sequence,5);
+ const last={...snapshot,sequence:7,generated_at:'2026-11-06T15:40:02Z',topics:{...snapshot.topics,SessionStatus:{Status:'Finished'}}};
+ assert.equal((await post('?window=2026-21-1&final=1',last)).status,200);
+ assert.equal(JSON.parse(store.get('live/current.json')).snapshot.sequence,7);
+ const closed={...last,sequence:8,generated_at:'2026-11-06T15:40:03Z'};
+ assert.equal((await post('?window=2026-21-1&flush=1',closed)).status,200);
+ assert.equal(JSON.parse(store.get('live/current.json')).snapshot.sequence,8);
+});
