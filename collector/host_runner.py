@@ -29,6 +29,34 @@ BACKUP_GRACE = timedelta(minutes=2)
 RESTART_AFTER_SECONDS = int(os.environ.get('RESTART_AFTER_SECONDS', str(6 * 3600)))
 
 
+# Windows SetThreadExecutionState flags: keep the system (not the display) awake.
+ES_CONTINUOUS, ES_SYSTEM_REQUIRED, ES_AWAYMODE_REQUIRED = 0x80000000, 0x00000001, 0x00000040
+
+
+class keep_awake:
+    """Block idle sleep from 45 minutes before a session until it ends (also on battery).
+
+    Closing a laptop lid or pressing the power button still follows Windows settings."""
+
+    def __enter__(self):
+        self.active = False
+        if sys.platform == 'win32':
+            try:
+                import ctypes
+                self.active = bool(ctypes.windll.kernel32.SetThreadExecutionState(
+                    ES_CONTINUOUS | ES_SYSTEM_REQUIRED | ES_AWAYMODE_REQUIRED))
+            except (AttributeError, OSError):
+                pass
+        cloud.run_log({'event': 'keep_awake', 'on': self.active})
+        return self
+
+    def __exit__(self, *exc):
+        if self.active:
+            import ctypes
+            ctypes.windll.kernel32.SetThreadExecutionState(ES_CONTINUOUS)
+        return False
+
+
 def lookahead():
     return timedelta(minutes=int(os.environ.get('LOOKAHEAD_MINUTES', '45')))
 
@@ -97,7 +125,8 @@ def cycle(state):
         backup = os.environ.get('HOST_ROLE', 'primary').lower() == 'backup'
         cloud.atomic_json(cloud.DATA / 'active-window.json', {'window': window['id'], 'at': cloud.now().isoformat()})
         try:
-            runner.record_window(window, backup_should_start if backup else None)
+            with keep_awake():
+                runner.record_window(window, backup_should_start if backup else None)
         finally:
             (cloud.DATA / 'active-window.json').unlink(missing_ok=True)
         return

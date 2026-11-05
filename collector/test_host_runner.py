@@ -57,6 +57,15 @@ class EnvFile(unittest.TestCase):
         self.assertFalse(host_runner.load_env_file('/nonexistent/host.env'))
 
 
+class KeepAwake(unittest.TestCase):
+    def test_sleep_block_wraps_recording(self):
+        source = Path(host_runner.__file__).read_text(encoding='utf-8')
+        self.assertIn('with keep_awake():\n                runner.record_window', source)
+        with mock.patch('cloud.run_log'):
+            with host_runner.keep_awake() as guard:  # no-op off Windows
+                self.assertIsInstance(guard.active, bool)
+
+
 class HostRunner(unittest.TestCase):
     def test_backup_stands_by_while_another_host_pushes(self):
         now = datetime(2026, 11, 6, 15, 40, tzinfo=UTC)

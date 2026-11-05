@@ -25,6 +25,10 @@ irm https://raw.githubusercontent.com/MisterKinn/f1-data-analyst/main/collector/
 
 접속 점검: `run-windows.ps1 -Probe`가 F1 negotiate·SessionInfo·아카이브 응답 코드를 출력한다(비밀값은 출력하지 않음). 로그는 `data\host.log`, `data\run-log.jsonl`.
 
+## 설치 키트 (다른 사람용 zip)
+
+`python scripts/build-host-kit.py`가 `collector/host/kit/`로 `kongboda-collector-setup.zip`을 만든다. 압축을 풀고 `1_설치하기.cmd`(예비는 `2_예비_PC로_설치하기.cmd`)를 실행하면 설치되고, `내_호스트_키.txt`가 열린다. 그 내용을 받아 `worker/collector-hosts.js`에 추가하면 된다. `3_상태_확인.cmd`는 F1 접속과 등록 여부를, `4_제거하기.cmd`는 제거를 한다. 사용자 설명은 키트의 `설치방법.txt`.
+
 ## 호스트 추가 (다른 PC)
 
 호스트 수에는 코드상 제한이 없다. PC마다 다음만 하면 된다.
@@ -38,6 +42,7 @@ irm https://raw.githubusercontent.com/MisterKinn/f1-data-analyst/main/collector/
 
 ## 주의
 
+- 세션 45분 전부터 끝날 때까지 수집기가 Windows 자동 절전을 막는다(배터리 포함). 덮개 닫기·전원 버튼은 Windows 설정을 따른다.
 - 로그인 기반 자동 시작이라 Windows에 로그인해 있어야 한다(화면 잠금은 괜찮음).
 - 노트북은 들고 나가면 수집이 멈춘다. 상시 운영은 미니 PC를 주 호스트로, 노트북을 예비로 두는 구성을 권장한다.
 - 같은 F1 계정으로 두 호스트가 동시에 접속해도 되는지는 확인하지 않았다. 예비 모드가 동시 접속을 줄인다.
