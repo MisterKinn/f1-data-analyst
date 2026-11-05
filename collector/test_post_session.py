@@ -58,5 +58,40 @@ class RunnerPostSession(unittest.TestCase):
         self.assertEqual((end['event'], end['telemetry_laps'], end['done']), ('history_end', 2, 200))
 
 
+class HistoryJson(unittest.TestCase):
+    def test_fastf1_session_info_is_sent_as_json(self):
+        import json as _json
+        import numpy as np
+        import pandas as pd
+        from datetime import datetime as _dt, timedelta as _td
+        sent = {}
+
+        class Response:
+            status = 200
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *exc):
+                return False
+
+            def read(self, *a):
+                return b'{}'
+
+        def urlopen(request, timeout=None):
+            sent['body'] = request.data
+            return Response()
+        info = {'Key': np.int64(11404), 'StartDate': _dt(2026, 11, 1, 14, 0), 'EndDate': pd.Timestamp('2026-11-01T16:00:00'),
+                'GmtOffset': _td(hours=-6), 'Path': '2026/x/'}
+        with mock.patch.object(actions_runner.urllib.request, 'urlopen', urlopen), \
+                mock.patch.object(actions_runner, 'auth_header', return_value='x'):
+            status, _ = actions_runner.history('POST', '2026-19-5', {'kind': 'archive'}, {'session_info': info})
+        self.assertEqual(status, 200)
+        self.assertEqual(_json.loads(sent['body'])['session_info'],
+                         {'Key': 11404, 'StartDate': '2026-11-01T14:00:00', 'EndDate': '2026-11-01T16:00:00',
+                          'GmtOffset': '-06:00:00', 'Path': '2026/x/'})
+
+
+
 if __name__ == '__main__':
     unittest.main()
