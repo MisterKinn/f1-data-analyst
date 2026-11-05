@@ -1,6 +1,7 @@
 #!/bin/bash
 # Kongboda collector host setup for Linux servers, e.g. an Oracle Cloud Ubuntu VM (run once; safe to run again).
 #   curl -fsSL https://raw.githubusercontent.com/MisterKinn/f1-data-analyst/main/collector/host/setup-linux.sh | bash -s -- oracle-seoul
+#   KONGBODA_POWER_SAVE=aws: an AWS server that turns itself off between sessions (collector/power.py).
 # Installs into ~/kongboda, creates this server's upload key, starts the collector at boot
 # (systemd, restarts on crash) and checks whether F1 lets this network in. F1 refuses some
 # cloud networks before sign-in (403); such a host still runs, but the site uses it only
@@ -50,6 +51,11 @@ if [ ! -f "$ENVF" ]; then
   printf '%s\n' "HOST_NAME=$NAME" "DATA_DIR=$DATA" "HOST_KEY_FILE=$ROOT/host-key.pem" > "$ENVF"
 fi
 chmod 600 "$ENVF"
+# AWS server that runs only around sessions (aws-power-setup.sh sets this up from CloudShell).
+if [ "${KONGBODA_POWER_SAVE:-}" = aws ]; then
+  grep -q '^POWER_SAVE=' "$ENVF" || echo 'POWER_SAVE=aws' >> "$ENVF"
+  "$ROOT/venv/bin/python" -m pip install -q boto3
+fi
 if ! grep -q '^F1_USERNAME=.' "$ENVF" && [ -r /dev/tty ]; then
   echo 'Kongboda crew / owner server: just press Enter (uses the shared F1 login). Not crew: type your F1 TV account.'
   read -r -p 'F1 account email (crew: Enter): ' F1_USER </dev/tty || F1_USER=''
