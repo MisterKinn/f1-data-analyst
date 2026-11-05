@@ -5,6 +5,7 @@
 # this computer's upload key, keeps the PC awake on AC power and starts the collector at logon.
 param([string]$Name = $env:COMPUTERNAME.ToLower(), [ValidateSet('primary','backup')][string]$Role = 'primary')
 $ErrorActionPreference = 'Stop'
+$ProgressPreference = 'SilentlyContinue'  # PowerShell 5.1 downloads crawl while drawing a progress bar
 $Root = Join-Path $env:LOCALAPPDATA 'Kongboda'
 $Code = Join-Path $Root 'collector'
 $Data = Join-Path $Root 'data'
