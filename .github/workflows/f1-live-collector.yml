@@ -1,11 +1,10 @@
 name: F1 live collector
-# Records F1 sessions without a host computer: every 10 minutes GitHub checks the
-# FastF1 schedule and, when a session is about to start or running, records it and
-# pushes snapshots to the site with this job's OIDC token (no shared secret).
+# Manual only. Since 2026-10 F1 refuses GitHub-hosted runners (CloudFront 403 before
+# sign-in, FastF1 #988), so sessions are recorded by a home collector host
+# (collector/host_runner.py, docs/home-collector-host.md). This workflow stays for the
+# reachability probe (probe=yes) and as a fallback if F1 lifts the block.
 # Needs repository secrets F1_USERNAME and F1_PASSWORD (the F1 account for live timing).
 on:
-  schedule:
-    - cron: '*/10 * * * *'
   workflow_dispatch:
     inputs:
       history_hours:
