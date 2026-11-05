@@ -16,7 +16,7 @@ test('gateway tools are listed and never change shape',async()=>{
 test('kongboda_tools returns the live server catalog, filterable',async()=>{
  const out=JSON.parse((await call('kongboda_tools',{query:'openf1'})).result.content[0].text);
  const of1=out.tools.filter(t=>t.name.startsWith('openf1_'));
- assert.deepEqual(of1.map(t=>t.name).sort(),['openf1_lap_telemetry','openf1_laps','openf1_sessions']);
+ assert.deepEqual(of1.map(t=>t.name).sort(),['openf1_lap_telemetry','openf1_laps','openf1_race_control','openf1_race_gaps','openf1_result','openf1_sessions','openf1_strategy','openf1_team_radio','openf1_weather']);
  assert.ok(of1.every(t=>t.run_with==='kongboda_call'&&t.inputSchema));
  const all=JSON.parse((await call('kongboda_tools',{})).result.content[0].text);
  assert.ok(!all.tools.some(t=>t.name.startsWith('kongboda_tools')||t.name==='kongboda_call'));
