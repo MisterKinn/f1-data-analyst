@@ -14,15 +14,26 @@ New-Item -ItemType Directory -Force -Path $Root, $Data | Out-Null
 $Name = ($Name -replace '[^a-z0-9-]', '-').Trim('-')
 
 Write-Host '[1/6] Python 3.12+'
-$py = $null
-foreach ($candidate in @('py -3', 'python')) {
-  try { & cmd /c "$candidate -c ""import sys; sys.exit(0 if sys.version_info >= (3,12) else 1)""" 2>$null; if ($LASTEXITCODE -eq 0) { $py = $candidate; break } } catch {}
+function Find-Python {
+  # The installer's py launcher and python.exe are both on PATH after a PATH refresh.
+  foreach ($candidate in @('py -3', 'python')) {
+    try { & cmd /c "$candidate -c ""import sys; sys.exit(0 if sys.version_info >= (3,12) else 1)""" 2>$null; if ($LASTEXITCODE -eq 0) { return $candidate } } catch {}
+  }
+  return $null
 }
+$py = Find-Python
 if (-not $py) {
+  if (-not (Get-Command winget -ErrorAction SilentlyContinue)) {
+    throw 'Python 3.12+ not found and winget is unavailable. Install Python from https://www.python.org/downloads/windows/ (tick "Add python.exe to PATH"), then run setup again.'
+  }
   Write-Host 'Installing Python 3.12 with winget...'
-  winget install -e --id Python.Python.3.12 --accept-package-agreements --accept-source-agreements --silent
-  $py = 'py -3'
+  winget install -e --id Python.Python.3.12 --scope user --accept-package-agreements --accept-source-agreements --silent
+  # The new install is not on this window's PATH yet.
+  $env:Path = [Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [Environment]::GetEnvironmentVariable('Path','User')
+  $py = Find-Python
+  if (-not $py) { throw 'Python was installed but could not be started. Close this window and run setup again.' }
 }
+Write-Host "Using $py"
 
 Write-Host '[2/6] Collector code (GitHub main)'
 $zip = Join-Path $env:TEMP 'kongboda-main.zip'; $tmp = Join-Path $env:TEMP 'kongboda-main'

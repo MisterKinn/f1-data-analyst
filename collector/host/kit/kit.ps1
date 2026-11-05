@@ -16,7 +16,7 @@ function Check {
   $line = ($out -split "`n" | Where-Object { $_ -like '{"event": "probe"*' } | Select-Object -First 1)
   if ($line) {
     $p = $line | ConvertFrom-Json
-    $ok = ($p.negotiate.token[0] -eq 200) -and ($p.session_info.token[0] -eq 200)
+    $ok = ($p.negotiate.token -and $p.negotiate.token[0] -eq 200) -and ($p.session_info.token -and $p.session_info.token[0] -eq 200)
     Write-Host ("회선: {0} / F1 로그인: {1}" -f $p.network, $p.sign_in)
     if ($ok) { Write-Host 'F1 실시간 타이밍 접속: 가능' -ForegroundColor Green }
     else { Write-Host 'F1 실시간 타이밍 접속: 불가 (VPN·회사·학교망이면 집 회선에서 다시 시도하세요)' -ForegroundColor Red }
@@ -37,11 +37,13 @@ switch ($Action) {
     Write-Host 'F1 account email / password 를 물으면 본인 F1 계정을 입력하세요. 비밀번호는 입력해도 화면에 보이지 않습니다.'
     $setup = Join-Path $env:TEMP 'kongboda-setup-windows.ps1'
     Invoke-WebRequest -UseBasicParsing 'https://raw.githubusercontent.com/MisterKinn/f1-data-analyst/main/collector/host/setup-windows.ps1' -OutFile $setup
-    & $setup -Role $Role
+    try { & $setup -Role $Role } catch { Write-Host "설치 중 오류: $_" -ForegroundColor Red; Write-Host '이 화면을 캡처해 운영자에게 보내 주세요.'; break }
     LoadEnv
+    if ($env:HOST_ROLE -and $env:HOST_ROLE -ne $Role) { Write-Host "참고: 이 PC는 이미 '$($env:HOST_ROLE)' 역할로 설치돼 있습니다. 역할을 바꾸려면 4_제거하기.cmd 후 다시 설치하세요." -ForegroundColor Yellow }
     Title '2. 내 호스트 키 만들기'
     $keyFile = Join-Path $Here '내_호스트_키.txt'
     $line = (& "$Root\venv\Scripts\python.exe" "$Root\collector\host_auth.py" keygen --name $env:HOST_NAME --out "$Root\host-key.pem" 2>$null | Select-Object -Last 1)
+    if (-not $line) { Write-Host '키를 만들지 못했습니다. 위의 오류 화면을 캡처해 운영자에게 보내 주세요.' -ForegroundColor Red; break }
     @('아래 한 줄을 운영자에게 보내 주세요 (공개해도 되는 값입니다).', '', $line.Trim(), '', "역할: $Role") | Set-Content -Path $keyFile -Encoding UTF8
     Write-Host "키를 $keyFile 에 저장했습니다. 메모장으로 엽니다."
     Start-Process notepad.exe $keyFile
