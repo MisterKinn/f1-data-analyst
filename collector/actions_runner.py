@@ -19,11 +19,13 @@ import cloud
 SITE = os.environ.get('SITE_URL', 'https://kongboda-motorsports.vercel.app').rstrip('/')
 AUDIENCE = 'kongboda-motorsports'
 LOOKAHEAD = timedelta(minutes=int(os.environ.get('LOOKAHEAD_MINUTES', '45')))
-# Scheduled runs can start late or be skipped, so key sessions get a longer lookahead:
-# about seven 10-minute chances before the window opens. A race job then waits up to
-# 80 minutes plus its 4h05 window = 325 minutes, inside the job's 340-minute timeout.
+# GitHub's scheduled runs can start 20+ minutes late or be skipped, so each session
+# gets the longest lead time its job can afford: the job may wait, then record the
+# whole window, within JOB_BUDGET (the workflow's 340-minute timeout minus a margin).
+# Practice/qualifying/sprint windows (3h05) get 145 minutes; the race (4h05) gets 85.
+JOB_BUDGET = timedelta(minutes=int(os.environ.get('JOB_BUDGET_MINUTES', '330')))
+MAX_LOOKAHEAD = timedelta(minutes=150)
 KEY_SESSIONS = frozenset(('Qualifying', 'Sprint Qualifying', 'Sprint Shootout', 'Sprint', 'Race'))
-KEY_LOOKAHEAD = timedelta(minutes=int(os.environ.get('KEY_LOOKAHEAD_MINUTES', '75')))
 PUSH_INTERVAL = 10
 
 
@@ -32,7 +34,11 @@ def at(value):
 
 
 def lookahead_for(window):
-    return KEY_LOOKAHEAD if window.get('name') in KEY_SESSIONS else LOOKAHEAD
+    try:
+        length = at(window['close']) - at(window['open'])
+    except (KeyError, TypeError, ValueError):
+        return LOOKAHEAD
+    return max(LOOKAHEAD, min(MAX_LOOKAHEAD, JOB_BUDGET - length))
 
 
 def next_window(windows, now, lookahead=None):

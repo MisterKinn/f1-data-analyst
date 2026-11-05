@@ -18,24 +18,27 @@ class NextWindow(unittest.TestCase):
         self.assertEqual(actions_runner.next_window([window(self.start)], self.start - timedelta(minutes=30))['id'], '2026-21-1')
 
     def test_too_early(self):
-        self.assertIsNone(actions_runner.next_window([window(self.start)], self.start - timedelta(hours=2)))
+        self.assertIsNone(actions_runner.next_window([window(self.start)], self.start - timedelta(hours=3)))
 
     def test_running_and_closed(self):
         self.assertIsNotNone(actions_runner.next_window([window(self.start)], self.start + timedelta(hours=2)))
         self.assertIsNone(actions_runner.next_window([window(self.start)], self.start + timedelta(hours=4)))
 
-    def test_key_sessions_start_earlier(self):
-        early = self.start - timedelta(minutes=70)
-        self.assertIsNone(actions_runner.next_window([window(self.start)], early))
-        for name in ('Qualifying', 'Sprint Qualifying', 'Sprint', 'Race'):
-            self.assertIsNotNone(actions_runner.next_window([window(self.start, name)], early), name)
-        self.assertIsNone(actions_runner.next_window([window(self.start, 'Race')], self.start - timedelta(minutes=90)))
+    def test_sessions_get_the_longest_affordable_lead(self):
+        practice, race = window(self.start), window(self.start, 'Race', hours=4)
+        self.assertEqual(actions_runner.lookahead_for(practice), timedelta(minutes=145))
+        self.assertEqual(actions_runner.lookahead_for(race), timedelta(minutes=85))
+        self.assertIsNotNone(actions_runner.next_window([practice], self.start - timedelta(minutes=140)))
+        self.assertIsNone(actions_runner.next_window([practice], self.start - timedelta(minutes=155)))
+        self.assertIsNotNone(actions_runner.next_window([race], self.start - timedelta(minutes=85)))
+        self.assertIsNone(actions_runner.next_window([race], self.start - timedelta(minutes=95)))
 
-    def test_race_wait_fits_job_timeout(self):
+    def test_wait_plus_window_fits_job_timeout(self):
         workflow = open(Path(__file__).resolve().parent.parent / '.github/workflows/f1-live-collector.yml', encoding='utf-8').read()
-        timeout = int(workflow.split('timeout-minutes:')[1].split()[0])
-        worst = actions_runner.KEY_LOOKAHEAD + timedelta(minutes=5) + timedelta(hours=4)
-        self.assertLessEqual(worst, timedelta(minutes=timeout - 10))
+        timeout = timedelta(minutes=int(workflow.split('timeout-minutes:')[1].split()[0]))
+        for w in (window(self.start), window(self.start, 'Race', hours=4)):
+            length = datetime.fromisoformat(w['close']) - datetime.fromisoformat(w['open'])
+            self.assertLessEqual(actions_runner.lookahead_for(w) + length, timeout - timedelta(minutes=10))
 
 
 class RunLog(unittest.TestCase):
