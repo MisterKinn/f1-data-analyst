@@ -45,5 +45,17 @@ class HostKit(unittest.TestCase):
         self.assertTrue((ROOT / 'collector' / 'host' / 'kit-mac.sh').exists())
 
 
+    def test_site_download_module_is_current(self):
+        # Compare contents, not compressed bytes: zlib builds differ between machines.
+        import base64, io, re
+        def parts(text):
+            zip_b64, ps1_b64 = re.findall(r'"([A-Za-z0-9+/=]+)"', text)
+            with zipfile.ZipFile(io.BytesIO(base64.b64decode(zip_b64))) as archive:
+                files = {n: archive.read(n) for n in archive.namelist()}
+            return files, base64.b64decode(ps1_b64)
+        current = (ROOT / 'worker' / 'collector-kit.js').read_text(encoding='utf-8')
+        self.assertEqual(parts(current), parts(kit.site_module()), 'run: python scripts/build-host-kit.py --write-js')
+
+
 if __name__ == '__main__':
     unittest.main()

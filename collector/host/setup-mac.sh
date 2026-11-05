@@ -55,7 +55,7 @@ rsync -a --delete "$SRC/" "$CODE/"
 rm -rf "$TMP"
 [ -x "$ROOT/venv/bin/python" ] || "$PY" -m venv "$ROOT/venv"
 "$ROOT/venv/bin/python" -m pip install --upgrade pip -q
-"$ROOT/venv/bin/python" -m pip install -q fastf1==3.9.0 signalrcore==1.0.2 certifi
+"$ROOT/venv/bin/python" -m pip install -q fastf1==3.9.0 signalrcore==1.0.2 certifi keyring
 
 echo '[3/6] F1 account (typed here only, stored for this Mac user)'
 if [ ! -f "$ENVF" ]; then

@@ -5,8 +5,9 @@
 // record at the same time; only the baton holder publishes. The baton goes to the first
 // host that receives data ("ready"), then stays with it for the whole session. If the
 // holder goes quiet for BEAT_FRESH_MS, the other recording host takes over at once, the
-// next host in line starts recording as the new spare, and the silent host is retired for
-// the rest of that session (it only comes back as a last resort). A host marked "cold"
+// next host in line starts recording as the new spare, and the silent host is retired from
+// publishing for the rest of that session (it may record again as a spare; it publishes
+// again only as a last resort). A host marked "cold"
 // is picked as a spare only after the others. One live host is enough to collect.
 //
 // Hosts listed in collector-hosts.js are built in. Any other host registers itself with
@@ -78,8 +79,10 @@ export function decideBaton(hosts,beats,series,windowId,prev,{warmCount=WARM_DEF
  // Until the holder receives data, the best candidate may still take the baton (session start,
  // a holder whose F1 login fails). Once it receives data, it keeps the baton for the session.
  if(!state.holder||!ready(state.holder)){const next=pick();if(next&&next!==state.holder){state.holder=next;state.since=new Date(now).toISOString();}}
- // Spares: other fresh hosts (cold ones last); retired hosts only fill empty spare slots.
- const order=[...fresh_.filter(h=>!h.cold),...fresh_.filter(h=>h.cold),...alive.filter(h=>state.retired.includes(h.name))].map(h=>h.name);
+ // Spares follow the owner's order (cold ones last). A retired host may record again as a
+ // spare once it is back (a network blip should not cost the session its best computer),
+ // but it never publishes again in that session unless nobody else is left.
+ const order=[...alive.filter(h=>!h.cold),...alive.filter(h=>h.cold)].map(h=>h.name);
  const warm=new Set(state.holder?[state.holder]:[]);
  for(const name of order){if(warm.size>=warmCount)break;warm.add(name);}
  return {state,holder:state.holder,warm};

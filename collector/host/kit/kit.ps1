@@ -4,7 +4,7 @@ $ProgressPreference = 'SilentlyContinue'
 $Root = Join-Path $env:LOCALAPPDATA 'Kongboda'
 $Here = $PSScriptRoot
 function Title($t) { Write-Host ''; Write-Host "==== $t ====" -ForegroundColor Cyan }
-function LoadEnv { if (Test-Path "$Root\host.env") { Get-Content "$Root\host.env" | ForEach-Object { if ($_ -match '^([A-Z0-9_]+)=(.*)$') { [Environment]::SetEnvironmentVariable($Matches[1], $Matches[2], 'Process') } } } }
+function LoadEnv { if (Test-Path "$Root\host.env") { Get-Content "$Root\host.env" -Encoding UTF8 | ForEach-Object { if ($_ -match '^([A-Z0-9_]+)=(.*)$') { [Environment]::SetEnvironmentVariable($Matches[1], $Matches[2], 'Process') } } } }
 
 function Check {
   if (-not (Test-Path "$Root\venv\Scripts\python.exe")) { Write-Host '수집기가 아직 설치되지 않았습니다. 1_설치하기 를 먼저 실행하세요.' -ForegroundColor Yellow; return }
@@ -61,6 +61,7 @@ switch ($Action) {
     Unregister-ScheduledTask -TaskName 'Kongboda Collector' -Confirm:$false -ErrorAction SilentlyContinue
     Get-CimInstance Win32_Process | Where-Object { $_.CommandLine -like "*$Root*" } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }
     Start-Sleep -Seconds 2
+    if (Test-Path "$Root\venv\Scripts\python.exe") { Push-Location "$Root\collector"; & "$Root\venv\Scripts\python.exe" host_runner.py --forget-credentials 2>$null | Out-Null; Pop-Location }
     Remove-Item -Recurse -Force $Root -ErrorAction SilentlyContinue
     Write-Host '제거했습니다. 정민이한테 "지웠어" 라고 알려 주세요.' -ForegroundColor Green
     Write-Host '전원 설정(전원 연결 시 절전 안 함)은 Windows 설정 > 전원에서 되돌릴 수 있습니다.'

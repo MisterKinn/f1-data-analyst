@@ -47,7 +47,7 @@ robocopy (Join-Path $tmp 'f1-data-analyst-main\collector') $Code /MIR /NFL /NDL 
 Remove-Item -Recurse -Force $tmp, $zip
 if (-not (Test-Path (Join-Path $Root 'venv\Scripts\python.exe'))) { & cmd /c "$py -m venv ""$Root\venv""" }
 & "$Root\venv\Scripts\python.exe" -m pip install --upgrade pip -q
-& "$Root\venv\Scripts\python.exe" -m pip install -q fastf1==3.9.0 signalrcore==1.0.2
+& "$Root\venv\Scripts\python.exe" -m pip install -q fastf1==3.9.0 signalrcore==1.0.2 keyring
 
 Write-Host '[3/6] F1 account (typed here only, stored for this Windows user)'
 if (-not (Test-Path $EnvFile)) {
