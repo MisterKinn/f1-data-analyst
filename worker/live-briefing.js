@@ -78,7 +78,7 @@ export function buildLiveBriefing(snapshot,{now=Date.now(),accessMode=null}={}){
  const timing=topicAge(snapshot,'TimingData',limit);
  const sessionStatus=topics.SessionStatus?.Status||info.SessionStatus||f.session_status||null;
  const live=Boolean(timing.fresh&&snapshot?.available&&snapshot?.connected===true&&f.live===true&&info.Key&&['Started','Resumed'].includes(sessionStatus)&&Number.isFinite(feedAge)&&feedAge<=limit);
- const status=live?'LIVE':(timing.age!=null&&timing.age>limit?'데이터 지연':(snapshot?.available===false?'자료 없음':['Finished','Finalised','Ends'].includes(sessionStatus)?'종료':'LIVE 미확인'));
+ const status=live?'LIVE':snapshot?.available===false?'자료 없음':['Finished','Finalised','Ends'].includes(sessionStatus)?'종료':(timing.age!=null&&timing.age>limit?'데이터 지연':'LIVE 미확인');
  const lines=topics.TimingData?.Lines||{}, drivers=topics.DriverList||{}, timingApp=topics.TimingAppData||{};
  const observedLeaderboard=Object.entries(lines).map(([number,line])=>{
   const position=finite(line?.Position);
@@ -107,7 +107,7 @@ export function buildLiveBriefing(snapshot,{now=Date.now(),accessMode=null}={}){
   {label:'세션',value:sessionName||'세션 정보 미확인'},
   {label:'랩 진행',value:lapText||'미확인'},
   {label:'트랙 상태',value:trackStatusLabel(topics.TrackStatus?.Status)},
-  {label:'수집 상태',value:clean(collector.state)||'미확인'},
+  {label:'수집 상태',value:clean(collector.state)||(live?'수신 중':ended?'세션 종료':'미확인')},
   live?{label:'원본 지연',value:timing.age!=null?`${Math.round(timing.age)}초`:'미확인'}:{label:'자료 시각',value:age||'저장된 자료 없음'},
   live?{label:'순위 수신',value:`${leaderboard.length}대`}:{label:'다음 세션',value:next?.text||'일정 확인 필요'}
  ];
