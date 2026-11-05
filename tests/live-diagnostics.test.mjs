@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {freshness,validateSnapshot,liveRead,liveRoutes} from '../worker/live.js';
+import {freshness,validateSnapshot,liveRead,liveRoutes,actionsPush} from '../worker/live.js';
 import {METRICS,validateDiagnostics,readDiagnostics} from '../worker/live-diagnostics.js';
 import {beginRequestMeasurement,saveRequestMeasurement} from '../server/request-diagnostics.js';
 import worker from '../worker/index.js';
@@ -25,16 +25,16 @@ test('recent receipt cannot disguise 35-minute-old source, missing/initial clock
  const missing=structuredClone(s);delete missing.topics.TimingData;assert.equal(freshness(missing,now,at).live,false);
 });
 
-test('cloud sync archives CPU history, exposes summary and refuses stale generated times and sequences',async()=>{
- const store=bucket(),env={DEPLOY_OWNER_EMAIL:'owner@test',BUCKET:store,FASTF1_CLOUD_URL:'https://collector.example/',FASTF1_CLOUD_KEY:'test'};
+const push=(env,snap,flush=true)=>actionsPush(new Request('https://site.test/api/live/actions-push?window=2026-21-1'+(flush?'&flush=1':''),{method:'POST',headers:{authorization:'Bearer ok','content-type':'application/json'},body:JSON.stringify(snap)}),env,{verify:async()=>{}});
+test('collector pushes archive CPU history, expose summary and refuse stale generated times and sequences',async()=>{
+ const store=bucket(),env={DEPLOY_OWNER_EMAIL:'owner@test',BUCKET:store};
  const s=base();s.diagnostics=record();const original=globalThis.fetch;
- globalThis.fetch=async()=>Response.json({snapshot:s});
  try{
-  await liveRead(env);let saved=(await (await store.get('live/current.json')).json()).snapshot;
+  assert.equal((await push(env,s)).status,200);await liveRead(env);let saved=(await (await store.get('live/current.json')).json()).snapshot;
   assert.equal(saved.diagnostics.latest.process_cpu_percent_one_core,100);assert.equal(saved.diagnostics.samples,undefined);
   const history=await readDiagnostics(env,new URLSearchParams({session_key:'123'}));assert.equal(history.samples.length,1);
-  s.generated_at=old;s.sequence=3;assert.equal((await liveRead(env)).synchronization.ok,false);
-  s.generated_at=now;s.sequence=1;assert.equal((await liveRead(env)).synchronization.ok,false);
+  s.generated_at=old;s.sequence=3;assert.equal((await push(env,s)).status,409);
+  s.generated_at=now;s.sequence=1;assert.equal((await push(env,s)).status,409);
   saved=(await (await store.get('live/current.json')).json()).snapshot;assert.equal(saved.sequence,2);
   const unauth=await liveRoutes(new Request('https://site.test/api/live/diagnostics?session_key=123'),env);assert.equal(unauth.status,401);
   const denied=await worker.fetch(new Request('https://site.test/api/live/diagnostics?session_key=123',{headers:{'oai-authenticated-user-id':'outsider'}}),{...env,LIVE_ANALYSIS_KEY_HASH:'configured'});assert.equal(denied.status,401);
@@ -65,9 +65,10 @@ test('a CPU-history storage failure does not block otherwise valid timing',async
  const store=bucket(),put=store.put;
  store.put=async(key,...args)=>{if(key.startsWith('live/diagnostics/'))throw Error('storage failure');return put(key,...args);};
  const s=base();s.diagnostics=record();const original=globalThis.fetch;
- globalThis.fetch=async()=>Response.json({snapshot:s});
  try{
-  const result=await liveRead({DEPLOY_OWNER_EMAIL:'owner@test',BUCKET:store,FASTF1_CLOUD_URL:'https://collector.example/',FASTF1_CLOUD_KEY:'test'});
+  const env={DEPLOY_OWNER_EMAIL:'owner@test',BUCKET:store};
+  assert.equal((await push(env,s)).status,200);
+  const result=await liveRead(env);
   assert.equal(result.available,true);assert.equal(result.diagnostics.persistence.ok,false);
  }finally{globalThis.fetch=original;}
 });

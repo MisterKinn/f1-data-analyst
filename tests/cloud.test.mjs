@@ -35,24 +35,9 @@ assert.equal((await liveRoutes(request('poll'),env)).status,502);
 console.log('PASS: private cloud proxy, same-origin protection, secret filtering, storage, stop and upstream failure');
 
 
-// Read-only collector synchronization works without browser polling.
-let snapshotReads=0;
-globalThis.fetch=async(url,options)=>{
- assert.equal(new URL(url).pathname,'/snapshot');
- assert.equal(options.method,'GET');
- snapshotReads++;
- return new Response(JSON.stringify({snapshot,collector:{automatic_collection:true,collection_enabled:true,supported_sessions:['Race']}}));
-};
-const synchronized=await liveRead(env,{});
-assert.equal(snapshotReads,1);
-assert.equal(synchronized.freshness.live,true);
-assert.equal(synchronized.synchronization.collector.automatic_collection,true);
-const old=new Date(Date.now()-120000).toISOString();
-globalThis.fetch=async()=>new Response(JSON.stringify({snapshot:{...snapshot,generated_at:old,last_message_at:old}}));
-assert.equal((await liveRead(env,{})).synchronization.ok,false);
-assert.equal((await liveRead(env,{})).freshness.live,true);
-globalThis.fetch=async()=>{throw Error('network failure');};
-const unavailable=await liveRead(env,{});
-assert.equal(unavailable.synchronization.ok,false);
-assert.equal(unavailable.freshness.live,true);
-console.log('PASS: collector read synchronization, automatic mode, stale feed and failure handling');
+// F1 live reads never contact the old pull server, even when its address is still set.
+globalThis.fetch=async()=>{throw Error('old server must not be called');};
+const stored=await liveRead(env,{});
+assert.equal(stored.available,true);
+assert.equal(stored.synchronization,null);
+console.log('PASS: F1 live reads use pushed data only');

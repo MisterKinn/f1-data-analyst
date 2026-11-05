@@ -13,7 +13,8 @@ test('durable standings remain immediately readable while a sleeping collector f
 test('F1 first visit returns fresh database totals and persists them for another worker',async()=>{
  const year=new Date().getUTCFullYear(),data={series:'f1',season:year,round:19,provider:'FastF1 · Jolpica',retrieved_at:new Date().toISOString(),categories:[{id:'drivers',rows:[{position:1,name:'Driver',points:10}]}]};
  let saved;const tasks=[],env={FASTF1_CLOUD_URL:'https://collector.test',FASTF1_CLOUD_KEY:'test',BUCKET:{get:async()=>saved?{json:async()=>JSON.parse(saved)}:null,put:async(key,value)=>{saved=value;}}};
- const original=globalThis.fetch;globalThis.fetch=async()=>Response.json(data);
+ const jolpica={MRData:{total:'1',StandingsTable:{StandingsLists:[{season:String(year),round:'19',DriverStandings:[{position:'1',points:'10',Driver:{givenName:'Test',familyName:'Driver',permanentNumber:'1'},Constructors:[{name:'Team'}]}]}]}}};
+ const original=globalThis.fetch;globalThis.fetch=async()=>Response.json(jolpica);
  try{
   const request=new Request('https://test/api/championship-standings?series=f1');
   assert.equal((await standingsRoute(request,env,{waitUntil:p=>tasks.push(p)})).status,200);
