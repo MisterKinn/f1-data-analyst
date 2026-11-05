@@ -1,0 +1,46 @@
+name: Rules and race-document monitor
+
+# Reads official regulation listings and race-event noticeboards, indexes new or changed
+# documents and posts the index to the site (GitHub OIDC, no shared secret). The script
+# decides per source whether a check is due: every 15 min for event documents during that
+# series' race weekend, otherwise daily (6-hourly for regulations on race weekends).
+# Runs outside the website, so a slow or blocked source never slows the site or answers.
+on:
+  schedule:
+    - cron: '7,22,37,52 * * * *'
+  workflow_dispatch:
+    inputs:
+      source:
+        description: 'Only this source id (optional)'
+        required: false
+      force:
+        description: 'Re-read even unchanged documents'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: rules-monitor
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --omit=dev --ignore-scripts
+      - name: Check sources and update the index
+        env:
+          RULES_MAX_MINUTES: '25'
+        run: |
+          node scripts/rules-monitor.mjs \
+            ${{ inputs.source && format('--source={0}', inputs.source) || '' }} \
+            ${{ inputs.force && '--force' || '' }}
