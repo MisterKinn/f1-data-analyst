@@ -28,7 +28,7 @@ export const translations = {
 
  '좋아하는 모터스포츠 · 팀 · 드라이버':'Favourite motorsport, teams and drivers',
  'F1 팀 1개, 드라이버 최대 2명과 WEC 하이퍼카 제조사 1개를 함께 저장하세요.':'Save one F1 team, up to two F1 drivers and one WEC Hypercar manufacturer together.',
- 'F1 · WEC 함께 저장':'Save F1 and WEC preferences',
+ 'F1 · WEC 함께 저장':'Save F1 and WEC preferences','저장':'Save',
  '제조사 (최대 1개)':'Manufacturer (up to one)',
  'F1 · WEC 선택 목록을 불러오는 중…':'Loading F1 and WEC choices…',
  'F1과 WEC 선호 항목을 함께 저장할 수 있습니다.':'Save your F1 and WEC preferences together.',

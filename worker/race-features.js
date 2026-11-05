@@ -140,13 +140,13 @@ export const raceFeatureCss=`
 [data-race-calendar="week"] .week-arrow-next{right:-10px}
 @media(max-width:700px){[data-race-calendar="week"] .week-arrow{width:34px;height:34px;min-height:34px}[data-race-calendar="week"] .week-arrow-prev{left:-4px}[data-race-calendar="week"] .week-arrow-next{right:-4px}}
 /* Championship filter chips and session fade in/out. */
-.week-filter{padding:4px 10px 4px 8px;border:1px solid var(--line);border-radius:999px;transition:border-color .18s,background-color .18s,opacity .18s}
+.week-filter{padding:4px 10px 4px 8px;border:1px solid var(--line);border-radius:999px;transition:border-color .14s cubic-bezier(.2,0,0,1),background-color .14s cubic-bezier(.2,0,0,1),opacity .14s cubic-bezier(.2,0,0,1)}
 .week-filter:has(input:checked){border-color:var(--mint);background:color-mix(in srgb,var(--mint) 12%,transparent)}
 .week-filter:not(:has(input:checked)){opacity:.6}
 .week-filter:not(:has(input:checked)) span{text-decoration:line-through;text-decoration-thickness:1px}
-.week-filter.is-toggled{animation:week-filter-pop .22s ease-out}
-.week-slot.slot-enter,.week-day.slot-enter{animation:week-slot-in .2s ease-out}
-.week-slot.slot-leave,.week-day.slot-leave{animation:week-slot-out .18s ease-in forwards}
+.week-filter.is-toggled{animation:week-filter-pop .14s cubic-bezier(.2,0,0,1)}
+.week-slot.slot-enter,.week-day.slot-enter{animation:week-slot-in .14s cubic-bezier(.2,0,0,1)}
+.week-slot.slot-leave,.week-day.slot-leave{animation:week-slot-out .14s cubic-bezier(.2,0,0,1) forwards}
 @keyframes week-filter-pop{0%{transform:scale(1)}45%{transform:scale(.93)}100%{transform:scale(1)}}
 @keyframes week-slot-in{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 @keyframes week-slot-out{from{opacity:1;transform:none}to{opacity:0;transform:translateY(-4px)}}
@@ -390,7 +390,7 @@ export function raceFeaturesClient(dictionary,translateText,weekBounds,sessionSt
    const zoneLabel=calendarStatusText({},{lang,zone});
    const bar=node('div',undefined,'week-view-bar');
    const tabs=node('div',undefined,'week-view-tabs');tabs.setAttribute('role','group');tabs.setAttribute('aria-label',t('일정 보기 방식','Schedule view'));
-   const views=[['series',t('대회별','By championship')],['time',t('날짜·시간순','By date & time')]].map(([value,text])=>{const b=node('button',text,'week-view-tab');b.type='button';b.dataset.view=value;b.addEventListener('click',()=>{weekView=value;apply();});tabs.append(b);return b;});
+   const views=[['series',t('대회별','By championship')],['time',t('날짜·시간순','By date & time')]].map(([value,text])=>{const b=node('button',text,'week-view-tab');b.type='button';b.dataset.view=value;b.addEventListener('click',()=>{const changed=weekView!==value;weekView=value;apply();if(changed)fadeIn(value==='time'?timeline:cards);});tabs.append(b);return b;});
    const copy=node('button',t('텍스트로 복사','Copy as text'),'week-copy');copy.type='button';
    const feedback=node('span','','week-copy-status');feedback.setAttribute('role','status');feedback.setAttribute('aria-live','polite');
    bar.append(tabs,copy,feedback);
@@ -430,8 +430,10 @@ export function raceFeaturesClient(dictionary,translateText,weekBounds,sessionSt
     clearTimeout(el._leave);el.classList.remove('slot-leave');
     if(!animate){el.hidden=!visible;el.classList.remove('slot-enter');return;}
     if(visible&&el.hidden){el.hidden=false;el.classList.remove('slot-enter');void el.offsetWidth;el.classList.add('slot-enter');}
-    else if(!visible&&!el.hidden){el.classList.add('slot-leave');el._leave=setTimeout(()=>{el.hidden=true;el.classList.remove('slot-leave');},180);}
+    else if(!visible&&!el.hidden){el.classList.add('slot-leave');el._leave=setTimeout(()=>{el.hidden=true;el.classList.remove('slot-leave');},140);}
    };
+   // Switching view: the newly shown list fades up quickly (skipped for reduced motion).
+   function fadeIn(el){if(!el||typeof el.animate!=='function'||matchMedia('(prefers-reduced-motion: reduce)').matches)return;el.animate([{opacity:0,transform:'translateY(4px)'},{opacity:1,transform:'none'}],{duration:160,easing:'cubic-bezier(.2,0,0,1)'});}
    function apply(animate=false){
     for(const b of views)b.setAttribute('aria-pressed',String(b.dataset.view===weekView));
     const time=weekView==='time';cards.hidden=time;timeline.hidden=!time;
