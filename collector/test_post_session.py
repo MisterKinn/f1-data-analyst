@@ -20,7 +20,9 @@ class PendingWindow(unittest.TestCase):
         windows = [window('2026-21-1', 10), window('2026-21-2', 2), window('2026-20-5', 80)]
         self.assertEqual(post_session.pending_window(windows, NOW, lambda w: False)['id'], '2026-21-2')
         self.assertEqual(post_session.pending_window(windows, NOW, lambda w: w == '2026-21-2')['id'], '2026-21-1')
-        self.assertIsNone(post_session.pending_window(windows, NOW, lambda w: w != '2026-20-5'))  # 80 h ago: too old
+        # 80 h ago: still filled in (a week of retries, e.g. every host was off after that race)
+        self.assertEqual(post_session.pending_window(windows, NOW, lambda w: w != '2026-20-5')['id'], '2026-20-5')
+        self.assertIsNone(post_session.pending_window([window('2026-19-5', 170)], NOW, lambda w: False))  # past a week
 
     def test_open_window_is_never_post_session(self):
         future = window('2026-21-3', -1)
