@@ -16,7 +16,7 @@ const BASE='https://api.openf1.org/v1/';
 export const CACHE_POLICY={SETTLED_MS:30*60_000,FRESH_MS:60_000,META_MS:6*3600_000,SETTLE_AFTER_END_MS:2*3600_000,MAX_ENTRIES:300,MAX_BYTES:24*1024*1024};
 const TIMEOUT_MS=20_000;
 const cache=new Map();let cacheBytes=0;
-const SOURCE='OpenF1 API (historical F1 live-timing data, fetched on demand; kept briefly in server memory only, never written to storage)';
+export const SOURCE='OpenF1 API (historical F1 live-timing data, fetched on demand; kept briefly in server memory only, never written to storage)';
 const ro={readOnlyHint:true,destructiveHint:false,idempotentHint:true,openWorldHint:true};
 const key={type:'integer',minimum:1,maximum:999999999999};
 const driver={type:'string',pattern:'^\\d{1,3}$'};
@@ -27,7 +27,7 @@ export const OPENF1_TOOLS=[
  {name:'openf1_laps',description:'Completed-session laps from OpenF1: lap times, S1/S2/S3, pit-out laps, lap start times and tyre stint per lap. Without driver_number returns each driver\'s best lap and lap count; with driver_number returns that driver\'s laps (optionally lap_from..lap_to). For post-session analysis only; live sessions use fastf1_live_snapshot.',
   inputSchema:{type:'object',properties:{session_key:key,driver_number:driver,lap_from:{type:'integer',minimum:1,maximum:200},lap_to:{type:'integer',minimum:1,maximum:200}},required:['session_key'],additionalProperties:false},annotations:ro},
  {name:'openf1_lap_telemetry',description:'Car telemetry (speed, throttle, binary brake, gear, RPM at about 3.7 Hz) for any lap of a completed session from OpenF1, optionally compared with a second driver/lap. lap_number defaults to the driver\'s best lap. For race starts use lap_number 1 with seconds (e.g. 15): the window then begins 3 s before the lap start so the launch from standstill is visible. Distance is speed-integrated (approximate). Not for live sessions.',
-  inputSchema:{type:'object',properties:{session_key:key,driver_number:driver,lap_number:{type:'integer',minimum:1,maximum:200},compare_driver_number:driver,compare_lap_number:{type:'integer',minimum:1,maximum:200},seconds:{type:'number',minimum:3,maximum:200}},required:['session_key','driver_number'],additionalProperties:false},annotations:ro}
+  inputSchema:{type:'object',properties:{session_key:key,driver_number:driver,lap_number:{type:'integer',minimum:1,maximum:200},compare_driver_number:driver,compare_lap_number:{type:'integer',minimum:1,maximum:200},seconds:{type:'number',minimum:3,maximum:200},summary:{type:'boolean',description:'true returns a compact per-corner summary (minimum speed, braking point, time gained or lost per corner) instead of raw samples. Use it first for comparisons; ask for samples only when drawing charts.'}},required:['session_key','driver_number'],additionalProperties:false},annotations:ro}
 ];
 
 export const OPENF1_INSTRUCTIONS=' POST-SESSION F1 ANALYSIS: for a completed session (any lap, race starts, stints, sector times, lap or start telemetry) use the OpenF1 tools: openf1_sessions to find the session_key, openf1_laps for laps/sectors/tyres, openf1_lap_telemetry for telemetry (lap_number 1 + seconds for starts). Name OpenF1 as the source. Live sessions stay on the FastF1 tools. If OpenF1 is rate-limited or lacks the data, say so instead of guessing. Results carry a cache field: data may be reused from server memory for up to 30 min for a settled session (scheduled end + 2 h) and up to 1 min otherwise; mention it only if the user asks how fresh the data is.';
@@ -79,10 +79,10 @@ export async function sessionTtl(sessionKey,io={}){
  const end=Date.parse(rows[0]?.date_end);
  return Number.isFinite(end)&&now>=end+CACHE_POLICY.SETTLE_AFTER_END_MS?CACHE_POLICY.SETTLED_MS:CACHE_POLICY.FRESH_MS;
 }
-const byDriver=(rows,d)=>d?rows.filter(r=>String(r.driver_number)===String(d)):rows;
+export const byDriver=(rows,d)=>d?rows.filter(r=>String(r.driver_number)===String(d)):rows;
 
-const fmt=s=>{if(!Number.isFinite(s))return null;const m=Math.floor(s/60),r=s-m*60;return m?`${m}:${r.toFixed(3).padStart(6,'0')}`:r.toFixed(3);};
-const sec=v=>Number.isFinite(v)?Number(v.toFixed(3)):null;
+export const fmt=s=>{if(!Number.isFinite(s))return null;const m=Math.floor(s/60),r=s-m*60;return m?`${m}:${r.toFixed(3).padStart(6,'0')}`:r.toFixed(3);};
+export const sec=v=>Number.isFinite(v)?Number(v.toFixed(3)):null;
 const timed=l=>Number.isFinite(l.lap_duration)&&!l.is_pit_out_lap;
 export function bestLap(laps){return laps.filter(timed).sort((a,b)=>a.lap_duration-b.lap_duration)[0]||null;}
 function tyreFor(stints,driverNumber,lap){
@@ -105,7 +105,7 @@ async function sessions(args,io){
 }
 
 // One request per kind for the whole session; every driver's question reuses it.
-async function sessionData(sessionKey,io){
+export async function sessionData(sessionKey,io){
  const [laps,stints,drivers]=await Promise.all(['laps','stints','drivers'].map(p=>openf1Get(p,{session_key:sessionKey},io,io.ttl)));
  return {laps,stints,drivers};
 }
@@ -159,6 +159,34 @@ async function oneLap(sessionKey,driverNumber,lapNumber,seconds,io){
   ...(data.length?{}:{reason:'OpenF1 returned no car data for this window.'})};
 }
 
+// Compact per-corner view of one lap: local speed minima at least 40 km/h below the
+// preceding peak, merged within 150 m, with the braking point that led into each.
+export function lapSummary(rows){
+ const v=rows.filter(r=>Number.isFinite(r[2]));if(v.length<5)return null;
+ const corners=[];let peak=v[0][2];
+ for(let i=1;i<v.length-1;i++){
+  const s=v[i][2];peak=Math.max(peak,v[i-1][2]);
+  const lo=Math.max(0,i-3),hi=Math.min(v.length-1,i+3);let isMin=true;for(let j=lo;j<=hi;j++)if(v[j][2]<s){isMin=false;break;}
+  if(!isMin||peak-s<40)continue;
+  let b=i;while(b>0&&v[b-1][4]===1)b--;const braked=b<i&&v[b][4]===1;
+  const corner={distance_m:Math.round(v[i][1]),min_speed_kmh:s,entry_speed_kmh:braked?v[Math.max(0,b-1)][2]:peak,brake_start_m:braked?Math.round(v[b][1]):null};
+  const last=corners.at(-1);if(last&&corner.distance_m-last.distance_m<150){if(s<last.min_speed_kmh)corners[corners.length-1]=corner;}else corners.push(corner);
+  peak=s;
+ }
+ const full=v.filter(r=>r[3]>=98).length,brake=v.filter(r=>r[4]===1).length;
+ return {top_speed_kmh:Math.max(...v.map(r=>r[2])),full_throttle_pct:Math.round(100*full/v.length),braking_pct:Math.round(100*brake/v.length),corners};
+}
+function deltaAt(all,d){const points=(all||[]).filter(p=>Number.isFinite(p[1]));if(!points.length)return null;if(d<=points[0][0])return points[0][1];for(let i=1;i<points.length;i++)if(points[i][0]>=d){const [d0,v0]=points[i-1],[d1,v1]=points[i];return v0+(v1-v0)*(d-d0)/(d1-d0||1);}return points.at(-1)[1];}
+export function cornerComparison(a,b,delta){
+ if(!a||!b)return null;const rows=[];let prevExit=0;
+ a.corners.forEach((c,i)=>{const m=b.corners.reduce((best,x)=>Math.abs(x.distance_m-c.distance_m)<Math.abs((best?.distance_m??1e9)-c.distance_m)?x:best,null);
+  if(!m||Math.abs(m.distance_m-c.distance_m)>250)return;const exit=c.distance_m+150,d0=deltaAt(delta?.points,prevExit),d1=deltaAt(delta?.points,exit);prevExit=exit;
+  rows.push({corner:i+1,distance_m:c.distance_m,min_speed_kmh:[c.min_speed_kmh,m.min_speed_kmh],brake_start_m:[c.brake_start_m,m.brake_start_m],time_change_s:Number.isFinite(d0)&&Number.isFinite(d1)?Number((d1-d0).toFixed(3)):null});});
+ return {columns_note:'Pairs are [reference, comparison]. time_change_s is the change in the gap from the previous corner exit to this corner exit; positive means the comparison driver lost time there.',corners:rows,
+  biggest_losses:[...rows].filter(r=>Number.isFinite(r.time_change_s)).sort((x,y)=>y.time_change_s-x.time_change_s).slice(0,3).map(r=>r.corner),
+  biggest_gains:[...rows].filter(r=>Number.isFinite(r.time_change_s)).sort((x,y)=>x.time_change_s-y.time_change_s).slice(0,3).map(r=>r.corner)};
+}
+
 async function lapTelemetry(args,io){
  if(args.compare_driver_number&&args.compare_driver_number===args.driver_number&&(args.compare_lap_number||null)===(args.lap_number||null))throw Error('Choose a different driver or lap to compare');
  const first=await oneLap(args.session_key,args.driver_number,args.lap_number,args.seconds,io);
@@ -166,6 +194,13 @@ async function lapTelemetry(args,io){
  const laps=[first,...(second?[second]:[])];
  const ready=laps.every(l=>l.state==='ready');
  const delta=ready&&laps.length===2&&!args.seconds?distanceDelta(laps.map(l=>({...l,complete_coverage:l.complete_coverage}))):null;
+ if(args.summary){
+  const sums=laps.map(l=>l.state==='ready'?lapSummary(l.samples):null);
+  return {state:ready?'ready':laps.some(l=>l.state==='ready')?'partial':'unavailable',source:SOURCE,session_key:args.session_key,mode:'summary',
+   laps:laps.map((l,i)=>{const {samples,...rest}=l;return {...rest,summary:sums[i]};}),
+   ...(delta?{total_delta_s:delta.points?.filter(p=>Number.isFinite(p[1])).at(-1)?.[1]??null,corner_comparison:cornerComparison(sums[0],sums[1],delta)}:{}),
+   limitations:['Corners are numbered in the order found on this lap (speed minima), not official turn numbers.','Distance is speed-integrated and approximate. Brake is on/off only.','Call again without summary for raw samples when a chart is needed.']};
+ }
  return {state:ready?'ready':laps.some(l=>l.state==='ready')?'partial':'unavailable',source:SOURCE,session_key:args.session_key,laps,...(delta?{delta}:{}),
   columns:['elapsed_s','integrated_distance_m','speed_kmh','throttle_percent','brake_on','gear','rpm'],
   limitations:['elapsed_s is measured from the lap start time (negative before the start line for race starts).','Distance is speed-integrated, not GPS. Brake is binary.','About 3.7 samples per second; do not draw across gaps.'],

@@ -1,0 +1,25 @@
+name: FIA document alerts
+
+# Every 10 minutes the site checks the current F1 weekend for new FIA/Pirelli documents,
+# summarises them and sends push alerts. Outside a race weekend the call returns at once.
+# The endpoint is throttled and idempotent, so a late or duplicated run is harmless.
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: fia-doc-alerts
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Check for new FIA documents
+        run: |
+          curl -sS --max-time 280 -X POST -H 'content-type: application/json' -d '{}' \
+            https://kongboda-motorsports.vercel.app/api/doc-alerts/run || true

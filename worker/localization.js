@@ -343,6 +343,7 @@ Object.assign(translations,{
 '‘이해했으며 계속 진행하겠습니다’에 체크하고 ‘만들기’를 누릅니다.':'Tick ‘I understand and want to continue’, then choose ‘Create’.',
  '열리는 화면에서 꽁보다에 로그인한 Google 계정으로 로그인하고 ‘연결 승인’을 누릅니다.':'In the window that opens, sign in with the Google account you use for Kongboda and approve the connection.',
  '새 대화에서 ‘+’ 메뉴나 ‘@’로 Kongboda Motorsports를 고른 뒤 질문합니다.':'In a new chat, pick Kongboda Motorsports from the ‘+’ menu or with ‘@’, then ask.',
+ 'FIA 문서 알림':'FIA document alerts','새 FIA·피렐리 공식 문서가 나오면 핵심 내용과 해석을 휴대폰 알림으로 보내드립니다.':'When new official FIA or Pirelli documents come out, we send the key points and what they mean as a phone notification.','이 기기 알림':'Alerts on this device','확인 중…':'Checking…','알림 켜기':'Turn on alerts','알림 끄기':'Turn off alerts','iPhone은 Safari 공유 버튼 → ‘홈 화면에 추가’ 후, 홈 화면의 꽁보다 앱에서 알림을 켤 수 있습니다.':'On iPhone, tap Share in Safari → Add to Home Screen, then turn on alerts in the Kongboda app on your Home Screen.','아직 이번 주말의 새 문서 알림이 없습니다.':'No new document alerts for this weekend yet.','지금은 진행 중인 F1 주말이 없습니다.':'No F1 weekend is in progress right now.',
  '아직 저장하지 않은 변경사항이 있습니다.':'You have unsaved changes.','주소 복사':'Copy address','복사했습니다':'Copied',
  '도구가 안 보이거나 설정을 못 가져올 때':'If tools are missing or settings do not load',
  '플러그인 → Kongboda Motorsports → ‘관리’에서 ‘도구 새로고침’을 누르고 끝날 때까지 기다립니다.':'In Plugins → Kongboda Motorsports → ‘Manage’, tap ‘Refresh tools’ and wait until it finishes.',

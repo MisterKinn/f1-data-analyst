@@ -55,7 +55,8 @@ for(const language of ['ko','en'])for(const path of paths){
  const message=language==='en'?'Review preview · Calendar snapshot: '+calendar.checkedAt+' · Sign-in and live data require the production connection':'검토용 프리뷰 · 일정 스냅샷: '+calendar.checkedAt+' · 로그인/실시간 조회는 운영 연결 후 확인';
  const config={language,path,routes:routeFiles,assets:Object.fromEntries(assetCache),calendar,message};
  const bootstrap='('+previewRuntime.toString()+')('+JSON.stringify(config).replaceAll('<','\\u003c')+');';
- const payload=inlineScripts.map(url=>{
+ // Push alerts need a live site (service worker, sign-in); the offline preview leaves them out.
+ const payload=inlineScripts.filter(url=>url!=='/assets/alerts.js').map(url=>{
   let source=scripts.find(s=>s.path===url)?.source;
   if(source===undefined)throw Error('Unknown preview script '+url);
   source=source.replaceAll('location.href=destination','window.__previewNavigate(destination)').replaceAll("location.href='/championships/'+series.value","window.__previewNavigate('/championships/'+series.value)");
