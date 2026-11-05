@@ -27,13 +27,14 @@ from datetime import datetime, timedelta, timezone
 import actions_runner as runner
 import cloud
 import host_jobs
+import power
 
 CHECK_SECONDS = int(os.environ.get('CHECK_SECONDS', '60'))
 HISTORY_RETRY_SECONDS = host_jobs.HISTORY_RETRY_SECONDS
 BEAT_SECONDS = int(os.environ.get('BEAT_SECONDS', '5'))
 IDLE_BEAT_SECONDS = int(os.environ.get('IDLE_BEAT_SECONDS', '60'))  # also how fast an update request is seen
 STARTED_AT = datetime.now(timezone.utc).isoformat(timespec='seconds')
-COLLECTOR_VERSION = '2026.11.05.1'
+COLLECTOR_VERSION = '2026.11.05.2'
 # Exit while idle after this long so the launcher can pull new code and restart.
 RESTART_AFTER_SECONDS = int(os.environ.get('RESTART_AFTER_SECONDS', str(6 * 3600)))
 # After a failed F1 login, wait this long before trying the same session again.
@@ -479,7 +480,7 @@ def cycle(state, wait=False):
     """Start a recording thread for each job whose window is open (or opens soon); when a
     job has no window coming, the lead host publishes its post-session data. wait=True
     joins the threads (tests and one-shot runs)."""
-    started = []
+    started, power_windows = [], []
     for job in assigned_jobs(state):
         job_state = state.setdefault('jobs', {}).setdefault(job.series, {'done': set(), 'retry_at': {}, 'running': {}})
         running = job_state['running']
@@ -489,7 +490,10 @@ def cycle(state, wait=False):
             windows = job.windows(job_state)
         except Exception as exc:
             cloud.run_log({'event': 'schedule_error', 'series': job.series, 'error': type(exc).__name__})
+            power_windows = None  # calendar unknown: never sleep on a guess
             continue
+        if power_windows is not None:
+            power_windows += [dict(w, series=job.series, ended=w['id'] in job_state['done']) for w in windows]
         live = [w for w in windows if not skipped(job_state, w['id'])]
         window = runner.next_window(live, cloud.now(), lookahead())
         if window:
@@ -505,7 +509,10 @@ def cycle(state, wait=False):
         if idle_beat(state):
             job.post_session(windows)
     idle_beat(state)  # cheap: at most once a minute; carries job assignments and update requests
-    update_active_marker(state)
+    recording = update_active_marker(state)
+    if power.enabled() and power_windows is not None and not wait:
+        power.tick(power_windows, lookahead(), recording=bool(recording), is_lead=state.get('is_lead', True),
+                   is_done=lambda wid: runner.history_done(wid))
     if wait:
         for thread in started:
             thread.join()

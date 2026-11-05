@@ -12,8 +12,10 @@ from history import history_from_session
 from telemetry import laps_from_session
 
 PARTS = ('session', 'Q1', 'Q2', 'Q3')
-# Manual runs may look further back (workflow input history_hours) to backfill a session.
-RETRY_FOR = timedelta(hours=float(os.environ.get('HISTORY_RETRY_HOURS') or 36))
+# Collector hosts keep retrying for a week, so a session whose data could not be loaded
+# while every host was off (or asleep between sessions) is still filled in later.
+# The manual workflow passes its own look-back (input history_hours).
+RETRY_FOR = timedelta(hours=float(os.environ.get('HISTORY_RETRY_HOURS') or 168))
 
 
 def pending_window(windows, now, is_done):

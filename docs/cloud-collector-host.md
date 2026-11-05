@@ -26,3 +26,19 @@ curl -fsSL https://raw.githubusercontent.com/MisterKinn/f1-data-analyst/main/col
 - 1차: Google Cloud 무료(e2-micro, us-west1·us-central1·us-east1, 표준 영구 디스크 30GB, 북미 발신 월 1GB, 종료일 없음).
 - Google이 막히면 AWS(서울)로 같은 명령을 다시 실행한다.
 - 부하(2시간 레이스 재생 시험): CPU 코어 1개의 약 0.2%, 메모리 약 120MB, 디스크 레이스당 약 33MB. 라이브 업로드는 10초마다(스냅샷 약 120KB)라 레이스 주말이 많은 달은 발신 1GB를 조금 넘을 수 있다.
+
+## 세션 시간에만 켜기 (AWS 절전)
+
+AWS 서버는 세션 전후에만 켜 두고 나머지 시간엔 꺼서(EC2 중지) 비용을 줄인다. 코드는 `collector/power.py`, 설정은 AWS CloudShell에서 한 번:
+
+```
+curl -fsSL https://raw.githubusercontent.com/MisterKinn/f1-data-analyst/main/collector/host/aws-power-setup.sh | bash -s -- <인스턴스 ID> kongboda-aws
+```
+
+- 켜기: 서버가 꺼지기 전에 Amazon EventBridge Scheduler에 자기 다음 시작 시각을 예약한다(`kongboda-wake-<호스트>`). 시각 = 수집기가 F1에 접속해야 하는 때(세션 시작 5분 전 창 열림 − 45분) − 20분. 부팅·수집기 준비가 끝나고도 여유가 남는다.
+- 끄기: 세션을 끝까지(Finished/Finalised) 받으면 바로 끈다. 다음 세션 접속이 1시간 안이면 켜 둔다. 녹화 중이거나 예약 저장이 실패하면 절대 끄지 않는다(안 켜지는 것보다 켜져 있는 편이 낫다).
+- FastF1 사후 자료: 지금처럼 세션 창이 닫힐 때(시작 + 3시간, 레이스 4시간) 올린다. 서버는 그 시각 + 5분에 다시 켜져 자료가 사이트에 올라가면 끈다(최대 3시간 대기). 안 되면 12시간마다 잠깐 켜질 때 다시 시도하고, 호스트는 7일까지 재시도한다.
+- 안전장치: 최대 12시간마다 자동으로 켜져 일정 변경을 확인(약 10분), 매일 12:00 KST 백업 시작 예약, 서버 안에서 끄면 항상 '중지'(종료 아님).
+- 권한: 스케줄러 역할은 이 인스턴스 시작만, 서버 역할은 자기 `kongboda-wake-*` 예약 생성·수정과 그 역할 전달만 가능(+ SSM). 키 파일 없음.
+- 사이트에 저장된 자료(실시간 기록, FastF1 베스트랩·텔레메트리)는 사이트 저장소에서 바로 읽으므로 서버가 꺼져 있어도 조회된다.
+- WEC는 아직 호스트 작업(host_jobs)이 아니라 이 서버가 켜질 필요가 없다. WEC 작업이 추가되면 그 세션 창도 자동으로 깨우기 계산에 들어간다.
