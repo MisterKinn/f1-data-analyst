@@ -1,14 +1,22 @@
 // Completed-session F1 analysis straight from the OpenF1 API (https://openf1.org): any lap,
-// race starts, stints and car telemetry, fetched when a question needs it and never stored.
-// Live sessions stay on FastF1 + the collector hosts (live.js). OpenF1 historical data is
-// free and needs no key; the free tier allows 3 requests/s and 30/min, so answers reuse a
-// short in-memory cache and retry once politely on 429.
+// race starts, stints and car telemetry, fetched when a question needs it. Nothing is written
+// to a database. Live sessions stay on FastF1 + the collector hosts (live.js). OpenF1
+// historical data is free and needs no key; the free tier allows 3 requests/s and 30/min.
+//
+// Short in-memory cache (per server instance, lost on restart):
+// - a settled session (scheduled end + 2 h passed, so red-flag overruns and late OpenF1
+//   corrections are over) is kept SETTLED_MS: its data no longer changes;
+// - a running or just-finished session is kept only FRESH_MS, so a burst of the same
+//   question does not hit the rate limit but late corrections still show up;
+// - laps, stints and drivers are fetched once per session and filtered per driver;
+// - the cache is capped by entries and by bytes, oldest (least recently used) out first.
 import {distanceDelta} from './telemetry.js';
 
 const BASE='https://api.openf1.org/v1/';
-const CACHE_MS=10*60_000,CACHE_MAX=200,TIMEOUT_MS=20_000;
-const cache=new Map();
-const SOURCE='OpenF1 API (historical F1 live-timing data, fetched on demand; not stored by Kongboda)';
+export const CACHE_POLICY={SETTLED_MS:30*60_000,FRESH_MS:60_000,META_MS:6*3600_000,SETTLE_AFTER_END_MS:2*3600_000,MAX_ENTRIES:300,MAX_BYTES:24*1024*1024};
+const TIMEOUT_MS=20_000;
+const cache=new Map();let cacheBytes=0;
+const SOURCE='OpenF1 API (historical F1 live-timing data, fetched on demand; kept briefly in server memory only, never written to storage)';
 const ro={readOnlyHint:true,destructiveHint:false,idempotentHint:true,openWorldHint:true};
 const key={type:'integer',minimum:1,maximum:999999999999};
 const driver={type:'string',pattern:'^\\d{1,3}$'};
@@ -22,16 +30,28 @@ export const OPENF1_TOOLS=[
   inputSchema:{type:'object',properties:{session_key:key,driver_number:driver,lap_number:{type:'integer',minimum:1,maximum:200},compare_driver_number:driver,compare_lap_number:{type:'integer',minimum:1,maximum:200},seconds:{type:'number',minimum:3,maximum:200}},required:['session_key','driver_number'],additionalProperties:false},annotations:ro}
 ];
 
-export const OPENF1_INSTRUCTIONS=' POST-SESSION F1 ANALYSIS: for a completed session (any lap, race starts, stints, sector times, lap or start telemetry) use the OpenF1 tools: openf1_sessions to find the session_key, openf1_laps for laps/sectors/tyres, openf1_lap_telemetry for telemetry (lap_number 1 + seconds for starts). Name OpenF1 as the source. Live sessions stay on the FastF1 tools. If OpenF1 is rate-limited or lacks the data, say so instead of guessing.';
+export const OPENF1_INSTRUCTIONS=' POST-SESSION F1 ANALYSIS: for a completed session (any lap, race starts, stints, sector times, lap or start telemetry) use the OpenF1 tools: openf1_sessions to find the session_key, openf1_laps for laps/sectors/tyres, openf1_lap_telemetry for telemetry (lap_number 1 + seconds for starts). Name OpenF1 as the source. Live sessions stay on the FastF1 tools. If OpenF1 is rate-limited or lacks the data, say so instead of guessing. Results carry a cache field: data may be reused from server memory for up to 30 min for a settled session (scheduled end + 2 h) and up to 1 min otherwise; mention it only if the user asks how fresh the data is.';
 
 function query(params){
  return Object.entries(params).filter(([,v])=>v!==undefined&&v!==null&&v!=='').map(([k,v])=>encodeURIComponent(k)+'='+encodeURIComponent(String(v))).join('&');
 }
 
-export async function openf1Get(path,params={},{fetchImpl=fetch,wait=ms=>new Promise(r=>setTimeout(r,ms)),now=Date.now()}={}){
+function drop(url){const e=cache.get(url);if(e){cacheBytes-=e.bytes;cache.delete(url);}}
+function remember(url,data,bytes,ttl,now){
+ if(ttl<=0||bytes>CACHE_POLICY.MAX_BYTES/4)return;
+ drop(url);
+ while(cache.size&&(cache.size>=CACHE_POLICY.MAX_ENTRIES||cacheBytes+bytes>CACHE_POLICY.MAX_BYTES))drop(cache.keys().next().value);
+ cache.set(url,{at:now,ttl,data,bytes});cacheBytes+=bytes;
+}
+export function openf1CacheStats(){return {entries:cache.size,bytes:cacheBytes};}
+
+// ttl: how long this answer may be reused (CACHE_POLICY.FRESH_MS when unsure).
+export async function openf1Get(path,params={},{fetchImpl=fetch,wait=ms=>new Promise(r=>setTimeout(r,ms)),now=Date.now(),trace=null}={},ttl=CACHE_POLICY.FRESH_MS){
  const url=BASE+path+'?'+query(params);
  const hit=cache.get(url);
- if(hit&&now-hit.at<CACHE_MS)return hit.data;
+ if(hit&&now-hit.at<hit.ttl){cache.delete(url);cache.set(url,hit);trace?.push('hit');return hit.data;}
+ if(hit)drop(url);
+ trace?.push('fetch');
  for(let attempt=0;;attempt++){
   const ctl=new AbortController(),timer=setTimeout(()=>ctl.abort(),TIMEOUT_MS);
   let res;
@@ -42,14 +62,24 @@ export async function openf1Get(path,params={},{fetchImpl=fetch,wait=ms=>new Pro
   if(res.status===429)throw Error('OpenF1 is rate-limiting requests right now (free tier 30/min). Try again in a minute.');
   if(res.status===404)return [];
   if(!res.ok)throw Error('OpenF1 error '+res.status);
-  const data=await res.json();
+  const text=await res.text();
+  let data;try{data=JSON.parse(text);}catch{throw Error('Unexpected OpenF1 response');}
   if(!Array.isArray(data))throw Error('Unexpected OpenF1 response');
-  if(cache.size>=CACHE_MAX)cache.delete(cache.keys().next().value);
-  cache.set(url,{at:now,data});
+  remember(url,data,text.length,ttl,now);
   return data;
  }
 }
-export function clearOpenf1Cache(){cache.clear();}
+export function clearOpenf1Cache(){cache.clear();cacheBytes=0;}
+
+// How long data for this session may be reused. The session's own metadata changes rarely,
+// so it is kept META_MS; unknown sessions are treated as still changing.
+export async function sessionTtl(sessionKey,io={}){
+ const now=io.now??Date.now();
+ let rows=[];try{rows=await openf1Get('sessions',{session_key:sessionKey},io,CACHE_POLICY.META_MS);}catch{return CACHE_POLICY.FRESH_MS;}
+ const end=Date.parse(rows[0]?.date_end);
+ return Number.isFinite(end)&&now>=end+CACHE_POLICY.SETTLE_AFTER_END_MS?CACHE_POLICY.SETTLED_MS:CACHE_POLICY.FRESH_MS;
+}
+const byDriver=(rows,d)=>d?rows.filter(r=>String(r.driver_number)===String(d)):rows;
 
 const fmt=s=>{if(!Number.isFinite(s))return null;const m=Math.floor(s/60),r=s-m*60;return m?`${m}:${r.toFixed(3).padStart(6,'0')}`:r.toFixed(3);};
 const sec=v=>Number.isFinite(v)?Number(v.toFixed(3)):null;
@@ -66,7 +96,7 @@ function lapRow(l,stints){
 }
 
 async function sessions(args,io){
- const rows=await openf1Get('sessions',{year:args.year},io);
+ const rows=await openf1Get('sessions',{year:args.year},io,CACHE_POLICY.SETTLED_MS);
  const place=(args.place||'').toLowerCase(),name=(args.session_name||'').toLowerCase();
  const found=rows.filter(s=>(!place||[s.country_name,s.location,s.circuit_short_name,s.meeting_name].some(v=>String(v||'').toLowerCase().includes(place)))
   &&(!name||String(s.session_name||'').toLowerCase()===name||String(s.session_type||'').toLowerCase()===name));
@@ -74,9 +104,16 @@ async function sessions(args,io){
   ...(found.length?{}:{reason:'No matching session on OpenF1. Check the year and place spelling.'})};
 }
 
+// One request per kind for the whole session; every driver's question reuses it.
+async function sessionData(sessionKey,io){
+ const [laps,stints,drivers]=await Promise.all(['laps','stints','drivers'].map(p=>openf1Get(p,{session_key:sessionKey},io,io.ttl)));
+ return {laps,stints,drivers};
+}
+
 async function laps(args,io){
  const d=args.driver_number;
- const [rows,stints,drivers]=await Promise.all([openf1Get('laps',{session_key:args.session_key,driver_number:d},io),openf1Get('stints',{session_key:args.session_key,driver_number:d},io),openf1Get('drivers',{session_key:args.session_key,driver_number:d},io)]);
+ const all=await sessionData(args.session_key,io);
+ const rows=byDriver(all.laps,d),stints=byDriver(all.stints,d),drivers=byDriver(all.drivers,d);
  if(!rows.length)return {state:'unavailable',source:SOURCE,session_key:args.session_key,reason:'OpenF1 has no laps for this session'+(d?' and driver':'')+'.'};
  const who=Object.fromEntries(drivers.map(x=>[String(x.driver_number),{driver:x.name_acronym||null,team:x.team_name||null}]));
  if(d){
@@ -104,7 +141,8 @@ export function telemetryRows(samples,startMs){
 }
 
 async function oneLap(sessionKey,driverNumber,lapNumber,seconds,io){
- const [rows,stints]=await Promise.all([openf1Get('laps',{session_key:sessionKey,driver_number:driverNumber},io),openf1Get('stints',{session_key:sessionKey,driver_number:driverNumber},io)]);
+ const all=await sessionData(sessionKey,io);
+ const rows=byDriver(all.laps,driverNumber),stints=byDriver(all.stints,driverNumber);
  const lap=lapNumber?rows.find(l=>l.lap_number===lapNumber):bestLap(rows);
  if(!lap)return {state:'unavailable',driver_number:driverNumber,reason:lapNumber?`OpenF1 has no lap ${lapNumber} for car ${driverNumber}.`:`OpenF1 has no timed lap for car ${driverNumber}.`};
  const begin=Date.parse(lap.date_start);
@@ -112,7 +150,7 @@ async function oneLap(sessionKey,driverNumber,lapNumber,seconds,io){
  const lead=lap.lap_number===1&&seconds?3:0;
  const span=seconds||(Number.isFinite(lap.lap_duration)?lap.lap_duration:150);
  const from=begin-lead*1000,to=begin+span*1000;
- const samples=await openf1Get('car_data',{session_key:sessionKey,driver_number:driverNumber,'date>':new Date(from).toISOString(),'date<':new Date(to).toISOString()},io);
+ const samples=[...await openf1Get('car_data',{session_key:sessionKey,driver_number:driverNumber,'date>':new Date(from).toISOString(),'date<':new Date(to).toISOString()},io,io.ttl)];
  samples.sort((a,b)=>Date.parse(a.date)-Date.parse(b.date));
  const data=telemetryRows(samples,begin);
  const gaps=[];for(let i=1;i<data.length;i++)if(data[i][0]-data[i-1][0]>1.5)gaps.push([data[i-1][0],data[i][0]]);
@@ -136,7 +174,12 @@ async function lapTelemetry(args,io){
 
 export async function openf1Call(name,args,io={}){
  for(const k of ['driver_number','compare_driver_number'])if(args[k]!==undefined&&!/^\d{1,3}$/.test(args[k]))throw Error('Use a driver racing number');
- const result=name==='openf1_sessions'?await sessions(args,io):name==='openf1_laps'?await laps(args,io):name==='openf1_lap_telemetry'?await lapTelemetry(args,io):null;
- if(!result)throw Error('Unknown OpenF1 tool');
+ if(!['openf1_sessions','openf1_laps','openf1_lap_telemetry'].includes(name))throw Error('Unknown OpenF1 tool');
+ const trace=[],run={...io,trace};
+ if(args.session_key)run.ttl=await sessionTtl(args.session_key,run);
+ const result=name==='openf1_sessions'?await sessions(args,run):name==='openf1_laps'?await laps(args,run):await lapTelemetry(args,run);
+ const hits=trace.filter(x=>x==='hit').length;
+ result.cache={served_from_memory:hits,fetched_from_openf1:trace.length-hits,
+  policy:run.ttl===undefined?'session list kept up to 30 min':run.ttl===CACHE_POLICY.SETTLED_MS?'settled session: kept up to 30 min':'running or just-finished session: kept up to 1 min'};
  return {content:[{type:'text',text:JSON.stringify(result)}],isError:false};
 }
