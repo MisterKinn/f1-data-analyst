@@ -129,6 +129,9 @@ def main():
         print('F1_USERNAME / F1_PASSWORD repository secrets are missing; nothing recorded.')
         return 0
     cloud.DATA.mkdir(parents=True, exist_ok=True)
+    if os.environ.get('PROBE') == '1':
+        import probe
+        return probe.main()
     cloud.fetch_schedule()
     windows = cloud.read_json(cloud.DATA / 'schedule.json', {}).get('windows', [])
     window = next_window(windows, cloud.now())
