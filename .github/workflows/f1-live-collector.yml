@@ -12,6 +12,10 @@ on:
         description: 'Look back this many hours for a finished session to publish with FastF1 (default 36)'
         required: false
         default: '36'
+      probe:
+        description: 'yes = only check whether this runner can reach F1 live timing'
+        required: false
+        default: 'no'
 permissions:
   contents: read
   id-token: write
@@ -39,6 +43,7 @@ jobs:
           F1_USERNAME: ${{ secrets.F1_USERNAME }}
           F1_PASSWORD: ${{ secrets.F1_PASSWORD }}
           HISTORY_RETRY_HOURS: ${{ inputs.history_hours || '36' }}
+          PROBE: ${{ inputs.probe == 'yes' && '1' || '' }}
         run: python actions_runner.py
       - name: Keep run log and diagnostics
         if: always()
