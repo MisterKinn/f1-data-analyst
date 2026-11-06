@@ -41,3 +41,14 @@ The existing `pip install -r requirements.txt` build command now includes pinned
 - `live=true` only while the window is open and the table changed within 90 seconds. Login/CAPTCHA/subscription problems stop the run without retrying.
 - Others: `/live` → "내 FIAWEC+ 계정 연결" → collector `/personal/<account>/wec/login` (`PersonalWEC` in wec_runtime.py; in-memory credentials, 8 hours, max `PERSONAL_WEC_MAX_SESSIONS`=2, never the owner's account).
 - Still to verify at a real session: the timing table selector on the livestream page. If `timing_layout_unverified` appears while the page is running, adjust `read_rows` to the observed layout.
+
+## FIAWEC+ 연결 (saved sign-in, 2026-11-06)
+
+Owner decision: a person signs in to FIAWEC+ once and the sign-in is kept, so sessions do not log in again (each fresh login met a CAPTCHA). Nothing here solves a CAPTCHA or types a password.
+
+- Account settings → **FIAWEC+ 연결** opens a remote view of a collector browser (`wec_signin.py`, routes `/wec/signin/<account>/<start|frame|input|cancel>`). The person taps and types through screenshots, solves any CAPTCHA, and the browser's storage state goes back to the site once the FIAWEC+ account menu appears.
+- The site stores it AES-GCM encrypted per account (`wec/auth/<account>.json`, key from `WEC_AUTH_KEY` or `FASTF1_CLOUD_KEY`), never returns it to a browser or MCP tool, and deletes it on "연결 해제".
+- The owner's connection is `operator`. Crew never connect; the scheduled reader (`wec_live_runner.py`) fetches it via `/api/wec/actions-auth` (workflow OIDC) and posts refreshed cookies back after each session. The WEC_USERNAME/WEC_PASSWORD secrets are only a fallback.
+- Personal accounts: the site hands the saved state to `/personal/<account>/wec/restore` whenever the collector has forgotten it.
+- A blocked or expired sign-in (`sign_in_expired`, CAPTCHA, login required) marks the connection `needs_reconnect` and sends one web push to the Google account that connected it (enable alerts at /alerts). The reader starts 10 minutes before each session, so the alert usually comes before the green flag.
+- How long FIAWEC+ keeps a sign-in valid, and whether cookies made on one server keep working on GitHub Actions runners, is not verified yet.

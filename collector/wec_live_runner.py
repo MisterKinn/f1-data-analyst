@@ -9,6 +9,7 @@ scheduled runs skip it. A run that hits its time budget leaves the window open f
 import json
 import os
 import re
+import tempfile
 import time
 import urllib.error
 import urllib.parse
@@ -28,7 +29,7 @@ PUSH_SECONDS = int(os.environ.get('WEC_PUSH_SECONDS', '10'))
 RETRY_SECONDS = (30, 60, 120, 300)
 # Login, CAPTCHA and subscription problems need the owner; retrying only risks a lock-out.
 STOP = {'credentials_required', 'authentication_failed', 'authentication_action_required',
-        'human_verification_required', 'subscription_or_login_required'}
+        'human_verification_required', 'subscription_or_login_required', 'sign_in_expired'}
 
 
 def now():
@@ -113,6 +114,31 @@ def site(method, window_id, body=None, final=False):
         return None, None
 
 
+def saved_sign_in(method='GET', state=None):
+    """The owner's FIAWEC+ 연결 (cookies from a sign-in the owner did on the site), or None.
+    POST stores the refreshed cookies after a session so the sign-in keeps working."""
+    data = json.dumps({'storage_state': state}).encode() if state is not None else None
+    try:
+        request = urllib.request.Request(SITE + '/api/wec/actions-auth', data=data, method=method, headers={
+            'authorization': 'Bearer ' + oidc_token(), 'content-type': 'application/json'})
+        with urllib.request.urlopen(request, timeout=30) as response:
+            body = json.load(response)
+    except (OSError, ValueError, KeyError):
+        return None
+    found = body.get('storage_state') if isinstance(body, dict) else None
+    return found if isinstance(found, dict) else None
+
+
+def state_file(state):
+    if not state:
+        return None
+    fd, path = tempfile.mkstemp(prefix='wec-signin-', suffix='.json')
+    with os.fdopen(fd, 'w', encoding='utf-8') as f:
+        json.dump(state, f)
+    os.chmod(path, 0o600)
+    return path
+
+
 def fetch_calendar():
     request = urllib.request.Request(SITE + '/api/race-calendar', headers={'accept': 'application/json'})
     with urllib.request.urlopen(request, timeout=30) as response:
@@ -150,12 +176,12 @@ def watch(driver, window, deadline, push=site, clock=now, sleep=time.sleep):
     return 'closed'
 
 
-def record(window, launch=None, push=site, clock=now, sleep=time.sleep):
+def record(window, launch=None, push=site, clock=now, sleep=time.sleep, state=None):
     deadline = clock() + BUDGET
     attempt = 0
     while clock() < min(window['close'], deadline):
         try:
-            outcome = run_browser(window, deadline, launch, push, clock, sleep)
+            outcome = run_browser(window, deadline, launch, push, clock, sleep, state)
         except DiscoveryError as error:
             outcome, detail = error.code, error.detail
         else:
@@ -178,28 +204,39 @@ def record(window, launch=None, push=site, clock=now, sleep=time.sleep):
     return 'budget_reached'  # the next scheduled run continues this window
 
 
-def run_browser(window, deadline, launch, push, clock, sleep):
+def run_browser(window, deadline, launch, push, clock, sleep, state=None):
     if launch:
         return watch(launch(), window, deadline, push, clock, sleep)
     from playwright.sync_api import sync_playwright
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
-        driver = FIAWECBrowser(browser)
-        try:
-            return watch(driver, window, deadline, push, clock, sleep)
-        finally:
-            driver.close()
-            browser.close()
+    path = state_file(state)
+    try:
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            driver = FIAWECBrowser(browser, storage_state=path)
+            try:
+                outcome = watch(driver, window, deadline, push, clock, sleep)
+                if path:
+                    # FIAWEC+ may rotate its sign-in cookies; keep the newest for the next session.
+                    saved_sign_in('POST', driver.saved_state())
+                return outcome
+            finally:
+                driver.close()
+                browser.close()
+    finally:
+        if path:
+            os.unlink(path)
 
 
 def main():
-    if not all(owner_credentials()):
-        print('WEC_USERNAME / WEC_PASSWORD repository secrets are missing; nothing recorded.')
-        return 0
     window = next_window(windows_from_calendar(fetch_calendar()), now())
     if not window:
         print('No WEC session window now.')
         return 0
+    state = saved_sign_in()
+    if not state and not all(owner_credentials()):
+        print('No FIAWEC+ 연결 on the site and no WEC_USERNAME / WEC_PASSWORD secrets; nothing recorded.')
+        return 0
+    print('FIAWEC+ sign-in:', 'saved connection' if state else 'password secrets', flush=True)
     status, data = site('GET', window['id'])
     if status == 200 and data and data.get('done'):
         print('WEC window already recorded:', window['id'])
@@ -207,7 +244,7 @@ def main():
     print('WEC window', window['id'], window['names'], 'opens', window['open'].isoformat(), flush=True)
     while now() < window['open']:
         time.sleep(min(30, max(1, (window['open'] - now()).total_seconds())))
-    print('Result:', record(window))
+    print('Result:', record(window, state=state))
     return 0
 
 

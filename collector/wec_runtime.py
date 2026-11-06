@@ -17,7 +17,7 @@ OWNER_KEYS = ('WEC_USERNAME', 'WEC_EMAIL', 'WEC_PASSWORD', 'FIAWEC_USERNAME', 'F
 ACCOUNT = re.compile(r'^[a-zA-Z0-9-]{1,80}$')
 
 BLOCKING = {'credentials_required', 'authentication_failed', 'authentication_action_required',
-            'human_verification_required', 'subscription_or_login_required'}
+            'human_verification_required', 'subscription_or_login_required', 'sign_in_expired'}
 
 
 def save_result(path, result):
@@ -27,19 +27,23 @@ def save_result(path, result):
     temporary.replace(path)
 
 
-def child_env(credentials=None):
+def child_env(credentials=None, state=None):
     """A personal job never sees the owner's FIAWEC+ account, and vice versa."""
-    env = {k: v for k, v in os.environ.items() if not credentials or k not in OWNER_KEYS}
+    personal = bool(credentials or state)
+    env = {k: v for k, v in os.environ.items() if not personal or k not in OWNER_KEYS + ('WEC_STORAGE_STATE',)}
     if credentials:
         env['WEC_USERNAME'], env['WEC_PASSWORD'] = credentials
+    if state:
+        env['WEC_STORAGE_STATE'] = str(state)
     # Startup preflight or render-build.sh installs this pinned runtime.
     env.setdefault('PLAYWRIGHT_BROWSERS_PATH', str(Path(__file__).resolve().parent / '.wec-browsers'))
     return env
 
 
 class WECManager:
-    def __init__(self, directory, credentials=None):
+    def __init__(self, directory, credentials=None, state=None):
         self.credentials = credentials
+        self.state = state
         self.path = Path(directory) / 'wec-status.json'
         self.lock = threading.Lock()
         self.process = None
@@ -77,7 +81,7 @@ class WECManager:
                                    'target': target, 'records': []})
             self.process = subprocess.Popen([sys.executable, str(Path(__file__).resolve()),
                 '--output', str(self.path), '--target', json.dumps(target)],
-                env=child_env(self.credentials), stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                env=child_env(self.credentials, self.state), stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             return self.read()
 
     def close(self):
@@ -131,11 +135,32 @@ class PersonalWEC:
                                       'directory': directory, 'expires': time.monotonic() + 8 * 3600}
         return {'state': 'authenticated', 'expires_in_seconds': 8 * 3600}, 200
 
+    def restore(self, account, body):
+        """A saved sign-in from the site's FIAWEC+ 연결 (the person signed in themselves).
+        The cookies stay in a private temporary file for this account only."""
+        state = body.get('storage_state')
+        if not isinstance(state, dict) or not isinstance(state.get('cookies'), list) or len(json.dumps(state)) > 150000:
+            return {'error': 'Invalid sign-in'}, 400
+        with self.lock:
+            if account not in self.sessions and len(self.sessions) >= self.limit:
+                return {'error': 'Personal WEC capacity reached'}, 503
+            self.remove(account)
+            directory = tempfile.mkdtemp(prefix='kongboda-wec-')
+            path = Path(directory) / 'signin.json'
+            fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+            with os.fdopen(fd, 'w', encoding='utf-8') as f:
+                json.dump(state, f)
+            self.sessions[account] = {'manager': WECManager(directory, state=path), 'directory': directory,
+                                      'expires': time.monotonic() + 24 * 3600}
+        return {'state': 'restored'}, 200
+
     def request(self, account, path, method, body=None):
         if not ACCOUNT.fullmatch(account):
             return {'error': 'Invalid account'}, 400
         if path == '/wec/login' and method == 'POST':
             return self.login(account, body or {})
+        if path == '/wec/restore' and method == 'POST':
+            return self.restore(account, body or {})
         with self.lock:
             if path == '/wec/logout' and method == 'POST':
                 self.remove(account)

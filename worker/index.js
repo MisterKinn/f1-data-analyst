@@ -10,6 +10,7 @@ import {accountIdentity,accountRoute,firebaseIdentity} from './accounts.js';
 import {googleAuthRoute,googleIdentity,googleConfigured} from './google-auth.js';
 import {OFFICIAL_TOOLS,officialCall} from './official.js';
 import {WEC_LIVE_TOOLS,WEC_LIVE_INSTRUCTIONS,WEC_NEXT_STEP,wecAccess,wecLiveAccessCall,wecRoutes} from './wec_live.js';
+import {connectInfo} from './wec_connect.js';
 import {pickSeries,buildWecBriefing,buildF1Card,buildIdleBriefing,routedBriefingText,BRIEFING_ROUTER_INSTRUCTIONS} from './briefing-router.js';
 import {RESEARCH_TOOLS,RESEARCH_INSTRUCTIONS,researchCall} from './research.js';
 import {RULES_TOOLS,RULES_INSTRUCTIONS,rulesCall,rulesRoutes,rulesContext,attachRulesContext} from './rules.js';
@@ -60,6 +61,7 @@ async function liveBriefing(request,env,timingEnv,args,access){
   const acc=await wecAccess(request,env).catch(()=>null);let status;
   if(!acc)status={state:'credentials_required',next_step:WEC_NEXT_STEP};
   else try{status=JSON.parse((await wecLiveAccessCall('wec_live_status',{},env,acc)).content[0].text);}catch(e){status={state:'discovery_failed',error:String(e.message).slice(0,200)};}
+  if(status.next_step)status.connect=connectInfo(acc);
   return card(buildWecBriefing(status,route,prefs));
  }
  const snapshot=await liveRead(timingEnv,args),payload=buildLiveBriefing(snapshot,{accessMode:access?.mode});
