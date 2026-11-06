@@ -1,0 +1,40 @@
+{
+  "extraKnownMarketplaces": {
+    "ponytail": {
+      "source": { "source": "github", "repo": "DietrichGebert/ponytail" }
+    }
+  },
+  "enabledPlugins": {
+    "ponytail@ponytail": true
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume",
+        "hooks": [
+          { "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/scripts/graphify-hook.mjs\" refresh", "timeout": 240 }
+        ]
+      },
+      {
+        "matcher": "compact",
+        "hooks": [
+          { "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/scripts/graphify-hook.mjs\" compact", "timeout": 10 }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash|Grep",
+        "hooks": [
+          { "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/scripts/graphify-hook.mjs\" search", "timeout": 10 }
+        ]
+      },
+      {
+        "matcher": "Read|Glob",
+        "hooks": [
+          { "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/scripts/graphify-hook.mjs\" read", "timeout": 10 }
+        ]
+      }
+    ]
+  }
+}
