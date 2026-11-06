@@ -21,6 +21,7 @@ test('switched off: home shows only this week in motorsport, menu Home, About, F
   const aboutMain=about.html.match(/<main[\s\S]*?<\/main>/)[0];
   assert.match(aboutMain,/id="ci"/);assert.match(aboutMain,/라이트팬과 코어팬 사이의 그 계단을/);assert.doesNotMatch(aboutMain,/id="about"|어떤 정보를 읽을 수 있나요/);
   assert.equal((await page('/guide')).status,404);
+  for(const slug of ['f1','wec'])assert.doesNotMatch((await page('/championships/'+slug)).html,/href="\/guide"|연결 방법 보기/);
   assert.equal((await page('/status')).status,404);
   const live=await worker.fetch(new Request('https://kongboda.test/api/live/wec/connect/start',{method:'POST'}),{});
   assert.notEqual(live.status,200);
