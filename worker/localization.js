@@ -1,3 +1,4 @@
+import {briefingTranslations} from './briefing-guide.js';
 // Explicit translations shared by server markup and dynamic browser updates.
 export const translations = {
  "수집기 상태":"Collector status",
@@ -403,3 +404,4 @@ export function translateHtml(html,lang){
   return translated;
  });
 }
+Object.assign(translations,briefingTranslations);
