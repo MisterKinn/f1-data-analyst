@@ -16,6 +16,8 @@ const ITERS = Number(process.env.LAPSIM_ITERS || 90);
 const traces = JSON.parse(await readFile(join(CACHE, 'traces.json'), 'utf8'));
 const tracks = Object.fromEntries(Object.entries(lapsimTracks).map(([id, d]) => [id, trackFromData(d)]));
 const PARAMS = ['muY', 'clA', 'cdA', 'cdALow', 'pIce'];
+// physical bounds, so geometry error cannot be absorbed by impossible cars
+const BOUNDS = {muY: [1.5, 2.4], clA: [2.5, 8], cdA: [0.7, 1.9], cdALow: [0.45, 1.6], pIce: [0.85, 1.15]};
 
 const seasons = {};
 const report = ['# Lap simulator calibration', '', `Generated ${new Date().toISOString().slice(0, 10)}. Real qualifying laps from OpenF1 on tracks built from OpenF1 car positions.`, ''];
@@ -26,7 +28,10 @@ for (const year of [...new Set(traces.map(t => t.year))].sort()) {
       obs: {s: t.s, v: t.v.map(x => x / 3.6)}, weather: t.weather, meta: {sessionKey: t.session_key, driver: t.driver_number, position: t.position}}));
   if (laps.length < 4) { report.push(`${year}: not enough laps (${laps.length})`); continue; }
   const base = {...structuredClone(prior), linkMu: true};
-  const params = PARAMS.map(k => ({key: k, path: k, base: base[k], step: 0.08}));
+  const params = PARAMS.map(k => {
+    const [lo, hi] = BOUNDS[k], rel = k === 'pIce';
+    return {key: k, path: k, base: base[k], step: 0.08, min: rel ? lo * base[k] : lo, max: rel ? hi * base[k] : hi};
+  });
   const t0 = Date.now();
   const fit = fitSeason(laps, base, params, {iters: ITERS});
   const car = fit.car; delete car.linkMu;

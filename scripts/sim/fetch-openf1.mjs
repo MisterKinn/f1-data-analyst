@@ -10,7 +10,7 @@ import {join} from 'node:path';
 const CACHE = process.env.LAPSIM_CACHE || '.cache/lapsim';
 const YEARS = (process.argv[2] || process.env.LAPSIM_YEARS || '2025,2026').split(',').map(Number);
 const GEOMETRY_YEAR = Math.max(...YEARS);
-const GEOMETRY_DRIVERS = Number(process.env.LAPSIM_GEOMETRY_DRIVERS || 8);
+const GEOMETRY_DRIVERS = Number(process.env.LAPSIM_GEOMETRY_DRIVERS || 14);
 const TRACE_DRIVERS = Number(process.env.LAPSIM_TRACE_DRIVERS || 3);
 const UA = 'Kongboda-lapsim/1.0 (+https://kongboda-motorsports.vercel.app)';
 const OPENF1 = 'https://api.openf1.org/v1/';

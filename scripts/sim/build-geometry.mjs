@@ -40,6 +40,31 @@ function interpAt(ts, vs, t) {
   return vs[vs.length - 1];
 }
 
+// Positions come about every 0.27 s, so 20+ m apart in fast sections. Position noise there turns
+// into false curvature spikes, so curvature is smoothed over a window that grows with the gap
+// between samples (KAPPA_K × gap): fast corners get ~10 m, slow corners almost nothing extra.
+const KAPPA_K = Number(process.env.LAPSIM_KAPPA_K ?? 0.5);
+function smoothBySpacing(kappa, grid, lap) {
+  const n = kappa.length, ds = grid.ds, L = n * ds, pp = lapPoints(lap);
+  const inLap = pp.pts.filter(p => p.t >= pp.t0 && p.t < pp.t1);
+  const pr = projectOnto(grid, inLap.map(p => p.x), inLap.map(p => p.y)), su = unwrapS(pr.s, L);
+  const gap = new Float64Array(n).fill(NaN);
+  for (let k = 1; k < su.length; k++) {
+    const d = su[k] - su[k - 1]; if (!(d > 0 && d < 80)) continue;
+    for (let x = su[k - 1]; x <= su[k]; x += ds) gap[((Math.round(x / ds) % n) + n) % n] = d;
+  }
+  const filled = Array.from(gap, g => Number.isFinite(g) ? g : 10);
+  const out = new Float64Array(n);
+  for (let i = 0; i < n; i++) {
+    const sg = KAPPA_K * filled[i];
+    if (sg < ds / 2) { out[i] = kappa[i]; continue; }
+    const h = Math.ceil(3 * sg / ds); let a = 0, w = 0;
+    for (let j = -h; j <= h; j++) { const x = Math.exp(-0.5 * (j * ds / sg) ** 2); a += x * kappa[((i + j) % n + n) % n]; w += x; }
+    out[i] = a / w;
+  }
+  return out;
+}
+
 function buildCurve(laps) {
   const pole = lapPoints(laps[0]);
   const inLap = pole.pts.filter(p => p.t >= pole.t0 && p.t < pole.t1); // no overlap at the seam
@@ -87,7 +112,8 @@ for (const entry of index.filter(x => x.year === geometryYear)) {
   if (laps.length < 3) { report.push(`${entry.circuit}: not enough laps with positions`); continue; }
   const c = buildCurve(laps);
   const grid = resampleClosed(c.x, c.y, DS, c.z);
-  const {heading, kappa} = headingCurvature(grid.x, grid.y, grid.ds, CURV_SMOOTH);
+  const {heading, kappa: kappaRaw} = headingCurvature(grid.x, grid.y, grid.ds, CURV_SMOOTH);
+  const kappa = smoothBySpacing(kappaRaw, grid, laps[0]);
   const n = grid.x.length, grade = new Float64Array(n);
   for (let i = 0; i < n; i++) grade[i] = Math.atan((grid.z[(i + 1) % n] - grid.z[(i - 1 + n) % n]) / (2 * grid.ds));
   // corners (official numbering) projected onto the line
