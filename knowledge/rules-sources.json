@@ -5,7 +5,7 @@
   "phases": {
     "1": "Tier 1: public dated listings readable with a plain HTTP fetch (this file).",
     "2": "Tier 2: JS-rendered noticeboards (ELMS/ALMS, Formula E, BTCC, Supercars) via a headless browser, undated pages via content hashes, per-event discovery (WRC, DTM, NLS).",
-    "3": "History: all issues back to the oldest year each archive publishes.",
+    "3": "History beyond the current and next rulebook year is not crawled by default (decided 2026-11-06); effort goes to current rules, upcoming race documents and automotive technology/patent monitoring instead. Older issues are indexed only when already listed with current ones.",
     "4": "Tier 3: login-only or unpublished rulebooks are listed as unavailable, never guessed."
   },
   "sources": [

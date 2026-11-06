@@ -19,7 +19,7 @@ At most 60 downloads and 25 minutes per run (env `RULES_MAX_DOWNLOADS`, `RULES_M
 
 ## Sources
 
-`knowledge/rules-sources.json` lists phase 1 (public, dated, plain-HTTP sources). Later phases: JS-rendered noticeboards via a headless browser, undated pages via hashes, per-event discovery, full history, and tier-3 sources marked unavailable.
+`knowledge/rules-sources.json` lists phase 1 (public, dated, plain-HTTP sources). Later phases: JS-rendered noticeboards via a headless browser, undated pages via hashes, per-event discovery, and tier-3 sources marked unavailable. Full historical crawling is not planned; only the current and next rulebook year are indexed.
 
 ## Rights
 
