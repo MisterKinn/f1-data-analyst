@@ -81,3 +81,14 @@ test('the analysis section follows the session: qualifying sectors, practice sim
  assert.equal(ra.title,'레이스 페이스');assert.match(ra.lines.join('|'),/앞차 NOR\(\+0\.8\) 대비 랩당 \+0\.\d{3} → 벌어지는 중/);
  const none=buildSessionAnalysis({sessionName:'Race',live:false,rows,mine:[],snapshot:{}});assert.match(none.lines[0],/판단하지 않습니다/);
 });
+
+test('setup offers both sign-ins early with a skip option',async()=>{
+ const {SETUP_PROMPTS}=await import('../worker/briefing-guide.js');
+ for(const key of ['claude','chatgpt']){const t=SETUP_PROMPTS[key];
+  for(const part of ['미리 로그인','지금 로그인','나중에(건너뛰기)','/live','plus.fiawec.com/en → Account','비밀번호와 CAPTCHA만','건너뛰기 가능'])assert.ok(t.includes(part),key+' '+part);}
+});
+test('a card outside a live session never shows an old lap count as the headline',()=>{
+ const p={series:'f1',status:'점검 기록',briefing:'x',freshness:{live:false},track_status:{},weather:{},leaderboard:[],final_leaderboard:[]};
+ const c=buildF1Card(p,{topics:{LapCount:{CurrentLap:30,TotalLaps:30}}},{series:'f1'},null,Date.parse('2026-11-06T11:00:00Z'));
+ assert.equal(c.header.time_left,null);
+});
