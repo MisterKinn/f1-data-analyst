@@ -12,13 +12,15 @@ test('a WEC window routes to WEC, an F1 session to F1, otherwise nothing live',(
  assert.equal(idle.series,'none');assert.ok(idle.next.f1&&idle.next.wec);
  assert.match(buildIdleBriefing(idle).briefing,/진행 중인 F1·WEC 세션 없음/);
 });
-test('WEC sign-in needed gives one FIAWEC+ connection link (owner and personal) or an owner wait (crew)',()=>{
+test('every WEC card gives the FIAWEC+ live timing link (no account connection)',()=>{
  const route=pickSeries('auto',Date.parse('2026-11-06T10:00:00Z'));
  const card=buildWecBriefing({state:'human_verification_required',next_step:'x'},route,{preferences:{wecHypercarManufacturer:'Ferrari'}},Date.parse('2026-11-06T10:00:00Z'));
- assert.equal(card.connect.url,'https://kongboda-motorsports.vercel.app/account#fiawec');assert.equal(card.access_choice,undefined);
- assert.match(card.sections.right_now,/FIAWEC\+ 연결 필요/);assert.match(routedBriefingText(card),/account#fiawec/);
- const crew=buildWecBriefing({state:'sign_in_expired',next_step:'x',connect:{by:'owner',note:'운영자 연결 대기'}},route,null,Date.parse('2026-11-06T10:00:00Z'));
- assert.equal(crew.connect.url,null);assert.match(crew.sections.right_now,/운영자 연결 대기/);
+ assert.equal(card.connect.url,'https://plus.fiawec.com/en');assert.equal(card.access_choice,undefined);
+ assert.match(card.sections.right_now,/라이브 타이밍 링크/);assert.match(routedBriefingText(card),/plus\.fiawec\.com\/en/);assert.doesNotMatch(routedBriefingText(card),/account#fiawec/);
+ const found=buildWecBriefing({state:'reading',session_url:'https://plus.fiawec.com/en/livestream/s-6-hours-of-monza-free-practice-2-ab12cd'},route,null,Date.parse('2026-11-06T10:00:00Z'));
+ assert.equal(found.connect.url,'https://plus.fiawec.com/en/livestream/s-6-hours-of-monza-free-practice-2-ab12cd');
+ const odd=buildWecBriefing({state:'reading',session_url:'https://plus.fiawec.com/en/livestream/s-x?token=1'},route,null,Date.parse('2026-11-06T10:00:00Z'));
+ assert.equal(odd.connect.url,'https://plus.fiawec.com/en');
  assert.equal(card.header.time_left,'1:00');assert.equal(card.available,false);
  assert.match(card.sections.favourite.note,/Ferrari/);
 });
@@ -26,7 +28,7 @@ test('WEC card explains flags with their reasons from the race log',()=>{
  const route=pickSeries('auto',Date.parse('2026-11-06T10:00:00Z'));
  const card=buildWecBriefing({state:'reading',live:true,records:[{t:'09:41',m:'RED FLAG - car 51 stopped at T1'},{t:'09:50',m:'Car 7 under investigation - track limits'}]},route,null,Date.parse('2026-11-06T10:00:00Z'));
  assert.equal(card.sections.flags[0].code,'red');assert.match(card.sections.flags[0].text,/car 51/);
- assert.ok(card.buttons.some(b=>b.id==='decision'));assert.equal(card.connect,null);
+ assert.ok(card.buttons.some(b=>b.id==='decision'));assert.match(card.connect.url,/^https:\/\/plus\.fiawec\.com\//);
 });
 test('off-schedule F1 data (failover drill) is never a session result',()=>{
  assert.equal(inScheduledF1Window('2026-11-05T10:00:00Z'),false);
@@ -36,7 +38,7 @@ test('off-schedule F1 data (failover drill) is never a session result',()=>{
  assert.match(drill.briefing,/실제 세션 결과로 표시하지 않습니다/);
 });
 test('connector tells the model: card first, no F1 during WEC, one FIAWEC+ connection link',async()=>{
- for(const part of ['series "auto" FIRST','do not call fastf1_live_snapshot','write no summary before it','connect.url','account page','solving any CAPTCHA','never type a password','off_schedule_record','KEEP BRIEFING FOR THE WHOLE SESSION','follow_up.until'])assert.ok(BRIEFING_ROUTER_INSTRUCTIONS.includes(part),part);
+ for(const part of ['series "auto" FIRST','do not call fastf1_live_snapshot','write no summary before it','connect.url','every WEC card','solve a CAPTCHA','never type a password','off_schedule_record','KEEP BRIEFING FOR THE WHOLE SESSION','follow_up.until'])assert.ok(BRIEFING_ROUTER_INSTRUCTIONS.includes(part),part);
  assert.deepEqual(LIVE_APP_TOOL.inputSchema.properties.series.enum,['auto','f1','wec']);
  const html=readAppResource(LIVE_APP_URI).contents[0].text;
  assert.match(html,/renderRouted/);assert.match(html,/ui\/message/);
@@ -87,7 +89,7 @@ test('the analysis section follows the session: qualifying sectors, practice sim
 test('setup offers both sign-ins early with a skip option',async()=>{
  const {SETUP_PROMPTS}=await import('../worker/briefing-guide.js');
  for(const key of ['claude','chatgpt']){const t=SETUP_PROMPTS[key];
-  for(const part of ['미리 로그인','지금 로그인','나중에(건너뛰기)','/live','/account#fiawec','CAPTCHA가 나오면 내가 직접 풀어','건너뛰기 가능'])assert.ok(t.includes(part),key+' '+part);}
+  for(const part of ['미리 로그인','지금 로그인','나중에(건너뛰기)','/live','plus.fiawec.com/en','CAPTCHA가 나오면 내가 직접 풀어','건너뛰기 가능'])assert.ok(t.includes(part),key+' '+part);}
 });
 test('a card outside a live session never shows an old lap count as the headline',()=>{
  const p={series:'f1',status:'점검 기록',briefing:'x',freshness:{live:false},track_status:{},weather:{},leaderboard:[],final_leaderboard:[]};
