@@ -66,6 +66,7 @@ function storedFields(raw){
  return {...base,window:String(raw.window).slice(0,100),event:String(raw.event??'').slice(0,100),
   sessions:Array.isArray(raw.sessions)?raw.sessions.filter(v=>typeof v==='string').slice(0,8).map(v=>v.slice(0,60)):[],
   session:typeof raw.session==='string'?raw.session.slice(0,40):null,
+  diagnostic:typeof raw.diagnostic==='string'?raw.diagnostic.replace(/[^\w .:@·|-]/g,'').slice(0,160):null,
   rows_changed_at:iso(raw.rows_changed_at),window_open:iso(raw.window_open),window_close:iso(raw.window_close)};
 }
 // LIVE only while the scheduled session window is open, the reader is on the timing page

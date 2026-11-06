@@ -70,6 +70,12 @@ class RunnerTests(unittest.TestCase):
         self.assertEqual(run.call_count, 1)
         self.assertEqual(pushes[-1]['state'], 'human_verification_required')
 
+    def test_gate_detail_has_phrase_host_title_only(self):
+        from wec_browser import gate_detail
+        detail = gate_detail('reCAPTCHA', 'https://auth.staylive.io/u/login?state=SECRET', 'Log in <x>')
+        self.assertEqual(detail, 'recaptcha @ auth.staylive.io · Log in x')
+        self.assertNotIn('SECRET', detail)
+
 
 class PersonalWECTests(unittest.TestCase):
     def test_personal_job_never_sees_owner_account(self):

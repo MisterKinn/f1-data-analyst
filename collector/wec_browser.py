@@ -11,9 +11,17 @@ SESSIONS = ('auto', 'FP1', 'FP2', 'FP3', 'Qualifying', 'Hyperpole', 'Race')
 
 
 class DiscoveryError(Exception):
-    def __init__(self, code):
+    def __init__(self, code, detail=None):
         self.code = code
+        self.detail = detail  # gate phrase, host and page title only; never page body or URLs
         super().__init__(code)  # No provider errors, credentials or signed URLs.
+
+
+def gate_detail(phrase, url, title):
+    """Enough to tell a real bot check from a harmless 'protected by reCAPTCHA' notice."""
+    host = urlsplit(url).hostname or ''
+    title = re.sub(r'[^\w .:|-]', '', title or '')[:60]
+    return '%s @ %s · %s' % (phrase.lower()[:30], host[:60], title)
 
 
 def utcnow():
@@ -136,8 +144,9 @@ class FIAWECBrowser:
 
     def check_gate(self):
         text = self.page.locator('body').inner_text(timeout=12000)[:30000]
-        if re.search(r'verify you are human|checking your browser|unusual traffic|captcha|access denied', text, re.I):
-            raise DiscoveryError('human_verification_required')
+        found = re.search(r'verify you are human|checking your browser|unusual traffic|captcha|access denied', text, re.I)
+        if found:
+            raise DiscoveryError('human_verification_required', gate_detail(found.group(0), self.page.url, self.page.title()))
         if re.search(r'incorrect password|wrong email|invalid credentials', text, re.I):
             raise DiscoveryError('authentication_failed')
         return text
