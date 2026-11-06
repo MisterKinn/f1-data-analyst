@@ -94,3 +94,12 @@ test('a lapsed connection alerts the Google account that connected it, once per 
  await saveSignIn(e,'operator',STATE,{verified:true}); // reconnect keeps who to alert
  assert.equal((await signInMeta(e,'operator')).notify,'owner-sub');
 });
+
+test('the site admin (collector host owner) connects FIAWEC+ for the crew, from the site or an AI',async()=>{
+ const {wecAccess}=await import('../worker/wec_live.js');
+ const hash=[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode('admin@example.invalid')))].map(b=>b.toString(16).padStart(2,'0')).join('');
+ const env={COLLECTOR_ADMIN_SHA256:hash,LIVE_ANALYSIS_KEY_HASH:'x'};
+ const ai=new Request('https://site.test/mcp',{headers:{'oai-authenticated-user-id':'oauth:1','oai-authenticated-user-email':'Admin@example.invalid'}});
+ assert.deepEqual(await wecAccess(ai,env),{mode:'crew',owner:true});
+ assert.deepEqual(await wecAccess(new Request('https://site.test/account'),env,{email:'admin@example.invalid',sub:'g'}),{mode:'crew',owner:true});
+});

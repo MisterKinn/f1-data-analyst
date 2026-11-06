@@ -2,6 +2,7 @@ import {cloudConfigured,cloudRequest} from './live.js';
 import {accountIdentity,sharedLiveAllowed} from './accounts.js';
 import {googleIdentity} from './google-auth.js';
 import {verifyCollectorToken,COLLECTOR_REPOSITORY} from './github-oidc.js';
+import {isOwner} from './collector-fleet.js';
 import {isOwnerEmail,wecConnectRoute,wecActionsAuth,loadSignIn,markSignIn,signInMeta} from './wec_connect.js';
 import {WEC_LIVE_TIMING_URL} from './briefing-router.js';
 export const WEC_COLLECTOR_WORKFLOW=COLLECTOR_REPOSITORY+'/.github/workflows/wec-live-collector.yml@refs/heads/main';
@@ -39,7 +40,10 @@ export async function wecLiveCall(name,args,env){
 export async function wecAccess(request,env,google=null){
  // Without a crew key configured there is no crew/personal split (previous WEC behaviour).
  const email=google?.email||request.headers.get('oai-authenticated-user-email');
- if(!env.LIVE_ANALYSIS_KEY_HASH||await sharedLiveAllowed(request,env,google))return {mode:'crew',owner:isOwnerEmail(email,env)};
+ // Owner = the site's collector admin (same check as the host panel), or DEPLOY_OWNER_EMAIL.
+ const owner=isOwnerEmail(email,env)||(email?await isOwner(env,google||{email}).catch(()=>false):false);
+ if(owner)return {mode:'crew',owner:true};
+ if(!env.LIVE_ANALYSIS_KEY_HASH||await sharedLiveAllowed(request,env,google))return {mode:'crew',owner:false};
  const account=(await accountIdentity(request,env,google,{create:true}))?.account;
  return account&&!account.deleted?{mode:'personal',accountId:account.id}:null;
 }
