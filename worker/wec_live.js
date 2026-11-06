@@ -80,7 +80,7 @@ export function wecLiveView(stored,now=Date.now()){
  const changed=(now-Date.parse(stored.rows_changed_at))/1000;
  const received=(now-Date.parse(stored.received_at))/1000;
  const live=open&&stored.state==='reading'&&stored.records?.length>0&&changed>=0&&changed<=FRESH_SECONDS&&received<=FRESH_SECONDS;
- return {...stored,source:'FIAWEC+ live timing (scheduled reader)',live,
+ return {...stored,...(ACCESS_BLOCKED.has(stored.state)?{next_step:WEC_NEXT_STEP}:{}),source:'FIAWEC+ live timing (scheduled reader)',live,
   table_age_seconds:Number.isFinite(changed)?Math.round(changed):null,received_age_seconds:Number.isFinite(received)?Math.round(received):null,
   verification_note:live?'The timing table changed within the last 90 seconds during the scheduled session window.':'Not live: the window is closed, the table has not changed recently, or the reader has not reached the timing page.'};
 }

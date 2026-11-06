@@ -74,3 +74,9 @@ test('blocked WEC access asks the user to sign in or give the session link, and 
  assert.equal(publicWecStatus({state:'reading'}).next_step,undefined);
  for(const part of ['time left first','with its reason','track condition','kongboda_my_preferences','never type a password','token expires'])assert.ok(WEC_LIVE_INSTRUCTIONS.includes(part),part);
 });
+
+test('a stored snapshot from before the change still offers the sign-in-or-link choice',async()=>{
+ const {wecLiveView}=await import('../worker/wec_live.js');
+ assert.match(wecLiveView({state:'human_verification_required',received_at:new Date().toISOString()}).next_step,/session link/);
+ assert.equal(wecLiveView({state:'reading',received_at:new Date().toISOString()}).next_step,undefined);
+});
