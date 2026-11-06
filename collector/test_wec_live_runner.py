@@ -77,12 +77,25 @@ class RunnerTests(unittest.TestCase):
         b.page = MagicMock(url='https://auth.staylive.io/u/login', title=lambda: 'Log in | FIAWEC')
         b.page.locator.return_value.inner_text.return_value = 'Email address Continue captcha'
         b.check_gate()  # normal login page: carry on
-        with self.assertRaises(DiscoveryError) as error:
-            b.check_gate(strict=True)
+        b.page.screenshot.assert_not_called()
+        import json, os, tempfile
+        with tempfile.TemporaryDirectory() as folder, patch.dict('os.environ', {'WEC_GATE_DIR': folder}):
+            with self.assertRaises(DiscoveryError) as error:
+                b.check_gate(strict=True)
+            files = sorted(os.listdir(folder))
+            self.assertEqual(len(files), 1)  # MagicMock writes no PNG; the note is real
+            with open(os.path.join(folder, files[0]), encoding='utf-8') as f:
+                self.assertEqual(json.load(f)['detail'], 'captcha @ auth.staylive.io · Log in | FIAWEC')
         self.assertEqual(error.exception.detail, 'captcha @ auth.staylive.io · Log in | FIAWEC')
+        kwargs = b.page.screenshot.call_args.kwargs
+        self.assertTrue(kwargs['path'].endswith('.png'))
+        self.assertIn('mask', kwargs)  # typed email/password never in the picture
         b.page.locator.return_value.inner_text.return_value = 'Checking your browser before accessing'
-        with self.assertRaises(DiscoveryError):
-            b.check_gate()
+        b.page.screenshot.side_effect = RuntimeError('page closed')
+        with tempfile.TemporaryDirectory() as folder, patch.dict('os.environ', {'WEC_GATE_DIR': folder}):
+            with self.assertRaises(DiscoveryError) as error:
+                b.check_gate()
+        self.assertEqual(error.exception.code, 'human_verification_required')  # capture failure never hides it
 
     def test_gate_detail_has_phrase_host_title_only(self):
         from wec_browser import gate_detail
