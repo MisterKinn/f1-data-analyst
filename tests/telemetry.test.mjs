@@ -30,21 +30,16 @@ test('shared snapshot storage never retains high-frequency telemetry copies',asy
  const saved=JSON.parse(entries.get('live/current.json'));assert.equal(saved.snapshot.topics['CarData.z'],undefined);assert.equal(saved.snapshot.topics['Position.z'],undefined);
 });
 
-test('published FastF1 history does not replace another current session',async()=>{
- const saved=structuredClone(snapshot);saved.connected=false;saved.generated_at=new Date(0).toISOString();saved.last_message_at=null;saved.recent_events=[];
- const entries=new Map([['live/current.json',JSON.stringify({snapshot:{...saved,topics:{...saved.topics,SessionInfo:{Key:124}}},received_at:new Date(0).toISOString()})],['live/sessions/123.json',JSON.stringify({snapshot:saved,received_at:new Date(0).toISOString()})]]);
- const row={driver_number:'63',lap_time:'1:00.000',timing_lap_reference:3,status:'complete',validation:'complete',sectors:{S1:'20.000',S2:'20.000',S3:'20.000'},sector_source_times:['2026-10-30T22:00:20Z','2026-10-30T22:00:40Z','2026-10-30T22:01:00Z']};
+test('FastF1 post-session history is retired: collectors are told it is done and uploads are dropped',async()=>{
+ const entries=new Map([['live/current.json',JSON.stringify({snapshot:{topics:{SessionInfo:{Key:124}}},received_at:new Date(0).toISOString()})]]);
  const env={BUCKET:{get:async k=>entries.has(k)?{json:async()=>JSON.parse(entries.get(k))}:null,put:async(k,v)=>entries.set(k,v)}};
- const post=(q,body)=>actionsHistory(new Request('https://test/api/live/actions-history?window=2026-21-1&session_key=123&'+q,{method:'POST',headers:{authorization:'Bearer ok','content-type':'application/json'},body:JSON.stringify(body)}),env,{verify:async()=>{}});
- assert.equal((await post('kind=archive',{session_info:info,topics:saved.topics,lap_archive:{version:1,session_key:123,records:[],best_laps:{session:{63:row}}}})).status,200);
- assert.equal((await post('kind=telemetry&part=session&driver=63',{...lap,samples:[]})).status,200);
- assert.equal((await post('kind=telemetry&part=Q9&driver=63',lap)).status,400);
- const result=await readBestLaps(env,{session_key:123,session_part:'session'});
- assert.equal(result.best_laps[0].status,'complete');assert.equal(result.freshness.live,false);
- assert.equal(JSON.parse(entries.get('live/current.json')).snapshot.topics.SessionInfo.Key,124);
- assert.equal((await post('kind=done',{telemetry_laps:1})).status,200);
  const done=await actionsHistory(new Request('https://test/api/live/actions-history?window=2026-21-1',{headers:{authorization:'Bearer ok'}}),env,{verify:async()=>{}});
- assert.equal((await done.json()).done,true);
+ const body=await done.json();assert.equal(body.done,true);assert.match(body.reason,/OpenF1/);
+ const upload=await actionsHistory(new Request('https://test/api/live/actions-history?window=2026-21-1&session_key=123&kind=archive',{method:'POST',headers:{authorization:'Bearer ok','content-type':'application/json'},body:'{}'}),env,{verify:async()=>{}});
+ assert.equal(upload.status,200);assert.equal((await upload.json()).stored,false);
+ assert.deepEqual([...entries.keys()],['live/current.json']);
  const rejected=await actionsHistory(new Request('https://test/api/live/actions-history?window=2026-21-1&session_key=123&kind=done',{method:'POST',headers:{authorization:'Bearer bad'},body:'{}'}),env);
  assert.equal(rejected.status,401);
+ const bad=await actionsHistory(new Request('https://test/api/live/actions-history?window=x',{headers:{authorization:'Bearer ok'}}),env,{verify:async()=>{}});
+ assert.equal(bad.status,400);
 });
