@@ -473,19 +473,6 @@
       "note": "Weekly. Needs the EPO OPS key saved by the owner. Vehicle technology classes only (drive, hybrid/EV, chassis, brakes, tyres, body/aero, engine, exhaust, transmission, batteries)."
     },
     {
-      "id": "fe-event-docs",
-      "series": "formula-e",
-      "kind": "event_documents",
-      "adapter": "fia_event_documents",
-      "url": "https://www.fia.com/documents/championships/fia-formula-one-world-championship-14",
-      "discover": {
-        "from": "https://www.fia.com/documents/championships/fia-formula-one-world-championship-14",
-        "match": "/documents/championships/[^\"'#?]*formula-e"
-      },
-      "calendar": "formula-e",
-      "note": "FIA decision documents; championship id found from the fia.com championship menu"
-    },
-    {
       "id": "fe-event-info",
       "series": "formula-e",
       "kind": "event_documents",
@@ -579,6 +566,7 @@
     "f1-academy": "Summary page only; no public sporting regulations PDF.",
     "extreme-h": "No FIA regulations category; second edition postponed.",
     "kara": "Rule PDFs only as board-post attachments with no stable listing.",
+    "formula-e-decisions": "fia.com Decision documents lists only F1, F2 and F3; Formula E stewards decisions are not published there (event information comes from the Formula E results archive).",
     "wec-bop": "FIA/ACO stopped publishing public BoP tables from 2026 (reported); not available."
   }
 }
