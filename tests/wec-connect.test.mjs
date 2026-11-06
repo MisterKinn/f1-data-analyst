@@ -36,28 +36,58 @@ test('crew use the owner connection unless they connect their own account',async
  assert.equal((await wecConnectRoute(post('/api/live/wec/connect/start',{}, 'https://evil.test'),e,{mode:'personal',accountId:'a1'})).status,403);
 });
 
-test('remote sign-in: frames pass through, the finished sign-in is stored and never sent to the browser',async()=>{
- const original=globalThis.fetch,calls=[];
- let reply={state:'signing_in',image:'QUJD',width:390,height:740,host:'auth.staylive.io'};
- globalThis.fetch=async(url,options)=>{calls.push({url:String(url),method:options.method,body:options.body});return Response.json(String(url).endsWith('/restore')?{state:'restored'}:reply);};
- try{
-  const e=env(),access={mode:'personal',accountId:'acct-1'};
-  const first=await (await wecConnectRoute(post('/api/live/wec/connect/start'),e,access)).json();
-  assert.equal(calls[0].url,'https://collector.test/wec/signin/acct-1/start');
-  assert.equal(first.image,'QUJD');assert.equal(first.state,'signing_in');
-  await wecConnectRoute(post('/api/live/wec/connect/input',{op:'type',text:'me@example.invalid'}),e,access);
-  assert.equal(calls[1].url,'https://collector.test/wec/signin/acct-1/input');assert.match(calls[1].body,/"op":"type"/);
-  reply={state:'signed_in',storage_state:STATE};
-  const res=await wecConnectRoute(new Request('https://site.test/api/live/wec/connect/frame'),e,access);
-  const text=await res.text();
-  assert.doesNotMatch(text,/SECRET-COOKIE|storage_state/);assert.equal(JSON.parse(text).state,'signed_in');
-  assert.deepEqual(await loadSignIn(e,'acct-1'),STATE);
-  assert.equal(calls.at(-1).url,'https://collector.test/personal/acct-1/wec/restore');
-  const owner=await wecConnectRoute(post('/api/live/wec/connect/start'),e,{mode:'crew',owner:true});
-  assert.equal(owner.status,200);assert.equal(calls.at(-1).url,'https://collector.test/wec/signin/operator/start');
-  const off=await wecConnectRoute(post('/api/live/wec/disconnect'),e,access);
-  assert.equal(off.status,200);assert.equal(await loadSignIn(e,'acct-1'),null);
- }finally{globalThis.fetch=original;}
+test('remote sign-in runs on the site: start wakes the browser, taps are queued encrypted, cookies never reach the page',async()=>{
+ const {readControl,newCommands,writeView,runnerToken}=await import('../worker/wec_connect.js');
+ const e=env(),access={mode:'personal',accountId:'acct-1'},started=[];
+ // Fake runner: answers like api/wec-signin.js and draws its first frame.
+ const fetchImpl=async(url,options)=>{
+  const body=JSON.parse(options.body);started.push({url:String(url),auth:options.headers.authorization,body});
+  await writeView(e,body.key,{run:body.run,seq:0,state:'signing_in',host:'auth.staylive.io',image:'QUJD',width:390,height:740});
+  return new Response(null,{status:202});
+ };
+ const relay={fetchImpl,startWaitMs:200,inputWaitMs:200,pollMs:5};
+ const first=await (await wecConnectRoute(post('/api/live/wec/connect/start'),e,access,{notify:'g-1',relay})).json();
+ assert.equal(started[0].url,'https://site.test/api/wec-signin');
+ assert.equal(started[0].auth,'Bearer '+await runnerToken(e,'acct-1',started[0].body.run));
+ assert.equal(first.image,'QUJD');assert.equal(first.state,'signing_in');
+ await wecConnectRoute(post('/api/live/wec/connect/input',{op:'type',text:'pass-word-123'}),e,access,{relay});
+ const ctlRaw=e.BUCKET.m.get('wec/signin-ctl/acct-1.json');
+ assert.doesNotMatch(ctlRaw,/pass-word-123/); // the typed password is never stored in clear
+ const ctl=await readControl(e,'acct-1');
+ assert.deepEqual(await newCommands(e,'acct-1',ctl,0),[{id:1,cmd:{op:'type',text:'pass-word-123'}}]);
+ assert.equal(ctl.notify,'g-1');
+ assert.equal((await wecConnectRoute(post('/api/live/wec/connect/input',{op:'eval',js:'x'}),e,access,{relay})).status,400);
+ await writeView(e,'acct-1',{run:ctl.run,seq:1,state:'signed_in'});
+ const text=await (await wecConnectRoute(new Request('https://site.test/api/live/wec/connect/frame'),e,access,{relay})).text();
+ assert.equal(JSON.parse(text).state,'signed_in');assert.doesNotMatch(text,/cookie|storage_state/i);
+ const owner=await wecConnectRoute(post('/api/live/wec/connect/start'),e,{mode:'crew',owner:true},{relay});
+ assert.equal(owner.status,200);assert.equal(started.at(-1).body.key,'operator');
+ const cancel=await (await wecConnectRoute(post('/api/live/wec/connect/cancel'),e,{mode:'crew',owner:true},{relay})).json();
+ assert.equal(cancel.state,'cancelled');assert.equal((await readControl(e,'operator')).cancel,true);
+ const failed=await wecConnectRoute(post('/api/live/wec/connect/start'),e,access,{relay:{...relay,fetchImpl:async()=>new Response('x',{status:500})}});
+ assert.equal(failed.status,502);assert.match((await failed.json()).error,/FIAWEC\+ 로그인 화면/);
+ const off=await wecConnectRoute(post('/api/live/wec/disconnect'),e,access);
+ assert.equal(off.status,200);
+});
+
+test('sign-in browser: runs queued taps, saves the cookies encrypted once the account menu shows',async()=>{
+ const {runSignIn}=await import('../server/wec-signin-runner.js');
+ const {seal}=await import('../worker/wec_connect.js');
+ const e=env(),run='11111111-2222-3333-4444-555555555555',done=[];
+ let menu=false;
+ e.BUCKET.m.set('wec/signin-ctl/acct-1.json',JSON.stringify({run,notify:'g-1',mode:'crew',cmds:[{id:1,box:await seal(e,'acct-1',{op:'type',text:'pw'})},{id:2,box:await seal(e,'acct-1',{op:'key',key:'Enter'})}]}));
+ const locator=sel=>({count:async()=>sel.includes('headlessui')?(menu?1:0):(menu?0:1),first(){return this;},waitFor:async()=>{},click:async()=>{}});
+ const page={url:()=>menu?'https://plus.fiawec.com/en':'https://auth.staylive.io/login',goto:async()=>{},locator,getByRole:()=>locator('b'),waitForURL:async()=>{},mainFrame:()=>null,
+  mouse:{click:async()=>{},wheel:async()=>{}},keyboard:{type:async t=>done.push('type:'+t),press:async k=>{done.push('key:'+k);menu=true;}},waitForTimeout:async()=>{},screenshot:async()=>Buffer.from('JPEG')};
+ const context={newPage:async()=>page,route:async()=>{},storageState:async()=>STATE};
+ const browser={newContext:async()=>context,close:async()=>{}};
+ assert.equal(await runSignIn(e,{key:'acct-1',run},{launchBrowser:async()=>browser}),'signed_in');
+ assert.deepEqual(done,['type:pw','key:Enter']);
+ assert.deepEqual(await loadSignIn(e,'acct-1'),STATE);
+ assert.equal((await signInMeta(e,'acct-1')).notify,'g-1');
+ assert.equal(JSON.parse(e.BUCKET.m.get('wec/signin-view/acct-1.json')).state,'signed_in');
+ assert.equal(e.BUCKET.m.has('wec/signin-ctl/acct-1.json'),false);
+ assert.doesNotMatch(e.BUCKET.m.get('wec/signin-view/acct-1.json'),/SECRET-COOKIE/);
 });
 
 test('the scheduled reader gets the owner sign-in with its workflow token and can save refreshed cookies',async()=>{
