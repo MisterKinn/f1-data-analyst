@@ -54,7 +54,8 @@ const SOURCE_POLICY={records:'FIA documents, championship standings and cited we
 async function liveBriefing(request,env,timingEnv,args,access){
  const route=pickSeries(args.series||'auto');
  const prefs=await readMyPreferences(request,env,null).catch(()=>null);
- const card=payload=>({structuredContent:payload,content:[{type:'text',text:payload.series==='f1'?liveBriefingText(payload):routedBriefingText(payload)}],isError:false});
+ const a=route.active,follow=a&&Number.isFinite(a.end)&&a.end>Date.now()?{every_minutes:10,until:new Date(a.end).toISOString(),series:a.series,session:a.session,stop_when:'session window closed, route.series changed, or the user says stop'}:null;
+ const card=payload=>({structuredContent:{...payload,follow_up:payload.series==='none'?null:follow},content:[{type:'text',text:payload.series==='f1'?liveBriefingText(payload):routedBriefingText(payload)}],isError:false});
  if(route.series==='wec'){
   const acc=await wecAccess(request,env).catch(()=>null);let status;
   if(!acc)status={state:'credentials_required',next_step:WEC_NEXT_STEP};

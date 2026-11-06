@@ -34,10 +34,14 @@ test('off-schedule F1 data (failover drill) is never a session result',()=>{
  assert.match(drill.briefing,/실제 세션 결과로 표시하지 않습니다/);
 });
 test('connector tells the model: card first, no F1 during WEC, choice box, login page',async()=>{
- for(const part of ['series "auto" FIRST','do not call fastf1_live_snapshot','write no summary before it','choice box','Signed in to FIAWEC+','off_schedule_record'])assert.ok(BRIEFING_ROUTER_INSTRUCTIONS.includes(part),part);
+ for(const part of ['series "auto" FIRST','do not call fastf1_live_snapshot','write no summary before it','choice box','Signed in to FIAWEC+','off_schedule_record','KEEP BRIEFING FOR THE WHOLE SESSION','follow_up.until'])assert.ok(BRIEFING_ROUTER_INSTRUCTIONS.includes(part),part);
  assert.deepEqual(LIVE_APP_TOOL.inputSchema.properties.series.enum,['auto','f1','wec']);
  const html=readAppResource(LIVE_APP_URI).contents[0].text;
  assert.match(html,/renderRouted/);assert.match(html,/ui\/message/);
  const init=await (await worker.fetch(new Request('https://k.test/mcp',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'initialize',params:{protocolVersion:'2025-06-18'}})}),{})).json();
  assert.ok(init.result.instructions.indexOf('LIVE BRIEFING')<init.result.instructions.indexOf('WEC BRIEFING FORMAT'));
+});
+test('setup prompt books an always-on task and per-session tasks that keep briefing until the session ends',async()=>{
+ const {SETUP_PROMPTS}=await import('../worker/briefing-guide.js');
+ for(const key of ['claude','chatgpt'])for(const part of ['series auto','follow_up','10분마다','시작 5분 뒤','기존 예약 작업'])assert.ok(SETUP_PROMPTS[key].includes(part),key+' '+part);
 });
