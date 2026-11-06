@@ -4,7 +4,7 @@ import {writeFile} from 'node:fs/promises';
 import {lapsimTracks} from '../../worker/lapsim/tracks-data.js';
 import {eventDocuments, fiaCall} from '../../worker/fia.js';
 import {parseTrackChanges} from '../../worker/lapsim/track-changes.js';
-import {TRACK_EVENTS as EVENTS} from '../../worker/lapsim/names.js';
+import {eventFor} from '../../worker/lapsim/names.js';
 
 const NOTES = /event notes|competition notes/i;
 
@@ -25,9 +25,9 @@ const years = (process.env.LAPSIM_CHANGE_YEARS || String(new Date().getUTCFullYe
 const {lapsimTrackChanges: previous} = await import('../../worker/lapsim/track-changes-data.js').catch(() => ({lapsimTrackChanges: {}}));
 const out = structuredClone(previous || {});
 for (const [id, track] of Object.entries(lapsimTracks)) {
-  const name = EVENTS[id] || EVENTS[id.replace(/-circuit$/, '')];
-  if (!name) { console.log(`${id}: no FIA event name`); continue; }
   for (const year of years) {
+    const name = eventFor(id, year);
+    if (!name) { console.log(`${id} ${year}: no FIA event for this track`); continue; }
     try {
       const ev = await eventDocuments(year, name);
       if (!ev) { console.log(`${id} ${year}: event not published`); continue; }

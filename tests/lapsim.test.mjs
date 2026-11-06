@@ -175,3 +175,29 @@ test('track names resolve from ids, names, Grand Prix names and aliases', async 
   assert.equal(resolveTrack('Spanish Grand Prix', ids), 'madring');
   assert.equal(resolveTrack('nowhere', ids), null);
 });
+
+test('FIA notes: lists, distances, numbered items, raised kerbs and sentences', () => {
+  const doc = items => `19. | Changes to the circuit\n${items}\n20. | Free Practice Collective Test Items.`;
+  const one = items => parseTrackChanges(doc(items)).changes;
+  const list = one('- | Kerbs at Turn 4 and Turn 9 lowered.')[0];
+  assert.deepEqual(list.range.list.map(r => r.turn), [4, 9]);
+  const corners = Array.from({length: 12}, (_, i) => ({number: i + 1, letter: '', s: 200 + i * 300}));
+  const {track, applied} = applyTrackChanges({ds: 5, kappa: new Float64Array(800)}, [list], corners);
+  assert.ok(track.vScale[Math.round(corners[3].s / 5)] > 1 && track.vScale[Math.round(corners[8].s / 5)] > 1);
+  assert.equal(track.vScale[Math.round(corners[6].s / 5)], 1, 'turns between the listed ones stay unchanged');
+  assert.equal(applied[0].spans.length, 2);
+  assert.deepEqual(one('- | Track resurfaced from Turn 3 - 50 m before the apex.')[0].corners, ['3']);
+  assert.equal(one('1. Kerb at turn 4 apex reduced in height.\n2. Track resurfaced between turns 6 and 8.').length, 2);
+  assert.equal(one('- | Kerb at turn 2 exit removed and replaced with a higher kerb.')[0].type, 'kerb_raised');
+  assert.deepEqual(one('- | Bumps at T1 ground. New asphalt T2 to T4.').map(c => c.type), ['bump_removal', 'resurfacing']);
+});
+
+test('track resolver avoids partial-word matches', async () => {
+  const {resolveTrack, TRACK_NAMES} = await import('../worker/lapsim/names.js');
+  const ids = Object.keys(TRACK_NAMES);
+  assert.equal(resolveTrack('Circuit of the Americas', ids), 'austin');
+  assert.equal(resolveTrack('Spain', ids), 'madring');
+  assert.equal(resolveTrack('a', ids), null);
+  assert.equal(resolveTrack('Marina Bay', ids), 'singapore');
+  assert.equal(resolveTrack('Sepang', ids), 'kuala-lumpur');
+});

@@ -94,7 +94,9 @@ function buildCurve(laps) {
 
 function geoFor(session) {
   if (!geo?.features) return null;
-  const want = [session.location, session.circuit, session.country].map(slug);
+  // OpenF1 names that differ from the GeoJSON (2026 Bahrain GP ran at Sepang, Kuala Lumpur)
+  const HINT = {'kuala-lumpur': 'sepang'};
+  const want = HINT[slug(session.circuit)] ? [HINT[slug(session.circuit)]] : [session.location, session.circuit, session.country].map(slug);
   let best = null;
   for (const f of geo.features) {
     const p = f.properties || {}, hay = [p.Location, p.Name, p.id].map(slug).join(' ');

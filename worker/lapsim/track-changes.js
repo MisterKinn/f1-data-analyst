@@ -5,8 +5,8 @@ import {lapsimKernel} from './kernel.js';
 // say what changed, not how much faster it is. Every applied effect keeps the original line.
 
 const HEADING = /^\s*(?:\d{1,2}(?:\.\d+)?\.?\s*\|?\s*)?((?:changes?|modifications?|alterations?)\s+(?:to\s+the\s+|since\s+(?:the\s+)?(?:last|previous)\s+\w+\s*|of\s+the\s+)?(?:circuit|track)[^\n|]*|(?:circuit|track)\s+(?:changes|modifications)[^\n|]*)$/i;
-const NEXT_HEADING = /^\s*\d{1,2}\.\s*\|?\s*[A-Z][^\n]{2,80}$/;
-const BULLET = /^\s*(?:[-–•▪◦*]|\d{1,2}\)|[a-z]\))\s*\|?\s*/;
+const NEXT_HEADING = /^\s*(\d{1,2})\.\s*\|?\s*[A-Z][^\n]{2,80}$/;
+const BULLET = /^\s*(?:[-–•▪◦*]|\d{1,2}[).]|[a-z]\))\s*\|?\s*/;
 
 const RULES = [
   ['track_limits', /\b(?:paint|white line|blue line|track[- ]limit|detection loop)/i],
@@ -23,8 +23,9 @@ const RULES = [
 export function classifyChange(text) {
   for (const [type, re] of RULES) if (re.test(text)) {
     if (type !== 'kerb') return type;
+    if (/raised|higher|taller|increased in height/i.test(text)) return 'kerb_raised';
     if (/reduced in height|lower(?:ed)?|removed|flatten|smaller|reduced/i.test(text)) return 'kerb_lowered';
-    if (/raised|higher|added|install|extended|increased|new\b/i.test(text)) return 'kerb_raised';
+    if (/added|install|extended|increased|new\b/i.test(text)) return 'kerb_raised';
     return 'kerb_changed';
   }
   return 'other';
@@ -33,7 +34,7 @@ export function classifyChange(text) {
 // Finds turn references and the part of the corner each one refers to.
 export function cornerRefs(text) {
   const refs = [];
-  const re = /\b(?:turns?|t)\s*(\d{1,2})([a-z])?\b((?:\s*(?:,|and|&|to|until|-|–)\s*(?:turns?\s*|t\s*)?\d{1,2}[a-z]?\b)*)/gi;
+  const re = /\b(?:turns?|t)\s*(\d{1,2})([a-z])?\b((?:\s*(?:,|and|&|to|until|through|-|–)\s*(?:turns?\s*|t\s*)?\d{1,2}[a-z]?\b(?!\s*(?:m\b|metres?|meters?|%)))*)/gi;
   let m;
   while ((m = re.exec(text))) {
     const before = text.slice(Math.max(0, m.index - 28), m.index).toLowerCase();
@@ -47,12 +48,15 @@ export function cornerRefs(text) {
   return refs;
 }
 
+// "from T9 to T11", "T3-4", "between T3 and T4" are a stretch of track; "T4 and T9" or "T4, T9"
+// are separate places (list).
 function rangeOf(text, refs) {
   if (!refs.length) return null;
-  const isRange = refs.length > 1 && /\b(?:from|until|to|between|and|-|–)\b|\d\s*[-–]\s*\d/i.test(text);
   const first = refs[0], last = refs[refs.length - 1];
-  if (!isRange) return {from: first, to: first, single: true};
-  return {from: first, to: last, single: false};
+  if (refs.length === 1) return {from: first, to: first, single: true};
+  const stretch = /\b(?:from|until|to|through|between)\b|\d[a-z]?\s*[-–]\s*(?:turns?\s*|t\s*)?\d/i.test(text);
+  if (stretch && refs.length === 2) return {from: first, to: last, single: false};
+  return {from: first, to: first, single: true, list: refs};
 }
 
 // Extract the list of circuit changes from document text (pages joined with newlines).
@@ -61,10 +65,13 @@ export function extractCircuitChanges(text) {
   let start = -1;
   for (let i = 0; i < lines.length; i++) if (HEADING.test(lines[i])) { start = i; break; }
   if (start < 0) return {sectionFound: false, items: []};
+  // the section's own number ("19. Changes to the circuit"): only a higher number ends it, so
+  // items numbered "1.", "2." inside the section stay items
+  const own = Number(lines[start].match(/^\s*(\d{1,2})\./)?.[1] || 0);
   const items = [];
   for (let i = start + 1; i < lines.length; i++) {
-    const line = lines[i];
-    if (NEXT_HEADING.test(line) && !BULLET.test(line)) break;
+    const line = lines[i], next = line.match(NEXT_HEADING);
+    if (next && (own ? Number(next[1]) > own && Number(next[1]) <= own + 2 : !BULLET.test(line))) break;
     if (/^\s*\d{1,3}\s*$/.test(line)) continue; // page number
     if (BULLET.test(line)) items.push(line.replace(BULLET, '').replace(/\s*\|\s*/g, ' ').trim());
     else if (items.length && line.trim()) items[items.length - 1] += ' ' + line.replace(/\s*\|\s*/g, ' ').trim();
@@ -74,7 +81,9 @@ export function extractCircuitChanges(text) {
 
 export function parseTrackChanges(text, source = {}) {
   const {sectionFound, items} = extractCircuitChanges(text);
-  const changes = items.map(line => {
+  // one change per sentence ("Bumps at T1 ground. New asphalt T2 to T4.")
+  const sentences = items.flatMap(it => it.split(/(?<=[a-z0-9)]\.)\s+(?=[A-Z])/)).map(x => x.trim()).filter(Boolean);
+  const changes = sentences.map(line => {
     const type = classifyChange(line);
     const refs = cornerRefs(line);
     const range = rangeOf(line, refs);

@@ -61,8 +61,8 @@ export function lapError(track, car, env, obs, lapTime, {wTime = 2} = {}) {
   return {score: rms * rms + wTime * dt * dt, rms, dt, res};
 }
 
-// 1-D golden-section search for the per-track grip factor. With opts.guess (the last result for
-// this lap) it searches a narrow bracket first and falls back to the full range at its edges.
+// 1-D golden-section search for the per-track grip factor (same answer for the same car, so the
+// Nelder–Mead objective stays a fixed function of the car parameters).
 export function fitGrip(track, car, env, obs, lapTime, lo = 0.85, hi = 1.15, opts = {}) {
   const phi = (Math.sqrt(5) - 1) / 2;
   const f = g => ({grip: g, ...lapError(withGrip(track, g), car, env, obs, lapTime, opts)});
@@ -74,11 +74,7 @@ export function fitGrip(track, car, env, obs, lapTime, lo = 0.85, hi = 1.15, opt
     }
     return c.score < d.score ? c : d;
   };
-  if (opts.guess != null) {
-    const a = Math.max(lo, opts.guess - 0.04), b = Math.min(hi, opts.guess + 0.04), r = search(a, b, 11);
-    if ((r.grip - a > 0.003 || a === lo) && (b - r.grip > 0.003 || b === hi)) return r;
-  }
-  return search(lo, hi, 18);
+  return search(lo, hi, 14); // bracket 0.3 → 3e-4 of grip
 }
 
 // Nelder–Mead on a parameter vector (minimisation)
@@ -120,15 +116,18 @@ export function fitSeason(laps, base, params, {iters = 120, wTime = 2, wGrip = 5
     const {shift} = bestShift(sim0.v, l.track.ds, l.trace, L);
     return {...l, env, lapSeconds, obs: traceOnTrack(l.trace, L, shift), shift};
   });
+  let outside = 0;
   const build = x => {
+    outside = 0;
     const car = structuredClone(base);
     params.forEach((p, i) => {
       const parts = p.path.split('.');
       let o = car; for (let k = 0; k < parts.length - 1; k++) o = o[parts[k]];
       const last = parts[parts.length - 1];
       o[last] = p.base * Math.exp(x[i]);
-      if (p.min != null) o[last] = Math.max(p.min, o[last]);
-      if (p.max != null) o[last] = Math.min(p.max, o[last]);
+      // clamp to the bounds, and record how far outside (log scale) so the objective can push back
+      if (p.min != null && o[last] < p.min) { outside += Math.log(p.min / o[last]) ** 2; o[last] = p.min; }
+      if (p.max != null && o[last] > p.max) { outside += Math.log(o[last] / p.max) ** 2; o[last] = p.max; }
     });
     if (base.linkMu) { car.muX = base.muX * car.muY / base.muY; car.muXTrac = base.muXTrac * car.muY / base.muY; }
     return car;
@@ -137,11 +136,11 @@ export function fitSeason(laps, base, params, {iters = 120, wTime = 2, wGrip = 5
     const car = build(x);
     let total = 0, logGrip = 0;
     for (const l of prepared) {
-      const r = fitGrip(l.track, car, l.env, l.obs, l.lapSeconds, 0.85, 1.15, {wTime, guess: l.gripGuess});
-      l.gripGuess = r.grip; total += (l.weight ?? 1) * r.score; logGrip += Math.log(r.grip);
+      const r = fitGrip(l.track, car, l.env, l.obs, l.lapSeconds, 0.85, 1.15, {wTime});
+      total += (l.weight ?? 1) * r.score; logGrip += Math.log(r.grip);
     }
     // car grip and track grip only appear as a product: keep the average track factor at 1
-    return total / prepared.length + wGrip * (logGrip / prepared.length) ** 2;
+    return total / prepared.length + wGrip * (logGrip / prepared.length) ** 2 + 100 * outside;
   };
   const x0 = params.map(() => 0);
   const result = nelderMead(objective, x0, {step: params.map(p => p.step ?? 0.08), iters});

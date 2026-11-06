@@ -227,7 +227,7 @@ export function lapsimKernel() {
         if (v[j] < v[i] - 1e-6 && ers.regenMax) {
           // braking power at the wheels; the rear axle share can be recovered by the MGU-K
           const pBrake = t.m * (v[i] * v[i] - v[j] * v[j]) / (2 * ds) * vm;
-          eRegen += Math.min(ers.regenMax, (ers.regenShare ?? 0.6) * pBrake) * (ers.etaRegen ?? 0.9) * dt;
+          eRegen += Math.min(ers.regenMax, (ers.regenShare ?? 0.6) * pBrake * (ers.etaRegen ?? 0.9)) * dt; // regenMax is a DC limit
         }
       }
       return {eDeploy, eRegen, time};
@@ -347,20 +347,29 @@ export function lapsimKernel() {
     const applied = [];
     for (const ch of changes) {
       if (!ch.affectsLap || !ch.effect || !corners?.length) continue;
-      const a = windowFor(ch.range.from, corners), b = windowFor(ch.range.to, corners);
-      if (!a || !b) { applied.push({...ch, applied: false, reason: 'corner not found'}); continue; }
-      let s0 = ch.range.single ? a[0] : a[0], s1 = ch.range.single ? a[1] : b[1];
-      if (ch.range.from.part === 'entry' && ch.range.to.part === 'entry' && !ch.range.single) s1 = b[0];
-      s0 = ((s0 % L) + L) % L; s1 = ((s1 % L) + L) % L;
+      // spans in metres: one stretch (from..to), one corner, or several separate corners (list)
+      const spans = [];
+      if (ch.range.list) for (const r of ch.range.list) { const w = windowFor(r, corners); if (w) spans.push(w); }
+      else {
+        const a = windowFor(ch.range.from, corners), b = windowFor(ch.range.to, corners);
+        if (a && b) {
+          let s1 = ch.range.single ? a[1] : b[1];
+          if (ch.range.from.part === 'entry' && ch.range.to.part === 'entry' && !ch.range.single) s1 = b[0];
+          spans.push([a[0], s1]);
+        }
+      }
+      if (!spans.length) { applied.push({...ch, applied: false, reason: 'corner not found'}); continue; }
       const factor = 1 + (ch.effect.factor - 1) * strength;
       const target = ch.effect.kind === 'grip' ? mu : vScale;
-      let count = 0;
-      for (let i = 0; i < n; i++) {
-        const s = i * track.ds;
-        const inside = s0 <= s1 ? (s >= s0 && s <= s1) : (s >= s0 || s <= s1);
-        if (inside) { target[i] *= factor; count++; }
+      const hit = new Uint8Array(n);
+      for (const [a0, a1] of spans) {
+        const s0 = ((a0 % L) + L) % L, s1 = ((a1 % L) + L) % L;
+        for (let i = 0; i < n; i++) { const s = i * track.ds; if (s0 <= s1 ? (s >= s0 && s <= s1) : (s >= s0 || s <= s1)) hit[i] = 1; }
       }
-      applied.push({...ch, applied: count > 0, sStart: s0, sEnd: s1, points: count, factor});
+      let count = 0;
+      for (let i = 0; i < n; i++) if (hit[i]) { target[i] *= factor; count++; }
+      const norm = x => ((x % L) + L) % L;
+      applied.push({...ch, applied: count > 0, sStart: norm(spans[0][0]), sEnd: norm(spans[spans.length - 1][1]), spans: spans.map(([a0, a1]) => [norm(a0), norm(a1)]), points: count, factor});
     }
     return {track: {...track, mu, vScale}, applied};
   }
