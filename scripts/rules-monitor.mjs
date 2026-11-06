@@ -14,7 +14,7 @@ import * as L from '../worker/rules-lib.js';
 const args=Object.fromEntries(process.argv.slice(2).map(a=>{const [k,v]=a.replace(/^--/,'').split('=');return [k,v??true];}));
 const DRY=!!args['dry-run'],FORCE=!!args.force,ONLY=args.source||null;
 const SITE=process.env.RULES_SITE||'https://kongboda-motorsports.vercel.app';
-const MAX_DOWNLOADS=Number(args['max-downloads']||process.env.RULES_MAX_DOWNLOADS||60);
+const MAX_DOWNLOADS=Number(args['max-downloads']||process.env.RULES_MAX_DOWNLOADS||150);
 const DEADLINE=Date.now()+Number(process.env.RULES_MAX_MINUTES||25)*60_000;
 const UA='KongbodaRulesMonitor/1.0 (+https://kongboda-motorsports.vercel.app; official-document index)';
 const HOUR=3600_000,DAY=24*HOUR;
@@ -53,10 +53,23 @@ function inRaceWindow(source,now=Date.now()){
  return calendarEvents.some(e=>e.series===cal&&now>=Date.parse(e.start+'T00:00:00Z')-4*DAY&&now<=Date.parse((e.end||e.start)+'T23:59:59Z')+2*DAY);
 }
 export function intervalFor(source,now=Date.now()){
+ if(source.kind==='research_watch'||source.kind==='patent_watch')return 7*DAY;
  if(source.kind==='event_documents')return inRaceWindow(source,now)?15*60_000:12*HOUR;
  return inRaceWindow(source,now)?6*HOUR:DAY;
 }
-const due=(source,status,now=Date.now())=>FORCE||!status?.checked_at||now-Date.parse(status.checked_at)>=intervalFor(source,now)-60_000;
+// Unfinished sources continue on the next run; failed ones retry after an hour.
+export function due(source,status,now=Date.now(),force=FORCE){
+ if(force||!status?.checked_at)return true;
+ const age=now-Date.parse(status.checked_at);
+ if(status.status==='partial')return true;
+ if(status.status==='failed'||status.status==='skipped')return age>=Math.min(HOUR,intervalFor(source,now))-60_000;
+ return age>=intervalFor(source,now)-60_000;
+}
+// Race notes in a race window first, then series racing now, then F1/WEC, then the rest.
+export function priority(source,now=Date.now()){
+ const live=inRaceWindow(source,now);
+ return (source.kind==='event_documents'?(live?0:3):(live?1:4))+(['f1','wec','fia-general'].includes(source.series)?0:0.5);
+}
 
 // PDF -> [{page,text}] with lines rebuilt from text positions.
 export async function pdfPages(bytes,maxPages=400){
@@ -104,6 +117,40 @@ export function buildDoc(source,c,file,parsed){
   text_status:parsed?(parsed.pages.some(p=>p.text.trim())?'ok':'no_text_layer'):'metadata_only',articles};
 }
 
+async function processResearchWatch(source,report){
+ // OpenAlex: open-access CC BY works from the last 60 days matching driving-theory queries.
+ const result={id:source.id,series:source.series,kind:source.kind,status:'ok',listed:0,new:0,error:null},found=new Map(),known=new Set();
+ try{for(const p of (await import('../knowledge/research-catalog.json',{with:{type:'json'}})).default.papers)known.add(String(p.doi).toLowerCase());}catch{}
+ const since=new Date(Date.now()-(source.recent_days??60)*DAY).toISOString().slice(0,10);
+ for(const q of source.queries||[]){
+  try{const url=`https://api.openalex.org/works?search=${encodeURIComponent(q)}&filter=from_publication_date:${since},is_oa:true,best_oa_location.license:cc-by&per-page=25&select=doi,title,publication_year,best_oa_location`;
+   const r=await get(url,{max:2_000_000,headers:{accept:'application/json'}});report.downloads++;const data=JSON.parse(text(r.bytes));
+   for(const w of data.results||[]){const doi=String(w.doi||'').replace(/^https?:\/\/doi\.org\//,'').toLowerCase();if(!doi||known.has(doi)||found.has(doi))continue;found.set(doi,{doi,title:w.title||'',year:w.publication_year||null,url:w.best_oa_location?.landing_page_url||w.best_oa_location?.pdf_url||null,license:w.best_oa_location?.license||null,query:q});}
+  }catch(e){result.status='partial';result.error=String(e.message).slice(0,200);}
+ }
+ result.listed=found.size;result.new=found.size;return {result,candidates:[...found.values()]};
+}
+
+async function processPatentWatch(source,report){
+ // EPO OPS: weekly search of new publications per watched company, limited to vehicle technology classes.
+ const result={id:source.id,series:source.series,kind:source.kind,status:'ok',listed:0,new:0,error:null},all=new Map();
+ let token;try{token=(await api('/api/patents/ops-token',{})).access_token;}catch(e){result.status=/not configured|503/.test(e.message)?'skipped':'failed';result.error=/not configured|503/.test(e.message)?'EPO OPS key not configured yet (owner settings on /alerts)':e.message;return {result,patents:[]};}
+ const {parseOpsBiblio}=await import('../worker/patents.js');
+ const fmt=d=>d.toISOString().slice(0,10).replace(/-/g,''),to=new Date(),from=new Date(Date.now()-(source.recent_days??45)*DAY);
+ const classes=(source.cpc||[]).map(c=>`cpc=${c}`).join(' or ');
+ for(const w of source.applicants||[]){
+  for(let page=0;page<(source.max_pages??2);page++){
+   const q=`pa="${w}" and pd within "${fmt(from)} ${fmt(to)}"${classes?` and (${classes})`:''}`;
+   const url=`https://ops.epo.org/3.2/rest-services/published-data/search/biblio?q=${encodeURIComponent(q)}&Range=${page*100+1}-${page*100+100}`;
+   try{await sleep(6500);const r=await fetch(url,{headers:{authorization:'Bearer '+token,accept:'application/json','user-agent':UA},signal:AbortSignal.timeout(60_000)});report.downloads++;
+    if(r.status===404)break;if(!r.ok)throw Error(`OPS HTTP ${r.status} for ${w}`);
+    const {total,patents}=parseOpsBiblio(await r.json(),w);for(const p of patents)all.set(p.number,p);if(total<=(page+1)*100)break;}
+   catch(e){result.status='partial';result.error=String(e.message).slice(0,200);break;}
+  }
+ }
+ result.listed=all.size;result.new=all.size;return {result,patents:[...all.values()]};
+}
+
 async function processSource(source,status,report){
  const result={id:source.id,series:source.series,kind:source.kind,status:'ok',listed:0,new:0,error:null},docs=[],known={};
  let state={};try{state=DRY?{}:(await api('/api/rules/state?source='+source.id)).known||{};}catch(e){result.status='failed';result.error='state: '+e.message;return {result,docs,known};}
@@ -139,11 +186,13 @@ async function main(){
  const started=new Date().toISOString(),report={downloads:0};
  const sources=registry.sources.filter(s=>s.enabled!==false&&(!ONLY||s.id===ONLY));
  let status={sources:{}};if(!DRY){try{status=(await api('/api/rules/state')).status||status;}catch(e){console.error('State unavailable:',e.message);process.exitCode=1;return;}}
- const todo=sources.filter(s=>due(s,status.sources?.[s.id]));
+ const todo=sources.filter(s=>due(s,status.sources?.[s.id])).sort((a,b)=>priority(a)-priority(b));
  console.log(`${todo.length}/${sources.length} sources due`);
  let failures=0;
  for(const source of todo){
-  if(Date.now()>DEADLINE){console.log('Deadline reached; remaining sources wait for the next run');break;}
+  if(Date.now()>DEADLINE||report.downloads>=MAX_DOWNLOADS){console.log('Run budget reached; remaining sources wait for the next run');break;}
+  if(source.kind==='patent_watch'){const {result,patents}=await processPatentWatch(source,report);console.log(`[${result.status}] ${source.id}: ${patents.length} patents${result.error?' — '+result.error:''}`);if(!DRY){try{for(let i=0;i<patents.length||i===0;i+=500)await api('/api/patents/ingest',{patents:patents.slice(i,i+500),watch:{status:result.status,error:result.error,found:patents.length}});await api('/api/rules/ingest',{documents:[],sources:[result]});}catch(e){failures++;console.error('   ingest failed: '+e.message);}}continue;}
+  if(source.kind==='research_watch'){const {result,candidates}=await processResearchWatch(source,report);console.log(`[${result.status}] ${source.id}: ${candidates.length} new open-access candidates`);if(!DRY){try{await api('/api/rules/ingest',{documents:[],sources:[result],research_candidates:candidates});}catch(e){failures++;console.error('   ingest failed: '+e.message);}}continue;}
   const {result,docs,known}=await processSource(source,status.sources?.[source.id],report);
   if(result.status==='failed')failures++;
   console.log(`[${result.status}] ${source.id}: listed ${result.listed}, new ${result.new}${result.error?' — '+result.error:''}`);

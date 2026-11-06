@@ -90,7 +90,7 @@ assert.equal(evHit.hits[0].event,'São Paulo Grand Prix');assert.equal(evHit.hit
 assert.ok(evHit.freshness_warning,'partial source check is surfaced');
 assert.equal((await rulesLookup(env,{query:'event notes',series:'f1',kind:'event_documents',as_of:'2026-11-05'})).hits.length,0,'documents published after as_of are hidden');
 assert.equal((await rulesLookup({BUCKET:memoryBucket()},{query:'vsc'})).index_status,'index_empty');
-assert.deepEqual((await rulesLookup(env,{query:'vsc',series:'nascar'})).unknown_series,['nascar']);
+assert.deepEqual((await rulesLookup(env,{query:'vsc',series:'zzz-cup'})).unknown_series,['zzz-cup']);
 
 // applicability picks the latest valid issue per family
 const fam=applicableDocs([{series:'f1',family:'a',published:'2026-01-01',title:'1'},{series:'f1',family:'a',published:'2026-03-01',title:'2'},{series:'f1',family:'a',published:'2026-09-01',title:'3'}],'2026-04-01');
@@ -99,3 +99,43 @@ assert.equal(fam.length,1);assert.equal(fam[0].title,'2');assert.equal(fam[0].ne
 // storage objects stay below the Firestore limit
 for(const [k,v] of env.BUCKET.m)assert.ok(v.length<850_000,k);
 assert.equal(RULES_TOOLS[0].name,'rules_lookup');
+
+// ---- automatic rule context ----
+import {rulesContext,attachRulesContext,contextTopics,contextSeries} from '../worker/rules.js';
+assert.deepEqual(contextTopics('CAR 44 TIME 1:23.4 DELETED - TRACK LIMITS AT TURN 4; VSC DEPLOYED'),['track limits','virtual safety car']);
+assert.equal(contextSeries('openf1_race_control'),'f1');assert.equal(contextSeries('wec_list_documents'),'wec');assert.equal(contextSeries('motorsport_read_document',{series:'imsa'}),'imsa');assert.equal(contextSeries('research_lookup'),null);
+const rc={content:[{type:'text',text:JSON.stringify({messages:['LAP 12 TIME DELETED - TRACK LIMITS']})}],isError:false};
+const ctxR=await rulesContext(env,'openf1_race_control',{},rc);
+assert.equal(ctxR.series,'f1');assert.equal(ctxR.topics[0].topic,'track limits');assert.equal(ctxR.topics[0].hits[0].article,'B1.8.1');
+const att=JSON.parse(attachRulesContext(rc,ctxR).content[0].text);assert.ok(att.messages&&att.rules_context.topics.length);
+assert.equal(await rulesContext(env,'openf1_race_control',{},{content:[{type:'text',text:'{"laps":[]}'}]}),null,'no regulated situation, nothing attached');
+assert.equal(await rulesContext({},'openf1_race_control',{},rc),null);
+assert.equal((await rulesLookup(env,{query:'track limits',series:'NASCAR'})).index_status,'not_publicly_available');
+// ---- scheduling of unfinished and failed sources ----
+import {due,priority} from '../scripts/rules-monitor.mjs';
+{const now=Date.parse('2026-07-15T00:00:00Z'),src={kind:'regulations',series:'nonexistent'},ago=m=>new Date(now-m*60_000).toISOString();
+assert.equal(due(src,{checked_at:ago(5),status:'partial'},now,false),true,'unfinished source continues next run');
+assert.equal(due(src,{checked_at:ago(5),status:'ok'},now,false),false);
+assert.equal(due(src,{checked_at:ago(30),status:'failed'},now,false),false);assert.equal(due(src,{checked_at:ago(61),status:'failed'},now,false),true,'failed source retries after an hour');
+assert.ok(priority({kind:'event_documents',series:'f1',calendar:'nonexistent'},now)<priority({kind:'regulations',series:'scca'},now));}
+// ---- OpenAlex watch candidates are listed as pending only ----
+import {researchCall} from '../worker/research.js';
+assert.equal((await post({documents:[],research_candidates:[{doi:'10.1234/abc.5',title:'A new trail braking study',year:2026,license:'cc-by',url:'https://example.org/a'},{doi:'bad',title:'x'}]})).status,200);
+{const r=JSON.parse((await researchCall('research_lookup',{include_pending:true,query:'trail braking'},env)).content[0].text);
+ const auto=r.pending.find(p=>p.doi==='10.1234/abc.5');assert.ok(auto);assert.equal(auto.eligible_for_analysis,false);assert.equal(auto.review_status,'auto_found_not_reviewed');
+ assert.ok(!r.papers.some(p=>p.doi==='10.1234/abc.5'),'never used as approved evidence');}
+// ---- patents ----
+import {parseOpsBiblio,patentsIngest,patentsLookup,saveOpsKey,opsStatus,opsToken} from '../worker/patents.js';
+{const ops={'ops:world-patent-data':{'ops:biblio-search':{'@total-result-count':'1','ops:search-result':{'exchange-documents':{'exchange-document':{'@country':'EP','@doc-number':'4123456','@kind':'A1','bibliographic-data':{'publication-reference':{'document-id':[{'@document-id-type':'docdb',country:{$:'EP'},'doc-number':{$:'4123456'},kind:{$:'A1'},date:{$:'20261015'}}]},'invention-title':[{'@lang':'de',$:'Verbrennungsmotor'},{'@lang':'en',$:'Internal combustion engine with turbocharger cooling'}],parties:{applicants:{applicant:[{'@data-format':'epodoc','applicant-name':{name:{$:'FERRARI SPA [IT]'}}}]}},'patent-classifications':{'patent-classification':{section:{$:'F'},class:{$:'02'},subclass:{$:'B'},'main-group':{$:'37'},subgroup:{$:'00'}}},'priority-claims':{'priority-claim':{'document-id':{date:{$:'20250410'}}}}},abstract:{'@lang':'en',p:{$:'A turbocharged engine whose compressor outlet is cooled by a dedicated circuit.'}}}}}}}};
+ const r=parseOpsBiblio(ops,'Ferrari');assert.equal(r.total,1);const p=r.patents[0];
+ assert.equal(p.number,'EP4123456A1');assert.equal(p.published,'2026-10-15');assert.equal(p.priority,'2025-04-10');assert.match(p.title,/turbocharger/);assert.deepEqual(p.cpc,['F02B37/00']);assert.equal(p.applicants[0],'FERRARI SPA [IT]');
+ const penv={BUCKET:memoryBucket()};
+ assert.equal((await opsStatus(penv)).configured,false);await assert.rejects(saveOpsKey(penv,'x','y'));assert.equal((await saveOpsKey(penv,'abcdEFGH1234','secretVALUE5678')).configured,true);
+ assert.equal((await opsToken(new Request('https://x/api/patents/ops-token',{method:'POST'}),penv,{verify:async()=>{throw Error('no')}})).status,401);
+ const tok=await opsToken(new Request('https://x/api/patents/ops-token',{method:'POST'}),penv,{verify:async()=>{},fetcher:async(u,o)=>{assert.match(o.headers.authorization,/^Basic /);return new Response(JSON.stringify({access_token:'T',expires_in:'1199'}),{status:200});}});
+ assert.deepEqual(await tok.json(),{access_token:'T',expires_in:1199});
+ assert.equal((await patentsLookup(penv,{query:'페라리 엔진'})).index_status,'index_empty');
+ const ing=await patentsIngest(new Request('https://x/api/patents/ingest',{method:'POST',body:JSON.stringify({patents:r.patents,watch:{status:'ok',found:1}})}),penv,{verify:async()=>{}});assert.equal(ing.status,200);
+ assert.equal((await patentsIngest(new Request('https://x',{method:'POST',body:JSON.stringify({patents:[{...p,number:'bad'}]})}),penv,{verify:async()=>{}})).status,400);
+ const look=await patentsLookup(penv,{query:'페라리 터보 엔진'});assert.equal(look.hits[0].number,'EP4123456A1');assert.match(look.hits[0].url,/espacenet/);
+ assert.equal((await patentsLookup(penv,{query:'포르쉐 엔진'})).hits.length,0,'company filter applies');}

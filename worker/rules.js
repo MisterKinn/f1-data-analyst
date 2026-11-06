@@ -11,6 +11,7 @@
 //  rules/doc/<id>/<part>.json              article index parts of one document
 import {verifyCollectorToken,RULES_MONITOR_WORKFLOW} from './github-oidc.js';
 import {expandQuery,scoreArticle,seriesFrom,tokenize,slug,RULES_INDEX_VERSION} from './rules-lib.js';
+import registry from '../knowledge/rules-sources.json' with {type:'json'};
 
 const ro={readOnlyHint:true,destructiveHint:false,idempotentHint:true,openWorldHint:false};
 const KINDS=['regulations','event_documents','all'];
@@ -25,7 +26,7 @@ export const RULES_TOOLS=[{name:'rules_lookup',
   event:{type:'string',maxLength:80,description:'Event name for race documents, e.g. "São Paulo Grand Prix". Default: latest indexed event.'},
   limit:{type:'integer',minimum:1,maximum:10}
  },required:['query'],additionalProperties:false},annotations:ro}];
-export const RULES_INSTRUCTIONS=' RULES INDEX: for any regulation, procedure, penalty, flag, track-limit, BoP or race-director question in any series, call rules_lookup first; it answers from a pre-built index without downloading PDFs. Cite series, document title, issue/date, article number and page with the official link, and say when the index last checked that source. If rules_lookup reports index_status other than ok, a failed or stale check, or a newer issue than the one applied, say so plainly. The excerpt is a search aid, not the full rule: open the cited page with fia_read_document (FIA) or motorsport_read_document before quoting exact wording or deciding a penalty dispute. Apply the issue valid on the event date (as_of), not a later one, and never present an older issue as current.';
+export const RULES_INSTRUCTIONS=' RULES INDEX: for any regulation, procedure, penalty, flag, track-limit, BoP or race-director question in any series, call rules_lookup first; it answers from a pre-built index without downloading PDFs. Cite series, document title, issue/date, article number and page with the official link, and say when the index last checked that source. If rules_lookup reports index_status other than ok, a failed or stale check, or a newer issue than the one applied, say so plainly. The excerpt is a search aid, not the full rule: open the cited page with fia_read_document (FIA) or motorsport_read_document before quoting exact wording or deciding a penalty dispute. Apply the issue valid on the event date (as_of), not a later one, and never present an older issue as current. Analysis results may carry rules_context: articles the server matched to situations in that result (deleted laps, SC/VSC/FCY, penalties, flags); use them to cite the applicable rule, and check the page before quoting.';
 
 const json=(v,status=200)=>new Response(JSON.stringify(v),{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store'}});
 let caches=new WeakMap();const TTL=5*60_000;
@@ -89,6 +90,11 @@ export async function rulesIngest(request,env,{verify=t=>verifyCollectorToken(t,
   for(const [url,v] of Object.entries(entries))if(/^https?:\/\//.test(url)&&v&&typeof v==='object')cur[url]={id:v.id??cur[url]?.id??null,hash:v.hash??cur[url]?.hash??null,etag:v.etag??null,lm:v.lm??null,published:v.published??cur[url]?.published??null,seen_at:now};
   if(JSON.stringify(cur).length<800_000)await writeJson(env,key,cur);
  }
+ if(Array.isArray(body.research_candidates)&&body.research_candidates.length){
+  const key='research/auto-candidates.json',cur=await readJson(env,key,{fresh:true})||{items:[]},byDoi=new Map(cur.items.map(c=>[c.doi,c]));
+  for(const c of body.research_candidates.slice(0,200)){if(!c||typeof c.doi!=='string'||!/^10\.\d{4,9}\//.test(c.doi)||typeof c.title!=='string')continue;if(!byDoi.has(c.doi))byDoi.set(c.doi,{id:'A-'+c.doi.replace(/[^a-z0-9]+/gi,'-').slice(0,40),doi:c.doi,title:c.title.slice(0,300),year:Number.isInteger(c.year)?c.year:null,url:typeof c.url==='string'?c.url.slice(0,300):null,license:typeof c.license==='string'?c.license.slice(0,40):null,query:String(c.query||'').slice(0,80),found_at:now});}
+  const items=[...byDoi.values()].sort((a,b)=>String(b.found_at).localeCompare(String(a.found_at))).slice(0,300);await writeJson(env,key,{updated_at:now,items});
+ }
  if(Array.isArray(body.sources)&&body.sources.length){
   const status=await readJson(env,'rules/status.json',{fresh:true})||{sources:{}};
   for(const s of body.sources.slice(0,200)){if(!s||!SAFE.test(s.id))continue;const prev=status.sources[s.id]||{};
@@ -138,6 +144,8 @@ export async function rulesLookup(env,args={}){
  if(!env.BUCKET)return {index_status:'storage_unavailable',hits:[]};
  const asOf=args.as_of||today(),season=args.season||Number(asOf.slice(0,4)),kind=args.kind||'all',limit=args.limit||5;
  const [catalog,status]=await Promise.all([readJson(env,'rules/catalog.json'),readJson(env,'rules/status.json')]);
+ const reqSeries=args.series?seriesFrom(args.series):null,unavailable=reqSeries&&registry.tier3_unavailable?.[reqSeries];
+ if(unavailable)return {index_status:'not_publicly_available',series:reqSeries,message:unavailable+' Do not guess the rule text; cite official news or the governing body where available.',hits:[]};
  if(!catalog||!Object.keys(catalog.series||{}).length)return {index_status:'index_empty',message:'The rules index has no documents yet. Use fia_list_regulations / motorsport_list_documents for now.',hits:[]};
  let series=args.series?[seriesFrom(args.series)]:null;
  if(!series){const words=String(args.query).toLowerCase();const guess=Object.keys(catalog.series).filter(s=>{const id=seriesFrom(s);return id&&(words.includes(id)||tokenize(words).some(w=>seriesFrom(w)===id));});series=guess.length?guess:Object.keys(catalog.series);}
@@ -174,4 +182,38 @@ export async function rulesLookup(env,args={}){
 export async function rulesCall(name,args,env){
  if(name!=='rules_lookup')throw Error('Unknown rules tool');
  return {content:[{type:'text',text:JSON.stringify(await rulesLookup(env,args))}],isError:false};
+}
+
+// ---------- automatic rule context for analysis results ----------
+// When an analysis result mentions a regulated situation (deleted laps, SC/VSC, penalties...),
+// attach the matching indexed articles so the answer can cite the rule without another call.
+const CONTEXT_TOPICS=[
+ ['track limits',/track limits|lap (?:time )?deleted|deleted lap|leaving the track/i],
+ ['safety car',/\bsafety car\b|\bSC (?:DEPLOYED|ENDING|IN THIS LAP)/i],
+ ['virtual safety car',/virtual safety car|\bVSC\b/],
+ ['full course yellow',/full course yellow|\bFCY\b|code 60/i],
+ ['red flag',/red flag|session suspended|race suspended/i],
+ ['penalty',/penalt|drive.?through|stop.?(?:and.?)?go|reprimand|grid (?:drop|place)/i],
+ ['blue flags',/blue flag/i],
+ ['yellow flags',/double yellow|yellow flag/i],
+ ['pit lane',/unsafe release|pit lane speed|speeding in the pit/i],
+ ['start procedure',/false start|jump start|aborted start/i]
+];
+export function contextSeries(toolName,args={}){
+ if(/^(?:fastf1_|openf1_|fia_|kongboda_live)/.test(toolName))return 'f1';
+ if(/^wec_/.test(toolName))return 'wec';
+ if(toolName.startsWith('motorsport_')&&typeof args.series==='string')return seriesFrom(args.series);
+ return null;
+}
+export function contextTopics(text){const t=String(text||'').slice(0,200_000);return CONTEXT_TOPICS.filter(([,rx])=>rx.test(t)).map(([n])=>n).slice(0,3);}
+export async function rulesContext(env,toolName,args,result,{timeoutMs=1500}={}){
+ if(!env?.BUCKET)return null;const series=contextSeries(toolName,args);if(!series)return null;
+ const text=(result?.content||[]).map(c=>c.type==='text'?c.text:'').join('\n');const topics=contextTopics(text);if(!topics.length)return null;
+ const work=(async()=>{const out=[];for(const topic of topics){const r=await rulesLookup(env,{query:topic,series,kind:'regulations',limit:2});if(r.index_status!=='ok'||!r.hits.length)continue;out.push({topic,hits:r.hits.map(h=>({document:h.document,issue:h.issue,article:h.article,heading:h.heading,page:h.page,url:h.url,last_checked:h.freshness?.last_checked??null}))});}return out.length?{series,topics:out,note:'Matched from the rules index; open the cited page before quoting exact wording.'}:null;})();
+ return Promise.race([work.catch(()=>null),new Promise(r=>setTimeout(()=>r(null),timeoutMs))]);
+}
+export function attachRulesContext(result,context){
+ if(!context||!result||result.isError)return result;const first=result.content?.[0];
+ if(first?.type==='text'){try{const v=JSON.parse(first.text);if(v&&typeof v==='object'&&!Array.isArray(v))return {...result,content:[{...first,text:JSON.stringify({...v,rules_context:context})},...result.content.slice(1)]};}catch{}}
+ return {...result,content:[...(result.content||[]),{type:'text',text:JSON.stringify({rules_context:context})}]};
 }
