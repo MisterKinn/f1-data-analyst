@@ -61,18 +61,24 @@ export function lapError(track, car, env, obs, lapTime, {wTime = 2} = {}) {
   return {score: rms * rms + wTime * dt * dt, rms, dt, res};
 }
 
-// 1-D golden-section search for the per-track grip factor
-export function fitGrip(track, car, env, obs, lapTime, lo = 0.85, hi = 1.15, opts) {
+// 1-D golden-section search for the per-track grip factor. With opts.guess (the last result for
+// this lap) it searches a narrow bracket first and falls back to the full range at its edges.
+export function fitGrip(track, car, env, obs, lapTime, lo = 0.85, hi = 1.15, opts = {}) {
   const phi = (Math.sqrt(5) - 1) / 2;
-  let a = lo, b = hi, c = b - phi * (b - a), d = a + phi * (b - a);
-  const f = g => lapError(withGrip(track, g), car, env, obs, lapTime, opts).score;
-  let fc = f(c), fd = f(d);
-  for (let it = 0; it < 18; it++) {
-    if (fc < fd) { b = d; d = c; fd = fc; c = b - phi * (b - a); fc = f(c); }
-    else { a = c; c = d; fc = fd; d = a + phi * (b - a); fd = f(d); }
+  const f = g => ({grip: g, ...lapError(withGrip(track, g), car, env, obs, lapTime, opts)});
+  const search = (a, b, iters) => {
+    let c = f(b - phi * (b - a)), d = f(a + phi * (b - a));
+    for (let it = 0; it < iters; it++) {
+      if (c.score < d.score) { b = d.grip; d = c; c = f(b - phi * (b - a)); }
+      else { a = c.grip; c = d; d = f(a + phi * (b - a)); }
+    }
+    return c.score < d.score ? c : d;
+  };
+  if (opts.guess != null) {
+    const a = Math.max(lo, opts.guess - 0.04), b = Math.min(hi, opts.guess + 0.04), r = search(a, b, 11);
+    if ((r.grip - a > 0.003 || a === lo) && (b - r.grip > 0.003 || b === hi)) return r;
   }
-  const g = fc < fd ? c : d;
-  return {grip: g, ...lapError(withGrip(track, g), car, env, obs, lapTime, opts)};
+  return search(lo, hi, 18);
 }
 
 // Nelder–Mead on a parameter vector (minimisation)
@@ -104,7 +110,7 @@ export function nelderMead(f, x0, {step = 0.05, iters = 200, tol = 1e-6} = {}) {
 
 // Fit a season. laps: [{name, track, trace, weather}] ; base: car object ; params: [{key, path, scale}]
 // The car parameters are optimised in log space around the base values.
-export function fitSeason(laps, base, params, {iters = 120, wTime = 2, log = () => {}} = {}) {
+export function fitSeason(laps, base, params, {iters = 120, wTime = 2, wGrip = 50, log = () => {}} = {}) {
   const prepared = laps.map(l => {
     const env = conditionsFromWeather(l.weather, l.conditionOptions);
     const lapSeconds = l.lapSeconds ?? l.trace.lap_seconds;
@@ -129,9 +135,13 @@ export function fitSeason(laps, base, params, {iters = 120, wTime = 2, log = () 
   };
   const objective = x => {
     const car = build(x);
-    let total = 0;
-    for (const l of prepared) total += (l.weight ?? 1) * fitGrip(l.track, car, l.env, l.obs, l.lapSeconds, 0.85, 1.15, {wTime}).score;
-    return total / prepared.length;
+    let total = 0, logGrip = 0;
+    for (const l of prepared) {
+      const r = fitGrip(l.track, car, l.env, l.obs, l.lapSeconds, 0.85, 1.15, {wTime, guess: l.gripGuess});
+      l.gripGuess = r.grip; total += (l.weight ?? 1) * r.score; logGrip += Math.log(r.grip);
+    }
+    // car grip and track grip only appear as a product: keep the average track factor at 1
+    return total / prepared.length + wGrip * (logGrip / prepared.length) ** 2;
   };
   const x0 = params.map(() => 0);
   const result = nelderMead(objective, x0, {step: params.map(p => p.step ?? 0.08), iters});

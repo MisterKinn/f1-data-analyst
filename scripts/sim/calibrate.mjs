@@ -36,7 +36,7 @@ for (const year of [...new Set(traces.map(t => t.year))].sort()) {
     if (p.meta?.position !== 1 && perTrack[p.name]) continue;
     const trace = traces.find(t => t.year === year && t.track === p.name && t.session_key === p.meta?.sessionKey && t.position === p.meta?.position);
     perTrack[p.name] = {grip: +p.grip.toFixed(4), rmsKph: +p.rmsKph.toFixed(1), errorSec: +p.dt.toFixed(3), simLap: +p.simLap.toFixed(3), realLap: p.realLap,
-      sessionKey: p.meta?.sessionKey, driver: p.meta?.driver, weather: trace?.weather || null};
+      sessionKey: p.meta?.sessionKey, driver: p.meta?.driver, position: p.meta?.position ?? 1, weather: trace?.weather || null};
   }
   seasons[year] = {car, tracks: perTrack, score: +fit.score.toFixed(3), laps: laps.length};
   report.push(`## ${year}`, '', `${laps.length} laps, fit score ${fit.score.toFixed(3)}, ${((Date.now() - t0) / 1000).toFixed(0)} s.`, '',

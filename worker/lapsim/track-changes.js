@@ -1,3 +1,4 @@
+import {lapsimKernel} from './kernel.js';
 // Reads the "Changes to the circuit" list in an FIA Race Director's Event/Competition Notes
 // document and turns each line into a structured change the lap simulator can apply.
 // Effects on grip or corner speed are scenario estimates, never measurements: the FIA notes
@@ -6,14 +7,6 @@
 const HEADING = /^\s*(?:\d{1,2}(?:\.\d+)?\.?\s*\|?\s*)?((?:changes?|modifications?|alterations?)\s+(?:to\s+the\s+|since\s+(?:the\s+)?(?:last|previous)\s+\w+\s*|of\s+the\s+)?(?:circuit|track)[^\n|]*|(?:circuit|track)\s+(?:changes|modifications)[^\n|]*)$/i;
 const NEXT_HEADING = /^\s*\d{1,2}\.\s*\|?\s*[A-Z][^\n]{2,80}$/;
 const BULLET = /^\s*(?:[-–•▪◦*]|\d{1,2}\)|[a-z]\))\s*\|?\s*/;
-
-// Default scenario factors. Kept small and explicit; the page shows them next to each change.
-export const CHANGE_EFFECTS = {
-  resurfacing: {kind: 'grip', factor: 1.02, ko: '새 노면: 그립 +2% 가정', en: 'New surface: +2% grip assumed'},
-  bump_removal: {kind: 'grip', factor: 1.01, ko: '범프 제거: 그립 +1% 가정', en: 'Bump removed: +1% grip assumed'},
-  kerb_lowered: {kind: 'cornerSpeed', factor: 1.005, ko: '연석 낮춤: 코너 속도 +0.5% 가정', en: 'Lower kerb: +0.5% corner speed assumed'},
-  kerb_raised: {kind: 'cornerSpeed', factor: 0.995, ko: '연석 높임·추가: 코너 속도 −0.5% 가정', en: 'Higher or added kerb: −0.5% corner speed assumed'},
-};
 
 const RULES = [
   ['track_limits', /\b(?:paint|white line|blue line|track[- ]limit|detection loop)/i],
@@ -98,39 +91,5 @@ export function parseTrackChanges(text, source = {}) {
   return {sectionFound, changes};
 }
 
-// Distance window (m) along the lap for a corner reference, from corner apex distances.
-const PART_WINDOW = {approach: [-250, -30], entry: [-90, -10], apex: [-30, 30], exit: [10, 90], after: [30, 200], null: [-80, 80]};
-function windowFor(ref, corners) {
-  const c = corners.find(x => x.number === ref.turn && (x.letter || '') === (ref.letter || ''))
-    || corners.find(x => x.number === ref.turn);
-  if (!c) return null;
-  const w = PART_WINDOW[ref.part] || PART_WINDOW.null;
-  return [c.s + w[0], c.s + w[1]];
-}
-
-// Apply parsed changes to a track (mu / vScale arrays). corners: [{number, letter, s}] with s in metres.
-// strength scales every scenario effect (0 = ignore, 1 = default, 2 = double).
-export function applyTrackChanges(track, changes, corners, {strength = 1} = {}) {
-  const n = track.kappa.length, L = n * track.ds;
-  const mu = Float64Array.from(track.mu || new Float64Array(n).fill(1));
-  const vScale = Float64Array.from(track.vScale || new Float64Array(n).fill(1));
-  const applied = [];
-  for (const ch of changes) {
-    if (!ch.affectsLap || !ch.effect || !corners?.length) continue;
-    const a = windowFor(ch.range.from, corners), b = windowFor(ch.range.to, corners);
-    if (!a || !b) { applied.push({...ch, applied: false, reason: 'corner not found'}); continue; }
-    let s0 = ch.range.single ? a[0] : a[0], s1 = ch.range.single ? a[1] : b[1];
-    if (ch.range.from.part === 'entry' && ch.range.to.part === 'entry' && !ch.range.single) s1 = b[0];
-    s0 = ((s0 % L) + L) % L; s1 = ((s1 % L) + L) % L;
-    const factor = 1 + (ch.effect.factor - 1) * strength;
-    const target = ch.effect.kind === 'grip' ? mu : vScale;
-    let count = 0;
-    for (let i = 0; i < n; i++) {
-      const s = i * track.ds;
-      const inside = s0 <= s1 ? (s >= s0 && s <= s1) : (s >= s0 || s <= s1);
-      if (inside) { target[i] *= factor; count++; }
-    }
-    applied.push({...ch, applied: count > 0, sStart: s0, sEnd: s1, points: count, factor});
-  }
-  return {track: {...track, mu, vScale}, applied};
-}
+// Scenario factors and the code that applies changes live in the kernel (shared with the browser).
+export const {CHANGE_EFFECTS, PART_WINDOW, windowFor, applyTrackChanges} = lapsimKernel();

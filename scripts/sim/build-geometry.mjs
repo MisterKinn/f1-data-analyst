@@ -127,6 +127,19 @@ for (const entry of index.filter(x => x.year === geometryYear)) {
   report.push(`${id}: ${Math.round(grid.length)} m, ${c.lapsUsed} laps, ${corners.length} corners, align ${align ? Math.round(align.rms) + ' m' : 'none'}`);
 }
 
+// OpenF1 car data sometimes freezes: speed, gear and rpm repeat and throttle reads 104 (outside 0-100).
+// Those samples are dropped; distance comes from positions, so the rest of the lap stays usable.
+function frozenRows(rows) {
+  const bad = rows.map(r => r.thr > 100);
+  for (let i = 0; i < rows.length;) {
+    let j = i + 1;
+    while (j < rows.length && rows[j].v === rows[i].v && rows[j].gear === rows[i].gear && rows[j].rpm === rows[i].rpm) j++;
+    if (j - i >= 4) for (let k = i + 1; k < j; k++) bad[k] = true;
+    i = j;
+  }
+  return bad;
+}
+
 // Real speed traces for calibration (every year), on the matching track's distance scale
 for (const entry of index) {
   const session = JSON.parse(await readFile(join(CACHE, 'sessions', entry.file), 'utf8'));
@@ -155,7 +168,9 @@ for (const entry of index) {
     }
     if (meanLat > 8) { report.push(`${session.year} ${track.id} ${lap.driver_number}: path does not match geometry (${meanLat.toFixed(0)} m)`); continue; }
     const sUn = unwrapS(pr.s, ref.length), ts = pp.pts.map(p => p.t), sStart = interpAt(ts, sUn, t0);
-    const rows = lap.carData.map(r => ({t: ms(r[0]), v: r[1], thr: r[2], brk: r[3]})).filter(r => r.t >= t0 && r.t <= t1);
+    const all = lap.carData.map(r => ({t: ms(r[0]), v: r[1], thr: r[2], brk: r[3], gear: r[4], rpm: r[5]})).filter(r => r.t >= t0 && r.t <= t1);
+    const bad = frozenRows(all), rows = all.filter((_, k) => !bad[k]);
+    if (rows.length < 0.85 * all.length) { report.push(`${session.year} ${track.id} ${lap.driver_number}: car data frozen for ${Math.round(100 - 100 * rows.length / all.length)}% of the lap; skipped`); continue; }
     const w = session.weather.filter(r => ms(r[0]) >= t0 - 15 * 60e3 && ms(r[0]) <= t0 + 2 * 60e3);
     const mean = k => w.length ? w.reduce((a, r) => a + (r[k] ?? 0), 0) / w.length : null;
     const we = w.reduce((a, r) => a + (r[6] || 0) * Math.sin((r[7] || 0) * Math.PI / 180), 0), wn = w.reduce((a, r) => a + (r[6] || 0) * Math.cos((r[7] || 0) * Math.PI / 180), 0);

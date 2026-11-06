@@ -144,3 +144,34 @@ test('stored tracks decode to typed arrays', () => {
   const t = trackFromData({id: 'x', ds: 5, kappa: [0, 100, -200, 0], grade: [10, 0, 0, 0], heading: [1571, 0, 0, 0]});
   assert.equal(t.kappa[1], 0.001); assert.equal(t.grade[0], 0.001); assert.ok(Math.abs(t.heading[0] - 1.571) < 1e-12);
 });
+
+test('lapsim_simulate tool answers from the stored tracks', async () => {
+  const {simulate, lapsimCall} = await import('../worker/lapsim/tool.js');
+  const {lapsimTracks} = await import('../worker/lapsim/tracks-data.js');
+  const ids = Object.keys(lapsimTracks);
+  if (!ids.length) { assert.equal(simulate({track: 'monza'}).status, 'unavailable'); return; }
+  assert.equal(simulate({}).status, 'tracks');
+  assert.equal(simulate({track: 'no such place'}).status, 'track_not_found');
+  const r = simulate({track: ids[0], car: '2026', compare_car: '2027', altitude_m: 2240, air_temp_c: 20});
+  assert.equal(r.status, 'ok');
+  assert.ok(r.result.lap_seconds > 40 && r.result.lap_seconds < 150, String(r.result.lap_seconds));
+  assert.ok(r.conditions.air_density_kg_m3 < 1.0);
+  assert.match(r.conditions.sources.pressure, /altitude/);
+  assert.equal(r.conditions.sources.air_temp, 'given');
+  assert.ok(Number.isFinite(r.compare.delta_s));
+  const shares = Object.values(r.result.limited_by_pct_of_lap).reduce((a, b) => a + b, 0);
+  assert.ok(Math.abs(shares - 100) < 0.5, String(shares));
+  const c = await lapsimCall('lapsim_simulate', {track: ids[0]});
+  assert.equal(c.isError, false);
+});
+
+test('track names resolve from ids, names, Grand Prix names and aliases', async () => {
+  const {resolveTrack, TRACK_NAMES} = await import('../worker/lapsim/names.js');
+  const ids = Object.keys(TRACK_NAMES);
+  assert.equal(resolveTrack('COTA', ids), 'austin');
+  assert.equal(resolveTrack('Mexico City GP', ids), 'mexico-city');
+  assert.equal(resolveTrack('멕시코시티', ids), 'mexico-city');
+  assert.equal(resolveTrack('São Paulo Grand Prix', ids), 'interlagos');
+  assert.equal(resolveTrack('Spanish Grand Prix', ids), 'madring');
+  assert.equal(resolveTrack('nowhere', ids), null);
+});

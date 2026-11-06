@@ -1,95 +1,282 @@
-// Lap simulator page. Data comes from worker/sim-data.js, generated offline by
-// scripts/sim/generate_laptime_sim.py with TUMFTM laptime-simulation (LGPL-3.0).
-import {simMeta,simTracks} from './sim-data.js';
+// /simulation — lap simulator page. The physics runs in worker/lapsim/kernel.js on the server
+// (first render) and in the browser (every change), so sliders answer instantly.
+import {lapsimKernel} from './lapsim/kernel.js';
+import {lapsimTracks} from './lapsim/tracks-data.js';
+import {lapsimCalibration} from './lapsim/calibration-data.js';
+import {RULE_CHANGES} from './lapsim/cars.js';
+import {carsFor as scenarioCars, realConditions, latestChanges, fittedYear, CAR_ORDER} from './lapsim/scenario.js';
+import {TRACK_NAMES as NAMES} from './lapsim/names.js';
 
-const NAMES={Austin:['COTA (오스틴)','COTA (Austin)'],Budapest:['헝가로링','Hungaroring'],Catalunya:['바르셀로나-카탈루냐','Barcelona-Catalunya'],Hockenheim:['호켄하임','Hockenheim'],Melbourne:['앨버트 파크','Albert Park'],MexicoCity:['멕시코시티','Mexico City'],Montreal:['몬트리올','Montreal'],Monza:['몬자','Monza'],Sakhir:['바레인 (사키르)','Bahrain (Sakhir)'],SaoPaulo:['인터라고스','Interlagos'],Sepang:['세팡','Sepang'],Shanghai:['상하이','Shanghai'],Silverstone:['실버스톤','Silverstone'],Sochi:['소치','Sochi'],Spa:['스파-프랑코르샹','Spa-Francorchamps'],Spielberg:['레드불링','Red Bull Ring'],Suzuka:['스즈카','Suzuka'],YasMarina:['야스 마리나','Yas Marina'],Zandvoort:['잔드보르트','Zandvoort']};
+const K = lapsimKernel();
+const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
 
-const T={
- ko:{title:'랩 시뮬레이터',h1:'한 바퀴를 계산해서, 랩타임이 어디서 갈리는지 봅니다',lead:'물리 모델이 F1 머신으로 트랙을 한 바퀴 돕니다. 어디서 빠르고 느린지, 무게·출력·노면 그립이 랩타임을 얼마나 바꾸는지 직접 바꿔 보세요.',track:'트랙',show:'보기',lap:'계산된 랩타임',s:'구간',vmax:'최고 속도',vmin:'최저 속도',full:'최고 속도 근처 구간',map:'속도로 칠한 주행 라인. 진할수록 빠릅니다.',slow:'느림',fast:'빠름',trace:'거리별 속도',km:'거리 (km)',whatif:'바꿔 보기',whatifLead:'값을 움직이면 모델이 계산한 민감도로 랩타임 변화를 바로 추정합니다.',mass:'무게',power:'엔진 출력',grip:'노면 그립',reset:'처음 값으로',delta:'랩타임 변화',newLap:'예상 랩타임',faster:'빨라짐',slower:'느려짐',same:'변화 없음',read:'이 트랙 읽는 법',model:'이 계산의 범위',m1:'TUM(뮌헨공대) 자동차공학연구소가 공개한 준정상상태 랩 시뮬레이션을 수정 없이 사용했습니다.',m2:'차량은 TUM의 범용 하이브리드 F1 모델(2019년 규정 무렵)입니다. 2026년 차나 실제 팀 데이터가 아닙니다.',m3:'주행 라인은 TUM의 최소 곡률 라인 최적화로 만든 것이고, 트랙 형상은 2017년 무렵 기준입니다. 이후 바뀐 레이아웃은 반영되지 않았습니다.',m4:'그립은 측정값이 아니라 모델의 마찰 계수를 늘리고 줄인 시나리오입니다. 바꿔 보기 결과는 선형 근사라서 큰 값일수록 오차가 커집니다.',m5:'구간 1~3은 계산용으로 나눈 거리 구간이라 공식 섹터와 다를 수 있습니다. 절대 랩타임보다 차이와 경향을 보는 데 쓰세요.',src:'원본 도구',gen:'계산일'},
- en:{title:'Lap simulator',h1:'Simulate one lap and see where the lap time is won',lead:'A physics model drives an F1 car around the track. See where it is fast or slow, and change weight, power and track grip to see how the lap time moves.',track:'Track',show:'Show',lap:'Simulated lap time',s:'Part',vmax:'Top speed',vmin:'Lowest speed',full:'Share near top speed',map:'Racing line coloured by speed. Stronger colour means faster.',slow:'Slow',fast:'Fast',trace:'Speed over distance',km:'Distance (km)',whatif:'Try a change',whatifLead:'Move a value and the model’s sensitivities estimate the lap-time change straight away.',mass:'Weight',power:'Engine power',grip:'Track grip',reset:'Reset values',delta:'Lap-time change',newLap:'Estimated lap time',faster:'faster',slower:'slower',same:'no change',read:'How to read this track',model:'What this calculation covers',m1:'It uses the quasi-steady-state lap simulation published by TUM (Technical University of Munich), unmodified.',m2:'The car is TUM’s generic hybrid F1 model (about 2019 rules). It is not a 2026 car and not team data.',m3:'The racing line comes from TUM’s minimum-curvature optimisation, and track shapes date from about 2017. Later layout changes are not included.',m4:'Grip is a scenario that scales the model’s friction, not a measured value. Try-a-change results are a linear estimate, so large changes are less accurate.',m5:'Parts 1–3 are distance splits for the calculation and may differ from official sectors. Use it for differences and trends rather than absolute lap times.',src:'Source tools',gen:'Calculated'},
+const trackName = (id, lang) => (NAMES[id] || [lapsimTracks[id]?.name || id, lapsimTracks[id]?.name || id])[lang === 'en' ? 1 : 0];
+
+const T = {
+  ko: {
+    title: '랩 시뮬레이터', h1: '2026–2028 F1 머신으로 한 바퀴를 계산합니다',
+    lead: '실제 예선 랩으로 보정한 물리 모델이 지금의 트랙 형상, 예선 날씨, FIA가 공지한 서킷 변경 사항을 반영해 랩타임과 속도를 계산합니다.',
+    track: '트랙', car: '머신', compare: '비교', none: '없음', conditions: '조건', real: '실제 예선 조건', manual: '직접 설정',
+    lap: '계산된 랩타임', vsPole: '실제 폴', realLap: '실제 랩', sector: '섹터', vmax: '최고 속도', vmin: '최저 속도', energy: '배치 에너지', clip: '배치 상한 속도',
+    map: '속도로 칠한 주행 라인', slow: '느림', fast: '빠름', trace: '거리별 속도', km: '거리 (km)',
+    air: '공기', airTemp: '기온', trackTemp: '노면 온도', humidity: '습도', pressure: '기압', wind: '풍속', windFrom: '바람 방향',
+    density: '공기 밀도', seaLevel: '해수면 표준 대비', ice: '엔진 출력', grip: '타이어 그립', mainStraight: '메인 스트레이트',
+    headwind: '맞바람', tailwind: '뒷바람', calm: '무풍', fia: 'FIA 서킷 변경 사항', fiaLead: '레이스 디렉터 노트의 “Changes to the circuit” 목록입니다. 랩에 영향을 주는 항목은 켜고 끌 수 있으며, 효과 크기는 가정값입니다.',
+    inFit: y => `${y}년 실제 랩으로 머신을 보정할 때 이미 반영된 변경 사항입니다. 켜면 효과가 한 번 더 더해집니다.`, notInFit: '아직 보정에 쓴 실제 랩에는 없는 변경 사항입니다. 켜서 효과를 미리 계산해 보세요.',
+    strength: '효과 크기', apply: '적용', noLap: '랩타임 영향 없음', noChanges: '이 트랙의 공지된 변경 사항이 아직 없습니다.',
+    calib: '보정과 예측', calibLead: '실제 폴 랩의 속도 기록과 랩타임에 맞춰 머신 값을 찾았습니다.', fitErr: '랩타임 오차', speedRms: '속도 오차(RMS)',
+    proj: '2027–2028 예측', projRules: '확정된 파워유닛 규정 변경', projDev: '규정 주기 2·3년 차의 역대 개발 속도',
+    model: '이 계산의 범위', pending: '데이터 준비 중', pendingLead: '트랙과 보정 데이터를 만드는 중입니다. 잠시 후 다시 확인해 주세요.',
+    calibrated: '실측 보정', prior: '규정값 기반', projected: '예측',
+    m1: '트랙 형상은 OpenF1의 예선 차량 위치(여러 드라이버의 베스트 랩)로 만든 실제 주행 라인입니다. 코너 번호는 공식 위치, 방위는 실제 지도와 맞췄습니다.',
+    m2: '2019 기준 머신은 TUM(뮌헨공대)이 공개한 범용 F1 모델이고, 2025·2026 머신은 실제 폴 랩에 맞춰 보정했습니다.',
+    m3: '2026년 규정: MGU-K 350kW(290km/h 이상에서 감소, 345km/h에서 0), 배터리 사용 폭 4MJ, 랩당 회생 8.5MJ (Section C 5.2, Issue 21).',
+    m4: '노면 온도에 따른 그립, 고도에 따른 엔진 출력 감소, FIA 변경 사항의 효과는 가정값입니다. 측정값처럼 읽지 마세요.',
+    m5: '준정상상태 모델이라 변속, 타이어 온도 변화, 차 사이 간섭은 계산하지 않습니다. 절대값보다 차이와 경향을 보는 데 쓰세요.',
+    src: '자료', updated: '보정일',
+  },
+  en: {
+    title: 'Lap simulator', h1: 'Simulate a lap in a 2026–2028 F1 car',
+    lead: 'A physics model calibrated on real qualifying laps works out lap time and speed on today’s track layout, with qualifying weather and the circuit changes the FIA has announced.',
+    track: 'Track', car: 'Car', compare: 'Compare', none: 'None', conditions: 'Conditions', real: 'Real qualifying conditions', manual: 'Set my own',
+    lap: 'Simulated lap time', vsPole: 'Real pole', realLap: 'Real lap', sector: 'Sector', vmax: 'Top speed', vmin: 'Lowest speed', energy: 'Energy deployed', clip: 'Deploy cut-off',
+    map: 'Racing line coloured by speed', slow: 'Slow', fast: 'Fast', trace: 'Speed over distance', km: 'Distance (km)',
+    air: 'Air', airTemp: 'Air temperature', trackTemp: 'Track temperature', humidity: 'Humidity', pressure: 'Pressure', wind: 'Wind speed', windFrom: 'Wind from',
+    density: 'Air density', seaLevel: 'vs standard sea level', ice: 'Engine power', grip: 'Tyre grip', mainStraight: 'Main straight',
+    headwind: 'headwind', tailwind: 'tailwind', calm: 'calm', fia: 'FIA circuit changes', fiaLead: 'The “Changes to the circuit” list from the race director’s notes. Items that affect the lap can be switched on or off; their size is an assumption.',
+    inFit: y => `These changes were already in the real ${y} lap the cars were fitted to; switching them on adds them a second time.`, notInFit: 'These changes are not in the real laps used for fitting yet: switch them on to estimate their effect.',
+    strength: 'Effect size', apply: 'Apply', noLap: 'No lap-time effect', noChanges: 'No announced changes for this track yet.',
+    calib: 'Calibration and projection', calibLead: 'Car values were fitted to the speed trace and lap time of real pole laps.', fitErr: 'Lap-time error', speedRms: 'Speed error (RMS)',
+    proj: '2027–2028 projection', projRules: 'Ratified power-unit rule changes', projDev: 'Historical development in years 2 and 3 of a rules cycle',
+    model: 'What this calculation covers', pending: 'Data in preparation', pendingLead: 'Track and calibration data are being built. Please check back shortly.',
+    calibrated: 'Fitted to real laps', prior: 'From the regulations', projected: 'Projection',
+    m1: 'Track shapes are the real driving line built from OpenF1 car positions in qualifying (several drivers’ best laps). Corners use official positions; headings are aligned to real maps.',
+    m2: 'The 2019 base car is TUM’s published generic F1 model; the 2025 and 2026 cars are fitted to real pole laps.',
+    m3: '2026 rules: MGU-K 350 kW (reduced above 290 km/h, zero at 345 km/h), 4 MJ battery window, 8.5 MJ recharge per lap (Section C 5.2, Issue 21).',
+    m4: 'Grip versus track temperature, engine power loss with altitude and the effect of FIA changes are assumptions, not measurements.',
+    m5: 'A quasi-steady-state model ignores gear shifts, tyre temperature and car-to-car effects. Use it for differences and trends rather than absolute times.',
+    src: 'Sources', updated: 'Calibrated',
+  },
 };
 
-const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const fmtLap=s=>{const m=Math.floor(s/60);return (m?m+':':'')+(s-m*60).toFixed(3).padStart(m?6:5,'0');};
-const name=(k,lang)=>(NAMES[k]||[k,k])[lang==='en'?1:0];
-export const simTrackKeys=Object.keys(simTracks).filter(k=>NAMES[k]);
+function fmtLap(s) { if (!Number.isFinite(s)) return '–'; const m = Math.floor(s / 60); return (m ? m + ':' : '') + (s - m * 60).toFixed(3).padStart(m ? 6 : 5, '0'); }
 
-function mapSvg(d,lang){
- const xs=d.x,ys=d.y,n=xs.length,minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);
- const w=maxX-minX,h=maxY-minY,pad=Math.max(w,h)*0.09,vw=w+pad*2,vh=h+pad*2;
- const px=i=>(xs[i]-minX+pad).toFixed(1),py=i=>(maxY-ys[i]+pad).toFixed(1);
- const lo=d.vmin,hi=d.vmax,bucket=i=>Math.min(5,Math.floor((d.speed[i]-lo)/(hi-lo+1e-9)*6));
- let paths='',run=[0],b=bucket(0);
- const flush=()=>{if(run.length>1)paths+=`<path d="M${run.map(i=>px(i)+' '+py(i)).join('L')}" stroke="color-mix(in oklab,var(--mint) ${b*20}%,var(--sim-slow))"/>`;};
- for(let i=1;i<n;i++){run.push(i);const nb=bucket(i);if(nb!==b){flush();run=[i];b=nb;}}
- run.push(0);flush();
- const at=dist=>{let i=0;while(i<n-1&&d.distance[i]<dist)i++;return i;};
- const sw=(Math.max(vw,vh)/120).toFixed(1);
- const marks=d.sectorBounds.map((s,k)=>{const i=at(s);return `<circle cx="${px(i)}" cy="${py(i)}" r="${sw*1.6}" class="sim-sector-dot"/><text x="${px(i)}" y="${py(i)}" dy="${-sw*3}" class="sim-map-label">${k+2}</text>`;}).join('');
- return `<svg class="sim-map" viewBox="0 0 ${vw.toFixed(0)} ${vh.toFixed(0)}" role="img" aria-label="${esc(T[lang].map)}"><g fill="none" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round">${paths}</g><rect x="${(+px(0)-sw*2.2).toFixed(1)}" y="${(+py(0)-sw*2.2).toFixed(1)}" width="${(sw*4.4).toFixed(1)}" height="${(sw*4.4).toFixed(1)}" class="sim-start"/>${marks}<style>.sim-map-label{font-size:${(sw*3.6).toFixed(1)}px}</style></svg>`;
+// Cars offered on the page, with the per-track grip factor from calibration
+function carsFor(id, lang) {
+  const t = T[lang], label = {base2019: lang === 'en' ? '2019 base (TUM)' : '2019 기준 (TUM)', 2027: `2027 (${t.projected})`, 2028: `2028 (${t.projected})`};
+  return Object.fromEntries(Object.entries(scenarioCars(id)).map(([k, c]) => [k, {...c, label: label[k] || k}]));
 }
 
-function traceSvg(d,lang){
- const W=1000,H=260,L=46,B=28,top=10,len=d.length,lo=Math.floor(d.vmin/50)*50,hi=Math.ceil(d.vmax/50)*50;
- const x=s=>(L+(s/len)*(W-L-8)).toFixed(1),y=v=>(top+(1-(v-lo)/(hi-lo))*(H-top-B)).toFixed(1);
- const line=d.distance.map((s,i)=>(i?'L':'M')+x(s)+' '+y(d.speed[i])).join('');
- const bounds=[0,...d.sectorBounds,len];
- const bands=bounds.slice(0,3).map((s,k)=>`<rect x="${x(s)}" y="${top}" width="${(x(bounds[k+1])-x(s)).toFixed(1)}" height="${H-top-B}" class="${k%2?'sim-band-b':'sim-band-a'}"/><text x="${((+x(s)+ +x(bounds[k+1]))/2).toFixed(1)}" y="${top+16}" class="sim-axis" text-anchor="middle">${k+1}</text>`).join('');
- const grid=[];for(let v=lo;v<=hi;v+=50)grid.push(`<line x1="${L}" x2="${W-8}" y1="${y(v)}" y2="${y(v)}" class="sim-grid"/><text x="${L-6}" y="${y(v)}" dy="4" class="sim-axis" text-anchor="end">${v}</text>`);
- const ticks=[];for(let k=0;k<=len/1000;k++)ticks.push(`<text x="${x(k*1000)}" y="${H-8}" class="sim-axis" text-anchor="middle">${k}</text>`);
- return `<svg class="sim-trace" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(T[lang].trace)}">${bands}${grid.join('')}${ticks.join('')}<path d="${line}" class="sim-line"/><text x="${W-8}" y="${H-8}" class="sim-axis" text-anchor="end">${esc(T[lang].km)}</text><text x="${L+6}" y="${top+16}" class="sim-axis">km/h</text></svg>`;
+// --- Rendering (shared with the browser; must only use its arguments) ---
+function renderMap(map, v, opts) {
+  const xs = map.x, ys = map.y, n = xs.length;
+  if (!n) return '';
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  for (let i = 0; i < n; i++) { minX = Math.min(minX, xs[i]); maxX = Math.max(maxX, xs[i]); minY = Math.min(minY, ys[i]); maxY = Math.max(maxY, ys[i]); }
+  const w = maxX - minX, h = maxY - minY, pad = Math.max(w, h) * 0.08, vw = w + 2 * pad, vh = h + 2 * pad;
+  const px = i => (xs[i] - minX + pad).toFixed(1), py = i => (maxY - ys[i] + pad).toFixed(1);
+  const vAt = i => v[Math.min(v.length - 1, Math.round(i * v.length / n))];
+  let lo = Infinity, hi = -Infinity; for (const x of v) { lo = Math.min(lo, x); hi = Math.max(hi, x); }
+  const bucket = i => Math.min(5, Math.floor((vAt(i) - lo) / (hi - lo + 1e-9) * 6));
+  let paths = '', run = [0], b = bucket(0);
+  const flush = () => { if (run.length > 1) paths += '<path d="M' + run.map(i => px(i) + ' ' + py(i)).join('L') + '" stroke="color-mix(in oklab,var(--mint) ' + (b * 20) + '%,var(--sim-slow))"/>'; };
+  for (let i = 1; i < n; i++) { run.push(i); const nb = bucket(i); if (nb !== b) { flush(); run = [i]; b = nb; } }
+  run.push(0); flush();
+  const sw = (Math.max(vw, vh) / 110).toFixed(1);
+  let corners = '';
+  for (const c of opts.corners || []) {
+    const i = Math.min(n - 1, Math.round(c.s / opts.length * n));
+    corners += '<text x="' + px(i) + '" y="' + py(i) + '" dy="' + (-sw * 2.2).toFixed(1) + '" class="ls-corner">' + c.number + (c.letter || '') + '</text>';
+  }
+  return '<svg class="ls-map" viewBox="0 0 ' + vw.toFixed(0) + ' ' + vh.toFixed(0) + '" role="img" aria-label="' + opts.label + '"><g fill="none" stroke-width="' + sw + '" stroke-linecap="round" stroke-linejoin="round">' + paths + '</g><rect x="' + (px(0) - sw * 2) + '" y="' + (py(0) - sw * 2) + '" width="' + (sw * 4) + '" height="' + (sw * 4) + '" class="ls-start"/>' + corners + '<style>.ls-corner{font-size:' + (sw * 3.4).toFixed(1) + 'px}</style></svg>';
 }
 
-function reading(d,lang){
- const s=d.sensitivity,g=s.grip3pctBySector.map(r=>r.reduce((a,b)=>a+b,0)),best=g.indexOf(Math.min(...g));
- const massVsPower=Math.abs(s.mass10kg)/Math.max(1e-6,Math.abs(s.power10kW));
- const f=v=>Math.abs(v).toFixed(2);
- if(lang==='en')return [
-  `Carrying 10 kg more costs about ${f(s.mass10kg)} s per lap, and 10 kW more power gains about ${f(s.power10kW)} s.`,
-  massVsPower>1.2?'Here weight matters more than power, so the lap is decided in braking and corner exits.':massVsPower<0.8?'Here power matters more than weight, so the long full-throttle sections decide the lap.':'Weight and power matter about equally here.',
-  `Extra grip helps most in part ${best+1}: 3% more grip there saves about ${f(g[best])} s. A resurfaced section in that part would show up first.`];
- return [
-  `무게가 10kg 늘면 한 바퀴에 약 ${f(s.mass10kg)}초 느려지고, 출력이 10kW 늘면 약 ${f(s.power10kW)}초 빨라집니다.`,
-  massVsPower>1.2?'이 트랙은 출력보다 무게에 더 민감합니다. 제동과 코너 탈출에서 랩이 갈립니다.':massVsPower<0.8?'이 트랙은 무게보다 출력에 더 민감합니다. 긴 풀스로틀 구간에서 랩이 갈립니다.':'이 트랙은 무게와 출력의 영향이 비슷합니다.',
-  `그립이 가장 크게 효과를 보는 곳은 구간 ${best+1}입니다. 여기 그립이 3% 오르면 약 ${f(g[best])}초가 줄어듭니다. 이 구간에 재포장된 곳이 있다면 가장 먼저 차이가 드러납니다.`];
+function renderTrace(ds, series, opts) {
+  const W = 1000, H = 280, L = 48, B = 30, top = 12, n = series[0].v.length, len = n * ds;
+  let lo = Infinity, hi = -Infinity;
+  for (const s of series) for (const x of s.v) { lo = Math.min(lo, x); hi = Math.max(hi, x); }
+  lo = Math.floor(lo / 50) * 50; hi = Math.ceil(hi / 50) * 50;
+  const x = d => (L + d / len * (W - L - 8)).toFixed(1), y = v => (top + (1 - (v - lo) / (hi - lo)) * (H - top - B)).toFixed(1);
+  let grid = '';
+  for (let v = lo; v <= hi; v += 50) grid += '<line x1="' + L + '" x2="' + (W - 8) + '" y1="' + y(v) + '" y2="' + y(v) + '" class="ls-grid"/><text x="' + (L - 6) + '" y="' + y(v) + '" dy="4" text-anchor="end" class="ls-axis">' + v + '</text>';
+  for (let k = 0; k <= len / 1000; k++) grid += '<text x="' + x(k * 1000) + '" y="' + (H - 8) + '" text-anchor="middle" class="ls-axis">' + k + '</text>';
+  for (const sb of opts.sectors || []) grid += '<line x1="' + x(sb) + '" x2="' + x(sb) + '" y1="' + top + '" y2="' + (H - B) + '" class="ls-sector"/>';
+  let lines = '';
+  series.forEach((s, j) => {
+    let d = '';
+    for (let i = 0; i < n; i++) d += (i ? 'L' : 'M') + x(i * ds) + ' ' + y(s.v[i]);
+    lines += '<path d="' + d + '" class="ls-line ls-line-' + j + '"/>';
+  });
+  return '<svg class="ls-trace" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + opts.label + '">' + grid + lines + '<text x="' + (W - 8) + '" y="' + (H - 8) + '" text-anchor="end" class="ls-axis">' + opts.km + '</text><text x="' + (L + 6) + '" y="' + (top + 14) + '" class="ls-axis">km/h</text></svg>';
 }
 
-export function simulationPage(trackKey,lang='ko'){
- const t=T[lang==='en'?'en':'ko'];lang=lang==='en'?'en':'ko';
- const key=simTrackKeys.includes(trackKey)?trackKey:(simTrackKeys.includes('Monza')?'Monza':simTrackKeys[0]);
- if(!key)return `<section class="hero"><h1>${esc(t.title)}</h1></section>`;
- const d=simTracks[key],s=d.sensitivity;
- const gripRows=s.grip3pctBySector.map(r=>r.reduce((a,b)=>a+b,0).toFixed(4)).join(',');
- const slider=(id,label,min,max,step,unit)=>`<label class="sim-slider"><span>${esc(label)}</span><input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="0" aria-describedby="${id}-out"><output id="${id}-out" for="${id}">0 ${unit}</output></label>`;
- const options=simTrackKeys.slice().sort((a,b)=>name(a,lang).localeCompare(name(b,lang),lang)).map(k=>`<option value="${k}" ${k===key?'selected':''}>${esc(name(k,lang))}</option>`).join('');
- return `<style>${simCss}</style><section class="hero sim-hero"><h1>${esc(t.h1)}</h1><p class="lead">${esc(t.lead)}</p></section>
-<form class="sim-pick" method="get" action="/simulation"><label>${esc(t.track)}<select name="track" data-no-translate onchange="this.form.submit()">${options}</select></label><noscript><button>${esc(t.show)}</button></noscript></form>
-<section class="sim-stage" aria-label="${esc(name(key,lang))}"><figure class="sim-map-wrap">${mapSvg(d,lang)}<figcaption><span class="sim-legend" aria-hidden="true"></span><span>${esc(t.slow)}</span><span>${esc(t.fast)}</span></figcaption></figure>
-<div class="sim-readout"><p class="sim-track" data-no-translate>${esc(name(key,lang))}</p><p class="sim-label">${esc(t.lap)}</p><p class="sim-lap" data-no-translate>${fmtLap(d.lapTime)}</p><dl class="sim-facts">${d.sectors.map((v,k)=>`<div><dt>${esc(t.s)} ${k+1} <span data-no-translate>(${([0,...d.sectorBounds][k]/1000).toFixed(1)}–${([...d.sectorBounds,d.length][k]/1000).toFixed(1)} km)</span></dt><dd data-no-translate>${v.toFixed(3)}</dd></div>`).join('')}<div><dt>${esc(t.vmax)}</dt><dd data-no-translate>${Math.round(d.vmax)} km/h</dd></div><div><dt>${esc(t.vmin)}</dt><dd data-no-translate>${Math.round(d.vmin)} km/h</dd></div><div><dt>${esc(t.full)}</dt><dd data-no-translate>${Math.round(d.fullThrottleShare*100)}%</dd></div></dl></div></section>
-<section class="panel sim-trace-panel"><h2>${esc(t.trace)}</h2><div class="sim-trace-scroll">${traceSvg(d,lang)}</div></section>
-<section class="panel sim-whatif" id="sim-whatif" data-base="${d.lapTime}" data-mass="${s.mass10kg}" data-power="${s.power10kW}" data-grip="${gripRows}"><div><h2>${esc(t.whatif)}</h2><p>${esc(t.whatifLead)}</p></div><div class="sim-whatif-grid"><div class="sim-sliders">${slider('sim-mass',t.mass,-30,30,5,'kg')}${slider('sim-power',t.power,-30,30,5,'kW')}${[1,2,3].map(k=>slider('sim-grip'+k,`${t.grip} · ${t.s} ${k}`,-5,5,1,'%')).join('')}<button type="button" id="sim-reset" class="small-button">${esc(t.reset)}</button></div><div class="sim-result" aria-live="polite"><p class="sim-label">${esc(t.delta)}</p><p class="sim-delta" id="sim-delta" data-no-translate>±0.000 s</p><p class="sim-dir" id="sim-dir" data-faster="${esc(t.faster)}" data-slower="${esc(t.slower)}" data-same="${esc(t.same)}">${esc(t.same)}</p><p class="sim-label">${esc(t.newLap)}</p><p class="sim-new" id="sim-new" data-no-translate>${fmtLap(d.lapTime)}</p></div></div></section>
-<section class="panel sim-read"><h2>${esc(t.read)}</h2><ul>${reading(d,lang).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></section>
-<section class="panel sim-model"><h2>${esc(t.model)}</h2><ul><li>${esc(t.m1)}</li><li>${esc(t.m2)}</li><li>${esc(t.m3)}</li><li>${esc(t.m4)}</li><li>${esc(t.m5)}</li></ul><p class="fine">${esc(t.src)}: <a href="https://github.com/TUMFTM/laptime-simulation" target="_blank" rel="noopener noreferrer">TUMFTM/laptime-simulation</a>, <a href="https://github.com/TUMFTM/global_racetrajectory_optimization" target="_blank" rel="noopener noreferrer">global_racetrajectory_optimization</a>, <a href="https://github.com/TUMFTM/racetrack-database" target="_blank" rel="noopener noreferrer">racetrack-database</a> (LGPL-3.0) · ${esc(t.gen)} <span data-no-translate>${esc(simMeta.generatedAt)}</span></p></section>
-<script>(${simClient.toString()})()</script>`;
+// --- Page ---
+export function simulationPage(query = {}, lang = 'ko') {
+  lang = lang === 'en' ? 'en' : 'ko';
+  const t = T[lang], ids = Object.keys(lapsimTracks).sort((a, b) => trackName(a, lang).localeCompare(trackName(b, lang), lang));
+  if (!ids.length) return `<section class="hero ls-hero"><h1>${esc(t.h1)}</h1><p class="lead">${esc(t.pending)} · ${esc(t.pendingLead)}</p></section>`;
+  const id = ids.includes(query.track) ? query.track : (ids.includes('monza') ? 'monza' : ids[0]);
+  const td = lapsimTracks[id], cars = carsFor(id, lang), conds = realConditions(id);
+  const carId = cars[query.car] ? query.car : '2026';
+  const changes = latestChanges(id);
+  const data = {lang, t, id, track: td, cars, carOrder: CAR_ORDER, carId, conds, changes,
+    calibration: {generatedAt: lapsimCalibration?.generatedAt || null, seasons: Object.fromEntries(Object.entries(lapsimCalibration?.seasons || {}).map(([y, s]) => [y, s.tracks?.[id] || null]))}};
+  // first render on the server with the same code the browser uses
+  const view = computeView(K, data, {carId, compareId: '', mode: 'real', manual: null, active: {}, strength: 1}, {renderMap, renderTrace});
+  const options = ids.map(k => `<option value="${esc(k)}"${k === id ? ' selected' : ''}>${esc(trackName(k, lang))}</option>`).join('');
+  const carOpts = sel => data.carOrder.map(k => `<option value="${k}"${k === sel ? ' selected' : ''}>${esc(cars[k].label)}</option>`).join('');
+  const slider = (key, label, min, max, step, unit) => `<label class="ls-slider"><span>${esc(label)}</span><input type="range" data-cond="${key}" min="${min}" max="${max}" step="${step}"><output data-out="${key}"></output><span class="ls-unit">${unit}</span></label>`;
+  const changeRows = changes?.changes?.length ? changes.changes.map((c, i) => `<li class="ls-change${c.affectsLap ? '' : ' is-info'}"><label>${c.affectsLap ? `<input type="checkbox" data-change="${i}">` : '<span class="ls-dot" aria-hidden="true"></span>'}<span><span class="ls-change-text" data-no-translate lang="en">${esc(c.text)}</span><small>${esc(c.affectsLap ? (lang === 'en' ? c.effect.en : c.effect.ko) : t.noLap)}</small></span></label></li>`).join('') : '';
+  const s = data.calibration.seasons;
+  const calRows = ['2025', '2026'].filter(y => s[y]).map(y => `<tr><td>${y}</td><td data-no-translate>${fmtLap(s[y].realLap)}${s[y].position > 1 ? ` (P${s[y].position})` : ''}</td><td data-no-translate>${fmtLap(s[y].simLap)}</td><td data-no-translate>${s[y].errorSec > 0 ? '+' : ''}${s[y].errorSec.toFixed(3)} s</td><td data-no-translate>${s[y].rmsKph} km/h</td></tr>`).join('');
+  const proj = lapsimCalibration?.projections || {};
+  const projRows = [2027, 2028].map(y => proj[y] ? `<li><strong>${y}</strong> — ${esc(t.projRules)}: ${esc(proj[y].rules?.[lang] || RULE_CHANGES[y].note[lang])} (${proj[y].rulesEffectPct > 0 ? '+' : ''}${proj[y].rulesEffectPct}%). ${esc(t.projDev)}: ${proj[y].developmentTargetPct}% (${proj[y].bandPct[0]} … ${proj[y].bandPct[1]}%).</li>` : `<li><strong>${y}</strong> — ${esc(t.projRules)}: ${esc(RULE_CHANGES[y].note[lang])}</li>`).join('');
+  return `<style>${CSS}</style>
+<section class="hero ls-hero"><h1>${esc(t.h1)}</h1><p class="lead">${esc(t.lead)}</p></section>
+<form class="ls-controls" method="get" action="/simulation">
+ <label>${esc(t.track)}<select name="track" data-no-translate onchange="this.form.submit()">${options}</select></label>
+ <label>${esc(t.car)}<select name="car" data-ls="car">${carOpts(carId)}</select></label>
+ <label>${esc(t.compare)}<select data-ls="compare"><option value="">${esc(t.none)}</option>${carOpts('')}</select></label>
+ <label>${esc(t.conditions)}<select data-ls="mode"><option value="real">${esc(t.real)}</option><option value="manual">${esc(t.manual)}</option></select></label>
+ <noscript><button>${esc(t.track)}</button></noscript>
+</form>
+<section class="ls-stage">
+ <figure class="ls-map-wrap"><div data-ls="map">${view.mapSvg}</div><figcaption><span class="ls-legend" aria-hidden="true"></span><span>${esc(t.slow)}</span><span>${esc(t.fast)}</span><span class="ls-windkey" data-ls="wind">${view.windHtml}</span></figcaption></figure>
+ <div class="ls-readout">
+  <p class="ls-track" data-no-translate>${esc(trackName(id, lang))}</p>
+  <p class="ls-label"><span data-ls="carLabel">${esc(cars[carId].label)}</span> · <span data-ls="carKind">${esc(view.kindLabel)}</span></p>
+  <p class="ls-lap" data-ls="lap" data-no-translate>${view.lap}</p>
+  <p class="ls-pole" data-ls="pole">${view.poleHtml}</p>
+  <dl class="ls-facts" data-ls="facts">${view.factsHtml}</dl>
+ </div>
+</section>
+<section class="panel ls-panel"><h2>${esc(t.trace)}</h2><div class="ls-scroll" data-ls="trace">${view.traceSvg}</div><p class="ls-key" data-ls="key">${view.keyHtml}</p></section>
+<section class="panel ls-panel ls-air"><h2>${esc(t.air)}</h2>
+ <dl class="ls-facts ls-air-facts" data-ls="air">${view.airHtml}</dl>
+ <div class="ls-sliders" data-ls="manual" hidden>${slider('airTempC', t.airTemp, -5, 45, 0.5, '°C')}${slider('trackTempC', t.trackTemp, 5, 65, 0.5, '°C')}${slider('humidityPct', t.humidity, 0, 100, 1, '%')}${slider('pressureHpa', t.pressure, 760, 1040, 1, 'hPa')}${slider('windSpeed', t.wind, 0, 15, 0.1, 'm/s')}${slider('windFromDeg', t.windFrom, 0, 359, 1, '°')}</div>
+</section>
+<section class="panel ls-panel"><h2>${esc(t.fia)}</h2><p>${esc(t.fiaLead)}</p>
+ ${changes ? `<p class="fine"><a href="${esc(changes.document.url)}" target="_blank" rel="noopener noreferrer" data-no-translate>${esc(changes.event)} · ${esc(changes.document.title)}</a></p><p class="fine">${esc(fittedYear(id) >= changes.year ? t.inFit(fittedYear(id)) : t.notInFit)}</p><ul class="ls-changes">${changeRows}</ul><label class="ls-slider ls-strength"><span>${esc(t.strength)}</span><input type="range" data-ls="strength" min="0" max="2" step="0.25" value="1"><output data-ls="strengthOut">×1</output></label>` : `<p class="fine">${esc(t.noChanges)}</p>`}
+</section>
+<section class="panel ls-panel"><h2>${esc(t.calib)}</h2><p>${esc(t.calibLead)}</p>
+ ${calRows ? `<div class="output"><table class="ls-table"><thead><tr><th></th><th>${esc(t.vsPole)}</th><th>${esc(t.lap)}</th><th>${esc(t.fitErr)}</th><th>${esc(t.speedRms)}</th></tr></thead><tbody>${calRows}</tbody></table></div>` : `<p class="fine">${esc(t.pendingLead)}</p>`}
+ <h3>${esc(t.proj)}</h3><ul class="ls-notes">${projRows}</ul>
+</section>
+<section class="panel ls-panel"><h2>${esc(t.model)}</h2><ul class="ls-notes"><li>${esc(t.m1)}</li><li>${esc(t.m2)}</li><li>${esc(t.m3)}</li><li>${esc(t.m4)}</li><li>${esc(t.m5)}</li></ul>
+ <p class="fine">${esc(t.src)}: <a href="https://openf1.org" target="_blank" rel="noopener noreferrer">OpenF1</a>, MultiViewer, <a href="https://github.com/bacinger/f1-circuits" target="_blank" rel="noopener noreferrer">f1-circuits</a>, <a href="https://github.com/f1db/f1db" target="_blank" rel="noopener noreferrer">f1db</a> (CC BY 4.0), <a href="https://github.com/TUMFTM/laptime-simulation" target="_blank" rel="noopener noreferrer">TUMFTM laptime-simulation</a>, FIA Section C Issue 21${data.calibration.generatedAt ? ` · ${esc(t.updated)} <span data-no-translate>${esc(data.calibration.generatedAt)}</span>` : ''}</p>
+</section>
+<script type="application/json" id="lapsim-data">${JSON.stringify(data).replace(/</g, '\\u003c')}</script>
+<script src="/assets/lapsim.js?v=${lapsimScriptVersion()}" defer></script>`;
 }
 
-// Browser script: linear estimate from the precomputed sensitivities.
-function simClient(){
- const box=document.getElementById('sim-whatif');if(!box)return;
- const base=+box.dataset.base,m=+box.dataset.mass,p=+box.dataset.power,g=box.dataset.grip.split(',').map(Number);
- const ids=['sim-mass','sim-power','sim-grip1','sim-grip2','sim-grip3'],units=['kg','kW','%','%','%'];
- const el=id=>document.getElementById(id),fmt=s=>{const mm=Math.floor(s/60);return (mm?mm+':':'')+(s-mm*60).toFixed(3).padStart(mm?6:5,'0');};
- const update=()=>{
-  const v=ids.map(id=>+el(id).value);
-  ids.forEach((id,i)=>{el(id+'-out').textContent=(v[i]>0?'+':'')+v[i]+' '+units[i];});
-  const d=v[0]/10*m+v[1]/10*p+v[2]/3*g[0]+v[3]/3*g[1]+v[4]/3*g[2];
-  el('sim-delta').textContent=(d>0.0005?'+':d<-0.0005?'−':'±')+Math.abs(d).toFixed(3)+' s';
-  const dir=el('sim-dir');dir.textContent=d<-0.0005?dir.dataset.faster:d>0.0005?dir.dataset.slower:dir.dataset.same;
-  box.dataset.trend=d<-0.0005?'faster':d>0.0005?'slower':'same';
-  el('sim-new').textContent=fmt(base+d);
- };
- ids.forEach(id=>el(id).addEventListener('input',update));
- el('sim-reset').addEventListener('click',()=>{ids.forEach(id=>{el(id).value=0;});update();});
+// One computation for a given UI state. Used on the server and (as source text) in the browser.
+function computeView(K, data, state, R) {
+  const t = data.t, d = data.track;
+  if (!computeView.cache || computeView.cache.id !== data.id) computeView.cache = {id: data.id, base: K.trackFromData(d)};
+  const base = computeView.cache.base;
+  const sel = data.cars[state.carId];
+  // conditions: real (season of the selected car, else 2026) or manual
+  const yearKey = data.conds[String(sel.year)] ? String(sel.year) : (data.conds['2026'] ? '2026' : Object.keys(data.conds)[0]);
+  const w = Object.assign({pressureHpa: 1013.25, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0},
+    Object.fromEntries(Object.entries(state.mode === 'manual' && state.manual ? state.manual : (data.conds[yearKey] || {})).filter(([, v]) => Number.isFinite(v))));
+  const env = K.conditionsFromWeather(w);
+  // FIA changes switched on by the user
+  let track = base;
+  const active = (data.changes?.changes || []).filter((c, i) => state.active[i]);
+  if (active.length) track = K.applyTrackChanges(base, active, d.corners || [], {strength: state.strength}).track;
+  const withGrip = (tr, g) => { const n = tr.kappa.length, mu = new Float64Array(n); for (let i = 0; i < n; i++) mu[i] = g * tr.mu[i]; return {...tr, mu}; };
+  const run = c => K.simulateLap(withGrip(track, c.grip || 1), c.car, env);
+  const res = run(sel);
+  const cmp = state.compareId && data.cars[state.compareId] ? run(data.cars[state.compareId]) : null;
+  const fmt = s => { if (!Number.isFinite(s)) return '–'; const m = Math.floor(s / 60); return (m ? m + ':' : '') + (s - m * 60).toFixed(3).padStart(m ? 6 : 5, '0'); };
+  const sectors = d.sectors && d.sectors.length === 2 ? (() => { const i1 = Math.round(d.sectors[0] / d.ds), i2 = Math.round(d.sectors[1] / d.ds); return [res.time[i1], res.time[i2] - res.time[i1], res.lapTime - res.time[i2]]; })() : null;
+  const real = data.conds[String(sel.year)];
+  const sameConditions = state.mode !== 'manual' && !active.length;
+  const poleHtml = real && real.realLap && sameConditions && sel.kind === 'calibrated'
+    ? (real.position > 1 ? t.realLap + ' P' + real.position : t.vsPole) + ' <span data-no-translate>' + fmt(real.realLap) + '</span> · <span data-no-translate>' + ((res.lapTime - real.realLap) >= 0 ? '+' : '−') + Math.abs(res.lapTime - real.realLap).toFixed(3) + ' s</span>'
+    : (cmp ? data.cars[state.compareId].label + ' <span data-no-translate>' + fmt(cmp.lapTime) + ' · ' + ((res.lapTime - cmp.lapTime) >= 0 ? '+' : '−') + Math.abs(res.lapTime - cmp.lapTime).toFixed(3) + ' s</span>' : '');
+  const fact = (k, v) => '<div><dt>' + k + '</dt><dd data-no-translate>' + v + '</dd></div>';
+  let factsHtml = '';
+  if (sectors) sectors.forEach((x, i) => { factsHtml += fact(t.sector + ' ' + (i + 1), x.toFixed(3)); });
+  factsHtml += fact(t.vmax, Math.round(res.vMaxKph) + ' km/h') + fact(t.vmin, Math.round(res.vMinKph) + ' km/h');
+  if (sel.car.ers?.pMax) factsHtml += fact(t.energy, (res.energy.deployJ / 1e6).toFixed(1) + ' / ' + (res.energy.budgetJ / 1e6).toFixed(1) + ' MJ') + fact(t.clip, res.energy.cutoffKph ? Math.round(res.energy.cutoffKph) + ' km/h' : '–');
+  // wind on the main straight (the straight the lap starts on)
+  let windTxt = t.calm;
+  if (env.windSpeed > 0.3 && base.heading) {
+    const tw = K.tailwind(base.heading[2], env.windSpeed, env.windFromDeg);
+    windTxt = Math.abs(tw) < 0.3 ? t.calm : (tw > 0 ? t.tailwind : t.headwind) + ' ' + Math.abs(tw).toFixed(1) + ' m/s';
+  }
+  const pct = x => (x >= 1 ? '+' : '−') + Math.abs((x - 1) * 100).toFixed(1) + '%';
+  const airHtml = fact(t.airTemp, w.airTempC.toFixed(1) + ' °C') + fact(t.trackTemp, w.trackTempC.toFixed(1) + ' °C') + fact(t.humidity, Math.round(w.humidityPct) + '%')
+    + fact(t.pressure, Math.round(w.pressureHpa) + ' hPa') + fact(t.density, env.rho.toFixed(3) + ' kg/m³ (' + pct(env.rho / 1.225) + ' ' + t.seaLevel + ')')
+    + fact(t.ice, pct(env.iceFactor)) + fact(t.grip, pct(env.grip)) + fact(t.mainStraight, windTxt);
+  const kindLabel = sel.kind === 'calibrated' ? t.calibrated : sel.kind === 'projected' ? t.projected : sel.kind === 'prior' ? t.prior : 'TUM';
+  const mapSvg = R.renderMap(d.map || {x: [], y: []}, res.v, {corners: d.corners, length: d.length, label: t.map});
+  // compass arrow pointing where the wind blows to (map north is up)
+  const windHtml = env.windSpeed > 0.3 ? '<svg class="ls-compass" width="20" height="20" viewBox="-10 -10 20 20" aria-hidden="true"><path d="M0 -8L5 5L0 2L-5 5Z" transform="rotate(' + Math.round((env.windFromDeg + 180) % 360) + ')"/></svg><span>' + t.wind + ' <span data-no-translate>' + env.windSpeed.toFixed(1) + ' m/s</span></span>' : '';
+  const series = [{v: res.v.map(x => x * 3.6)}];
+  if (cmp) series.push({v: cmp.v.map(x => x * 3.6)});
+  const traceSvg = R.renderTrace(d.ds, series, {sectors: d.sectors || [], label: t.trace, km: t.km});
+  const keyHtml = '<span class="ls-key-0"></span>' + sel.label + (cmp ? ' <span class="ls-key-1"></span>' + data.cars[state.compareId].label : '');
+  return {lap: fmt(res.lapTime), poleHtml, factsHtml, airHtml, kindLabel, mapSvg, traceSvg, keyHtml, windHtml, weather: w};
 }
 
-const simCss=`:root{--sim-slow:#ffa94d}:root[data-theme="light"]{--sim-slow:#245d9c}@media(prefers-color-scheme:light){:root:not([data-theme]){--sim-slow:#245d9c}}.sim-trace-scroll{overflow-x:auto}.sim-hero h1{font-size:44px;max-width:22ch}.sim-pick{display:flex;max-width:360px}.sim-stage{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(260px,1fr);gap:40px;align-items:center}.sim-map-wrap{margin:0;display:grid;gap:12px}.sim-map{width:100%;height:auto;max-height:520px}.sim-start{fill:var(--text)}.sim-sector-dot{fill:var(--bg);stroke:var(--text);stroke-width:2}.sim-map-label{fill:var(--muted);font-weight:700;text-anchor:middle}.sim-map-wrap figcaption{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}.sim-legend{order:1;width:120px;height:8px;border-radius:4px;background:linear-gradient(90deg,var(--sim-slow),var(--mint))}.sim-map-wrap figcaption span:last-child{order:2}.sim-readout{display:grid;gap:6px;align-content:center}.sim-track{font-size:20px;font-weight:700;color:var(--text)}.sim-label{font-size:13px;color:var(--muted)}.sim-lap{font-size:clamp(56px,7vw,88px);line-height:1;font-weight:800;letter-spacing:-2px;color:var(--mint);font-variant-numeric:tabular-nums;margin-bottom:18px}.sim-facts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px 20px;margin:0;padding-top:18px;border-top:1px solid var(--line)}.sim-facts dt{font-size:12px;color:var(--muted)}.sim-facts dd{margin:4px 0 0;font-size:18px;font-weight:700;font-variant-numeric:tabular-nums}.sim-trace{width:100%;height:auto}.sim-line{fill:none;stroke:var(--mint);stroke-width:2.5;stroke-linejoin:round}.sim-grid{stroke:var(--line);stroke-width:1}.sim-axis{fill:var(--muted);font-size:13px}.sim-band-a{fill:transparent}.sim-band-b{fill:var(--text);opacity:.04}.sim-whatif-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(220px,1fr);gap:32px;align-items:start}.sim-sliders{display:grid;gap:14px}.sim-slider{display:grid;grid-template-columns:minmax(120px,1fr) minmax(0,2fr) 64px;align-items:center;gap:12px;min-width:0}.sim-slider input{min-height:32px;padding:0;accent-color:var(--mint);border:0;background:none}.sim-slider output{text-align:right;font-variant-numeric:tabular-nums;color:var(--text)}#sim-reset{justify-self:start}.sim-result{display:grid;gap:4px;padding:20px;border-radius:12px;background:var(--bg)}.sim-delta{font-size:44px;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums;color:var(--text)}.sim-whatif[data-trend=faster] .sim-delta{color:var(--mint)}.sim-dir{margin-bottom:12px;color:var(--text)}.sim-new{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--text)}.sim-read ul,.sim-model ul{margin:0;padding-left:20px;display:grid;gap:10px;line-height:1.7;color:var(--muted);max-width:75ch}.sim-read li{color:var(--text)}@media(max-width:900px){.sim-stage,.sim-whatif-grid{grid-template-columns:1fr;gap:24px}.sim-hero h1{font-size:32px}}@media(max-width:520px){.sim-trace{min-width:640px}.sim-slider{grid-template-columns:1fr 64px}.sim-slider span{grid-column:1/-1}.sim-facts{grid-template-columns:1fr 1fr}.sim-delta{font-size:36px}}`;
+// Browser controller
+function lapsimClient(K, computeView, renderMap, renderTrace) {
+  const el = document.getElementById('lapsim-data'); if (!el) return;
+  const R = {renderMap, renderTrace};
+  const data = JSON.parse(el.textContent);
+  const q = s => document.querySelector('[data-ls="' + s + '"]');
+  const yearKey = data.conds['2026'] ? '2026' : Object.keys(data.conds)[0];
+  const state = {carId: data.carId, compareId: '', mode: 'real', manual: Object.assign({pressureHpa: 1013, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0}, data.conds[yearKey] || {}), active: {}, strength: 1};
+  const sliders = document.querySelectorAll('[data-cond]');
+  const syncSliders = () => sliders.forEach(s => { const k = s.dataset.cond, v = state.manual[k]; if (Number.isFinite(v)) s.value = v; const o = document.querySelector('[data-out="' + k + '"]'); if (o) o.textContent = Number(s.value).toFixed(s.step < 1 ? 1 : 0); });
+  let pending = false;
+  const update = () => {
+    if (pending) return; pending = true;
+    requestAnimationFrame(() => {
+      pending = false;
+      const v = computeView(K, data, state, R);
+      q('lap').textContent = v.lap; q('pole').innerHTML = v.poleHtml; q('facts').innerHTML = v.factsHtml; q('air').innerHTML = v.airHtml;
+      q('map').innerHTML = v.mapSvg; q('trace').innerHTML = v.traceSvg; q('key').innerHTML = v.keyHtml; q('wind').innerHTML = v.windHtml;
+      q('carLabel').textContent = data.cars[state.carId].label; q('carKind').textContent = v.kindLabel;
+    });
+  };
+  q('car').addEventListener('change', e => { state.carId = e.target.value; const u = new URL(location.href); u.searchParams.set('car', state.carId); history.replaceState(null, '', u); update(); });
+  q('compare').addEventListener('change', e => { state.compareId = e.target.value; update(); });
+  q('mode').addEventListener('change', e => { state.mode = e.target.value; q('manual').hidden = state.mode !== 'manual'; if (state.mode === 'manual') { const real = data.conds[String(data.cars[state.carId].year)]; if (real) Object.assign(state.manual, real); syncSliders(); } update(); });
+  sliders.forEach(s => s.addEventListener('input', () => { state.manual[s.dataset.cond] = Number(s.value); syncSliders(); update(); }));
+  document.querySelectorAll('[data-change]').forEach(c => c.addEventListener('change', () => { state.active[c.dataset.change] = c.checked; update(); }));
+  const st = q('strength'); if (st) st.addEventListener('input', () => { state.strength = Number(st.value); q('strengthOut').textContent = '×' + state.strength; update(); });
+  syncSliders();
+}
+
+let scriptText = null;
+export function lapsimScript() {
+  if (!scriptText) scriptText = '(()=>{const K=(' + lapsimKernel.toString() + ')();const renderMap=' + renderMap.toString() + ';const renderTrace=' + renderTrace.toString() + ';const computeView=' + computeView.toString() + ';(' + lapsimClient.toString() + ')(K,computeView,renderMap,renderTrace);})();';
+  return scriptText;
+}
+export function lapsimScriptVersion() {
+  const text = lapsimScript(); let h = 2166136261;
+  for (let i = 0; i < text.length; i++) { h ^= text.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return (h >>> 0).toString(36);
+}
+
+const CSS = `:root{--sim-slow:#ffa94d}:root[data-theme="light"]{--sim-slow:#245d9c}@media(prefers-color-scheme:light){:root:not([data-theme]){--sim-slow:#245d9c}}
+.ls-hero h1{font-size:44px;max-width:20ch}.ls-controls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.ls-controls label{min-width:0}.ls-controls select{width:100%}
+.ls-stage{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(280px,1fr);gap:40px;align-items:center}.ls-map-wrap{margin:0;display:grid;gap:12px}.ls-map{width:100%;height:auto;max-height:540px;color:var(--text)}
+.ls-start{fill:var(--text)}.ls-corner{fill:var(--muted);text-anchor:middle;font-weight:600}
+.ls-map-wrap figcaption{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}.ls-legend{order:1;width:120px;height:8px;border-radius:4px;background:linear-gradient(90deg,var(--sim-slow),var(--mint))}.ls-map-wrap figcaption>span:nth-child(3){order:2}.ls-windkey{order:3;margin-left:auto;display:inline-flex;align-items:center;gap:6px}.ls-compass{fill:var(--text)}
+.ls-readout{display:grid;gap:6px;align-content:center}.ls-track{font-size:20px;font-weight:700;color:var(--text)}.ls-label{font-size:13px;color:var(--muted)}
+.ls-lap{font-size:clamp(56px,7vw,88px);line-height:1;font-weight:800;letter-spacing:-2px;color:var(--mint);font-variant-numeric:tabular-nums}.ls-pole{min-height:1.6em;font-size:14px;color:var(--text);margin-bottom:12px}
+.ls-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 18px;margin:0;padding-top:16px;border-top:1px solid var(--line)}.ls-facts dt{font-size:12px;color:var(--muted)}.ls-facts dd{margin:4px 0 0;font-size:17px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--text)}
+.ls-air-facts{grid-template-columns:repeat(4,minmax(0,1fr));border-top:0;padding-top:0}
+.ls-scroll{overflow-x:auto}.ls-trace{width:100%;height:auto;min-width:560px}.ls-grid{stroke:var(--line)}.ls-sector{stroke:var(--muted);stroke-dasharray:4 4;opacity:.6}.ls-axis{fill:var(--muted);font-size:13px}
+.ls-line{fill:none;stroke-width:2.4;stroke-linejoin:round}.ls-line-0{stroke:var(--mint)}.ls-line-1{stroke:var(--sim-slow);stroke-dasharray:6 4}
+.ls-key{font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:center;flex-wrap:wrap}.ls-key span{display:inline-block;width:22px;height:3px;border-radius:2px}.ls-key-0{background:var(--mint)}.ls-key-1{background:var(--sim-slow)}
+.ls-sliders{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 28px}.ls-slider{display:grid;grid-template-columns:minmax(110px,1fr) minmax(0,2fr) 52px 36px;align-items:center;gap:10px;min-width:0}.ls-slider input{min-height:32px;padding:0;accent-color:var(--mint);border:0;background:none}.ls-slider output{text-align:right;font-variant-numeric:tabular-nums;color:var(--text)}.ls-unit{font-size:12px;color:var(--muted)}
+.ls-strength{max-width:520px;grid-template-columns:minmax(110px,1fr) minmax(0,2fr) 52px}
+.ls-changes{list-style:none;margin:0;padding:0;display:grid;gap:10px}.ls-change label{display:flex;gap:12px;align-items:flex-start;color:var(--text);font-size:14px;min-width:0}.ls-change input{width:20px;height:20px;min-height:0;margin-top:2px;accent-color:var(--mint)}.ls-change small{display:block;color:var(--muted);font-size:12px;margin-top:2px}.ls-change.is-info label{color:var(--muted)}.ls-dot{width:20px;flex:0 0 20px;text-align:center}.ls-dot::before{content:'·'}
+.ls-table td,.ls-table th{white-space:nowrap}.ls-notes{margin:0;padding-left:20px;display:grid;gap:10px;line-height:1.7;color:var(--muted);max-width:80ch}.ls-panel h3{font-size:18px;margin-top:6px}
+@media(max-width:900px){.ls-stage{grid-template-columns:1fr;gap:24px}.ls-hero h1{font-size:32px}.ls-controls{grid-template-columns:1fr 1fr}.ls-air-facts{grid-template-columns:repeat(2,minmax(0,1fr))}.ls-sliders{grid-template-columns:1fr}}
+@media(max-width:520px){.ls-controls{grid-template-columns:1fr}.ls-facts{grid-template-columns:1fr 1fr}.ls-slider{grid-template-columns:1fr 52px 36px}.ls-slider>span:first-child{grid-column:1/-1}}`;

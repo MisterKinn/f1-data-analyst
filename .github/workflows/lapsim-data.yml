@@ -8,7 +8,7 @@ name: Lap simulator data
 on:
   push:
     branches: ['lapsim/**']
-    paths-ignore: ['worker/lapsim/tracks-data.js', 'worker/lapsim/calibration-data.js', 'docs/lapsim-report.md']
+    paths-ignore: ['worker/lapsim/tracks-data.js', 'worker/lapsim/calibration-data.js', 'worker/lapsim/track-changes-data.js', 'docs/lapsim-report.md']
   schedule:
     - cron: '17 3 * * 2' # Tuesday 12:17 Korea time, after the race weekend
   workflow_dispatch:
@@ -29,35 +29,49 @@ jobs:
   rebuild:
     if: github.event_name != 'schedule' || github.repository == 'MisterKinn/f1-data-analyst'
     runs-on: ubuntu-latest
-    timeout-minutes: 75
+    timeout-minutes: 180
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
       - name: Restore raw data cache
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           path: .cache/lapsim/raw
           key: lapsim-raw-v1-${{ github.run_id }}
           restore-keys: lapsim-raw-v1-
       - name: Fetch OpenF1 qualifying data
+        timeout-minutes: 90
         run: node scripts/sim/fetch-openf1.mjs "${{ inputs.years || '2025,2026' }}"
+      # saved even when a later step fails, so a rerun does not fetch everything again
+      - name: Save raw data cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: .cache/lapsim/raw
+          key: lapsim-raw-v1-${{ github.run_id }}
       - name: Build tracks
         run: node scripts/sim/build-geometry.mjs
       - name: Calibrate cars
         run: node scripts/sim/calibrate.mjs
+      - run: npm ci --omit=dev --ignore-scripts
+      - name: Read FIA circuit changes
+        run: node scripts/sim/fia-changes.mjs
+        env:
+          LAPSIM_CHANGE_YEARS: '2025,2026'
       - name: Test
         run: node --test tests/lapsim*.test.mjs
       - name: Commit derived data
         run: |
           git config user.name "kongboda-lapsim[bot]"
           git config user.email "lapsim@users.noreply.github.com"
-          git add worker/lapsim/tracks-data.js worker/lapsim/calibration-data.js docs/lapsim-report.md
+          git add worker/lapsim/tracks-data.js worker/lapsim/calibration-data.js worker/lapsim/track-changes-data.js docs/lapsim-report.md
           if git diff --cached --quiet; then echo "No changes"; exit 0; fi
           git commit -m "Rebuild lap simulator tracks and calibration"
           if [ "${{ github.event_name }}" = "push" ]; then
-            git push origin HEAD:${{ github.ref_name }}
+            # the branch may have moved while this ran: replay the data commit on top
+            git push origin HEAD:${{ github.ref_name }} || { git fetch origin ${{ github.ref_name }} && git rebase FETCH_HEAD && git push origin HEAD:${{ github.ref_name }}; }
           else
             branch="lapsim/refresh-$(date -u +%Y%m%d)"
             git push origin HEAD:refs/heads/$branch
