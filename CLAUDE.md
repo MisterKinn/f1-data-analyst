@@ -6,7 +6,7 @@ Read AGENTS.md and docs/answer-principles.md first; they are the product rules.
 
 - Production repo: `MisterKinn/f1-data-analyst`. A merge to `main` deploys automatically (Vercel Git integration). Do not deploy through Vercel directly.
 - Claude Code sessions push to the owner's fork `kangjeongmin1229/f1-data-analyst-deploy` (the Claude GitHub App has access there), then open a PR into `MisterKinn/f1-data-analyst:main`.
-- The fork's `main` is synced from upstream every hour by `.github/workflows/sync-fork.yml`; always branch from `upstream/main` anyway:
+- The fork's `main` is synced from upstream every hour by `.github/workflows/sync-fork.yml`. Every scheduled workflow job except sync-fork must have `if: github.repository == 'MisterKinn/f1-data-analyst'` so it does not also run on the fork. Always branch from `upstream/main` anyway:
   `git remote add upstream https://github.com/MisterKinn/f1-data-analyst && git fetch upstream main && git checkout -b <branch> upstream/main`
 - If the PR cannot be created or merged through the GitHub connector (403 for the upstream repo), use the browser: open
   `https://github.com/MisterKinn/f1-data-analyst/compare/main...kangjeongmin1229:f1-data-analyst-deploy:<branch>?expand=1`, create the PR, wait for the `test` check, then merge. The owner wants merges done without asking each time.
