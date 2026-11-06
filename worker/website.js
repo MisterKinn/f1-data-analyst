@@ -371,7 +371,7 @@ function fiawecClient(){
  const post=(path,body)=>fetch(path,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body||{})});
  async function load(){try{const r=await fetch('/api/live/wec/connection',{cache:'no-store'});const d=await r.json();if(!r.ok)throw Error();
   if(!d.can_connect){say('선원은 운영자의 FIAWEC+ 연결로 자동 수신합니다. 따로 연결할 필요가 없습니다.');connect.hidden=off.hidden=true;return;}
-  say(d.status==='connected'?(d.owner?'FIAWEC+ 연결됨 · 모든 선원이 이 연결을 함께 씁니다.':'FIAWEC+ 연결됨'):d.status==='needs_reconnect'?'FIAWEC+ 연결이 만료됐습니다. 다시 연결해 주세요.':'아직 연결하지 않았습니다.');
+  say(d.status==='connected'?(d.owner?'FIAWEC+ 연결됨 · 모든 선원이 이 연결을 함께 씁니다.':d.crew?'내 FIAWEC+ 계정 연결됨 · 운영자 연결 대신 이 계정으로 읽습니다.':'FIAWEC+ 연결됨'):d.crew&&!d.owner&&d.status==='not_connected'?'선원은 운영자의 FIAWEC+ 연결로 자동 수신합니다. 원하면 내 FIAWEC+ 계정을 연결해 쓸 수도 있습니다.':d.status==='needs_reconnect'?'FIAWEC+ 연결이 만료됐습니다. 다시 연결해 주세요.':'아직 연결하지 않았습니다.');
   connect.textContent=d.status==='not_connected'?'FIAWEC+ 연결하기':'다시 연결';connect.hidden=false;off.hidden=d.status==='not_connected';}catch{say('연결 상태를 확인하지 못했습니다.');}}
  function show(d){
   if(d.state==='signed_in'){stop();say('연결했습니다. 다음 WEC 세션부터 자동으로 읽습니다.');load();return;}

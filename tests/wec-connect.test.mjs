@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {saveSignIn,loadSignIn,signInMeta,wecConnectRoute,wecActionsAuth,connectionKey,connectInfo} from '../worker/wec_connect.js';
+import {saveSignIn,loadSignIn,signInMeta,wecConnectRoute,wecActionsAuth,connectionKey,connectInfo,canConnect} from '../worker/wec_connect.js';
 import {wecActionsPush} from '../worker/wec_live.js';
 
 const bucket=()=>{const m=new Map();return {m,get:async k=>m.has(k)?{json:async()=>JSON.parse(m.get(k))}:null,put:async(k,v)=>{m.set(k,v);},delete:async k=>{m.delete(k);}};};
@@ -20,8 +20,11 @@ test('a saved FIAWEC+ sign-in is encrypted per account and only that account can
  assert.equal((await signInMeta(e,'acct-1')).status,'connected');
 });
 
-test('crew use the owner connection; only the owner or a personal account can connect',async()=>{
+test('crew use the owner connection unless they connect their own account',async()=>{
  assert.equal(connectionKey({mode:'crew',owner:false}),'operator');
+ assert.equal(connectionKey({mode:'crew',owner:true,accountId:'o1'}),'operator');
+ assert.equal(connectionKey({mode:'crew',owner:false,accountId:'c1'}),'c1');
+ assert.equal(canConnect({mode:'crew',owner:false,accountId:'c1'}),true);
  assert.equal(connectionKey({mode:'personal',accountId:'a1'}),'a1');
  assert.equal(connectInfo({mode:'crew',owner:false}).by,'owner');
  assert.match(connectInfo({mode:'crew',owner:true}).url,/account#fiawec$/);

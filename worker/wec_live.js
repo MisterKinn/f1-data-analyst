@@ -43,7 +43,12 @@ export async function wecAccess(request,env,google=null){
  // Owner = the site's collector admin (same check as the host panel), or DEPLOY_OWNER_EMAIL.
  const owner=isOwnerEmail(email,env)||(email?await isOwner(env,google||{email}).catch(()=>false):false);
  if(owner)return {mode:'crew',owner:true};
- if(!env.LIVE_ANALYSIS_KEY_HASH||await sharedLiveAllowed(request,env,google))return {mode:'crew',owner:false};
+ if(!env.LIVE_ANALYSIS_KEY_HASH||await sharedLiveAllowed(request,env,google)){
+  // Crew may connect their own FIAWEC+ account; while it is connected they read it instead of the owner's.
+  const id=(await accountIdentity(request,env,google,{create:false}).catch(()=>null))?.account;
+  if(!id||id.deleted)return {mode:'crew',owner:false};
+  return (await signInMeta(env,id.id))?.status==='connected'?{mode:'personal',accountId:id.id,crew:true}:{mode:'crew',owner:false,accountId:id.id};
+ }
  const account=(await accountIdentity(request,env,google,{create:true}))?.account;
  return account&&!account.deleted?{mode:'personal',accountId:account.id}:null;
 }
