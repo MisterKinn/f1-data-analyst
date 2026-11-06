@@ -5,25 +5,35 @@
 // The MCP address is shown only to signed-in accounts (see install()); otherwise the prompts point to step 3.
 const URL_MCP='https://kongboda-motorsports.vercel.app/mcp',NO_URL_KO='꽁보다 가이드 3단계에서 복사한 연결 주소',NO_URL_EN='the connection address from step 3 of the Kongboda guide';
 const RULES_KO=`[진행 규칙]
-- 전체는 4단계야: 1 연결 확인 → 2 커넥터 추가(필요할 때만) → 3 종목 선택과 첫 브리핑 → 4 자동 브리핑 예약.
+- 전체는 4단계야: 1 연결 확인 → 2 커넥터 추가(필요할 때만) → 3 종목 선택·미리 로그인·첫 브리핑 → 4 자동 브리핑 예약.
 - 매 답변 첫 줄에 ‘[단계 n/4] 단계 이름’을 써서 지금 어디인지 보여 줘.
 - 네가 할 수 있는 일은 묻지 말고 바로 하고, 한 일과 결과를 한 줄로 알려 줘.
 - 내가 직접 눌러야 하는 일은 한 번에 하나만, 번호(예: 2-1)를 붙여 한두 줄로 알려 줘. 내가 ‘완료’라고 하거나 화면에 보이는 것을 알려 주기 전에는 다음으로 넘어가지 마.
 - 막히면 그 단계의 ‘막힐 때’부터 확인하고, 그래도 안 되면 원인과 내가 할 일을 한 줄씩 알려 줘.`;
 const RULES_EN=`[How to run this]
-- There are 4 stages: 1 check the connection → 2 add the connector (only if needed) → 3 pick series and first briefing → 4 book automatic briefings.
+- There are 4 stages: 1 check the connection → 2 add the connector (only if needed) → 3 pick series, sign in early, first briefing → 4 book automatic briefings.
 - Start every reply with "[Stage n/4] stage name" so I can see where we are.
 - Do what you can yourself without asking, and tell me in one line what you did and the result.
 - Give me the clicks only I can make one at a time, numbered (for example 2-1), in one or two lines. Do not move on until I reply "done" or tell you what I see.
 - If something fails, check that stage's "If stuck" first; if it still fails, tell me the cause and what I should do, one line each.`;
-const PICK_KO=`[단계 3/4] 종목 선택과 첫 브리핑
+// Stage 3 also offers both sign-ins up front (F1 account, FIAWEC+), each with a skip option, so
+// the first live session does not stop at a login screen. Passwords and CAPTCHAs stay with the user.
+const PICK_KO=`[단계 3/4] 종목 선택, 미리 로그인, 첫 브리핑
 3-1. 실시간으로 받을 종목을 물어봐 줘: ‘F1’, ‘WEC’ 중 하나 또는 둘 다(중복 선택 가능). 내 답을 받기 전에는 다음으로 가지 마.
-3-2. 고른 종목마다 지금 브리핑을 한 번 해 줘. F1은 kongboda_live_briefing, WEC는 wec_live_status 도구를 써.
-막힐 때: F1·FIAWEC+ 계정 연결이 필요하다고 나오면 https://kongboda-motorsports.vercel.app/live 에서 연결하라고 알려 주고, 연결했다고 하면 3-2를 다시 해.`;
-const PICK_EN=`[Stage 3/4] Pick series and first briefing
+3-2. 미리 로그인: 세션 중에 로그인 화면에서 멈추지 않도록, 고른 종목마다 지금 로그인할지 선택 박스(객관식 질문 도구, 없으면 번호 목록)로 한 번에 물어봐 줘. 각 종목 선택지는 ‘지금 로그인’과 ‘나중에(건너뛰기)’ 두 개야. 먼저 확인해서 이미 되는 종목은 묻지 말고 ‘로그인 필요 없음’으로 알려 줘(F1: kongboda_live_briefing에 공용 데이터 안내가 없으면 됨, WEC: wec_live_status에 next_step·access_choice가 없으면 됨).
+ - F1 지금 로그인: https://kongboda-motorsports.vercel.app/live 를 브라우저로 네가 열고(브라우저 도구가 없으면 링크만), 나는 그 화면에서 내 F1 계정 연결만 해. 내가 ‘완료’라고 하면 kongboda_live_briefing으로 다시 확인해.
+ - WEC 지금 로그인: FIAWEC+ 로그인 화면(plus.fiawec.com/en → Account)을 브라우저로 네가 열어. 이미 ‘Signed in to FIAWEC+’면 건너뛰고, 아니면 나는 비밀번호와 CAPTCHA만 입력해(네가 대신 입력하지 마). 로그인이 끝난 것은 화면으로 직접 확인해.
+ - 건너뛰기: 그 종목은 그대로 두고, 세션이 시작될 때 브리핑 카드에서 다시 물어본다고 한 줄로 알려 줘.
+3-3. 고른 종목마다 지금 브리핑을 한 번 해 줘(kongboda_live_briefing, series f1 또는 wec).
+막힐 때: 로그인 화면이 열리지 않으면 링크를 주고 내가 직접 열게 해. 연결이 안 되면 원인과 내가 할 일을 한 줄씩 알려 주고, 건너뛰어도 다음 단계로 갈 수 있다고 말해 줘.`;
+const PICK_EN=`[Stage 3/4] Pick series, sign in early, first briefing
 3-1. Ask me which series I want live: F1, WEC, or both (I can pick more than one). Do not go on until I answer.
-3-2. For each series I picked, give me one briefing now: kongboda_live_briefing for F1, wec_live_status for WEC.
-If stuck: if it says an F1 or FIAWEC+ account is needed, tell me to connect it at https://kongboda-motorsports.vercel.app/live, and run 3-2 again once I say it is connected.`;
+3-2. Sign in early: so a live session does not stop at a login screen, ask me once, as a choice box (the multiple-choice question tool, or a numbered list), whether to sign in now for each series I picked. Each series has two options: "Sign in now" and "Later (skip)". Check first and do not ask for a series that already works; say "no sign-in needed" (F1: kongboda_live_briefing shows no shared-data notice; WEC: wec_live_status has no next_step or access_choice).
+ - F1 sign in now: open https://kongboda-motorsports.vercel.app/live in the browser yourself (just the link if you have no browser tool); I only connect my F1 account there. When I say "done", check again with kongboda_live_briefing.
+ - WEC sign in now: open the FIAWEC+ sign-in page (plus.fiawec.com/en, Account) in the browser yourself. If it already shows "Signed in to FIAWEC+", skip; otherwise I only type my password and solve the CAPTCHA (never type them for me). Check on screen yourself that sign-in finished.
+ - Skip: leave that series as it is and tell me in one line that the briefing card will ask again when a session starts.
+3-3. For each series I picked, give me one briefing now (kongboda_live_briefing with series f1 or wec).
+If stuck: if the sign-in page does not open, give me the link to open myself. If connecting fails, tell me the cause and what to do, one line each, and say I can skip and still go on.`;
 // One scheduled task per series. Each run happens 5 minutes after a session starts (times from
 // the Kongboda calendar), posts the card, keeps posting until the session ends, then re-books
 // itself for the next session of that series. No hourly polling, no per-session task list.
@@ -47,7 +57,7 @@ const ko=url=>({
 ${RULES_KO}
 
 [단계 1/4] 연결 확인
-1-1. 이 대화에서 Kongboda Motorsports 커넥터를 쓸 수 있는지 직접 확인해 줘. 쓸 수 있으면 kongboda_my_preferences를 불러 계정 등록 여부도 확인해. 이미 연결·계정 등록이 돼 있으면 [빠른 설정]으로 가: 단계 2와 3-1 질문을 건너뛰고, 종목은 F1·WEC 둘 다로 정해(계정 설정에 응원 팀이 한쪽 종목만 있으면 그 종목만), 묻지 말고 3-2 첫 브리핑과 단계 4 예약 작업을 바로 만든 뒤 4-3 체크리스트만 보여 줘. 계정 등록이 안 돼 있으면 단계 2를 건너뛰고 단계 3으로 가.
+1-1. 이 대화에서 Kongboda Motorsports 커넥터를 쓸 수 있는지 직접 확인해 줘. 쓸 수 있으면 kongboda_my_preferences를 불러 계정 등록 여부도 확인해. 이미 연결·계정 등록이 돼 있으면 [빠른 설정]으로 가: 단계 2와 3-1 질문을 건너뛰고, 종목은 F1·WEC 둘 다로 정해(계정 설정에 응원 팀이 한쪽 종목만 있으면 그 종목만), 3-2 미리 로그인은 아직 안 되는 종목만 선택 박스로 한 번 묻고(건너뛰기 가능), 그 밖에는 묻지 말고 3-3 첫 브리핑과 단계 4 예약 작업을 바로 만든 뒤 4-3 체크리스트만 보여 줘. 계정 등록이 안 돼 있으면 단계 2를 건너뛰고 단계 3으로 가.
 
 [단계 2/4] 커넥터 추가 (내가 직접 하는 단계)
 2-1. claude.ai 웹이나 데스크톱 앱에서 ‘사용자 지정 → 커넥터’(https://claude.ai/customize/connectors)를 연다.
@@ -68,7 +78,7 @@ ${LATER_KO}`,
 ${RULES_KO}
 
 [단계 1/4] 연결 확인
-1-1. 이 대화에서 Kongboda Motorsports 앱을 쓸 수 있는지 직접 확인해 줘. 쓸 수 있으면 kongboda_my_preferences를 불러 계정 등록 여부도 확인해. 이미 연결·계정 등록이 돼 있으면 [빠른 설정]으로 가: 단계 2와 3-1 질문을 건너뛰고, 종목은 F1·WEC 둘 다로 정해(계정 설정에 응원 팀이 한쪽 종목만 있으면 그 종목만), 묻지 말고 3-2 첫 브리핑과 단계 4 예약 작업을 바로 만든 뒤 4-3 체크리스트만 보여 줘. 계정 등록이 안 돼 있으면 단계 2를 건너뛰고 단계 3으로 가.
+1-1. 이 대화에서 Kongboda Motorsports 앱을 쓸 수 있는지 직접 확인해 줘. 쓸 수 있으면 kongboda_my_preferences를 불러 계정 등록 여부도 확인해. 이미 연결·계정 등록이 돼 있으면 [빠른 설정]으로 가: 단계 2와 3-1 질문을 건너뛰고, 종목은 F1·WEC 둘 다로 정해(계정 설정에 응원 팀이 한쪽 종목만 있으면 그 종목만), 3-2 미리 로그인은 아직 안 되는 종목만 선택 박스로 한 번 묻고(건너뛰기 가능), 그 밖에는 묻지 말고 3-3 첫 브리핑과 단계 4 예약 작업을 바로 만든 뒤 4-3 체크리스트만 보여 줘. 계정 등록이 안 돼 있으면 단계 2를 건너뛰고 단계 3으로 가.
 
 [단계 2/4] 플러그인 추가 (내가 직접 하는 단계)
 2-1. chatgpt.com 웹에서 ‘플러그인’(https://chatgpt.com/plugins)을 열고 ‘사용자 지정 MCP 서버 추가’를 누른다.
@@ -90,7 +100,7 @@ const en=url=>({
 ${RULES_EN}
 
 [Stage 1/4] Check the connection
-1-1. Check yourself whether the Kongboda Motorsports connector is available in this chat. If it is: Also call kongboda_my_preferences to check that my account is registered. If it is already connected and registered, go to [Quick setup]: skip stage 2 and the 3-1 question, use both F1 and WEC (or only the series my account settings have a favourite for, if only one), and without asking run the 3-2 first briefing and create the stage 4 scheduled tasks, then show only the 4-3 checklist. If my account is not registered yet, skip stage 2 and go to stage 3.
+1-1. Check yourself whether the Kongboda Motorsports connector is available in this chat. If it is: Also call kongboda_my_preferences to check that my account is registered. If it is already connected and registered, go to [Quick setup]: skip stage 2 and the 3-1 question, use both F1 and WEC (or only the series my account settings have a favourite for, if only one), ask the 3-2 early sign-in choice box once only for series that do not work yet (skip allowed), and otherwise without asking run the 3-3 first briefing and create the stage 4 scheduled tasks, then show only the 4-3 checklist. If my account is not registered yet, skip stage 2 and go to stage 3.
 
 [Stage 2/4] Add the connector (I do this stage)
 2-1. In claude.ai on the web or the desktop app, open Customize → Connectors (https://claude.ai/customize/connectors).
@@ -111,7 +121,7 @@ ${LATER_EN}`,
 ${RULES_EN}
 
 [Stage 1/4] Check the connection
-1-1. Check yourself whether the Kongboda Motorsports app is available in this chat. If it is: Also call kongboda_my_preferences to check that my account is registered. If it is already connected and registered, go to [Quick setup]: skip stage 2 and the 3-1 question, use both F1 and WEC (or only the series my account settings have a favourite for, if only one), and without asking run the 3-2 first briefing and create the stage 4 scheduled tasks, then show only the 4-3 checklist. If my account is not registered yet, skip stage 2 and go to stage 3.
+1-1. Check yourself whether the Kongboda Motorsports app is available in this chat. If it is: Also call kongboda_my_preferences to check that my account is registered. If it is already connected and registered, go to [Quick setup]: skip stage 2 and the 3-1 question, use both F1 and WEC (or only the series my account settings have a favourite for, if only one), ask the 3-2 early sign-in choice box once only for series that do not work yet (skip allowed), and otherwise without asking run the 3-3 first briefing and create the stage 4 scheduled tasks, then show only the 4-3 checklist. If my account is not registered yet, skip stage 2 and go to stage 3.
 
 [Stage 2/4] Add the plugin (I do this stage)
 2-1. On chatgpt.com open Plugins (https://chatgpt.com/plugins) and click Add custom MCP server.

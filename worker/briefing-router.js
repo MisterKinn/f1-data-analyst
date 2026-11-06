@@ -124,7 +124,7 @@ export function buildF1Card(p,snapshot={},route={},prefs=null,now=Date.now()){
  const left=a?.end&&now<a.end?Math.max(0,Math.round((a.end-now)/60000)):null;
  const lap=topics.LapCount, lapText=lap?.CurrentLap&&lap?.TotalLaps?`랩 ${lap.CurrentLap}/${lap.TotalLaps}`:null;
  const header={series:'F1',event:a?.event_ko||p.session?.name||null,session:a?.session||null,status:p.status,
-  time_left_minutes:left,time_left:lapText||(left==null?null:`${Math.floor(left/60)}:${String(left%60).padStart(2,'0')}`),
+  time_left_minutes:left,time_left:(live&&lapText)||(left==null?null:`${Math.floor(left/60)}:${String(left%60).padStart(2,'0')}`),
   clock:new Date(now).toLocaleString('ko-KR',{timeZone:'Asia/Seoul',hour12:false,hour:'2-digit',minute:'2-digit'})+' KST',
   track_status:F1_TRACK[String(topics.TrackStatus?.Status??'')]||(live?'green':'unknown')};
  const w=p.weather||{}, wx=[w.track_temperature&&`노면 ${w.track_temperature}`,w.air_temperature&&`기온 ${w.air_temperature}`,w.humidity&&`습도 ${w.humidity}`,/^(1|true)$/i.test(String(w.rainfall||''))?'비 감지':null].filter(Boolean).join(' · ');
