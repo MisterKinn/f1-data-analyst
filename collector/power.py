@@ -9,12 +9,11 @@ then turns itself off when nothing is left to do and books its own next start:
     same schedule also wakes it every CHECK_IN_HOURS at most, so a changed calendar or a
     post-session upload that was not ready yet is picked up while it sleeps.
   * Sleep: right after a session is recorded to its end, unless another recording starts
-    within MIN_SLEEP. FastF1 post-session data is published once the session window
-    closes (as before), so the host books a wake for that moment, stays on until the
-    data is on the site (or HISTORY_GRACE has passed; the next check-in retries) and
-    sleeps again. It also stays on for MIN_UPTIME after starting and only sleeps once
-    the wake schedule is saved. If AWS refuses the schedule the host
-    stays on: an idle server costs a little, a server that never wakes misses a session.
+    within MIN_SLEEP. Completed sessions are analysed from OpenF1 on demand, so nothing is
+    uploaded after a session and the host does not come back for it. It also stays on for
+    MIN_UPTIME after starting and only sleeps once the wake schedule is saved. If AWS
+    refuses the schedule the host stays on: an idle server costs a little, a server that
+    never wakes misses a session.
 
 Needs the instance role made by host/aws-power-setup.sh (EventBridge Scheduler create/
 update on kongboda-wake-* only, and passing the scheduler role, which may only start
@@ -33,8 +32,6 @@ WAKE_MARGIN = timedelta(minutes=int(os.environ.get('POWER_WAKE_MARGIN_MINUTES', 
 MIN_SLEEP = timedelta(minutes=int(os.environ.get('POWER_MIN_SLEEP_MINUTES', '40')))
 MIN_UPTIME = timedelta(minutes=int(os.environ.get('POWER_MIN_UPTIME_MINUTES', '10')))
 CHECK_IN = timedelta(hours=float(os.environ.get('POWER_CHECK_IN_HOURS', '12')))
-HISTORY_GRACE = timedelta(hours=float(os.environ.get('POWER_HISTORY_GRACE_HOURS', '3')))
-HISTORY_WAKE_DELAY = timedelta(minutes=5)
 SCHEDULE_GROUP = 'default'
 SCHEDULER_ROLE = os.environ.get('POWER_SCHEDULER_ROLE', 'kongboda-scheduler')
 BOOT = time.monotonic()
@@ -71,35 +68,17 @@ def recording_due(windows, now, lookahead):
                for w in live(windows))
 
 
-def publishes_after(window):
-    return window.get('series', 'f1') == 'f1'  # only F1 publishes FastF1 data after a session
-
-
-def history_pending(windows, now, is_done):
-    """A session window closed within HISTORY_GRACE and its FastF1 data is not on the site.
-    (The host publishes it once the window has closed, as it always did.)"""
-    return [w for w in windows if publishes_after(w) and at(w['close']) <= now < at(w['close']) + HISTORY_GRACE
-            and not is_done(w['id'])]
-
-
-def history_wakes(windows, now):
-    """A recorded session that ended before its window closes: come back at the close to
-    publish its FastF1 data, instead of staying on until then."""
-    return [at(w['close']) + HISTORY_WAKE_DELAY for w in windows
-            if publishes_after(w) and w.get('ended') and at(w['close']) > now]
-
-
-def decide(now, windows, lookahead, *, recording, is_lead, is_done, uptime):
-    """('stay', reason) or ('sleep', wake_at). Pure: tests drive it with fake clocks."""
+def decide(now, windows, lookahead, *, recording, is_lead=True, is_done=None, uptime):
+    """('stay', reason) or ('sleep', wake_at). Pure: tests drive it with fake clocks.
+    is_lead and is_done are kept for callers from before FastF1 post-session uploads were
+    retired; they no longer change the decision."""
     if recording:
         return 'stay', 'recording'
     if recording_due(windows, now, lookahead):
         return 'stay', 'session_soon'
-    if is_lead and history_pending(windows, now, is_done):
-        return 'stay', 'post_session_upload'
     if uptime < MIN_UPTIME:
         return 'stay', 'just_started'
-    wakes = [now + CHECK_IN] + (history_wakes(windows, now) if is_lead else [])
+    wakes = [now + CHECK_IN]
     start = next_record_start(windows, now, lookahead)
     if start is not None:
         wakes.append(start - WAKE_MARGIN)
