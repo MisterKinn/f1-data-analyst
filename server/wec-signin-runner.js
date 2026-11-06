@@ -19,9 +19,12 @@ export async function signedIn(page){
  try{return await page.locator('[id^="headlessui-menu-button-"]').count()>0&&await page.locator('a[href*="/login"]').count()===0;}catch{return false;}
 }
 
+// Chromium is not bundled (it would exceed Vercel's function size limit): chromium-min
+// downloads the matching pack once per instance into /tmp.
+export const CHROMIUM_PACK='https://github.com/Sparticuz/chromium/releases/download/v153.0.0/chromium-v153.0.0-pack.x64.tar';
 async function launch(){
- const [{default:chromium},{chromium:pw}]=await Promise.all([import('@sparticuz/chromium'),import('playwright-core')]);
- return pw.launch({executablePath:await chromium.executablePath(),args:chromium.args,headless:true});
+ const [{default:chromium},{chromium:pw}]=await Promise.all([import('@sparticuz/chromium-min'),import('playwright-core')]);
+ return pw.launch({executablePath:await chromium.executablePath(process.env.CHROMIUM_PACK_URL||CHROMIUM_PACK),args:chromium.args,headless:true});
 }
 
 async function openLogin(page){
