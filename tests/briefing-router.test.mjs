@@ -48,7 +48,7 @@ test('connector tells the model: card first, no F1 during WEC, one FIAWEC+ conne
 test('setup prompt books one calendar-timed task per series that re-books itself',async()=>{
  const {SETUP_PROMPTS}=await import('../worker/briefing-guide.js');
  for(const key of ['claude','chatgpt']){const t=SETUP_PROMPTS[key];
-  for(const part of ['꽁보다 F1 실시간 브리핑','꽁보다 WEC 실시간 브리핑','딱 하나씩','캘린더','시작 5분 뒤','다음 F1 세션','다음 WEC 세션','follow_up','10분마다','기존 예약 작업'])assert.ok(t.includes(part),key+' '+part);
+  for(const part of ['꽁보다 F1 실시간 브리핑','꽁보다 WEC 실시간 브리핑','딱 하나씩','캘린더','시작 30분 전','사전 점검','다음 F1 세션','다음 WEC 세션','follow_up','10분마다','기존 예약 작업'])assert.ok(t.includes(part),key+' '+part);
   assert.ok(!t.includes('매시간 실행,'),key+' no hourly task');}
 });
 test('F1 card follows the WEC order: situation, flag reasons, pace, favourite drivers; standings on request',()=>{
