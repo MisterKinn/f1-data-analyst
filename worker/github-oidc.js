@@ -15,7 +15,8 @@ async function jwks(fetcher,now){
  const keys=(await r.json()).keys||[];jwksCache={at:now,keys};return keys;
 }
 export function resetOidcCache(){jwksCache=null;}
-export async function verifyCollectorToken(token,{fetcher=fetch,now=Date.now()}={}){
+export const RULES_MONITOR_WORKFLOW=COLLECTOR_REPOSITORY+'/.github/workflows/rules-monitor.yml@refs/heads/main';
+export async function verifyCollectorToken(token,{fetcher=fetch,now=Date.now(),workflow=COLLECTOR_WORKFLOW}={}){
  const pieces=String(token||'').split('.');
  if(pieces.length!==3)throw Error('Malformed token');
  const header=part(pieces[0]),claims=part(pieces[1]);
@@ -27,6 +28,6 @@ export async function verifyCollectorToken(token,{fetcher=fetch,now=Date.now()}=
  const t=Math.floor(now/1000);
  if(claims.iss!==OIDC_ISSUER||claims.aud!==OIDC_AUDIENCE)throw Error('Wrong issuer or audience');
  if(!(claims.exp>t)||(claims.nbf&&claims.nbf>t+60))throw Error('Expired token');
- if(claims.repository!==COLLECTOR_REPOSITORY||claims.ref!=='refs/heads/main'||claims.workflow_ref!==COLLECTOR_WORKFLOW)throw Error('Token is not from the collector workflow');
+ if(claims.repository!==COLLECTOR_REPOSITORY||claims.ref!=='refs/heads/main'||claims.workflow_ref!==workflow)throw Error('Token is not from the expected workflow');
  return claims;
 }

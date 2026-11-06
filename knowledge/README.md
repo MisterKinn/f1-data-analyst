@@ -1,6 +1,6 @@
 # Research evidence for live interpretation
 
-Version 1.4, reviewed 2026-10-29. The catalog contains 19 reviewed papers, 4 candidates and 12 rights/access-held entries. It covers IMechE and related publishers, not every IMechE paper.
+Version 1.5, reviewed 2026-11-06. The catalog contains 27 reviewed papers, 6 candidates and 24 rights/access-held entries. It covers IMechE and related publishers plus open driving-theory papers, not every paper on these topics.
 
 ## Persistence and provenance
 
@@ -15,6 +15,10 @@ These additions are available through the existing research_lookup topic/query/I
 Version 1.3 adds K10 (tire wear regression) and K11 (battery model fidelity) as explanation references. Their manuscript licenses, required inputs and transfer limits are recorded in the catalog. R09 remains excluded under CC BY-NC-ND. See [the additional review log](reviews/2026-10-29-additional-review.md). The previous 13 approved cards and all prior pending records are unchanged.
 
 Version 1.4 rechecks the previous 15 papers and adds K12 (Monte Carlo scenarios), K13 (wake-aware overtaking), K14 (wheel/ground and attitude effects), and K15 (arXiv v4 racing-line surrogate). R10–R12 remain excluded. See the [complete Korean inventory and applicability report](reviews/2026-10-29-comprehensive-audit.md) for all 19 approved and 16 pending records. None of these four models is executed by the service. K12 is read with its production erratum; K15 is a version-specific preprint approval.
+
+Version 1.5 adds a `driving` topic for race-driving theory: K16 (racing vs non-racing drivers, eye tracking), K17 (human vs RL agent braking and turn-in), K18 (GG-V limited planning), K19 (3D track, banking), K20 (lift-and-coast and regenerative braking), K21 (steering at the handling limit), K22 (coaching-literature drills) and K23 (expertise background). K06 and K15 are also tagged `driving`. Each has an exact CC BY 4.0 statement visible on the article page; MDPI's HTML meta tag value of 3.0 is treated as a template error because the printed statement and Crossref say 4.0. C09 (Kegelman et al., 2017) stays a candidate: its CC BY 4.0 appears only in Crossref metadata, not on the article or PDF. C10 has a metadata license but no captured body. R13–R24 are CC BY-NC-ND, arXiv non-exclusive, SAE, IEEE, Elsevier, Springer or thesis all-rights-reserved sources (including the Velenis trail-braking papers and the Casanova thesis) and are not ingested. Free-to-read is not treated as a reuse license: race-driving books, paid courses and all-rights-reserved blogs are not paraphrased into the pack. See [the driving-theory review](reviews/2026-11-06-driving-theory-review.md).
+
+For driving questions the answer must keep the boundary between mechanism and observation. Public telemetry (speed, throttle, brake on/off, gear, distance) does not contain steering angle, brake pressure, tyre slip or g-g usage, so a card cannot prove that a driver trail-braked or used a particular line. Optimal-control lines are results for a stated vehicle and track.
 
 ## How a live answer uses the evidence
 

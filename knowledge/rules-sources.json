@@ -1,0 +1,251 @@
+{
+  "version": 1,
+  "updated_on": "2026-11-06",
+  "policy": "Official sources only. The monitor stores an article index (number, heading, page, short excerpt, keywords) and links to the original; it does not republish documents. Notifications stay F1/WEC only; indexing covers every series listed here.",
+  "phases": {
+    "1": "Tier 1: public dated listings readable with a plain HTTP fetch (this file).",
+    "2": "Tier 2: JS-rendered noticeboards (ELMS/ALMS, Formula E, BTCC, Supercars) via a headless browser, undated pages via content hashes, per-event discovery (WRC, DTM, NLS).",
+    "3": "History beyond the current and next rulebook year is not crawled by default (decided 2026-11-06); effort goes to current rules, upcoming race documents and automotive technology/patent monitoring instead. Older issues are indexed only when already listed with current ones.",
+    "4": "Tier 3: login-only or unpublished rulebooks are listed as unavailable, never guessed."
+  },
+  "sources": [
+    {
+      "id": "fia-isc",
+      "series": "fia-general",
+      "kind": "regulations",
+      "adapter": "fia_regulations",
+      "url": "https://www.fia.com/regulation/category/123",
+      "note": "International Sporting Code and appendices"
+    },
+    {
+      "id": "fia-circuits",
+      "series": "fia-general",
+      "kind": "regulations",
+      "adapter": "fia_regulations",
+      "url": "https://www.fia.com/regulation/category/97",
+      "note": "Circuit regulations incl. Appendix O and conduct material"
+    },
+    {
+      "id": "f1-regs",
+      "series": "f1",
+      "kind": "regulations",
+      "adapter": "fia_regulations",
+      "url": "https://www.fia.com/regulation/category/110",
+      "calendar": "f1"
+    },
+    {
+      "id": "f1-driving-standards",
+      "series": "f1",
+      "kind": "driving_guidelines",
+      "adapter": "single_pdf",
+      "url": "https://www.fia.com/sites/default/files/2026_f1_driving_standards_guidelines.pdf",
+      "title": "2026 F1 Driving Standards Guidelines",
+      "reg_year": 2026,
+      "calendar": "f1"
+    },
+    {
+      "id": "f1-event-docs",
+      "series": "f1",
+      "kind": "event_documents",
+      "adapter": "fia_event_documents",
+      "url": "https://www.fia.com/documents/championships/fia-formula-one-world-championship-14",
+      "calendar": "f1"
+    },
+    {
+      "id": "f2-regs",
+      "series": "f2",
+      "kind": "regulations",
+      "adapter": "fia_regulations",
+      "url": "https://www.fia.com/regulation/category/829",
+      "calendar": "f1"
+    },
+    {
+      "id": "f2-event-docs",
+      "series": "f2",
+      "kind": "event_documents",
+      "adapter": "fia_event_documents",
+      "url": "https://www.fia.com/documents/championships/formula-2-championship-44",
+      "calendar": "f1"
+    },
+    {
+      "id": "f3-regs",
+      "series": "f3",
+      "kind": "regulations",
+      "adapter": "fia_regulations",
+      "url": "https://www.fia.com/regulation/category/106",
+      "calendar": "f1"
+    },
+    {
+      "id": "f3-event-docs",
+      "series": "f3",
+      "kind": "event_documents",
+      "adapter": "fia_event_documents",
+      "url": "https://www.fia.com/documents/championships/fia-formula-3-championship-1012",
+      "calendar": "f1"
+    },
+    {
+      "id": "fe-regs",
+      "series": "formula-e",
+      "kind": "regulations",
+      "adapter": "fia_regulations",
+      "url": "https://www.fia.com/regulation/category/109",
+      "calendar": "formula-e"
+    },
+    {
+      "id": "wec-regs",
+      "series": "wec",
+      "kind": "regulations",
+      "adapter": "fia_regulations",
+      "url": "https://www.fia.com/regulation/category/118",
+      "calendar": "wec"
+    },
+    {
+      "id": "wec-event-docs",
+      "series": "wec",
+      "kind": "event_documents",
+      "adapter": "alkamel_wec",
+      "url": "https://files.alkamelcloud.com/wec/manifests/results.json",
+      "exclude": "analysis|hour \\d|chart|lap|sector|speed|weather|pit ?stop|best",
+      "recent_days": 60,
+      "calendar": "wec",
+      "note": "Al Kamel published files (same source as the personal WEC alert task); the Sportity noticeboard is not readable"
+    },
+    {
+      "id": "wrc-regs",
+      "series": "wrc",
+      "kind": "regulations",
+      "adapter": "fia_regulations",
+      "url": "https://www.fia.com/regulation/category/119",
+      "calendar": "wrc"
+    },
+    {
+      "id": "erc-regs",
+      "series": "erc",
+      "kind": "regulations",
+      "adapter": "fia_regulations",
+      "url": "https://www.fia.com/regulation/category/117"
+    },
+    {
+      "id": "world-rx-regs",
+      "series": "world-rx",
+      "kind": "regulations",
+      "adapter": "fia_regulations",
+      "url": "https://www.fia.com/regulation/category/120"
+    },
+    {
+      "id": "euro-rx-regs",
+      "series": "world-rx",
+      "kind": "regulations",
+      "adapter": "fia_regulations",
+      "url": "https://www.fia.com/regulation/category/103"
+    },
+    {
+      "id": "macau-fr-regs",
+      "series": "macau",
+      "kind": "regulations",
+      "adapter": "fia_regulations",
+      "url": "https://www.fia.com/regulation/category/107",
+      "calendar": "macau"
+    },
+    {
+      "id": "macau-gt-regs",
+      "series": "macau",
+      "kind": "regulations",
+      "adapter": "fia_regulations",
+      "url": "https://www.fia.com/regulation/category/629",
+      "calendar": "macau"
+    },
+    {
+      "id": "fia-f4-world-cup-regs",
+      "series": "fia-f4",
+      "kind": "regulations",
+      "adapter": "fia_regulations",
+      "url": "https://www.fia.com/regulation/category/2157"
+    },
+    {
+      "id": "frec-regs",
+      "series": "fia-formula-regional",
+      "kind": "regulations",
+      "adapter": "fia_regulations",
+      "url": "https://www.fia.com/regulation/category/2179"
+    },
+    {
+      "id": "fr-regs",
+      "series": "fia-formula-regional",
+      "kind": "regulations",
+      "adapter": "fia_regulations",
+      "url": "https://www.fia.com/regulation/category/2036"
+    },
+    {
+      "id": "f4-regs",
+      "series": "fia-f4",
+      "kind": "regulations",
+      "adapter": "fia_regulations",
+      "url": "https://www.fia.com/regulation/category/108"
+    },
+    {
+      "id": "tcr-world-tour-regs",
+      "series": "tcr",
+      "kind": "regulations",
+      "adapter": "fia_regulations",
+      "url": "https://www.fia.com/regulation/category/2102"
+    },
+    {
+      "id": "imsa-regs",
+      "series": "imsa",
+      "kind": "regulations",
+      "adapter": "pdf_links",
+      "url": "https://www.imsa.com/competitors/2026-imsa-rules-regulations/",
+      "exclude": "redline",
+      "date_order": "mdy",
+      "reg_year": 2026,
+      "calendar": "imsa"
+    },
+    {
+      "id": "imsa-aco-regs",
+      "series": "imsa",
+      "kind": "regulations",
+      "adapter": "pdf_links",
+      "url": "https://www.imsa.com/competitors/2026-aco-imsa-rules-regulations/",
+      "exclude": "redline",
+      "date_order": "mdy",
+      "reg_year": 2026,
+      "calendar": "imsa"
+    },
+    {
+      "id": "imsa-bulletins",
+      "series": "imsa",
+      "kind": "bulletin",
+      "adapter": "pdf_links",
+      "url": "https://www.imsa.com/competitors/2026-technical-bulletins/",
+      "exclude": "redline",
+      "date_order": "mdy",
+      "reg_year": 2026,
+      "calendar": "imsa"
+    },
+    {
+      "id": "indycar-regs",
+      "series": "indycar",
+      "kind": "regulations",
+      "adapter": "pdf_links",
+      "url": "https://epaddock.indycar.com/rules-policies-regulations",
+      "date_order": "mdy"
+    },
+    {
+      "id": "nls-regs",
+      "series": "nls",
+      "kind": "regulations",
+      "adapter": "pdf_links",
+      "url": "https://teilnehmer.vln.de/formulare.php?d=Ausschreibung",
+      "calendar": "nls"
+    },
+    {
+      "id": "scca-rules",
+      "series": "scca",
+      "kind": "regulations",
+      "adapter": "pdf_links",
+      "url": "https://www.scca.com/pages/cars-and-rules",
+      "date_order": "mdy"
+    }
+  ]
+}
