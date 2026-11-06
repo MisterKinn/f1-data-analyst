@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {pickSeries,buildWecBriefing,buildIdleBriefing,inScheduledF1Window,BRIEFING_ROUTER_INSTRUCTIONS} from '../worker/briefing-router.js';
+import {pickSeries,buildWecBriefing,buildF1Card,routedBriefingText,buildIdleBriefing,inScheduledF1Window,BRIEFING_ROUTER_INSTRUCTIONS} from '../worker/briefing-router.js';
 import {buildLiveBriefing} from '../worker/live-briefing.js';
 import {LIVE_APP_TOOL,readAppResource,LIVE_APP_URI} from '../worker/mcp-app.js';
 import worker from '../worker/index.js';
@@ -41,9 +41,25 @@ test('connector tells the model: card first, no F1 during WEC, choice box, login
  const init=await (await worker.fetch(new Request('https://k.test/mcp',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'initialize',params:{protocolVersion:'2025-06-18'}})}),{})).json();
  assert.ok(init.result.instructions.indexOf('LIVE BRIEFING')<init.result.instructions.indexOf('WEC BRIEFING FORMAT'));
 });
-test('setup prompt books an always-on task and per-session tasks that keep briefing until the session ends',async()=>{
+test('setup prompt books one calendar-timed task per series that re-books itself',async()=>{
  const {SETUP_PROMPTS}=await import('../worker/briefing-guide.js');
- for(const key of ['claude','chatgpt'])for(const part of ['series auto','follow_up','10분마다','시작 5분 뒤','기존 예약 작업'])assert.ok(SETUP_PROMPTS[key].includes(part),key+' '+part);
+ for(const key of ['claude','chatgpt']){const t=SETUP_PROMPTS[key];
+  for(const part of ['꽁보다 F1 실시간 브리핑','꽁보다 WEC 실시간 브리핑','딱 하나씩','캘린더','시작 5분 뒤','다음 F1 세션','다음 WEC 세션','follow_up','10분마다','기존 예약 작업'])assert.ok(t.includes(part),key+' '+part);
+  assert.ok(!t.includes('매시간 실행,'),key+' no hourly task');}
+});
+test('F1 card follows the WEC order: situation, flag reasons, pace, favourite drivers; standings on request',()=>{
+ const now=Date.parse('2026-11-06T15:45:00Z'),route=pickSeries('auto',now);
+ assert.equal(route.series,'f1');
+ const p={series:'f1',status:'LIVE',briefing:'x',freshness:{live:true},track_status:{label:'옐로'},weather:{track_temperature:'31°C'},
+  leaderboard:[{position:1,number:'1',code:'VER',name:'Max Verstappen',team:'Red Bull',best_lap:'1:11.200',gap:'LEADER'},{position:4,number:'63',code:'RUS',name:'George Russell',team:'Mercedes',best_lap:'1:11.600',gap:'+3.1',compound:'MEDIUM',tyre_laps:5}],final_leaderboard:[]};
+ const snap={topics:{TrackStatus:{Status:'2'},RaceControlMessages:{Messages:[{Utc:'2026-11-06T15:40:00',Category:'Flag',Flag:'YELLOW',Message:'YELLOW IN TRACK SECTOR 7'},{Utc:'2026-11-06T15:41:00',Category:'Other',Message:'CAR 63 (RUS) TRACK LIMITS NOTED - UNDER INVESTIGATION'}]}}};
+ const c=buildF1Card(p,snap,route,{preferences:{f1Team:'Mercedes',f1Drivers:['George Russell','Andrea Kimi Antonelli']}},now);
+ assert.equal(c.header.track_status,'yellow');assert.match(c.sections.right_now,/옐로/);
+ assert.equal(c.sections.flags[0].code,'yellow');assert.match(c.sections.flags[0].text,/SECTOR 7/);
+ assert.match(c.sections.pace,/단일 랩/);assert.match(c.sections.pace,/롱런/);
+ assert.match(c.sections.favourite.note,/RUS P4/);assert.match(c.sections.favourite.note,/\+0\.400s/);assert.match(c.sections.favourite.note,/조사/);
+ assert.ok(c.buttons.some(b=>b.id==='standings'));assert.ok(c.buttons.some(b=>b.id==='decision'));
+ assert.match(routedBriefingText(c),/응원 팀/);
 });
 test('already registered users get quick setup: briefing and scheduled tasks without questions',async()=>{
  const {SETUP_PROMPTS}=await import('../worker/briefing-guide.js');
