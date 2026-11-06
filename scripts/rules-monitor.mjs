@@ -79,6 +79,14 @@ export async function candidates(source,now=new Date()){
   return L.parseFiaRegulations(html,base).filter(d=>{const y=L.regulationYear(d.title)||Number(String(d.published||'').slice(0,4));return !y||y>=min;}).filter(d=>!source.include||new RegExp(source.include,'i').test(d.title)).filter(d=>!source.exclude||!new RegExp(source.exclude,'i').test(d.title));
  }
  if(source.adapter==='fia_event_documents'){const r=L.parseFiaEventDocuments(html,base);return r.docs.map(d=>({...d,event:r.event}));}
+ if(source.adapter==='alkamel_wec'){
+  // Al Kamel's JSON manifests (same reader the connector's wec_list_documents uses).
+  const {archive}=await import('../worker/wec.js');const index=await archive();const year=String(now.getUTCFullYear());
+  const season=[...index.records].reverse().find(r=>String(r.name).includes(year))||index.records.at(-1);if(!season)return [];
+  const a=await archive(season.season_id),since=now.getTime()-(source.recent_days??60)*DAY,skip=source.exclude?new RegExp(source.exclude,'i'):null;
+  return a.files.filter(f=>f.format==='pdf').map(f=>({url:f.url,title:[...f.folders.slice(1),f.title].filter(Boolean).join(' / '),published:f.published_at||null,event:f.folders[0]||null}))
+   .filter(f=>!skip||!skip.test(f.title)).filter(f=>FORCE||!f.published||Date.parse(f.published)>=since);
+ }
  if(source.adapter==='pdf_links')return L.parsePdfLinks(html,base,{include:source.include,exclude:source.exclude,date_order:source.date_order});
  throw Error('Unknown adapter '+source.adapter);
 }

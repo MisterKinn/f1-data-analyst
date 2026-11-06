@@ -10,7 +10,7 @@
 //  rules/events/<series>/<year>.json       race-event documents grouped by event
 //  rules/doc/<id>/<part>.json              article index parts of one document
 import {verifyCollectorToken,RULES_MONITOR_WORKFLOW} from './github-oidc.js';
-import {expandQuery,scoreArticle,seriesFrom,tokenize,RULES_INDEX_VERSION} from './rules-lib.js';
+import {expandQuery,scoreArticle,seriesFrom,tokenize,slug,RULES_INDEX_VERSION} from './rules-lib.js';
 
 const ro={readOnlyHint:true,destructiveHint:false,idempotentHint:true,openWorldHint:false};
 const KINDS=['regulations','event_documents','all'];
@@ -69,8 +69,11 @@ export async function rulesIngest(request,env,{verify=t=>verifyCollectorToken(t,
   const parts=partsOf(d.articles);for(let i=0;i<parts.length;i++)await writeJson(env,`rules/doc/${d.id}/${i}.json`,{id:d.id,part:i,articles:parts[i]});
   const record={...meta(d),parts:parts.length,article_count:d.articles.length,stored_at:now};
   if(d.kind==='event_documents'){
-   const y=eventYear(d),key=`rules/events/${d.series}/${y}.json`,m=await load(key)||{series:d.series,year:y,events:{}};
-   const ev=m.events[d.event||'Unknown event']||={docs:{}};ev.docs[d.id]=record;ev.updated_at=now;m.updated_at=now;manifests.set(key,m);
+   // Per-event manifest keeps every object small even for a full season of documents.
+   const y=eventYear(d),name=d.event||'Unknown event',es=slug(name)||'unknown',idxKey=`rules/events/${d.series}/${y}.json`,evKey=`rules/events/${d.series}/${y}/${es}.json`;
+   const idx=await load(idxKey)||{series:d.series,year:y,events:{}},ev=await load(evKey)||{series:d.series,year:y,event:name,docs:{}};
+   ev.docs[d.id]=record;ev.updated_at=now;manifests.set(evKey,ev);
+   idx.events[name]={slug:es,updated_at:now,count:Object.keys(ev.docs).length};idx.updated_at=now;manifests.set(idxKey,idx);
    const c=catalog.series[d.series]||={buckets:[],event_years:[]};if(!c.event_years.includes(y))c.event_years.push(y);
   }else{
    const b=bucketOf(d),key=`rules/series/${d.series}/${b}.json`,m=await load(key)||{series:d.series,bucket:b,docs:{}};
@@ -153,12 +156,12 @@ export async function rulesLookup(env,args={}){
   const m=await readJson(env,`rules/events/${s}/${year}.json`);if(!m?.events)continue;
   const names=Object.keys(m.events).sort((a,b)=>String(m.events[b].updated_at).localeCompare(String(m.events[a].updated_at)));
   const chosen=args.event?names.filter(n=>sameEvent(n,args.event)):names.slice(0,1);
-  for(const name of chosen)for(const d of Object.values(m.events[name].docs)){
+  for(const name of chosen){const ev=await readJson(env,`rules/events/${s}/${year}/${m.events[name].slug}.json`);if(!ev?.docs)continue;for(const d of Object.values(ev.docs)){
    if(d.published&&date(d.published)>asOf)continue;const fresh=freshness(status,d.source_id);
    const docScore=scoreArticle({n:'',h:d.title,x:d.excerpt||'',k:d.keywords||[]},q);
    if(docScore>0)hits.push({score:docScore+1,series:s,kind:'event_document',event:name,document:d.title,category:d.category,number:d.number,published:d.published,recalled:!!d.recalled,page:1,excerpt:d.excerpt||null,url:d.url,freshness:fresh});
    if(d.article_count)for(const a of await articlesOf(env,d)){const score=scoreArticle(a,q);if(score>0)hits.push({score,series:s,kind:'event_document',event:name,document:d.title,category:d.category,published:d.published,recalled:!!d.recalled,article:a.n,heading:a.h,page:a.p,excerpt:a.x,url:pageUrl(d.url,a.p),freshness:fresh});}
-  }
+  }}
  }
  hits.sort((a,b)=>b.score-a.score);
  const top=hits.slice(0,limit).map(({score,...h})=>h);
