@@ -10,7 +10,7 @@ test('a WEC window routes to WEC, an F1 session to F1, otherwise nothing live',(
  assert.equal(pickSeries('auto',Date.parse('2026-11-06T15:45:00Z')).series,'f1');
  const idle=pickSeries('auto',Date.parse('2026-11-04T00:00:00Z'));
  assert.equal(idle.series,'none');assert.ok(idle.next.f1&&idle.next.wec);
- assert.match(buildIdleBriefing(idle).briefing,/진행 중인 F1·WEC 세션이 없습니다/);
+ assert.match(buildIdleBriefing(idle).briefing,/진행 중인 F1·WEC 세션 없음/);
 });
 test('WEC login needed gives a two-option choice box with the FIAWEC+ login page',()=>{
  const route=pickSeries('auto',Date.parse('2026-11-06T10:00:00Z'));
@@ -57,7 +57,7 @@ test('F1 card follows the WEC order: situation, flag reasons, pace, favourite dr
  assert.equal(c.header.track_status,'yellow');assert.match(c.sections.right_now,/옐로/);
  assert.equal(c.sections.flags[0].code,'yellow');assert.match(c.sections.flags[0].text,/SECTOR 7/);
  assert.equal(c.sections.pace_title,'프랙티스 분석');
- assert.match(c.sections.favourite.note,/RUS P4/);assert.match(c.sections.favourite.note,/\+0\.400s/);assert.match(c.sections.favourite.note,/조사/);
+ assert.match(c.sections.favourite.note,/RUS P4/);assert.match(c.sections.favourite.note,/최고랩 \+0\.400/);assert.match(c.sections.favourite.note,/조사/);
  assert.ok(c.buttons.some(b=>b.id==='standings'));assert.ok(c.buttons.some(b=>b.id==='decision'));
  assert.match(routedBriefingText(c),/응원 팀/);
 });
@@ -72,14 +72,14 @@ test('the analysis section follows the session: qualifying sectors, practice sim
  const rows=[{number:'1',code:'VER',position:1},{number:'4',code:'NOR',position:2,interval:'+1.2'},{number:'63',code:'RUS',position:3,interval:'+0.8',compound:'HARD',tyre_laps:12}];
  const bl=(n,t,s1,s2,s3,c)=>({driver_number:n,lap_time:t,status:'complete',sectors:{S1:s1,S2:s2,S3:s3},tyre:c?{compound:c}:undefined});
  const q=buildSessionAnalysis({sessionName:'Qualifying',live:true,rows,mine:['63'],snapshot:{topics:{TimingData:{SessionPart:3}},lap_archive:{best_laps:{Q3:{'1':bl('1','1:10.000','20.000','30.000','20.000'),'4':bl('4','1:10.100','19.950','30.150','20.000'),'63':bl('63','1:10.300','20.050','30.200','20.050')}},records:[]}}});
- assert.equal(q.title,'퀄리파잉 페이스');assert.match(q.lines.join('|'),/S1 NOR 19\.950/);assert.match(q.lines.join('|'),/RUS P3 \+0\.300.*S2 \+0\.200.*S2에서 가장 많이 잃음/);
+ assert.equal(q.title,'퀄리파잉 페이스');assert.match(q.lines.join('|'),/S1 NOR 19\.950/);assert.match(q.lines.join('|'),/RUS P3 \+0\.300.*S2 \+0\.200.*S2 최대 손실/);
  const rec=(n,i,t)=>({driver_number:n,lap_number:i,lap_time_ms:t,completed_at:`2026-11-06T16:${String(i).padStart(2,'0')}:00Z`,track_status_at_completion:'1'});
  const records=[...[1,2,3,4,5].map(i=>rec('4',i,74000+i*50)),...[1,2,3,4,5].map(i=>rec('63',i,74400+i*80)),...[1,2,3,4].map(i=>rec('1',i,73900)),...[1,2,3,4].map(i=>rec('16',i,74100))];
  const pr=buildSessionAnalysis({sessionName:'Practice 2',live:true,rows:[...rows,{number:'16',code:'LEC',position:4}],mine:['63'],snapshot:{topics:{},lap_archive:{best_laps:{session:{'1':bl('1','1:09.900','20.0','29.9','20.0','SOFT'),'63':bl('63','1:10.200','20.1','30.0','20.1','SOFT')}},records}}});
- const t=pr.lines.join('|');assert.match(t,/퀄리 시뮬/);assert.match(t,/VER 1:09\.900 · RUS \+0\.300/);assert.match(t,/롱런/);assert.match(t,/RUS 롱런/);assert.match(t,/랩당 \+0\.080/);
+ const t=pr.lines.join('|');assert.match(t,/퀄리 시뮬/);assert.match(t,/VER 1:09\.900 · RUS \+0\.300/);assert.match(t,/롱런/);assert.match(t,/RUS 롱런/);assert.match(t,/추세 \+0\.080\/랩/);
  const ra=buildSessionAnalysis({sessionName:'Race',live:true,rows,mine:['63'],snapshot:{topics:{},lap_archive:{best_laps:{},records}}});
- assert.equal(ra.title,'레이스 페이스');assert.match(ra.lines.join('|'),/앞차 NOR\(\+0\.8\) 대비 랩당 \+0\.\d{3} → 벌어지는 중/);
- const none=buildSessionAnalysis({sessionName:'Race',live:false,rows,mine:[],snapshot:{}});assert.match(none.lines[0],/판단하지 않습니다/);
+ assert.equal(ra.title,'레이스 페이스');assert.match(ra.lines.join('|'),/앞차 NOR\(\+0\.8\) 대비 \+0\.\d{3}\/랩 → 멀어짐/);
+ const none=buildSessionAnalysis({sessionName:'Race',live:false,rows,mine:[],snapshot:{}});assert.match(none.lines[0],/판단 보류/);
 });
 
 test('setup offers both sign-ins early with a skip option',async()=>{
