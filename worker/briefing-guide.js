@@ -45,12 +45,12 @@ const SCHEDULE_KO=`고른 종목마다 예약 작업을 딱 하나씩 만들어 
  각 작업은 1회 실행으로 만들고, 실행 시각은 캘린더(kongboda_live_briefing 결과의 next_sessions)에서 그 종목의 다음 세션 시작 5분 전로 정해. 시각은 한국시간으로 보여 줘. 작업은 실행될 때마다 스스로 다음 세션으로 다시 예약된다.
  F1 작업 지침: ${SERIES_TASK_KO('F1','꽁보다 F1 실시간 브리핑','팀·드라이버')}
  WEC 작업 지침: ${SERIES_TASK_KO('WEC','꽁보다 WEC 실시간 브리핑','제조사')}
- 두 작업 모두 내 컴퓨터가 필요한 작업(‘이 컴퓨터 필요’, requires_local_device)으로 만들어, 실행될 때 대화 옆 브라우저로 로그인 화면을 띄울 수 있게 해. 자동 승인으로 만들 수 있으면 그렇게 하고, 아니면 작업 설정에서 ‘Automatically approve’를 켜는 방법을 알려 줘. 알림(push)은 켜. 고른 종목만 만들어.`;
+ 두 작업 모두 내 컴퓨터에 묶지 말고 클라우드에서 돌게 만들어(PC가 꺼져 있어도 실행되고 폰으로도 오게). 실행 때 내 컴퓨터 브라우저가 연결돼 있으면 그걸로 로그인 화면을 띄워. 자동 승인으로 만들 수 있으면 그렇게 하고, 아니면 작업 설정에서 ‘Automatically approve’를 켜는 방법을 알려 줘. 알림(push)은 켜. 고른 종목만 만들어.`;
 const SCHEDULE_EN=`Create exactly one scheduled task per series I picked: "Kongboda F1 live briefing" and "Kongboda WEC live briefing". Do not run them hourly and do not create one task per session. First check my existing scheduled tasks: if one with the same name exists, update its instructions and time instead of creating another, and delete old-style tasks ("Kongboda live briefing" hourly, "... live briefing · session").
  Make each a one-time task set to 5 minutes before the start of that series' next session in the calendar (next_sessions in the kongboda_live_briefing result), shown in my time zone. Each run re-books itself for the next session.
  F1 task instructions: ${SERIES_TASK_EN('F1','Kongboda F1 live briefing','team and drivers')}
  WEC task instructions: ${SERIES_TASK_EN('WEC','Kongboda WEC live briefing','manufacturer')}
- Create both as tasks that require my computer ("Require this computer", requires_local_device) so each run can open the sign-in page in the browser beside the chat. Use automatic approval if you can; otherwise tell me how to turn on "Automatically approve" in the task settings. Turn on push notifications. Only for the series I picked.`;
+ Create both as cloud tasks, not tied to my computer, so they run with my PC off and reach my phone; when a browser on my computer is reachable, use it to open the sign-in page. Use automatic approval if you can; otherwise tell me how to turn on "Automatically approve" in the task settings. Turn on push notifications. Only for the series I picked.`;
 const LATER_KO=`4-3. 마무리로 체크리스트를 보여 줘: 커넥터 연결, 고른 종목, 만든 예약 작업 이름(각각 완료/안 됨). 그리고 두 줄로 알려 줘: 고르지 않은 종목도 언제든 이 대화에서 ‘WEC 예약도 만들어 줘’처럼 말하면 추가할 수 있다는 것, 세션 중에 더 자주 보고 싶으면 그 대화에서 ‘업데이트’라고 보내면 된다는 것.`;
 const LATER_EN=`4-3. Finish with a checklist: connector connected, series picked, scheduled tasks created by name (each done / not done). Then tell me in two lines that I can add a scheduled task for a series I did not pick at any time by saying, for example, "set up WEC too", and that I can send "update" in that chat for more frequent updates during a session.`;
 const ko=url=>({

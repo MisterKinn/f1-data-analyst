@@ -34,7 +34,7 @@ test('off-schedule F1 data (failover drill) is never a session result',()=>{
  assert.match(drill.briefing,/실제 세션 결과로 표시하지 않습니다/);
 });
 test('connector tells the model: card first, no F1 during WEC, choice box, login page',async()=>{
- for(const part of ['series "auto" FIRST','do not call fastf1_live_snapshot','write no summary before it','choice box','ALWAYS a choice box','requires_local_device','Signed in to FIAWEC+','off_schedule_record','KEEP BRIEFING FOR THE WHOLE SESSION','follow_up.until'])assert.ok(BRIEFING_ROUTER_INSTRUCTIONS.includes(part),part);
+ for(const part of ['series "auto" FIRST','do not call fastf1_live_snapshot','write no summary before it','choice box','ALWAYS a choice box','run in the cloud','Signed in to FIAWEC+','off_schedule_record','KEEP BRIEFING FOR THE WHOLE SESSION','follow_up.until'])assert.ok(BRIEFING_ROUTER_INSTRUCTIONS.includes(part),part);
  assert.deepEqual(LIVE_APP_TOOL.inputSchema.properties.series.enum,['auto','f1','wec']);
  const html=readAppResource(LIVE_APP_URI).contents[0].text;
  assert.match(html,/renderRouted/);assert.match(html,/ui\/message/);
@@ -44,7 +44,7 @@ test('connector tells the model: card first, no F1 during WEC, choice box, login
 test('setup prompt books one calendar-timed task per series that re-books itself',async()=>{
  const {SETUP_PROMPTS}=await import('../worker/briefing-guide.js');
  for(const key of ['claude','chatgpt']){const t=SETUP_PROMPTS[key];
-  for(const part of ['꽁보다 F1 실시간 브리핑','꽁보다 WEC 실시간 브리핑','딱 하나씩','캘린더','시작 5분 전','선택 박스','requires_local_device','다음 F1 세션','다음 WEC 세션','follow_up','10분마다','기존 예약 작업'])assert.ok(t.includes(part),key+' '+part);
+  for(const part of ['꽁보다 F1 실시간 브리핑','꽁보다 WEC 실시간 브리핑','딱 하나씩','캘린더','시작 5분 전','선택 박스','클라우드에서','다음 F1 세션','다음 WEC 세션','follow_up','10분마다','기존 예약 작업'])assert.ok(t.includes(part),key+' '+part);
   assert.ok(!t.includes('매시간 실행,'),key+' no hourly task');}
 });
 test('F1 card follows the WEC order: situation, flag reasons, pace, favourite drivers; standings on request',()=>{
