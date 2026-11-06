@@ -246,6 +246,170 @@
       "adapter": "pdf_links",
       "url": "https://www.scca.com/pages/cars-and-rules",
       "date_order": "mdy"
+    },
+    {
+      "id": "dakar-fia-regs",
+      "series": "dakar",
+      "kind": "regulations",
+      "adapter": "fia_regulations",
+      "url": "https://www.fia.com/regulation/category/100",
+      "calendar": "dakar"
+    },
+    {
+      "id": "dakar-regs",
+      "series": "dakar",
+      "kind": "regulations",
+      "adapter": "pdf_links",
+      "url": "https://competitors.dakar.com/en/regulations",
+      "calendar": "dakar",
+      "tier": 2
+    },
+    {
+      "id": "elms-regs",
+      "series": "elms",
+      "kind": "regulations",
+      "adapter": "pdf_links",
+      "url": "https://www.europeanlemansseries.com/en/page/regulations-2",
+      "calendar": "elms",
+      "tier": 2,
+      "note": "Random file names; changes detected by new URL or hash"
+    },
+    {
+      "id": "lemanscup-regs",
+      "series": "lemanscup",
+      "kind": "regulations",
+      "adapter": "pdf_links",
+      "url": "https://www.lemanscup.com/en/page/regulations-3",
+      "tier": 2
+    },
+    {
+      "id": "alms-regs",
+      "series": "alms",
+      "kind": "regulations",
+      "adapter": "pdf_links",
+      "url": "https://www.asianlemansseries.com/en/page/regulations",
+      "calendar": "alms",
+      "tier": 2
+    },
+    {
+      "id": "gtwc-europe-regs",
+      "series": "gtwc-europe",
+      "kind": "regulations",
+      "adapter": "pdf_links",
+      "url": "https://europeregs.sporting.gt-world-challenge.com/",
+      "calendar": "gtwc-europe",
+      "tier": 2
+    },
+    {
+      "id": "british-gt-regs",
+      "series": "british-gt",
+      "kind": "regulations",
+      "adapter": "single_pdf",
+      "url": "https://www.britishgt.com/images/2026%20British%20GT%20Championship%20Regulations%20-%20Published%20Copy%2026%20March%202026%20%5BClean%5D.pdf",
+      "title": "2026 British GT Championship Regulations",
+      "reg_year": 2026,
+      "calendar": "british-gt",
+      "tier": 2
+    },
+    {
+      "id": "24h-series-regs",
+      "series": "24h-series",
+      "kind": "regulations",
+      "adapter": "pdf_links",
+      "url": "https://www.24hseries.com/gfx/TEAM%20INFO/01%20Regulations/2026/",
+      "calendar": "24h-series",
+      "reg_year": 2026,
+      "tier": 2
+    },
+    {
+      "id": "dtm-regs",
+      "series": "dtm",
+      "kind": "regulations",
+      "adapter": "pdf_links",
+      "url": "https://www.adac-motorsport.de/dtm/reglement/",
+      "tier": 2
+    },
+    {
+      "id": "btcc-regs",
+      "series": "btcc",
+      "kind": "regulations",
+      "adapter": "pdf_links",
+      "url": "https://btcc.net/about/key-rules-and-regulations/",
+      "tier": 2
+    },
+    {
+      "id": "motorsport-uk-rules",
+      "series": "motorsport-uk",
+      "kind": "regulations",
+      "adapter": "pdf_links",
+      "url": "https://motorsportuk.org/the-national-competition-rules-2026-updates/",
+      "tier": 2
+    },
+    {
+      "id": "super-formula-regs",
+      "series": "super-formula",
+      "kind": "regulations",
+      "adapter": "single_pdf",
+      "url": "https://motorsports.jaf.or.jp/-/media/1/3375/3379/3400/3462/3466/3492/2026_touitsu_kisoku_superformula_20260101.pdf",
+      "title": "2026 Super Formula Unified Regulations (JAF)",
+      "reg_year": 2026,
+      "tier": 2
+    },
+    {
+      "id": "super-taikyu-regs",
+      "series": "super-taikyu",
+      "kind": "regulations",
+      "adapter": "single_pdf",
+      "url": "https://supertaikyu.com/files/Regulation.pdf",
+      "title": "Super Taikyu Series Regulations",
+      "calendar": "super-taikyu",
+      "tier": 2,
+      "note": "Same URL overwritten each season; hash detects changes"
+    },
+    {
+      "id": "superrace-regs",
+      "series": "superrace",
+      "kind": "regulations",
+      "adapter": "pdf_links",
+      "url": "https://www.super-race.com/inside/info_race",
+      "tier": 2
+    },
+    {
+      "id": "n-festival-regs",
+      "series": "hyundai-n-festival",
+      "kind": "regulations",
+      "adapter": "pdf_links",
+      "url": "https://drivingexperience.hyundai.co.kr/kr/n-festival/about/index",
+      "tier": 2
+    },
+    {
+      "id": "fim-documents",
+      "series": "motogp",
+      "kind": "regulations",
+      "adapter": "pdf_links",
+      "url": "https://www.fim-moto.com/en/documents",
+      "include": "motogp|moto2|moto3|superbike|worldsbk|supersport",
+      "tier": 2,
+      "note": "MotoGP and WorldSBK regulations on the FIM document list"
+    },
+    {
+      "id": "gr-cup-regs",
+      "series": "gr-cup",
+      "kind": "regulations",
+      "adapter": "pdf_links",
+      "url": "https://www.grcupseries.com/about/regulations",
+      "tier": 2
     }
-  ]
+  ],
+  "tier3_unavailable": {
+    "nascar": "Rule books are member-only; changes appear only as news posts.",
+    "super-gt": "No public rulebook PDF; updates published as news.",
+    "gtwc-america": "Regulations page shows information pending.",
+    "porsche-carrera-cup": "No public regulations found (Germany, Asia, Korea, GB); North America is on the IMSA list.",
+    "f1-academy": "Summary page only; no public sporting regulations PDF.",
+    "extreme-h": "No FIA regulations category; second edition postponed.",
+    "kara": "Rule PDFs only as board-post attachments with no stable listing.",
+    "supercars": "JS-rendered rules page (phase 2 headless browser).",
+    "wec-bop": "FIA/ACO stopped publishing public BoP tables from 2026 (reported); not available."
+  }
 }

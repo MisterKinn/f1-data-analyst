@@ -11,6 +11,7 @@
 //  rules/doc/<id>/<part>.json              article index parts of one document
 import {verifyCollectorToken,RULES_MONITOR_WORKFLOW} from './github-oidc.js';
 import {expandQuery,scoreArticle,seriesFrom,tokenize,slug,RULES_INDEX_VERSION} from './rules-lib.js';
+import registry from '../knowledge/rules-sources.json' with {type:'json'};
 
 const ro={readOnlyHint:true,destructiveHint:false,idempotentHint:true,openWorldHint:false};
 const KINDS=['regulations','event_documents','all'];
@@ -138,6 +139,8 @@ export async function rulesLookup(env,args={}){
  if(!env.BUCKET)return {index_status:'storage_unavailable',hits:[]};
  const asOf=args.as_of||today(),season=args.season||Number(asOf.slice(0,4)),kind=args.kind||'all',limit=args.limit||5;
  const [catalog,status]=await Promise.all([readJson(env,'rules/catalog.json'),readJson(env,'rules/status.json')]);
+ const reqSeries=args.series?seriesFrom(args.series):null,unavailable=reqSeries&&registry.tier3_unavailable?.[reqSeries];
+ if(unavailable)return {index_status:'not_publicly_available',series:reqSeries,message:unavailable+' Do not guess the rule text; cite official news or the governing body where available.',hits:[]};
  if(!catalog||!Object.keys(catalog.series||{}).length)return {index_status:'index_empty',message:'The rules index has no documents yet. Use fia_list_regulations / motorsport_list_documents for now.',hits:[]};
  let series=args.series?[seriesFrom(args.series)]:null;
  if(!series){const words=String(args.query).toLowerCase();const guess=Object.keys(catalog.series).filter(s=>{const id=seriesFrom(s);return id&&(words.includes(id)||tokenize(words).some(w=>seriesFrom(w)===id));});series=guess.length?guess:Object.keys(catalog.series);}

@@ -198,7 +198,8 @@ export const SERIES_ALIASES={
  'formula-e':['formula e','formula-e','fe','포뮬러e','포뮬러 e'],wec:['wec','world endurance','르망','le mans','하이퍼카'],
  wrc:['wrc','rally','랠리'],erc:['erc'],'world-rx':['world rx','rallycross','wrx'],macau:['macau','마카오'],
  'fia-formula-regional':['frec','formula regional','fr'],'fia-f4':['f4'],tcr:['tcr'],'fia-general':['isc','sporting code','international sporting code','appendix l','국제 스포팅 코드'],
- imsa:['imsa'],indycar:['indycar','indy nxt','인디카'],nls:['nls','nurburgring','뉘르부르크링'],scca:['scca'],'fia-other':['fia other']
+ imsa:['imsa'],indycar:['indycar','indy nxt','인디카'],nls:['nls','nurburgring','뉘르부르크링'],scca:['scca'],'fia-other':['fia other'],
+ dakar:['dakar','다카르'],elms:['elms','european le mans'],lemanscup:['le mans cup','michelin le mans cup'],alms:['alms','asian le mans'],'gtwc-europe':['gtwc','gt world challenge','gtwc europe'],'british-gt':['british gt'],'24h-series':['24h series','24h 시리즈'],dtm:['dtm'],btcc:['btcc'],'motorsport-uk':['motorsport uk','msuk'],'super-formula':['super formula','슈퍼 포뮬러','슈퍼포뮬러'],'super-taikyu':['super taikyu','슈퍼 다이큐','슈퍼다이큐'],superrace:['superrace','super race','슈퍼레이스','슈퍼 레이스'],'hyundai-n-festival':['n festival','n페스티벌','n 페스티벌','현대 n 페스티벌'],motogp:['motogp','moto gp','motogp','worldsbk','wsbk','모토gp'],'gr-cup':['gr cup','gr86']
 };
 export function seriesFrom(value){
  const v=String(value??'').trim().toLowerCase();if(!v)return null;if(SERIES_ALIASES[v])return v;

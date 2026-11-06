@@ -90,7 +90,7 @@ assert.equal(evHit.hits[0].event,'São Paulo Grand Prix');assert.equal(evHit.hit
 assert.ok(evHit.freshness_warning,'partial source check is surfaced');
 assert.equal((await rulesLookup(env,{query:'event notes',series:'f1',kind:'event_documents',as_of:'2026-11-05'})).hits.length,0,'documents published after as_of are hidden');
 assert.equal((await rulesLookup({BUCKET:memoryBucket()},{query:'vsc'})).index_status,'index_empty');
-assert.deepEqual((await rulesLookup(env,{query:'vsc',series:'nascar'})).unknown_series,['nascar']);
+assert.deepEqual((await rulesLookup(env,{query:'vsc',series:'zzz-cup'})).unknown_series,['zzz-cup']);
 
 // applicability picks the latest valid issue per family
 const fam=applicableDocs([{series:'f1',family:'a',published:'2026-01-01',title:'1'},{series:'f1',family:'a',published:'2026-03-01',title:'2'},{series:'f1',family:'a',published:'2026-09-01',title:'3'}],'2026-04-01');
@@ -110,3 +110,4 @@ assert.equal(ctxR.series,'f1');assert.equal(ctxR.topics[0].topic,'track limits')
 const att=JSON.parse(attachRulesContext(rc,ctxR).content[0].text);assert.ok(att.messages&&att.rules_context.topics.length);
 assert.equal(await rulesContext(env,'openf1_race_control',{},{content:[{type:'text',text:'{"laps":[]}'}]}),null,'no regulated situation, nothing attached');
 assert.equal(await rulesContext({},'openf1_race_control',{},rc),null);
+assert.equal((await rulesLookup(env,{query:'track limits',series:'NASCAR'})).index_status,'not_publicly_available');
