@@ -70,6 +70,20 @@ class RunnerTests(unittest.TestCase):
         self.assertEqual(run.call_count, 1)
         self.assertEqual(pushes[-1]['state'], 'human_verification_required')
 
+    def test_login_page_captcha_word_blocks_only_after_a_failed_step(self):
+        from unittest.mock import MagicMock
+        from wec_browser import FIAWECBrowser, DiscoveryError
+        b = FIAWECBrowser.__new__(FIAWECBrowser)
+        b.page = MagicMock(url='https://auth.staylive.io/u/login', title=lambda: 'Log in | FIAWEC')
+        b.page.locator.return_value.inner_text.return_value = 'Email address Continue captcha'
+        b.check_gate()  # normal login page: carry on
+        with self.assertRaises(DiscoveryError) as error:
+            b.check_gate(strict=True)
+        self.assertEqual(error.exception.detail, 'captcha @ auth.staylive.io · Log in | FIAWEC')
+        b.page.locator.return_value.inner_text.return_value = 'Checking your browser before accessing'
+        with self.assertRaises(DiscoveryError):
+            b.check_gate()
+
     def test_gate_detail_has_phrase_host_title_only(self):
         from wec_browser import gate_detail
         detail = gate_detail('reCAPTCHA', 'https://auth.staylive.io/u/login?state=SECRET', 'Log in <x>')

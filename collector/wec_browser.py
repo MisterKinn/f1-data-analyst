@@ -142,9 +142,12 @@ class FIAWECBrowser:
                 return route.abort()
         return route.continue_()
 
-    def check_gate(self):
+    def check_gate(self, strict=False):
+        """Stop on a real bot wall. The FIAWEC login page itself mentions 'captcha' (a widget
+        shown only when needed), so that word alone stops a run only after a step failed."""
         text = self.page.locator('body').inner_text(timeout=12000)[:30000]
-        found = re.search(r'verify you are human|checking your browser|unusual traffic|captcha|access denied', text, re.I)
+        pattern = r'verify you are human|checking your browser|unusual traffic|access denied' + (r'|captcha' if strict else '')
+        found = re.search(pattern, text, re.I)
         if found:
             raise DiscoveryError('human_verification_required', gate_detail(found.group(0), self.page.url, self.page.title()))
         if re.search(r'incorrect password|wrong email|invalid credentials', text, re.I):
@@ -185,7 +188,7 @@ class FIAWECBrowser:
         try:
             field.wait_for(state='visible')
         except Exception:
-            self.check_gate()
+            self.check_gate(strict=True)
             raise DiscoveryError('authentication_action_required') from None
         if urlsplit(self.page.url).hostname != AUTH_HOST:
             raise DiscoveryError('unapproved_destination')
@@ -195,7 +198,7 @@ class FIAWECBrowser:
             self.page.wait_for_url('https://plus.fiawec.com/**', timeout=25000)
             self.page.locator('[id^="headlessui-menu-button-"]').wait_for(state='visible')
         except Exception:
-            self.check_gate()
+            self.check_gate(strict=True)
             raise DiscoveryError('authentication_action_required') from None
         self.check_gate()
 
