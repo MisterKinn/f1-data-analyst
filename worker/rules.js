@@ -90,6 +90,11 @@ export async function rulesIngest(request,env,{verify=t=>verifyCollectorToken(t,
   for(const [url,v] of Object.entries(entries))if(/^https?:\/\//.test(url)&&v&&typeof v==='object')cur[url]={id:v.id??cur[url]?.id??null,hash:v.hash??cur[url]?.hash??null,etag:v.etag??null,lm:v.lm??null,published:v.published??cur[url]?.published??null,seen_at:now};
   if(JSON.stringify(cur).length<800_000)await writeJson(env,key,cur);
  }
+ if(Array.isArray(body.research_candidates)&&body.research_candidates.length){
+  const key='research/auto-candidates.json',cur=await readJson(env,key,{fresh:true})||{items:[]},byDoi=new Map(cur.items.map(c=>[c.doi,c]));
+  for(const c of body.research_candidates.slice(0,200)){if(!c||typeof c.doi!=='string'||!/^10\.\d{4,9}\//.test(c.doi)||typeof c.title!=='string')continue;if(!byDoi.has(c.doi))byDoi.set(c.doi,{id:'A-'+c.doi.replace(/[^a-z0-9]+/gi,'-').slice(0,40),doi:c.doi,title:c.title.slice(0,300),year:Number.isInteger(c.year)?c.year:null,url:typeof c.url==='string'?c.url.slice(0,300):null,license:typeof c.license==='string'?c.license.slice(0,40):null,query:String(c.query||'').slice(0,80),found_at:now});}
+  const items=[...byDoi.values()].sort((a,b)=>String(b.found_at).localeCompare(String(a.found_at))).slice(0,300);await writeJson(env,key,{updated_at:now,items});
+ }
  if(Array.isArray(body.sources)&&body.sources.length){
   const status=await readJson(env,'rules/status.json',{fresh:true})||{sources:{}};
   for(const s of body.sources.slice(0,200)){if(!s||!SAFE.test(s.id))continue;const prev=status.sources[s.id]||{};

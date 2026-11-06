@@ -399,6 +399,27 @@
       "adapter": "pdf_links",
       "url": "https://www.grcupseries.com/about/regulations",
       "tier": 2
+    },
+    {
+      "id": "openalex-driving",
+      "series": "research",
+      "kind": "research_watch",
+      "adapter": "openalex",
+      "url": "https://api.openalex.org/works",
+      "recent_days": 60,
+      "queries": [
+        "racing line",
+        "trail braking",
+        "race car driver",
+        "racing driver",
+        "minimum lap time",
+        "lap time simulation",
+        "g-g diagram",
+        "handling limits vehicle",
+        "motorsport vehicle dynamics",
+        "driver model race car"
+      ],
+      "note": "Weekly. Found papers become unreviewed candidates only; approval needs the exact license and full-text review."
     }
   ],
   "tier3_unavailable": {

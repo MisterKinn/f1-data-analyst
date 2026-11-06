@@ -53,6 +53,7 @@ function inRaceWindow(source,now=Date.now()){
  return calendarEvents.some(e=>e.series===cal&&now>=Date.parse(e.start+'T00:00:00Z')-4*DAY&&now<=Date.parse((e.end||e.start)+'T23:59:59Z')+2*DAY);
 }
 export function intervalFor(source,now=Date.now()){
+ if(source.kind==='research_watch')return 7*DAY;
  if(source.kind==='event_documents')return inRaceWindow(source,now)?15*60_000:12*HOUR;
  return inRaceWindow(source,now)?6*HOUR:DAY;
 }
@@ -116,6 +117,20 @@ export function buildDoc(source,c,file,parsed){
   text_status:parsed?(parsed.pages.some(p=>p.text.trim())?'ok':'no_text_layer'):'metadata_only',articles};
 }
 
+async function processResearchWatch(source,report){
+ // OpenAlex: open-access CC BY works from the last 60 days matching driving-theory queries.
+ const result={id:source.id,series:source.series,kind:source.kind,status:'ok',listed:0,new:0,error:null},found=new Map(),known=new Set();
+ try{for(const p of (await import('../knowledge/research-catalog.json',{with:{type:'json'}})).default.papers)known.add(String(p.doi).toLowerCase());}catch{}
+ const since=new Date(Date.now()-(source.recent_days??60)*DAY).toISOString().slice(0,10);
+ for(const q of source.queries||[]){
+  try{const url=`https://api.openalex.org/works?search=${encodeURIComponent(q)}&filter=from_publication_date:${since},is_oa:true,best_oa_location.license:cc-by&per-page=25&select=doi,title,publication_year,best_oa_location`;
+   const r=await get(url,{max:2_000_000,headers:{accept:'application/json'}});report.downloads++;const data=JSON.parse(text(r.bytes));
+   for(const w of data.results||[]){const doi=String(w.doi||'').replace(/^https?:\/\/doi\.org\//,'').toLowerCase();if(!doi||known.has(doi)||found.has(doi))continue;found.set(doi,{doi,title:w.title||'',year:w.publication_year||null,url:w.best_oa_location?.landing_page_url||w.best_oa_location?.pdf_url||null,license:w.best_oa_location?.license||null,query:q});}
+  }catch(e){result.status='partial';result.error=String(e.message).slice(0,200);}
+ }
+ result.listed=found.size;result.new=found.size;return {result,candidates:[...found.values()]};
+}
+
 async function processSource(source,status,report){
  const result={id:source.id,series:source.series,kind:source.kind,status:'ok',listed:0,new:0,error:null},docs=[],known={};
  let state={};try{state=DRY?{}:(await api('/api/rules/state?source='+source.id)).known||{};}catch(e){result.status='failed';result.error='state: '+e.message;return {result,docs,known};}
@@ -156,6 +171,7 @@ async function main(){
  let failures=0;
  for(const source of todo){
   if(Date.now()>DEADLINE||report.downloads>=MAX_DOWNLOADS){console.log('Run budget reached; remaining sources wait for the next run');break;}
+  if(source.kind==='research_watch'){const {result,candidates}=await processResearchWatch(source,report);console.log(`[${result.status}] ${source.id}: ${candidates.length} new open-access candidates`);if(!DRY){try{await api('/api/rules/ingest',{documents:[],sources:[result],research_candidates:candidates});}catch(e){failures++;console.error('   ingest failed: '+e.message);}}continue;}
   const {result,docs,known}=await processSource(source,status.sources?.[source.id],report);
   if(result.status==='failed')failures++;
   console.log(`[${result.status}] ${source.id}: listed ${result.listed}, new ${result.new}${result.error?' — '+result.error:''}`);

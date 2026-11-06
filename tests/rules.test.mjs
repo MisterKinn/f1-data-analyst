@@ -118,3 +118,9 @@ assert.equal(due(src,{checked_at:ago(5),status:'partial'},now,false),true,'unfin
 assert.equal(due(src,{checked_at:ago(5),status:'ok'},now,false),false);
 assert.equal(due(src,{checked_at:ago(30),status:'failed'},now,false),false);assert.equal(due(src,{checked_at:ago(61),status:'failed'},now,false),true,'failed source retries after an hour');
 assert.ok(priority({kind:'event_documents',series:'f1',calendar:'nonexistent'},now)<priority({kind:'regulations',series:'scca'},now));}
+// ---- OpenAlex watch candidates are listed as pending only ----
+import {researchCall} from '../worker/research.js';
+assert.equal((await post({documents:[],research_candidates:[{doi:'10.1234/abc.5',title:'A new trail braking study',year:2026,license:'cc-by',url:'https://example.org/a'},{doi:'bad',title:'x'}]})).status,200);
+{const r=JSON.parse((await researchCall('research_lookup',{include_pending:true,query:'trail braking'},env)).content[0].text);
+ const auto=r.pending.find(p=>p.doi==='10.1234/abc.5');assert.ok(auto);assert.equal(auto.eligible_for_analysis,false);assert.equal(auto.review_status,'auto_found_not_reviewed');
+ assert.ok(!r.papers.some(p=>p.doi==='10.1234/abc.5'),'never used as approved evidence');}
