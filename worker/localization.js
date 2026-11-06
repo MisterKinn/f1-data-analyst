@@ -25,6 +25,8 @@ export const translations = {
 "로그인 화면이 닫혔습니다. 다시 연결을 눌러 주세요.":"The sign-in view closed. Press Connect again.",
 "FIAWEC+ 로그인 화면을 여는 중… (최대 1분)":"Opening the FIAWEC+ sign-in… (up to 1 minute)",
 "FIAWEC+에 로그인하세요. 로그인이 끝나면 자동으로 저장됩니다.":"Sign in to FIAWEC+. The connection is saved as soon as you finish.",
+"🛠 사이트 점검 중":"🛠 Site maintenance",
+" · 일부 기능(FIAWEC+ 연결 등)이 제대로 작동하지 않을 수 있습니다.":" · Some features (such as the FIAWEC+ connection) may not work properly.",
 "FIAWEC+ 로그인 화면을 열지 못했습니다. 잠시 후 다시 시도하세요.":"Could not open the FIAWEC+ sign-in. Please try again shortly.",
 "취소했습니다.":"Cancelled.",
 "FIAWEC+ 연결을 해제했습니다.":"FIAWEC+ disconnected.",
