@@ -13,6 +13,8 @@ export const translations = {
 "입력":"Enter text",
 "취소":"Cancel",
 "선원은 운영자의 FIAWEC+ 연결로 자동 수신합니다. 따로 연결할 필요가 없습니다.":"Crew receive WEC timing through the owner’s FIAWEC+ connection automatically. There is nothing to connect.",
+"선원은 운영자의 FIAWEC+ 연결로 자동 수신합니다. 원하면 내 FIAWEC+ 계정을 연결해 쓸 수도 있습니다.":"Crew receive WEC timing through the owner’s FIAWEC+ connection automatically. You can also connect your own FIAWEC+ account if you want.",
+"내 FIAWEC+ 계정 연결됨 · 운영자 연결 대신 이 계정으로 읽습니다.":"Your FIAWEC+ account is connected · timing is read with it instead of the owner’s.",
 "FIAWEC+ 연결됨 · 모든 선원이 이 연결을 함께 씁니다.":"FIAWEC+ connected · all crew share this connection.",
 "FIAWEC+ 연결됨":"FIAWEC+ connected",
 "FIAWEC+ 연결이 만료됐습니다. 다시 연결해 주세요.":"The FIAWEC+ connection has expired. Please connect again.",

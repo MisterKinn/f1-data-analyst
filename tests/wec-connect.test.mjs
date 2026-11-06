@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {saveSignIn,loadSignIn,signInMeta,wecConnectRoute,wecActionsAuth,connectionKey,connectInfo} from '../worker/wec_connect.js';
+import {saveSignIn,loadSignIn,signInMeta,wecConnectRoute,wecActionsAuth,connectionKey,connectInfo,canConnect} from '../worker/wec_connect.js';
 import {wecActionsPush} from '../worker/wec_live.js';
 
 const bucket=()=>{const m=new Map();return {m,get:async k=>m.has(k)?{json:async()=>JSON.parse(m.get(k))}:null,put:async(k,v)=>{m.set(k,v);},delete:async k=>{m.delete(k);}};};
@@ -20,8 +20,11 @@ test('a saved FIAWEC+ sign-in is encrypted per account and only that account can
  assert.equal((await signInMeta(e,'acct-1')).status,'connected');
 });
 
-test('crew use the owner connection; only the owner or a personal account can connect',async()=>{
+test('crew use the owner connection unless they connect their own account',async()=>{
  assert.equal(connectionKey({mode:'crew',owner:false}),'operator');
+ assert.equal(connectionKey({mode:'crew',owner:true,accountId:'o1'}),'operator');
+ assert.equal(connectionKey({mode:'crew',owner:false,accountId:'c1'}),'c1');
+ assert.equal(canConnect({mode:'crew',owner:false,accountId:'c1'}),true);
  assert.equal(connectionKey({mode:'personal',accountId:'a1'}),'a1');
  assert.equal(connectInfo({mode:'crew',owner:false}).by,'owner');
  assert.match(connectInfo({mode:'crew',owner:true}).url,/account#fiawec$/);
@@ -93,4 +96,13 @@ test('a lapsed connection alerts the Google account that connected it, once per 
  assert.equal(sent.length,1);
  await saveSignIn(e,'operator',STATE,{verified:true}); // reconnect keeps who to alert
  assert.equal((await signInMeta(e,'operator')).notify,'owner-sub');
+});
+
+test('the site admin (collector host owner) connects FIAWEC+ for the crew, from the site or an AI',async()=>{
+ const {wecAccess}=await import('../worker/wec_live.js');
+ const hash=[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode('admin@example.invalid')))].map(b=>b.toString(16).padStart(2,'0')).join('');
+ const env={COLLECTOR_ADMIN_SHA256:hash,LIVE_ANALYSIS_KEY_HASH:'x'};
+ const ai=new Request('https://site.test/mcp',{headers:{'oai-authenticated-user-id':'oauth:1','oai-authenticated-user-email':'Admin@example.invalid'}});
+ assert.deepEqual(await wecAccess(ai,env),{mode:'crew',owner:true});
+ assert.deepEqual(await wecAccess(new Request('https://site.test/account'),env,{email:'admin@example.invalid',sub:'g'}),{mode:'crew',owner:true});
 });

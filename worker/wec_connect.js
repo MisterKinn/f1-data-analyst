@@ -14,9 +14,10 @@ const stateKey=key=>'wec/auth/'+key+'.json',metaKey=key=>'wec/auth-meta/'+key+'.
 const b64=bytes=>{let s='';for(let i=0;i<bytes.length;i+=8192)s+=String.fromCharCode(...bytes.subarray(i,i+8192));return btoa(s);},unb64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
 
 export function isOwnerEmail(email,env){return !!(email&&env.DEPLOY_OWNER_EMAIL&&email.toLowerCase()===env.DEPLOY_OWNER_EMAIL.toLowerCase());}
-// Whose FIAWEC+ connection this access uses: the owner's ('operator') for crew, the account's own otherwise.
-export function connectionKey(access){return !access?null:access.mode==='personal'?access.accountId:'operator';}
-export function canConnect(access){return !!access&&(access.mode==='personal'||access.owner===true);}
+// Whose FIAWEC+ connection this access uses: the owner's ('operator') for the owner and crew,
+// the account's own for personal accounts. Crew may also connect their own account (key = accountId).
+export function connectionKey(access){return !access?null:access.mode==='personal'?access.accountId:access.owner!==true&&access.accountId?access.accountId:'operator';}
+export function canConnect(access){return !!access&&(access.mode==='personal'||access.owner===true||!!access.accountId);}
 
 async function aesKey(env){
  const secret=env.WEC_AUTH_KEY||env.FASTF1_CLOUD_KEY;
@@ -66,7 +67,7 @@ export async function wecConnectRoute(request,env,access,{notify=null}={}){
  if(path==='/api/live/wec/connection'){
   if(request.method!=='GET')return reply({error:'GET required'},405);
   const meta=await signInMeta(env,key);
-  return reply({mode:access.mode,owner:access.owner===true,can_connect:canConnect(access),connected:meta?.status==='connected',status:meta?.status||'not_connected',connected_at:meta?.connectedAt||null,verified_at:meta?.verifiedAt||null});
+  return reply({mode:access.mode,owner:access.owner===true,crew:access.mode==='crew'||access.crew===true,can_connect:canConnect(access),connected:meta?.status==='connected',status:meta?.status||'not_connected',connected_at:meta?.connectedAt||null,verified_at:meta?.verifiedAt||null});
  }
  if(request.method==='POST'&&(request.headers.get('origin')!==url.origin||request.headers.get('sec-fetch-site')==='cross-site'))return reply({error:'Same-origin request required'},403);
  if(!canConnect(access))return reply({error:'선원은 운영자의 FIAWEC+ 연결을 자동으로 사용합니다.'},409);
