@@ -221,41 +221,19 @@ export async function actionsPush(request,env,{verify=verifyCollectorToken}={}){
  if(doneKey&&url.searchParams.get('final')==='1')await env.BUCKET.put(doneKey,JSON.stringify({done:true,at:received_at,session_key:snapshot.topics.SessionInfo?.Key??null}));
  return reply({ok:!!accepted,received_at},accepted?200:409);
 }
-// The GitHub collector publishes FastF1 post-session data here (same OIDC check as pushes).
-const HISTORY_PARTS=['session','Q1','Q2','Q3'],HISTORY_LIMIT=900000;
+// Completed sessions are analysed from OpenF1 on demand (openf1.js), so FastF1 post-session
+// data is no longer stored. Collectors already in the field still ask here before loading
+// it: answering "done" stops them downloading the F1 archive and keeps AWS hosts from
+// staying on after a session to upload it. Uploads from older collectors are accepted
+// and dropped, so they never retry.
+export const HISTORY_RETIRED='Post-session analysis uses OpenF1; FastF1 history is not stored.';
 export async function actionsHistory(request,env,{verify=verifyCollectorToken}={}){
- const url=new URL(request.url),q=url.searchParams,windowId=q.get('window');
+ const url=new URL(request.url),windowId=url.searchParams.get('window');
  if(!['GET','POST'].includes(request.method))return reply({error:'Method not allowed'},405);
  if(!WINDOW_ID.test(windowId||''))return reply({error:'Invalid window id'},400);
  try{await verify((request.headers.get('authorization')||'').replace(/^Bearer /,''));}catch{return reply({error:'Collector token rejected'},401);}
- if(!env.BUCKET)return reply({error:'Live storage unavailable'},503);
- const doneKey='live/actions-history/'+windowId+'.json';
- if(request.method==='GET')return reply({window:windowId,done:!!await env.BUCKET.get(doneKey)});
- const kind=q.get('kind'),key=q.get('session_key');
- if(!/^\d{1,12}$/.test(key||'')||!['archive','telemetry','done'].includes(kind))return reply({error:'Invalid history request'},400);
- const text=await request.text();if(text.length>HISTORY_LIMIT)return reply({error:'History payload too large'},413);
- let body;try{body=JSON.parse(text);}catch{return reply({error:'JSON required'},400);}
- const received_at=new Date().toISOString(),sessionKey=Number(key);
- if(kind==='done'){await env.BUCKET.put(doneKey,JSON.stringify({done:true,at:received_at,session_key:sessionKey,telemetry_laps:Number(body?.telemetry_laps)||0}));return reply({ok:true});}
- if(kind==='telemetry'){
-  const part=q.get('part'),driver=q.get('driver');
-  if(!HISTORY_PARTS.includes(part)||!/^\d{1,3}$/.test(driver||'')||String(body?.driver_number)!==driver||!Array.isArray(body?.points??body?.samples??[]))return reply({error:'Invalid telemetry lap'},400);
-  await env.BUCKET.put(`live/history/${key}/telemetry/${part}-${driver}.json`,JSON.stringify({received_at,lap:body}));
-  return reply({ok:true});
- }
- const info=body?.session_info;
- if(!info||info.Key!==sessionKey||typeof info.Path!=='string')return reply({error:'Session identity mismatch'},400);
- let archive;try{archive=validateArchive(body.lap_archive,sessionKey);}catch(e){return reply({error:e.message},400);}
- const topics={...(body.topics&&typeof body.topics==='object'?body.topics:{}),SessionInfo:info};
- await env.BUCKET.put(`live/history/${key}/archive.json`,JSON.stringify({received_at,session_info:info,lap_archive:archive}));
- // Merge into the saved session (or create it) so best-lap tools read FastF1 records.
- const sessionDoc=`live/sessions/${key}.json`,object=await env.BUCKET.get(sessionDoc),old=object?await object.json():null;
- const base=old?.snapshot||{schema_version:1,producer:'fastf1-post-session',run_id:'fastf1-'+key,sequence:0,generated_at:received_at,connected:false,topics:{}};
- const merged={received_at:old?.received_at||received_at,source:'FastF1 Session.load (official F1 archive)',snapshot:{...base,connected:false,topics:{...base.topics,...topics},lap_archive:archive}};
- await env.BUCKET.put(sessionDoc,boundedStoredText(merged));
- const currentObject=await env.BUCKET.get(KEY),current=currentObject?await currentObject.json():null;
- if(current?.snapshot?.topics?.SessionInfo?.Key===sessionKey&&!freshness(current.snapshot,current.received_at).live)await env.BUCKET.put(KEY,boundedStoredText({...merged,received_at:current.received_at}));
- return reply({ok:true});
+ if(request.method==='GET')return reply({window:windowId,done:true,reason:HISTORY_RETIRED});
+ return reply({ok:true,stored:false,reason:HISTORY_RETIRED});
 }
 export async function liveRoutes(request,env,websiteIdentity=null) {
  const url=new URL(request.url),path=url.pathname;
