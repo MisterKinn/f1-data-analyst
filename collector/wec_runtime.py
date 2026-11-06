@@ -17,7 +17,7 @@ OWNER_KEYS = ('WEC_USERNAME', 'WEC_EMAIL', 'WEC_PASSWORD', 'FIAWEC_USERNAME', 'F
 ACCOUNT = re.compile(r'^[a-zA-Z0-9-]{1,80}$')
 
 BLOCKING = {'credentials_required', 'authentication_failed', 'authentication_action_required',
-            'human_verification_required', 'subscription_or_login_required'}
+            'subscription_or_login_required'}
 
 
 def save_result(path, result):

@@ -17,7 +17,7 @@ private process group and removes its temporary files and saved account timing.
 Account deletion first terminates any recorded personal session. If the collector
 cannot confirm termination, deletion asks the user to retry rather than hiding a
 still-running session. Provider login and subscription checks use the existing
-FastF1 password authentication path; CAPTCHA or provider rejection is a failure,
+FastF1 password authentication path; provider rejection is a failure,
 not a reason to use owner credentials.
 
 The default maximum is two simultaneous personal sessions. Operators may set

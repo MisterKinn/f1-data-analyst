@@ -14,15 +14,9 @@ SESSIONS = ('auto', 'FP1', 'FP2', 'FP3', 'Qualifying', 'Hyperpole', 'Race')
 class DiscoveryError(Exception):
     def __init__(self, code, detail=None):
         self.code = code
-        self.detail = detail  # gate phrase, host and page title only; never page body or URLs
+        self.detail = detail  # short code-level detail only; never page body or URLs
         super().__init__(code)  # No provider errors, credentials or signed URLs.
 
-
-def gate_detail(phrase, url, title):
-    """Enough to tell a real bot check from a harmless 'protected by reCAPTCHA' notice."""
-    host = urlsplit(url).hostname or ''
-    title = re.sub(r'[^\w .:|-]', '', title or '')[:60]
-    return '%s @ %s · %s' % (phrase.lower()[:30], host[:60], title)
 
 
 def utcnow():
@@ -143,34 +137,12 @@ class FIAWECBrowser:
                 return route.abort()
         return route.continue_()
 
-    def check_gate(self, strict=False):
-        """Stop on a real bot wall. The FIAWEC login page itself mentions 'captcha' (a widget
-        shown only when needed), so that word alone stops a run only after a step failed."""
+    def page_text(self):
+        """Visible page text. A wrong password stops the run; a person signs in, never this code."""
         text = self.page.locator('body').inner_text(timeout=12000)[:30000]
-        pattern = r'verify you are human|checking your browser|unusual traffic|access denied' + (r'|captcha' if strict else '')
-        found = re.search(pattern, text, re.I)
-        if found:
-            detail = gate_detail(found.group(0), self.page.url, self.page.title())
-            self.capture_gate(detail)
-            raise DiscoveryError('human_verification_required', detail)
         if re.search(r'incorrect password|wrong email|invalid credentials', text, re.I):
             raise DiscoveryError('authentication_failed')
         return text
-
-    def capture_gate(self, detail):
-        """Keep a picture of the bot check for the owner to look at later. Never solves it.
-        Every input is masked so a typed email or password never lands in the image."""
-        try:
-            folder = os.environ.get('WEC_GATE_DIR') or 'gate-captures'
-            os.makedirs(folder, exist_ok=True)
-            base = os.path.join(folder, 'wec-gate-' + datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ'))
-            self.page.screenshot(path=base + '.png', full_page=True, mask=[self.page.locator('input')], timeout=10000)
-            with open(base + '.json', 'w', encoding='utf-8') as f:
-                json.dump({'captured_at': utcnow(), 'detail': detail}, f, ensure_ascii=False)
-            print('WEC gate captured:', base + '.png', flush=True)
-            return base + '.png'
-        except Exception:
-            return None  # a failed capture must never hide the real stop reason
 
     def goto(self, url):
         checked_url(url, hosts=TIMING_HOSTS | {AUTH_HOST})
@@ -178,7 +150,7 @@ class FIAWECBrowser:
         self.page.locator('body').wait_for(state='visible')
         # Wait for app rendering, not a fixed sleep or network-idle video stream.
         self.page.locator('a,button,input').first.wait_for(state='visible')
-        self.check_gate()
+        self.page_text()
 
     def authenticate(self):
         self.goto(HOME)
@@ -195,7 +167,7 @@ class FIAWECBrowser:
         login.first.click()
         self.page.get_by_role('button', name=re.compile(r'^Sign in\b')).click()
         self.page.wait_for_url('https://auth.staylive.io/**')
-        self.check_gate()
+        self.page_text()
         email = self.page.locator('input[name="username"][type="email"]')
         email.wait_for(state='visible')
         if urlsplit(self.page.url).hostname != AUTH_HOST:
@@ -206,7 +178,7 @@ class FIAWECBrowser:
         try:
             field.wait_for(state='visible')
         except Exception:
-            self.check_gate(strict=True)
+            self.page_text()
             raise DiscoveryError('authentication_action_required') from None
         if urlsplit(self.page.url).hostname != AUTH_HOST:
             raise DiscoveryError('unapproved_destination')
@@ -216,9 +188,9 @@ class FIAWECBrowser:
             self.page.wait_for_url('https://plus.fiawec.com/**', timeout=25000)
             self.page.locator('[id^="headlessui-menu-button-"]').wait_for(state='visible')
         except Exception:
-            self.check_gate(strict=True)
+            self.page_text()
             raise DiscoveryError('authentication_action_required') from None
-        self.check_gate()
+        self.page_text()
 
     def next_session_cards(self):
         """The FIA WEC home page's NEXT SESSIONS cards (recorded flow), each with its own
@@ -270,7 +242,7 @@ class FIAWECBrowser:
         try:
             control.first.wait_for(state='visible')
         except Exception:
-            text = self.check_gate()
+            text = self.page_text()
             if re.search(r'subscribe|buy.*pass|get access|log in|sign in', text, re.I):
                 raise DiscoveryError('subscription_or_login_required') from None
             raise DiscoveryError('timing_link_unavailable') from None
@@ -287,7 +259,7 @@ class FIAWECBrowser:
                 self.page = new[-1]
                 self.page.wait_for_load_state('domcontentloaded', timeout=15000)
             checked_url(self.page.url)
-            self.check_gate()
+            self.page_text()
         # Only timing-labelled/URL frames; never an arbitrary advertising iframe.
         frames = self.page.locator('iframe').evaluate_all('els => els.map(e=>({url:e.src,title:e.title}))')
         for frame in frames:
@@ -298,11 +270,11 @@ class FIAWECBrowser:
         return self.page.url
 
     def waiting_for_start(self):
-        text = self.check_gate()
+        text = self.page_text()
         return bool(re.search(r'\bto start\b|syncing live timeline', text, re.I))
 
     def read_rows(self):
-        self.check_gate()
+        self.page_text()
         for frame in self.page.frames:
             if frame.url == 'about:blank':
                 continue

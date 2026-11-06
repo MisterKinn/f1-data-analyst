@@ -70,13 +70,13 @@ test('WEC login route: same-origin, personal accounts only, password forwarded o
 
 test('blocked WEC access asks the user to sign in or give the session link, and briefings follow the card rules',async()=>{
  const {publicWecStatus,WEC_LIVE_INSTRUCTIONS}=await import('../worker/wec_live.js');
- for(const state of ['human_verification_required','credentials_required'])assert.match(publicWecStatus({state}).next_step,/sign in to FIAWEC\+ themselves.*session link/);
+ for(const state of ['authentication_action_required','credentials_required'])assert.match(publicWecStatus({state}).next_step,/sign in to FIAWEC\+ themselves in a browser you open.*session link/);
  assert.equal(publicWecStatus({state:'reading'}).next_step,undefined);
  for(const part of ['time left first','with its reason','track condition','kongboda_my_preferences','never type a password','token expires'])assert.ok(WEC_LIVE_INSTRUCTIONS.includes(part),part);
 });
 
 test('a stored snapshot from before the change still offers the sign-in-or-link choice',async()=>{
  const {wecLiveView}=await import('../worker/wec_live.js');
- assert.match(wecLiveView({state:'human_verification_required',received_at:new Date().toISOString()}).next_step,/session link/);
+ assert.match(wecLiveView({state:'authentication_action_required',received_at:new Date().toISOString()}).next_step,/session link/);
  assert.equal(wecLiveView({state:'reading',received_at:new Date().toISOString()}).next_step,undefined);
 });

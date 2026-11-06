@@ -139,7 +139,7 @@ class WECTests(unittest.TestCase):
                 self.assertTrue(manager.request(TARGET)['busy'])
                 self.assertEqual(spawn.call_count, 1)
                 proc.poll.return_value = 0
-                save_result(manager.path, {'state': 'human_verification_required', 'live': False})
+                save_result(manager.path, {'state': 'authentication_action_required', 'live': False})
                 self.assertTrue(manager.request(TARGET)['retry_requires_operator'])
                 self.assertEqual(spawn.call_count, 1)
 
