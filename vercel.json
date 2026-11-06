@@ -9,8 +9,7 @@
       "maxDuration": 300
     },
     "api/wec-signin.js": {
-      "maxDuration": 300,
-      "includeFiles": "{node_modules/@sparticuz/chromium/bin/**,node_modules/.pnpm/@sparticuz+chromium@*/node_modules/@sparticuz/chromium/bin/**}"
+      "maxDuration": 300
     }
   },
   "rewrites": [
