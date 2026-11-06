@@ -1,5 +1,6 @@
 import {calendarEvents} from './race-calendar-data.js';
 import {sessionSchedule} from './session-schedule.js';
+import {inScheduledF1Window} from './briefing-router.js';
 
 const kst=(ms,options)=>new Date(ms).toLocaleString('ko-KR',{timeZone:'Asia/Seoul',hour12:false,...options});
 const sessionLabel=name=>({'Sprint Qualifying':'스프린트 퀄리파잉','Sprint Shootout':'스프린트 퀄리파잉','Sprint':'스프린트','Qualifying':'퀄리파잉','Race':'레이스'})[name]||name;
@@ -78,7 +79,7 @@ export function buildLiveBriefing(snapshot,{now=Date.now(),accessMode=null}={}){
  const timing=topicAge(snapshot,'TimingData',limit);
  const sessionStatus=topics.SessionStatus?.Status||info.SessionStatus||f.session_status||null;
  const live=Boolean(timing.fresh&&snapshot?.available&&snapshot?.connected===true&&f.live===true&&info.Key&&['Started','Resumed'].includes(sessionStatus)&&Number.isFinite(feedAge)&&feedAge<=limit);
- const status=live?'LIVE':snapshot?.available===false?'자료 없음':['Finished','Finalised','Ends'].includes(sessionStatus)?'종료':(timing.age!=null&&timing.age>limit?'데이터 지연':'LIVE 미확인');
+ const status=live?'LIVE':snapshot?.available&&!inScheduledF1Window(snapshot?.received_at)?'점검 기록':snapshot?.available===false?'자료 없음':['Finished','Finalised','Ends'].includes(sessionStatus)?'종료':(timing.age!=null&&timing.age>limit?'데이터 지연':'LIVE 미확인');
  const lines=topics.TimingData?.Lines||{}, drivers=topics.DriverList||{}, timingApp=topics.TimingAppData||{};
  const observedLeaderboard=Object.entries(lines).map(([number,line])=>{
   const position=finite(line?.Position);
@@ -96,7 +97,9 @@ export function buildLiveBriefing(snapshot,{now=Date.now(),accessMode=null}={}){
  const leaderboard=live?observedLeaderboard:[];
  // After the session ends, the last received order is shown as a final record, never as live.
  const ended=['Finished','Finalised','Ends'].includes(sessionStatus);
- const finalLeaderboard=!live&&ended&&snapshot?.available?observedLeaderboard:[];
+ // Data received outside every published F1 session (failover drills, tests) is not a session result.
+ const offSchedule=!live&&!!snapshot?.available&&!inScheduledF1Window(snapshot?.received_at);
+ const finalLeaderboard=!live&&ended&&snapshot?.available&&!offSchedule?observedLeaderboard:[];
  const age=snapshot?.available?dataAgeText(snapshot?.received_at,now):null;
  const next=nextF1Session(now);
  const leaders=leaderboard.slice(0,3).map(row=>`${row.position}위 ${row.code}`);
@@ -131,12 +134,13 @@ export function buildLiveBriefing(snapshot,{now=Date.now(),accessMode=null}={}){
   [sessionName||'F1 세션',lapText,leaders.length?`실시간 순위 ${leaders.join(' · ')}`:null,'원본 타이밍 수신 확인'].filter(Boolean).join(' / '):
   snapshot?.available===false&&accessMode==='personal'?'공용 라이브 데이터는 등록된 선원만 볼 수 있습니다. 사이트의 /live에서 본인 F1 계정을 연결하거나 운영자에게 선원 등록을 요청하세요.':
   snapshot?.available===false?`아직 수집된 세션이 없습니다.${next?` 다음 세션은 ${next.text}입니다.`:''}`:
+  offSchedule?`F1 공식 세션 시간 밖에서 받은 자료입니다(수집기 전환 점검·테스트 등). 실제 세션 결과로 표시하지 않습니다.${next?` 다음 세션: ${next.text}.`:''}`:
   ended?`${sessionName?sessionName+' 세션이':'이 세션은'} 끝났습니다. 지금은 라이브 중계가 아닙니다.${next?` 다음 세션: ${next.text}.`:''}`:
   (timing.age!=null&&timing.age>limit?`원본 타이밍이 ${Math.round(timing.age)}초 지연됐습니다. 현재 경기로 표시하지 않습니다.`:'최신 레이스 수신이 검증되지 않았습니다. 연결 상태만으로 LIVE를 표시하지 않습니다.');
  const topic_times={};
  for(const key of ['TimingData','TimingAppData','RaceControlMessages','TrackStatus','WeatherData'])if(snapshot?.topic_times?.[key])topic_times[key]=snapshot.topic_times[key].received_at;
  return {
-  schema_version:4,available:!!snapshot?.available,status,briefing,analysis,details,leaderboard,final_leaderboard:finalLeaderboard,next_session:next,data_age:age,reason:snapshot?.reason||null,strategy,weather,race_control:raceControl,
+  schema_version:4,series:'f1',record_kind:live?'live':offSchedule?'off_schedule_record':ended?'final_record':'unverified',available:!!snapshot?.available,status,briefing,analysis,details,leaderboard,final_leaderboard:finalLeaderboard,next_session:next,data_age:age,reason:snapshot?.reason||null,strategy,weather,race_control:raceControl,
   track_status:{code:clean(topics.TrackStatus?.Status,12),label:trackStatusLabel(topics.TrackStatus?.Status)},
   session:{key:info.Key??null,name:sessionName||null,session_status:sessionStatus},
   freshness:{live,source_age_seconds:timing.age,feed_age_seconds:Number.isFinite(feedAge)?feedAge:null,stale_after_seconds:limit},

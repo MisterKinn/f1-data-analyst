@@ -4,10 +4,10 @@
 // connector cannot start a chat, so the scheduled task is what makes briefings arrive unasked.
 // The MCP address is shown only to signed-in accounts (see install()); otherwise the prompts point to step 3.
 const URL_MCP='https://kongboda-motorsports.vercel.app/mcp',NO_URL_KO='꽁보다 가이드 3단계에서 복사한 연결 주소',NO_URL_EN='the connection address from step 3 of the Kongboda guide';
-const TASK_KO='“Kongboda Motorsports 커넥터의 kongboda_live_briefing 도구로 F1 상황을 확인해. 세션이 진행 중이면 순위, 타이어, 날씨, 레이스 컨트롤 핵심을 한국어로 짧게 정리해. 진행 중인 세션이 없으면 다음 세션 이름과 한국 시간 시작 시각만 한 줄로 알려 줘.”';
-const TASK_EN='"Use the kongboda_live_briefing tool of the Kongboda Motorsports connector to check F1. If a session is live, summarise the order, tyres, weather and race control briefly in English. If no session is live, reply with one line: the next session and its start time in my time zone."';
-const WEC_TASK_KO='“Kongboda Motorsports 커넥터의 wec_live_status 도구로 WEC 상황을 확인하고, kongboda_my_preferences로 내가 응원하는 제조사를 확인해. live가 true이면 카드 한 장으로 보고해: 맨 위에 남은 시간을 크게, 세션 이름과 시각은 구석에 작게. 레드·옐로 플래그는 원인(차량 번호·코너)과 함께 바로 알리고, 원인이 발표되지 않았으면 그렇다고 밝혀. 노면 상황(비·노면 온도·습도)과 랩타임 영향, 롱런 페이스나 섹터 손익, 내가 응원하는 팀의 순위·격차·잃는 구간을 먼저 설명해. 순위표는 내가 요청할 때만 줘. live가 false이면 다음 WEC 세션 이름과 한국 시간 시작 시각만 한 줄로 알려 줘. next_step이 나오면 내가 직접 로그인할지, 세션 링크를 줄지 하나만 물어봐.”';
-const WEC_TASK_EN='"Use the wec_live_status tool of the Kongboda Motorsports connector to check WEC, and kongboda_my_preferences for the manufacturer I support. If live is true, report as one card: time left large at the top, session name and clock time small in a corner. Report red and yellow flags at once with their reason (car number, corner), or say no reason is published. Cover track condition (rain, track temperature, humidity) and its effect on lap times, long-run pace or sector gaps, and my team\'s position, gap and where it loses time, first. Give the ranking table only when I ask. If live is false, reply with one line: the next WEC session and its start time in my time zone. If next_step appears, ask me one question: sign in myself, or give the session link."';
+const TASK_KO='“Kongboda Motorsports 커넥터의 kongboda_live_briefing 도구를 series f1로 불러 F1 카드를 받아. 카드를 맨 먼저 띄우고 앞에 요약을 쓰지 마. 순서는 현재 상황 → 플래그 이유 → 레이스 페이스 → 내 응원 팀이고, 순위표는 내가 요청할 때만 줘. 진행 중인 세션이 없으면 다음 F1 세션만 한 줄로 알려 줘. 공식 세션 시간 밖의 점검 기록은 결과로 쓰지 마.”';
+const TASK_EN='"Call the kongboda_live_briefing tool of the Kongboda Motorsports connector with series f1 to get the F1 card. Show the card first with no summary before it. Order: right now, why the flags, race pace, my team; the ranking table only when I ask. If nothing is live, give the next F1 session in one line. Never report an off-schedule test record as a result."';
+const WEC_TASK_KO='“Kongboda Motorsports 커넥터의 wec_live_status 도구로 WEC 상황을 확인하고, kongboda_my_preferences로 내가 응원하는 제조사를 확인해. live가 true이면 카드 한 장으로 보고해: 맨 위에 남은 시간을 크게, 세션 이름과 시각은 구석에 작게. 레드·옐로 플래그는 원인(차량 번호·코너)과 함께 바로 알리고, 원인이 발표되지 않았으면 그렇다고 밝혀. 노면 상황(비·노면 온도·습도)과 랩타임 영향, 롱런 페이스나 섹터 손익, 내가 응원하는 팀의 순위·격차·잃는 구간을 먼저 설명해. 순위표는 내가 요청할 때만 줘. live가 false이면 다음 WEC 세션 이름과 한국 시간 시작 시각만 한 줄로 알려 줘. next_step이 나오면 ‘직접 로그인’과 ‘링크 입력’ 두 개를 선택 박스로 띄워. 직접 로그인을 고르면 FIAWEC+ 로그인 화면(plus.fiawec.com/en → Account)까지 네가 열고, 나는 비밀번호와 CAPTCHA만 입력해.”';
+const WEC_TASK_EN='"Use the wec_live_status tool of the Kongboda Motorsports connector to check WEC, and kongboda_my_preferences for the manufacturer I support. If live is true, report as one card: time left large at the top, session name and clock time small in a corner. Report red and yellow flags at once with their reason (car number, corner), or say no reason is published. Cover track condition (rain, track temperature, humidity) and its effect on lap times, long-run pace or sector gaps, and my team\'s position, gap and where it loses time, first. Give the ranking table only when I ask. If live is false, reply with one line: the next WEC session and its start time in my time zone. If next_step appears, show a choice box with two options: sign in myself, or paste the session link. If I choose sign in, open the FIAWEC+ sign-in page (plus.fiawec.com/en, Account) yourself; I only type the password and solve the CAPTCHA."';
 const RULES_KO=`[진행 규칙]
 - 전체는 4단계야: 1 연결 확인 → 2 커넥터 추가(필요할 때만) → 3 종목 선택과 첫 브리핑 → 4 자동 브리핑 예약.
 - 매 답변 첫 줄에 ‘[단계 n/4] 단계 이름’을 써서 지금 어디인지 보여 줘.
@@ -28,8 +28,16 @@ const PICK_EN=`[Stage 3/4] Pick series and first briefing
 3-1. Ask me which series I want live: F1, WEC, or both (I can pick more than one). Do not go on until I answer.
 3-2. For each series I picked, give me one briefing now: kongboda_live_briefing for F1, wec_live_status for WEC.
 If stuck: if it says an F1 or FIAWEC+ account is needed, tell me to connect it at https://kongboda-motorsports.vercel.app/live, and run 3-2 again once I say it is connected.`;
-const SCHEDULE_KO=`고른 종목만 매시간 실행되는 예약 작업으로 하나씩 만들어 줘. F1은 ‘꽁보다 F1 실시간 브리핑’, 작업 지침: ${TASK_KO} WEC는 ‘꽁보다 WEC 실시간 브리핑’, 작업 지침: ${WEC_TASK_KO}`;
-const SCHEDULE_EN=`Create an hourly scheduled task only for each series I picked. F1: "Kongboda F1 live briefing" with these instructions: ${TASK_EN} WEC: "Kongboda WEC live briefing" with these instructions: ${WEC_TASK_EN}`;
+const AUTO_TASK_KO='“Kongboda Motorsports 커넥터의 kongboda_live_briefing 도구를 series auto로 불러. 결과 route.series가 내가 고른 종목(PICKED)이 아니거나 none이면 아무것도 쓰지 말고 끝내. 고른 종목이면 카드를 맨 먼저 띄우고 앞에 요약을 쓰지 마(카드 뒤엔 한 줄까지). 순서는 지금 상황 → 플래그 이유(시각·코너·원인) → 레이스 페이스(단일 랩과 롱런 구분, 아직 판단 불가면 이유) → 내 응원 팀이고, 순위표는 내가 요청할 때만. 공식 세션 시간 밖의 점검 기록은 결과로 쓰지 마. WEC에서 access_choice가 나오면 ‘직접 로그인’·‘링크 입력’ 선택 버튼이 있는 카드를 그대로 남겨 두고 알림을 보내. 내가 직접 로그인을 고르면 FIAWEC+ 로그인 화면(plus.fiawec.com/en → Account)까지 네가 열고, 나는 비밀번호와 CAPTCHA만 입력해. 카드에 follow_up이 있으면 세션이 끝날 때(follow_up.until)까지 이 대화로 10분마다 다음 브리핑을 예약해서(send_later 등) 새 카드를 계속 보내. 이 대화로 예약할 수 없으면 세션 종료까지 15분 간격 1회 예약 작업을 만들어.”';
+const AUTO_TASK_EN='"Call the kongboda_live_briefing tool of the Kongboda Motorsports connector with series auto. If route.series is not one of the series I picked (PICKED) or is none, write nothing and stop. Otherwise show the card first with no summary before it (at most one line after). Order: right now, why the flags (time, corner, reason), race pace (single lap apart from long runs; say why when not readable yet), my team; the ranking table only when I ask. Never report an off-schedule test record as a result. If a WEC card has access_choice, leave the card with its sign-in and paste-link buttons and send me a notification. If I choose sign in, open the FIAWEC+ sign-in page (plus.fiawec.com/en, Account) yourself; I only type the password and solve the CAPTCHA. If the card has follow_up, keep scheduling the next briefing back into this conversation every 10 minutes (send_later or similar) until follow_up.until, posting a new card each time. If you cannot schedule into this conversation, create one-time tasks every 15 minutes until the session ends."';
+const SCHEDULE_KO=`예약 작업을 두 종류로 만들어 줘. 만들기 전에 기존 예약 작업 목록을 확인해서 같은 이름이 있으면 새로 만들지 말고 지침만 바꿔. PICKED 자리에는 내가 고른 종목(F1, WEC)을 넣어.
+ (가) 상시 예약 ‘꽁보다 실시간 브리핑’: 매시간 실행, 작업 지침: ${AUTO_TASK_KO} 자동 승인으로 만들 수 있으면 그렇게 하고, 아니면 작업 설정에서 ‘Automatically approve’를 켜는 방법을 알려 줘. 알림(push)은 켜.
+ (나) 세션 시작 예약: 고른 종목의 이번 주 남은 세션마다 시작 5분 뒤 1회 실행되는 예약 작업을 ‘꽁보다 F1 실시간 브리핑 · 세션’ 또는 ‘꽁보다 WEC 실시간 브리핑 · 세션’ 이름으로 만들어. 세션 시각은 kongboda_live_briefing 결과의 next_sessions와 커넥터 일정으로 확인하고 한국시간으로 보여 줘. 작업 지침은 (가)와 같아. WEC 참고 지침: ${WEC_TASK_KO} F1 참고 지침: ${TASK_KO}
+ 고른 종목만 만들고, 다 만든 뒤 지금 한 번 실행해서 카드가 뜨는지 확인해 줘.`;
+const SCHEDULE_EN=`Create two kinds of scheduled tasks. First check my existing scheduled tasks; if one with the same name exists, update its instructions instead of creating another. Replace PICKED with the series I picked (F1, WEC).
+ (a) Always-on task "Kongboda live briefing": hourly, with these instructions: ${AUTO_TASK_EN} Use automatic approval if you can; otherwise tell me how to turn on "Automatically approve" in the task settings. Turn on push notifications.
+ (b) Session-start tasks: for each remaining session this week of the series I picked, a one-time task 5 minutes after the start, named "Kongboda F1 live briefing · session" or "Kongboda WEC live briefing · session". Take session times from next_sessions in the kongboda_live_briefing result and the connector schedule, and show them in my time zone. Same instructions as (a). WEC reference: ${WEC_TASK_EN} F1 reference: ${TASK_EN}
+ Only for the series I picked. When done, run one now to check that the card appears.`;
 const LATER_KO=`4-3. 마무리로 체크리스트를 보여 줘: 커넥터 연결, 고른 종목, 만든 예약 작업 이름(각각 완료/안 됨). 그리고 두 줄로 알려 줘: 고르지 않은 종목도 언제든 이 대화에서 ‘WEC 예약도 만들어 줘’처럼 말하면 추가할 수 있다는 것, 세션 중에 더 자주 보고 싶으면 그 대화에서 ‘업데이트’라고 보내면 된다는 것.`;
 const LATER_EN=`4-3. Finish with a checklist: connector connected, series picked, scheduled tasks created by name (each done / not done). Then tell me in two lines that I can add a scheduled task for a series I did not pick at any time by saying, for example, "set up WEC too", and that I can send "update" in that chat for more frequent updates during a session.`;
 const ko=url=>({
@@ -38,7 +46,7 @@ const ko=url=>({
 ${RULES_KO}
 
 [단계 1/4] 연결 확인
-1-1. 이 대화에서 Kongboda Motorsports 커넥터를 쓸 수 있는지 직접 확인해 줘. 쓸 수 있으면 단계 2를 건너뛰고 단계 3으로 가.
+1-1. 이 대화에서 Kongboda Motorsports 커넥터를 쓸 수 있는지 직접 확인해 줘. 쓸 수 있으면 kongboda_my_preferences를 불러 계정 등록 여부도 확인해. 이미 연결·계정 등록이 돼 있으면 [빠른 설정]으로 가: 단계 2와 3-1 질문을 건너뛰고, 종목은 F1·WEC 둘 다로 정해(계정 설정에 응원 팀이 한쪽 종목만 있으면 그 종목만), 묻지 말고 3-2 첫 브리핑과 단계 4 예약 작업을 바로 만든 뒤 4-3 체크리스트만 보여 줘. 계정 등록이 안 돼 있으면 단계 2를 건너뛰고 단계 3으로 가.
 
 [단계 2/4] 커넥터 추가 (내가 직접 하는 단계)
 2-1. claude.ai 웹이나 데스크톱 앱에서 ‘사용자 지정 → 커넥터’(https://claude.ai/customize/connectors)를 연다.
@@ -59,7 +67,7 @@ ${LATER_KO}`,
 ${RULES_KO}
 
 [단계 1/4] 연결 확인
-1-1. 이 대화에서 Kongboda Motorsports 앱을 쓸 수 있는지 직접 확인해 줘. 쓸 수 있으면 단계 2를 건너뛰고 단계 3으로 가.
+1-1. 이 대화에서 Kongboda Motorsports 앱을 쓸 수 있는지 직접 확인해 줘. 쓸 수 있으면 kongboda_my_preferences를 불러 계정 등록 여부도 확인해. 이미 연결·계정 등록이 돼 있으면 [빠른 설정]으로 가: 단계 2와 3-1 질문을 건너뛰고, 종목은 F1·WEC 둘 다로 정해(계정 설정에 응원 팀이 한쪽 종목만 있으면 그 종목만), 묻지 말고 3-2 첫 브리핑과 단계 4 예약 작업을 바로 만든 뒤 4-3 체크리스트만 보여 줘. 계정 등록이 안 돼 있으면 단계 2를 건너뛰고 단계 3으로 가.
 
 [단계 2/4] 플러그인 추가 (내가 직접 하는 단계)
 2-1. chatgpt.com 웹에서 ‘플러그인’(https://chatgpt.com/plugins)을 열고 ‘사용자 지정 MCP 서버 추가’를 누른다.
@@ -81,7 +89,7 @@ const en=url=>({
 ${RULES_EN}
 
 [Stage 1/4] Check the connection
-1-1. Check yourself whether the Kongboda Motorsports connector is available in this chat. If it is, skip stage 2 and go to stage 3.
+1-1. Check yourself whether the Kongboda Motorsports connector is available in this chat. If it is: Also call kongboda_my_preferences to check that my account is registered. If it is already connected and registered, go to [Quick setup]: skip stage 2 and the 3-1 question, use both F1 and WEC (or only the series my account settings have a favourite for, if only one), and without asking run the 3-2 first briefing and create the stage 4 scheduled tasks, then show only the 4-3 checklist. If my account is not registered yet, skip stage 2 and go to stage 3.
 
 [Stage 2/4] Add the connector (I do this stage)
 2-1. In claude.ai on the web or the desktop app, open Customize → Connectors (https://claude.ai/customize/connectors).
@@ -102,7 +110,7 @@ ${LATER_EN}`,
 ${RULES_EN}
 
 [Stage 1/4] Check the connection
-1-1. Check yourself whether the Kongboda Motorsports app is available in this chat. If it is, skip stage 2 and go to stage 3.
+1-1. Check yourself whether the Kongboda Motorsports app is available in this chat. If it is: Also call kongboda_my_preferences to check that my account is registered. If it is already connected and registered, go to [Quick setup]: skip stage 2 and the 3-1 question, use both F1 and WEC (or only the series my account settings have a favourite for, if only one), and without asking run the 3-2 first briefing and create the stage 4 scheduled tasks, then show only the 4-3 checklist. If my account is not registered yet, skip stage 2 and go to stage 3.
 
 [Stage 2/4] Add the plugin (I do this stage)
 2-1. On chatgpt.com open Plugins (https://chatgpt.com/plugins) and click Add custom MCP server.
