@@ -22,3 +22,6 @@ lap-archive.json
 .wec-browsers/
 wec-status.json
 wec-status.tmp
+
+# graphify code map (rebuilt each Claude Code session)
+graphify-out/
