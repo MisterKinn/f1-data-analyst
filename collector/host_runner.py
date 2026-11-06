@@ -34,7 +34,7 @@ HISTORY_RETRY_SECONDS = host_jobs.HISTORY_RETRY_SECONDS
 BEAT_SECONDS = int(os.environ.get('BEAT_SECONDS', '5'))
 IDLE_BEAT_SECONDS = int(os.environ.get('IDLE_BEAT_SECONDS', '60'))  # also how fast an update request is seen
 STARTED_AT = datetime.now(timezone.utc).isoformat(timespec='seconds')
-COLLECTOR_VERSION = '2026.11.05.2'
+COLLECTOR_VERSION = '2026.11.06.1'
 # Exit while idle after this long so the launcher can pull new code and restart.
 RESTART_AFTER_SECONDS = int(os.environ.get('RESTART_AFTER_SECONDS', str(6 * 3600)))
 # After a failed F1 login, wait this long before trying the same session again.
