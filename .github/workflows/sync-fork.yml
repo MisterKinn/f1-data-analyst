@@ -1,0 +1,21 @@
+name: Sync fork with upstream
+
+# Runs only in the owner's fork (kangjeongmin1229/f1-data-analyst-deploy) so Claude Code
+# sessions there always start from the current production main.
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: github.repository == 'kangjeongmin1229/f1-data-analyst-deploy'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fast-forward main to MisterKinn/f1-data-analyst main
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh repo sync "$GITHUB_REPOSITORY" --source MisterKinn/f1-data-analyst --branch main
