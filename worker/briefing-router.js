@@ -1,6 +1,7 @@
 import {calendarEvents} from './race-calendar-data.js';
 import {sessionSchedule} from './session-schedule.js';
 import {sessionState} from './session-state.js';
+import {buildSessionAnalysis,sessionKind,ANALYSIS_TITLE} from './session-analysis.js';
 
 // "꽁보다 실시간브리핑" picks the series from the published schedule, never from whichever
 // collector happens to have data. A WEC window always wins over an old F1 snapshot.
@@ -69,7 +70,7 @@ export function buildWecBriefing(status={},route={},prefs=null,now=Date.now()){
  const pace=live?'단일 랩과 롱런을 나눠 봅니다. 토우·저연료 랩은 기준에서 뺍니다. 연속 스틴트가 짧거나 플래그·비가 있으면 레이스 페이스는 아직 판단하지 않습니다.':'라이브 타이밍이 없어 페이스를 판단하지 않습니다.';
  return {schema_version:5,series:'wec',route:{series:'wec',reason:route.reason||'schedule'},available:live,status:header.status,header,
   briefing:`${header.event||'WEC'} ${header.session||''} · ${right_now}`.trim(),
-  sections:{right_now,flags:flags.length?flags:[],flags_note:flags.length?null:(live?'RaceLog에 플래그 기록이 없습니다.':'아직 읽지 못했습니다.'),investigations,pace,
+  sections:{right_now,flags:flags.length?flags:[],flags_note:flags.length?null:(live?'RaceLog에 플래그 기록이 없습니다.':'아직 읽지 못했습니다.'),investigations,pace,pace_title:ANALYSIS_TITLE[sessionKind(a?.session||status.session||'')],
    favourite:{manufacturer:fav,note:fav?(live?`${fav} 차량의 순위·격차와 관련 사건을 먼저 봅니다.`:`${fav}: 타이밍을 읽은 뒤 설명합니다.`):'계정 설정에 응원 제조사가 없습니다.'},personal_instructions:prefs?.personalInstructions?.text||null},
   access_choice:needsAccess?ACCESS_CHOICE:null,
   buttons:[...(investigations.length?[{id:'decision',label:'판정 확인'}]:[]),{id:'standings',label:'전체 순위'},{id:'refresh',label:'새로고침'}],
@@ -91,7 +92,7 @@ export function routedBriefingText(p){
  const s=p.sections||{};
  return [p.briefing,p.header?.time_left?`남은 시간 ${p.header.time_left}`:null,
   s.flags?.length?'플래그: '+s.flags.map(f=>f.text).join(' | '):s.flags_note?'플래그: '+s.flags_note:null,
-  s.pace?'페이스: '+s.pace:null,s.favourite?'응원 팀: '+s.favourite.note:null,
+  s.pace?(s.pace_title||'페이스')+': '+s.pace:null,s.favourite?'응원 팀: '+s.favourite.note:null,
   p.access_choice?'선택: '+p.access_choice.options.map(o=>o.label).join(' / '):null].filter(Boolean).join('\n');
 }
 
@@ -106,7 +107,7 @@ export function inScheduledF1Window(at){
  return false;
 }
 
-export const BRIEFING_ROUTER_INSTRUCTIONS=' LIVE BRIEFING ("꽁보다 브리핑", "꽁보다 실시간브리핑", "live briefing"): call kongboda_live_briefing with series "auto" FIRST and ONLY. The server picks the series from the published schedule: route.series "wec" means a WEC window is open, so do not call fastf1_live_snapshot or any F1 tool; "f1" means the F1 flow; "none" means nothing is live, so say that and give next_sessions for each series. The returned card IS the briefing: it renders automatically as the first output; write no summary before it and at most one short line after it. Never present record_kind "off_schedule_record", a failover drill, a test or a stale snapshot as a live or real session result. CARD ORDER: header (series, event, session, live or not, time left, track status), right now (what is happening this moment), why the flags (each yellow, double yellow, red, FCY, SC with time, corner, race-control reason and investigations or penalties; say when no reason is published), race pace (single lap apart from long runs; exclude tow and low-fuel outliers; say plainly when pace is not readable yet and why), your team or drivers (favourite and personal_instructions from the card; position, gap to the real pack, incidents), standings only on request. WEC ACCESS: when the card has access_choice, show it as a choice box with exactly its two options (use the host\'s multiple-choice question tool when available; the card buttons are the fallback), never as a plain-text question. If the user picks login, open access_choice.login_url in the browser yourself and go to Account; if it already shows "Signed in to FIAWEC+" skip sign-in, otherwise leave only the password and CAPTCHA to the user and detect the finished sign-in yourself. Then open the LIVE card, /en/livestream/<session>, Live timing, and read Map, RaceLog (Race Control, Flags) and Analysis (Pace). If the user picks link, open that plus.fiawec.com link and read Live timing the same way. Then call kongboda_live_briefing again or render the same card order from what you read. KEEP BRIEFING FOR THE WHOLE SESSION: when the card has follow_up, the user wants a new card every follow_up.every_minutes until follow_up.until. After each card, schedule the next briefing back into this same conversation (send_later or the host equivalent, message: 꽁보다 실시간브리핑) unless one is already pending; each run posts a new card (never edit the old one). Stop scheduling when follow_up is null, the time passes follow_up.until, route.series changes, or the user says stop. If the host cannot schedule into this conversation, create one-time scheduled tasks every 15 minutes until follow_up.until instead, and say so in one line.';
+export const BRIEFING_ROUTER_INSTRUCTIONS=' LIVE BRIEFING ("꽁보다 브리핑", "꽁보다 실시간브리핑", "live briefing"): call kongboda_live_briefing with series "auto" FIRST and ONLY. The server picks the series from the published schedule: route.series "wec" means a WEC window is open, so do not call fastf1_live_snapshot or any F1 tool; "f1" means the F1 flow; "none" means nothing is live, so say that and give next_sessions for each series. The returned card IS the briefing: it renders automatically as the first output; write no summary before it and at most one short line after it. Never present record_kind "off_schedule_record", a failover drill, a test or a stale snapshot as a live or real session result. CARD ORDER: header (series, event, session, live or not, time left, track status), right now (what is happening this moment), why the flags (each yellow, double yellow, red, FCY, SC with time, corner, race-control reason and investigations or penalties; say when no reason is published), the session analysis titled by sections.pace_title (qualifying: best-lap gaps by sector, who owns each sector, the knockout line and where the favourite loses time; practice: quali sims on soft compared with rivals and long-run averages kept apart; race: recent green-lap pace against the car ahead and the leader; add whatever else the data shows that explains the session, and say plainly when something is not readable yet and why), your team or drivers (favourite and personal_instructions from the card; position, gap to the real pack, incidents), standings only on request. WEC ACCESS: when the card has access_choice, show it as a choice box with exactly its two options (use the host\'s multiple-choice question tool when available; the card buttons are the fallback), never as a plain-text question. If the user picks login, open access_choice.login_url in the browser yourself and go to Account; if it already shows "Signed in to FIAWEC+" skip sign-in, otherwise leave only the password and CAPTCHA to the user and detect the finished sign-in yourself. Then open the LIVE card, /en/livestream/<session>, Live timing, and read Map, RaceLog (Race Control, Flags) and Analysis (Pace). If the user picks link, open that plus.fiawec.com link and read Live timing the same way. Then call kongboda_live_briefing again or render the same card order from what you read. KEEP BRIEFING FOR THE WHOLE SESSION: when the card has follow_up, the user wants a new card every follow_up.every_minutes until follow_up.until. After each card, schedule the next briefing back into this same conversation (send_later or the host equivalent, message: 꽁보다 실시간브리핑) unless one is already pending; each run posts a new card (never edit the old one). Stop scheduling when follow_up is null, the time passes follow_up.until, route.series changes, or the user says stop. If the host cannot schedule into this conversation, create one-time scheduled tasks every 15 minutes until follow_up.until instead, and say so in one line.';
 
 // F1 card in the same order as the WEC card: right now → why the flags → race pace → your
 // team, standings only on request. Built only from what the FastF1 snapshot actually holds.
@@ -129,16 +130,15 @@ export function buildF1Card(p,snapshot={},route={},prefs=null,now=Date.now()){
  const w=p.weather||{}, wx=[w.track_temperature&&`노면 ${w.track_temperature}`,w.air_temperature&&`기온 ${w.air_temperature}`,w.humidity&&`습도 ${w.humidity}`,/^(1|true)$/i.test(String(w.rainfall||''))?'비 감지':null].filter(Boolean).join(' · ');
  const pits=rows.filter(r=>r.in_pit).map(r=>r.code);
  const right_now=live?[p.track_status?.label&&p.track_status.label!=='정상'?`트랙 상태: ${p.track_status.label}`:'그린 플래그',lapText,wx||null,pits.length?`피트: ${pits.join(', ')}`:null,flags.at(-1)?`최근 레이스 컨트롤: ${flags.at(-1).text}`:null].filter(Boolean).join(' / '):p.briefing;
- // Pace: single-lap only from the snapshot. Long runs need lap history, so say so instead of guessing.
- const timed=rows.map(r=>({...r,best:lapSeconds(r.best_lap),last:lapSeconds(r.last_lap)})).filter(r=>r.best);
- const ref=timed.slice().sort((x,y)=>x.best-y.best)[0];
- const pace=!live?'라이브 타이밍이 없어 페이스를 판단하지 않습니다.':!ref?'아직 기록된 랩이 없어 페이스를 판단하지 않습니다.':
-  `단일 랩 기준: 최고 ${ref.code} ${ref.best_lap}. 롱런 페이스는 연속 랩 기록이 필요해 이 스냅샷만으로 판단하지 않습니다(세션 후 openf1_laps로 확인).`;
  const team=prefs?.preferences?.f1Team||null, drivers=prefs?.preferences?.f1Drivers||[];
  const mine=rows.filter(r=>drivers.some(d=>sameName(r.name,d))||(team&&String(r.team||'').toLowerCase().includes(team.toLowerCase())));
+ const timed=rows.map(r=>({...r,best:lapSeconds(r.best_lap)})).filter(r=>r.best), ref=timed.slice().sort((x,y)=>x.best-y.best)[0];
+ const analysis=buildSessionAnalysis({sessionName:a?.session||topics.SessionInfo?.Name||'',live,snapshot,rows,mine:mine.map(r=>r.number)});
+ const pace=[...analysis.lines,analysis.note].filter(Boolean).join('\n');
+ const tele=mine[0]&&ref&&ref.number!==mine[0].number?{id:'telemetry',label:`${mine[0].code} vs ${ref.code} 텔레메트리`,prompt:`꽁보다 브리핑: ${mine[0].code}와 ${ref.code}의 이번 세션 최고 랩 텔레메트리(속도·브레이크·델타, 코너별 우위)를 비교해 줘.`}:null;
  const favNote=!team&&!drivers.length?'계정 설정에 응원 팀·드라이버가 없습니다.':!mine.length?`${[team,...drivers].filter(Boolean).join(' · ')}: 타이밍을 읽은 뒤 설명합니다.`:
   mine.map(r=>{const b=lapSeconds(r.best_lap);const d=b&&ref?` (최고 랩 +${(b-ref.best).toFixed(3)}s)`:'';const inv=investigations.find(t=>t.includes(String(r.number)));return `${r.code} P${r.position}${r.gap&&r.gap!=='LEADER'?` ${r.gap}`:''}${d}${r.compound?` · ${r.compound}${r.tyre_laps!=null?` ${r.tyre_laps}랩`:''}`:''}${r.in_pit?' · 피트':''}${inv?` · 조사: ${inv}`:''}`;}).join(' / ');
- return {...p,header,sections:{right_now,flags,flags_note:flags.length?null:(live?'레이스 컨트롤에 플래그 기록이 없습니다.':'아직 읽지 못했습니다.'),investigations,pace,
+ return {...p,header,sections:{right_now,flags,flags_note:flags.length?null:(live?'레이스 컨트롤에 플래그 기록이 없습니다.':'아직 읽지 못했습니다.'),investigations,pace,pace_title:analysis.title,analysis,
   favourite:{team,drivers,note:favNote},personal_instructions:prefs?.personalInstructions?.text||null},
-  buttons:[...(investigations.length?[{id:'decision',label:'판정 확인'}]:[]),{id:'standings',label:'전체 순위'},{id:'refresh',label:'새로고침'}]};
+  buttons:[...(investigations.length?[{id:'decision',label:'판정 확인'}]:[]),...(tele?[tele]:[]),{id:'standings',label:'전체 순위'},{id:'refresh',label:'새로고침'}]};
 }

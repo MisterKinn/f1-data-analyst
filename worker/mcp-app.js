@@ -26,17 +26,17 @@ function switchTab(name){for(const key of ['overview','timing','strategy']){byId
 for(const key of ['overview','timing','strategy'])byId('tab-'+key).addEventListener('click',()=>switchTab(key));
 function sendPrompt(text){try{if(window.openai?.sendFollowUpMessage){window.openai.sendFollowUpMessage({prompt:text});return;}}catch(_){}window.parent.postMessage({jsonrpc:'2.0',id:Date.now(),method:'ui/message',params:{role:'user',content:[{type:'text',text}]}},'*');}
 const PROMPTS={login:'FIAWEC+ 직접 로그인할게. 로그인 화면까지 열어 줘.',link:'FIAWEC+ 세션 링크를 붙여 넣을게.',standings:'꽁보다 브리핑 전체 순위 보여 줘.',refresh:'꽁보다 실시간브리핑 새로고침',decision:'꽁보다 브리핑에 나온 조사 건의 판정 확인해 줘.'};
-function button(id,label,primary){const b=node('button','act'+(primary?' primary':''),label);b.type='button';b.addEventListener('click',()=>sendPrompt(PROMPTS[id]||label));return b;}
+function button(id,label,primary,prompt){const b=node('button','act'+(primary?' primary':''),label);b.type='button';b.addEventListener('click',()=>sendPrompt(prompt||PROMPTS[id]||label));return b;}
 function renderRouted(d){const box=byId('brief'),h=d.header||{},s=d.sections||{};box.replaceChildren();
  for(const key of ['overview','timing','strategy'])byId(key).hidden=true;byId('tabs').hidden=true;box.hidden=false;
  const top=node('div');top.append(node('div','left',h.time_left||'—'),node('div','corner',[h.series,h.event,h.session,h.clock].filter(Boolean).join(' · ')));box.append(top);
  box.append(node('h2','', '지금 상황'),node('p','',s.right_now||d.briefing||'확인된 정보가 없습니다.'));
  if(d.series==='wec'||d.series==='f1'){box.append(node('h2','','플래그 이유'));if(Array.isArray(s.flags)&&s.flags.length)for(const f of s.flags)box.append(node('span','flag '+(f.code||''),f.text));else box.append(node('p','',s.flags_note||'기록 없음'));
   if(Array.isArray(s.investigations)&&s.investigations.length){box.append(node('h2','','조사·페널티'));for(const t of s.investigations)box.append(node('span','flag',t));}
-  box.append(node('h2','','레이스 페이스'),node('p','',s.pace||'—'));
+  box.append(node('h2','',s.pace_title||'레이스 페이스'));for(const t of String(s.pace||'—').split(String.fromCharCode(10)))box.append(node('p','',t));
   box.append(node('h2','','내 팀'),node('p','',s.favourite?.note||'—'));if(s.personal_instructions)box.append(node('p','corner','내 지침 반영: '+s.personal_instructions.slice(0,120)));}
  if(s.last_record)box.append(node('h2','','직전 세션'),node('p','',s.last_record));
- const actions=node('div','actions');if(d.access_choice)for(const o of d.access_choice.options)actions.append(button(o.id,o.label,true));for(const b of (Array.isArray(d.buttons)?d.buttons:[]))actions.append(button(b.id,b.label,false));box.append(actions);
+ const actions=node('div','actions');if(d.access_choice)for(const o of d.access_choice.options)actions.append(button(o.id,o.label,true));for(const b of (Array.isArray(d.buttons)?d.buttons:[]))actions.append(button(b.id,b.label,false,b.prompt));box.append(actions);
  metaEl.textContent=[d.source,d.checked_at?'확인 '+receivedText(d.checked_at):null,'새 분석 요청 시 갱신'].filter(Boolean).join(' · ');sizeChanged();}
 function render(value){const d=unwrap(value),f=d.freshness||{},live=d.available!==false&&f.live===true&&(d.connected===true||d.series==='wec');hasResult=true;if(d.series==='wec'||d.series==='none'||(d.series==='f1'&&d.sections)){statusEl.textContent=d.status||'확인 필요';statusEl.classList.toggle('live',live);summaryEl.textContent=d.briefing||'';renderRouted(d);return;}byId('brief').hidden=true;byId('tabs').hidden=false;statusEl.textContent=live?'LIVE':(d.status||(d.available===false?'자료 없음':f.session_status||'연결 확인 필요'));statusEl.classList.toggle('live',live);summaryEl.textContent=d.briefing||d.reason||'검증된 라이브 브리핑이 없습니다.';
  factsEl.replaceChildren();for(const item of (Array.isArray(d.details)?d.details:[]).slice(0,6))if(typeof item?.label==='string'&&typeof item?.value==='string')factsEl.append(fact(item.label,item.value));

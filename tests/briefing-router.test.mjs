@@ -56,7 +56,7 @@ test('F1 card follows the WEC order: situation, flag reasons, pace, favourite dr
  const c=buildF1Card(p,snap,route,{preferences:{f1Team:'Mercedes',f1Drivers:['George Russell','Andrea Kimi Antonelli']}},now);
  assert.equal(c.header.track_status,'yellow');assert.match(c.sections.right_now,/옐로/);
  assert.equal(c.sections.flags[0].code,'yellow');assert.match(c.sections.flags[0].text,/SECTOR 7/);
- assert.match(c.sections.pace,/단일 랩/);assert.match(c.sections.pace,/롱런/);
+ assert.equal(c.sections.pace_title,'프랙티스 분석');
  assert.match(c.sections.favourite.note,/RUS P4/);assert.match(c.sections.favourite.note,/\+0\.400s/);assert.match(c.sections.favourite.note,/조사/);
  assert.ok(c.buttons.some(b=>b.id==='standings'));assert.ok(c.buttons.some(b=>b.id==='decision'));
  assert.match(routedBriefingText(c),/응원 팀/);
@@ -64,4 +64,20 @@ test('F1 card follows the WEC order: situation, flag reasons, pace, favourite dr
 test('already registered users get quick setup: briefing and scheduled tasks without questions',async()=>{
  const {SETUP_PROMPTS}=await import('../worker/briefing-guide.js');
  for(const key of ['claude','chatgpt'])for(const part of ['[빠른 설정]','kongboda_my_preferences','묻지 말고'])assert.ok(SETUP_PROMPTS[key].includes(part),key+' '+part);
+});
+
+test('the analysis section follows the session: qualifying sectors, practice sims and long runs, race vs car ahead',async()=>{
+ const {buildSessionAnalysis,sessionKind}=await import('../worker/session-analysis.js');
+ assert.equal(sessionKind('Qualifying'),'qualifying');assert.equal(sessionKind('Sprint Qualifying'),'qualifying');assert.equal(sessionKind('Practice 2'),'practice');assert.equal(sessionKind('Sprint'),'race');assert.equal(sessionKind('하이퍼카 하이퍼폴'),'qualifying');
+ const rows=[{number:'1',code:'VER',position:1},{number:'4',code:'NOR',position:2,interval:'+1.2'},{number:'63',code:'RUS',position:3,interval:'+0.8',compound:'HARD',tyre_laps:12}];
+ const bl=(n,t,s1,s2,s3,c)=>({driver_number:n,lap_time:t,status:'complete',sectors:{S1:s1,S2:s2,S3:s3},tyre:c?{compound:c}:undefined});
+ const q=buildSessionAnalysis({sessionName:'Qualifying',live:true,rows,mine:['63'],snapshot:{topics:{TimingData:{SessionPart:3}},lap_archive:{best_laps:{Q3:{'1':bl('1','1:10.000','20.000','30.000','20.000'),'4':bl('4','1:10.100','19.950','30.150','20.000'),'63':bl('63','1:10.300','20.050','30.200','20.050')}},records:[]}}});
+ assert.equal(q.title,'퀄리파잉 페이스');assert.match(q.lines.join('|'),/S1 NOR 19\.950/);assert.match(q.lines.join('|'),/RUS P3 \+0\.300.*S2 \+0\.200.*S2에서 가장 많이 잃음/);
+ const rec=(n,i,t)=>({driver_number:n,lap_number:i,lap_time_ms:t,completed_at:`2026-11-06T16:${String(i).padStart(2,'0')}:00Z`,track_status_at_completion:'1'});
+ const records=[...[1,2,3,4,5].map(i=>rec('4',i,74000+i*50)),...[1,2,3,4,5].map(i=>rec('63',i,74400+i*80)),...[1,2,3,4].map(i=>rec('1',i,73900)),...[1,2,3,4].map(i=>rec('16',i,74100))];
+ const pr=buildSessionAnalysis({sessionName:'Practice 2',live:true,rows:[...rows,{number:'16',code:'LEC',position:4}],mine:['63'],snapshot:{topics:{},lap_archive:{best_laps:{session:{'1':bl('1','1:09.900','20.0','29.9','20.0','SOFT'),'63':bl('63','1:10.200','20.1','30.0','20.1','SOFT')}},records}}});
+ const t=pr.lines.join('|');assert.match(t,/퀄리 시뮬/);assert.match(t,/VER 1:09\.900 · RUS \+0\.300/);assert.match(t,/롱런/);assert.match(t,/RUS 롱런/);assert.match(t,/랩당 \+0\.080/);
+ const ra=buildSessionAnalysis({sessionName:'Race',live:true,rows,mine:['63'],snapshot:{topics:{},lap_archive:{best_laps:{},records}}});
+ assert.equal(ra.title,'레이스 페이스');assert.match(ra.lines.join('|'),/앞차 NOR\(\+0\.8\) 대비 랩당 \+0\.\d{3} → 벌어지는 중/);
+ const none=buildSessionAnalysis({sessionName:'Race',live:false,rows,mine:[],snapshot:{}});assert.match(none.lines[0],/판단하지 않습니다/);
 });
