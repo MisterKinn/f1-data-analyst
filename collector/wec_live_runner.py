@@ -157,11 +157,14 @@ def record(window, launch=None, push=site, clock=now, sleep=time.sleep):
         try:
             outcome = run_browser(window, deadline, launch, push, clock, sleep)
         except DiscoveryError as error:
-            outcome = error.code
-        print('WEC', window['id'], outcome, flush=True)
+            outcome, detail = error.code, error.detail
+        else:
+            detail = None
+        print('WEC', window['id'], outcome, detail or '', flush=True)
         if outcome in STOP:
             push('POST', window['id'], {'schema_version': 1, 'producer': 'fiawec-actions', 'window': window['id'],
-                                        'event': window['event'], 'state': outcome, 'checked_at': utcnow(), 'records': []})
+                                        'event': window['event'], 'state': outcome, 'diagnostic': detail,
+                                        'checked_at': utcnow(), 'records': []})
             return outcome
         if outcome == 'closed':
             break
