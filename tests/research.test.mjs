@@ -4,10 +4,10 @@ import {liveRead} from '../worker/live.js';
 import worker from '../worker/index.js';
 import catalog from '../knowledge/research-catalog.json' with {type:'json'};
 const all=researchLookup({limit:10});
-assert.equal(all.total,27); assert.equal(all.papers.length,10);assert.equal(all.next_offset,10);
+assert.equal(all.total,28); assert.equal(all.papers.length,10);assert.equal(all.next_offset,10);
 const approvedCards=[];for(let offset=0;offset!==null;){const r=researchLookup({offset,limit:10});approvedCards.push(...r.papers);offset=r.next_offset;}
 for(const p of approvedCards){assert.equal(p.license,'CC-BY-4.0');assert.ok(p.authors&&p.doi&&p.source_locator&&p.license_evidence_url&&p.adaptation_notice);assert.ok(p.limitations);}
-assert.deepEqual(catalog.counts,{reviewed:27,candidates:6,held:24});
+assert.deepEqual(catalog.counts,{reviewed:28,candidates:5,held:24});
 assert.equal(new Set([...catalog.papers,...catalog.candidates,...catalog.held].map(p=>p.id)).size,57);
 for(const id of ['C01','C04','C07','K10','K11','K12','K13','K14','K15']){
  const p=researchLookup({paper_id:id}).papers[0];assert.equal(p.id,id);assert.equal(p.execution_status,'explanatory_reference_not_executed');
@@ -18,17 +18,17 @@ assert.match(researchLookup({paper_id:'C07'}).papers[0].limitations,/CC BY-NC/);
 assert.match(researchLookup({paper_id:'C04'}).papers[0].limitations,/시간 오차 불일치/);
 assert.equal(researchLookup({paper_id:'R01'}).papers.length,0);
 const pending=researchLookup({include_pending:true}).pending;
-assert.equal(pending.length,30);assert.ok(pending.every(p=>p.eligible_for_analysis===false&&!p.summary));
+assert.equal(pending.length,29);assert.ok(pending.every(p=>p.eligible_for_analysis===false&&!p.summary));
 for(const id of ['C03','C05','C06','C08','R01','R02','R03','R04','R05','R06','R07','R08','R09','R10','R11','R12']){
  assert.equal(researchLookup({paper_id:id}).total,0);
  const p=researchLookup({paper_id:id,include_pending:true}).pending[0];assert.equal(p.id,id);assert.equal(p.eligible_for_analysis,false);
 }
 assert.ok(researchLookup({query:'타이어',limit:10}).papers.some(p=>p.id==='K04'));
 const driving=[];for(let offset=0;offset!==null;){const r=researchLookup({topic:'driving',offset,limit:10});driving.push(...r.papers.map(p=>p.id));offset=r.next_offset;}
-for(const id of ['K06','K15','K16','K17','K18','K19','K20','K21','K22','K23'])assert.ok(driving.includes(id),id);
+for(const id of ['K06','K15','K16','K17','K18','K19','K20','K21','K22','K23','K24'])assert.ok(driving.includes(id),id);
 for(const id of ['K16','K17','K18','K19','K20','K21','K22','K23']){const p=researchLookup({paper_id:id}).papers[0];assert.equal(p.license,'CC-BY-4.0');assert.equal(p.checked_on,'2026-11-06');assert.ok(p.limitations&&p.source_locator);}
 assert.ok(researchLookup({query:'리프트 앤 코스트'}).papers.some(p=>p.id==='K20'));
-for(const id of ['C09','C10','R13','R14','R15','R16','R17','R18','R19','R20','R21','R22','R23','R24']){assert.equal(researchLookup({paper_id:id}).total,0);assert.equal(researchLookup({paper_id:id,include_pending:true}).pending[0].eligible_for_analysis,false);}
+for(const id of ['C10','R13','R14','R15','R16','R17','R18','R19','R20','R21','R22','R23','R24']){assert.equal(researchLookup({paper_id:id}).total,0);assert.equal(researchLookup({paper_id:id,include_pending:true}).pending[0].eligible_for_analysis,false);}
 assert.throws(()=>researchLookup({topic:'trail'}));
 assert.ok(researchLookup({topic:'aerodynamics'}).papers.every(p=>['K01','K02','K09','C07','K13','K14'].includes(p.id)));
 assert.ok(researchLookup({topic:'aerodynamics'}).papers.some(p=>p.id==='C07'));
@@ -37,7 +37,7 @@ assert.ok(researchLookup({query:'Formula E',limit:10}).papers.some(p=>p.id==='C0
 assert.equal(researchLookup({paper_id:'C02'}).papers[0].execution_status,'equations_6_to_9_scenario_only');
 assert.equal(researchLookup({query:'no matching paper'}).total,0);
 assert.throws(()=>researchLookup({query:'x'.repeat(201)}));assert.throws(()=>researchLookup({limit:11}));
-const paged=[];for(let offset=0;offset!==null;){const r=researchLookup({offset,limit:3});paged.push(...r.papers.map(p=>p.id));offset=r.next_offset;}assert.equal(new Set(paged).size,27);
+const paged=[];for(let offset=0;offset!==null;){const r=researchLookup({offset,limit:3});paged.push(...r.papers.map(p=>p.id));offset=r.next_offset;}assert.equal(new Set(paged).size,28);
 const a={remaining_laps:10,current_age:10,next_age:0,current_offset_seconds:0,current_slope_seconds_per_lap:0.1,next_offset_seconds:0,next_slope_seconds_per_lap:0.1,pit_loss_seconds:20,warmup_loss_seconds:2,coefficient_basis:'Synthetic explicit example, not live measurements',input_kind:'explicit_scenario_assumptions'};
 const result=pitScenario(a);
 assert.equal(result.stay_modeled_loss_seconds,15.5);assert.equal(result.pit_modeled_loss_seconds,27.5);assert.equal(result.pit_minus_stay_seconds,12);

@@ -4,8 +4,8 @@
   "checked_on": "2026-11-06",
   "scope": "IMechE, SAE, Springer Nature, Elsevier, IEEE, MDPI, PLOS, arXiv 및 기관 공개 원고를 탐색한 연구 지식팩. 전 세계 논문을 망라한 체계적 문헌고찰은 아님 1.5에서 주행 이론(레이싱 라인·제동·g-g·드라이버 특성) 공개 논문을 추가.",
   "counts": {
-    "reviewed": 27,
-    "candidates": 6,
+    "reviewed": 28,
+    "candidates": 5,
     "held": 24
   },
   "persistent_preference": "상업 재사용 가능 자료 우선. Formula E 확장 시 에너지·배터리 열관리·회생·규정 버전을 포함.",
@@ -1181,6 +1181,45 @@
         "전문성"
       ],
       "live_timing_scope": "드라이버 전문성·트랙 지식의 배경 설명; 미니 리뷰; 차량 제어 연구 아님; 영상 연구는 과제·방법에 크게 좌우됨; 기법 근거로 쓰지 않음"
+    },
+    {
+      "review_status": "methods_results_limitations_reviewed",
+      "commercial_text_reuse": "allowed_with_attribution_subject_to_exclusions",
+      "license": "CC-BY-4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "usage_status": "approved_explanation",
+      "execution_status": "explanatory_reference_not_executed",
+      "adaptation_notice": "Kongboda Korean paraphrase and application limits; no author endorsement. No figures, code, datasets or weights copied.",
+      "review_scope": "공개 본문의 주요 방법·결과·한계와 해당 버전의 권리 검토(Firecrawl 열람); 재실험·모델 실행·재학습 없음",
+      "id": "K24",
+      "topic": "주행 기술·실차 드라이버 주행선 데이터",
+      "title": "Insights into vehicle trajectories at the handling limits: analysing open data from race car drivers",
+      "authors": "John C. Kegelman; Lene K. Harbott; J. Christian Gerdes",
+      "year": 2017,
+      "journal": "Vehicle System Dynamics 55(2): 191-207",
+      "doi": "10.1080/00423114.2016.1249893",
+      "url": "https://www.tandfonline.com/doi/full/10.1080/00423114.2016.1249893",
+      "license_evidence_url": "https://www.tandfonline.com/action/showCopyRight?doi=10.1080%2F00423114.2016.1249893",
+      "source_locator": "Licensing tab (Creative Commons Attribution License 4.0 statement); data collection; trajectory analysis; driver comparison",
+      "checked_on": "2026-11-06",
+      "rights_checked_on": "2026-11-06",
+      "note": "스탠퍼드 Revs 프로그램이 빈티지 레이스카에 조향·스로틀·페달 센서와 GNSS/INS를 달아 실제 레이스 주말의 프로 드라이버 주행을 기록하고 공개했다. 라구나 세카에서 두 드라이버의 약 56랩을 비교한 결과, 랩마다 주행선의 횡방향 흩어짐은 곡률이 가장 큰 지점(에이펙스 부근)에서 가장 작았다. 두 드라이버의 랩타임은 통계적으로 구분되지 않았지만 주행 거리는 달랐다. 한 명은 늦은 에이펙스와 이른 가속의 slow-in fast-out, 다른 한 명은 더 짧고 타이트한 라인과 높은 최저속을 택했고, 어느 쪽이 유리한지는 코너마다 달라 구간 합계에서는 상쇄됐다. 한계 주행에는 하나의 정답 라인보다 비슷한 시간을 내는 여러 경로·속도 조합이 있으며 에이펙스의 일관성이 중요하다는 설명 근거다.",
+      "inputs": [
+        "GNSS/INS 위치",
+        "조향·스로틀·브레이크 페달",
+        "랩별 중심선 투영"
+      ],
+      "use": "실제 드라이버의 라인 선택·에이펙스 일관성·라인 간 상충 설명",
+      "limits": "1963년식 차량 한 종류·서킷 한 곳·드라이버 두 명; 현대 다운포스 차량과 다름; 공개 데이터셋(ODC-By)의 권리는 논문과 별도이며 데이터는 복제하지 않음",
+      "tags": [
+        "driving",
+        "주행",
+        "레이싱 라인",
+        "에이펙스",
+        "드라이버",
+        "telemetry"
+      ],
+      "live_timing_scope": "실제 드라이버의 라인 선택·에이펙스 일관성·라인 간 상충 설명; 1963년식 차량 한 종류·서킷 한 곳·드라이버 두 명; 현대 다운포스 차량과 다름; 공개 데이터셋(ODC-By)의 권리는 논문과 별도이며 데이터는 복제하지 않음"
     }
   ],
   "candidates": [
@@ -1247,22 +1286,6 @@
       "license_evidence_url": "https://www.tandfonline.com/doi/pdf/10.1080/00423114.2025.2501989",
       "rights_checked_on": "2026-10-29",
       "review_scope": "접근·권리 및 검색 색인 본문 일부 점검; 승인용 전체 검토 미완료"
-    },
-    {
-      "review_status": "candidate_not_ingested",
-      "commercial_text_reuse": "not_approved_for_this_pack",
-      "last_access_checked_on": "2026-11-06",
-      "rights_checked_on": "2026-11-06",
-      "id": "C09",
-      "title": "Insights into vehicle trajectories at the handling limits: analysing open data from race car drivers",
-      "doi": "10.1080/00423114.2016.1249893",
-      "url": "https://www.tandfonline.com/doi/full/10.1080/00423114.2016.1249893",
-      "note": "Crossref 메타데이터는 출판본 CC BY 4.0, 출판사 페이지는 Open access와 저자 저작권 표시. 그러나 기사 HTML·PDF 1–3쪽에서 CC 문구 자체가 확인되지 않아 승인 보류.",
-      "access_status": "full_text_open_license_sentence_not_visible",
-      "next_action": "출판사 Licensing 탭 또는 PDF 내 CC 문구를 직접 확인한 뒤 프로 드라이버 주행선 분산·주행 스타일 비교 결과를 승인 검토.",
-      "review_observation": "빈티지 레이스카 실주행 공개 데이터; 에이펙스에서 주행선 분산 최소, 두 드라이버의 서로 다른 라인이 비슷한 랩타임.",
-      "license_evidence_url": "https://api.crossref.org/works/10.1080/00423114.2016.1249893",
-      "review_scope": "본문 열람·요약 가능; 라이선스 문구 직접 확인 미완료"
     },
     {
       "review_status": "candidate_not_ingested",
@@ -1700,6 +1723,6 @@
     "source_file": "Kongboda_Motorsports_Research_2026-10-29.zip",
     "source_catalog_version": "1.0",
     "imported_on": "2026-10-29",
-    "changes": "Added use boundaries, topic tags, access triage and reviewed C02. Korean notes are adapted summaries, not verbatim article text. Version 1.2: reviewed C01 and C04 using publisher-provided public full text; C07 uses explicitly licensed arXiv v3 only. Rechecked all 15 previously unapproved records; four partial-text candidates and eight rights holds remain excluded. Version 1.3: added K10/K11 from explicitly licensed public manuscripts and R09 as a noncommercial rights hold. IMechE authenticated access was not available to the agent; no subscription-access claim. Version 1.4: re-read key methods/results/limitations of the existing 15 papers; added K12–K15 with explicit live-timing boundaries and R10–R12 as excluded rights/access records. See comprehensive audit report. Version 1.5: added driving-theory topic with K16–K23 (CC BY 4.0, visible license statements), C09–C10 as candidates (license only in metadata or body not captured), and R13–R24 as NC/ND or all-rights-reserved holds. Books, paid courses and all-rights-reserved free web articles are not ingested."
+    "changes": "Added use boundaries, topic tags, access triage and reviewed C02. Korean notes are adapted summaries, not verbatim article text. Version 1.2: reviewed C01 and C04 using publisher-provided public full text; C07 uses explicitly licensed arXiv v3 only. Rechecked all 15 previously unapproved records; four partial-text candidates and eight rights holds remain excluded. Version 1.3: added K10/K11 from explicitly licensed public manuscripts and R09 as a noncommercial rights hold. IMechE authenticated access was not available to the agent; no subscription-access claim. Version 1.4: re-read key methods/results/limitations of the existing 15 papers; added K12–K15 with explicit live-timing boundaries and R10–R12 as excluded rights/access records. See comprehensive audit report. Version 1.5: added driving-theory topic with K16–K23 (CC BY 4.0, visible license statements), C09–C10 as candidates (license only in metadata or body not captured), and R13–R24 as NC/ND or all-rights-reserved holds. Books, paid courses and all-rights-reserved free web articles are not ingested. 2026-11-06: C09 promoted to K24 after the publisher Licensing tab confirmed CC BY 4.0."
   }
 }
