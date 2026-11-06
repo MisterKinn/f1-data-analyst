@@ -1,4 +1,5 @@
 """FIAWEC+ UI discovery. Never guess a timing endpoint or export auth state."""
+import json
 import os
 import re
 from datetime import datetime, timezone
@@ -149,10 +150,27 @@ class FIAWECBrowser:
         pattern = r'verify you are human|checking your browser|unusual traffic|access denied' + (r'|captcha' if strict else '')
         found = re.search(pattern, text, re.I)
         if found:
-            raise DiscoveryError('human_verification_required', gate_detail(found.group(0), self.page.url, self.page.title()))
+            detail = gate_detail(found.group(0), self.page.url, self.page.title())
+            self.capture_gate(detail)
+            raise DiscoveryError('human_verification_required', detail)
         if re.search(r'incorrect password|wrong email|invalid credentials', text, re.I):
             raise DiscoveryError('authentication_failed')
         return text
+
+    def capture_gate(self, detail):
+        """Keep a picture of the bot check for the owner to look at later. Never solves it.
+        Every input is masked so a typed email or password never lands in the image."""
+        try:
+            folder = os.environ.get('WEC_GATE_DIR') or 'gate-captures'
+            os.makedirs(folder, exist_ok=True)
+            base = os.path.join(folder, 'wec-gate-' + datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ'))
+            self.page.screenshot(path=base + '.png', full_page=True, mask=[self.page.locator('input')], timeout=10000)
+            with open(base + '.json', 'w', encoding='utf-8') as f:
+                json.dump({'captured_at': utcnow(), 'detail': detail}, f, ensure_ascii=False)
+            print('WEC gate captured:', base + '.png', flush=True)
+            return base + '.png'
+        except Exception:
+            return None  # a failed capture must never hide the real stop reason
 
     def goto(self, url):
         checked_url(url, hosts=TIMING_HOSTS | {AUTH_HOST})
