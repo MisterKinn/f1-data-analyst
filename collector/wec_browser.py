@@ -47,13 +47,17 @@ def session_name(text):
     return None
 
 
-def select_session(cards, year, session='auto'):
-    """Current year + positive card-specific live badge; never a replay/duration."""
+def select_session(cards, year, session='auto', event=None, upcoming=False):
+    """Current year + positive card-specific live badge; never a replay/duration.
+    upcoming=True (a scheduled window for one named session) also accepts that session's
+    card before its LIVE badge appears; the livestream page then shows a countdown."""
     candidates = {}
     for card in cards:
         text = card.get('text', '') + ' ' + card.get('url', '')
         years = set(re.findall(r'\b20\d{2}\b', text.replace('-', ' ')))
-        if years != {str(year)}:
+        if years and years != {str(year)}:
+            continue
+        if event and event not in re.sub(r'[^a-z0-9]', '', text.lower()):
             continue
         if re.search(r'replay|highlights|full\s+race|on\s*demand', text, re.I):
             continue
@@ -61,13 +65,13 @@ def select_session(cards, year, session='auto'):
         if not name or (session != 'auto' and name != session):
             continue
         # "Live Timing Pro" in marketing copy is not a session status.
-        if not card.get('live'):
+        if not card.get('live') and not (upcoming and session != 'auto'):
             continue
         url = checked_url(card['url'], hosts={'plus.fiawec.com'})
-        if not re.match(r'^/en/(?:video|live)/[^/]+/?$', urlsplit(url).path):
+        if not re.match(r'^/en/(?:video|live|livestream|session)/[^/]+/?$', urlsplit(url).path):
             continue
         # Prefer the English card; preserve distinct sessions as ambiguity.
-        if name not in candidates or re.search(r'\benglish\b', text, re.I):
+        if name not in candidates or card.get('live') and not candidates[name].get('live') or re.search(r'\benglish\b', text, re.I):
             candidates[name] = {**card, 'url': url, 'session': name}
     if len(candidates) > 1:
         raise DiscoveryError('ambiguous_live_session')
@@ -102,9 +106,17 @@ def normalize_table(headers, rows):
     return [dict(zip(labels, [str(v)[:200] for v in row])) for row in rows if len(row) == len(labels)][:100]
 
 
+def owner_credentials():
+    """The operator's FIAWEC+ account (crew collection). Never used for a personal login."""
+    return (os.environ.get('WEC_USERNAME') or os.environ.get('WEC_EMAIL') or os.environ.get('FIAWEC_USERNAME'),
+            os.environ.get('WEC_PASSWORD') or os.environ.get('FIAWEC_PASSWORD'))
+
+
 class FIAWECBrowser:
     """Small explicit browser path, with an in-memory cookie jar only."""
-    def __init__(self, browser):
+    def __init__(self, browser, credentials=None):
+        # A personal session passes its own (username, password); crew uses the owner's.
+        self.credentials = credentials
         self.context = browser.new_context(accept_downloads=False)
         self.context.set_default_timeout(12000)
         self.page = self.context.new_page()
@@ -147,8 +159,7 @@ class FIAWECBrowser:
             if self.page.locator('[id^="headlessui-menu-button-"]').count():
                 return
             raise DiscoveryError('authentication_unverified')
-        username = os.environ.get('WEC_USERNAME') or os.environ.get('WEC_EMAIL') or os.environ.get('FIAWEC_USERNAME')
-        password = os.environ.get('WEC_PASSWORD') or os.environ.get('FIAWEC_PASSWORD')
+        username, password = self.credentials or owner_credentials()
         if not username or not password:
             raise DiscoveryError('credentials_required')
         login.first.click()
@@ -178,6 +189,22 @@ class FIAWECBrowser:
             self.check_gate()
             raise DiscoveryError('authentication_action_required') from None
         self.check_gate()
+
+    def next_session_cards(self):
+        """The FIA WEC home page's NEXT SESSIONS cards (recorded flow), each with its own
+        LIVE badge. Other series (ELMS etc.) are filtered by the event name later."""
+        self.goto(HOME)
+        heading = self.page.get_by_text(re.compile(r'^\s*next\s+sessions\s*$', re.I)).first
+        try:
+            heading.wait_for(state='visible')
+        except Exception:
+            return []
+        return heading.evaluate('''h => {
+          let box = h; for (let i = 0; i < 6 && box && !box.querySelector('a[href]'); i++) box = box.parentElement;
+          if (!box) return [];
+          return [...box.querySelectorAll('a[href]')].map(a => ({url: a.href, text: a.innerText,
+            live: [...a.querySelectorAll('*')].some(e => /^(live|live now)$/i.test(e.textContent.trim()))}));
+        }''')
 
     def race_links(self):
         self.goto(HOME)
@@ -240,6 +267,10 @@ class FIAWECBrowser:
                 break
         return self.page.url
 
+    def waiting_for_start(self):
+        text = self.check_gate()
+        return bool(re.search(r'\bto start\b|syncing live timeline', text, re.I))
+
     def read_rows(self):
         self.check_gate()
         for frame in self.page.frames:
@@ -263,10 +294,16 @@ class FIAWECBrowser:
         self.context.close()
 
 
-def discover(driver, target):
+def discover(driver, target, upcoming=False):
     target = request_target(target)
     driver.authenticate()
     event = re.sub(r'[^a-z0-9]', '', target['event'].lower())
+    selected = select_session(driver.next_session_cards(), target['year'], target['session'], event, upcoming)
+    if selected:
+        result = {'schema_version': 1, 'producer': 'fiawec-browser', 'target': target,
+                  'checked_at': utcnow(), 'auth_state': 'authenticated', 'race_url': None,
+                  'live': False, 'records': [], 'state': 'waiting_for_session'}
+        return open_session(driver, result, selected)
     choices = {}
     for item in driver.race_links():
         url = checked_url(item['url'], hosts={'plus.fiawec.com'})
@@ -284,15 +321,20 @@ def discover(driver, target):
               'checked_at': utcnow(), 'auth_state': 'authenticated',
               'race_url': public_url(race_url), 'session_url': None, 'timing_url': None,
               'live': False, 'records': [], 'state': 'waiting_for_session'}
-    selected = select_session(driver.session_cards(race_url), target['year'], target['session'])
+    selected = select_session(driver.session_cards(race_url), target['year'], target['session'], None, upcoming)
     if not selected:
         return result
+    return open_session(driver, result, selected)
+
+
+def open_session(driver, result, selected):
     result.update(session=selected['session'], session_url=public_url(selected['url']))
     timing = driver.open_timing(selected['url'])
     result.update(state='timing_opened', timing_url=public_url(timing),
                   private_timing_link=public_url(timing) is None,
                   timing_origin='https://' + urlsplit(checked_url(timing)).hostname)
     rows = driver.read_rows()
-    result.update(records=rows, state='snapshot_unverified' if rows else 'timing_layout_unverified')
+    waiting = not rows and driver.waiting_for_start()
+    result.update(records=rows, state='snapshot_unverified' if rows else 'timing_waiting_start' if waiting else 'timing_layout_unverified')
     # A link, login or one table observation never proves a changing live feed.
     return result

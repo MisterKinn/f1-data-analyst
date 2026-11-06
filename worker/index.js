@@ -6,11 +6,10 @@ import {ANSWER_POLICY} from './answer-policy.js';
 import {PREFERENCE_TOOLS,PERSONALIZATION_INSTRUCTIONS,readMyPreferences,updateMyInstructions} from './personalization.js';
 import {EXTERNAL_MCP_UNAVAILABLE} from './external-mcp.js';
 import {CREW_TOOLS,listCrew,hasCrewAccess} from './crew.js';
-import {sharedLiveAllowed} from './accounts.js';
 import {accountIdentity,accountRoute,firebaseIdentity} from './accounts.js';
 import {googleAuthRoute,googleIdentity,googleConfigured} from './google-auth.js';
 import {OFFICIAL_TOOLS,officialCall} from './official.js';
-import {WEC_LIVE_TOOLS,WEC_LIVE_INSTRUCTIONS,wecLiveCall} from './wec_live.js';
+import {WEC_LIVE_TOOLS,WEC_LIVE_INSTRUCTIONS,wecAccess,wecLiveAccessCall,wecRoutes} from './wec_live.js';
 import {RESEARCH_TOOLS,RESEARCH_INSTRUCTIONS,researchCall} from './research.js';
 import {RULES_TOOLS,RULES_INSTRUCTIONS,rulesCall,rulesRoutes,rulesContext,attachRulesContext} from './rules.js';
 import {PATENT_TOOLS,PATENT_INSTRUCTIONS,patentsCall,patentRoutes} from './patents.js';
@@ -72,6 +71,7 @@ export default{async fetch(request,env,ctx){
  const hostUpload=await hostCollectorRoute(request,env);if(hostUpload)return hostUpload;
  const kit=collectorKitRoute(request);if(kit)return kit;
  const live=await liveRoutes(request,env,firebase);if(live)return live;
+ const wecLive=await wecRoutes(request,env,firebase);if(wecLive)return wecLive;
  const rules=await rulesRoutes(request,env);if(rules)return rules;
  const patents=await patentRoutes(request,env);if(patents)return patents;
  if(path==='/api/mcp')return new Response(JSON.stringify({error:EXTERNAL_MCP_UNAVAILABLE}),{status:401,headers:{'content-type':'application/json','cache-control':'no-store'}});
@@ -127,11 +127,12 @@ export default{async fetch(request,env,ctx){
   b.params={name:target.name,arguments:gargs.arguments??{}};
  }
  const spec=callable.find(s=>s.name===b.params?.name);if(!spec)return rpcError(b.id,-32602,UNKNOWN_TOOL(b.params?.name));
- if(env.LIVE_ANALYSIS_KEY_HASH&&['wec_discover_live','wec_live_status'].includes(spec.name)&&!await sharedLiveAllowed(request,env)){result=toolError('운영자 계정의 공용 수집기 사용 권한이 없습니다. 본인 F1·FIAWEC+ 계정 연결은 준비 중입니다. 비밀 키는 운영자 공용 수집기 사용 허가용입니다.');break;}
+ const wecAcc=WEC_LIVE_TOOLS.some(t=>t.name===spec.name)?await wecAccess(request,env):null;
+ if(WEC_LIVE_TOOLS.some(t=>t.name===spec.name)&&!wecAcc){result=toolError('꽁보다 계정 로그인이 필요합니다.');break;}
  const access=['fastf1_live_snapshot','fastf1_diagnostics','fastf1_best_laps','kongboda_live_briefing'].includes(spec.name)?await f1Access(request,env):null;
  if(['fastf1_live_snapshot','fastf1_diagnostics','fastf1_best_laps','kongboda_live_briefing'].includes(spec.name)&&!access){result=toolError('꽁보다 계정 로그인이 필요합니다.');break;}
  const timingEnv=access?.env||env;
- const args=b.params.arguments??{};try{validate(spec,args);}catch(e){return rpcError(b.id,-32602,e.message);}try{result=spec.name==='kongboda_collector_setup'?await collectorSetupCall(request,env,args,{identity:(r,e)=>accountIdentity(r,e,null)}):spec.name==='kongboda_update_my_instructions'?await updateMyInstructions(request,env,null,args):spec.name==='kongboda_my_preferences'?{content:[{type:'text',text:JSON.stringify(await readMyPreferences(request,env,null))}],isError:false}:spec.name==='kongboda_list_crew'?await listCrew(request,env,args):spec.name==='motorsport_championship_standings'?await standingsCall(args,env):spec.name.startsWith('motorsport_')?await officialCall(spec.name,args,env):spec.name==='kongboda_live_briefing'?await liveBriefing(timingEnv,args,access?.mode):spec.name==='fastf1_diagnostics'?{content:[{type:'text',text:JSON.stringify(await diagnosticsRead(timingEnv,args))}],isError:false}:spec.name==='fastf1_live_snapshot'?{content:[{type:'text',text:JSON.stringify(await liveRead(timingEnv,args))}],isError:false}:spec.name==='fastf1_best_laps'?{content:[{type:'text',text:JSON.stringify(await bestLapsTool(timingEnv,args))}],isError:false}:WEC_LIVE_TOOLS.some(t=>t.name===spec.name)?await wecLiveCall(spec.name,args,env):isRaceTool(spec.name)?await openf1RaceCall(spec.name,args):spec.name==='fia_event_updates'?await eventUpdatesCall(env,args,{ctx,origin:new URL(request.url).origin}):spec.name.startsWith('openf1_')?await openf1Call(spec.name,args):spec.name.startsWith('research_')?await researchCall(spec.name,args,env):spec.name==='rules_lookup'?await rulesCall(spec.name,args,env):spec.name==='patents_lookup'?await patentsCall(spec.name,args,env):spec.name.startsWith('wec_')?await wecCall(spec.name,args,env):await fiaCall(spec.name,args);}catch(e){result=toolError(e.message);}
+ const args=b.params.arguments??{};try{validate(spec,args);}catch(e){return rpcError(b.id,-32602,e.message);}try{result=spec.name==='kongboda_collector_setup'?await collectorSetupCall(request,env,args,{identity:(r,e)=>accountIdentity(r,e,null)}):spec.name==='kongboda_update_my_instructions'?await updateMyInstructions(request,env,null,args):spec.name==='kongboda_my_preferences'?{content:[{type:'text',text:JSON.stringify(await readMyPreferences(request,env,null))}],isError:false}:spec.name==='kongboda_list_crew'?await listCrew(request,env,args):spec.name==='motorsport_championship_standings'?await standingsCall(args,env):spec.name.startsWith('motorsport_')?await officialCall(spec.name,args,env):spec.name==='kongboda_live_briefing'?await liveBriefing(timingEnv,args,access?.mode):spec.name==='fastf1_diagnostics'?{content:[{type:'text',text:JSON.stringify(await diagnosticsRead(timingEnv,args))}],isError:false}:spec.name==='fastf1_live_snapshot'?{content:[{type:'text',text:JSON.stringify(await liveRead(timingEnv,args))}],isError:false}:spec.name==='fastf1_best_laps'?{content:[{type:'text',text:JSON.stringify(await bestLapsTool(timingEnv,args))}],isError:false}:WEC_LIVE_TOOLS.some(t=>t.name===spec.name)?await wecLiveAccessCall(spec.name,args,env,wecAcc):isRaceTool(spec.name)?await openf1RaceCall(spec.name,args):spec.name==='fia_event_updates'?await eventUpdatesCall(env,args,{ctx,origin:new URL(request.url).origin}):spec.name.startsWith('openf1_')?await openf1Call(spec.name,args):spec.name.startsWith('research_')?await researchCall(spec.name,args,env):spec.name==='rules_lookup'?await rulesCall(spec.name,args,env):spec.name==='patents_lookup'?await patentsCall(spec.name,args,env):spec.name.startsWith('wec_')?await wecCall(spec.name,args,env):await fiaCall(spec.name,args);}catch(e){result=toolError(e.message);}
   if(result&&!result.isError&&OFFICIAL_UPDATE_TOOLS.test(spec.name))result=await withOfficialUpdates(result,request,env,ctx);
   if(result&&!result.isError&&/^(?:fastf1_|openf1_|fia_|kongboda_live|wec_|motorsport_)/.test(spec.name)){try{result=attachRulesContext(result,await rulesContext(env,spec.name,args,result));}catch{}}
   break;

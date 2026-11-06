@@ -4,4 +4,4 @@ Registered crew use their own authenticated Kongboda account to read the same sh
 
 The collector's automatic schedule remains responsible for session startup. Before describing a feed as current, check synchronization, event/session identity, freshness.live and per-topic timestamps. An old saved snapshot is not a successful live-session verification. Actual Mexico City FP1 reception must be checked during the session.
 
-Deferred: users without crew registration will later connect their own F1 or FIAWEC+ accounts to a separately scoped collection flow. That personal-account feature is not implemented by this release; never treat a site login as an F1/FIAWEC+ login or silently grant shared collector access.
+Users without crew registration connect their own F1 or FIAWEC+ account at /live (personal collector, credentials in memory only, 8 hours). WEC crew access reads the scheduled FIAWEC+ timing reader (.github/workflows/wec-live-collector.yml, operator account). Never treat a site login as an F1/FIAWEC+ login or silently grant shared collector access.

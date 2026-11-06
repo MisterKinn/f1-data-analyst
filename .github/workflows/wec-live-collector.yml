@@ -1,0 +1,47 @@
+name: WEC live collector
+# Reads the FIAWEC+ live-timing page in a headless browser during each WEC session window
+# (from the site's official session schedule) and pushes the timing table to the site.
+# No home host or AWS server. Runs that find no window within 40 minutes exit at once.
+# Needs repository secrets WEC_USERNAME and WEC_PASSWORD (the operator's FIAWEC+ account).
+on:
+  schedule:
+    - cron: '7,37 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+  id-token: write
+concurrency:
+  group: wec-live-collector
+  cancel-in-progress: false
+jobs:
+  collect:
+    if: github.repository == 'MisterKinn/f1-data-analyst'
+    runs-on: ubuntu-latest
+    timeout-minutes: 345
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Find a WEC session window
+        id: window
+        working-directory: collector
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import wec_live_runner as r
+          w = r.next_window(r.windows_from_calendar(r.fetch_calendar()), r.now())
+          print('found=' + ('yes' if w else 'no'))
+          PY
+      - name: Install browser
+        if: steps.window.outputs.found == 'yes'
+        working-directory: collector
+        run: |
+          pip install "$(grep -i '^playwright' requirements.txt)"
+          python -m playwright install --with-deps --only-shell chromium
+      - name: Record WEC session
+        if: steps.window.outputs.found == 'yes'
+        working-directory: collector
+        env:
+          WEC_USERNAME: ${{ secrets.WEC_USERNAME }}
+          WEC_PASSWORD: ${{ secrets.WEC_PASSWORD }}
+        run: python wec_live_runner.py
