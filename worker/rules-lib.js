@@ -77,6 +77,45 @@ export function parseFiaEventDocuments(html,base='https://www.fia.com'){
 
 // Any page that links PDFs (IMSA, IndyCar, NLS, series sites). Dates only when written.
 const urlDate=url=>{const m=String(url).match(/\/((?:19|20)\d{2})\/(\d{2})\/(\d{2})\//);return m?ymd(m[1],m[2],m[3]):null;};
+// First <a href> whose URL matches a pattern (used to find fia.com championship ids).
+export function discoverLink(html,base,match){
+ const re=new RegExp(match,'i');
+ for(const m of String(html??'').matchAll(/<a\b([^>]*)>/gi)){const href=attr(m[1],'href');if(!href)continue;const u=absolute(href,base);if(u&&re.test(u))return u.replace(/#.*$/,'');}
+ return null;
+}
+
+// PDF URLs embedded anywhere in a page (Next.js/RSC payloads, JSON islands) rather than in <a> tags.
+export function parseEmbeddedPdfUrls(html,base,{include,exclude,event_pattern,title_prefix,date_order='dmy'}={}){
+ const src=String(html??'').replace(/\\u002[Ff]/g,'/').replace(/\\\//g,'/'),out=new Map(),inc=include?new RegExp(include,'i'):null,exc=exclude?new RegExp(exclude,'i'):null,ev=event_pattern?new RegExp(event_pattern,'i'):null;
+ for(const m of src.matchAll(/(?:https?:)?\/\/[^\s"'<>()\\]+?\.pdf(?=[?#"'\s<>)\\]|$)/gi)){
+  let url;try{url=new URL(m[0].startsWith('//')?'https:'+m[0]:m[0],base).href;}catch{continue;}
+  const file=decodeURIComponent(new URL(url).pathname.split('/').pop()||'').replace(/\.pdf$/i,'');
+  const title=file.replace(/[_]+/g,' ').replace(/\s+-\s+|\s{2,}/g,' - ').replace(/\s+/g,' ').trim();
+  if(inc&&!inc.test(title))continue;if(exc&&exc.test(title))continue;
+  // The same file is often served from two CDN hosts; key on the file name.
+  const key=file.toLowerCase();if(out.has(key))continue;
+  const e=ev?(file.match(ev)?.[1]||'').replace(/_+/g,' ').trim():'';
+  out.set(key,{url,title:title_prefix?`${title_prefix} - ${title}`:title,published:findDate(title,date_order)||urlDate(url),event:ev?(e||null):undefined});
+ }
+ return [...out.values()].map(d=>{if(d.event===undefined)delete d.event;return d;});
+}
+
+// GT Apps Race Control noticeboard JSON (BTCC/TOCA and other BARC meetings).
+const GT_MONTHS={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
+export function parseGtappsNoticeboard(data,{include,exclude,recent_events=2}={}){
+ const inc=include?new RegExp(include,'i'):null,exc=exclude?new RegExp(exclude,'i'):null;
+ const events=(data?.seasons||[]).flatMap(s=>s.events||[]).sort((a,b)=>String(a.event_from_date).localeCompare(String(b.event_from_date)));
+ const keep=new Set(events.slice(-recent_events).map(e=>e.uuid));
+ const when=t=>{const m=String(t||'').match(/^(\d{1,2}) ([A-Za-z]{3})[a-z]* (\d{4})(?: (\d{2}):(\d{2}))?/);if(!m||!GT_MONTHS[m[2].toLowerCase()])return null;const p=n=>String(n).padStart(2,'0');return `${m[3]}-${p(GT_MONTHS[m[2].toLowerCase()])}-${p(m[1])}${m[4]?`T${m[4]}:${m[5]}:00`:''}`;};
+ const out=[];
+ for(const d of data?.documents||[]){
+  if(keep.size&&!keep.has(d.season_event_uuid))continue;if(!d.pdf_url)continue;
+  const hay=`${d.category_name||''} ${d.title||''}`;if(inc&&!inc.test(hay))continue;if(exc&&exc.test(hay))continue;
+  out.push({url:String(d.pdf_url).replace(/#.*$/,''),title:`${d.top_line_label||d.category_label||''} - ${d.title_label||d.title||''}`.replace(/^ - /,'').slice(0,300),published:when(d.published_at),event:d.season_event_name||null,number:d.document_number??null,recalled:!!d.redacted});
+ }
+ return out;
+}
+
 export function parsePdfLinks(html,base,{include,exclude,date_order='dmy'}={}){
  const out=new Map(),inc=include?new RegExp(include,'i'):null,exc=exclude?new RegExp(exclude,'i'):null;
  for(const m of String(html??'').matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/gi)){
@@ -199,7 +238,7 @@ export const SERIES_ALIASES={
  wrc:['wrc','rally','랠리'],erc:['erc'],'world-rx':['world rx','rallycross','wrx'],macau:['macau','마카오'],
  'fia-formula-regional':['frec','formula regional','fr'],'fia-f4':['f4'],tcr:['tcr'],'fia-general':['isc','sporting code','international sporting code','appendix l','국제 스포팅 코드'],
  imsa:['imsa'],indycar:['indycar','indy nxt','인디카'],nls:['nls','nurburgring','뉘르부르크링'],scca:['scca'],'fia-other':['fia other'],
- dakar:['dakar','다카르'],elms:['elms','european le mans'],lemanscup:['le mans cup','michelin le mans cup'],alms:['alms','asian le mans'],'gtwc-europe':['gtwc','gt world challenge','gtwc europe'],'british-gt':['british gt'],'24h-series':['24h series','24h 시리즈'],dtm:['dtm'],btcc:['btcc'],'motorsport-uk':['motorsport uk','msuk'],'super-formula':['super formula','슈퍼 포뮬러','슈퍼포뮬러'],'super-taikyu':['super taikyu','슈퍼 다이큐','슈퍼다이큐'],superrace:['superrace','super race','슈퍼레이스','슈퍼 레이스'],'hyundai-n-festival':['n festival','n페스티벌','n 페스티벌','현대 n 페스티벌'],motogp:['motogp','moto gp','motogp','worldsbk','wsbk','모토gp'],'gr-cup':['gr cup','gr86']
+ dakar:['dakar','다카르'],elms:['elms','european le mans'],lemanscup:['le mans cup','michelin le mans cup'],alms:['alms','asian le mans'],'gtwc-europe':['gtwc','gt world challenge','gtwc europe'],'british-gt':['british gt'],'24h-series':['24h series','24h 시리즈'],dtm:['dtm'],btcc:['btcc','british touring car','브리티시 투어링카'],supercars:['supercars','repco supercars','v8 supercars','슈퍼카 챔피언십'],'motorsport-uk':['motorsport uk','msuk'],'super-formula':['super formula','슈퍼 포뮬러','슈퍼포뮬러'],'super-taikyu':['super taikyu','슈퍼 다이큐','슈퍼다이큐'],superrace:['superrace','super race','슈퍼레이스','슈퍼 레이스'],'hyundai-n-festival':['n festival','n페스티벌','n 페스티벌','현대 n 페스티벌'],motogp:['motogp','moto gp','motogp','worldsbk','wsbk','모토gp'],'gr-cup':['gr cup','gr86']
 };
 export function seriesFrom(value){
  const v=String(value??'').trim().toLowerCase();if(!v)return null;if(SERIES_ALIASES[v])return v;

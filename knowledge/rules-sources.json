@@ -471,6 +471,104 @@
         "H01M"
       ],
       "note": "Weekly. Needs the EPO OPS key saved by the owner. Vehicle technology classes only (drive, hybrid/EV, chassis, brakes, tyres, body/aero, engine, exhaust, transmission, batteries)."
+    },
+    {
+      "id": "fe-event-docs",
+      "series": "formula-e",
+      "kind": "event_documents",
+      "adapter": "fia_event_documents",
+      "url": "https://www.fia.com/documents/championships/fia-formula-one-world-championship-14",
+      "discover": {
+        "from": "https://www.fia.com/documents/championships/fia-formula-one-world-championship-14",
+        "match": "/documents/championships/[^\"'#?]*formula-e"
+      },
+      "calendar": "formula-e",
+      "note": "FIA decision documents; championship id found from the fia.com championship menu"
+    },
+    {
+      "id": "fe-event-info",
+      "series": "formula-e",
+      "kind": "event_documents",
+      "adapter": "official_archive",
+      "archive": "formula-e",
+      "url": "https://d112sbqg9gqc2x.cloudfront.net/formula-e/files/results/index.json",
+      "recent_events": 2,
+      "exclude": "Classification|Analysis|Chart|Lap ?Time|Lap Chart|Sector|Speed|Weather|Best|Circuit Map|Pit ?Stop|Fastest",
+      "calendar": "formula-e",
+      "tier": 2,
+      "note": "Formula E results archive (JSON); only Event Information folders"
+    },
+    {
+      "id": "elms-event-docs",
+      "series": "elms",
+      "kind": "event_documents",
+      "adapter": "official_archive",
+      "archive": "elms",
+      "url": "https://elms.alkamelsystems.com/",
+      "recent_events": 2,
+      "include": "EVENT INFO|Bulletin|Decision|Document|Note|Regulation|Timetable|Entry List|Stewards|Race Direct|Penalt|Summons|Infringement|Procedure|Protest|Appeal",
+      "exclude": "Classification|Analysis|Chart|Lap ?Time|Lap Chart|Sector|Speed|Weather|Best|Circuit Map|Pit ?Stop|Fastest",
+      "calendar": "elms",
+      "tier": 2,
+      "note": "Al Kamel results site (season/event selects + PDF links)"
+    },
+    {
+      "id": "lemanscup-event-docs",
+      "series": "lemanscup",
+      "kind": "event_documents",
+      "adapter": "official_archive",
+      "archive": "lemanscup",
+      "url": "https://lemanscup.alkamelsystems.com/",
+      "recent_events": 2,
+      "include": "EVENT INFO|Bulletin|Decision|Document|Note|Regulation|Timetable|Entry List|Stewards|Race Direct|Penalt|Summons|Infringement|Procedure|Protest|Appeal",
+      "exclude": "Classification|Analysis|Chart|Lap ?Time|Lap Chart|Sector|Speed|Weather|Best|Circuit Map|Pit ?Stop|Fastest",
+      "tier": 2
+    },
+    {
+      "id": "alms-event-docs",
+      "series": "alms",
+      "kind": "event_documents",
+      "adapter": "official_archive",
+      "archive": "alms",
+      "url": "https://files.alkamelcloud.com/alms/manifests/results.json",
+      "recent_events": 2,
+      "include": "EVENT INFO|Bulletin|Decision|Document|Note|Regulation|Timetable|Entry List|Stewards|Race Direct|Penalt|Summons|Infringement|Procedure|Protest|Appeal",
+      "exclude": "Classification|Analysis|Chart|Lap ?Time|Lap Chart|Sector|Speed|Weather|Best|Circuit Map|Pit ?Stop|Fastest",
+      "calendar": "alms",
+      "tier": 2,
+      "note": "Al Kamel JSON manifests"
+    },
+    {
+      "id": "btcc-event-docs",
+      "series": "btcc",
+      "kind": "event_documents",
+      "adapter": "gtapps_noticeboard",
+      "url": "https://racecontrol.gtapps.co.uk/barc/noticeboard/TOCA",
+      "recent_events": 2,
+      "include": "Bulletin|Decision|Official Document",
+      "tier": 2,
+      "note": "GT Apps Race Control public JSON behind the JS noticeboard; whole TOCA package (BTCC + support series)"
+    },
+    {
+      "id": "supercars-regs",
+      "series": "supercars",
+      "kind": "regulations",
+      "adapter": "embedded_pdf_urls",
+      "url": "https://www.supercars.com/rules-and-regulations",
+      "include": "Div [A-H]\\b|Points Structure",
+      "title_prefix": "Supercars Operations Manual",
+      "tier": 2,
+      "note": "PDF links sit in the Next.js page data, not in <a> tags"
+    },
+    {
+      "id": "supercars-event-docs",
+      "series": "supercars",
+      "kind": "event_documents",
+      "adapter": "embedded_pdf_urls",
+      "url": "https://www.supercars.com/rules-and-regulations",
+      "include": "Supplementary Regulations|Variation",
+      "event_pattern": "^\\d{4}_VCS_-_(.+?)_*-_+(?:Further_)?(?:Supplementary|Variation)",
+      "tier": 2
     }
   ],
   "tier3_unavailable": {
@@ -481,7 +579,6 @@
     "f1-academy": "Summary page only; no public sporting regulations PDF.",
     "extreme-h": "No FIA regulations category; second edition postponed.",
     "kara": "Rule PDFs only as board-post attachments with no stable listing.",
-    "supercars": "JS-rendered rules page (phase 2 headless browser).",
     "wec-bop": "FIA/ACO stopped publishing public BoP tables from 2026 (reported); not available."
   }
 }

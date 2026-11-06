@@ -83,15 +83,51 @@ export async function pdfPages(bytes,maxPages=400){
  }finally{await pdf.destroy?.();}
 }
 
-// Listing -> candidate documents.
-export async function candidates(source,now=new Date()){
- if(source.adapter==='single_pdf')return [{url:source.url,title:source.title,published:null}];
- const page=await get(source.url,{max:8_000_000});const html=text(page.bytes),base=page.url||source.url;
- if(source.adapter==='fia_regulations'){
-  const year=now.getUTCFullYear(),min=source.min_year??year;
-  return L.parseFiaRegulations(html,base).filter(d=>{const y=L.regulationYear(d.title)||Number(String(d.published||'').slice(0,4));return !y||y>=min;}).filter(d=>!source.include||new RegExp(source.include,'i').test(d.title)).filter(d=>!source.exclude||!new RegExp(source.exclude,'i').test(d.title)).filter(d=>!/marked[- ]?up|red[- ]?line|track(?:ed)? changes/i.test(d.title));
+const titleFromUrl=u=>{try{return decodeURIComponent(new URL(u).pathname.split('/').pop()).replace(/\.pdf$/i,'').replace(/^\d{1,4}[_-]/,'').replace(/[_-]+/g,' ').trim();}catch{return u;}};
+
+// ---------- official archives the connector already reads (no browser) ----------
+export async function officialCandidates(source,now,archive){
+ if(!archive)archive=(await import('../worker/official.js')).officialArchive;
+ const year=String(now.getUTCFullYear()),recent=source.recent_events??2,out=[];
+ const iso=v=>{if(v==null||v==='')return null;const n=Number(v),d=Number.isFinite(n)?new Date(n<1e12?n*1000:n):new Date(v);return Number.isNaN(d.getTime())?null:d.toISOString().slice(0,19);};
+ const byId=(x,y)=>String(y.id).localeCompare(String(x.id),undefined,{numeric:true});
+ const push=(f,event,prefix)=>out.push({url:f.url,title:[prefix,f.title||titleFromUrl(f.url)].filter(Boolean).join(' / '),published:iso(f.published_at),event:event||null});
+ if(source.archive==='formula-e'){
+  // Root -> newest season -> newest events -> files (+ one level of session folders).
+  const root=await archive('formula-e'),season=[...(root.catalogs||[])].filter(c=>/season/i.test(c.name)).sort(byId)[0];if(!season)return out;
+  const s=await archive('formula-e',season.id);
+  for(const ev of [...(s.catalogs||[])].sort(byId).slice(0,recent)){
+   // Only document folders ("Event Information"); session folders hold timing sheets the connector reads elsewhere.
+   const want=new RegExp(source.folder_include||'event information|document|bulletin|decision|note|regulation','i');
+   const e=await archive('formula-e',ev.id);for(const f of e.files||[])push(f,ev.name);
+   for(const sub of (e.catalogs||[]).filter(c=>want.test(c.name)).slice(0,6)){
+    const x=await archive('formula-e',sub.id);for(const f of x.files||[])push(f,ev.name,sub.name);
+    for(const sub2 of (x.catalogs||[]).slice(0,10)){const y=await archive('formula-e',sub2.id);for(const f of y.files||[])push(f,ev.name,`${sub.name} / ${sub2.name}`);}
+   }
+  }
+  return out;
  }
- if(source.adapter==='fia_event_documents'){const r=L.parseFiaEventDocuments(html,base);return r.docs.map(d=>({...d,event:r.event}));}
+ const root=await archive(source.archive),seasons=root.seasons||[];
+ const season=seasons.find(x=>String(x.name).includes(year))||seasons.at(-1);if(!season)return out;
+ const s=await archive(source.archive,season.id);
+ if(source.archive==='alms'){const evs=(s.events||[]).slice(-recent);for(const f of s.files||[])if(evs.includes(f.folders?.[0]))push(f,f.folders[0],f.folders.slice(1).join(' / '));return out;}
+ // ELMS / Le Mans Cup: events are <select> options; newest are last.
+ for(const ev of (s.events||[]).filter(e=>e.id).slice(-recent)){const e=await archive(source.archive,season.id,ev.id);for(const f of e.files||[])if(f.format==='pdf')push(f,ev.name||ev.id);}
+ return out;
+}
+
+// Listing -> candidate documents.
+export async function candidates(source,now=new Date(),opts={}){
+ if(opts.fetchText&&source.adapter!=='official_archive'){const t=await opts.fetchText(source);if(source.adapter==='gtapps_noticeboard')return L.parseGtappsNoticeboard(JSON.parse(t),{include:source.include,exclude:source.exclude,recent_events:source.recent_events??2});if(source.adapter==='embedded_pdf_urls')return L.parseEmbeddedPdfUrls(t,source.url,{include:source.include,exclude:source.exclude,event_pattern:source.kind==='event_documents'?source.event_pattern:null,title_prefix:source.title_prefix,date_order:source.date_order});}
+ if(source.adapter==='single_pdf')return [{url:source.url,title:source.title,published:null}];
+ if(source.adapter==='official_archive'){const inc=source.include&&new RegExp(source.include,'i'),exc=source.exclude&&new RegExp(source.exclude,'i'),seen=new Set();
+  return (await officialCandidates(source,now,opts.archive)).filter(f=>/\.pdf(?:$|[?#])/i.test(f.url)).filter(f=>{const k=f.title+' '+decodeURIComponent(f.url);return (!inc||inc.test(k))&&(!exc||!exc.test(k));}).filter(f=>!seen.has(f.url)&&seen.add(f.url));
+ }
+ if(source.adapter==='gtapps_noticeboard'){
+  // GT Apps Race Control (BARC/TOCA): the noticeboard page is a JS viewer over a public JSON list.
+  const r=await get(source.url.replace(/\/$/,'')+'/documents',{max:8_000_000,headers:{accept:'application/json'}});
+  return L.parseGtappsNoticeboard(JSON.parse(text(r.bytes)),{include:source.include,exclude:source.exclude,recent_events:source.recent_events??2});
+ }
  if(source.adapter==='alkamel_wec'){
   // Al Kamel's JSON manifests (same reader the connector's wec_list_documents uses).
   const {archive}=await import('../worker/wec.js');const index=await archive();const year=String(now.getUTCFullYear());
@@ -100,6 +136,19 @@ export async function candidates(source,now=new Date()){
   return a.files.filter(f=>f.format==='pdf').map(f=>({url:f.url,title:[...f.folders.slice(1),f.title].filter(Boolean).join(' / '),published:f.published_at||null,event:f.folders[0]||null}))
    .filter(f=>!skip||!skip.test(f.title)).filter(f=>FORCE||!f.published||Date.parse(f.published)>=since);
  }
+ let url=source.url;
+ if(source.discover){
+  // Championship pages on fia.com carry numeric ids; find ours from the championship menu instead of hardcoding it.
+  const menu=await get(source.discover.from,{max:8_000_000});url=L.discoverLink(text(menu.bytes),menu.url||source.discover.from,source.discover.match);
+  if(!url)throw Error('Championship link not found on '+source.discover.from);
+ }
+ const page=await get(url,{max:8_000_000});const html=text(page.bytes),base=page.url||url;
+ if(source.adapter==='fia_regulations'){
+  const year=now.getUTCFullYear(),min=source.min_year??year;
+  return L.parseFiaRegulations(html,base).filter(d=>{const y=L.regulationYear(d.title)||Number(String(d.published||'').slice(0,4));return !y||y>=min;}).filter(d=>!source.include||new RegExp(source.include,'i').test(d.title)).filter(d=>!source.exclude||!new RegExp(source.exclude,'i').test(d.title)).filter(d=>!/marked[- ]?up|red[- ]?line|track(?:ed)? changes/i.test(d.title));
+ }
+ if(source.adapter==='fia_event_documents'){const r=L.parseFiaEventDocuments(html,base);return r.docs.map(d=>({...d,event:r.event}));}
+ if(source.adapter==='embedded_pdf_urls')return L.parseEmbeddedPdfUrls(html,base,{include:source.include,exclude:source.exclude,event_pattern:source.kind==='event_documents'?source.event_pattern:null,title_prefix:source.title_prefix,date_order:source.date_order});
  if(source.adapter==='pdf_links')return L.parsePdfLinks(html,base,{include:source.include,exclude:source.exclude,date_order:source.date_order});
  throw Error('Unknown adapter '+source.adapter);
 }

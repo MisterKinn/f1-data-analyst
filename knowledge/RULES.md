@@ -19,7 +19,14 @@ At most 60 downloads and 25 minutes per run (env `RULES_MAX_DOWNLOADS`, `RULES_M
 
 ## Sources
 
-`knowledge/rules-sources.json` lists phase 1 (public, dated, plain-HTTP sources). Later phases: JS-rendered noticeboards via a headless browser, undated pages via hashes, per-event discovery, and tier-3 sources marked unavailable. Full historical crawling is not planned; only the current and next rulebook year are indexed.
+`knowledge/rules-sources.json` lists the public sources. JS noticeboards are read through the data behind them, so no headless browser runs in the Action:
+
+- `official_archive`: Formula E results archive (only "Event Information" folders), ELMS / Le Mans Cup (Al Kamel season and event selects) and ALMS (Al Kamel JSON manifests). Uses the connector's own `worker/official.js` reader. Newest season, newest 2 events.
+- `gtapps_noticeboard`: BTCC/TOCA on GT Apps Race Control. Reads the public `/documents` JSON. Bulletins, decisions and official documents only; classifications and grids are skipped.
+- `embedded_pdf_urls`: PDF URLs inside page data (Supercars' Next.js page). Operations Manual divisions become regulations; supplementary regulations become event documents.
+- `fia_event_documents` with `discover`: finds the fia.com championship id (Formula E decisions) from the championship menu instead of hardcoding it.
+
+Tier-3 sources are marked unavailable. Full historical crawling is not planned; only the current and next rulebook year are indexed.
 
 ## Rights
 

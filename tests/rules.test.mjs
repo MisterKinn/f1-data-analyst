@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import * as L from '../worker/rules-lib.js';
 import {rulesIngest,rulesLookup,rulesState,applicableDocs,clearRulesCache,RULES_TOOLS} from '../worker/rules.js';
-import {pdfPages,buildDoc,intervalFor} from '../scripts/rules-monitor.mjs';
+import {pdfPages,buildDoc,intervalFor,candidates,officialCandidates} from '../scripts/rules-monitor.mjs';
 import sources from '../knowledge/rules-sources.json' with {type:'json'};
 
 // ---- listings (synthetic markup in the same shape as the official pages) ----
@@ -146,3 +146,57 @@ import {parseOpsBiblio,patentsIngest,patentsLookup,saveOpsKey,opsStatus,opsToken
  const r=await rulesLookup(env,{query:'트랙 리밋',series:'f1',kind:'regulations',as_of:'2026-11-06',limit:10});
  assert.ok(!r.hits.some(h=>/marked-up/i.test(h.document)),'marked-up copy ignored');
  assert.equal(r.hits.filter(h=>h.article==='B1.8.1').length,1,'same article from two documents collapses');}
+
+// ---- JS noticeboards read through their data instead of a browser ----
+{// Supercars: PDF links only inside the Next.js payload (escaped slashes, two CDN hosts for one file)
+ const page=`<script>self.__next_f.push([1,"{\\"file\\":{\\"url\\":\\"https:\\/\\/assets.ctfassets.net\\/x\\/1\\/a\\/2026._Div_A_-_FINAL_V2_-_Clean.pdf\\"}}"])</script>
+ <script>{"u":"//images.ctfassets.net/x/2/b/2026._Div_A_-_FINAL_V2_-_Clean.pdf"}</script>
+ <script>{"u":"https://assets.ctfassets.net/x/3/c/2026_VCS_-_Sydney_500-_Supplementary_Regulations.pdf","v":"https://assets.ctfassets.net/x/4/d/2026_VCS_-_Penrite_Oil_Sandown_500_-_Further_Supplementary_Regulations_2.pdf"}</script>
+ <a href="https://assets.ctfassets.net/x/5/e/SC27-Calendar.pdf">Calendar</a>`;
+ const regsSrc=sources.sources.find(s=>s.id==='supercars-regs'),evSrc=sources.sources.find(s=>s.id==='supercars-event-docs');
+ const fetchText=async()=>page;
+ const regs=await candidates(regsSrc,new Date('2026-11-06'),{fetchText});
+ assert.equal(regs.length,1,'same file from two hosts collapses; calendar excluded');
+ assert.equal(regs[0].title,'Supercars Operations Manual - 2026. Div A - FINAL V2 - Clean');
+ const ev=await candidates(evSrc,new Date('2026-11-06'),{fetchText});
+ assert.deepEqual(ev.map(e=>e.event),['Sydney 500','Penrite Oil Sandown 500']);
+ assert.equal(L.eventDocCategory(ev[1].title),L.eventDocCategory('Further Supplementary Regulations'));}
+{// BTCC: GT Apps noticeboard JSON — only the newest events, only bulletins/decisions/official documents
+ const doc=(ev,n,cat,title,at,extra={})=>({season_event_uuid:ev,season_event_name:ev==='e2'?'HQ60 TOCA Brands Hatch (GP)':'HQ59 TOCA Silverstone',document_number:n,category_name:cat,top_line_label:`Doc ${n} - ${cat} 1`,title,title_label:title,published_at:at,pdf_url:`https://racecontrol.gtapps.co.uk/barc/noticeboard/TOCA/documents/${ev}-${n}/pdf#zoom=page-width`,...extra});
+ const data={seasons:[{events:[{uuid:'e0',event_from_date:'2026-08-01'},{uuid:'e1',event_from_date:'2026-09-26'},{uuid:'e2',event_from_date:'2026-10-10'}]}],documents:[
+  doc('e0',1,'Bulletin','Old bulletin','01 Aug 2026 10:00'),doc('e1',5,'Bulletin','Bulletin No: 01 - Start Procedure','24 Sep 2026 14:40'),
+  doc('e2',7,'Race Classification','BTCC - Race 1 - Classification','11 Oct 2026 12:00'),doc('e2',9,'Stewards Decision','Car 12 - Track limits','11 Oct 2026 16:05',{redacted:true})]};
+ const src=sources.sources.find(s=>s.id==='btcc-event-docs');
+ const list=await candidates(src,new Date('2026-11-06'),{fetchText:async()=>JSON.stringify(data)});
+ assert.deepEqual(list.map(d=>d.number),[5,9]);
+ assert.equal(list[1].url,'https://racecontrol.gtapps.co.uk/barc/noticeboard/TOCA/documents/e2-9/pdf');
+ assert.equal(list[1].published,'2026-10-11T16:05:00');assert.equal(list[1].event,'HQ60 TOCA Brands Hatch (GP)');assert.equal(list[1].recalled,true);}
+{// Formula E results archive: newest season, newest events, document folders only
+ const tree={
+  'formula-e/files/results':{catalogs:[{id:'formula-e/files/results/10_Season 11 - 2024-25',name:'Season 11 - 2024-25'},{id:'formula-e/files/results/11_Season 12 - 2025-26',name:'Season 12 - 2025-26'}],files:[]},
+  'formula-e/files/results/11_Season 12 - 2025-26':{catalogs:[{id:'S/16_R16 London',name:'R16 London'},{id:'S/17_R17 London',name:'R17 London'},{id:'S/09_R09 Monaco',name:'R09 Monaco'}],files:[]},
+  'S/17_R17 London':{catalogs:[{id:'S/17/champ',name:'ABB FIA Formula E World Championship'},{id:'S/17/info',name:'Event Information'}],files:[]},
+  'S/17/info':{catalogs:[],files:[{url:'https://results.formulae.fia.com/r17/Race_Director_Notes.pdf',title:'Race Director Notes',published_at:1786860276}]},
+  'S/16_R16 London':{catalogs:[{id:'S/16/info',name:'Event Information'}],files:[]},
+  'S/16/info':{catalogs:[],files:[{url:'https://results.formulae.fia.com/r16/Bulletin_1.pdf',title:'Bulletin 1',published_at:1786700000},{url:'https://results.formulae.fia.com/r16/Classification.pdf',title:'Race Classification'}]}};
+ const seen=[];const archive=async(series,id)=>{seen.push(id||'formula-e/files/results');const t=tree[id||'formula-e/files/results'];if(!t)throw Error('unexpected '+id);return t;};
+ const src=sources.sources.find(s=>s.id==='fe-event-info');
+ const list=await candidates(src,new Date('2026-11-06'),{archive});
+ assert.deepEqual(list.map(d=>d.title),['Event Information / Race Director Notes','Event Information / Bulletin 1']);
+ assert.equal(list[0].event,'R17 London');assert.equal(list[0].published,'2026-08-16T06:04:36');
+ assert.ok(!seen.includes('S/17/champ'),'timing folders are not crawled');assert.ok(!seen.includes('S/09_R09 Monaco'));}
+{// ELMS / ALMS through the connector's own archive reader
+ const elms=async(series,season,event)=>!season?{seasons:[{id:'20_2025',name:'2025'},{id:'21_2026',name:'2026'}]}:!event?{events:[{id:'05_SILVERSTONE',name:'SILVERSTONE'},{id:'06_PORTIMAO',name:'PORTIMAO'}]}:
+  {files:[{url:`https://elms.alkamelsystems.com/Results/21_2026/${event}/00_EVENT%20INFO/Timetable_V3.pdf`,title:'Timetable V3',format:'pdf'},{url:`https://elms.alkamelsystems.com/Results/21_2026/${event}/Race/03_Classification_Race.PDF`,title:'Classification Race',format:'pdf'}]};
+ const e=await candidates(sources.sources.find(s=>s.id==='elms-event-docs'),new Date('2026-11-06'),{archive:elms});
+ assert.deepEqual(e.map(d=>[d.event,d.title]),[['SILVERSTONE','Timetable V3'],['PORTIMAO','Timetable V3']]);
+ const alms=async(series,season)=>!season?{seasons:[{id:'04_2024-2025',name:'2024-2025'},{id:'05_2025-2026',name:'2025-2026'}]}:
+  {events:['01_SEPANG','02_DUBAI','03_ABU DHABI'],files:[{url:'https://files.alkamelcloud.com/a/sepang/bulletin.pdf',title:'Bulletin 1',folders:['01_SEPANG','EVENT INFO'],format:'pdf'},{url:'https://files.alkamelcloud.com/a/ad/decision.pdf',title:'Stewards Decision 3',folders:['03_ABU DHABI','DOCUMENTS'],format:'pdf'}]};
+ const a=await candidates(sources.sources.find(s=>s.id==='alms-event-docs'),new Date('2026-11-06'),{archive:alms});
+ assert.deepEqual(a.map(d=>[d.event,d.title]),[['03_ABU DHABI','DOCUMENTS / Stewards Decision 3']]);}
+{// fia.com championship id discovery
+ assert.equal(L.discoverLink('<a href="/documents/championships/fia-formula-one-world-championship-14">F1</a><a href="/documents/championships/abb-fia-formula-e-world-championship-1013#x">FE</a>','https://www.fia.com/x','/documents/championships/[^"\'#?]*formula-e'),'https://www.fia.com/documents/championships/abb-fia-formula-e-world-championship-1013');
+ assert.ok(sources.sources.every(s=>['fia_regulations','fia_event_documents','pdf_links','single_pdf','alkamel_wec','official_archive','gtapps_noticeboard','embedded_pdf_urls','research_watch','patent_watch'].includes(s.adapter)||s.kind==='research_watch'||s.kind==='patent_watch'),'every source uses a known adapter');
+ assert.ok(!('supercars' in sources.tier3_unavailable));
+ assert.equal(L.seriesFrom('슈퍼카 챔피언십'),'supercars');assert.equal(L.seriesFrom('Repco Supercars'),'supercars');}
+console.log('rules noticeboards ok');
