@@ -107,3 +107,38 @@ export function inScheduledF1Window(at){
 }
 
 export const BRIEFING_ROUTER_INSTRUCTIONS=' LIVE BRIEFING ("꽁보다 브리핑", "꽁보다 실시간브리핑", "live briefing"): call kongboda_live_briefing with series "auto" FIRST and ONLY. The server picks the series from the published schedule: route.series "wec" means a WEC window is open, so do not call fastf1_live_snapshot or any F1 tool; "f1" means the F1 flow; "none" means nothing is live, so say that and give next_sessions for each series. The returned card IS the briefing: it renders automatically as the first output; write no summary before it and at most one short line after it. Never present record_kind "off_schedule_record", a failover drill, a test or a stale snapshot as a live or real session result. CARD ORDER: header (series, event, session, live or not, time left, track status), right now (what is happening this moment), why the flags (each yellow, double yellow, red, FCY, SC with time, corner, race-control reason and investigations or penalties; say when no reason is published), race pace (single lap apart from long runs; exclude tow and low-fuel outliers; say plainly when pace is not readable yet and why), your team or drivers (favourite and personal_instructions from the card; position, gap to the real pack, incidents), standings only on request. WEC ACCESS: when the card has access_choice, show it as a choice box with exactly its two options (use the host\'s multiple-choice question tool when available; the card buttons are the fallback), never as a plain-text question. If the user picks login, open access_choice.login_url in the browser yourself and go to Account; if it already shows "Signed in to FIAWEC+" skip sign-in, otherwise leave only the password and CAPTCHA to the user and detect the finished sign-in yourself. Then open the LIVE card, /en/livestream/<session>, Live timing, and read Map, RaceLog (Race Control, Flags) and Analysis (Pace). If the user picks link, open that plus.fiawec.com link and read Live timing the same way. Then call kongboda_live_briefing again or render the same card order from what you read. KEEP BRIEFING FOR THE WHOLE SESSION: when the card has follow_up, the user wants a new card every follow_up.every_minutes until follow_up.until. After each card, schedule the next briefing back into this same conversation (send_later or the host equivalent, message: 꽁보다 실시간브리핑) unless one is already pending; each run posts a new card (never edit the old one). Stop scheduling when follow_up is null, the time passes follow_up.until, route.series changes, or the user says stop. If the host cannot schedule into this conversation, create one-time scheduled tasks every 15 minutes until follow_up.until instead, and say so in one line.';
+
+// F1 card in the same order as the WEC card: right now → why the flags → race pace → your
+// team, standings only on request. Built only from what the FastF1 snapshot actually holds.
+const lapSeconds=t=>{const m=String(t||'').match(/^(?:(\d+):)?(\d+(?:\.\d+)?)$/);return m?(Number(m[1]||0)*60+Number(m[2])):null;};
+const F1_TRACK={'1':'green','2':'yellow','4':'sc','5':'red','6':'vsc','7':'vsc'};
+const sameName=(a,b)=>{const x=String(a||'').toLowerCase(),y=String(b||'').toLowerCase();if(!x||!y)return false;const last=y.split(/\s+/).at(-1);return x.includes(last)||y.includes(x);};
+export function buildF1Card(p,snapshot={},route={},prefs=null,now=Date.now()){
+ const a=route.active&&route.active.series==='f1'?route.active:null, topics=snapshot?.topics||{}, live=p.freshness?.live===true;
+ const rows=(p.leaderboard?.length?p.leaderboard:p.final_leaderboard)||[];
+ const msgs=(Array.isArray(topics.RaceControlMessages?.Messages)?topics.RaceControlMessages.Messages:Object.values(topics.RaceControlMessages?.Messages||{})).filter(m=>m&&typeof m==='object');
+ const line=m=>[m.Utc?String(m.Utc).slice(11,16)+' UTC':null,m.Lap?`L${m.Lap}`:null,String(m.Message||'').slice(0,200)].filter(Boolean).join(' · ');
+ const flags=msgs.filter(m=>FLAG.test(`${m.Category||''} ${m.Flag||''} ${m.Message||''}`)||/flag|safetycar|vsc/i.test(m.Category||'')).slice(-8).map(m=>({code:flagCode(`${m.Flag||''} ${m.Message||''}`)||(/vsc|virtual/i.test(m.Message||'')?'fcy':null),text:line(m)}));
+ const investigations=msgs.filter(m=>INVESTIGATION.test(m.Message||'')).slice(-5).map(line);
+ const left=a?.end&&now<a.end?Math.max(0,Math.round((a.end-now)/60000)):null;
+ const lap=topics.LapCount, lapText=lap?.CurrentLap&&lap?.TotalLaps?`랩 ${lap.CurrentLap}/${lap.TotalLaps}`:null;
+ const header={series:'F1',event:a?.event_ko||p.session?.name||null,session:a?.session||null,status:p.status,
+  time_left_minutes:left,time_left:lapText||(left==null?null:`${Math.floor(left/60)}:${String(left%60).padStart(2,'0')}`),
+  clock:new Date(now).toLocaleString('ko-KR',{timeZone:'Asia/Seoul',hour12:false,hour:'2-digit',minute:'2-digit'})+' KST',
+  track_status:F1_TRACK[String(topics.TrackStatus?.Status??'')]||(live?'green':'unknown')};
+ const w=p.weather||{}, wx=[w.track_temperature&&`노면 ${w.track_temperature}`,w.air_temperature&&`기온 ${w.air_temperature}`,w.humidity&&`습도 ${w.humidity}`,/^(1|true)$/i.test(String(w.rainfall||''))?'비 감지':null].filter(Boolean).join(' · ');
+ const pits=rows.filter(r=>r.in_pit).map(r=>r.code);
+ const right_now=live?[p.track_status?.label&&p.track_status.label!=='정상'?`트랙 상태: ${p.track_status.label}`:'그린 플래그',lapText,wx||null,pits.length?`피트: ${pits.join(', ')}`:null,flags.at(-1)?`최근 레이스 컨트롤: ${flags.at(-1).text}`:null].filter(Boolean).join(' / '):p.briefing;
+ // Pace: single-lap only from the snapshot. Long runs need lap history, so say so instead of guessing.
+ const timed=rows.map(r=>({...r,best:lapSeconds(r.best_lap),last:lapSeconds(r.last_lap)})).filter(r=>r.best);
+ const ref=timed.slice().sort((x,y)=>x.best-y.best)[0];
+ const pace=!live?'라이브 타이밍이 없어 페이스를 판단하지 않습니다.':!ref?'아직 기록된 랩이 없어 페이스를 판단하지 않습니다.':
+  `단일 랩 기준: 최고 ${ref.code} ${ref.best_lap}. 롱런 페이스는 연속 랩 기록이 필요해 이 스냅샷만으로 판단하지 않습니다(세션 후 openf1_laps로 확인).`;
+ const team=prefs?.preferences?.f1Team||null, drivers=prefs?.preferences?.f1Drivers||[];
+ const mine=rows.filter(r=>drivers.some(d=>sameName(r.name,d))||(team&&String(r.team||'').toLowerCase().includes(team.toLowerCase())));
+ const favNote=!team&&!drivers.length?'계정 설정에 응원 팀·드라이버가 없습니다.':!mine.length?`${[team,...drivers].filter(Boolean).join(' · ')}: 타이밍을 읽은 뒤 설명합니다.`:
+  mine.map(r=>{const b=lapSeconds(r.best_lap);const d=b&&ref?` (최고 랩 +${(b-ref.best).toFixed(3)}s)`:'';const inv=investigations.find(t=>t.includes(String(r.number)));return `${r.code} P${r.position}${r.gap&&r.gap!=='LEADER'?` ${r.gap}`:''}${d}${r.compound?` · ${r.compound}${r.tyre_laps!=null?` ${r.tyre_laps}랩`:''}`:''}${r.in_pit?' · 피트':''}${inv?` · 조사: ${inv}`:''}`;}).join(' / ');
+ return {...p,header,sections:{right_now,flags,flags_note:flags.length?null:(live?'레이스 컨트롤에 플래그 기록이 없습니다.':'아직 읽지 못했습니다.'),investigations,pace,
+  favourite:{team,drivers,note:favNote},personal_instructions:prefs?.personalInstructions?.text||null},
+  buttons:[...(investigations.length?[{id:'decision',label:'판정 확인'}]:[]),{id:'standings',label:'전체 순위'},{id:'refresh',label:'새로고침'}]};
+}

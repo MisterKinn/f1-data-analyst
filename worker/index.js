@@ -10,7 +10,7 @@ import {accountIdentity,accountRoute,firebaseIdentity} from './accounts.js';
 import {googleAuthRoute,googleIdentity,googleConfigured} from './google-auth.js';
 import {OFFICIAL_TOOLS,officialCall} from './official.js';
 import {WEC_LIVE_TOOLS,WEC_LIVE_INSTRUCTIONS,WEC_NEXT_STEP,wecAccess,wecLiveAccessCall,wecRoutes} from './wec_live.js';
-import {pickSeries,buildWecBriefing,buildIdleBriefing,routedBriefingText,BRIEFING_ROUTER_INSTRUCTIONS} from './briefing-router.js';
+import {pickSeries,buildWecBriefing,buildF1Card,buildIdleBriefing,routedBriefingText,BRIEFING_ROUTER_INSTRUCTIONS} from './briefing-router.js';
 import {RESEARCH_TOOLS,RESEARCH_INSTRUCTIONS,researchCall} from './research.js';
 import {RULES_TOOLS,RULES_INSTRUCTIONS,rulesCall,rulesRoutes,rulesContext,attachRulesContext} from './rules.js';
 import {PATENT_TOOLS,PATENT_INSTRUCTIONS,patentsCall,patentRoutes} from './patents.js';
@@ -55,7 +55,7 @@ async function liveBriefing(request,env,timingEnv,args,access){
  const route=pickSeries(args.series||'auto');
  const prefs=await readMyPreferences(request,env,null).catch(()=>null);
  const a=route.active,follow=a&&Number.isFinite(a.end)&&a.end>Date.now()?{every_minutes:10,until:new Date(a.end).toISOString(),series:a.series,session:a.session,stop_when:'session window closed, route.series changed, or the user says stop'}:null;
- const card=payload=>({structuredContent:{...payload,follow_up:payload.series==='none'?null:follow},content:[{type:'text',text:payload.series==='f1'?liveBriefingText(payload):routedBriefingText(payload)}],isError:false});
+ const card=payload=>({structuredContent:{...payload,follow_up:payload.series==='none'?null:follow},content:[{type:'text',text:payload.series==='f1'&&!payload.sections?liveBriefingText(payload):routedBriefingText(payload)}],isError:false});
  if(route.series==='wec'){
   const acc=await wecAccess(request,env).catch(()=>null);let status;
   if(!acc)status={state:'credentials_required',next_step:WEC_NEXT_STEP};
@@ -65,7 +65,7 @@ async function liveBriefing(request,env,timingEnv,args,access){
  const snapshot=await liveRead(timingEnv,args),payload=buildLiveBriefing(snapshot,{accessMode:access?.mode});
  payload.route={series:route.series==='none'?'f1':route.series,reason:route.reason};payload.favourite={team:prefs?.preferences?.f1Team||null,drivers:prefs?.preferences?.f1Drivers||[]};payload.personal_instructions=prefs?.personalInstructions?.text||null;
  if(route.series==='none'&&!payload.freshness.live){const idle=buildIdleBriefing(route);if(payload.record_kind==='final_record'&&payload.final_leaderboard.length)idle.sections.last_record=payload.briefing;return card(idle);}
- return card(payload);
+ return card(buildF1Card(payload,snapshot,route,prefs));
 }
 const MCP_SECURITY=[{type:'oauth2',scopes:['mcp:read']}];
 const securedTool=tool=>({...tool,securitySchemes:MCP_SECURITY,_meta:{...tool._meta,securitySchemes:MCP_SECURITY}});
