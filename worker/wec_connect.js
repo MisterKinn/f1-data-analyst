@@ -62,7 +62,7 @@ export function connectInfo(access){
 }
 
 // /api/live/wec/connection, /api/live/wec/connect/<start|frame|input|cancel>, /api/live/wec/disconnect
-export async function wecConnectRoute(request,env,access,{notify=null}={}){
+export async function wecConnectRoute(request,env,access,{notify=null,relay={}}={}){
  const url=new URL(request.url),path=url.pathname,key=connectionKey(access);
  if(path==='/api/live/wec/connection'){
   if(request.method!=='GET')return reply({error:'GET required'},405);
@@ -80,22 +80,84 @@ export async function wecConnectRoute(request,env,access,{notify=null}={}){
  const op=path.match(/^\/api\/live\/wec\/connect\/(start|frame|input|cancel)$/)?.[1];
  if(!op)return reply({error:'Not found'},404);
  if((op==='frame')!==(request.method==='GET'))return reply({error:'Method not allowed'},405);
- if(!cloudConfigured(env))return reply({error:'수집 서버 연결 설정이 필요합니다.'},503);
  let body;
  if(op==='input'){const text=await request.text();if(text.length>1024)return reply({error:'Request too large'},413);try{body=JSON.parse(text);}catch{return reply({error:'JSON required'},400);}}
- let result;
- // Opening the sign-in browser takes up to ~60 s on the collector (start waits for the login page).
- try{result=await cloudRequest(env,'/wec/signin/'+encodeURIComponent(key)+'/'+op,op==='frame'?'GET':'POST',op==='input'?body:op==='frame'?undefined:{},{timeoutMs:op==='start'?90000:op==='input'?50000:20000});}
- catch(e){const why=e?.name==='TimeoutError'?'수집 서버가 제때 응답하지 않았습니다.':String(e?.message||'').slice(0,120);return reply({error:'FIAWEC+ 로그인 화면을 열지 못했습니다. '+(why?why+' ':'')+'잠시 후 다시 시도하세요.'},502);}
- if(result?.state==='signed_in'){
-  if(!validState(result.storage_state))return reply({state:'failed',error:'로그인 정보를 저장하지 못했습니다. 다시 시도하세요.'},502);
-  await saveSignIn(env,key,result.storage_state,{notify});
-  if(access.mode==='personal')await cloudRequest(env,'/personal/'+encodeURIComponent(key)+'/wec/restore','POST',{storage_state:result.storage_state}).catch(()=>null);
-  return reply({state:'signed_in'}); // the cookies never go to the browser
- }
- const image=typeof result?.image==='string'&&result.image.length<1500000&&/^[A-Za-z0-9+/=]+$/.test(result.image)?result.image:null;
- return reply({state:['signing_in','closed','cancelled'].includes(result?.state)?result.state:'signing_in',host:typeof result?.host==='string'?result.host.slice(0,60):null,image,width:result?.width||null,height:result?.height||null,error:typeof result?.error==='string'?result.error.slice(0,60):undefined});
+ return relayRoute(env,key,op,body,{notify,mode:access.mode,origin:url.origin,...relay});
 }
+
+// The sign-in browser runs on the site itself (api/wec-signin.js, a separate function with a
+// headless Chromium), not on a collector host: hosts only poll the site and sleep between
+// sessions, so a browser there could not be reached. This route and that browser talk through
+// two stored records per account: the control record (written here: run id, queued taps and
+// typing, cancel) and the view record (written by the browser: latest screenshot). Queued
+// commands are encrypted, since typing includes the password.
+const ctlKey=key=>'wec/signin-ctl/'+key+'.json',viewKey=key=>'wec/signin-view/'+key+'.json';
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const readJson=async(env,k)=>{const o=await env.BUCKET.get(k);if(!o)return null;try{return await o.json();}catch{return null;}};
+export async function seal(env,key,value){
+ const iv=crypto.getRandomValues(new Uint8Array(12));
+ const data=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv,additionalData:enc.encode('relay:'+key)},await aesKey(env),enc.encode(JSON.stringify(value))));
+ return b64(iv)+'.'+b64(data);
+}
+export async function unseal(env,key,box){
+ try{const [iv,data]=String(box).split('.');return JSON.parse(dec.decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:unb64(iv),additionalData:enc.encode('relay:'+key)},await aesKey(env),unb64(data))));}catch{return null;}
+}
+// Proof that a runner start came from this site: HMAC of the account key and run id.
+export async function runnerToken(env,key,run){
+ const secret=env.WEC_AUTH_KEY||env.FASTF1_CLOUD_KEY;if(!secret||secret.length<16)throw Error('FIAWEC+ 연결 저장 키가 설정되지 않았습니다.');
+ const k=await crypto.subtle.importKey('raw',enc.encode(secret),{name:'HMAC',hash:'SHA-256'},false,['sign']);
+ return b64(new Uint8Array(await crypto.subtle.sign('HMAC',k,enc.encode('wec-signin\0'+key+'\0'+run)))).replace(/[+/=]/g,c=>({'+':'-','/':'_','=':''})[c]);
+}
+export async function startRunner(env,origin,key,run,extra={},fetchImpl=fetch){
+ const r=await fetchImpl(new URL('/api/wec-signin',env.APP_ORIGIN||origin),{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+await runnerToken(env,key,run)},body:JSON.stringify({key,run,...extra}),signal:AbortSignal.timeout(15000)});
+ if(r.status!==202)throw Error('runner '+r.status);
+}
+export function clean(raw){
+ if(!raw||typeof raw!=='object')return null;
+ const num=v=>typeof v==='number'&&Number.isFinite(v);
+ if(raw.op==='click'&&num(raw.x)&&num(raw.y)&&raw.x>=0&&raw.x<=390&&raw.y>=0&&raw.y<=740)return {op:'click',x:raw.x,y:raw.y};
+ if(raw.op==='type'&&typeof raw.text==='string'&&raw.text.length>=1&&raw.text.length<=256&&!/[\r\n]/.test(raw.text))return {op:'type',text:raw.text};
+ if(raw.op==='key'&&['Enter','Backspace','Tab','Escape','ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(raw.key))return {op:'key',key:raw.key};
+ if(raw.op==='scroll'&&num(raw.dy)&&Math.abs(raw.dy)<=2000)return {op:'scroll',dy:raw.dy};
+ return null;
+}
+const shown=(view,run)=>{
+ if(!view||view.run!==run)return {state:'signing_in',image:null};
+ if(view.state==='signed_in')return {state:'signed_in'};
+ if(['closed','cancelled'].includes(view.state))return {state:view.state,...(view.error?{error:String(view.error).slice(0,60)}:{})};
+ return {state:'signing_in',host:typeof view.host==='string'?view.host.slice(0,60):null,image:typeof view.image==='string'?view.image:null,width:view.width||390,height:view.height||740,seq:view.seq||0};
+};
+async function waitView(env,key,run,done,{waitMs,pollMs}){
+ const until=Date.now()+waitMs;let view;
+ do{view=await readJson(env,viewKey(key));if(view?.run===run&&done(view))return view;await sleep(pollMs);}while(Date.now()<until);
+ return view;
+}
+export async function relayRoute(env,key,op,body,{notify=null,mode=null,origin,fetchImpl=fetch,startWaitMs=45000,inputWaitMs=15000,pollMs=500}={}){
+ if(!env.BUCKET)return reply({error:'계정 저장소를 사용할 수 없습니다.'},503);
+ const ctl=await readJson(env,ctlKey(key));
+ if(op==='cancel'){if(ctl)await env.BUCKET.put(ctlKey(key),JSON.stringify({...ctl,cancel:true}));return reply({state:'cancelled'});}
+ if(op==='start'){
+  const run=crypto.randomUUID();
+  await env.BUCKET.put(ctlKey(key),JSON.stringify({run,created:Date.now(),notify,mode,cmds:[]}));
+  try{await startRunner(env,origin,key,run,{},fetchImpl);}
+  catch{return reply({error:'FIAWEC+ 로그인 화면을 열지 못했습니다. 로그인 브라우저를 시작하지 못했습니다. 잠시 후 다시 시도하세요.'},502);}
+  const view=await waitView(env,key,run,v=>!!v.image||v.state!=='signing_in',{waitMs:startWaitMs,pollMs});
+  if(!view||view.run!==run)return reply({error:'FIAWEC+ 로그인 화면을 열지 못했습니다. 로그인 브라우저가 제때 응답하지 않았습니다. 잠시 후 다시 시도하세요.'},502);
+  return reply(shown(view,run));
+ }
+ if(!ctl||ctl.cancel)return reply({state:'closed'});
+ if(op==='frame')return reply(shown(await readJson(env,viewKey(key)),ctl.run));
+ const command=clean(body);if(!command)return reply({error:'Invalid input'},400);
+ const id=(ctl.cmds.at(-1)?.id||0)+1;
+ await env.BUCKET.put(ctlKey(key),JSON.stringify({...ctl,cmds:[...ctl.cmds,{id,box:await seal(env,key,command)}].slice(-30)}));
+ return reply(shown(await waitView(env,key,ctl.run,v=>(v.seq||0)>=id||v.state!=='signing_in',{waitMs:inputWaitMs,pollMs}),ctl.run));
+}
+// Runner side (api/wec-signin.js): control record and commands newer than `after`.
+export async function readControl(env,key){return readJson(env,ctlKey(key));}
+export async function newCommands(env,key,ctl,after){const out=[];for(const c of ctl?.cmds||[])if(c.id>after){const cmd=clean(await unseal(env,key,c.box));out.push({id:c.id,cmd});}return out;}
+export async function writeView(env,key,view){await env.BUCKET.put(viewKey(key),JSON.stringify({...view,at:Date.now()}));}
+export async function endControl(env,key,run){const ctl=await readJson(env,ctlKey(key));if(ctl?.run===run)await env.BUCKET.delete(ctlKey(key));}
+export const chainKey=key=>'wec/signin-chain/'+key+'.json';
 
 // Scheduled WEC reader (GitHub Actions) -> the owner's saved sign-in, and back after a session.
 export async function wecActionsAuth(request,env,{verify}){
