@@ -50,7 +50,6 @@ const WRITE_INTERVAL_MS=5000,COLLECTOR_PAUSE_MS=30000;
 // request (single-flight), and a collector that just failed is not called again
 // for 30 s (circuit breaker) so questions get saved data without a 20 s wait.
 const guards={inflight:new Map(),pausedUntil:new Map()};
-export function resetLiveGuards(){guards.inflight.clear();guards.pausedUntil.clear();}
 const guardKey=env=>env.FASTF1_CLOUD_URL+'|'+(env.F1_PERSONAL_ACCOUNT||'shared');
 
 async function storeSnapshot(env,snapshot,received_at,source,updateCurrent=true,{skipUnchanged=false,onCurrent=null,flush=false}={}){

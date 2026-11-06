@@ -183,7 +183,3 @@ export async function authenticateMcpBearer(request,env){
  return record.profile;
 }
 
-export function mcpAuthChallenge(request,description='You need to sign in to continue'){
- const metadata=new URL('/.well-known/oauth-protected-resource',request.url).toString();
- return `Bearer resource_metadata="${metadata}", scope="mcp:read", error="insufficient_scope", error_description="${description.replace(/["\\]/g,'')}"`;
-}
