@@ -44,15 +44,4 @@ jobs:
         env:
           WEC_USERNAME: ${{ secrets.WEC_USERNAME }}
           WEC_PASSWORD: ${{ secrets.WEC_PASSWORD }}
-          WEC_GATE_DIR: gate-captures
         run: python wec_live_runner.py
-      # A CAPTCHA / bot check stops the run (never solved). Its screenshot (inputs masked)
-      # is kept on this run's page under Artifacts for the owner to check later.
-      - name: Keep CAPTCHA screenshots
-        if: always() && steps.window.outputs.found == 'yes'
-        uses: actions/upload-artifact@v4
-        with:
-          name: wec-captcha-${{ github.run_id }}
-          path: collector/gate-captures/
-          if-no-files-found: ignore
-          retention-days: 30

@@ -21,7 +21,7 @@ Use existing `WEC_USERNAME` (or `WEC_EMAIL` / `FIAWEC_USERNAME`) and `WEC_PASSWO
 - Authenticated `POST /wec/discover`: JSON `{ "event": "Monza", "year": 2026, "session": "FP1" }`. Allowed sessions: auto, FP1, FP2, FP3, Qualifying, Hyperpole, Race. Event is an English name fragment, not a URL.
 - Authenticated `GET /wec/snapshot`: last safe result; does not log in or start a job.
 - Shared MCP tools `wec_discover_live` and `wec_live_status` use the existing collector URL/key. The WEC page offers separate start/status buttons. Existing visitor authentication is preserved.
-- One job at a time, 110-second execution deadline, 60-second duplicate-request suppression. No repository polling or new scheduled automation. Authentication/MFA/CAPTCHA/subscription failures stop further sign-in attempts until operator intervention/restart. Human verification is never bypassed.
+- One job at a time, 110-second execution deadline, 60-second duplicate-request suppression. No repository polling or new scheduled automation. Authentication/MFA/subscription failures stop further sign-in attempts until operator intervention/restart. Human verification is never bypassed.
 - Public result stages distinguish waiting, authentication, missing browser runtime, missing timing link, unapproved destination, unsupported table and unverified snapshot. Signed timing links are withheld, not altered into broken public links; the safe session page remains the user entrypoint.
 
 ## Session-time acceptance
@@ -38,6 +38,6 @@ The existing `pip install -r requirements.txt` build command now includes pinned
 
 - Flow (owner's recorded browser skill): FIA WEC home `https://plus.fiawec.com/` → NEXT SESSIONS card with LIVE (or the scheduled session's card) → session page → LIVE TIMING → `https://plus.fiawec.com/en/livestream/s-<event>-<session>-<id>`. Before the start the page shows a "TO START" countdown and "Syncing live timeline" (state `timing_waiting_start`, not an error). ELMS cards are filtered by the event name.
 - Crew: `.github/workflows/wec-live-collector.yml` runs every 30 minutes, finds a WEC session window in `/api/race-calendar` (start −10 min to end +15 min; back-to-back qualifying/hyperpole sessions merge), signs in with repository secrets `WEC_USERNAME`/`WEC_PASSWORD`, keeps the livestream page open and pushes the timing table to `/api/wec/actions-push` (GitHub OIDC, this workflow only). No AWS or home host. A 6-hour race exceeds one job, so the next scheduled run continues the same window.
-- `live=true` only while the window is open and the table changed within 90 seconds. Login/CAPTCHA/subscription problems stop the run without retrying.
+- `live=true` only while the window is open and the table changed within 90 seconds. Login/subscription problems stop the run without retrying.
 - Others: `/live` → "내 FIAWEC+ 계정 연결" → collector `/personal/<account>/wec/login` (`PersonalWEC` in wec_runtime.py; in-memory credentials, 8 hours, max `PERSONAL_WEC_MAX_SESSIONS`=2, never the owner's account).
 - Still to verify at a real session: the timing table selector on the livestream page. If `timing_layout_unverified` appears while the page is running, adjust `read_rows` to the observed layout.

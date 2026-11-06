@@ -26,9 +26,9 @@ BUDGET = timedelta(minutes=int(os.environ.get('JOB_BUDGET_MINUTES', '330')))
 READ_SECONDS = int(os.environ.get('WEC_READ_SECONDS', '5'))
 PUSH_SECONDS = int(os.environ.get('WEC_PUSH_SECONDS', '10'))
 RETRY_SECONDS = (30, 60, 120, 300)
-# Login, CAPTCHA and subscription problems need the owner; retrying only risks a lock-out.
+# Login and subscription problems need the owner to sign in; retrying only risks a lock-out.
 STOP = {'credentials_required', 'authentication_failed', 'authentication_action_required',
-        'human_verification_required', 'subscription_or_login_required'}
+        'subscription_or_login_required'}
 
 
 def now():

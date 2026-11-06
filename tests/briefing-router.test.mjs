@@ -14,7 +14,7 @@ test('a WEC window routes to WEC, an F1 session to F1, otherwise nothing live',(
 });
 test('WEC login needed gives a two-option choice box with the FIAWEC+ login page',()=>{
  const route=pickSeries('auto',Date.parse('2026-11-06T10:00:00Z'));
- const card=buildWecBriefing({state:'human_verification_required',next_step:'x'},route,{preferences:{wecHypercarManufacturer:'Ferrari'}},Date.parse('2026-11-06T10:00:00Z'));
+ const card=buildWecBriefing({state:'authentication_action_required',next_step:'x'},route,{preferences:{wecHypercarManufacturer:'Ferrari'}},Date.parse('2026-11-06T10:00:00Z'));
  assert.deepEqual(card.access_choice.options.map(o=>o.id),['login','link']);
  assert.equal(card.access_choice.login_url,'https://plus.fiawec.com/en');
  assert.equal(card.header.time_left,'1:00');assert.equal(card.available,false);
@@ -34,7 +34,7 @@ test('off-schedule F1 data (failover drill) is never a session result',()=>{
  assert.match(drill.briefing,/실제 세션 결과로 표시하지 않습니다/);
 });
 test('connector tells the model: card first, no F1 during WEC, choice box, login page',async()=>{
- for(const part of ['series "auto" FIRST','do not call fastf1_live_snapshot','write no summary before it','choice box','Signed in to FIAWEC+','off_schedule_record','KEEP BRIEFING FOR THE WHOLE SESSION','follow_up.until'])assert.ok(BRIEFING_ROUTER_INSTRUCTIONS.includes(part),part);
+ for(const part of ['series "auto" FIRST','do not call fastf1_live_snapshot','write no summary before it','choice box','ALWAYS a choice box','run in the cloud','Signed in to FIAWEC+','off_schedule_record','KEEP BRIEFING FOR THE WHOLE SESSION','follow_up.until'])assert.ok(BRIEFING_ROUTER_INSTRUCTIONS.includes(part),part);
  assert.deepEqual(LIVE_APP_TOOL.inputSchema.properties.series.enum,['auto','f1','wec']);
  const html=readAppResource(LIVE_APP_URI).contents[0].text;
  assert.match(html,/renderRouted/);assert.match(html,/ui\/message/);
@@ -44,7 +44,7 @@ test('connector tells the model: card first, no F1 during WEC, choice box, login
 test('setup prompt books one calendar-timed task per series that re-books itself',async()=>{
  const {SETUP_PROMPTS}=await import('../worker/briefing-guide.js');
  for(const key of ['claude','chatgpt']){const t=SETUP_PROMPTS[key];
-  for(const part of ['꽁보다 F1 실시간 브리핑','꽁보다 WEC 실시간 브리핑','딱 하나씩','캘린더','시작 5분 뒤','다음 F1 세션','다음 WEC 세션','follow_up','10분마다','기존 예약 작업'])assert.ok(t.includes(part),key+' '+part);
+  for(const part of ['꽁보다 F1 실시간 브리핑','꽁보다 WEC 실시간 브리핑','딱 하나씩','캘린더','시작 5분 전','선택 박스','클라우드에서','다음 F1 세션','다음 WEC 세션','follow_up','10분마다','기존 예약 작업'])assert.ok(t.includes(part),key+' '+part);
   assert.ok(!t.includes('매시간 실행,'),key+' no hourly task');}
 });
 test('F1 card follows the WEC order: situation, flag reasons, pace, favourite drivers; standings on request',()=>{
@@ -85,7 +85,7 @@ test('the analysis section follows the session: qualifying sectors, practice sim
 test('setup offers both sign-ins early with a skip option',async()=>{
  const {SETUP_PROMPTS}=await import('../worker/briefing-guide.js');
  for(const key of ['claude','chatgpt']){const t=SETUP_PROMPTS[key];
-  for(const part of ['미리 로그인','지금 로그인','나중에(건너뛰기)','/live','plus.fiawec.com/en → Account','비밀번호와 CAPTCHA만','건너뛰기 가능'])assert.ok(t.includes(part),key+' '+part);}
+  for(const part of ['미리 로그인','지금 로그인','나중에(건너뛰기)','/live','plus.fiawec.com/en → Account','로그인만 해','건너뛰기 가능'])assert.ok(t.includes(part),key+' '+part);}
 });
 test('a card outside a live session never shows an old lap count as the headline',()=>{
  const p={series:'f1',status:'점검 기록',briefing:'x',freshness:{live:false},track_status:{},weather:{},leaderboard:[],final_leaderboard:[]};
