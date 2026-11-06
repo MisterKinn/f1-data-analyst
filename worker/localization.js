@@ -143,7 +143,7 @@ export const translations = {
  '이 페이지는 실시간 타이밍 화면이 아닙니다. Al Kamel에 공개된 결과만 조회하며, 진행 중인 세션의 자료는 아직 없거나 중간 결과일 수 있습니다.':'This page shows published Al Kamel results, not live timing. Records for an ongoing session may be unavailable or provisional.',
  '세션 시작을 기다릴 필요 없이 시즌과 이벤트를 선택해 공개된 결과·랩·섹터·피트스톱 기록을 찾아보세요. 연결한 AI에 대회명과 세션을 알려주고 경기 흐름을 질문할 수도 있습니다. 최종 결과 여부는 원문을 확인하세요.':'Browse published results, laps, sectors and pit stops by season and event at any time. Ask your AI about the race with its event and session name. Check the source for final classification.',
  '로그인 오류·서버 연결 실패·자료 조회 오류는 세션이 없는 정상 대기 상태와 다릅니다. 오류가 계속되면 화면의 메시지와 조회한 대회·세션을 운영자에게 알려주세요.':'Sign-in, server and data errors differ from normal waiting between sessions. If an error persists, report its message and the event and session to the operator.',
- '레이스 잘 아는 친구가':'Like having a racing-savvy friend','곁에 있는 것처럼.':'right beside you.',
+ '순위만 보던 눈이,':'Eyes that once saw only the standings,','전략과 셋업까지 보이도록.':'now see strategy and setup too.','F1에 입문하기는 쉬워졌지만, 한 걸음 더 들어가려면 알아야 할 게 너무 많아졌어요. 라이트팬과 코어팬 사이의 그 계단을, 꽁보다가 한 칸씩 함께 오릅니다.':'Getting into F1 has never been easier, but going one step deeper now takes a lot to learn. Kongboda climbs the stairs between casual and core fan with you, one step at a time.','레이스 잘 아는 친구가':'Like having a racing-savvy friend','곁에 있는 것처럼.':'right beside you.',
  '숫자는 우리가 함께 읽을게요. 여러분은 레이스를 즐기세요.':'We’ll help read the numbers. You enjoy the racing.',
  '꽁보다, 무슨 뜻인가요?':'What does Kongboda mean?', '꽁 — 인사이트를 ‘꽁’으로 얻다':'Kong — insights, effortlessly',
  '기록을 찾고, 용어를 익히고, 숫자를 비교하는 일.':'Finding records, learning terminology, comparing numbers.',
