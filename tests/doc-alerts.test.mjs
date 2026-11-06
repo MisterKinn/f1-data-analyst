@@ -89,7 +89,7 @@ test('owner-only AI key, public throttled run, browser assets',async()=>{
 test('alerts stay off public pages; the connector lists the new tools',async()=>{
  const home=await worker.fetch(new Request('https://kongboda.test/'),{});
  const html=await home.text();assert.doesNotMatch(html,/alerts\.js|data-kb-user/);
- const guide=await (await worker.fetch(new Request('https://kongboda.test/guide'),{})).text();assert.doesNotMatch(guide,/scheduled-alerts|예약 작업/);
+ const guide=await (await worker.fetch(new Request('https://kongboda.test/guide'),{})).text();assert.doesNotMatch(guide,/scheduled-alerts|새 문서 알림/);
  assert.notEqual((await worker.fetch(new Request('https://kongboda.test/alerts'),{})).status,200,'/alerts is owner-only');
  const list=await (await worker.fetch(new Request('https://kongboda.test/mcp',{method:'POST',headers:{'content-type':'application/json','oai-authenticated-user-id':'owner'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/list'})}),{})).json();
  const names=list.result.tools.map(t=>t.name);
