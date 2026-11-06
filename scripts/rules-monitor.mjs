@@ -14,7 +14,7 @@ import * as L from '../worker/rules-lib.js';
 const args=Object.fromEntries(process.argv.slice(2).map(a=>{const [k,v]=a.replace(/^--/,'').split('=');return [k,v??true];}));
 const DRY=!!args['dry-run'],FORCE=!!args.force,ONLY=args.source||null;
 const SITE=process.env.RULES_SITE||'https://kongboda-motorsports.vercel.app';
-const MAX_DOWNLOADS=Number(args['max-downloads']||process.env.RULES_MAX_DOWNLOADS||60);
+const MAX_DOWNLOADS=Number(args['max-downloads']||process.env.RULES_MAX_DOWNLOADS||150);
 const DEADLINE=Date.now()+Number(process.env.RULES_MAX_MINUTES||25)*60_000;
 const UA='KongbodaRulesMonitor/1.0 (+https://kongboda-motorsports.vercel.app; official-document index)';
 const HOUR=3600_000,DAY=24*HOUR;
@@ -56,7 +56,19 @@ export function intervalFor(source,now=Date.now()){
  if(source.kind==='event_documents')return inRaceWindow(source,now)?15*60_000:12*HOUR;
  return inRaceWindow(source,now)?6*HOUR:DAY;
 }
-const due=(source,status,now=Date.now())=>FORCE||!status?.checked_at||now-Date.parse(status.checked_at)>=intervalFor(source,now)-60_000;
+// Unfinished sources continue on the next run; failed ones retry after an hour.
+export function due(source,status,now=Date.now(),force=FORCE){
+ if(force||!status?.checked_at)return true;
+ const age=now-Date.parse(status.checked_at);
+ if(status.status==='partial')return true;
+ if(status.status==='failed')return age>=Math.min(HOUR,intervalFor(source,now))-60_000;
+ return age>=intervalFor(source,now)-60_000;
+}
+// Race notes in a race window first, then series racing now, then F1/WEC, then the rest.
+export function priority(source,now=Date.now()){
+ const live=inRaceWindow(source,now);
+ return (source.kind==='event_documents'?(live?0:3):(live?1:4))+(['f1','wec','fia-general'].includes(source.series)?0:0.5);
+}
 
 // PDF -> [{page,text}] with lines rebuilt from text positions.
 export async function pdfPages(bytes,maxPages=400){
@@ -139,11 +151,11 @@ async function main(){
  const started=new Date().toISOString(),report={downloads:0};
  const sources=registry.sources.filter(s=>s.enabled!==false&&(!ONLY||s.id===ONLY));
  let status={sources:{}};if(!DRY){try{status=(await api('/api/rules/state')).status||status;}catch(e){console.error('State unavailable:',e.message);process.exitCode=1;return;}}
- const todo=sources.filter(s=>due(s,status.sources?.[s.id]));
+ const todo=sources.filter(s=>due(s,status.sources?.[s.id])).sort((a,b)=>priority(a)-priority(b));
  console.log(`${todo.length}/${sources.length} sources due`);
  let failures=0;
  for(const source of todo){
-  if(Date.now()>DEADLINE){console.log('Deadline reached; remaining sources wait for the next run');break;}
+  if(Date.now()>DEADLINE||report.downloads>=MAX_DOWNLOADS){console.log('Run budget reached; remaining sources wait for the next run');break;}
   const {result,docs,known}=await processSource(source,status.sources?.[source.id],report);
   if(result.status==='failed')failures++;
   console.log(`[${result.status}] ${source.id}: listed ${result.listed}, new ${result.new}${result.error?' — '+result.error:''}`);

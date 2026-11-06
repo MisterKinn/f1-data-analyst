@@ -111,3 +111,10 @@ const att=JSON.parse(attachRulesContext(rc,ctxR).content[0].text);assert.ok(att.
 assert.equal(await rulesContext(env,'openf1_race_control',{},{content:[{type:'text',text:'{"laps":[]}'}]}),null,'no regulated situation, nothing attached');
 assert.equal(await rulesContext({},'openf1_race_control',{},rc),null);
 assert.equal((await rulesLookup(env,{query:'track limits',series:'NASCAR'})).index_status,'not_publicly_available');
+// ---- scheduling of unfinished and failed sources ----
+import {due,priority} from '../scripts/rules-monitor.mjs';
+{const now=Date.parse('2026-07-15T00:00:00Z'),src={kind:'regulations',series:'nonexistent'},ago=m=>new Date(now-m*60_000).toISOString();
+assert.equal(due(src,{checked_at:ago(5),status:'partial'},now,false),true,'unfinished source continues next run');
+assert.equal(due(src,{checked_at:ago(5),status:'ok'},now,false),false);
+assert.equal(due(src,{checked_at:ago(30),status:'failed'},now,false),false);assert.equal(due(src,{checked_at:ago(61),status:'failed'},now,false),true,'failed source retries after an hour');
+assert.ok(priority({kind:'event_documents',series:'f1',calendar:'nonexistent'},now)<priority({kind:'regulations',series:'scca'},now));}
