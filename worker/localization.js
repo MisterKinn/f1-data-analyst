@@ -105,7 +105,7 @@ export const translations = {
  '당신 곁의':'Your', '레이스 엔지니어':'race engineer',
  '사용하는 AI에 ':'In your AI, ', '꽁보다 모터스포츠 플러그인을 설치':'install the Kongboda Motorsports plugin', '하고, 궁금한 것을 물어보세요.':' and ask your racing questions.',
  '내 곁의 든든한 레이스 엔지니어':'Your trusted race engineer', 'PC 화면으로 보기':'View desktop layout', '모바일 화면으로 보기':'View mobile layout', 'MCP 설치 안내 →':'MCP setup guide →',
- '대회 페이지 열기 ↗':'Open championship ↗','대회 선택':'Championships','꽁보다 소개':'About','이용 방법':'How to use','유용한 사이트':'Useful Websites',
+ '대회 페이지 열기 ↗':'Open championship ↗','대회 선택':'Championships','꽁보다 소개':'About','이용 방법':'How to use','유용한 사이트':'Useful Websites','랩 시뮬레이터':'Lap simulator','물리 모델로 한 바퀴를 계산해, 트랙마다 랩타임이 어디서 갈리는지 보여 줍니다.':'A physics model simulates one lap and shows where lap time is won on each track.','시뮬레이터 열기':'Open the simulator',
  '꽁보다 모터스포츠':'KONGBODA MOTORSPORTS','홈':'Home','계정':'Account','내 계정':'My account','로그인':'Sign in',
  '메뉴 열기':'Open menu','메뉴 닫기':'Close menu','주 메뉴':'Main navigation',
  '챔피언십 포인트':'Championship standings','대회':'Championship','부문':'Category','공식 순위를 불러오는 중…':'Loading official standings…','출처 보기 ↗':'View source ↗','다시 불러오기':'Retry',
@@ -389,7 +389,7 @@ Object.assign(translations,{
  '새 대화의 왼쪽 아래 ‘+’ → ‘커넥터’에서 Kongboda Motorsports를 켜고 질문합니다.':'In a new chat, click ‘+’ at the bottom left → ‘Connectors’, turn on Kongboda Motorsports and ask away.',
  'Team·Enterprise 요금제는 조직 소유자가 먼저 커스텀 커넥터를 추가해야 할 수 있습니다. 커넥터를 추가하기 전에 열려 있던 대화에는 나타나지 않으니 새 대화에서 사용하세요.':'On Team and Enterprise plans, an organisation owner may need to add the custom connector first. It doesn’t appear in chats that were already open, so use a new chat.'
 });
-for(const [ko,en] of [['홈','Home'],['이용 방법','How to use'],['유용한 사이트','Useful Websites'],['꽁보다 소개','About Kongboda Motorsports'],['계정','Account'],['화면 보기','Display mode'],...['Formula 1','FIA WEC','IMSA','Formula E','NLS','Michelin Le Mans Cup','European Le Mans Series','Asian Le Mans Series'].map(s=>[s,s])])translations[ko+' · 꽁보다 모터스포츠']=en+' · KONGBODA MOTORSPORTS';
+for(const [ko,en] of [['홈','Home'],['랩 시뮬레이터','Lap simulator'],['이용 방법','How to use'],['유용한 사이트','Useful Websites'],['꽁보다 소개','About Kongboda Motorsports'],['계정','Account'],['화면 보기','Display mode'],...['Formula 1','FIA WEC','IMSA','Formula E','NLS','Michelin Le Mans Cup','European Le Mans Series','Asian Le Mans Series'].map(s=>[s,s])])translations[ko+' · 꽁보다 모터스포츠']=en+' · KONGBODA MOTORSPORTS';
 for(const [ko,en] of [['유럽','Europe'],['아시아','Asia'],['아메리카','America'],['오스트레일리아','Australia']]){
  translations['GT World Challenge '+ko]='GT World Challenge '+en;
  translations['/ GT World Challenge '+ko]='/ GT World Challenge '+en;

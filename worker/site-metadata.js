@@ -17,6 +17,10 @@ const PAGES = {
     ko: ['유용한 사이트', 'FIA 문서와 공식 타이밍 기록, 모터스포츠 전문 매체와 공학 자료를 찾아보세요. 공식 기록과 보도를 구분해 안내합니다.'],
     en: ['Useful websites', 'Find official FIA documents, timing records, motorsport reporting and engineering resources, with official records distinguished from reporting.'],
   },
+  '/simulation': {
+    ko: ['랩 시뮬레이터', '물리 모델로 F1 머신의 한 바퀴를 계산합니다. 트랙별 속도, 섹터 시간과 무게·출력·그립이 랩타임에 주는 영향을 확인하세요.'],
+    en: ['Lap simulator', 'A physics model simulates one F1 lap. See speed, sector times and how weight, power and grip change the lap time on each track.'],
+  },
   '/account': {
     ko: ['계정', '꽁보다 계정에 로그인하고 연결 정보를 확인하세요.'],
     en: ['Account', 'Sign in to your Kongboda account and review your connections.'],
@@ -40,7 +44,7 @@ const SERIES = {
 };
 
 export const publicSitePaths = Object.freeze([
-  '/', '/about', '/guide', '/resources',
+  '/', '/about', '/guide', '/resources', '/simulation',
   ...Object.keys(SERIES).map(slug => `/championships/${slug}`),
 ]);
 

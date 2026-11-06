@@ -30,7 +30,7 @@ export function untranslated(html){
 }
 
 test('English pages contain no untranslated Korean UI text',async()=>{
- const pages=['/','/guide','/about','/resources','/status','/account',...championships.map(c=>'/championships/'+c.slug)];
+ const pages=['/','/guide','/about','/resources','/simulation','/simulation?track=Austin','/status','/account',...championships.map(c=>'/championships/'+c.slug)];
  const problems=[];
  for(const path of pages)for(const identity of [{},signedIn]){
   const html=await websiteRoute(request(path),identity).text();
