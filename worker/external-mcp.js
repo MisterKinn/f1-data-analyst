@@ -13,4 +13,3 @@ export async function revokeMcpToken(env,account){
 // Legacy bearer credentials deliberately fail closed. They cannot distinguish a
 // supported connector session from a copied development token.
 export async function externalMcpAccount(){return null;}
-export function externalLiveAllowed(){return false;}
