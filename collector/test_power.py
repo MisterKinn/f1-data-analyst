@@ -58,14 +58,11 @@ class DecideTest(unittest.TestCase):
     def test_stays_when_a_session_is_close(self):
         self.assertEqual(self.decide(datetime(2026, 11, 6, 14, 0, tzinfo=UTC)), ('stay', 'session_soon'))
 
-    def test_waits_for_post_session_data_but_not_forever(self):
+    def test_never_waits_for_post_session_uploads(self):
+        # completed sessions come from OpenF1: a closed window keeps nobody on
         fp1_close = datetime(2026, 11, 6, 18, 30, tzinfo=UTC)
         ws = [w for w in windows() if w['id'] == '2026-20-1']
-        self.assertEqual(self.decide(fp1_close + timedelta(minutes=10), done=False, ws=ws), ('stay', 'post_session_upload'))
-        # not the lead: another host publishes it
-        self.assertEqual(self.decide(fp1_close + timedelta(minutes=10), done=False, is_lead=False, ws=ws)[0], 'sleep')
-        # past the grace period the next check-in retries
-        self.assertEqual(self.decide(fp1_close + power.HISTORY_GRACE + timedelta(minutes=1), done=False, ws=ws)[0], 'sleep')
+        self.assertEqual(self.decide(fp1_close + timedelta(minutes=10), done=False, ws=ws)[0], 'sleep')
 
     def test_just_booted_stays_a_little(self):
         self.assertEqual(self.decide(datetime(2026, 11, 5, 12, 0, tzinfo=UTC), uptime=timedelta(minutes=3)),
@@ -77,7 +74,7 @@ class DecideTest(unittest.TestCase):
 
 
 class EndedTest(unittest.TestCase):
-    def test_off_right_after_the_session_and_back_at_window_close_for_fastf1(self):
+    def test_off_right_after_the_session_until_the_next_one(self):
         ws = windows()
         ws[0]['ended'] = True  # FP1 recorded to its end at 16:32 UTC; window closes 18:30
         now = datetime(2026, 11, 6, 16, 33, tzinfo=UTC)
@@ -85,18 +82,16 @@ class EndedTest(unittest.TestCase):
                                       uptime=timedelta(hours=2)),
                          ('sleep', datetime(2026, 11, 6, 17, 50, tzinfo=UTC)))  # FP2 recorder connects 18:10
 
-    def test_race_end_sleeps_until_the_window_closes_then_publishes(self):
+    def test_race_end_does_not_come_back_at_window_close(self):
         ws = windows()
         for w in ws:
             w['ended'] = True
         race_end = datetime(2026, 11, 8, 18, 52, tzinfo=UTC)  # window closes 21:00
         decision, wake = power.decide(race_end, ws, LOOKAHEAD, recording=False, is_lead=True,
-                                      is_done=lambda w: w != '2026-20-5', uptime=timedelta(hours=3))
-        self.assertEqual((decision, wake), ('sleep', datetime(2026, 11, 8, 21, 5, tzinfo=UTC)))
-        # woken at 21:05: the race data is not on the site yet -> stay until it is
-        self.assertEqual(power.decide(wake, ws, LOOKAHEAD, recording=False, is_lead=True,
-                                      is_done=lambda w: w != '2026-20-5', uptime=timedelta(minutes=0))[1],
-                         'post_session_upload')
+                                      is_done=lambda w: False, uptime=timedelta(hours=3))
+        self.assertEqual((decision, wake), ('sleep', race_end + power.CHECK_IN))
+
+
 class ScheduleRequestTest(unittest.TestCase):
     """Validate the request against the real EventBridge Scheduler API model (botocore)."""
 
@@ -152,7 +147,7 @@ class TickTest(unittest.TestCase):
 
 class WeekendRehearsal(unittest.TestCase):
     """Thursday noon KST to Tuesday: every recorder connect finds the server on; it goes off
-    soon after each session ends and after each session's FastF1 data is published."""
+    soon after each session ends and does not come back until the next one (or a check-in)."""
 
     def run_weekend(self, sessions=BRAZIL, history_after=timedelta(minutes=40), boot=timedelta(minutes=2),
                     delay=timedelta(0)):
@@ -187,14 +182,13 @@ class WeekendRehearsal(unittest.TestCase):
                     on, wake_at = False, detail
                     log.append(('sleep', t, detail))
             t += timedelta(minutes=1)
-        # FastF1 data needs the host on at some point between close and close + grace
-        unpublished = [wid for wid in closes if not any(e[0] == 'sleep' and e[1] >= published[wid] for e in log)]
-        return on_minutes, misses, unpublished, log
+        boots_after_close = [e for e in log if e[0] == 'boot' and any(c <= e[1] < c + timedelta(minutes=30) for c in closes.values())]
+        return on_minutes, misses, boots_after_close, log
 
     def test_brazil_weekend(self):
-        on_minutes, misses, unpublished, log = self.run_weekend()
+        on_minutes, misses, boots_after_close, log = self.run_weekend()
         self.assertEqual(misses, [], 'a recorder connect found the server off')
-        self.assertEqual(unpublished, [])
+        self.assertEqual(boots_after_close, [], 'no wake just to upload after a session')
         sleeps = [e for e in log if e[0] == 'sleep']
         self.assertGreaterEqual(len(sleeps), 4)
         # ~ the sessions, their lead-in and uploads, plus short check-ins: far below 24/7
@@ -203,10 +197,10 @@ class WeekendRehearsal(unittest.TestCase):
 
     def test_late_start_and_slow_archive(self):
         # session 40 min late (red flag / delay) and FastF1 data 2.5 h after the end
-        on_minutes, misses, unpublished, log = self.run_weekend(history_after=timedelta(minutes=150),
-                                                                delay=timedelta(minutes=40))
+        on_minutes, misses, boots_after_close, log = self.run_weekend(history_after=timedelta(minutes=150),
+                                                                      delay=timedelta(minutes=40))
         self.assertEqual(misses, [])
-        self.assertEqual(unpublished, [])
+        self.assertEqual(boots_after_close, [])
         self.print_log(log, on_minutes)
 
     def test_boot_takes_ten_minutes(self):
