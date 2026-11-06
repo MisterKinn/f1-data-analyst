@@ -24,6 +24,7 @@ WEC = None  # Initialized only by serve; F1 recording stays independent.
 TELEMETRY = None
 HISTORY = None
 PERSONAL = None
+PERSONAL_WEC = None  # per-account FIAWEC+ logins, ready with the WEC runtime
 SUPPORTED_SESSIONS = ('Practice 1', 'Practice 2', 'Practice 3', 'Qualifying',
                       'Sprint Qualifying', 'Sprint Shootout', 'Sprint', 'Race')
 TERMINAL_SESSION_STATUSES = frozenset(('Finished', 'Finalised', 'Cancelled', 'Canceled', 'Aborted'))
@@ -652,6 +653,11 @@ class Handler(BaseHTTPRequestHandler):
                     raise ValueError()
             except (ValueError, TypeError):
                 return self.reply({'error': 'Invalid body'}, 400)
+        if parts[3].startswith('wec/'):
+            if PERSONAL_WEC is None:
+                return self.reply({'error': 'WEC runtime not ready'}, 503)
+            result, status = PERSONAL_WEC.request(parts[2], '/' + parts[3], method, body)
+            return self.reply(result, status)
         result, status = PERSONAL.request(parts[2], '/' + parts[3], method, body)
         return self.reply(result, status)
 
@@ -676,13 +682,14 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def prepare_wec():
-    global WEC, WEC_RUNTIME
+    global WEC, WEC_RUNTIME, PERSONAL_WEC
     WEC_RUNTIME = 'preparing'
     try:
         from wec_install import ensure_browser
-        from wec_runtime import WECManager
+        from wec_runtime import PersonalWEC, WECManager
         WEC_RUNTIME = ensure_browser()
         WEC = WECManager(DATA)
+        PERSONAL_WEC = PersonalWEC()
     except Exception:
         WEC_RUNTIME = 'unavailable'
         print('WEC runtime unavailable; F1 collector continues independently.', flush=True)
@@ -752,6 +759,8 @@ def main():
         server.server_close()
         if PERSONAL:
             PERSONAL.close()
+        if PERSONAL_WEC:
+            PERSONAL_WEC.close()
         if WEC:
             WEC.close()
     return 0

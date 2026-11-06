@@ -18,7 +18,13 @@ class Driver:
         self.cards = cards
         self.calls = []
         self.timing = TIMING
+        self.home = []
+        self.countdown = False
     def authenticate(self): self.calls.append('authenticate')
+    def next_session_cards(self):
+        self.calls.append('next_session_cards')
+        return self.home
+    def waiting_for_start(self): return self.countdown
     def race_links(self):
         self.calls.append('race_links')
         return [{'url': RACE, 'text': 'Monza'}]
@@ -37,7 +43,7 @@ class WECTests(unittest.TestCase):
     def test_complete_discovery_order_and_no_false_live_claim(self):
         d = Driver([{'url': WATCH, 'text': 'Monza 2026 Free Practice 1 English LIVE', 'live': True}])
         result = discover(d, TARGET)
-        self.assertEqual(d.calls, ['authenticate', 'race_links', ('session_cards', RACE), ('open_timing', WATCH), 'read_rows'])
+        self.assertEqual(d.calls, ['authenticate', 'next_session_cards', 'race_links', ('session_cards', RACE), ('open_timing', WATCH), 'read_rows'])
         self.assertEqual(result['timing_url'], TIMING)
         self.assertFalse(result['live'])
         self.assertEqual(result['state'], 'snapshot_unverified')
@@ -70,6 +76,29 @@ class WECTests(unittest.TestCase):
         with self.assertRaisesRegex(DiscoveryError, 'authentication_failed'):
             discover(d, TARGET)
         self.assertEqual(d.calls, [])
+
+    def test_recorded_flow_home_next_sessions_to_livestream(self):
+        # Recorded: FIA WEC home -> NEXT SESSIONS LIVE card -> session page -> LIVE TIMING.
+        live = 'https://plus.fiawec.com/en/livestream/s-6-hours-of-monza-free-practice-1-78gtpr'
+        d = Driver([])
+        d.home = [{'url': 'https://plus.fiawec.com/en/video/elms-portimao-free-practice-1', 'text': 'ELMS 4 HOURS OF PORTIMAO FREE PRACTICE 1 LIVE', 'live': True},
+                  {'url': WATCH, 'text': '6 HOURS OF MONZA - FREE PRACTICE 1 TODAY 18:30 LIVE', 'live': True}]
+        d.timing = live
+        result = discover(d, TARGET)
+        self.assertEqual(d.calls[:3], ['authenticate', 'next_session_cards', ('open_timing', WATCH)])
+        self.assertNotIn('race_links', d.calls)
+        self.assertEqual(result['timing_url'], live)
+        self.assertEqual(result['session'], 'FP1')
+
+    def test_scheduled_window_opens_upcoming_card_and_reports_countdown(self):
+        d = Driver([])
+        d.home = [{'url': WATCH, 'text': '6 HOURS OF MONZA - FREE PRACTICE 1 TODAY 18:30', 'live': False}]
+        d.read_rows = lambda: []
+        d.countdown = True
+        self.assertEqual(discover(d, TARGET)['state'], 'waiting_for_session')  # on demand: LIVE badge needed
+        result = discover(d, TARGET, upcoming=True)
+        self.assertEqual(result['state'], 'timing_waiting_start')
+        self.assertFalse(result['live'])
 
     def test_ssrf_and_credential_urls_rejected(self):
         for url in ['http://plus.fiawec.com/en', 'https://127.0.0.1/',

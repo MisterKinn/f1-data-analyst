@@ -33,3 +33,11 @@ Deployment of this branch and the Render mirror is not implied by these instruct
 ## Existing Render commands (2026-10-29)
 
 The existing `pip install -r requirements.txt` build command now includes pinned Playwright. `python cloud.py serve` explicitly prepares the matching Chromium headless shell once when missing and verifies launch before serving traffic. It does not authenticate to FIAWEC+ during setup. A 300-second download limit and 30-second launch limit fail the new rollout on error; no system packages, access policies or secrets are changed. The existing optional `bash render-build.sh` can still preinstall it at build time. `/healthz` exposes only browser readiness and Render source SHA, never account credentials. Actual live-session reception remains separately unverified.
+
+## Scheduled reader and personal logins (2026-11-06)
+
+- Flow (owner's recorded browser skill): FIA WEC home `https://plus.fiawec.com/` → NEXT SESSIONS card with LIVE (or the scheduled session's card) → session page → LIVE TIMING → `https://plus.fiawec.com/en/livestream/s-<event>-<session>-<id>`. Before the start the page shows a "TO START" countdown and "Syncing live timeline" (state `timing_waiting_start`, not an error). ELMS cards are filtered by the event name.
+- Crew: `.github/workflows/wec-live-collector.yml` runs every 30 minutes, finds a WEC session window in `/api/race-calendar` (start −10 min to end +15 min; back-to-back qualifying/hyperpole sessions merge), signs in with repository secrets `WEC_USERNAME`/`WEC_PASSWORD`, keeps the livestream page open and pushes the timing table to `/api/wec/actions-push` (GitHub OIDC, this workflow only). No AWS or home host. A 6-hour race exceeds one job, so the next scheduled run continues the same window.
+- `live=true` only while the window is open and the table changed within 90 seconds. Login/CAPTCHA/subscription problems stop the run without retrying.
+- Others: `/live` → "내 FIAWEC+ 계정 연결" → collector `/personal/<account>/wec/login` (`PersonalWEC` in wec_runtime.py; in-memory credentials, 8 hours, max `PERSONAL_WEC_MAX_SESSIONS`=2, never the owner's account).
+- Still to verify at a real session: the timing table selector on the livestream page. If `timing_layout_unverified` appears while the page is running, adjust `read_rows` to the observed layout.

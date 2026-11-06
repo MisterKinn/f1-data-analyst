@@ -22,3 +22,9 @@ test('step 4 is translated, hidden prompts included',async()=>{
  assert.doesNotMatch(en,/[가-힣]/);
  assert.match(en,/Copy Claude prompt/);assert.match(en,/Help me connect Kongboda Motorsports/);
 });
+test('setup prompt asks F1/WEC (multi-select), schedules only picked series and offers the rest later',()=>{
+ for(const key of ['claude','chatgpt']){
+  const p=SETUP_PROMPTS[key];
+  for(const part of ['F1’, ‘WEC','중복 선택','고른 종목만','꽁보다 F1 실시간 브리핑','꽁보다 WEC 실시간 브리핑','wec_live_status','언제든'])assert.ok(p.includes(part),key+' '+part);
+ }
+});
