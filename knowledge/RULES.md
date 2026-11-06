@@ -24,7 +24,7 @@ At most 60 downloads and 25 minutes per run (env `RULES_MAX_DOWNLOADS`, `RULES_M
 - `official_archive`: Formula E results archive (only "Event Information" folders), ELMS / Le Mans Cup (Al Kamel season and event selects) and ALMS (Al Kamel JSON manifests). Uses the connector's own `worker/official.js` reader. Newest season, newest 2 events.
 - `gtapps_noticeboard`: BTCC/TOCA on GT Apps Race Control. Reads the public `/documents` JSON. Bulletins, decisions and official documents only; classifications and grids are skipped.
 - `embedded_pdf_urls`: PDF URLs inside page data (Supercars' Next.js page). Operations Manual divisions become regulations; supplementary regulations become event documents.
-- `fia_event_documents` with `discover`: finds the fia.com championship id (Formula E decisions) from the championship menu instead of hardcoding it.
+- `fia_event_documents` with `discover` can find a fia.com championship id from the championship menu instead of hardcoding it. fia.com lists only F1, F2 and F3 decision documents, so Formula E decisions are not a source (2026-11-06 check).
 
 Tier-3 sources are marked unavailable. Full historical crawling is not planned; only the current and next rulebook year are indexed.
 
