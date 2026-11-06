@@ -135,6 +135,7 @@ export async function alertsRoute(request,env,{google=null,owner=false,ctx=null}
  if(m==='POST'&&!sameOrigin(request))return json({error:'Origin not allowed.'},403);
  if(path==='/api/push/unsubscribe'&&m==='POST'){const body=await request.json().catch(()=>null);if(typeof body?.endpoint!=='string')return json({error:'endpoint required'},400);await removeSubscription(env,body.endpoint);return json({ok:true});}
  if(!google)return json({error:'Sign in required.'},401);
+ if(!owner)return json({error:'운영자만 사용할 수 있습니다.'},403);
  if(path==='/api/push/subscribe'&&m==='POST'){
   const body=await request.json().catch(()=>null);
   try{await saveSubscription(env,google.sub,body?.subscription,body?.lang);}catch(e){return json({error:e.message},400);}
@@ -142,7 +143,6 @@ export async function alertsRoute(request,env,{google=null,owner=false,ctx=null}
  }
  if(path==='/api/push/status'&&m==='GET')return json(await accountPushState(env,google.sub));
  if(path==='/api/push/account'&&m==='POST'){const body=await request.json().catch(()=>({}));await setAccountOff(env,google.sub,body?.off===true);return json({ok:true,off:body?.off===true});}
- if(!owner)return json({error:'운영자만 사용할 수 있습니다.'},403);
  if(path==='/api/push/test'&&m==='POST'){
   const tally=await broadcast(env,lang=>lang==='en'?{title:'Kongboda test alert',body:'Alerts work on this device.',url:'/alerts',tag:'test'}:{title:'꽁보다 테스트 알림',body:'이 기기에서 알림이 정상 작동합니다.',url:'/alerts',tag:'test'},{account:google.sub});
   return json(tally);

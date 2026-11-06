@@ -54,8 +54,7 @@ test('new documents become Claude-written alerts and reach every device once',as
  const again=await runCheck(env,{...io,now:NOW+5*60_000});assert.equal(again.new_alerts,0,'never alerts twice');
  assert.equal(calls.filter(c=>c.push).length,3);
  const updates=await officialUpdates(env,{now:NOW+10*60_000,account:'g-2',origin:'https://site'});
- assert.equal(updates.alerts.length,3);assert.equal(updates.alerts_setup,'https://site/alerts','accounts without a device are told how to turn alerts on');
- assert.equal((await officialUpdates(env,{now:NOW+10*60_000,account:'g-1'})).alerts_setup,undefined);
+ assert.equal(updates.alerts.length,3);assert.equal(updates.alerts_setup,undefined,'alerts are owner-only: no setup link for users');
  assert.match(await alertsPageBody(env,{now:NOW+10*60_000}),/상파울루 GP PU 운용 한도 공개/);
 });
 
@@ -79,6 +78,7 @@ test('owner-only AI key, public throttled run, browser assets',async()=>{
  await assert.rejects(saveAiKey(env,'not-a-key'),/형식/);
  assert.equal((await alertsRoute(req('/api/doc-alerts/ai',{method:'POST',body:'{"key":"sk-ant-aaaaaaaaaaaaaaaaaaaaaaaa"}'}),env,{google:{sub:'u',email:'u@x'},owner:false})).status,403);
  assert.equal((await alertsRoute(req('/api/push/subscribe',{method:'POST',body:'{}'}),env,{})).status,401);
+ assert.equal((await alertsRoute(req('/api/push/subscribe',{method:'POST',body:'{}'}),env,{google:{sub:'u'},owner:false})).status,403,'push is owner-only');
  assert.equal((await alertsRoute(req('/api/push/subscribe',{method:'POST',body:'{}',headers:{origin:'https://evil.test'}}),env,{google:{sub:'u'}})).status,403);
  const run=await alertsRoute(req('/api/doc-alerts/run',{method:'POST',body:'{}',headers:{origin:''}}),env,{});assert.ok([200,502].includes(run.status),'no network here: errors come back as JSON');assert.ok((await run.json()).state);
  const sw=await alertsRoute(req('/sw.js'),env,{});assert.match(await sw.text(),/showNotification/);
@@ -86,9 +86,11 @@ test('owner-only AI key, public throttled run, browser assets',async()=>{
  assert.match(ALERTS_SCRIPT,/kb-alert-optin/);
 });
 
-test('site pages load the alerts script and the connector lists the new tools',async()=>{
+test('alerts stay off public pages; the connector lists the new tools',async()=>{
  const home=await worker.fetch(new Request('https://kongboda.test/'),{});
- assert.match(await home.text(),/\/assets\/alerts\.js\?v=/);
+ const html=await home.text();assert.doesNotMatch(html,/alerts\.js|data-kb-user/);
+ const guide=await (await worker.fetch(new Request('https://kongboda.test/guide'),{})).text();assert.doesNotMatch(guide,/scheduled-alerts|예약 작업/);
+ assert.notEqual((await worker.fetch(new Request('https://kongboda.test/alerts'),{})).status,200,'/alerts is owner-only');
  const list=await (await worker.fetch(new Request('https://kongboda.test/mcp',{method:'POST',headers:{'content-type':'application/json','oai-authenticated-user-id':'owner'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/list'})}),{})).json();
  const names=list.result.tools.map(t=>t.name);
  for(const n of ['fia_event_updates','openf1_race_control','openf1_race_gaps','openf1_strategy','openf1_result','openf1_weather','openf1_team_radio'])assert.ok(names.includes(n),n);

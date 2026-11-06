@@ -5,7 +5,7 @@
 // State per event: doc-alerts/f1/<year>/<slug>. Nothing here guesses facts missing from the PDF.
 import {calendarEvents} from './race-calendar-data.js';
 import {eventDocuments,fiaDocumentText} from './fia.js';
-import {broadcast,sha256Hex,accountPushState} from './web-push.js';
+import {broadcast,sha256Hex} from './web-push.js';
 
 const CHECK_GAP_MS=3*60_000,MAX_PER_RUN=3,MAX_TRIES=3,RECENT_MS=48*3600_000;
 const DAY=86400_000;
@@ -14,7 +14,7 @@ const ro={readOnlyHint:true,destructiveHint:false,idempotentHint:true,openWorldH
 export const DOC_ALERT_TOOLS=[{name:'fia_event_updates',description:'New official documents for the current (or a named) F1 weekend: FIA power unit information, Pirelli preview, race director notes, car upgrades and steward decisions, each already read and summarised (headline, key facts, short interpretation) with the original link. Call it first for any question about this weekend\'s PU/energy limits, tyres, track notes, upgrades or penalties.',
  inputSchema:{type:'object',properties:{year:{type:'integer',minimum:2023,maximum:2100},event:{type:'string',maxLength:80,description:'FIA event name, e.g. "São Paulo Grand Prix". Default: current weekend.'},include_routine:{type:'boolean',description:'Also list routine documents (timetable, visa, car display).'}},additionalProperties:false},annotations:ro}];
 
-export const DOC_ALERT_INSTRUCTIONS=' OFFICIAL DOCUMENT ALERTS: during a race weekend, F1 tool results may carry official_updates (new FIA/Pirelli documents the server already read and summarised). Mention new ones briefly at the start of the answer (headline + one fact), once per conversation, and link the original. For this weekend\'s PU/energy limits, tyres, race director notes, upgrades or penalties call fia_event_updates first. If a result carries alerts_setup, tell the user once that phone notifications for new documents can be turned on at that link. Summaries are server-written from the PDF; quote the PDF for exact wording.';
+export const DOC_ALERT_INSTRUCTIONS=' OFFICIAL DOCUMENT ALERTS: during a race weekend, F1 tool results may carry official_updates (new FIA/Pirelli documents the server already read and summarised). Mention new ones briefly at the start of the answer (headline + one fact), once per conversation, and link the original. For this weekend\'s PU/energy limits, tyres, race director notes, upgrades or penalties call fia_event_updates first. Summaries are server-written from the PDF; quote the PDF for exact wording.';
 
 // ---------- event and classification ----------
 export function currentF1Event(now=Date.now()){
@@ -143,7 +143,6 @@ export async function officialUpdates(env,{now=Date.now(),account=null,origin=''
  const state=await readJson(env,stateKey(ev));const recent=(state?.alerts||[]).filter(a=>now-Date.parse(a.created_at)<RECENT_MS).slice(0,5);
  if(!recent.length)return null;
  const out={event:ev.name,alerts:recent.map(brief)};
- if(account){try{const s=await accountPushState(env,account);if(!s.devices&&!s.off)out.alerts_setup=`${origin||'https://kongboda-motorsports.vercel.app'}/alerts`;}catch{}}
  return out;
 }
 
@@ -158,6 +157,6 @@ export async function eventUpdatesCall(env,args,{now=Date.now(),ctx=null,origin=
   .filter(d=>args.include_routine||d.category!=='skip');
  if(cur&&ev.name===cur.name&&env.BUCKET){const job=runCheck(env,{now}).catch(()=>null);if(ctx?.waitUntil)ctx.waitUntil(job);}
  const out={state:'ready',source:'FIA official event documents',event:listing.event,event_url:listing.url,alerts:state.alerts.slice(0,20).map(brief),documents,
-  notes:['Documents without alert_id are not summarised yet (new, or routine). Read them with fia_read_document.','Phone notifications: '+(origin||'https://kongboda-motorsports.vercel.app')+'/alerts']};
+  notes:['Documents without alert_id are not summarised yet (new, or routine). Read them with fia_read_document.']};
  return {content:[{type:'text',text:JSON.stringify(out)}],isError:false};
 }
