@@ -67,3 +67,10 @@ test('WEC login route: same-origin, personal accounts only, password forwarded o
   assert.equal(text.includes('pw'),false);assert.equal(JSON.parse(text).state,'authenticated');
  }finally{globalThis.fetch=original;}
 });
+
+test('blocked WEC access asks the user to sign in or give the session link, and briefings follow the card rules',async()=>{
+ const {publicWecStatus,WEC_LIVE_INSTRUCTIONS}=await import('../worker/wec_live.js');
+ for(const state of ['human_verification_required','credentials_required'])assert.match(publicWecStatus({state}).next_step,/sign in to FIAWEC\+ themselves.*session link/);
+ assert.equal(publicWecStatus({state:'reading'}).next_step,undefined);
+ for(const part of ['time left first','with its reason','track condition','kongboda_my_preferences','never type a password','token expires'])assert.ok(WEC_LIVE_INSTRUCTIONS.includes(part),part);
+});
