@@ -89,7 +89,7 @@ export async function candidates(source,now=new Date()){
  const page=await get(source.url,{max:8_000_000});const html=text(page.bytes),base=page.url||source.url;
  if(source.adapter==='fia_regulations'){
   const year=now.getUTCFullYear(),min=source.min_year??year;
-  return L.parseFiaRegulations(html,base).filter(d=>{const y=L.regulationYear(d.title)||Number(String(d.published||'').slice(0,4));return !y||y>=min;}).filter(d=>!source.include||new RegExp(source.include,'i').test(d.title)).filter(d=>!source.exclude||!new RegExp(source.exclude,'i').test(d.title));
+  return L.parseFiaRegulations(html,base).filter(d=>{const y=L.regulationYear(d.title)||Number(String(d.published||'').slice(0,4));return !y||y>=min;}).filter(d=>!source.include||new RegExp(source.include,'i').test(d.title)).filter(d=>!source.exclude||!new RegExp(source.exclude,'i').test(d.title)).filter(d=>!/marked[- ]?up|red[- ]?line|track(?:ed)? changes/i.test(d.title));
  }
  if(source.adapter==='fia_event_documents'){const r=L.parseFiaEventDocuments(html,base);return r.docs.map(d=>({...d,event:r.event}));}
  if(source.adapter==='alkamel_wec'){

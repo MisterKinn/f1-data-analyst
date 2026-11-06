@@ -154,7 +154,7 @@ export async function rulesLookup(env,args={}){
  if(kind!=='event_documents')for(const s of series){
   const buckets=(catalog.series[s].buckets||[]).filter(b=>b==='general'||Number(b)===season);
   const docs=[];for(const b of buckets){const m=await readJson(env,`rules/series/${s}/${b}.json`);if(m?.docs)docs.push(...Object.values(m.docs));}
-  for(const d of applicableDocs(docs,asOf)){
+  for(const d of applicableDocs(docs.filter(x=>!/marked[- ]?up|red[- ]?line|track(?:ed)? changes/i.test(x.title)),asOf)){
    considered.push(d.title);const fresh=freshness(status,d.source_id),titleScore=scoreArticle({n:'',h:d.title,x:'',k:[]},q);
    for(const a of await articlesOf(env,d)){const score=scoreArticle(a,q)+(titleScore>0?1:0);if(score>0)hits.push({score,series:s,kind:d.kind,document:d.title,issue:d.issue?.label??null,published:d.published??null,article:a.n,heading:a.h,page:a.p,excerpt:a.x,url:pageUrl(d.url,a.p),document_url:d.url,newer_issue:d.newer_issue,freshness:fresh});}
   }
@@ -172,9 +172,10 @@ export async function rulesLookup(env,args={}){
   }}
  }
  hits.sort((a,b)=>b.score-a.score);
- const top=hits.slice(0,limit).map(({score,...h})=>h);
+ const seen=new Set(),unique=hits.filter(h=>{const k=[h.series,h.kind,h.article||'',String(h.heading||'').toLowerCase(),String(h.excerpt||'').slice(0,60)].join('|');if(seen.has(k))return false;seen.add(k);return true;});
+ const top=unique.slice(0,limit).map(({score,...h})=>h);
  const stale=top.some(h=>h.freshness.check_status!=='ok');
- return {index_status:'ok',as_of:asOf,season,series_searched:series,unknown_series:unknown.length?unknown:undefined,total_matches:hits.length,hits:top,
+ return {index_status:'ok',as_of:asOf,season,series_searched:series,unknown_series:unknown.length?unknown:undefined,total_matches:unique.length,hits:top,
   ...(top.length?{}:{message:'No indexed article matched. Try another wording, an article number, or open the rulebook with fia_list_regulations.'}),
   ...(stale?{freshness_warning:'At least one source was not checked successfully on its last run; verify on the official page.'}:{}),
   note:'Excerpts are short search aids from the official documents, not full rule text. Check the linked page for exact wording.'};

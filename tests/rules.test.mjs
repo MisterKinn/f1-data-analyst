@@ -139,3 +139,10 @@ import {parseOpsBiblio,patentsIngest,patentsLookup,saveOpsKey,opsStatus,opsToken
  assert.equal((await patentsIngest(new Request('https://x',{method:'POST',body:JSON.stringify({patents:[{...p,number:'bad'}]})}),penv,{verify:async()=>{}})).status,400);
  const look=await patentsLookup(penv,{query:'페라리 터보 엔진'});assert.equal(look.hits[0].number,'EP4123456A1');assert.match(look.hits[0].url,/espacenet/);
  assert.equal((await patentsLookup(penv,{query:'포르쉐 엔진'})).hits.length,0,'company filter applies');}
+// marked-up copies are ignored and duplicate articles collapse
+{const dup=buildDoc(source,{url:'https://www.fia.com/b9-marked-up.pdf',title:'FIA 2026 F1 Regulations - Section B [Sporting] - Iss 09 - Marked-up',published:'2026-08-01'},file('m'),parsed);
+ const dup2=buildDoc({...source,id:'f1-regs'},{url:'https://www.fia.com/other.pdf',title:'Other F1 document 2026',published:'2026-08-02'},file('o'),parsed);
+ assert.equal((await post({documents:[dup,dup2]})).status,200);
+ const r=await rulesLookup(env,{query:'트랙 리밋',series:'f1',kind:'regulations',as_of:'2026-11-06',limit:10});
+ assert.ok(!r.hits.some(h=>/marked-up/i.test(h.document)),'marked-up copy ignored');
+ assert.equal(r.hits.filter(h=>h.article==='B1.8.1').length,1,'same article from two documents collapses');}
