@@ -420,6 +420,57 @@
         "driver model race car"
       ],
       "note": "Weekly. Found papers become unreviewed candidates only; approval needs the exact license and full-text review."
+    },
+    {
+      "id": "epo-patents",
+      "series": "patents",
+      "kind": "patent_watch",
+      "adapter": "epo_ops",
+      "url": "https://ops.epo.org/3.2/rest-services/published-data/search/biblio",
+      "recent_days": 45,
+      "max_pages": 2,
+      "applicants": [
+        "Ferrari",
+        "Porsche",
+        "Tesla",
+        "Mercedes-Benz",
+        "Mercedes-AMG",
+        "McLaren",
+        "Red Bull",
+        "Toyota",
+        "Hyundai",
+        "Kia",
+        "Honda",
+        "Audi",
+        "Bayerische Motoren Werke",
+        "Aston Martin",
+        "Renault",
+        "Peugeot",
+        "Stellantis",
+        "General Motors",
+        "Ford",
+        "Lamborghini",
+        "Pirelli",
+        "Michelin",
+        "Bridgestone",
+        "Goodyear"
+      ],
+      "cpc": [
+        "B60K",
+        "B60L",
+        "B60W",
+        "B60G",
+        "B60T",
+        "B60C",
+        "B62D",
+        "F02B",
+        "F02D",
+        "F02M",
+        "F01N",
+        "F16H",
+        "H01M"
+      ],
+      "note": "Weekly. Needs the EPO OPS key saved by the owner. Vehicle technology classes only (drive, hybrid/EV, chassis, brakes, tyres, body/aero, engine, exhaust, transmission, batteries)."
     }
   ],
   "tier3_unavailable": {

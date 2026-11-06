@@ -124,3 +124,18 @@ assert.equal((await post({documents:[],research_candidates:[{doi:'10.1234/abc.5'
 {const r=JSON.parse((await researchCall('research_lookup',{include_pending:true,query:'trail braking'},env)).content[0].text);
  const auto=r.pending.find(p=>p.doi==='10.1234/abc.5');assert.ok(auto);assert.equal(auto.eligible_for_analysis,false);assert.equal(auto.review_status,'auto_found_not_reviewed');
  assert.ok(!r.papers.some(p=>p.doi==='10.1234/abc.5'),'never used as approved evidence');}
+// ---- patents ----
+import {parseOpsBiblio,patentsIngest,patentsLookup,saveOpsKey,opsStatus,opsToken} from '../worker/patents.js';
+{const ops={'ops:world-patent-data':{'ops:biblio-search':{'@total-result-count':'1','ops:search-result':{'exchange-documents':{'exchange-document':{'@country':'EP','@doc-number':'4123456','@kind':'A1','bibliographic-data':{'publication-reference':{'document-id':[{'@document-id-type':'docdb',country:{$:'EP'},'doc-number':{$:'4123456'},kind:{$:'A1'},date:{$:'20261015'}}]},'invention-title':[{'@lang':'de',$:'Verbrennungsmotor'},{'@lang':'en',$:'Internal combustion engine with turbocharger cooling'}],parties:{applicants:{applicant:[{'@data-format':'epodoc','applicant-name':{name:{$:'FERRARI SPA [IT]'}}}]}},'patent-classifications':{'patent-classification':{section:{$:'F'},class:{$:'02'},subclass:{$:'B'},'main-group':{$:'37'},subgroup:{$:'00'}}},'priority-claims':{'priority-claim':{'document-id':{date:{$:'20250410'}}}}},abstract:{'@lang':'en',p:{$:'A turbocharged engine whose compressor outlet is cooled by a dedicated circuit.'}}}}}}}};
+ const r=parseOpsBiblio(ops,'Ferrari');assert.equal(r.total,1);const p=r.patents[0];
+ assert.equal(p.number,'EP4123456A1');assert.equal(p.published,'2026-10-15');assert.equal(p.priority,'2025-04-10');assert.match(p.title,/turbocharger/);assert.deepEqual(p.cpc,['F02B37/00']);assert.equal(p.applicants[0],'FERRARI SPA [IT]');
+ const penv={BUCKET:memoryBucket()};
+ assert.equal((await opsStatus(penv)).configured,false);await assert.rejects(saveOpsKey(penv,'x','y'));assert.equal((await saveOpsKey(penv,'abcdEFGH1234','secretVALUE5678')).configured,true);
+ assert.equal((await opsToken(new Request('https://x/api/patents/ops-token',{method:'POST'}),penv,{verify:async()=>{throw Error('no')}})).status,401);
+ const tok=await opsToken(new Request('https://x/api/patents/ops-token',{method:'POST'}),penv,{verify:async()=>{},fetcher:async(u,o)=>{assert.match(o.headers.authorization,/^Basic /);return new Response(JSON.stringify({access_token:'T',expires_in:'1199'}),{status:200});}});
+ assert.deepEqual(await tok.json(),{access_token:'T',expires_in:1199});
+ assert.equal((await patentsLookup(penv,{query:'페라리 엔진'})).index_status,'index_empty');
+ const ing=await patentsIngest(new Request('https://x/api/patents/ingest',{method:'POST',body:JSON.stringify({patents:r.patents,watch:{status:'ok',found:1}})}),penv,{verify:async()=>{}});assert.equal(ing.status,200);
+ assert.equal((await patentsIngest(new Request('https://x',{method:'POST',body:JSON.stringify({patents:[{...p,number:'bad'}]})}),penv,{verify:async()=>{}})).status,400);
+ const look=await patentsLookup(penv,{query:'페라리 터보 엔진'});assert.equal(look.hits[0].number,'EP4123456A1');assert.match(look.hits[0].url,/espacenet/);
+ assert.equal((await patentsLookup(penv,{query:'포르쉐 엔진'})).hits.length,0,'company filter applies');}

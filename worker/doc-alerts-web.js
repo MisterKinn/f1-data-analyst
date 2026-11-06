@@ -2,6 +2,7 @@
 // one-tap enable (site banner, /alerts page, connector consent page) and the JSON APIs.
 import {vapidKeys,saveSubscription,removeSubscription,accountPushState,setAccountOff,broadcast} from './web-push.js';
 import {runCheck,currentF1Event,eventState,aiStatus,saveAiKey} from './doc-alerts.js';
+import {opsStatus,saveOpsKey} from './patents.js';
 
 const json=(value,status=200)=>new Response(JSON.stringify(value),{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'private, no-store'}});
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -72,8 +73,8 @@ function alertsClient(){
   show();
   document.querySelectorAll('[data-kb-owner]').forEach(btn=>btn.addEventListener('click',async()=>{
    const out=document.getElementById('kb-owner-result'),action=btn.getAttribute('data-kb-owner');
-   const body=action==='ai'?{key:document.getElementById('kb-ai-key').value,model:document.getElementById('kb-ai-model').value}:action==='ai-remove'?{key:''}:{force:true};
-   const url=action==='test'?'/api/push/test':action==='run'?'/api/doc-alerts/run':'/api/doc-alerts/ai';
+   const body=action==='ai'?{key:document.getElementById('kb-ai-key').value,model:document.getElementById('kb-ai-model').value}:action==='ai-remove'||action==='epo-remove'?{key:''}:action==='epo'?{key:document.getElementById('kb-epo-key').value,secret:document.getElementById('kb-epo-secret').value}:{force:true};
+   const url=action==='test'?'/api/push/test':action==='run'?'/api/doc-alerts/run':/^epo/.test(action)?'/api/doc-alerts/epo':'/api/doc-alerts/ai';
    const res=await post(url,body).catch(()=>null);out.textContent=res?JSON.stringify(await res.json().catch(()=>({status:res.status}))):'network error';
   }));
   return;
@@ -110,9 +111,10 @@ export async function alertsPageBody(env,{google=null,owner=false,now=Date.now()
  const ev=currentF1Event(now),state=ev&&env.BUCKET?await eventState(env,ev):null;
  const list=state?.alerts?.length?state.alerts.map(alertHtml).join(''):`<p class="fine">${ev?'아직 이번 주말의 새 문서 알림이 없습니다.':'지금은 진행 중인 F1 주말이 없습니다.'}</p>`;
  let ownerPanel='';
- if(owner){const ai=await aiStatus(env);ownerPanel=`<section class="panel" data-no-translate><h2>운영자 설정</h2><p>AI 요약: ${ai.configured?`사용 중 (${esc(ai.source)} · ${esc(ai.model)})`:'꺼짐 · 키가 없으면 제목만 알립니다'}</p>
+ if(owner){const ai=await aiStatus(env),epo=await opsStatus(env);ownerPanel=`<section class="panel" data-no-translate><h2>운영자 설정</h2><p>AI 요약: ${ai.configured?`사용 중 (${esc(ai.source)} · ${esc(ai.model)})`:'꺼짐 · 키가 없으면 제목만 알립니다'}</p>
 <label>Anthropic API 키<input id="kb-ai-key" type="password" autocomplete="off" placeholder="sk-ant-..."></label><label>모델 ID (비우면 기본값)<input id="kb-ai-model" type="text" autocomplete="off" placeholder="claude-sonnet-5-5"></label>
-<p><button class="button small-button" type="button" data-kb-owner="ai">키 저장</button> <button class="button small-button" type="button" data-kb-owner="ai-remove">키 삭제</button> <button class="button small-button" type="button" data-kb-owner="run">지금 문서 확인</button> <button class="button small-button" type="button" data-kb-owner="test">내 기기로 테스트 알림</button></p><pre id="kb-owner-result" class="fine" style="white-space:pre-wrap"></pre></section>`;}
+<p><button class="button small-button" type="button" data-kb-owner="ai">키 저장</button> <button class="button small-button" type="button" data-kb-owner="ai-remove">키 삭제</button> <button class="button small-button" type="button" data-kb-owner="run">지금 문서 확인</button> <button class="button small-button" type="button" data-kb-owner="test">내 기기로 테스트 알림</button></p>
+<h3>특허 수집 (EPO OPS)</h3><p>${epo.configured?'키 설정됨 · 매주 자동 수집':'꺼짐 · developers.epo.org에서 앱을 만들고 키를 넣으세요'}</p><label>Consumer Key<input id="kb-epo-key" type="password" autocomplete="off"></label><label>Consumer Secret<input id="kb-epo-secret" type="password" autocomplete="off"></label><p><button class="button small-button" type="button" data-kb-owner="epo">EPO 키 저장</button> <button class="button small-button" type="button" data-kb-owner="epo-remove">EPO 키 삭제</button></p><pre id="kb-owner-result" class="fine" style="white-space:pre-wrap"></pre></section>`;}
  return `<section class="hero"><h1>FIA 문서 알림</h1><p class="lead">새 FIA·피렐리 공식 문서가 나오면 핵심 내용과 해석을 휴대폰 알림으로 보내드립니다.</p></section>
 <section class="panel" id="kb-alerts-panel" data-signed-in="${google?'1':'0'}"><h2>이 기기 알림</h2><p data-kb-status>확인 중…</p><p><button class="button" type="button" data-kb-enable hidden>알림 켜기</button> <button class="button" type="button" data-kb-disable hidden>알림 끄기</button></p><p class="fine" data-kb-ios hidden>iPhone은 Safari 공유 버튼 → ‘홈 화면에 추가’ 후, 홈 화면의 꽁보다 앱에서 알림을 켤 수 있습니다.</p>${google?'':'<p><a class="button" href="/auth/google/start?return_to=%2Falerts">Google로 로그인</a></p>'}</section>
 <section><h2 data-no-translate>${esc(ev?ev.name_ko:'최근 알림')}<span data-lang="en" hidden> ${esc(ev?.name||'')}</span></h2>${list}</section>${ownerPanel}`;
@@ -146,6 +148,10 @@ export async function alertsRoute(request,env,{google=null,owner=false,ctx=null}
  if(path==='/api/push/test'&&m==='POST'){
   const tally=await broadcast(env,lang=>lang==='en'?{title:'Kongboda test alert',body:'Alerts work on this device.',url:'/alerts',tag:'test'}:{title:'꽁보다 테스트 알림',body:'이 기기에서 알림이 정상 작동합니다.',url:'/alerts',tag:'test'},{account:google.sub});
   return json(tally);
+ }
+ if(path==='/api/doc-alerts/epo'){
+  if(m==='GET')return json(await opsStatus(env));
+  if(m==='POST'){const body=await request.json().catch(()=>({}));try{return json(await saveOpsKey(env,body?.key,body?.secret));}catch(e){return json({error:e.message},400);}}
  }
  if(path==='/api/doc-alerts/ai'){
   if(m==='GET')return json(await aiStatus(env));

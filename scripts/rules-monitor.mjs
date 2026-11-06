@@ -53,7 +53,7 @@ function inRaceWindow(source,now=Date.now()){
  return calendarEvents.some(e=>e.series===cal&&now>=Date.parse(e.start+'T00:00:00Z')-4*DAY&&now<=Date.parse((e.end||e.start)+'T23:59:59Z')+2*DAY);
 }
 export function intervalFor(source,now=Date.now()){
- if(source.kind==='research_watch')return 7*DAY;
+ if(source.kind==='research_watch'||source.kind==='patent_watch')return 7*DAY;
  if(source.kind==='event_documents')return inRaceWindow(source,now)?15*60_000:12*HOUR;
  return inRaceWindow(source,now)?6*HOUR:DAY;
 }
@@ -62,7 +62,7 @@ export function due(source,status,now=Date.now(),force=FORCE){
  if(force||!status?.checked_at)return true;
  const age=now-Date.parse(status.checked_at);
  if(status.status==='partial')return true;
- if(status.status==='failed')return age>=Math.min(HOUR,intervalFor(source,now))-60_000;
+ if(status.status==='failed'||status.status==='skipped')return age>=Math.min(HOUR,intervalFor(source,now))-60_000;
  return age>=intervalFor(source,now)-60_000;
 }
 // Race notes in a race window first, then series racing now, then F1/WEC, then the rest.
@@ -131,6 +131,26 @@ async function processResearchWatch(source,report){
  result.listed=found.size;result.new=found.size;return {result,candidates:[...found.values()]};
 }
 
+async function processPatentWatch(source,report){
+ // EPO OPS: weekly search of new publications per watched company, limited to vehicle technology classes.
+ const result={id:source.id,series:source.series,kind:source.kind,status:'ok',listed:0,new:0,error:null},all=new Map();
+ let token;try{token=(await api('/api/patents/ops-token',{})).access_token;}catch(e){result.status=/not configured|503/.test(e.message)?'skipped':'failed';result.error=/not configured|503/.test(e.message)?'EPO OPS key not configured yet (owner settings on /alerts)':e.message;return {result,patents:[]};}
+ const {parseOpsBiblio}=await import('../worker/patents.js');
+ const fmt=d=>d.toISOString().slice(0,10).replace(/-/g,''),to=new Date(),from=new Date(Date.now()-(source.recent_days??45)*DAY);
+ const classes=(source.cpc||[]).map(c=>`cpc=${c}`).join(' or ');
+ for(const w of source.applicants||[]){
+  for(let page=0;page<(source.max_pages??2);page++){
+   const q=`pa="${w}" and pd within "${fmt(from)} ${fmt(to)}"${classes?` and (${classes})`:''}`;
+   const url=`https://ops.epo.org/3.2/rest-services/published-data/search/biblio?q=${encodeURIComponent(q)}&Range=${page*100+1}-${page*100+100}`;
+   try{await sleep(6500);const r=await fetch(url,{headers:{authorization:'Bearer '+token,accept:'application/json','user-agent':UA},signal:AbortSignal.timeout(60_000)});report.downloads++;
+    if(r.status===404)break;if(!r.ok)throw Error(`OPS HTTP ${r.status} for ${w}`);
+    const {total,patents}=parseOpsBiblio(await r.json(),w);for(const p of patents)all.set(p.number,p);if(total<=(page+1)*100)break;}
+   catch(e){result.status='partial';result.error=String(e.message).slice(0,200);break;}
+  }
+ }
+ result.listed=all.size;result.new=all.size;return {result,patents:[...all.values()]};
+}
+
 async function processSource(source,status,report){
  const result={id:source.id,series:source.series,kind:source.kind,status:'ok',listed:0,new:0,error:null},docs=[],known={};
  let state={};try{state=DRY?{}:(await api('/api/rules/state?source='+source.id)).known||{};}catch(e){result.status='failed';result.error='state: '+e.message;return {result,docs,known};}
@@ -171,6 +191,7 @@ async function main(){
  let failures=0;
  for(const source of todo){
   if(Date.now()>DEADLINE||report.downloads>=MAX_DOWNLOADS){console.log('Run budget reached; remaining sources wait for the next run');break;}
+  if(source.kind==='patent_watch'){const {result,patents}=await processPatentWatch(source,report);console.log(`[${result.status}] ${source.id}: ${patents.length} patents${result.error?' — '+result.error:''}`);if(!DRY){try{for(let i=0;i<patents.length||i===0;i+=500)await api('/api/patents/ingest',{patents:patents.slice(i,i+500),watch:{status:result.status,error:result.error,found:patents.length}});await api('/api/rules/ingest',{documents:[],sources:[result]});}catch(e){failures++;console.error('   ingest failed: '+e.message);}}continue;}
   if(source.kind==='research_watch'){const {result,candidates}=await processResearchWatch(source,report);console.log(`[${result.status}] ${source.id}: ${candidates.length} new open-access candidates`);if(!DRY){try{await api('/api/rules/ingest',{documents:[],sources:[result],research_candidates:candidates});}catch(e){failures++;console.error('   ingest failed: '+e.message);}}continue;}
   const {result,docs,known}=await processSource(source,status.sources?.[source.id],report);
   if(result.status==='failed')failures++;
