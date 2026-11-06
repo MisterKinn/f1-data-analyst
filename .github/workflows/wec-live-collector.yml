@@ -2,7 +2,9 @@ name: WEC live collector
 # Reads the FIAWEC+ live-timing page in a headless browser during each WEC session window
 # (from the site's official session schedule) and pushes the timing table to the site.
 # No home host or AWS server. Runs that find no window within 40 minutes exit at once.
-# Needs repository secrets WEC_USERNAME and WEC_PASSWORD (the operator's FIAWEC+ account).
+# Signs in with the owner's FIAWEC+ connection saved on the site (account settings → FIAWEC+ 연결,
+# read through /api/wec/actions-auth with this workflow's OIDC token). The repository secrets
+# WEC_USERNAME and WEC_PASSWORD are only a fallback when no connection is saved.
 on:
   schedule:
     - cron: '7,37 * * * *'

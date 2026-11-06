@@ -36,17 +36,14 @@ const WEATHER=/sky:|track temperature|air temperature|humidity|rain/i;
 const text=r=>Object.values(r||{}).join(' · ');
 const flagCode=t=>/red flag/i.test(t)?'red':/full course|\bfcy\b/i.test(t)?'fcy':/safety car|\bsc\b/i.test(t)?'sc':/double yellow/i.test(t)?'double_yellow':/yellow|slow zone|code 60/i.test(t)?'yellow':/green|track clear/i.test(t)?'green':null;
 
-export const WEC_LOGIN_URL='https://plus.fiawec.com/en';
-export const ACCESS_CHOICE={
- question:'FIAWEC+ 라이브 타이밍을 어떻게 열까요?',
- options:[
-  {id:'login',label:'직접 로그인할게요',description:'Claude가 FIAWEC+ 로그인 화면(plus.fiawec.com/en → Account)까지 엽니다. 비밀번호와 CAPTCHA만 직접 입력하세요.'},
-  {id:'link',label:'링크를 붙여 넣을게요',description:'plus.fiawec.com/en/livestream/s-... 세션 링크를 주면 그 화면의 Live timing을 읽습니다.'}
- ],
- login_url:WEC_LOGIN_URL,
- navigation:['plus.fiawec.com/en → LIVE 표시 카드','/en/livestream/<세션> → Live timing','탭: Map(순위)·RaceLog(All/Race Control/Flags/Drivers Status)·Charts·Analysis(Pace/Consistency)','RaceLog의 Sky·Track Temperature 항목이 날씨, 제목 옆 초록 상자가 남은 시간'],
- signed_in_hint:'Account 화면에 "Signed in to FIAWEC+"가 보이면 로그인을 건너뛰고 바로 Live timing으로 갑니다.'
-};
+export const WEC_CONNECT_URL='https://kongboda-motorsports.vercel.app/account#fiawec';
+// FIAWEC+ needs a person: one link to the account page's FIAWEC+ 연결 (sign in once there,
+// CAPTCHA included); crew who are not the owner just wait for the owner's connection.
+export function wecConnect(status={}){
+ const c=status.connect&&typeof status.connect==='object'?status.connect:null;
+ if(c?.by==='owner')return {by:'owner',label:null,url:null,note:String(c.note||'운영자 FIAWEC+ 연결 대기').slice(0,200)};
+ return {by:'self',label:'FIAWEC+ 연결',url:WEC_CONNECT_URL,note:String(c?.note||'꽁보다 계정 설정에서 FIAWEC+에 한 번 직접 로그인하세요(CAPTCHA는 직접 풀기). 다음 세션부터 자동으로 읽습니다.').slice(0,200)};
+}
 
 // One WEC card from wec_live_status. Sections follow the briefing order; anything the reader
 // did not observe is left empty and named, never filled in.
@@ -64,7 +61,8 @@ export function buildWecBriefing(status={},route={},prefs=null,now=Date.now()){
   status:live?'LIVE':a?.phase==='starting-soon'?'곧 시작':a?'세션 시간(수신 미확인)':'라이브 아님',
   time_left_minutes:left,time_left:left==null?null:`${Math.floor(left/60)}:${String(left%60).padStart(2,'0')}`,
   clock:kst(now,{hour:'2-digit',minute:'2-digit'})+' KST',track_status:current||(live?'green':'unknown')};
- const right_now=needsAccess?'FIAWEC+ 로그인(CAPTCHA) 필요 · 아래에서 방법 선택':
+ const connect=needsAccess?wecConnect(status):null;
+ const right_now=needsAccess?(connect.by==='owner'?'FIAWEC+ 운영자 연결 대기 · 연결되면 자동 수신':status.state==='sign_in_expired'?'FIAWEC+ 연결 만료 · 아래 버튼으로 다시 연결':'FIAWEC+ 연결 필요 · 아래 버튼으로 한 번 로그인'):
   live?[weather.at(-1),flags.at(-1)?.text].filter(Boolean).join(' / ')||'타이밍 갱신 중 · RaceLog 특이사항 없음':
   `실시간 타이밍 미확인(${status.state||'unknown'}) · 지난 표는 안 씀`;
  const pace=live?'단일 랩·롱런 분리, 토우·저연료 랩 제외 · 스틴트가 짧거나 플래그·비면 판단 보류':'라이브 타이밍 없음 · 판단 보류';
@@ -72,7 +70,7 @@ export function buildWecBriefing(status={},route={},prefs=null,now=Date.now()){
   briefing:`${header.event||'WEC'} ${header.session||''} · ${right_now}`.trim(),
   sections:{right_now,flags:flags.length?flags:[],flags_note:flags.length?null:(live?'RaceLog 플래그 없음':'아직 못 읽음'),investigations,pace,pace_title:ANALYSIS_TITLE[sessionKind(a?.session||status.session||'')],
    favourite:{manufacturer:fav,note:fav?(live?`${fav} 순위·격차·사건 우선`:`${fav}: 타이밍 확인 후 설명`):'응원 제조사 미설정'},personal_instructions:prefs?.personalInstructions?.text||null},
-  access_choice:needsAccess?ACCESS_CHOICE:null,
+  connect,
   buttons:[...(investigations.length?[{id:'decision',label:'판정 확인'}]:[]),{id:'standings',label:'전체 순위'},{id:'refresh',label:'새로고침'}],
   standings:null,next_sessions:route.next||{},wec_state:status.state||null,checked_at:status.checked_at||null,source:status.source||'FIAWEC+',
   freshness:{live,table_age_seconds:status.table_age_seconds??null}};
@@ -93,7 +91,7 @@ export function routedBriefingText(p){
  return [p.briefing,p.header?.time_left?`남은 시간 ${p.header.time_left}`:null,
   s.flags?.length?'플래그: '+s.flags.map(f=>f.text).join(' | '):s.flags_note?'플래그: '+s.flags_note:null,
   s.pace?(s.pace_title||'페이스')+': '+s.pace:null,s.favourite?'응원 팀: '+s.favourite.note:null,
-  p.access_choice?'선택: '+p.access_choice.options.map(o=>o.label).join(' / '):null].filter(Boolean).join('\n');
+  p.connect?.url?`${p.connect.label}: ${p.connect.url}`:p.connect?.note||null].filter(Boolean).join('\n');
 }
 
 // True when a timestamp falls inside a published F1 session (30 min before start to 3 h after
@@ -107,7 +105,7 @@ export function inScheduledF1Window(at){
  return false;
 }
 
-export const BRIEFING_ROUTER_INSTRUCTIONS=' LIVE BRIEFING ("꽁보다 브리핑", "꽁보다 실시간브리핑", "live briefing"): call kongboda_live_briefing with series "auto" FIRST and ONLY. The server picks the series from the published schedule: route.series "wec" means a WEC window is open, so do not call fastf1_live_snapshot or any F1 tool; "f1" means the F1 flow; "none" means nothing is live, so say that and give next_sessions for each series. The returned card IS the briefing: it renders automatically as the first output; write no summary before it and at most one short line after it. Never present record_kind "off_schedule_record", a failover drill, a test or a stale snapshot as a live or real session result. CARD ORDER: header (series, event, session, live or not, time left, track status), right now (what is happening this moment), why the flags (each yellow, double yellow, red, FCY, SC with time, corner, race-control reason and investigations or penalties; say when no reason is published), the session analysis titled by sections.pace_title (qualifying: best-lap gaps by sector, who owns each sector, the knockout line and where the favourite loses time; practice: quali sims on soft compared with rivals and long-run averages kept apart; race: recent green-lap pace against the car ahead and the leader; add whatever else the data shows that explains the session, and say plainly when something is not readable yet and why), your team or drivers (favourite and personal_instructions from the card; position, gap to the real pack, incidents), standings only on request. MOBILE BREVITY (F1 and WEC alike): keep every card section short enough for a phone screen, about two-thirds of a full write-up: short phrases rather than full sentences, about one line per item, no repeating the same fact in two sections, no greetings or filler; keep the same sections and facts, cut the words. WEC ACCESS: when the card has access_choice, show it as a choice box with exactly its two options (use the host\'s multiple-choice question tool when available; the card buttons are the fallback), never as a plain-text question. If the user picks login, open access_choice.login_url in the browser yourself and go to Account; if it already shows "Signed in to FIAWEC+" skip sign-in, otherwise leave only the password and CAPTCHA to the user and detect the finished sign-in yourself. Then open the LIVE card, /en/livestream/<session>, Live timing, and read Map, RaceLog (Race Control, Flags) and Analysis (Pace). If the user picks link, open that plus.fiawec.com link and read Live timing the same way. Then call kongboda_live_briefing again or render the same card order from what you read. KEEP BRIEFING FOR THE WHOLE SESSION: when the card has follow_up, the user wants a new card every follow_up.every_minutes until follow_up.until. After each card, schedule the next briefing back into this same conversation (send_later or the host equivalent, message: 꽁보다 실시간브리핑) unless one is already pending; each run posts a new card (never edit the old one). Stop scheduling when follow_up is null, the time passes follow_up.until, route.series changes, or the user says stop. If the host cannot schedule into this conversation, create one-time scheduled tasks every 15 minutes until follow_up.until instead, and say so in one line.';
+export const BRIEFING_ROUTER_INSTRUCTIONS=' LIVE BRIEFING ("꽁보다 브리핑", "꽁보다 실시간브리핑", "live briefing"): call kongboda_live_briefing with series "auto" FIRST and ONLY. The server picks the series from the published schedule: route.series "wec" means a WEC window is open, so do not call fastf1_live_snapshot or any F1 tool; "f1" means the F1 flow; "none" means nothing is live, so say that and give next_sessions for each series. The returned card IS the briefing: it renders automatically as the first output; write no summary before it and at most one short line after it. Never present record_kind "off_schedule_record", a failover drill, a test or a stale snapshot as a live or real session result. CARD ORDER: header (series, event, session, live or not, time left, track status), right now (what is happening this moment), why the flags (each yellow, double yellow, red, FCY, SC with time, corner, race-control reason and investigations or penalties; say when no reason is published), the session analysis titled by sections.pace_title (qualifying: best-lap gaps by sector, who owns each sector, the knockout line and where the favourite loses time; practice: quali sims on soft compared with rivals and long-run averages kept apart; race: recent green-lap pace against the car ahead and the leader; add whatever else the data shows that explains the session, and say plainly when something is not readable yet and why), your team or drivers (favourite and personal_instructions from the card; position, gap to the real pack, incidents), standings only on request. MOBILE BREVITY (F1 and WEC alike): keep every card section short enough for a phone screen, about two-thirds of a full write-up: short phrases rather than full sentences, about one line per item, no repeating the same fact in two sections, no greetings or filler; keep the same sections and facts, cut the words. WEC ACCESS: when the card has connect, FIAWEC+ needs a person. If connect.url is set, give that one link as a button or link ("FIAWEC+ 연결", the Kongboda account page): the user signs in to FIAWEC+ there once, solving any CAPTCHA themselves, and later sessions read timing automatically with no sign-in. Never open plus.fiawec.com, never ask for a session link, never type a password or solve a CAPTCHA. If connect.by is "owner" (crew), say the owner\'s FIAWEC+ connection is being renewed and keep briefing. KEEP BRIEFING FOR THE WHOLE SESSION: when the card has follow_up, the user wants a new card every follow_up.every_minutes until follow_up.until. After each card, schedule the next briefing back into this same conversation (send_later or the host equivalent, message: 꽁보다 실시간브리핑) unless one is already pending; each run posts a new card (never edit the old one). Stop scheduling when follow_up is null, the time passes follow_up.until, route.series changes, or the user says stop. If the host cannot schedule into this conversation, create one-time scheduled tasks every 15 minutes until follow_up.until instead, and say so in one line.';
 
 // F1 card in the same order as the WEC card: right now → why the flags → race pace → your
 // team, standings only on request. Built only from what the FastF1 snapshot actually holds.

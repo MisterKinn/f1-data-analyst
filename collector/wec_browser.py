@@ -1,4 +1,5 @@
-"""FIAWEC+ UI discovery. Never guess a timing endpoint or export auth state."""
+"""FIAWEC+ UI discovery. Never guess a timing endpoint. A saved sign-in (storage state)
+comes only from the owner-approved "FIAWEC+ 연결" flow, where a person signs in."""
 import json
 import os
 import re
@@ -122,11 +123,13 @@ def owner_credentials():
 
 
 class FIAWECBrowser:
-    """Small explicit browser path, with an in-memory cookie jar only."""
-    def __init__(self, browser, credentials=None):
+    """Small explicit browser path. Cookies start empty, or from a saved sign-in."""
+    def __init__(self, browser, credentials=None, storage_state=None):
         # A personal session passes its own (username, password); crew uses the owner's.
         self.credentials = credentials
-        self.context = browser.new_context(accept_downloads=False)
+        state = storage_state or os.environ.get('WEC_STORAGE_STATE') or None
+        self.has_state = bool(state)
+        self.context = browser.new_context(accept_downloads=False, **({'storage_state': state} if state else {}))
         self.context.set_default_timeout(12000)
         self.page = self.context.new_page()
         self.context.route('**/*', self._guard)
@@ -191,7 +194,8 @@ class FIAWECBrowser:
             raise DiscoveryError('authentication_unverified')
         username, password = self.credentials or owner_credentials()
         if not username or not password:
-            raise DiscoveryError('credentials_required')
+            # A saved sign-in that no longer works needs the person to connect again.
+            raise DiscoveryError('sign_in_expired' if self.has_state else 'credentials_required')
         login.first.click()
         self.page.get_by_role('button', name=re.compile(r'^Sign in\b')).click()
         self.page.wait_for_url('https://auth.staylive.io/**')
@@ -319,6 +323,10 @@ class FIAWECBrowser:
                 if rows:
                     return rows
         return []
+
+    def saved_state(self):
+        """Current cookies, so a rotated sign-in is kept for the next session."""
+        return self.context.storage_state()
 
     def close(self):
         self.context.close()
