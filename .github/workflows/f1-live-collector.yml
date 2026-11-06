@@ -23,7 +23,9 @@ concurrency:
   cancel-in-progress: false
 jobs:
   collect:
-    if: github.repository == 'MisterKinn/f1-data-analyst'
+    # Live timing is switched off (worker/features.js). Set the repository variable
+    # LIVE_TIMING_ENABLED to 'true' to run this collector again.
+    if: github.repository == 'MisterKinn/f1-data-analyst' && vars.LIVE_TIMING_ENABLED == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 340
     steps:
