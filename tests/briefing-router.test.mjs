@@ -45,3 +45,7 @@ test('setup prompt books an always-on task and per-session tasks that keep brief
  const {SETUP_PROMPTS}=await import('../worker/briefing-guide.js');
  for(const key of ['claude','chatgpt'])for(const part of ['series auto','follow_up','10분마다','시작 5분 뒤','기존 예약 작업'])assert.ok(SETUP_PROMPTS[key].includes(part),key+' '+part);
 });
+test('already registered users get quick setup: briefing and scheduled tasks without questions',async()=>{
+ const {SETUP_PROMPTS}=await import('../worker/briefing-guide.js');
+ for(const key of ['claude','chatgpt'])for(const part of ['[빠른 설정]','kongboda_my_preferences','묻지 말고'])assert.ok(SETUP_PROMPTS[key].includes(part),key+' '+part);
+});

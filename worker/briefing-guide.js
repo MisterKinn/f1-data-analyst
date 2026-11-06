@@ -46,7 +46,7 @@ const ko=url=>({
 ${RULES_KO}
 
 [단계 1/4] 연결 확인
-1-1. 이 대화에서 Kongboda Motorsports 커넥터를 쓸 수 있는지 직접 확인해 줘. 쓸 수 있으면 단계 2를 건너뛰고 단계 3으로 가.
+1-1. 이 대화에서 Kongboda Motorsports 커넥터를 쓸 수 있는지 직접 확인해 줘. 쓸 수 있으면 kongboda_my_preferences를 불러 계정 등록 여부도 확인해. 이미 연결·계정 등록이 돼 있으면 [빠른 설정]으로 가: 단계 2와 3-1 질문을 건너뛰고, 종목은 F1·WEC 둘 다로 정해(계정 설정에 응원 팀이 한쪽 종목만 있으면 그 종목만), 묻지 말고 3-2 첫 브리핑과 단계 4 예약 작업을 바로 만든 뒤 4-3 체크리스트만 보여 줘. 계정 등록이 안 돼 있으면 단계 2를 건너뛰고 단계 3으로 가.
 
 [단계 2/4] 커넥터 추가 (내가 직접 하는 단계)
 2-1. claude.ai 웹이나 데스크톱 앱에서 ‘사용자 지정 → 커넥터’(https://claude.ai/customize/connectors)를 연다.
@@ -67,7 +67,7 @@ ${LATER_KO}`,
 ${RULES_KO}
 
 [단계 1/4] 연결 확인
-1-1. 이 대화에서 Kongboda Motorsports 앱을 쓸 수 있는지 직접 확인해 줘. 쓸 수 있으면 단계 2를 건너뛰고 단계 3으로 가.
+1-1. 이 대화에서 Kongboda Motorsports 앱을 쓸 수 있는지 직접 확인해 줘. 쓸 수 있으면 kongboda_my_preferences를 불러 계정 등록 여부도 확인해. 이미 연결·계정 등록이 돼 있으면 [빠른 설정]으로 가: 단계 2와 3-1 질문을 건너뛰고, 종목은 F1·WEC 둘 다로 정해(계정 설정에 응원 팀이 한쪽 종목만 있으면 그 종목만), 묻지 말고 3-2 첫 브리핑과 단계 4 예약 작업을 바로 만든 뒤 4-3 체크리스트만 보여 줘. 계정 등록이 안 돼 있으면 단계 2를 건너뛰고 단계 3으로 가.
 
 [단계 2/4] 플러그인 추가 (내가 직접 하는 단계)
 2-1. chatgpt.com 웹에서 ‘플러그인’(https://chatgpt.com/plugins)을 열고 ‘사용자 지정 MCP 서버 추가’를 누른다.
@@ -89,7 +89,7 @@ const en=url=>({
 ${RULES_EN}
 
 [Stage 1/4] Check the connection
-1-1. Check yourself whether the Kongboda Motorsports connector is available in this chat. If it is, skip stage 2 and go to stage 3.
+1-1. Check yourself whether the Kongboda Motorsports connector is available in this chat. If it is: Also call kongboda_my_preferences to check that my account is registered. If it is already connected and registered, go to [Quick setup]: skip stage 2 and the 3-1 question, use both F1 and WEC (or only the series my account settings have a favourite for, if only one), and without asking run the 3-2 first briefing and create the stage 4 scheduled tasks, then show only the 4-3 checklist. If my account is not registered yet, skip stage 2 and go to stage 3.
 
 [Stage 2/4] Add the connector (I do this stage)
 2-1. In claude.ai on the web or the desktop app, open Customize → Connectors (https://claude.ai/customize/connectors).
@@ -110,7 +110,7 @@ ${LATER_EN}`,
 ${RULES_EN}
 
 [Stage 1/4] Check the connection
-1-1. Check yourself whether the Kongboda Motorsports app is available in this chat. If it is, skip stage 2 and go to stage 3.
+1-1. Check yourself whether the Kongboda Motorsports app is available in this chat. If it is: Also call kongboda_my_preferences to check that my account is registered. If it is already connected and registered, go to [Quick setup]: skip stage 2 and the 3-1 question, use both F1 and WEC (or only the series my account settings have a favourite for, if only one), and without asking run the 3-2 first briefing and create the stage 4 scheduled tasks, then show only the 4-3 checklist. If my account is not registered yet, skip stage 2 and go to stage 3.
 
 [Stage 2/4] Add the plugin (I do this stage)
 2-1. On chatgpt.com open Plugins (https://chatgpt.com/plugins) and click Add custom MCP server.
