@@ -11,7 +11,7 @@ const ko=url=>({
 1. 이 대화에서 Kongboda Motorsports 커넥터를 쓸 수 있는지 확인해 줘. 쓸 수 있으면 3번으로 가.
 2. 없으면 커넥터 추가는 내가 직접 해야 하니 이 순서로 안내하고 여기서 멈춰 줘.
 - claude.ai 웹이나 데스크톱 앱에서 ‘사용자 지정 → 커넥터’(https://claude.ai/customize/connectors)를 연다.
-- ‘+ 추가 → 커스텀 커넥터 추가’를 누르고 이름 Kongboda Motorsports, MCP 서버 URL ${url}을 넣고 ‘계속’을 누른다.
+- ‘+ 추가 → 커스텀 커넥터 추가’를 누르고 아래처럼 넣은 뒤 ‘계속’을 누른다. 이름: Kongboda Motorsports, MCP 서버 URL: ${url}
 - 인증은 ‘지금 로그인’, OAuth 클라이언트는 ‘자동으로 등록’을 고른다(‘로그인 없음’이 선택돼 있으면 바꾼다). 요청 헤더는 비우고 ‘추가’를 누른다.
 - ‘연결’을 누르고 꽁보다에 로그인한 Google 계정으로 ‘연결 승인’을 누른다.
 - 새 대화의 ‘+ → 커넥터’에서 Kongboda Motorsports를 켜고 이 문장을 다시 보낸다.
@@ -24,7 +24,7 @@ const ko=url=>({
 1. 이 대화에서 Kongboda Motorsports 앱을 쓸 수 있는지 확인해 줘. 쓸 수 있으면 3번으로 가.
 2. 없으면 플러그인 설치는 내가 직접 해야 하니 이 순서로 안내하고 여기서 멈춰 줘.
 - chatgpt.com 웹에서 ‘플러그인’(https://chatgpt.com/plugins)을 열고 ‘사용자 지정 MCP 서버 추가’를 누른다.
-- 이름 Kongboda Motorsports, 서버 URL ${url}을 넣는다.
+- 아래처럼 넣는다. 이름: Kongboda Motorsports, 서버 URL: ${url}
 - 인증은 ‘OAuth’를 고르고 ‘고급 OAuth 설정’은 그대로 둔 채 ‘만들기’를 누른 뒤 Google 계정으로 승인한다.
 - 새 대화에서 ‘+’ 메뉴나 ‘@’로 Kongboda Motorsports를 고르고 이 문장을 다시 보낸다.
 - 도구가 안 보이면 플러그인 → Kongboda Motorsports → ‘관리’에서 ‘도구 새로고침’을 누르고, ‘권한’을 ‘읽기 전용 도구 허용’으로 바꾼다.
@@ -39,7 +39,7 @@ const en=url=>({
 1. Check whether the Kongboda Motorsports connector is available in this chat. If it is, go to step 3.
 2. If not, I have to add the connector myself, so walk me through this and stop here.
 - In claude.ai on the web or the desktop app, open Customize → Connectors (https://claude.ai/customize/connectors).
-- Click + Add → Add custom connector, enter the name Kongboda Motorsports and the MCP server URL ${url}, then click Continue.
+- Click + Add → Add custom connector, fill in the fields below, then click Continue. Name: Kongboda Motorsports, MCP server URL: ${url}
 - For authentication choose Sign in now, and for the OAuth client choose Register automatically (change it if No sign-in is selected). Leave request headers empty and click Add.
 - Click Connect and approve with the Google account you use for Kongboda.
 - Turn on Kongboda Motorsports under + → Connectors in a new chat and send this message again.
@@ -52,7 +52,7 @@ const en=url=>({
 1. Check whether the Kongboda Motorsports app is available in this chat. If it is, go to step 3.
 2. If not, I have to install the plugin myself, so walk me through this and stop here.
 - On chatgpt.com open Plugins (https://chatgpt.com/plugins) and click Add custom MCP server.
-- Enter the name Kongboda Motorsports and the server URL ${url}.
+- Fill in the fields below. Name: Kongboda Motorsports, server URL: ${url}
 - Choose OAuth, leave the advanced OAuth settings as they are, click Create and approve with my Google account.
 - In a new chat pick Kongboda Motorsports from the + menu or with @ and send this message again.
 - If the tools do not show, open Plugins → Kongboda Motorsports → Manage, click Refresh tools and set permissions to allow read-only tools.
@@ -66,10 +66,11 @@ export const SETUP_PROMPTS=ko(URL_MCP);
 export const setupPrompts=withAddress=>withAddress?SETUP_PROMPTS:ko(NO_URL_KO);
 export function aiSetupStep({withAddress=false}={}){
  const p=setupPrompts(withAddress);
- return `<li id="ai-setup"><h3>사용하는 AI에 추가하세요</h3><p>쓰는 AI의 프롬프트를 복사해 새 대화에 붙여 넣으세요. 연결부터 세션 자동 브리핑 예약까지 AI가 할 수 있는 건 직접 하고, 직접 눌러야 하는 단계만 안내합니다.</p><p class="prompt-links"><button class="link-copy" type="button" data-copy-from="prompt-claude">Claude용 프롬프트 복사</button><button class="link-copy" type="button" data-copy-from="prompt-chatgpt">ChatGPT용 프롬프트 복사</button></p><pre id="prompt-claude" hidden>${p.claude}</pre><pre id="prompt-chatgpt" hidden>${p.chatgpt}</pre><p class="fine">커넥터 추가와 Google 승인은 직접 눌러야 합니다. 자동 브리핑은 예약 작업을 쓰는 유료 요금제에서 1시간마다 옵니다.</p></li>`;
+ return `<li id="ai-setup"><h3>사용하는 AI에 추가하세요</h3><p>쓰는 AI의 프롬프트를 복사해 새 대화에 붙여 넣으세요.<br>연결부터 세션 자동 브리핑 예약까지 AI가 처리하고, 직접 누를 단계만 안내합니다.</p><p class="prompt-links"><button class="link-copy" type="button" data-copy-from="prompt-claude">Claude용 프롬프트 복사</button><button class="link-copy" type="button" data-copy-from="prompt-chatgpt">ChatGPT용 프롬프트 복사</button></p><pre id="prompt-claude" hidden>${p.claude}</pre><pre id="prompt-chatgpt" hidden>${p.chatgpt}</pre><p class="fine">커넥터 추가와 Google 승인은 직접 눌러야 합니다. 자동 브리핑은 예약 작업을 쓰는 유료 요금제에서 1시간마다 옵니다.</p></li>`;
 }
 export const setupTranslations={
- '쓰는 AI의 프롬프트를 복사해 새 대화에 붙여 넣으세요. 연결부터 세션 자동 브리핑 예약까지 AI가 할 수 있는 건 직접 하고, 직접 눌러야 하는 단계만 안내합니다.':'Copy the prompt for your AI and paste it into a new chat. It handles what it can, from connecting to booking automatic session briefings, and walks you through the clicks only you can make.',
+ '쓰는 AI의 프롬프트를 복사해 새 대화에 붙여 넣으세요.':'Copy the prompt for your AI and paste it into a new chat.',
+ '연결부터 세션 자동 브리핑 예약까지 AI가 처리하고, 직접 누를 단계만 안내합니다.':'Your AI handles everything from connecting to booking automatic session briefings and points out the clicks only you can make.',
  'Claude용 프롬프트 복사':'Copy Claude prompt','ChatGPT용 프롬프트 복사':'Copy ChatGPT prompt',
  '커넥터 추가와 Google 승인은 직접 눌러야 합니다. 자동 브리핑은 예약 작업을 쓰는 유료 요금제에서 1시간마다 옵니다.':'You add the connector and approve Google sign-in yourself. Automatic briefings arrive hourly through scheduled tasks on paid plans.'
 };
