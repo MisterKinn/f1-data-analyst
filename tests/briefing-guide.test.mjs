@@ -25,7 +25,7 @@ test('step 4 is translated, hidden prompts included',async()=>{
 test('setup prompt asks F1/WEC (multi-select), schedules only picked series and offers the rest later',()=>{
  for(const key of ['claude','chatgpt']){
   const p=SETUP_PROMPTS[key];
-  for(const part of ['F1’, ‘WEC','중복 선택','고른 종목만','꽁보다 F1 실시간 브리핑','꽁보다 WEC 실시간 브리핑','wec_live_status','언제든'])assert.ok(p.includes(part),key+' '+part);
+  for(const part of ['F1’, ‘WEC','중복 선택','고른 종목만','꽁보다 F1 실시간 브리핑','꽁보다 WEC 실시간 브리핑','모든 종목 공통 규칙','plus.fiawec.com','언제든'])assert.ok(p.includes(part),key+' '+part);
  }
 });
 test('setup prompt runs as numbered stages and waits after each user click',()=>{
@@ -34,4 +34,9 @@ test('setup prompt runs as numbered stages and waits after each user click',()=>
   for(const part of ['[진행 규칙]','[단계 1/4]','[단계 2/4]','[단계 3/4]','[단계 4/4]','한 번에 하나만','‘완료’','막힐 때','2-1.','3-1.','4-3.','체크리스트'])assert.ok(p.includes(part),key+' '+part);
   assert.doesNotMatch(p,/[<&]/,'prompt sits raw inside <pre>');
  }
+});
+test('F1 and WEC scheduled tasks share one card rule',()=>{
+ for(const key of ['claude','chatgpt']){const p=SETUP_PROMPTS[key];
+  assert.ok(p.split('카드(모든 종목 공통 규칙)').length>=3,key);
+  assert.doesNotMatch(p,/account#fiawec/);}
 });

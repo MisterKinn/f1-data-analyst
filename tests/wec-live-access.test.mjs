@@ -42,7 +42,7 @@ test('personal WEC calls go to the account own collector path; crew read the sch
   const env={FASTF1_CLOUD_URL:'https://collector.test',FASTF1_CLOUD_KEY:'k'};
   const result=JSON.parse((await wecLiveAccessCall('wec_live_status',{},env,{mode:'personal',accountId:'acct-1'})).content[0].text);
   assert.equal(calls[0].url,'https://collector.test/personal/acct-1/wec/snapshot');
-  assert.equal(result.state,'credentials_required');assert.match(result.verification_note,/account#fiawec/);
+  assert.equal(result.state,'credentials_required');assert.match(result.verification_note,/plus\.fiawec\.com\/en/);
   await wecLiveAccessCall('wec_discover_live',{event:'Monza'},env,{mode:'personal',accountId:'acct-1'});
   assert.equal(calls[1].url,'https://collector.test/personal/acct-1/wec/discover');
   const crewEnv={...env,BUCKET:bucket()};
@@ -68,15 +68,15 @@ test('WEC login route: same-origin, personal accounts only, password forwarded o
  }finally{globalThis.fetch=original;}
 });
 
-test('blocked WEC access sends the user to the one FIAWEC+ connection link, and briefings follow the card rules',async()=>{
+test('blocked WEC access gives the live timing link, and WEC uses the shared card rule',async()=>{
  const {publicWecStatus,WEC_LIVE_INSTRUCTIONS}=await import('../worker/wec_live.js');
- for(const state of ['human_verification_required','credentials_required','sign_in_expired'])assert.match(publicWecStatus({state}).next_step,/account#fiawec.*solve any CAPTCHA themselves/);
+ for(const state of ['human_verification_required','credentials_required','sign_in_expired'])assert.match(publicWecStatus({state}).next_step,/live timing link.*plus\.fiawec\.com\/en.*every session/);
  assert.equal(publicWecStatus({state:'reading'}).next_step,undefined);
- for(const part of ['time left first','with its reason','track condition','kongboda_my_preferences','never type a password','token expires'])assert.ok(WEC_LIVE_INSTRUCTIONS.includes(part),part);
+ for(const part of ['same card rule as every series','no separate WEC format','never type a password','token expires'])assert.ok(WEC_LIVE_INSTRUCTIONS.includes(part),part);
 });
 
-test('a stored blocked snapshot still points to the FIAWEC+ connection',async()=>{
+test('a stored blocked snapshot still points to the live timing link',async()=>{
  const {wecLiveView}=await import('../worker/wec_live.js');
- assert.match(wecLiveView({state:'human_verification_required',received_at:new Date().toISOString()}).next_step,/account#fiawec/);
+ assert.match(wecLiveView({state:'human_verification_required',received_at:new Date().toISOString()}).next_step,/plus\.fiawec\.com\/en/);
  assert.equal(wecLiveView({state:'reading',received_at:new Date().toISOString()}).next_step,undefined);
 });
