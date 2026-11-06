@@ -177,11 +177,11 @@ async function synchronizeCollector(env){
 
 export function cloudConfigured(env) { return !!(env.FASTF1_CLOUD_URL && env.FASTF1_CLOUD_KEY); }
 
-export async function cloudRequest(env,path,method='POST',body) {
+export async function cloudRequest(env,path,method='POST',body,{timeoutMs=20000}={}) {
  if(!cloudConfigured(env))throw Error('무료 수집 서버 연결이 아직 설정되지 않았습니다.');
  const url=new URL(env.FASTF1_CLOUD_URL);
  if(url.protocol!=='https:'||url.username||url.password||url.pathname!=='/'||url.search||url.hash)throw Error('수집 서버 주소 설정을 확인해 주세요.');
- const response=await fetch(new URL(env.F1_PERSONAL_ACCOUNT?'/personal/'+encodeURIComponent(env.F1_PERSONAL_ACCOUNT)+path:path,url),{method,headers:{Authorization:`Bearer ${env.FASTF1_CLOUD_KEY}`,...(body?{'content-type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{}),redirect:'manual',signal:AbortSignal.timeout(20000)});
+ const response=await fetch(new URL(env.F1_PERSONAL_ACCOUNT?'/personal/'+encodeURIComponent(env.F1_PERSONAL_ACCOUNT)+path:path,url),{method,headers:{Authorization:`Bearer ${env.FASTF1_CLOUD_KEY}`,...(body?{'content-type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{}),redirect:'manual',signal:AbortSignal.timeout(timeoutMs)});
  if(!response.ok)throw Error(response.status===401?'수집 서버 연결 인증을 확인해 주세요.':'서버가 시작 중이거나 응답하지 않습니다. 잠시 후 다시 시도합니다.');
  const text=await response.text();
  if(text.length>(path.startsWith('/official/published?')?4100000:path==='/telemetry/laps'?2000000:1100000))throw Error('수집 데이터 크기 제한을 초과했습니다.');

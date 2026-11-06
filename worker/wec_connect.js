@@ -84,8 +84,9 @@ export async function wecConnectRoute(request,env,access,{notify=null}={}){
  let body;
  if(op==='input'){const text=await request.text();if(text.length>1024)return reply({error:'Request too large'},413);try{body=JSON.parse(text);}catch{return reply({error:'JSON required'},400);}}
  let result;
- try{result=await cloudRequest(env,'/wec/signin/'+encodeURIComponent(key)+'/'+op,op==='frame'?'GET':'POST',op==='input'?body:op==='frame'?undefined:{});}
- catch{return reply({error:'FIAWEC+ 로그인 화면을 열지 못했습니다. 잠시 후 다시 시도하세요.'},502);}
+ // Opening the sign-in browser takes up to ~60 s on the collector (start waits for the login page).
+ try{result=await cloudRequest(env,'/wec/signin/'+encodeURIComponent(key)+'/'+op,op==='frame'?'GET':'POST',op==='input'?body:op==='frame'?undefined:{},{timeoutMs:op==='start'?90000:op==='input'?50000:20000});}
+ catch(e){const why=e?.name==='TimeoutError'?'수집 서버가 제때 응답하지 않았습니다.':String(e?.message||'').slice(0,120);return reply({error:'FIAWEC+ 로그인 화면을 열지 못했습니다. '+(why?why+' ':'')+'잠시 후 다시 시도하세요.'},502);}
  if(result?.state==='signed_in'){
   if(!validState(result.storage_state))return reply({state:'failed',error:'로그인 정보를 저장하지 못했습니다. 다시 시도하세요.'},502);
   await saveSignIn(env,key,result.storage_state,{notify});

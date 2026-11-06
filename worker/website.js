@@ -381,7 +381,7 @@ function fiawecClient(){
  function stop(){open=false;clearTimeout(timer);view.hidden=true;connect.disabled=false;}
  async function poll(){if(!open)return;try{const r=await fetch('/api/live/wec/connect/frame',{cache:'no-store'});if(r.ok)show(await r.json());}catch{}if(open)timer=setTimeout(poll,2000);}
  async function send(body){if(!open)return;clearTimeout(timer);try{const r=await post('/api/live/wec/connect/input',body);if(r.ok)show(await r.json());}catch{}if(open)timer=setTimeout(poll,2000);}
- connect.onclick=async()=>{connect.disabled=true;say('FIAWEC+ 로그인 화면을 여는 중… (최대 1분)');try{const r=await post('/api/live/wec/connect/start');const d=await r.json();if(!r.ok)throw Error(d.error);open=true;view.hidden=false;say('FIAWEC+에 로그인하세요. 로그인이 끝나면 자동으로 저장됩니다.');show(d);if(open)timer=setTimeout(poll,2000);}catch{connect.disabled=false;say('FIAWEC+ 로그인 화면을 열지 못했습니다. 잠시 후 다시 시도하세요.');}};
+ connect.onclick=async()=>{connect.disabled=true;say('FIAWEC+ 로그인 화면을 여는 중… (최대 1분)');try{const r=await post('/api/live/wec/connect/start');const d=await r.json();if(!r.ok)throw Error(d.error);open=true;view.hidden=false;say('FIAWEC+에 로그인하세요. 로그인이 끝나면 자동으로 저장됩니다.');show(d);if(open)timer=setTimeout(poll,2000);}catch(e){connect.disabled=false;say(e?.message&&/FIAWEC\+|수집|서버/.test(e.message)?e.message:'FIAWEC+ 로그인 화면을 열지 못했습니다. 잠시 후 다시 시도하세요.');}};
  img.onclick=e=>{const box=img.getBoundingClientRect();send({op:'click',x:Math.round((e.clientX-box.left)*size.w/box.width),y:Math.round((e.clientY-box.top)*size.h/box.height)});};
  form.onsubmit=e=>{e.preventDefault();if(!text.value)return;send({op:'type',text:text.value});text.value='';};
  for(const b of view.querySelectorAll('[data-key]'))b.onclick=()=>send({op:'key',key:b.dataset.key});
