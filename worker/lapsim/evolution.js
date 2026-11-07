@@ -27,10 +27,12 @@ export const SESSION_SCALE = {practice: 1, qualifying: 0.8, sprint: 1.1, race: 1
 // Coefficients for a series/track/session: fitted track value > fitted series value > default
 export function evolutionCoeffs(series = 'f1', track = null, session = 'qualifying') {
   const fit = lapsimEvolution?.series?.[series], def = EVOLUTION_DEFAULTS[series] || EVOLUTION_DEFAULTS.f1;
-  const tr = track ? fit?.tracks?.[track]?.[session] : null, ses = fit?.sessions?.[session];
+  // a pooled fit that does worse than "no change" on held-out sessions is not used
+  const tr = track ? fit?.tracks?.[track]?.[session] : null, s0 = fit?.sessions?.[session];
+  const ses = s0 && !(s0.holdoutEndPct >= s0.noModelEndPct) ? s0 : null;
   const base = {...def, ...(ses?.coeffs || {}), ...(tr?.coeffs || {})};
   return {...base, curve: tr?.curve || null, calibrated: !!(tr || ses), basis: tr ? 'track' : ses ? 'series' : 'default',
-    holdoutPct: ses?.holdoutPct ?? fit?.holdoutPct ?? null};
+    holdoutPct: ses?.holdoutEndPct ?? null, noModelPct: s0?.noModelEndPct ?? null};
 }
 
 // Lap-time change (fraction) at session minute t and lap k after the out-lap. Self-contained: the

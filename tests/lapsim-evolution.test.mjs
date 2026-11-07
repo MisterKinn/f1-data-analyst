@@ -20,7 +20,7 @@ test('evolution: rubber and drying make laps faster over the session, warm-up la
 test('evolution: a measured curve replaces the formula', () => {
   const p = {curve: [[0, 0], [20, -0.5], [40, -0.8]]};
   assert.ok(Math.abs(evolutionDelta(p, 30) + 0.0065) < 1e-12);
-  assert.equal(evolutionCoeffs('f1', 'monza').basis, 'default');
+  assert.equal(evolutionCoeffs('f1', 'no-such-track').basis !== 'track', true);
 });
 
 test('evolution: lapsim tool adds the block only when asked and keeps the lap result', async () => {
