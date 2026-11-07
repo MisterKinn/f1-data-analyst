@@ -41,10 +41,11 @@ export const normalize = s => s.replace(/\s+/g, ' ')
 // value, then the new one).
 export function extract(pages, param, {section} = {}) {
   let start = 0;
-  if (section) { const i = pages.findIndex(p => p.text.includes(section)); if (i < 0) return {error: `section "${section}" not found`}; start = i; }
+  // the last mention is the section itself (earlier ones are the contents page or cross-references)
+  if (section) { const i = pages.findLastIndex(p => p.text.includes(section)); if (i < 0) return {error: `section "${section}" not found`}; start = i; }
   const re = new RegExp(param.pattern, 'i');
   for (const p of pages.slice(start)) {
-    const text = section && p === pages[start] ? p.text.slice(p.text.indexOf(section)) : p.text;
+    const text = section && p === pages[start] ? p.text.slice(p.text.lastIndexOf(section)) : p.text;
     const m = re.exec(text); if (!m) continue;
     const nums = (m[1].match(/\d+(?:\.\d+)?/g) || []).map(Number);
     if (!nums.length) continue;

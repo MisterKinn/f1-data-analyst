@@ -69,3 +69,11 @@ test('a missing approved-changes section keeps the previous 2028 values', async 
   const e = extract([{page: 1, text: 'C5.2.3 Fuel energy flow must not exceed 3150 MJ/h.'}], {pattern: 'C5\\.2\\.3[^.]*?(\\d{4}(?:\\s+\\d{4})?)\\s*MJ/h', range: [2000, 4000]}, {section: 'Changes Approved for 2028'});
   assert.match(e.error, /section/);
 });
+
+test('the approved-changes section is read where it is, not where the contents page names it', async () => {
+  const {extract} = await import('../scripts/sim/rule-params.mjs');
+  const pages = [{page: 2, text: 'Contents ... Changes Approved for 2028 ... 120'}, {page: 71, text: 'C5.2.3 Fuel energy flow must not exceed 3150 MJ/h.'},
+    {page: 120, text: 'Appendix C7 Changes Approved for 2028. C5.2.3 Fuel energy flow must not exceed 3400 MJ/h.'}];
+  const e = extract(pages, {pattern: 'C5\\.2\\.3\\s+Fuel energy flow must not exceed\\s+(\\d{4})', range: [2500, 4500]}, {section: 'Changes Approved for 2028'});
+  assert.equal(e.value, 3400);
+});
