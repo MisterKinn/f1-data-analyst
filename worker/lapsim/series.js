@@ -16,14 +16,14 @@ export const SERIES = {
         // the BoP near 500 kW at the wheels' side of the hybrid split, so no separate ERS deployment.
         prior: {...common, label: 'Hypercar', mass: 1120, wheelbase: 3.15, cogHeight: 0.32, rearWeight: 0.53, rearAero: 0.52,
           clA: 3.4, cdA: 1.05, clALow: 3.4, cdALow: 1.05, muX: 1.6, muY: 1.75, muXTrac: 1.7, pIce: 500e3, vMax: 345 / 3.6, noLowDrag: true},
-        bounds: {muY: [1.4, 2.1], clA: [2, 6], cdA: [0.7, 1.6]},
+        bounds: {muY: [1.3, 2.2], clA: [2, 7], cdA: [0.7, 1.6]},
       },
       lmgt3: {
         label: {ko: 'LMGT3', en: 'LMGT3'},
         // GT3 to BoP: about 1300–1350 kg + driver, roughly 380 kW
         prior: {...common, label: 'LMGT3', mass: 1400, wheelbase: 2.7, cogHeight: 0.42, rearWeight: 0.52, rearAero: 0.5,
           clA: 1.4, cdA: 0.9, clALow: 1.4, cdALow: 0.9, muX: 1.45, muY: 1.55, muXTrac: 1.5, pIce: 380e3, vMax: 300 / 3.6, noLowDrag: true},
-        bounds: {muY: [1.2, 1.9], clA: [0.6, 3], cdA: [0.6, 1.3]},
+        bounds: {muY: [1.1, 2.0], clA: [0.6, 3.5], cdA: [0.6, 1.3]},
       },
     },
     // Al Kamel event names -> simulator track ids (tracks without a built line are skipped)

@@ -17,7 +17,9 @@ const ITERS = Number(process.env.LAPSIM_ITERS || 90), HOLDOUT_ITERS = Number(pro
 const traces = JSON.parse(await readFile(join(CACHE, 'traces.json'), 'utf8'));
 const tracks = Object.fromEntries(Object.entries(lapsimTracks).map(([id, d]) => [id, trackFromData(d)]));
 const PARAMS = ['muY', 'clA', 'cdA', 'cdALow', 'pIce'];
-// physical bounds, so geometry error cannot be absorbed by impossible cars
+// physical bounds, so geometry error cannot be absorbed by impossible cars. ClA up to 8 m²:
+// modern F1 cars make about 3.5x their weight in downforce near 300 km/h (ClA ≈ 6.5–7). The fitted
+// values are effective ones: they also absorb what the quasi-steady-state model leaves out.
 const BOUNDS = {muY: [1.5, 2.4], clA: [2.5, 8], cdA: [0.7, 1.9], cdALow: [0.45, 1.6], pIce: [0.85, 1.15]};
 
 const seasons = {};

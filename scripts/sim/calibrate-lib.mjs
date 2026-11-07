@@ -24,6 +24,32 @@ export function sampleAt(simV, ds, s) {
   return simV[i] * (1 - f) + simV[j] * f;
 }
 
+// Corner (minimum) and straight-end (maximum) speeds of the real trace compared with the simulated
+// extreme within ±window m: robust to small distance misalignment, which a point-by-point RMS is not.
+export function realExtremes(obs, prominence = 4) {
+  const {s, v} = obs, out = [];
+  for (let k = 2; k < v.length - 2; k++) {
+    const isMin = v[k] < v[k - 1] && v[k] <= v[k + 1] && v[k] < v[k - 2] && v[k] <= v[k + 2];
+    const isMax = v[k] > v[k - 1] && v[k] >= v[k + 1] && v[k] > v[k - 2] && v[k] >= v[k + 2];
+    if (!isMin && !isMax) continue;
+    let lo = Infinity, hi = -Infinity;
+    for (let j = Math.max(0, k - 8); j <= Math.min(v.length - 1, k + 8); j++) { lo = Math.min(lo, v[j]); hi = Math.max(hi, v[j]); }
+    if ((isMin ? hi - v[k] : v[k] - lo) >= prominence) out.push({s: s[k], v: v[k], min: isMin});
+  }
+  return out;
+}
+export function extremaRms(simV, ds, ext, window = 50) {
+  if (!ext?.length) return 0;
+  const n = simV.length, h = Math.round(window / ds);
+  let se = 0;
+  for (const e of ext) {
+    const i0 = Math.round(e.s / ds); let x = e.min ? Infinity : -Infinity;
+    for (let j = -h; j <= h; j++) { const y = simV[((i0 + j) % n + n) % n]; x = e.min ? Math.min(x, y) : Math.max(x, y); }
+    se += (x - e.v) ** 2;
+  }
+  return Math.sqrt(se / ext.length);
+}
+
 export function rmsSpeed(simV, ds, obs) {
   let se = 0;
   for (let k = 0; k < obs.s.length; k++) { const d = sampleAt(simV, ds, obs.s[k]) - obs.v[k]; se += d * d; }
@@ -57,7 +83,7 @@ export function withGrip(track, g) {
 // speed trap (trapKph, compared with the top speed), always the lap time. Units: m/s and s.
 export function lapError(track, car, env, obs, lapTime, {wTime = 2, trapKph = null, wTrap = 1} = {}) {
   const res = simulateLap(track, car, env);
-  const rms = obs ? rmsSpeed(res.v, track.ds, obs) : 0;
+  const rms = !obs ? 0 : obs.ext ? extremaRms(res.v, track.ds, obs.ext) : rmsSpeed(res.v, track.ds, obs);
   const trap = trapKph ? (res.vMaxKph - trapKph) / 3.6 : 0;
   const dt = res.lapTime - lapTime;
   return {score: rms * rms + wTime * dt * dt + wTrap * trap * trap, rms, dt, trap: trap * 3.6, res};
@@ -114,11 +140,12 @@ export function fitSeason(laps, base, params, {iters = 120, wTime = 2, wGrip = 5
   const prepared = laps.map(l => {
     const env = conditionsFromWeather(l.weather || {}, l.conditionOptions);
     const lapSeconds = l.lapSeconds ?? l.trace.lap_seconds;
-    if (l.obs || !l.trace) return {...l, env, lapSeconds, shift: 0}; // distance already measured, or timing only
+    const withExt = obs => obs && process.env.LAPSIM_TRACE_ERROR !== 'rms' ? {...obs, ext: realExtremes(obs)} : obs;
+    if (l.obs || !l.trace) return {...l, env, lapSeconds, shift: 0, obs: withExt(l.obs)}; // distance already measured, or timing only
     const L = l.track.kappa.length * l.track.ds;
     const sim0 = simulateLap(l.track, base, env);
     const {shift} = bestShift(sim0.v, l.track.ds, l.trace, L);
-    return {...l, env, lapSeconds, obs: traceOnTrack(l.trace, L, shift), shift};
+    return {...l, env, lapSeconds, obs: withExt(traceOnTrack(l.trace, L, shift)), shift};
   });
   let outside = 0;
   const build = x => {
