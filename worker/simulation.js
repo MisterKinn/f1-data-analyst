@@ -8,6 +8,8 @@ import {SERIES} from './lapsim/series.js';
 import {carsFor as scenarioCars, realConditions, latestChanges, fittedYear, CAR_ORDER} from './lapsim/scenario.js';
 import {TRACK_NAMES as NAMES} from './lapsim/names.js';
 import {energyLimit} from './lapsim/energy-limits.js';
+import {lapsimRace} from './lapsim/race-data.js';
+import {raceLaps, strategies} from './lapsim/race-pace.js';
 
 const K = lapsimKernel();
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -167,11 +169,43 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
  ${calRows ? `<div class="output"><table class="ls-table"><thead><tr><th></th><th>${esc(t.vsPole)}</th><th>${esc(t.lap)}</th><th>${esc(t.fitErr)}</th><th>${esc(t.speedRms)}</th></tr></thead><tbody>${calRows}</tbody></table></div>` : `<p class="fine">${esc(t.pendingLead)}</p>`}
  <h3>${esc(t.proj)}</h3><ul class="ls-notes">${projRows}</ul>
 </section>
+${racePanel(id, lang)}
 <section class="panel ls-panel"><h2>${esc(t.model)}</h2><ul class="ls-notes"><li>${esc(t.m1)}</li><li>${esc(t.m2)}</li><li>${esc(t.m3)}</li><li>${esc(t.m4)}</li><li>${esc(t.m5)}</li><li>${esc(t.soon)}</li></ul>
  <p class="fine">${esc(t.src)}: <a href="https://openf1.org" target="_blank" rel="noopener noreferrer">OpenF1</a>, MultiViewer, <a href="https://github.com/bacinger/f1-circuits" target="_blank" rel="noopener noreferrer">f1-circuits</a>, <a href="https://github.com/f1db/f1db" target="_blank" rel="noopener noreferrer">f1db</a> (CC BY 4.0), <a href="https://github.com/TUMFTM/laptime-simulation" target="_blank" rel="noopener noreferrer">TUMFTM laptime-simulation</a>, FIA Section C Issue 21${data.calibration.generatedAt ? ` · ${esc(t.updated)} <span data-no-translate>${esc(data.calibration.generatedAt)}</span>` : ''}</p>
 </section>
 <script type="application/json" id="lapsim-data">${JSON.stringify(data).replace(/</g, '\\u003c')}</script>
 <script src="/assets/lapsim.js?v=${lapsimScriptVersion()}" defer></script>`;
+}
+
+// Race pace: expected lap times over the race and the best strategies, from the 2026 pole
+// (predicted when the track has not been raced in 2026) and the fitted fuel/tyre/pit factors.
+const RT = {
+  ko: {h: '레이스 페이스 예측', lead: '연료가 줄고, 타이어가 닳고, 피트 스톱을 하면서 랩타임이 어떻게 바뀌는지 실제 레이스 랩으로 맞춘 값입니다.', strat: '전략', time: '레이스 시간', gap: '차이', laps: '랩', pole: '기준 폴', basis: {pred: '2026 예측', real: '2026 실제'}, test: '이전 시즌만으로 예측한 리딩 페이스 오차', chart: '최적 전략의 예상 랩타임', c: {S: '소프트', M: '미디엄', H: '하드'}},
+  en: {h: 'Race pace prediction', lead: 'How lap time changes as fuel burns, tyres wear and cars stop, fitted to real race laps.', strat: 'Strategy', time: 'Race time', gap: 'Gap', laps: 'laps', pole: 'Pole used', basis: {pred: '2026 prediction', real: '2026 real'}, test: 'Leading-pace error predicted from earlier seasons only', chart: 'Expected lap times, best strategy', c: {S: 'Soft', M: 'Medium', H: 'Hard'}},
+};
+function racePanel(id, lang) {
+  const tr = lapsimRace?.tracks?.[id], s26 = lapsimCalibration?.seasons?.[2026];
+  if (!tr || !tr.laps) return '';
+  const predicted = s26?.predictions?.[id]?.lap, real = s26?.tracks?.[id]?.position === 1 ? s26.tracks[id].realLap : null;
+  const pole = real ?? predicted ?? s26?.tracks?.[id]?.realLap;
+  if (!Number.isFinite(pole)) return '';
+  const t = RT[lang], seen = new Set();
+  // the model has no order effect between stints, so mirrored strategies tie: keep one of each
+  const best = strategies(tr, pole).filter(x => { const k = x.stints.map(([c, n]) => c + n).sort().join(); return !seen.has(k) && seen.add(k); }).slice(0, 4);
+  const fmtRace = v => `${Math.floor(v / 3600)}:${String(Math.floor(v % 3600 / 60)).padStart(2, '0')}:${(v % 60).toFixed(1).padStart(4, '0')}`;
+  const name = st => st.map(([c, n]) => `${t.c[c[0]]} ${n}`).join(' → ');
+  const rows = best.map((x, i) => `<tr><td>${esc(name(x.stints))}</td><td data-no-translate>${fmtRace(x.total)}</td><td data-no-translate>${i ? '+' + (x.total - best[0].total).toFixed(1) + ' s' : '–'}</td></tr>`).join('');
+  const L = raceLaps(tr, pole, best[0].stints.map(([compound, laps]) => ({compound, laps}))).filter(l => !(l.age === 0 && l.lap > 1));
+  const W = 640, H = 180, lo = Math.min(...L.map(l => l.time)), hi = Math.max(...L.map(l => l.time)), n = tr.laps;
+  const X = l => 30 + (l - 1) / Math.max(1, n - 1) * (W - 40), Y = v => 10 + (hi - v) / Math.max(0.1, hi - lo) * (H - 30);
+  const line = L.map(l => `${X(l.lap).toFixed(1)},${Y(l.time).toFixed(1)}`).join(' ');
+  const svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(t.chart)}" class="ls-race"><polyline points="${line}" fill="none" stroke="currentColor" stroke-width="2"/><text x="30" y="${H - 4}" font-size="11" fill="currentColor">1</text><text x="${W - 10}" y="${H - 4}" font-size="11" text-anchor="end" fill="currentColor">${n}</text><text x="2" y="14" font-size="11" fill="currentColor">${fmtLap(hi)}</text><text x="2" y="${H - 20}" font-size="11" fill="currentColor">${fmtLap(lo)}</text></svg>`;
+  const test = lapsimRace.test?.rmsPct != null ? `<p class="fine">${esc(t.test)}: <span data-no-translate>${lapsimRace.test.rmsPct.toFixed(2)}% (${lapsimRace.test.races})</span></p>` : '';
+  return `<section class="panel ls-panel"><h2>${esc(t.h)}</h2><p>${esc(t.lead)}</p>
+ <p class="fine">${esc(t.pole)}: <span data-no-translate>${fmtLap(pole)}</span> (${esc(real ? t.basis.real : t.basis.pred)}) · <span data-no-translate>${n}</span> ${esc(t.laps)}</p>
+ <div class="output"><table class="ls-table"><thead><tr><th>${esc(t.strat)}</th><th>${esc(t.time)}</th><th>${esc(t.gap)}</th></tr></thead><tbody>${rows}</tbody></table></div>
+ <h3>${esc(t.chart)}</h3><div class="ls-scroll">${svg}</div>${test}
+</section>`;
 }
 
 // One computation for a given UI state. Used on the server and (as source text) in the browser.
