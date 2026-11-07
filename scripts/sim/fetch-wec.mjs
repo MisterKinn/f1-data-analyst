@@ -24,8 +24,7 @@ for (const year of YEARS) {
     const files = a.files.filter(f => f.folders[0] === event && f.folders[1] === 'FIA WEC' && f.format === 'csv');
     for (const [label, cls] of Object.entries(CLASSES)) {
       const sessions = files.filter(f => /^Analysis_(?:Qualifying|Hyperpole)/i.test(f.title) && new RegExp(label, 'i').test(f.title));
-      const best = new Map();
-      let weatherRows = [];
+      const best = new Map(), weatherBySession = {};
       for (const f of sessions) {
         try {
           for (const r of await rows(f.url)) {
@@ -36,12 +35,14 @@ for (const year of YEARS) {
             if (!prev || lap < prev.lap) best.set(r.NUMBER, {car: r.NUMBER, manufacturer: r.MANUFACTURER, team: r.TEAM, session: f.folders[2], lap,
               sectors: [num(r.S1_SECONDS), num(r.S2_SECONDS), num(r.S3_SECONDS)], topSpeedKph: num(r.TOP_SPEED)});
           }
+          // weather file of the same session folder (titles can differ by spaces, folders do not)
           const w = files.find(x => x.folders[2] === f.folders[2] && /^Weather_/i.test(x.title));
-          if (w) weatherRows = weatherRows.concat(await rows(w.url));
+          if (w) weatherBySession[f.folders[2]] = await rows(w.url);
         } catch (e) { console.log(`wec ${year} ${event} ${f.title}: ${e.message}`); }
       }
       const laps = [...best.values()].sort((x, y) => x.lap - y.lap).slice(0, 3);
       if (!laps.length) continue;
+      const weatherRows = weatherBySession[laps[0].session] || []; // the session the fastest lap came from
       const mean = k => { const v = weatherRows.map(r => num(r[k])).filter(x => x != null); return v.length ? v.reduce((p, q) => p + q, 0) / v.length : null; };
       // wind as a vector mean (direction is where it blows from)
       let we = 0, wn = 0;
