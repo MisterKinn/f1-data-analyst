@@ -41,7 +41,9 @@ const index = [];
 
 // F1 — rows: [car, lap, time, minute, outLap, compound, tyreAge, neutral]
 if (process.env.LAPSIM_EVO_F1 !== 'off') for (const year of [...new Set([...Q_YEARS, ...P_YEARS])]) {
-  const list = (await openf1('sessions', {year})).filter(s => Date.parse(s.date_end) < Date.now() - 3 * 3600e3 && typeOf(s.session_name)
+  // OpenF1 refuses anonymous calls (401) while a live session runs: skip the season, a rerun fills it
+  let all; try { all = await openf1('sessions', {year}); } catch (e) { console.log(`f1 ${year}: ${e.message}`); continue; }
+  const list = all.filter(s => Date.parse(s.date_end) < Date.now() - 3 * 3600e3 && typeOf(s.session_name)
     && (typeOf(s.session_name) === 'qualifying' ? Q_YEARS : P_YEARS).includes(year));
   for (const s of list) {
     try {
