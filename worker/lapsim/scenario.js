@@ -11,13 +11,16 @@ export const CAR_ORDER = ['base2019', '2025', '2026', '2027', '2028', 'wec-hyper
 export function carsFor(id) {
   const s = lapsimCalibration?.seasons || {}, p = lapsimCalibration?.projections || {};
   const gripOf = y => [y, ...Object.keys(s).sort().reverse()].map(k => s[k]?.tracks?.[id]?.grip).find(g => g != null) ?? 1;
+  // drag: per-track straight-line factor shared by the F1 seasons (when the calibration fitted one)
+  const drag = [...Object.keys(s).sort().reverse()].map(k => s[k]?.tracks?.[id]?.drag).find(d => d != null) ?? 1;
+  const withDrag = c => drag === 1 ? c : {...c, cdA: c.cdA * drag, cdALow: (c.cdALow ?? c.cdA) * drag};
   const out = {base2019: {car: TUM_2019, grip: 1, kind: 'base', year: 2019}};
-  for (const y of [2025, 2026]) out[y] = {car: s[y]?.car || PRIOR[y], grip: s[y]?.car ? gripOf(y) : 1, kind: s[y]?.car ? 'calibrated' : 'prior', year: y};
+  for (const y of [2025, 2026]) out[y] = {car: s[y]?.car ? withDrag(s[y].car) : PRIOR[y], grip: s[y]?.car ? gripOf(y) : 1, kind: s[y]?.car ? 'calibrated' : 'prior', year: y};
   // projected cars are rebuilt from the current regulation values (rules-data.js) plus the fitted
   // development factor, so a regulation update applies without a new calibration run
   for (const y of [2027, 2028]) {
     const c = applyDevelopment(applyRules(s[2026]?.car || PRIOR[2026], y), p[y]?.development ?? 0); c.label = String(y);
-    out[y] = {car: c, grip: gripOf(2026), kind: 'projected', year: y};
+    out[y] = {car: s[2026]?.car ? withDrag(c) : c, grip: gripOf(2026), kind: 'projected', year: y};
   }
   // WEC classes (latest calibrated season), on the same track factor as F1
   for (const [cls, def] of Object.entries(SERIES.wec.classes)) {
