@@ -20,6 +20,7 @@ const files={
  'São Paulo Grand Prix/Qualifying/session_info.json':info,
  'São Paulo Grand Prix/Qualifying/session_laptimes.json':laptimes,
  'São Paulo Grand Prix/Qualifying/drivers.json':drivers,
+ 'São Paulo Grand Prix/Qualifying/corners.json':{CornerNumber:[1,2,3],Distance:[531.4,1594.2,2657.1]},
  'São Paulo Grand Prix/Qualifying/NOR/23_tel.json':tel(87.47,4251,87.17),
  'São Paulo Grand Prix/Qualifying/RUS/21_tel.json':tel(87.674,4231,87.674)};
 function tiFetch(calls){return async url=>{calls.push(url);const p=decodeURIComponent(url.replace('https://raw.githubusercontent.com/TracingInsights/2026/main/',''));
@@ -73,4 +74,24 @@ test('falls back to OpenF1 when TracingInsights has not published the session',a
 test('OpenF1 401 (live lock) says what to use instead',async()=>{
  clearOpenf1Cache();
  await assert.rejects(openf1Get('laps',{session_key:1},{fetchImpl:openf1Locked}),/locked for free users.*TracingInsights.*FIA/);
+});
+
+test('telemetry: official turn numbers come with the samples and label the corner summary',async()=>{
+ clearOpenf1Cache();clearTiCache();
+ const args={session_key:11408,driver_number:'1',lap_number:23,compare_driver_number:'63',compare_lap_number:21};
+ const raw=parse(await openf1Call('openf1_lap_telemetry',args,io([])));
+ assert.deepEqual(raw.official_turns,[{turn:'T1',distance_m:531},{turn:'T2',distance_m:1594},{turn:'T3',distance_m:2657}]);
+ assert.match(raw.response_format,/official turn/);
+ const sum=parse(await openf1Call('openf1_lap_telemetry',{...args,summary:true},io([])));
+ const turns=sum.laps[0].summary.corners.map(c=>c.turn||null);
+ assert.ok(turns.includes('T1'),'speed minimum near 531 m is T1: '+JSON.stringify(sum.laps[0].summary.corners));
+ assert.ok(sum.corner_comparison.corners.every(c=>!c.turn||/^T\d+$/.test(c.turn)));
+});
+
+test('telemetry from OpenF1 says when official turns are missing',async()=>{
+ clearOpenf1Cache();clearTiCache();
+ const lap={session_key:99999,driver_number:1,lap_number:2,date_start:'2026-11-07T20:00:00+00:00',lap_duration:88.1,is_pit_out_lap:false};
+ const openf1=async url=>new Response(JSON.stringify(url.includes('/laps')?[lap]:[]),{status:200});
+ const out=parse(await openf1Call('openf1_lap_telemetry',{session_key:99999,driver_number:'1'},{tiFetch:async()=>new Response('',{status:404}),fetchImpl:openf1,now:NOW}));
+ assert.equal(out.official_turns,null);assert.match(out.official_turns_note,/not available/);
 });
