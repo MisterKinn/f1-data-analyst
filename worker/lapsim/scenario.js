@@ -10,7 +10,7 @@ export const CAR_ORDER = ['base2019', '2025', '2026', '2027', '2028', 'wec-hyper
 // grip: the per-track factor fitted with that season's car (absorbs asphalt and line differences)
 export function carsFor(id) {
   const s = lapsimCalibration?.seasons || {}, p = lapsimCalibration?.projections || {};
-  const gripOf = y => [y, 2026, 2025].map(k => s[k]?.tracks?.[id]?.grip).find(g => g != null) ?? 1;
+  const gripOf = y => [y, ...Object.keys(s).sort().reverse()].map(k => s[k]?.tracks?.[id]?.grip).find(g => g != null) ?? 1;
   const out = {base2019: {car: TUM_2019, grip: 1, kind: 'base', year: 2019}};
   for (const y of [2025, 2026]) out[y] = {car: s[y]?.car || PRIOR[y], grip: s[y]?.car ? gripOf(y) : 1, kind: s[y]?.car ? 'calibrated' : 'prior', year: y};
   for (const y of [2027, 2028]) out[y] = {car: p[y]?.car || applyRules(s[2026]?.car || PRIOR[2026], y), grip: gripOf(2026), kind: 'projected', year: y};

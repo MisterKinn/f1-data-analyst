@@ -1,4 +1,4 @@
-// Fits 2025 and 2026 car parameters to real qualifying laps on the built tracks, then projects
+// Fits 2023–2026 car parameters to real qualifying laps on the built tracks, then projects
 // 2027 and 2028. Reads worker/lapsim/tracks-data.js and .cache/lapsim/traces.json (from
 // build-geometry.mjs); writes worker/lapsim/calibration-data.js and docs/lapsim-report.md.
 import {readFile, writeFile} from 'node:fs/promises';
@@ -110,7 +110,7 @@ if (s26) {
 // qualifying/Hyperpole laps (lap time + speed trap). Track factors are shared from the F1 fit.
 const series = {};
 const wec = JSON.parse(await readFile(join(CACHE, 'wec.json'), 'utf8').catch(() => '[]'));
-const f1Grip = id => [2026, 2025].map(y => seasons[y]?.tracks?.[id]?.grip).find(g => g != null) ?? null;
+const f1Grip = id => Object.keys(seasons).sort().reverse().map(y => seasons[y]?.tracks?.[id]?.grip).find(g => g != null) ?? null;
 for (const [cls, def] of Object.entries(SERIES.wec.classes)) {
   for (const year of [...new Set(wec.map(w => w.year))].sort()) {
     const sessions = wec.filter(w => w.cls === cls && w.year === year && tracks[w.track] && !w.weather?.rain && f1Grip(w.track) != null);

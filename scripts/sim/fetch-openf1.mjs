@@ -2,13 +2,13 @@
 // positions, telemetry, weather), MultiViewer circuit info (official corner positions) and
 // the f1-circuits GeoJSON (north alignment). Raw responses stay in .cache/lapsim (Actions
 // cache, never committed); only derived geometry and fitted parameters are committed.
-// Usage: node scripts/sim/fetch-openf1.mjs [years=2025,2026]
+// Usage: node scripts/sim/fetch-openf1.mjs [years=2023,2024,2025,2026]
 import {mkdir, readFile, writeFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {join} from 'node:path';
 
 const CACHE = process.env.LAPSIM_CACHE || '.cache/lapsim';
-const YEARS = (process.argv[2] || process.env.LAPSIM_YEARS || '2025,2026').split(',').map(Number);
+const YEARS = (process.argv[2] || process.env.LAPSIM_YEARS || '2023,2024,2025,2026').split(',').map(Number);
 const GEOMETRY_DRIVERS = Number(process.env.LAPSIM_GEOMETRY_DRIVERS || 14);
 const TRACE_DRIVERS = Number(process.env.LAPSIM_TRACE_DRIVERS || 3);
 const UA = 'Kongboda-lapsim/1.0 (+https://kongboda-motorsports.vercel.app)';

@@ -17,7 +17,7 @@ on:
       years:
         description: 'Seasons to fetch (comma separated)'
         required: false
-        default: '2025,2026'
+        default: '2023,2024,2025,2026'
 
 permissions:
   contents: write
@@ -30,7 +30,7 @@ jobs:
   rebuild:
     if: github.event_name != 'schedule' || github.repository == 'MisterKinn/f1-data-analyst'
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 340
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -43,8 +43,8 @@ jobs:
           key: lapsim-raw-v1-${{ github.run_id }}
           restore-keys: lapsim-raw-v1-
       - name: Fetch OpenF1 qualifying data
-        timeout-minutes: 90
-        run: node scripts/sim/fetch-openf1.mjs "${{ inputs.years || '2025,2026' }}"
+        timeout-minutes: 150
+        run: node scripts/sim/fetch-openf1.mjs "${{ inputs.years || '2023,2024,2025,2026' }}"
       # saved even when a later step fails, so a rerun does not fetch everything again
       - name: Save raw data cache
         if: always()

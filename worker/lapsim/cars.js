@@ -32,6 +32,10 @@ export const PRIOR = {
     ers: {rule: 'f1-2026', pMax: 350e3, socWindow: 4e6, rechargeMax: 8.5e6, regenMax: 350e3, regenShare: 0.4, etaRegen: 0.9},
   },
 };
+// 2023 and 2024: same rule set as 2025 (798 kg minimum). Fitted only to give the shared track
+// factors more seasons; the simulator does not offer them as cars.
+PRIOR[2023] = {...PRIOR[2025], label: '2023'};
+PRIOR[2024] = {...PRIOR[2025], label: '2024'};
 
 // Ratified power-unit changes (FIA World Motor Sport Council, June 2026), relative to 2026.
 export const RULE_CHANGES = {
