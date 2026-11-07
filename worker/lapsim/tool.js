@@ -9,15 +9,15 @@ import {carsFor, realConditions, latestChanges, fittedYear} from './scenario.js'
 
 const K = lapsimKernel();
 const SITE = 'https://kongboda-motorsports.vercel.app';
-const CARS = ['2019', '2025', '2026', '2027', '2028'];
+const CARS = ['2019', '2025', '2026', '2027', '2028', 'wec-hypercar', 'wec-lmgt3'];
 const ro = {readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false};
 const num = (min, max, description) => ({type: 'number', minimum: min, maximum: max, description});
 
 export const LAPSIM_TOOLS = [{name: 'lapsim_simulate',
-  description: 'Kongboda lap simulator: a qualifying lap worked out by a quasi-steady-state model (TUM method) on the real driving line built from OpenF1 qualifying car positions. Cars: 2019 (TUM base), 2025 and 2026 (fitted to real pole laps), 2027 and 2028 (projected from the ratified power-unit changes and historical development). Inputs override the real qualifying weather: air and track temperature, humidity, pressure (or altitude), wind speed and direction; FIA "Changes to the circuit" (resurfacing, bumps, kerbs) can be switched on. Returns lap and sector times, top and lowest speed, corner minimum speeds, 2026 energy use, what limits the lap, air density and the model error against the real pole. Call without track to list tracks.',
+  description: 'Kongboda lap simulator: a qualifying lap worked out by a quasi-steady-state model (TUM method) on the real driving line built from OpenF1 qualifying car positions. Cars: F1 2019 (TUM base), 2025 and 2026 (fitted to real pole laps), 2027 and 2028 (projected from the ratified power-unit changes and historical development); WEC Hypercar and LMGT3 class cars (fitted to Al Kamel lap times and speed traps). Every result carries a one-sigma error range and a confidence label from a holdout test. Inputs override the real qualifying weather: air and track temperature, humidity, pressure (or altitude), wind speed and direction; FIA "Changes to the circuit" (resurfacing, bumps, kerbs) can be switched on. Returns lap and sector times, top and lowest speed, corner minimum speeds, 2026 energy use, what limits the lap, air density and the model error against the real pole. Call without track to list tracks.',
   inputSchema: {type: 'object', properties: {
     track: {type: 'string', maxLength: 60, description: 'Track id, name or Grand Prix, e.g. "mexico-city", "Monza", "COTA", "멕시코시티".'},
-    car: {type: 'string', enum: CARS, description: 'Car generation. Default 2026.'},
+    car: {type: 'string', enum: CARS, description: 'F1 generation (2019 TUM base, 2025, 2026, 2027, 2028) or WEC class car (wec-hypercar, wec-lmgt3). Default 2026.'},
     compare_car: {type: 'string', enum: CARS, description: 'Second car on the same track and conditions.'},
     air_temp_c: num(-10, 50, 'Air temperature (°C).'),
     track_temp_c: num(0, 70, 'Track temperature (°C).'),
@@ -30,7 +30,7 @@ export const LAPSIM_TOOLS = [{name: 'lapsim_simulate',
     change_strength: num(0, 2, 'Scale of the assumed effect of FIA changes (1 = default assumption).'),
   }, additionalProperties: false}, annotations: ro}];
 
-export const LAPSIM_INSTRUCTIONS = ' LAP SIMULATOR: for what-if questions about lap time (car generation 2019/2025/2026/2027/2028, air density or altitude, temperature, humidity, wind, FIA resurfacing or kerb changes), call lapsim_simulate. Report its numbers as model estimates with the assumptions it returns, keep real and simulated times apart, and never present them as a prediction of a real session result. Show the conditions used (with their sources) and link the /simulation page it returns.';
+export const LAPSIM_INSTRUCTIONS = ' LAP SIMULATOR: for what-if questions about lap time (F1 car generation 2019/2025/2026/2027/2028 or WEC Hypercar/LMGT3, air density or altitude, temperature, humidity, wind, FIA resurfacing or kerb changes), call lapsim_simulate. Report its numbers as provisional model estimates with the error range, confidence label and assumptions it returns, keep real and simulated times apart, and never present them as a prediction of a real session result. Show the conditions used (with their sources) and link the /simulation page it returns.';
 
 const r3 = x => Math.round(x * 1000) / 1000;
 const fmt = s => { const m = Math.floor(s / 60); return (m ? m + ':' : '') + (s - m * 60).toFixed(3).padStart(m ? 6 : 5, '0'); };
@@ -61,9 +61,10 @@ export function simulate(args = {}) {
   const d = lapsimTracks[id], base = K.trackFromData(d), cars = carsFor(id), conds = realConditions(id);
   const selKey = carKey(args.car || '2026'), sel = cars[selKey];
   // weather: the real qualifying session of the car's season (else the latest), overridden by inputs
-  const realYear = conds[String(sel.year)] ? String(sel.year) : conds['2026'] ? '2026' : Object.keys(conds)[0];
+  const own = sel.series ? selKey : String(sel.year);
+  const realYear = conds[own] ? own : conds['2026'] ? '2026' : Object.keys(conds)[0];
   const real = realYear ? conds[realYear] : null;
-  const realSrc = real ? `real ${realYear} qualifying (OpenF1 weather, session mean)` : null;
+  const realSrc = !real ? null : sel.series && realYear === own ? `real ${real.year} WEC qualifying/Hyperpole (Al Kamel weather, session mean)` : `real ${realYear} F1 qualifying (OpenF1 weather, session mean)`;
   const pick = (given, key, fallback) => Number.isFinite(given) ? [given, 'given'] : Number.isFinite(real?.[key]) ? [real[key], realSrc] : [fallback, 'default'];
   const [airTempC, airSrc] = pick(args.air_temp_c, 'airTempC', 25), [trackTempC, trackSrc] = pick(args.track_temp_c, 'trackTempC', 35);
   const [humidityPct, humSrc] = pick(args.humidity_pct, 'humidityPct', 50), [windSpeed, windSrc] = pick(args.wind_speed_ms, 'windSpeed', 0);
@@ -86,20 +87,26 @@ export function simulate(args = {}) {
   const out = {status: 'ok', model: 'quasi-steady-state lap simulation (estimate, not a prediction of a real session)',
     track: {id, name: TRACK_NAMES[id]?.[1] || id, length_m: Math.round(d.length || d.kappa.length * d.ds), corners: (d.corners || []).length,
       geometry: 'driving line from OpenF1 qualifying car positions; corner numbers from official positions'},
-    car: {year: sel.year, kind: sel.kind, mass_kg: sel.car.mass, track_grip_factor: r3(sel.grip || 1)},
+    car: {series: sel.series || 'f1', class: sel.cls || null, year: sel.year, kind: sel.kind, mass_kg: sel.car.mass, track_grip_factor: r3(sel.grip || 1)},
     conditions: {air_temp_c: r3(airTempC), track_temp_c: r3(trackTempC), humidity_pct: Math.round(humidityPct), pressure_hpa: Math.round(pressureHpa * 10) / 10,
       wind_speed_ms: r3(windSpeed), wind_from_deg: Math.round(windFromDeg),
       sources: {air_temp: airSrc, track_temp: trackSrc, humidity: humSrc, pressure: pressureSrc, wind_speed: windSrc, wind_direction: windDirSrc},
       air_density_kg_m3: r3(env.rho), density_vs_sea_level_pct: Math.round((env.rho / 1.225 - 1) * 1000) / 10,
       engine_power_factor: r3(env.iceFactor), tyre_grip_factor: r3(env.grip), wind_applied: !!base.heading && windSpeed > 0,
       main_straight_tailwind_ms: base.heading ? r3(K.tailwind(base.heading[2], windSpeed, windFromDeg)) : null},
-    result: summary(res, d, sel.car)};
+    result: summary(res, d, sel.car),
+    uncertainty: {error_range_s: sel.unc?.pct ? r3(res.lapTime * sel.unc.pct / 100) : null, error_range_pct: sel.unc?.pct ?? null, confidence: sel.unc?.confidence,
+      basis: 'one-sigma error from the holdout test (tracks left out of the fit); projections add half the historical development range'}};
   if (args.compare_car && carKey(args.compare_car) !== selKey) {
     const c = cars[carKey(args.compare_car)], r2 = run(c);
-    out.compare = {car: {year: c.year, kind: c.kind}, ...summary(r2, d, c.car), delta_s: r3(res.lapTime - r2.lapTime), delta_note: 'result minus compare; positive = the first car is slower'};
+    out.compare = {car: {series: c.series || 'f1', class: c.cls || null, year: c.year, kind: c.kind}, error_range_s: c.unc?.pct ? r3(r2.lapTime * c.unc.pct / 100) : null, ...summary(r2, d, c.car), delta_s: r3(res.lapTime - r2.lapTime), delta_note: 'result minus compare; positive = the first car is slower'};
   }
-  const cal = lapsimCalibration?.seasons?.[sel.year]?.tracks?.[id];
-  if (cal && sel.kind === 'calibrated') {
+  const cal = sel.series ? lapsimCalibration?.series?.[sel.series]?.[sel.cls]?.[sel.year]?.tracks?.[id] : lapsimCalibration?.seasons?.[sel.year]?.tracks?.[id];
+  if (cal && sel.kind === 'calibrated' && sel.series) {
+    const same = !args.apply_fia_changes && ['air_temp_c', 'track_temp_c', 'humidity_pct', 'pressure_hpa', 'altitude_m', 'wind_speed_ms', 'wind_from_deg'].every(k => args[k] === undefined);
+    out.real_lap = {year: sel.year, event: cal.event, lap_time: fmt(cal.realLap), car_number: cal.car ?? null, manufacturer: cal.manufacturer ?? null, speed_trap_kph: cal.trapKph ?? null,
+      fit_error_s: r3(cal.errorSec), ...(same ? {simulated_minus_real_s: r3(res.lapTime - cal.realLap)} : {})};
+  } else if (cal && sel.kind === 'calibrated') {
     const same = !args.apply_fia_changes && ['air_temp_c', 'track_temp_c', 'humidity_pct', 'pressure_hpa', 'altitude_m', 'wind_speed_ms', 'wind_from_deg'].every(k => args[k] === undefined);
     out.real_lap = {year: sel.year, position: cal.position ?? 1, lap_time: fmt(cal.realLap), driver_number: cal.driver ?? null, fit_error_s: r3(cal.errorSec), speed_rms_kph: cal.rmsKph,
       ...(same ? {simulated_minus_real_s: r3(res.lapTime - cal.realLap)} : {})};

@@ -53,12 +53,14 @@ export function withGrip(track, g) {
   return {...track, mu};
 }
 
-// Error for one lap: speed-trace RMS (m/s) plus lap-time error, with weights.
-export function lapError(track, car, env, obs, lapTime, {wTime = 2} = {}) {
+// Error for one lap, common to every series. Observations: a speed trace (obs: {s, v}) and/or a
+// speed trap (trapKph, compared with the top speed), always the lap time. Units: m/s and s.
+export function lapError(track, car, env, obs, lapTime, {wTime = 2, trapKph = null, wTrap = 1} = {}) {
   const res = simulateLap(track, car, env);
-  const rms = rmsSpeed(res.v, track.ds, obs);
+  const rms = obs ? rmsSpeed(res.v, track.ds, obs) : 0;
+  const trap = trapKph ? (res.vMaxKph - trapKph) / 3.6 : 0;
   const dt = res.lapTime - lapTime;
-  return {score: rms * rms + wTime * dt * dt, rms, dt, res};
+  return {score: rms * rms + wTime * dt * dt + wTrap * trap * trap, rms, dt, trap: trap * 3.6, res};
 }
 
 // 1-D golden-section search for the per-track grip factor (same answer for the same car, so the
@@ -106,11 +108,13 @@ export function nelderMead(f, x0, {step = 0.05, iters = 200, tol = 1e-6} = {}) {
 
 // Fit a season. laps: [{name, track, trace, weather}] ; base: car object ; params: [{key, path, scale}]
 // The car parameters are optimised in log space around the base values.
+// A lap with a fixed track factor (l.grip, e.g. shared from F1) is not given its own grip fit;
+// a lap with l.trapKph is also scored on top speed.
 export function fitSeason(laps, base, params, {iters = 120, wTime = 2, wGrip = 50, log = () => {}} = {}) {
   const prepared = laps.map(l => {
-    const env = conditionsFromWeather(l.weather, l.conditionOptions);
+    const env = conditionsFromWeather(l.weather || {}, l.conditionOptions);
     const lapSeconds = l.lapSeconds ?? l.trace.lap_seconds;
-    if (l.obs) return {...l, env, lapSeconds, shift: 0}; // distance already measured on this track
+    if (l.obs || !l.trace) return {...l, env, lapSeconds, shift: 0}; // distance already measured, or timing only
     const L = l.track.kappa.length * l.track.ds;
     const sim0 = simulateLap(l.track, base, env);
     const {shift} = bestShift(sim0.v, l.track.ds, l.trace, L);
@@ -130,26 +134,52 @@ export function fitSeason(laps, base, params, {iters = 120, wTime = 2, wGrip = 5
       if (p.max != null && o[last] > p.max) { outside += Math.log(o[last] / p.max) ** 2; o[last] = p.max; }
     });
     if (base.linkMu) { car.muX = base.muX * car.muY / base.muY; car.muXTrac = base.muXTrac * car.muY / base.muY; }
+    if (base.noLowDrag) { car.clALow = car.clA; car.cdALow = car.cdA; } // no DRS / straight mode
     return car;
   };
   const objective = x => {
     const car = build(x);
-    let total = 0, logGrip = 0;
+    let total = 0, logGrip = 0, free = 0;
     for (const l of prepared) {
-      const r = fitGrip(l.track, car, l.env, l.obs, l.lapSeconds, 0.85, 1.15, {wTime});
-      total += (l.weight ?? 1) * r.score; logGrip += Math.log(r.grip);
+      const r = evalLap(l, car);
+      total += (l.weight ?? 1) * r.score;
+      if (l.grip == null) { logGrip += Math.log(r.grip); free++; }
     }
-    // car grip and track grip only appear as a product: keep the average track factor at 1
-    return total / prepared.length + wGrip * (logGrip / prepared.length) ** 2 + 100 * outside;
+    // car grip and track grip only appear as a product: keep the average fitted track factor at 1
+    return total / prepared.length + (free ? wGrip * (logGrip / free) ** 2 : 0) + 100 * outside;
   };
+  const evalLap = (l, car) => l.grip != null
+    ? {grip: l.grip, ...lapError(withGrip(l.track, l.grip), car, l.env, l.obs, l.lapSeconds, {wTime, trapKph: l.trapKph})}
+    : fitGrip(l.track, car, l.env, l.obs, l.lapSeconds, 0.85, 1.15, {wTime, trapKph: l.trapKph});
   const x0 = params.map(() => 0);
   const result = nelderMead(objective, x0, {step: params.map(p => p.step ?? 0.08), iters});
   const car = build(result.x);
   const perTrack = prepared.map(l => {
-    const r = fitGrip(l.track, car, l.env, l.obs, l.lapSeconds, 0.85, 1.15, {wTime});
+    const r = evalLap(l, car);
     return {name: l.name, grip: r.grip, rmsKph: r.rms * 3.6, dt: r.dt, simLap: r.res.lapTime, realLap: l.lapSeconds,
-      shift: l.shift, rho: l.env.rho, vMaxSim: r.res.vMaxKph, vMaxReal: Math.max(...l.obs.v) * 3.6, meta: l.meta};
+      shift: l.shift, rho: l.env.rho, vMaxSim: r.res.vMaxKph, vMaxReal: l.obs ? Math.max(...l.obs.v) * 3.6 : l.trapKph ?? null, meta: l.meta};
   });
   log({score: result.value});
   return {car, perTrack, score: result.value, x: result.x};
+}
+
+// Holdout test, common to all series: refit without some tracks (folds by track name), then predict
+// the main lap (weight 1) on each left-out track. gripFor(lap) gives the track factor to use for a
+// left-out lap (from another season or series); null skips that lap.
+export function holdout(laps, base, params, {folds = 4, iters = 40, gripFor, ...opts} = {}) {
+  const names = [...new Set(laps.map(l => l.name))].sort();
+  const k = Math.min(folds, names.length), errors = [];
+  for (let f = 0; f < k; f++) {
+    const test = new Set(names.filter((_, i) => i % k === f));
+    const train = laps.filter(l => !test.has(l.name));
+    if (new Set(train.map(l => l.name)).size < 2) continue;
+    const fit = fitSeason(train, base, params, {...opts, iters});
+    for (const l of laps.filter(x => test.has(x.name) && (x.weight ?? 1) >= 1)) {
+      const g = gripFor(l); if (g == null) continue;
+      const res = simulateLap(withGrip(l.track, g), fit.car, conditionsFromWeather(l.weather || {}));
+      errors.push({name: l.name, dt: res.lapTime - l.lapSeconds, pct: (res.lapTime / l.lapSeconds - 1) * 100});
+    }
+  }
+  const rmsPct = errors.length ? Math.sqrt(errors.reduce((a, e) => a + e.pct ** 2, 0) / errors.length) : null;
+  return {errors, rmsPct, n: errors.length};
 }

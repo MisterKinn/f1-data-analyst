@@ -1,6 +1,7 @@
 name: Lap simulator data
 
-# Rebuilds the lap simulator's tracks and car calibration from OpenF1 qualifying data.
+# Rebuilds the lap simulator's tracks and car calibration from OpenF1 qualifying data (F1) and
+# Al Kamel published timing (WEC).
 # Raw OpenF1/MultiViewer responses stay in the Actions cache; only derived geometry, fitted
 # parameters and the report are committed (worker/lapsim/*-data.js, docs/lapsim-report.md).
 # - push to a lapsim/** branch: rebuild and commit back to that branch
@@ -53,9 +54,11 @@ jobs:
           key: lapsim-raw-v1-${{ github.run_id }}
       - name: Build tracks
         run: node scripts/sim/build-geometry.mjs
-      - name: Calibrate cars
-        run: node scripts/sim/calibrate.mjs
       - run: npm ci --omit=dev --ignore-scripts
+      - name: Fetch WEC timing (Al Kamel)
+        run: node scripts/sim/fetch-wec.mjs
+      - name: Calibrate cars (F1 and WEC)
+        run: node scripts/sim/calibrate.mjs
       - name: Read FIA circuit changes
         run: node scripts/sim/fia-changes.mjs
         env:

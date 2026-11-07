@@ -4,6 +4,7 @@ import {lapsimKernel} from './lapsim/kernel.js';
 import {lapsimTracks} from './lapsim/tracks-data.js';
 import {lapsimCalibration} from './lapsim/calibration-data.js';
 import {RULE_CHANGES} from './lapsim/cars.js';
+import {SERIES} from './lapsim/series.js';
 import {carsFor as scenarioCars, realConditions, latestChanges, fittedYear, CAR_ORDER} from './lapsim/scenario.js';
 import {TRACK_NAMES as NAMES} from './lapsim/names.js';
 
@@ -17,7 +18,8 @@ const T = {
     title: '랩 시뮬레이터', h1: '2026–2028 F1 머신으로 한 바퀴를 계산합니다',
     lead: '실제 예선 랩으로 보정한 물리 모델이 지금의 트랙 형상, 예선 날씨, FIA가 공지한 서킷 변경 사항을 반영해 랩타임과 속도를 계산합니다.',
     track: '트랙', car: '머신', compare: '비교', none: '없음', conditions: '조건', real: '실제 예선 조건', manual: '직접 설정',
-    lap: '계산된 랩타임', vsPole: '실제 폴', realLap: '실제 랩', sector: '섹터', vmax: '최고 속도', vmin: '최저 속도', energy: '배치 에너지', clip: '배치 상한 속도',
+    lap: '계산된 랩타임', vsPole: '실제 폴', realLap: '실제 랩', wecBest: '실제 예선·하이퍼폴 최고', errRange: '오차 범위(1σ)', conf: {medium: '신뢰도 보통', low: '신뢰도 낮음', 'not-fitted': '실측 보정 전'},
+    soon: '준비 중: 기타 GT3(IMSA GTD·DTM·SP9), 포뮬러 E Gen4. 같은 보정 규칙을 쓰며 데이터 연결 후 추가됩니다.', sector: '섹터', vmax: '최고 속도', vmin: '최저 속도', energy: '배치 에너지', clip: '배치 상한 속도',
     map: '속도로 칠한 주행 라인', slow: '느림', fast: '빠름', trace: '거리별 속도', km: '거리 (km)',
     air: '공기', airTemp: '기온', trackTemp: '노면 온도', humidity: '습도', pressure: '기압', wind: '풍속', windFrom: '바람 방향',
     density: '공기 밀도', seaLevel: '해수면 표준 대비', ice: '엔진 출력', grip: '타이어 그립', mainStraight: '메인 스트레이트',
@@ -39,7 +41,8 @@ const T = {
     title: 'Lap simulator', h1: 'Simulate a lap in a 2026–2028 F1 car',
     lead: 'A physics model calibrated on real qualifying laps works out lap time and speed on today’s track layout, with qualifying weather and the circuit changes the FIA has announced.',
     track: 'Track', car: 'Car', compare: 'Compare', none: 'None', conditions: 'Conditions', real: 'Real qualifying conditions', manual: 'Set my own',
-    lap: 'Simulated lap time', vsPole: 'Real pole', realLap: 'Real lap', sector: 'Sector', vmax: 'Top speed', vmin: 'Lowest speed', energy: 'Energy deployed', clip: 'Deploy cut-off',
+    lap: 'Simulated lap time', vsPole: 'Real pole', realLap: 'Real lap', wecBest: 'Real qualifying/Hyperpole best', errRange: 'Error range (1σ)', conf: {medium: 'medium confidence', low: 'low confidence', 'not-fitted': 'not fitted to real laps'},
+    soon: 'Coming soon: other GT3 (IMSA GTD, DTM, SP9) and Formula E Gen4. They use the same calibration rules and are added once their data is connected.', sector: 'Sector', vmax: 'Top speed', vmin: 'Lowest speed', energy: 'Energy deployed', clip: 'Deploy cut-off',
     map: 'Racing line coloured by speed', slow: 'Slow', fast: 'Fast', trace: 'Speed over distance', km: 'Distance (km)',
     air: 'Air', airTemp: 'Air temperature', trackTemp: 'Track temperature', humidity: 'Humidity', pressure: 'Pressure', wind: 'Wind speed', windFrom: 'Wind from',
     density: 'Air density', seaLevel: 'vs standard sea level', ice: 'Engine power', grip: 'Tyre grip', mainStraight: 'Main straight',
@@ -64,7 +67,8 @@ function fmtLap(s) { if (!Number.isFinite(s)) return '–'; const m = Math.floor
 // Cars offered on the page, with the per-track grip factor from calibration
 function carsFor(id, lang) {
   const t = T[lang], label = {base2019: lang === 'en' ? '2019 base (TUM)' : '2019 기준 (TUM)', 2027: `2027 (${t.projected})`, 2028: `2028 (${t.projected})`};
-  return Object.fromEntries(Object.entries(scenarioCars(id)).map(([k, c]) => [k, {...c, label: label[k] || k}]));
+  const wec = c => `WEC ${SERIES.wec.classes[c.cls].label[lang]} ${c.year}`;
+  return Object.fromEntries(Object.entries(scenarioCars(id)).map(([k, c]) => [k, {...c, label: c.series ? wec(c) : label[k] || k}]));
 }
 
 // --- Rendering (shared with the browser; must only use its arguments) ---
@@ -162,7 +166,7 @@ export function simulationPage(query = {}, lang = 'ko') {
  ${calRows ? `<div class="output"><table class="ls-table"><thead><tr><th></th><th>${esc(t.vsPole)}</th><th>${esc(t.lap)}</th><th>${esc(t.fitErr)}</th><th>${esc(t.speedRms)}</th></tr></thead><tbody>${calRows}</tbody></table></div>` : `<p class="fine">${esc(t.pendingLead)}</p>`}
  <h3>${esc(t.proj)}</h3><ul class="ls-notes">${projRows}</ul>
 </section>
-<section class="panel ls-panel"><h2>${esc(t.model)}</h2><ul class="ls-notes"><li>${esc(t.m1)}</li><li>${esc(t.m2)}</li><li>${esc(t.m3)}</li><li>${esc(t.m4)}</li><li>${esc(t.m5)}</li></ul>
+<section class="panel ls-panel"><h2>${esc(t.model)}</h2><ul class="ls-notes"><li>${esc(t.m1)}</li><li>${esc(t.m2)}</li><li>${esc(t.m3)}</li><li>${esc(t.m4)}</li><li>${esc(t.m5)}</li><li>${esc(t.soon)}</li></ul>
  <p class="fine">${esc(t.src)}: <a href="https://openf1.org" target="_blank" rel="noopener noreferrer">OpenF1</a>, MultiViewer, <a href="https://github.com/bacinger/f1-circuits" target="_blank" rel="noopener noreferrer">f1-circuits</a>, <a href="https://github.com/f1db/f1db" target="_blank" rel="noopener noreferrer">f1db</a> (CC BY 4.0), <a href="https://github.com/TUMFTM/laptime-simulation" target="_blank" rel="noopener noreferrer">TUMFTM laptime-simulation</a>, FIA Section C Issue 21${data.calibration.generatedAt ? ` · ${esc(t.updated)} <span data-no-translate>${esc(data.calibration.generatedAt)}</span>` : ''}</p>
 </section>
 <script type="application/json" id="lapsim-data">${JSON.stringify(data).replace(/</g, '\\u003c')}</script>
@@ -176,7 +180,8 @@ function computeView(K, data, state, R) {
   const base = computeView.cache.base;
   const sel = data.cars[state.carId];
   // conditions: real (season of the selected car, else 2026) or manual
-  const yearKey = data.conds[String(sel.year)] ? String(sel.year) : (data.conds['2026'] ? '2026' : Object.keys(data.conds)[0]);
+  const condKey = sel.series ? state.carId : String(sel.year);
+  const yearKey = data.conds[condKey] ? condKey : (data.conds['2026'] ? '2026' : Object.keys(data.conds)[0]);
   const w = Object.assign({pressureHpa: 1013.25, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0},
     Object.fromEntries(Object.entries(state.mode === 'manual' && state.manual ? state.manual : (data.conds[yearKey] || {})).filter(([, v]) => Number.isFinite(v))));
   const env = K.conditionsFromWeather(w);
@@ -190,13 +195,14 @@ function computeView(K, data, state, R) {
   const cmp = state.compareId && data.cars[state.compareId] ? run(data.cars[state.compareId]) : null;
   const fmt = s => { if (!Number.isFinite(s)) return '–'; const m = Math.floor(s / 60); return (m ? m + ':' : '') + (s - m * 60).toFixed(3).padStart(m ? 6 : 5, '0'); };
   const sectors = d.sectors && d.sectors.length === 2 ? (() => { const i1 = Math.round(d.sectors[0] / d.ds), i2 = Math.round(d.sectors[1] / d.ds); return [res.time[i1], res.time[i2] - res.time[i1], res.lapTime - res.time[i2]]; })() : null;
-  const real = data.conds[String(sel.year)];
+  const real = data.conds[condKey];
   const sameConditions = state.mode !== 'manual' && !active.length;
   const poleHtml = real && real.realLap && sameConditions && sel.kind === 'calibrated'
-    ? (real.position > 1 ? t.realLap + ' P' + real.position : t.vsPole) + ' <span data-no-translate>' + fmt(real.realLap) + '</span> · <span data-no-translate>' + ((res.lapTime - real.realLap) >= 0 ? '+' : '−') + Math.abs(res.lapTime - real.realLap).toFixed(3) + ' s</span>'
+    ? (sel.series ? t.wecBest : real.position > 1 ? t.realLap + ' P' + real.position : t.vsPole) + ' <span data-no-translate>' + fmt(real.realLap) + '</span> · <span data-no-translate>' + ((res.lapTime - real.realLap) >= 0 ? '+' : '−') + Math.abs(res.lapTime - real.realLap).toFixed(3) + ' s</span>'
     : (cmp ? data.cars[state.compareId].label + ' <span data-no-translate>' + fmt(cmp.lapTime) + ' · ' + ((res.lapTime - cmp.lapTime) >= 0 ? '+' : '−') + Math.abs(res.lapTime - cmp.lapTime).toFixed(3) + ' s</span>' : '');
   const fact = (k, v) => '<div><dt>' + k + '</dt><dd data-no-translate>' + v + '</dd></div>';
   let factsHtml = '';
+  if (sel.unc) factsHtml += fact(t.errRange, (sel.unc.pct ? '±' + (res.lapTime * sel.unc.pct / 100).toFixed(2) + ' s · ' : '') + t.conf[sel.unc.confidence]);
   if (sectors) sectors.forEach((x, i) => { factsHtml += fact(t.sector + ' ' + (i + 1), x.toFixed(3)); });
   factsHtml += fact(t.vmax, Math.round(res.vMaxKph) + ' km/h') + fact(t.vmin, Math.round(res.vMinKph) + ' km/h');
   if (sel.car.ers?.pMax) factsHtml += fact(t.energy, (res.energy.deployJ / 1e6).toFixed(1) + ' / ' + (res.energy.budgetJ / 1e6).toFixed(1) + ' MJ') + fact(t.clip, res.energy.cutoffKph ? Math.round(res.energy.cutoffKph) + ' km/h' : '–');
@@ -244,7 +250,7 @@ function lapsimClient(K, computeView, renderMap, renderTrace) {
   };
   q('car').addEventListener('change', e => { state.carId = e.target.value; const u = new URL(location.href); u.searchParams.set('car', state.carId); history.replaceState(null, '', u); update(); });
   q('compare').addEventListener('change', e => { state.compareId = e.target.value; update(); });
-  q('mode').addEventListener('change', e => { state.mode = e.target.value; q('manual').hidden = state.mode !== 'manual'; if (state.mode === 'manual') { const real = data.conds[String(data.cars[state.carId].year)]; if (real) Object.assign(state.manual, real); syncSliders(); } update(); });
+  q('mode').addEventListener('change', e => { state.mode = e.target.value; q('manual').hidden = state.mode !== 'manual'; if (state.mode === 'manual') { const c = data.cars[state.carId], real = data.conds[c.series ? state.carId : String(c.year)]; if (real) Object.assign(state.manual, real); syncSliders(); } update(); });
   sliders.forEach(s => s.addEventListener('input', () => { state.manual[s.dataset.cond] = Number(s.value); syncSliders(); update(); }));
   document.querySelectorAll('[data-change]').forEach(c => c.addEventListener('change', () => { state.active[c.dataset.change] = c.checked; update(); }));
   const st = q('strength'); if (st) st.addEventListener('input', () => { state.strength = Number(st.value); q('strengthOut').textContent = '×' + state.strength; update(); });

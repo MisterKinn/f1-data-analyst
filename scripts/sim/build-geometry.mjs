@@ -10,11 +10,14 @@ import {resampleClosed, projectOnto, kernelSmooth, headingCurvature, alignClosed
 const CACHE = process.env.LAPSIM_CACHE || '.cache/lapsim';
 const OUT = process.env.LAPSIM_TRACKS_OUT || 'worker/lapsim/tracks-data.js';
 const DS = 5;
-const SIGMA = Number(process.env.LAPSIM_SIGMA || 7), CURV_SMOOTH = Number(process.env.LAPSIM_CURV_SMOOTH || 12);
+const SIGMA = Number(process.env.LAPSIM_SIGMA || 7), CURV_SMOOTH = Number(process.env.LAPSIM_CURV_SMOOTH || 6);
 const index = JSON.parse(await readFile(join(CACHE, 'index.json'), 'utf8'));
 const circuits = JSON.parse(await readFile(join(CACHE, 'circuits.json'), 'utf8').catch(() => '{}'));
 const geo = JSON.parse(await readFile(join(CACHE, 'f1-circuits.geojson'), 'utf8').catch(() => 'null'));
-const geometryYear = Math.max(...index.map(x => x.year));
+// each track's shape comes from its latest season
+const latestYear = {};
+for (const x of index) latestYear[x.circuit] = Math.max(latestYear[x.circuit] || 0, x.year);
+const isGeometry = x => x.year === latestYear[x.circuit];
 const ms = d => Date.parse(d);
 const slug = s => String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
@@ -108,7 +111,7 @@ function geoFor(session) {
 
 const tracks = {}, traces = [], buildCurveCache = {};
 const report = [];
-for (const entry of index.filter(x => x.year === geometryYear)) {
+for (const entry of index.filter(isGeometry)) {
   const session = JSON.parse(await readFile(join(CACHE, 'sessions', entry.file), 'utf8'));
   const laps = session.laps.filter(l => l.location?.length > 50);
   if (laps.length < 3) { report.push(`${entry.circuit}: not enough laps with positions`); continue; }
@@ -119,7 +122,7 @@ for (const entry of index.filter(x => x.year === geometryYear)) {
   const n = grid.x.length, grade = new Float64Array(n);
   for (let i = 0; i < n; i++) grade[i] = Math.atan((grid.z[(i + 1) % n] - grid.z[(i - 1 + n) % n]) / (2 * grid.ds));
   // corners (official numbering) projected onto the line
-  const info = circuits[entry.circuit_key];
+  const info = circuits[`${entry.circuit_key}/${entry.year}`] || circuits[entry.circuit_key];
   const corners = (info?.corners || []).map(k => {
     const pr = projectOnto(grid, [k.trackPosition.x / 10], [k.trackPosition.y / 10]);
     return {number: k.number, letter: k.letter || '', s: Math.round(pr.s[0])};
@@ -145,7 +148,7 @@ for (const entry of index.filter(x => x.year === geometryYear)) {
   }
   const id = slug(session.circuit);
   tracks[id] = {
-    id, name: session.location, circuit: session.circuit, circuitKey: entry.circuit_key, year: geometryYear, sessionKey: session.session_key,
+    id, name: session.location, circuit: session.circuit, circuitKey: entry.circuit_key, year: entry.year, sessionKey: session.session_key,
     ds: grid.ds, length: Math.round(grid.length), sectors, corners,
     kappa: Array.from(kappa, v => Math.round(v * 1e5)), grade: Array.from(grade, v => Math.round(v * 1e4)),
     heading: headingTrue ? headingTrue.map(v => Math.round(v * 1e3)) : null,
@@ -174,7 +177,7 @@ for (const entry of index) {
   const track = tracks[slug(session.circuit)];
   if (!track) continue;
   const grid = (() => { // rebuild the raw-frame line used for projection
-    const sameYear = index.find(x => x.year === geometryYear && slug(x.circuit) === track.id);
+    const sameYear = index.find(x => isGeometry(x) && slug(x.circuit) === track.id);
     return sameYear ? sameYear : null;
   })();
   if (!grid) continue;

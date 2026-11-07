@@ -98,7 +98,7 @@ export function lapsimKernel() {
       m, hOverWb: h / wb,
       muX0: car.muX, muY0: car.muY, dmu: car.dmuDfz ?? -5e-5, fz0: car.fz0 ?? 3000,
       rearStatic: car.rearWeight ?? 0.55, rearAero: car.rearAero ?? 0.55,
-      muXTrac: car.muXTrac ?? car.muX, inertia: car.inertiaFactor ?? 1.0,
+      muXTrac: car.muXTrac ?? car.muX, inertia: car.inertiaFactor ?? 1.0, awdAbove: car.awdAboveKph != null ? car.awdAboveKph / 3.6 : null,
     };
   }
 
@@ -203,7 +203,9 @@ export function lapsimKernel() {
           const fPow = (pIce * etaD + pErs * etaK * etaD) / vi;
           const nRear = t.rearStatic * mg * cosG[i] + t.rearAero * L;
           const muX = muAt(i) * (t.muXTrac / t.muY0) * capacity(t.muY0, t.dmu, t.fz0, N) / N;
-          const fTrac = muX * nRear / Math.max(0.2, 1 - muX * t.hOverWb) * ellipse(vi, i);
+          // LMH hybrids also drive the front axle above a set speed (awdAboveKph): all four tyres
+          const awd = t.awdAbove != null && vi > t.awdAbove;
+          const fTrac = (awd ? muX * N : muX * nRear / Math.max(0.2, 1 - muX * t.hOverWb)) * ellipse(vi, i);
           const fDrive = Math.min(fPow, fTrac);
           powerLimited[i] = fPow <= fTrac ? 1 : 0;
           // DC power the ERS-K actually supplies: whatever the ICE cannot, up to its limit

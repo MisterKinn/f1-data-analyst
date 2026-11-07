@@ -9,7 +9,6 @@ import {join} from 'node:path';
 
 const CACHE = process.env.LAPSIM_CACHE || '.cache/lapsim';
 const YEARS = (process.argv[2] || process.env.LAPSIM_YEARS || '2025,2026').split(',').map(Number);
-const GEOMETRY_YEAR = Math.max(...YEARS);
 const GEOMETRY_DRIVERS = Number(process.env.LAPSIM_GEOMETRY_DRIVERS || 14);
 const TRACE_DRIVERS = Number(process.env.LAPSIM_TRACE_DRIVERS || 3);
 const UA = 'Kongboda-lapsim/1.0 (+https://kongboda-motorsports.vercel.app)';
@@ -80,11 +79,15 @@ async function session(s, isGeometryYear) {
 await mkdir(join(CACHE, 'raw'), {recursive: true});
 await mkdir(join(CACHE, 'sessions'), {recursive: true});
 const index = [];
+const byYear = {};
+for (const year of YEARS) byYear[year] = (await openf1('sessions', {year})).filter(s => s.session_name === 'Qualifying' && Date.parse(s.date_end) < Date.now() - 3 * 3600e3);
+// each track's shape comes from its latest season (a track not raced this year keeps last year's)
+const latest = {};
+for (const year of YEARS) for (const s of byYear[year]) latest[s.circuit_short_name] = Math.max(latest[s.circuit_short_name] || 0, year);
 for (const year of YEARS) {
-  const sessions = (await openf1('sessions', {year})).filter(s => s.session_name === 'Qualifying' && Date.parse(s.date_end) < Date.now() - 3 * 3600e3);
-  for (const s of sessions) {
+  for (const s of byYear[year]) {
     try {
-      const data = await session(s, year === GEOMETRY_YEAR);
+      const data = await session(s, year === latest[s.circuit_short_name]);
       if (!data.laps.length) { console.log(`skip ${year} ${s.circuit_short_name}: no laps`); continue; }
       const file = `${year}-${s.circuit_short_name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.json`;
       await writeFile(join(CACHE, 'sessions', file), JSON.stringify(data));
@@ -95,8 +98,8 @@ for (const year of YEARS) {
 }
 // Official corner positions (MultiViewer, same coordinate frame as OpenF1 positions)
 const circuits = {};
-for (const {circuit_key, year} of index.filter(x => x.year === GEOMETRY_YEAR)) {
-  try { circuits[circuit_key] = await cachedJson(`https://api.multiviewer.app/api/v1/circuits/${circuit_key}/${year}`, {throttle: 0}); await sleep(400); }
+for (const {circuit_key, year} of index.filter(x => x.year === latest[x.circuit])) {
+  try { circuits[`${circuit_key}/${year}`] = await cachedJson(`https://api.multiviewer.app/api/v1/circuits/${circuit_key}/${year}`, {throttle: 0}); await sleep(400); }
   catch (e) { console.log(`no circuit info for ${circuit_key}: ${e.message}`); }
 }
 await writeFile(join(CACHE, 'circuits.json'), JSON.stringify(circuits));

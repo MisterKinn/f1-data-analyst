@@ -201,3 +201,33 @@ test('track resolver avoids partial-word matches', async () => {
   assert.equal(resolveTrack('Marina Bay', ids), 'singapore');
   assert.equal(resolveTrack('Sepang', ids), 'kuala-lumpur');
 });
+
+test('common calibration: timing-only laps with shared track factors recover a WEC car', async () => {
+  const {SERIES} = await import('../worker/lapsim/series.js');
+  const {fitSeason, holdout, withGrip} = await import('../scripts/sim/calibrate-lib.mjs');
+  const def = SERIES.wec.classes.hypercar;
+  const truth = {...structuredClone(def.prior), muY: 1.85, clA: 3.9, cdA: 1.15, clALow: 3.9, cdALow: 1.15};
+  truth.muX = def.prior.muX * 1.85 / 1.75; truth.muXTrac = def.prior.muXTrac * 1.85 / 1.75;
+  // four synthetic tracks: stadiums with different corner radii
+  const make = (R, straight) => { const L = 2 * straight + 2 * Math.PI * R, n = Math.round(L / 5), kappa = new Float64Array(n), ds = L / n;
+    for (let i = 0; i < n; i++) { const s = i * ds; kappa[i] = (s > straight && s < straight + Math.PI * R) || s > 2 * straight + Math.PI * R ? 1 / R : 0; }
+    return {ds, kappa, mu: new Float64Array(n).fill(1), vScale: new Float64Array(n).fill(1), aeroLow: autoStraights(kappa, ds)}; };
+  const tracks = [[40, 500], [90, 900], [150, 700], [250, 1100]].map(([R, s]) => make(R, s));
+  const w = {pressureHpa: 1000, airTempC: 25, humidityPct: 50, trackTempC: 35};
+  const laps = tracks.map((tr, k) => { const g = [1, 0.98, 1.02, 1][k], r = simulateLap(withGrip(tr, g), truth, conditionsFromWeather(w));
+    return {name: 't' + k, track: tr, lapSeconds: r.lapTime, trapKph: r.vMaxKph, grip: g, weather: w, weight: 1}; });
+  const base = {...structuredClone(def.prior), linkMu: true};
+  const params = Object.entries(def.bounds).map(([k, [lo, hi]]) => ({key: k, path: k, base: base[k], step: 0.08, min: lo, max: hi}));
+  const fit = fitSeason(laps, base, params, {iters: 120});
+  assert.ok(Math.abs(fit.car.cdA / 1.15 - 1) < 0.03, String(fit.car.cdA));
+  assert.ok(Math.abs(fit.car.muY / 1.85 - 1) < 0.05, String(fit.car.muY));
+  assert.equal(fit.car.cdALow, fit.car.cdA, 'no DRS: low-drag values follow the fitted ones');
+  const h = holdout(laps, base, params, {iters: 40, folds: 99, gripFor: l => l.grip});
+  assert.equal(h.n, 4); assert.ok(h.rmsPct < 1, String(h.rmsPct));
+});
+
+test('uncertainty: projections are wider than the calibrated season', async () => {
+  const {uncertainty} = await import('../worker/lapsim/scenario.js');
+  assert.equal(uncertainty({kind: 'base'}).confidence, 'not-fitted');
+  assert.equal(uncertainty({kind: 'prior'}).confidence, 'not-fitted');
+});
