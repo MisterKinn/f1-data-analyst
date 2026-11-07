@@ -132,3 +132,16 @@ export async function tiLapTelemetry(where,lap,seconds,io){
  }
  return {rows,scaled:k===1?null:{factor:Number(k.toFixed(5)),file_end_s:end,official_lap_s:official}};
 }
+
+// Official turn numbers and their distance along the lap (corners.json, FastF1 circuit info
+// matched to the session's fastest lap).
+export async function tiTurns(where,io){
+ const c=await tiGet(where.year,[where.folder,where.session,'corners.json'],io,TI_TTL.TELEMETRY).catch(()=>null);
+ const n=c?.CornerNumber,d=c?.Distance;if(!Array.isArray(n)||!Array.isArray(d))return [];
+ return n.map((t,i)=>({turn:'T'+t+(c.Letter?.[i]||''),distance_m:Math.round(num(d[i])??NaN)})).filter(t=>Number.isFinite(t.distance_m));
+}
+// Nearest official turn within 150 m of a distance, e.g. a speed minimum.
+export function nearestTurn(turns,distance){
+ let best=null;for(const t of turns)if(!best||Math.abs(t.distance_m-distance)<Math.abs(best.distance_m-distance))best=t;
+ return best&&Math.abs(best.distance_m-distance)<=150?best.turn:null;
+}

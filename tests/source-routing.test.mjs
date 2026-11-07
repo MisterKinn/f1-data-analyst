@@ -1,13 +1,14 @@
 import assert from 'node:assert/strict';
 import worker from '../worker/index.js';
 import {OPENF1_INSTRUCTIONS} from '../worker/openf1.js';
+import {ANSWER_POLICY} from '../worker/answer-policy.js';
 const request=(method,params={})=>new Request('https://test/mcp',{method:'POST',headers:{'content-type':'application/json','oai-authenticated-user-id':'owner','oai-authenticated-user-email':'owner@test'},body:JSON.stringify({jsonrpc:'2.0',id:1,method,params})});
 const call=async(method,params={},env={})=>(await worker.fetch(request(method,params),env)).json();
 const {result:info}=await call('initialize');
 assert.equal(info.serverInfo.version,'2.0.0');
 assert.match(info.instructions,/FastF1 is the source/);
 // TracingInsights is a post-session source only, never a live fallback.
-assert.doesNotMatch(info.instructions.replace(OPENF1_INSTRUCTIONS,''),/TracingInsights/);
+assert.doesNotMatch(info.instructions.replace(OPENF1_INSTRUCTIONS,'').replace(ANSWER_POLICY,''),/TracingInsights/);
 const {result:{tools}}=await call('tools/list');
 assert.equal(tools.length,38);
 assert.ok(!tools.some(t=>t.name==='get_driver_standings'));
