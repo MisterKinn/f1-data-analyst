@@ -10,6 +10,7 @@ import {TRACK_NAMES as NAMES} from './lapsim/names.js';
 import {energyLimit} from './lapsim/energy-limits.js';
 import {lapsimRace} from './lapsim/race-data.js';
 import {raceLaps, strategies} from './lapsim/race-pace.js';
+import {evolutionCoeffs, evolutionDelta, evolutionCurve} from './lapsim/evolution.js';
 
 const K = lapsimKernel();
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -40,6 +41,11 @@ const T = {
     m4: '노면 온도에 따른 그립, 고도에 따른 엔진 출력 감소, FIA 변경 사항의 효과는 가정값입니다. 측정값처럼 읽지 마세요.',
     m5: '준정상상태 모델이라 변속, 타이어 온도 변화, 차 사이 간섭, 풀스로틀 중 회생(슈퍼 클리핑)은 계산하지 않습니다. 절대값보다 차이와 경향을 보는 데 쓰세요.',
     src: '자료', updated: '보정일',
+    evo: '트랙 에볼루션', evoLead: '세션이 진행되며 고무가 쌓이고, 젖은 노면이 마르고, 타이어가 데워지면서 랩타임이 어떻게 바뀌는지 계산합니다. 기준은 위의 계산된 랩(예선 끝 노면)입니다.',
+    evoType: '세션', evoTypes: {practice: '연습', qualifying: '예선'}, evoTyre: '타이어', tyres: {slick: '슬릭', inter: '인터미디엇', wet: '웻'},
+    evoEnd: '세션 시각', evoGain: '고무 효과 (끝까지)', evoTau: '포화 시간', evoWet: '시작 노면 젖음', evoDry: '건조 시간', evoWarm: '워밍업 랩',
+    evoCurve: '실측 곡선 사용', evoLast: '이 시각의 예상 랩', evoChange: '세션 시작 대비', evoBasis: {track: '이 트랙 실측 곡선', series: '시리즈 평균 (보정)', default: '미보정 기본값'},
+    evoErr: '홀드아웃 오차 (트랙 제외)', evoBasisH: '근거', evoChart: '세션 시각별 예상 랩타임', min: '분',
   },
   en: {
     title: 'Lap simulator', h1: 'Simulate a lap in a 2026–2028 F1 car',
@@ -64,6 +70,11 @@ const T = {
     m4: 'Grip versus track temperature, engine power loss with altitude and the effect of FIA changes are assumptions, not measurements.',
     m5: 'A quasi-steady-state model ignores gear shifts, tyre temperature, car-to-car effects and harvesting at full throttle (super-clipping). Use it for differences and trends rather than absolute times.',
     src: 'Sources', updated: 'Calibrated',
+    evo: 'Track evolution', evoLead: 'How lap time changes over a session as rubber goes down, a wet track dries and tyres warm up. The reference is the simulated lap above (track state at the end of qualifying).',
+    evoType: 'Session', evoTypes: {practice: 'Practice', qualifying: 'Qualifying'}, evoTyre: 'Tyre', tyres: {slick: 'Slick', inter: 'Intermediate', wet: 'Wet'},
+    evoEnd: 'Session minute', evoGain: 'Rubber effect (full)', evoTau: 'Time to saturate', evoWet: 'Wetness at start', evoDry: 'Drying time', evoWarm: 'Warm-up laps',
+    evoCurve: 'Use measured curve', evoLast: 'Expected lap at this minute', evoChange: 'vs session start', evoBasis: {track: 'measured curve, this track', series: 'series average (fitted)', default: 'uncalibrated default'},
+    evoErr: 'Holdout error (track left out)', evoBasisH: 'Basis', evoChart: 'Expected lap time over the session', min: 'min',
   },
 };
 
@@ -129,11 +140,13 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
   const carId = cars[query.car] ? query.car : '2026';
   const changes = latestChanges(id);
   const data = {lang, t, id, track: td, cars, carOrder: CAR_ORDER, carId, conds, changes, energy: (liveEnergy && (query.track || 'monza') === id ? liveEnergy : energyLimit(id, 2026)),
+    evo: Object.fromEntries(['f1', 'wec'].map(se => [se, Object.fromEntries(['practice', 'qualifying'].map(ty => [ty, evolutionCoeffs(se, id, ty)]))])),
     calibration: {generatedAt: lapsimCalibration?.generatedAt || null, seasons: Object.fromEntries(Object.entries(lapsimCalibration?.seasons || {}).map(([y, s]) => [y, s.tracks?.[id] || null]))}};
   // first render on the server with the same code the browser uses
-  const view = computeView(K, data, {carId, compareId: '', mode: 'real', manual: null, active: {}, strength: 1}, {renderMap, renderTrace});
+  const view = computeView(K, data, {carId, compareId: '', mode: 'real', manual: null, active: {}, strength: 1, evo: null}, {renderMap, renderTrace, evolutionDelta, evolutionCurve});
   const options = ids.map(k => `<option value="${esc(k)}"${k === id ? ' selected' : ''}>${esc(trackName(k, lang))}</option>`).join('');
   const carOpts = sel => data.carOrder.map(k => `<option value="${k}"${k === sel ? ' selected' : ''}>${esc(cars[k].label)}</option>`).join('');
+  const evoSlider = (key, label, min, max, step, unit) => `<label class="ls-slider"><span>${esc(label)}</span><input type="range" data-evo="${key}" min="${min}" max="${max}" step="${step}" value="${view.evo[key]}"><output data-evo-out="${key}">${view.evo[key]}</output><span class="ls-unit">${unit}</span></label>`;
   const slider = (key, label, min, max, step, unit) => `<label class="ls-slider"><span>${esc(label)}</span><input type="range" data-cond="${key}" min="${min}" max="${max}" step="${step}"><output data-out="${key}"></output><span class="ls-unit">${unit}</span></label>`;
   const changeRows = changes?.changes?.length ? changes.changes.map((c, i) => `<li class="ls-change${c.affectsLap ? '' : ' is-info'}"><label>${c.affectsLap ? `<input type="checkbox" data-change="${i}">` : '<span class="ls-dot" aria-hidden="true"></span>'}<span><span class="ls-change-text" data-no-translate lang="en">${esc(c.text)}</span><small>${esc(c.affectsLap ? (lang === 'en' ? c.effect.en : c.effect.ko) : t.noLap)}</small></span></label></li>`).join('') : '';
   const s = data.calibration.seasons;
@@ -163,6 +176,14 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
 <section class="panel ls-panel ls-air"><h2>${esc(t.air)}</h2>
  <dl class="ls-facts ls-air-facts" data-ls="air">${view.airHtml}</dl>
  <div class="ls-sliders" data-ls="manual" hidden>${slider('airTempC', t.airTemp, -5, 45, 0.5, '°C')}${slider('trackTempC', t.trackTemp, 5, 65, 0.5, '°C')}${slider('humidityPct', t.humidity, 0, 100, 1, '%')}${slider('pressureHpa', t.pressure, 760, 1040, 1, 'hPa')}${slider('windSpeed', t.wind, 0, 15, 0.1, 'm/s')}${slider('windFromDeg', t.windFrom, 0, 359, 1, '°')}</div>
+</section>
+<section class="panel ls-panel ls-evo"><h2>${esc(t.evo)}</h2><p>${esc(t.evoLead)}</p>
+ <div class="ls-controls ls-evo-sel"><label>${esc(t.evoType)}<select data-evo="type">${['qualifying', 'practice'].map(k => `<option value="${k}">${esc(t.evoTypes[k])}</option>`).join('')}</select></label>
+ <label>${esc(t.evoTyre)}<select data-evo="tyre">${['slick', 'inter', 'wet'].map(k => `<option value="${k}">${esc(t.tyres[k])}</option>`).join('')}</select></label>
+ <label class="ls-check"><input type="checkbox" data-evo="useCurve" checked> ${esc(t.evoCurve)}</label></div>
+ <div class="ls-sliders">${evoSlider('end', t.evoEnd, 0, 120, 1, t.min)}${evoSlider('gainPct', t.evoGain, 0, 3, 0.05, '%')}${evoSlider('tauMin', t.evoTau, 5, 150, 1, t.min)}${evoSlider('wetStart', t.evoWet, 0, 1, 0.05, '')}${evoSlider('dryMin', t.evoDry, 0, 90, 1, t.min)}${evoSlider('warmupLaps', t.evoWarm, 0, 4, 1, '')}</div>
+ <dl class="ls-facts" data-ls="evoFacts">${view.evoFacts}</dl>
+ <div class="ls-scroll" data-ls="evoChart">${view.evoSvg}</div>
 </section>
 <section class="panel ls-panel"><h2>${esc(t.fia)}</h2><p>${esc(t.fiaLead)}</p>
  ${changes ? `<p class="fine"><a href="${esc(changes.document.url)}" target="_blank" rel="noopener noreferrer" data-no-translate>${esc(changes.event)} · ${esc(changes.document.title)}</a></p><p class="fine">${esc(fittedYear(id) >= changes.year ? t.inFit(fittedYear(id)) : t.notInFit)}</p><ul class="ls-changes">${changeRows}</ul><label class="ls-slider ls-strength"><span>${esc(t.strength)}</span><input type="range" data-ls="strength" min="0" max="2" step="0.25" value="1"><output data-ls="strengthOut">×1</output></label>` : `<p class="fine">${esc(t.noChanges)}</p>`}
@@ -266,17 +287,34 @@ function computeView(K, data, state, R) {
   if (cmp) series.push({v: cmp.v.map(x => x * 3.6)});
   const traceSvg = R.renderTrace(d.ds, series, {sectors: d.sectors || [], label: t.trace, km: t.km});
   const keyHtml = '<span class="ls-key-0"></span>' + sel.label + (cmp ? ' <span class="ls-key-1"></span>' + data.cars[state.compareId].label : '');
-  return {lap: fmt(res.lapTime), poleHtml, factsHtml, airHtml, kindLabel, mapSvg, traceSvg, keyHtml, windHtml, weather: w};
+  // Track evolution: lap over the session from the simulated lap (= end-of-qualifying track state)
+  const se = sel.series === 'wec' ? 'wec' : 'f1', ev = Object.assign({type: 'qualifying', tyre: 'slick', useCurve: true}, state.evo || {});
+  const coef = data.evo[se][ev.type], qc = data.evo[se].qualifying;
+  const endOf = c => c.curve ? c.curve[c.curve.length - 1][0] : (se === 'wec' ? (c === qc ? 20 : 90) : 60);
+  const P = Object.assign({}, coef, {session: ev.type, tyre: ev.tyre, useCurve: ev.useCurve && !!coef.curve, wetStart: 0, dryMin: 20, warmupLaps: 0}, ev.over || {});
+  const evo = {end: ev.over && Number.isFinite(ev.over.end) ? ev.over.end : endOf(coef), gainPct: +(+P.gainPct).toFixed(2), tauMin: Math.round(P.tauMin), wetStart: P.wetStart, dryMin: P.dryMin, warmupLaps: P.warmupLaps};
+  const lap0 = res.lapTime / (1 + R.evolutionDelta(Object.assign({}, qc, {session: 'qualifying', useCurve: !!qc.curve}), endOf(qc), Infinity));
+  const curve = R.evolutionCurve(lap0, P, {to: Math.max(evo.end, 1), step: Math.max(0.5, evo.end / 60)});
+  const first = curve.points[0].lap, last = curve.last.lap;
+  const evoFacts = fact(t.evoLast, fmt(last)) + fact(t.evoChange, (last - first >= 0 ? '+' : '−') + Math.abs(last - first).toFixed(3) + ' s')
+    + fact(t.evoBasisH, P.useCurve ? t.evoBasis.track : coef.calibrated ? t.evoBasis.series : t.evoBasis.default)
+    + (coef.holdoutPct != null ? fact(t.evoErr, '±' + (last * coef.holdoutPct / 100).toFixed(2) + ' s') : '');
+  const ew = 640, eh = 200, lo = Math.min(...curve.points.map(p => p.lap)), hi = Math.max(...curve.points.map(p => p.lap));
+  const ex = m => 44 + m / Math.max(1, evo.end) * (ew - 56), ey = v => 12 + (hi - v) / Math.max(0.05, hi - lo) * (eh - 40);
+  const evoSvg = '<svg class="ls-race" viewBox="0 0 ' + ew + ' ' + eh + '" role="img" aria-label="' + t.evoChart + '"><polyline fill="none" stroke="currentColor" stroke-width="2" points="' + curve.points.map(p => ex(p.minute).toFixed(1) + ',' + ey(p.lap).toFixed(1)).join(' ') + '"/>'
+    + '<text x="2" y="16" font-size="11" fill="currentColor">' + fmt(hi) + '</text><text x="2" y="' + (eh - 28) + '" font-size="11" fill="currentColor">' + fmt(lo) + '</text>'
+    + '<text x="44" y="' + (eh - 6) + '" font-size="11" fill="currentColor">0</text><text x="' + (ew - 12) + '" y="' + (eh - 6) + '" font-size="11" text-anchor="end" fill="currentColor">' + evo.end + ' ' + t.min + '</text></svg>';
+  return {lap: fmt(res.lapTime), poleHtml, factsHtml, airHtml, kindLabel, mapSvg, traceSvg, keyHtml, windHtml, weather: w, evo, evoFacts, evoSvg};
 }
 
 // Browser controller
-function lapsimClient(K, computeView, renderMap, renderTrace) {
+function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, evolutionCurve) {
   const el = document.getElementById('lapsim-data'); if (!el) return;
-  const R = {renderMap, renderTrace};
+  const R = {renderMap, renderTrace, evolutionDelta, evolutionCurve};
   const data = JSON.parse(el.textContent);
   const q = s => document.querySelector('[data-ls="' + s + '"]');
   const yearKey = data.conds['2026'] ? '2026' : Object.keys(data.conds)[0];
-  const state = {carId: data.carId, compareId: '', mode: 'real', manual: Object.assign({pressureHpa: 1013, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0}, data.conds[yearKey] || {}), active: {}, strength: 1};
+  const state = {carId: data.carId, compareId: '', mode: 'real', manual: Object.assign({pressureHpa: 1013, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0}, data.conds[yearKey] || {}), active: {}, strength: 1, evo: {type: 'qualifying', tyre: 'slick', useCurve: true, over: {}}};
   const sliders = document.querySelectorAll('[data-cond]');
   const syncSliders = () => sliders.forEach(s => { const k = s.dataset.cond, v = state.manual[k]; if (Number.isFinite(v)) s.value = v; const o = document.querySelector('[data-out="' + k + '"]'); if (o) o.textContent = Number(s.value).toFixed(s.step < 1 ? 1 : 0); });
   let pending = false;
@@ -288,6 +326,8 @@ function lapsimClient(K, computeView, renderMap, renderTrace) {
       q('lap').textContent = v.lap; q('pole').innerHTML = v.poleHtml; q('facts').innerHTML = v.factsHtml; q('air').innerHTML = v.airHtml;
       q('map').innerHTML = v.mapSvg; q('trace').innerHTML = v.traceSvg; q('key').innerHTML = v.keyHtml; q('wind').innerHTML = v.windHtml;
       q('carLabel').textContent = data.cars[state.carId].label; q('carKind').textContent = v.kindLabel;
+      q('evoFacts').innerHTML = v.evoFacts; q('evoChart').innerHTML = v.evoSvg;
+      document.querySelectorAll('[data-evo-out]').forEach(o => { const k = o.dataset.evoOut; o.textContent = v.evo[k]; const i = document.querySelector('input[data-evo="' + k + '"]'); if (i && document.activeElement !== i) i.value = v.evo[k]; });
     });
   };
   q('car').addEventListener('change', e => { state.carId = e.target.value; const u = new URL(location.href); u.searchParams.set('car', state.carId); history.replaceState(null, '', u); update(); });
@@ -296,12 +336,20 @@ function lapsimClient(K, computeView, renderMap, renderTrace) {
   sliders.forEach(s => s.addEventListener('input', () => { state.manual[s.dataset.cond] = Number(s.value); syncSliders(); update(); }));
   document.querySelectorAll('[data-change]').forEach(c => c.addEventListener('change', () => { state.active[c.dataset.change] = c.checked; update(); }));
   const st = q('strength'); if (st) st.addEventListener('input', () => { state.strength = Number(st.value); q('strengthOut').textContent = '×' + state.strength; update(); });
+  // track evolution: moving rubber sliders switches from the measured curve to the formula
+  document.querySelectorAll('[data-evo]').forEach(i => i.addEventListener(i.type === 'range' ? 'input' : 'change', () => {
+    const k = i.dataset.evo, e = state.evo;
+    if (k === 'type' || k === 'tyre') { e[k] = i.value; if (k === 'type') e.over = {}; }
+    else if (k === 'useCurve') e.useCurve = i.checked;
+    else { e.over[k] = Number(i.value); if (k === 'gainPct' || k === 'tauMin') { e.useCurve = false; const c = document.querySelector('[data-evo="useCurve"]'); if (c) c.checked = false; } }
+    update();
+  }));
   syncSliders();
 }
 
 let scriptText = null;
 export function lapsimScript() {
-  if (!scriptText) scriptText = '(()=>{const K=(' + lapsimKernel.toString() + ')();const renderMap=' + renderMap.toString() + ';const renderTrace=' + renderTrace.toString() + ';const computeView=' + computeView.toString() + ';(' + lapsimClient.toString() + ')(K,computeView,renderMap,renderTrace);})();';
+  if (!scriptText) scriptText = '(()=>{const K=(' + lapsimKernel.toString() + ')();const renderMap=' + renderMap.toString() + ';const renderTrace=' + renderTrace.toString() + ';const evolutionDelta=' + evolutionDelta.toString() + ';const evolutionCurve=' + evolutionCurve.toString() + ';const computeView=' + computeView.toString() + ';(' + lapsimClient.toString() + ')(K,computeView,renderMap,renderTrace,evolutionDelta,evolutionCurve);})();';
   return scriptText;
 }
 export function lapsimScriptVersion() {
@@ -326,5 +374,7 @@ const CSS = `:root{--sim-slow:#ffa94d}:root[data-theme="light"]{--sim-slow:#245d
 .ls-strength{max-width:520px;grid-template-columns:minmax(110px,1fr) minmax(0,2fr) 52px}
 .ls-changes{list-style:none;margin:0;padding:0;display:grid;gap:10px}.ls-change label{display:flex;gap:12px;align-items:flex-start;color:var(--text);font-size:14px;min-width:0}.ls-change input{width:20px;height:20px;min-height:0;margin-top:2px;accent-color:var(--mint)}.ls-change small{display:block;color:var(--muted);font-size:12px;margin-top:2px}.ls-change.is-info label{color:var(--muted)}.ls-dot{width:20px;flex:0 0 20px;text-align:center}.ls-dot::before{content:'·'}
 .ls-table td,.ls-table th{white-space:nowrap}.ls-notes{margin:0;padding-left:20px;display:grid;gap:10px;line-height:1.7;color:var(--muted);max-width:80ch}.ls-panel h3{font-size:18px;margin-top:6px}
+
+.ls-evo .ls-controls{grid-template-columns:repeat(3,minmax(0,1fr));margin:12px 0 16px}.ls-check{display:flex;align-items:center;gap:8px;align-self:end;min-height:40px}.ls-check input{width:20px;height:20px;min-height:0;accent-color:var(--mint)}.ls-evo .ls-facts{margin-top:16px}
 @media(max-width:900px){.ls-stage{grid-template-columns:1fr;gap:24px}.ls-hero h1{font-size:32px}.ls-controls{grid-template-columns:1fr 1fr}.ls-air-facts{grid-template-columns:repeat(2,minmax(0,1fr))}.ls-sliders{grid-template-columns:1fr}}
 @media(max-width:520px){.ls-controls{grid-template-columns:1fr}.ls-facts{grid-template-columns:1fr 1fr}.ls-slider{grid-template-columns:1fr 52px 36px}.ls-slider>span:first-child{grid-column:1/-1}}`;

@@ -24,8 +24,6 @@ export const EVOLUTION_DEFAULTS = {
 // Session type scales the rubber gain (a race lays down more rubber per minute than practice)
 export const SESSION_SCALE = {practice: 1, qualifying: 0.8, sprint: 1.1, race: 1.3};
 
-const num = (v, d = 0) => Number.isFinite(v) ? v : d;
-
 // Coefficients for a series/track/session: fitted track value > fitted series value > default
 export function evolutionCoeffs(series = 'f1', track = null, session = 'qualifying') {
   const fit = lapsimEvolution?.series?.[series], def = EVOLUTION_DEFAULTS[series] || EVOLUTION_DEFAULTS.f1;
@@ -35,27 +33,28 @@ export function evolutionCoeffs(series = 'f1', track = null, session = 'qualifyi
     holdoutPct: ses?.holdoutPct ?? fit?.holdoutPct ?? null};
 }
 
-// Lap-time change (fraction) at session minute t and lap k after the out-lap
+// Lap-time change (fraction) at session minute t and lap k after the out-lap. Self-contained: the
+// /simulation page sends this function's source to the browser.
 export function evolutionDelta(p = {}, t = 0, k = Infinity) {
+  const num = (v, d = 0) => Number.isFinite(v) ? v : d, T = Math.max(0, t);
+  const scale = {practice: 1, qualifying: 0.8, sprint: 1.1, race: 1.3}[p.session] ?? 1; // = SESSION_SCALE
   let rubber = 0;
-  if (Array.isArray(p.curve) && p.curve.length > 1 && p.useCurve !== false) rubber = interp(p.curve, t) / 100;
-  else {
-    const a = num(p.gainPct, 0) / 100 * (SESSION_SCALE[p.session] ?? 1), tau = num(p.tauMin, 0);
-    rubber = a > 0 && tau > 0 ? -a * (1 - Math.exp(-Math.max(0, t) / tau)) : 0;
+  const c = p.curve;
+  if (Array.isArray(c) && c.length > 1 && p.useCurve !== false) {
+    // measured curve (pct), piecewise linear, flat outside its range
+    let v = c.at(-1)[1];
+    if (T <= c[0][0]) v = c[0][1];
+    else for (let i = 1; i < c.length; i++) if (T <= c[i][0]) { v = c[i - 1][1] + (c[i][1] - c[i - 1][1]) * (T - c[i - 1][0]) / Math.max(1e-9, c[i][0] - c[i - 1][0]); break; }
+    rubber = v / 100;
+  } else {
+    const a = num(p.gainPct) / 100 * scale, tau = num(p.tauMin);
+    rubber = a > 0 && tau > 0 ? -a * (1 - Math.exp(-T / tau)) : 0;
   }
-  const w0 = Math.min(1, Math.max(0, num(p.wetStart, 0))), td = num(p.dryMin, 0);
-  const P = (p.P || {})[p.tyre || 'slick'] ?? 0;
+  const w0 = Math.min(1, Math.max(0, num(p.wetStart))), td = num(p.dryMin), P = (p.P || {})[p.tyre || 'slick'] ?? 0;
   // a track that does not dry (td = 0) stays at its start wetness
-  const wet = w0 > 0 ? w0 * P * (td > 0 ? Math.exp(-Math.max(0, t) / td) : 1) : 0;
-  const n = num(p.warmupLaps, 0), wu = n > 0 && Number.isFinite(k) ? num(p.warmupPct, 0) / 100 * Math.max(0, 1 - (k - 1) / n) : 0;
+  const wet = w0 > 0 ? w0 * P * (td > 0 ? Math.exp(-T / td) : 1) : 0;
+  const n = num(p.warmupLaps), wu = n > 0 && Number.isFinite(k) ? num(p.warmupPct) / 100 * Math.max(0, 1 - (k - 1) / n) : 0;
   return rubber + wet + wu;
-}
-
-// piecewise-linear interpolation of [[minute, pct], …], flat outside the range
-function interp(pts, t) {
-  if (t <= pts[0][0]) return pts[0][1];
-  for (let i = 1; i < pts.length; i++) if (t <= pts[i][0]) { const [x0, y0] = pts[i - 1], [x1, y1] = pts[i]; return y0 + (y1 - y0) * (t - x0) / Math.max(1e-9, x1 - x0); }
-  return pts.at(-1)[1];
 }
 
 // Expected lap time over a session: lap0 = the simulated lap on the reference track state (the
