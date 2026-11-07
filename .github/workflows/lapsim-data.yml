@@ -18,6 +18,10 @@ on:
         description: 'Seasons to fetch (comma separated)'
         required: false
         default: '2023,2024,2025,2026'
+      calibrate:
+        description: 'Calibrate and commit (false: only build data and upload it as an artifact)'
+        required: false
+        default: 'true'
 
 permissions:
   contents: write
@@ -57,15 +61,29 @@ jobs:
       - run: npm ci --omit=dev --ignore-scripts
       - name: Fetch WEC timing (Al Kamel)
         run: node scripts/sim/fetch-wec.mjs
+      # derived speed traces and tracks for local calibration experiments (not committed)
+      - name: Upload derived data
+        uses: actions/upload-artifact@v4
+        with:
+          name: lapsim-derived
+          path: |
+            .cache/lapsim/traces.json
+            .cache/lapsim/wec.json
+            worker/lapsim/tracks-data.js
+          retention-days: 5
       - name: Calibrate cars (F1 and WEC)
+        if: inputs.calibrate != 'false'
         run: node scripts/sim/calibrate.mjs
       - name: Read FIA circuit changes
+        if: inputs.calibrate != 'false'
         run: node scripts/sim/fia-changes.mjs
         env:
           LAPSIM_CHANGE_YEARS: '2025,2026'
       - name: Test
+        if: inputs.calibrate != 'false'
         run: node --test tests/lapsim*.test.mjs
       - name: Commit derived data
+        if: inputs.calibrate != 'false'
         run: |
           git config user.name "kongboda-lapsim[bot]"
           git config user.email "lapsim@users.noreply.github.com"
