@@ -91,6 +91,26 @@ for (const g of groups) {
     ...Object.entries(perTrack).map(([id, r]) => `| ${id} | ${r.realLap.toFixed(3)} | ${r.simLap.toFixed(3)} | ${r.errorSec > 0 ? '+' : ''}${r.errorSec.toFixed(3)} | ${r.rmsKph} km/h | ${r.grip}${r.drag ? ` / drag ${r.drag}` : ''}${r.grip <= GRIP_LIMITS[0] + 0.001 || r.grip >= GRIP_LIMITS[1] - 0.001 ? ' (at limit: check this track)' : ''} |`), '');
 }
 
+// Predictions for 2026 tracks not raced yet (e.g. Las Vegas, Qatar, Abu Dhabi): the 2026 car on
+// the track factors learned from earlier seasons, weather of the latest real qualifying there, and
+// the 2026 recharge limit of that event. Error range: the 2026 holdout error.
+if (seasons[2026]) {
+  const car26 = joint.cars[2026], preds = {};
+  for (const id of Object.keys(joint.grips)) {
+    if (seasons[2026].tracks[id] || !tracks[id]) continue;
+    const last = [...traces].filter(t => t.track === id && t.position === 1 && !t.weather.rain).sort((a, b) => b.year - a.year)[0];
+    if (!last) continue;
+    const drag = joint.factors?.[id]?.drag ?? 1, c = drag !== 1 ? {...car26, cdA: car26.cdA * drag, cdALow: car26.cdALow * drag} : car26;
+    const w = withEnergy(last.weather, id, 2026), res = simulateLap(withGrip(tracks[id], joint.grips[id]), c, conditionsFromWeather(w));
+    preds[id] = {lap: +res.lapTime.toFixed(3), sectors: res.sectors?.map(x => +x.toFixed(3)), grip: +joint.grips[id].toFixed(4), drag: drag !== 1 ? +drag.toFixed(4) : undefined,
+      weatherFrom: last.year, rechargeMJ: w.rechargeMJ ?? null, lastPole: {year: last.year, lap: last.lap_seconds}};
+  }
+  seasons[2026].predictions = preds;
+  const h = seasons[2026].holdout?.rmsPct;
+  report.push('## 2026 predictions (tracks not raced yet in 2026)', '', '| Track | Predicted pole | ± (holdout) | Last real pole | Weather from | Recharge limit |', '|---|---|---|---|---|---|',
+    ...Object.entries(preds).map(([id, p]) => `| ${id} | ${p.lap.toFixed(3)} | ${h != null ? '±' + (p.lap * h / 100).toFixed(2) + ' s' : '–'} | ${p.lastPole.lap.toFixed(3)} (${p.lastPole.year}) | ${p.weatherFrom} | ${p.rechargeMJ ?? '–'} MJ |`), '');
+}
+
 // Forecast test (strictest): each 2026 qualifying predicted from data dated before it only
 if (FITTER === 'bcd' && E.LAPSIM_BACKTEST === 'on' && groups.some(g => g.key === 2026)) {
   const b = await backtestBCD(groups, 2026, {...BCD, rounds: 2, iters: Math.round(BCD.iters * 0.6)});
