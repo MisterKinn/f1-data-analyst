@@ -43,7 +43,8 @@ export function cleanLaps(race) {
   }
   if (scFrom != null) for (let l = scFrom; l <= scFrom + 60; l++) neutral.add(l);
   // intermediate/wet-tyre laps are already left out; only a mostly wet race is skipped
-  const wx = race.weather || [], wet = wx.length > 0 && wx.filter(w => w[5] > 0).length / wx.length > 0.3;
+  // a drying or damp track also distorts slope and race ratio, so any real rain share counts as wet
+  const wx = race.weather || [], rainShare = wx.length ? wx.filter(w => w[5] > 0).length / wx.length : 0, wet = rainShare > 0.05;
   const pitLaps = new Set((race.pits || []).map(([d, l]) => d + ':' + l));
   const out = [];
   for (const [num, d] of Object.entries(race.drivers || {})) {
@@ -55,7 +56,7 @@ export function cleanLaps(race) {
   // race length: last lap number of the winner (array length can include duplicate rows)
   const ds = Object.values(race.drivers || {}), win = ds.find(d => d.position === 1) || ds[0];
   const totalLaps = win ? Math.max(0, ...win.laps.map(l => l[col.lap]).filter(Number.isFinite)) : 0;
-  return {laps: out, wet, totalLaps};
+  return {laps: out, wet, rainShare, totalLaps};
 }
 
 // One race: driver intercepts + lap slope + compound offsets (vs MEDIUM) + wear per compound

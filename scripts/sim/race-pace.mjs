@@ -16,7 +16,15 @@ const races = await read('races.json');
 // real pole lap per season and track, from the qualifying traces (build-geometry.mjs)
 const traces = await read('traces.json');
 // a wet qualifying gives no dry reference: the race ratio is then left out (wear and slope still count)
-const poleOf = (year, circuit) => { const t = traces.find(t => t.year === year && t.track === slug(circuit) && t.position === 1); return t && !t.weather?.rain ? t.lap_seconds : null; };
+// The trace flag marks any rain in the session; a pole that is as fast as the dry poles of the
+// other seasons at the track (within 1.5%) was still set on a dry track.
+const poleOf = (year, circuit) => {
+  const id = slug(circuit), t = traces.find(t => t.year === year && t.track === id && t.position === 1);
+  if (!t) return null;
+  if (!t.weather?.rain) return t.lap_seconds;
+  const dry = traces.filter(o => o.track === id && o.position === 1 && o.year !== year && !o.weather?.rain).map(o => o.lap_seconds);
+  return dry.length && t.lap_seconds <= 1.015 * median(dry) ? t.lap_seconds : null;
+};
 
 // pit loss: in-lap + out-lap minus two clean laps of the same driver
 function pitLoss(race, clean) {
@@ -34,7 +42,7 @@ const log = [];
 for (const r of races.filter(x => x.session === 'Race').sort((a, b) => a.year - b.year)) {
   const race = await read(join('races', r.file));
   const {laps, wet, totalLaps} = cleanLaps(race);
-  if (wet) { log.push(`${r.year} ${r.circuit}: wet, skipped`); continue; }
+  if (wet) { log.push(`${r.year} ${r.circuit}: wet or damp, skipped`); continue; }
   const f = fitRace(laps);
   const pole = poleOf(r.year, r.circuit);
   if (!f) { log.push(`${r.year} ${r.circuit}: too few clean laps`); continue; }
@@ -47,6 +55,12 @@ for (const r of races.filter(x => x.session === 'Race').sort((a, b) => a.year - 
 const strip = f => { const {cleanLaps: _c, ...rest} = f; return rest; };
 const latestYear = Math.max(...Object.values(fits).flat().map(f => f.year));
 
+// New-season change of the fuel/rubber slope, learned from the other tracks already raced this season
+function seasonSlope(skip) {
+  const r = median(Object.entries(fits).filter(([o]) => o !== skip).map(([, l]) => { const c = l.find(f => f.year === latestYear), p = l.filter(f => f.year < latestYear); const ps = p.length ? poolTrack(p).slope : NaN; return c && ps < -0.01 ? c.slope / ps : NaN; }).filter(Number.isFinite));
+  return Number.isFinite(r) ? r : 1;
+}
+
 // Leave-out test: winner-pace laps of each latest-season race from earlier seasons + real pole
 const errs = [], testRows = [];
 for (const [id, list] of Object.entries(fits)) {
@@ -56,7 +70,8 @@ for (const [id, list] of Object.entries(fits)) {
   // scale for the new season's race ratio, learned from the other tracks already raced this season
   const k = median(Object.entries(fits).filter(([o]) => o !== id).map(([, l]) => { const c = l.find(f => f.year === latestYear), p = l.filter(f => f.year < latestYear); return c && p.length && c.raceRatio ? c.raceRatio / poolTrack(p).raceRatio : NaN; }).filter(Number.isFinite));
   if (P.raceRatio == null) continue;
-  const track = {...P, raceRatio: P.raceRatio * (Number.isFinite(k) ? k : 1)};
+  const ks = seasonSlope(id);
+  const track = {...P, raceRatio: P.raceRatio * (Number.isFinite(k) ? k : 1), slope: P.slope * ks};
   if (!cur.pole || !Number.isFinite(track.raceRatio)) continue;
   // leading race pace at mid-race: start pace + fuel/track slope over half the race, predicted vs fitted
   const mid = (cur.laps - 1) / 2, pred = cur.pole * track.raceRatio + track.slope * mid, real = cur.ref + cur.slope * mid;
@@ -68,23 +83,25 @@ const rms = errs.length ? Math.sqrt(errs.reduce((s, v) => s + v * v, 0) / errs.l
 
 // 2026 race ratio for tracks not raced yet this season: latest pooled ratio × this season's change
 const kSeason = median(Object.values(fits).map(l => { const c = l.find(f => f.year === latestYear), p = l.filter(f => f.year < latestYear); return c && p.length && c.raceRatio ? c.raceRatio / poolTrack(p).raceRatio : NaN; }).filter(Number.isFinite));
+const kSlope = seasonSlope(null);
 const tracks = {};
 for (const [id, list] of Object.entries(fits)) {
   const pooled = poolTrack(list.map(strip));
   const raced = list.some(f => f.year === latestYear && f.raceRatio);
   // no dry qualifying at this track yet: the median ratio of this season's races
   const seasonMedian = median(Object.values(fits).flat().filter(f => f.year === latestYear && f.raceRatio).map(f => f.raceRatio));
+  if (!list.some(f => f.year === latestYear)) pooled.slope *= kSlope;
   tracks[id] = {...pooled, raceRatio: raced ? list.find(f => f.year === latestYear && f.raceRatio).raceRatio : pooled.raceRatio != null ? pooled.raceRatio * (Number.isFinite(kSeason) ? kSeason : 1) : seasonMedian,
     ratioBasis: raced ? latestYear : pooled.raceRatio != null ? 'scaled' : 'season-median'};
   for (const k of ['slope', 'raceRatio', 'pitLoss']) if (tracks[id][k] != null) tracks[id][k] = Math.round(tracks[id][k] * 1e5) / 1e5;
   for (const k of ['offset', 'wear']) for (const c of COMPOUNDS) if (tracks[id][k][c] != null) tracks[id][k][c] = Math.round(tracks[id][k][c] * 1e4) / 1e4;
 }
 
-const out = {generatedAt: new Date().toISOString(), season: latestYear, seasonRatioChange: kSeason, test: {rmsPct: rms, races: errs.length}, tracks};
+const out = {generatedAt: new Date().toISOString(), season: latestYear, seasonRatioChange: kSeason, seasonSlopeChange: kSlope, test: {rmsPct: rms, races: errs.length}, tracks};
 await writeFile('worker/lapsim/race-data.js', `// Generated by scripts/sim/race-pace.mjs from OpenF1 race laps (fitted factors only). Do not edit by hand.\nexport const lapsimRace=${JSON.stringify(out)};\n`);
 
 const fmt = s => `${Math.floor(s / 60)}:${(s % 60).toFixed(3).padStart(6, '0')}`;
-const report = ['# Race pace model', '', `Generated ${out.generatedAt}. Season ${latestYear}; race-ratio change vs earlier seasons ×${kSeason?.toFixed(4)}.`, '',
+const report = ['# Race pace model', '', `Generated ${out.generatedAt}. Season ${latestYear}; race-ratio change vs earlier seasons ×${kSeason?.toFixed(4)}, slope change ×${kSlope.toFixed(3)}.`, '',
   `Leave-out test (leading race pace, earlier seasons + real pole): ${rms?.toFixed(2)}% RMS over ${errs.length} races.`, '',
   '| Track | Season | Fitted from | Error % |', '|---|---|---|---|', ...testRows.map(([id, y, f, e]) => `| ${id} | ${y} | ${f} | ${e.toFixed(2)} |`), '',
   '## Track factors', '', '| Track | Race ratio | Slope s/lap | Pit loss s | Wear S/M/H s/lap | Offset S/H s |', '|---|---|---|---|---|---|',
