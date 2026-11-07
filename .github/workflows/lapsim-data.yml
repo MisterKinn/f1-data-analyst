@@ -71,6 +71,7 @@ jobs:
             .cache/lapsim/wec.json
             worker/lapsim/tracks-data.js
           retention-days: 5
+          include-hidden-files: true
       - name: Calibrate cars (F1 and WEC)
         if: inputs.calibrate != 'false'
         run: node scripts/sim/calibrate.mjs

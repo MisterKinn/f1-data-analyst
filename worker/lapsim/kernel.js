@@ -63,6 +63,9 @@ export function lapsimKernel() {
       windFromDeg: Number.isFinite(w.windFromDeg) ? w.windFromDeg : 0,
       grip: gripFromTrackTemp(w.trackTempC, opts.grip),
       iceFactor: icePowerFactor(rho, opts.ice),
+      // per-event ERS recharge limit (2026+ rules), MJ per lap
+      rechargeMax: Number.isFinite(w.rechargeMJ) ? w.rechargeMJ * 1e6 : undefined,
+      clipMax: Number.isFinite(w.clipKW) ? w.clipKW * 1e3 : undefined,
       inputs: { pressureHpa, tempC, humidityPct: w.humidityPct ?? 50, trackTempC: w.trackTempC ?? null },
     };
   }
@@ -189,8 +192,12 @@ export function lapsimKernel() {
     }
 
     // 3) Forward pass for a given deployment cut-off speed (ERS strategy) and clip-harvest flag
-    const fwd = new Float64Array(n), ersUsed = new Float64Array(n), powerLimited = new Uint8Array(n);
-    const forward = (vCut) => {
+    const fwd = new Float64Array(n), ersUsed = new Float64Array(n), powerLimited = new Uint8Array(n), harv = new Float64Array(n);
+    // 2026+ rules: the MGU-K also recharges on throttle. Free where traction, not power, limits the car
+    // (spare ICE power), and by "super-clipping" (harvesting at full throttle above vH, which costs speed).
+    const throttleHarvest = ers.rule === 'f1-2026' && ers.throttleHarvest !== false;
+    const clipMax = env.clipMax ?? ers.clipMax ?? 350e3, etaRegen = ers.etaRegen ?? 0.9;
+    const forward = (vCut, vH = Infinity) => {
       const v = fwd;
       v[iMin] = Math.min(vLat[iMin], vBack[iMin]);
       for (let pass = 0; pass < 2; pass++) {
@@ -206,8 +213,14 @@ export function lapsimKernel() {
           // LMH hybrids also drive the front axle above a set speed (awdAboveKph): all four tyres
           const awd = t.awdAbove != null && vi > t.awdAbove;
           const fTrac = (awd ? muX * N : muX * nRear / Math.max(0.2, 1 - muX * t.hOverWb)) * ellipse(vi, i);
-          const fDrive = Math.min(fPow, fTrac);
+          let fDrive = Math.min(fPow, fTrac);
           powerLimited[i] = fPow <= fTrac ? 1 : 0;
+          harv[i] = 0;
+          if (throttleHarvest) {
+            const spare = pIce * etaD - fDrive * vi; // W at the wheels the ICE could still give
+            if (spare > 0) harv[i] = Math.min(clipMax, spare / etaD) * etaRegen;
+            else if (pErs === 0 && vi > vH) { const pc = Math.min(clipMax, pIce); fDrive -= pc * etaD / vi; harv[i] = pc * etaRegen; }
+          }
           // DC power the ERS-K actually supplies: whatever the ICE cannot, up to its limit
           ersUsed[i] = pErs > 0 ? Math.min(pErs, Math.max(0, fDrive * vi - pIce * etaD) / (etaK * etaD)) : 0;
           const drag = aeroFactor * cdAt(i, low) * va * va, roll = cRoll * N;
@@ -221,10 +234,11 @@ export function lapsimKernel() {
 
     // Energy accounting on the final profile
     const account = (v) => {
-      let eDeploy = 0, eRegen = 0, time = 0;
+      let eDeploy = 0, eRegen = 0, eHarv = 0, time = 0;
       for (let i = 0; i < n; i++) {
         const j = (i + 1) % n, vm = 0.5 * (v[i] + v[j]), dt = ds / Math.max(vm, 1);
         time += dt;
+        if (throttleHarvest && v[j] >= v[i] - 1e-6) eHarv += harv[i] * dt;
         if (v[j] > v[i] + 1e-6) eDeploy += ersUsed[i] * dt;
         if (v[j] < v[i] - 1e-6 && ers.regenMax) {
           // braking power at the wheels; the rear axle share can be recovered by the MGU-K
@@ -232,7 +246,7 @@ export function lapsimKernel() {
           eRegen += Math.min(ers.regenMax, (ers.regenShare ?? 0.6) * pBrake * (ers.etaRegen ?? 0.9)) * dt; // regenMax is a DC limit
         }
       }
-      return {eDeploy, eRegen, time};
+      return {eDeploy, eRegen: eRegen + eHarv, eBrake: eRegen, eHarv, time};
     };
 
     // 4) Choose the deployment cut-off speed so the lap stays inside the energy budget.
@@ -240,18 +254,34 @@ export function lapsimKernel() {
     //    approximation of the optimal allocation.
     const budget = (eRegen) => {
       if (!ers.pMax) return 0;
-      if (ers.rule === 'f1-2026') return (ers.socWindow ?? 4e6) + Math.min(eRegen, ers.rechargeMax ?? 8.5e6);
+      if (ers.rule === 'f1-2026') return (ers.socWindow ?? 4e6) + Math.min(eRegen, env.rechargeMax ?? ers.rechargeMax ?? 8.5e6);
       return ers.deployMax ?? 4e6;
     };
-    let vCut = vMaxCar + 1, v = forward(vCut), acc = account(v);
-    if (ers.pMax && acc.eDeploy > budget(acc.eRegen)) {
+    const fitCut = (vH, fixedBudget) => {
       let lo = 5, hi = vMaxCar + 1;
-      for (let it = 0; it < 26; it++) {
-        const mid = 0.5 * (lo + hi);
-        v = forward(mid); acc = account(v);
-        if (acc.eDeploy > budget(acc.eRegen)) hi = mid; else lo = mid;
+      for (let it = 0; it < 20; it++) {
+        const mid = 0.5 * (lo + hi), a = account(forward(mid, vH));
+        if (a.eDeploy > (fixedBudget ?? budget(a.eRegen))) hi = mid; else lo = mid;
       }
-      vCut = lo; v = forward(vCut); acc = account(v);
+      return lo;
+    };
+    let vCut = vMaxCar + 1, vH = Infinity, v = forward(vCut), acc = account(v);
+    if (ers.pMax && acc.eDeploy > budget(acc.eRegen)) {
+      vCut = fitCut(Infinity); v = forward(vCut); acc = account(v);
+      // super-clipping: if the lap is short of the recharge limit, harvest at full throttle at the top of
+      // the straights (above vH) and spend the energy lower down, when that is faster
+      const limit = env.rechargeMax ?? ers.rechargeMax ?? 8.5e6, soc = ers.socWindow ?? 4e6;
+      if (throttleHarvest && acc.eRegen < limit - 1e4) {
+        const tA = acc.time, cutB = fitCut(Infinity, soc + limit);
+        let lo = 5, hi = vMaxCar + 1;
+        for (let it = 0; it < 20; it++) {
+          const mid = 0.5 * (lo + hi), a = account(forward(cutB, mid));
+          if (a.eDeploy > budget(a.eRegen)) hi = mid; else lo = mid;
+        }
+        const vB = lo, vb = forward(cutB, vB), b = account(vb);
+        if (b.eDeploy <= budget(b.eRegen) + 1e3 && b.time < tA) { vCut = cutB; vH = vB; acc = b; v = vb; }
+        else { v = forward(vCut); acc = account(v); }
+      }
     }
 
     // Results
@@ -268,7 +298,7 @@ export function lapsimKernel() {
     const sectors = sec ? [time[sec[0]], time[sec[1]] - time[sec[0]], time[n] - time[sec[1]]] : null;
     return {
       lapTime: time[n], sectors, v: Array.from(v), time: Array.from(time.subarray(0, n)), limit: Array.from(limit),
-      energy: {deployJ: acc.eDeploy, regenJ: acc.eRegen, budgetJ: budget(acc.eRegen), cutoffKph: vCut > vMaxCar ? null : vCut * 3.6},
+      energy: {deployJ: acc.eDeploy, regenJ: acc.eRegen, budgetJ: budget(acc.eRegen), rechargeMaxJ: ers.rule === 'f1-2026' ? env.rechargeMax ?? ers.rechargeMax ?? 8.5e6 : null, throttleHarvestJ: acc.eHarv ?? 0, clipFromKph: Number.isFinite(vH) ? vH * 3.6 : null, cutoffKph: vCut > vMaxCar ? null : vCut * 3.6},
       vMaxKph: Math.max(...v) * 3.6, vMinKph: Math.min(...v) * 3.6,
     };
   }

@@ -1,0 +1,58 @@
+name: Lap simulator experiment
+
+# Calibration experiments in parallel: each matrix entry runs calibrate.mjs with its own settings on
+# the derived data of a "Lap simulator data" run (artifact lapsim-derived). Push to lapsim-exp/**.
+# Settings: scripts/sim/experiments.json ({"source_run": id, "configs": [{"name", "env"}]}).
+on:
+  push:
+    branches: ['lapsim-exp/**']
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      configs: ${{ steps.p.outputs.configs }}
+      run: ${{ steps.p.outputs.run }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: p
+        run: |
+          echo "configs=$(jq -c '.configs' scripts/sim/experiments.json)" >> "$GITHUB_OUTPUT"
+          echo "run=$(jq -r '.source_run' scripts/sim/experiments.json)" >> "$GITHUB_OUTPUT"
+  run:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    strategy:
+      fail-fast: false
+      matrix:
+        config: ${{ fromJson(needs.plan.outputs.configs) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Get derived data
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download ${{ needs.plan.outputs.run }} -R ${{ github.repository }} -n lapsim-derived -D derived
+          mkdir -p .cache/lapsim
+          cp derived/.cache/lapsim/*.json .cache/lapsim/
+          cp derived/worker/lapsim/tracks-data.js worker/lapsim/tracks-data.js
+      - name: Calibrate (${{ matrix.config.name }})
+        run: |
+          for kv in $(echo '${{ toJson(matrix.config.env) }}' | jq -r 'to_entries[] | "\(.key)=\(.value)"'); do export "$kv"; done
+          node scripts/sim/calibrate.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: exp-${{ matrix.config.name }}
+          path: |
+            docs/lapsim-report.md
+            worker/lapsim/calibration-data.js
+          retention-days: 5

@@ -6,6 +6,7 @@ import {lapsimCalibration} from './calibration-data.js';
 import {RULE_CHANGES} from './cars.js';
 import {TRACK_NAMES, resolveTrack} from './names.js';
 import {carsFor, realConditions, latestChanges, fittedYear} from './scenario.js';
+import {rechargeLimitMJ} from './energy-limits.js';
 
 const K = lapsimKernel();
 const SITE = 'https://kongboda-motorsports.vercel.app';
@@ -48,7 +49,7 @@ function summary(res, d, car) {
   });
   return {lap_time: fmt(res.lapTime), lap_seconds: r3(res.lapTime), sectors_s: res.sectors?.map(r3) ?? null,
     top_speed_kph: Math.round(res.vMaxKph), lowest_speed_kph: Math.round(res.vMinKph),
-    energy: car.ers?.pMax ? {deployed_mj: r3(res.energy.deployJ / 1e6), budget_mj: r3(res.energy.budgetJ / 1e6), recovered_mj: r3(res.energy.regenJ / 1e6), recharge_limit_mj: car.ers.rule === 'f1-2026' ? r3((car.ers.rechargeMax ?? 8.5e6) / 1e6) : null,
+    energy: car.ers?.pMax ? {deployed_mj: r3(res.energy.deployJ / 1e6), budget_mj: r3(res.energy.budgetJ / 1e6), recovered_mj: r3(res.energy.regenJ / 1e6), recharge_limit_mj: res.energy.rechargeMaxJ != null ? r3(res.energy.rechargeMaxJ / 1e6) : null,
       deploy_cutoff_kph: res.energy.cutoffKph ? Math.round(res.energy.cutoffKph) : null} : null,
     limited_by_pct_of_lap: {cornering_grip: pct(share[0]), traction: pct(share[1]), power: pct(share[2]), braking: pct(share[3])}, corners};
 }
@@ -73,7 +74,9 @@ export function simulate(args = {}) {
   if (Number.isFinite(args.pressure_hpa)) [pressureHpa, pressureSrc] = [args.pressure_hpa, 'given'];
   else if (Number.isFinite(args.altitude_m)) [pressureHpa, pressureSrc] = [K.pressureFromAltitude(args.altitude_m), `estimated from ${args.altitude_m} m altitude (standard atmosphere)`];
   else [pressureHpa, pressureSrc] = pick(undefined, 'pressureHpa', 1013.25);
-  const w = {airTempC, trackTempC, humidityPct, pressureHpa, windSpeed, windFromDeg};
+  // per-event ERS recharge limit (2026 values; 2027/2028 reuse them), ignored by older rule sets
+  const rechargeMJ = rechargeLimitMJ(id, 2026);
+  const w = {airTempC, trackTempC, humidityPct, pressureHpa, windSpeed, windFromDeg, rechargeMJ: rechargeMJ ?? undefined};
   const env = K.conditionsFromWeather(w);
   // FIA changes
   const ch = latestChanges(id);
@@ -124,7 +127,7 @@ export function simulate(args = {}) {
     applied: applied.map(a => ({type: a.type, applied: a.applied, from_m: a.sStart != null ? Math.round(a.sStart) : null, to_m: a.sEnd != null ? Math.round(a.sEnd) : null})),
     note: fittedYear(id) >= ch.year ? `The cars were fitted on a real ${fittedYear(id)} lap that already ran with these changes; switching them on adds them a second time.` : 'Not yet in the fitted laps: switch them on to estimate their effect.'};
   out.assumptions = ['Grip versus track temperature is an assumed curve (best near 35 °C).', 'Engine power changes with air density as (density/1.18)^0.15 (assumed for a turbocharged engine).',
-    'FIA change effects are assumed sizes, not measurements.', 'No gear shifts, tyre temperature, fuel burn or car-to-car effects.', '2026-2028 energy: harvesting only under braking (no harvesting at full throttle, "super-clipping"); the per-event recharge limit is taken as 8.5 MJ.'];
+    'FIA change effects are assumed sizes, not measurements.', 'No gear shifts, tyre temperature, fuel burn or car-to-car effects.', '2026-2028 energy: harvesting only under braking (no harvesting at full throttle, "super-clipping"); per-event qualifying recharge limit from 2026 press reports (FIA values per circuit), reused for 2027/2028.'];
   out.page = `${SITE}/simulation?track=${encodeURIComponent(id)}&car=${selKey}`;
   return out;
 }

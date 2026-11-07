@@ -6,6 +6,7 @@ import {join} from 'node:path';
 import {lapsimTracks} from '../../worker/lapsim/tracks-data.js';
 import {trackFromData} from '../../worker/lapsim/tracks.js';
 import {poleTrend} from '../../worker/lapsim/pole-trend.js';
+import {rechargeLimitMJ} from '../../worker/lapsim/energy-limits.js';
 import {PRIOR, applyRules, applyDevelopment, RULE_CHANGES} from '../../worker/lapsim/cars.js';
 import {simulateLap} from '../../worker/lapsim/engine.js';
 import {conditionsFromWeather} from '../../worker/lapsim/atmosphere.js';
@@ -14,6 +15,9 @@ import {SERIES} from '../../worker/lapsim/series.js';
 
 const CACHE = process.env.LAPSIM_CACHE || '.cache/lapsim';
 const ITERS = Number(process.env.LAPSIM_ITERS || 70), HOLDOUT_ITERS = Number(process.env.LAPSIM_HOLDOUT_ITERS || 25);
+// experiment knobs (defaults are the published settings)
+const WTIME = Number(process.env.LAPSIM_WTIME || 2);
+const ONLY_YEARS = process.env.LAPSIM_SEASONS ? process.env.LAPSIM_SEASONS.split(',').map(Number) : null;
 const traces = JSON.parse(await readFile(join(CACHE, 'traces.json'), 'utf8'));
 const tracks = Object.fromEntries(Object.entries(lapsimTracks).map(([id, d]) => [id, trackFromData(d)]));
 const PARAMS = ['muY', 'clA', 'cdA', 'cdALow', 'pIce'];
@@ -27,14 +31,17 @@ const report = ['# Lap simulator calibration', '', `Generated ${new Date().toISO
 // F1: all seasons fitted together (common rule): one car per season, one grip factor per track
 // shared by every season (same asphalt and line), so a car can be predicted on a track it has not
 // raced yet with the factor learned from another season.
+// 2026+ qualifying laps: the per-event ERS recharge limit is part of the conditions
+const withEnergy = (w, id, year) => { const mj = year >= 2026 && process.env.LAPSIM_ENERGY_LIMITS !== 'off' ? rechargeLimitMJ(id, year) : null; return mj ? {...w, rechargeMJ: mj} : w; };
 const groups = [];
 for (const year of [...new Set(traces.map(t => t.year))].sort()) {
-  const prior = PRIOR[year]; if (!prior) continue;
+  const prior = PRIOR[year]; if (!prior || (ONLY_YEARS && !ONLY_YEARS.includes(year))) continue;
   const laps = traces.filter(t => t.year === year && tracks[t.track] && !t.weather.rain && t.s.length > 100)
     .map(t => ({name: t.track, track: tracks[t.track], lapSeconds: t.lap_seconds, weight: t.position === 1 ? 1 : 0.5,
-      obs: {s: t.s, v: t.v.map(x => x / 3.6)}, weather: t.weather, meta: {sessionKey: t.session_key, driver: t.driver_number, position: t.position}}));
+      obs: {s: t.s, v: t.v.map(x => x / 3.6)}, weather: withEnergy(t.weather, t.track, year), meta: {sessionKey: t.session_key, driver: t.driver_number, position: t.position}}));
   if (laps.length < 4) { report.push(`${year}: not enough laps (${laps.length})`); continue; }
   const base = {...structuredClone(prior), linkMu: true};
+  if (process.env.LAPSIM_THROTTLE_HARVEST === 'off' && base.ers) base.ers.throttleHarvest = false;
   const params = PARAMS.map(k => {
     const [lo, hi] = BOUNDS[k], rel = k === 'pIce';
     return {key: k, path: k, base: base[k], step: 0.08, min: rel ? lo * base[k] : lo, max: rel ? hi * base[k] : hi};
@@ -42,14 +49,14 @@ for (const year of [...new Set(traces.map(t => t.year))].sort()) {
   groups.push({key: year, laps, base, params});
 }
 const t0 = Date.now();
-let joint = fitJoint(groups, {iters: ITERS});
+let joint = fitJoint(groups, {iters: ITERS, wTime: WTIME});
 // clean data (common rule): a lap more than 4% off after the fit is not a normal dry lap
 // (wet track, red flag, wrong lap); drop that season's laps on that track and fit again
 const bad = joint.perLap.filter(p => Math.abs(p.dt / p.realLap) > 0.04);
 if (bad.length) {
   for (const g of groups) { const drop = new Set(bad.filter(p => p.group === g.key).map(p => p.name)); g.laps = g.laps.filter(l => !drop.has(l.name)); }
   report.push(`Dropped (lap more than 4% off after the first fit): ${[...new Set(bad.map(p => p.group + ' ' + p.name))].join(', ')}`, '');
-  joint = fitJoint(groups, {iters: ITERS});
+  joint = fitJoint(groups, {iters: ITERS, wTime: WTIME});
 }
 report.push(`F1 joint fit of ${groups.map(g => g.key).join(' and ')}: ${((Date.now() - t0) / 1000).toFixed(0)} s, score ${joint.score.toFixed(3)}.`, '');
 for (const g of groups) {
@@ -63,7 +70,7 @@ for (const g of groups) {
   }
   // holdout: this season's laps on a quarter of the tracks left out, predicted with the factor the
   // other season gives that track
-  const h = holdoutJoint(groups, year, {iters: HOLDOUT_ITERS});
+  const h = holdoutJoint(groups, year, {iters: HOLDOUT_ITERS, wTime: WTIME});
   seasons[year] = {car, tracks: perTrack, laps: g.laps.length,
     holdout: {rmsPct: h.rmsPct != null ? +h.rmsPct.toFixed(2) : null, n: h.n, tracks: h.errors.map(e => ({track: e.name, errorSec: +e.dt.toFixed(3)}))}};
   report.push(`## ${year}`, '', `${g.laps.length} laps. Holdout: ${h.n ? `predicted ${h.n} unseen pole laps, typical error ${h.rmsPct.toFixed(2)}% (RMS)` : 'no track had a factor from another season'}.`, '',
@@ -109,7 +116,7 @@ if (s26) {
 // WEC classes, same rules: BoP values fixed; drag, downforce and tyre grip fitted to the best
 // qualifying/Hyperpole laps (lap time + speed trap). Track factors are shared from the F1 fit.
 const series = {};
-const wec = JSON.parse(await readFile(join(CACHE, 'wec.json'), 'utf8').catch(() => '[]'));
+const wec = process.env.LAPSIM_SKIP_WEC ? [] : JSON.parse(await readFile(join(CACHE, 'wec.json'), 'utf8').catch(() => '[]'));
 const f1Grip = id => Object.keys(seasons).sort().reverse().map(y => seasons[y]?.tracks?.[id]?.grip).find(g => g != null) ?? null;
 for (const [cls, def] of Object.entries(SERIES.wec.classes)) {
   for (const year of [...new Set(wec.map(w => w.year))].sort()) {

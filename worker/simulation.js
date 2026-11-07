@@ -7,6 +7,7 @@ import {RULE_CHANGES} from './lapsim/cars.js';
 import {SERIES} from './lapsim/series.js';
 import {carsFor as scenarioCars, realConditions, latestChanges, fittedYear, CAR_ORDER} from './lapsim/scenario.js';
 import {TRACK_NAMES as NAMES} from './lapsim/names.js';
+import {rechargeLimitMJ} from './lapsim/energy-limits.js';
 
 const K = lapsimKernel();
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -32,7 +33,7 @@ const T = {
     calibrated: '실측 보정', prior: '규정값 기반', projected: '예측',
     m1: '트랙 형상은 OpenF1의 예선 차량 위치(여러 드라이버의 베스트 랩)로 만든 실제 주행 라인입니다. 코너 번호는 공식 위치, 방위는 실제 지도와 맞췄습니다.',
     m2: '2019 기준 머신은 TUM(뮌헨공대)이 공개한 범용 F1 모델이고, 2025·2026 머신은 실제 폴 랩에 맞춰 보정했습니다.',
-    m3: '2026년 규정: MGU-K 350kW(290km/h 이상에서 감소, 345km/h에서 0), 배터리 사용 폭 4MJ, 랩당 회생 8.5MJ (Section C 5.2, Issue 21).',
+    m3: '2026년 규정: MGU-K 350kW(290km/h 이상에서 감소, 345km/h에서 0), 배터리 사용 폭 4MJ, 랩당 회생 최대 8.5MJ (Section C 5.2, Issue 21). 퀄리파잉 회생 한도는 FIA가 서킷별로 정한 값(5–9MJ, 언론 보도 기준)을 씁니다.',
     m4: '노면 온도에 따른 그립, 고도에 따른 엔진 출력 감소, FIA 변경 사항의 효과는 가정값입니다. 측정값처럼 읽지 마세요.',
     m5: '준정상상태 모델이라 변속, 타이어 온도 변화, 차 사이 간섭, 풀스로틀 중 회생(슈퍼 클리핑)은 계산하지 않습니다. 절대값보다 차이와 경향을 보는 데 쓰세요.',
     src: '자료', updated: '보정일',
@@ -55,7 +56,7 @@ const T = {
     calibrated: 'Fitted to real laps', prior: 'From the regulations', projected: 'Projection',
     m1: 'Track shapes are the real driving line built from OpenF1 car positions in qualifying (several drivers’ best laps). Corners use official positions; headings are aligned to real maps.',
     m2: 'The 2019 base car is TUM’s published generic F1 model; the 2025 and 2026 cars are fitted to real pole laps.',
-    m3: '2026 rules: MGU-K 350 kW (reduced above 290 km/h, zero at 345 km/h), 4 MJ battery window, 8.5 MJ recharge per lap (Section C 5.2, Issue 21).',
+    m3: '2026 rules: MGU-K 350 kW (reduced above 290 km/h, zero at 345 km/h), 4 MJ battery window, up to 8.5 MJ recharge per lap (Section C 5.2, Issue 21). Qualifying uses the per-circuit recharge limit the FIA sets (5–9 MJ, from press reports).',
     m4: 'Grip versus track temperature, engine power loss with altitude and the effect of FIA changes are assumptions, not measurements.',
     m5: 'A quasi-steady-state model ignores gear shifts, tyre temperature, car-to-car effects and harvesting at full throttle (super-clipping). Use it for differences and trends rather than absolute times.',
     src: 'Sources', updated: 'Calibrated',
@@ -123,7 +124,7 @@ export function simulationPage(query = {}, lang = 'ko') {
   const td = lapsimTracks[id], cars = carsFor(id, lang), conds = realConditions(id);
   const carId = cars[query.car] ? query.car : '2026';
   const changes = latestChanges(id);
-  const data = {lang, t, id, track: td, cars, carOrder: CAR_ORDER, carId, conds, changes,
+  const data = {lang, t, id, track: td, cars, carOrder: CAR_ORDER, carId, conds, changes, rechargeMJ: rechargeLimitMJ(id, 2026),
     calibration: {generatedAt: lapsimCalibration?.generatedAt || null, seasons: Object.fromEntries(Object.entries(lapsimCalibration?.seasons || {}).map(([y, s]) => [y, s.tracks?.[id] || null]))}};
   // first render on the server with the same code the browser uses
   const view = computeView(K, data, {carId, compareId: '', mode: 'real', manual: null, active: {}, strength: 1}, {renderMap, renderTrace});
@@ -184,7 +185,8 @@ function computeView(K, data, state, R) {
   const yearKey = data.conds[condKey] ? condKey : (data.conds['2026'] ? '2026' : Object.keys(data.conds)[0]);
   const w = Object.assign({pressureHpa: 1013.25, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0},
     Object.fromEntries(Object.entries(state.mode === 'manual' && state.manual ? state.manual : (data.conds[yearKey] || {})).filter(([, v]) => Number.isFinite(v))));
-  const env = K.conditionsFromWeather(w);
+  // per-event ERS recharge limit for 2026+ cars (ignored by older rule sets)
+  const env = K.conditionsFromWeather({...w, rechargeMJ: data.rechargeMJ ?? undefined});
   // FIA changes switched on by the user
   let track = base;
   const active = (data.changes?.changes || []).filter((c, i) => state.active[i]);
