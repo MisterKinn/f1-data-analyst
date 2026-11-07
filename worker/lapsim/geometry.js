@@ -51,7 +51,9 @@ export function projectOnto(ref, px, py) {
 }
 
 // Periodic local-linear kernel regression of values at positions s onto a uniform grid.
-export function kernelSmooth(s, vals, L, sigma, gridDs) {
+// sigmaAt(s) (optional) gives a local bandwidth no larger than sigma: tight corners, where samples
+// are dense, keep their shape; sparse fast sections use the full sigma.
+export function kernelSmooth(s, vals, L, sigma, gridDs, {sigmaAt = null} = {}) {
   const order = Array.from(s.keys()).sort((a, b) => s[a] - s[b]);
   const S = order.map(i => s[i]), V = order.map(i => vals[i]);
   const ext = 4 * sigma, xs = [], ys = [];
@@ -64,8 +66,9 @@ export function kernelSmooth(s, vals, L, sigma, gridDs) {
     const c = k * step;
     while (lo < xs.length && xs[lo] < c - ext) lo++;
     let sw = 0, swx = 0, swxx = 0, swy = 0, swxy = 0;
+    const sg = sigmaAt ? Math.min(sigma, sigmaAt(c)) : sigma;
     for (let i = lo; i < xs.length && xs[i] <= c + ext; i++) {
-      const d = xs[i] - c, w = Math.exp(-0.5 * (d / sigma) ** 2);
+      const d = xs[i] - c, w = Math.exp(-0.5 * (d / sg) ** 2);
       sw += w; swx += w * d; swxx += w * d * d; swy += w * ys[i]; swxy += w * d * ys[i];
     }
     const det = sw * swxx - swx * swx;

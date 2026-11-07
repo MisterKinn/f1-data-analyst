@@ -9,7 +9,7 @@ name: Lap simulator data
 on:
   push:
     branches: ['lapsim/**']
-    paths-ignore: ['worker/lapsim/tracks-data.js', 'worker/lapsim/calibration-data.js', 'worker/lapsim/track-changes-data.js', 'docs/lapsim-report.md']
+    paths-ignore: ['worker/lapsim/tracks-data.js', 'worker/lapsim/calibration-data.js', 'worker/lapsim/track-changes-data.js', 'docs/lapsim-report.md', 'docs/lapsim-geometry.md']
   schedule:
     - cron: '17 3 * * 2' # Tuesday 12:17 Korea time, after the race weekend
   workflow_dispatch:
@@ -52,8 +52,8 @@ jobs:
         with:
           path: .cache/lapsim/raw
           key: lapsim-raw-v1-${{ github.run_id }}
-      - name: Build tracks
-        run: node scripts/sim/build-geometry.mjs
+      - name: Choose track smoothing and build tracks
+        run: node scripts/sim/tune-geometry.mjs
       - run: npm ci --omit=dev --ignore-scripts
       - name: Fetch WEC timing (Al Kamel)
         run: node scripts/sim/fetch-wec.mjs
@@ -69,7 +69,7 @@ jobs:
         run: |
           git config user.name "kongboda-lapsim[bot]"
           git config user.email "lapsim@users.noreply.github.com"
-          git add worker/lapsim/tracks-data.js worker/lapsim/calibration-data.js worker/lapsim/track-changes-data.js docs/lapsim-report.md
+          git add worker/lapsim/tracks-data.js worker/lapsim/calibration-data.js worker/lapsim/track-changes-data.js docs/lapsim-report.md docs/lapsim-geometry.md
           if git diff --cached --quiet; then echo "No changes"; exit 0; fi
           git commit -m "Rebuild lap simulator tracks and calibration"
           if [ "${{ github.event_name }}" = "push" ]; then
