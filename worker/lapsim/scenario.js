@@ -63,7 +63,10 @@ export function realConditions(id) {
 // Latest "Changes to the circuit" list read from the race director's notes
 export function latestChanges(id) {
   const years = Object.keys(lapsimTrackChanges[id] || {}).sort();
-  return years.length ? {year: Number(years.at(-1)), ...lapsimTrackChanges[id][years.at(-1)]} : null;
+  if (!years.length) return null;
+  const e = lapsimTrackChanges[id][years.at(-1)];
+  // drop a signature line read by older parser versions ("… The FIA Formula 1 Race Director")
+  return {year: Number(years.at(-1)), ...e, changes: (e.changes || []).filter(c => !/race director\s*$/i.test(c.text))};
 }
 
 // Latest season whose real lap on this track the cars were fitted to (null when none)
