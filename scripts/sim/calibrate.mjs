@@ -11,12 +11,22 @@ import {PRIOR, applyRules, applyDevelopment, RULE_CHANGES} from '../../worker/la
 import {simulateLap} from '../../worker/lapsim/engine.js';
 import {conditionsFromWeather} from '../../worker/lapsim/atmosphere.js';
 import {fitSeason, withGrip, holdout, fitJoint, holdoutJoint} from './calibrate-lib.mjs';
+import {fitJointBCD, holdoutBCD, backtestBCD} from './joint-bcd.mjs';
 import {SERIES} from '../../worker/lapsim/series.js';
 
 const CACHE = process.env.LAPSIM_CACHE || '.cache/lapsim';
 const ITERS = Number(process.env.LAPSIM_ITERS || 70), HOLDOUT_ITERS = Number(process.env.LAPSIM_HOLDOUT_ITERS || 25);
 // experiment knobs (defaults are the published settings)
 const WTIME = Number(process.env.LAPSIM_WTIME || 2);
+const E = process.env;
+const FITTER = E.LAPSIM_FITTER || 'nm';
+const BCD = {rounds: Number(E.LAPSIM_ROUNDS || 4), iters: Number(E.LAPSIM_BCD_ITERS || 150), wTime: WTIME, wSector: Number(E.LAPSIM_WSECTOR || 0),
+  trackDrag: E.LAPSIM_TRACK_DRAG === 'on', wPrior: Number(E.LAPSIM_WPRIOR || 2), log: m => console.log(m)};
+const MAX_POS = Number(E.LAPSIM_MAX_POS || 3);
+const HOLDOUT_YEARS = (E.LAPSIM_HOLDOUT_YEARS || '2025,2026').split(',').map(Number);
+const fitAll = gs => FITTER === 'bcd' ? fitJointBCD(gs, BCD) : fitJoint(gs, {iters: ITERS, wTime: WTIME});
+const holdoutOf = (gs, key) => FITTER === 'bcd' ? holdoutBCD(gs, key, {...BCD, rounds: Math.max(2, BCD.rounds - 1)}) : holdoutJoint(gs, key, {iters: HOLDOUT_ITERS, wTime: WTIME});
+const GRIP_LIMITS = FITTER === 'bcd' ? [0.7, 1.3] : [0.85, 1.15];
 const ONLY_YEARS = process.env.LAPSIM_SEASONS ? process.env.LAPSIM_SEASONS.split(',').map(Number) : null;
 const traces = JSON.parse(await readFile(join(CACHE, 'traces.json'), 'utf8'));
 const tracks = Object.fromEntries(Object.entries(lapsimTracks).map(([id, d]) => [id, trackFromData(d)]));
@@ -36,8 +46,10 @@ const withEnergy = (w, id, year) => { const mj = year >= 2026 && process.env.LAP
 const groups = [];
 for (const year of [...new Set(traces.map(t => t.year))].sort()) {
   const prior = PRIOR[year]; if (!prior || (ONLY_YEARS && !ONLY_YEARS.includes(year))) continue;
-  const laps = traces.filter(t => t.year === year && tracks[t.track] && !t.weather.rain && t.s.length > 100)
+  const laps = traces.filter(t => t.year === year && tracks[t.track] && !t.weather.rain && t.s.length > 100 && t.position <= MAX_POS)
     .map(t => ({name: t.track, track: tracks[t.track], lapSeconds: t.lap_seconds, weight: t.position === 1 ? 1 : 0.5,
+      // non-pole laps: other cars, so by default they count for the speed trace shape only
+      timeScale: t.position === 1 || E.LAPSIM_NONPOLE === 'time' ? 1 : 0, sectors: t.sectors, date: t.date,
       obs: {s: t.s, v: t.v.map(x => x / 3.6)}, weather: withEnergy(t.weather, t.track, year), meta: {sessionKey: t.session_key, driver: t.driver_number, position: t.position}}));
   if (laps.length < 4) { report.push(`${year}: not enough laps (${laps.length})`); continue; }
   const base = {...structuredClone(prior), linkMu: true};
@@ -49,14 +61,14 @@ for (const year of [...new Set(traces.map(t => t.year))].sort()) {
   groups.push({key: year, laps, base, params});
 }
 const t0 = Date.now();
-let joint = fitJoint(groups, {iters: ITERS, wTime: WTIME});
+let joint = await fitAll(groups);
 // clean data (common rule): a lap more than 4% off after the fit is not a normal dry lap
 // (wet track, red flag, wrong lap); drop that season's laps on that track and fit again
 const bad = joint.perLap.filter(p => Math.abs(p.dt / p.realLap) > 0.04);
 if (bad.length) {
   for (const g of groups) { const drop = new Set(bad.filter(p => p.group === g.key).map(p => p.name)); g.laps = g.laps.filter(l => !drop.has(l.name)); }
   report.push(`Dropped (lap more than 4% off after the first fit): ${[...new Set(bad.map(p => p.group + ' ' + p.name))].join(', ')}`, '');
-  joint = fitJoint(groups, {iters: ITERS, wTime: WTIME});
+  joint = await fitAll(groups);
 }
 report.push(`F1 joint fit of ${groups.map(g => g.key).join(' and ')}: ${((Date.now() - t0) / 1000).toFixed(0)} s, score ${joint.score.toFixed(3)}.`, '');
 for (const g of groups) {
@@ -65,18 +77,26 @@ for (const g of groups) {
   for (const p of joint.perLap.filter(x => x.group === year)) {
     if (p.meta?.position !== 1 && perTrack[p.name]) continue;
     const trace = traces.find(t => t.year === year && t.track === p.name && t.session_key === p.meta?.sessionKey && t.position === p.meta?.position);
-    perTrack[p.name] = {grip: +p.grip.toFixed(4), rmsKph: +p.rmsKph.toFixed(1), errorSec: +p.dt.toFixed(3), simLap: +p.simLap.toFixed(3), realLap: p.realLap,
+    perTrack[p.name] = {grip: +p.grip.toFixed(4), drag: p.drag != null && p.drag !== 1 ? +p.drag.toFixed(4) : undefined, rmsKph: +p.rmsKph.toFixed(1), errorSec: +p.dt.toFixed(3), simLap: +p.simLap.toFixed(3), realLap: p.realLap,
       sessionKey: p.meta?.sessionKey, driver: p.meta?.driver, position: p.meta?.position ?? 1, weather: trace?.weather || null};
   }
   // holdout: this season's laps on a quarter of the tracks left out, predicted with the factor the
   // other season gives that track
-  const h = holdoutJoint(groups, year, {iters: HOLDOUT_ITERS, wTime: WTIME});
+  const h = HOLDOUT_YEARS.includes(year) ? await holdoutOf(groups, year) : {n: 0, errors: [], rmsPct: null};
   seasons[year] = {car, tracks: perTrack, laps: g.laps.length,
     holdout: {rmsPct: h.rmsPct != null ? +h.rmsPct.toFixed(2) : null, n: h.n, tracks: h.errors.map(e => ({track: e.name, errorSec: +e.dt.toFixed(3)}))}};
   report.push(`## ${year}`, '', `${g.laps.length} laps. Holdout: ${h.n ? `predicted ${h.n} unseen pole laps, typical error ${h.rmsPct.toFixed(2)}% (RMS)` : 'no track had a factor from another season'}.`, '',
     `Car: grip μy ${car.muY.toFixed(3)}, downforce ClA ${car.clA.toFixed(2)} m², drag CdA ${car.cdA.toFixed(3)} m², low-drag CdA ${car.cdALow.toFixed(3)} m², ICE ${(car.pIce / 1e3).toFixed(0)} kW.`, '',
     '| Track | Real | Sim | Error | Corner/straight speed error | Track grip (shared) |', '|---|---|---|---|---|---|',
-    ...Object.entries(perTrack).map(([id, r]) => `| ${id} | ${r.realLap.toFixed(3)} | ${r.simLap.toFixed(3)} | ${r.errorSec > 0 ? '+' : ''}${r.errorSec.toFixed(3)} | ${r.rmsKph} km/h | ${r.grip}${r.grip <= 0.851 || r.grip >= 1.149 ? ' (at limit: check this track)' : ''} |`), '');
+    ...Object.entries(perTrack).map(([id, r]) => `| ${id} | ${r.realLap.toFixed(3)} | ${r.simLap.toFixed(3)} | ${r.errorSec > 0 ? '+' : ''}${r.errorSec.toFixed(3)} | ${r.rmsKph} km/h | ${r.grip}${r.drag ? ` / drag ${r.drag}` : ''}${r.grip <= GRIP_LIMITS[0] + 0.001 || r.grip >= GRIP_LIMITS[1] - 0.001 ? ' (at limit: check this track)' : ''} |`), '');
+}
+
+// Forecast test (strictest): each 2026 qualifying predicted from data dated before it only
+if (FITTER === 'bcd' && E.LAPSIM_BACKTEST === 'on' && groups.some(g => g.key === 2026)) {
+  const b = await backtestBCD(groups, 2026, {...BCD, rounds: 2, iters: Math.round(BCD.iters * 0.6)});
+  seasons[2026].backtest = {rmsPct: b.rmsPct != null ? +b.rmsPct.toFixed(2) : null, n: b.n, tracks: b.errors.map(e => ({track: e.name, date: e.date, errorSec: +e.dt.toFixed(3)}))};
+  report.push('## 2026 forecast test', '', `Each 2026 pole lap predicted from earlier data only: ${b.rmsPct?.toFixed(2) ?? '–'}% RMS over ${b.n} laps.`, '',
+    '| Date | Track | Error (s) |', '|---|---|---|', ...b.errors.map(e => `| ${e.date} | ${e.name} | ${e.dt > 0 ? '+' : ''}${e.dt.toFixed(3)} |`), '');
 }
 
 // Projections from the latest calibrated season (2026)

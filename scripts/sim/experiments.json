@@ -1,0 +1,81 @@
+{
+ "source_run": 42344242865,
+ "configs": [
+  {
+   "name": "bcd",
+   "env": {
+    "LAPSIM_FITTER": "bcd",
+    "LAPSIM_SKIP_WEC": "1",
+    "LAPSIM_ROUNDS": "3",
+    "LAPSIM_BCD_ITERS": "100"
+   }
+  },
+  {
+   "name": "sector",
+   "env": {
+    "LAPSIM_FITTER": "bcd",
+    "LAPSIM_SKIP_WEC": "1",
+    "LAPSIM_ROUNDS": "3",
+    "LAPSIM_BCD_ITERS": "100",
+    "LAPSIM_WSECTOR": "2"
+   }
+  },
+  {
+   "name": "sector-drag",
+   "env": {
+    "LAPSIM_FITTER": "bcd",
+    "LAPSIM_SKIP_WEC": "1",
+    "LAPSIM_ROUNDS": "3",
+    "LAPSIM_BCD_ITERS": "100",
+    "LAPSIM_WSECTOR": "2",
+    "LAPSIM_TRACK_DRAG": "on"
+   }
+  },
+  {
+   "name": "sector-time20",
+   "env": {
+    "LAPSIM_FITTER": "bcd",
+    "LAPSIM_SKIP_WEC": "1",
+    "LAPSIM_ROUNDS": "3",
+    "LAPSIM_BCD_ITERS": "100",
+    "LAPSIM_WSECTOR": "2",
+    "LAPSIM_WTIME": "20"
+   }
+  },
+  {
+   "name": "sector-oldenergy",
+   "env": {
+    "LAPSIM_FITTER": "bcd",
+    "LAPSIM_SKIP_WEC": "1",
+    "LAPSIM_ROUNDS": "3",
+    "LAPSIM_BCD_ITERS": "100",
+    "LAPSIM_WSECTOR": "2",
+    "LAPSIM_ENERGY_LIMITS": "off",
+    "LAPSIM_THROTTLE_HARVEST": "off"
+   }
+  },
+  {
+   "name": "sector-top10",
+   "env": {
+    "LAPSIM_FITTER": "bcd",
+    "LAPSIM_SKIP_WEC": "1",
+    "LAPSIM_ROUNDS": "3",
+    "LAPSIM_BCD_ITERS": "100",
+    "LAPSIM_WSECTOR": "2",
+    "LAPSIM_MAX_POS": "10"
+   }
+  },
+  {
+   "name": "sector-drag-backtest",
+   "env": {
+    "LAPSIM_FITTER": "bcd",
+    "LAPSIM_SKIP_WEC": "1",
+    "LAPSIM_ROUNDS": "3",
+    "LAPSIM_BCD_ITERS": "100",
+    "LAPSIM_WSECTOR": "2",
+    "LAPSIM_TRACK_DRAG": "on",
+    "LAPSIM_BACKTEST": "on"
+   }
+  }
+ ]
+}
