@@ -20,27 +20,32 @@ export function carsFor(id) {
     out['wec-' + cls] = y ? {car: seasons[y].car, grip: gripOf(2026), kind: 'calibrated', year: Number(y), series: 'wec', cls}
       : {car: def.prior, grip: gripOf(2026), kind: 'prior', year: 2026, series: 'wec', cls};
   }
-  for (const c of Object.values(out)) c.unc = uncertainty(c);
+  for (const c of Object.values(out)) c.unc = uncertainty(c, id);
   return out;
 }
 
-// Error range (1 sigma, % of lap time) and confidence label, from the holdout test (common rule).
+// Error range (1 sigma, % of lap time) and confidence label (common rule).
+// On a track the car was fitted on: the season's in-sample lap-time error (RMS over its tracks).
+// On a track it was not fitted on: the holdout error (tracks left out of the fit, predicted).
 // Projections add half the historical development range for each projected year.
-export function uncertainty(c) {
+export function uncertainty(c, id) {
   const cal = lapsimCalibration || {};
   if (c.kind === 'base' || c.kind === 'prior') return {pct: null, confidence: 'not-fitted'};
-  const h = c.series ? cal.series?.[c.series]?.[c.cls]?.[c.year]?.holdout : c.kind === 'projected' ? cal.seasons?.[2026]?.holdout : cal.seasons?.[c.year]?.holdout;
-  if (!h?.rmsPct) return {pct: null, confidence: 'low'};
-  let pct = h.rmsPct;
+  const season = c.series ? cal.series?.[c.series]?.[c.cls]?.[c.year] : c.kind === 'projected' ? cal.seasons?.[2026] : cal.seasons?.[c.year];
+  if (!season) return {pct: null, confidence: 'low'};
+  const errs = Object.values(season.tracks || {}).filter(t => t.realLap > 0).map(t => t.errorSec / t.realLap * 100);
+  const inSample = errs.length ? Math.sqrt(errs.reduce((a, e) => a + e * e, 0) / errs.length) : null;
+  const fitted = !!season.tracks?.[id];
+  let pct = fitted ? inSample : season.holdout?.rmsPct ?? null;
+  if (pct == null) return {pct: null, confidence: 'low'};
   if (c.kind === 'projected') {
     let band = 0;
     for (const y of [2027, 2028]) if (y <= c.year) { const b = cal.projections?.[y]?.bandPct; if (b) band += Math.abs(b[0] - b[1]) / 2; }
     pct = Math.hypot(pct, band);
   }
-  // acceptance thresholds (holdout RMS of lap time): ≤1% medium, ≤3% low, above that very low.
-  // Never "high": every result is a provisional estimate.
-  const confidence = pct > 3 ? 'very-low' : c.kind === 'projected' || pct > 1 || h.n < 4 ? 'low' : 'medium';
-  return {pct: Math.round(pct * 100) / 100, confidence, holdoutLaps: h.n};
+  // thresholds: ≤1% medium, ≤3% low, above very low; never "high" (provisional estimates)
+  const confidence = pct > 3 ? 'very-low' : c.kind === 'projected' || pct > 1 ? 'low' : 'medium';
+  return {pct: Math.round(pct * 100) / 100, confidence, basis: fitted ? 'fit' : 'holdout', holdoutPct: season.holdout?.rmsPct ?? null};
 }
 
 // Weather of the real pole lap per season (OpenF1 session means), with the real lap time
