@@ -23,15 +23,15 @@ const key={type:'integer',minimum:1,maximum:999999999999};
 const driver={type:'string',pattern:'^\\d{1,3}$'};
 
 export const OPENF1_TOOLS=[
- {name:'openf1_sessions',description:'Find completed F1 sessions (session_key) on OpenF1 by year and place, e.g. year 2026 + "Mexico". Use the session_key with openf1_laps and openf1_lap_telemetry for post-session analysis.',
+ {name:'f1_sessions',description:'Find completed F1 sessions (session_key) by year and place, e.g. year 2026 + "Mexico". Use the session_key with f1_laps and f1_lap_telemetry for post-session analysis.',
   inputSchema:{type:'object',properties:{year:{type:'integer',minimum:2023,maximum:2100},place:{type:'string',minLength:2,maxLength:60,description:'Country, location or circuit name fragment'},session_name:{type:'string',maxLength:40,description:'Optional, e.g. Race, Qualifying, Sprint, Practice 1'}},required:['year'],additionalProperties:false},annotations:ro},
- {name:'openf1_laps',description:'Completed-session laps from OpenF1: lap times, S1/S2/S3, pit-out laps, lap start times and tyre stint per lap. Without driver_number returns each driver\'s best lap and lap count; with driver_number returns that driver\'s laps (optionally lap_from..lap_to). For post-session analysis only; live sessions use fastf1_live_snapshot.',
+ {name:'f1_laps',description:'Completed-session laps (TracingInsights/FastF1 extraction, OpenF1 fallback): lap times, S1/S2/S3, pit-out laps, lap start times and tyre stint per lap. Without driver_number returns each driver\'s best lap and lap count; with driver_number returns that driver\'s laps (optionally lap_from..lap_to). For post-session analysis only; live sessions use f1_live_snapshot.',
   inputSchema:{type:'object',properties:{session_key:key,driver_number:driver,lap_from:{type:'integer',minimum:1,maximum:200},lap_to:{type:'integer',minimum:1,maximum:200}},required:['session_key'],additionalProperties:false},annotations:ro},
- {name:'openf1_lap_telemetry',description:'Car telemetry (speed, throttle, binary brake, gear, RPM at about 3.7 Hz) for any lap of a completed session from OpenF1, optionally compared with a second driver/lap. lap_number defaults to the driver\'s best lap. For race starts use lap_number 1 with seconds (e.g. 15): the window then begins 3 s before the lap start so the launch from standstill is visible. Distance is speed-integrated (approximate). Not for live sessions.',
+ {name:'f1_lap_telemetry',description:'Car telemetry (speed, throttle, binary brake, gear, RPM at about 3.7 Hz) for any lap of a completed session (TracingInsights/FastF1 extraction, OpenF1 fallback), optionally compared with a second driver/lap. lap_number defaults to the driver\'s best lap. For race starts use lap_number 1 with seconds (e.g. 15): the window then begins 3 s before the lap start so the launch from standstill is visible. Distance is speed-integrated (approximate). Not for live sessions.',
   inputSchema:{type:'object',properties:{session_key:key,driver_number:driver,lap_number:{type:'integer',minimum:1,maximum:200},compare_driver_number:driver,compare_lap_number:{type:'integer',minimum:1,maximum:200},seconds:{type:'number',minimum:3,maximum:200},summary:{type:'boolean',description:'true returns a compact per-corner summary (minimum speed, braking point, time gained or lost per corner) instead of raw samples. Use it first for comparisons; ask for samples only when drawing charts.'}},required:['session_key','driver_number'],additionalProperties:false},annotations:ro}
 ];
 
-export const OPENF1_INSTRUCTIONS=' POST-SESSION F1 ANALYSIS: for a completed session (any lap, race starts, stints, sector times, lap or start telemetry) use the post-session tools: openf1_sessions to find the session_key, openf1_laps for laps/sectors/tyres, openf1_lap_telemetry for telemetry (lap_number 1 + seconds for starts). These three read TracingInsights first (free, published about an hour after the session, not locked during live sessions) and OpenF1 when TracingInsights has no data; name the source given in each result. QUALIFYING: rank by the classification, not the fastest lap of the session: compare Q3 laps for Q3 drivers (laps carry qualifying_segment; deleted laps are flagged and never chosen as best) and confirm with the FIA provisional/final qualifying classification and deleted-lap documents (fia_list_documents). TELEMETRY CHARTS: mark every official turn number (official_turns) on the common distance axis and name turns by official number in the text; never present speed-minimum order (corner) as turn numbers. Gaps the post-session data does not cover (official results, grid, penalties, pit-stop times, overtakes) come from FIA documents. Live sessions stay on the FastF1 tools. If OpenF1 is rate-limited or lacks the data, say so instead of guessing. Results carry a cache field: data may be reused from server memory for up to 30 min for a settled session (scheduled end + 2 h) and up to 1 min otherwise; mention it only if the user asks how fresh the data is.';
+export const OPENF1_INSTRUCTIONS=' POST-SESSION F1 ANALYSIS: for a completed session (any lap, race starts, stints, sector times, lap or start telemetry) use the post-session tools: f1_sessions to find the session_key, f1_laps for laps/sectors/tyres, f1_lap_telemetry for telemetry (lap_number 1 + seconds for starts). These three read TracingInsights first (free, published about an hour after the session, not locked during live sessions) and OpenF1 when TracingInsights has no data; name the source given in each result. QUALIFYING: rank by the classification, not the fastest lap of the session: compare Q3 laps for Q3 drivers (laps carry qualifying_segment; deleted laps are flagged and never chosen as best) and confirm with the FIA provisional/final qualifying classification and deleted-lap documents (fia_list_documents). TELEMETRY CHARTS: mark every official turn number (official_turns) on the common distance axis and name turns by official number in the text; never present speed-minimum order (corner) as turn numbers. Gaps the post-session data does not cover (official results, grid, penalties, pit-stop times, overtakes) come from FIA documents. Live sessions use the f1_live_* tools. If OpenF1 is rate-limited or lacks the data, say so instead of guessing. Results carry a cache field: data may be reused from server memory for up to 30 min for a settled session (scheduled end + 2 h) and up to 1 min otherwise; mention it only if the user asks how fresh the data is.';
 
 function query(params){
  return Object.entries(params).filter(([,v])=>v!==undefined&&v!==null&&v!=='').map(([k,v])=>encodeURIComponent(k)+'='+encodeURIComponent(String(v))).join('&');
@@ -62,7 +62,7 @@ export async function openf1Get(path,params={},{fetchImpl=fetch,wait=ms=>new Pro
   if(res.status===429&&attempt<2){await wait(1200*(attempt+1));continue;}
   if(res.status===429)throw Error('OpenF1 is rate-limiting requests right now (free tier 30/min). Try again in a minute.');
   if(res.status===404)return [];
-  if(res.status===401)throw Error('OpenF1 is locked for free users while an F1 session is live (past sessions included) and for a while after. Use openf1_sessions/openf1_laps/openf1_lap_telemetry (TracingInsights) and FIA documents (fia_list_documents) meanwhile.');
+  if(res.status===401)throw Error('OpenF1 is locked for free users while an F1 session is live (past sessions included) and for a while after. Use f1_sessions/f1_laps/f1_lap_telemetry (TracingInsights) and FIA documents (fia_list_documents) meanwhile.');
   if(!res.ok)throw Error('OpenF1 error '+res.status);
   const text=await res.text();
   let data;try{data=JSON.parse(text);}catch{throw Error('Unexpected OpenF1 response');}
@@ -144,7 +144,7 @@ async function laps(args,io){
  const by=new Map();for(const l of rows){const k=String(l.driver_number);if(!by.has(k))by.set(k,[]);by.get(k).push(l);}
  const list=[...by.entries()].map(([n,ls])=>{const b=bestLap(ls);return {driver_number:n,...(who[n]||{}),laps:ls.length,best_lap:b?lapRow(b,stints):null};})
   .sort((a,b)=>(a.best_lap?.lap_seconds??1e9)-(b.best_lap?.lap_seconds??1e9));
- return {state:'ready',source:io.source,session_key:args.session_key,drivers:list,next:'Call openf1_laps with driver_number for every lap of one driver, or openf1_lap_telemetry for telemetry.'};
+ return {state:'ready',source:io.source,session_key:args.session_key,drivers:list,next:'Call f1_laps with driver_number for every lap of one driver, or f1_lap_telemetry for telemetry.'};
 }
 
 // Rows: [elapsed_s, integrated_distance_m, speed_kmh, throttle_percent, brake_on, gear, rpm]
@@ -247,10 +247,10 @@ async function lapTelemetry(args,io){
 
 export async function openf1Call(name,args,io={}){
  for(const k of ['driver_number','compare_driver_number'])if(args[k]!==undefined&&!/^\d{1,3}$/.test(args[k]))throw Error('Use a driver racing number');
- if(!['openf1_sessions','openf1_laps','openf1_lap_telemetry'].includes(name))throw Error('Unknown OpenF1 tool');
+ if(!['f1_sessions','f1_laps','f1_lap_telemetry'].includes(name))throw Error('Unknown OpenF1 tool');
  const trace=[],run={...io,trace};
  if(args.session_key)run.ttl=await sessionTtl(args.session_key,run);
- const result=name==='openf1_sessions'?await sessions(args,run):name==='openf1_laps'?await laps(args,run):await lapTelemetry(args,run);
+ const result=name==='f1_sessions'?await sessions(args,run):name==='f1_laps'?await laps(args,run):await lapTelemetry(args,run);
  const hits=trace.filter(x=>x==='hit').length;
  result.cache={served_from_memory:hits,fetched_from_openf1:trace.length-hits,
   policy:run.ttl===undefined?'session list kept up to 30 min':run.ttl===CACHE_POLICY.SETTLED_MS?'settled session: kept up to 30 min':'running or just-finished session: kept up to 1 min'};

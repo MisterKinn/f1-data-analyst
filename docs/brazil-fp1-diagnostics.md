@@ -63,7 +63,7 @@ from concurrent requests sharing the process and omit idle periods. They are
 **not** collector CPU or whole-host saturation. No request bodies, query strings,
 account identifiers, cookies, credentials or timing packet bodies are recorded.
 
-Read history through the authenticated `fastf1_diagnostics` MCP tool:
+Read history through the authenticated `f1_live_diagnostics` MCP tool:
 
 - Collector: `session_key` from verified SessionInfo; optional `run_id` for a
   prior run. Histories remain separate across reconnects.

@@ -26,7 +26,7 @@ test('switched off: home shows only this week in motorsport, menu Home, About, F
   const live=await worker.fetch(new Request('https://kongboda.test/api/live/wec/connect/start',{method:'POST'}),{});
   assert.notEqual(live.status,200);
   const tools=(await (await worker.fetch(rpc('tools/list'),{})).json()).result.tools.map(t=>t.name);
-  for(const name of ['kongboda_live_briefing','fastf1_live_snapshot','fastf1_diagnostics','wec_live_status','wec_discover_live','kongboda_collector_setup'])assert.ok(!tools.includes(name),name);
+  for(const name of ['kongboda_live_briefing','f1_live_snapshot','f1_live_diagnostics','wec_live_status','wec_live_discover','kongboda_collector_setup'])assert.ok(!tools.includes(name),name);
   assert.ok(tools.includes('fia_list_documents'));
   const call=await (await worker.fetch(rpc('tools/call',{name:'kongboda_live_briefing',arguments:{}}),{})).json();
   assert.ok(call.error||call.result?.isError);

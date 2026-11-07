@@ -38,7 +38,7 @@ test('off-schedule F1 data (failover drill) is never a session result',()=>{
  assert.match(drill.briefing,/실제 세션 결과로 표시하지 않습니다/);
 });
 test('connector tells the model: card first, no F1 during WEC, one FIAWEC+ connection link',async()=>{
- for(const part of ['series "auto" FIRST','do not call fastf1_live_snapshot','write no summary before it','connect.url','every WEC card','solve a CAPTCHA','never type a password','off_schedule_record','KEEP BRIEFING FOR THE WHOLE SESSION','follow_up.until'])assert.ok(BRIEFING_ROUTER_INSTRUCTIONS.includes(part),part);
+ for(const part of ['series "auto" FIRST','do not call f1_live_snapshot','write no summary before it','connect.url','every WEC card','solve a CAPTCHA','never type a password','off_schedule_record','KEEP BRIEFING FOR THE WHOLE SESSION','follow_up.until'])assert.ok(BRIEFING_ROUTER_INSTRUCTIONS.includes(part),part);
  assert.deepEqual(LIVE_APP_TOOL.inputSchema.properties.series.enum,['auto','f1','wec']);
  const html=readAppResource(LIVE_APP_URI).contents[0].text;
  assert.match(html,/renderRouted/);assert.match(html,/ui\/message/);

@@ -22,7 +22,7 @@ test('registered crew read one shared collector through ChatGPT MCP and Google w
  data.set('live/current.json',JSON.stringify({received_at:now,source:'Cloud / FastF1 live recorder + custom patch adapter',snapshot}));
  globalThis.fetch=async()=>{reads++;throw Error('old server must not be called');};
  try{
-  const rpc=headers=>new Request(origin+'/mcp',{method:'POST',headers:{...headers,'content-type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'fastf1_live_snapshot',arguments:{recent_events:0}}})});
+  const rpc=headers=>new Request(origin+'/mcp',{method:'POST',headers:{...headers,'content-type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'f1_live_snapshot',arguments:{recent_events:0}}})});
   const mcp=await (await worker.fetch(rpc(platformHeaders),env)).json();
   assert.equal(mcp.result.isError,false);
   const first=JSON.parse(mcp.result.content[0].text);

@@ -17,13 +17,13 @@ function fakeFetch(calls){
 const parse=r=>JSON.parse(r.content[0].text);
 
 test('tools are read-only and named for post-session use',()=>{
- assert.deepEqual(OPENF1_TOOLS.map(t=>t.name),['openf1_sessions','openf1_laps','openf1_lap_telemetry']);
+ assert.deepEqual(OPENF1_TOOLS.map(t=>t.name),['f1_sessions','f1_laps','f1_lap_telemetry']);
  assert.ok(OPENF1_TOOLS.every(t=>t.annotations.readOnlyHint));
 });
 
 test('race start: lap 1 with seconds starts 3 s early and asks OpenF1 only for that window',async()=>{
  clearOpenf1Cache();const calls=[];
- const out=parse(await openf1Call('openf1_lap_telemetry',{session_key:11404,driver_number:'63',lap_number:1,seconds:15},{fetchImpl:fakeFetch(calls)}));
+ const out=parse(await openf1Call('f1_lap_telemetry',{session_key:11404,driver_number:'63',lap_number:1,seconds:15},{fetchImpl:fakeFetch(calls)}));
  assert.equal(out.state,'ready');
  const lap=out.laps[0];
  assert.equal(lap.lap_number,1);assert.equal(lap.tyre.compound,'SOFT');assert.equal(lap.tyre.tyre_age,3);
@@ -37,14 +37,14 @@ test('race start: lap 1 with seconds starts 3 s early and asks OpenF1 only for t
 
 test('default lap is the best timed lap (pit-out laps never count)',async()=>{
  clearOpenf1Cache();
- const out=parse(await openf1Call('openf1_laps',{session_key:11404,driver_number:'63'},{fetchImpl:fakeFetch([])}));
+ const out=parse(await openf1Call('f1_laps',{session_key:11404,driver_number:'63'},{fetchImpl:fakeFetch([])}));
  assert.equal(out.best_lap.lap_number,2);assert.equal(out.best_lap.lap_time,'1:21.821');assert.equal(out.driver,'RUS');
  assert.equal(out.laps[0].pit_out_lap,true);
 });
 
 test('sessions are found by place',async()=>{
  clearOpenf1Cache();
- const out=parse(await openf1Call('openf1_sessions',{year:2026,place:'mexico',session_name:'Race'},{fetchImpl:fakeFetch([])}));
+ const out=parse(await openf1Call('f1_sessions',{year:2026,place:'mexico',session_name:'Race'},{fetchImpl:fakeFetch([])}));
  assert.equal(out.sessions[0].session_key,11404);
 });
 
@@ -65,25 +65,25 @@ const END=Date.parse('2026-11-01T22:00:00Z');
 
 test('settled session: one driver question fills the cache for every driver for 30 min',async()=>{
  clearOpenf1Cache();const calls=[];const io={fetchImpl:sessionFetch(calls,'2026-11-01T22:00:00+00:00'),now:END+3*3600_000};
- const first=parse(await openf1Call('openf1_laps',{session_key:11404,driver_number:'63'},io));
+ const first=parse(await openf1Call('f1_laps',{session_key:11404,driver_number:'63'},io));
  assert.equal(first.cache.policy,'settled session: kept up to 30 min');
  const n=calls.length;
- const second=parse(await openf1Call('openf1_laps',{session_key:11404,driver_number:'44'},{...io,now:io.now+20*60_000}));
+ const second=parse(await openf1Call('f1_laps',{session_key:11404,driver_number:'44'},{...io,now:io.now+20*60_000}));
  assert.equal(calls.length,n,'another driver in the same session needs no new OpenF1 request');
  assert.equal(second.cache.fetched_from_openf1,0);assert.ok(second.cache.served_from_memory>0);
  assert.ok(!calls.some(c=>c.includes('/laps?')&&c.includes('driver_number')),'laps are fetched for the whole session');
- await openf1Call('openf1_laps',{session_key:11404,driver_number:'63'},{...io,now:io.now+31*60_000});
+ await openf1Call('f1_laps',{session_key:11404,driver_number:'63'},{...io,now:io.now+31*60_000});
  assert.ok(calls.length>n,'after 30 min the data is fetched again');
 });
 
 test('running or just-finished session is kept only 1 min',async()=>{
  clearOpenf1Cache();const calls=[];const io={fetchImpl:sessionFetch(calls,'2026-11-01T22:00:00+00:00'),now:END+30*60_000};
- const out=parse(await openf1Call('openf1_laps',{session_key:11404,driver_number:'63'},io));
+ const out=parse(await openf1Call('f1_laps',{session_key:11404,driver_number:'63'},io));
  assert.equal(out.cache.policy,'running or just-finished session: kept up to 1 min');
  const n=calls.length;
- await openf1Call('openf1_laps',{session_key:11404,driver_number:'63'},{...io,now:io.now+30_000});
+ await openf1Call('f1_laps',{session_key:11404,driver_number:'63'},{...io,now:io.now+30_000});
  assert.equal(calls.length,n,'a burst within a minute is served from memory');
- await openf1Call('openf1_laps',{session_key:11404,driver_number:'63'},{...io,now:io.now+90_000});
+ await openf1Call('f1_laps',{session_key:11404,driver_number:'63'},{...io,now:io.now+90_000});
  assert.ok(calls.length>n,'late corrections are picked up after a minute');
 });
 
@@ -101,7 +101,7 @@ test('cache is capped by size; oversized answers are not kept',async()=>{
 });
 
 test('bad driver numbers are refused',async()=>{
- await assert.rejects(openf1Call('openf1_laps',{session_key:1,driver_number:'RUS'}),/racing number/);
+ await assert.rejects(openf1Call('f1_laps',{session_key:1,driver_number:'RUS'}),/racing number/);
 });
 
 test('telemetry rows integrate distance from speed',()=>{

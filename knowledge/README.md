@@ -22,7 +22,7 @@ For driving questions the answer must keep the boundary between mechanism and ob
 
 ## How a live answer uses the evidence
 
-fastf1_live_snapshot attaches research_context to every available snapshot. It includes a pace-decomposition checklist, thermal/wear distinctions and pit-strategy tradeoffs with citation metadata. Live eligibility uses the existing feed freshness result plus the collector's actual topic_times records (received_at, source_time, initial_snapshot). The 45-second topic recency flag is a conservative interpretation check, not a claim that unchanged event-driven fields are invalid. Recent topic receipt does not validate individual fields or align history to a lap.
+f1_live_snapshot attaches research_context to every available snapshot. It includes a pace-decomposition checklist, thermal/wear distinctions and pit-strategy tradeoffs with citation metadata. Live eligibility uses the existing feed freshness result plus the collector's actual topic_times records (received_at, source_time, initial_snapshot). The 45-second topic recency flag is a conservative interpretation check, not a claim that unchanged event-driven fields are invalid. Recent topic receipt does not validate individual fields or align history to a lap.
 
 The answer must separate:
 1. Observations with session, lap and timestamp.

@@ -1,7 +1,7 @@
 // TracingInsights (github.com/TracingInsights/<year>, Apache-2.0): per-session JSON that the
 // project extracts with FastF1 from F1 live timing, usually within about an hour of the
-// session end. It is the primary post-session source for openf1_sessions, openf1_laps and
-// openf1_lap_telemetry because it is free, needs no key and is not locked while another F1
+// session end. It is the primary post-session source for f1_sessions, f1_laps and
+// f1_lap_telemetry because it is free, needs no key and is not locked while another F1
 // session is live (OpenF1's free tier is: every request returns 401 until OpenF1 decides the
 // live session is over). Session keys are the F1 live-timing keys, the same numbers OpenF1
 // uses, so a key found here also works with the OpenF1 race tools later.

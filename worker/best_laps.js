@@ -1,5 +1,5 @@
 export const BEST_LAPS_TOOL = {
- name:'fastf1_best_laps',
+ name:'f1_live_best_laps',
  description:'Read each driver\'s published best lap with its own preserved S1/S2/S3, validation, timestamps and matched tyre stint. Choose Q1/Q2/Q3 or session. Use ONLY status=complete sectors; unavailable/deleted records must not be inferred from rolling TimingData.Sectors. A saved completed session is historical, not live. No corner telemetry or ideal-sector composites. Optional session_key reads a previously saved session; resolve it from SessionInfo first.',
  inputSchema:{type:'object',properties:{session_part:{type:'string',enum:['Q1','Q2','Q3','session'],description:'Qualifying segment, or session for practice.'},session_key:{type:'integer',minimum:1,maximum:999999999999},driver_number:{type:'string',description:'Optional racing number from DriverList; omit for all drivers.'}},required:['session_part'],additionalProperties:false},
  annotations:{readOnlyHint:true,destructiveHint:false,idempotentHint:true,openWorldHint:false}

@@ -38,7 +38,7 @@ test('collector pushes archive CPU history, expose summary and refuse stale gene
   saved=(await (await store.get('live/current.json')).json()).snapshot;assert.equal(saved.sequence,2);
   const unauth=await liveRoutes(new Request('https://site.test/api/live/diagnostics?session_key=123'),env);assert.equal(unauth.status,401);
   const denied=await worker.fetch(new Request('https://site.test/api/live/diagnostics?session_key=123',{headers:{'oai-authenticated-user-id':'outsider'}}),{...env,LIVE_ANALYSIS_KEY_HASH:'configured'});assert.equal(denied.status,401);
-  const rpc=new Request('https://site.test/mcp',{method:'POST',headers:{'oai-authenticated-user-id':'owner','oai-authenticated-user-email':'owner@test','content-type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'fastf1_diagnostics',arguments:{session_key:123}}})});
+  const rpc=new Request('https://site.test/mcp',{method:'POST',headers:{'oai-authenticated-user-id':'owner','oai-authenticated-user-email':'owner@test','content-type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'f1_live_diagnostics',arguments:{session_key:123}}})});
   assert.equal(JSON.parse((await (await worker.fetch(rpc,env)).json()).result.content[0].text).samples.length,1);
  }finally{globalThis.fetch=original;}
 });

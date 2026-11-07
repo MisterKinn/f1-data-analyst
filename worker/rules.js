@@ -201,7 +201,7 @@ const CONTEXT_TOPICS=[
  ['start procedure',/false start|jump start|aborted start/i]
 ];
 export function contextSeries(toolName,args={}){
- if(/^(?:fastf1_|openf1_|fia_|kongboda_live)/.test(toolName))return 'f1';
+ if(/^(?:f1_|fia_|kongboda_live)/.test(toolName))return 'f1';
  if(/^wec_/.test(toolName))return 'wec';
  if(toolName.startsWith('motorsport_')&&typeof args.series==='string')return seriesFrom(args.series);
  return null;
