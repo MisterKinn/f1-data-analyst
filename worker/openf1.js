@@ -11,6 +11,7 @@
 // - laps, stints and drivers are fetched once per session and filtered per driver;
 // - the cache is capped by entries and by bytes, oldest (least recently used) out first.
 import {distanceDelta} from './telemetry.js';
+import {TI_SOURCE,tiSessions,tiSessionData,tiLapTelemetry} from './tracinginsights.js';
 
 const BASE='https://api.openf1.org/v1/';
 export const CACHE_POLICY={SETTLED_MS:30*60_000,FRESH_MS:60_000,META_MS:6*3600_000,SETTLE_AFTER_END_MS:2*3600_000,MAX_ENTRIES:300,MAX_BYTES:24*1024*1024};
@@ -30,7 +31,7 @@ export const OPENF1_TOOLS=[
   inputSchema:{type:'object',properties:{session_key:key,driver_number:driver,lap_number:{type:'integer',minimum:1,maximum:200},compare_driver_number:driver,compare_lap_number:{type:'integer',minimum:1,maximum:200},seconds:{type:'number',minimum:3,maximum:200},summary:{type:'boolean',description:'true returns a compact per-corner summary (minimum speed, braking point, time gained or lost per corner) instead of raw samples. Use it first for comparisons; ask for samples only when drawing charts.'}},required:['session_key','driver_number'],additionalProperties:false},annotations:ro}
 ];
 
-export const OPENF1_INSTRUCTIONS=' POST-SESSION F1 ANALYSIS: for a completed session (any lap, race starts, stints, sector times, lap or start telemetry) use the OpenF1 tools: openf1_sessions to find the session_key, openf1_laps for laps/sectors/tyres, openf1_lap_telemetry for telemetry (lap_number 1 + seconds for starts). Name OpenF1 as the source. Live sessions stay on the FastF1 tools. If OpenF1 is rate-limited or lacks the data, say so instead of guessing. Results carry a cache field: data may be reused from server memory for up to 30 min for a settled session (scheduled end + 2 h) and up to 1 min otherwise; mention it only if the user asks how fresh the data is.';
+export const OPENF1_INSTRUCTIONS=' POST-SESSION F1 ANALYSIS: for a completed session (any lap, race starts, stints, sector times, lap or start telemetry) use the post-session tools: openf1_sessions to find the session_key, openf1_laps for laps/sectors/tyres, openf1_lap_telemetry for telemetry (lap_number 1 + seconds for starts). These three read TracingInsights first (free, published about an hour after the session, not locked during live sessions) and OpenF1 when TracingInsights has no data; name the source given in each result. QUALIFYING: rank by the classification, not the fastest lap of the session: compare Q3 laps for Q3 drivers (laps carry qualifying_segment; deleted laps are flagged and never chosen as best) and confirm with the FIA provisional/final qualifying classification and deleted-lap documents (fia_list_documents). Gaps the post-session data does not cover (official results, grid, penalties, pit-stop times, overtakes) come from FIA documents. Live sessions stay on the FastF1 tools. If OpenF1 is rate-limited or lacks the data, say so instead of guessing. Results carry a cache field: data may be reused from server memory for up to 30 min for a settled session (scheduled end + 2 h) and up to 1 min otherwise; mention it only if the user asks how fresh the data is.';
 
 function query(params){
  return Object.entries(params).filter(([,v])=>v!==undefined&&v!==null&&v!=='').map(([k,v])=>encodeURIComponent(k)+'='+encodeURIComponent(String(v))).join('&');
@@ -61,6 +62,7 @@ export async function openf1Get(path,params={},{fetchImpl=fetch,wait=ms=>new Pro
   if(res.status===429&&attempt<2){await wait(1200*(attempt+1));continue;}
   if(res.status===429)throw Error('OpenF1 is rate-limiting requests right now (free tier 30/min). Try again in a minute.');
   if(res.status===404)return [];
+  if(res.status===401)throw Error('OpenF1 is locked for free users while an F1 session is live (past sessions included) and for a while after. Use openf1_sessions/openf1_laps/openf1_lap_telemetry (TracingInsights) and FIA documents (fia_list_documents) meanwhile.');
   if(!res.ok)throw Error('OpenF1 error '+res.status);
   const text=await res.text();
   let data;try{data=JSON.parse(text);}catch{throw Error('Unexpected OpenF1 response');}
@@ -83,7 +85,7 @@ export const byDriver=(rows,d)=>d?rows.filter(r=>String(r.driver_number)===Strin
 
 export const fmt=s=>{if(!Number.isFinite(s))return null;const m=Math.floor(s/60),r=s-m*60;return m?`${m}:${r.toFixed(3).padStart(6,'0')}`:r.toFixed(3);};
 export const sec=v=>Number.isFinite(v)?Number(v.toFixed(3)):null;
-const timed=l=>Number.isFinite(l.lap_duration)&&!l.is_pit_out_lap;
+const timed=l=>Number.isFinite(l.lap_duration)&&!l.is_pit_out_lap&&!l.deleted;
 export function bestLap(laps){return laps.filter(timed).sort((a,b)=>a.lap_duration-b.lap_duration)[0]||null;}
 function tyreFor(stints,driverNumber,lap){
  const s=stints.find(x=>x.driver_number===driverNumber&&x.lap_start<=lap&&(x.lap_end==null||lap<=x.lap_end));
@@ -92,10 +94,18 @@ function tyreFor(stints,driverNumber,lap){
 function lapRow(l,stints){
  return {driver_number:String(l.driver_number),lap_number:l.lap_number,lap_time:fmt(l.lap_duration),lap_seconds:sec(l.lap_duration),
   sectors:{S1:sec(l.duration_sector_1),S2:sec(l.duration_sector_2),S3:sec(l.duration_sector_3)},pit_out_lap:!!l.is_pit_out_lap,
-  speed_trap_kmh:l.st_speed??null,date_start:l.date_start||null,tyre:tyreFor(stints,l.driver_number,l.lap_number)};
+  speed_trap_kmh:l.st_speed??null,date_start:l.date_start||null,tyre:tyreFor(stints,l.driver_number,l.lap_number),
+  ...(l.qualifying_segment?{qualifying_segment:l.qualifying_segment}:{}),...(l.deleted?{deleted:true,deleted_reason:l.deleted_reason||null}:{})};
 }
 
+// TracingInsights is used unless a test injects only an OpenF1 fetch.
+const tiOn=io=>{if(io.tiFetch===undefined)io.tiFetch=io.fetchImpl?null:fetch;return !!io.tiFetch;};
+
 async function sessions(args,io){
+ if(tiOn(io)){
+  let found=[];try{found=await tiSessions(args,io);}catch{}
+  if(found.length){io.source=TI_SOURCE;return {source:TI_SOURCE,sessions:found.slice(0,40).map(s=>({session_key:s.session_key,meeting_key:s.meeting_key,session_name:s.session_name,session_type:s.session_type,country:s.country_name,location:s.location,meeting:s.meeting_name,date_start:s.date_start,date_end:s.date_end}))};}
+ }
  const rows=await openf1Get('sessions',{year:args.year},io,CACHE_POLICY.SETTLED_MS);
  const place=(args.place||'').toLowerCase(),name=(args.session_name||'').toLowerCase();
  const found=rows.filter(s=>(!place||[s.country_name,s.location,s.circuit_short_name,s.meeting_name].some(v=>String(v||'').toLowerCase().includes(place)))
@@ -110,22 +120,31 @@ export async function sessionData(sessionKey,io){
  return {laps,stints,drivers};
 }
 
+// Laps for the lap and telemetry tools: TracingInsights first, OpenF1 when it has none.
+async function lapData(sessionKey,io){
+ if(io.lapData?.key===sessionKey)return io.lapData.data;
+ let data=null;
+ if(tiOn(io)){try{data=await tiSessionData(sessionKey,io);}catch{}}
+ if(data?.laps.length)io.source=TI_SOURCE;else{data=await sessionData(sessionKey,io);io.source=SOURCE;}
+ io.lapData={key:sessionKey,data};return data;
+}
+
 async function laps(args,io){
  const d=args.driver_number;
- const all=await sessionData(args.session_key,io);
+ const all=await lapData(args.session_key,io);
  const rows=byDriver(all.laps,d),stints=byDriver(all.stints,d),drivers=byDriver(all.drivers,d);
- if(!rows.length)return {state:'unavailable',source:SOURCE,session_key:args.session_key,reason:'OpenF1 has no laps for this session'+(d?' and driver':'')+'.'};
+ if(!rows.length)return {state:'unavailable',source:io.source,session_key:args.session_key,reason:'Neither TracingInsights nor OpenF1 has laps for this session'+(d?' and driver':'')+' yet.'};
  const who=Object.fromEntries(drivers.map(x=>[String(x.driver_number),{driver:x.name_acronym||null,team:x.team_name||null}]));
  if(d){
   const from=args.lap_from||1,to=args.lap_to||999,sel=rows.filter(l=>l.lap_number>=from&&l.lap_number<=to).sort((a,b)=>a.lap_number-b.lap_number);
   const best=bestLap(rows);
-  return {state:'ready',source:SOURCE,session_key:args.session_key,driver_number:d,...(who[d]||{}),best_lap:best?lapRow(best,stints):null,laps:sel.slice(0,120).map(l=>lapRow(l,stints)),
-   limitations:['Pit-out laps are flagged and excluded from best-lap selection.','Lap times are OpenF1 timing values; use FIA classification documents for official results.']};
+  return {state:'ready',source:io.source,session_key:args.session_key,driver_number:d,...(who[d]||{}),best_lap:best?lapRow(best,stints):null,laps:sel.slice(0,120).map(l=>lapRow(l,stints)),
+   limitations:['Pit-out and deleted laps are flagged and excluded from best-lap selection.','Lap times are live-timing values; use FIA classification documents for official results.']};
  }
  const by=new Map();for(const l of rows){const k=String(l.driver_number);if(!by.has(k))by.set(k,[]);by.get(k).push(l);}
  const list=[...by.entries()].map(([n,ls])=>{const b=bestLap(ls);return {driver_number:n,...(who[n]||{}),laps:ls.length,best_lap:b?lapRow(b,stints):null};})
   .sort((a,b)=>(a.best_lap?.lap_seconds??1e9)-(b.best_lap?.lap_seconds??1e9));
- return {state:'ready',source:SOURCE,session_key:args.session_key,drivers:list,next:'Call openf1_laps with driver_number for every lap of one driver, or openf1_lap_telemetry for telemetry.'};
+ return {state:'ready',source:io.source,session_key:args.session_key,drivers:list,next:'Call openf1_laps with driver_number for every lap of one driver, or openf1_lap_telemetry for telemetry.'};
 }
 
 // Rows: [elapsed_s, integrated_distance_m, speed_kmh, throttle_percent, brake_on, gear, rpm]
@@ -141,10 +160,17 @@ export function telemetryRows(samples,startMs){
 }
 
 async function oneLap(sessionKey,driverNumber,lapNumber,seconds,io){
- const all=await sessionData(sessionKey,io);
+ const all=await lapData(sessionKey,io);
  const rows=byDriver(all.laps,driverNumber),stints=byDriver(all.stints,driverNumber);
  const lap=lapNumber?rows.find(l=>l.lap_number===lapNumber):bestLap(rows);
- if(!lap)return {state:'unavailable',driver_number:driverNumber,reason:lapNumber?`OpenF1 has no lap ${lapNumber} for car ${driverNumber}.`:`OpenF1 has no timed lap for car ${driverNumber}.`};
+ if(!lap)return {state:'unavailable',driver_number:driverNumber,reason:lapNumber?`No lap ${lapNumber} for car ${driverNumber}.`:`No timed lap for car ${driverNumber}.`};
+ if(all.where){
+  const {rows:data,scaled}=await tiLapTelemetry(all.where,lap,seconds,io);
+  const gaps=[];for(let i=1;i<data.length;i++)if(data[i][0]-data[i-1][0]>1.5)gaps.push([data[i-1][0],data[i][0]]);
+  return {state:data.length?'ready':'unavailable',driver_number:String(driverNumber),...lapRow(lap,all.stints),window:{seconds_before_lap_start:0,partial_lap:!!seconds},
+   sample_count:data.length,gaps_seconds:gaps,complete_coverage:data.length>2&&!gaps.length&&!seconds,distance_m:data.length?data.at(-1)[1]:0,samples:data,
+   ...(scaled?{time_axis_scaled:scaled}:{}),...(data.length?{}:{reason:'TracingInsights has no telemetry file for this lap yet.'})};
+ }
  const begin=Date.parse(lap.date_start);
  if(!Number.isFinite(begin))return {state:'unavailable',driver_number:driverNumber,reason:'This lap has no start time on OpenF1.'};
  const lead=lap.lap_number===1&&seconds?3:0;
@@ -187,24 +213,32 @@ export function cornerComparison(a,b,delta){
   biggest_gains:[...rows].filter(r=>Number.isFinite(r.time_change_s)).sort((x,y)=>x.time_change_s-y.time_change_s).slice(0,3).map(r=>r.corner)};
 }
 
+// Two laps rarely integrate to the same distance; stretching the second onto the first's
+// length keeps the delta from drifting so it ends at the real lap-time difference.
+function sameLength([a,b]){
+ const la=a.samples.at(-1)?.[1],lb=b.samples.at(-1)?.[1];
+ if(!(la>0&&lb>0))return [a,b];const k=la/lb;
+ return [a,{...b,samples:b.samples.map(r=>[r[0],Number((r[1]*k).toFixed(2)),...r.slice(2)])}];
+}
+
 async function lapTelemetry(args,io){
  if(args.compare_driver_number&&args.compare_driver_number===args.driver_number&&(args.compare_lap_number||null)===(args.lap_number||null))throw Error('Choose a different driver or lap to compare');
  const first=await oneLap(args.session_key,args.driver_number,args.lap_number,args.seconds,io);
  const second=args.compare_driver_number||args.compare_lap_number?await oneLap(args.session_key,args.compare_driver_number||args.driver_number,args.compare_lap_number||(args.compare_driver_number?args.lap_number:null),args.seconds,io):null;
  const laps=[first,...(second?[second]:[])];
  const ready=laps.every(l=>l.state==='ready');
- const delta=ready&&laps.length===2&&!args.seconds?distanceDelta(laps.map(l=>({...l,complete_coverage:l.complete_coverage}))):null;
+ const delta=ready&&laps.length===2&&!args.seconds?distanceDelta(sameLength(laps)):null;
  if(args.summary){
   const sums=laps.map(l=>l.state==='ready'?lapSummary(l.samples):null);
-  return {state:ready?'ready':laps.some(l=>l.state==='ready')?'partial':'unavailable',source:SOURCE,session_key:args.session_key,mode:'summary',
+  return {state:ready?'ready':laps.some(l=>l.state==='ready')?'partial':'unavailable',source:io.source,session_key:args.session_key,mode:'summary',
    laps:laps.map((l,i)=>{const {samples,...rest}=l;return {...rest,summary:sums[i]};}),
    ...(delta?{total_delta_s:delta.points?.filter(p=>Number.isFinite(p[1])).at(-1)?.[1]??null,corner_comparison:cornerComparison(sums[0],sums[1],delta)}:{}),
-   limitations:['Corners are numbered in the order found on this lap (speed minima), not official turn numbers.','Distance is speed-integrated and approximate. Brake is on/off only.','Call again without summary for raw samples when a chart is needed.']};
+   limitations:[...(io.source===TI_SOURCE?['TracingInsights telemetry starts at the lap start line (no pre-start window for race starts); a file time axis that ends away from the official lap time is scaled to it (time_axis_scaled).']:[]),'Corners are numbered in the order found on this lap (speed minima), not official turn numbers.','Distance is speed-integrated and approximate. Brake is on/off only.','Call again without summary for raw samples when a chart is needed.']};
  }
- return {state:ready?'ready':laps.some(l=>l.state==='ready')?'partial':'unavailable',source:SOURCE,session_key:args.session_key,laps,...(delta?{delta}:{}),
+ return {state:ready?'ready':laps.some(l=>l.state==='ready')?'partial':'unavailable',source:io.source,session_key:args.session_key,laps,...(delta?{delta}:{}),
   columns:['elapsed_s','integrated_distance_m','speed_kmh','throttle_percent','brake_on','gear','rpm'],
-  limitations:['elapsed_s is measured from the lap start time (negative before the start line for race starts).','Distance is speed-integrated, not GPS. Brake is binary.','About 3.7 samples per second; do not draw across gaps.'],
-  response_format:'One conclusion sentence, aligned speed/throttle/brake charts on a common horizontal axis, a short sector table, and 1-2 observations. Name OpenF1 as the source.'};
+  limitations:[...(io.source===TI_SOURCE?['TracingInsights telemetry starts at the lap start line (no pre-start window for race starts); a file time axis that ends away from the official lap time is scaled to it (time_axis_scaled).']:[]),'elapsed_s is measured from the lap start time (negative before the start line for race starts).','Distance is speed-integrated, not GPS. Brake is binary.','About 3.7 samples per second; do not draw across gaps.'],
+  response_format:'One conclusion sentence, aligned speed/throttle/brake charts on a common horizontal axis, a short sector table, and 1-2 observations. Name the source field.'};
 }
 
 export async function openf1Call(name,args,io={}){
