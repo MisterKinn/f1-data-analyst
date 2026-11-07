@@ -18,6 +18,10 @@ on:
         description: 'Seasons to fetch (comma separated)'
         required: false
         default: '2023,2024,2025,2026'
+      trace_drivers:
+        description: 'Fastest drivers per qualifying session whose speed trace is used'
+        required: false
+        default: '10'
       calibrate:
         description: 'Calibrate and commit (false: only build data and upload it as an artifact)'
         required: false
@@ -48,6 +52,8 @@ jobs:
           restore-keys: lapsim-raw-v1-
       - name: Fetch OpenF1 qualifying data
         timeout-minutes: 150
+        env:
+          LAPSIM_TRACE_DRIVERS: ${{ inputs.trace_drivers || '10' }}
         run: node scripts/sim/fetch-openf1.mjs "${{ inputs.years || '2023,2024,2025,2026' }}"
       # saved even when a later step fails, so a rerun does not fetch everything again
       - name: Save raw data cache

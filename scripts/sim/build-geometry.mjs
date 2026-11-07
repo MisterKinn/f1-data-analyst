@@ -215,7 +215,7 @@ for (const entry of index) {
     const mean = k => w.length ? w.reduce((a, r) => a + (r[k] ?? 0), 0) / w.length : null;
     const we = w.reduce((a, r) => a + (r[6] || 0) * Math.sin((r[7] || 0) * Math.PI / 180), 0), wn = w.reduce((a, r) => a + (r[6] || 0) * Math.cos((r[7] || 0) * Math.PI / 180), 0);
     traces.push({
-      year: session.year, track: track.id, session_key: session.session_key, driver_number: lap.driver_number, position: lap.position,
+      year: session.year, track: track.id, session_key: session.session_key, date: session.date_start ?? null, driver_number: lap.driver_number, position: lap.position,
       lap_seconds: lap.lap.lap_duration, sectors: [lap.lap.duration_sector_1, lap.lap.duration_sector_2, lap.lap.duration_sector_3],
       s: rows.map(r => Math.round(((interpAt(ts, sUn, r.t) - sStart) % ref.length + ref.length) % ref.length * 10) / 10),
       v: rows.map(r => r.v), throttle: rows.map(r => r.thr), brake: rows.map(r => r.brk),
