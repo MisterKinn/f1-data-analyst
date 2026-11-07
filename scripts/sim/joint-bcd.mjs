@@ -181,6 +181,19 @@ function residualCorrector(fit, groupsPrep, lambda) {
 // Predict laps of group `key` on left-out tracks with factors learned from the other groups' laps.
 const predict = (l, car, f, adj) => lapScore(l, car, f, {wTime: 0, wSector: 0}).res.lapTime * poleMult(adj?.[l.group], l.tau);
 
+// Carry-over of the track bias (LAPSIM_CARRY=on): the fitted model's remaining error on the same
+// track in the other seasons (real / sim − 1, mean), applied to the prediction of an unseen season.
+function carryBias(fit, groups, key) {
+  if (process.env.LAPSIM_CARRY !== 'on') return () => 0;
+  const by = {};
+  for (const g of prepGroups(groups.filter(g => g.key !== key))) for (const l of g.laps) {
+    const fa = fit.factors[l.name]; if (!fa || !fit.cars[g.key] || (l.weight ?? 1) < 1) continue;
+    (by[l.name] ||= []).push(l.lapSeconds / predict(l, fit.cars[g.key], fa, fit.adj) - 1);
+  }
+  const w = Number(process.env.LAPSIM_CARRY_W || 1);
+  return l => by[l.name]?.length ? w * by[l.name].reduce((a, b) => a + b, 0) / by[l.name].length : 0;
+}
+
 export async function holdoutBCD(groups, key, {folds = 4, ...opts} = {}) {
   const target = groups.find(g => g.key === key);
   const names = [...new Set(target.laps.map(l => l.name))].sort();
@@ -189,10 +202,10 @@ export async function holdoutBCD(groups, key, {folds = 4, ...opts} = {}) {
     const test = new Set(names.filter((_, i) => i % k === f));
     const train = groups.map(g => g.key === key ? {...g, laps: g.laps.filter(l => !test.has(l.name))} : g);
     const fit = await fitJointBCD(train, opts);
-    const corr = opts.residual ? residualCorrector(fit, prepGroups(train), opts.residualLambda ?? 1) : () => 0;
+    const corr = opts.residual ? residualCorrector(fit, prepGroups(train), opts.residualLambda ?? 1) : () => 0, carry = carryBias(fit, train, key);
     for (const l of prepGroups([target])[0].laps.filter(x => test.has(x.name) && (x.weight ?? 1) >= 1)) {
       const fa = fit.factors[l.name]; if (!fa || !train.some(g => g.laps.some(x => x.name === l.name))) continue;
-      const t = predict(l, fit.cars[key], fa, fit.adj) * (1 - corr(l, key));
+      const t = predict(l, fit.cars[key], fa, fit.adj) * (1 - corr(l, key)) * (1 + carry(l));
       errors.push({name: l.name, dt: t - l.lapSeconds, pct: (t / l.lapSeconds - 1) * 100});
     }
   }
@@ -211,10 +224,10 @@ export async function backtestBCD(groups, key, opts = {}) {
     if (!before.some(g => g.key === key) || before.find(g => g.key === key).laps.length < 3) continue;
     const fit = await fitJointBCD(before, {...opts, ...start});
     start = {startX: fit.xs, startFactors: fit.factors, startAdj: fit.adj};
-    const corr = opts.residual ? residualCorrector(fit, prepGroups(before), opts.residualLambda ?? 1) : () => 0;
+    const corr = opts.residual ? residualCorrector(fit, prepGroups(before), opts.residualLambda ?? 1) : () => 0, carry = carryBias(fit, before, key);
     for (const l of prepGroups([target])[0].laps.filter(x => x.date?.slice(0, 10) === d && (x.weight ?? 1) >= 1)) {
       const fa = fit.factors[l.name]; if (!fa) continue;
-      const t = predict(l, fit.cars[key], fa, fit.adj) * (1 - corr(l, key));
+      const t = predict(l, fit.cars[key], fa, fit.adj) * (1 - corr(l, key)) * (1 + carry(l));
       errors.push({name: l.name, date: d, dt: t - l.lapSeconds, pct: (t / l.lapSeconds - 1) * 100});
     }
   }
