@@ -107,4 +107,45 @@ await writeFile(join(CACHE, 'circuits.json'), JSON.stringify(circuits));
 try { await writeFile(join(CACHE, 'f1-circuits.geojson'), JSON.stringify(await cachedJson('https://raw.githubusercontent.com/bacinger/f1-circuits/master/f1-circuits.geojson'))); }
 catch (e) { console.log('no geojson: ' + e.message); }
 await writeFile(join(CACHE, 'index.json'), JSON.stringify(index, null, 1));
-console.log(`done: ${index.length} sessions, ${calls} requests, ${cached} from cache`);
+
+// Race sessions for the race-pace model (fuel burn, tyre wear, pit loss): every lap of every
+// driver with its stint (compound, tyre age), pit stops and race-control messages (SC/VSC/flags).
+// Compact form in .cache/lapsim/races; only fitted factors are committed.
+async function race(s) {
+  const sk = s.session_key;
+  const [laps, stints, pits, control, weather, drivers, results] = await Promise.all(['laps', 'stints', 'pit', 'race_control', 'weather', 'drivers', 'session_result'].map(p => openf1(p, {session_key: sk})));
+  const teamOf = n => drivers.find(d => d.driver_number === n)?.team_name || null;
+  const byDriver = {};
+  for (const l of laps) {
+    const st = stints.find(t => t.driver_number === l.driver_number && l.lap_number >= t.lap_start && l.lap_number <= (t.lap_end ?? 999));
+    (byDriver[l.driver_number] ||= []).push([l.lap_number, l.lap_duration ?? null, l.duration_sector_1 ?? null, l.duration_sector_2 ?? null, l.duration_sector_3 ?? null,
+      st?.compound || null, st ? st.tyre_age_at_start + l.lap_number - st.lap_start : null, st?.stint_number ?? null, l.is_pit_out_lap ? 1 : 0, l.date_start || null]);
+  }
+  return {
+    session_key: sk, meeting_key: s.meeting_key, year: s.year, circuit: s.circuit_short_name, session: s.session_name, date_start: s.date_start,
+    columns: ['lap', 'time', 's1', 's2', 's3', 'compound', 'tyreAge', 'stint', 'pitOut', 'date'],
+    drivers: Object.fromEntries(Object.entries(byDriver).map(([n, ls]) => [n, {team: teamOf(Number(n)), position: results.find(r => r.driver_number === Number(n))?.position ?? null, laps: ls.sort((a, b) => a[0] - b[0])}])),
+    pits: pits.map(p => [p.driver_number, p.lap_number, p.pit_duration ?? null, p.stop_duration ?? null]),
+    control: control.map(c => [c.date, c.lap_number ?? null, c.category, c.flag ?? null, c.message]),
+    weather: weather.map(w => [w.date, w.air_temperature, w.track_temperature, w.humidity, w.pressure, w.rainfall, w.wind_speed, w.wind_direction]),
+  };
+}
+if (process.env.LAPSIM_RACES !== 'off') {
+  await mkdir(join(CACHE, 'races'), {recursive: true});
+  const races = [];
+  for (const year of YEARS) {
+    const list = (await openf1('sessions', {year})).filter(s => (s.session_name === 'Race' || s.session_name === 'Sprint') && Date.parse(s.date_end) < Date.now() - 3 * 3600e3);
+    for (const s of list) {
+      try {
+        const data = await race(s);
+        if (!Object.keys(data.drivers).length) { console.log(`skip race ${year} ${s.circuit_short_name}: no laps`); continue; }
+        const file = `${year}-${s.circuit_short_name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${s.session_name.toLowerCase()}.json`;
+        await writeFile(join(CACHE, 'races', file), JSON.stringify(data));
+        races.push({file, year, circuit: s.circuit_short_name, session: s.session_name, session_key: s.session_key});
+        console.log(`ok race ${year} ${s.circuit_short_name} ${s.session_name}`);
+      } catch (e) { console.log(`fail race ${year} ${s.circuit_short_name}: ${e.message}`); }
+    }
+  }
+  await writeFile(join(CACHE, 'races.json'), JSON.stringify(races, null, 1));
+}
+console.log(`done: ${index.length} qualifying sessions, ${calls} requests, ${cached} from cache`);

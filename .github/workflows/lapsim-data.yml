@@ -75,6 +75,8 @@ jobs:
           path: |
             .cache/lapsim/traces.json
             .cache/lapsim/wec.json
+            .cache/lapsim/races.json
+            .cache/lapsim/races/
             worker/lapsim/tracks-data.js
           retention-days: 5
           include-hidden-files: true
