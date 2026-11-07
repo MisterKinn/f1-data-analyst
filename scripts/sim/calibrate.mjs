@@ -21,7 +21,7 @@ const WTIME = Number(process.env.LAPSIM_WTIME || 2);
 const E = process.env;
 const FITTER = E.LAPSIM_FITTER || 'nm';
 const BCD = {rounds: Number(E.LAPSIM_ROUNDS || 4), iters: Number(E.LAPSIM_BCD_ITERS || 150), wTime: WTIME, wSector: Number(E.LAPSIM_WSECTOR || 0),
-  trackDrag: E.LAPSIM_TRACK_DRAG === 'on', wPrior: Number(E.LAPSIM_WPRIOR || 2), log: m => console.log(m)};
+  trackDrag: E.LAPSIM_TRACK_DRAG === 'on', residual: E.LAPSIM_RESIDUAL === 'on', residualLambda: Number(E.LAPSIM_RESIDUAL_LAMBDA || 1), wPrior: Number(E.LAPSIM_WPRIOR || 2), log: m => console.log(m)};
 const MAX_POS = Number(E.LAPSIM_MAX_POS || 3);
 const HOLDOUT_YEARS = (E.LAPSIM_HOLDOUT_YEARS || '2025,2026').split(',').map(Number);
 const fitAll = gs => FITTER === 'bcd' ? fitJointBCD(gs, BCD) : fitJoint(gs, {iters: ITERS, wTime: WTIME});
@@ -50,6 +50,7 @@ for (const year of [...new Set(traces.map(t => t.year))].sort()) {
     .map(t => ({name: t.track, track: tracks[t.track], lapSeconds: t.lap_seconds, weight: t.position === 1 ? 1 : 0.5,
       // non-pole laps: other cars, so by default they count for the speed trace shape only
       timeScale: t.position === 1 || E.LAPSIM_NONPOLE === 'time' ? 1 : 0, sectors: t.sectors, date: t.date,
+      feat: {ftf: t.throttle?.length ? t.throttle.filter(x => x >= 98).length / t.throttle.length : null, vmean: tracks[t.track].kappa.length * tracks[t.track].ds / t.lap_seconds},
       obs: {s: t.s, v: t.v.map(x => x / 3.6)}, weather: withEnergy(t.weather, t.track, year), meta: {sessionKey: t.session_key, driver: t.driver_number, position: t.position}}));
   if (laps.length < 4) { report.push(`${year}: not enough laps (${laps.length})`); continue; }
   const base = {...structuredClone(prior), linkMu: true};

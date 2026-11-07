@@ -114,6 +114,41 @@ export async function fitJointBCD(groups, opts = {}) {
   } finally { await pool.close(); }
 }
 
+// Learned correction on top of the physics (option residual): the error the physics leaves on the
+// fitted pole laps, regressed (ridge) on lap features; applied as a lap-time scale. Only training laps
+// are used, so holdout and forecast tests stay honest.
+export function featureRow(l, key, keys) {
+  const f = l.feat || {}, recent = keys.length ? key === Math.max(...keys) : 0;
+  const x = [1, f.ftf ?? 0.6, (f.vmean ?? 60) / 60, (l.env?.rho ?? 1.18) / 1.18, ((l.weather?.trackTempC ?? 35) - 35) / 15, (l.weather?.rechargeMJ ?? 8.5) / 8.5];
+  return [...x, recent ? 1 : 0, recent ? x[1] : 0, recent ? x[2] : 0];
+}
+export function ridgeFit(rows, y, lambda = 1) {
+  const n = rows[0].length, A = Array.from({length: n}, () => new Array(n).fill(0)), b = new Array(n).fill(0);
+  rows.forEach((r, k) => { for (let i = 0; i < n; i++) { b[i] += r[i] * y[k]; for (let j = 0; j < n; j++) A[i][j] += r[i] * r[j]; } });
+  for (let i = 1; i < n; i++) A[i][i] += lambda;
+  // Gaussian elimination
+  for (let i = 0; i < n; i++) {
+    let p = i; for (let k = i + 1; k < n; k++) if (Math.abs(A[k][i]) > Math.abs(A[p][i])) p = k;
+    [A[i], A[p]] = [A[p], A[i]]; [b[i], b[p]] = [b[p], b[i]];
+    const d = A[i][i] || 1e-12;
+    for (let k = i + 1; k < n; k++) { const m = A[k][i] / d; for (let j = i; j < n; j++) A[k][j] -= m * A[i][j]; b[k] -= m * b[i]; }
+  }
+  const w = new Array(n).fill(0);
+  for (let i = n - 1; i >= 0; i--) { let t = b[i]; for (let j = i + 1; j < n; j++) t -= A[i][j] * w[j]; w[i] = t / (A[i][i] || 1e-12); }
+  return w;
+}
+function residualCorrector(fit, groupsPrep, lambda) {
+  const keys = groupsPrep.map(g => g.key), rows = [], y = [];
+  for (const p of fit.perLap) {
+    if ((p.meta?.position ?? 1) !== 1) continue;
+    const l = groupsPrep.find(g => g.key === p.group).laps.find(x => x.name === p.name && x.meta?.position === p.meta?.position && x.meta?.sessionKey === p.meta?.sessionKey);
+    if (!l) continue; rows.push(featureRow(l, p.group, keys)); y.push(p.dt / p.realLap);
+  }
+  if (rows.length < 8) return () => 0;
+  const w = ridgeFit(rows, y, lambda);
+  return (l, key) => featureRow(l, key, keys).reduce((a, v, i) => a + v * w[i], 0);
+}
+
 // Predict laps of group `key` on left-out tracks with factors learned from the other groups' laps.
 const predict = (l, car, f) => lapScore(l, car, f, {wTime: 0, wSector: 0}).res.lapTime;
 
@@ -125,9 +160,10 @@ export async function holdoutBCD(groups, key, {folds = 4, ...opts} = {}) {
     const test = new Set(names.filter((_, i) => i % k === f));
     const train = groups.map(g => g.key === key ? {...g, laps: g.laps.filter(l => !test.has(l.name))} : g);
     const fit = await fitJointBCD(train, opts);
+    const corr = opts.residual ? residualCorrector(fit, prepGroups(train), opts.residualLambda ?? 1) : () => 0;
     for (const l of prepGroups([target])[0].laps.filter(x => test.has(x.name) && (x.weight ?? 1) >= 1)) {
       const fa = fit.factors[l.name]; if (!fa || !train.some(g => g.laps.some(x => x.name === l.name))) continue;
-      const t = predict(l, fit.cars[key], fa);
+      const t = predict(l, fit.cars[key], fa) * (1 - corr(l, key));
       errors.push({name: l.name, dt: t - l.lapSeconds, pct: (t / l.lapSeconds - 1) * 100});
     }
   }
@@ -146,9 +182,10 @@ export async function backtestBCD(groups, key, opts = {}) {
     if (!before.some(g => g.key === key) || before.find(g => g.key === key).laps.length < 3) continue;
     const fit = await fitJointBCD(before, {...opts, ...start});
     start = {startX: fit.xs, startFactors: fit.factors};
+    const corr = opts.residual ? residualCorrector(fit, prepGroups(before), opts.residualLambda ?? 1) : () => 0;
     for (const l of prepGroups([target])[0].laps.filter(x => x.date?.slice(0, 10) === d && (x.weight ?? 1) >= 1)) {
       const fa = fit.factors[l.name]; if (!fa) continue;
-      const t = predict(l, fit.cars[key], fa);
+      const t = predict(l, fit.cars[key], fa) * (1 - corr(l, key));
       errors.push({name: l.name, date: d, dt: t - l.lapSeconds, pct: (t / l.lapSeconds - 1) * 100});
     }
   }

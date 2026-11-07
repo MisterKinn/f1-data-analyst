@@ -76,6 +76,19 @@
     "LAPSIM_TRACK_DRAG": "on",
     "LAPSIM_BACKTEST": "on"
    }
+  },
+  {
+   "name": "sector-drag-resid",
+   "env": {
+    "LAPSIM_FITTER": "bcd",
+    "LAPSIM_SKIP_WEC": "1",
+    "LAPSIM_ROUNDS": "3",
+    "LAPSIM_BCD_ITERS": "100",
+    "LAPSIM_WSECTOR": "2",
+    "LAPSIM_TRACK_DRAG": "on",
+    "LAPSIM_RESIDUAL": "on",
+    "LAPSIM_BACKTEST": "on"
+   }
   }
  ]
 }
