@@ -96,7 +96,8 @@ export function simulate(args = {}) {
       main_straight_tailwind_ms: base.heading ? r3(K.tailwind(base.heading[2], windSpeed, windFromDeg)) : null},
     result: summary(res, d, sel.car),
     uncertainty: {error_range_s: sel.unc?.pct ? r3(res.lapTime * sel.unc.pct / 100) : null, error_range_pct: sel.unc?.pct ?? null, confidence: sel.unc?.confidence,
-      basis: 'one-sigma error from the holdout test (tracks left out of the fit); projections add half the historical development range'}};
+      basis: sel.unc?.basis === 'fit' ? 'one-sigma lap-time error of the fit over the tracks this car was fitted on' : 'one-sigma error from the holdout test (tracks left out of the fit, predicted)', holdout_error_pct: sel.unc?.holdoutPct ?? null,
+      note: 'projections add half the historical development range'}};
   // sensitivity table (common rule, as Formula Student teams report it): lap-time change for +10%
   const plus = (k, f) => { const c = structuredClone(sel.car); if (k === 'muY') { c.muX *= f; c.muY *= f; c.muXTrac = (c.muXTrac ?? c.muX) * f; } else if (k === 'clA') { c.clA *= f; c.clALow = (c.clALow ?? c.clA) * f; } else if (k === 'cdA') { c.cdA *= f; c.cdALow = (c.cdALow ?? c.cdA) * f; } else c[k] *= f; return c; };
   out.sensitivity_s_per_plus_10pct = Object.fromEntries(['mass', 'muY', 'clA', 'cdA', 'pIce'].map(k => [k === 'muY' ? 'tyre_grip' : k === 'pIce' ? 'engine_power' : k === 'clA' ? 'downforce_clA' : k === 'cdA' ? 'drag_cdA' : 'mass',
