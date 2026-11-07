@@ -53,7 +53,9 @@ for (const year of YEARS) {
       const weather = weatherRows.length ? {airTempC: mean('AIR_TEMP'), trackTempC: mean('TRACK_TEMP'), humidityPct: mean('HUMIDITY'), pressureHpa: mean('PRESSURE'),
         windSpeed: Math.hypot(we, wn) / weatherRows.length, windFromDeg: (Math.atan2(we, wn) * 180 / Math.PI + 360) % 360,
         rain: weatherRows.some(r => num(r.RAIN) > 0)} : null;
-      out.push({series: 'wec', year, event, track, cls, laps, weather});
+      // every car of the class (set-up and team reading); `laps` keeps the top 3 for the class fit
+      const cars = [...best.values()].filter(l => !def.manufacturers || def.manufacturers.test(l.manufacturer || '')).sort((x, y) => x.lap - y.lap);
+      out.push({series: 'wec', year, event, track, cls, laps, cars, weather});
       console.log(`wec ${year} ${event} ${cls}: best ${laps[0].lap.toFixed(3)} (#${laps[0].car} ${laps[0].manufacturer}), trap ${laps[0].topSpeedKph}`);
       }
     }
