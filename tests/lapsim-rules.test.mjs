@@ -63,3 +63,9 @@ test('FIA Power Unit Information: recharge limits by session from column positio
   assert.deepEqual(parsePuInfo([{page: 2, rows}]), {raceMJ: 8, raceOvertakeMJ: 8.5, qualiMJ: 6.5, practiceMJ: 8.5, outLapMJ: 9});
   assert.equal(parsePuInfo([{page: 1, rows: [row(1, [['Power Unit Information', 1]])]}]), null);
 });
+
+test('a missing approved-changes section keeps the previous 2028 values', async () => {
+  const {extract} = await import('../scripts/sim/rule-params.mjs');
+  const e = extract([{page: 1, text: 'C5.2.3 Fuel energy flow must not exceed 3150 MJ/h.'}], {pattern: 'C5\\.2\\.3[^.]*?(\\d{4}(?:\\s+\\d{4})?)\\s*MJ/h', range: [2000, 4000]}, {section: 'Changes Approved for 2028'});
+  assert.match(e.error, /section/);
+});

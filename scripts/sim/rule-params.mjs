@@ -81,14 +81,18 @@ async function main() {
       }
       const pages = docCache.get(key);
       const values = {...(target.inherit ? out[target.inherit]?.values : {}), ...(out[target.car]?.values || {})};
+      let found = 0;
       for (const param of target.params) {
         const e = extract(pages, param, {section: target.section});
         if (e.error) { report.push(`- ${param.key} (${param.article}): not updated, ${e.error}. Kept ${values[param.key]?.value ?? 'none'}.`); continue; }
         const v = {value: e.value, article: param.article, page: e.page, document: doc.title, url: `${doc.url}#page=${e.page}`, published: doc.published || null};
         if (values[param.key]?.value !== e.value) changes.push(`${target.car} ${param.key}: ${values[param.key]?.value ?? 'none'} → ${e.value} (${param.article}, ${doc.title})`);
-        values[param.key] = v;
+        values[param.key] = v; found++;
         report.push(`- ${param.key} = ${e.value} (${param.article}, p.${e.page})`);
       }
+      // nothing read (e.g. the approved-changes section is missing from this issue): keep the previous
+      // values instead of copying the inherited ones of another year
+      if (!found) { report.push('', `Nothing read from ${doc.title}; previous values kept.`, ''); continue; }
       out[target.car] = {values, document: {title: doc.title, url: doc.url, published: doc.published || null}, checked: new Date().toISOString().slice(0, 10)};
       report.push('', `Source: [${doc.title}](${doc.url})`, '');
     } catch (err) {
