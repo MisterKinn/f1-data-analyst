@@ -6,6 +6,7 @@ import {readFile, writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {cleanLaps, fitRace, poolTrack, raceLaps, strategies, COMPOUNDS} from '../../worker/lapsim/race-pace.js';
 import {lapsimCalibration} from '../../worker/lapsim/calibration-data.js';
+import {rechargeLimitMJ} from '../../worker/lapsim/energy-limits.js';
 
 const CACHE = process.env.LAPSIM_CACHE || '.cache/lapsim';
 const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g, '-');
@@ -55,6 +56,20 @@ for (const r of races.filter(x => x.session === 'Race').sort((a, b) => a.year - 
 const strip = f => { const {cleanLaps: _c, ...rest} = f; return rest; };
 const latestYear = Math.max(...Object.values(fits).flat().map(f => f.year));
 
+// New-season change of the race/qualifying ratio per track. 2026 qualifying runs on a per-track
+// energy recharge limit, so the change depends on it: k = c0 + c1 × limit (MJ), fitted on the other
+// tracks already raced this season; median when the limits do not vary enough.
+const changes = () => Object.entries(fits).map(([o, l]) => { const c = l.find(f => f.year === latestYear), p = l.filter(f => f.year < latestYear), pr = p.length ? poolTrack(p).raceRatio : null; return c?.raceRatio && pr ? {id: o, k: c.raceRatio / pr, mj: rechargeLimitMJ(o, latestYear)} : null; }).filter(Boolean);
+function seasonRatio(skip) {
+  const pts = changes().filter(x => x.id !== skip), m = median(pts.map(x => x.k));
+  const mj = rechargeLimitMJ(skip, latestYear), xs = pts.filter(x => Number.isFinite(x.mj));
+  if (process.env.LAPSIM_RACE_K !== 'energy' || !Number.isFinite(mj) || xs.length < 5) return m;
+  const mx = xs.reduce((a, x) => a + x.mj, 0) / xs.length, my = xs.reduce((a, x) => a + x.k, 0) / xs.length;
+  const sxx = xs.reduce((a, x) => a + (x.mj - mx) ** 2, 0); if (sxx < 0.5) return m;
+  const b = xs.reduce((a, x) => a + (x.mj - mx) * (x.k - my), 0) / sxx;
+  return my + b * (mj - mx);
+}
+
 // New-season change of the fuel/rubber slope, learned from the other tracks already raced this season
 function seasonSlope(skip) {
   const r = median(Object.entries(fits).filter(([o]) => o !== skip).map(([, l]) => { const c = l.find(f => f.year === latestYear), p = l.filter(f => f.year < latestYear); const ps = p.length ? poolTrack(p).slope : NaN; return c && ps < -0.01 ? c.slope / ps : NaN; }).filter(Number.isFinite));
@@ -68,7 +83,7 @@ for (const [id, list] of Object.entries(fits)) {
   if (!cur || !prev.length) continue;
   const P = poolTrack(prev);
   // scale for the new season's race ratio, learned from the other tracks already raced this season
-  const k = median(Object.entries(fits).filter(([o]) => o !== id).map(([, l]) => { const c = l.find(f => f.year === latestYear), p = l.filter(f => f.year < latestYear); return c && p.length && c.raceRatio ? c.raceRatio / poolTrack(p).raceRatio : NaN; }).filter(Number.isFinite));
+  const k = seasonRatio(id);
   if (P.raceRatio == null) continue;
   const ks = seasonSlope(id);
   const track = {...P, raceRatio: P.raceRatio * (Number.isFinite(k) ? k : 1), slope: P.slope * ks};
@@ -79,6 +94,7 @@ for (const [id, list] of Object.entries(fits)) {
   if (!Number.isFinite(best) || Math.abs(best) > 30) { log.push(`${id} ${cur.year}: test skipped (pred ${pred.toFixed(1)}, real ${real.toFixed(1)}, laps ${cur.laps}, slope ${cur.slope.toFixed(3)})`); continue; }
   errs.push(best); testRows.push([id, cur.year, prev.map(f => f.year).join('+'), best]);
 }
+log.push(...changes().map(x => `k ${x.id}: ×${x.k.toFixed(4)}, recharge limit ${x.mj ?? '–'} MJ`));
 const rms = errs.length ? Math.sqrt(errs.reduce((s, v) => s + v * v, 0) / errs.length) : null;
 
 // 2026 race ratio for tracks not raced yet this season: latest pooled ratio × this season's change

@@ -60,7 +60,9 @@ jobs:
       - name: Race pace
         if: hashFiles('.cache/lapsim/races.json') != ''
         continue-on-error: true
-        run: node scripts/sim/race-pace.mjs && cat docs/lapsim-race.md
+        run: |
+          for kv in $(echo '${{ toJson(matrix.config.env) }}' | jq -r 'to_entries[] | "\(.key)=\(.value)"'); do export "$kv"; done
+          node scripts/sim/race-pace.mjs && cat docs/lapsim-race.md
       - uses: actions/upload-artifact@v4
         if: always()
         with:
