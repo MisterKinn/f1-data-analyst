@@ -2,7 +2,7 @@
 // /simulation page and the lapsim_simulate connector tool so both give the same answer.
 import {lapsimCalibration} from './calibration-data.js';
 import {lapsimTrackChanges} from './track-changes-data.js';
-import {TUM_2019, PRIOR, applyRules} from './cars.js';
+import {TUM_2019, PRIOR, applyRules, applyDevelopment} from './cars.js';
 import {SERIES} from './series.js';
 
 export const CAR_ORDER = ['base2019', '2025', '2026', '2027', '2028', 'wec-hypercar', 'wec-lmgt3'];
@@ -13,7 +13,12 @@ export function carsFor(id) {
   const gripOf = y => [y, ...Object.keys(s).sort().reverse()].map(k => s[k]?.tracks?.[id]?.grip).find(g => g != null) ?? 1;
   const out = {base2019: {car: TUM_2019, grip: 1, kind: 'base', year: 2019}};
   for (const y of [2025, 2026]) out[y] = {car: s[y]?.car || PRIOR[y], grip: s[y]?.car ? gripOf(y) : 1, kind: s[y]?.car ? 'calibrated' : 'prior', year: y};
-  for (const y of [2027, 2028]) out[y] = {car: p[y]?.car || applyRules(s[2026]?.car || PRIOR[2026], y), grip: gripOf(2026), kind: 'projected', year: y};
+  // projected cars are rebuilt from the current regulation values (rules-data.js) plus the fitted
+  // development factor, so a regulation update applies without a new calibration run
+  for (const y of [2027, 2028]) {
+    const c = applyDevelopment(applyRules(s[2026]?.car || PRIOR[2026], y), p[y]?.development ?? 0); c.label = String(y);
+    out[y] = {car: c, grip: gripOf(2026), kind: 'projected', year: y};
+  }
   // WEC classes (latest calibrated season), on the same track factor as F1
   for (const [cls, def] of Object.entries(SERIES.wec.classes)) {
     const seasons = lapsimCalibration?.series?.wec?.[cls] || {}, y = Object.keys(seasons).sort().at(-1);
