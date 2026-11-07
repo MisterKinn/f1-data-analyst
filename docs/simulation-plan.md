@@ -59,6 +59,21 @@ needs a front-axle deployment threshold; LMDh (rear-axle hybrid) fits the curren
 - Tyre grip and drag borrowed from Gen3 Evo as a start. Labelled **spec-based only**.
 - Re-calibrate after the first Gen4 races and publish prediction vs reality.
 
+Data sources checked (2026-11-07):
+- Timing: the official FIA Formula E results site (results.formulae.fia.com, Season 1–12) serves
+  public JSON folder indexes; each qualifying group/duel has `23_Analysis` (lap, S1–S3, average
+  speed, Attack Mode / 350 kW lap flags) and `26_Weather` files — the same Al Kamel format as WEC,
+  but no speed-trap column was seen. Al Kamel's own FE hosts were not reachable.
+- Telemetry or car positions: no public source (no OpenF1 equivalent).
+- Tracks: most FE street circuits are not in open datasets. FE layouts also differ from F1 on shared
+  venues (Mexico City, Miami, Jeddah), so the F1 lines cannot be reused as they are. TUMFTM
+  global_racetrajectory_optimization has Berlin Tempelhof 2018.
+- Gen4 (Season 13 from Jeddah, 18–19 Dec 2026): 450 kW race, 600 kW qualifying/Attack Mode,
+  up to 700 kW regen, permanent AWD, Bridgestone tyres, two aero kits. Minimum mass and energy differ
+  between sources (950 vs 1,028 kg; 55 vs 51.25 kWh): read the FIA Technical Regulations before fixing them.
+- Next step: an FE line builder for street circuits (official track maps + widths), then the
+  Analysis/Weather adapter. Until then FE stays "coming soon".
+
 ## 6. BoP simulation — prediction from FP data
 
 1. Collect clean FP laps (fuel/tyre-corrected if possible).
