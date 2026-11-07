@@ -14,7 +14,8 @@ const laptimes={time:rows.map(r=>r[3]),lap:rows.map(r=>r[2]),drv:rows.map(r=>r[0
  s1:rows.map(()=>22.5),s2:rows.map(()=>45.8),s3:rows.map(()=>19.1),compound:rows.map(()=>'INTERMEDIATE'),stint:rows.map(()=>4),life:rows.map(()=>3),pout:rows.map(()=>'None'),pin:rows.map(()=>'None'),vst:rows.map(()=>245),pos:rows.map(()=>'None')};
 const drivers={drivers:[{driver:'NOR',team:'McLaren',dn:'1'},{driver:'RUS',team:'Mercedes',dn:'63'}]};
 // A straight-line lap: the file time ends 0.3 s short of the official time, distance ends short too.
-const tel=(lapS,lenM,end)=>{const n=120,time=[],distance=[],speed=[];for(let i=0;i<=n;i++){time.push(end*i/n);distance.push(lenM*i/n);speed.push(i%30===15?90:280);}
+// Speeds match the lap length, because distance is integrated from speed.
+const tel=(lapS,lenM,end)=>{const n=120,time=[],distance=[],speed=[];for(let i=0;i<=n;i++){time.push(end*i/n);distance.push(lenM*i/n);speed.push(i%30===15?90:Math.round(lenM/end*3.6*1.03));}
  return {tel:{time,distance,speed,throttle:time.map(()=>100),brake:time.map((_,i)=>i%30===14),gear:time.map(()=>7),rpm:time.map(()=>11000)}};};
 const files={
  'São Paulo Grand Prix/Qualifying/session_info.json':info,
@@ -94,4 +95,35 @@ test('telemetry from OpenF1 says when official turns are missing',async()=>{
  const openf1=async url=>new Response(JSON.stringify(url.includes('/laps')?[lap]:[]),{status:200});
  const out=parse(await openf1Call('f1_lap_telemetry',{session_key:99999,driver_number:'1'},{tiFetch:async()=>new Response('',{status:404}),fetchImpl:openf1,now:NOW}));
  assert.equal(out.official_turns,null);assert.match(out.official_turns_note,/not available/);
+});
+
+// RUS 2026 São Paulo Q3 lap 21, T1 braking: the file skips 1.0 s (243.8 -> 178 km/h). The file's distance
+// column counts that second at 178 km/h (~50 m); the car really covered ~59 m. Distance must be re-integrated.
+test('telemetry distance is trapezoid-integrated from speed, not the file distance column, and holes are listed',async()=>{
+ clearOpenf1Cache();clearTiCache();
+ const time=[],speed=[],distance=[],brake=[];let d=0;
+ const push=(t,v,b)=>{if(time.length)d+=v/3.6*(t-time.at(-1));time.push(t);speed.push(v);distance.push(d);brake.push(b);};
+ for(let t=0;t<2.25;t+=0.25)push(Number(t.toFixed(2)),294,false);
+ push(2.469,243.8,true);push(3.478,178,true);push(3.75,150,true);push(4.0,120,false);push(4.25,90,false);push(4.5,95,false);push(4.75,130,false);
+ for(let t=5;t<87.5;t+=0.25)push(Number(t.toFixed(3)),280,false);push(87.674,280,false);
+ const lap={tel:{time,distance,speed,throttle:time.map(()=>100),brake,gear:time.map(()=>7),rpm:time.map(()=>11000)}};
+ const saved=files['São Paulo Grand Prix/Qualifying/RUS/21_tel.json'];files['São Paulo Grand Prix/Qualifying/RUS/21_tel.json']=lap;
+ try{
+  const out=parse(await openf1Call('f1_lap_telemetry',{session_key:11408,driver_number:'63',lap_number:21},io([])));
+  const rows=out.laps[0].samples,i=rows.findIndex(r=>r[0]===3.478),j=rows.findIndex(r=>r[0]===2.469);
+  const covered=rows[i][1]-rows[j][1],trapezoid=(243.8+178)/2/3.6*(3.478-2.469);
+  assert.ok(Math.abs(covered-trapezoid)<0.05,`hole step ${covered} m, trapezoid ${trapezoid} m`);
+  assert.ok(covered-178/3.6*(3.478-2.469)>8,'not the end-speed (file) value');
+  assert.deepEqual(out.laps[0].sample_holes.map(h=>[h.from_s,h.to_s]),[[2.469,3.478]]);
+  assert.match(out.limitations.join(' '),/trapezoid/);
+  const sum=parse(await openf1Call('f1_lap_telemetry',{session_key:11408,driver_number:'63',lap_number:21,summary:true},io([])));
+  const c=sum.laps[0].summary.corners[0];
+  assert.equal(c.min_speed_kmh,90);assert.ok(c.brake_start_m>0&&c.brake_start_m<c.distance_m,'brake point found though the brake is off at the apex: '+JSON.stringify(c));
+ }finally{files['São Paulo Grand Prix/Qualifying/RUS/21_tel.json']=saved;clearTiCache();}
+});
+
+test('shared rule: telemetry gap uses trapezoid distance and checks sample holes',async()=>{
+ const {OPENF1_INSTRUCTIONS}=await import('../worker/openf1.js');const {ANSWER_POLICY}=await import('../worker/answer-policy.js');
+ assert.match(OPENF1_INSTRUCTIONS,/TELEMETRY DISTANCE AND GAP:.*trapezoid.*sample_holes.*sector times/);
+ assert.match(ANSWER_POLICY,/사다리꼴 적분/);assert.match(ANSWER_POLICY,/sample_holes/);
 });

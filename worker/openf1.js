@@ -31,7 +31,7 @@ export const OPENF1_TOOLS=[
   inputSchema:{type:'object',properties:{session_key:key,driver_number:driver,lap_number:{type:'integer',minimum:1,maximum:200},compare_driver_number:driver,compare_lap_number:{type:'integer',minimum:1,maximum:200},seconds:{type:'number',minimum:3,maximum:200},summary:{type:'boolean',description:'true returns a compact per-corner summary (minimum speed, braking point, time gained or lost per corner) instead of raw samples. Use it first for comparisons; ask for samples only when drawing charts.'}},required:['session_key','driver_number'],additionalProperties:false},annotations:ro}
 ];
 
-export const OPENF1_INSTRUCTIONS=' POST-SESSION F1 ANALYSIS: for a completed session (any lap, race starts, stints, sector times, lap or start telemetry) use the post-session tools: f1_sessions to find the session_key, f1_laps for laps/sectors/tyres, f1_lap_telemetry for telemetry (lap_number 1 + seconds for starts). These three read TracingInsights first (free, published about an hour after the session, not locked during live sessions) and OpenF1 when TracingInsights has no data; name the source given in each result. QUALIFYING: rank by the classification, not the fastest lap of the session: compare Q3 laps for Q3 drivers (laps carry qualifying_segment; deleted laps are flagged and never chosen as best) and confirm with the FIA provisional/final qualifying classification and deleted-lap documents (fia_list_documents). TELEMETRY CHARTS: mark every official turn number (official_turns) on the common distance axis and name turns by official number in the text; never present speed-minimum order (corner) as turn numbers. Gaps the post-session data does not cover (official results, grid, penalties, pit-stop times, overtakes) come from FIA documents. Live sessions use the f1_live_* tools. If OpenF1 is rate-limited or lacks the data, say so instead of guessing. Results carry a cache field: data may be reused from server memory for up to 30 min for a settled session (scheduled end + 2 h) and up to 1 min otherwise; mention it only if the user asks how fresh the data is.';
+export const OPENF1_INSTRUCTIONS=' POST-SESSION F1 ANALYSIS: for a completed session (any lap, race starts, stints, sector times, lap or start telemetry) use the post-session tools: f1_sessions to find the session_key, f1_laps for laps/sectors/tyres, f1_lap_telemetry for telemetry (lap_number 1 + seconds for starts). These three read TracingInsights first (free, published about an hour after the session, not locked during live sessions) and OpenF1 when TracingInsights has no data; name the source given in each result. QUALIFYING: rank by the classification, not the fastest lap of the session: compare Q3 laps for Q3 drivers (laps carry qualifying_segment; deleted laps are flagged and never chosen as best) and confirm with the FIA provisional/final qualifying classification and deleted-lap documents (fia_list_documents). TELEMETRY CHARTS: mark every official turn number (official_turns) on the common distance axis and name turns by official number in the text; never present speed-minimum order (corner) as turn numbers. TELEMETRY DISTANCE AND GAP: use the integrated_distance_m and delta the tool returns (trapezoid distance, comparison lap scaled to the reference length); never use the source file distance column. Before explaining a gap, check sample_holes for both laps: if a sudden gap change sits on or next to a hole, say the change may be a data effect and do not explain it with driving. Check the gap curve against sector times (S1/S2/S3 differences) and say so if they disagree. Same request gives the same data; repeat calls do not make an uncertain gap more certain. Gaps the post-session data does not cover (official results, grid, penalties, pit-stop times, overtakes) come from FIA documents. Live sessions use the f1_live_* tools. If OpenF1 is rate-limited or lacks the data, say so instead of guessing. Results carry a cache field: data may be reused from server memory for up to 30 min for a settled session (scheduled end + 2 h) and up to 1 min otherwise; mention it only if the user asks how fresh the data is.';
 
 function query(params){
  return Object.entries(params).filter(([,v])=>v!==undefined&&v!==null&&v!=='').map(([k,v])=>encodeURIComponent(k)+'='+encodeURIComponent(String(v))).join('&');
@@ -147,6 +147,12 @@ async function laps(args,io){
  return {state:'ready',source:io.source,session_key:args.session_key,drivers:list,next:'Call f1_laps with driver_number for every lap of one driver, or f1_lap_telemetry for telemetry.'};
 }
 
+// Steps longer than 0.6 s (normal spacing is about 0.27 s) inside otherwise complete coverage.
+// Distance and the gap curve near them are less exact, most of all in braking zones.
+export function sampleHoles(rows){
+ const out=[];for(let i=1;i<rows.length;i++){const dt=rows[i][0]-rows[i-1][0];if(dt>0.6&&dt<=1.5)out.push({from_s:rows[i-1][0],to_s:rows[i][0],distance_m:Math.round(rows[i-1][1]),speed_kmh:[rows[i-1][2],rows[i][2]]});}
+ return out;
+}
 // Rows: [elapsed_s, integrated_distance_m, speed_kmh, throttle_percent, brake_on, gear, rpm]
 export function telemetryRows(samples,startMs){
  const rows=[];let dist=0,prev=null;
@@ -167,8 +173,9 @@ async function oneLap(sessionKey,driverNumber,lapNumber,seconds,io){
  if(all.where){
   const {rows:data,scaled}=await tiLapTelemetry(all.where,lap,seconds,io);
   const gaps=[];for(let i=1;i<data.length;i++)if(data[i][0]-data[i-1][0]>1.5)gaps.push([data[i-1][0],data[i][0]]);
+  const holes=sampleHoles(data);
   return {state:data.length?'ready':'unavailable',driver_number:String(driverNumber),...lapRow(lap,all.stints),window:{seconds_before_lap_start:0,partial_lap:!!seconds},
-   sample_count:data.length,gaps_seconds:gaps,complete_coverage:data.length>2&&!gaps.length&&!seconds,distance_m:data.length?data.at(-1)[1]:0,samples:data,
+   sample_count:data.length,gaps_seconds:gaps,...(holes.length?{sample_holes:holes}:{}),complete_coverage:data.length>2&&!gaps.length&&!seconds,distance_m:data.length?data.at(-1)[1]:0,samples:data,
    ...(scaled?{time_axis_scaled:scaled}:{}),...(data.length?{}:{reason:'TracingInsights has no telemetry file for this lap yet.'})};
  }
  const begin=Date.parse(lap.date_start);
@@ -181,7 +188,7 @@ async function oneLap(sessionKey,driverNumber,lapNumber,seconds,io){
  const data=telemetryRows(samples,begin);
  const gaps=[];for(let i=1;i<data.length;i++)if(data[i][0]-data[i-1][0]>1.5)gaps.push([data[i-1][0],data[i][0]]);
  return {state:data.length?'ready':'unavailable',driver_number:String(driverNumber),...lapRow(lap,stints),window:{from:new Date(from).toISOString(),to:new Date(to).toISOString(),seconds_before_lap_start:lead,partial_lap:!!seconds},
-  sample_count:data.length,gaps_seconds:gaps,complete_coverage:data.length>2&&!gaps.length&&!seconds,distance_m:data.length?data.at(-1)[1]:0,samples:data,
+  sample_count:data.length,gaps_seconds:gaps,...(sampleHoles(data).length?{sample_holes:sampleHoles(data)}:{}),complete_coverage:data.length>2&&!gaps.length&&!seconds,distance_m:data.length?data.at(-1)[1]:0,samples:data,
   ...(data.length?{}:{reason:'OpenF1 returned no car data for this window.'})};
 }
 
@@ -189,15 +196,17 @@ async function oneLap(sessionKey,driverNumber,lapNumber,seconds,io){
 // preceding peak, merged within 150 m, with the braking point that led into each.
 export function lapSummary(rows){
  const v=rows.filter(r=>Number.isFinite(r[2]));if(v.length<5)return null;
- const corners=[];let peak=v[0][2];
+ const corners=[];let peak=v[0][2],peakAt=0;
  for(let i=1;i<v.length-1;i++){
-  const s=v[i][2];peak=Math.max(peak,v[i-1][2]);
+  const s=v[i][2];if(v[i-1][2]>=peak){peak=v[i-1][2];peakAt=i-1;}
   const lo=Math.max(0,i-3),hi=Math.min(v.length-1,i+3);let isMin=true;for(let j=lo;j<=hi;j++)if(v[j][2]<s){isMin=false;break;}
   if(!isMin||peak-s<40)continue;
-  let b=i;while(b>0&&v[b-1][4]===1)b--;const braked=b<i&&v[b][4]===1;
+  // Drivers usually release the brake before the apex: find the last brake sample between the
+  // preceding peak and the minimum, then walk back to where that brake application began.
+  let b=i;while(b>peakAt&&v[b][4]!==1)b--;const braked=v[b][4]===1;if(braked)while(b>0&&v[b-1][4]===1)b--;
   const corner={distance_m:Math.round(v[i][1]),min_speed_kmh:s,entry_speed_kmh:braked?v[Math.max(0,b-1)][2]:peak,brake_start_m:braked?Math.round(v[b][1]):null};
   const last=corners.at(-1);if(last&&corner.distance_m-last.distance_m<150){if(s<last.min_speed_kmh)corners[corners.length-1]=corner;}else corners.push(corner);
-  peak=s;
+  peak=s;peakAt=i;
  }
  const full=v.filter(r=>r[3]>=98).length,brake=v.filter(r=>r[4]===1).length;
  return {top_speed_kmh:Math.max(...v.map(r=>r[2])),full_throttle_pct:Math.round(100*full/v.length),braking_pct:Math.round(100*brake/v.length),corners};
@@ -237,11 +246,11 @@ async function lapTelemetry(args,io){
   return {state:ready?'ready':laps.some(l=>l.state==='ready')?'partial':'unavailable',source:io.source,session_key:args.session_key,mode:'summary',
    laps:laps.map((l,i)=>{const {samples,...rest}=l;return {...rest,summary:sums[i]};}),
    ...turnInfo,...(delta?{total_delta_s:delta.points?.filter(p=>Number.isFinite(p[1])).at(-1)?.[1]??null,corner_comparison:cornerComparison(sums[0],sums[1],delta)}:{}),
-   limitations:[...(io.source===TI_SOURCE?['TracingInsights telemetry starts at the lap start line (no pre-start window for race starts); a file time axis that ends away from the official lap time is scaled to it (time_axis_scaled).']:[]),'corner is the order of speed minima on this lap; turn is the nearest official turn number (within 150 m). Always label charts and text with official turn numbers.','Distance is speed-integrated and approximate. Brake is on/off only.','Call again without summary for raw samples when a chart is needed.']};
+   limitations:[...(io.source===TI_SOURCE?['TracingInsights telemetry starts at the lap start line (no pre-start window for race starts); a file time axis that ends away from the official lap time is scaled to it (time_axis_scaled).']:[]),'corner is the order of speed minima on this lap; turn is the nearest official turn number (within 150 m). Always label charts and text with official turn numbers.','Distance is re-integrated from speed with the trapezoid rule (not GPS, not the file distance column). sample_holes lists steps of 0.6-1.5 s; the gap near them is less exact. Brake is on/off only.','Call again without summary for raw samples when a chart is needed.']};
  }
  return {state:ready?'ready':laps.some(l=>l.state==='ready')?'partial':'unavailable',source:io.source,session_key:args.session_key,laps,...turnInfo,...(delta?{delta}:{}),
   columns:['elapsed_s','integrated_distance_m','speed_kmh','throttle_percent','brake_on','gear','rpm'],
-  limitations:[...(io.source===TI_SOURCE?['TracingInsights telemetry starts at the lap start line (no pre-start window for race starts); a file time axis that ends away from the official lap time is scaled to it (time_axis_scaled).']:[]),'elapsed_s is measured from the lap start time (negative before the start line for race starts).','Distance is speed-integrated, not GPS. Brake is binary.','About 3.7 samples per second; do not draw across gaps.'],
+  limitations:[...(io.source===TI_SOURCE?['TracingInsights telemetry starts at the lap start line (no pre-start window for race starts); a file time axis that ends away from the official lap time is scaled to it (time_axis_scaled).']:[]),'elapsed_s is measured from the lap start time (negative before the start line for race starts).','Distance is re-integrated from speed with the trapezoid rule (not GPS, not the file distance column). sample_holes lists steps of 0.6-1.5 s; the gap near them is less exact. Brake is binary.','About 3.7 samples per second; do not draw across gaps.'],
   response_format:'One conclusion sentence, aligned speed/throttle/brake charts on a common horizontal axis with every official turn (official_turns) marked by a vertical line and its number, a short sector table, and 1-2 observations naming turns by official number. Name the source field.'};
 }
 
