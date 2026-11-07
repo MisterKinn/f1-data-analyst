@@ -46,6 +46,8 @@ jobs:
           [ -d derived/.cache/lapsim/races ] && cp -r derived/.cache/lapsim/races .cache/lapsim/ || true
           cp derived/worker/lapsim/tracks-data.js worker/lapsim/tracks-data.js
       - name: Calibrate (${{ matrix.config.name }})
+        # RACE_ONLY=on skips the calibration (hours) to test the race-pace model in minutes
+        if: matrix.config.env.RACE_ONLY != 'on'
         run: |
           for kv in $(echo '${{ toJson(matrix.config.env) }}' | jq -r 'to_entries[] | "\(.key)=\(.value)"'); do export "$kv"; done
           node scripts/sim/calibrate.mjs
