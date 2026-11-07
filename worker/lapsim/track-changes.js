@@ -8,13 +8,15 @@ const HEADING = /^\s*(?:\d{1,2}(?:\.\d+)?\.?\s*\|?\s*)?((?:changes?|modification
 const NEXT_HEADING = /^\s*(\d{1,2})\.\s*\|?\s*[A-Z][^\n]{2,80}$/;
 const BULLET = /^\s*(?:[-–•▪◦*]|\d{1,2}[).]|[a-z]\))\s*\|?\s*/;
 
+// order matters: run-off/apron work and kerb work are matched before surface work, so "resurfaced
+// run-off" or "grind the apex kerb" are not read as a change to the racing surface
 const RULES = [
   ['track_limits', /\b(?:paint|white line|blue line|track[- ]limit|detection loop)/i],
+  ['runoff', /gravel|run-?off|apron|grass|astro ?turf|artificial turf|\bturf\b/i],
+  ['kerb', /\bkerb|\bcurb|sausage|rumble strip/i],
   ['resurfacing', /\bre-?surfac|new asphalt|re-?laid|re-?asphalt|new (?:track )?surface|surface (?:has been |was )?(?:replaced|renewed)/i],
   ['bump_removal', /\bbump|smooth(?:ed|ing)?\b|grind|diamond[- ]cut/i],
-  ['kerb', /\bkerb|\bcurb|sausage|rumble strip/i],
   ['layout', /re-?profil|\blayout|chicane|realign|widen|narrow(?:ed|ing)|new corner|corner (?:has been |was )?(?:modified|changed|moved)|apex (?:has been |was )?moved/i],
-  ['runoff', /gravel|run-?off|grass|astro ?turf|artificial turf/i],
   ['drainage', /drain/i],
   ['pit', /\bpit (?:lane|entry|exit|wall|building)/i],
   ['infrastructure', /barrier|tecpro|debris fence|fence|light panel|display|hospitality|grandstand|cable car|bridge|marshal|camera|building|tyre wall|guard ?rail|\bwall\b|screen|signage|post/i],
@@ -24,7 +26,7 @@ export function classifyChange(text) {
   for (const [type, re] of RULES) if (re.test(text)) {
     if (type !== 'kerb') return type;
     if (/raised|higher|taller|increased in height/i.test(text)) return 'kerb_raised';
-    if (/reduced in height|lower(?:ed)?|removed|flatten|smaller|reduced/i.test(text)) return 'kerb_lowered';
+    if (/reduced in height|lower(?:ed)?|removed|flatten|smaller|reduced|grind|ground down/i.test(text)) return 'kerb_lowered';
     if (/added|install|extended|increased|new\b/i.test(text)) return 'kerb_raised';
     return 'kerb_changed';
   }
