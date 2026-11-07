@@ -15,7 +15,8 @@ const median = a => { const s = [...a].sort((x, y) => x - y); return s.length ? 
 const races = await read('races.json');
 // real pole lap per season and track, from the qualifying traces (build-geometry.mjs)
 const traces = await read('traces.json');
-const poleOf = (year, circuit) => traces.find(t => t.year === year && t.track === slug(circuit) && t.position === 1)?.lap_seconds ?? null;
+// a wet qualifying gives no dry reference: the race ratio is then left out (wear and slope still count)
+const poleOf = (year, circuit) => { const t = traces.find(t => t.year === year && t.track === slug(circuit) && t.position === 1); return t && !t.weather?.rain ? t.lap_seconds : null; };
 
 // pit loss: in-lap + out-lap minus two clean laps of the same driver
 function pitLoss(race, clean) {
@@ -36,11 +37,11 @@ for (const r of races.filter(x => x.session === 'Race').sort((a, b) => a.year - 
   if (wet) { log.push(`${r.year} ${r.circuit}: wet, skipped`); continue; }
   const f = fitRace(laps);
   const pole = poleOf(r.year, r.circuit);
-  if (!f || !pole) { log.push(`${r.year} ${r.circuit}: ${f ? 'no pole' : 'too few clean laps'}`); continue; }
+  if (!f) { log.push(`${r.year} ${r.circuit}: too few clean laps`); continue; }
   const id = slug(r.circuit);
-  const fit = {...f, year: r.year, pole, raceRatio: f.ref / pole, pitLoss: pitLoss(race, laps), laps: totalLaps, cleanLaps: laps};
+  const fit = {...f, year: r.year, pole, raceRatio: pole ? f.ref / pole : null, pitLoss: pitLoss(race, laps), laps: totalLaps, cleanLaps: laps};
   (fits[id] ||= []).push(fit);
-  log.push(`${r.year} ${r.circuit}: ${laps.length} clean laps, ratio ${fit.raceRatio.toFixed(4)}, slope ${f.slope.toFixed(3)} s/lap, fit RMS ${f.rmsSec.toFixed(2)} s`);
+  log.push(`${r.year} ${r.circuit}: ${laps.length} clean laps, ratio ${fit.raceRatio?.toFixed(4) ?? '– (wet qualifying)'}, slope ${f.slope.toFixed(3)} s/lap, fit RMS ${f.rmsSec.toFixed(2)} s`);
 }
 
 const strip = f => { const {cleanLaps: _c, ...rest} = f; return rest; };
@@ -53,27 +54,23 @@ for (const [id, list] of Object.entries(fits)) {
   if (!cur || !prev.length) continue;
   const P = poolTrack(prev);
   // scale for the new season's race ratio, learned from the other tracks already raced this season
-  const k = median(Object.entries(fits).filter(([o]) => o !== id).map(([, l]) => { const c = l.find(f => f.year === latestYear), p = l.filter(f => f.year < latestYear); return c && p.length ? c.raceRatio / poolTrack(p).raceRatio : NaN; }).filter(Number.isFinite));
+  const k = median(Object.entries(fits).filter(([o]) => o !== id).map(([, l]) => { const c = l.find(f => f.year === latestYear), p = l.filter(f => f.year < latestYear); return c && p.length && c.raceRatio ? c.raceRatio / poolTrack(p).raceRatio : NaN; }).filter(Number.isFinite));
   const track = {...P, raceRatio: P.raceRatio * (Number.isFinite(k) ? k : 1)};
-  const e = [];
-  for (const l of cur.cleanLaps) {
-    const p = cur.pole * track.raceRatio + track.slope * (l.lap - 1) + (track.offset[l.compound] ?? 0) + Math.max(0, track.wear[l.compound] ?? 0.05) * l.age;
-    const real = l.time;
-    e.push((p - real) / real * 100);
-  }
-  // compare against the best 10% of laps at each point: the leading pace, not traffic
-  const best = median(e.sort((a, b) => a - b).slice(0, Math.max(5, Math.round(e.length * 0.1))));
+  if (!cur.pole || !Number.isFinite(track.raceRatio)) continue;
+  // leading race pace at mid-race: start pace + fuel/track slope over half the race, predicted vs fitted
+  const mid = (cur.laps - 1) / 2, pred = cur.pole * track.raceRatio + track.slope * mid, real = cur.ref + cur.slope * mid;
+  const best = (pred - real) / real * 100;
   errs.push(best); testRows.push([id, cur.year, prev.map(f => f.year).join('+'), best]);
 }
 const rms = errs.length ? Math.sqrt(errs.reduce((s, v) => s + v * v, 0) / errs.length) : null;
 
 // 2026 race ratio for tracks not raced yet this season: latest pooled ratio × this season's change
-const kSeason = median(Object.values(fits).map(l => { const c = l.find(f => f.year === latestYear), p = l.filter(f => f.year < latestYear); return c && p.length ? c.raceRatio / poolTrack(p).raceRatio : NaN; }).filter(Number.isFinite));
+const kSeason = median(Object.values(fits).map(l => { const c = l.find(f => f.year === latestYear), p = l.filter(f => f.year < latestYear); return c && p.length && c.raceRatio ? c.raceRatio / poolTrack(p).raceRatio : NaN; }).filter(Number.isFinite));
 const tracks = {};
 for (const [id, list] of Object.entries(fits)) {
   const pooled = poolTrack(list.map(strip));
-  const raced = list.some(f => f.year === latestYear);
-  tracks[id] = {...pooled, raceRatio: raced ? list.find(f => f.year === latestYear).raceRatio : pooled.raceRatio * (Number.isFinite(kSeason) ? kSeason : 1), ratioBasis: raced ? latestYear : 'scaled'};
+  const raced = list.some(f => f.year === latestYear && f.raceRatio);
+  tracks[id] = {...pooled, raceRatio: raced ? list.find(f => f.year === latestYear && f.raceRatio).raceRatio : pooled.raceRatio * (Number.isFinite(kSeason) ? kSeason : 1), ratioBasis: raced ? latestYear : 'scaled'};
   for (const k of ['slope', 'raceRatio', 'pitLoss']) if (tracks[id][k] != null) tracks[id][k] = Math.round(tracks[id][k] * 1e5) / 1e5;
   for (const k of ['offset', 'wear']) for (const c of COMPOUNDS) if (tracks[id][k][c] != null) tracks[id][k][c] = Math.round(tracks[id][k][c] * 1e4) / 1e4;
 }

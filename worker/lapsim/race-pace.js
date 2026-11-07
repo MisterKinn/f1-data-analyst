@@ -42,7 +42,8 @@ export function cleanLaps(race) {
     if (flag === 'DOUBLE YELLOW' || (cat === 'Flag' && flag === 'YELLOW' && /TRACK/.test(m))) neutral.add(lap);
   }
   if (scFrom != null) for (let l = scFrom; l <= scFrom + 60; l++) neutral.add(l);
-  const wet = (race.weather || []).some(w => w[5] > 0);
+  // intermediate/wet-tyre laps are already left out; only a mostly wet race is skipped
+  const wx = race.weather || [], wet = wx.length > 0 && wx.filter(w => w[5] > 0).length / wx.length > 0.3;
   const pitLaps = new Set((race.pits || []).map(([d, l]) => d + ':' + l));
   const out = [];
   for (const [num, d] of Object.entries(race.drivers || {})) {
