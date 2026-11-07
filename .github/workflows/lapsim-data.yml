@@ -85,17 +85,19 @@ jobs:
         continue-on-error: true
         run: node scripts/sim/energy-docs.mjs && node scripts/sim/rule-params.mjs
       # settings chosen from the calibration experiments (scripts/sim/experiments.json rounds 1–2):
-      # joint fit, lap time ×20, sectors ×2, per-track drag, learned correction, longer fit
+      # best of experiment round 3: joint fit, lap time ×20, sectors ×2, per-track drag, team pace and
+      # development, prior weight 8 (holdout 0.81% / 0.85%)
       - name: Calibrate cars (F1 and WEC)
         if: inputs.calibrate != 'false'
         env:
           LAPSIM_FITTER: bcd
           LAPSIM_ROUNDS: '5'
-          LAPSIM_BCD_ITERS: '150'
+          LAPSIM_BCD_ITERS: '200'
           LAPSIM_WTIME: '20'
           LAPSIM_WSECTOR: '2'
           LAPSIM_TRACK_DRAG: 'on'
-          LAPSIM_RESIDUAL: 'on'
+          LAPSIM_TEAMS: 'on'
+          LAPSIM_WPRIOR: '8'
         run: node scripts/sim/calibrate.mjs
       - name: Fit race pace (fuel, tyres, pit loss)
         continue-on-error: true
