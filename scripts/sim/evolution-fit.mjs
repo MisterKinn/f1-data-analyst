@@ -93,7 +93,7 @@ for (const e of index) {
 
 const out = {generatedAt: new Date().toISOString(), series: {}};
 const report = ['# Track evolution', '', `Generated ${out.generatedAt}.`, '',
-  'Leave-one-track-out: each session curve predicted from the other tracks of the same series and session type. Curve error = RMS gap between predicted and measured lap-time change over the session; end error = gap at the last minute. "No model" = assuming the track does not change.', '',
+  'Holdout: each session curve predicted without itself — from the same track in other seasons when available, else from the other tracks of the same series and session type. Curve error = RMS gap between predicted and measured lap-time change over the session; end error = gap at the last minute. "No model" = assuming the track does not change.', '',
   '| Series | Session | Sessions | Gain % | τ min | Curve error % | End error % | No model, end % |', '|---|---|---|---|---|---|---|---|'];
 for (const series of [...new Set(sessions.map(s => s.series))]) {
   const S = out.series[series] = {sessions: {}, tracks: {}};
@@ -101,12 +101,17 @@ for (const series of [...new Set(sessions.map(s => s.series))]) {
     // sessions with an implausible change (mixed conditions the filters missed) stay out of the pool
     const list = sessions.filter(s => s.series === series && s.type === type && Math.abs(s.curve.at(-1)[1]) <= 4);
     const scale = SESSION_SCALE[type] ?? 1, all = pool(list);
+    // Each session predicted without itself: from the same track's other seasons when there are any
+    // (how a new season's session is predicted), else from the pooled curve of the other tracks
     const errC = [], errE = [], base = [];
+    const at = (c, t) => { if (t <= c[0][0]) return c[0][1]; for (let i = 1; i < c.length; i++) if (t <= c[i][0]) return c[i - 1][1] + (c[i][1] - c[i - 1][1]) * (t - c[i - 1][0]) / (c[i][0] - c[i - 1][0]); return c.at(-1)[1]; };
     for (const s of list) {
+      const same = list.filter(o => o.track === s.track && o !== s && o.session === s.session && o.year !== s.year);
       const others = list.filter(o => o.track !== s.track);
-      if (others.length < 2) continue;
-      const q = pool(others);
-      const d = s.curve.map(([t, v]) => para(q.gainPct, q.tauMin, t) - para(q.gainPct, q.tauMin, s.curve[0][0]) - v);
+      if (!same.length && others.length < 2) continue;
+      const q = same.length ? null : pool(others), t0 = s.curve[0][0];
+      const pred = t => same.length ? same.reduce((a, o) => a + at(o.curve, t) - at(o.curve, t0), 0) / same.length : para(q.gainPct, q.tauMin, t) - para(q.gainPct, q.tauMin, t0);
+      const d = s.curve.map(([t, v]) => pred(t) - v);
       errC.push(rms(d)); errE.push(d.at(-1)); base.push(s.curve.at(-1)[1]);
     }
     S.sessions[type] = {coeffs: {gainPct: r4(all.gainPct / scale), tauMin: all.tauMin, warmupPct: all.warmupPct}, n: list.length,
