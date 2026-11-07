@@ -81,7 +81,7 @@ export function withGrip(track, g) {
 
 // Error for one lap, common to every series. Observations: a speed trace (obs: {s, v}) and/or a
 // speed trap (trapKph, compared with the top speed), always the lap time. Units: m/s and s.
-export function lapError(track, car, env, obs, lapTime, {wTime = 2, trapKph = null, wTrap = 1} = {}) {
+export function lapError(track, car, env, obs, lapTime, {wTime = 2, trapKph = null, wTrap = 0.5} = {}) {
   const res = simulateLap(track, car, env);
   const rms = !obs ? 0 : obs.ext ? extremaRms(res.v, track.ds, obs.ext) : rmsSpeed(res.v, track.ds, obs);
   const trap = trapKph ? (res.vMaxKph - trapKph) / 3.6 : 0;

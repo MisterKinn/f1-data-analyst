@@ -36,7 +36,15 @@ for (const year of [...new Set(traces.map(t => t.year))].sort()) {
     return {key: k, path: k, base: base[k], step: 0.08, min: rel ? lo * base[k] : lo, max: rel ? hi * base[k] : hi};
   });
   const t0 = Date.now();
-  const fit = fitSeason(laps, base, params, {iters: ITERS});
+  let fit = fitSeason(laps, base, params, {iters: ITERS});
+  // clean data (common rule): a lap more than 4% off after the fit is not a normal dry lap
+  // (wet track, red flag, wrong lap); drop it and fit again
+  const outliers = new Set(fit.perTrack.filter(p => Math.abs(p.dt / p.realLap) > 0.04).map(p => p.name));
+  if (outliers.size) {
+    report.push(`${year}: dropped ${[...outliers].join(', ')} (lap more than 4% off after the first fit)`);
+    laps.splice(0, laps.length, ...laps.filter(l => !outliers.has(l.name)));
+    fit = fitSeason(laps, base, params, {iters: ITERS});
+  }
   const car = fit.car; delete car.linkMu;
   // per-track result from the pole lap (position 1)
   const perTrack = {};
@@ -105,7 +113,10 @@ const f1Grip = id => [2026, 2025].map(y => seasons[y]?.tracks?.[id]?.grip).find(
 for (const [cls, def] of Object.entries(SERIES.wec.classes)) {
   for (const year of [...new Set(wec.map(w => w.year))].sort()) {
     const sessions = wec.filter(w => w.cls === cls && w.year === year && tracks[w.track] && !w.weather?.rain && f1Grip(w.track) != null);
-    const laps = sessions.flatMap(w => w.laps.map((l, i) => ({name: w.track, track: tracks[w.track], lapSeconds: l.lap, trapKph: l.topSpeedKph,
+    // speed traps sit at different places on each track: use one only when it looks like a top speed
+    const traps = sessions.flatMap(w => w.laps.map(l => l.topSpeedKph)).filter(Number.isFinite).sort((a, b) => a - b);
+    const medTrap = traps[Math.floor(traps.length / 2)];
+    const laps = sessions.flatMap(w => w.laps.map((l, i) => ({name: w.track, track: tracks[w.track], lapSeconds: l.lap, trapKph: l.topSpeedKph >= 0.92 * medTrap ? l.topSpeedKph : null,
       weight: i === 0 ? 1 : 0.5, grip: f1Grip(w.track), weather: w.weather || {}, meta: {event: w.event, car: l.car, manufacturer: l.manufacturer, session: l.session}})));
     if (new Set(laps.map(l => l.name)).size < 3) { report.push(`WEC ${cls} ${year}: not enough tracks (${new Set(laps.map(l => l.name)).size})`); continue; }
     const base = {...structuredClone(def.prior), linkMu: true};

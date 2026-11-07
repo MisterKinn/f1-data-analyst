@@ -210,7 +210,7 @@ for (const entry of index) {
       lap_seconds: lap.lap.lap_duration, sectors: [lap.lap.duration_sector_1, lap.lap.duration_sector_2, lap.lap.duration_sector_3],
       s: rows.map(r => Math.round(((interpAt(ts, sUn, r.t) - sStart) % ref.length + ref.length) % ref.length * 10) / 10),
       v: rows.map(r => r.v), throttle: rows.map(r => r.thr), brake: rows.map(r => r.brk),
-      weather: {airTempC: mean(1), trackTempC: mean(2), humidityPct: mean(3), pressureHpa: mean(4), rain: w.some(r => r[5] > 0),
+      weather: {airTempC: mean(1), trackTempC: mean(2), humidityPct: mean(3), pressureHpa: mean(4), rain: session.weather.some(r => r[5] > 0), // any rain in the session: the track may still be wet
         windSpeed: w.length ? Math.hypot(we, wn) / w.length : null, windFromDeg: w.length ? (Math.atan2(we, wn) * 180 / Math.PI + 360) % 360 : null},
     });
   }
