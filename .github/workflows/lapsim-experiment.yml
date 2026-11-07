@@ -49,6 +49,12 @@ jobs:
         run: |
           for kv in $(echo '${{ toJson(matrix.config.env) }}' | jq -r 'to_entries[] | "\(.key)=\(.value)"'); do export "$kv"; done
           node scripts/sim/calibrate.mjs
+      - name: Circuit-change effects
+        if: matrix.config.env.LAPSIM_CHANGES == 'on'
+        continue-on-error: true
+        env:
+          LAPSIM_CHANGE_YEARS: '2023,2024,2025,2026'
+        run: node scripts/sim/fia-changes.mjs > /dev/null && node scripts/sim/change-effects.mjs
       - name: Race pace
         if: hashFiles('.cache/lapsim/races.json') != ''
         continue-on-error: true

@@ -94,7 +94,11 @@ jobs:
         if: inputs.calibrate != 'false'
         run: node scripts/sim/fia-changes.mjs
         env:
-          LAPSIM_CHANGE_YEARS: '2025,2026'
+          LAPSIM_CHANGE_YEARS: '2023,2024,2025,2026'
+      - name: Learn circuit-change effects (kerbs, resurfacing) from speed traces
+        if: inputs.calibrate != 'false'
+        continue-on-error: true
+        run: node scripts/sim/change-effects.mjs
       - name: Test
         if: inputs.calibrate != 'false'
         run: node --test tests/lapsim*.test.mjs
@@ -104,7 +108,7 @@ jobs:
           git config user.name "kongboda-lapsim[bot]"
           git config user.email "lapsim@users.noreply.github.com"
           for f in worker/lapsim/tracks-data.js worker/lapsim/calibration-data.js worker/lapsim/track-changes-data.js docs/lapsim-report.md docs/lapsim-geometry.md \
-            worker/lapsim/race-data.js docs/lapsim-race.md worker/lapsim/energy-docs-data.js worker/lapsim/rules-data.js docs/lapsim-rules.md; do
+            worker/lapsim/race-data.js docs/lapsim-race.md worker/lapsim/change-effects-data.js worker/lapsim/energy-docs-data.js worker/lapsim/rules-data.js docs/lapsim-rules.md; do
             [ -e "$f" ] && git add "$f"
           done
           if git diff --cached --quiet; then echo "No changes"; exit 0; fi

@@ -2,6 +2,7 @@
 // /simulation page and the lapsim_simulate connector tool so both give the same answer.
 import {lapsimCalibration} from './calibration-data.js';
 import {lapsimTrackChanges} from './track-changes-data.js';
+import {lapsimChangeEffects} from './change-effects-data.js';
 import {TUM_2019, PRIOR, applyRules, applyDevelopment} from './cars.js';
 import {SERIES} from './series.js';
 
@@ -74,7 +75,17 @@ export function latestChanges(id) {
   if (!years.length) return null;
   const e = lapsimTrackChanges[id][years.at(-1)];
   // drop a signature line read by older parser versions ("… The FIA Formula 1 Race Director")
-  return {year: Number(years.at(-1)), ...e, changes: (e.changes || []).filter(c => !/race director\s*$/i.test(c.text))};
+  return {year: Number(years.at(-1)), ...e, changes: (e.changes || []).filter(c => !/race director\s*$/i.test(c.text)).map(learnedEffect)};
+}
+
+// Use the effect size learned from past changes (speed traces before/after) instead of the assumed
+// one when at least 3 earlier cases of that kind exist.
+export function learnedEffect(c) {
+  const l = lapsimChangeEffects?.learned?.[c.type];
+  if (!c.effect || !l || l.n < 3) return c;
+  const pct = ((l.kind === 'grip' ? Math.sqrt(l.factor) : l.factor) - 1) * 100, sign = pct > 0 ? '+' : '';
+  return {...c, effect: {...c.effect, kind: l.kind, factor: l.factor, learned: true,
+    ko: `과거 ${l.n}건의 실제 변화에서 학습: 코너 속도 ${sign}${pct.toFixed(2)}%`, en: `Learned from ${l.n} past cases: ${sign}${pct.toFixed(2)}% corner speed`}};
 }
 
 // Latest season whose real lap on this track the cars were fitted to (null when none)
