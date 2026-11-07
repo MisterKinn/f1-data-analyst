@@ -8,7 +8,7 @@ on:
     branches: ['lapsim-exp/**']
 
 permissions:
-  contents: read
+  contents: write
   actions: read
 
 jobs:
@@ -63,6 +63,14 @@ jobs:
         run: |
           for kv in $(echo '${{ toJson(matrix.config.env) }}' | jq -r 'to_entries[] | "\(.key)=\(.value)"'); do export "$kv"; done
           node scripts/sim/race-pace.mjs && cat docs/lapsim-race.md
+      # race-only runs commit the race fit back to the experiment branch (artifacts cannot always be downloaded)
+      - name: Commit race fit
+        if: matrix.config.env.RACE_ONLY == 'on' && hashFiles('worker/lapsim/race-data.js') != ''
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add worker/lapsim/race-data.js docs/lapsim-race.md
+          git diff --cached --quiet || { git commit -m "Race pace fit from the race-only run [skip ci]"; git push origin HEAD:${{ github.ref_name }}; }
       - uses: actions/upload-artifact@v4
         if: always()
         with:
