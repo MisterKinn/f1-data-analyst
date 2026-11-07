@@ -131,11 +131,13 @@ test('geometry: alignment recovers a known rotation', () => {
   assert.ok(Math.abs(((al.theta - th + Math.PI) % (2 * Math.PI)) - Math.PI) < 0.03);
 });
 
-test('cars: 2027 and 2028 apply the ratified power-unit changes', () => {
+test('cars: 2027 and 2028 apply the power-unit changes in the regulations', () => {
   const c27 = applyRules(PRIOR[2026], 2027), c28 = applyRules(PRIOR[2026], 2028);
   assert.equal(c27.ers.pMax, 300e3); assert.equal(c27.ers.regenMax, 375e3);
   assert.ok(Math.abs(c27.pIce / PRIOR[2026].pIce - 1.05) < 1e-9);
-  assert.ok(Math.abs(c28.pIce / PRIOR[2026].pIce - 1.125) < 1e-9);
+  // 2028: 3400 MJ/h fuel flow (Appendix C7 of the 2027 Section C), 400 kW ERS-K, 5 MJ battery window
+  assert.ok(Math.abs(c28.pIce / PRIOR[2026].pIce - 3400 / 3000) < 1e-9);
+  assert.equal(c28.ers.regenMax, 400e3); assert.equal(c27.ers.socWindow, 4.5e6); assert.equal(c28.ers.socWindow, 5e6);
   const d = applyDevelopment(PRIOR[2026], 0.06);
   assert.ok(d.clA > PRIOR[2026].clA && d.muY > PRIOR[2026].muY);
 });
