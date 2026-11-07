@@ -10,7 +10,7 @@ import {rechargeLimitMJ} from './energy-limits.js';
 
 const K = lapsimKernel();
 const SITE = 'https://kongboda-motorsports.vercel.app';
-const CARS = ['2019', '2025', '2026', '2027', '2028', 'wec-hypercar', 'wec-lmgt3'];
+const CARS = ['2019', '2025', '2026', '2027', '2028', 'wec-lmh', 'wec-lmdh', 'wec-lmgt3'];
 const ro = {readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false};
 const num = (min, max, description) => ({type: 'number', minimum: min, maximum: max, description});
 
@@ -18,7 +18,7 @@ export const LAPSIM_TOOLS = [{name: 'lapsim_simulate',
   description: 'Kongboda lap simulator: a qualifying lap worked out by a quasi-steady-state model (TUM method) on the real driving line built from OpenF1 qualifying car positions. Cars: F1 2019 (TUM base), 2025 and 2026 (fitted to real pole laps), 2027 and 2028 (projected from the ratified power-unit changes and historical development); WEC Hypercar and LMGT3 class cars (fitted to Al Kamel lap times and speed traps). Every result carries a one-sigma error range and a confidence label from a holdout test. Inputs override the real qualifying weather: air and track temperature, humidity, pressure (or altitude), wind speed and direction; FIA "Changes to the circuit" (resurfacing, bumps, kerbs) can be switched on. Returns lap and sector times, top and lowest speed, corner minimum speeds, 2026 energy use, what limits the lap, air density and the model error against the real pole. Call without track to list tracks.',
   inputSchema: {type: 'object', properties: {
     track: {type: 'string', maxLength: 60, description: 'Track id, name or Grand Prix, e.g. "mexico-city", "Monza", "COTA", "멕시코시티".'},
-    car: {type: 'string', enum: CARS, description: 'F1 generation (2019 TUM base, 2025, 2026, 2027, 2028) or WEC class car (wec-hypercar, wec-lmgt3). Default 2026.'},
+    car: {type: 'string', enum: CARS, description: 'F1 generation (2019 TUM base, 2025, 2026, 2027, 2028) or WEC class car (wec-lmh, wec-lmdh, wec-lmgt3). Default 2026.'},
     compare_car: {type: 'string', enum: CARS, description: 'Second car on the same track and conditions.'},
     air_temp_c: num(-10, 50, 'Air temperature (°C).'),
     track_temp_c: num(0, 70, 'Track temperature (°C).'),

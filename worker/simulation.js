@@ -25,6 +25,7 @@ const T = {
     soon: '준비 중: 기타 GT3(IMSA GTD·DTM·SP9), 포뮬러 E Gen4. 같은 보정 규칙을 쓰며 데이터 연결 후 추가됩니다.', sector: '섹터', vmax: '최고 속도', vmin: '최저 속도', energy: '배치 에너지', clip: '배치 상한 속도',
     map: '속도로 칠한 주행 라인', slow: '느림', fast: '빠름', trace: '거리별 속도', km: '거리 (km)',
     air: '공기', airTemp: '기온', trackTemp: '노면 온도', humidity: '습도', pressure: '기압', wind: '풍속', windFrom: '바람 방향',
+    motor: '하이브리드 모터', axleFront: '앞 차축', axleRear: '뒤 차축', deployFrom: '{v} 이상에서만 구동', hybridE: '모터 사용 / 회생 (랩당)',
     recharge: '퀄리 회생 한도', energy_official: 'FIA PU 문서', energy_provisional: 'FIA 잠정값, 보도 기준', energy_estimated: '추정', density: '공기 밀도', seaLevel: '해수면 표준 대비', ice: '엔진 출력', grip: '타이어 그립', mainStraight: '메인 스트레이트',
     headwind: '맞바람', tailwind: '뒷바람', calm: '무풍', fia: 'FIA 서킷 변경 사항', fiaLead: '레이스 디렉터 노트의 “Changes to the circuit” 목록입니다. 랩에 영향을 주는 항목은 켜고 끌 수 있으며, 효과 크기는 가정값입니다.',
     inFit: y => `${y}년 실제 랩으로 머신을 보정할 때 이미 반영된 변경 사항입니다. 켜면 효과가 한 번 더 더해집니다.`, notInFit: '아직 보정에 쓴 실제 랩에는 없는 변경 사항입니다. 켜서 효과를 미리 계산해 보세요.',
@@ -48,6 +49,7 @@ const T = {
     soon: 'Coming soon: other GT3 (IMSA GTD, DTM, SP9) and Formula E Gen4. They use the same calibration rules and are added once their data is connected.', sector: 'Sector', vmax: 'Top speed', vmin: 'Lowest speed', energy: 'Energy deployed', clip: 'Deploy cut-off',
     map: 'Racing line coloured by speed', slow: 'Slow', fast: 'Fast', trace: 'Speed over distance', km: 'Distance (km)',
     air: 'Air', airTemp: 'Air temperature', trackTemp: 'Track temperature', humidity: 'Humidity', pressure: 'Pressure', wind: 'Wind speed', windFrom: 'Wind from',
+    motor: 'Hybrid motor', axleFront: 'front axle', axleRear: 'rear axle', deployFrom: 'drives only above {v}', hybridE: 'Motor use / recovery (per lap)',
     recharge: 'Qualifying recharge limit', energy_official: 'FIA PU document', energy_provisional: 'FIA provisional, press', energy_estimated: 'estimated', density: 'Air density', seaLevel: 'vs standard sea level', ice: 'Engine power', grip: 'Tyre grip', mainStraight: 'Main straight',
     headwind: 'headwind', tailwind: 'tailwind', calm: 'calm', fia: 'FIA circuit changes', fiaLead: 'The “Changes to the circuit” list from the race director’s notes. Items that affect the lap can be switched on or off; their size is an assumption.',
     inFit: y => `These changes were already in the real ${y} lap the cars were fitted to; switching them on adds them a second time.`, notInFit: 'These changes are not in the real laps used for fitting yet: switch them on to estimate their effect.',
@@ -241,6 +243,9 @@ function computeView(K, data, state, R) {
   if (sel.unc) factsHtml += fact(t.errRange, (sel.unc.pct ? '±' + (res.lapTime * sel.unc.pct / 100).toFixed(2) + ' s · ' : '') + t.conf[sel.unc.confidence]);
   if (sectors) sectors.forEach((x, i) => { factsHtml += fact(t.sector + ' ' + (i + 1), x.toFixed(3)); });
   factsHtml += fact(t.vmax, Math.round(res.vMaxKph) + ' km/h') + fact(t.vmin, Math.round(res.vMinKph) + ' km/h');
+  // LMH vs LMDh: where the hybrid drives and how much energy it moves per lap (total power is BoP-capped)
+  if (sel.car.ers?.rule === 'hypercar') { const h = sel.car.ers; factsHtml += fact(t.motor, Math.round(h.eMax / 1000) + ' kW, ' + (h.axle === 'front' ? t.axleFront : t.axleRear) + (h.deployFrom > 0 ? ', ' + t.deployFrom.replace('{v}', Math.round(h.deployFrom * 3.6) + ' km/h') : ''))
+    + fact(t.hybridE, (res.energy.deployJ / 1e6).toFixed(2) + ' / ' + (res.energy.regenJ / 1e6).toFixed(2) + ' MJ'); }
   if (sel.car.ers?.pMax) factsHtml += fact(t.energy, (res.energy.deployJ / 1e6).toFixed(1) + ' / ' + (res.energy.budgetJ / 1e6).toFixed(1) + ' MJ') + fact(t.clip, res.energy.cutoffKph ? Math.round(res.energy.cutoffKph) + ' km/h' : '–');
   // wind on the main straight (the straight the lap starts on)
   let windTxt = t.calm;

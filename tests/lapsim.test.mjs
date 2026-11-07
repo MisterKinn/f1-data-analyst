@@ -207,7 +207,7 @@ test('track resolver avoids partial-word matches', async () => {
 test('common calibration: timing-only laps with shared track factors recover a WEC car', async () => {
   const {SERIES} = await import('../worker/lapsim/series.js');
   const {fitSeason, holdout, withGrip} = await import('../scripts/sim/calibrate-lib.mjs');
-  const def = SERIES.wec.classes.hypercar;
+  const def = SERIES.wec.classes.lmdh;
   const truth = {...structuredClone(def.prior), muY: 1.85, clA: 3.9, cdA: 1.15, clALow: 3.9, cdALow: 1.15};
   truth.muX = def.prior.muX * 1.85 / 1.75; truth.muXTrac = def.prior.muXTrac * 1.85 / 1.75;
   // four synthetic tracks: stadiums with different corner radii

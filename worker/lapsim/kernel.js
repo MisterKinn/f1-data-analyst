@@ -223,6 +223,9 @@ export function lapsimKernel() {
           }
           // DC power the ERS-K actually supplies: whatever the ICE cannot, up to its limit
           ersUsed[i] = pErs > 0 ? Math.min(pErs, Math.max(0, fDrive * vi - pIce * etaD) / (etaK * etaD)) : 0;
+          // Hypercar hybrids (LMH front axle, LMDh rear axle): the BoP caps total power, so the motor
+          // replaces engine power rather than adding to it; it can only drive above its deploy speed
+          if (ers.rule === 'hypercar') ersUsed[i] = vi > (ers.deployFrom || 0) && vi < vCut ? Math.min(ers.eMax || 0, fDrive * vi / etaD) : 0;
           const drag = aeroFactor * cdAt(i, low) * va * va, roll = cRoll * N;
           const a = (fDrive - drag - roll) / (t.m * t.inertia) - G * sinG[i];
           const vn = Math.sqrt(Math.max(1, vi * vi + 2 * a * ds));
@@ -253,6 +256,8 @@ export function lapsimKernel() {
     //    Deploying at lower speed gains more time per joule, so a speed threshold is a good
     //    approximation of the optimal allocation.
     const budget = (eRegen) => {
+      // Hypercar: charge-sustaining over a lap (energy recovered on braking plus a small battery window)
+      if (ers.rule === 'hypercar') return eRegen + (ers.socWindow ?? 0.5e6);
       if (!ers.pMax) return 0;
       if (ers.rule === 'f1-2026') return (ers.socWindow ?? 4e6) + Math.min(eRegen, env.rechargeMax ?? ers.rechargeMax ?? 8.5e6);
       return ers.deployMax ?? 4e6;
@@ -266,7 +271,7 @@ export function lapsimKernel() {
       return lo;
     };
     let vCut = vMaxCar + 1, vH = Infinity, v = forward(vCut), acc = account(v);
-    if (ers.pMax && acc.eDeploy > budget(acc.eRegen)) {
+    if ((ers.pMax || ers.rule === 'hypercar') && acc.eDeploy > budget(acc.eRegen)) {
       vCut = fitCut(Infinity); v = forward(vCut); acc = account(v);
       // super-clipping: if the lap is short of the recharge limit, harvest at full throttle at the top of
       // the straights (above vH) and spend the energy lower down, when that is faster

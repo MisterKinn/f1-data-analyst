@@ -6,7 +6,7 @@ import {lapsimChangeEffects} from './change-effects-data.js';
 import {TUM_2019, PRIOR, applyRules, applyDevelopment} from './cars.js';
 import {SERIES} from './series.js';
 
-export const CAR_ORDER = ['base2019', '2025', '2026', '2027', '2028', 'wec-hypercar', 'wec-lmgt3'];
+export const CAR_ORDER = ['base2019', '2025', '2026', '2027', '2028', 'wec-lmh', 'wec-lmdh', 'wec-lmgt3'];
 
 // grip: the per-track factor fitted with that season's car (absorbs asphalt and line differences)
 export function carsFor(id) {
