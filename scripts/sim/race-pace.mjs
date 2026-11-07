@@ -55,6 +55,7 @@ for (const [id, list] of Object.entries(fits)) {
   const P = poolTrack(prev);
   // scale for the new season's race ratio, learned from the other tracks already raced this season
   const k = median(Object.entries(fits).filter(([o]) => o !== id).map(([, l]) => { const c = l.find(f => f.year === latestYear), p = l.filter(f => f.year < latestYear); return c && p.length && c.raceRatio ? c.raceRatio / poolTrack(p).raceRatio : NaN; }).filter(Number.isFinite));
+  if (P.raceRatio == null) continue;
   const track = {...P, raceRatio: P.raceRatio * (Number.isFinite(k) ? k : 1)};
   if (!cur.pole || !Number.isFinite(track.raceRatio)) continue;
   // leading race pace at mid-race: start pace + fuel/track slope over half the race, predicted vs fitted
@@ -71,7 +72,10 @@ const tracks = {};
 for (const [id, list] of Object.entries(fits)) {
   const pooled = poolTrack(list.map(strip));
   const raced = list.some(f => f.year === latestYear && f.raceRatio);
-  tracks[id] = {...pooled, raceRatio: raced ? list.find(f => f.year === latestYear && f.raceRatio).raceRatio : pooled.raceRatio * (Number.isFinite(kSeason) ? kSeason : 1), ratioBasis: raced ? latestYear : 'scaled'};
+  // no dry qualifying at this track yet: the median ratio of this season's races
+  const seasonMedian = median(Object.values(fits).flat().filter(f => f.year === latestYear && f.raceRatio).map(f => f.raceRatio));
+  tracks[id] = {...pooled, raceRatio: raced ? list.find(f => f.year === latestYear && f.raceRatio).raceRatio : pooled.raceRatio != null ? pooled.raceRatio * (Number.isFinite(kSeason) ? kSeason : 1) : seasonMedian,
+    ratioBasis: raced ? latestYear : pooled.raceRatio != null ? 'scaled' : 'season-median'};
   for (const k of ['slope', 'raceRatio', 'pitLoss']) if (tracks[id][k] != null) tracks[id][k] = Math.round(tracks[id][k] * 1e5) / 1e5;
   for (const k of ['offset', 'wear']) for (const c of COMPOUNDS) if (tracks[id][k][c] != null) tracks[id][k][c] = Math.round(tracks[id][k][c] * 1e4) / 1e4;
 }
@@ -88,7 +92,8 @@ const report = ['# Race pace model', '', `Generated ${out.generatedAt}. Season $
 // Upcoming races: best strategies from the predicted pole (calibration) or the latest real pole
 for (const id of ['las-vegas', 'lusail', 'yas-marina-circuit']) {
   const t = tracks[id]; if (!t) continue;
-  const pole = lapsimCalibration?.seasons?.[2026]?.predictions?.[id]?.lap ?? fits[id].at(-1).pole;
+  const pole = lapsimCalibration?.seasons?.[2026]?.predictions?.[id]?.lap ?? fits[id].filter(f => f.pole).at(-1)?.pole;
+  if (!pole) continue;
   const s = strategies(t, pole).slice(0, 3);
   report.push(`## ${id}: pole ${fmt(pole)}, ${t.laps} laps`, '', '| Strategy | Race time | Gap |', '|---|---|---|',
     ...s.map(x => `| ${x.stints.map(([c, n]) => c[0] + n).join('-')} | ${fmt(x.total)} | +${(x.total - s[0].total).toFixed(1)} s |`), '');
