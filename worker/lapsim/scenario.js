@@ -37,7 +37,10 @@ export function uncertainty(c) {
     for (const y of [2027, 2028]) if (y <= c.year) { const b = cal.projections?.[y]?.bandPct; if (b) band += Math.abs(b[0] - b[1]) / 2; }
     pct = Math.hypot(pct, band);
   }
-  return {pct: Math.round(pct * 100) / 100, confidence: c.kind === 'projected' ? 'low' : pct <= 1 && h.n >= 4 ? 'medium' : 'low', holdoutLaps: h.n};
+  // acceptance thresholds (holdout RMS of lap time): ≤1% medium, ≤3% low, above that very low.
+  // Never "high": every result is a provisional estimate.
+  const confidence = pct > 3 ? 'very-low' : c.kind === 'projected' || pct > 1 || h.n < 4 ? 'low' : 'medium';
+  return {pct: Math.round(pct * 100) / 100, confidence, holdoutLaps: h.n};
 }
 
 // Weather of the real pole lap per season (OpenF1 session means), with the real lap time

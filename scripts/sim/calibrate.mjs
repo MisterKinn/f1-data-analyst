@@ -49,8 +49,8 @@ for (const year of [...new Set(traces.map(t => t.year))].sort()) {
   seasons[year] = {car, tracks: perTrack, score: +fit.score.toFixed(3), laps: laps.length, fitLaps: laps, base, params};
   report.push(`## ${year}`, '', `${laps.length} laps, fit score ${fit.score.toFixed(3)}, ${((Date.now() - t0) / 1000).toFixed(0)} s.`, '',
     `Car: grip μy ${car.muY.toFixed(3)}, downforce ClA ${car.clA.toFixed(2)} m², drag CdA ${car.cdA.toFixed(3)} m², low-drag CdA ${car.cdALow.toFixed(3)} m², ICE ${(car.pIce / 1e3).toFixed(0)} kW.`, '',
-    '| Track | Real | Sim | Error | Speed RMS | Track grip |', '|---|---|---|---|---|---|',
-    ...Object.entries(perTrack).map(([id, r]) => `| ${id} | ${r.realLap.toFixed(3)} | ${r.simLap.toFixed(3)} | ${r.errorSec > 0 ? '+' : ''}${r.errorSec.toFixed(3)} | ${r.rmsKph} km/h | ${r.grip} |`), '');
+    '| Track | Real | Sim | Error | Corner/straight speed error | Track grip |', '|---|---|---|---|---|---|',
+    ...Object.entries(perTrack).map(([id, r]) => `| ${id} | ${r.realLap.toFixed(3)} | ${r.simLap.toFixed(3)} | ${r.errorSec > 0 ? '+' : ''}${r.errorSec.toFixed(3)} | ${r.rmsKph} km/h | ${r.grip}${r.grip <= 0.851 || r.grip >= 1.149 ? ' (at limit: check this track)' : ''} |`), '');
 }
 
 // Holdout (common rule): refit without a quarter of the tracks, then predict their pole laps using
