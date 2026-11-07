@@ -9,11 +9,11 @@ import {poleTrend} from '../../worker/lapsim/pole-trend.js';
 import {PRIOR, applyRules, applyDevelopment, RULE_CHANGES} from '../../worker/lapsim/cars.js';
 import {simulateLap} from '../../worker/lapsim/engine.js';
 import {conditionsFromWeather} from '../../worker/lapsim/atmosphere.js';
-import {fitSeason, withGrip, holdout} from './calibrate-lib.mjs';
+import {fitSeason, withGrip, holdout, fitJoint, holdoutJoint} from './calibrate-lib.mjs';
 import {SERIES} from '../../worker/lapsim/series.js';
 
 const CACHE = process.env.LAPSIM_CACHE || '.cache/lapsim';
-const ITERS = Number(process.env.LAPSIM_ITERS || 90), HOLDOUT_ITERS = Number(process.env.LAPSIM_HOLDOUT_ITERS || 40);
+const ITERS = Number(process.env.LAPSIM_ITERS || 70), HOLDOUT_ITERS = Number(process.env.LAPSIM_HOLDOUT_ITERS || 25);
 const traces = JSON.parse(await readFile(join(CACHE, 'traces.json'), 'utf8'));
 const tracks = Object.fromEntries(Object.entries(lapsimTracks).map(([id, d]) => [id, trackFromData(d)]));
 const PARAMS = ['muY', 'clA', 'cdA', 'cdALow', 'pIce'];
@@ -24,6 +24,10 @@ const BOUNDS = {muY: [1.5, 2.4], clA: [2.5, 8], cdA: [0.7, 1.9], cdALow: [0.45, 
 
 const seasons = {};
 const report = ['# Lap simulator calibration', '', `Generated ${new Date().toISOString().slice(0, 10)}. Real qualifying laps from OpenF1 on tracks built from OpenF1 car positions.`, ''];
+// F1: all seasons fitted together (common rule): one car per season, one grip factor per track
+// shared by every season (same asphalt and line), so a car can be predicted on a track it has not
+// raced yet with the factor learned from another season.
+const groups = [];
 for (const year of [...new Set(traces.map(t => t.year))].sort()) {
   const prior = PRIOR[year]; if (!prior) continue;
   const laps = traces.filter(t => t.year === year && tracks[t.track] && !t.weather.rain && t.s.length > 100)
@@ -35,40 +39,37 @@ for (const year of [...new Set(traces.map(t => t.year))].sort()) {
     const [lo, hi] = BOUNDS[k], rel = k === 'pIce';
     return {key: k, path: k, base: base[k], step: 0.08, min: rel ? lo * base[k] : lo, max: rel ? hi * base[k] : hi};
   });
-  const t0 = Date.now();
-  let fit = fitSeason(laps, base, params, {iters: ITERS});
-  // clean data (common rule): a lap more than 4% off after the fit is not a normal dry lap
-  // (wet track, red flag, wrong lap); drop it and fit again
-  const outliers = new Set(fit.perTrack.filter(p => Math.abs(p.dt / p.realLap) > 0.04).map(p => p.name));
-  if (outliers.size) {
-    report.push(`${year}: dropped ${[...outliers].join(', ')} (lap more than 4% off after the first fit)`);
-    laps.splice(0, laps.length, ...laps.filter(l => !outliers.has(l.name)));
-    fit = fitSeason(laps, base, params, {iters: ITERS});
-  }
-  const car = fit.car; delete car.linkMu;
-  // per-track result from the pole lap (position 1)
+  groups.push({key: year, laps, base, params});
+}
+const t0 = Date.now();
+let joint = fitJoint(groups, {iters: ITERS});
+// clean data (common rule): a lap more than 4% off after the fit is not a normal dry lap
+// (wet track, red flag, wrong lap); drop that season's laps on that track and fit again
+const bad = joint.perLap.filter(p => Math.abs(p.dt / p.realLap) > 0.04);
+if (bad.length) {
+  for (const g of groups) { const drop = new Set(bad.filter(p => p.group === g.key).map(p => p.name)); g.laps = g.laps.filter(l => !drop.has(l.name)); }
+  report.push(`Dropped (lap more than 4% off after the first fit): ${[...new Set(bad.map(p => p.group + ' ' + p.name))].join(', ')}`, '');
+  joint = fitJoint(groups, {iters: ITERS});
+}
+report.push(`F1 joint fit of ${groups.map(g => g.key).join(' and ')}: ${((Date.now() - t0) / 1000).toFixed(0)} s, score ${joint.score.toFixed(3)}.`, '');
+for (const g of groups) {
+  const year = g.key, car = joint.cars[year]; delete car.linkMu;
   const perTrack = {};
-  for (const p of fit.perTrack) {
+  for (const p of joint.perLap.filter(x => x.group === year)) {
     if (p.meta?.position !== 1 && perTrack[p.name]) continue;
     const trace = traces.find(t => t.year === year && t.track === p.name && t.session_key === p.meta?.sessionKey && t.position === p.meta?.position);
     perTrack[p.name] = {grip: +p.grip.toFixed(4), rmsKph: +p.rmsKph.toFixed(1), errorSec: +p.dt.toFixed(3), simLap: +p.simLap.toFixed(3), realLap: p.realLap,
       sessionKey: p.meta?.sessionKey, driver: p.meta?.driver, position: p.meta?.position ?? 1, weather: trace?.weather || null};
   }
-  seasons[year] = {car, tracks: perTrack, score: +fit.score.toFixed(3), laps: laps.length, fitLaps: laps, base, params};
-  report.push(`## ${year}`, '', `${laps.length} laps, fit score ${fit.score.toFixed(3)}, ${((Date.now() - t0) / 1000).toFixed(0)} s.`, '',
+  // holdout: this season's laps on a quarter of the tracks left out, predicted with the factor the
+  // other season gives that track
+  const h = holdoutJoint(groups, year, {iters: HOLDOUT_ITERS});
+  seasons[year] = {car, tracks: perTrack, laps: g.laps.length,
+    holdout: {rmsPct: h.rmsPct != null ? +h.rmsPct.toFixed(2) : null, n: h.n, tracks: h.errors.map(e => ({track: e.name, errorSec: +e.dt.toFixed(3)}))}};
+  report.push(`## ${year}`, '', `${g.laps.length} laps. Holdout: ${h.n ? `predicted ${h.n} unseen pole laps, typical error ${h.rmsPct.toFixed(2)}% (RMS)` : 'no track had a factor from another season'}.`, '',
     `Car: grip μy ${car.muY.toFixed(3)}, downforce ClA ${car.clA.toFixed(2)} m², drag CdA ${car.cdA.toFixed(3)} m², low-drag CdA ${car.cdALow.toFixed(3)} m², ICE ${(car.pIce / 1e3).toFixed(0)} kW.`, '',
-    '| Track | Real | Sim | Error | Corner/straight speed error | Track grip |', '|---|---|---|---|---|---|',
+    '| Track | Real | Sim | Error | Corner/straight speed error | Track grip (shared) |', '|---|---|---|---|---|---|',
     ...Object.entries(perTrack).map(([id, r]) => `| ${id} | ${r.realLap.toFixed(3)} | ${r.simLap.toFixed(3)} | ${r.errorSec > 0 ? '+' : ''}${r.errorSec.toFixed(3)} | ${r.rmsKph} km/h | ${r.grip}${r.grip <= 0.851 || r.grip >= 1.149 ? ' (at limit: check this track)' : ''} |`), '');
-}
-
-// Holdout (common rule): refit without a quarter of the tracks, then predict their pole laps using
-// the track factor fitted in the other season. Tests the car fit on tracks it has not seen.
-const otherGrip = (year, id) => Object.entries(seasons).filter(([y]) => Number(y) !== year).map(([, s]) => s.tracks[id]?.grip).find(g => g != null) ?? null;
-for (const [year, s] of Object.entries(seasons)) {
-  const h = holdout(s.fitLaps, s.base, s.params, {iters: HOLDOUT_ITERS, gripFor: l => otherGrip(Number(year), l.name)});
-  s.holdout = {rmsPct: h.rmsPct != null ? +h.rmsPct.toFixed(2) : null, n: h.n, tracks: h.errors.map(e => ({track: e.name, errorSec: +e.dt.toFixed(3)}))};
-  report.push(`### ${year} holdout`, '', h.n ? `Predicted ${h.n} unseen pole laps: typical error ${h.rmsPct.toFixed(2)}% (RMS).` : 'No track had a factor from another season.', '');
-  delete s.fitLaps; delete s.base; delete s.params;
 }
 
 // Projections from the latest calibrated season (2026)
