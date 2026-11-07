@@ -52,7 +52,10 @@ export function cleanLaps(race) {
     const med = median(ok.map(l => l[col.time]));
     for (const l of ok) if (l[col.time] < med * 1.07) out.push({driver: num, team: d.team, lap: l[col.lap], time: l[col.time], compound: l[col.compound], age: l[col.tyreAge], stint: l[col.stint]});
   }
-  return {laps: out, wet, totalLaps: Math.max(0, ...Object.values(race.drivers || {}).map(d => d.laps.length))};
+  // race length: last lap number of the winner (array length can include duplicate rows)
+  const ds = Object.values(race.drivers || {}), win = ds.find(d => d.position === 1) || ds[0];
+  const totalLaps = win ? Math.max(0, ...win.laps.map(l => l[col.lap]).filter(Number.isFinite)) : 0;
+  return {laps: out, wet, totalLaps};
 }
 
 // One race: driver intercepts + lap slope + compound offsets (vs MEDIUM) + wear per compound

@@ -60,6 +60,7 @@ for (const [id, list] of Object.entries(fits)) {
   // leading race pace at mid-race: start pace + fuel/track slope over half the race, predicted vs fitted
   const mid = (cur.laps - 1) / 2, pred = cur.pole * track.raceRatio + track.slope * mid, real = cur.ref + cur.slope * mid;
   const best = (pred - real) / real * 100;
+  if (!Number.isFinite(best) || Math.abs(best) > 30) { log.push(`${id} ${cur.year}: test skipped (pred ${pred.toFixed(1)}, real ${real.toFixed(1)}, laps ${cur.laps}, slope ${cur.slope.toFixed(3)})`); continue; }
   errs.push(best); testRows.push([id, cur.year, prev.map(f => f.year).join('+'), best]);
 }
 const rms = errs.length ? Math.sqrt(errs.reduce((s, v) => s + v * v, 0) / errs.length) : null;
