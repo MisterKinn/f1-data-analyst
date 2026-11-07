@@ -94,7 +94,19 @@ export function simulate(args = {}) {
     const r = K.applyTrackChanges(base, ch.changes.filter(c => c.affectsLap), d.corners || [], {strength: args.change_strength ?? 1});
     track = r.track; applied = r.applied;
   }
-  const run = c => K.simulateLap(withGrip(track, c.grip || 1), c.car, env);
+  // sector correction on raced tracks (same rule as the /simulation page): real pole sectors minus the
+  // reference car's simulated sectors in the real pole weather, added to every result for that car
+  const secOf = r => { if (d.sectors?.length !== 2) return null; const i1 = Math.round(d.sectors[0] / d.ds), i2 = Math.round(d.sectors[1] / d.ds); return [r.time[i1], r.time[i2] - r.time[i1], r.lapTime - r.time[i2]]; };
+  const corrOf = c => {
+    if (!c.fix || d.sectors?.length !== 2) return null;
+    const ref = cars[c.fix.ref], fw = Object.fromEntries(Object.entries(c.fix.weather || {}).filter(([, v]) => Number.isFinite(v)));
+    const ss = secOf(K.simulateLap(withGrip(base, ref.grip || 1), ref.car, K.conditionsFromWeather({pressureHpa: 1013.25, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0, ...fw, rechargeMJ: rechargeMJ ?? undefined})));
+    return c.fix.real.map((x, i) => x - ss[i]);
+  };
+  const run = c => {
+    const r = K.simulateLap(withGrip(track, c.grip || 1), c.car, env), k = corrOf(c), sec = secOf(r);
+    return k && sec ? {...r, lapTime: r.lapTime + k[0] + k[1] + k[2], sectors: sec.map((x, i) => x + k[i]), sectorCorrection: k} : r;
+  };
   const res = run(sel);
   const out = {status: 'ok', model: 'quasi-steady-state lap simulation (estimate, not a prediction of a real session)',
     track: {id, name: TRACK_NAMES[id]?.[1] || id, length_m: Math.round(d.length || d.kappa.length * d.ds), corners: (d.corners || []).length,
@@ -106,7 +118,7 @@ export function simulate(args = {}) {
       air_density_kg_m3: r3(env.rho), density_vs_sea_level_pct: Math.round((env.rho / 1.225 - 1) * 1000) / 10,
       engine_power_factor: r3(env.iceFactor), tyre_grip_factor: r3(env.grip), wind_applied: !!base.heading && windSpeed > 0,
       main_straight_tailwind_ms: base.heading ? r3(K.tailwind(base.heading[2], windSpeed, windFromDeg)) : null},
-    result: summary(res, d, sel.car),
+    result: {...summary(res, d, sel.car), ...(res.sectorCorrection ? {sector_correction_s: res.sectorCorrection.map(r3), sector_correction_note: 'real pole sectors minus the simulated ones in the real pole weather (track-specific model bias)'} : {})},
     uncertainty: {error_range_s: sel.unc?.pct ? r3(res.lapTime * sel.unc.pct / 100) : null, error_range_pct: sel.unc?.pct ?? null, confidence: sel.unc?.confidence,
       basis: sel.unc?.basis === 'fit' ? 'one-sigma lap-time error of the fit over the tracks this car was fitted on' : 'one-sigma error from the holdout test (tracks left out of the fit, predicted)', holdout_error_pct: sel.unc?.holdoutPct ?? null,
       note: 'projections add half the historical development range'}};

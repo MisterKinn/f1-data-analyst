@@ -238,3 +238,15 @@ test('FIA notes: the race director signature is not a change', () => {
   const doc = '19. | Changes to the circuit\n- | Add blue line at the apex of Turn 11\nR ui Marques | The FIA Formula 1 Race Director\n';
   assert.equal(parseTrackChanges(doc).changes.length, 1);
 });
+
+test('sector correction: a raced track reproduces the real pole sectors in its weather', async () => {
+  const {lapsimCalibration: c} = await import('../worker/lapsim/calibration-data.js');
+  const t = c?.seasons?.[2026]?.tracks?.monza; if (!t) return;
+  const saved = t.realSectors; t.realSectors = [26.5, 27.1, 26.9];
+  try {
+    const {simulate} = await import('../worker/lapsim/tool.js');
+    const r = simulate({track: 'monza'});
+    assert.ok(Math.abs(r.result.lap_seconds - 80.5) < 0.002);
+    assert.deepEqual(r.result.sectors_s, [26.5, 27.1, 26.9]);
+  } finally { t.realSectors = saved; }
+});

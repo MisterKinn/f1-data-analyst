@@ -45,7 +45,7 @@ const T = {
     evoType: '세션', evoTypes: {practice: '연습', qualifying: '예선'}, evoTyre: '타이어', tyres: {slick: '슬릭', inter: '인터미디엇', wet: '웻'},
     evoEnd: '세션 시각', evoGain: '고무 효과 (끝까지)', evoTau: '포화 시간', evoWet: '시작 노면 젖음', evoDry: '건조 시간', evoWarm: '워밍업 랩',
     evoCurve: '실측 곡선 사용', evoLast: '이 시각의 예상 랩', evoChange: '세션 시작 대비', evoBasis: {track: '이 트랙 실측 곡선', series: '시리즈 평균 (보정)', default: '미보정 기본값'},
-    evoErr: '홀드아웃 오차 (트랙 제외)', evoBasisH: '근거', evoChart: '세션 시각별 예상 랩타임', min: '분',
+    evoErr: '홀드아웃 오차 (트랙 제외)', secFix: '섹터 보정 (실제 폴 기준)', evoBasisH: '근거', evoChart: '세션 시각별 예상 랩타임', min: '분',
   },
   en: {
     title: 'Lap simulator', h1: 'Simulate a lap in a 2026–2028 F1 car',
@@ -74,7 +74,7 @@ const T = {
     evoType: 'Session', evoTypes: {practice: 'Practice', qualifying: 'Qualifying'}, evoTyre: 'Tyre', tyres: {slick: 'Slick', inter: 'Intermediate', wet: 'Wet'},
     evoEnd: 'Session minute', evoGain: 'Rubber effect (full)', evoTau: 'Time to saturate', evoWet: 'Wetness at start', evoDry: 'Drying time', evoWarm: 'Warm-up laps',
     evoCurve: 'Use measured curve', evoLast: 'Expected lap at this minute', evoChange: 'vs session start', evoBasis: {track: 'measured curve, this track', series: 'series average (fitted)', default: 'uncalibrated default'},
-    evoErr: 'Holdout error (track left out)', evoBasisH: 'Basis', evoChart: 'Expected lap time over the session', min: 'min',
+    evoErr: 'Holdout error (track left out)', secFix: 'Sector correction (real pole)', evoBasisH: 'Basis', evoChart: 'Expected lap time over the session', min: 'min',
   },
 };
 
@@ -250,10 +250,27 @@ function computeView(K, data, state, R) {
   if (active.length) track = K.applyTrackChanges(base, active, d.corners || [], {strength: state.strength}).track;
   const withGrip = (tr, g) => { const n = tr.kappa.length, mu = new Float64Array(n); for (let i = 0; i < n; i++) mu[i] = g * tr.mu[i]; return {...tr, mu}; };
   const run = c => K.simulateLap(withGrip(track, c.grip || 1), c.car, env);
-  const res = run(sel);
-  const cmp = state.compareId && data.cars[state.compareId] ? run(data.cars[state.compareId]) : null;
+  const secOf = r => { const i1 = Math.round(d.sectors[0] / d.ds), i2 = Math.round(d.sectors[1] / d.ds); return [r.time[i1], r.time[i2] - r.time[i1], r.lapTime - r.time[i2]]; };
+  // sector correction (raced tracks): real pole sectors minus the reference car's sectors in that weather
+  const corrOf = c => {
+    if (!c.fix || !d.sectors || d.sectors.length !== 2) return null;
+    const key = data.id + '|' + c.fix.ref; computeView.fixCache = computeView.fixCache || {};
+    if (!computeView.fixCache[key]) {
+      const ref = data.cars[c.fix.ref], fw = {};
+      for (const k of ['pressureHpa', 'airTempC', 'humidityPct', 'trackTempC', 'windSpeed', 'windFromDeg']) if (Number.isFinite(c.fix.weather && c.fix.weather[k])) fw[k] = c.fix.weather[k];
+      const envR = K.conditionsFromWeather(Object.assign({pressureHpa: 1013.25, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0}, fw, {rechargeMJ: data.energy && data.energy.mj != null ? data.energy.mj : undefined}));
+      const ss = secOf(K.simulateLap(withGrip(base, ref.grip || 1), ref.car, envR));
+      computeView.fixCache[key] = c.fix.real.map((x, i) => x - ss[i]);
+    }
+    return computeView.fixCache[key];
+  };
+  const corrected = (c, r) => { const k = corrOf(c), sec = d.sectors && d.sectors.length === 2 ? secOf(r) : null; return k && sec ? {lapTime: r.lapTime + k[0] + k[1] + k[2], sectors: sec.map((x, i) => x + k[i]), corr: k} : {lapTime: r.lapTime, sectors: sec, corr: null}; };
+  const raw = run(sel), fixd = corrected(sel, raw);
+  const res = Object.assign({}, raw, {lapTime: fixd.lapTime});
+  const cmpRaw = state.compareId && data.cars[state.compareId] ? run(data.cars[state.compareId]) : null;
+  const cmp = cmpRaw ? Object.assign({}, cmpRaw, {lapTime: corrected(data.cars[state.compareId], cmpRaw).lapTime}) : null;
   const fmt = s => { if (!Number.isFinite(s)) return '–'; const m = Math.floor(s / 60); return (m ? m + ':' : '') + (s - m * 60).toFixed(3).padStart(m ? 6 : 5, '0'); };
-  const sectors = d.sectors && d.sectors.length === 2 ? (() => { const i1 = Math.round(d.sectors[0] / d.ds), i2 = Math.round(d.sectors[1] / d.ds); return [res.time[i1], res.time[i2] - res.time[i1], res.lapTime - res.time[i2]]; })() : null;
+  const sectors = fixd.sectors;
   const real = data.conds[condKey];
   const sameConditions = state.mode !== 'manual' && !active.length;
   const poleHtml = real && real.realLap && sameConditions && sel.kind === 'calibrated'
@@ -263,6 +280,7 @@ function computeView(K, data, state, R) {
   let factsHtml = '';
   if (sel.unc) factsHtml += fact(t.errRange, (sel.unc.pct ? '±' + (res.lapTime * sel.unc.pct / 100).toFixed(2) + ' s · ' : '') + t.conf[sel.unc.confidence]);
   if (sectors) sectors.forEach((x, i) => { factsHtml += fact(t.sector + ' ' + (i + 1), x.toFixed(3)); });
+  if (fixd.corr) factsHtml += fact(t.secFix, fixd.corr.map(x => (x >= 0 ? '+' : '−') + Math.abs(x).toFixed(3)).join(' / ') + ' s');
   factsHtml += fact(t.vmax, Math.round(res.vMaxKph) + ' km/h') + fact(t.vmin, Math.round(res.vMinKph) + ' km/h');
   // LMH vs LMDh: where the hybrid drives and how much energy it moves per lap (total power is BoP-capped)
   if (sel.car.ers?.rule === 'hypercar') { const h = sel.car.ers; factsHtml += fact(t.motor, Math.round(h.eMax / 1000) + ' kW, ' + (h.axle === 'front' ? t.axleFront : t.axleRear) + (h.deployFrom > 0 ? ', ' + t.deployFrom.replace('{v}', Math.round(h.deployFrom * 3.6) + ' km/h') : ''))

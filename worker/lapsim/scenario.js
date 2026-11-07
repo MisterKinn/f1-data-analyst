@@ -29,6 +29,13 @@ export function carsFor(id) {
     out['wec-' + cls] = y ? {car: seasons[y].car, grip: gripOf(2026), kind: 'calibrated', year: Number(y), series: 'wec', cls}
       : {car: def.prior, grip: gripOf(2026), kind: 'prior', year: 2026, series: 'wec', cls};
   }
+  // Sector correction on tracks raced with this rule set: the real pole's sector times minus the
+  // fitted 2026 car's sectors in the same weather (worked out where the lap is simulated). Projected
+  // cars keep the 2026 correction (it describes the track, not the car).
+  const t26 = s[2026]?.tracks?.[id], t25 = s[2025]?.tracks?.[id];
+  const fix = t => t?.realSectors && t.position === 1 && !t.weather?.rain ? {real: t.realSectors, weather: t.weather, ref: '2026'} : null;
+  if (out[2026].kind === 'calibrated' && fix(t26)) for (const y of [2026, 2027, 2028]) out[y].fix = fix(t26);
+  if (out[2025].kind === 'calibrated' && fix(t25)) out[2025].fix = {...fix(t25), ref: '2025'};
   for (const c of Object.values(out)) c.unc = uncertainty(c, id);
   return out;
 }
