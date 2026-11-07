@@ -18,7 +18,8 @@ const r4 = x => Math.round(x * 1e4) / 1e4;
 
 function fitSession(S) {
   const c = Object.fromEntries(S.columns.map((k, i) => [k, i]));
-  if (S.weather?.length && S.weather.filter(w => w[2] > 0).length / S.weather.length > 0.5 && S.series === 'f1') return {skip: 'wet'};
+  // any real rain in the session mixes wet and dry laps: kept out (drying is fitted on its own)
+  if (S.weather?.length && S.weather.filter(w => w[2] > 0).length / S.weather.length > 0.1) return {skip: 'rain'};
   // laps since the out-lap and in-laps per car
   const byCar = {};
   for (const r of S.rows) (byCar[r[c.car]] ||= []).push(r);
@@ -32,6 +33,7 @@ function fitSession(S) {
       k++;
       if (next?.[c.outLap] && next[c.lap] === r[c.lap] + 1 && S.series === 'f1') continue; // in-lap
       if (r[c.neutral]) continue;
+      if (S.series === 'f1' && !['SOFT', 'MEDIUM', 'HARD'].includes(r[c.compound])) continue; // slicks only
       laps.push({car: String(r[c.car]), t: r[c.minute], y: r[c.time], k, compound: c.compound != null ? r[c.compound] : null, age: c.tyreAge != null ? r[c.tyreAge] : null});
     }
   }
@@ -41,9 +43,10 @@ function fitSession(S) {
   const cars = [...new Set(push.map(l => l.car))].filter(k => push.filter(l => l.car === k).length >= 2);
   const P = push.filter(l => cars.includes(l.car));
   if (cars.length < 4 || P.length < 25) return {skip: 'few laps'};
-  const T = Math.max(...P.map(l => l.t)), step = Math.max(5, Math.ceil(T / 6 / 5) * 5);
-  const knots = []; for (let x = 0; x < T + step; x += step) knots.push(x);
-  const hat = (t, j) => { const a = knots[j - 1], b = knots[j], d = knots[j + 1]; return t <= a || (d != null && t >= d) ? 0 : t <= b ? (t - a) / (b - a) : d == null ? 1 : (d - t) / (d - b); };
+  // curve starts at the first push lap (no extrapolation back to minute 0)
+  const t0 = Math.floor(Math.min(...P.map(l => l.t))), T = Math.max(...P.map(l => l.t)), step = Math.max(5, Math.ceil((T - t0) / 6 / 5) * 5);
+  const knots = []; for (let x = t0; x < T + step; x += step) knots.push(x);
+  const hat = (t, j) => { if (t < knots[0]) t = knots[0]; const a = knots[j - 1], b = knots[j], d = knots[j + 1]; return t <= a || (d != null && t >= d) ? 0 : t <= b ? (t - a) / (b - a) : d == null ? 1 : (d - t) / (d - b); };
   const comps = S.series === 'f1' ? ['MEDIUM', 'HARD'] : [];
   const nC = cars.length, nK = knots.length - 1, iW = nC + nK, iC = iW + 1, iA = iC + comps.length, p = iA + 1;
   const rows = P.map(l => {
@@ -70,9 +73,9 @@ function pool(list) {
   for (let tau = 5; tau <= 150; tau += 2.5) {
     // least squares for a at this τ
     let num = 0, den = 0;
-    for (const s of list) for (const [t, v] of s.curve) { const g = 1 - Math.exp(-t / tau); num += -v * g; den += g * g; }
+    for (const s of list) for (const [t, v] of s.curve) { const g = Math.exp(-s.curve[0][0] / tau) - Math.exp(-t / tau); num += -v * g; den += g * g; }
     const a = den ? num / den : 0;
-    let e = 0; for (const s of list) for (const [t, v] of s.curve) e += (para(a, tau, t) - v) ** 2;
+    let e = 0; for (const s of list) for (const [t, v] of s.curve) e += (para(a, tau, t) - para(a, tau, s.curve[0][0]) - v) ** 2;
     if (!best || e < best.e) best = {a, tau, e};
   }
   return {gainPct: r4(best.a), tauMin: best.tau, warmupPct: r4(median(list.map(s => s.warmupPct)))};
@@ -95,14 +98,15 @@ const report = ['# Track evolution', '', `Generated ${out.generatedAt}.`, '',
 for (const series of [...new Set(sessions.map(s => s.series))]) {
   const S = out.series[series] = {sessions: {}, tracks: {}};
   for (const type of [...new Set(sessions.filter(s => s.series === series).map(s => s.type))]) {
-    const list = sessions.filter(s => s.series === series && s.type === type);
+    // sessions with an implausible change (mixed conditions the filters missed) stay out of the pool
+    const list = sessions.filter(s => s.series === series && s.type === type && Math.abs(s.curve.at(-1)[1]) <= 4);
     const scale = SESSION_SCALE[type] ?? 1, all = pool(list);
     const errC = [], errE = [], base = [];
     for (const s of list) {
       const others = list.filter(o => o.track !== s.track);
       if (others.length < 2) continue;
       const q = pool(others);
-      const d = s.curve.map(([t, v]) => para(q.gainPct, q.tauMin, t) - v);
+      const d = s.curve.map(([t, v]) => para(q.gainPct, q.tauMin, t) - para(q.gainPct, q.tauMin, s.curve[0][0]) - v);
       errC.push(rms(d)); errE.push(d.at(-1)); base.push(s.curve.at(-1)[1]);
     }
     S.sessions[type] = {coeffs: {gainPct: r4(all.gainPct / scale), tauMin: all.tauMin, warmupPct: all.warmupPct}, n: list.length,
