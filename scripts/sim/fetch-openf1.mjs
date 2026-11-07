@@ -46,9 +46,10 @@ const bestOf = r => Array.isArray(r.duration) ? Math.min(...r.duration.filter(Nu
 
 async function session(s, isGeometryYear) {
   const sk = s.session_key;
-  const [laps, results, weather] = await Promise.all([
-    openf1('laps', {session_key: sk}), openf1('session_result', {session_key: sk}), openf1('weather', {session_key: sk}),
+  const [laps, results, weather, drivers] = await Promise.all([
+    openf1('laps', {session_key: sk}), openf1('session_result', {session_key: sk}), openf1('weather', {session_key: sk}), openf1('drivers', {session_key: sk}),
   ]);
+  const teamOf = n => drivers.find(d => d.driver_number === n)?.team_name || null;
   const ranked = results.filter(r => Number.isFinite(r.position)).sort((a, b) => a.position - b.position);
   const want = Math.max(isGeometryYear ? GEOMETRY_DRIVERS : 1, TRACE_DRIVERS);
   const chosen = [];
@@ -58,7 +59,7 @@ async function session(s, isGeometryYear) {
     const own = laps.filter(l => l.driver_number === r.driver_number && Number.isFinite(l.lap_duration) && !l.is_pit_out_lap && l.date_start);
     if (!own.length) continue;
     const lap = own.find(l => Math.abs(l.lap_duration - target) < 0.0025) || own.sort((a, b) => a.lap_duration - b.lap_duration)[0];
-    chosen.push({driver_number: r.driver_number, position: r.position, lap});
+    chosen.push({driver_number: r.driver_number, team: teamOf(r.driver_number), position: r.position, lap});
   }
   const out = [];
   for (const [i, c] of chosen.entries()) {
