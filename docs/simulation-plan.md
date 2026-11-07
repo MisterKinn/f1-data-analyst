@@ -1,0 +1,97 @@
+# Kongboda simulation tools — plan
+
+All results are **provisional estimates**, not exact values. The site shows a confidence label and an
+error range with every simulated time.
+
+Base: the TUMFTM open-source tools.
+- `laptime-simulation` — lap time. Ported to JavaScript as `worker/lapsim/kernel.js` (same
+  quasi-steady-state method, validated against TUM's own results within 0.3–1.2%).
+- `global_racetrajectory_optimization` + `racetrack-database` — racing line. Replaced for F1 by the
+  real driving line built from OpenF1 qualifying positions (`scripts/sim/build-geometry.mjs`).
+- `race-simulation` — race strategy (not started).
+
+## 1. Scope
+
+| Series | Status | Notes |
+|---|---|---|
+| F1 | **Built** (lap time) | 2025/2026 cars fitted to real pole laps; 2027/2028 projected. Page `/simulation`, tool `lapsim_simulate`. |
+| WEC Hypercar | Next | New vehicle files + calibration (see §3). |
+| WEC LMGT3 | Next | Shares WEC data and race logic with Hypercar. |
+| Other GT3 (IMSA GTD, DTM, SP9/NLS) | Later | Same GT3 base model + per-series BoP and tyre files. |
+| Formula E Gen4 | Coming soon | Shown as "coming soon" on the site. Spec-based, provisional. |
+
+## 2. What the TUM tools support
+
+- laptime-simulation: F1 (hybrid) and Formula E (electric) example files; combustion, hybrid and
+  electric powertrains.
+- global_racetrajectory_optimization: one generic car file (Roborace DevBot 2.0).
+- race-simulation: F1 races 2014–2019, F1 race rules only.
+- No Hypercar, GT3 or FE Gen4 files: these must be created.
+
+## 3. Hypercar calibration (LMH / LMDh)
+
+Known inputs (BoP / rules): minimum weight, maximum power and power curve, energy per stint, hybrid
+deployment speed threshold (LMH).
+Fitted to data: drag (CdA), downforce (ClA), tyre grip (μ).
+Data: WEC timing via Kongboda (lap, sector times, speed traps); clean green-flag laps only.
+
+Method:
+1. Validate the tool first on F1 (done: engine vs TUM, then fit vs real 2025/2026 pole laps).
+2. One vehicle file per Hypercar model.
+3. Fix the BoP values; fit only CdA, ClA, μ.
+4. Calibrate on some tracks, test on a different track (holdout).
+5. Report the error range (e.g. ±0.5 s).
+
+Code change needed: LMH hybrids drive the front axle only above a set speed. The kernel's hybrid model
+needs a front-axle deployment threshold; LMDh (rear-axle hybrid) fits the current model.
+
+## 4. GT3 (LMGT3, GTD, DTM, SP9)
+
+- Combustion only: the easiest case.
+- One GT3 base model + per-series BoP file (weight, power/restrictor, ride height) and tyre file.
+- Calibration data: public timing (WEC, IMSA, DTM, NLS/N24). Order: LMGT3 → GTD / DTM → SP9.
+- Weak point: Nordschleife (SP9) is not in racetrack-database and has large elevation changes.
+  The kernel already uses track grade, but the 2D line still gives a bigger error there.
+
+## 5. Formula E Gen4 (coming soon)
+
+- Start from TUM's FE file; update power, weight, AWD and regen from the Gen4 technical rules.
+- Tyre grip and drag borrowed from Gen3 Evo as a start. Labelled **spec-based only**.
+- Re-calibrate after the first Gen4 races and publish prediction vs reality.
+
+## 6. BoP simulation — prediction from FP data
+
+1. Collect clean FP laps (fuel/tyre-corrected if possible).
+2. Calibrate each car to its FP pace.
+3. Compare each car with the class reference ("car X is 0.4 s too fast").
+4. Convert the gap into a BoP change (kg / kW / energy) with the lap-sim sensitivity.
+5. Show "BoP from FP pace" next to the official BoP.
+
+BoP effect ("+10 kg = +x s") for all series; FP-based prediction for WEC first.
+Limits: sandbagging (use several sessions and long-run pace), unknown fuel load and tyre age.
+
+## 7. Race simulation (biggest job)
+
+| Series | Rules to add |
+|---|---|
+| WEC (Hypercar + LMGT3) | Driver changes, energy/fuel stints, multi-class traffic, FCY/SC |
+| GT3 series | Pit windows, driver changes, Code 60 (NLS/SP9), multi-class traffic |
+| FE Gen4 | Attack Mode, energy limit, pit boost if used |
+
+## 8. Build order
+
+1. ~~Validate stock F1 lap time.~~ Done (engine vs TUM; fit vs real 2025/2026 laps with holdout error).
+2. Lap time: Hypercar → LMGT3 → other GT3.
+3. Racing line: vehicle files for each.
+4. FP-based BoP prediction (WEC).
+5. Race sim: WEC rules, then GT3 series.
+6. FE Gen4 (coming soon), recalibrated after the first races.
+
+## 9. Risk control
+
+- Validate before extending.
+- Few free parameters (CdA, ClA, μ; F1 also fits engine power within ±15% of the rules estimate).
+- Train/test track split: the F1 fit reports a holdout error (tracks left out of the fit).
+- Clean laps only (frozen OpenF1 car data is dropped; wet sessions are skipped).
+- Always show the error range and a confidence label.
+- Lap time must be validated before race-sim code starts.
