@@ -19,11 +19,20 @@ export const ENERGY_LIMITS = {
   },
 };
 
-// Recharge limit (MJ) for a qualifying lap of `year` cars on track `id`. Seasons after the latest
-// listed one reuse its per-circuit values (the FIA keeps the circuit ranking; the default changes).
-export function rechargeLimitMJ(id, year) {
+import {lapsimEnergyDocs} from './energy-docs-data.js';
+
+// Qualifying recharge limit (MJ) for `year` cars on track `id`, with where it comes from:
+// official — the event's FIA "Power Unit Information" document (published in race week);
+// provisional — the FIA's per-circuit values as reported by the press before that;
+// estimated — the qualifying baseline when nothing is known yet.
+// Seasons after the latest known one reuse its per-circuit values.
+export function energyLimit(id, year, docs = lapsimEnergyDocs) {
+  const doc = docs?.[year]?.[id];
+  if (Number.isFinite(doc?.qualiMJ)) return {mj: doc.qualiMJ, status: 'official', source: doc.document};
   const years = Object.keys(ENERGY_LIMITS).map(Number).filter(y => y <= year);
   if (!years.length) return null;
-  const e = ENERGY_LIMITS[Math.max(...years)];
-  return e.quali[id] ?? e.defaultQuali;
+  const y = Math.max(...years), e = ENERGY_LIMITS[y];
+  if (e.quali[id] != null) return {mj: e.quali[id], status: y === year ? 'provisional' : 'estimated', source: e.sources.at(-1)};
+  return {mj: e.defaultQuali, status: 'estimated', source: null};
 }
+export const rechargeLimitMJ = (id, year) => energyLimit(id, year)?.mj ?? null;

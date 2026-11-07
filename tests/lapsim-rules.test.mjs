@@ -50,3 +50,16 @@ test('a value outside its range is not applied', () => {
   const bad = [{page: 1, text: normalize('C5.2.3 Fuel energy flow must not exceed 9999MJ/h')}];
   assert.match(val(bad, 'f1-2027', 'fuelFlowMJh').error, /outside/);
 });
+
+test('FIA Power Unit Information: recharge limits by session from column positions', async () => {
+  const {parsePuInfo} = await import('../worker/lapsim/pu-info.js');
+  const row = (y, cells) => ({y, cells: cells.map(([text, x]) => ({text, x}))});
+  // São Paulo 2026, Doc 3 page 2 (cell positions as read from the PDF)
+  const rows = [row(445.6, [['Maximum Recharge per lap', 182.8], ['Maximum PU Power Reduction Rate', 424.3]]),
+    row(434.6, [['Race', 108], ['Free Practice', 277.4], ['Out laps other than in', 337.3], ['Power Limited', 421.4]]),
+    row(429.2, [['Qualifying', 209.4], ['Rate Limit', 500.9]]),
+    row(423.4, [['Overtake not', 49.4], ['active', 90.7], ['Overtake active', 128.2], ['sessions', 284.3], ['Race', 362.9], ['Distance', 429.7]]),
+    row(405.2, [['8.0 MJ', 67.7], ['8.5 MJ', 140.5], ['6.5 MJ', 213.4], ['8.5 MJ', 286.2], ['9.0 MJ', 359.1], ['2278 m', 430], ['100 kW/s', 498.6]])];
+  assert.deepEqual(parsePuInfo([{page: 2, rows}]), {raceMJ: 8, raceOvertakeMJ: 8.5, qualiMJ: 6.5, practiceMJ: 8.5, outLapMJ: 9});
+  assert.equal(parsePuInfo([{page: 1, rows: [row(1, [['Power Unit Information', 1]])]}]), null);
+});
