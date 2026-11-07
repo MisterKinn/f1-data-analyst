@@ -231,3 +231,8 @@ test('uncertainty: projections are wider than the calibrated season', async () =
   assert.equal(uncertainty({kind: 'base'}).confidence, 'not-fitted');
   assert.equal(uncertainty({kind: 'prior'}).confidence, 'not-fitted');
 });
+
+test('FIA notes: the race director signature is not a change', () => {
+  const doc = '19. | Changes to the circuit\n- | Add blue line at the apex of Turn 11\nR ui Marques | The FIA Formula 1 Race Director\n';
+  assert.equal(parseTrackChanges(doc).changes.length, 1);
+});

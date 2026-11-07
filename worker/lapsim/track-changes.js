@@ -73,6 +73,7 @@ export function extractCircuitChanges(text) {
     const line = lines[i], next = line.match(NEXT_HEADING);
     if (next && (own ? Number(next[1]) > own && Number(next[1]) <= own + 2 : !BULLET.test(line))) break;
     if (/^\s*\d{1,3}\s*$/.test(line)) continue; // page number
+    if (/race director\s*$/i.test(line.replace(/\s*\|\s*/g, ' '))) break; // signature block ends the list
     if (BULLET.test(line)) items.push(line.replace(BULLET, '').replace(/\s*\|\s*/g, ' ').trim());
     else if (items.length && line.trim()) items[items.length - 1] += ' ' + line.replace(/\s*\|\s*/g, ' ').trim();
   }
