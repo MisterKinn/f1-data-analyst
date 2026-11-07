@@ -102,7 +102,29 @@ Limits: sandbagging (use several sessions and long-run pace), unknown fuel load 
 5. Race sim: WEC rules, then GT3 series.
 6. FE Gen4 (coming soon), recalibrated after the first races.
 
-## 9. Risk control
+## 9. Common calibration rules (every series)
+
+Drawn from the plan above and from how Formula Student teams build and check their lap-time
+simulations (Chalmers 2024, TU Delft 2018, KU coast-down study, OpenLAP, FSAE TTC practice):
+
+1. Fix what the rules or BoP fix (mass, power, energy, hybrid limits). Fit only drag (CdA), downforce
+   (ClA) and peak tyre grip (μ), inside physical bounds; F1 also fits engine power within ±15% of the
+   rules estimate. Tyre load sensitivity keeps a fixed shape; only the peak μ is fitted.
+2. One grip factor per track (asphalt and line), kept at an average of 1, bounded 0.85–1.15; a track at
+   a bound is flagged in the report. Track factors come from the richest data (F1) and are shared by
+   every series. No other local fudge factors; FIA circuit changes are labelled scenarios.
+3. Drag is pinned mainly by straights and speed traps, downforce and grip by fast vs slow corners;
+   ClA is the least certain fitted value.
+4. Correlate more than lap time: corner minimum and straight-end speeds (robust to distance
+   misalignment), lap time, speed trap; report each.
+5. Holdout test: refit without some tracks and predict them. Its RMS lap-time error is the error
+   range (1 sigma). Confidence: ≤1% medium, ≤3% low, above very low; projections are always low.
+6. Report a sensitivity table (lap-time change for +10% mass, grip, ClA, CdA, power) with results.
+7. Clean data only: frozen telemetry dropped, wet sessions skipped, pit and flagged laps excluded.
+8. State the QSS limits: no transients, gear shifts, tyre temperature or car-to-car effects; 2026
+   energy harvest only under braking.
+
+## 10. Risk control
 
 - Validate before extending.
 - Few free parameters (CdA, ClA, μ; F1 also fits engine power within ±15% of the rules estimate).
