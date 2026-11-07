@@ -1,11 +1,15 @@
 // Lap-by-lap timing of practice and qualifying sessions for the track-evolution fit
 // (scripts/sim/evolution-fit.mjs): every lap with its session minute, out-lap flag and tyre.
-//  - F1: OpenF1 laps, stints, weather and race control (qualifying all seasons, practice recent ones)
+//  - F1: TracingInsights season repositories on GitHub (FastF1 timing: every lap of every driver,
+//    track status, deleted laps and weather per lap, 2018 on); OpenF1 as an optional second source
+//    (LAPSIM_EVO_F1=openf1), which refuses anonymous calls during live sessions
 //  - WEC: Al Kamel analysis files (every class, practice, qualifying and Hyperpole)
 // Raw responses stay in .cache/lapsim/raw; compact sessions go to .cache/lapsim/evolution.
 import {mkdir, readFile, writeFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {join} from 'node:path';
+import {execFileSync} from 'node:child_process';
+import {existsSync, readdirSync} from 'node:fs';
 import {archive, readDocument} from '../../worker/wec.js';
 import {SERIES, WEC_SEASONS} from '../../worker/lapsim/series.js';
 
@@ -39,8 +43,52 @@ await mkdir(join(CACHE, 'raw'), {recursive: true});
 await mkdir(OUT, {recursive: true});
 const index = [];
 
-// F1 — rows: [car, lap, time, minute, outLap, compound, tyreAge, neutral]
-if (process.env.LAPSIM_EVO_F1 !== 'off') for (const year of [...new Set([...Q_YEARS, ...P_YEARS])]) {
+// F1 from TracingInsights — rows: [car, lap, time, minute, outLap, compound, tyreAge, neutral]
+const TI_YEARS = (process.env.LAPSIM_EVO_TI_YEARS || '2018,2019,2020,2021,2022,2023,2024,2025,2026').split(',').map(Number);
+const GP = {bahrain: 'sakhir', 'saudi-arabian': 'jeddah', 'emilia-romagna': 'imola', 'sao-paulo': 'interlagos', brazilian: 'interlagos', 'las-vegas': 'las-vegas', qatar: 'lusail',
+  'abu-dhabi': 'yas-marina-circuit', australian: 'melbourne', chinese: 'shanghai', japanese: 'suzuka', miami: 'miami', canadian: 'montreal', monaco: 'monte-carlo',
+  barcelona: 'catalunya', austrian: 'spielberg', british: 'silverstone', belgian: 'spa-francorchamps', hungarian: 'hungaroring', dutch: 'zandvoort', italian: 'monza',
+  azerbaijan: 'baku', singapore: 'singapore', 'united-states': 'austin', 'mexico-city': 'mexico-city', mexican: 'mexico-city'};
+const tiTrack = (event, year) => { const k = slug(event.normalize('NFD').replace(/[\u0300-\u036f]/g, '')).replace(/-grand-prix$/, ''); return k === 'spanish' ? (year >= 2026 ? 'madring' : 'catalunya') : GP[k] || k; };
+const tiType = s => /^Practice \d$/.test(s) ? 'practice' : /^(Qualifying|Sprint Qualifying|Sprint Shootout)$/.test(s) ? 'qualifying' : null;
+const val = v => v === 'None' || v == null ? null : v;
+if ((process.env.LAPSIM_EVO_F1 || 'ti') === 'ti') for (const year of TI_YEARS) {
+  const dir = join(CACHE, 'ti', String(year));
+  try {
+    if (!existsSync(join(dir, '.git'))) {
+      execFileSync('git', ['clone', '-q', '--depth', '1', '--filter=blob:none', '--no-checkout', `https://github.com/TracingInsights/${year}`, dir], {stdio: 'inherit', env: {...process.env, GIT_LFS_SKIP_SMUDGE: '1'}});
+      execFileSync('git', ['-C', dir, 'sparse-checkout', 'set', '--no-cone', '/*/Practice */*/laptimes.json', '/*/Qualifying/*/laptimes.json', '/*/Sprint Qualifying/*/laptimes.json', '/*/Sprint Shootout/*/laptimes.json', '/*/*/session_info.json'], {stdio: 'inherit'});
+      execFileSync('git', ['-C', dir, 'checkout', '-q'], {stdio: 'inherit'});
+    }
+  } catch (e) { console.log(`ti ${year}: ${e.message}`); continue; }
+  for (const event of readdirSync(dir).filter(e => /Grand Prix$/.test(e))) for (const ses of readdirSync(join(dir, event))) {
+    const type = tiType(ses); if (!type) continue;
+    try {
+      const info = JSON.parse(await readFile(join(dir, event, ses, 'session_info.json'), 'utf8')), t0 = info.session_start_time ?? 0;
+      const rows = [], weather = [], drivers = readdirSync(join(dir, event, ses)).filter(d => /^[A-Z]{3}$/.test(d));
+      for (const drv of drivers) {
+        let L; try { L = JSON.parse(await readFile(join(dir, event, ses, drv, 'laptimes.json'), 'utf8')); } catch { continue; }
+        for (let i = 0; i < (L.lap || []).length; i++) {
+          const time = val(L.time[i]), start = val(L.lST?.[i]);
+          if (!Number.isFinite(time) || !Number.isFinite(start)) continue;
+          // in-laps are marked by the timing itself: left out as neutral (the fit's own in-lap guess is for OpenF1)
+          const st = String(L.status?.[i] ?? '1'), neutral = /[24567]/.test(st) || L.del?.[i] === true || val(L.pin?.[i]) != null ? 1 : 0;
+          rows.push([drv, L.lap[i], time, Math.round((start - t0) / 0.6) / 100, val(L.pout?.[i]) != null ? 1 : 0, val(L.compound?.[i]), val(L.life?.[i]), neutral]);
+          if (drv === drivers[0]) weather.push([Math.round((start - t0) / 0.6) / 100, val(L.wTT?.[i]), L.wR?.[i] === true ? 1 : 0]);
+        }
+      }
+      if (rows.length < 30) continue;
+      const track = tiTrack(event, year), file = `f1ti-${year}-${track}-${slug(ses)}.json`;
+      await writeFile(join(OUT, file), JSON.stringify({series: 'f1', source: 'tracinginsights', year, track, session: ses, type,
+        columns: ['car', 'lap', 'time', 'minute', 'outLap', 'compound', 'tyreAge', 'neutral'], rows, weather}));
+      index.push({file, series: 'f1', year, track, type, session: ses});
+      console.log(`ti ${year} ${event} ${ses}: ${rows.length} laps`);
+    } catch (e) { console.log(`ti ${year} ${event} ${ses}: ${e.message}`); }
+  }
+}
+
+// F1 from OpenF1 — rows: [car, lap, time, minute, outLap, compound, tyreAge, neutral]
+if (process.env.LAPSIM_EVO_F1 === 'openf1') for (const year of [...new Set([...Q_YEARS, ...P_YEARS])]) {
   // OpenF1 refuses anonymous calls (401) while a live session runs: skip the season, a rerun fills it
   let all; try { all = await openf1('sessions', {year}); } catch (e) { console.log(`f1 ${year}: ${e.message}`); continue; }
   const list = all.filter(s => Date.parse(s.date_end) < Date.now() - 3 * 3600e3 && typeOf(s.session_name)
