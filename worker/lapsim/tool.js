@@ -7,6 +7,7 @@ import {RULE_CHANGES} from './cars.js';
 import {TRACK_NAMES, resolveTrack} from './names.js';
 import {carsFor, realConditions, latestChanges, fittedYear} from './scenario.js';
 import {rechargeLimitMJ} from './energy-limits.js';
+import {evolutionCoeffs, evolutionDelta, evolutionCurve} from './evolution.js';
 
 const K = lapsimKernel();
 const SITE = 'https://kongboda-motorsports.vercel.app';
@@ -29,9 +30,17 @@ export const LAPSIM_TOOLS = [{name: 'lapsim_simulate',
     wind_from_deg: num(0, 360, 'Direction the wind blows from (degrees, 0 = north).'),
     apply_fia_changes: {type: 'boolean', description: 'Apply the lap-relevant items of the latest race director\'s "Changes to the circuit" list.'},
     change_strength: num(0, 2, 'Scale of the assumed effect of FIA changes (1 = default assumption).'),
+    session_type: {type: 'string', enum: ['practice', 'qualifying', 'sprint', 'race'], description: 'Track evolution: session type (picks the fitted coefficients). Giving any evolution input adds an "evolution" block; the lap result itself is unchanged.'},
+    session_minute: num(0, 360, 'Track evolution: minute of the session to predict (default: session end).'),
+    rubber_gain_pct: num(0, 5, 'Track evolution: total lap-time gain from rubber over the session (%); overrides the measured/fitted curve.'),
+    saturation_min: num(1, 300, 'Track evolution: minutes for the rubber gain to mostly saturate.'),
+    track_wetness_start: num(0, 1, 'Track evolution: wetness at the session start (0 dry, 1 fully wet).'),
+    drying_time_min: num(0, 300, 'Track evolution: drying time constant (min; 0 = does not dry).'),
+    tyre: {type: 'string', enum: ['slick', 'inter', 'wet'], description: 'Track evolution: tyre type on a wet track.'},
+    tyre_warmup_laps: num(0, 5, 'Track evolution: laps after the out-lap before the tyre is at its best.'),
   }, additionalProperties: false}, annotations: ro}];
 
-export const LAPSIM_INSTRUCTIONS = ' LAP SIMULATOR: for what-if questions about lap time (F1 car generation 2019/2025/2026/2027/2028 or WEC Hypercar/LMGT3, air density or altitude, temperature, humidity, wind, FIA resurfacing or kerb changes), call lapsim_simulate. Report its numbers as provisional model estimates with the error range, confidence label and assumptions it returns, keep real and simulated times apart, and never present them as a prediction of a real session result. Show the conditions used (with their sources) and link the /simulation page it returns.';
+export const LAPSIM_INSTRUCTIONS = ' LAP SIMULATOR: for what-if questions about lap time (F1 car generation 2019/2025/2026/2027/2028 or WEC Hypercar/LMGT3, air density or altitude, temperature, humidity, wind, FIA resurfacing or kerb changes, track evolution over a session: rubber, drying, tyre warm-up), call lapsim_simulate. Report its numbers as provisional model estimates with the error range, confidence label and assumptions it returns, keep real and simulated times apart, and never present them as a prediction of a real session result. Show the conditions used (with their sources) and link the /simulation page it returns.';
 
 const r3 = x => Math.round(x * 1000) / 1000;
 const fmt = s => { const m = Math.floor(s / 60); return (m ? m + ':' : '') + (s - m * 60).toFixed(3).padStart(m ? 6 : 5, '0'); };
@@ -105,6 +114,22 @@ export function simulate(args = {}) {
   const plus = (k, f) => { const c = structuredClone(sel.car); if (k === 'muY') { c.muX *= f; c.muY *= f; c.muXTrac = (c.muXTrac ?? c.muX) * f; } else if (k === 'clA') { c.clA *= f; c.clALow = (c.clALow ?? c.clA) * f; } else if (k === 'cdA') { c.cdA *= f; c.cdALow = (c.cdALow ?? c.cdA) * f; } else c[k] *= f; return c; };
   out.sensitivity_s_per_plus_10pct = Object.fromEntries(['mass', 'muY', 'clA', 'cdA', 'pIce'].map(k => [k === 'muY' ? 'tyre_grip' : k === 'pIce' ? 'engine_power' : k === 'clA' ? 'downforce_clA' : k === 'cdA' ? 'drag_cdA' : 'mass',
     r3(K.simulateLap(withGrip(track, sel.grip || 1), plus(k, 1.1), env).lapTime - res.lapTime)]));
+  // track evolution: only when asked, so the default output is unchanged
+  if (['session_type', 'session_minute', 'rubber_gain_pct', 'saturation_min', 'track_wetness_start', 'drying_time_min', 'tyre', 'tyre_warmup_laps'].some(k => args[k] !== undefined)) {
+    const se = sel.series === 'wec' ? 'wec' : 'f1', type = args.session_type || 'qualifying', c = evolutionCoeffs(se, id, type), qc = evolutionCoeffs(se, id, 'qualifying');
+    const endOf = x => x.curve ? x.curve.at(-1)[0] : se === 'wec' ? (type === 'qualifying' ? 20 : 90) : 60;
+    const formula = Number.isFinite(args.rubber_gain_pct) || Number.isFinite(args.saturation_min);
+    const P = {...c, session: type, tyre: args.tyre || 'slick', useCurve: !formula && !!c.curve, wetStart: args.track_wetness_start ?? 0, dryMin: args.drying_time_min ?? 20,
+      warmupLaps: args.tyre_warmup_laps ?? 0, ...(Number.isFinite(args.rubber_gain_pct) ? {gainPct: args.rubber_gain_pct} : {}), ...(Number.isFinite(args.saturation_min) ? {tauMin: args.saturation_min} : {})};
+    const end = args.session_minute ?? endOf(c);
+    const lap0 = res.lapTime / (1 + evolutionDelta({...qc, session: 'qualifying', useCurve: !!qc.curve}, endOf(qc)));
+    const curve = evolutionCurve(lap0, P, {to: Math.max(end, 1), step: Math.max(1, Math.round(end / 12))});
+    out.evolution = {session_type: type, minute: end, lap_at_minute: fmt(curve.last.lap), lap_at_minute_s: r3(curve.last.lap), change_from_start_s: r3(curve.last.lap - curve.points[0].lap),
+      curve: curve.points.map(p => ({minute: p.minute, lap_s: r3(p.lap)})),
+      basis: P.useCurve ? `measured ${type} curve at this track` : c.calibrated ? 'fitted series coefficients' : 'uncalibrated default coefficients',
+      holdout_error_pct: c.holdoutPct, reference: 'the simulated lap = track state at the end of qualifying',
+      assumptions: 'lap = reference × (1 + rubber(t) + wet(t) + warm-up(k)); rubber −a(1−e^(−t/τ)) or the measured curve, wet = wetness × tyre penalty × e^(−t/drying), warm-up fades over the given laps'};
+  }
   if (args.compare_car && carKey(args.compare_car) !== selKey) {
     const c = cars[carKey(args.compare_car)], r2 = run(c);
     out.compare = {car: {series: c.series || 'f1', class: c.cls || null, year: c.year, kind: c.kind}, error_range_s: c.unc?.pct ? r3(r2.lapTime * c.unc.pct / 100) : null, ...summary(r2, d, c.car), delta_s: r3(res.lapTime - r2.lapTime), delta_note: 'result minus compare; positive = the first car is slower'};

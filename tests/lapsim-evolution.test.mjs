@@ -22,3 +22,13 @@ test('evolution: a measured curve replaces the formula', () => {
   assert.ok(Math.abs(evolutionDelta(p, 30) + 0.0065) < 1e-12);
   assert.equal(evolutionCoeffs('f1', 'monza').basis, 'default');
 });
+
+test('evolution: lapsim tool adds the block only when asked and keeps the lap result', async () => {
+  const {simulate} = await import('../worker/lapsim/tool.js');
+  const a = simulate({track: 'monza'});
+  if (a.status !== 'ok') return; // track data not built in this checkout
+  const b = simulate({track: 'monza', track_wetness_start: 0.6, drying_time_min: 15});
+  assert.equal(a.evolution, undefined);
+  assert.equal(b.result.lap_seconds, a.result.lap_seconds);
+  assert.ok(b.evolution.curve[0].lap_s > b.evolution.curve.at(-1).lap_s);
+});
