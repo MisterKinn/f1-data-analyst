@@ -19,6 +19,7 @@ import {evolutionCoeffs, evolutionDelta, evolutionCurve} from './lapsim/evolutio
 import {lineTrack} from './lapsim/racing-line.js';
 import {brakeZones} from './lapsim/brakes.js';
 import {lapsimBrakes} from './lapsim/brake-data.js';
+import {lapsimQsplit} from './lapsim/qsplit-data.js';
 import {lapsimCarLines} from './lapsim/car-lines-data.js';
 
 const K = lapsimKernel();
@@ -57,7 +58,7 @@ const T = {
     evoComp: '컴파운드 차이 (소프트 대비)', evoCompReal: '{y} 실측: 같은 드라이버 저연료 랩, 트랙 진화 제외', evoCompModel: 'C단계 모델 예측, 검증 오차 ±{e}%', evoCompNone: '실측 없음, 랩 그대로',
     evoEnd: '세션 시각', evoGain: '고무 효과 (끝까지)', evoTau: '포화 시간', evoWet: '시작 노면 젖음', evoDry: '건조 시간', evoWarm: '워밍업 랩',
     evoCurve: '실측 곡선 사용', evoLast: '이 시각의 예상 랩', evoChange: '세션 시작 대비', evoBasis: {track: '이 트랙 실측 곡선', series: '시리즈 평균 (보정)', default: '미보정 기본값'},
-    evoErr: '홀드아웃 오차 (트랙 제외)', secFix: '섹터 보정 (실제 폴 기준)', evoBasisH: '근거', evoChart: '세션 시각별 예상 랩타임', min: '분',
+    evoErr: '홀드아웃 오차 (트랙 제외)', qs: {h: '구간', win: '시간 (분)', model: '모델 최고 랩', real: '실제 최고 랩', test: 'Q1·Q2 예측 검증 (대회 하나씩 빼고, {n}개 예선): Q1 {a}% · Q2 {b}% 오차. Q3 = 폴 (실측 재현)', none: '이 트랙 실제 구간 기록 없음 (보통 시간표 18·15·12분 사용)'}, secFix: '섹터 보정 (실제 폴 기준)', evoBasisH: '근거', evoChart: '세션 시각별 예상 랩타임', min: '분',
   },
   en: {
     title: 'Lap simulator', h1: 'Simulate a lap in a 2026–2028 F1 car',
@@ -89,7 +90,7 @@ const T = {
     evoComp: 'Compound gap (vs soft)', evoCompReal: 'measured {y}: same driver, low fuel, track evolution removed', evoCompModel: 'C-step model, test error ±{e}%', evoCompNone: 'not measured, lap unchanged',
     evoEnd: 'Session minute', evoGain: 'Rubber effect (full)', evoTau: 'Time to saturate', evoWet: 'Wetness at start', evoDry: 'Drying time', evoWarm: 'Warm-up laps',
     evoCurve: 'Use measured curve', evoLast: 'Expected lap at this minute', evoChange: 'vs session start', evoBasis: {track: 'measured curve, this track', series: 'series average (fitted)', default: 'uncalibrated default'},
-    evoErr: 'Holdout error (track left out)', secFix: 'Sector correction (real pole)', evoBasisH: 'Basis', evoChart: 'Expected lap time over the session', min: 'min',
+    evoErr: 'Holdout error (track left out)', qs: {h: 'Segment', win: 'Window (min)', model: 'Model best lap', real: 'Real best lap', test: 'Q1/Q2 check (each event left out, {n} qualifyings): Q1 {a}% · Q2 {b}% error. Q3 = pole (reproduced)', none: 'No real segment times for this track (usual 18/15/12-minute schedule used)'}, secFix: 'Sector correction (real pole)', evoBasisH: 'Basis', evoChart: 'Expected lap time over the session', min: 'min',
   },
 };
 
@@ -168,7 +169,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
   const carId = cars[query.car] ? query.car : '2026';
   const changes = latestChanges(id);
   const data = {lang, t, id, track: td, cars, carOrder: CAR_ORDER, carId, conds, changes, energy: (liveEnergy && (query.track || 'monza') === id ? liveEnergy : energyLimit(id, 2026)),
-    compounds: lapsimCompounds?.[id] || {}, wecTyres: lapsimWecTyres?.[id] || {}, line: lineData(id), lineText: LT[lang], brakes: lapsimBrakes ? {k: lapsimBrakes.pedalKgPerG, g: lapsimBrakes.gScale, t: lapsimBrakes.timeScale, test: lapsimBrakes.test, real: lapsimBrakes.races?.[id] || null, text: BT[lang]} : null, compoundGap: compoundGap(id), compoundTest: lapsimCompoundGap?.test?.rmsPct ?? null,
+    compounds: lapsimCompounds?.[id] || {}, wecTyres: lapsimWecTyres?.[id] || {}, line: lineData(id), lineText: LT[lang], qsplit: lapsimQsplit ? {off: lapsimQsplit.offsetPct, test: lapsimQsplit.test, real: lapsimQsplit.tracks?.[id] || null} : null, brakes: lapsimBrakes ? {k: lapsimBrakes.pedalKgPerG, g: lapsimBrakes.gScale, t: lapsimBrakes.timeScale, test: lapsimBrakes.test, real: lapsimBrakes.races?.[id] || null, text: BT[lang]} : null, compoundGap: compoundGap(id), compoundTest: lapsimCompoundGap?.test?.rmsPct ?? null,
     evo: Object.fromEntries(['f1', 'wec'].map(se => [se, Object.fromEntries(['practice', 'qualifying'].map(ty => [ty, evolutionCoeffs(se, id, ty)]))])),
     calibration: {generatedAt: lapsimCalibration?.generatedAt || null, seasons: Object.fromEntries(Object.entries(lapsimCalibration?.seasons || {}).map(([y, s]) => [y, s.tracks?.[id] || null]))}};
   // first render on the server with the same code the browser uses
@@ -193,7 +194,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
  <label>${esc(t.series)}<select data-ls="series">${seriesOpts}</select></label>
  <label>${esc(t.car)}<select name="car" data-ls="car">${carOpts(carId, curSeries)}</select></label>
  <label>${esc(t.compare)}<select data-ls="compare"><option value="">${esc(t.none)}</option>${cmpOpts}</select></label>
- <label>${esc(t.conditions)}<select data-ls="mode"><option value="real">${esc(t.real)}</option><option value="manual">${esc(t.manual)}</option></select></label>
+ <label>${esc(t.conditions)}<select data-ls="mode"><option value="real">${esc(t.real)}</option><option value="manual">${esc(t.manual)}</option>${TRACK_LL[id] ? `<option value="forecast">${esc(FT[lang].opt)}</option>` : ''}</select></label>
  <noscript><button>${esc(t.track)}</button></noscript>
 </form>
 <section class="ls-stage">
@@ -210,6 +211,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
 <section class="panel ls-panel ls-brakes"><h2>${esc(BT[lang].h)}</h2><div data-ls="brakes">${view.brakeHtml}</div></section>
 <section class="panel ls-panel ls-air"><h2>${esc(t.air)}</h2>
  <dl class="ls-facts ls-air-facts" data-ls="air">${view.airHtml}</dl>
+ <div class="ls-forecast" data-ls="forecast" hidden data-ll="${(TRACK_LL[id] || []).join(',')}" data-ft='${esc(JSON.stringify(FT[lang]))}'></div>
  <div class="ls-sliders" data-ls="manual" hidden>${slider('airTempC', t.airTemp, -5, 45, 0.5, '°C')}${slider('trackTempC', t.trackTemp, 5, 65, 0.5, '°C')}${slider('humidityPct', t.humidity, 0, 100, 1, '%')}${slider('pressureHpa', t.pressure, 760, 1040, 1, 'hPa')}${slider('windSpeed', t.wind, 0, 15, 0.1, 'm/s')}${slider('windFromDeg', t.windFrom, 0, 359, 1, '°')}</div>
 </section>
 <section class="panel ls-panel ls-evo"><h2>${esc(t.evo)}</h2><p>${esc(t.evoLead)}</p>
@@ -218,7 +220,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
  <label class="ls-check"><input type="checkbox" data-evo="useCurve" checked> ${esc(t.evoCurve)}</label></div>
  <div class="ls-sliders">${evoSlider('end', t.evoEnd, 0, 120, 1, t.min)}${evoSlider('gainPct', t.evoGain, 0, 3, 0.05, '%')}${evoSlider('tauMin', t.evoTau, 5, 150, 1, t.min)}${evoSlider('wetStart', t.evoWet, 0, 1, 0.05, '')}${evoSlider('dryMin', t.evoDry, 0, 90, 1, t.min)}${evoSlider('warmupLaps', t.evoWarm, 0, 4, 1, '')}</div>
  <dl class="ls-facts" data-ls="evoFacts">${view.evoFacts}</dl>
- <div class="ls-scroll" data-ls="evoChart">${view.evoSvg}</div>
+ <div class="ls-scroll" data-ls="evoChart">${view.evoSvg}</div><div data-ls="qsplit">${view.qsHtml}</div>
 </section>
 <section class="panel ls-panel"><h2>${esc(t.fia)}</h2><p>${esc(t.fiaLead)}</p>
  ${changes ? `<p class="fine"><a href="${esc(changes.document.url)}" target="_blank" rel="noopener noreferrer" data-no-translate>${esc(changes.event)} · ${esc(changes.document.title)}</a></p><p class="fine">${esc(fittedYear(id) >= changes.year ? t.inFit(fittedYear(id)) : t.notInFit)}</p><ul class="ls-changes">${changeRows}</ul><label class="ls-slider ls-strength"><span>${esc(t.strength)}</span><input type="range" data-ls="strength" min="0" max="2" step="0.25" value="1"><output data-ls="strengthOut">×1</output></label>` : `<p class="fine">${esc(t.noChanges)}</p>`}
@@ -311,6 +313,18 @@ const BT = {
     hardest: 'Hardest braking', hardestT: 'Hardest braking (Brembo: T{t})', model: 'Model', brembo: 'Brembo, real', vFrom: 'Speed before', vTo: 'Speed after', dist: 'Braking distance', time: 'Braking time', g: 'Deceleration (mean)', pedal: 'Pedal load', bar: 'Front brake pressure (estimate)', zones: 'Braking zones per lap', brakeTime: 'Braking time per lap',
     axle: {rear: 'rear axle', front: 'front axle'}, noRegen: 'no regen', split: 'Friction brakes front {f}% · rear {r}% · motor regen ({ax}) {rk} kWh · friction brakes {fk} kWh · stopped by air drag {dk} kWh (per lap)',
     test: 'Test (Brembo figures, {n} races, each left out and predicted): deceleration error {g}% · pedal load {kg}% · speed before braking {v}% · braking distance {d}% (the model builds pressure instantly, so it brakes shorter than a real car)', assume: 'Assumed: pedal ratio 3.5, master cylinder 17.8 mm, balance = front friction share. Pedal load = deceleration (g) × kg per g fitted on Brembo figures. Real pressure data is not published.'},
+};
+// Track coordinates for the weather forecast (circuit centre, about 0.01°)
+const TRACK_LL = {sakhir: [26.0325, 50.5106], jeddah: [21.6319, 39.1044], melbourne: [-37.8497, 144.968], suzuka: [34.8431, 136.541], shanghai: [31.3389, 121.22], miami: [25.9581, -80.2389],
+  imola: [44.3439, 11.7167], 'monte-carlo': [43.7347, 7.4206], montreal: [45.5, -73.5228], catalunya: [41.57, 2.2611], spielberg: [47.2197, 14.7647], silverstone: [52.0786, -1.0169],
+  hungaroring: [47.5789, 19.2486], 'spa-francorchamps': [50.4372, 5.9714], zandvoort: [52.3888, 4.5409], monza: [45.6156, 9.2811], baku: [40.3725, 49.8533], singapore: [1.2914, 103.864],
+  austin: [30.1328, -97.6411], 'mexico-city': [19.4042, -99.0907], interlagos: [-23.7036, -46.6997], 'las-vegas': [36.1147, -115.1728], lusail: [25.49, 51.4542],
+  'yas-marina-circuit': [24.4672, 54.6031], madring: [40.4636, -3.6146], 'kuala-lumpur': [2.7608, 101.7381]};
+const FT = {
+  ko: {opt: '예보 (Météo-France)', loading: 'Météo-France 예보 불러오는 중…', hour: '시각 (현지)', rain: '비', fail: '예보를 불러오지 못했습니다. 잠시 후 다시 시도하세요.', k: 0.02,
+    note: 'Météo-France의 ARPEGE·AROME 예보(Open-Meteo 제공)입니다. F1·WEC 공식 기상 서비스도 Météo-France입니다. 노면 온도는 예보에 없어 기온 + 일사량 × 0.02 °C/(W/m²)로 추정합니다.'},
+  en: {opt: 'Forecast (Météo-France)', loading: 'Loading the Météo-France forecast…', hour: 'Hour (local)', rain: 'rain', fail: 'Could not load the forecast. Try again shortly.', k: 0.02,
+    note: 'Météo-France ARPEGE/AROME forecast (served by Open-Meteo); Météo-France is also the official weather service of F1 and WEC. Track temperature is not forecast: estimated as air temperature + solar radiation × 0.02 °C per W/m².'},
 };
 const SERIES_UI = ['f1', 'wec', 'imsa', 'fe', 'gt3'];
 const RT = {
@@ -511,10 +525,22 @@ function computeView(K, data, state, R) {
     + (coef.holdoutPct != null ? fact(t.evoErr, '±' + (last * coef.holdoutPct / 100).toFixed(2) + ' s') : '');
   const ew = 640, eh = 200, lo = Math.min(...curve.points.map(p => p.lap)), hi = Math.max(...curve.points.map(p => p.lap));
   const ex = m => 44 + m / Math.max(1, evo.end) * (ew - 56), ey = v => 12 + (hi - v) / Math.max(0.05, hi - lo) * (eh - 40);
-  const evoSvg = '<svg class="ls-race" viewBox="0 0 ' + ew + ' ' + eh + '" role="img" aria-label="' + t.evoChart + '"><polyline fill="none" stroke="currentColor" stroke-width="2" points="' + curve.points.map(p => ex(p.minute).toFixed(1) + ',' + ey(p.lap).toFixed(1)).join(' ') + '"/>'
+  // F1 qualifying split: Q1/Q2/Q3 windows (latest real session here, else the usual schedule), the model's
+  // best lap at the end of each (curve + fitted segment offset) and the real segment bests
+  let qsHtml = '', qsBands = '';
+  const QS = data.qsplit;
+  if (QS && se === 'f1' && ev.type === 'qualifying') {
+    const yr = QS.real ? Object.keys(QS.real).sort().pop() : null, R0 = yr ? QS.real[yr] : null, seg = R0 ? R0.seg : [[0, 18], [25, 40], [48, 60]];
+    const at = m => 1 + R.evolutionDelta(P, m, Infinity), q3 = at(seg[2][1]), model = seg.map(([, b], k) => res.lapTime * (at(b) / q3 + (k < 2 ? QS.off[k] / 100 : 0)));
+    qsBands = seg.map(([a, b], k) => '<rect x="' + ex(Math.min(a, evo.end)).toFixed(1) + '" y="12" width="' + Math.max(0, ex(Math.min(b, evo.end)) - ex(Math.min(a, evo.end))).toFixed(1) + '" height="' + (eh - 40) + '" fill="var(--mint)" opacity=".07"/><text x="' + ex(Math.min(a, evo.end)).toFixed(1) + '" y="24" font-size="11" fill="currentColor">Q' + (k + 1) + '</text>').join('');
+    qsHtml = '<div class="output"><table class="ls-table"><thead><tr><th>' + t.qs.h + '</th><th>' + t.qs.win + '</th><th>' + t.qs.model + '</th><th>' + t.qs.real + (yr ? ' ' + yr : '') + '</th></tr></thead><tbody>'
+      + seg.map(([a, b], k) => '<tr><td>Q' + (k + 1) + '</td><td data-no-translate>' + a.toFixed(0) + '–' + b.toFixed(0) + '</td><td data-no-translate>' + fmt(model[k]) + '</td><td data-no-translate>' + (R0 ? fmt(R0.best[k]) : '–') + '</td></tr>').join('') + '</tbody></table></div>'
+      + '<p class="fine">' + (R0 ? '' : t.qs.none + ' · ') + t.qs.test.replace('{n}', QS.test.events).replace('{a}', QS.test.q1RmsPct).replace('{b}', QS.test.q2RmsPct) + '</p>';
+  }
+  const evoSvg = '<svg class="ls-race" viewBox="0 0 ' + ew + ' ' + eh + '" role="img" aria-label="' + t.evoChart + '">' + qsBands + '<polyline fill="none" stroke="currentColor" stroke-width="2" points="' + curve.points.map(p => ex(p.minute).toFixed(1) + ',' + ey(p.lap).toFixed(1)).join(' ') + '"/>'
     + '<text x="2" y="16" font-size="11" fill="currentColor">' + fmt(hi) + '</text><text x="2" y="' + (eh - 28) + '" font-size="11" fill="currentColor">' + fmt(lo) + '</text>'
     + '<text x="44" y="' + (eh - 6) + '" font-size="11" fill="currentColor">0</text><text x="' + (ew - 12) + '" y="' + (eh - 6) + '" font-size="11" text-anchor="end" fill="currentColor">' + evo.end + ' ' + t.min + '</text></svg>';
-  return {lineNote, lap: fmt(res.lapTime), poleHtml, factsHtml, airHtml, kindLabel, mapSvg, traceSvg, keyHtml, windHtml, weather: w, evo, evoFacts, evoSvg, socHtml, brakeHtml, tyreHtml};
+  return {lineNote, lap: fmt(res.lapTime), poleHtml, factsHtml, airHtml, kindLabel, mapSvg, traceSvg, keyHtml, windHtml, weather: w, evo, evoFacts, evoSvg, qsHtml, socHtml, brakeHtml, tyreHtml};
 }
 
 // Browser controller
@@ -562,7 +588,7 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
       q('map').innerHTML = v.mapSvg; reZoom(); q('trace').innerHTML = v.traceSvg; q('soc').innerHTML = v.socHtml; q('brakes').innerHTML = v.brakeHtml; q('key').innerHTML = v.keyHtml; q('wind').innerHTML = v.windHtml;
       q('carLabel').textContent = data.cars[state.carId].label; q('carKind').textContent = v.kindLabel;
       if (q('lineNote')) q('lineNote').textContent = v.lineNote;
-      q('evoFacts').innerHTML = v.evoFacts; q('evoChart').innerHTML = v.evoSvg; q('tyre').innerHTML = v.tyreHtml;
+      q('evoFacts').innerHTML = v.evoFacts; q('evoChart').innerHTML = v.evoSvg; q('qsplit').innerHTML = v.qsHtml; q('tyre').innerHTML = v.tyreHtml;
       document.querySelectorAll('[data-evo-out]').forEach(o => { const k = o.dataset.evoOut; o.textContent = v.evo[k]; const i = document.querySelector('input[data-evo="' + k + '"]'); if (i && document.activeElement !== i) i.value = v.evo[k]; });
     });
   };
@@ -573,7 +599,20 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
   });
   q('car').addEventListener('change', e => { state.carId = e.target.value; const u = new URL(location.href); u.searchParams.set('car', state.carId); history.replaceState(null, '', u); update(); });
   q('compare').addEventListener('change', e => { state.compareId = e.target.value; update(); });
-  q('mode').addEventListener('change', e => { state.mode = e.target.value; q('manual').hidden = state.mode !== 'manual'; if (state.mode === 'manual') { const c = data.cars[state.carId], real = data.conds[c.series ? state.carId : String(c.year)]; if (real) Object.assign(state.manual, real); syncSliders(); } update(); });
+  // Météo-France forecast (ARPEGE/AROME through Open-Meteo): pick an hour, its weather fills the sliders
+  const fc = q('forecast'), FT = fc && fc.dataset.ft ? JSON.parse(fc.dataset.ft) : null;
+  const forecast = async () => {
+    const [lat, lon] = fc.dataset.ll.split(','); fc.hidden = false; fc.textContent = FT.loading; const det = fc.closest('details'); if (det) det.open = true;
+    try {
+      const r = await fetch('https://api.open-meteo.com/v1/meteofrance?latitude=' + lat + '&longitude=' + lon + '&hourly=temperature_2m,relative_humidity_2m,surface_pressure,wind_speed_10m,wind_direction_10m,shortwave_radiation,precipitation&wind_speed_unit=ms&forecast_days=4&timezone=auto');
+      const j = await r.json(), H = j.hourly; if (!H || !H.time) throw Error('no data');
+      const now = Date.now(), idx = H.time.map((x, i) => i).filter(i => new Date(H.time[i] + 'Z').getTime() - (j.utc_offset_seconds || 0) * 1000 >= now - 3600e3);
+      fc.innerHTML = '<label>' + FT.hour + ' <select data-fc-hour>' + idx.map(i => '<option value="' + i + '">' + H.time[i].replace('T', ' ') + (H.precipitation[i] > 0.1 ? ' · ' + FT.rain + ' ' + H.precipitation[i] + ' mm' : '') + '</option>').join('') + '</select></label><p class="fine">' + FT.note + '</p>';
+      const pick = i => { Object.assign(state.manual, {airTempC: H.temperature_2m[i], humidityPct: H.relative_humidity_2m[i], pressureHpa: H.surface_pressure[i], windSpeed: H.wind_speed_10m[i], windFromDeg: H.wind_direction_10m[i], trackTempC: Math.round((H.temperature_2m[i] + FT.k * (H.shortwave_radiation[i] || 0)) * 2) / 2}); syncSliders(); update(); };
+      fc.querySelector('[data-fc-hour]').addEventListener('change', e => pick(+e.target.value)); pick(idx[0]);
+    } catch (err) { fc.textContent = FT.fail; }
+  };
+  q('mode').addEventListener('change', e => { state.mode = e.target.value === 'forecast' ? 'manual' : e.target.value; if (fc) fc.hidden = e.target.value !== 'forecast'; if (e.target.value === 'forecast') { q('manual').hidden = false; forecast(); return; } q('manual').hidden = state.mode !== 'manual'; if (state.mode === 'manual') { const c = data.cars[state.carId], real = data.conds[c.series ? state.carId : String(c.year)]; if (real) Object.assign(state.manual, real); syncSliders(); } update(); });
   sliders.forEach(s => s.addEventListener('input', () => { state.manual[s.dataset.cond] = Number(s.value); syncSliders(); update(); }));
   document.querySelectorAll('[data-change]').forEach(c => c.addEventListener('change', () => { state.active[c.dataset.change] = c.checked; update(); }));
   const st = q('strength'); if (st) st.addEventListener('input', () => { state.strength = Number(st.value); q('strengthOut').textContent = '×' + state.strength; update(); });
