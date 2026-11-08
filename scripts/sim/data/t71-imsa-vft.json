@@ -1,0 +1,428 @@
+{
+ "2024": {
+  "road-atlanta": {
+   "event": "Motul Petit Le Mans - Race",
+   "cars": {
+    "5": {
+     "make": "PORSCHE 963",
+     "pctPerLap": 2.28,
+     "stints": 6
+    },
+    "6": {
+     "make": "PORSCHE 963",
+     "pctPerLap": 2.317,
+     "stints": 3
+    },
+    "7": {
+     "make": "PORSCHE 963",
+     "pctPerLap": 2.209,
+     "stints": 3
+    },
+    "10": {
+     "make": "ACURA ARX-06",
+     "pctPerLap": 2.317,
+     "stints": 4
+    },
+    "24": {
+     "make": "BMW M HYBRID V8",
+     "pctPerLap": 2.258,
+     "stints": 2
+    },
+    "25": {
+     "make": "BMW M HYBRID V8",
+     "pctPerLap": 2.361,
+     "stints": 2
+    },
+    "31": {
+     "make": "CADILLAC V-SERIES.R",
+     "pctPerLap": 2.262,
+     "stints": 3
+    },
+    "40": {
+     "make": "ACURA ARX-06",
+     "pctPerLap": 2.267,
+     "stints": 6
+    },
+    "63": {
+     "make": "LAMBORGHINI SC63",
+     "pctPerLap": 2.285,
+     "stints": 6
+    },
+    "85": {
+     "make": "PORSCHE 963",
+     "pctPerLap": 2.262,
+     "stints": 1
+    },
+    "01": {
+     "make": "CADILLAC V-SERIES.R",
+     "pctPerLap": 2.262,
+     "stints": 3
+    }
+   }
+  }
+ },
+ "2025": {
+  "sebring": {
+   "event": "73rd Annual Mobil 1 Twelve Hours of Sebring - Race",
+   "cars": {
+    "5": {
+     "make": "PORSCHE 963",
+     "pctPerLap": 3.4,
+     "stints": 5
+    },
+    "6": {
+     "make": "PORSCHE 963",
+     "pctPerLap": 3.292,
+     "stints": 5
+    },
+    "7": {
+     "make": "PORSCHE 963",
+     "pctPerLap": 3.321,
+     "stints": 5
+    },
+    "10": {
+     "make": "CADILLAC V-SERIES.R",
+     "pctPerLap": 3.317,
+     "stints": 4
+    },
+    "23": {
+     "make": "ASTON MARTIN VALKYRIE",
+     "pctPerLap": 3.357,
+     "stints": 5
+    },
+    "24": {
+     "make": "BMW M HYBRID V8",
+     "pctPerLap": 3.264,
+     "stints": 4
+    },
+    "25": {
+     "make": "BMW M HYBRID V8",
+     "pctPerLap": 3.321,
+     "stints": 5
+    },
+    "31": {
+     "make": "CADILLAC V-SERIES.R",
+     "pctPerLap": 3.276,
+     "stints": 5
+    },
+    "40": {
+     "make": "CADILLAC V-SERIES.R",
+     "pctPerLap": 3.264,
+     "stints": 6
+    },
+    "60": {
+     "make": "ACURA ARX-06",
+     "pctPerLap": 3.276,
+     "stints": 5
+    },
+    "63": {
+     "make": "LAMBORGHINI SC63",
+     "pctPerLap": 3.481,
+     "stints": 5
+    },
+    "85": {
+     "make": "PORSCHE 963",
+     "pctPerLap": 3.481,
+     "stints": 5
+    },
+    "93": {
+     "make": "ACURA ARX-06",
+     "pctPerLap": 3.172,
+     "stints": 4
+    }
+   }
+  },
+  "laguna-seca": {
+   "event": "TireRack.com Monterey SportsCar Championship - Race",
+   "cars": {
+    "6": {
+     "make": "PORSCHE 963",
+     "pctPerLap": 2.186,
+     "stints": 1
+    },
+    "7": {
+     "make": "PORSCHE 963",
+     "pctPerLap": 2.179,
+     "stints": 1
+    },
+    "10": {
+     "make": "CADILLAC V-SERIES.R",
+     "pctPerLap": 1.909,
+     "stints": 1
+    },
+    "23": {
+     "make": "ASTON MARTIN VALKYRIE",
+     "pctPerLap": 1.977,
+     "stints": 1
+    },
+    "24": {
+     "make": "BMW M HYBRID V8",
+     "pctPerLap": 2.237,
+     "stints": 1
+    },
+    "25": {
+     "make": "BMW M HYBRID V8",
+     "pctPerLap": 1.976,
+     "stints": 1
+    },
+    "31": {
+     "make": "CADILLAC V-SERIES.R",
+     "pctPerLap": 2.089,
+     "stints": 1
+    },
+    "40": {
+     "make": "CADILLAC V-SERIES.R",
+     "pctPerLap": 1.455,
+     "stints": 1
+    },
+    "60": {
+     "make": "ACURA ARX-06",
+     "pctPerLap": 1.279,
+     "stints": 1
+    },
+    "93": {
+     "make": "ACURA ARX-06",
+     "pctPerLap": 2.162,
+     "stints": 1
+    }
+   }
+  },
+  "indianapolis": {
+   "event": "Tire Rack.com Battle On The Bricks - Race",
+   "cars": {
+    "6": {
+     "make": "PORSCHE 963",
+     "pctPerLap": 2.207,
+     "stints": 1
+    },
+    "7": {
+     "make": "PORSCHE 963",
+     "pctPerLap": 2.255,
+     "stints": 1
+    },
+    "10": {
+     "make": "CADILLAC V-SERIES.R",
+     "pctPerLap": 2.141,
+     "stints": 1
+    },
+    "23": {
+     "make": "ASTON MARTIN VALKYRIE",
+     "pctPerLap": 2.136,
+     "stints": 1
+    },
+    "24": {
+     "make": "BMW M HYBRID V8",
+     "pctPerLap": 2.089,
+     "stints": 1
+    },
+    "25": {
+     "make": "BMW M HYBRID V8",
+     "pctPerLap": 2.129,
+     "stints": 1
+    },
+    "31": {
+     "make": "CADILLAC V-SERIES.R",
+     "pctPerLap": 2.168,
+     "stints": 1
+    },
+    "40": {
+     "make": "CADILLAC V-SERIES.R",
+     "pctPerLap": 2.254,
+     "stints": 1
+    },
+    "63": {
+     "make": "LAMBORGHINI SC63",
+     "pctPerLap": 2.211,
+     "stints": 1
+    },
+    "93": {
+     "make": "ACURA ARX-06",
+     "pctPerLap": 2.144,
+     "stints": 1
+    }
+   }
+  },
+  "road-atlanta": {
+   "event": "28th Annual Motul Petit Le Mans - Race",
+   "cars": {
+    "6": {
+     "make": "PORSCHE 963",
+     "pctPerLap": 2.187,
+     "stints": 3
+    },
+    "7": {
+     "make": "PORSCHE 963",
+     "pctPerLap": 2.279,
+     "stints": 3
+    },
+    "10": {
+     "make": "CADILLAC V-SERIES.R",
+     "pctPerLap": 2.353,
+     "stints": 3
+    },
+    "23": {
+     "make": "ASTON MARTIN VALKYRIE",
+     "pctPerLap": 2.247,
+     "stints": 3
+    },
+    "24": {
+     "make": "BMW M HYBRID V8",
+     "pctPerLap": 2.251,
+     "stints": 2
+    },
+    "25": {
+     "make": "BMW M HYBRID V8",
+     "pctPerLap": 2.32,
+     "stints": 4
+    },
+    "31": {
+     "make": "CADILLAC V-SERIES.R",
+     "pctPerLap": 2.198,
+     "stints": 4
+    },
+    "40": {
+     "make": "CADILLAC V-SERIES.R",
+     "pctPerLap": 2.307,
+     "stints": 5
+    },
+    "60": {
+     "make": "ACURA ARX-06",
+     "pctPerLap": 2.195,
+     "stints": 4
+    },
+    "63": {
+     "make": "LAMBORGHINI SC63",
+     "pctPerLap": 2.156,
+     "stints": 4
+    },
+    "85": {
+     "make": "PORSCHE 963",
+     "pctPerLap": 2.329,
+     "stints": 5
+    },
+    "93": {
+     "make": "ACURA ARX-06",
+     "pctPerLap": 2.242,
+     "stints": 4
+    }
+   }
+  }
+ },
+ "2026": {
+  "daytona": {
+   "event": "Rolex 24 at Daytona - Race",
+   "cars": {
+    "6": {
+     "make": "PORSCHE 963",
+     "pctPerLap": 2.616,
+     "stints": 2
+    },
+    "7": {
+     "make": "PORSCHE 963",
+     "pctPerLap": 3.382,
+     "stints": 2
+    },
+    "10": {
+     "make": "CADILLAC V-SERIES.R",
+     "pctPerLap": 3.293,
+     "stints": 1
+    },
+    "23": {
+     "make": "ASTON MARTIN VALKYRIE",
+     "pctPerLap": 2.722,
+     "stints": 2
+    },
+    "24": {
+     "make": "BMW M HYBRID V8",
+     "pctPerLap": 3.283,
+     "stints": 3
+    },
+    "25": {
+     "make": "BMW M HYBRID V8",
+     "pctPerLap": 2.512,
+     "stints": 3
+    },
+    "31": {
+     "make": "CADILLAC V-SERIES.R",
+     "pctPerLap": 3.443,
+     "stints": 1
+    },
+    "40": {
+     "make": "CADILLAC V-SERIES.R",
+     "pctPerLap": 3.422,
+     "stints": 1
+    },
+    "60": {
+     "make": "ACURA ARX-06",
+     "pctPerLap": 2.756,
+     "stints": 2
+    },
+    "85": {
+     "make": "PORSCHE 963",
+     "pctPerLap": 3.209,
+     "stints": 2
+    },
+    "93": {
+     "make": "ACURA ARX-06",
+     "pctPerLap": 3.3,
+     "stints": 2
+    }
+   }
+  },
+  "laguna-seca": {
+   "event": "StubHub Monterey SportsCar Championship - Race",
+   "cars": {
+    "23": {
+     "make": "ASTON MARTIN VALKYRIE",
+     "pctPerLap": 2.212,
+     "stints": 1
+    },
+    "24": {
+     "make": "BMW M HYBRID V8",
+     "pctPerLap": 1.936,
+     "stints": 1
+    },
+    "25": {
+     "make": "BMW M HYBRID V8",
+     "pctPerLap": 1.235,
+     "stints": 1
+    },
+    "31": {
+     "make": "CADILLAC V-SERIES.R",
+     "pctPerLap": 2.122,
+     "stints": 1
+    },
+    "40": {
+     "make": "CADILLAC V-SERIES.R",
+     "pctPerLap": 2.024,
+     "stints": 1
+    }
+   }
+  },
+  "road-america": {
+   "event": "Motul SportsCar Endurance Grand Prix - Race",
+   "cars": {
+    "25": {
+     "make": "BMW M HYBRID V8",
+     "pctPerLap": 3.662,
+     "stints": 1
+    }
+   }
+  },
+  "indianapolis": {
+   "event": "TireRack.com Battle on the Bricks - Race",
+   "cars": {
+    "5": {
+     "make": "PORSCHE 963",
+     "pctPerLap": 2.269,
+     "stints": 1
+    },
+    "25": {
+     "make": "BMW M HYBRID V8",
+     "pctPerLap": 2.259,
+     "stints": 1
+    }
+   }
+  }
+ }
+}
