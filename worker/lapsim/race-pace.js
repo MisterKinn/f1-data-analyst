@@ -80,7 +80,7 @@ export function fitRace(laps, {lambdaWear = 50, lambdaOffset = 5} = {}) {
   const resid = rows.map((r, i) => r.y - pred[i]);
   // reference pace: best driver intercept, i.e. the leading car on a fresh medium at lap 1 fuel
   // leading pace: best driver intercept, or the mean of the best N (LAPSIM_RACE_TOP) to cut one-driver noise
-  const top = Math.max(1, Number(globalThis.process?.env?.LAPSIM_RACE_TOP || 1));
+  const top = Math.max(1, Number(globalThis.process?.env?.LAPSIM_RACE_TOP || 8));
   const ref = [...x.slice(0, nD)].sort((a, b) => a - b).slice(0, top).reduce((a, b, _, arr) => a + b / arr.length, 0);
   return {
     ref, slope: x[iSlope], n: laps.length,
@@ -94,9 +94,7 @@ const mean = a => a.length ? a.reduce((s, v) => s + v, 0) / a.length : null;
 
 // Pool fits of one track over seasons (newer seasons weigh more) into one parameter set
 export function poolTrack(fits) {
-  // newer seasons weigh more: linear by default, or geometric with LAPSIM_RACE_DECAY (0 < d < 1)
-  const d = Number(globalThis.process?.env?.LAPSIM_RACE_DECAY || 0), last = fits.at(-1)?.year ?? 0;
-  const w = fits.map((f, i) => d > 0 ? d ** (last - f.year) : 1 + i), W = (get) => { const v = fits.map((f, i) => [get(f), w[i]]).filter(([x]) => Number.isFinite(x)); return v.length ? v.reduce((s, [x, k]) => s + x * k, 0) / v.reduce((s, [, k]) => s + k, 0) : null; };
+  const w = fits.map((f, i) => 1 + i), W = (get) => { const v = fits.map((f, i) => [get(f), w[i]]).filter(([x]) => Number.isFinite(x)); return v.length ? v.reduce((s, [x, k]) => s + x * k, 0) / v.reduce((s, [, k]) => s + k, 0) : null; };
   return {
     slope: W(f => f.slope), raceRatio: W(f => f.raceRatio), pitLoss: W(f => f.pitLoss), laps: fits.at(-1)?.laps ?? null,
     offset: Object.fromEntries(COMPOUNDS.map(c => [c, W(f => f.offset[c])])),

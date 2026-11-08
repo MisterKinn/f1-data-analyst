@@ -6,7 +6,6 @@ import {readFile, writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {cleanLaps, fitRace, poolTrack, raceLaps, strategies, COMPOUNDS} from '../../worker/lapsim/race-pace.js';
 import {lapsimCalibration} from '../../worker/lapsim/calibration-data.js';
-import {rechargeLimitMJ} from '../../worker/lapsim/energy-limits.js';
 import {tiRaces} from './ti-races.mjs';
 
 const CACHE = process.env.LAPSIM_CACHE || '.cache/lapsim';
@@ -70,37 +69,20 @@ for (const r of races.filter(x => x.session === 'Race').sort((a, b) => a.year - 
 const strip = f => { const {cleanLaps: _c, ...rest} = f; return rest; };
 const latestYear = Math.max(...Object.values(fits).flat().map(f => f.year));
 
-// New-season change of the race/qualifying ratio per track. 2026 qualifying runs on a per-track
-// energy recharge limit, so the change depends on it: k = c0 + c1 × limit (MJ), fitted on the other
-// tracks already raced this season; median when the limits do not vary enough.
-const changes = () => Object.entries(fits).map(([o, l]) => { const c = l.find(f => f.year === latestYear), p = l.filter(f => f.year < latestYear), pr = p.length ? poolTrack(p).raceRatio : null; return c?.raceRatio && pr ? {id: o, k: c.raceRatio / pr, mj: rechargeLimitMJ(o, latestYear)} : null; }).filter(Boolean);
-function seasonRatio(skip) {
-  const pts = changes().filter(x => x.id !== skip), m = median(pts.map(x => x.k));
-  const mj = rechargeLimitMJ(skip, latestYear), xs = pts.filter(x => Number.isFinite(x.mj));
-  if (process.env.LAPSIM_RACE_K !== 'energy' || !Number.isFinite(mj) || xs.length < 5) return m;
-  const mx = xs.reduce((a, x) => a + x.mj, 0) / xs.length, my = xs.reduce((a, x) => a + x.k, 0) / xs.length;
-  const sxx = xs.reduce((a, x) => a + (x.mj - mx) ** 2, 0); if (sxx < 0.5) return m;
-  const b = xs.reduce((a, x) => a + (x.mj - mx) * (x.k - my), 0) / sxx;
-  return my + b * (mj - mx);
-}
-
-// mid-race leading pace / pole, pooled over seasons (newer weigh more) and its new-season change
+// Mid-race pace / reference lap (the prediction target), pooled over seasons with newer ones weighing more
 const midOf = f => f.pole ? (f.ref + f.slope * (f.laps - 1) / 2) / f.pole : NaN;
+const prevOf = l => l.filter(f => f.year < latestYear), curOf = l => l.find(f => f.year === latestYear);
 function midPool(list) {
-  const d = Number(process.env.LAPSIM_RACE_DECAY || 0), last = list.at(-1)?.year ?? 0;
-  const v = list.map((f, i) => [midOf(f), d > 0 ? d ** (last - f.year) : 1 + i]).filter(([x]) => Number.isFinite(x));
+  const v = list.map((f, i) => [midOf(f), 1 + i]).filter(([x]) => Number.isFinite(x));
   return v.length ? v.reduce((a, [x, w]) => a + x * w, 0) / v.reduce((a, [, w]) => a + w, 0) : NaN;
 }
-function midSeason(skip) {
-  if (process.env.LAPSIM_RACE_K === 'energy') {
-    const pts = Object.entries(fits).filter(([o]) => o !== skip).map(([o, l]) => { const c = l.find(f => f.year === latestYear), p = l.filter(f => f.year < latestYear); return c && p.length ? {k: midOf(c) / midPool(p), mj: rechargeLimitMJ(o, latestYear)} : null; }).filter(x => x && Number.isFinite(x.k) && Number.isFinite(x.mj));
-    const mj = rechargeLimitMJ(skip, latestYear);
-    if (pts.length >= 5 && Number.isFinite(mj)) {
-      const mx = pts.reduce((a, x) => a + x.mj, 0) / pts.length, my = pts.reduce((a, x) => a + x.k, 0) / pts.length, sxx = pts.reduce((a, x) => a + (x.mj - mx) ** 2, 0);
-      if (sxx > 0.5) return my + pts.reduce((a, x) => a + (x.mj - mx) * (x.k - my), 0) / sxx * (mj - mx);
-    }
-  }
-  return median(Object.entries(fits).filter(([o]) => o !== skip).map(([, l]) => { const c = l.find(f => f.year === latestYear), p = l.filter(f => f.year < latestYear); return c && p.length ? midOf(c) / midPool(p) : NaN; }).filter(Number.isFinite));
+// Prediction for a track this season: its pooled ratio pulled toward the all-track mean (the mean counts
+// as one season), times this season's change on the other tracks already raced. Tested on 2024/2025/2026.
+function midPred(id) {
+  const others = Object.entries(fits).filter(([o]) => o !== id).map(([, l]) => l), p = prevOf(fits[id]);
+  const all = median(others.map(l => midPool(prevOf(l))).filter(Number.isFinite));
+  const k = median(others.map(l => curOf(l) && prevOf(l).length ? midOf(curOf(l)) / midPool(prevOf(l)) : NaN).filter(Number.isFinite));
+  return (midPool(p) * p.length + all) / (p.length + 1) * k;
 }
 
 // New-season change of the fuel/rubber slope, learned from the other tracks already raced this season
@@ -114,25 +96,13 @@ const errs = [], testRows = [];
 for (const [id, list] of Object.entries(fits)) {
   const cur = list.find(f => f.year === latestYear), prev = list.filter(f => f.year < latestYear);
   if (!cur || !prev.length) continue;
-  const P = poolTrack(prev);
-  // scale for the new season's race ratio, learned from the other tracks already raced this season
-  const k = seasonRatio(id);
-  if (P.raceRatio == null) continue;
-  const ks = seasonSlope(id);
-  const track = {...P, raceRatio: P.raceRatio * (Number.isFinite(k) ? k : 1), slope: P.slope * ks};
-  if (!cur.pole || !Number.isFinite(track.raceRatio)) continue;
-  // leading race pace at mid-race: start pace + fuel/track slope over half the race, predicted vs fitted
-  const mid = (cur.laps - 1) / 2, real = cur.ref + cur.slope * mid;
-  // LAPSIM_RACE_MID=on: pool the mid-race pace ratio itself (no slope extrapolation), scaled by this season's change
-  // LAPSIM_RACE_SHRINK=s pulls a track's pooled ratio toward the all-track mean by s/(n+s) (few seasons → more pull)
-  const sh = Number(process.env.LAPSIM_RACE_SHRINK || 0), allMid = median(Object.entries(fits).filter(([o]) => o !== id).map(([, l]) => midPool(l.filter(f => f.year < latestYear))).filter(Number.isFinite));
-  const mp = sh > 0 ? (midPool(prev) * prev.length + allMid * sh) / (prev.length + sh) : midPool(prev);
-  const pred = process.env.LAPSIM_RACE_MID === 'on' ? cur.pole * mp * midSeason(id) : cur.pole * track.raceRatio + track.slope * mid;
+  if (!cur.pole) continue;
+  // mid-race pace of this race's reference group, predicted vs fitted
+  const real = cur.ref + cur.slope * (cur.laps - 1) / 2, pred = cur.pole * midPred(id);
   const best = (pred - real) / real * 100;
   if (!Number.isFinite(best) || Math.abs(best) > 30) { log.push(`${id} ${cur.year}: test skipped (pred ${pred.toFixed(1)}, real ${real.toFixed(1)}, laps ${cur.laps}, slope ${cur.slope.toFixed(3)})`); continue; }
   errs.push(best); testRows.push([id, cur.year, prev.map(f => f.year).join('+'), best]);
 }
-log.push(...changes().map(x => `k ${x.id}: ×${x.k.toFixed(4)}, recharge limit ${x.mj ?? '–'} MJ`));
 const rms = errs.length ? Math.sqrt(errs.reduce((s, v) => s + v * v, 0) / errs.length) : null;
 
 // 2026 race ratio for tracks not raced yet this season: latest pooled ratio × this season's change
@@ -153,14 +123,10 @@ for (const [id, list] of Object.entries(fits)) {
     offset: Object.fromEntries(COMPOUNDS.map(c => [c, pick(own.offset[c], pooled.offset[c])])), wear: Object.fromEntries(COMPOUNDS.map(c => [c, pick(own.wear[c], pooled.wear[c])])),
     raceRatio: own.raceRatio, pole: own.pole, ratioBasis: latestYear, reproduced: true}
     : {...pooled, raceRatio: pooled.raceRatio != null ? pooled.raceRatio * (Number.isFinite(kSeason) ? kSeason : 1) : seasonMedian, ratioBasis: pooled.raceRatio != null ? 'scaled' : 'season-median'};
-  // mid-race pace model (LAPSIM_RACE_MID=on): race ratio on the P1 pole set so that the mid-race pace equals
-  // pole × (group/pole gap) × pooled, shrunk mid-pace ratio × this season's change
-  if (!own && process.env.LAPSIM_RACE_MID === 'on') {
-    const prevL = list.filter(f => f.year < latestYear), sh = Number(process.env.LAPSIM_RACE_SHRINK || 0);
-    const allMid = median(Object.values(fits).map(l => midPool(l.filter(f => f.year < latestYear))).filter(Number.isFinite));
-    const mp = sh > 0 ? (midPool(prevL) * prevL.length + allMid * sh) / (prevL.length + sh) : midPool(prevL);
-    const gaps = list.filter(f => f.pole && f.pole1).map(f => f.pole / f.pole1), gap = gaps.length ? median(gaps) : 1, mid = ((tracks[id].laps ?? pooled.laps) - 1) / 2;
-    const m = gap * mp * midSeason(id); if (Number.isFinite(m)) { tracks[id].midRatio = Math.round(m * 1e7) / 1e7; tracks[id].ratioBasis = "mid-pace"; }
+  // not raced this season: mid-race pace on the predicted P1 pole = pole × (group/P1 gap) × predicted ratio
+  if (!own && prevOf(list).length) {
+    const gaps = list.filter(f => f.pole && f.pole1).map(f => f.pole / f.pole1), m = (gaps.length ? median(gaps) : 1) * midPred(id);
+    if (Number.isFinite(m)) { tracks[id].midRatio = Math.round(m * 1e7) / 1e7; tracks[id].ratioBasis = 'mid-pace'; }
   }
   for (const k of ['slope', 'raceRatio', 'pitLoss', 'pole']) if (tracks[id][k] != null) tracks[id][k] = Math.round(tracks[id][k] * 1e7) / 1e7; // fine enough for 0.000%
   for (const k of ['offset', 'wear']) for (const c of COMPOUNDS) if (tracks[id][k][c] != null) tracks[id][k][c] = Math.round(tracks[id][k][c] * 1e4) / 1e4;
@@ -173,7 +139,7 @@ const repro = Object.entries(tracks).filter(([, t]) => t.reproduced).map(([id, t
   return [id, ((t.pole * t.raceRatio + t.slope * mid) / (f.ref + f.slope * mid) - 1) * 100];
 });
 const reproMax = repro.length ? Math.max(...repro.map(([, e]) => Math.abs(e))) : null;
-const out = {generatedAt: new Date().toISOString(), season: latestYear, refTop: Math.max(1, Number(process.env.LAPSIM_RACE_TOP || 1)), seasonRatioChange: kSeason, seasonSlopeChange: kSlope, test: {rmsPct: rms, races: errs.length}, reproduction: {maxPct: reproMax, races: repro.length}, tracks};
+const out = {generatedAt: new Date().toISOString(), season: latestYear, refTop: Math.max(1, Number(process.env.LAPSIM_RACE_TOP || 8)), seasonRatioChange: kSeason, seasonSlopeChange: kSlope, test: {rmsPct: rms, races: errs.length}, reproduction: {maxPct: reproMax, races: repro.length}, tracks};
 await writeFile('worker/lapsim/race-data.js', `// Generated by scripts/sim/race-pace.mjs from OpenF1 race laps (fitted factors only). Do not edit by hand.\nexport const lapsimRace=${JSON.stringify(out)};\n`);
 
 const fmt = s => `${Math.floor(s / 60)}:${(s % 60).toFixed(3).padStart(6, '0')}`;
