@@ -5,6 +5,7 @@ export const raceFeatureCss=`
 .track-map{margin:8px 0;min-width:0}.track-map img{display:block;width:100%;height:120px;object-fit:contain;padding:8px;background:#16181a;border-radius:8px}.track-map figcaption{font-size:11px;color:var(--muted);line-height:1.5}.track-map-links{display:flex;gap:10px;flex-wrap:wrap}.sm-zones{font-size:12px;line-height:1.6;padding:0;list-style:none}.sm-zones li{margin:6px 0}
 
 [data-race-calendar="week"] .race-card[hidden]{display:none!important}
+[data-race-calendar="week"] .navigable-race-card{cursor:pointer}[data-race-calendar="week"] .navigable-race-card:hover{background:color-mix(in srgb,var(--mint) 6%,transparent)}
 .race-status-row{display:flex;align-items:center;gap:8px 12px;flex-wrap:wrap;margin:8px 0 16px}.race-status-row .race-timezone{margin:0}.race-refresh{font:inherit;font-size:12px;line-height:1;padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--text,inherit);cursor:pointer}.race-refresh:hover:not(:disabled){border-color:var(--mint);color:var(--mint)}.race-refresh:disabled{opacity:.6;cursor:progress}.race-refresh[hidden]{display:none}.race-refresh{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;min-height:32px;padding:0;border-radius:50%}.race-refresh svg{width:16px;height:16px}.race-refresh.is-spinning svg{animation:race-refresh-spin .8s linear infinite}@keyframes race-refresh-spin{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.race-refresh.is-spinning svg{animation:none}}
 [data-race-calendar="week"] .race-cards{display:flex;flex-direction:column;gap:0;border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:4px 16px}
 [data-race-calendar="week"] .race-card{display:grid;grid-template-columns:110px minmax(0,1fr) auto;align-items:center;gap:6px 16px;width:100%;border:0;border-bottom:1px solid var(--line);border-radius:0;padding:13px 0;background:none}
@@ -373,6 +374,8 @@ export function raceFeaturesClient(dictionary,translateText,weekBounds,sessionSt
      const destination='/championships/'+supported[0];
      card.classList.add('navigable-race-card');
      const titleLink=link(heading.textContent,destination);heading.replaceChildren(titleLink);
+     // The whole row opens the championship page; inner links and controls keep their own action.
+     card.addEventListener('click',ev=>{if(ev.target.closest('a,button,summary,select,input,details'))return;if(window.getSelection?.().toString())return;location.href=destination;});
     }
    }
    const badge=liveBadge();card.querySelector('h3').append(badge);
