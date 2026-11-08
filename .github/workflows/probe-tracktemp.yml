@@ -1,0 +1,19 @@
+name: Probe track temperature fit
+on:
+  push:
+    branches: ['probe/**']
+permissions:
+  contents: write
+jobs:
+  fit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node scripts/sim/tracktemp-fit.mjs
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add worker/lapsim/tracktemp-data.js scripts/sim/data/tracktemp.json && git commit -m "Track temperature fit" && git push
