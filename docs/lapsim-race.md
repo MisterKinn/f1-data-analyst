@@ -1,10 +1,10 @@
 # Race pace model
 
-Generated 2026-11-08T05:28:12.205Z. Season 2026; race-ratio change vs earlier seasons ×0.9836, slope change ×0.862.
+Generated 2026-11-08T05:34:02.273Z. Season 2026; race-ratio change vs earlier seasons ×0.9836, slope change ×0.862.
 
 Leave-out test (leading race pace, earlier seasons + real pole): 0.64% RMS over 17 races.
 
-Races already run, reproduced from the stored factors: largest error 0.000% over 18 races.
+Races already run (all seasons), reproduced from the stored factors: largest error 0.000% over 143 races.
 
 | Track | Season | Fitted from | Error % |
 |---|---|---|---|
