@@ -53,7 +53,7 @@ const utc=(local,offset)=>{
  return new Date(t-off).toISOString();
 };
 
-async function eventSessions(year,folder,io){
+export async function eventSessions(year,folder,io){
  const infos=await Promise.all(TI_SESSIONS.map(s=>tiGet(year,[folder,s,'session_info.json'],io).catch(()=>null)));
  const out=[];
  infos.forEach((f,i)=>{

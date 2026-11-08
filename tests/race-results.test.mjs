@@ -43,7 +43,7 @@ test('race panels sit between calendar and championship points on F1 and WEC onl
   const html=await websiteRoute(new Request('https://test/championships/'+series,{headers:{cookie:'kongboda_lang='+lang}})).text();
   assert.ok(html.indexOf('data-race-results="'+series+'"')>html.indexOf('data-race-calendar="'+series+'"'));
   assert.ok(html.indexOf('data-race-results="'+series+'"')<html.indexOf('data-championship="'+series+'"'));
-  if(lang==='en')assert.match(html,/Race results/);
+  if(lang==='en')assert.match(html,/Session results/);
  }
  assert.doesNotMatch(await websiteRoute(new Request('https://test/championships/formula-e')).text(),/data-race-results=/);
  new Function(await websiteRoute(new Request('https://test/assets/website.js')).text());
@@ -63,4 +63,27 @@ test('missing optional tyre archives do not prevent a complete F1 classification
   return Response.json({MRData:{total:'1',RaceTable:{Races:[result]}}});
  };
  try{const r=await raceResultsRoute(new Request('https://test/api/race-results?series=f1&season='+year));assert.equal(r.status,200);const d=await r.json();assert.equal(d.strategy_state,'unavailable');assert.equal(d.rows.length,1);assert.equal(d.rows[0].gap,'Leader');assert.equal(d.rows[0].stints,null);}finally{globalThis.fetch=original;}
+});
+test('F1 sessions from TracingInsights: qualifying ranks by last segment, race uses laps and finish time',async()=>{
+ const {tiTimedClassification,tiRaceClassification}=await import('../worker/race-results.js');
+ const drivers={drivers:[{dn:'4',fn:'Lando',ln:'Norris',team:'McLaren',driver:'NOR'},{dn:'63',fn:'George',ln:'Russell',team:'Mercedes',driver:'RUS'},{dn:'23',fn:'Alex',ln:'Albon',team:'Williams',driver:'ALB'}]};
+ const q={lap:[1,2,1,2,1],dNum:['4','4','63','63','23'],drv:['NOR','NOR','RUS','RUS','ALB'],time:[88.0,87.47,88.1,87.674,86.9],qs:['Q2','Q3','Q2','Q3','Q1'],del:[false,false,false,false,false]};
+ const rows=tiTimedClassification(q,drivers,true);
+ assert.deepEqual(rows.map(r=>[r.number,r.gap]),[['4','Leader'],['63','+0.204'],['23','—']]);
+ const fp={...q,qs:q.qs.map(()=>'None'),del:[false,false,false,false,true]};
+ assert.deepEqual(tiTimedClassification(fp,drivers).map(r=>r.number),['4','63','23']);
+ const race={lap:[1,2,1,2,1],dNum:['4','4','63','63','23'],drv:['NOR','NOR','RUS','RUS','ALB'],time:[80,73.437,80,73.977,90],lSD:['2025-11-09T18:00:00.000000000','2025-11-09T18:34:02.430000000','2025-11-09T18:00:01.000000000','2025-11-09T18:34:12.278000000','2025-11-09T18:00:02.000000000'],pos:[1,1,2,2,'None'],stint:[1,1,1,1,1],compound:['MEDIUM','MEDIUM','HARD','HARD','SOFT'],fresh:[true,true,false,false,true]};
+ const r=tiRaceClassification(race,drivers);
+ assert.deepEqual(r.map(x=>[x.number,x.gap]),[['4','Leader'],['63','+10.388'],['23','DNF']]);
+ assert.deepEqual(r[0].stints,[{stint:1,compound:'MEDIUM',fresh:true,laps:2}]);
+});
+test('WEC non-race sessions: one classification per session folder, gaps inside the selected class',async()=>{
+ const {selectWecSessions,normalizeWecTimed}=await import('../worker/race-results.js');
+ const f=(folder,title,date)=>({format:'csv',title,url:'https://files.alkamelcloud.com/x/15_2026/08_BAHRAIN/1_FIA%20WEC/'+encodeURIComponent(folder)+'/'+encodeURIComponent(title),folders:['BAHRAIN','FIA WEC',folder],published_at:date});
+ const event={file:f('Race','Classification_Race_Hour 8_Final.CSV','3')};
+ const sessions=selectWecSessions([f('Free Practice 1','Classification_Free Practice 1.CSV','1'),f('Free Practice 1','Classification_Free Practice 1.CSV','2'),f('Hyperpole HYPERCAR','Classification_Hyperpole HYPERCAR.CSV','2'),f('Free Practice 1','Classification_Free Practice 1_ByCategory.CSV','2'),event.file],event);
+ assert.deepEqual(sessions.map(s=>s.id),['free-practice-1','hyperpole-hypercar']);assert.equal(sessions[0].file.published_at,'2');
+ const row=(POSITION,NUMBER,CLASS,BEST_LAP)=>({POSITION,NUMBER,CLASS,BEST_LAP,TEAM:'T'+NUMBER,LAPS:'10'});
+ const out=normalizeWecTimed([row('1','8','HYPERCAR','1:47.100'),row('2','007','HYPERCAR','1:47.450'),row('20','92','LMGT3','1:58.000'),row('21','85','LMGT3','1:58.250')],'LMGT3');
+ assert.deepEqual(out.rows.map(r=>[r.number,r.position,r.gap]),[['92',1,'Leader'],['85',2,'+0.250']]);
 });
