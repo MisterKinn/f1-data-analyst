@@ -45,6 +45,8 @@ jobs:
         run: node scripts/sim/evolution-fit.mjs
       - name: Fit tyre compound gaps (same TracingInsights laps, evolution removed)
         run: node scripts/sim/compound-gap.mjs
+      - name: Qualifying Q1/Q2/Q3 windows and segment bests
+        run: node scripts/sim/qsplit.mjs
       - uses: actions/upload-artifact@v4
         with:
           name: lapsim-evolution
@@ -53,10 +55,11 @@ jobs:
             docs/lapsim-evolution.md
             worker/lapsim/evolution-data.js
             worker/lapsim/compound-gap-data.js
+            worker/lapsim/qsplit-data.js
       - name: Commit the fit
         if: github.event_name == 'push'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
-          git add worker/lapsim/evolution-data.js docs/lapsim-evolution.md worker/lapsim/compound-gap-data.js
+          git add worker/lapsim/evolution-data.js docs/lapsim-evolution.md worker/lapsim/compound-gap-data.js worker/lapsim/qsplit-data.js
           git diff --cached --quiet || { git commit -m "Lapsim track evolution: fit from official lap data"; git push; }
