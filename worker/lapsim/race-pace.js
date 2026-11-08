@@ -79,7 +79,9 @@ export function fitRace(laps, {lambdaWear = 50, lambdaOffset = 5} = {}) {
   const pred = rows.map(r => r.x.reduce((s, v, i) => s + v * x[i], 0));
   const resid = rows.map((r, i) => r.y - pred[i]);
   // reference pace: best driver intercept, i.e. the leading car on a fresh medium at lap 1 fuel
-  const ref = Math.min(...x.slice(0, nD));
+  // leading pace: best driver intercept, or the mean of the best N (LAPSIM_RACE_TOP) to cut one-driver noise
+  const top = Math.max(1, Number(globalThis.process?.env?.LAPSIM_RACE_TOP || 1));
+  const ref = [...x.slice(0, nD)].sort((a, b) => a - b).slice(0, top).reduce((a, b, _, arr) => a + b / arr.length, 0);
   return {
     ref, slope: x[iSlope], n: laps.length,
     offset: {SOFT: used('SOFT') ? x[iOff.SOFT] : null, MEDIUM: 0, HARD: used('HARD') ? x[iOff.HARD] : null},
@@ -92,7 +94,9 @@ const mean = a => a.length ? a.reduce((s, v) => s + v, 0) / a.length : null;
 
 // Pool fits of one track over seasons (newer seasons weigh more) into one parameter set
 export function poolTrack(fits) {
-  const w = fits.map((f, i) => 1 + i), W = (get) => { const v = fits.map((f, i) => [get(f), w[i]]).filter(([x]) => Number.isFinite(x)); return v.length ? v.reduce((s, [x, k]) => s + x * k, 0) / v.reduce((s, [, k]) => s + k, 0) : null; };
+  // newer seasons weigh more: linear by default, or geometric with LAPSIM_RACE_DECAY (0 < d < 1)
+  const d = Number(globalThis.process?.env?.LAPSIM_RACE_DECAY || 0), last = fits.at(-1)?.year ?? 0;
+  const w = fits.map((f, i) => d > 0 ? d ** (last - f.year) : 1 + i), W = (get) => { const v = fits.map((f, i) => [get(f), w[i]]).filter(([x]) => Number.isFinite(x)); return v.length ? v.reduce((s, [x, k]) => s + x * k, 0) / v.reduce((s, [, k]) => s + k, 0) : null; };
   return {
     slope: W(f => f.slope), raceRatio: W(f => f.raceRatio), pitLoss: W(f => f.pitLoss), laps: fits.at(-1)?.laps ?? null,
     offset: Object.fromEntries(COMPOUNDS.map(c => [c, W(f => f.offset[c])])),
@@ -104,12 +108,14 @@ export function poolTrack(fits) {
 // Lap-by-lap race for one strategy: stints [{compound, laps}], pole = predicted pole lap (s)
 export function raceLaps(track, pole, stints, {startAge = 0} = {}) {
   const fill = (v, d) => Number.isFinite(v) ? v : d;
+  // mid-pace model: the race ratio that puts the mid-race lap at pole × midRatio
+  const ratio = Number.isFinite(track.midRatio) ? track.midRatio - track.slope * ((track.laps ?? 1) - 1) / 2 / pole : track.raceRatio;
   const out = [];
   let n = 1;
   for (const [k, s] of stints.entries()) {
     for (let a = 0; a < s.laps; a++, n++) {
       const age = (k === 0 ? startAge : 0) + a;
-      let t = pole * track.raceRatio + track.slope * (n - 1) + fill(track.offset[s.compound], 0) + Math.max(0, fill(track.wear[s.compound], 0.05)) * age;
+      let t = pole * ratio + track.slope * (n - 1) + fill(track.offset[s.compound], 0) + Math.max(0, fill(track.wear[s.compound], 0.05)) * age;
       if (a === 0 && k > 0) t += track.pitLoss ?? 22;
       out.push({lap: n, time: t, compound: s.compound, age});
     }

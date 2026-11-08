@@ -99,8 +99,15 @@ jobs:
           LAPSIM_TEAMS: 'on'
           LAPSIM_WPRIOR: '8'
         run: node scripts/sim/calibrate.mjs
+      # TracingInsights race laps 2018 on; reference = mean of the best 20 qualifying laps, mid-race pace
+      # pooled per track and pulled toward the all-track mean (prediction test 0.62% vs 1.12% before)
       - name: Fit race pace (fuel, tyres, pit loss)
         continue-on-error: true
+        env:
+          LAPSIM_RACE_SRC: ti
+          LAPSIM_RACE_TOP: '20'
+          LAPSIM_RACE_MID: 'on'
+          LAPSIM_RACE_SHRINK: '1'
         run: node scripts/sim/race-pace.mjs
       - name: Read FIA circuit changes
         if: inputs.calibrate != 'false'
