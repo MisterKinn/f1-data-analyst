@@ -36,7 +36,7 @@ export const LAPSIM_TOOLS = [{name: 'lapsim_simulate',
     saturation_min: num(1, 300, 'Track evolution: minutes for the rubber gain to mostly saturate.'),
     track_wetness_start: num(0, 1, 'Track evolution: wetness at the session start (0 dry, 1 fully wet).'),
     drying_time_min: num(0, 300, 'Track evolution: drying time constant (min; 0 = does not dry).'),
-    tyre: {type: 'string', enum: ['slick', 'inter', 'wet'], description: 'Track evolution: tyre type on a wet track.'},
+    tyre: {type: 'string', enum: ['slick', 'inter', 'wet'], description: 'Track evolution: tyre type on a wet track. Intermediates exist only in F1; WEC Hypercar and LMGT3 have slicks and wets only (inter is treated as wet there).'},
     tyre_warmup_laps: num(0, 5, 'Track evolution: laps after the out-lap before the tyre is at its best.'),
   }, additionalProperties: false}, annotations: ro}];
 
@@ -131,7 +131,7 @@ export function simulate(args = {}) {
     const se = sel.series === 'wec' ? 'wec' : 'f1', type = args.session_type || 'qualifying', c = evolutionCoeffs(se, id, type), qc = evolutionCoeffs(se, id, 'qualifying');
     const endOf = x => x.curve ? x.curve.at(-1)[0] : se === 'wec' ? (type === 'qualifying' ? 20 : 90) : 60;
     const formula = Number.isFinite(args.rubber_gain_pct) || Number.isFinite(args.saturation_min);
-    const P = {...c, session: type, tyre: args.tyre || 'slick', useCurve: !formula && !!c.curve, wetStart: args.track_wetness_start ?? 0, dryMin: args.drying_time_min ?? 20,
+    const P = {...c, session: type, tyre: se === 'wec' && args.tyre === 'inter' ? 'wet' : args.tyre || 'slick', useCurve: !formula && !!c.curve, wetStart: args.track_wetness_start ?? 0, dryMin: args.drying_time_min ?? 20,
       warmupLaps: args.tyre_warmup_laps ?? 0, ...(Number.isFinite(args.rubber_gain_pct) ? {gainPct: args.rubber_gain_pct} : {}), ...(Number.isFinite(args.saturation_min) ? {tauMin: args.saturation_min} : {})};
     const end = args.session_minute ?? endOf(c);
     const lap0 = res.lapTime / (1 + evolutionDelta({...qc, session: 'qualifying', useCurve: !!qc.curve}, endOf(qc)));

@@ -1,0 +1,873 @@
+{
+ "2026": {
+  "Australian Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Chinese Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Japanese Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "Miami Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Canadian Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Monaco Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Barcelona-Catalunya Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Austrian Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "British Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "Belgian Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Hungarian Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Dutch Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Italian Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Spanish Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Azerbaijan Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Singapore Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "United States Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Mexico City Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "São Paulo Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ]
+ },
+ "2025": {
+  "Australian Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Chinese Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Japanese Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "Bahrain Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "Saudi Arabian Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Miami Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Emilia Romagna Grand Prix": [
+   "C4",
+   "C5",
+   "C6"
+  ],
+  "Monaco Grand Prix": [
+   "C4",
+   "C5",
+   "C6"
+  ],
+  "Spanish Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "Canadian Grand Prix": [
+   "C4",
+   "C5",
+   "C6"
+  ],
+  "Austrian Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "British Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Belgian Grand Prix": [
+   "C1",
+   "C3",
+   "C4"
+  ],
+  "Hungarian Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Dutch Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Italian Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Azerbaijan Grand Prix": [
+   "C4",
+   "C5",
+   "C6"
+  ],
+  "Singapore Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "United States Grand Prix": [
+   "C1",
+   "C3",
+   "C4"
+  ],
+  "Mexico City Grand Prix": [
+   "C2",
+   "C4",
+   "C5"
+  ],
+  "São Paulo Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Las Vegas Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Qatar Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "Abu Dhabi Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ]
+ },
+ "2024": {
+  "Bahrain Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "Saudi Arabian Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Australian Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Japanese Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "Chinese Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Miami Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Emilia Romagna Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Monaco Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Canadian Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Spanish Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "Austrian Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "British Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "Hungarian Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Belgian Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Dutch Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "Italian Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Azerbaijan Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Singapore Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "United States Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Mexico City Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "São Paulo Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Las Vegas Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Qatar Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "Abu Dhabi Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ]
+ },
+ "2023": {
+  "Bahrain Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "Saudi Arabian Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Australian Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Azerbaijan Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Miami Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Monaco Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Spanish Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "Canadian Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Austrian Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "British Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "Hungarian Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Belgian Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Dutch Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "Italian Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Singapore Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Japanese Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "Qatar Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "United States Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Mexico City Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "São Paulo Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Las Vegas Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Abu Dhabi Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ]
+ },
+ "2022": {
+  "Bahrain Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "Saudi Arabian Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Australian Grand Prix": [
+   "C2",
+   "C3",
+   "C5"
+  ],
+  "Emilia Romagna Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Miami Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Spanish Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "Monaco Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Azerbaijan Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Canadian Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "British Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "Austrian Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "French Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Hungarian Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Belgian Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Dutch Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "Italian Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Singapore Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Japanese Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "United States Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Mexico City Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "São Paulo Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Abu Dhabi Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ]
+ },
+ "2021": {
+  "Bahrain Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Emilia Romagna Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Portuguese Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "Spanish Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "Monaco Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Azerbaijan Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "French Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Styrian Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Austrian Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "British Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "Hungarian Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Belgian Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Dutch Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "Italian Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Russian Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Turkish Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "United States Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Mexico City Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "São Paulo Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Qatar Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "Saudi Arabian Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Abu Dhabi Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ]
+ },
+ "2020": {
+  "Austrian Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Styrian Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Hungarian Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "British Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "70th Anniversary Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Spanish Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "Belgian Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Italian Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Tuscan Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "Russian Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Eifel Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Portuguese Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "Emilia Romagna Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Turkish Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "Bahrain Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Sakhir Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Abu Dhabi Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ]
+ },
+ "2019": {
+  "Australian Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Bahrain Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "Chinese Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Azerbaijan Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Spanish Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "Monaco Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Canadian Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "French Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Austrian Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "British Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "German Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Hungarian Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Belgian Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "Italian Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Singapore Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ],
+  "Russian Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Japanese Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "Mexican Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "United States Grand Prix": [
+   "C2",
+   "C3",
+   "C4"
+  ],
+  "Brazilian Grand Prix": [
+   "C1",
+   "C2",
+   "C3"
+  ],
+  "Abu Dhabi Grand Prix": [
+   "C3",
+   "C4",
+   "C5"
+  ]
+ }
+}

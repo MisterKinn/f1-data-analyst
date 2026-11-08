@@ -10,6 +10,7 @@ import {TRACK_NAMES as NAMES} from './lapsim/names.js';
 import {energyLimit} from './lapsim/energy-limits.js';
 import {lapsimRace} from './lapsim/race-data.js';
 import {lapsimRacingLines} from './lapsim/racing-lines-data.js';
+import {lapsimCompounds} from './lapsim/compounds-data.js';
 import {raceLaps, strategies} from './lapsim/race-pace.js';
 import {evolutionCoeffs, evolutionDelta, evolutionCurve} from './lapsim/evolution.js';
 
@@ -43,7 +44,7 @@ const T = {
     m5: '준정상상태 모델이라 변속, 타이어 온도 변화, 차 사이 간섭, 풀스로틀 중 회생(슈퍼 클리핑)은 계산하지 않습니다. 절대값보다 차이와 경향을 보는 데 쓰세요.',
     src: '자료', updated: '보정일',
     evo: '트랙 에볼루션', evoLead: '세션이 진행되며 고무가 쌓이고, 젖은 노면이 마르고, 타이어가 데워지면서 랩타임이 어떻게 바뀌는지 계산합니다. 기준은 위의 계산된 랩(예선 끝 노면)입니다.',
-    evoType: '세션', evoTypes: {practice: '연습', qualifying: '예선'}, evoTyre: '타이어', tyres: {slick: '슬릭', inter: '인터미디엇', wet: '웻'},
+    evoType: '세션', evoTypes: {practice: '연습', qualifying: '예선'}, evoTyre: '타이어', tyres: {f1: {slick: '슬릭 (피렐리 {c})', inter: '인터미디엇', wet: '풀 웻'}, hypercar: {slick: '슬릭 (미쉐린)', wet: '웻 (미쉐린)'}, lmgt3: {slick: '슬릭 (굿이어 미디엄)', wet: '웻 (굿이어)'}},
     evoEnd: '세션 시각', evoGain: '고무 효과 (끝까지)', evoTau: '포화 시간', evoWet: '시작 노면 젖음', evoDry: '건조 시간', evoWarm: '워밍업 랩',
     evoCurve: '실측 곡선 사용', evoLast: '이 시각의 예상 랩', evoChange: '세션 시작 대비', evoBasis: {track: '이 트랙 실측 곡선', series: '시리즈 평균 (보정)', default: '미보정 기본값'},
     evoErr: '홀드아웃 오차 (트랙 제외)', secFix: '섹터 보정 (실제 폴 기준)', evoBasisH: '근거', evoChart: '세션 시각별 예상 랩타임', min: '분',
@@ -72,7 +73,7 @@ const T = {
     m5: 'A quasi-steady-state model ignores gear shifts, tyre temperature, car-to-car effects and harvesting at full throttle (super-clipping). Use it for differences and trends rather than absolute times.',
     src: 'Sources', updated: 'Calibrated',
     evo: 'Track evolution', evoLead: 'How lap time changes over a session as rubber goes down, a wet track dries and tyres warm up. The reference is the simulated lap above (track state at the end of qualifying).',
-    evoType: 'Session', evoTypes: {practice: 'Practice', qualifying: 'Qualifying'}, evoTyre: 'Tyre', tyres: {slick: 'Slick', inter: 'Intermediate', wet: 'Wet'},
+    evoType: 'Session', evoTypes: {practice: 'Practice', qualifying: 'Qualifying'}, evoTyre: 'Tyre', tyres: {f1: {slick: 'Slick (Pirelli {c})', inter: 'Intermediate', wet: 'Full wet'}, hypercar: {slick: 'Slick (Michelin)', wet: 'Wet (Michelin)'}, lmgt3: {slick: 'Slick (Goodyear Medium)', wet: 'Wet (Goodyear)'}},
     evoEnd: 'Session minute', evoGain: 'Rubber effect (full)', evoTau: 'Time to saturate', evoWet: 'Wetness at start', evoDry: 'Drying time', evoWarm: 'Warm-up laps',
     evoCurve: 'Use measured curve', evoLast: 'Expected lap at this minute', evoChange: 'vs session start', evoBasis: {track: 'measured curve, this track', series: 'series average (fitted)', default: 'uncalibrated default'},
     evoErr: 'Holdout error (track left out)', secFix: 'Sector correction (real pole)', evoBasisH: 'Basis', evoChart: 'Expected lap time over the session', min: 'min',
@@ -141,6 +142,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
   const carId = cars[query.car] ? query.car : '2026';
   const changes = latestChanges(id);
   const data = {lang, t, id, track: td, cars, carOrder: CAR_ORDER, carId, conds, changes, energy: (liveEnergy && (query.track || 'monza') === id ? liveEnergy : energyLimit(id, 2026)),
+    compounds: lapsimCompounds?.[id] || {},
     evo: Object.fromEntries(['f1', 'wec'].map(se => [se, Object.fromEntries(['practice', 'qualifying'].map(ty => [ty, evolutionCoeffs(se, id, ty)]))])),
     calibration: {generatedAt: lapsimCalibration?.generatedAt || null, seasons: Object.fromEntries(Object.entries(lapsimCalibration?.seasons || {}).map(([y, s]) => [y, s.tracks?.[id] || null]))}};
   // first render on the server with the same code the browser uses
@@ -180,7 +182,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
 </section>
 <section class="panel ls-panel ls-evo"><h2>${esc(t.evo)}</h2><p>${esc(t.evoLead)}</p>
  <div class="ls-controls ls-evo-sel"><label>${esc(t.evoType)}<select data-evo="type">${['qualifying', 'practice'].map(k => `<option value="${k}">${esc(t.evoTypes[k])}</option>`).join('')}</select></label>
- <label>${esc(t.evoTyre)}<select data-evo="tyre">${['slick', 'inter', 'wet'].map(k => `<option value="${k}">${esc(t.tyres[k])}</option>`).join('')}</select></label>
+ <label>${esc(t.evoTyre)}<select data-evo="tyre" data-ls="tyre">${view.tyreHtml}</select></label>
  <label class="ls-check"><input type="checkbox" data-evo="useCurve" checked> ${esc(t.evoCurve)}</label></div>
  <div class="ls-sliders">${evoSlider('end', t.evoEnd, 0, 120, 1, t.min)}${evoSlider('gainPct', t.evoGain, 0, 3, 0.05, '%')}${evoSlider('tauMin', t.evoTau, 5, 150, 1, t.min)}${evoSlider('wetStart', t.evoWet, 0, 1, 0.05, '')}${evoSlider('dryMin', t.evoDry, 0, 90, 1, t.min)}${evoSlider('warmupLaps', t.evoWarm, 0, 4, 1, '')}</div>
  <dl class="ls-facts" data-ls="evoFacts">${view.evoFacts}</dl>
@@ -266,7 +268,9 @@ function racePanel(id, lang, raceYear) {
   // the model has no order effect between stints, so mirrored strategies tie: keep one of each
   const best = strategies(tr, pole).filter(x => { const k = x.stints.map(([c, n]) => c + n).sort().join(); return !seen.has(k) && seen.add(k); }).slice(0, 4);
   const fmtRace = v => `${Math.floor(v / 3600)}:${String(Math.floor(v % 3600 / 60)).padStart(2, '0')}:${(v % 60).toFixed(1).padStart(4, '0')}`;
-  const name = st => st.map(([c, n]) => `${t.c[c[0]]} ${n}`).join(' → ');
+  // Pirelli nomination of that race (or of this season's race at this track): HARD, MEDIUM, SOFT
+  const cy = lapsimCompounds?.[id] || {}, cn = cy[own ? raceYear : 2026] || null, cOf = c => cn ? ' ' + cn[{H: 0, M: 1, S: 2}[c[0]]] : '';
+  const name = st => st.map(([c, n]) => `${t.c[c[0]]}${cOf(c)} ${n}`).join(' → ');
   const rows = best.map((x, i) => `<tr><td>${esc(name(x.stints))}</td><td data-no-translate>${fmtRace(x.total)}</td><td data-no-translate>${i ? '+' + (x.total - best[0].total).toFixed(1) + ' s' : '–'}</td></tr>`).join('');
   const L = raceLaps(tr, pole, best[0].stints.map(([compound, laps]) => ({compound, laps}))).filter(l => !(l.age === 0 && l.lap > 1));
   const W = 640, H = 180, lo = Math.min(...L.map(l => l.time)), hi = Math.max(...L.map(l => l.time)), n = tr.laps;
@@ -360,6 +364,11 @@ function computeView(K, data, state, R) {
   const keyHtml = '<span class="ls-key-0"></span>' + sel.label + (cmp ? ' <span class="ls-key-1"></span>' + data.cars[state.compareId].label : '');
   // Track evolution: lap over the session from the simulated lap (= end-of-qualifying track state)
   const se = sel.series === 'wec' ? 'wec' : 'f1', ev = Object.assign({type: 'qualifying', tyre: 'slick', useCurve: true}, state.evo || {});
+  // tyres the selected car's series really has (no intermediate in WEC); F1 slick named by the race's Pirelli C-numbers
+  const ts = sel.series ? (sel.cls === 'lmgt3' ? 'lmgt3' : 'hypercar') : 'f1', tyres = t.tyres[ts];
+  if (!tyres[ev.tyre]) ev.tyre = 'slick';
+  const cs = data.compounds[sel.year] || data.compounds[2026] || Object.values(data.compounds).pop();
+  const tyreHtml = Object.keys(tyres).map(k => '<option value="' + k + '"' + (k === ev.tyre ? ' selected' : '') + '>' + tyres[k].replace(cs ? '{c}' : ' ({c})', cs ? cs.join('·') : '') + '</option>').join('');
   const coef = data.evo[se][ev.type], qc = data.evo[se].qualifying;
   const endOf = c => c.curve ? c.curve[c.curve.length - 1][0] : (se === 'wec' ? (c === qc ? 20 : 90) : 60);
   const P = Object.assign({}, coef, {session: ev.type, tyre: ev.tyre, useCurve: ev.useCurve && !!coef.curve, wetStart: 0, dryMin: 20, warmupLaps: 0}, ev.over || {});
@@ -375,7 +384,7 @@ function computeView(K, data, state, R) {
   const evoSvg = '<svg class="ls-race" viewBox="0 0 ' + ew + ' ' + eh + '" role="img" aria-label="' + t.evoChart + '"><polyline fill="none" stroke="currentColor" stroke-width="2" points="' + curve.points.map(p => ex(p.minute).toFixed(1) + ',' + ey(p.lap).toFixed(1)).join(' ') + '"/>'
     + '<text x="2" y="16" font-size="11" fill="currentColor">' + fmt(hi) + '</text><text x="2" y="' + (eh - 28) + '" font-size="11" fill="currentColor">' + fmt(lo) + '</text>'
     + '<text x="44" y="' + (eh - 6) + '" font-size="11" fill="currentColor">0</text><text x="' + (ew - 12) + '" y="' + (eh - 6) + '" font-size="11" text-anchor="end" fill="currentColor">' + evo.end + ' ' + t.min + '</text></svg>';
-  return {lap: fmt(res.lapTime), poleHtml, factsHtml, airHtml, kindLabel, mapSvg, traceSvg, keyHtml, windHtml, weather: w, evo, evoFacts, evoSvg};
+  return {lap: fmt(res.lapTime), poleHtml, factsHtml, airHtml, kindLabel, mapSvg, traceSvg, keyHtml, windHtml, weather: w, evo, evoFacts, evoSvg, tyreHtml};
 }
 
 // Browser controller
@@ -401,7 +410,7 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
       q('lap').textContent = v.lap; q('pole').innerHTML = v.poleHtml; q('facts').innerHTML = v.factsHtml; q('air').innerHTML = v.airHtml;
       q('map').innerHTML = v.mapSvg; q('trace').innerHTML = v.traceSvg; q('key').innerHTML = v.keyHtml; q('wind').innerHTML = v.windHtml;
       q('carLabel').textContent = data.cars[state.carId].label; q('carKind').textContent = v.kindLabel;
-      q('evoFacts').innerHTML = v.evoFacts; q('evoChart').innerHTML = v.evoSvg;
+      q('evoFacts').innerHTML = v.evoFacts; q('evoChart').innerHTML = v.evoSvg; q('tyre').innerHTML = v.tyreHtml;
       document.querySelectorAll('[data-evo-out]').forEach(o => { const k = o.dataset.evoOut; o.textContent = v.evo[k]; const i = document.querySelector('input[data-evo="' + k + '"]'); if (i && document.activeElement !== i) i.value = v.evo[k]; });
     });
   };
