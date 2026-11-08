@@ -1,0 +1,11 @@
+{
+ "generatedAt": "2026-11-08T11:01:50.171Z",
+ "a": 4.806,
+ "k": 0.01776,
+ "test": {
+  "events": 66,
+  "points": 1834,
+  "rmsC": 3.97,
+  "oldAssumptionRmsC": 5.37
+ }
+}

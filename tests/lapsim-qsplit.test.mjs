@@ -21,3 +21,9 @@ test('evolution panel lists Q1/Q2/Q3 with the real segment bests; Météo-France
   assert.match(h, /data-ll="45\.6156,9\.2811"/);
   assert.doesNotMatch(await page('track=monza&car=wec-lmh'), /data-ls="qsplit"><div/, 'F1 only');
 });
+
+test('forecast track temperature uses the fit on real session weather (better than the old assumption)', async () => {
+  const {lapsimTrackTemp: T} = await import('../worker/lapsim/tracktemp-data.js');
+  assert.ok(T && T.k > 0 && T.test.events >= 30 && T.test.rmsC < T.test.oldAssumptionRmsC);
+  assert.match(await page('track=monza&car=2026'), /실제 세션 기상\(\d+개 대회\)에 맞춘 값/);
+});

@@ -17,6 +17,8 @@ import {lapsimWecTyres} from './lapsim/wec-tyres-data.js';
 import {raceLaps, strategies} from './lapsim/race-pace.js';
 import {evolutionCoeffs, evolutionDelta, evolutionCurve} from './lapsim/evolution.js';
 import {lineTrack} from './lapsim/racing-line.js';
+import {TRACK_LL} from './lapsim/track-coords.js';
+import {lapsimTrackTemp} from './lapsim/tracktemp-data.js';
 import {brakeZones} from './lapsim/brakes.js';
 import {lapsimBrakes} from './lapsim/brake-data.js';
 import {lapsimQsplit} from './lapsim/qsplit-data.js';
@@ -211,7 +213,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
 <section class="panel ls-panel ls-brakes"><h2>${esc(BT[lang].h)}</h2><div data-ls="brakes">${view.brakeHtml}</div></section>
 <section class="panel ls-panel ls-air"><h2>${esc(t.air)}</h2>
  <dl class="ls-facts ls-air-facts" data-ls="air">${view.airHtml}</dl>
- <div class="ls-forecast" data-ls="forecast" hidden data-ll="${(TRACK_LL[id] || []).join(',')}" data-ft='${esc(JSON.stringify(FT[lang]))}'></div>
+ <div class="ls-forecast" data-ls="forecast" hidden data-ll="${(TRACK_LL[id] || []).join(',')}" data-ft='${esc(JSON.stringify(lapsimTrackTemp ? {...FT[lang], k: lapsimTrackTemp.k, a: lapsimTrackTemp.a, note: FT[lang].noteFit.replace('{a}', lapsimTrackTemp.a.toFixed(1)).replace('{k}', lapsimTrackTemp.k.toFixed(4)).replace('{e}', lapsimTrackTemp.test.rmsC).replace('{n}', lapsimTrackTemp.test.events)} : FT[lang]))}'></div>
  <div class="ls-sliders" data-ls="manual" hidden>${slider('airTempC', t.airTemp, -5, 45, 0.5, '°C')}${slider('trackTempC', t.trackTemp, 5, 65, 0.5, '°C')}${slider('humidityPct', t.humidity, 0, 100, 1, '%')}${slider('pressureHpa', t.pressure, 760, 1040, 1, 'hPa')}${slider('windSpeed', t.wind, 0, 15, 0.1, 'm/s')}${slider('windFromDeg', t.windFrom, 0, 359, 1, '°')}</div>
 </section>
 <section class="panel ls-panel ls-evo"><h2>${esc(t.evo)}</h2><p>${esc(t.evoLead)}</p>
@@ -314,17 +316,13 @@ const BT = {
     axle: {rear: 'rear axle', front: 'front axle'}, noRegen: 'no regen', split: 'Friction brakes front {f}% · rear {r}% · motor regen ({ax}) {rk} kWh · friction brakes {fk} kWh · stopped by air drag {dk} kWh (per lap)',
     test: 'Test (Brembo figures, {n} races, each left out and predicted): deceleration error {g}% · pedal load {kg}% · speed before braking {v}% · braking distance {d}% · braking time per lap {t}% (an effective pressure build-up of {r} s, fitted on the Brembo figures, is included)', assume: 'Assumed: pedal ratio 3.5, master cylinder 17.8 mm, balance = front friction share. Pedal load = deceleration (g) × kg per g fitted on Brembo figures. Real pressure data is not published.'},
 };
-// Track coordinates for the weather forecast (circuit centre, about 0.01°)
-const TRACK_LL = {sakhir: [26.0325, 50.5106], jeddah: [21.6319, 39.1044], melbourne: [-37.8497, 144.968], suzuka: [34.8431, 136.541], shanghai: [31.3389, 121.22], miami: [25.9581, -80.2389],
-  imola: [44.3439, 11.7167], 'monte-carlo': [43.7347, 7.4206], montreal: [45.5, -73.5228], catalunya: [41.57, 2.2611], spielberg: [47.2197, 14.7647], silverstone: [52.0786, -1.0169],
-  hungaroring: [47.5789, 19.2486], 'spa-francorchamps': [50.4372, 5.9714], zandvoort: [52.3888, 4.5409], monza: [45.6156, 9.2811], baku: [40.3725, 49.8533], singapore: [1.2914, 103.864],
-  austin: [30.1328, -97.6411], 'mexico-city': [19.4042, -99.0907], interlagos: [-23.7036, -46.6997], 'las-vegas': [36.1147, -115.1728], lusail: [25.49, 51.4542],
-  'yas-marina-circuit': [24.4672, 54.6031], madring: [40.4636, -3.6146], 'kuala-lumpur': [2.7608, 101.7381]};
 const FT = {
   ko: {opt: '예보 (Météo-France)', loading: 'Météo-France 예보 불러오는 중…', hour: '시각 (현지)', rain: '비', fail: '예보를 불러오지 못했습니다. 잠시 후 다시 시도하세요.', k: 0.02,
-    note: 'Météo-France의 ARPEGE·AROME 예보(Open-Meteo 제공)입니다. F1·WEC 공식 기상 서비스도 Météo-France입니다. 노면 온도는 예보에 없어 기온 + 일사량 × 0.02 °C/(W/m²)로 추정합니다.'},
+    note: 'Météo-France의 ARPEGE·AROME 예보(Open-Meteo 제공)입니다. F1·WEC 공식 기상 서비스도 Météo-France입니다. 노면 온도는 예보에 없어 기온 + 일사량 × 0.02 °C/(W/m²)로 추정합니다.',
+    noteFit: 'Météo-France의 ARPEGE·AROME 예보(Open-Meteo 제공)입니다. F1·WEC 공식 기상 서비스도 Météo-France입니다. 노면 온도 = 기온 + {a} °C + 일사량 × {k} °C/(W/m²): 실제 세션 기상({n}개 대회)에 맞춘 값, 대회 하나씩 빼고 예측한 오차 ±{e} °C.'},
   en: {opt: 'Forecast (Météo-France)', loading: 'Loading the Météo-France forecast…', hour: 'Hour (local)', rain: 'rain', fail: 'Could not load the forecast. Try again shortly.', k: 0.02,
-    note: 'Météo-France ARPEGE/AROME forecast (served by Open-Meteo); Météo-France is also the official weather service of F1 and WEC. Track temperature is not forecast: estimated as air temperature + solar radiation × 0.02 °C per W/m².'},
+    note: 'Météo-France ARPEGE/AROME forecast (served by Open-Meteo); Météo-France is also the official weather service of F1 and WEC. Track temperature is not forecast: estimated as air temperature + solar radiation × 0.02 °C per W/m².',
+    noteFit: 'Météo-France ARPEGE/AROME forecast (served by Open-Meteo); Météo-France is also the official weather service of F1 and WEC. Track temperature = air + {a} °C + solar radiation × {k} °C per W/m², fitted on real session weather ({n} events), error ±{e} °C with each event left out.'},
 };
 const SERIES_UI = ['f1', 'wec', 'imsa', 'fe', 'gt3'];
 const RT = {
@@ -608,7 +606,7 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
       const j = await r.json(), H = j.hourly; if (!H || !H.time) throw Error('no data');
       const now = Date.now(), idx = H.time.map((x, i) => i).filter(i => new Date(H.time[i] + 'Z').getTime() - (j.utc_offset_seconds || 0) * 1000 >= now - 3600e3);
       fc.innerHTML = '<label>' + FT.hour + ' <select data-fc-hour>' + idx.map(i => '<option value="' + i + '">' + H.time[i].replace('T', ' ') + (H.precipitation[i] > 0.1 ? ' · ' + FT.rain + ' ' + H.precipitation[i] + ' mm' : '') + '</option>').join('') + '</select></label><p class="fine">' + FT.note + '</p>';
-      const pick = i => { Object.assign(state.manual, {airTempC: H.temperature_2m[i], humidityPct: H.relative_humidity_2m[i], pressureHpa: H.surface_pressure[i], windSpeed: H.wind_speed_10m[i], windFromDeg: H.wind_direction_10m[i], trackTempC: Math.round((H.temperature_2m[i] + FT.k * (H.shortwave_radiation[i] || 0)) * 2) / 2}); syncSliders(); update(); };
+      const pick = i => { Object.assign(state.manual, {airTempC: H.temperature_2m[i], humidityPct: H.relative_humidity_2m[i], pressureHpa: H.surface_pressure[i], windSpeed: H.wind_speed_10m[i], windFromDeg: H.wind_direction_10m[i], trackTempC: Math.round((H.temperature_2m[i] + (FT.a || 0) + FT.k * (H.shortwave_radiation[i] || 0)) * 2) / 2}); syncSliders(); update(); };
       fc.querySelector('[data-fc-hour]').addEventListener('change', e => pick(+e.target.value)); pick(idx[0]);
     } catch (err) { fc.textContent = FT.fail; }
   };
