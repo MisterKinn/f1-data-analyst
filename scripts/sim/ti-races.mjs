@@ -42,7 +42,7 @@ function pole(dir) {
     if (Number.isFinite(best)) bests.push(best);
   }
   // reference lap: pole, or the mean of the best N drivers' laps (LAPSIM_RACE_TOP) to match the race reference
-  const top = Math.max(1, Number(process.env.LAPSIM_RACE_TOP || 1)), b = bests.sort((x, y) => x - y).slice(0, top);
+  const top = Math.max(1, Number(process.env.LAPSIM_RACE_TOP || 8)), b = bests.sort((x, y) => x - y).slice(0, top);
   return {pole: b.length ? b.reduce((a, x) => a + x, 0) / b.length : null, pole1: b[0] ?? null, rainShare: n ? rain / n : 0};
 }
 
