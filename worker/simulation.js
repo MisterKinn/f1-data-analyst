@@ -9,6 +9,7 @@ import {carsFor as scenarioCars, realConditions, latestChanges, fittedYear, CAR_
 import {TRACK_NAMES as NAMES} from './lapsim/names.js';
 import {energyLimit} from './lapsim/energy-limits.js';
 import {lapsimRace} from './lapsim/race-data.js';
+import {lapsimRacingLines} from './lapsim/racing-lines-data.js';
 import {raceLaps, strategies} from './lapsim/race-pace.js';
 import {evolutionCoeffs, evolutionDelta, evolutionCurve} from './lapsim/evolution.js';
 
@@ -192,6 +193,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
  ${calRows ? `<div class="output"><table class="ls-table"><thead><tr><th></th><th>${esc(t.vsPole)}</th><th>${esc(t.lap)}</th><th>${esc(t.fitErr)}</th><th>${esc(t.speedRms)}</th></tr></thead><tbody>${calRows}</tbody></table></div>` : `<p class="fine">${esc(t.pendingLead)}</p>`}
  <h3>${esc(t.proj)}</h3><ul class="ls-notes">${projRows}</ul>
 </section>
+${linePanel(id, lang)}
 ${racePanel(id, lang, query.race || null)}
 <section class="panel ls-panel"><h2>${esc(t.model)}</h2><ul class="ls-notes"><li>${esc(t.m1)}</li><li>${esc(t.m2)}</li><li>${esc(t.m3)}</li><li>${esc(t.m4)}</li><li>${esc(t.m5)}</li><li>${esc(t.soon)}</li></ul>
  <p class="fine">${esc(t.src)}: <a href="https://openf1.org" target="_blank" rel="noopener noreferrer">OpenF1</a>, MultiViewer, <a href="https://github.com/bacinger/f1-circuits" target="_blank" rel="noopener noreferrer">f1-circuits</a>, <a href="https://github.com/f1db/f1db" target="_blank" rel="noopener noreferrer">f1db</a> (CC BY 4.0), <a href="https://github.com/TUMFTM/laptime-simulation" target="_blank" rel="noopener noreferrer">TUMFTM laptime-simulation</a>, FIA Section C Issue 21${data.calibration.generatedAt ? ` · ${esc(t.updated)} <span data-no-translate>${esc(data.calibration.generatedAt)}</span>` : ''}</p>
@@ -202,6 +204,51 @@ ${racePanel(id, lang, query.race || null)}
 
 // Race pace: expected lap times over the race and the best strategies, from the 2026 pole
 // (predicted when the track has not been raced in 2026) and the fitted fuel/tyre/pit factors.
+// Racing line panel: track edges + predicted minimum-curvature line, coloured by the real pole lap's
+// speed, with brake / apex / full-throttle points and a zoom on each corner.
+const LT = {
+  ko: {h: '레이싱 라인', all: '전체', lead: '공개 F1 위치 데이터는 트랙마다 하나의 기준선에 맞춰져 있어 실제 주행 라인을 알 수 없습니다. 그래서 라인은 트랙 폭 안에서 곡률이 가장 작은 경로로 예측하고, 속도·브레이크·스로틀은 실제 폴 랩 기록을 씁니다.',
+    edges: {TUM: '트랙 폭: TUM 측정값', 'TUM-widths': '트랙 폭: TUM 측정값 (레이아웃 변경 구간 근사)', assumed: '트랙 폭: 12 m 가정'}, pole: '속도·브레이크·스로틀: {y} 퀄리 폴 랩 실측 ({d}, {t})', nopole: '실측 폴 랩 없음',
+    check: 'TUM 최적 라인과의 차이: 평균 {m} m', key: ['브레이크 시작', '최저 속도', '풀 스로틀']},
+  en: {h: 'Racing line', all: 'All', lead: 'Public F1 position data is snapped to one reference path per track, so the real driven line is unknown. The line is predicted as the least-curvature path inside the track width; speed, brake and throttle are the real pole lap.',
+    edges: {TUM: 'Track width: TUM measured', 'TUM-widths': 'Track width: TUM measured (approximate where the layout changed)', assumed: 'Track width: 12 m assumed'}, pole: 'Speed, brake, throttle: {y} qualifying pole lap, measured ({d}, {t})', nopole: 'No measured pole lap',
+    check: 'Gap to the TUM optimal line: mean {m} m', key: ['Brake start', 'Lowest speed', 'Full throttle']},
+};
+function linePanel(id, lang) {
+  const L = lapsimRacingLines?.tracks?.[id], td = lapsimTracks[id];
+  if (!L?.line?.length) return '';
+  const t = LT[lang], P = L.line, n = P.length, xs = [...P, ...L.left, ...L.right].map(p => p[0]), ys = [...P, ...L.left, ...L.right].map(p => p[1]);
+  const minX = Math.min(...xs), maxX = Math.max(...xs), minY = Math.min(...ys), maxY = Math.max(...ys), pad = 40;
+  const X = x => (x - minX + pad).toFixed(1), Y = y => (maxY - y + pad).toFixed(1), pt = p => X(p[0]) + ',' + Y(p[1]);
+  const band = '<polygon class="ls-band" points="' + [...L.left, ...[...L.right].reverse()].map(pt).join(' ') + '"/>';
+  const v = L.speed, lo = v ? Math.min(...v) : 0, hi = v ? Math.max(...v) : 1;
+  // one path per speed bucket (as renderMap) so the line stays light
+  const bucket = i => v ? Math.min(5, Math.floor((v[i] - lo) / (hi - lo + 1e-9) * 6)) : 3;
+  let line = '', run = [0];
+  for (let i = 1; i <= n; i++) {
+    const j = i % n; run.push(j);
+    if (i === n || bucket(j) !== bucket(run[0])) { line += '<path d="M' + run.map(k => X(P[k][0]) + ' ' + Y(P[k][1])).join('L') + '" stroke="color-mix(in oklab,var(--mint) ' + bucket(run[0]) * 20 + '%,var(--sim-slow))"/>'; run = [j]; }
+  }
+  // brake start, lowest speed until the next full throttle, full throttle again
+  const marks = [];
+  if (L.brake && v) for (let i = 0; i < n; i++) if (L.brake[i] && !L.brake[(i - 1 + n) % n]) {
+    let a = i, j = i; for (let k = 0; k < n / 4; k++) { j = (i + k) % n; if (v[j] < v[a]) a = j; if (k > 3 && L.throttle[j] >= 98 && !L.brake[j]) break; }
+    marks.push([i, 'b'], [a, 'a'], [j, 't']);
+  }
+  const dot = ([i, k]) => '<circle class="ls-mk ls-mk-' + k + '" cx="' + X(P[i][0]) + '" cy="' + Y(P[i][1]) + '" r="4" vector-effect="non-scaling-stroke"/>';
+  const at = s => P[Math.round(s / td.length * n) % n];
+  const corners = (td.corners || []).map(c => ({k: c.number + (c.letter || ''), p: at(c.s)}));
+  const W = maxX - minX + 2 * pad, H = maxY - minY + 2 * pad, box = p => [Math.max(0, +X(p[0]) - 140), Math.max(0, +Y(p[1]) - 140), 280, 280].map(Math.round).join(' ');
+  const fmtT = s => { const m = Math.floor(s / 60); return (m ? m + ':' : '') + (s - m * 60).toFixed(3).padStart(m ? 6 : 5, '0'); };
+  const zoom = `<div class="ls-zoom"><button type="button" class="pill active" data-line-zoom="0 0 ${Math.round(W)} ${Math.round(H)}">${esc(t.all)}</button>${corners.map(c => `<button type="button" class="pill" data-line-zoom="${box(c.p)}">T${esc(c.k)}</button>`).join('')}</div>`;
+  const labels = corners.map(c => `<text class="ls-corner" x="${X(c.p[0])}" y="${Y(c.p[1])}" dy="-1.2em">${esc(c.k)}</text>`).join('');
+  const notes = [t.edges[L.edges], L.pole ? t.pole.replace('{y}', L.pole.year).replace('{d}', L.pole.driver).replace('{t}', fmtT(L.pole.time)) : t.nopole, L.check?.vsTumMeanM != null ? t.check.replace('{m}', L.check.vsTumMeanM) : null].filter(Boolean);
+  return `<section class="panel ls-panel ls-line-panel"><h2>${esc(t.h)}</h2><p>${esc(t.lead)}</p>${zoom}
+ <div class="ls-scroll"><svg class="ls-line-map" style="--k:${(W / 700).toFixed(2)}" viewBox="0 0 ${Math.round(W)} ${Math.round(H)}" role="img" aria-label="${esc(t.h)}">${band}<g class="ls-line-path">${line}</g>${marks.map(dot).join('')}${labels}</svg></div>
+ <p class="fine ls-line-key"><span class="ls-mk-b"></span>${esc(t.key[0])} <span class="ls-mk-a"></span>${esc(t.key[1])} <span class="ls-mk-t"></span>${esc(t.key[2])}</p>
+ <p class="fine">${notes.map(esc).join(' · ')}</p></section>`;
+}
+
 const RT = {
   ko: {h: '레이스 페이스 예측', lead: '연료가 줄고, 타이어가 닳고, 피트 스톱을 하면서 랩타임이 어떻게 바뀌는지 실제 레이스 랩으로 맞춘 값입니다.', strat: '전략', time: '레이스 시간', gap: '차이', laps: '랩', pole: '기준 폴', refTop: '기준 랩 (예선 상위 {n}명 평균)', basis: {pred: '2026 예측', real: '2026 실제'}, test: '이전 시즌만으로 예측한 레이스 페이스 오차', season: '시즌', now: '예측/최근', repro: '이미 열린 레이스 재현 오차 (전 시즌 최대)', chart: '최적 전략의 예상 랩타임', c: {S: '소프트', M: '미디엄', H: '하드'}},
   en: {h: 'Race pace prediction', lead: 'How lap time changes as fuel burns, tyres wear and cars stop, fitted to real race laps.', strat: 'Strategy', time: 'Race time', gap: 'Gap', laps: 'laps', pole: 'Pole used', refTop: 'Reference lap (mean of the best {n} in qualifying)', basis: {pred: '2026 prediction', real: '2026 real'}, test: 'Race-pace error predicted from earlier seasons only', season: 'Season', now: 'Prediction/latest', repro: 'Races already run, reproduction error (largest, all seasons)', chart: 'Expected lap times, best strategy', c: {S: 'Soft', M: 'Medium', H: 'Hard'}},
@@ -335,6 +382,10 @@ function computeView(K, data, state, R) {
 function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, evolutionCurve) {
   const el = document.getElementById('lapsim-data'); if (!el) return;
   const R = {renderMap, renderTrace, evolutionDelta, evolutionCurve};
+  document.querySelectorAll('[data-line-zoom]').forEach(b => b.addEventListener('click', () => {
+    const svg = document.querySelector('.ls-line-map'); if (svg) { svg.setAttribute('viewBox', b.dataset.lineZoom); svg.style.setProperty('--k', (b.dataset.lineZoom.split(' ')[2] / 700).toFixed(2)); }
+    document.querySelectorAll('[data-line-zoom]').forEach(o => o.classList.toggle('active', o === b));
+  }));
   const data = JSON.parse(el.textContent);
   const q = s => document.querySelector('[data-ls="' + s + '"]');
   const yearKey = data.conds['2026'] ? '2026' : Object.keys(data.conds)[0];
@@ -399,6 +450,7 @@ const CSS = `:root{--sim-slow:#ffa94d}:root[data-theme="light"]{--sim-slow:#245d
 .ls-changes{list-style:none;margin:0;padding:0;display:grid;gap:10px}.ls-change label{display:flex;gap:12px;align-items:flex-start;color:var(--text);font-size:14px;min-width:0}.ls-change input{width:20px;height:20px;min-height:0;margin-top:2px;accent-color:var(--mint)}.ls-change small{display:block;color:var(--muted);font-size:12px;margin-top:2px}.ls-change.is-info label{color:var(--muted)}.ls-dot{width:20px;flex:0 0 20px;text-align:center}.ls-dot::before{content:'·'}
 .ls-table td,.ls-table th{white-space:nowrap}.ls-notes{margin:0;padding-left:20px;display:grid;gap:10px;line-height:1.7;color:var(--muted);max-width:80ch}.ls-panel h3{font-size:18px;margin-top:6px}
 
+.ls-line-map{width:100%;max-height:560px;transition:none}.ls-band{fill:color-mix(in oklab,var(--muted) 22%,transparent);stroke:var(--muted);stroke-width:1;vector-effect:non-scaling-stroke}.ls-line-path path{fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}.ls-mk{stroke:var(--surface);stroke-width:1.5;r:calc(var(--k) * 6px)}.ls-mk-b{fill:#e5484d}.ls-mk-a{fill:#f5a524}.ls-mk-t{fill:#30a46c}.ls-line-key span{display:inline-block;width:10px;height:10px;border-radius:50%;margin:0 4px 0 10px;vertical-align:middle}.ls-line-key span:first-child{margin-left:0}.ls-line-key .ls-mk-b{background:#e5484d}.ls-line-key .ls-mk-a{background:#f5a524}.ls-line-key .ls-mk-t{background:#30a46c}.ls-zoom{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 12px}.ls-line-map .ls-corner{font-size:calc(var(--k) * 15px);font-weight:600;fill:var(--text);text-anchor:middle;paint-order:stroke;stroke:var(--surface);stroke-width:3px}
 .ls-evo .ls-controls{grid-template-columns:repeat(3,minmax(0,1fr));margin:12px 0 16px}.ls-check{display:flex;align-items:center;gap:8px;align-self:end;min-height:40px}.ls-check input{width:20px;height:20px;min-height:0;accent-color:var(--mint)}.ls-evo .ls-facts{margin-top:16px}
 @media(max-width:900px){.ls-stage{grid-template-columns:1fr;gap:24px}.ls-hero h1{font-size:32px}.ls-controls{grid-template-columns:1fr 1fr}.ls-air-facts{grid-template-columns:repeat(2,minmax(0,1fr))}.ls-sliders{grid-template-columns:1fr}}
 @media(max-width:520px){.ls-controls{grid-template-columns:1fr}.ls-facts{grid-template-columns:1fr 1fr}.ls-slider{grid-template-columns:1fr 52px 36px}.ls-slider>span:first-child{grid-column:1/-1}}`;
