@@ -31,3 +31,20 @@ export function minCurvatureLine(x, y, half, {iters = 4000, rate = 0.5, init = n
   }
   return {offset: Array.from(o), x: Array.from(o, (v, i) => x[i] + nx[i] * v), y: Array.from(o, (v, i) => y[i] + ny[i] * v)};
 }
+
+// Closed polyline -> uniform-spacing track for the lap kernel K (curvature from three points about
+// 20 m apart, lightly smoothed). Self-contained: the /simulation page sends its source to the browser.
+export function lineTrack(K, px, py, ds = 10) {
+  const n = px.length, s = [0];
+  for (let i = 1; i <= n; i++) s.push(s[i - 1] + Math.hypot(px[i % n] - px[i - 1], py[i % n] - py[i - 1]));
+  const L = s[n], m = Math.round(L / ds), d = L / m, x = new Float64Array(m), y = new Float64Array(m);
+  for (let j = 0, i = 0; j < m; j++) { const t = j * d; while (s[i + 1] < t) i++; const f = (t - s[i]) / (s[i + 1] - s[i]); x[j] = px[i] + f * (px[(i + 1) % n] - px[i]); y[j] = py[i] + f * (py[(i + 1) % n] - py[i]); }
+  const k = new Float64Array(m);
+  for (let j = 0; j < m; j++) {
+    // three points 2 samples apart (about 20 m): curvature of the line, not of the sampling noise
+    const a = (j - 2 + m) % m, b = (j + 2) % m, ax = x[j] - x[a], ay = y[j] - y[a], bx = x[b] - x[j], by = y[b] - y[j];
+    k[j] = 2 * (ax * by - ay * bx) / (Math.hypot(ax, ay) * Math.hypot(bx, by) * Math.hypot(x[b] - x[a], y[b] - y[a]) || 1);
+  }
+  const kappa = k.map((v, j) => (k[(j - 1 + m) % m] + 2 * v + k[(j + 1) % m]) / 4);
+  return {ds: d, kappa, grade: null, heading: null, mu: new Float64Array(m).fill(1), vScale: new Float64Array(m).fill(1), aeroLow: K.autoStraights(kappa, d), corners: [], length: L, x, y};
+}

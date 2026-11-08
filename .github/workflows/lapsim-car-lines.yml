@@ -1,0 +1,76 @@
+name: Lap simulator racing line per car
+
+# Fastest qualifying and race line for each car (scripts/sim/car-lines.mjs) from the lap simulator,
+# inside the track widths of worker/lapsim/racing-lines-data.js. Four shards run in parallel, then the
+# results are merged into worker/lapsim/car-lines-data.js. Push to lapsim-lines/** (commits back to
+# that branch) or run by hand.
+on:
+  push:
+    branches: ['lapsim-lines/**']
+    paths-ignore: ['worker/lapsim/car-lines-data.js', 'docs/lapsim-car-lines.md']
+  workflow_dispatch:
+    inputs:
+      iters:
+        description: 'Optimiser steps per line'
+        default: '1200'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: lapsim-car-lines-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  shard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    strategy:
+      matrix:
+        shard: [0, 1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Optimise this shard's tracks
+        env:
+          LAPSIM_LINE_ITERS: ${{ inputs.iters || '1200' }}
+        run: |
+          export LAPSIM_LINE_TRACKS=$(node -e "import('./worker/lapsim/racing-lines-data.js').then(m=>console.log(Object.keys(m.lapsimRacingLines.tracks).filter((_,i)=>i%4==${{ matrix.shard }}).join(',')))")
+          node scripts/sim/car-lines.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: car-lines-${{ matrix.shard }}
+          path: .cache/lapsim/car-lines/
+
+  merge:
+    needs: shard
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: car-lines-*
+          path: .cache/lapsim/car-lines/
+          merge-multiple: true
+      - name: Merge
+        run: LAPSIM_LINE_MERGE=1 node scripts/sim/car-lines.mjs && cat docs/lapsim-car-lines.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Test
+        run: node --test tests/lapsim-car-lines.test.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: car-lines
+          path: |
+            worker/lapsim/car-lines-data.js
+            docs/lapsim-car-lines.md
+      - name: Commit the lines
+        if: github.event_name == 'push'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add worker/lapsim/car-lines-data.js docs/lapsim-car-lines.md
+          git diff --cached --quiet || { git commit -m "Lapsim: racing line per car from the lap simulator"; git push; }
