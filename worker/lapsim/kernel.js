@@ -197,16 +197,23 @@ export function lapsimKernel() {
     // (spare ICE power), and by "super-clipping" (harvesting at full throttle above vH, which costs speed).
     const throttleHarvest = ers.rule === 'f1-2026' && ers.throttleHarvest !== false;
     const clipMax = env.clipMax ?? ers.clipMax ?? 350e3, etaRegen = ers.etaRegen ?? 0.9;
+    // 2026+ F1: the battery is tracked point by point on the final pass (qualifying lap from a full
+    // battery): no deploy when it is empty, recovery stops at the per-lap recharge limit, and charge above
+    // the usable window is lost. Earlier passes only warm up the speed profile.
+    const causal = ers.rule === 'f1-2026' && ers.causalSoc !== false;
+    const socMax = ers.socWindow ?? 4e6, recMax = env.rechargeMax ?? ers.rechargeMax ?? 8.5e6;
     const forward = (vCut, vH = Infinity) => {
       const v = fwd;
       v[iMin] = Math.min(vLat[iMin], vBack[iMin]);
+      let soc = socMax, got = 0;
       for (let pass = 0; pass < 2; pass++) {
+        const track = causal && pass === 1, start = track ? 0 : iMin;
         for (let c = 0; c < n; c++) {
-          const i = (iMin + c) % n, j = (i + 1) % n;
+          const i = (start + c) % n, j = (i + 1) % n;
           const vi = Math.max(v[i], 1);
           const low = lowAt(i);
           const va = vAir(vi, i), L = aeroFactor * clAt(i, low) * va * va, N = mg * cosG[i] + L;
-          const pErs = vi < vCut ? erskLimitW(ers.rule, vi, ers.pMax || 0) : 0;
+          const pErs = vi < vCut && (!track || soc > 0) ? erskLimitW(ers.rule, vi, ers.pMax || 0) : 0;
           const fPow = (pIce * etaD + pErs * etaK * etaD) / vi;
           const nRear = t.rearStatic * mg * cosG[i] + t.rearAero * L;
           const muX = muAt(i) * (t.muXTrac / t.muY0) * capacity(t.muY0, t.dmu, t.fz0, N) / N;
@@ -230,6 +237,16 @@ export function lapsimKernel() {
           const a = (fDrive - drag - roll) / (t.m * t.inertia) - G * sinG[i];
           const vn = Math.sqrt(Math.max(1, vi * vi + 2 * a * ds));
           v[j] = Math.min(vn, vLat[j], vMaxCar, vBack[j]);
+          if (track) {
+            // same energy terms as account(): deploy while accelerating, throttle harvest, braking regen
+            const vm = 0.5 * (vi + v[j]), dt = ds / Math.max(vm, 1);
+            let rec = v[j] >= vi - 1e-6 ? harv[i] * dt : 0;
+            if (v[j] < vi - 1e-6 && ers.regenMax) rec += Math.min(ers.regenMax, (ers.regenShare ?? 0.6) * t.m * (vi * vi - v[j] * v[j]) / (2 * ds) * vm * etaRegen) * dt;
+            rec = Math.max(0, Math.min(rec, recMax - got)); got += rec;
+            if (v[j] > vi + 1e-6) { const use = Math.min(ersUsed[i] * dt, Math.max(0, soc)); if (use < ersUsed[i] * dt) ersUsed[i] = use / dt; soc -= use; }
+            else ersUsed[i] = 0;
+            soc = Math.min(socMax, soc + rec);
+          }
         }
       }
       return v;
