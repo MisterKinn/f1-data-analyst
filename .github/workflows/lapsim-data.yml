@@ -109,6 +109,9 @@ jobs:
       - name: Hypercar stints (Al Kamel race timing) and stint-energy fit
         continue-on-error: true
         run: node scripts/sim/wec-stints.mjs && cp .cache/lapsim/wec-stints.json scripts/sim/data/wec-stints.json && node scripts/sim/stint-fit.mjs
+      - name: Brakes against Brembo published figures
+        continue-on-error: true
+        run: node scripts/sim/brake-fit.mjs
       - name: Read FIA circuit changes
         if: inputs.calibrate != 'false'
         run: node scripts/sim/fia-changes.mjs
@@ -129,7 +132,7 @@ jobs:
           for f in worker/lapsim/tracks-data.js worker/lapsim/calibration-data.js worker/lapsim/track-changes-data.js docs/lapsim-report.md docs/lapsim-geometry.md \
             worker/lapsim/race-data.js docs/lapsim-race.md worker/lapsim/change-effects-data.js worker/lapsim/energy-docs-data.js worker/lapsim/rules-data.js docs/lapsim-rules.md \
             worker/lapsim/racing-lines-data.js docs/lapsim-racing-lines.md \
-            worker/lapsim/stint-data.js scripts/sim/data/wec-stints.json; do
+            worker/lapsim/stint-data.js scripts/sim/data/wec-stints.json worker/lapsim/brake-data.js; do
             [ -e "$f" ] && git add "$f"
           done
           if git diff --cached --quiet; then echo "No changes"; exit 0; fi

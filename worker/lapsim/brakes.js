@@ -13,7 +13,7 @@ export function brakeZones(track, car, env, v, limit, opts = {}) {
   let energy = {total: 0, drag: 0, regen: 0, front: 0, rear: 0};
   for (let i = 0; i < n; i++) {
     if (limit[i] !== 3 || limit[(i - 1 + n) % n] === 3) continue;
-    let j = i, peak = 0, dist = 0, time = 0, zf = 0, zr = 0, zg = 0;
+    let j = i, peak = 0, dist = 0, time = 0, zf = 0, zr = 0, zg = 0, hd = 0, ht = 0, hs = -1, he = -1, gsum = 0;
     while (limit[j % n] === 3 && j - i < n / 3) {
       const a = j % n, b = (j + 1) % n, vm = 0.5 * (v[a] + v[b]), dec = (v[a] * v[a] - v[b] * v[b]) / (2 * ds); // m/s²
       const low = track.aeroLow?.[a], drag = 0.5 * rho * (low ? car.cdALow ?? car.cdA : car.cdA) * vm * vm, down = 0.5 * rho * (low ? car.clALow ?? car.clA : car.clA) * vm * vm;
@@ -25,11 +25,17 @@ export function brakeZones(track, car, env, v, limit, opts = {}) {
       const ff = fNeed - (axle === 'front' ? regenF : 0), fr = rNeed - (axle === 'front' ? 0 : regenF);
       zf += ff * ds; zr += fr * ds; zg += regenF * ds;
       energy.total += total * ds; energy.drag += drag * ds; energy.regen += regenF * ds; energy.front += ff * ds; energy.rear += fr * ds;
-      peak = Math.max(peak, dec / G); dist += ds; time += ds / Math.max(vm, 1); j++;
+      peak = Math.max(peak, dec / G); dist += ds; time += ds / Math.max(vm, 1);
+      // the hard part (pedal pressed: deceleration above 1.5 g, beyond what drag and lifting give)
+      if (dec / G >= (opts.hardG ?? 1.5)) { hd += ds; ht += ds / Math.max(vm, 1); gsum += dec / G * ds; if (hs < 0) hs = a; he = b; }
+      j++;
     }
     if (j - i < 2 || (v[i] - v[j % n]) * 3.6 < 10) continue;
-    const pedalKg = pedalPerG * peak, barPerKg = G * ratio / (Math.PI * (mcMm / 2000) ** 2) / 1e5;
-    zones.push({start: i, end: j % n, vFrom: v[i] * 3.6, vTo: v[j % n] * 3.6, distM: dist, timeS: time, peakG: peak,
+    // pedal load from the mean deceleration of the hard part; front-circuit pressure from the pedal force,
+    // pedal ratio and master-cylinder bore, with the balance bar sending the front friction share forward
+    const meanG = hd ? gsum / hd : peak, pedalKg = pedalPerG * meanG, front = zf / Math.max(1, zf + zr);
+    const barPerKg = G * ratio * front / (Math.PI * (mcMm / 2000) ** 2) / 1e5;
+    zones.push({start: i, end: j % n, vFrom: v[hs < 0 ? i : hs] * 3.6, vTo: v[he < 0 ? j % n : he] * 3.6, distM: hd || dist, timeS: ht || time, peakG: peak, meanG, liftDistM: dist,
       frontPct: 100 * zf / Math.max(1, zf + zr), regenPct: 100 * zg / Math.max(1, zf + zr + zg), pedalKg, bar: pedalKg * barPerKg});
     i = j;
   }

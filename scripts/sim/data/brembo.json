@@ -1,0 +1,1511 @@
+{
+ "_meta": {
+  "collected": "2026-11-08",
+  "note": "Values as stated by Brembo (brembo.com '5 facts' pages) or mirrors quoting Brembo. Upper/lower bounds ('<13 s', 'over 17 s') stored as the number with the qualifier in notes. powerKW = Brembo braking power at that corner. 2026 pages are pre-race simulations."
+ },
+ "f1": {
+  "2024": {
+   "Monaco Grand Prix": {
+    "source": "https://thebrakereport.com/monaco-grand-prix-brembo-insights/",
+    "index": null,
+    "zones": 12,
+    "brakingTimeS": 17,
+    "brakingPct": 24,
+    "maxDecelG": 4.7,
+    "maxPedalKg": 148,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 10,
+      "vFrom": 283,
+      "vTo": 93,
+      "distM": 86,
+      "timeS": 1.91,
+      "decelG": 4.7,
+      "pedalKg": 148
+     }
+    ]
+   },
+   "Italian Grand Prix": {
+    "source": "https://gpblog.com/en/news/297226/brembo-analysis-on-2024-italian-grand-prix.html",
+    "index": 5,
+    "zones": 6,
+    "brakingTimeS": 8,
+    "brakingPct": null,
+    "maxDecelG": 4.5,
+    "maxPedalKg": 140,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [],
+    "notes": "'just under 8 s'; decel 'at least 4.5 g'; pedal 'exceeds 140 kg'. No corner detail."
+   },
+   "Singapore Grand Prix": {
+    "source": "https://scuderiafans.com/f1-singapore-gp-brembo-preview-the-critical-factor-for-brakes-at-marina-bay/",
+    "index": null,
+    "zones": 12,
+    "brakingTimeS": null,
+    "brakingPct": null,
+    "maxDecelG": 4.6,
+    "maxPedalKg": 150,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 14,
+      "vFrom": 288,
+      "vTo": 93,
+      "distM": 94,
+      "timeS": 2.19,
+      "decelG": 4.6,
+      "pedalKg": 150,
+      "powerKW": 2239
+     }
+    ],
+    "notes": "Brakes used in 12 of 19 corners."
+   },
+   "United States Grand Prix": {
+    "source": "https://scuderiafans.com/brembo-preview-here-are-the-braking-points-to-watch-out-for-in-austin-2024-f1-usa-gp/",
+    "index": null,
+    "zones": 10,
+    "brakingTimeS": 16.7,
+    "brakingPct": 18,
+    "maxDecelG": 4.3,
+    "maxPedalKg": 133,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 12,
+      "vFrom": 309,
+      "vTo": 86,
+      "distM": 123,
+      "timeS": 2.7,
+      "decelG": 4.3,
+      "pedalKg": 133,
+      "powerKW": 2212
+     }
+    ],
+    "notes": "Braking distance per lap 730 m."
+   },
+   "São Paulo Grand Prix": {
+    "source": "https://scuderiafans.com/brazilian-gp-brembo-analysis-it-all-comes-down-to-first-corner-at-interlagos/",
+    "index": 3,
+    "zones": 5,
+    "brakingTimeS": 10.5,
+    "brakingPct": null,
+    "maxDecelG": 4.6,
+    "maxPedalKg": 139,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 1,
+      "vFrom": 337,
+      "vTo": 124,
+      "distM": 130,
+      "timeS": 2.41,
+      "decelG": 4.6,
+      "pedalKg": 139,
+      "powerKW": 2486
+     }
+    ]
+   },
+   "Abu Dhabi Grand Prix": {
+    "source": "https://scuderiafans.com/brembo-analysis-of-2024-f1-abu-dhabi-gp-watch-out-for-brake-overheating/",
+    "index": 3,
+    "zones": 7,
+    "brakingTimeS": null,
+    "brakingPct": null,
+    "maxDecelG": 4.6,
+    "maxPedalKg": 146,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 6,
+      "vFrom": 307,
+      "vTo": 64,
+      "distM": 114,
+      "timeS": 2.67,
+      "decelG": 4.6,
+      "pedalKg": 146,
+      "powerKW": 2339
+     }
+    ]
+   }
+  },
+  "2025": {
+   "Australian Grand Prix": {
+    "source": "https://www.brembo.com/cs/motorsport/formula1/2025/australia",
+    "index": 3,
+    "zones": 7,
+    "brakingTimeS": 8.5,
+    "brakingPct": 11,
+    "maxDecelG": 4.8,
+    "maxPedalKg": 153,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 11,
+      "vFrom": 317,
+      "vTo": 133,
+      "distM": 96,
+      "timeS": 1.8,
+      "decelG": 4.8,
+      "pedalKg": 153,
+      "powerKW": 2508
+     }
+    ],
+    "zonesBreakdown": "4 high, 2 medium, 1 light",
+    "notes": "Czech-language Brembo page; '<8.5 s'."
+   },
+   "Chinese Grand Prix": {
+    "source": "https://www.brembo.com/en/motorsport/formula1/2025/facts-formula1-gp-cina",
+    "index": 3,
+    "zones": null,
+    "brakingTimeS": 16.6,
+    "brakingPct": 18,
+    "maxDecelG": 4.7,
+    "maxPedalKg": 174,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 14,
+      "vFrom": 318,
+      "vTo": 72,
+      "distM": 113,
+      "timeS": 2.66,
+      "decelG": 4.7,
+      "pedalKg": 174,
+      "powerKW": 2450
+     }
+    ],
+    "notes": "18% stated as share of the race; zone count not stated (3 hard)."
+   },
+   "Japanese Grand Prix": {
+    "source": "https://www.brembo.com/en/motorsport/formula1/2025/facts-formula1-gp-japan",
+    "index": 1,
+    "zones": 8,
+    "brakingTimeS": 10,
+    "brakingPct": 11,
+    "maxDecelG": 4.5,
+    "maxPedalKg": 166,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 16,
+      "vFrom": 303,
+      "vTo": 103,
+      "distM": 106,
+      "timeS": 2.17,
+      "decelG": 4.5,
+      "pedalKg": 166,
+      "powerKW": 2360
+     }
+    ],
+    "zonesBreakdown": "2 hard, 4 medium, 2 light"
+   },
+   "Bahrain Grand Prix": {
+    "source": "https://www.brembo.com/en/motorsport/formula1/2025/facts-formula1-gp-bahrein",
+    "index": 4,
+    "zones": 8,
+    "brakingTimeS": 15.8,
+    "brakingPct": 18,
+    "maxDecelG": 4.2,
+    "maxPedalKg": 133,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 1,
+      "vFrom": 313,
+      "vTo": 66,
+      "distM": 124,
+      "timeS": 2.89,
+      "decelG": 4.2,
+      "pedalKg": 133,
+      "powerKW": 2112
+     }
+    ],
+    "zonesBreakdown": "4 hard, 3 medium, 1 light"
+   },
+   "Saudi Arabian Grand Prix": {
+    "source": "https://www.brembo.com/en/motorsport/formula1/2025/facts-formula1-gp-saudi-arabia",
+    "index": 4,
+    "zones": 8,
+    "brakingTimeS": 11,
+    "brakingPct": null,
+    "maxDecelG": 4.4,
+    "maxPedalKg": 159,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 1,
+      "vFrom": 317,
+      "vTo": 110,
+      "distM": 122,
+      "timeS": 2.47,
+      "decelG": 4.4,
+      "pedalKg": 159,
+      "powerKW": 2339
+     }
+    ],
+    "notes": "'over 11 s'; per-lap pedal load 'exceeding one ton'; 6 of 8 High."
+   },
+   "Miami Grand Prix": {
+    "source": "https://www.brembo.com/en/motorsport/formula1/2025/facts-formula1-gp-miami",
+    "index": 3,
+    "zones": 8,
+    "brakingTimeS": 14.5,
+    "brakingPct": null,
+    "maxDecelG": 4.6,
+    "maxPedalKg": 169,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 17,
+      "vFrom": 319,
+      "vTo": 76,
+      "distM": 121,
+      "timeS": 2.81,
+      "decelG": 4.6,
+      "pedalKg": 169,
+      "powerKW": 2462
+     }
+    ],
+    "notes": "'less than 14.5 s'; 3 High."
+   },
+   "Emilia Romagna Grand Prix": {
+    "source": "https://www.brembo.com/en/motorsport/formula1/2025/facts-formula1-gp-imola",
+    "index": 3,
+    "zones": 9,
+    "brakingTimeS": 10.5,
+    "brakingPct": null,
+    "maxDecelG": 4.1,
+    "maxPedalKg": 145,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 17,
+      "vFrom": 292,
+      "vTo": 122,
+      "distM": 105,
+      "timeS": 2.09,
+      "decelG": 4.1,
+      "pedalKg": 145,
+      "powerKW": 2026
+     }
+    ],
+    "zonesBreakdown": "3 high, 4 medium, 2 light",
+    "notes": "'<10.5 s'"
+   },
+   "Monaco Grand Prix": {
+    "source": "https://www.brembo.com/en/motorsport/formula1/2025/facts-formula1-gp-monaco",
+    "index": 3,
+    "zones": 15,
+    "brakingTimeS": 19,
+    "brakingPct": 27,
+    "maxDecelG": 4.5,
+    "maxPedalKg": 145,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 10,
+      "vFrom": 290,
+      "vTo": 96,
+      "distM": 91,
+      "timeS": 2.06,
+      "decelG": 4.5,
+      "pedalKg": 145,
+      "powerKW": 2184
+     }
+    ],
+    "zonesBreakdown": "2 high, 6 medium, 7 light"
+   },
+   "Spanish Grand Prix": {
+    "source": "https://www.brembo.com/en/motorsport/formula1/2025/facts-formula1-gp-spagna",
+    "index": 2,
+    "zones": 6,
+    "brakingTimeS": 11.5,
+    "brakingPct": null,
+    "maxDecelG": 4.0,
+    "maxPedalKg": 133,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 10,
+      "vFrom": 310,
+      "vTo": 106,
+      "distM": 125,
+      "timeS": 2.46,
+      "decelG": 4.0,
+      "pedalKg": 133,
+      "powerKW": 2019
+     }
+    ],
+    "zonesBreakdown": "3 high, 2 medium, 1 light"
+   },
+   "Canadian Grand Prix": {
+    "source": "https://www.brembo.com/pl/motorsport/formula1/2025/facts-formula1-gp-canada",
+    "index": 4,
+    "zones": 8,
+    "brakingTimeS": 12.5,
+    "brakingPct": null,
+    "maxDecelG": 5.0,
+    "maxPedalKg": 168,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 10,
+      "vFrom": 292,
+      "vTo": 69,
+      "distM": 107,
+      "timeS": 2.82,
+      "decelG": 5.0,
+      "pedalKg": 168,
+      "powerKW": 2519
+     }
+    ],
+    "zonesBreakdown": "6 hard, 2 light",
+    "notes": "Polish Brembo page; 'just under 12.5 s'."
+   },
+   "Austrian Grand Prix": {
+    "source": "https://www.brembo.com/pl/motorsport/formula1/2025/facts-formula1-gp-austria",
+    "index": 3,
+    "zones": 6,
+    "brakingTimeS": 8.6,
+    "brakingPct": 13,
+    "maxDecelG": 4.6,
+    "maxPedalKg": 142,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 3,
+      "vFrom": 306,
+      "vTo": 78,
+      "distM": 112,
+      "timeS": 2.58,
+      "decelG": 4.6,
+      "pedalKg": 142,
+      "powerKW": 2355
+     }
+    ],
+    "zonesBreakdown": "3 hard, 2 medium, 1 light",
+    "notes": "Polish Brembo page; per-lap pedal load just under 650 kg."
+   },
+   "British Grand Prix": {
+    "source": "https://www.brembo.com/en/motorsport/formula1/2025/facts-formula1-gp-uk",
+    "index": 1,
+    "zones": 8,
+    "brakingTimeS": 11,
+    "brakingPct": null,
+    "maxDecelG": 4.5,
+    "maxPedalKg": 152,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 3,
+      "vFrom": 295,
+      "vTo": 130,
+      "distM": 115,
+      "timeS": 2.33,
+      "decelG": 4.5,
+      "pedalKg": 152,
+      "powerKW": 2260
+     }
+    ],
+    "zonesBreakdown": "3 hard, 1 medium, 4 light"
+   },
+   "Belgian Grand Prix": {
+    "source": "https://www.brembo.com/pl/motorsport/formula1/2025/facts-formula1-gp-belgium",
+    "index": 4,
+    "zones": 8,
+    "brakingTimeS": 12.5,
+    "brakingPct": null,
+    "maxDecelG": 4.7,
+    "maxPedalKg": 157,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 5,
+      "vFrom": 327,
+      "vTo": 176,
+      "distM": 93,
+      "timeS": 1.48,
+      "decelG": 4.7,
+      "pedalKg": 157,
+      "powerKW": 2584
+     },
+     {
+      "turn": 1,
+      "vFrom": 295,
+      "vTo": 81,
+      "distM": null,
+      "timeS": 2.9,
+      "decelG": null,
+      "pedalKg": null,
+      "label": "La Source, from 2025-numbers page"
+     }
+    ],
+    "zonesBreakdown": "5 hard, 1 medium, 2 light",
+    "notes": "Polish Brembo page; 'over 12.5 s'; per-lap pedal load almost 1 t."
+   },
+   "Hungarian Grand Prix": {
+    "source": "https://www.brembo.com/en/motorsport/formula1/2025/facts-formula1-gp-hungary",
+    "index": 3,
+    "zones": 10,
+    "brakingTimeS": null,
+    "brakingPct": 20,
+    "maxDecelG": 4.4,
+    "maxPedalKg": 156,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 1,
+      "vFrom": 307,
+      "vTo": 95,
+      "distM": 122,
+      "timeS": 2.65,
+      "decelG": 4.4,
+      "pedalKg": 156,
+      "powerKW": 2243
+     }
+    ],
+    "zonesBreakdown": "2 hard, 4 medium, 4 light"
+   },
+   "Dutch Grand Prix": {
+    "source": "https://www.brembo.com/en/motorsport/formula1/2025/facts-formula1-gp-dutch",
+    "index": 2,
+    "zones": 9,
+    "brakingTimeS": 13,
+    "brakingPct": null,
+    "maxDecelG": 4.7,
+    "maxPedalKg": 157,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 1,
+      "vFrom": 315,
+      "vTo": 124,
+      "distM": 119,
+      "timeS": 2.29,
+      "decelG": 4.7,
+      "pedalKg": 157,
+      "powerKW": 2507
+     }
+    ],
+    "zonesBreakdown": "2 hard, 1 medium, 6 light",
+    "notes": "'<13 s'"
+   },
+   "Italian Grand Prix": {
+    "source": "https://www.brembo.com/en/motorsport/formula1/2025/facts-formula1-gp-monza",
+    "index": 5,
+    "zones": 7,
+    "brakingTimeS": 9.25,
+    "brakingPct": null,
+    "maxDecelG": 4.7,
+    "maxPedalKg": 162,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 1,
+      "vFrom": 337,
+      "vTo": 89,
+      "distM": 129,
+      "timeS": 2.75,
+      "decelG": 4.7,
+      "pedalKg": 162,
+      "powerKW": 2715
+     }
+    ],
+    "notes": "'just under 9.25 s'; 5 of 7 Hard."
+   },
+   "Azerbaijan Grand Prix": {
+    "source": "https://www.brembo.com/en/motorsport/formula1/2025/facts-formula1-gp-baku",
+    "index": 4,
+    "zones": 12,
+    "brakingTimeS": 20.5,
+    "brakingPct": null,
+    "maxDecelG": 5.0,
+    "maxPedalKg": 176,
+    "totalDecelG": null,
+    "raceLoadT": 88.6,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 1,
+      "vFrom": 329,
+      "vTo": 119,
+      "distM": 108,
+      "timeS": 2.12,
+      "decelG": 5.0,
+      "pedalKg": 176,
+      "powerKW": 2758
+     }
+    ],
+    "zonesBreakdown": "7 hard, 2 medium, 3 light",
+    "notes": "'almost 20.5 s'; '88.6 tons ... from start to finish' (season peak)."
+   },
+   "Singapore Grand Prix": {
+    "source": "https://www.brembo.com/en/motorsport/formula1/2025/facts-formula1-gp-singapore",
+    "index": 4,
+    "zones": 11,
+    "brakingTimeS": 17,
+    "brakingPct": null,
+    "maxDecelG": 4.9,
+    "maxPedalKg": 151,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 7,
+      "vFrom": 308,
+      "vTo": 128,
+      "distM": 96,
+      "timeS": 1.9,
+      "decelG": 4.9,
+      "pedalKg": 151,
+      "powerKW": 2542
+     }
+    ],
+    "zonesBreakdown": "5 hard, 3 medium, 3 light",
+    "notes": "'over 17 s'"
+   },
+   "United States Grand Prix": {
+    "source": "https://www.brembo.com/en/motorsport/formula1/2025/facts-formula1-gp-usa",
+    "index": 3,
+    "zones": 9,
+    "brakingTimeS": 16.5,
+    "brakingPct": null,
+    "maxDecelG": 4.3,
+    "maxPedalKg": 130,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 12,
+      "vFrom": 312,
+      "vTo": 92,
+      "distM": 126,
+      "timeS": 2.72,
+      "decelG": 4.2,
+      "pedalKg": 130,
+      "powerKW": 2131
+     },
+     {
+      "turn": 1,
+      "vFrom": null,
+      "vTo": null,
+      "distM": null,
+      "timeS": null,
+      "decelG": 4.3,
+      "pedalKg": null
+     }
+    ],
+    "zonesBreakdown": "3 hard, 4 medium, 2 light"
+   },
+   "Mexico City Grand Prix": {
+    "source": "https://www.brembo.com/en/motorsport/formula1/2025/facts-formula1-gp-messico",
+    "index": 4,
+    "zones": 9,
+    "brakingTimeS": null,
+    "brakingPct": null,
+    "maxDecelG": null,
+    "maxPedalKg": null,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 1,
+      "vFrom": 342,
+      "vTo": 112,
+      "distM": 141,
+      "timeS": 2.68,
+      "decelG": 4.1,
+      "pedalKg": 126,
+      "powerKW": 2209
+     }
+    ],
+    "notes": "'brakes used in 9 of the 17 corners'; 3 hard, 2 medium."
+   },
+   "São Paulo Grand Prix": {
+    "source": "https://www.brembo.com/en/motorsport/formula1/2025/facts-formula1-gp-san-paolo",
+    "index": 3,
+    "zones": 7,
+    "brakingTimeS": 12,
+    "brakingPct": null,
+    "maxDecelG": 4.6,
+    "maxPedalKg": 139,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 1,
+      "vFrom": 325,
+      "vTo": 123,
+      "distM": 126,
+      "timeS": 2.39,
+      "decelG": 4.6,
+      "pedalKg": 139,
+      "powerKW": 2493
+     }
+    ],
+    "zonesBreakdown": "3 high, 2 medium, 2 light",
+    "notes": "'<12 s'"
+   },
+   "Las Vegas Grand Prix": {
+    "source": "https://www.brembo.com/en/motorsport/formula1/2025/facts-formula1-gp-las-vegas",
+    "index": 3,
+    "zones": 7,
+    "brakingTimeS": 14.5,
+    "brakingPct": null,
+    "maxDecelG": 4.2,
+    "maxPedalKg": 127,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 14,
+      "vFrom": 350,
+      "vTo": 102,
+      "distM": 143,
+      "timeS": 2.74,
+      "decelG": 4.2,
+      "pedalKg": 127,
+      "powerKW": 2535
+     }
+    ],
+    "zonesBreakdown": "3 hard, 2 medium, 2 light"
+   },
+   "Qatar Grand Prix": {
+    "source": "https://www.brembo.com/en/motorsport/formula1/2025/facts-formula1-gp-las-qatar",
+    "index": 3,
+    "zones": 7,
+    "brakingTimeS": 9,
+    "brakingPct": null,
+    "maxDecelG": 4.8,
+    "maxPedalKg": 119,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 1,
+      "vFrom": 310,
+      "vTo": 169,
+      "distM": 99,
+      "timeS": 1.59,
+      "decelG": 4.8,
+      "pedalKg": 119,
+      "powerKW": 2102
+     }
+    ],
+    "zonesBreakdown": "1 hard, 5 medium, 1 light",
+    "notes": "'over 9 s'"
+   },
+   "Abu Dhabi Grand Prix": {
+    "source": "https://www.brembo.com/en/motorsport/formula1/2025/facts-formula1-gp-las-abu-dhabi",
+    "index": 3,
+    "zones": 9,
+    "brakingTimeS": 13,
+    "brakingPct": null,
+    "maxDecelG": 4.7,
+    "maxPedalKg": 148,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 6,
+      "vFrom": 321,
+      "vTo": 78,
+      "distM": 114,
+      "timeS": 2.67,
+      "decelG": 4.7,
+      "pedalKg": 148,
+      "powerKW": 2403
+     }
+    ],
+    "notes": "'<13 s'; 4 hard, 2 medium."
+   }
+  },
+  "2026": {
+   "Australian Grand Prix": {
+    "source": "https://automobilemagazine.com.tr/some-braking-movements-disappear-and-the-others-become-less-intense-brembos-numbers",
+    "index": null,
+    "zones": 4,
+    "brakingTimeS": null,
+    "brakingPct": null,
+    "maxDecelG": 3.3,
+    "maxPedalKg": 88,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 11,
+      "vFrom": null,
+      "vTo": null,
+      "distM": 116,
+      "timeS": 2.16,
+      "decelG": 3.3,
+      "pedalKg": 88
+     }
+    ],
+    "notes": "Brembo pre-season simulation reported by a mirror (brembo.com 2026 Australia page not reachable). 2025 T11: 4.8 g, 96 m, 1.80 s, 153 kg; 7 braking points in 2025 vs 4 expected in 2026."
+   },
+   "Chinese Grand Prix": {
+    "source": "https://www.brembo.com/en/motorsport/formula1/2026/facts-2026-china",
+    "index": 3,
+    "zones": 7,
+    "brakingTimeS": 16.3,
+    "brakingPct": 18,
+    "maxDecelG": null,
+    "maxPedalKg": null,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 14,
+      "vFrom": 314,
+      "vTo": 77,
+      "distM": 158,
+      "timeS": 3.51,
+      "decelG": 3.9,
+      "pedalKg": 105,
+      "powerKW": 1665
+     }
+    ],
+    "zonesBreakdown": "3 hard, 1 medium, 3 light"
+   },
+   "Japanese Grand Prix": {
+    "source": "https://www.brembo.com/en/motorsport/formula1/2026/facts-2026-japan",
+    "index": 1,
+    "zones": 4,
+    "brakingTimeS": 9,
+    "brakingPct": 10,
+    "maxDecelG": null,
+    "maxPedalKg": null,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 16,
+      "vFrom": 283,
+      "vTo": 104,
+      "distM": 135,
+      "timeS": 2.81,
+      "decelG": 3.7,
+      "pedalKg": 99,
+      "powerKW": 1413
+     }
+    ],
+    "zonesBreakdown": "1 hard, 2 medium, 1 light",
+    "notes": "'just over 9 seconds per lap', 'about 10 percent'"
+   },
+   "Bahrain Grand Prix": {
+    "source": "https://www.brembo.com/en/motorsport/formula1/2026/facts-bahrein-2026",
+    "index": 3,
+    "zones": 6,
+    "brakingTimeS": 13.2,
+    "brakingPct": null,
+    "maxDecelG": 4.7,
+    "maxPedalKg": 189,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 15,
+      "vFrom": 307,
+      "vTo": 93,
+      "distM": 121,
+      "timeS": 2.58,
+      "decelG": 4.7,
+      "pedalKg": 189,
+      "powerKW": 2177
+     }
+    ],
+    "zonesBreakdown": "3 hard, 1 medium, 2 light",
+    "notes": "Page published before the event; 189 kg is far above every other 2026 figure (check)."
+   },
+   "Miami Grand Prix": {
+    "source": "https://www.brembo.com/en/motorsport/formula1/2026/facts-miami-2026",
+    "index": 2,
+    "zones": 3,
+    "brakingTimeS": 10,
+    "brakingPct": 11,
+    "maxDecelG": 4.0,
+    "maxPedalKg": 120,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 17,
+      "vFrom": 320,
+      "vTo": 78,
+      "distM": 165,
+      "timeS": 3.66,
+      "decelG": 4.0,
+      "pedalKg": 114,
+      "powerKW": 1734
+     },
+     {
+      "turn": 1,
+      "vFrom": null,
+      "vTo": null,
+      "distM": 136,
+      "timeS": 2.94,
+      "decelG": null,
+      "pedalKg": 120,
+      "powerKW": 1660,
+      "label": "first corner, 2026"
+     }
+    ],
+    "zonesBreakdown": "3 hard",
+    "notes": "'just under 10 s'; 2025 first corner per this page: 2,426 kW, 169 kg, 2.60 s, 117 m."
+   },
+   "Canadian Grand Prix": {
+    "source": "https://scuderiafans.com/f1-canadian-gp-2026-brembo-analysis-reveals-montreals-biggest-technical-challenge/",
+    "index": 4,
+    "zones": 6,
+    "brakingTimeS": 14,
+    "brakingPct": null,
+    "maxDecelG": 3.7,
+    "maxPedalKg": null,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 13,
+      "vFrom": 306,
+      "vTo": 147,
+      "distM": 114,
+      "timeS": 1.93,
+      "decelG": 3.7,
+      "pedalKg": 101,
+      "powerKW": 1561
+     },
+     {
+      "turn": 10,
+      "vFrom": null,
+      "vTo": null,
+      "distM": 158,
+      "timeS": 3.94,
+      "decelG": 3.1,
+      "pedalKg": 87
+     }
+    ],
+    "notes": "Mirror of Brembo preview; 'exceeding 14 s'. 2025 T10: 107 m, 2.82 s, 168 kg, 5 g."
+   },
+   "Monaco Grand Prix": {
+    "source": "https://www.brembo.com/en/motorsport/formula1/2026/facts-monaco-2026",
+    "index": 2,
+    "zones": 9,
+    "brakingTimeS": 16.3,
+    "brakingPct": 23,
+    "maxDecelG": 4.0,
+    "maxPedalKg": 114,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 1,
+      "vFrom": 276,
+      "vTo": 132,
+      "distM": 91,
+      "timeS": 1.67,
+      "decelG": 4.0,
+      "pedalKg": 114,
+      "powerKW": 1463,
+      "label": "Sainte Devote"
+     },
+     {
+      "turn": 10,
+      "vFrom": null,
+      "vTo": null,
+      "distM": 136,
+      "timeS": 2.87,
+      "decelG": 3.0,
+      "pedalKg": 86,
+      "label": "chicane after tunnel"
+     }
+    ],
+    "zonesBreakdown": "2 high, 3 medium, 4 light",
+    "notes": "23% stated as share of the race."
+   },
+   "Barcelona-Catalunya Grand Prix": {
+    "source": "https://www.brembo.com/en/motorsport/formula1/2026/facts-spain-2026",
+    "index": 2,
+    "zones": 5,
+    "brakingTimeS": 11.5,
+    "brakingPct": null,
+    "maxDecelG": 3.6,
+    "maxPedalKg": 96,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 1,
+      "vFrom": 304,
+      "vTo": 164,
+      "distM": 121,
+      "timeS": 1.95,
+      "decelG": 3.6,
+      "pedalKg": 96,
+      "powerKW": 1393
+     },
+     {
+      "turn": 10,
+      "vFrom": null,
+      "vTo": null,
+      "distM": 151,
+      "timeS": 2.96,
+      "decelG": 3.3,
+      "pedalKg": 88
+     }
+    ],
+    "zonesBreakdown": "2 high, 2 medium, 1 light",
+    "notes": "'less than 11.5 s'"
+   },
+   "Austrian Grand Prix": {
+    "source": "https://www.brembo.com/en/motorsport/formula1/2026/facts-austria-2026",
+    "index": 3,
+    "zones": 6,
+    "brakingTimeS": 10.5,
+    "brakingPct": null,
+    "maxDecelG": 3.8,
+    "maxPedalKg": 110,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 1,
+      "vFrom": 306,
+      "vTo": 149,
+      "distM": 109,
+      "timeS": 1.93,
+      "decelG": 3.8,
+      "pedalKg": 110,
+      "powerKW": 1533
+     },
+     {
+      "turn": 3,
+      "vFrom": null,
+      "vTo": null,
+      "distM": 135,
+      "timeS": 3.0,
+      "decelG": 3.8,
+      "pedalKg": 110
+     }
+    ],
+    "zonesBreakdown": "3 hard, 2 medium, 1 light",
+    "notes": "'at no point does deceleration reach 4 g'. 2025 T3: 112 m, 2.58 s, 4.6 g, 142 kg."
+   },
+   "British Grand Prix": {
+    "source": "https://www.brembo.com/en/motorsport/formula1/2026/facts-uk-2026",
+    "index": 1,
+    "zones": 3,
+    "brakingTimeS": 6.5,
+    "brakingPct": null,
+    "maxDecelG": 3.1,
+    "maxPedalKg": 86,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 16,
+      "vFrom": 268,
+      "vTo": 116,
+      "distM": 125,
+      "timeS": 2.45,
+      "decelG": 3.1,
+      "pedalKg": 86,
+      "powerKW": 1081
+     }
+    ],
+    "zonesBreakdown": "1 hard, 2 medium",
+    "notes": "'just over 6.5 s'. T3 2025 vs 2026: 4.5 vs 2.9 g, 152 vs 78 kg."
+   },
+   "Belgian Grand Prix": {
+    "source": "https://www.brembo.com/en/motorsport/formula1/2026/facts-belgium-2026",
+    "index": 3,
+    "zones": 6,
+    "brakingTimeS": 13,
+    "brakingPct": null,
+    "maxDecelG": 3.6,
+    "maxPedalKg": 111,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 1,
+      "vFrom": 285,
+      "vTo": 86,
+      "distM": 145,
+      "timeS": 3.32,
+      "decelG": 3.6,
+      "pedalKg": 111,
+      "powerKW": 1367
+     },
+     {
+      "turn": 18,
+      "vFrom": null,
+      "vTo": null,
+      "distM": null,
+      "timeS": null,
+      "decelG": 3.3,
+      "pedalKg": 96
+     }
+    ],
+    "zonesBreakdown": "3 hard, 2 medium, 1 light",
+    "notes": "'less than 13 s'. 2025 T18: 4.7 g, 160 kg, 2.51 s."
+   },
+   "Hungarian Grand Prix": {
+    "source": "https://www.brembo.com/en/motorsport/formula1/2026/facts-hungary-2026",
+    "index": 4,
+    "zones": 8,
+    "brakingTimeS": 16.7,
+    "brakingPct": 22,
+    "maxDecelG": null,
+    "maxPedalKg": null,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 1,
+      "vFrom": 332,
+      "vTo": 99,
+      "distM": 172,
+      "timeS": 3.58,
+      "decelG": 4.0,
+      "pedalKg": 119,
+      "powerKW": 1760
+     },
+     {
+      "turn": 2,
+      "vFrom": null,
+      "vTo": null,
+      "distM": 143,
+      "timeS": 2.85,
+      "decelG": 3.7,
+      "pedalKg": 110
+     }
+    ],
+    "zonesBreakdown": "3 hard, 1 medium, 4 light",
+    "notes": "22% stated as share of the race; index 4 vs 3 in 2025."
+   },
+   "Italian Grand Prix": {
+    "source": "https://www.automoto.it/formula1/f1-gp-italia-2026-monza-staccate-frenate-brembo-analisi.html",
+    "index": 3,
+    "zones": 5,
+    "brakingTimeS": 8.5,
+    "brakingPct": null,
+    "maxDecelG": 3.8,
+    "maxPedalKg": 111,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 1,
+      "vFrom": 318,
+      "vTo": 87,
+      "distM": 153,
+      "timeS": 3.22,
+      "decelG": 3.8,
+      "pedalKg": 111,
+      "powerKW": 1637
+     },
+     {
+      "turn": 4,
+      "vFrom": null,
+      "vTo": null,
+      "distM": 121,
+      "timeS": 2.29,
+      "decelG": 3.7,
+      "pedalKg": 108,
+      "label": "Variante della Roggia"
+     }
+    ],
+    "zonesBreakdown": "4 hard, 1 light",
+    "notes": "Italian mirror of Brembo data; '<8.5 s'. Index 3 vs 5 in 2025."
+   },
+   "Azerbaijan Grand Prix": {
+    "source": "https://www.brembo.com/en/motorsport/formula1/2026/facts-baku-2026",
+    "index": 5,
+    "zones": 10,
+    "brakingTimeS": 18.5,
+    "brakingPct": null,
+    "maxDecelG": null,
+    "maxPedalKg": null,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 1,
+      "vFrom": 313,
+      "vTo": 140,
+      "distM": 123,
+      "timeS": 2.13,
+      "decelG": 3.9,
+      "pedalKg": 115,
+      "powerKW": 1652
+     }
+    ],
+    "zonesBreakdown": "2 hard, 6 medium, 2 light"
+   },
+   "Singapore Grand Prix": {
+    "source": "https://www.brembo.com/en/motorsport/formula1/2026/facts-singapore-2026",
+    "index": 5,
+    "zones": 11,
+    "brakingTimeS": 21.6,
+    "brakingPct": 24,
+    "maxDecelG": null,
+    "maxPedalKg": null,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 1,
+      "vFrom": 298,
+      "vTo": 144,
+      "distM": 107,
+      "timeS": 1.9,
+      "decelG": 4.0,
+      "pedalKg": 110,
+      "powerKW": 1660
+     },
+     {
+      "turn": 7,
+      "vFrom": null,
+      "vTo": null,
+      "distM": 117,
+      "timeS": 2.15,
+      "decelG": 3.8,
+      "pedalKg": 107,
+      "label": "Memorial"
+     }
+    ],
+    "zonesBreakdown": "6 hard, 1 medium, 4 light",
+    "notes": "24% stated as share of the race."
+   },
+   "United States Grand Prix": {
+    "source": "https://www.brembo.com/en/motorsport/formula1/2026/facts-austin-2026",
+    "index": 4,
+    "zones": 6,
+    "brakingTimeS": 15,
+    "brakingPct": null,
+    "maxDecelG": 4.3,
+    "maxPedalKg": 123,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 1,
+      "vFrom": 305,
+      "vTo": 93,
+      "distM": 144,
+      "timeS": 3.11,
+      "decelG": 4.3,
+      "pedalKg": 123,
+      "powerKW": 1760
+     },
+     {
+      "turn": 12,
+      "vFrom": null,
+      "vTo": null,
+      "distM": 166,
+      "timeS": 3.42,
+      "decelG": 4.0,
+      "pedalKg": 110
+     }
+    ],
+    "zonesBreakdown": "4 hard, 1 medium, 1 light",
+    "notes": "'less than 15 s'. T12 2025: 4.2 g, 130 kg, 126 m, 2.72 s."
+   },
+   "Mexico City Grand Prix": {
+    "source": "https://scuderiafans.com/2026-f1-mexico-gp-why-longer-braking-zones-and-energy-limits-could-change-everything/",
+    "index": 4,
+    "zones": 7,
+    "brakingTimeS": 16,
+    "brakingPct": null,
+    "maxDecelG": null,
+    "maxPedalKg": 107,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 1,
+      "vFrom": 340,
+      "vTo": 114,
+      "distM": 193,
+      "timeS": 3.51,
+      "decelG": 3.6,
+      "pedalKg": 107,
+      "powerKW": 1668
+     },
+     {
+      "turn": 4,
+      "vFrom": null,
+      "vTo": null,
+      "distM": 175,
+      "timeS": 3.33,
+      "decelG": 3.5,
+      "pedalKg": 102
+     }
+    ],
+    "zonesBreakdown": "3 hard, 1 medium, 3 light",
+    "notes": "Mirror; 'slightly less than 16 s'; max decel 'below 3.7 g'. 2025 T4: 4.1 g, 131 kg, 129 m, 2.76 s."
+   },
+   "São Paulo Grand Prix": {
+    "source": "https://scuderiafans.com/brembo-reveals-major-f1-braking-changes-for-2026-brazilian-gp-compared-to-2025/",
+    "index": 2,
+    "zones": 6,
+    "brakingTimeS": 14,
+    "brakingPct": 20,
+    "maxDecelG": 3.7,
+    "maxPedalKg": 104,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 1,
+      "vFrom": 312,
+      "vTo": 115,
+      "distM": 156,
+      "timeS": 2.93,
+      "decelG": 3.7,
+      "pedalKg": 104,
+      "powerKW": 1538
+     },
+     {
+      "turn": 12,
+      "vFrom": null,
+      "vTo": null,
+      "distM": 98,
+      "timeS": 2.01,
+      "decelG": 3.0,
+      "pedalKg": 89
+     }
+    ],
+    "zonesBreakdown": "2 hard, 1 medium, 3 light",
+    "notes": "Mirror; 'more than 14 s', '~20%'. 2025 T12: 4.7 g, 148 kg, 84 m, 1.73 s."
+   },
+   "Spanish Grand Prix": {
+    "source": "https://www.f1-fansite.com/f1-news/brembo-now-puts-a-number-on-the-madrings-braking-load/",
+    "index": null,
+    "zones": 8,
+    "brakingTimeS": 14.2,
+    "brakingPct": 15,
+    "maxDecelG": null,
+    "maxPedalKg": null,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [],
+    "notes": "Madring. zones and 14.2 s are from the f1-fansite headline only (page not fetchable); 15% from scuderiafans.com/2026-f1-madrid-gp-preview-why-the-madring-could-make-mercedes-vulnerable-again/."
+   }
+  }
+ },
+ "wec": {
+  "2026": {
+   "24 Hours of Le Mans": {
+    "source": "https://www.brembo.com/en/motorsport/wec/le-mans-2025",
+    "class": "Hypercar",
+    "index": null,
+    "zones": 11,
+    "brakingTimeS": 43.5,
+    "brakingPct": 20,
+    "maxDecelG": 3.0,
+    "maxPedalKg": 91,
+    "totalDecelG": null,
+    "lapPedalLoadKg": 757,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 7,
+      "vFrom": 331,
+      "vTo": 114,
+      "distM": 301,
+      "timeS": 5.0,
+      "decelG": 3.0,
+      "pedalKg": 79,
+      "powerKW": 4200,
+      "label": "Daytona chicane (first Mulsanne chicane)"
+     },
+     {
+      "turn": 8,
+      "vFrom": null,
+      "vTo": null,
+      "distM": null,
+      "timeS": null,
+      "decelG": null,
+      "pedalKg": 91,
+      "powerKW": 6900
+     },
+     {
+      "turn": 9,
+      "vFrom": null,
+      "vTo": null,
+      "distM": null,
+      "timeS": null,
+      "decelG": 2.6,
+      "pedalKg": 90,
+      "powerKW": 6800,
+      "label": "Mulsanne Corner"
+     },
+     {
+      "turn": 14,
+      "vFrom": null,
+      "vTo": null,
+      "distM": 222,
+      "timeS": 3.0,
+      "decelG": null,
+      "pedalKg": null,
+      "label": "Ford Corner, 77 km/h lost"
+     }
+    ],
+    "notes": "Page URL says 2025 but text says 94th edition (= 2026). 20% stated as share of race; 757 kg is total pedal load per lap. maxPedalKg is the highest corner value stated (T8)."
+   }
+  }
+ },
+ "imsa": {
+  "2025": {
+   "Rolex 24 at Daytona": {
+    "source": "https://www.brembo.com/en/motorsport/wec/imsa",
+    "class": "GTP",
+    "index": 3,
+    "zones": 5,
+    "brakingTimeS": null,
+    "brakingPct": null,
+    "maxDecelG": 3.0,
+    "maxPedalKg": null,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 1,
+      "vFrom": 320,
+      "vTo": 130,
+      "distM": null,
+      "timeS": null,
+      "decelG": 3.0,
+      "pedalKg": null
+     }
+    ],
+    "notes": "~4,000 brake applications over 24 h (781 laps). GTD 2 g."
+   },
+   "12 Hours of Sebring": {
+    "source": "https://www.brembo.com/en/motorsport/wec/brembo-brake-facts-sebring",
+    "class": "GTP",
+    "index": 5,
+    "zones": 9,
+    "brakingTimeS": null,
+    "brakingPct": null,
+    "maxDecelG": 2.7,
+    "maxPedalKg": null,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 7,
+      "vFrom": 274,
+      "vTo": 80,
+      "distM": null,
+      "timeS": null,
+      "decelG": 2.7,
+      "pedalKg": null
+     }
+    ],
+    "notes": "Source gives mph: '170 mph' -> '50 mph' (converted 274/80 km/h); 2,800-3,000 applications per race."
+   },
+   "Petit Le Mans": {
+    "source": "https://thebrakereport.com/brembo-brakes-tackle-road-atlanta-finale/",
+    "class": "GTP",
+    "index": 4,
+    "zones": 6,
+    "brakingTimeS": null,
+    "brakingPct": null,
+    "maxDecelG": 3.0,
+    "maxPedalKg": null,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 10,
+      "vFrom": 306,
+      "vTo": 113,
+      "distM": null,
+      "timeS": null,
+      "decelG": 3.0,
+      "pedalKg": null
+     }
+    ],
+    "notes": "Source gives mph: 190 -> 70 mph (converted 306/113 km/h)."
+   }
+  }
+ }
+}
