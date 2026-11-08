@@ -169,7 +169,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
   const carId = cars[query.car] ? query.car : '2026';
   const changes = latestChanges(id);
   const data = {lang, t, id, track: td, cars, carOrder: CAR_ORDER, carId, conds, changes, energy: (liveEnergy && (query.track || 'monza') === id ? liveEnergy : energyLimit(id, 2026)),
-    compounds: lapsimCompounds?.[id] || {}, wecTyres: lapsimWecTyres?.[id] || {}, line: lineData(id), lineText: LT[lang], qsplit: lapsimQsplit ? {off: lapsimQsplit.offsetPct, test: lapsimQsplit.test, real: lapsimQsplit.tracks?.[id] || null} : null, brakes: lapsimBrakes ? {k: lapsimBrakes.pedalKgPerG, g: lapsimBrakes.gScale, t: lapsimBrakes.timeScale, test: lapsimBrakes.test, real: lapsimBrakes.races?.[id] || null, text: BT[lang]} : null, compoundGap: compoundGap(id), compoundTest: lapsimCompoundGap?.test?.rmsPct ?? null,
+    compounds: lapsimCompounds?.[id] || {}, wecTyres: lapsimWecTyres?.[id] || {}, line: lineData(id), lineText: LT[lang], qsplit: lapsimQsplit ? {off: lapsimQsplit.offsetPct, test: lapsimQsplit.test, real: lapsimQsplit.tracks?.[id] || null} : null, brakes: lapsimBrakes ? {ramp: lapsimBrakes.rampS ?? 0, k: lapsimBrakes.pedalKgPerG, g: lapsimBrakes.gScale, t: lapsimBrakes.timeScale, test: lapsimBrakes.test, real: lapsimBrakes.races?.[id] || null, text: BT[lang]} : null, compoundGap: compoundGap(id), compoundTest: lapsimCompoundGap?.test?.rmsPct ?? null,
     evo: Object.fromEntries(['f1', 'wec'].map(se => [se, Object.fromEntries(['practice', 'qualifying'].map(ty => [ty, evolutionCoeffs(se, id, ty)]))])),
     calibration: {generatedAt: lapsimCalibration?.generatedAt || null, seasons: Object.fromEntries(Object.entries(lapsimCalibration?.seasons || {}).map(([y, s]) => [y, s.tracks?.[id] || null]))}};
   // first render on the server with the same code the browser uses
@@ -308,11 +308,11 @@ const BT = {
   ko: {h: '브레이크', lead: '시뮬레이션 랩의 제동 구간입니다. 가장 강한 제동 구간을 Brembo가 대회마다 공개하는 실제 수치와 나란히 보여 줍니다 (F1). 하이퍼카는 LMH(앞바퀴 모터 회생)와 LMDh(뒷바퀴 회생)의 차이가 앞뒤 브레이크 부담에 그대로 나타납니다.',
     hardest: '가장 강한 제동', hardestT: '가장 강한 제동 (Brembo 기준 T{t})', model: '모델', brembo: 'Brembo 실측', vFrom: '제동 전 속도', vTo: '제동 후 속도', dist: '제동 거리', time: '제동 시간', g: '감속 (평균)', pedal: '페달 하중', bar: '앞 브레이크 압력 (추정)', zones: '랩당 제동 구간', brakeTime: '랩당 제동 시간',
     axle: {rear: '뒤 차축', front: '앞 차축'}, noRegen: '회생 없음', split: '마찰 브레이크 앞 {f}% · 뒤 {r}% · 모터 회생({ax}) {rk} kWh · 마찰 브레이크 {fk} kWh · 공기 저항이 멈춰 준 몫 {dk} kWh (랩당)',
-    test: '검증 (Brembo 공개 수치 {n}개 대회, 대회 하나씩 빼고 예측): 감속 오차 {g}% · 페달 하중 {kg}% · 제동 전 속도 {v}% · 제동 거리 {d}% (이 모델은 압력이 바로 차오른다고 가정해 실제보다 짧게 제동합니다)', assume: '가정: 페달 비 3.5, 마스터 실린더 17.8 mm, 밸런스 = 앞 마찰 비중. 페달 하중 = 감속(g) × Brembo 수치에서 맞춘 kg/g. 실제 압력 데이터는 공개되지 않습니다.'},
+    test: '검증 (Brembo 공개 수치 {n}개 대회, 대회 하나씩 빼고 예측): 감속 오차 {g}% · 페달 하중 {kg}% · 제동 전 속도 {v}% · 제동 거리 {d}% · 랩당 제동 시간 {t}% (브레이크 압력이 차오르는 시간 {r}초를 Brembo 수치로 맞춰 반영)', assume: '가정: 페달 비 3.5, 마스터 실린더 17.8 mm, 밸런스 = 앞 마찰 비중. 페달 하중 = 감속(g) × Brembo 수치에서 맞춘 kg/g. 실제 압력 데이터는 공개되지 않습니다.'},
   en: {h: 'Brakes', lead: 'Braking zones of the simulated lap. The hardest one is shown next to the real figures Brembo publishes for each race (F1). For Hypercars, LMH (front-axle regen) and LMDh (rear-axle regen) differ directly in how much each axle\'s brakes do.',
     hardest: 'Hardest braking', hardestT: 'Hardest braking (Brembo: T{t})', model: 'Model', brembo: 'Brembo, real', vFrom: 'Speed before', vTo: 'Speed after', dist: 'Braking distance', time: 'Braking time', g: 'Deceleration (mean)', pedal: 'Pedal load', bar: 'Front brake pressure (estimate)', zones: 'Braking zones per lap', brakeTime: 'Braking time per lap',
     axle: {rear: 'rear axle', front: 'front axle'}, noRegen: 'no regen', split: 'Friction brakes front {f}% · rear {r}% · motor regen ({ax}) {rk} kWh · friction brakes {fk} kWh · stopped by air drag {dk} kWh (per lap)',
-    test: 'Test (Brembo figures, {n} races, each left out and predicted): deceleration error {g}% · pedal load {kg}% · speed before braking {v}% · braking distance {d}% (the model builds pressure instantly, so it brakes shorter than a real car)', assume: 'Assumed: pedal ratio 3.5, master cylinder 17.8 mm, balance = front friction share. Pedal load = deceleration (g) × kg per g fitted on Brembo figures. Real pressure data is not published.'},
+    test: 'Test (Brembo figures, {n} races, each left out and predicted): deceleration error {g}% · pedal load {kg}% · speed before braking {v}% · braking distance {d}% · braking time per lap {t}% (an effective pressure build-up of {r} s, fitted on the Brembo figures, is included)', assume: 'Assumed: pedal ratio 3.5, master cylinder 17.8 mm, balance = front friction share. Pedal load = deceleration (g) × kg per g fitted on Brembo figures. Real pressure data is not published.'},
 };
 // Track coordinates for the weather forecast (circuit centre, about 0.01°)
 const TRACK_LL = {sakhir: [26.0325, 50.5106], jeddah: [21.6319, 39.1044], melbourne: [-37.8497, 144.968], suzuka: [34.8431, 136.541], shanghai: [31.3389, 121.22], miami: [25.9581, -80.2389],
@@ -463,7 +463,7 @@ function computeView(K, data, state, R) {
   let brakeHtml = '';
   const BD = data.brakes;
   if (BD) {
-    const T = BD.text, b = R.brakeZones(track, sel.car, env, res.v, res.limit, {pedalPerG: BD.k});
+    const T = BD.text, b = R.brakeZones(track, sel.car, env, res.v, res.limit, {pedalPerG: BD.k, rampS: BD.ramp, minDropKph: 30});
     const real = !sel.series && BD.real ? BD.real[sel.year] || BD.real[2026] || null : null, rh = real && real.real;
     // the zone ending nearest Brembo's corner when there is one, else the hardest
     const cs = real && (d.corners || []).find(c => String(c.number) === String(real.turn)), L = d.length || b.zones.length;
@@ -471,11 +471,11 @@ function computeView(K, data, state, R) {
     const z = b.zones.slice().sort((x, y) => dist(x) - dist(y))[0];
     const cell = (m, r, u, d = 0) => '<td data-no-translate>' + (Number.isFinite(m) ? m.toFixed(d) + ' ' + u : '–') + '</td><td data-no-translate>' + (Number.isFinite(r) ? r + ' ' + u : '–') + '</td>';
     const rowsH = z ? [[T.vFrom, z.vFrom, rh?.vFrom, 'km/h'], [T.vTo, z.vTo, rh?.vTo, 'km/h'], [T.dist, z.distM, rh?.distM, 'm'], [T.time, z.timeS, rh?.timeS, 's', 2], [T.g, z.meanG, rh?.decelG, 'g', 1], [T.pedal, z.pedalKg, rh?.pedalKg, 'kg'], [T.bar, z.bar, null, 'bar']].map(([l, m, r, u, d]) => '<tr><td>' + l + '</td>' + cell(m, r, u, d) + '</tr>').join('') : '';
-    const lapRows = '<tr><td>' + T.zones + '</td>' + cell(b.zones.length, real?.lap?.zones, '') + '</tr><tr><td>' + T.brakeTime + '</td>' + cell(b.brakingTime * BD.t, real?.lap?.brakingTimeS, 's', 1) + '</tr>';
+    const lapRows = '<tr><td>' + T.zones + '</td>' + cell(b.zones.length, real?.lap?.zones, '') + '</tr><tr><td>' + T.brakeTime + '</td>' + cell(b.brakingTime, real?.lap?.brakingTimeS, 's', 1) + '</tr>';
     const E = b.energy, ax = b.regenAxle ? T.axle[b.regenAxle] : T.noRegen;
     brakeHtml = '<p class="fine">' + T.lead + '</p><div class="output"><table class="ls-table"><thead><tr><th>' + (z && real ? T.hardestT.replace('{t}', real.turn) : T.hardest) + '</th><th>' + T.model + '</th><th>' + T.brembo + (real ? ' ' + sel.year : '') + '</th></tr></thead><tbody>' + rowsH + lapRows + '</tbody></table></div>'
       + '<p class="fine">' + T.split.replace('{f}', E.frontPct.toFixed(0)).replace('{r}', (100 - E.frontPct).toFixed(0)).replace('{ax}', ax).replace('{rk}', E.regenKWh.toFixed(2)).replace('{fk}', E.frictionKWh.toFixed(2)).replace('{dk}', E.dragKWh.toFixed(2)) + '</p>'
-      + '<p class="fine">' + T.test.replace('{g}', BD.test.decelG.rmsPct).replace('{kg}', BD.test.pedalKg.rmsPct).replace('{v}', BD.test.vFrom.rmsPct).replace('{d}', BD.test.distM.rmsPct).replace('{n}', BD.test.decelG.n) + '</p><p class="fine">' + T.assume + '</p>';
+      + '<p class="fine">' + T.test.replace('{g}', BD.test.decelG.rmsPct).replace('{kg}', BD.test.pedalKg.rmsPct).replace('{v}', BD.test.vFrom.rmsPct).replace('{t}', (BD.test.lapTimeRampS || BD.test.brakingTimeS).rmsPct).replace('{d}', (BD.test.distRampM || BD.test.distM).rmsPct).replace('{r}', BD.ramp).replace('{n}', BD.test.decelG.n) + '</p><p class="fine">' + T.assume + '</p>';
   }
   // battery estimate along the lap: recovery capped at the per-lap limit, battery clamped to its window
   let socHtml = '';
