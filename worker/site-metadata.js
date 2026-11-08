@@ -2,8 +2,8 @@ const SITE_NAMES = { ko: '꽁보다 모터스포츠', en: 'Kongboda Motorsports'
 
 const PAGES = {
   '/': {
-    ko: ['라이브타이밍과 공식 기록 해설', 'F1·WEC 라이브타이밍과 모터스포츠 공식 기록을 AI와 함께 읽어보세요. 연결 방법, 분석 예시와 대회별 지원 범위를 안내합니다.'],
-    en: ['Race timing and official records, explained', 'Explore F1 and WEC timing and official motorsport records with AI. Find setup instructions, analysis examples and supported championships.'],
+    ko: ['모터스포츠 테크니컬, 쉽게', '규정, 공력, 타이어, 에너지, 전략. 모터스포츠의 기술을 쉽게 풀어 라이트팬이 코어팬이 되도록 돕습니다. F1·WEC 공식 기록과 AI 해설.'],
+    en: ['Motorsport engineering, made easy', 'Regulations, aero, tyres, energy and strategy, explained simply so casual fans become core fans. F1 and WEC official records with AI explanations.'],
   },
   '/about': {
     ko: ['꽁보다 소개', '레이스 기록을 이해하는 수고를 덜어주는 꽁보다 모터스포츠를 소개합니다. 공식 주최 기관과 구분되는 독립 분석 서비스입니다.'],

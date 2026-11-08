@@ -16,7 +16,7 @@ Read and preserve docs/answer-principles.md for all answer, demo and tool change
 
 On desktop, the “이렇게 물어보세요” card must keep the same outer width and height across every automatic slide transition. Measure all examples to choose a shared desktop height with 24px of breathing room after balancing complete supplementary evidence blocks into unused left-column space. Keep answers and charts fully visible without internal scroll containers. Omit the evidence panel from homepage examples; retain official source links and essential qualifications in the answer/chart caption. Recalculate the shared height after fonts load and viewport resize; automatic transitions must not change height.
 
-The actual service goal is to find hard-to-locate, difficult-to-understand information and explain it clearly. Charts are a means, not the goal. Prefer short verified regulation excerpts with edition/article/page and labelled translations for rule questions; never chart trivial counts merely to add a visualization.
+The service goal is to lower the barrier to motorsport technical knowledge and turn casual fans into core fans: find hard-to-locate, difficult-to-understand information (regulations, aero, tyres, energy, strategy) and explain it simply, one step deeper each time. Reading live timing is one means, not the goal. Charts are a means, not the goal. Prefer short verified regulation excerpts with edition/article/page and labelled translations for rule questions; never chart trivial counts merely to add a visualization.
 
 ## FIA·피렐리·F1 공식 문서 알림 지침
 
