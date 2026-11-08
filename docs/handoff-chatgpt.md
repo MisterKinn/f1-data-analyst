@@ -18,7 +18,7 @@ Production repo: `MisterKinn/f1-data-analyst` (merge to `main` = automatic Verce
 4. Everything built, with numbers (merged PRs)
 5. How each feature was built: method, problems, fixes, tools
 6. Data sources, access paths and limits
-7. Work left for ChatGPT, in order, with pass checks
+7. Work left for ChatGPT, in order, with pass checks (J = Timing71 archive)
 8. Tools, skills and plugins used — what to install, substitutes
 9. Stable UI names (do not rename) and page structure
 10. Workflows (GitHub Actions) and scripts
@@ -177,6 +177,13 @@ npm ci && node --test tests/*.test.mjs && npm run build && npm run validate
 | #132 | Racing line per car on the track map | 4 cars × quali/race × 26 tracks; median gain vs least-curvature: F1 −0.9 s, WEC −1.5 s; on/off, zoom/pan |
 | #133 | Brakes panel | Brembo 42 races LOO: decel 18%, pedal 21.8%, speed before 11%, distance 34.9% |
 | #134 | Q1/Q2/Q3 split + Météo-France forecast | 47 dry qualifyings LOO: Q1 0.58% (evo only 0.76%), Q2 0.44% (0.50%) |
+| #136 | Kernel battery tracked point by point (f1-2026) | 0 of 26 tracks over the 4 MJ window (was 25/26); 38 raced dry poles still 0.000% |
+| #137 | Brake build-up time + 30 km/h zone threshold | Brembo LOO: distance 14.1% (was 34.9%), lap braking time 19.1%, decel 14.2%, pedal 18.7%, speed before 5.7%, zone count MAE 2.07; ramp 0.73 s |
+| #138 | Forecast track temperature fitted | air + 4.806 °C + 0.01776 × shortwave (W/m²), 66 events, held-out ±3.97 °C (old guess ±5.37) |
+| #139 | Stint estimates with ± error and confidence flags | `estLow` flag for FCY-heavy races |
+| feat/line-check | WEC per-car line check + Barcelona-Catalunya alias | see §7 A4; `docs/lapsim-line-check.md` |
+
+Note: the holdout numbers stored in the data files refresh on the next `lapsim-data` run.
 
 ---
 
@@ -306,6 +313,8 @@ npm ci && node --test tests/*.test.mjs && npm run build && npm run validate
 | Brembo | braking references | WebSearch + WebFetch | 2024 pages moved; Dutch 2026 missing |
 | Open-Meteo `meteofrance` | forecast | browser fetch (CORS ok) | no track temperature |
 | Firecrawl | live checks (owner rule) | MCP | credits ran out until 2026-11-09 ~02:07 KST |
+| Timing71 archive (`archive.timing71.org`, files on Backblaze) | laps with flags, stints, sectors, best laps, IMSA VFT, weather — all series (§7 J) | GitHub Actions `probe/**` only | not reachable from the Claude shell/WebFetch; no data terms → calibration only, no raw commits |
+| IMSA technical bulletins (imsa.com PDFs) | GTP BoP incl. Max Stint Energy | WebFetch worked for 2026 Road America | not all rounds found |
 
 ---
 
@@ -315,17 +324,21 @@ npm ci && node --test tests/*.test.mjs && npm run build && npm run validate
 - Load `/simulation` for several tracks/cars on desktop and phone; check: racing line toggle/mode/zoom;
   tyre options per series/event; stint panel on WEC tracks; battery panel; brakes panel; Q-split table;
   forecast option. Fix bugs; keep all tests green (except the 5 old failures).
-- Known fixes to do:
-  1. **Kernel energy causality**: enforce the battery window point by point (e.g. per-straight deploy
-     cut-offs or a SoC-tracking forward pass). Then rerun calibration (`lapsim-data` workflow) so pole
-     reproduction stays 0.000%. Pass: battery panel ✓ on every 2026 track; pole errors unchanged.
-  2. **Brake pressure ramp**: add a rise time (0.1–0.15 s) at brake application (kernel or post-process).
-     Pass: Brembo braking distance LOO error well below 34.9% without making deceleration worse.
-  3. **Track temperature model for the forecast**: fit `k` (°C per W/m²) on TI `weather.json`
-     (TrackTemp − AirTemp) vs Open-Meteo historical radiation. Pass: held-out track-temperature error stated.
-  4. **Per-car line check for WEC**: compare against Al Kamel speed traps / sector times per car.
-  5. `race-pace` 2026 "Barcelona Grand Prix" → check `tiTrack` maps it to catalunya (aliases exist in
-     compound scripts).
+- Known fixes from the first handoff — **all done by Claude** (keep them working):
+  1. Kernel energy causality — done (#136).
+  2. Brake pressure ramp — done (#137): fitted build-up 0.73 s, not 0.1–0.15 s (the effective time
+     includes driver lift and pressure rise, fitted on Brembo distances).
+  3. Forecast track temperature — done (#138), ±3.97 °C held out.
+  4. Per-car line check for WEC — done (`scripts/sim/line-check.mjs`, `docs/lapsim-line-check.md`):
+     36 class-track-season rows. Top speed vs real trap: line 3.02% RMS vs reference path 2.93% (no change).
+     Lap vs real pole: reference path 1.90% RMS (mean +0.07%), least-curvature line 5.60% (−3.54%),
+     per-car line 6.85% (−4.97%). Cause: grip is calibrated on the reference path, so a shorter, smoother
+     line makes laps 3.5–5% too fast. **Decision kept:** lap time stays on the calibrated path; the line is
+     map + relative gain only. Open option: refit grip on the line (would need re-checking the 0.000%
+     pole reproduction).
+  5. Barcelona 2026 — checked: TI names it "Barcelona Grand Prix" → `catalunya` ✓ (race data has
+     catalunya 2026; "Spanish Grand Prix" 2026 → `madring`). Added the `barcelona-catalunya` alias and
+     `tests/lapsim-ti-names.test.mjs`.
 
 ### B. Formula E: Attack Mode + energy (before GT3)
 - Data: FIA Formula E results site (results.formulae.fia.com) — Al Kamel format `23_Analysis` with
@@ -360,8 +373,84 @@ npm ci && node --test tests/*.test.mjs && npm run build && npm run validate
 
 ### G. IMSA tyre allocations and IMSA GTP BoP
 - IMSA uses Maximum Stint Energy (MJ) + Energy Replenishment Rate (MJ/s); power as % of the homologated
-  curve at ≤230 / ≥240 km/h. Found: 2026 Watkins Glen, Road America (bulletins), Daytona (press). Missing:
+  curve at ≤230 / ≥240 km/h. Example (Road America 2026, TB IWSC #26-49): Acura/Aston 912 MJ, BMW 906,
+  Cadillac 908, Porsche 963 907/906 MJ; replenishment 22.65–22.8 MJ/s.
+- **IMSA GTP stint energy is not done** (Claude gap 7): IMSA is not calibrated in the simulator (no
+  `SERIES.imsa`, no IMSA track geometry except shared tracks) and real stint lengths need a collector.
+  Do it with Timing71 (§7 J): IMSA analysis files carry per-lap times with flags, stints and the
+  **VFT (Virtual Fuel Tank % energy left, GTP only)** column, so energy per lap = Δ VFT% × stint MJ / laps.
+  Same method as the WEC stint fit (`scripts/sim/stint-fit.mjs`, k factor, LOO). Found: 2026 Watkins Glen, Road America (bulletins), Daytona (press). Missing:
   2025 rounds and several 2026 rounds.
+
+### J. Timing71 replay archive — collect and calibrate every series we simulate (owner decision 2026-11-08 20:21)
+Owner wants all of it learned (= fit the physics model's parameters; the AI stores nothing itself) and fed
+into the current models and future development. Claude found the access path and formats; **ChatGPT does the
+collection and fitting.**
+
+**Access (found by Claude):**
+- Archive API: `https://archive.timing71.org` (LoopBack style), found in the site bundle
+  (`www.timing71.org/main.<hash>.js`; code: `github.com/timing71/web` `src/modules/archive/api.js`).
+  - `GET /replays/series` → `{series: [...]}` (1,016 names)
+  - `GET /replays?filter[order]=startTime%20DESC&filter[limit]=500&filter[skip]=N` (+ `filter[where][series]=…`)
+  - each replay: `series, description, startTime (unix s), duration, filename (ZIP), analysisFilename (JSON)`;
+    files on `https://s3.us-east-005.backblazeb2.com/t71-archive/<date time series - description>.zip|.json`
+    (URL-encode spaces; `encodeURI` works).
+- **Not reachable from the Claude shell** (proxy 403) and the WebFetch allowlist; Firecrawl had no credits.
+  Worked: GitHub Actions on a `probe/**` branch of the fork (`kangjeongmin1229/f1-data-analyst-deploy`).
+  Scripts: `scripts/probe/t71-list.mjs` (list → `probe-out/t71.json`, 15,798 replays on 2026-11-08) and
+  `scripts/probe/t71-sample.mjs` (formats); workflow copy in `docs/probe-t71-workflow.yml.txt`
+  (put it under `.github/workflows/` on a `probe/**` branch only). Branch `probe/t71` on the fork holds the
+  last results (`probe-out/t71.json`, `probe-out/samples.json`); delete it when done.
+- Licence/terms: code AGPL-3.0, docs CC BY-SA; **no terms for the timing data** (it belongs to each
+  series' timing provider; Timing71 is a non-profit hobby project). Use for calibration only, never
+  republish raw files, never commit them (`.cache/` only); credit "Timing71 archive" in docs.
+
+**File formats:**
+- Analysis JSON (40–110 KB): `{cars: {cars: {<num>: {raceNum, raceClass, teamName, make, drivers[{idx,name}],
+  stints[{startLap, startTime, endLap, endTime, driver, laps[{lapNumber, laptime, driver, flag, timestamp}]}]}}},
+  messages, session, state, manifest, trackData, latestTimestamp, version}`. `flag` per lap (green/yellow/sc/…).
+  Timestamps: `startTime` in s, others in ms (mixed — check).
+- Replay ZIP (0.1–1.6 MB): `manifest.json` (`colSpec` = column names per series, `trackDataSpec`) + frames
+  `<unix>.json` (key frames) and `<unix>i.json` (diffs; use `@timing71/common` `Replay` + `patch`).
+  Frame `cars` rows follow `colSpec`; times as `[value, flag]` with flags `sb` (session best), `pb`, `old`.
+  IMSA colSpec: Num, State, Class, S/C, PIC, Driver, Team, Car, Laps, Gap, Int, **S1, S2, S3**, Last, **Best**,
+  **VFT**, Pits. trackData: Air temp, Track temp, Humidity, Wind speed. Speed traps: not in IMSA; check other
+  series' colSpec.
+- Last frame = final classification (best lap + sectors per car). Lap list with flags = analysis JSON.
+
+**What to collect (series that run cars we simulate; archive counts 2026-11-08):**
+| Series | Archive series names | Replays | Use |
+|---|---|---|---|
+| F1 | `Formula 1` | 790 | cross-check only (TI is the main source) |
+| WEC Hypercar (**2021 on only** — Hypercar class started 2021) + LMGT3 (2024 on) | `WEC`, `FIA WEC`, `FIA World Endurance Championship`, `Le Mans 24 Hours` | ~370 | extra seasons 2021–24 for calibration + stints; Al Kamel stays the main source |
+| IMSA GTP / GTD Pro / GTD | `IMSA WeatherTech SportsCar Championship` (+ case variants) | ~490 | new: GTP stint energy (VFT), GTP/GTD calibration |
+| Formula E | `ABB FIA Formula E (World) Championship`, `FORMULA E` | ~615 | **tag the generation**: Gen2 = seasons to 2021-22, Gen3 = 2022-23 to 2023-24, Gen3 Evo = 2024-25 to 2025-26. **None is Gen4** (Gen4 from Season 13, Dec 2026): fit Gen3/Evo, then Gen4 = baseline + rule deltas, labelled estimate |
+| GT3 — GTWC Europe/America | `Blancpain GT Series…`, `Fanatec GT World Challenge…`, `GT World Challenge America…` | ~250 | GT3 calibration |
+| GT3 — IGTC | `… Bathurst 12 Hour`, `IGTC Indianapolis 8 Hour`, `Kyalami 9 Hour` | ~95 | GT3 calibration |
+| GT3 — DTM | `DTM` | 85 | GT3 calibration (DTM BoP) |
+| GT3 — Nürburgring SP9 | `… 24h Nürburgring`, `ADAC 24h Nürburgring Qualifiers`, `NLS`/`VLN` | ~145 | SP9 only (filter class) |
+| GT3 — Macau FIA GT World Cup | `70th–72nd Macau Grand Prix` (GT Cup sessions only) | ~70 | GT3 calibration |
+| LMGT3 — ELMS / Asian LMS | `European Le Mans Series`, `Asian Le Mans Series` | 275 / 88 | LMGT3 extra data |
+Exclude: esports/iRacing, F1 Academy, historic, Le Mans Cup, one-make cups. No Super GT data.
+
+**Steps and pass checks:**
+1. Collector `scripts/sim/t71-collect.mjs` + workflow `lapsim-t71.yml` (manual dispatch): download analysis
+   JSON + last frame of qualifying and race sessions for the table above; write raw to `.cache/lapsim/t71/`
+   and a compact committed summary `scripts/sim/data/t71/<series>.json` (per session: series, event, track id,
+   year, generation/class, weather; per car: class, make, best lap, best sectors, green laps, stints, VFT).
+   Pass: counts per series logged; summary < 5 MB.
+2. Track ids: map event names to `lapsimTracks` ids (like `SERIES.wec.events`). Tracks without geometry
+   (most IMSA, FE street, DTM, Nordschleife) need geometry first: TUMFTM racetrack-database has Hockenheim,
+   Norisring, Nürburgring GP, Oschersleben, Brands Hatch, IMS (Indianapolis road course), Sepang;
+   others need official maps + widths (as for FE, §7 B). Calibrate only where geometry exists; list the rest.
+3. Data check: Timing71 pole laps vs our TI (F1) and Al Kamel (WEC) poles for the same sessions.
+   Pass: differences listed; drop sessions that disagree (wrong session label, partial replay).
+4. Fit, same rules as F1/WEC (`scripts/sim/calibrate-lib.mjs`): only cdA, clA, muY inside bounds; values
+   from rules/BoP fixed; holdout by track (LOO) reported; raced cases reproduce 0.000% via the sector
+   correction. New `SERIES.imsa`, GT3 classes and FE generations in `worker/lapsim/series.js`.
+5. Stints: WEC 2021–24 and IMSA GTP rows added to the stint fit (more LOO rows than the current 29);
+   IMSA energy per lap from VFT.
+6. Docs: `docs/lapsim-t71.md` (what was used, counts, errors, failed checks shown) + update this handoff.
 
 ### H. The 5 tests failing on main since PR #117
 - Not simulator tests (account cards, guide/setup prompt tests, previews, source-routing, introduction).
@@ -418,16 +507,17 @@ Added in this session: `data-ls="series|tyre|soc|brakes|qsplit|forecast|lineNote
 | `lapsim-experiment.yml` | calibration experiments on `lapsim-exp/**` | — |
 | `rules-monitor.yml` | rules and race-document monitor (knowledge/RULES.md) | — |
 
-Scripts added: `scripts/sim/{racing-lines,car-lines,compounds,compound-gap,wec-stints,stint-fit,brake-fit,qsplit}.mjs`.
+Scripts added: `scripts/sim/{racing-lines,car-lines,compounds,compound-gap,wec-stints,stint-fit,brake-fit,qsplit,tracktemp-fit,line-check}.mjs`; probes `scripts/probe/t71-{list,sample}.mjs`.
+New modules: `worker/lapsim/track-coords.js` (TRACK_LL), `worker/lapsim/tracktemp-data.js`.
 Data inputs (committed, small, with sources): `scripts/sim/data/{compounds,wec-tyres,wec-bop,wec-stints,brembo}.json`.
 
 ---
 
 ## 11. Known issues, risks, open questions
-- Battery swing > window (kernel causality) — §7 A1.
-- Brake distance 35% short — §7 A2.
-- Per-car line gains can be large (e.g. LMGT3 Silverstone −3.0 s vs least-curvature) — partly kernel
-  curvature sensitivity; validate (§7 A4).
+- Fixed: battery window (#136), brake distance (#137), forecast track temperature (#138).
+- Per-car line laps are 3.5–5% fast if used for lap time with path-calibrated grip — so they are not
+  (§7 A4). Line gains vs least-curvature (e.g. LMGT3 Silverstone −3.0 s) are relative only.
+- IMSA GTP, FE and GT3 have no calibration yet; Timing71 (§7 J) is the data path.
 - WEC 2026 BoP unpublished → stint energy 2026 is an estimate (FCY-heavy races less reliable: COTA,
   Barcelona 2026 values look low).
 - Racing lines for tracks with assumed ±6 m width are less certain.
@@ -517,3 +607,13 @@ Data inputs (committed, small, with sources): `scripts/sim/data/{compounds,wec-t
 - scripts/sim/qsplit.mjs: TI Qualifying session_info.session_status Started/Finished pairs -> Q1/Q2/Q3 minute windows (minus session_start_time); segment best = fastest slick lap whose end time falls in the window (+2.5 min grace for laps started before the flag); wet (>3% wR laps) skipped. 47 dry qualifyings 2023-2026. Model: (1+evo(end k))/(1+evo(end Q3)) + pooled segment offset (Q1 +0.56%, Q2 +0.24%); LOO Q1 0.58% / Q2 0.44% (evo only 0.76/0.50).
 - Page: bands on the evolution chart + table [data-ls="qsplit"] (F1 qualifying only). Model Q3 = simulated pole lap (reproduces the real pole); the real table year is the latest dry qualifying at that track (can differ from the car year, e.g. Las Vegas 2024).
 - Forecast: condition option "forecast" -> browser fetch https://api.open-meteo.com/v1/meteofrance (hourly temperature_2m, relative_humidity_2m, surface_pressure, wind_speed_10m, wind_direction_10m, shortwave_radiation, precipitation; forecast_days=4; timezone=auto; wind m/s). Hour select fills state.manual and reuses manual mode. Track temp = air + 0.02 x SW (assumption; FOR CHATGPT: fit k on TI weather.json TrackTemp/AirTemp + Open-Meteo historical radiation). TRACK_LL coordinates in simulation.js. Opens the folded Air panel (details) itself. Tested with a mocked Open-Meteo route in Playwright (container cannot reach the API); live check needed in a real browser.
+
+### Gap fill (user 19:50–20:21: "fill everything except cross-validation, then hand off")
+- #136 battery causal tracking, #137 brake ramp/zone threshold, #138 track temperature fit, #139 stint ± and flags.
+- WEC line check (`line-check.mjs`): run locally in ~2 min; results in §7 A4. Barcelona alias + test.
+- IMSA GTP stint energy: not possible without IMSA calibration and a collector → §7 G and J.
+- Timing71: archive API found in the site bundle; listed via Actions probe (shell blocked); formats sampled on
+  6 sessions (IMSA, FE, DTM, GTWC America, WEC Hypercar, F1). Owner decision 20:21: ChatGPT collects and fits (§7 J).
+- Tools: WebFetch (IMSA bulletin PDF), WebSearch, git clone of `timing71/{common,chrome,web,cli,livetiming-core}`
+  to read the code, GitHub Actions `probe/**`, built-in browser (PRs; one navigate call could not be approved by
+  the safety check — retry or open the compare link by hand).

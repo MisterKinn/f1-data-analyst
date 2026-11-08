@@ -9,7 +9,7 @@ import {execFileSync} from 'node:child_process';
 const slug = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 const GP = {bahrain: 'sakhir', 'saudi-arabian': 'jeddah', 'emilia-romagna': 'imola', 'sao-paulo': 'interlagos', brazilian: 'interlagos', 'las-vegas': 'las-vegas', qatar: 'lusail',
   'abu-dhabi': 'yas-marina-circuit', australian: 'melbourne', chinese: 'shanghai', japanese: 'suzuka', miami: 'miami', canadian: 'montreal', monaco: 'monte-carlo',
-  barcelona: 'catalunya', austrian: 'spielberg', british: 'silverstone', belgian: 'spa-francorchamps', hungarian: 'hungaroring', dutch: 'zandvoort', italian: 'monza',
+  barcelona: 'catalunya', 'barcelona-catalunya': 'catalunya', austrian: 'spielberg', british: 'silverstone', belgian: 'spa-francorchamps', hungarian: 'hungaroring', dutch: 'zandvoort', italian: 'monza',
   azerbaijan: 'baku', singapore: 'singapore', 'united-states': 'austin', 'mexico-city': 'mexico-city', mexican: 'mexico-city'};
 export const tiTrack = (event, year) => { const k = slug(event.normalize('NFD').replace(/[̀-ͯ]/g, '')).replace(/-grand-prix$/, ''); return k === 'spanish' ? (year >= 2026 ? 'madring' : 'catalunya') : GP[k] || k; };
 const val = v => v === 'None' || v == null ? null : v;
