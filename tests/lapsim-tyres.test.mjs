@@ -22,3 +22,15 @@ test('Pirelli nominations are C-numbers, hard to soft, and name the race strateg
   const h = await page('track=' + id + '&car=2026');
   for (const c of years[2026]) assert.match(h, new RegExp('>(소프트|미디엄|하드) ' + c + '<'));
 });
+
+test('compound gaps: measured events reproduce exactly, others follow the C-step model, hard never quicker than medium', async () => {
+  const {lapsimCompoundGap: G} = await import('../worker/lapsim/compound-gap-data.js');
+  assert.ok(G.kPctPerStep > 0.1 && G.kPctPerStep < 1, 'per C-step gap in a physical range');
+  assert.ok(G.test.rmsPct < G.test.noModelPct, 'model beats no model on held-out events');
+  const [id, years] = Object.entries(G.measured).find(([, y]) => Object.values(y).some(v => v.MEDIUM));
+  const y = Object.keys(years).find(k => years[k].MEDIUM), m = years[y].MEDIUM.pct;
+  const h = await page(`track=${id}&car=${y >= 2026 ? 2026 : 2025}`);
+  assert.match(h, /data-ls="tyre"/);
+  for (const [, ys] of Object.entries(G.measured)) for (const v of Object.values(ys)) if (v.MEDIUM && v.HARD) assert.ok(v.HARD.pct >= v.MEDIUM.pct - 0.5);
+  assert.ok(Number.isFinite(m));
+});

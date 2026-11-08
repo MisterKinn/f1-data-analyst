@@ -11,6 +11,7 @@ import {energyLimit} from './lapsim/energy-limits.js';
 import {lapsimRace} from './lapsim/race-data.js';
 import {lapsimRacingLines} from './lapsim/racing-lines-data.js';
 import {lapsimCompounds} from './lapsim/compounds-data.js';
+import {lapsimCompoundGap} from './lapsim/compound-gap-data.js';
 import {raceLaps, strategies} from './lapsim/race-pace.js';
 import {evolutionCoeffs, evolutionDelta, evolutionCurve} from './lapsim/evolution.js';
 
@@ -45,7 +46,7 @@ const T = {
     src: '자료', updated: '보정일',
     evo: '트랙 에볼루션', evoLead: '세션이 진행되며 고무가 쌓이고, 젖은 노면이 마르고, 타이어가 데워지면서 랩타임이 어떻게 바뀌는지 계산합니다. 기준은 위의 계산된 랩(예선 끝 노면)입니다.',
     evoType: '세션', evoTypes: {practice: '연습', qualifying: '예선'}, evoTyre: '타이어', tyres: {f1: {soft: '소프트{S}', medium: '미디엄{M}', hard: '하드{H}', inter: '인터미디엇', wet: '풀 웻'}, hypercar: {soft: '소프트 (미쉐린)', medium: '미디엄 (미쉐린)', hard: '하드 (미쉐린)', wet: '웻 (미쉐린)'}, lmgt3: {medium: '미디엄 (굿이어)', wet: '웻 (굿이어)'}},
-    evoComp: '컴파운드 차이 (소프트 대비)', evoCompReal: '실제 레이스 랩 기준', evoCompNone: '실측 없음, 랩 그대로',
+    evoComp: '컴파운드 차이 (소프트 대비)', evoCompReal: '{y} 실측: 같은 드라이버 저연료 랩, 트랙 진화 제외', evoCompModel: 'C단계 모델 예측, 검증 오차 ±{e}%', evoCompNone: '실측 없음, 랩 그대로',
     evoEnd: '세션 시각', evoGain: '고무 효과 (끝까지)', evoTau: '포화 시간', evoWet: '시작 노면 젖음', evoDry: '건조 시간', evoWarm: '워밍업 랩',
     evoCurve: '실측 곡선 사용', evoLast: '이 시각의 예상 랩', evoChange: '세션 시작 대비', evoBasis: {track: '이 트랙 실측 곡선', series: '시리즈 평균 (보정)', default: '미보정 기본값'},
     evoErr: '홀드아웃 오차 (트랙 제외)', secFix: '섹터 보정 (실제 폴 기준)', evoBasisH: '근거', evoChart: '세션 시각별 예상 랩타임', min: '분',
@@ -75,7 +76,7 @@ const T = {
     src: 'Sources', updated: 'Calibrated',
     evo: 'Track evolution', evoLead: 'How lap time changes over a session as rubber goes down, a wet track dries and tyres warm up. The reference is the simulated lap above (track state at the end of qualifying).',
     evoType: 'Session', evoTypes: {practice: 'Practice', qualifying: 'Qualifying'}, evoTyre: 'Tyre', tyres: {f1: {soft: 'Soft{S}', medium: 'Medium{M}', hard: 'Hard{H}', inter: 'Intermediate', wet: 'Full wet'}, hypercar: {soft: 'Soft (Michelin)', medium: 'Medium (Michelin)', hard: 'Hard (Michelin)', wet: 'Wet (Michelin)'}, lmgt3: {medium: 'Medium (Goodyear)', wet: 'Wet (Goodyear)'}},
-    evoComp: 'Compound gap (vs soft)', evoCompReal: 'from real race laps', evoCompNone: 'not measured, lap unchanged',
+    evoComp: 'Compound gap (vs soft)', evoCompReal: 'measured {y}: same driver, low fuel, track evolution removed', evoCompModel: 'C-step model, test error ±{e}%', evoCompNone: 'not measured, lap unchanged',
     evoEnd: 'Session minute', evoGain: 'Rubber effect (full)', evoTau: 'Time to saturate', evoWet: 'Wetness at start', evoDry: 'Drying time', evoWarm: 'Warm-up laps',
     evoCurve: 'Use measured curve', evoLast: 'Expected lap at this minute', evoChange: 'vs session start', evoBasis: {track: 'measured curve, this track', series: 'series average (fitted)', default: 'uncalibrated default'},
     evoErr: 'Holdout error (track left out)', secFix: 'Sector correction (real pole)', evoBasisH: 'Basis', evoChart: 'Expected lap time over the session', min: 'min',
@@ -144,7 +145,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
   const carId = cars[query.car] ? query.car : '2026';
   const changes = latestChanges(id);
   const data = {lang, t, id, track: td, cars, carOrder: CAR_ORDER, carId, conds, changes, energy: (liveEnergy && (query.track || 'monza') === id ? liveEnergy : energyLimit(id, 2026)),
-    compounds: lapsimCompounds?.[id] || {}, compoundGap: compoundGap(id),
+    compounds: lapsimCompounds?.[id] || {}, compoundGap: compoundGap(id), compoundTest: lapsimCompoundGap?.test?.rmsPct ?? null,
     evo: Object.fromEntries(['f1', 'wec'].map(se => [se, Object.fromEntries(['practice', 'qualifying'].map(ty => [ty, evolutionCoeffs(se, id, ty)]))])),
     calibration: {generatedAt: lapsimCalibration?.generatedAt || null, seasons: Object.fromEntries(Object.entries(lapsimCalibration?.seasons || {}).map(([y, s]) => [y, s.tracks?.[id] || null]))}};
   // first render on the server with the same code the browser uses
@@ -253,10 +254,18 @@ function linePanel(id, lang) {
  <p class="fine">${notes.map(esc).join(' · ')}</p></section>`;
 }
 
-// Compound gap vs soft (s), from the race fit of this track (offsets are fitted on real race laps vs MEDIUM)
+// Compound gap vs soft (% of lap) per season: the real low-fuel gap measured at that event (reproduced
+// exactly), else k(track) × C-steps between the compounds (fitted, leave-one-event-out tested)
 function compoundGap(id) {
-  const o = lapsimRace?.tracks?.[id]?.offset;
-  return o && Number.isFinite(o.SOFT) ? Object.fromEntries(['soft', 'medium', 'hard'].map(k => [k, Number.isFinite(o[k.toUpperCase()]) ? +(o[k.toUpperCase()] - o.SOFT).toFixed(3) : null])) : null;
+  const G = lapsimCompoundGap, k = G?.tracks?.[id] ?? G?.kPctPerStep;
+  if (!Number.isFinite(k)) return {};
+  // hard is built on medium (a measured medium gap plus the model step medium → hard), so hard ≥ medium
+  return Object.fromEntries(Object.entries(lapsimCompounds?.[id] || {}).map(([y, cp]) => {
+    const C = j => +cp[j].slice(1), m = G.measured?.[id]?.[y] || {};
+    const medium = m.MEDIUM ? {pct: m.MEDIUM.pct, basis: 'measured'} : {pct: +(k * (C(2) - C(1))).toFixed(4), basis: 'model'};
+    const hard = m.HARD ? {pct: m.HARD.pct, basis: 'measured'} : {pct: +(medium.pct + k * (C(1) - C(0))).toFixed(4), basis: 'model'};
+    return [y, {medium, hard}];
+  }));
 }
 const RT = {
   ko: {h: '레이스 페이스 예측', lead: '연료가 줄고, 타이어가 닳고, 피트 스톱을 하면서 랩타임이 어떻게 바뀌는지 실제 레이스 랩으로 맞춘 값입니다.', strat: '전략', time: '레이스 시간', gap: '차이', laps: '랩', pole: '기준 폴', refTop: '기준 랩 (예선 상위 {n}명 평균)', basis: {pred: '2026 예측', real: '2026 실제'}, test: '이전 시즌만으로 예측한 레이스 페이스 오차', season: '시즌', now: '예측/최근', repro: '이미 열린 레이스 재현 오차 (전 시즌 최대)', chart: '최적 전략의 예상 랩타임', c: {S: '소프트', M: '미디엄', H: '하드'}},
@@ -374,10 +383,10 @@ function computeView(K, data, state, R) {
   // tyres the selected car's series really has (no intermediate in WEC); F1 slick named by the race's Pirelli C-numbers
   const ts = sel.series ? (sel.cls === 'lmgt3' ? 'lmgt3' : 'hypercar') : 'f1', tyres = t.tyres[ts];
   if (!tyres[ev.tyre]) ev.tyre = Object.keys(tyres)[0];
-  const cs = data.compounds[sel.year] || data.compounds[2026] || Object.values(data.compounds).pop(), cn = {S: 2, M: 1, H: 0};
+  const cy = data.compounds[sel.year] ? sel.year : data.compounds[2026] ? 2026 : Object.keys(data.compounds).pop(), cs = data.compounds[cy], cn = {S: 2, M: 1, H: 0};
   const tyreHtml = Object.keys(tyres).map(k => '<option value="' + k + '"' + (k === ev.tyre ? ' selected' : '') + '>' + tyres[k].replace(/\{([SMH])\}/, (_, c) => cs ? ' ' + cs[cn[c]] : '') + '</option>').join('');
   // dry compound: the simulated lap is a soft-tyre pole lap; F1 adds the gap fitted on this track's real race laps
-  const dry = ev.tyre !== 'inter' && ev.tyre !== 'wet', gapS = ts === 'f1' && dry && data.compoundGap ? data.compoundGap[ev.tyre] : null;
+  const dry = ev.tyre !== 'inter' && ev.tyre !== 'wet', cg = ts === 'f1' && dry ? data.compoundGap?.[cy]?.[ev.tyre] : null, gapS = cg ? res.lapTime * cg.pct / 100 : null;
   const coef = data.evo[se][ev.type], qc = data.evo[se].qualifying;
   const endOf = c => c.curve ? c.curve[c.curve.length - 1][0] : (se === 'wec' ? (c === qc ? 20 : 90) : 60);
   const P = Object.assign({}, coef, {session: ev.type, tyre: dry ? 'slick' : ev.tyre, useCurve: ev.useCurve && !!coef.curve, wetStart: 0, dryMin: 20, warmupLaps: 0}, ev.over || {});
@@ -387,7 +396,7 @@ function computeView(K, data, state, R) {
   if (gapS) { curve.points = curve.points.map(p => ({...p, lap: p.lap + gapS})); curve.last = curve.points.at(-1); }
   const first = curve.points[0].lap, last = curve.last.lap;
   const evoFacts = fact(t.evoLast, fmt(last)) + fact(t.evoChange, (last - first >= 0 ? '+' : '−') + Math.abs(last - first).toFixed(3) + ' s')
-    + (dry && ev.tyre !== 'soft' ? fact(t.evoComp, gapS != null ? (gapS >= 0 ? '+' : '−') + Math.abs(gapS).toFixed(3) + ' s (' + t.evoCompReal + ')' : t.evoCompNone) : '')
+    + (dry && ev.tyre !== 'soft' ? fact(t.evoComp, gapS != null ? (gapS >= 0 ? '+' : '−') + Math.abs(gapS).toFixed(3) + ' s (' + (cg.basis === 'measured' ? t.evoCompReal.replace('{y}', cy) : t.evoCompModel.replace('{e}', data.compoundTest)) + ')' : t.evoCompNone) : '')
     + fact(t.evoBasisH, P.useCurve ? t.evoBasis.track : coef.calibrated ? t.evoBasis.series : t.evoBasis.default)
     + (coef.holdoutPct != null ? fact(t.evoErr, '±' + (last * coef.holdoutPct / 100).toFixed(2) + ' s') : '');
   const ew = 640, eh = 200, lo = Math.min(...curve.points.map(p => p.lap)), hi = Math.max(...curve.points.map(p => p.lap));
