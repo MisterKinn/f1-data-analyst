@@ -203,8 +203,8 @@ ${racePanel(id, lang)}
 // Race pace: expected lap times over the race and the best strategies, from the 2026 pole
 // (predicted when the track has not been raced in 2026) and the fitted fuel/tyre/pit factors.
 const RT = {
-  ko: {h: '레이스 페이스 예측', lead: '연료가 줄고, 타이어가 닳고, 피트 스톱을 하면서 랩타임이 어떻게 바뀌는지 실제 레이스 랩으로 맞춘 값입니다.', strat: '전략', time: '레이스 시간', gap: '차이', laps: '랩', pole: '기준 폴', basis: {pred: '2026 예측', real: '2026 실제'}, test: '이전 시즌만으로 예측한 리딩 페이스 오차', repro: '이미 열린 이 레이스 재현 오차 (중반 리딩 페이스)', chart: '최적 전략의 예상 랩타임', c: {S: '소프트', M: '미디엄', H: '하드'}},
-  en: {h: 'Race pace prediction', lead: 'How lap time changes as fuel burns, tyres wear and cars stop, fitted to real race laps.', strat: 'Strategy', time: 'Race time', gap: 'Gap', laps: 'laps', pole: 'Pole used', basis: {pred: '2026 prediction', real: '2026 real'}, test: 'Leading-pace error predicted from earlier seasons only', repro: 'This race already run, reproduction error (mid-race leading pace)', chart: 'Expected lap times, best strategy', c: {S: 'Soft', M: 'Medium', H: 'Hard'}},
+  ko: {h: '레이스 페이스 예측', lead: '연료가 줄고, 타이어가 닳고, 피트 스톱을 하면서 랩타임이 어떻게 바뀌는지 실제 레이스 랩으로 맞춘 값입니다.', strat: '전략', time: '레이스 시간', gap: '차이', laps: '랩', pole: '기준 폴', refTop: '기준 랩 (예선 상위 {n}명 평균)', basis: {pred: '2026 예측', real: '2026 실제'}, test: '이전 시즌만으로 예측한 레이스 페이스 오차', repro: '이미 열린 이 레이스 재현 오차 (중반 리딩 페이스)', chart: '최적 전략의 예상 랩타임', c: {S: '소프트', M: '미디엄', H: '하드'}},
+  en: {h: 'Race pace prediction', lead: 'How lap time changes as fuel burns, tyres wear and cars stop, fitted to real race laps.', strat: 'Strategy', time: 'Race time', gap: 'Gap', laps: 'laps', pole: 'Pole used', refTop: 'Reference lap (mean of the best {n} in qualifying)', basis: {pred: '2026 prediction', real: '2026 real'}, test: 'Race-pace error predicted from earlier seasons only', repro: 'This race already run, reproduction error (mid-race leading pace)', chart: 'Expected lap times, best strategy', c: {S: 'Soft', M: 'Medium', H: 'Hard'}},
 };
 function racePanel(id, lang) {
   const tr = lapsimRace?.tracks?.[id], s26 = lapsimCalibration?.seasons?.[2026];
@@ -227,7 +227,7 @@ function racePanel(id, lang) {
   const test = (lapsimRace.test?.rmsPct != null ? `<p class="fine">${esc(t.test)}: <span data-no-translate>${lapsimRace.test.rmsPct.toFixed(2)}% (${lapsimRace.test.races})</span></p>` : '')
     + (tr.reproduced && lapsimRace.reproduction?.maxPct != null ? `<p class="fine">${esc(t.repro)}: <span data-no-translate>${lapsimRace.reproduction.maxPct.toFixed(3)}%</span></p>` : '');
   return `<section class="panel ls-panel"><h2>${esc(t.h)}</h2><p>${esc(t.lead)}</p>
- <p class="fine">${esc(t.pole)}: <span data-no-translate>${fmtLap(pole)}</span> (${esc(real ? t.basis.real : t.basis.pred)}) · <span data-no-translate>${n}</span> ${esc(t.laps)}</p>
+ <p class="fine">${esc(tr.reproduced && lapsimRace.refTop > 1 ? t.refTop.replace('{n}', lapsimRace.refTop) : t.pole)}: <span data-no-translate>${fmtLap(pole)}</span> (${esc(real || tr.reproduced ? t.basis.real : t.basis.pred)}) · <span data-no-translate>${n}</span> ${esc(t.laps)}</p>
  <div class="output"><table class="ls-table"><thead><tr><th>${esc(t.strat)}</th><th>${esc(t.time)}</th><th>${esc(t.gap)}</th></tr></thead><tbody>${rows}</tbody></table></div>
  <h3>${esc(t.chart)}</h3><div class="ls-scroll">${svg}</div>${test}
 </section>`;
