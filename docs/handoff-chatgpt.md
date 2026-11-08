@@ -18,7 +18,7 @@ Production repo: `MisterKinn/f1-data-analyst` (merge to `main` = automatic Verce
 4. Everything built, with numbers (merged PRs)
 5. How each feature was built: method, problems, fixes, tools
 6. Data sources, access paths and limits
-7. Work left for ChatGPT, in order, with pass checks (J = Timing71 archive)
+7. Work left for ChatGPT, in order, with pass checks (J = Timing71 archive, K = open model items)
 8. Tools, skills and plugins used — what to install, substitutes
 9. Stable UI names (do not rename) and page structure
 10. Workflows (GitHub Actions) and scripts
@@ -451,6 +451,28 @@ Exclude: esports/iRacing, F1 Academy, historic, Le Mans Cup, one-make cups. No S
 5. Stints: WEC 2021–24 and IMSA GTP rows added to the stint fit (more LOO rows than the current 29);
    IMSA energy per lap from VFT.
 6. Docs: `docs/lapsim-t71.md` (what was used, counts, errors, failed checks shown) + update this handoff.
+
+### K. Open model items from the status board (owner decision 2026-11-08 20:31: hand all to ChatGPT)
+Same rules as everything else: 0.000% where a real reference exists, held-out error shown, estimates labelled.
+1. **F1 race energy per stint / race lap (2026 rules).** Today only the qualifying lap is modelled
+   (`kernel.js` causal battery, `flow.soc`). Run the kernel with the race line's fuel and grip
+   (`car-lines-data` `r.fuelKg`, `r.grip`) and the per-event recharge limit; show deploy/recover per lap
+   and the battery over a stint. No public SoC data → label as estimate. Pass: battery stays inside the
+   4 MJ window every lap; race-lap time from the kernel within the race-pace model's error (0.64% for 2026).
+2. **LMGT3 fuel / stint length.** LMGT3 has fuel capacity and BoP, not a stint-energy budget. Get real
+   full-green stint lengths from the Al Kamel race analysis (`scripts/sim/wec-stints.mjs`, change the class
+   filter from `HYPERCAR` to `LMGT3`; runs only in Actions) and Timing71 for 2024+ (§7 J); fit fuel per lap
+   like `stint-fit.mjs`. Pass: LOO stint-length error stated; FCY-heavy races flagged.
+3. **WEC compound effect on lap time.** Page shows "not measured, lap unchanged" (correct today). Al Kamel
+   and Timing71 WEC data have no tyre column. Only add an effect with a real source (team/Michelin
+   statements per event, or a tyre field in a new source); otherwise keep the label. Pass: no number
+   without a source.
+4. **Wet / intermediate tyres per compound.** Only inside the track-evolution model now. Measure from real
+   wet sessions (TI `laptimes.json` has the compound; Al Kamel wet sessions) the gap to dry pace per
+   compound and track temperature. Pass: LOO error vs the evolution-only model.
+5. **Tyre temperature / warm-up model.** Not built; no public tyre temperature data, so no 0.000% check is
+   possible. Lowest priority; if built, label fully as a model and test only warm-up laps vs real out-lap /
+   first flying lap deltas (TI laps with `pout`).
 
 ### H. The 5 tests failing on main since PR #117
 - Not simulator tests (account cards, guide/setup prompt tests, previews, source-routing, introduction).
