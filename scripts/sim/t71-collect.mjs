@@ -64,8 +64,9 @@ export function summarise(rep, analysis) {
       stints: (c.stints || []).filter(st => st.laps?.length).map(st => {
         const g = st.laps.filter(l => l.flag === 'green'); const v = st.laps.map(l => fr(l)?.vft).filter(x => x != null && x !== '');
         const gb = g.length ? Math.min(...g.map(l => l.laptime)) : null; const t0 = st.laps[0].timestamp;
-        // [first lap, last lap, green laps, green median, tyre, VFT first, VFT last, driver, green best, start (s since session start)]
-        return [st.laps[0].lapNumber, st.laps.at(-1).lapNumber, g.length, r3(median(g.map(l => l.laptime))), tyreName(st.laps.at(-1)), v[0] ?? null, v.at(-1) ?? null, st.driver ?? null, r3(gb), t0 && t00 ? Math.round(t0 / 1e3 - t00) : null];
+        // [first lap, last lap, green laps, green median, tyre, VFT first, VFT last, driver, green best, start (s since session start),
+        //  neutralised laps (full-course: FCY/VSC/SC/Code 60/red; local yellows are racing laps, as in Al Kamel's flag column)]
+        return [st.laps[0].lapNumber, st.laps.at(-1).lapNumber, g.length, r3(median(g.map(l => l.laptime))), tyreName(st.laps.at(-1)), v[0] ?? null, v.at(-1) ?? null, st.driver ?? null, r3(gb), t0 && t00 ? Math.round(t0 / 1e3 - t00) : null, st.laps.filter(l => !['green', 'yellow', 'chequered'].includes(l.flag)).length];
       })};
   }
   return cars;
