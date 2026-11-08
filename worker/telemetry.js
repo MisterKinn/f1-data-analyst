@@ -1,4 +1,4 @@
-// Distance alignment for two laps of telemetry (used by openf1_lap_telemetry).
+// Distance alignment for two laps of telemetry (used by f1_lap_telemetry).
 export function distanceDelta(laps){
  if(laps.length!==2||laps.some(l=>!l.complete_coverage||!Array.isArray(l.samples)||l.samples.length<3))return null;
  const [a,b]=laps.map(l=>l.samples),max=Math.min(a.at(-1)[1],b.at(-1)[1]);

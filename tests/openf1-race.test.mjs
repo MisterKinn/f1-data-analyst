@@ -44,33 +44,33 @@ function fake(calls=[]){
 const NOW=Date.parse('2026-11-06T00:00:00Z'),call=async(name,args)=>JSON.parse((await openf1RaceCall(name,{session_key:1,...args},{fetchImpl:fake(),now:NOW})).content[0].text);
 
 test('six read-only race tools',()=>{
- assert.deepEqual(OPENF1_RACE_TOOLS.map(t=>t.name),['openf1_race_control','openf1_race_gaps','openf1_strategy','openf1_result','openf1_weather','openf1_team_radio']);
+ assert.deepEqual(OPENF1_RACE_TOOLS.map(t=>t.name),['f1_race_control','f1_race_gaps','f1_strategy','f1_result','f1_weather','f1_team_radio']);
  assert.ok(OPENF1_RACE_TOOLS.every(t=>t.annotations.readOnlyHint));
 });
 
 test('race control: SC, red flag and VSC periods with laps; penalties and track limits',async()=>{
  const p=neutralisations(rc);
  assert.deepEqual(p.map(x=>[x.type,x.lap_start,x.lap_end]),[['SC',3,3],['RED FLAG',3,4],['VSC',28,29]]);
- clearOpenf1Cache();const out=await call('openf1_race_control',{});
+ clearOpenf1Cache();const out=await call('f1_race_control',{});
  assert.equal(out.neutralisations[2].type,'VSC');assert.ok(out.neutralisations[2].duration_s>0);
  assert.deepEqual(out.track_limit_deletions[0],{driver_number:'63',driver:'RUS',team:'Mercedes',count:1,laps:[9]});
  assert.equal(out.penalties_and_investigations.length,2);assert.equal(out.blue_flags[0].driver_number,'77');
- const rus=await call('openf1_race_control',{driver_number:'63',category:'penalties'});
+ const rus=await call('f1_race_control',{driver_number:'63',category:'penalties'});
  assert.equal(rus.penalties_and_investigations.length,1);assert.match(rus.penalties_and_investigations[0].message,/YELLOW FLAG/);assert.equal(rus.neutralisations,undefined);
 });
 
 test('gaps are measured at the line; the pair view finds the pass',async()=>{
  const c=crossings(tables.laps);assert.equal((c.get('12').get(1)-c.get('63').get(1))/1000,0.5);
- clearOpenf1Cache();const out=await call('openf1_race_gaps',{driver_numbers:['63','12']});
+ clearOpenf1Cache();const out=await call('f1_race_gaps',{driver_numbers:['63','12']});
  const lap2=out.laps.find(r=>r.lap===2);assert.equal(lap2.cars['12'].gap_to_leader_s,1);assert.equal(lap2.cars['12'].position,2);
  assert.equal(out.pair.per_lap.find(p=>p.lap===27).gap_s,12.5,'25 green laps x 0.5 s; laps 3-4 equal under the red flag');
  assert.ok(out.pair.per_lap.find(p=>p.lap===28).neutralised&&out.pair.per_lap.find(p=>p.lap===28).pit);
  assert.equal(out.overtakes.length,1);assert.equal(out.overtakes[0].overtaking.driver,'ANT');assert.equal(out.overtakes[0].lap,30);
- const def=await call('openf1_race_gaps',{include_overtakes:false});assert.deepEqual(def.drivers.map(d=>d.driver_number),['12','63'],'default: top finishers');
+ const def=await call('f1_race_gaps',{include_overtakes:false});assert.deepEqual(def.drivers.map(d=>d.driver_number),['12','63'],'default: top finishers');
 });
 
 test('strategy: stops under VSC and red flag are labelled; clean pace and head-to-head',async()=>{
- clearOpenf1Cache();const out=await call('openf1_strategy',{driver_numbers:['63','12']});
+ clearOpenf1Cache();const out=await call('f1_strategy',{driver_numbers:['63','12']});
  const ant=out.drivers.find(d=>d.driver_number==='12');
  assert.deepEqual(ant.pit_stops.map(p=>p.under),['red_flag','VSC']);assert.equal(ant.racing_pit_stops,1);
  const s1=ant.stints[0];assert.equal(s1.clean_pace.mean_s,86.5);assert.deepEqual(s1.excluded_laps,{lap_1:1,pit_out:0,pit_in:1,neutralised:2,no_time:0,outlier:0});
@@ -80,15 +80,15 @@ test('strategy: stops under VSC and red flag are labelled; clean pace and head-t
 });
 
 test('result: classification with grid and places gained',async()=>{
- clearOpenf1Cache();const out=await call('openf1_result',{});
+ clearOpenf1Cache();const out=await call('f1_result',{});
  assert.equal(out.classification[0].driver,'ANT');assert.equal(out.classification[0].grid,19);assert.equal(out.classification[0].places_gained,18);
  assert.equal(out.classification[2].status,'DNF');assert.equal(out.classification[1].gap_to_leader_s,3.857);
 });
 
 test('weather summary and radio links',async()=>{
- clearOpenf1Cache();const w=await call('openf1_weather',{});
+ clearOpenf1Cache();const w=await call('f1_weather',{});
  assert.equal(w.rain_periods.length,1);assert.equal(w.track_temperature_c.max,54);assert.equal(w.samples.length,3);
- const r=await call('openf1_team_radio',{driver_number:'63'});
+ const r=await call('f1_team_radio',{driver_number:'63'});
  assert.equal(r.messages[0].lap,29);assert.match(r.limitations[0],/no transcripts/);
 });
 

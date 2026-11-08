@@ -103,13 +103,13 @@ assert.equal(RULES_TOOLS[0].name,'rules_lookup');
 // ---- automatic rule context ----
 import {rulesContext,attachRulesContext,contextTopics,contextSeries} from '../worker/rules.js';
 assert.deepEqual(contextTopics('CAR 44 TIME 1:23.4 DELETED - TRACK LIMITS AT TURN 4; VSC DEPLOYED'),['track limits','virtual safety car']);
-assert.equal(contextSeries('openf1_race_control'),'f1');assert.equal(contextSeries('wec_list_documents'),'wec');assert.equal(contextSeries('motorsport_read_document',{series:'imsa'}),'imsa');assert.equal(contextSeries('research_lookup'),null);
+assert.equal(contextSeries('f1_race_control'),'f1');assert.equal(contextSeries('wec_list_documents'),'wec');assert.equal(contextSeries('motorsport_read_document',{series:'imsa'}),'imsa');assert.equal(contextSeries('research_lookup'),null);
 const rc={content:[{type:'text',text:JSON.stringify({messages:['LAP 12 TIME DELETED - TRACK LIMITS']})}],isError:false};
-const ctxR=await rulesContext(env,'openf1_race_control',{},rc);
+const ctxR=await rulesContext(env,'f1_race_control',{},rc);
 assert.equal(ctxR.series,'f1');assert.equal(ctxR.topics[0].topic,'track limits');assert.equal(ctxR.topics[0].hits[0].article,'B1.8.1');
 const att=JSON.parse(attachRulesContext(rc,ctxR).content[0].text);assert.ok(att.messages&&att.rules_context.topics.length);
-assert.equal(await rulesContext(env,'openf1_race_control',{},{content:[{type:'text',text:'{"laps":[]}'}]}),null,'no regulated situation, nothing attached');
-assert.equal(await rulesContext({},'openf1_race_control',{},rc),null);
+assert.equal(await rulesContext(env,'f1_race_control',{},{content:[{type:'text',text:'{"laps":[]}'}]}),null,'no regulated situation, nothing attached');
+assert.equal(await rulesContext({},'f1_race_control',{},rc),null);
 assert.equal((await rulesLookup(env,{query:'track limits',series:'NASCAR'})).index_status,'not_publicly_available');
 // ---- scheduling of unfinished and failed sources ----
 import {due,priority} from '../scripts/rules-monitor.mjs';

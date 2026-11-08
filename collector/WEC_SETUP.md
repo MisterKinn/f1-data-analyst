@@ -20,7 +20,7 @@ Use existing `WEC_USERNAME` (or `WEC_EMAIL` / `FIAWEC_USERNAME`) and `WEC_PASSWO
 
 - Authenticated `POST /wec/discover`: JSON `{ "event": "Monza", "year": 2026, "session": "FP1" }`. Allowed sessions: auto, FP1, FP2, FP3, Qualifying, Hyperpole, Race. Event is an English name fragment, not a URL.
 - Authenticated `GET /wec/snapshot`: last safe result; does not log in or start a job.
-- Shared MCP tools `wec_discover_live` and `wec_live_status` use the existing collector URL/key. The WEC page offers separate start/status buttons. Existing visitor authentication is preserved.
+- Shared MCP tools `wec_live_discover` and `wec_live_status` use the existing collector URL/key. The WEC page offers separate start/status buttons. Existing visitor authentication is preserved.
 - One job at a time, 110-second execution deadline, 60-second duplicate-request suppression. No repository polling or new scheduled automation. Authentication/MFA/CAPTCHA/subscription failures stop further sign-in attempts until operator intervention/restart. Human verification is never bypassed.
 - Public result stages distinguish waiting, authentication, missing browser runtime, missing timing link, unapproved destination, unsupported table and unverified snapshot. Signed timing links are withheld, not altered into broken public links; the safe session page remains the user entrypoint.
 

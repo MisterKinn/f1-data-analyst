@@ -43,7 +43,7 @@ test('personal WEC calls go to the account own collector path; crew read the sch
   const result=JSON.parse((await wecLiveAccessCall('wec_live_status',{},env,{mode:'personal',accountId:'acct-1'})).content[0].text);
   assert.equal(calls[0].url,'https://collector.test/personal/acct-1/wec/snapshot');
   assert.equal(result.state,'credentials_required');assert.match(result.verification_note,/plus\.fiawec\.com\/en/);
-  await wecLiveAccessCall('wec_discover_live',{event:'Monza'},env,{mode:'personal',accountId:'acct-1'});
+  await wecLiveAccessCall('wec_live_discover',{event:'Monza'},env,{mode:'personal',accountId:'acct-1'});
   assert.equal(calls[1].url,'https://collector.test/personal/acct-1/wec/discover');
   const crewEnv={...env,BUCKET:bucket()};
   crewEnv.BUCKET.m.set('wec/live/current.json',JSON.stringify({state:'reading',records:[{'No.':'8'}],received_at:new Date().toISOString(),rows_changed_at:new Date().toISOString(),window_open:new Date(Date.now()-60000).toISOString(),window_close:new Date(Date.now()+60000).toISOString()}));

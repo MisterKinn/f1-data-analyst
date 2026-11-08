@@ -36,14 +36,14 @@ test('calendar names map to TracingInsights folders',()=>{
 
 test('sessions: "Brazil" finds São Paulo qualifying while OpenF1 is locked',async()=>{
  clearOpenf1Cache();clearTiCache();
- const out=parse(await openf1Call('openf1_sessions',{year:2026,place:'Brazil',session_name:'Qualifying'},io([])));
+ const out=parse(await openf1Call('f1_sessions',{year:2026,place:'Brazil',session_name:'Qualifying'},io([])));
  assert.match(out.source,/TracingInsights/);
  assert.equal(out.sessions[0].session_key,11408);assert.equal(out.sessions[0].date_start,'2026-11-07T18:00:00.000Z');
 });
 
 test('laps: best lap skips deleted laps and carries the qualifying segment',async()=>{
  clearOpenf1Cache();clearTiCache();
- const out=parse(await openf1Call('openf1_laps',{session_key:11408,driver_number:'1'},io([])));
+ const out=parse(await openf1Call('f1_laps',{session_key:11408,driver_number:'1'},io([])));
  assert.equal(out.state,'ready');assert.equal(out.driver,'NOR');
  assert.equal(out.best_lap.lap_number,23,'lap 24 is deleted');assert.equal(out.best_lap.qualifying_segment,'Q3');
  assert.equal(out.laps.find(l=>l.lap_number===24).deleted,true);
@@ -52,7 +52,7 @@ test('laps: best lap skips deleted laps and carries the qualifying segment',asyn
 
 test('telemetry: unknown session key is found by scanning events; time axis is scaled to the official lap',async()=>{
  clearOpenf1Cache();clearTiCache();
- const out=parse(await openf1Call('openf1_lap_telemetry',{session_key:11408,driver_number:'1',lap_number:23,compare_driver_number:'63',compare_lap_number:21},io([])));
+ const out=parse(await openf1Call('f1_lap_telemetry',{session_key:11408,driver_number:'1',lap_number:23,compare_driver_number:'63',compare_lap_number:21},io([])));
  assert.equal(out.state,'ready');assert.match(out.source,/TracingInsights/);
  const [nor,rus]=out.laps;
  assert.equal(nor.time_axis_scaled.official_lap_s,87.47);assert.equal(nor.samples.at(-1)[0],87.47);
@@ -67,7 +67,7 @@ test('falls back to OpenF1 when TracingInsights has not published the session',a
  const lap={session_key:11408,driver_number:1,lap_number:2,date_start:'2026-11-07T20:00:00+00:00',lap_duration:88.1,is_pit_out_lap:false};
  const openf1=async url=>new Response(JSON.stringify(url.includes('/laps')?[lap]:[]),{status:200});
  const empty=async()=>new Response('404: Not Found',{status:404});
- const out=parse(await openf1Call('openf1_laps',{session_key:99999,driver_number:'1'},{tiFetch:empty,fetchImpl:openf1,now:NOW}));
+ const out=parse(await openf1Call('f1_laps',{session_key:99999,driver_number:'1'},{tiFetch:empty,fetchImpl:openf1,now:NOW}));
  assert.equal(out.best_lap.lap_number,2);assert.match(out.source,/OpenF1/);
 });
 
@@ -79,10 +79,10 @@ test('OpenF1 401 (live lock) says what to use instead',async()=>{
 test('telemetry: official turn numbers come with the samples and label the corner summary',async()=>{
  clearOpenf1Cache();clearTiCache();
  const args={session_key:11408,driver_number:'1',lap_number:23,compare_driver_number:'63',compare_lap_number:21};
- const raw=parse(await openf1Call('openf1_lap_telemetry',args,io([])));
+ const raw=parse(await openf1Call('f1_lap_telemetry',args,io([])));
  assert.deepEqual(raw.official_turns,[{turn:'T1',distance_m:531},{turn:'T2',distance_m:1594},{turn:'T3',distance_m:2657}]);
  assert.match(raw.response_format,/official turn/);
- const sum=parse(await openf1Call('openf1_lap_telemetry',{...args,summary:true},io([])));
+ const sum=parse(await openf1Call('f1_lap_telemetry',{...args,summary:true},io([])));
  const turns=sum.laps[0].summary.corners.map(c=>c.turn||null);
  assert.ok(turns.includes('T1'),'speed minimum near 531 m is T1: '+JSON.stringify(sum.laps[0].summary.corners));
  assert.ok(sum.corner_comparison.corners.every(c=>!c.turn||/^T\d+$/.test(c.turn)));
@@ -92,6 +92,6 @@ test('telemetry from OpenF1 says when official turns are missing',async()=>{
  clearOpenf1Cache();clearTiCache();
  const lap={session_key:99999,driver_number:1,lap_number:2,date_start:'2026-11-07T20:00:00+00:00',lap_duration:88.1,is_pit_out_lap:false};
  const openf1=async url=>new Response(JSON.stringify(url.includes('/laps')?[lap]:[]),{status:200});
- const out=parse(await openf1Call('openf1_lap_telemetry',{session_key:99999,driver_number:'1'},{tiFetch:async()=>new Response('',{status:404}),fetchImpl:openf1,now:NOW}));
+ const out=parse(await openf1Call('f1_lap_telemetry',{session_key:99999,driver_number:'1'},{tiFetch:async()=>new Response('',{status:404}),fetchImpl:openf1,now:NOW}));
  assert.equal(out.official_turns,null);assert.match(out.official_turns_note,/not available/);
 });

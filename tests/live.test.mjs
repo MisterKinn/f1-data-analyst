@@ -20,7 +20,7 @@ assert.equal((await liveRead(env)).freshness.live,true);
 const earlier={...sample,generated_at:new Date(Date.now()-3600000).toISOString(),topics:{Heartbeat:{},SessionInfo:{Key:122,Name:'OLDER SESSION'}}};
 assert.equal((await liveRoutes(req(earlier),env)).status,409);
 assert.equal((await liveRead(env)).topics.SessionInfo.Key,123);
-const rpc=new Request('https://example.test/mcp',{method:'POST',headers:{'content-type':'application/json','oai-authenticated-user-id':'owner','oai-authenticated-user-email':'owner@test'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'fastf1_live_snapshot',arguments:{recent_events:0}}})});
+const rpc=new Request('https://example.test/mcp',{method:'POST',headers:{'content-type':'application/json','oai-authenticated-user-id':'owner','oai-authenticated-user-email':'owner@test'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'f1_live_snapshot',arguments:{recent_events:0}}})});
 const result=await (await worker.fetch(rpc,env)).json();
 assert.equal(JSON.parse(result.result.content[0].text).topics.SessionInfo.Name,'TEST SESSION');
 assert.equal(result.result.isError,false);

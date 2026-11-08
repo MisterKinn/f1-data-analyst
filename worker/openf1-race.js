@@ -13,21 +13,21 @@ const lap={type:'integer',minimum:1,maximum:200};
 const schema=(properties,required=['session_key'])=>({type:'object',properties,required,additionalProperties:false});
 
 export const OPENF1_RACE_TOOLS=[
- {name:'openf1_race_control',description:'Race control for a completed F1 session from OpenF1: SC, VSC and red-flag periods with laps and durations, penalties and steward investigations, track-limit deletions per driver, blue flags and key events. Use it to confirm neutralisations before explaining gaps, pit timing or slow laps.',
+ {name:'f1_race_control',description:'Race control for a completed F1 session from OpenF1: SC, VSC and red-flag periods with laps and durations, penalties and steward investigations, track-limit deletions per driver, blue flags and key events. Use it to confirm neutralisations before explaining gaps, pit timing or slow laps.',
   inputSchema:schema({session_key:key,category:{type:'string',enum:['all','neutralisations','penalties','track_limits','flags'],description:'Default all.'},driver_number:driver}),annotations:ro},
- {name:'openf1_race_gaps',description:'Per-lap positions and gaps for a completed F1 race or sprint from OpenF1, measured when each car crossed the timing line. With two drivers it also returns the gap between them per lap, the biggest lap-to-lap changes and the lap the order flipped. Laps under SC/VSC/red flag and pit laps are marked. Optionally lists overtakes involving the chosen drivers.',
+ {name:'f1_race_gaps',description:'Per-lap positions and gaps for a completed F1 race or sprint from OpenF1, measured when each car crossed the timing line. With two drivers it also returns the gap between them per lap, the biggest lap-to-lap changes and the lap the order flipped. Laps under SC/VSC/red flag and pit laps are marked. Optionally lists overtakes involving the chosen drivers.',
   inputSchema:schema({session_key:key,driver_numbers:drivers,lap_from:lap,lap_to:lap,include_overtakes:{type:'boolean',description:'Default true.'}}),annotations:ro},
- {name:'openf1_strategy',description:'Tyre strategy for a completed F1 session from OpenF1: stints (compound, laps, tyre age), pit stops (pit-lane and stationary time, flagged when made under red flag, SC or VSC) and clean stint pace (pit, lap-1, neutralised and outlier laps removed, with counts). With two drivers it adds a head-to-head pace difference on laps where both ran clean.',
+ {name:'f1_strategy',description:'Tyre strategy for a completed F1 session from OpenF1: stints (compound, laps, tyre age), pit stops (pit-lane and stationary time, flagged when made under red flag, SC or VSC) and clean stint pace (pit, lap-1, neutralised and outlier laps removed, with counts). With two drivers it adds a head-to-head pace difference on laps where both ran clean.',
   inputSchema:schema({session_key:key,driver_numbers:drivers}),annotations:ro},
- {name:'openf1_result',description:'Classification of a completed F1 session from OpenF1 (position, laps, gap, status, points; Q1/Q2/Q3 times for qualifying) with the starting grid and places gained for races. Use FIA classification documents when official confirmation is needed.',
+ {name:'f1_result',description:'Classification of a completed F1 session from OpenF1 (position, laps, gap, status, points; Q1/Q2/Q3 times for qualifying) with the starting grid and places gained for races. Use FIA classification documents when official confirmation is needed.',
   inputSchema:schema({session_key:key}),annotations:ro},
- {name:'openf1_weather',description:'Weather for a completed F1 session from OpenF1: air and track temperature range and trend, humidity, pressure, wind and rain periods, with 10-minute samples.',
+ {name:'f1_weather',description:'Weather for a completed F1 session from OpenF1: air and track temperature range and trend, humidity, pressure, wind and rain periods, with 10-minute samples.',
   inputSchema:schema({session_key:key}),annotations:ro},
- {name:'openf1_team_radio',description:'Team radio recordings for a completed F1 session from OpenF1: time, lap and audio link per message. Links only: there are no transcripts, so never describe what was said unless you actually heard it.',
+ {name:'f1_team_radio',description:'Team radio recordings for a completed F1 session from OpenF1: time, lap and audio link per message. Links only: there are no transcripts, so never describe what was said unless you actually heard it.',
   inputSchema:schema({session_key:key,driver_number:driver,lap_from:lap,lap_to:lap}),annotations:ro}
 ];
 
-export const OPENF1_RACE_INSTRUCTIONS=' RACE CONTEXT: for completed sessions use openf1_race_control to confirm SC/VSC/red flags and penalties, openf1_race_gaps for per-lap gaps and overtakes, openf1_strategy for stints, pit stops and clean pace, openf1_result for classification and grid, openf1_weather for conditions and openf1_team_radio for radio links (no transcripts). Prefer these computed values over estimating gaps or pace by hand.';
+export const OPENF1_RACE_INSTRUCTIONS=' RACE CONTEXT: for completed sessions use f1_race_control to confirm SC/VSC/red flags and penalties, f1_race_gaps for per-lap gaps and overtakes, f1_strategy for stints, pit stops and clean pace, f1_result for classification and grid, f1_weather for conditions and f1_team_radio for radio links (no transcripts). Prefer these computed values over estimating gaps or pace by hand.';
 
 const ms=v=>{const t=Date.parse(v);return Number.isFinite(t)?t:null;};
 const iso=t=>Number.isFinite(t)?new Date(t).toISOString():null;
@@ -225,7 +225,7 @@ async function radio(args,io){
   limitations:['Audio links only. There are no transcripts; do not describe what was said without listening.','OpenF1 publishes a selection of broadcast radio, not every message.']};
 }
 
-const HANDLERS={openf1_race_control:raceControl,openf1_race_gaps:raceGaps,openf1_strategy:strategy,openf1_result:result,openf1_weather:weather,openf1_team_radio:radio};
+const HANDLERS={f1_race_control:raceControl,f1_race_gaps:raceGaps,f1_strategy:strategy,f1_result:result,f1_weather:weather,f1_team_radio:radio};
 export const isRaceTool=name=>name in HANDLERS;
 export async function openf1RaceCall(name,args,io={}){
  const handler=HANDLERS[name];if(!handler)throw Error('Unknown OpenF1 tool');

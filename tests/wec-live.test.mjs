@@ -13,7 +13,7 @@ test('WEC discovery uses existing authenticated collector and status is a separa
  globalThis.fetch=async(url,options)=>{calls.push({url:String(url),options});return Response.json({state:'waiting_for_session',live:false});};
  try{
   const env={FASTF1_CLOUD_URL:'https://collector.test',FASTF1_CLOUD_KEY:'fixture-key'};
-  await wecLiveCall('wec_discover_live',{event:'Monza',year:2026,session:'FP1'},env);
+  await wecLiveCall('wec_live_discover',{event:'Monza',year:2026,session:'FP1'},env);
   await wecLiveCall('wec_live_status',{},env);
   assert.equal(calls[0].url,'https://collector.test/wec/discover');assert.equal(calls[0].options.method,'POST');
   assert.equal(JSON.parse(calls[0].options.body).event,'Monza');assert.equal(calls[0].options.headers.Authorization,'Bearer fixture-key');
@@ -23,7 +23,7 @@ test('WEC discovery uses existing authenticated collector and status is a separa
  }finally{globalThis.fetch=original;}
 });
 test('MCP requires existing visitor authentication for WEC discovery',async()=>{
- const req=new Request('https://test/mcp',{method:'POST',body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'wec_discover_live',arguments:{event:'Monza'}}})});
+ const req=new Request('https://test/mcp',{method:'POST',body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'wec_live_discover',arguments:{event:'Monza'}}})});
  const blocked=await worker.fetch(req,{});assert.equal(blocked.status,200);const challenge=await blocked.json();assert.equal(challenge.result.isError,true);assert.ok(challenge.result._meta['mcp/www_authenticate']);
  const html=await (await worker.fetch(new Request('https://test/championships/wec'),{})).text();
  assert.doesNotMatch(html,/세션·타이밍 링크 찾기/);assert.match(html,/챔피언십 포인트/);
@@ -31,7 +31,7 @@ test('MCP requires existing visitor authentication for WEC discovery',async()=>{
 test('WEC discovery is routed through MCP and rejects unexpected parameters',async()=>{
  const original=globalThis.fetch;
  const env={FASTF1_CLOUD_URL:'https://collector.test',FASTF1_CLOUD_KEY:'fixture-key'};
- const rpc=async args=>(await worker.fetch(new Request('https://test/mcp',{method:'POST',headers:{'oai-authenticated-user-id':'fixture-viewer'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'wec_discover_live',arguments:args}})}),env)).json();
+ const rpc=async args=>(await worker.fetch(new Request('https://test/mcp',{method:'POST',headers:{'oai-authenticated-user-id':'fixture-viewer'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'wec_live_discover',arguments:args}})}),env)).json();
  try{
   globalThis.fetch=async()=>Response.json({state:'discovering',live:false});
   const result=await rpc({event:'Monza',year:2026,session:'FP1'});

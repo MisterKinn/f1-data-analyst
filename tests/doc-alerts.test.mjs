@@ -93,5 +93,5 @@ test('alerts stay off public pages; the connector lists the new tools',async()=>
  assert.notEqual((await worker.fetch(new Request('https://kongboda.test/alerts'),{})).status,200,'/alerts is owner-only');
  const list=await (await worker.fetch(new Request('https://kongboda.test/mcp',{method:'POST',headers:{'content-type':'application/json','oai-authenticated-user-id':'owner'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/list'})}),{})).json();
  const names=list.result.tools.map(t=>t.name);
- for(const n of ['fia_event_updates','openf1_race_control','openf1_race_gaps','openf1_strategy','openf1_result','openf1_weather','openf1_team_radio'])assert.ok(names.includes(n),n);
+ for(const n of ['fia_event_updates','f1_race_control','f1_race_gaps','f1_strategy','f1_result','f1_weather','f1_team_radio'])assert.ok(names.includes(n),n);
 });
