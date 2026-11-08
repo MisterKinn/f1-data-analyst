@@ -1,0 +1,82 @@
+{
+ "counts": {
+  "imsa": {
+   "sessions": 257,
+   "Q": 111,
+   "R": 146,
+   "noCars": 49,
+   "MB": 2.63
+  },
+  "alms": {
+   "sessions": 78,
+   "Q": 38,
+   "R": 40,
+   "noCars": 2,
+   "MB": 0.7
+  },
+  "fe": {
+   "sessions": 396,
+   "Q": 245,
+   "R": 151,
+   "noCars": 37,
+   "MB": 1.38
+  },
+  "igtc": {
+   "sessions": 58,
+   "Q": 35,
+   "R": 23,
+   "noCars": 3,
+   "MB": 0.45
+  },
+  "f1": {
+   "sessions": 328,
+   "Q": 172,
+   "R": 156,
+   "noCars": 2,
+   "MB": 2.41
+  },
+  "gtwc": {
+   "sessions": 179,
+   "Q": 86,
+   "R": 93,
+   "noCars": 6,
+   "MB": 1.21
+  },
+  "nur": {
+   "sessions": 72,
+   "Q": 25,
+   "R": 47,
+   "noCars": 10,
+   "MB": 2.46
+  },
+  "elms": {
+   "sessions": 161,
+   "Q": 106,
+   "R": 55,
+   "noCars": 12,
+   "MB": 1.22
+  },
+  "wec": {
+   "sessions": 194,
+   "Q": 129,
+   "R": 65,
+   "noCars": 22,
+   "MB": 1.94
+  },
+  "macau": {
+   "sessions": 62,
+   "Q": 34,
+   "R": 28,
+   "noCars": 2,
+   "MB": 0.45
+  },
+  "dtm": {
+   "sessions": 60,
+   "Q": 29,
+   "R": 31,
+   "noCars": 1,
+   "MB": 0.42
+  }
+ },
+ "failed": []
+}

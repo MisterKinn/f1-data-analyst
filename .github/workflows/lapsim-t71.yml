@@ -1,0 +1,74 @@
+name: Lap simulator Timing71 archive
+
+# Reads Timing71 replays (archive.timing71.org) for the series we simulate: per-lap sectors, tyre letters,
+# VFT, speed trap, flags and weather (scripts/sim/t71-read.mjs, t71-collect.mjs). Calibration use only:
+# raw files and per-series summaries stay in the Actions cache; only counts, the three-way check and fit
+# results are committed. Push to lapsim-t71/** (commits back to that branch) or run by hand.
+on:
+  push:
+    branches: ['lapsim-t71/**']
+    paths-ignore: ['scripts/sim/data/t71/**', 'scripts/sim/data/wec-tyre-effect.json', 'docs/lapsim-t71.md']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: lapsim-t71-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/cache@v4
+        with:
+          path: .cache/lapsim/t71/sessions
+          key: t71-sessions-${{ matrix.shard }}-${{ hashFiles('scripts/sim/t71-read.mjs', 'scripts/sim/t71-collect.mjs') }}-${{ github.run_id }}
+          restore-keys: t71-sessions-${{ matrix.shard }}-${{ hashFiles('scripts/sim/t71-read.mjs', 'scripts/sim/t71-collect.mjs') }}-
+      - run: node scripts/sim/t71-collect.mjs
+        env:
+          T71_SHARD: ${{ matrix.shard }}
+          T71_SHARDS: 8
+      - uses: actions/upload-artifact@v4
+        with:
+          name: t71-${{ matrix.shard }}
+          path: |
+            .cache/lapsim/t71/sessions
+            .cache/lapsim/t71/log-*.json
+          retention-days: 7
+  fit:
+    needs: collect
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: t71-*
+          path: .cache/lapsim/t71
+          merge-multiple: true
+      - run: node scripts/sim/t71-collect.mjs merge
+      - run: node scripts/sim/t71-check.mjs
+      - run: node scripts/sim/wec-tyre-fit.mjs
+      - uses: actions/cache/save@v4
+        with:
+          path: scripts/sim/data/t71
+          key: t71-summary-${{ github.run_id }}
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add scripts/sim/data/t71/counts.json scripts/sim/data/t71/check.json scripts/sim/data/wec-tyre-effect.json
+          git diff --cached --quiet || (git commit -m "Timing71: counts, three-way check, WEC tyre fit" && git push)
