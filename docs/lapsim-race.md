@@ -1,6 +1,6 @@
 # Race pace model
 
-Generated 2026-11-08T05:26:08.433Z. Season 2026; race-ratio change vs earlier seasons ×0.9836, slope change ×0.862.
+Generated 2026-11-08T05:28:12.205Z. Season 2026; race-ratio change vs earlier seasons ×0.9836, slope change ×0.862.
 
 Leave-out test (leading race pace, earlier seasons + real pole): 0.64% RMS over 17 races.
 

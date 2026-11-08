@@ -60,7 +60,7 @@ export function cleanLaps(race) {
 }
 
 // One race: driver intercepts + lap slope + compound offsets (vs MEDIUM) + wear per compound
-export function fitRace(laps, {lambdaWear = 50, lambdaOffset = 5} = {}) {
+export function fitRace(laps, {lambdaWear = 50, lambdaOffset = 5, top = 1} = {}) {
   const drivers = [...new Set(laps.map(l => l.driver))];
   if (laps.length < 40 || drivers.length < 4) return null;
   const nD = drivers.length, iSlope = nD, iOff = {SOFT: nD + 1, HARD: nD + 2}, iWear = {SOFT: nD + 3, MEDIUM: nD + 4, HARD: nD + 5};
@@ -79,8 +79,7 @@ export function fitRace(laps, {lambdaWear = 50, lambdaOffset = 5} = {}) {
   const pred = rows.map(r => r.x.reduce((s, v, i) => s + v * x[i], 0));
   const resid = rows.map((r, i) => r.y - pred[i]);
   // reference pace: best driver intercept, i.e. the leading car on a fresh medium at lap 1 fuel
-  // leading pace: best driver intercept, or the mean of the best N (LAPSIM_RACE_TOP) to cut one-driver noise
-  const top = Math.max(1, Number(globalThis.process?.env?.LAPSIM_RACE_TOP || 8));
+  // leading pace: best driver intercept, or the mean of the best `top` to cut one-driver noise
   const ref = [...x.slice(0, nD)].sort((a, b) => a - b).slice(0, top).reduce((a, b, _, arr) => a + b / arr.length, 0);
   return {
     ref, slope: x[iSlope], n: laps.length,
