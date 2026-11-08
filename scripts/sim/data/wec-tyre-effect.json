@@ -1,0 +1,41 @@
+{
+ "method": "within-car stint best vs race trend (Theil–Sen), tyre score S0/M1/H2 per corner; LOO by event; gate vs no effect. Variants declared before testing: same car, same car + same driver",
+ "classes": {
+  "hypercar/sameCar": {
+   "kPctPerStep": 0.163,
+   "rows": 643,
+   "events": 6,
+   "looRmsNoEffect": 1.406,
+   "looRmsModel": 1.444,
+   "gate": "rejected: worse on held-out rows",
+   "accept": false
+  },
+  "lmgt3/sameCar": {
+   "kPctPerStep": 0,
+   "rows": 0,
+   "events": 0,
+   "looRmsNoEffect": 0,
+   "looRmsModel": 0,
+   "gate": "rejected: only 0 held-out rows",
+   "accept": false
+  },
+  "hypercar/sameDriver": {
+   "kPctPerStep": 0.189,
+   "rows": 550,
+   "events": 6,
+   "looRmsNoEffect": 1.495,
+   "looRmsModel": 2.035,
+   "gate": "rejected: worse on held-out rows",
+   "accept": false
+  },
+  "lmgt3/sameDriver": {
+   "kPctPerStep": 0,
+   "rows": 0,
+   "events": 0,
+   "looRmsNoEffect": 0,
+   "looRmsModel": 0,
+   "gate": "rejected: only 0 held-out rows",
+   "accept": false
+  }
+ }
+}
