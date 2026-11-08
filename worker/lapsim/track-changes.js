@@ -76,6 +76,9 @@ export function extractCircuitChanges(text) {
     if (next && (own ? Number(next[1]) > own && Number(next[1]) <= own + 2 : !BULLET.test(line))) break;
     if (/^\s*\d{1,3}\s*$/.test(line)) continue; // page number
     if (/race director\s*$/i.test(line.replace(/\s*\|\s*/g, ' '))) break; // signature block ends the list
+    // the signer's name sits on the line just before "Race Director": not part of the last item
+    const after = lines.slice(i + 1).find(l => l.trim() && !/^\s*\d{1,3}\s*$/.test(l));
+    if (!BULLET.test(line) && after && /race director\s*$/i.test(after.replace(/\s*\|\s*/g, ' ')) && !/[.:;]\s*$/.test(line) && line.trim().split(/\s+/).length <= 4) break;
     if (BULLET.test(line)) items.push(line.replace(BULLET, '').replace(/\s*\|\s*/g, ' ').trim());
     else if (items.length && line.trim()) items[items.length - 1] += ' ' + line.replace(/\s*\|\s*/g, ' ').trim();
   }
