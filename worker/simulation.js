@@ -11,6 +11,8 @@ import {energyLimit} from './lapsim/energy-limits.js';
 import {lapsimRace} from './lapsim/race-data.js';
 import {lapsimRacingLines} from './lapsim/racing-lines-data.js';
 import {lapsimCompounds} from './lapsim/compounds-data.js';
+import {lapsimCompoundGap} from './lapsim/compound-gap-data.js';
+import {lapsimWecTyres} from './lapsim/wec-tyres-data.js';
 import {raceLaps, strategies} from './lapsim/race-pace.js';
 import {evolutionCoeffs, evolutionDelta, evolutionCurve} from './lapsim/evolution.js';
 
@@ -44,7 +46,9 @@ const T = {
     m5: '준정상상태 모델이라 변속, 타이어 온도 변화, 차 사이 간섭, 풀스로틀 중 회생(슈퍼 클리핑)은 계산하지 않습니다. 절대값보다 차이와 경향을 보는 데 쓰세요.',
     src: '자료', updated: '보정일',
     evo: '트랙 에볼루션', evoLead: '세션이 진행되며 고무가 쌓이고, 젖은 노면이 마르고, 타이어가 데워지면서 랩타임이 어떻게 바뀌는지 계산합니다. 기준은 위의 계산된 랩(예선 끝 노면)입니다.',
-    evoType: '세션', evoTypes: {practice: '연습', qualifying: '예선'}, evoTyre: '타이어', tyres: {f1: {slick: '슬릭 (피렐리 {c})', inter: '인터미디엇', wet: '풀 웻'}, hypercar: {slick: '슬릭 (미쉐린)', wet: '웻 (미쉐린)'}, lmgt3: {slick: '슬릭 (굿이어 미디엄)', wet: '웻 (굿이어)'}},
+    evoType: '세션', evoTypes: {practice: '연습', qualifying: '예선'}, evoTyre: '타이어', tyres: {f1: {soft: '소프트{S}', medium: '미디엄{M}', hard: '하드{H}', inter: '인터미디엇', wet: '풀 웻'}, hypercar: {soft: '소프트 (미쉐린)', medium: '미디엄 (미쉐린)', hard: '하드 (미쉐린)', wet: '웻 (미쉐린)'}, lmgt3: {medium: '미디엄 (굿이어)', hard: '하드 (굿이어)', wet: '웻 (굿이어)'}}, tyreQ: ' · 하이퍼폴 지정',
+    tyreEvent: '타이어: {y} 이 대회 공급 컴파운드', tyreSeason: '타이어: 이 서킷 대회 기록 없음, 시즌 전체 컴파운드',
+    evoComp: '컴파운드 차이 (소프트 대비)', evoCompReal: '{y} 실측: 같은 드라이버 저연료 랩, 트랙 진화 제외', evoCompModel: 'C단계 모델 예측, 검증 오차 ±{e}%', evoCompNone: '실측 없음, 랩 그대로',
     evoEnd: '세션 시각', evoGain: '고무 효과 (끝까지)', evoTau: '포화 시간', evoWet: '시작 노면 젖음', evoDry: '건조 시간', evoWarm: '워밍업 랩',
     evoCurve: '실측 곡선 사용', evoLast: '이 시각의 예상 랩', evoChange: '세션 시작 대비', evoBasis: {track: '이 트랙 실측 곡선', series: '시리즈 평균 (보정)', default: '미보정 기본값'},
     evoErr: '홀드아웃 오차 (트랙 제외)', secFix: '섹터 보정 (실제 폴 기준)', evoBasisH: '근거', evoChart: '세션 시각별 예상 랩타임', min: '분',
@@ -73,7 +77,9 @@ const T = {
     m5: 'A quasi-steady-state model ignores gear shifts, tyre temperature, car-to-car effects and harvesting at full throttle (super-clipping). Use it for differences and trends rather than absolute times.',
     src: 'Sources', updated: 'Calibrated',
     evo: 'Track evolution', evoLead: 'How lap time changes over a session as rubber goes down, a wet track dries and tyres warm up. The reference is the simulated lap above (track state at the end of qualifying).',
-    evoType: 'Session', evoTypes: {practice: 'Practice', qualifying: 'Qualifying'}, evoTyre: 'Tyre', tyres: {f1: {slick: 'Slick (Pirelli {c})', inter: 'Intermediate', wet: 'Full wet'}, hypercar: {slick: 'Slick (Michelin)', wet: 'Wet (Michelin)'}, lmgt3: {slick: 'Slick (Goodyear Medium)', wet: 'Wet (Goodyear)'}},
+    evoType: 'Session', evoTypes: {practice: 'Practice', qualifying: 'Qualifying'}, evoTyre: 'Tyre', tyres: {f1: {soft: 'Soft{S}', medium: 'Medium{M}', hard: 'Hard{H}', inter: 'Intermediate', wet: 'Full wet'}, hypercar: {soft: 'Soft (Michelin)', medium: 'Medium (Michelin)', hard: 'Hard (Michelin)', wet: 'Wet (Michelin)'}, lmgt3: {medium: 'Medium (Goodyear)', hard: 'Hard (Goodyear)', wet: 'Wet (Goodyear)'}}, tyreQ: ' · Hyperpole tyre',
+    tyreEvent: 'Tyres: compounds supplied at this event in {y}', tyreSeason: 'Tyres: no event here, whole-season range',
+    evoComp: 'Compound gap (vs soft)', evoCompReal: 'measured {y}: same driver, low fuel, track evolution removed', evoCompModel: 'C-step model, test error ±{e}%', evoCompNone: 'not measured, lap unchanged',
     evoEnd: 'Session minute', evoGain: 'Rubber effect (full)', evoTau: 'Time to saturate', evoWet: 'Wetness at start', evoDry: 'Drying time', evoWarm: 'Warm-up laps',
     evoCurve: 'Use measured curve', evoLast: 'Expected lap at this minute', evoChange: 'vs session start', evoBasis: {track: 'measured curve, this track', series: 'series average (fitted)', default: 'uncalibrated default'},
     evoErr: 'Holdout error (track left out)', secFix: 'Sector correction (real pole)', evoBasisH: 'Basis', evoChart: 'Expected lap time over the session', min: 'min',
@@ -142,7 +148,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
   const carId = cars[query.car] ? query.car : '2026';
   const changes = latestChanges(id);
   const data = {lang, t, id, track: td, cars, carOrder: CAR_ORDER, carId, conds, changes, energy: (liveEnergy && (query.track || 'monza') === id ? liveEnergy : energyLimit(id, 2026)),
-    compounds: lapsimCompounds?.[id] || {},
+    compounds: lapsimCompounds?.[id] || {}, wecTyres: lapsimWecTyres?.[id] || {}, compoundGap: compoundGap(id), compoundTest: lapsimCompoundGap?.test?.rmsPct ?? null,
     evo: Object.fromEntries(['f1', 'wec'].map(se => [se, Object.fromEntries(['practice', 'qualifying'].map(ty => [ty, evolutionCoeffs(se, id, ty)]))])),
     calibration: {generatedAt: lapsimCalibration?.generatedAt || null, seasons: Object.fromEntries(Object.entries(lapsimCalibration?.seasons || {}).map(([y, s]) => [y, s.tracks?.[id] || null]))}};
   // first render on the server with the same code the browser uses
@@ -251,6 +257,19 @@ function linePanel(id, lang) {
  <p class="fine">${notes.map(esc).join(' · ')}</p></section>`;
 }
 
+// Compound gap vs soft (% of lap) per season: the real low-fuel gap measured at that event (reproduced
+// exactly), else k(track) × C-steps between the compounds (fitted, leave-one-event-out tested)
+function compoundGap(id) {
+  const G = lapsimCompoundGap, k = G?.tracks?.[id] ?? G?.kPctPerStep;
+  if (!Number.isFinite(k)) return {};
+  // hard is built on medium (a measured medium gap plus the model step medium → hard), so hard ≥ medium
+  return Object.fromEntries(Object.entries(lapsimCompounds?.[id] || {}).map(([y, cp]) => {
+    const C = j => +cp[j].slice(1), m = G.measured?.[id]?.[y] || {};
+    const medium = m.MEDIUM ? {pct: m.MEDIUM.pct, basis: 'measured'} : {pct: +(k * (C(2) - C(1))).toFixed(4), basis: 'model'};
+    const hard = m.HARD ? {pct: m.HARD.pct, basis: 'measured'} : {pct: +(medium.pct + k * (C(1) - C(0))).toFixed(4), basis: 'model'};
+    return [y, {medium, hard}];
+  }));
+}
 const RT = {
   ko: {h: '레이스 페이스 예측', lead: '연료가 줄고, 타이어가 닳고, 피트 스톱을 하면서 랩타임이 어떻게 바뀌는지 실제 레이스 랩으로 맞춘 값입니다.', strat: '전략', time: '레이스 시간', gap: '차이', laps: '랩', pole: '기준 폴', refTop: '기준 랩 (예선 상위 {n}명 평균)', basis: {pred: '2026 예측', real: '2026 실제'}, test: '이전 시즌만으로 예측한 레이스 페이스 오차', season: '시즌', now: '예측/최근', repro: '이미 열린 레이스 재현 오차 (전 시즌 최대)', chart: '최적 전략의 예상 랩타임', c: {S: '소프트', M: '미디엄', H: '하드'}},
   en: {h: 'Race pace prediction', lead: 'How lap time changes as fuel burns, tyres wear and cars stop, fitted to real race laps.', strat: 'Strategy', time: 'Race time', gap: 'Gap', laps: 'laps', pole: 'Pole used', refTop: 'Reference lap (mean of the best {n} in qualifying)', basis: {pred: '2026 prediction', real: '2026 real'}, test: 'Race-pace error predicted from earlier seasons only', season: 'Season', now: 'Prediction/latest', repro: 'Races already run, reproduction error (largest, all seasons)', chart: 'Expected lap times, best strategy', c: {S: 'Soft', M: 'Medium', H: 'Hard'}},
@@ -365,18 +384,27 @@ function computeView(K, data, state, R) {
   // Track evolution: lap over the session from the simulated lap (= end-of-qualifying track state)
   const se = sel.series === 'wec' ? 'wec' : 'f1', ev = Object.assign({type: 'qualifying', tyre: 'slick', useCurve: true}, state.evo || {});
   // tyres the selected car's series really has (no intermediate in WEC); F1 slick named by the race's Pirelli C-numbers
-  const ts = sel.series ? (sel.cls === 'lmgt3' ? 'lmgt3' : 'hypercar') : 'f1', tyres = t.tyres[ts];
-  if (!tyres[ev.tyre]) ev.tyre = 'slick';
-  const cs = data.compounds[sel.year] || data.compounds[2026] || Object.values(data.compounds).pop();
-  const tyreHtml = Object.keys(tyres).map(k => '<option value="' + k + '"' + (k === ev.tyre ? ' selected' : '') + '>' + tyres[k].replace(cs ? '{c}' : ' ({c})', cs ? cs.join('·') : '') + '</option>').join('');
+  const ts = sel.series ? (sel.cls === 'lmgt3' ? 'lmgt3' : 'hypercar') : 'f1';
+  // WEC: only the slicks Michelin/Goodyear supplied at this event (season of the car, else the latest held here)
+  const wy = sel.series ? (data.wecTyres[sel.year] ? sel.year : Object.keys(data.wecTyres).pop()) : null, we = wy ? data.wecTyres[wy][ts] : null;
+  const tyres = we ? Object.fromEntries(Object.entries(t.tyres[ts]).filter(([k]) => k === 'wet' || we.dry.includes(k)).map(([k, v]) => [k, v + (we.q === k ? t.tyreQ : '')]))
+    : sel.series && ts === 'lmgt3' ? {medium: t.tyres.lmgt3.medium, wet: t.tyres.lmgt3.wet} : t.tyres[ts];
+  const tyreNote = sel.series ? (we ? t.tyreEvent.replace('{y}', wy) : t.tyreSeason) : '';
+  if (!tyres[ev.tyre]) ev.tyre = Object.keys(tyres)[0];
+  const cy = data.compounds[sel.year] ? sel.year : data.compounds[2026] ? 2026 : Object.keys(data.compounds).pop(), cs = data.compounds[cy], cn = {S: 2, M: 1, H: 0};
+  const tyreHtml = Object.keys(tyres).map(k => '<option value="' + k + '"' + (k === ev.tyre ? ' selected' : '') + '>' + tyres[k].replace(/\{([SMH])\}/, (_, c) => cs ? ' ' + cs[cn[c]] + (String(cy) !== String(sel.year) ? ' (' + cy + ')' : '') : '') + '</option>').join('');
+  // dry compound: the simulated lap is a soft-tyre pole lap; F1 adds the gap fitted on this track's real race laps
+  const dry = ev.tyre !== 'inter' && ev.tyre !== 'wet', cg = ts === 'f1' && dry ? data.compoundGap?.[cy]?.[ev.tyre] : null, gapS = cg ? res.lapTime * cg.pct / 100 : null;
   const coef = data.evo[se][ev.type], qc = data.evo[se].qualifying;
   const endOf = c => c.curve ? c.curve[c.curve.length - 1][0] : (se === 'wec' ? (c === qc ? 20 : 90) : 60);
-  const P = Object.assign({}, coef, {session: ev.type, tyre: ev.tyre, useCurve: ev.useCurve && !!coef.curve, wetStart: 0, dryMin: 20, warmupLaps: 0}, ev.over || {});
+  const P = Object.assign({}, coef, {session: ev.type, tyre: dry ? 'slick' : ev.tyre, useCurve: ev.useCurve && !!coef.curve, wetStart: 0, dryMin: 20, warmupLaps: 0}, ev.over || {});
   const evo = {end: ev.over && Number.isFinite(ev.over.end) ? ev.over.end : endOf(coef), gainPct: +(+P.gainPct).toFixed(2), tauMin: Math.round(P.tauMin), wetStart: P.wetStart, dryMin: P.dryMin, warmupLaps: P.warmupLaps};
   const lap0 = res.lapTime / (1 + R.evolutionDelta(Object.assign({}, qc, {session: 'qualifying', useCurve: !!qc.curve}), endOf(qc), Infinity));
   const curve = R.evolutionCurve(lap0, P, {to: Math.max(evo.end, 1), step: Math.max(0.5, evo.end / 60)});
+  if (gapS) { curve.points = curve.points.map(p => ({...p, lap: p.lap + gapS})); curve.last = curve.points.at(-1); }
   const first = curve.points[0].lap, last = curve.last.lap;
-  const evoFacts = fact(t.evoLast, fmt(last)) + fact(t.evoChange, (last - first >= 0 ? '+' : '−') + Math.abs(last - first).toFixed(3) + ' s')
+  const evoFacts = (tyreNote ? fact(t.evoTyre, tyreNote.replace(/^[^:]+: /, '')) : '') + fact(t.evoLast, fmt(last)) + fact(t.evoChange, (last - first >= 0 ? '+' : '−') + Math.abs(last - first).toFixed(3) + ' s')
+    + (dry && ev.tyre !== 'soft' ? fact(t.evoComp, gapS != null ? (gapS >= 0 ? '+' : '−') + Math.abs(gapS).toFixed(3) + ' s (' + (cg.basis === 'measured' ? t.evoCompReal.replace('{y}', cy) : t.evoCompModel.replace('{e}', data.compoundTest)) + ')' : t.evoCompNone) : '')
     + fact(t.evoBasisH, P.useCurve ? t.evoBasis.track : coef.calibrated ? t.evoBasis.series : t.evoBasis.default)
     + (coef.holdoutPct != null ? fact(t.evoErr, '±' + (last * coef.holdoutPct / 100).toFixed(2) + ' s') : '');
   const ew = 640, eh = 200, lo = Math.min(...curve.points.map(p => p.lap)), hi = Math.max(...curve.points.map(p => p.lap));
@@ -398,7 +426,7 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
   const data = JSON.parse(el.textContent);
   const q = s => document.querySelector('[data-ls="' + s + '"]');
   const yearKey = data.conds['2026'] ? '2026' : Object.keys(data.conds)[0];
-  const state = {carId: data.carId, compareId: '', mode: 'real', manual: Object.assign({pressureHpa: 1013, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0}, data.conds[yearKey] || {}), active: {}, strength: 1, evo: {type: 'qualifying', tyre: 'slick', useCurve: true, over: {}}};
+  const state = {carId: data.carId, compareId: '', mode: 'real', manual: Object.assign({pressureHpa: 1013, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0}, data.conds[yearKey] || {}), active: {}, strength: 1, evo: {type: 'qualifying', tyre: '', useCurve: true, over: {}}};
   const sliders = document.querySelectorAll('[data-cond]');
   const syncSliders = () => sliders.forEach(s => { const k = s.dataset.cond, v = state.manual[k]; if (Number.isFinite(v)) s.value = v; const o = document.querySelector('[data-out="' + k + '"]'); if (o) o.textContent = Number(s.value).toFixed(s.step < 1 ? 1 : 0); });
   let pending = false;
