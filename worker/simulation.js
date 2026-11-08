@@ -16,6 +16,8 @@ import {lapsimCompoundGap} from './lapsim/compound-gap-data.js';
 import {lapsimWecTyres} from './lapsim/wec-tyres-data.js';
 import {raceLaps, strategies} from './lapsim/race-pace.js';
 import {evolutionCoeffs, evolutionDelta, evolutionCurve} from './lapsim/evolution.js';
+import {lineTrack} from './lapsim/racing-line.js';
+import {lapsimCarLines} from './lapsim/car-lines-data.js';
 
 const K = lapsimKernel();
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -151,11 +153,11 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
   const carId = cars[query.car] ? query.car : '2026';
   const changes = latestChanges(id);
   const data = {lang, t, id, track: td, cars, carOrder: CAR_ORDER, carId, conds, changes, energy: (liveEnergy && (query.track || 'monza') === id ? liveEnergy : energyLimit(id, 2026)),
-    compounds: lapsimCompounds?.[id] || {}, wecTyres: lapsimWecTyres?.[id] || {}, compoundGap: compoundGap(id), compoundTest: lapsimCompoundGap?.test?.rmsPct ?? null,
+    compounds: lapsimCompounds?.[id] || {}, wecTyres: lapsimWecTyres?.[id] || {}, line: lineData(id), lineText: LT[lang], compoundGap: compoundGap(id), compoundTest: lapsimCompoundGap?.test?.rmsPct ?? null,
     evo: Object.fromEntries(['f1', 'wec'].map(se => [se, Object.fromEntries(['practice', 'qualifying'].map(ty => [ty, evolutionCoeffs(se, id, ty)]))])),
     calibration: {generatedAt: lapsimCalibration?.generatedAt || null, seasons: Object.fromEntries(Object.entries(lapsimCalibration?.seasons || {}).map(([y, s]) => [y, s.tracks?.[id] || null]))}};
   // first render on the server with the same code the browser uses
-  const view = computeView(K, data, {carId, compareId: '', mode: 'real', manual: null, active: {}, strength: 1, evo: null}, {renderMap, renderTrace, evolutionDelta, evolutionCurve});
+  const view = computeView(K, data, {carId, compareId: '', mode: 'real', manual: null, active: {}, strength: 1, evo: null}, {renderMap, renderTrace, evolutionDelta, evolutionCurve, lineTrack});
   const options = ids.map(k => `<option value="${esc(k)}"${k === id ? ' selected' : ''}>${esc(trackName(k, lang))}</option>`).join('');
   // cascade: series → rules/class (the car models of that series); series without a model yet are listed as coming soon
   const seriesOf = k => cars[k].series || 'f1', curSeries = seriesOf(carId);
@@ -209,7 +211,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
  ${calRows ? `<div class="output"><table class="ls-table"><thead><tr><th></th><th>${esc(t.vsPole)}</th><th>${esc(t.lap)}</th><th>${esc(t.fitErr)}</th><th>${esc(t.speedRms)}</th></tr></thead><tbody>${calRows}</tbody></table></div>` : `<p class="fine">${esc(t.pendingLead)}</p>`}
  <h3>${esc(t.proj)}</h3><ul class="ls-notes">${projRows}</ul>
 </section>
-${linePanel(id, lang)}
+${linePanel(id, lang, view)}
 ${stintPanel(id, lang)}
 ${racePanel(id, lang, query.race || null)}
 <section class="panel ls-panel"><h2>${esc(t.model)}</h2><ul class="ls-notes"><li>${esc(t.m1)}</li><li>${esc(t.m2)}</li><li>${esc(t.m3)}</li><li>${esc(t.m4)}</li><li>${esc(t.m5)}</li><li>${esc(t.soon)}</li></ul>
@@ -224,46 +226,43 @@ ${racePanel(id, lang, query.race || null)}
 // Racing line panel: track edges + predicted minimum-curvature line, coloured by the real pole lap's
 // speed, with brake / apex / full-throttle points and a zoom on each corner.
 const LT = {
-  ko: {h: '레이싱 라인', all: '전체', lead: '공개 F1 위치 데이터는 트랙마다 하나의 기준선에 맞춰져 있어 실제 주행 라인을 알 수 없습니다. 그래서 라인은 트랙 폭 안에서 곡률이 가장 작은 경로로 예측하고, 속도·브레이크·스로틀은 실제 폴 랩 기록을 씁니다.',
+  ko: {h: '레이싱 라인', all: '전체', lead: '공개 F1 위치 데이터는 트랙마다 하나의 기준선에 맞춰져 있어 실제 주행 라인을 알 수 없습니다. 그래서 선택한 차로 랩 시뮬레이션을 돌려 트랙 폭 안에서 가장 빠른 라인을 찾습니다. 다운포스·그립·출력·무게가 다르면 라인도 달라지고, 레이스 라인은 연료 무게와 레이스 페이스(타이어·에너지 관리)를 넣어 따로 계산합니다.',
+    modes: {q: '예선 라인', r: '레이스 라인'}, lineNote: '{car} · {mode} · 최소 곡률 라인보다 {gain} s · 평균 {shift} m 이동', uses: '라인:', raceNote: ' · 연료 +{fuel} kg, 그립 ×{grip} ({basis})', basis: {'race-fit': '실제 레이스 중반 페이스에 맞춤', assumed: 'F1 비율 가정'}, noCar: '이 차의 라인은 아직 계산 전: 최소 곡률 라인',
     edges: {TUM: '트랙 폭: TUM 측정값', 'TUM-widths': '트랙 폭: TUM 측정값 (레이아웃 변경 구간 근사)', assumed: '트랙 폭: 12 m 가정'}, pole: '속도·브레이크·스로틀: {y} 퀄리 폴 랩 실측 ({d}, {t})', nopole: '실측 폴 랩 없음',
     check: 'TUM 최적 라인과의 차이: 평균 {m} m', key: ['브레이크 시작', '최저 속도', '풀 스로틀']},
-  en: {h: 'Racing line', all: 'All', lead: 'Public F1 position data is snapped to one reference path per track, so the real driven line is unknown. The line is predicted as the least-curvature path inside the track width; speed, brake and throttle are the real pole lap.',
+  en: {h: 'Racing line', all: 'All', lead: 'Public F1 position data is snapped to one reference path per track, so the real driven line is unknown. The lap simulator runs the selected car to find the fastest line inside the track width: different downforce, grip, power and weight give a different line. The race line is worked out separately with fuel weight and race pace (tyres, energy management).',
+    modes: {q: 'Qualifying line', r: 'Race line'}, lineNote: '{car} · {mode} · {gain} s vs the least-curvature line · mean shift {shift} m', uses: 'line of', raceNote: ' · fuel +{fuel} kg, grip ×{grip} ({basis})', basis: {'race-fit': 'fitted to real mid-race pace', assumed: 'F1 ratio assumed'}, noCar: 'line for this car not computed yet: least-curvature line',
     edges: {TUM: 'Track width: TUM measured', 'TUM-widths': 'Track width: TUM measured (approximate where the layout changed)', assumed: 'Track width: 12 m assumed'}, pole: 'Speed, brake, throttle: {y} qualifying pole lap, measured ({d}, {t})', nopole: 'No measured pole lap',
     check: 'Gap to the TUM optimal line: mean {m} m', key: ['Brake start', 'Lowest speed', 'Full throttle']},
 };
-function linePanel(id, lang) {
+// Track geometry for the line panel: midline, its normals and each car's line offsets (0.1 m).
+function lineData(id) {
+  const L = lapsimRacingLines?.tracks?.[id], C = lapsimCarLines?.tracks?.[id];
+  if (!L?.line?.length) return null;
+  const n = L.line.length, mid = L.left.map((l, i) => [(l[0] + L.right[i][0]) / 2, (l[1] + L.right[i][1]) / 2]);
+  const nrm = mid.map((_, i) => { const a = mid[(i - 1 + n) % n], b = mid[(i + 1) % n], dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy) || 1; return [+(-dy / l).toFixed(4), +(dx / l).toFixed(4)]; });
+  const base = L.line.map((p, i) => Math.round(((p[0] - mid[i][0]) * nrm[i][0] + (p[1] - mid[i][1]) * nrm[i][1]) * 10));
+  const xs = [...L.left, ...L.right].map(p => p[0]), ys = [...L.left, ...L.right].map(p => p[1]);
+  return {mid: mid.map(p => [+p[0].toFixed(1), +p[1].toFixed(1)]), nrm, base, minX: Math.min(...xs), maxY: Math.max(...ys), pad: 40, cars: C || {}};
+}
+function linePanel(id, lang, view) {
   const L = lapsimRacingLines?.tracks?.[id], td = lapsimTracks[id];
   if (!L?.line?.length) return '';
-  const t = LT[lang], P = L.line, n = P.length, xs = [...P, ...L.left, ...L.right].map(p => p[0]), ys = [...P, ...L.left, ...L.right].map(p => p[1]);
+  const t = LT[lang], P = L.line, n = P.length, xs = [...L.left, ...L.right].map(p => p[0]), ys = [...L.left, ...L.right].map(p => p[1]);
   const minX = Math.min(...xs), maxX = Math.max(...xs), minY = Math.min(...ys), maxY = Math.max(...ys), pad = 40;
   const X = x => (x - minX + pad).toFixed(1), Y = y => (maxY - y + pad).toFixed(1), pt = p => X(p[0]) + ',' + Y(p[1]);
   const band = '<polygon class="ls-band" points="' + [...L.left, ...[...L.right].reverse()].map(pt).join(' ') + '"/>';
-  const v = L.speed, lo = v ? Math.min(...v) : 0, hi = v ? Math.max(...v) : 1;
-  // one path per speed bucket (as renderMap) so the line stays light
-  const bucket = i => v ? Math.min(5, Math.floor((v[i] - lo) / (hi - lo + 1e-9) * 6)) : 3;
-  let line = '', run = [0];
-  for (let i = 1; i <= n; i++) {
-    const j = i % n; run.push(j);
-    if (i === n || bucket(j) !== bucket(run[0])) { line += '<path d="M' + run.map(k => X(P[k][0]) + ' ' + Y(P[k][1])).join('L') + '" stroke="color-mix(in oklab,var(--mint) ' + bucket(run[0]) * 20 + '%,var(--sim-slow))"/>'; run = [j]; }
-  }
-  // brake start, lowest speed until the next full throttle, full throttle again
-  const marks = [];
-  if (L.brake && v) for (let i = 0; i < n; i++) if (L.brake[i] && !L.brake[(i - 1 + n) % n]) {
-    let a = i, j = i; for (let k = 0; k < n / 4; k++) { j = (i + k) % n; if (v[j] < v[a]) a = j; if (k > 3 && L.throttle[j] >= 98 && !L.brake[j]) break; }
-    marks.push([i, 'b'], [a, 'a'], [j, 't']);
-  }
-  const dot = ([i, k]) => '<circle class="ls-mk ls-mk-' + k + '" cx="' + X(P[i][0]) + '" cy="' + Y(P[i][1]) + '" r="4" vector-effect="non-scaling-stroke"/>';
   const at = s => P[Math.round(s / td.length * n) % n];
   const corners = (td.corners || []).map(c => ({k: c.number + (c.letter || ''), p: at(c.s)}));
   const W = maxX - minX + 2 * pad, H = maxY - minY + 2 * pad, box = p => [Math.max(0, +X(p[0]) - 140), Math.max(0, +Y(p[1]) - 140), 280, 280].map(Math.round).join(' ');
-  const fmtT = s => { const m = Math.floor(s / 60); return (m ? m + ':' : '') + (s - m * 60).toFixed(3).padStart(m ? 6 : 5, '0'); };
   const zoom = `<div class="ls-zoom"><button type="button" class="pill active" data-line-zoom="0 0 ${Math.round(W)} ${Math.round(H)}">${esc(t.all)}</button>${corners.map(c => `<button type="button" class="pill" data-line-zoom="${box(c.p)}">T${esc(c.k)}</button>`).join('')}</div>`;
+  const modes = `<div class="ls-zoom ls-line-modes">${['q', 'r'].map(m => `<button type="button" class="pill${m === 'q' ? ' active' : ''}" data-line-mode="${m}">${esc(t.modes[m])}</button>`).join('')}</div>`;
   const labels = corners.map(c => `<text class="ls-corner" x="${X(c.p[0])}" y="${Y(c.p[1])}" dy="-1.2em">${esc(c.k)}</text>`).join('');
-  const notes = [t.edges[L.edges], L.pole ? t.pole.replace('{y}', L.pole.year).replace('{d}', L.pole.driver).replace('{t}', fmtT(L.pole.time)) : t.nopole, L.check?.vsTumMeanM != null ? t.check.replace('{m}', L.check.vsTumMeanM) : null].filter(Boolean);
-  return `<section class="panel ls-panel ls-line-panel"><h2>${esc(t.h)}</h2><p>${esc(t.lead)}</p>${zoom}
- <div class="ls-scroll"><svg class="ls-line-map" style="--k:${(W / 700).toFixed(2)}" viewBox="0 0 ${Math.round(W)} ${Math.round(H)}" role="img" aria-label="${esc(t.h)}">${band}<g class="ls-line-path">${line}</g>${marks.map(dot).join('')}${labels}</svg></div>
+  const fixed = [t.edges[L.edges], L.check?.vsTumMeanM != null ? t.check.replace('{m}', L.check.vsTumMeanM) : null].filter(Boolean);
+  return `<section class="panel ls-panel ls-line-panel"><h2>${esc(t.h)}</h2><p>${esc(t.lead)}</p>${modes}${zoom}
+ <div class="ls-scroll"><svg class="ls-line-map" style="--k:${(W / 700).toFixed(2)}" viewBox="0 0 ${Math.round(W)} ${Math.round(H)}" role="img" aria-label="${esc(t.h)}">${band}<g class="ls-line-path" data-ls="linePath">${view.lineHtml}</g>${labels}</svg></div>
  <p class="fine ls-line-key"><span class="ls-mk-b"></span>${esc(t.key[0])} <span class="ls-mk-a"></span>${esc(t.key[1])} <span class="ls-mk-t"></span>${esc(t.key[2])}</p>
- <p class="fine">${notes.map(esc).join(' · ')}</p></section>`;
+ <p class="fine" data-ls="lineNote">${esc(view.lineNote)}</p><p class="fine">${fixed.map(esc).join(' · ')}</p></section>`;
 }
 
 // Compound gap vs soft (% of lap) per season: the real low-fuel gap measured at that event (reproduced
@@ -462,13 +461,42 @@ function computeView(K, data, state, R) {
   const evoSvg = '<svg class="ls-race" viewBox="0 0 ' + ew + ' ' + eh + '" role="img" aria-label="' + t.evoChart + '"><polyline fill="none" stroke="currentColor" stroke-width="2" points="' + curve.points.map(p => ex(p.minute).toFixed(1) + ',' + ey(p.lap).toFixed(1)).join(' ') + '"/>'
     + '<text x="2" y="16" font-size="11" fill="currentColor">' + fmt(hi) + '</text><text x="2" y="' + (eh - 28) + '" font-size="11" fill="currentColor">' + fmt(lo) + '</text>'
     + '<text x="44" y="' + (eh - 6) + '" font-size="11" fill="currentColor">0</text><text x="' + (ew - 12) + '" y="' + (eh - 6) + '" font-size="11" text-anchor="end" fill="currentColor">' + evo.end + ' ' + t.min + '</text></svg>';
-  return {lap: fmt(res.lapTime), poleHtml, factsHtml, airHtml, kindLabel, mapSvg, traceSvg, keyHtml, windHtml, weather: w, evo, evoFacts, evoSvg, socHtml, tyreHtml};
+  // racing line of the selected car (F1 projections use the 2026 line), coloured by its simulated speed
+  let lineHtml = '', lineNote = '';
+  const LD = data.line;
+  if (LD) {
+    const LT0 = data.lineText, mode = state.lineMode || 'q', key = LD.cars[state.carId] ? state.carId : !sel.series && LD.cars['2026'] ? '2026' : null, cl = key ? LD.cars[key][mode] : null;
+    const off = cl ? cl.off : LD.base, n = off.length, P = LD.mid.map((m, i) => [m[0] + LD.nrm[i][0] * off[i] / 10, m[1] + LD.nrm[i][1] * off[i] / 10]);
+    const tr = R.lineTrack(K, P.map(p => p[0]), P.map(p => p[1]));
+    const car = mode === 'r' && cl ? Object.assign({}, sel.car, {mass: sel.car.mass + cl.fuelKg}) : sel.car;
+    tr.mu.fill(sel.grip * (mode === 'r' && cl ? cl.grip : 1));
+    const sim = K.simulateLap(tr, car, env), m = sim.v.length, J = i => Math.min(m - 1, Math.round(i * m / n));
+    const v = P.map((_, i) => sim.v[J(i)] * 3.6), lo = Math.min(...v), hi = Math.max(...v), bk = i => Math.min(5, Math.floor((v[i] - lo) / (hi - lo + 1e-9) * 6));
+    const X = x => (x - LD.minX + LD.pad).toFixed(1), Y = y => (LD.maxY - y + LD.pad).toFixed(1);
+    let run = [0];
+    for (let i = 1; i <= n; i++) { const j = i % n; run.push(j); if (i === n || bk(j) !== bk(run[0])) { lineHtml += '<path class="ls-line-seg" d="M' + run.map(k => X(P[k][0]) + ' ' + Y(P[k][1])).join('L') + '" stroke="color-mix(in oklab,var(--mint) ' + bk(run[0]) * 20 + '%,var(--sim-slow))"/>'; run = [j]; } }
+    // markers from the simulation: braking starts (limit 3), lowest speed of that corner, back to full power (limit 2)
+    const lim = i => sim.limit[J(i)], dot = (i, k) => '<circle class="ls-mk ls-mk-' + k + '" cx="' + X(P[i][0]) + '" cy="' + Y(P[i][1]) + '" r="4" vector-effect="non-scaling-stroke"/>';
+    // a braking zone counts when it lasts 3+ points and costs 10+ km/h (lift-offs and noise are skipped)
+    for (let i = 0, last = -1; i < n; i++) if (lim(i) === 3 && lim((i - 1 + n) % n) !== 3 && i > last) {
+      let e = i; while (e - i < n / 4 && lim((e + 1) % n) === 3) e++;
+      let a = i, j = i; for (let k = 1; k < n / 3; k++) { j = (i + k) % n; if (v[j] < v[a]) a = j; if (lim(j) === 2 && k > e - i) break; }
+      if (e - i < 2 || v[i] - v[a] < 10) continue;
+      lineHtml += dot(i, 'b') + dot(a, 'a') + dot(j, 't'); last = j < i ? n : j;
+    }
+    lineNote = cl ? LT0.lineNote.replace('{car}', sel.label + (key !== state.carId ? ' (' + LT0.uses + ' ' + data.cars[key].label + ')' : '')).replace('{mode}', LT0.modes[mode]).replace('{gain}', (cl.gain >= 0 ? '+' : '−') + Math.abs(cl.gain).toFixed(3)).replace('{shift}', cl.shift)
+      + (mode === 'r' ? LT0.raceNote.replace('{fuel}', cl.fuelKg).replace('{grip}', cl.grip).replace('{basis}', LT0.basis[cl.basis] || cl.basis) : '') : LT0.noCar;
+  }
+  return {lineHtml, lineNote, lap: fmt(res.lapTime), poleHtml, factsHtml, airHtml, kindLabel, mapSvg, traceSvg, keyHtml, windHtml, weather: w, evo, evoFacts, evoSvg, socHtml, tyreHtml};
 }
 
 // Browser controller
-function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, evolutionCurve) {
+function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, evolutionCurve, lineTrack) {
   const el = document.getElementById('lapsim-data'); if (!el) return;
-  const R = {renderMap, renderTrace, evolutionDelta, evolutionCurve};
+  const R = {renderMap, renderTrace, evolutionDelta, evolutionCurve, lineTrack};
+  document.querySelectorAll('[data-line-mode]').forEach(b => b.addEventListener('click', () => {
+    state.lineMode = b.dataset.lineMode; document.querySelectorAll('[data-line-mode]').forEach(o => o.classList.toggle('active', o === b)); update();
+  }));
   document.querySelectorAll('[data-line-zoom]').forEach(b => b.addEventListener('click', () => {
     const svg = document.querySelector('.ls-line-map'); if (svg) { svg.setAttribute('viewBox', b.dataset.lineZoom); svg.style.setProperty('--k', (b.dataset.lineZoom.split(' ')[2] / 700).toFixed(2)); }
     document.querySelectorAll('[data-line-zoom]').forEach(o => o.classList.toggle('active', o === b));
@@ -488,6 +516,7 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
       q('lap').textContent = v.lap; q('pole').innerHTML = v.poleHtml; q('facts').innerHTML = v.factsHtml; q('air').innerHTML = v.airHtml;
       q('map').innerHTML = v.mapSvg; q('trace').innerHTML = v.traceSvg; q('soc').innerHTML = v.socHtml; q('key').innerHTML = v.keyHtml; q('wind').innerHTML = v.windHtml;
       q('carLabel').textContent = data.cars[state.carId].label; q('carKind').textContent = v.kindLabel;
+      if (q('linePath')) { q('linePath').innerHTML = v.lineHtml; q('lineNote').textContent = v.lineNote; }
       q('evoFacts').innerHTML = v.evoFacts; q('evoChart').innerHTML = v.evoSvg; q('tyre').innerHTML = v.tyreHtml;
       document.querySelectorAll('[data-evo-out]').forEach(o => { const k = o.dataset.evoOut; o.textContent = v.evo[k]; const i = document.querySelector('input[data-evo="' + k + '"]'); if (i && document.activeElement !== i) i.value = v.evo[k]; });
     });
@@ -516,7 +545,7 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
 
 let scriptText = null;
 export function lapsimScript() {
-  if (!scriptText) scriptText = '(()=>{const K=(' + lapsimKernel.toString() + ')();const renderMap=' + renderMap.toString() + ';const renderTrace=' + renderTrace.toString() + ';const evolutionDelta=' + evolutionDelta.toString() + ';const evolutionCurve=' + evolutionCurve.toString() + ';const computeView=' + computeView.toString() + ';(' + lapsimClient.toString() + ')(K,computeView,renderMap,renderTrace,evolutionDelta,evolutionCurve);})();';
+  if (!scriptText) scriptText = '(()=>{const K=(' + lapsimKernel.toString() + ')();const renderMap=' + renderMap.toString() + ';const renderTrace=' + renderTrace.toString() + ';const evolutionDelta=' + evolutionDelta.toString() + ';const evolutionCurve=' + evolutionCurve.toString() + ';const lineTrack=' + lineTrack.toString() + ';const computeView=' + computeView.toString() + ';(' + lapsimClient.toString() + ')(K,computeView,renderMap,renderTrace,evolutionDelta,evolutionCurve,lineTrack);})();';
   return scriptText;
 }
 export function lapsimScriptVersion() {
