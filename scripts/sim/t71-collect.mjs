@@ -24,7 +24,8 @@ const get = async (u, n = 3) => {
 };
 const median = a => { const s = a.filter(x => x != null).sort((x, y) => x - y); return s.length ? s[s.length >> 1] : null; };
 const r3 = x => x == null ? null : Math.round(x * 1000) / 1000;
-const id = r => `${new Date(r.startTime * 1e3).toISOString().slice(0, 16)} ${r.series} - ${r.description}`.replace(/[^\w.\- ]+/g, '_');
+// file name from the archive's own (unique) replay file name; two replays can share series, description and minute
+const id = r => `${new Date(r.startTime * 1e3).toISOString().slice(0, 16)} ${String(r.filename).split('/').pop().replace(/\.zip$/i, '')}`.replace(/[^\w.\- ]+/g, '_').slice(0, 200);
 
 // Frame weather → numbers in SI units (°C, %, m/s, hPa); `wet` from F1 "Track" text.
 export function weatherOf(spec = [], samples = []) {
@@ -105,18 +106,22 @@ async function collect() {
 
 function merge() {
   const dir = join(CACHE, 'sessions'); const by = {};
-  for (const f of readdirSync(dir)) { const s = JSON.parse(readFileSync(join(dir, f), 'utf8')); (by[s.key] ??= []).push(s); }
+  const bad = [];
+  for (const f of readdirSync(dir)) { let s; try { s = JSON.parse(readFileSync(join(dir, f), 'utf8')); } catch { bad.push(f); continue; } (by[s.key] ??= []).push(s); }
+  if (bad.length) console.log(`unreadable session files skipped: ${bad.length}`, bad.slice(0, 5));
   mkdirSync(OUT, {recursive: true});
   const counts = {};
-  for (const [k, list] of Object.entries(by)) {
-    list.sort((a, b) => a.start - b.start);
+  for (let [k, list] of Object.entries(by)) {
+    const uniq = new Map(); // duplicate replays of one session: keep the one with more laps
+    for (const x of list) { const k2 = `${x.description}|${x.start}`, o = uniq.get(k2); if (!o || x.frameLaps > o.frameLaps) uniq.set(k2, x); }
+    list = [...uniq.values()].sort((a, b) => a.start - b.start);
     const txt = JSON.stringify({source: 'Timing71 archive (archive.timing71.org); calibration use only', sessions: list});
     writeFileSync(join(OUT, `${k}.json`), txt);
     counts[k] = {sessions: list.length, Q: list.filter(s => s.kind === 'Q').length, R: list.filter(s => s.kind === 'R').length,
       noCars: list.filter(s => !Object.keys(s.cars).length).length, MB: +(txt.length / 1e6).toFixed(2)};
   }
   const logs = readdirSync(CACHE).filter(f => /^log-\d+\.json$/.test(f)).map(f => JSON.parse(readFileSync(join(CACHE, f), 'utf8')));
-  writeFileSync(join(OUT, 'counts.json'), JSON.stringify({counts, failed: logs.flatMap(l => l.failed)}, null, 1));
+  writeFileSync(join(OUT, 'counts.json'), JSON.stringify({counts, failed: logs.flatMap(l => l.failed), unreadable: bad}, null, 1));
   console.table(counts);
 }
 

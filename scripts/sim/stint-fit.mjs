@@ -5,7 +5,8 @@
 // published: its stint energy is estimated from the real stint length and the model energy per lap.
 // In: scripts/sim/data/wec-stints.json (wec-stints.mjs, Al Kamel), worker/lapsim/wec-bop-data.js.
 // Out: worker/lapsim/stint-data.js.
-import {readFileSync, writeFileSync} from 'node:fs';
+import {readFileSync, writeFileSync, existsSync} from 'node:fs';
+import {gate} from './gate.mjs';
 import {lapsimKernel} from '../../worker/lapsim/kernel.js';
 import {lapsimTracks} from '../../worker/lapsim/tracks-data.js';
 import {carsFor, realConditions} from '../../worker/lapsim/scenario.js';
@@ -13,6 +14,11 @@ import {lapsimWecBop} from '../../worker/lapsim/wec-bop-data.js';
 import {driveEnergyJ} from '../../worker/lapsim/stint-energy.js';
 
 const K = lapsimKernel(), stints = JSON.parse(readFileSync('scripts/sim/data/wec-stints.json', 'utf8'));
+// Timing71 stints (t71-stints.mjs) fill the events Al Kamel files are not collected for (2023–2024);
+// where both exist Al Kamel is kept (same stint lengths, docs/lapsim-t71.md).
+if (existsSync('scripts/sim/data/t71-wec-stints.json'))
+  for (const [y, tr] of Object.entries(JSON.parse(readFileSync('scripts/sim/data/t71-wec-stints.json', 'utf8'))))
+    for (const [id, ev] of Object.entries(tr)) (stints[y] ||= {})[id] ??= ev;
 const LMH = /toyota|ferrari|peugeot|aston|glickenhaus|isotta/i, brand = s => String(s).split(/\s+/)[0].toLowerCase();
 const median = a => { const s = [...a].sort((x, y) => x - y); return s.length ? (s[(s.length - 1) >> 1] + s[s.length >> 1]) / 2 : NaN; };
 // a full stint: the longest green stint length the car ran at least twice (±1 lap)
@@ -40,7 +46,12 @@ const k = kOf(rows), events = [...new Set(rows.map(r => r.year + r.id))];
 // leave one event out: predicted stint laps vs real
 const err = rows.map(r => { const kk = kOf(rows.filter(x => x.year + x.id !== r.year + r.id)); return (r.MJ / (kk * r.sim) - r.laps) / r.laps * 100; });
 const rms = Math.sqrt(err.reduce((s, x) => s + x * x, 0) / err.length);
-const out = {generatedAt: new Date().toISOString(), k: +k.toFixed(4), test: {rows: rows.length, events: events.length, rmsPct: +rms.toFixed(2)}, tracks: {}};
+// Gate: the previous model was trained on 2025 rows only. Same held-out rows, k trained on 2025 only vs all years.
+const errOld = rows.map(r => { const tr = rows.filter(x => x.year === '2025' && x.year + x.id !== r.year + r.id); const kk = tr.length ? kOf(tr) : k; return (r.MJ / (kk * r.sim) - r.laps) / r.laps * 100; });
+const g = gate(errOld, err);
+console.log(`gate (k from 2025 only vs all years, LOO by event): ${g.rmsCur.toFixed(2)}% vs ${g.rmsNew.toFixed(2)}% → ${g.reason}`);
+if (!g.accept && process.env.LAPSIM_STINT_FORCE !== '1') { console.log('kept previous stint-data.js'); process.exit(0); }
+const out = {generatedAt: new Date().toISOString(), k: +k.toFixed(4), test: {rows: rows.length, events: events.length, rmsPct: +rms.toFixed(2), gate: {previousRmsPct: +g.rmsCur.toFixed(2), reason: g.reason}}, tracks: {}};
 for (const r of rows) ((out.tracks[r.id] ||= {})[r.year] ||= {})[r.brand] = {laps: r.laps, MJ: r.MJ, lapMJ: +r.real.toFixed(3), simMJ: +r.sim.toFixed(3), basis: 'bop'};
 // estimates: ± the held-out stint-length error; low confidence when based on one car only or when the
 // value sits more than 8% from the event's median estimate (stints cut short by caution periods)
