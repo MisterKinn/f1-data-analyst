@@ -17,6 +17,7 @@ test('stint model: race factor in a physical range, held-out error reported, 202
   for (const ys of Object.values(lapsimStints.tracks)) for (const [y, by] of Object.entries(ys)) for (const r of Object.values(by)) {
     assert.ok(r.laps > 5 && r.MJ > 500 && r.MJ < 1200);
     if (r.basis === 'bop') assert.equal(+y, 2025, 'only 2025 BoP is published');
+    if (r.basis === 'estimated') assert.ok(r.plusMinusMJ > 0 && ['low', 'normal'].includes(r.confidence), 'estimates carry an error and a confidence');
   }
 });
 
