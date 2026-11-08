@@ -9,7 +9,7 @@ name: Lap simulator data
 on:
   push:
     branches: ['lapsim/**']
-    paths-ignore: ['worker/lapsim/tracks-data.js', 'worker/lapsim/calibration-data.js', 'worker/lapsim/track-changes-data.js', 'docs/lapsim-report.md']
+    paths-ignore: ['worker/lapsim/tracks-data.js', 'worker/lapsim/calibration-data.js', 'worker/lapsim/track-changes-data.js', 'docs/lapsim-report.md', 'docs/lapsim-geometry.md']
   schedule:
     - cron: '17 3 * * 2' # Tuesday 12:17 Korea time, after the race weekend
   workflow_dispatch:
@@ -17,7 +17,15 @@ on:
       years:
         description: 'Seasons to fetch (comma separated)'
         required: false
-        default: '2025,2026'
+        default: '2023,2024,2025,2026'
+      trace_drivers:
+        description: 'Fastest drivers per qualifying session whose speed trace is used'
+        required: false
+        default: '10'
+      calibrate:
+        description: 'Calibrate and commit (false: only build data and upload it as an artifact)'
+        required: false
+        default: 'true'
 
 permissions:
   contents: write
@@ -30,7 +38,7 @@ jobs:
   rebuild:
     if: github.event_name != 'schedule' || github.repository == 'MisterKinn/f1-data-analyst'
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 340
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -43,8 +51,10 @@ jobs:
           key: lapsim-raw-v1-${{ github.run_id }}
           restore-keys: lapsim-raw-v1-
       - name: Fetch OpenF1 qualifying data
-        timeout-minutes: 90
-        run: node scripts/sim/fetch-openf1.mjs "${{ inputs.years || '2025,2026' }}"
+        timeout-minutes: 150
+        env:
+          LAPSIM_TRACE_DRIVERS: ${{ inputs.trace_drivers || '10' }}
+        run: node scripts/sim/fetch-openf1.mjs "${{ inputs.years || '2023,2024,2025,2026' }}"
       # saved even when a later step fails, so a rerun does not fetch everything again
       - name: Save raw data cache
         if: always()
@@ -52,24 +62,67 @@ jobs:
         with:
           path: .cache/lapsim/raw
           key: lapsim-raw-v1-${{ github.run_id }}
-      - name: Build tracks
-        run: node scripts/sim/build-geometry.mjs
+      - name: Choose track smoothing and build tracks
+        run: node scripts/sim/tune-geometry.mjs
       - run: npm ci --omit=dev --ignore-scripts
       - name: Fetch WEC timing (Al Kamel)
         run: node scripts/sim/fetch-wec.mjs
+      # derived speed traces and tracks for local calibration experiments (not committed)
+      - name: Upload derived data
+        uses: actions/upload-artifact@v4
+        with:
+          name: lapsim-derived
+          path: |
+            .cache/lapsim/traces.json
+            .cache/lapsim/wec.json
+            .cache/lapsim/races.json
+            .cache/lapsim/races/
+            worker/lapsim/tracks-data.js
+          retention-days: 5
+          include-hidden-files: true
+      # official recharge limits (FIA PU documents) and 2027/28 + FE Gen4 rule values feed the fit
+      - name: Read FIA energy documents and regulation values
+        continue-on-error: true
+        run: node scripts/sim/energy-docs.mjs && node scripts/sim/rule-params.mjs
+      # settings chosen from the calibration experiments (scripts/sim/experiments.json rounds 1–2):
+      # best of experiment round 3: joint fit, lap time ×20, sectors ×2, per-track drag, team pace and
+      # development, prior weight 8 (holdout 0.81% / 0.85%)
       - name: Calibrate cars (F1 and WEC)
+        if: inputs.calibrate != 'false'
+        env:
+          LAPSIM_FITTER: bcd
+          LAPSIM_ROUNDS: '5'
+          LAPSIM_BCD_ITERS: '200'
+          LAPSIM_WTIME: '20'
+          LAPSIM_WSECTOR: '2'
+          LAPSIM_TRACK_DRAG: 'on'
+          LAPSIM_TEAMS: 'on'
+          LAPSIM_WPRIOR: '8'
         run: node scripts/sim/calibrate.mjs
+      - name: Fit race pace (fuel, tyres, pit loss)
+        continue-on-error: true
+        run: node scripts/sim/race-pace.mjs
       - name: Read FIA circuit changes
+        if: inputs.calibrate != 'false'
         run: node scripts/sim/fia-changes.mjs
         env:
-          LAPSIM_CHANGE_YEARS: '2025,2026'
+          LAPSIM_CHANGE_YEARS: '2023,2024,2025,2026'
+      - name: Learn circuit-change effects (kerbs, resurfacing) from speed traces
+        if: inputs.calibrate != 'false'
+        continue-on-error: true
+        run: node scripts/sim/change-effects.mjs
       - name: Test
+        if: inputs.calibrate != 'false'
         run: node --test tests/lapsim*.test.mjs
       - name: Commit derived data
+        if: inputs.calibrate != 'false'
         run: |
           git config user.name "kongboda-lapsim[bot]"
           git config user.email "lapsim@users.noreply.github.com"
-          git add worker/lapsim/tracks-data.js worker/lapsim/calibration-data.js worker/lapsim/track-changes-data.js docs/lapsim-report.md
+          for f in worker/lapsim/tracks-data.js worker/lapsim/calibration-data.js worker/lapsim/track-changes-data.js docs/lapsim-report.md docs/lapsim-geometry.md \
+            worker/lapsim/race-data.js docs/lapsim-race.md worker/lapsim/change-effects-data.js worker/lapsim/energy-docs-data.js worker/lapsim/rules-data.js docs/lapsim-rules.md; do
+            [ -e "$f" ] && git add "$f"
+          done
           if git diff --cached --quiet; then echo "No changes"; exit 0; fi
           git commit -m "Rebuild lap simulator tracks and calibration"
           if [ "${{ github.event_name }}" = "push" ]; then

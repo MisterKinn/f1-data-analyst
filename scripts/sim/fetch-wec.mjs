@@ -8,7 +8,8 @@ import {SERIES, WEC_SEASONS} from '../../worker/lapsim/series.js';
 
 const CACHE = process.env.LAPSIM_CACHE || '.cache/lapsim';
 const YEARS = (process.env.LAPSIM_WEC_YEARS || Object.keys(WEC_SEASONS).join(',')).split(',').map(Number);
-const CLASSES = {HYPERCAR: 'hypercar', LMGT3: 'lmgt3'};
+// Hypercar timing is split into LMH and LMDh by manufacturer (series.js)
+const CLASSES = {HYPERCAR: ['lmh', 'lmdh'], LMGT3: ['lmgt3']};
 const secs = t => { const p = String(t || '').split(':').map(Number); return p.some(x => !Number.isFinite(x)) || !p.length ? NaN : p.reduce((a, x) => a * 60 + x, 0); };
 const num = x => { const v = Number(String(x ?? '').replace(',', '.')); return Number.isFinite(v) ? v : null; };
 const rows = async url => (await readDocument({url, limit: 100000})).records;
@@ -22,7 +23,7 @@ for (const year of YEARS) {
     const track = SERIES.wec.events[event];
     if (!track || !lapsimTracks[track]) { console.log(`wec ${year} ${event}: no simulator track`); continue; }
     const files = a.files.filter(f => f.folders[0] === event && f.folders[1] === 'FIA WEC' && f.format === 'csv');
-    for (const [label, cls] of Object.entries(CLASSES)) {
+    for (const [label, clsList] of Object.entries(CLASSES)) {
       const sessions = files.filter(f => /^Analysis_(?:Qualifying|Hyperpole)/i.test(f.title) && new RegExp(label, 'i').test(f.title));
       const best = new Map(), weatherBySession = {};
       for (const f of sessions) {
@@ -40,7 +41,9 @@ for (const year of YEARS) {
           if (w) weatherBySession[f.folders[2]] = await rows(w.url);
         } catch (e) { console.log(`wec ${year} ${event} ${f.title}: ${e.message}`); }
       }
-      const laps = [...best.values()].sort((x, y) => x.lap - y.lap).slice(0, 3);
+      for (const cls of clsList) {
+      const def = SERIES.wec.classes[cls];
+      const laps = [...best.values()].filter(l => !def.manufacturers || def.manufacturers.test(l.manufacturer || '')).sort((x, y) => x.lap - y.lap).slice(0, 3);
       if (!laps.length) continue;
       const weatherRows = weatherBySession[laps[0].session] || []; // the session the fastest lap came from
       const mean = k => { const v = weatherRows.map(r => num(r[k])).filter(x => x != null); return v.length ? v.reduce((p, q) => p + q, 0) / v.length : null; };
@@ -50,8 +53,11 @@ for (const year of YEARS) {
       const weather = weatherRows.length ? {airTempC: mean('AIR_TEMP'), trackTempC: mean('TRACK_TEMP'), humidityPct: mean('HUMIDITY'), pressureHpa: mean('PRESSURE'),
         windSpeed: Math.hypot(we, wn) / weatherRows.length, windFromDeg: (Math.atan2(we, wn) * 180 / Math.PI + 360) % 360,
         rain: weatherRows.some(r => num(r.RAIN) > 0)} : null;
-      out.push({series: 'wec', year, event, track, cls, laps, weather});
+      // every car of the class (set-up and team reading); `laps` keeps the top 3 for the class fit
+      const cars = [...best.values()].filter(l => !def.manufacturers || def.manufacturers.test(l.manufacturer || '')).sort((x, y) => x.lap - y.lap);
+      out.push({series: 'wec', year, event, track, cls, laps, cars, weather});
       console.log(`wec ${year} ${event} ${cls}: best ${laps[0].lap.toFixed(3)} (#${laps[0].car} ${laps[0].manufacturer}), trap ${laps[0].topSpeedKph}`);
+      }
     }
   }
 }

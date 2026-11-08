@@ -10,11 +10,25 @@ export const SERIES = {
   f1: {label: {ko: 'F1', en: 'F1'}, status: 'calibrated', data: 'OpenF1 speed traces and lap times (pole laps)'},
   wec: {label: {ko: 'WEC', en: 'WEC'}, status: 'calibrated', data: 'Al Kamel lap times and speed traps (best qualifying/Hyperpole lap per class)',
     classes: {
-      hypercar: {
-        label: {ko: '하이퍼카', en: 'Hypercar'},
-        // Class-level car: BoP minimum weight about 1030 kg (dry) + driver + light fuel; power held by
-        // the BoP near 500 kW at the wheels' side of the hybrid split, so no separate ERS deployment.
-        prior: {...common, label: 'Hypercar', mass: 1120, wheelbase: 3.15, cogHeight: 0.32, rearWeight: 0.53, rearAero: 0.52,
+      // Hypercar split by architecture: same BoP power and weight window, different hybrids.
+      // LMH: own chassis, optional front-axle motor (up to 200 kW) that may only drive above a BoP
+      // speed (about 190 km/h in the dry), so 4WD traction only on fast exits; total power capped.
+      // LMDh: spec chassis (Dallara/Ligier/Multimatic/Oreca), spec Bosch rear motor (50 kW) and
+      // Williams battery, usable at any speed; total power capped. Both run a per-stint energy
+      // budget (Virtual Energy Tank).
+      lmh: {
+        label: {ko: '하이퍼카 LMH', en: 'Hypercar LMH'},
+        manufacturers: /toyota|ferrari|peugeot|aston|glickenhaus|isotta|vanwall/i,
+        hybrid: {axle: 'front', maxKW: 200, deployFromKph: 190},
+        prior: {...common, label: 'LMH', awdAboveKph: 190, ers: {rule: 'hypercar', axle: 'front', eMax: 200e3, deployFrom: 190 / 3.6, regenMax: 200e3, regenShare: 0.6, etaRegen: 0.9}, mass: 1120, wheelbase: 3.15, cogHeight: 0.32, rearWeight: 0.53, rearAero: 0.52,
+          clA: 3.4, cdA: 1.05, clALow: 3.4, cdALow: 1.05, muX: 1.6, muY: 1.75, muXTrac: 1.7, pIce: 500e3, vMax: 345 / 3.6, noLowDrag: true},
+        bounds: {muY: [1.3, 2.2], clA: [2, 7], cdA: [0.7, 1.6]},
+      },
+      lmdh: {
+        label: {ko: '하이퍼카 LMDh', en: 'Hypercar LMDh'},
+        manufacturers: /porsche|cadillac|bmw|alpine|lamborghini|acura|genesis|mclaren|ford/i,
+        hybrid: {axle: 'rear', maxKW: 50, deployFromKph: 0},
+        prior: {...common, label: 'LMDh', ers: {rule: 'hypercar', axle: 'rear', eMax: 50e3, deployFrom: 0, regenMax: 50e3, regenShare: 0.4, etaRegen: 0.9}, mass: 1120, wheelbase: 3.15, cogHeight: 0.32, rearWeight: 0.53, rearAero: 0.52,
           clA: 3.4, cdA: 1.05, clALow: 3.4, cdALow: 1.05, muX: 1.6, muY: 1.75, muXTrac: 1.7, pIce: 500e3, vMax: 345 / 3.6, noLowDrag: true},
         bounds: {muY: [1.3, 2.2], clA: [2, 7], cdA: [0.7, 1.6]},
       },

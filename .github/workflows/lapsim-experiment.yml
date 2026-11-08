@@ -1,0 +1,83 @@
+name: Lap simulator experiment
+
+# Calibration experiments in parallel: each matrix entry runs calibrate.mjs with its own settings on
+# the derived data of a "Lap simulator data" run (artifact lapsim-derived). Push to lapsim-exp/**.
+# Settings: scripts/sim/experiments.json ({"source_run": id, "configs": [{"name", "env"}]}).
+on:
+  push:
+    branches: ['lapsim-exp/**']
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      configs: ${{ steps.p.outputs.configs }}
+      run: ${{ steps.p.outputs.run }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: p
+        run: |
+          echo "configs=$(jq -c '.configs' scripts/sim/experiments.json)" >> "$GITHUB_OUTPUT"
+          echo "run=$(jq -r '.source_run' scripts/sim/experiments.json)" >> "$GITHUB_OUTPUT"
+  run:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    strategy:
+      fail-fast: false
+      matrix:
+        config: ${{ fromJson(needs.plan.outputs.configs) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Get derived data
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download ${{ needs.plan.outputs.run }} -R ${{ github.repository }} -n lapsim-derived -D derived
+          mkdir -p .cache/lapsim
+          cp derived/.cache/lapsim/*.json .cache/lapsim/
+          [ -d derived/.cache/lapsim/races ] && cp -r derived/.cache/lapsim/races .cache/lapsim/ || true
+          cp derived/worker/lapsim/tracks-data.js worker/lapsim/tracks-data.js
+      - name: Calibrate (${{ matrix.config.name }})
+        # RACE_ONLY=on skips the calibration (hours) to test the race-pace model in minutes
+        if: matrix.config.env.RACE_ONLY != 'on'
+        run: |
+          for kv in $(echo '${{ toJson(matrix.config.env) }}' | jq -r 'to_entries[] | "\(.key)=\(.value)"'); do export "$kv"; done
+          node scripts/sim/calibrate.mjs
+      - name: Circuit-change effects
+        if: matrix.config.env.LAPSIM_CHANGES == 'on'
+        continue-on-error: true
+        env:
+          LAPSIM_CHANGE_YEARS: '2023,2024,2025,2026'
+        run: npm ci --omit=dev --ignore-scripts > /dev/null && node scripts/sim/fia-changes.mjs > /dev/null && node scripts/sim/change-effects.mjs
+      - name: Race pace
+        if: hashFiles('.cache/lapsim/races.json') != ''
+        continue-on-error: true
+        run: |
+          for kv in $(echo '${{ toJson(matrix.config.env) }}' | jq -r 'to_entries[] | "\(.key)=\(.value)"'); do export "$kv"; done
+          node scripts/sim/race-pace.mjs && cat docs/lapsim-race.md
+      # race-only runs commit the race fit back to the experiment branch (artifacts cannot always be downloaded)
+      - name: Commit race fit
+        if: matrix.config.env.RACE_ONLY == 'on' && hashFiles('worker/lapsim/race-data.js') != ''
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add worker/lapsim/race-data.js docs/lapsim-race.md
+          git diff --cached --quiet || { git commit -m "Race pace fit from the race-only run [skip ci]"; git push origin HEAD:${{ github.ref_name }}; }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: exp-${{ matrix.config.name }}
+          path: |
+            docs/lapsim-report.md
+            docs/lapsim-race.md
+            worker/lapsim/calibration-data.js
+            worker/lapsim/race-data.js
+          retention-days: 5

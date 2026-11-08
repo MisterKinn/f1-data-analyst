@@ -1,0 +1,59 @@
+name: Lap simulator track evolution
+
+# Fits track evolution (worker/lapsim/evolution.js) from lap-by-lap practice and qualifying timing:
+# OpenF1 (F1) and Al Kamel (WEC). Push to lapsim-evo/** (commits the fit back to that branch) or run
+# by hand. Raw responses stay in the shared Actions cache with the other lap-simulator data.
+on:
+  push:
+    branches: ['lapsim-evo/**']
+    paths-ignore: ['worker/lapsim/evolution-data.js', 'docs/lapsim-evolution.md']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: lapsim-evolution-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  fit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci --omit=dev --ignore-scripts
+      - name: Restore raw data cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .cache/lapsim/raw
+          key: lapsim-raw-v1-${{ github.run_id }}
+          restore-keys: lapsim-raw-v1-
+      - name: Fetch lap-by-lap sessions
+        timeout-minutes: 150
+        run: node scripts/sim/fetch-evolution.mjs
+      - name: Save raw data cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: .cache/lapsim/raw
+          key: lapsim-raw-v1-${{ github.run_id }}
+      - name: Fit track evolution
+        run: node scripts/sim/evolution-fit.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lapsim-evolution
+          path: |
+            .cache/lapsim/evolution/
+            docs/lapsim-evolution.md
+            worker/lapsim/evolution-data.js
+      - name: Commit the fit
+        if: github.event_name == 'push'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add worker/lapsim/evolution-data.js docs/lapsim-evolution.md
+          git diff --cached --quiet || { git commit -m "Lapsim track evolution: fit from official lap data"; git push; }

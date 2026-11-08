@@ -6,10 +6,12 @@ import {lapsimCalibration} from './calibration-data.js';
 import {RULE_CHANGES} from './cars.js';
 import {TRACK_NAMES, resolveTrack} from './names.js';
 import {carsFor, realConditions, latestChanges, fittedYear} from './scenario.js';
+import {rechargeLimitMJ} from './energy-limits.js';
+import {evolutionCoeffs, evolutionDelta, evolutionCurve} from './evolution.js';
 
 const K = lapsimKernel();
 const SITE = 'https://kongboda-motorsports.vercel.app';
-const CARS = ['2019', '2025', '2026', '2027', '2028', 'wec-hypercar', 'wec-lmgt3'];
+const CARS = ['2019', '2025', '2026', '2027', '2028', 'wec-lmh', 'wec-lmdh', 'wec-lmgt3'];
 const ro = {readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false};
 const num = (min, max, description) => ({type: 'number', minimum: min, maximum: max, description});
 
@@ -17,7 +19,7 @@ export const LAPSIM_TOOLS = [{name: 'lapsim_simulate',
   description: 'Kongboda lap simulator: a qualifying lap worked out by a quasi-steady-state model (TUM method) on the real driving line built from OpenF1 qualifying car positions. Cars: F1 2019 (TUM base), 2025 and 2026 (fitted to real pole laps), 2027 and 2028 (projected from the ratified power-unit changes and historical development); WEC Hypercar and LMGT3 class cars (fitted to Al Kamel lap times and speed traps). Every result carries a one-sigma error range and a confidence label from a holdout test. Inputs override the real qualifying weather: air and track temperature, humidity, pressure (or altitude), wind speed and direction; FIA "Changes to the circuit" (resurfacing, bumps, kerbs) can be switched on. Returns lap and sector times, top and lowest speed, corner minimum speeds, 2026 energy use, what limits the lap, air density and the model error against the real pole. Call without track to list tracks.',
   inputSchema: {type: 'object', properties: {
     track: {type: 'string', maxLength: 60, description: 'Track id, name or Grand Prix, e.g. "mexico-city", "Monza", "COTA", "멕시코시티".'},
-    car: {type: 'string', enum: CARS, description: 'F1 generation (2019 TUM base, 2025, 2026, 2027, 2028) or WEC class car (wec-hypercar, wec-lmgt3). Default 2026.'},
+    car: {type: 'string', enum: CARS, description: 'F1 generation (2019 TUM base, 2025, 2026, 2027, 2028) or WEC class car (wec-lmh, wec-lmdh, wec-lmgt3). Default 2026.'},
     compare_car: {type: 'string', enum: CARS, description: 'Second car on the same track and conditions.'},
     air_temp_c: num(-10, 50, 'Air temperature (°C).'),
     track_temp_c: num(0, 70, 'Track temperature (°C).'),
@@ -28,9 +30,17 @@ export const LAPSIM_TOOLS = [{name: 'lapsim_simulate',
     wind_from_deg: num(0, 360, 'Direction the wind blows from (degrees, 0 = north).'),
     apply_fia_changes: {type: 'boolean', description: 'Apply the lap-relevant items of the latest race director\'s "Changes to the circuit" list.'},
     change_strength: num(0, 2, 'Scale of the assumed effect of FIA changes (1 = default assumption).'),
+    session_type: {type: 'string', enum: ['practice', 'qualifying', 'sprint', 'race'], description: 'Track evolution: session type (picks the fitted coefficients). Giving any evolution input adds an "evolution" block; the lap result itself is unchanged.'},
+    session_minute: num(0, 360, 'Track evolution: minute of the session to predict (default: session end).'),
+    rubber_gain_pct: num(0, 5, 'Track evolution: total lap-time gain from rubber over the session (%); overrides the measured/fitted curve.'),
+    saturation_min: num(1, 300, 'Track evolution: minutes for the rubber gain to mostly saturate.'),
+    track_wetness_start: num(0, 1, 'Track evolution: wetness at the session start (0 dry, 1 fully wet).'),
+    drying_time_min: num(0, 300, 'Track evolution: drying time constant (min; 0 = does not dry).'),
+    tyre: {type: 'string', enum: ['slick', 'inter', 'wet'], description: 'Track evolution: tyre type on a wet track.'},
+    tyre_warmup_laps: num(0, 5, 'Track evolution: laps after the out-lap before the tyre is at its best.'),
   }, additionalProperties: false}, annotations: ro}];
 
-export const LAPSIM_INSTRUCTIONS = ' LAP SIMULATOR: for what-if questions about lap time (F1 car generation 2019/2025/2026/2027/2028 or WEC Hypercar/LMGT3, air density or altitude, temperature, humidity, wind, FIA resurfacing or kerb changes), call lapsim_simulate. Report its numbers as provisional model estimates with the error range, confidence label and assumptions it returns, keep real and simulated times apart, and never present them as a prediction of a real session result. Show the conditions used (with their sources) and link the /simulation page it returns.';
+export const LAPSIM_INSTRUCTIONS = ' LAP SIMULATOR: for what-if questions about lap time (F1 car generation 2019/2025/2026/2027/2028 or WEC Hypercar/LMGT3, air density or altitude, temperature, humidity, wind, FIA resurfacing or kerb changes, track evolution over a session: rubber, drying, tyre warm-up), call lapsim_simulate. Report its numbers as provisional model estimates with the error range, confidence label and assumptions it returns, keep real and simulated times apart, and never present them as a prediction of a real session result. Show the conditions used (with their sources) and link the /simulation page it returns.';
 
 const r3 = x => Math.round(x * 1000) / 1000;
 const fmt = s => { const m = Math.floor(s / 60); return (m ? m + ':' : '') + (s - m * 60).toFixed(3).padStart(m ? 6 : 5, '0'); };
@@ -48,7 +58,7 @@ function summary(res, d, car) {
   });
   return {lap_time: fmt(res.lapTime), lap_seconds: r3(res.lapTime), sectors_s: res.sectors?.map(r3) ?? null,
     top_speed_kph: Math.round(res.vMaxKph), lowest_speed_kph: Math.round(res.vMinKph),
-    energy: car.ers?.pMax ? {deployed_mj: r3(res.energy.deployJ / 1e6), budget_mj: r3(res.energy.budgetJ / 1e6), recovered_mj: r3(res.energy.regenJ / 1e6), recharge_limit_mj: car.ers.rule === 'f1-2026' ? r3((car.ers.rechargeMax ?? 8.5e6) / 1e6) : null,
+    energy: car.ers?.pMax ? {deployed_mj: r3(res.energy.deployJ / 1e6), budget_mj: r3(res.energy.budgetJ / 1e6), recovered_mj: r3(res.energy.regenJ / 1e6), recharge_limit_mj: res.energy.rechargeMaxJ != null ? r3(res.energy.rechargeMaxJ / 1e6) : null,
       deploy_cutoff_kph: res.energy.cutoffKph ? Math.round(res.energy.cutoffKph) : null} : null,
     limited_by_pct_of_lap: {cornering_grip: pct(share[0]), traction: pct(share[1]), power: pct(share[2]), braking: pct(share[3])}, corners};
 }
@@ -73,7 +83,9 @@ export function simulate(args = {}) {
   if (Number.isFinite(args.pressure_hpa)) [pressureHpa, pressureSrc] = [args.pressure_hpa, 'given'];
   else if (Number.isFinite(args.altitude_m)) [pressureHpa, pressureSrc] = [K.pressureFromAltitude(args.altitude_m), `estimated from ${args.altitude_m} m altitude (standard atmosphere)`];
   else [pressureHpa, pressureSrc] = pick(undefined, 'pressureHpa', 1013.25);
-  const w = {airTempC, trackTempC, humidityPct, pressureHpa, windSpeed, windFromDeg};
+  // per-event ERS recharge limit (2026 values; 2027/2028 reuse them), ignored by older rule sets
+  const rechargeMJ = rechargeLimitMJ(id, 2026);
+  const w = {airTempC, trackTempC, humidityPct, pressureHpa, windSpeed, windFromDeg, rechargeMJ: rechargeMJ ?? undefined};
   const env = K.conditionsFromWeather(w);
   // FIA changes
   const ch = latestChanges(id);
@@ -82,7 +94,19 @@ export function simulate(args = {}) {
     const r = K.applyTrackChanges(base, ch.changes.filter(c => c.affectsLap), d.corners || [], {strength: args.change_strength ?? 1});
     track = r.track; applied = r.applied;
   }
-  const run = c => K.simulateLap(withGrip(track, c.grip || 1), c.car, env);
+  // sector correction on raced tracks (same rule as the /simulation page): real pole sectors minus the
+  // reference car's simulated sectors in the real pole weather, added to every result for that car
+  const secOf = r => { if (d.sectors?.length !== 2) return null; const i1 = Math.round(d.sectors[0] / d.ds), i2 = Math.round(d.sectors[1] / d.ds); return [r.time[i1], r.time[i2] - r.time[i1], r.lapTime - r.time[i2]]; };
+  const corrOf = c => {
+    if (!c.fix || d.sectors?.length !== 2) return null;
+    const ref = cars[c.fix.ref], fw = Object.fromEntries(Object.entries(c.fix.weather || {}).filter(([, v]) => Number.isFinite(v)));
+    const ss = secOf(K.simulateLap(withGrip(base, ref.grip || 1), ref.car, K.conditionsFromWeather({pressureHpa: 1013.25, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0, ...fw, rechargeMJ: rechargeMJ ?? undefined})));
+    return c.fix.real.map((x, i) => x - ss[i]);
+  };
+  const run = c => {
+    const r = K.simulateLap(withGrip(track, c.grip || 1), c.car, env), k = corrOf(c), sec = secOf(r);
+    return k && sec ? {...r, lapTime: r.lapTime + k[0] + k[1] + k[2], sectors: sec.map((x, i) => x + k[i]), sectorCorrection: k} : r;
+  };
   const res = run(sel);
   const out = {status: 'ok', model: 'quasi-steady-state lap simulation (estimate, not a prediction of a real session)',
     track: {id, name: TRACK_NAMES[id]?.[1] || id, length_m: Math.round(d.length || d.kappa.length * d.ds), corners: (d.corners || []).length,
@@ -94,13 +118,30 @@ export function simulate(args = {}) {
       air_density_kg_m3: r3(env.rho), density_vs_sea_level_pct: Math.round((env.rho / 1.225 - 1) * 1000) / 10,
       engine_power_factor: r3(env.iceFactor), tyre_grip_factor: r3(env.grip), wind_applied: !!base.heading && windSpeed > 0,
       main_straight_tailwind_ms: base.heading ? r3(K.tailwind(base.heading[2], windSpeed, windFromDeg)) : null},
-    result: summary(res, d, sel.car),
+    result: {...summary(res, d, sel.car), ...(res.sectorCorrection ? {sector_correction_s: res.sectorCorrection.map(r3), sector_correction_note: 'real pole sectors minus the simulated ones in the real pole weather (track-specific model bias)'} : {})},
     uncertainty: {error_range_s: sel.unc?.pct ? r3(res.lapTime * sel.unc.pct / 100) : null, error_range_pct: sel.unc?.pct ?? null, confidence: sel.unc?.confidence,
-      basis: 'one-sigma error from the holdout test (tracks left out of the fit); projections add half the historical development range'}};
+      basis: sel.unc?.basis === 'fit' ? 'one-sigma lap-time error of the fit over the tracks this car was fitted on' : 'one-sigma error from the holdout test (tracks left out of the fit, predicted)', holdout_error_pct: sel.unc?.holdoutPct ?? null,
+      note: 'projections add half the historical development range'}};
   // sensitivity table (common rule, as Formula Student teams report it): lap-time change for +10%
   const plus = (k, f) => { const c = structuredClone(sel.car); if (k === 'muY') { c.muX *= f; c.muY *= f; c.muXTrac = (c.muXTrac ?? c.muX) * f; } else if (k === 'clA') { c.clA *= f; c.clALow = (c.clALow ?? c.clA) * f; } else if (k === 'cdA') { c.cdA *= f; c.cdALow = (c.cdALow ?? c.cdA) * f; } else c[k] *= f; return c; };
   out.sensitivity_s_per_plus_10pct = Object.fromEntries(['mass', 'muY', 'clA', 'cdA', 'pIce'].map(k => [k === 'muY' ? 'tyre_grip' : k === 'pIce' ? 'engine_power' : k === 'clA' ? 'downforce_clA' : k === 'cdA' ? 'drag_cdA' : 'mass',
     r3(K.simulateLap(withGrip(track, sel.grip || 1), plus(k, 1.1), env).lapTime - res.lapTime)]));
+  // track evolution: only when asked, so the default output is unchanged
+  if (['session_type', 'session_minute', 'rubber_gain_pct', 'saturation_min', 'track_wetness_start', 'drying_time_min', 'tyre', 'tyre_warmup_laps'].some(k => args[k] !== undefined)) {
+    const se = sel.series === 'wec' ? 'wec' : 'f1', type = args.session_type || 'qualifying', c = evolutionCoeffs(se, id, type), qc = evolutionCoeffs(se, id, 'qualifying');
+    const endOf = x => x.curve ? x.curve.at(-1)[0] : se === 'wec' ? (type === 'qualifying' ? 20 : 90) : 60;
+    const formula = Number.isFinite(args.rubber_gain_pct) || Number.isFinite(args.saturation_min);
+    const P = {...c, session: type, tyre: args.tyre || 'slick', useCurve: !formula && !!c.curve, wetStart: args.track_wetness_start ?? 0, dryMin: args.drying_time_min ?? 20,
+      warmupLaps: args.tyre_warmup_laps ?? 0, ...(Number.isFinite(args.rubber_gain_pct) ? {gainPct: args.rubber_gain_pct} : {}), ...(Number.isFinite(args.saturation_min) ? {tauMin: args.saturation_min} : {})};
+    const end = args.session_minute ?? endOf(c);
+    const lap0 = res.lapTime / (1 + evolutionDelta({...qc, session: 'qualifying', useCurve: !!qc.curve}, endOf(qc)));
+    const curve = evolutionCurve(lap0, P, {to: Math.max(end, 1), step: Math.max(1, Math.round(end / 12))});
+    out.evolution = {session_type: type, minute: end, lap_at_minute: fmt(curve.last.lap), lap_at_minute_s: r3(curve.last.lap), change_from_start_s: r3(curve.last.lap - curve.points[0].lap),
+      curve: curve.points.map(p => ({minute: p.minute, lap_s: r3(p.lap)})),
+      basis: P.useCurve ? `measured ${type} curve at this track` : c.calibrated ? 'fitted series coefficients' : 'uncalibrated default coefficients',
+      holdout_error_pct: c.holdoutPct, reference: 'the simulated lap = track state at the end of qualifying',
+      assumptions: 'lap = reference × (1 + rubber(t) + wet(t) + warm-up(k)); rubber −a(1−e^(−t/τ)) or the measured curve, wet = wetness × tyre penalty × e^(−t/drying), warm-up fades over the given laps'};
+  }
   if (args.compare_car && carKey(args.compare_car) !== selKey) {
     const c = cars[carKey(args.compare_car)], r2 = run(c);
     out.compare = {car: {series: c.series || 'f1', class: c.cls || null, year: c.year, kind: c.kind}, error_range_s: c.unc?.pct ? r3(r2.lapTime * c.unc.pct / 100) : null, ...summary(r2, d, c.car), delta_s: r3(res.lapTime - r2.lapTime), delta_note: 'result minus compare; positive = the first car is slower'};
@@ -123,7 +164,7 @@ export function simulate(args = {}) {
     applied: applied.map(a => ({type: a.type, applied: a.applied, from_m: a.sStart != null ? Math.round(a.sStart) : null, to_m: a.sEnd != null ? Math.round(a.sEnd) : null})),
     note: fittedYear(id) >= ch.year ? `The cars were fitted on a real ${fittedYear(id)} lap that already ran with these changes; switching them on adds them a second time.` : 'Not yet in the fitted laps: switch them on to estimate their effect.'};
   out.assumptions = ['Grip versus track temperature is an assumed curve (best near 35 °C).', 'Engine power changes with air density as (density/1.18)^0.15 (assumed for a turbocharged engine).',
-    'FIA change effects are assumed sizes, not measurements.', 'No gear shifts, tyre temperature, fuel burn or car-to-car effects.', '2026-2028 energy: harvesting only under braking (no harvesting at full throttle, "super-clipping"); the per-event recharge limit is taken as 8.5 MJ.'];
+    'FIA change effects are assumed sizes, not measurements.', 'No gear shifts, tyre temperature, fuel burn or car-to-car effects.', '2026-2028 energy: harvesting only under braking (no harvesting at full throttle, "super-clipping"); per-event qualifying recharge limit from 2026 press reports (FIA values per circuit), reused for 2027/2028.'];
   out.page = `${SITE}/simulation?track=${encodeURIComponent(id)}&car=${selKey}`;
   return out;
 }

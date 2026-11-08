@@ -17,6 +17,7 @@ import {RESEARCH_TOOLS,RESEARCH_INSTRUCTIONS,researchCall} from './research.js';
 import {RULES_TOOLS,RULES_INSTRUCTIONS,rulesCall,rulesRoutes,rulesContext,attachRulesContext} from './rules.js';
 import {PATENT_TOOLS,PATENT_INSTRUCTIONS,patentsCall,patentRoutes} from './patents.js';
 import {LAPSIM_TOOLS,LAPSIM_INSTRUCTIONS,lapsimCall} from './lapsim/tool.js';
+import {liveEnergyLimit} from './lapsim/live-energy.js';
 import {OPENF1_TOOLS,OPENF1_INSTRUCTIONS,openf1Call} from './openf1.js';
 import {OPENF1_RACE_TOOLS,OPENF1_RACE_INSTRUCTIONS,openf1RaceCall,isRaceTool} from './openf1-race.js';
 import {DOC_ALERT_TOOLS,DOC_ALERT_INSTRUCTIONS,eventUpdatesCall,officialUpdates,runCheck} from './doc-alerts.js';
@@ -123,7 +124,7 @@ export default{async fetch(request,env,ctx){
  const aiConnections=path==='/account'&&request.method==='GET'&&google?.sub&&accountInfo?.account&&!accountInfo.account.deleted?await aiConnectionStatus(env,google.sub).catch(()=>null):null;
  const linkCode=path==='/account'&&request.method==='GET'?new URL(request.url).searchParams.get('host_link'):null;
  const hostLink=linkCode?{code:linkCode,host:await findLinkCode(env,linkCode.toUpperCase()).catch(()=>null)}:null;
- const website=websiteRoute(request,{alertsBody:path==='/alerts'&&request.method==='GET'&&alertsOwner?await alertsPageBody(env,{google,owner:alertsOwner}):undefined,hostLink,hostLinked:path==='/account'?new URL(request.url).searchParams.get('host_linked'):null,aiConnections,google,googleReady,firebaseConfig,firebaseCsrf:request.headers.get('x-kongboda-firebase-csrf'),accountInfo,crewRegistered:hasCrewAccess(accountInfo?.account,env),isOwner:path==='/account'&&google?await isOwner(env,google):false});if(website)return website;
+ const website=websiteRoute(request,{lapsimEnergy:path==='/simulation'&&request.method==='GET'?await liveEnergyLimit(new URL(request.url).searchParams.get('track')||'monza').catch(()=>null):undefined,alertsBody:path==='/alerts'&&request.method==='GET'&&alertsOwner?await alertsPageBody(env,{google,owner:alertsOwner}):undefined,hostLink,hostLinked:path==='/account'?new URL(request.url).searchParams.get('host_linked'):null,aiConnections,google,googleReady,firebaseConfig,firebaseCsrf:request.headers.get('x-kongboda-firebase-csrf'),accountInfo,crewRegistered:hasCrewAccess(accountInfo?.account,env),isOwner:path==='/account'&&google?await isOwner(env,google):false});if(website)return website;
  if(path==='/api/status'&&request.method==='GET'){if(!request.headers.get('oai-authenticated-user-id'))return json({error:'Authentication required'},401);return json({tools:FIA_TOOLS.length+LIVE_TOOLS.length+OPENF1_TOOLS.length+WEC_TOOLS.length+WEC_LIVE_TOOLS.length+RESEARCH_TOOLS.length+OFFICIAL_TOOLS.length+STANDINGS_TOOLS.length+PREFERENCE_TOOLS.length+CREW_TOOLS.length+COLLECTOR_SETUP_TOOLS.length+1,provider:'FastF1 + FIA + Al Kamel',live_storage_configured:!!env.BUCKET,live_feed_connected:null,telemetry:true,telemetry_mode:'session_accumulation_and_fastf1_historical_reload',source_policy:{...SOURCE_POLICY,requires_local_collector:!cloudConfigured(env),cloud_configured:cloudConfigured(env)}});}
  if(path!=='/mcp')return json({error:'Not found'},404);
  if(request.method==='GET'){

@@ -81,7 +81,7 @@ export function withGrip(track, g) {
 
 // Error for one lap, common to every series. Observations: a speed trace (obs: {s, v}) and/or a
 // speed trap (trapKph, compared with the top speed), always the lap time. Units: m/s and s.
-export function lapError(track, car, env, obs, lapTime, {wTime = 2, trapKph = null, wTrap = 1} = {}) {
+export function lapError(track, car, env, obs, lapTime, {wTime = 2, trapKph = null, wTrap = 0.5} = {}) {
   const res = simulateLap(track, car, env);
   const rms = !obs ? 0 : obs.ext ? extremaRms(res.v, track.ds, obs.ext) : rmsSpeed(res.v, track.ds, obs);
   const trap = trapKph ? (res.vMaxKph - trapKph) / 3.6 : 0;
@@ -204,6 +204,75 @@ export function holdout(laps, base, params, {folds = 4, iters = 40, gripFor, ...
     for (const l of laps.filter(x => test.has(x.name) && (x.weight ?? 1) >= 1)) {
       const g = gripFor(l); if (g == null) continue;
       const res = simulateLap(withGrip(l.track, g), fit.car, conditionsFromWeather(l.weather || {}));
+      errors.push({name: l.name, dt: res.lapTime - l.lapSeconds, pct: (res.lapTime / l.lapSeconds - 1) * 100});
+    }
+  }
+  const rmsPct = errors.length ? Math.sqrt(errors.reduce((a, e) => a + e.pct ** 2, 0) / errors.length) : null;
+  return {errors, rmsPct, n: errors.length};
+}
+
+// Joint fit of several seasons (common rule): each season has its own car, but a track keeps ONE
+// grip factor across seasons (same asphalt and line), fitted to all its laps together. This makes
+// track factors transferable, so a car can be predicted on a track it has not raced yet.
+// groups: [{key, laps, base, params}] (laps as for fitSeason, with obs)
+export function fitJoint(groups, {iters = 90, wTime = 2, wGrip = 50, lo = 0.85, hi = 1.15} = {}) {
+  const prep = groups.map(g => ({...g, laps: g.laps.map(l => ({...l, env: conditionsFromWeather(l.weather || {}), obs: l.obs && process.env.LAPSIM_TRACE_ERROR !== 'rms' ? {...l.obs, ext: realExtremes(l.obs)} : l.obs}))}));
+  const names = [...new Set(prep.flatMap(g => g.laps.map(l => l.name)))];
+  const offsets = []; let n = 0; for (const g of prep) { offsets.push(n); n += g.params.length; }
+  let outside = 0;
+  const buildOne = (g, x) => {
+    const car = structuredClone(g.base);
+    g.params.forEach((p, i) => {
+      let v = p.base * Math.exp(x[i]);
+      if (p.min != null && v < p.min) { outside += Math.log(p.min / v) ** 2; v = p.min; }
+      if (p.max != null && v > p.max) { outside += Math.log(v / p.max) ** 2; v = p.max; }
+      car[p.path] = v;
+    });
+    if (g.base.linkMu) { car.muX = g.base.muX * car.muY / g.base.muY; car.muXTrac = g.base.muXTrac * car.muY / g.base.muY; }
+    if (g.base.noLowDrag) { car.clALow = car.clA; car.cdALow = car.cdA; }
+    return car;
+  };
+  const build = x => { outside = 0; return prep.map((g, k) => buildOne(g, x.slice(offsets[k], offsets[k] + g.params.length))); };
+  const phi = (Math.sqrt(5) - 1) / 2;
+  // best shared grip for one track, given the cars
+  const trackFit = (name, cars) => {
+    const laps = prep.flatMap((g, k) => g.laps.filter(l => l.name === name).map(l => ({l, car: cars[k]})));
+    const f = gr => { let s = 0; const r = laps.map(({l, car}) => { const e = lapError(withGrip(l.track, gr), car, l.env, l.obs, l.lapSeconds, {wTime, trapKph: l.trapKph}); s += (l.weight ?? 1) * e.score; return e; }); return {grip: gr, score: s, r}; };
+    let a = lo, b = hi, c = f(b - phi * (b - a)), d = f(a + phi * (b - a));
+    for (let it = 0; it < 14; it++) { if (c.score < d.score) { b = d.grip; d = c; c = f(b - phi * (b - a)); } else { a = c.grip; c = d; d = f(a + phi * (b - a)); } }
+    const best = c.score < d.score ? c : d;
+    return {...best, laps};
+  };
+  const total = prep.reduce((a, g) => a + g.laps.length, 0);
+  const objective = x => {
+    const cars = build(x);
+    let s = 0, lg = 0;
+    for (const name of names) { const t = trackFit(name, cars); s += t.score; lg += Math.log(t.grip); }
+    return s / total + wGrip * (lg / names.length) ** 2 + 100 * outside;
+  };
+  const result = nelderMead(objective, new Array(n).fill(0), {step: 0.08, iters});
+  const cars = build(result.x);
+  const grips = {}, perLap = [];
+  for (const name of names) {
+    const t = trackFit(name, cars); grips[name] = t.grip;
+    t.laps.forEach(({l}, i) => { const r = t.r[i]; perLap.push({group: prep.find(g => g.laps.includes(l)).key, name, grip: t.grip, rmsKph: r.rms * 3.6, dt: r.dt, simLap: r.res.lapTime, realLap: l.lapSeconds, rho: l.env.rho, vMaxSim: r.res.vMaxKph, meta: l.meta}); });
+  }
+  return {cars: Object.fromEntries(prep.map((g, k) => [g.key, cars[k]])), grips, perLap, score: result.value};
+}
+
+// Holdout for the joint fit: leave one season's laps on some tracks out, refit, and predict them
+// with the track factor learned from the other seasons' laps on that track (skipped if none).
+export function holdoutJoint(groups, key, {folds = 4, iters = 40, ...opts} = {}) {
+  const target = groups.find(g => g.key === key);
+  const names = [...new Set(target.laps.map(l => l.name))].sort();
+  const k = Math.min(folds, names.length), errors = [];
+  for (let f = 0; f < k; f++) {
+    const test = new Set(names.filter((_, i) => i % k === f));
+    const train = groups.map(g => g.key === key ? {...g, laps: g.laps.filter(l => !test.has(l.name))} : g);
+    const fit = fitJoint(train, {...opts, iters});
+    for (const l of target.laps.filter(x => test.has(x.name) && (x.weight ?? 1) >= 1)) {
+      const g = fit.grips[l.name]; if (g == null) continue;
+      const res = simulateLap(withGrip(l.track, g), fit.cars[key], conditionsFromWeather(l.weather || {}));
       errors.push({name: l.name, dt: res.lapTime - l.lapSeconds, pct: (res.lapTime / l.lapSeconds - 1) * 100});
     }
   }

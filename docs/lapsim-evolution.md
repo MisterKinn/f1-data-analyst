@@ -1,0 +1,832 @@
+# Track evolution
+
+Generated 2026-11-07T22:17:19.086Z.
+
+Holdout: each session curve predicted without itself — from the same track in other seasons when available, else from the other tracks of the same series and session type. Curve error = RMS gap between predicted and measured lap-time change over the session; end error = gap at the last minute. "No model" = assuming the track does not change.
+
+| Series | Session | Sessions | Gain % | τ min | Curve error % | End error % | No model, end % |
+|---|---|---|---|---|---|---|---|
+| f1 | practice | 386 | 3.70 | 87.5 | 5.9005 | 1.4539 | 1.7475 |
+| f1 | qualifying | 169 | 1.80 | 20 | 1.1254 | 1.0106 | 1.8465 |
+| wec | practice | 37 | -0.54 | 15 | 0.6798 | 0.827 | 0.8915 |
+| wec | qualifying | 30 | 8.42 | 150 | 0.7853 | 1.2345 | 1.15 |
+
+## Sessions
+
+- f1ti-2018-yas-marina-circuit-practice-1.json: few laps
+- f1ti-2018-yas-marina-circuit-practice-2.json: few laps
+- f1ti-2018-yas-marina-circuit-practice-3.json: few laps
+- f1ti-2018-yas-marina-circuit-qualifying.json: few laps
+- f1ti-2018-spielberg-practice-1.json: rain
+- f1ti-2018-spielberg-practice-2.json: rain
+- f1ti-2018-spielberg-practice-3.json: rain
+- f1ti-2018-spielberg-qualifying.json: few laps
+- f1ti-2018-baku-practice-1.json: few laps
+- f1ti-2018-baku-practice-2.json: few laps
+- f1ti-2018-baku-practice-3.json: rain
+- f1ti-2018-baku-qualifying.json: rain
+- f1ti-2018-sakhir-practice-1.json: 59 push laps, 16 cars, end -1.6556%, fit RMS 0.2709%
+- f1ti-2018-sakhir-practice-2.json: 49 push laps, 15 cars, end -3.7212%, fit RMS 0.2608%
+- f1ti-2018-sakhir-practice-3.json: 35 push laps, 12 cars, end 0.0403%, fit RMS 0.2992%
+- f1ti-2018-sakhir-qualifying.json: few laps
+- f1ti-2018-spa-francorchamps-practice-1.json: 65 push laps, 16 cars, end -0.2114%, fit RMS 0.3397%
+- f1ti-2018-spa-francorchamps-practice-2.json: 59 push laps, 18 cars, end 1.4688%, fit RMS 0.2154%
+- f1ti-2018-spa-francorchamps-practice-3.json: 43 push laps, 14 cars, end -4.1347%, fit RMS 0.2508%
+- f1ti-2018-spa-francorchamps-qualifying.json: few laps
+- f1ti-2018-interlagos-practice-1.json: 59 push laps, 11 cars, end 17.1581%, fit RMS 0.4026%
+- f1ti-2018-interlagos-practice-2.json: 57 push laps, 18 cars, end -0.853%, fit RMS 0.2234%
+- f1ti-2018-interlagos-practice-3.json: few laps
+- f1ti-2018-interlagos-qualifying.json: rain
+- f1ti-2018-silverstone-practice-1.json: 72 push laps, 19 cars, end -40.1281%, fit RMS 0.3855%
+- f1ti-2018-silverstone-practice-2.json: 67 push laps, 18 cars, end -0.2402%, fit RMS 0.2262%
+- f1ti-2018-silverstone-practice-3.json: 83 push laps, 18 cars, end 0.5246%, fit RMS 0.2711%
+- f1ti-2018-silverstone-qualifying.json: 73 push laps, 17 cars, end -0.1741%, fit RMS 0.1878%
+- f1ti-2018-montreal-practice-1.json: few laps
+- f1ti-2018-montreal-practice-2.json: few laps
+- f1ti-2018-montreal-practice-3.json: few laps
+- f1ti-2018-montreal-qualifying.json: few laps
+- f1ti-2018-shanghai-practice-1.json: 80 push laps, 20 cars, end -5.8319%, fit RMS 0.3266%
+- f1ti-2018-shanghai-practice-2.json: 43 push laps, 16 cars, end -1.2406%, fit RMS 0.2152%
+- f1ti-2018-shanghai-practice-3.json: few laps
+- f1ti-2018-shanghai-qualifying.json: few laps
+- f1ti-2018-french-practice-1.json: few laps
+- f1ti-2018-french-practice-2.json: 34 push laps, 9 cars, end -0.7148%, fit RMS 0.323%
+- f1ti-2018-french-practice-3.json: few laps
+- f1ti-2018-french-qualifying.json: rain
+- f1ti-2018-german-practice-1.json: 55 push laps, 14 cars, end -5.4327%, fit RMS 0.3696%
+- f1ti-2018-german-practice-2.json: 53 push laps, 16 cars, end 0.4137%, fit RMS 0.4024%
+- f1ti-2018-german-practice-3.json: few laps
+- f1ti-2018-german-qualifying.json: few laps
+- f1ti-2018-hungaroring-practice-1.json: 59 push laps, 13 cars, end -1.3402%, fit RMS 0.334%
+- f1ti-2018-hungaroring-practice-2.json: 56 push laps, 20 cars, end 2.4186%, fit RMS 0.3672%
+- f1ti-2018-hungaroring-practice-3.json: few laps
+- f1ti-2018-hungaroring-qualifying.json: rain
+- f1ti-2018-monza-practice-1.json: rain
+- f1ti-2018-monza-practice-2.json: 60 push laps, 18 cars, end 24.1472%, fit RMS 0.271%
+- f1ti-2018-monza-practice-3.json: few laps
+- f1ti-2018-monza-qualifying.json: rain
+- f1ti-2018-suzuka-practice-1.json: 72 push laps, 16 cars, end 1.6555%, fit RMS 0.273%
+- f1ti-2018-suzuka-practice-2.json: 45 push laps, 15 cars, end -1.1885%, fit RMS 0.2196%
+- f1ti-2018-suzuka-practice-3.json: few laps
+- f1ti-2018-suzuka-qualifying.json: few laps
+- f1ti-2018-mexico-city-practice-1.json: few laps
+- f1ti-2018-mexico-city-practice-2.json: few laps
+- f1ti-2018-mexico-city-practice-3.json: rain
+- f1ti-2018-mexico-city-qualifying.json: rain
+- f1ti-2018-monte-carlo-practice-1.json: few laps
+- f1ti-2018-monte-carlo-practice-2.json: few laps
+- f1ti-2018-monte-carlo-practice-3.json: few laps
+- f1ti-2018-monte-carlo-qualifying.json: few laps
+- f1ti-2018-russian-practice-1.json: few laps
+- f1ti-2018-russian-practice-2.json: 39 push laps, 9 cars, end 1.783%, fit RMS 0.3416%
+- f1ti-2018-russian-practice-3.json: few laps
+- f1ti-2018-russian-qualifying.json: few laps
+- f1ti-2018-singapore-practice-1.json: few laps
+- f1ti-2018-singapore-practice-2.json: few laps
+- f1ti-2018-singapore-practice-3.json: few laps
+- f1ti-2018-singapore-qualifying.json: few laps
+- f1ti-2018-catalunya-practice-1.json: 69 push laps, 16 cars, end -14.0184%, fit RMS 0.4034%
+- f1ti-2018-catalunya-practice-2.json: 49 push laps, 18 cars, end -1.2983%, fit RMS 0.1676%
+- f1ti-2018-catalunya-practice-3.json: few laps
+- f1ti-2018-catalunya-qualifying.json: rain
+- f1ti-2018-austin-practice-1.json: rain
+- f1ti-2018-austin-practice-2.json: few laps
+- f1ti-2018-austin-practice-3.json: 33 push laps, 5 cars, end 0.3399%, fit RMS 0.4122%
+- f1ti-2018-austin-qualifying.json: few laps
+- f1ti-2019-yas-marina-circuit-practice-1.json: 84 push laps, 20 cars, end -0.3524%, fit RMS 0.3%
+- f1ti-2019-yas-marina-circuit-practice-2.json: 79 push laps, 18 cars, end -3.496%, fit RMS 0.2288%
+- f1ti-2019-yas-marina-circuit-practice-3.json: 78 push laps, 20 cars, end -0.2007%, fit RMS 0.278%
+- f1ti-2019-yas-marina-circuit-qualifying.json: 78 push laps, 20 cars, end -1.7725%, fit RMS 0.1847%
+- f1ti-2019-melbourne-practice-1.json: 83 push laps, 17 cars, end 0.4502%, fit RMS 0.4238%
+- f1ti-2019-melbourne-practice-2.json: 70 push laps, 20 cars, end -0.9705%, fit RMS 0.3285%
+- f1ti-2019-melbourne-practice-3.json: 79 push laps, 20 cars, end -0.9241%, fit RMS 0.3331%
+- f1ti-2019-melbourne-qualifying.json: 79 push laps, 20 cars, end -1.8252%, fit RMS 0.2608%
+- f1ti-2019-spielberg-practice-1.json: 123 push laps, 20 cars, end 0.0781%, fit RMS 0.3667%
+- f1ti-2019-spielberg-practice-2.json: 66 push laps, 20 cars, end -1.5508%, fit RMS 0.2829%
+- f1ti-2019-spielberg-practice-3.json: 97 push laps, 20 cars, end -1.2247%, fit RMS 0.3229%
+- f1ti-2019-spielberg-qualifying.json: 100 push laps, 20 cars, end -1.4945%, fit RMS 0.2856%
+- f1ti-2019-baku-practice-2.json: 56 push laps, 18 cars, end -2.4852%, fit RMS 0.3708%
+- f1ti-2019-baku-practice-3.json: 96 push laps, 20 cars, end -1.0603%, fit RMS 0.3943%
+- f1ti-2019-baku-qualifying.json: 70 push laps, 18 cars, end -1.2553%, fit RMS 0.286%
+- f1ti-2019-sakhir-practice-1.json: 78 push laps, 20 cars, end -0.5919%, fit RMS 0.2629%
+- f1ti-2019-sakhir-practice-2.json: 63 push laps, 18 cars, end 0.241%, fit RMS 0.1919%
+- f1ti-2019-sakhir-practice-3.json: 67 push laps, 19 cars, end -0.5219%, fit RMS 0.2995%
+- f1ti-2019-sakhir-qualifying.json: 78 push laps, 20 cars, end -1.6749%, fit RMS 0.2316%
+- f1ti-2019-spa-francorchamps-practice-1.json: 89 push laps, 20 cars, end -0.2723%, fit RMS 0.318%
+- f1ti-2019-spa-francorchamps-practice-2.json: 77 push laps, 20 cars, end -1.1076%, fit RMS 0.263%
+- f1ti-2019-spa-francorchamps-practice-3.json: 70 push laps, 19 cars, end -0.0685%, fit RMS 0.307%
+- f1ti-2019-spa-francorchamps-qualifying.json: 57 push laps, 14 cars, end -0.9403%, fit RMS 0.2411%
+- f1ti-2019-interlagos-practice-1.json: few laps
+- f1ti-2019-interlagos-practice-2.json: 93 push laps, 18 cars, end -2.2704%, fit RMS 0.297%
+- f1ti-2019-interlagos-practice-3.json: 91 push laps, 19 cars, end -0.6959%, fit RMS 0.2518%
+- f1ti-2019-interlagos-qualifying.json: 81 push laps, 19 cars, end -0.7405%, fit RMS 0.2378%
+- f1ti-2019-silverstone-practice-1.json: 67 push laps, 18 cars, end -3.0232%, fit RMS 0.3932%
+- f1ti-2019-silverstone-practice-2.json: 79 push laps, 20 cars, end -2.6108%, fit RMS 0.265%
+- f1ti-2019-silverstone-practice-3.json: 98 push laps, 20 cars, end -1.1504%, fit RMS 0.2851%
+- f1ti-2019-silverstone-qualifying.json: 115 push laps, 20 cars, end -0.5403%, fit RMS 0.3023%
+- f1ti-2019-montreal-practice-1.json: 69 push laps, 19 cars, end -0.2504%, fit RMS 0.3818%
+- f1ti-2019-montreal-practice-2.json: 85 push laps, 20 cars, end 3.2018%, fit RMS 0.2746%
+- f1ti-2019-montreal-practice-3.json: 92 push laps, 19 cars, end -8.6898%, fit RMS 0.291%
+- f1ti-2019-montreal-qualifying.json: 86 push laps, 20 cars, end -1.9544%, fit RMS 0.2585%
+- f1ti-2019-shanghai-practice-1.json: 84 push laps, 19 cars, end -2.4142%, fit RMS 0.3108%
+- f1ti-2019-shanghai-practice-2.json: 61 push laps, 19 cars, end -1.1399%, fit RMS 0.2305%
+- f1ti-2019-shanghai-practice-3.json: 44 push laps, 18 cars, end -0.9715%, fit RMS 0.2653%
+- f1ti-2019-shanghai-qualifying.json: 70 push laps, 18 cars, end -2.5562%, fit RMS 0.2355%
+- f1ti-2019-french-practice-1.json: 69 push laps, 19 cars, end 0.0111%, fit RMS 0.2943%
+- f1ti-2019-french-practice-2.json: 81 push laps, 20 cars, end -1.6967%, fit RMS 0.2464%
+- f1ti-2019-french-practice-3.json: 86 push laps, 19 cars, end -0.179%, fit RMS 0.2806%
+- f1ti-2019-french-qualifying.json: 73 push laps, 19 cars, end -3.4947%, fit RMS 0.2407%
+- f1ti-2019-german-practice-1.json: 85 push laps, 19 cars, end -0.4317%, fit RMS 0.3355%
+- f1ti-2019-german-practice-2.json: 78 push laps, 20 cars, end 1.935%, fit RMS 0.2647%
+- f1ti-2019-german-practice-3.json: 88 push laps, 20 cars, end 2.4447%, fit RMS 0.2946%
+- f1ti-2019-german-qualifying.json: 76 push laps, 18 cars, end -1.0772%, fit RMS 0.2662%
+- f1ti-2019-hungaroring-practice-1.json: rain
+- f1ti-2019-hungaroring-practice-2.json: 42 push laps, 15 cars, end -1.6524%, fit RMS 0.2068%
+- f1ti-2019-hungaroring-practice-3.json: 82 push laps, 20 cars, end 0.3264%, fit RMS 0.3764%
+- f1ti-2019-hungaroring-qualifying.json: 76 push laps, 18 cars, end -2.1757%, fit RMS 0.2537%
+- f1ti-2019-monza-practice-1.json: rain
+- f1ti-2019-monza-practice-2.json: rain
+- f1ti-2019-monza-practice-3.json: 102 push laps, 20 cars, end -0.9458%, fit RMS 0.2578%
+- f1ti-2019-monza-qualifying.json: 59 push laps, 18 cars, end -0.1457%, fit RMS 0.2436%
+- f1ti-2019-suzuka-practice-1.json: 91 push laps, 17 cars, end -0.8918%, fit RMS 0.2752%
+- f1ti-2019-suzuka-practice-2.json: 76 push laps, 20 cars, end -1.5955%, fit RMS 0.3266%
+- f1ti-2019-suzuka-qualifying.json: 76 push laps, 18 cars, end -3.2185%, fit RMS 0.2388%
+- f1ti-2019-mexico-city-practice-1.json: 51 push laps, 16 cars, end -0.2852%, fit RMS 0.2979%
+- f1ti-2019-mexico-city-practice-2.json: 66 push laps, 17 cars, end -19.762%, fit RMS 0.3395%
+- f1ti-2019-mexico-city-practice-3.json: 39 push laps, 15 cars, end -2.5614%, fit RMS 0.3117%
+- f1ti-2019-mexico-city-qualifying.json: 83 push laps, 19 cars, end -1.5744%, fit RMS 0.237%
+- f1ti-2019-monte-carlo-practice-1.json: 102 push laps, 19 cars, end -0.8993%, fit RMS 0.4306%
+- f1ti-2019-monte-carlo-practice-2.json: 106 push laps, 20 cars, end 2.5121%, fit RMS 0.4114%
+- f1ti-2019-monte-carlo-practice-3.json: rain
+- f1ti-2019-monte-carlo-qualifying.json: 125 push laps, 20 cars, end -2.021%, fit RMS 0.3007%
+- f1ti-2019-russian-practice-1.json: 76 push laps, 19 cars, end 1.0489%, fit RMS 0.3196%
+- f1ti-2019-russian-practice-2.json: 78 push laps, 20 cars, end -2.0376%, fit RMS 0.2634%
+- f1ti-2019-russian-practice-3.json: 65 push laps, 18 cars, end -1.6145%, fit RMS 0.1671%
+- f1ti-2019-russian-qualifying.json: 73 push laps, 18 cars, end -2.4733%, fit RMS 0.2322%
+- f1ti-2019-singapore-practice-1.json: 63 push laps, 19 cars, end -2.9323%, fit RMS 0.3439%
+- f1ti-2019-singapore-practice-2.json: 60 push laps, 18 cars, end -2.0053%, fit RMS 0.2966%
+- f1ti-2019-singapore-practice-3.json: 57 push laps, 18 cars, end -1.1223%, fit RMS 0.2879%
+- f1ti-2019-singapore-qualifying.json: 84 push laps, 19 cars, end -2.0623%, fit RMS 0.2299%
+- f1ti-2019-catalunya-practice-1.json: 81 push laps, 19 cars, end 0.5567%, fit RMS 0.3327%
+- f1ti-2019-catalunya-practice-2.json: 61 push laps, 18 cars, end -0.2185%, fit RMS 0.2035%
+- f1ti-2019-catalunya-practice-3.json: 70 push laps, 19 cars, end -1.463%, fit RMS 0.1893%
+- f1ti-2019-catalunya-qualifying.json: 83 push laps, 20 cars, end -0.8254%, fit RMS 0.2445%
+- f1ti-2019-austin-practice-1.json: 71 push laps, 18 cars, end -0.7062%, fit RMS 0.3537%
+- f1ti-2019-austin-practice-2.json: 46 push laps, 17 cars, end 195.8388%, fit RMS 0.2405%
+- f1ti-2019-austin-practice-3.json: 89 push laps, 19 cars, end -1.4676%, fit RMS 0.3756%
+- f1ti-2019-austin-qualifying.json: 78 push laps, 19 cars, end -1.8687%, fit RMS 0.1548%
+- f1ti-2020-70th-anniversary-practice-1.json: 86 push laps, 20 cars, end 1.5392%, fit RMS 0.2681%
+- f1ti-2020-70th-anniversary-practice-2.json: 78 push laps, 20 cars, end -1.2861%, fit RMS 0.2434%
+- f1ti-2020-70th-anniversary-practice-3.json: 76 push laps, 20 cars, end -2.3362%, fit RMS 0.2355%
+- f1ti-2020-70th-anniversary-qualifying.json: 79 push laps, 19 cars, end -1.3836%, fit RMS 0.2266%
+- f1ti-2020-yas-marina-circuit-practice-1.json: 70 push laps, 19 cars, end -2.1677%, fit RMS 0.3258%
+- f1ti-2020-yas-marina-circuit-practice-2.json: 49 push laps, 15 cars, end 0.5301%, fit RMS 0.2692%
+- f1ti-2020-yas-marina-circuit-practice-3.json: 70 push laps, 20 cars, end 10.596%, fit RMS 0.2352%
+- f1ti-2020-yas-marina-circuit-qualifying.json: 67 push laps, 17 cars, end -0.9809%, fit RMS 0.2684%
+- f1ti-2020-spielberg-practice-1.json: 100 push laps, 19 cars, end -0.1322%, fit RMS 0.3127%
+- f1ti-2020-spielberg-practice-2.json: 77 push laps, 20 cars, end -1.1827%, fit RMS 0.4142%
+- f1ti-2020-spielberg-practice-3.json: 82 push laps, 20 cars, end 3.9117%, fit RMS 0.2691%
+- f1ti-2020-spielberg-qualifying.json: 83 push laps, 20 cars, end -1.1101%, fit RMS 0.2185%
+- f1ti-2020-sakhir-practice-1.json: 117 push laps, 20 cars, end -0.4714%, fit RMS 0.3088%
+- f1ti-2020-sakhir-practice-2.json: 88 push laps, 19 cars, end 2.3313%, fit RMS 0.3047%
+- f1ti-2020-sakhir-practice-3.json: 90 push laps, 20 cars, end -0.7262%, fit RMS 0.3494%
+- f1ti-2020-sakhir-qualifying.json: 90 push laps, 20 cars, end -1.9778%, fit RMS 0.2208%
+- f1ti-2020-spa-francorchamps-practice-1.json: 73 push laps, 17 cars, end 2.6302%, fit RMS 0.2441%
+- f1ti-2020-spa-francorchamps-practice-2.json: 65 push laps, 19 cars, end -1.944%, fit RMS 0.2602%
+- f1ti-2020-spa-francorchamps-practice-3.json: rain
+- f1ti-2020-spa-francorchamps-qualifying.json: 64 push laps, 17 cars, end -1.9252%, fit RMS 0.2316%
+- f1ti-2020-silverstone-practice-1.json: 74 push laps, 19 cars, end -0.4519%, fit RMS 0.2427%
+- f1ti-2020-silverstone-practice-2.json: 64 push laps, 20 cars, end -1.7842%, fit RMS 0.2444%
+- f1ti-2020-silverstone-practice-3.json: 83 push laps, 19 cars, end -5.9511%, fit RMS 0.2357%
+- f1ti-2020-silverstone-qualifying.json: 75 push laps, 19 cars, end -2.0029%, fit RMS 0.1836%
+- f1ti-2020-eifel-practice-3.json: 68 push laps, 19 cars, end -0.6492%, fit RMS 0.352%
+- f1ti-2020-eifel-qualifying.json: 96 push laps, 20 cars, end -1.9328%, fit RMS 0.2403%
+- f1ti-2020-imola-practice-1.json: 90 push laps, 20 cars, end 0.6077%, fit RMS 0.2934%
+- f1ti-2020-imola-qualifying.json: 103 push laps, 20 cars, end -1.8683%, fit RMS 0.2119%
+- f1ti-2020-hungaroring-practice-1.json: rain
+- f1ti-2020-hungaroring-practice-2.json: few laps
+- f1ti-2020-hungaroring-practice-3.json: 89 push laps, 20 cars, end 0.2489%, fit RMS 0.3275%
+- f1ti-2020-hungaroring-qualifying.json: 91 push laps, 20 cars, end -2.4123%, fit RMS 0.2643%
+- f1ti-2020-monza-practice-1.json: 90 push laps, 20 cars, end 0.831%, fit RMS 0.3432%
+- f1ti-2020-monza-practice-2.json: 88 push laps, 19 cars, end -85.1415%, fit RMS 0.2673%
+- f1ti-2020-monza-practice-3.json: 73 push laps, 20 cars, end 6.7284%, fit RMS 0.272%
+- f1ti-2020-monza-qualifying.json: 71 push laps, 19 cars, end -1.4062%, fit RMS 0.26%
+- f1ti-2020-portuguese-practice-1.json: 108 push laps, 20 cars, end 0.7353%, fit RMS 0.4884%
+- f1ti-2020-portuguese-practice-2.json: 29 push laps, 11 cars, end -0.8497%, fit RMS 0.371%
+- f1ti-2020-portuguese-practice-3.json: 90 push laps, 20 cars, end -1.4446%, fit RMS 0.3186%
+- f1ti-2020-portuguese-qualifying.json: 109 push laps, 20 cars, end -0.9198%, fit RMS 0.2733%
+- f1ti-2020-russian-practice-1.json: 53 push laps, 18 cars, end 0.2412%, fit RMS 0.3074%
+- f1ti-2020-russian-practice-2.json: 63 push laps, 18 cars, end -0.3363%, fit RMS 0.2748%
+- f1ti-2020-russian-practice-3.json: 76 push laps, 20 cars, end -1.8734%, fit RMS 0.2723%
+- f1ti-2020-russian-qualifying.json: 67 push laps, 17 cars, end -2.1293%, fit RMS 0.2445%
+- f1ti-2020-sakhir-practice-1.json: 117 push laps, 20 cars, end -0.4714%, fit RMS 0.3088%
+- f1ti-2020-sakhir-practice-2.json: 88 push laps, 19 cars, end 2.3313%, fit RMS 0.3047%
+- f1ti-2020-sakhir-practice-3.json: 90 push laps, 20 cars, end -0.7262%, fit RMS 0.3494%
+- f1ti-2020-sakhir-qualifying.json: 90 push laps, 20 cars, end -1.9778%, fit RMS 0.2208%
+- f1ti-2020-catalunya-practice-1.json: 89 push laps, 19 cars, end 0.5213%, fit RMS 0.3395%
+- f1ti-2020-catalunya-practice-2.json: 65 push laps, 17 cars, end 0.2207%, fit RMS 0.2551%
+- f1ti-2020-catalunya-practice-3.json: 72 push laps, 19 cars, end -1.2446%, fit RMS 0.2507%
+- f1ti-2020-catalunya-qualifying.json: 84 push laps, 20 cars, end -1.7939%, fit RMS 0.2152%
+- f1ti-2020-styrian-practice-1.json: 83 push laps, 18 cars, end -0.3383%, fit RMS 0.266%
+- f1ti-2020-styrian-practice-2.json: 62 push laps, 19 cars, end -1.8314%, fit RMS 0.2807%
+- f1ti-2020-styrian-qualifying.json: rain
+- f1ti-2020-turkish-practice-1.json: 49 push laps, 18 cars, end -2.2205%, fit RMS 0.5139%
+- f1ti-2020-turkish-practice-2.json: 75 push laps, 19 cars, end 0.6821%, fit RMS 0.4269%
+- f1ti-2020-turkish-practice-3.json: rain
+- f1ti-2020-turkish-qualifying.json: rain
+- f1ti-2020-tuscan-practice-1.json: 65 push laps, 19 cars, end -1.0331%, fit RMS 0.3127%
+- f1ti-2020-tuscan-practice-2.json: 49 push laps, 16 cars, end 2.146%, fit RMS 0.1895%
+- f1ti-2020-tuscan-practice-3.json: 67 push laps, 19 cars, end -2.779%, fit RMS 0.3%
+- f1ti-2020-tuscan-qualifying.json: 68 push laps, 20 cars, end -2.1963%, fit RMS 0.2278%
+- f1ti-2021-yas-marina-circuit-practice-1.json: 84 push laps, 20 cars, end 6.6738%, fit RMS 0.2514%
+- f1ti-2021-yas-marina-circuit-practice-2.json: 82 push laps, 20 cars, end -1.4215%, fit RMS 0.2372%
+- f1ti-2021-yas-marina-circuit-practice-3.json: 85 push laps, 20 cars, end -0.7835%, fit RMS 0.2881%
+- f1ti-2021-yas-marina-circuit-qualifying.json: 96 push laps, 20 cars, end -0.2801%, fit RMS 0.2522%
+- f1ti-2021-spielberg-practice-1.json: 67 push laps, 20 cars, end -0.4777%, fit RMS 0.2445%
+- f1ti-2021-spielberg-practice-2.json: rain
+- f1ti-2021-spielberg-practice-3.json: 70 push laps, 20 cars, end -0.4444%, fit RMS 0.3184%
+- f1ti-2021-spielberg-qualifying.json: 93 push laps, 20 cars, end -1.6622%, fit RMS 0.2463%
+- f1ti-2021-baku-practice-1.json: 54 push laps, 18 cars, end -2.7034%, fit RMS 0.3268%
+- f1ti-2021-baku-practice-2.json: few laps
+- f1ti-2021-baku-practice-3.json: 46 push laps, 17 cars, end -6.4148%, fit RMS 0.2984%
+- f1ti-2021-baku-qualifying.json: 54 push laps, 17 cars, end -0.7832%, fit RMS 0.2381%
+- f1ti-2021-sakhir-practice-1.json: 72 push laps, 20 cars, end -0.772%, fit RMS 0.2805%
+- f1ti-2021-sakhir-practice-2.json: 38 push laps, 15 cars, end 0.1912%, fit RMS 0.2983%
+- f1ti-2021-sakhir-practice-3.json: 47 push laps, 18 cars, end -1.159%, fit RMS 0.2687%
+- f1ti-2021-sakhir-qualifying.json: 57 push laps, 15 cars, end -2.5037%, fit RMS 0.2537%
+- f1ti-2021-spa-francorchamps-practice-1.json: 83 push laps, 20 cars, end -32.6189%, fit RMS 0.3221%
+- f1ti-2021-spa-francorchamps-practice-2.json: 55 push laps, 19 cars, end 10.9445%, fit RMS 0.2896%
+- f1ti-2021-spa-francorchamps-practice-3.json: few laps
+- f1ti-2021-spa-francorchamps-qualifying.json: few laps
+- f1ti-2021-silverstone-practice-1.json: 77 push laps, 20 cars, end -2.6925%, fit RMS 0.2753%
+- f1ti-2021-silverstone-practice-2.json: 253 push laps, 19 cars, end -0.2773%, fit RMS 0.4192%
+- f1ti-2021-silverstone-qualifying.json: 99 push laps, 20 cars, end -1.4038%, fit RMS 0.1944%
+- f1ti-2021-silverstone-sprint-qualifying.json: 282 push laps, 20 cars, end -1.2179%, fit RMS 0.3264%
+- f1ti-2021-zandvoort-practice-1.json: 47 push laps, 17 cars, end -3.667%, fit RMS 0.1845%
+- f1ti-2021-zandvoort-practice-2.json: 64 push laps, 17 cars, end -3.1712%, fit RMS 0.2945%
+- f1ti-2021-zandvoort-practice-3.json: 70 push laps, 18 cars, end -0.6815%, fit RMS 0.3033%
+- f1ti-2021-zandvoort-qualifying.json: 82 push laps, 20 cars, end -0.8272%, fit RMS 0.2309%
+- f1ti-2021-imola-practice-1.json: few laps
+- f1ti-2021-imola-practice-2.json: 67 push laps, 19 cars, end -3.9293%, fit RMS 0.3617%
+- f1ti-2021-imola-practice-3.json: 79 push laps, 20 cars, end -0.4833%, fit RMS 0.3721%
+- f1ti-2021-imola-qualifying.json: 83 push laps, 18 cars, end -1.7619%, fit RMS 0.2515%
+- f1ti-2021-french-practice-1.json: 74 push laps, 18 cars, end 0.9815%, fit RMS 0.3357%
+- f1ti-2021-french-practice-2.json: 67 push laps, 20 cars, end -1.7312%, fit RMS 0.2178%
+- f1ti-2021-french-practice-3.json: 81 push laps, 20 cars, end -0.4388%, fit RMS 0.2568%
+- f1ti-2021-french-qualifying.json: 63 push laps, 14 cars, end -1.6789%, fit RMS 0.2084%
+- f1ti-2021-hungaroring-practice-1.json: 45 push laps, 14 cars, end -1.9839%, fit RMS 0.2954%
+- f1ti-2021-hungaroring-practice-2.json: 66 push laps, 19 cars, end -59.3448%, fit RMS 0.2351%
+- f1ti-2021-hungaroring-practice-3.json: 74 push laps, 19 cars, end -1.3419%, fit RMS 0.2681%
+- f1ti-2021-hungaroring-qualifying.json: 79 push laps, 18 cars, end -1.0123%, fit RMS 0.2248%
+- f1ti-2021-monza-practice-1.json: 82 push laps, 20 cars, end -1.1705%, fit RMS 0.3149%
+- f1ti-2021-monza-practice-2.json: 239 push laps, 20 cars, end 0.0161%, fit RMS 0.455%
+- f1ti-2021-monza-qualifying.json: 86 push laps, 20 cars, end -1.6634%, fit RMS 0.1831%
+- f1ti-2021-monza-sprint-qualifying.json: 267 push laps, 19 cars, end -0.6405%, fit RMS 0.3464%
+- f1ti-2021-mexico-city-practice-1.json: 62 push laps, 20 cars, end -1.0917%, fit RMS 0.3218%
+- f1ti-2021-mexico-city-practice-2.json: 55 push laps, 17 cars, end -3.2876%, fit RMS 0.2773%
+- f1ti-2021-mexico-city-practice-3.json: 78 push laps, 20 cars, end 0.3251%, fit RMS 0.2931%
+- f1ti-2021-mexico-city-qualifying.json: 76 push laps, 19 cars, end -2.2213%, fit RMS 0.2915%
+- f1ti-2021-monte-carlo-practice-1.json: 104 push laps, 19 cars, end -0.3607%, fit RMS 0.3896%
+- f1ti-2021-monte-carlo-practice-2.json: 90 push laps, 20 cars, end -2.9448%, fit RMS 0.3474%
+- f1ti-2021-monte-carlo-practice-3.json: 110 push laps, 20 cars, end -1.6647%, fit RMS 0.3713%
+- f1ti-2021-monte-carlo-qualifying.json: 113 push laps, 19 cars, end -1.0731%, fit RMS 0.3005%
+- f1ti-2021-portuguese-practice-1.json: 96 push laps, 20 cars, end -3.1847%, fit RMS 0.4257%
+- f1ti-2021-portuguese-practice-2.json: 77 push laps, 20 cars, end 8.4377%, fit RMS 0.3505%
+- f1ti-2021-portuguese-practice-3.json: 78 push laps, 19 cars, end -1.8009%, fit RMS 0.3637%
+- f1ti-2021-portuguese-qualifying.json: 100 push laps, 20 cars, end -1.0022%, fit RMS 0.3728%
+- f1ti-2021-lusail-practice-1.json: 81 push laps, 20 cars, end -0.9796%, fit RMS 0.3438%
+- f1ti-2021-lusail-practice-2.json: 67 push laps, 18 cars, end -1.9184%, fit RMS 0.2722%
+- f1ti-2021-lusail-practice-3.json: 76 push laps, 19 cars, end -1.5408%, fit RMS 0.2566%
+- f1ti-2021-lusail-qualifying.json: 91 push laps, 20 cars, end -2.1866%, fit RMS 0.2054%
+- f1ti-2021-russian-practice-1.json: 70 push laps, 20 cars, end -0.1466%, fit RMS 0.2601%
+- f1ti-2021-russian-practice-2.json: 62 push laps, 20 cars, end -1.8845%, fit RMS 0.2972%
+- f1ti-2021-russian-qualifying.json: rain
+- f1ti-2021-jeddah-practice-1.json: 82 push laps, 20 cars, end -0.9371%, fit RMS 0.3634%
+- f1ti-2021-jeddah-practice-2.json: 79 push laps, 20 cars, end -1.38%, fit RMS 0.2924%
+- f1ti-2021-jeddah-practice-3.json: 85 push laps, 20 cars, end -1.8374%, fit RMS 0.2758%
+- f1ti-2021-jeddah-qualifying.json: 106 push laps, 20 cars, end -1.3216%, fit RMS 0.2302%
+- f1ti-2021-catalunya-practice-1.json: 50 push laps, 18 cars, end -3.7835%, fit RMS 0.2799%
+- f1ti-2021-catalunya-practice-2.json: 71 push laps, 20 cars, end -0.5599%, fit RMS 0.2766%
+- f1ti-2021-catalunya-practice-3.json: 77 push laps, 20 cars, end 0.1008%, fit RMS 0.4093%
+- f1ti-2021-catalunya-qualifying.json: 80 push laps, 20 cars, end -1.4099%, fit RMS 0.2653%
+- f1ti-2021-styrian-practice-1.json: 84 push laps, 20 cars, end -158.283%, fit RMS 0.2676%
+- f1ti-2021-styrian-practice-2.json: rain
+- f1ti-2021-styrian-practice-3.json: 92 push laps, 20 cars, end -1.4363%, fit RMS 0.2989%
+- f1ti-2021-styrian-qualifying.json: 91 push laps, 20 cars, end -1.3396%, fit RMS 0.2083%
+- f1ti-2021-interlagos-practice-1.json: 86 push laps, 20 cars, end -4.1359%, fit RMS 0.2806%
+- f1ti-2021-interlagos-practice-2.json: 245 push laps, 19 cars, end -0.9612%, fit RMS 0.4027%
+- f1ti-2021-interlagos-qualifying.json: 101 push laps, 20 cars, end -1.7174%, fit RMS 0.2093%
+- f1ti-2021-interlagos-sprint-qualifying.json: 420 push laps, 20 cars, end 0.9398%, fit RMS 0.3695%
+- f1ti-2021-turkish-practice-1.json: 82 push laps, 20 cars, end -2.8681%, fit RMS 0.2166%
+- f1ti-2021-turkish-practice-2.json: 79 push laps, 19 cars, end -1.4886%, fit RMS 0.2311%
+- f1ti-2021-turkish-practice-3.json: rain
+- f1ti-2021-turkish-qualifying.json: rain
+- f1ti-2021-austin-practice-1.json: 36 push laps, 15 cars, end -2.4811%, fit RMS 0.2214%
+- f1ti-2021-austin-practice-2.json: 54 push laps, 18 cars, end -1.4581%, fit RMS 0.2445%
+- f1ti-2021-austin-practice-3.json: 40 push laps, 15 cars, end -0.7378%, fit RMS 0.2023%
+- f1ti-2021-austin-qualifying.json: 57 push laps, 14 cars, end -1.7311%, fit RMS 0.2313%
+- f1ti-2022-yas-marina-circuit-practice-1.json: 68 push laps, 19 cars, end -2.1442%, fit RMS 0.2548%
+- f1ti-2022-yas-marina-circuit-practice-2.json: 80 push laps, 20 cars, end -2.1766%, fit RMS 0.3066%
+- f1ti-2022-yas-marina-circuit-practice-3.json: 71 push laps, 20 cars, end -0.5612%, fit RMS 0.2716%
+- f1ti-2022-yas-marina-circuit-qualifying.json: 81 push laps, 19 cars, end -1.6909%, fit RMS 0.1389%
+- f1ti-2022-melbourne-practice-1.json: 65 push laps, 19 cars, end 1.503%, fit RMS 0.3106%
+- f1ti-2022-melbourne-practice-2.json: 62 push laps, 19 cars, end -2.6553%, fit RMS 0.3479%
+- f1ti-2022-melbourne-practice-3.json: 69 push laps, 19 cars, end -1.8206%, fit RMS 0.4321%
+- f1ti-2022-melbourne-qualifying.json: 83 push laps, 17 cars, end -0.8819%, fit RMS 0.312%
+- f1ti-2022-spielberg-practice-1.json: 84 push laps, 20 cars, end -1.2695%, fit RMS 0.4064%
+- f1ti-2022-spielberg-practice-2.json: 364 push laps, 20 cars, end -1.4552%, fit RMS 0.3735%
+- f1ti-2022-spielberg-qualifying.json: 98 push laps, 20 cars, end -7.0509%, fit RMS 0.2485%
+- f1ti-2022-baku-practice-1.json: 57 push laps, 17 cars, end 3.5958%, fit RMS 0.3319%
+- f1ti-2022-baku-practice-2.json: 68 push laps, 20 cars, end -3.4397%, fit RMS 0.2609%
+- f1ti-2022-baku-practice-3.json: 67 push laps, 20 cars, end -1.8255%, fit RMS 0.256%
+- f1ti-2022-baku-qualifying.json: 46 push laps, 14 cars, end -2.0263%, fit RMS 0.156%
+- f1ti-2022-sakhir-practice-1.json: 64 push laps, 19 cars, end -1.1202%, fit RMS 0.3606%
+- f1ti-2022-sakhir-practice-2.json: 56 push laps, 16 cars, end -1.3327%, fit RMS 0.2425%
+- f1ti-2022-sakhir-practice-3.json: 57 push laps, 18 cars, end -1.0367%, fit RMS 0.2071%
+- f1ti-2022-sakhir-qualifying.json: 81 push laps, 20 cars, end -1.0329%, fit RMS 0.2117%
+- f1ti-2022-spa-francorchamps-practice-1.json: 41 push laps, 13 cars, end -2.1147%, fit RMS 0.3332%
+- f1ti-2022-spa-francorchamps-practice-2.json: 59 push laps, 19 cars, end -1.1822%, fit RMS 0.2824%
+- f1ti-2022-spa-francorchamps-practice-3.json: 51 push laps, 17 cars, end -1.6728%, fit RMS 0.3066%
+- f1ti-2022-spa-francorchamps-qualifying.json: 70 push laps, 18 cars, end -0.9201%, fit RMS 0.1926%
+- f1ti-2022-silverstone-practice-1.json: few laps
+- f1ti-2022-silverstone-practice-2.json: 73 push laps, 19 cars, end -3.0716%, fit RMS 0.2423%
+- f1ti-2022-silverstone-practice-3.json: 106 push laps, 20 cars, end 2.0842%, fit RMS 0.3332%
+- f1ti-2022-silverstone-qualifying.json: rain
+- f1ti-2022-montreal-practice-1.json: 78 push laps, 20 cars, end -1.27%, fit RMS 0.3571%
+- f1ti-2022-montreal-practice-2.json: 81 push laps, 19 cars, end -1.0483%, fit RMS 0.3041%
+- f1ti-2022-montreal-practice-3.json: rain
+- f1ti-2022-montreal-qualifying.json: rain
+- f1ti-2022-zandvoort-practice-1.json: 54 push laps, 18 cars, end 4.4414%, fit RMS 0.2191%
+- f1ti-2022-zandvoort-practice-2.json: 46 push laps, 18 cars, end -2.079%, fit RMS 0.3118%
+- f1ti-2022-zandvoort-practice-3.json: 66 push laps, 20 cars, end 2.1136%, fit RMS 0.2801%
+- f1ti-2022-zandvoort-qualifying.json: 80 push laps, 19 cars, end -4.0135%, fit RMS 0.2865%
+- f1ti-2022-imola-practice-1.json: rain
+- f1ti-2022-imola-practice-2.json: 291 push laps, 17 cars, end 0.303%, fit RMS 0.4021%
+- f1ti-2022-imola-qualifying.json: 43 push laps, 16 cars, end -0.2448%, fit RMS 0.2739%
+- f1ti-2022-french-practice-1.json: 63 push laps, 19 cars, end -1.5006%, fit RMS 0.3355%
+- f1ti-2022-french-practice-2.json: 63 push laps, 18 cars, end -6.4476%, fit RMS 0.2475%
+- f1ti-2022-french-practice-3.json: 84 push laps, 20 cars, end -0.1343%, fit RMS 0.4301%
+- f1ti-2022-french-qualifying.json: 79 push laps, 20 cars, end -1.097%, fit RMS 0.2127%
+- f1ti-2022-hungaroring-practice-1.json: 65 push laps, 18 cars, end -1.3104%, fit RMS 0.3199%
+- f1ti-2022-hungaroring-practice-2.json: 68 push laps, 18 cars, end -1.9181%, fit RMS 0.2875%
+- f1ti-2022-hungaroring-practice-3.json: rain
+- f1ti-2022-hungaroring-qualifying.json: 97 push laps, 20 cars, end -2.7149%, fit RMS 0.2881%
+- f1ti-2022-monza-practice-1.json: 67 push laps, 19 cars, end -1.4764%, fit RMS 0.3102%
+- f1ti-2022-monza-practice-2.json: 66 push laps, 20 cars, end -12.7591%, fit RMS 0.2751%
+- f1ti-2022-monza-practice-3.json: 75 push laps, 20 cars, end -1.5132%, fit RMS 0.2273%
+- f1ti-2022-monza-qualifying.json: 77 push laps, 20 cars, end -1.7619%, fit RMS 0.1884%
+- f1ti-2022-suzuka-practice-1.json: rain
+- f1ti-2022-suzuka-practice-2.json: rain
+- f1ti-2022-suzuka-practice-3.json: 61 push laps, 18 cars, end -4.9834%, fit RMS 0.2964%
+- f1ti-2022-suzuka-qualifying.json: 79 push laps, 19 cars, end -1.3618%, fit RMS 0.2395%
+- f1ti-2022-mexico-city-practice-1.json: 46 push laps, 15 cars, end -1.3337%, fit RMS 0.395%
+- f1ti-2022-mexico-city-practice-2.json: few laps
+- f1ti-2022-mexico-city-practice-3.json: 75 push laps, 20 cars, end -1.1427%, fit RMS 0.3069%
+- f1ti-2022-mexico-city-qualifying.json: 83 push laps, 20 cars, end -2.07%, fit RMS 0.2072%
+- f1ti-2022-miami-practice-1.json: 61 push laps, 18 cars, end -2.8995%, fit RMS 0.2574%
+- f1ti-2022-miami-practice-2.json: 30 push laps, 11 cars, end -4.3899%, fit RMS 0.2886%
+- f1ti-2022-miami-practice-3.json: 60 push laps, 16 cars, end -3.2872%, fit RMS 0.3369%
+- f1ti-2022-miami-qualifying.json: 93 push laps, 18 cars, end -2.0618%, fit RMS 0.2686%
+- f1ti-2022-monte-carlo-practice-1.json: 79 push laps, 18 cars, end 0.0339%, fit RMS 0.4846%
+- f1ti-2022-monte-carlo-practice-2.json: 68 push laps, 19 cars, end 4.8856%, fit RMS 0.3398%
+- f1ti-2022-monte-carlo-practice-3.json: 116 push laps, 20 cars, end 3.192%, fit RMS 0.3395%
+- f1ti-2022-monte-carlo-qualifying.json: 73 push laps, 18 cars, end -2.3266%, fit RMS 0.2237%
+- f1ti-2022-jeddah-practice-1.json: 73 push laps, 19 cars, end 0.2442%, fit RMS 0.3637%
+- f1ti-2022-jeddah-practice-2.json: 70 push laps, 19 cars, end -1.2279%, fit RMS 0.3294%
+- f1ti-2022-jeddah-practice-3.json: 81 push laps, 20 cars, end 8.7386%, fit RMS 0.3255%
+- f1ti-2022-jeddah-qualifying.json: 88 push laps, 18 cars, end -1.2184%, fit RMS 0.2139%
+- f1ti-2022-singapore-practice-1.json: 48 push laps, 18 cars, end -0.2474%, fit RMS 0.2233%
+- f1ti-2022-singapore-practice-2.json: 47 push laps, 18 cars, end -5.9464%, fit RMS 0.2347%
+- f1ti-2022-singapore-practice-3.json: few laps
+- f1ti-2022-singapore-qualifying.json: few laps
+- f1ti-2022-catalunya-practice-1.json: 43 push laps, 17 cars, end -1.8365%, fit RMS 0.3024%
+- f1ti-2022-catalunya-practice-2.json: 42 push laps, 14 cars, end 0.1861%, fit RMS 0.2278%
+- f1ti-2022-catalunya-practice-3.json: 58 push laps, 16 cars, end -0.0506%, fit RMS 0.3752%
+- f1ti-2022-catalunya-qualifying.json: 73 push laps, 19 cars, end -1.7103%, fit RMS 0.2314%
+- f1ti-2022-interlagos-practice-1.json: 69 push laps, 19 cars, end -2.0833%, fit RMS 0.3267%
+- f1ti-2022-interlagos-practice-2.json: 257 push laps, 19 cars, end -0.0494%, fit RMS 0.4023%
+- f1ti-2022-interlagos-qualifying.json: 59 push laps, 16 cars, end -4.726%, fit RMS 0.302%
+- f1ti-2022-austin-practice-1.json: 53 push laps, 19 cars, end -0.5493%, fit RMS 0.2696%
+- f1ti-2022-austin-practice-2.json: few laps
+- f1ti-2022-austin-practice-3.json: 75 push laps, 19 cars, end -0.9675%, fit RMS 0.3002%
+- f1ti-2022-austin-qualifying.json: 77 push laps, 20 cars, end -2.3781%, fit RMS 0.1576%
+- f1ti-2023-yas-marina-circuit-practice-1.json: 93 push laps, 19 cars, end -2.1621%, fit RMS 0.2645%
+- f1ti-2023-yas-marina-circuit-practice-2.json: 44 push laps, 15 cars, end -1.5577%, fit RMS 0.2702%
+- f1ti-2023-yas-marina-circuit-practice-3.json: 83 push laps, 20 cars, end -0.6412%, fit RMS 0.3034%
+- f1ti-2023-yas-marina-circuit-qualifying.json: 76 push laps, 18 cars, end -2.1216%, fit RMS 0.1881%
+- f1ti-2023-melbourne-practice-1.json: 60 push laps, 20 cars, end -2.7721%, fit RMS 0.2924%
+- f1ti-2023-melbourne-practice-2.json: rain
+- f1ti-2023-melbourne-practice-3.json: 60 push laps, 20 cars, end -6.8934%, fit RMS 0.3342%
+- f1ti-2023-melbourne-qualifying.json: 114 push laps, 19 cars, end -3.1867%, fit RMS 0.2669%
+- f1ti-2023-spielberg-practice-1.json: 87 push laps, 19 cars, end -2.2492%, fit RMS 0.3532%
+- f1ti-2023-spielberg-qualifying.json: 84 push laps, 20 cars, end -3.1687%, fit RMS 0.2064%
+- f1ti-2023-spielberg-sprint-shootout.json: 70 push laps, 17 cars, end -3.6173%, fit RMS 0.3213%
+- f1ti-2023-baku-practice-1.json: 51 push laps, 16 cars, end -2.153%, fit RMS 0.2256%
+- f1ti-2023-baku-qualifying.json: 87 push laps, 17 cars, end -3.1948%, fit RMS 0.2111%
+- f1ti-2023-baku-sprint-shootout.json: 32 push laps, 11 cars, end -1.8105%, fit RMS 0.196%
+- f1ti-2023-sakhir-practice-1.json: 60 push laps, 18 cars, end -0.0809%, fit RMS 0.3514%
+- f1ti-2023-sakhir-practice-2.json: 49 push laps, 19 cars, end -0.3497%, fit RMS 0.2343%
+- f1ti-2023-sakhir-practice-3.json: 64 push laps, 20 cars, end -0.7128%, fit RMS 0.2533%
+- f1ti-2023-sakhir-qualifying.json: 74 push laps, 19 cars, end -1.3198%, fit RMS 0.1991%
+- f1ti-2023-spa-francorchamps-practice-1.json: rain
+- f1ti-2023-spa-francorchamps-qualifying.json: few laps
+- f1ti-2023-spa-francorchamps-sprint-shootout.json: few laps
+- f1ti-2023-silverstone-practice-1.json: 72 push laps, 19 cars, end -1.3777%, fit RMS 0.2415%
+- f1ti-2023-silverstone-practice-2.json: 70 push laps, 18 cars, end -2.5582%, fit RMS 0.2419%
+- f1ti-2023-silverstone-practice-3.json: rain
+- f1ti-2023-silverstone-qualifying.json: rain
+- f1ti-2023-montreal-practice-2.json: 79 push laps, 20 cars, end -1.8574%, fit RMS 0.2588%
+- f1ti-2023-montreal-practice-3.json: rain
+- f1ti-2023-montreal-qualifying.json: rain
+- f1ti-2023-zandvoort-practice-1.json: 49 push laps, 15 cars, end 2.3326%, fit RMS 0.3111%
+- f1ti-2023-zandvoort-practice-2.json: 48 push laps, 18 cars, end -2.9752%, fit RMS 0.1697%
+- f1ti-2023-zandvoort-practice-3.json: rain
+- f1ti-2023-zandvoort-qualifying.json: rain
+- f1ti-2023-hungaroring-practice-1.json: few laps
+- f1ti-2023-hungaroring-practice-2.json: 63 push laps, 18 cars, end -0.1099%, fit RMS 0.3206%
+- f1ti-2023-hungaroring-practice-3.json: 77 push laps, 20 cars, end 0.0201%, fit RMS 0.2728%
+- f1ti-2023-hungaroring-qualifying.json: 68 push laps, 20 cars, end -2.7563%, fit RMS 0.1489%
+- f1ti-2023-monza-practice-1.json: 96 push laps, 20 cars, end -1.155%, fit RMS 0.4414%
+- f1ti-2023-monza-practice-2.json: 60 push laps, 17 cars, end -4.2799%, fit RMS 0.2586%
+- f1ti-2023-monza-practice-3.json: 90 push laps, 20 cars, end -1.6324%, fit RMS 0.2701%
+- f1ti-2023-monza-qualifying.json: 92 push laps, 20 cars, end -1.8735%, fit RMS 0.2096%
+- f1ti-2023-suzuka-practice-1.json: rain
+- f1ti-2023-suzuka-practice-2.json: 40 push laps, 16 cars, end -1.4012%, fit RMS 0.1781%
+- f1ti-2023-suzuka-practice-3.json: 68 push laps, 20 cars, end 2.8938%, fit RMS 0.2774%
+- f1ti-2023-suzuka-qualifying.json: 68 push laps, 16 cars, end -1.2783%, fit RMS 0.1762%
+- f1ti-2023-las-vegas-practice-1.json: few laps
+- f1ti-2023-las-vegas-practice-2.json: 71 push laps, 19 cars, end 6.0736%, fit RMS 0.2697%
+- f1ti-2023-las-vegas-practice-3.json: 57 push laps, 16 cars, end -1.4057%, fit RMS 0.5025%
+- f1ti-2023-las-vegas-qualifying.json: 82 push laps, 19 cars, end -2.4187%, fit RMS 0.1614%
+- f1ti-2023-mexico-city-practice-1.json: 43 push laps, 15 cars, end -2.5323%, fit RMS 0.249%
+- f1ti-2023-mexico-city-practice-2.json: rain
+- f1ti-2023-mexico-city-practice-3.json: 66 push laps, 19 cars, end 0.2855%, fit RMS 0.3336%
+- f1ti-2023-mexico-city-qualifying.json: 68 push laps, 17 cars, end -1.5048%, fit RMS 0.242%
+- f1ti-2023-miami-practice-1.json: 59 push laps, 18 cars, end -2.218%, fit RMS 0.4049%
+- f1ti-2023-miami-practice-2.json: 62 push laps, 19 cars, end -3.5903%, fit RMS 0.3351%
+- f1ti-2023-miami-practice-3.json: 93 push laps, 20 cars, end 0.1202%, fit RMS 0.3176%
+- f1ti-2023-miami-qualifying.json: 89 push laps, 20 cars, end -1.7957%, fit RMS 0.2128%
+- f1ti-2023-monte-carlo-practice-1.json: 101 push laps, 20 cars, end -1.1955%, fit RMS 0.3649%
+- f1ti-2023-monte-carlo-practice-2.json: 88 push laps, 20 cars, end -6.6366%, fit RMS 0.2862%
+- f1ti-2023-monte-carlo-practice-3.json: 71 push laps, 20 cars, end -0.3244%, fit RMS 0.2802%
+- f1ti-2023-monte-carlo-qualifying.json: 103 push laps, 19 cars, end -3.3973%, fit RMS 0.308%
+- f1ti-2023-lusail-practice-1.json: 50 push laps, 15 cars, end -2.0635%, fit RMS 0.351%
+- f1ti-2023-lusail-qualifying.json: 84 push laps, 20 cars, end -2.7031%, fit RMS 0.2477%
+- f1ti-2023-lusail-sprint-shootout.json: 48 push laps, 15 cars, end -1.2501%, fit RMS 0.3014%
+- f1ti-2023-jeddah-practice-1.json: 77 push laps, 19 cars, end -1.0824%, fit RMS 0.27%
+- f1ti-2023-jeddah-practice-2.json: 68 push laps, 20 cars, end -1.3284%, fit RMS 0.2882%
+- f1ti-2023-jeddah-practice-3.json: 96 push laps, 19 cars, end -0.6712%, fit RMS 0.2794%
+- f1ti-2023-jeddah-qualifying.json: 88 push laps, 17 cars, end -0.9399%, fit RMS 0.2267%
+- f1ti-2023-singapore-practice-1.json: 54 push laps, 19 cars, end -0.6912%, fit RMS 0.1551%
+- f1ti-2023-singapore-practice-2.json: 63 push laps, 20 cars, end -1.9411%, fit RMS 0.299%
+- f1ti-2023-singapore-practice-3.json: 70 push laps, 20 cars, end -1.341%, fit RMS 0.2314%
+- f1ti-2023-singapore-qualifying.json: 76 push laps, 20 cars, end -1.9582%, fit RMS 0.1804%
+- f1ti-2023-catalunya-practice-1.json: 62 push laps, 18 cars, end -6.8492%, fit RMS 0.2776%
+- f1ti-2023-catalunya-practice-2.json: 52 push laps, 19 cars, end -1.4479%, fit RMS 0.2014%
+- f1ti-2023-catalunya-practice-3.json: rain
+- f1ti-2023-catalunya-qualifying.json: 77 push laps, 19 cars, end -2.0925%, fit RMS 0.2796%
+- f1ti-2023-interlagos-practice-1.json: 59 push laps, 17 cars, end -2.3046%, fit RMS 0.2861%
+- f1ti-2023-interlagos-qualifying.json: 88 push laps, 20 cars, end -0.1231%, fit RMS 0.2189%
+- f1ti-2023-interlagos-sprint-shootout.json: 50 push laps, 16 cars, end -0.5761%, fit RMS 0.1542%
+- f1ti-2023-austin-practice-1.json: 52 push laps, 17 cars, end -1.4225%, fit RMS 0.2317%
+- f1ti-2023-austin-qualifying.json: 82 push laps, 18 cars, end -1.8121%, fit RMS 0.1983%
+- f1ti-2023-austin-sprint-shootout.json: 60 push laps, 19 cars, end -2.6548%, fit RMS 0.1789%
+- f1ti-2024-yas-marina-circuit-practice-1.json: 77 push laps, 20 cars, end -0.5118%, fit RMS 0.2942%
+- f1ti-2024-yas-marina-circuit-practice-2.json: 75 push laps, 20 cars, end -1.3073%, fit RMS 0.2451%
+- f1ti-2024-yas-marina-circuit-practice-3.json: 84 push laps, 20 cars, end -1.4965%, fit RMS 0.2565%
+- f1ti-2024-yas-marina-circuit-qualifying.json: 78 push laps, 19 cars, end 7.0796%, fit RMS 0.1705%
+- f1ti-2024-melbourne-practice-1.json: 82 push laps, 20 cars, end -1.627%, fit RMS 0.3556%
+- f1ti-2024-melbourne-practice-2.json: 79 push laps, 19 cars, end -2.7588%, fit RMS 0.2882%
+- f1ti-2024-melbourne-practice-3.json: 89 push laps, 19 cars, end -1.6811%, fit RMS 0.3588%
+- f1ti-2024-melbourne-qualifying.json: 92 push laps, 18 cars, end -1.4108%, fit RMS 0.2711%
+- f1ti-2024-spielberg-practice-1.json: 71 push laps, 19 cars, end -1.6135%, fit RMS 0.2911%
+- f1ti-2024-spielberg-qualifying.json: 98 push laps, 20 cars, end -1.6108%, fit RMS 0.1837%
+- f1ti-2024-spielberg-sprint-qualifying.json: 49 push laps, 18 cars, end -1.2774%, fit RMS 0.2444%
+- f1ti-2024-baku-practice-1.json: 42 push laps, 16 cars, end -2.5828%, fit RMS 0.2375%
+- f1ti-2024-baku-practice-2.json: 40 push laps, 15 cars, end -4.3949%, fit RMS 0.2348%
+- f1ti-2024-baku-practice-3.json: rain
+- f1ti-2024-baku-qualifying.json: 71 push laps, 20 cars, end -2.0348%, fit RMS 0.1526%
+- f1ti-2024-sakhir-practice-1.json: 101 push laps, 19 cars, end -0.8187%, fit RMS 0.3226%
+- f1ti-2024-sakhir-practice-2.json: 64 push laps, 19 cars, end 0.1152%, fit RMS 0.2572%
+- f1ti-2024-sakhir-practice-3.json: 63 push laps, 19 cars, end -0.7598%, fit RMS 0.2809%
+- f1ti-2024-sakhir-qualifying.json: 82 push laps, 20 cars, end -1.8056%, fit RMS 0.1729%
+- f1ti-2024-spa-francorchamps-practice-1.json: 67 push laps, 19 cars, end -4.3351%, fit RMS 0.1775%
+- f1ti-2024-spa-francorchamps-practice-2.json: 62 push laps, 20 cars, end -1.0442%, fit RMS 0.1709%
+- f1ti-2024-spa-francorchamps-practice-3.json: rain
+- f1ti-2024-spa-francorchamps-qualifying.json: rain
+- f1ti-2024-silverstone-practice-1.json: 75 push laps, 19 cars, end -3.9134%, fit RMS 0.1968%
+- f1ti-2024-silverstone-practice-2.json: 72 push laps, 19 cars, end -44.3999%, fit RMS 0.217%
+- f1ti-2024-silverstone-practice-3.json: rain
+- f1ti-2024-silverstone-qualifying.json: rain
+- f1ti-2024-montreal-practice-1.json: few laps
+- f1ti-2024-montreal-practice-2.json: rain
+- f1ti-2024-montreal-practice-3.json: 77 push laps, 20 cars, end -12.7514%, fit RMS 0.3025%
+- f1ti-2024-montreal-qualifying.json: 100 push laps, 19 cars, end -2.8173%, fit RMS 0.3285%
+- f1ti-2024-shanghai-practice-1.json: 49 push laps, 17 cars, end -2.7106%, fit RMS 0.309%
+- f1ti-2024-shanghai-qualifying.json: 70 push laps, 16 cars, end -1.8591%, fit RMS 0.18%
+- f1ti-2024-shanghai-sprint-qualifying.json: 53 push laps, 19 cars, end 1.4706%, fit RMS 0.2079%
+- f1ti-2024-zandvoort-practice-1.json: few laps
+- f1ti-2024-zandvoort-practice-2.json: 37 push laps, 14 cars, end 2.8394%, fit RMS 0.1721%
+- f1ti-2024-zandvoort-practice-3.json: few laps
+- f1ti-2024-zandvoort-qualifying.json: 81 push laps, 19 cars, end -1.9829%, fit RMS 0.194%
+- f1ti-2024-imola-practice-1.json: 77 push laps, 19 cars, end -1.6145%, fit RMS 0.3476%
+- f1ti-2024-imola-practice-2.json: 76 push laps, 20 cars, end -2.5996%, fit RMS 0.2028%
+- f1ti-2024-imola-practice-3.json: 66 push laps, 20 cars, end -0.9329%, fit RMS 0.3383%
+- f1ti-2024-imola-qualifying.json: 72 push laps, 17 cars, end -1.814%, fit RMS 0.206%
+- f1ti-2024-hungaroring-practice-1.json: 64 push laps, 18 cars, end -0.4668%, fit RMS 0.1784%
+- f1ti-2024-hungaroring-practice-2.json: 52 push laps, 17 cars, end 1.7849%, fit RMS 0.1853%
+- f1ti-2024-hungaroring-practice-3.json: 67 push laps, 19 cars, end -1.1771%, fit RMS 0.2188%
+- f1ti-2024-hungaroring-qualifying.json: rain
+- f1ti-2024-monza-practice-1.json: 69 push laps, 19 cars, end -0.5703%, fit RMS 0.3139%
+- f1ti-2024-monza-practice-2.json: 55 push laps, 18 cars, end -1.7878%, fit RMS 0.255%
+- f1ti-2024-monza-practice-3.json: 85 push laps, 20 cars, end -1.0374%, fit RMS 0.2948%
+- f1ti-2024-monza-qualifying.json: 71 push laps, 16 cars, end -4.2558%, fit RMS 0.2375%
+- f1ti-2024-suzuka-practice-1.json: 74 push laps, 20 cars, end -1.0187%, fit RMS 0.2839%
+- f1ti-2024-suzuka-practice-2.json: few laps
+- f1ti-2024-suzuka-practice-3.json: 53 push laps, 18 cars, end 0.8238%, fit RMS 0.2491%
+- f1ti-2024-suzuka-qualifying.json: 73 push laps, 20 cars, end -1.3468%, fit RMS 0.1524%
+- f1ti-2024-las-vegas-practice-1.json: 64 push laps, 18 cars, end -1.671%, fit RMS 0.362%
+- f1ti-2024-las-vegas-practice-2.json: 54 push laps, 19 cars, end -0.0127%, fit RMS 0.1754%
+- f1ti-2024-las-vegas-practice-3.json: 40 push laps, 15 cars, end -3.5128%, fit RMS 0.2889%
+- f1ti-2024-las-vegas-qualifying.json: 82 push laps, 19 cars, end -4.5708%, fit RMS 0.2027%
+- f1ti-2024-mexico-city-practice-1.json: 43 push laps, 17 cars, end -1.5914%, fit RMS 0.2302%
+- f1ti-2024-mexico-city-practice-2.json: few laps
+- f1ti-2024-mexico-city-practice-3.json: 80 push laps, 20 cars, end -1.3617%, fit RMS 0.2836%
+- f1ti-2024-mexico-city-qualifying.json: 81 push laps, 20 cars, end -2.9303%, fit RMS 0.319%
+- f1ti-2024-miami-practice-1.json: 61 push laps, 18 cars, end -1.8264%, fit RMS 0.2903%
+- f1ti-2024-miami-qualifying.json: 102 push laps, 20 cars, end -0.8141%, fit RMS 0.2719%
+- f1ti-2024-miami-sprint-qualifying.json: 72 push laps, 19 cars, end 0.5975%, fit RMS 0.2548%
+- f1ti-2024-monte-carlo-practice-1.json: rain
+- f1ti-2024-monte-carlo-practice-2.json: 99 push laps, 20 cars, end -1.0894%, fit RMS 0.2856%
+- f1ti-2024-monte-carlo-practice-3.json: 106 push laps, 19 cars, end -1.2095%, fit RMS 0.3125%
+- f1ti-2024-monte-carlo-qualifying.json: 108 push laps, 20 cars, end -2.5045%, fit RMS 0.2744%
+- f1ti-2024-lusail-practice-1.json: 55 push laps, 18 cars, end -3.2139%, fit RMS 0.284%
+- f1ti-2024-lusail-qualifying.json: 104 push laps, 20 cars, end -1.4384%, fit RMS 0.2067%
+- f1ti-2024-lusail-sprint-qualifying.json: 88 push laps, 20 cars, end -1.0757%, fit RMS 0.2356%
+- f1ti-2024-jeddah-practice-1.json: 89 push laps, 20 cars, end 0.2031%, fit RMS 0.2447%
+- f1ti-2024-jeddah-practice-2.json: 77 push laps, 20 cars, end -1.5814%, fit RMS 0.2656%
+- f1ti-2024-jeddah-practice-3.json: 63 push laps, 19 cars, end -0.8582%, fit RMS 0.1934%
+- f1ti-2024-jeddah-qualifying.json: 92 push laps, 19 cars, end -1.2279%, fit RMS 0.1906%
+- f1ti-2024-singapore-practice-1.json: 49 push laps, 17 cars, end -1.7233%, fit RMS 0.2133%
+- f1ti-2024-singapore-practice-2.json: 63 push laps, 19 cars, end -3.794%, fit RMS 0.2245%
+- f1ti-2024-singapore-practice-3.json: 73 push laps, 20 cars, end 1.1714%, fit RMS 0.2463%
+- f1ti-2024-singapore-qualifying.json: 81 push laps, 20 cars, end -2.2494%, fit RMS 0.2175%
+- f1ti-2024-catalunya-practice-1.json: 38 push laps, 14 cars, end -0.1197%, fit RMS 0.2674%
+- f1ti-2024-catalunya-practice-2.json: 47 push laps, 17 cars, end -1.1182%, fit RMS 0.2123%
+- f1ti-2024-catalunya-practice-3.json: 56 push laps, 20 cars, end 0.1915%, fit RMS 0.1911%
+- f1ti-2024-catalunya-qualifying.json: 77 push laps, 20 cars, end -2.1181%, fit RMS 0.1738%
+- f1ti-2024-interlagos-practice-1.json: 52 push laps, 18 cars, end -2.7085%, fit RMS 0.2815%
+- f1ti-2024-interlagos-qualifying.json: rain
+- f1ti-2024-interlagos-sprint-qualifying.json: 61 push laps, 19 cars, end -4.5374%, fit RMS 0.2108%
+- f1ti-2024-austin-practice-1.json: 37 push laps, 13 cars, end -1.5652%, fit RMS 0.2071%
+- f1ti-2024-austin-qualifying.json: 73 push laps, 19 cars, end -0.9509%, fit RMS 0.1702%
+- f1ti-2024-austin-sprint-qualifying.json: 48 push laps, 16 cars, end 0.8992%, fit RMS 0.1611%
+- f1ti-2025-yas-marina-circuit-practice-1.json: 88 push laps, 20 cars, end 0.0402%, fit RMS 0.218%
+- f1ti-2025-yas-marina-circuit-practice-2.json: 88 push laps, 20 cars, end -0.8648%, fit RMS 0.1605%
+- f1ti-2025-yas-marina-circuit-practice-3.json: 58 push laps, 18 cars, end -1.7203%, fit RMS 0.2165%
+- f1ti-2025-yas-marina-circuit-qualifying.json: 86 push laps, 19 cars, end -1.2577%, fit RMS 0.1592%
+- f1ti-2025-melbourne-practice-1.json: 73 push laps, 20 cars, end -2.374%, fit RMS 0.282%
+- f1ti-2025-melbourne-practice-2.json: 74 push laps, 19 cars, end -2.1279%, fit RMS 0.3087%
+- f1ti-2025-melbourne-practice-3.json: 73 push laps, 18 cars, end -2.9947%, fit RMS 0.3073%
+- f1ti-2025-melbourne-qualifying.json: 74 push laps, 18 cars, end -1.4937%, fit RMS 0.2519%
+- f1ti-2025-spielberg-practice-1.json: 80 push laps, 20 cars, end -0.8881%, fit RMS 0.2781%
+- f1ti-2025-spielberg-practice-2.json: 82 push laps, 20 cars, end -1.7813%, fit RMS 0.2961%
+- f1ti-2025-spielberg-practice-3.json: 83 push laps, 20 cars, end -1.5567%, fit RMS 0.2981%
+- f1ti-2025-spielberg-qualifying.json: 80 push laps, 20 cars, end -0.955%, fit RMS 0.2606%
+- f1ti-2025-baku-practice-1.json: 37 push laps, 16 cars, end -1.8049%, fit RMS 0.2299%
+- f1ti-2025-baku-practice-2.json: 37 push laps, 15 cars, end -2.3298%, fit RMS 0.264%
+- f1ti-2025-baku-practice-3.json: 49 push laps, 19 cars, end 28.9059%, fit RMS 0.3207%
+- f1ti-2025-baku-qualifying.json: 40 push laps, 14 cars, end -5.5188%, fit RMS 0.2369%
+- f1ti-2025-sakhir-practice-1.json: 42 push laps, 16 cars, end 0.5477%, fit RMS 0.209%
+- f1ti-2025-sakhir-practice-2.json: 51 push laps, 16 cars, end -1.9536%, fit RMS 0.2497%
+- f1ti-2025-sakhir-practice-3.json: 44 push laps, 15 cars, end -1.1353%, fit RMS 0.221%
+- f1ti-2025-sakhir-qualifying.json: 74 push laps, 20 cars, end -2.6848%, fit RMS 0.2103%
+- f1ti-2025-spa-francorchamps-practice-1.json: 38 push laps, 14 cars, end -0.9577%, fit RMS 0.4159%
+- f1ti-2025-spa-francorchamps-qualifying.json: 82 push laps, 19 cars, end -1.0108%, fit RMS 0.1858%
+- f1ti-2025-spa-francorchamps-sprint-qualifying.json: 44 push laps, 16 cars, end 0.5441%, fit RMS 0.1959%
+- f1ti-2025-silverstone-practice-1.json: 80 push laps, 20 cars, end -1.1538%, fit RMS 0.2938%
+- f1ti-2025-silverstone-practice-2.json: 78 push laps, 20 cars, end -2.0903%, fit RMS 0.2075%
+- f1ti-2025-silverstone-practice-3.json: 67 push laps, 20 cars, end -2.2221%, fit RMS 0.2277%
+- f1ti-2025-silverstone-qualifying.json: 86 push laps, 19 cars, end -1.8173%, fit RMS 0.1764%
+- f1ti-2025-montreal-practice-1.json: 83 push laps, 20 cars, end 4.9216%, fit RMS 0.2766%
+- f1ti-2025-montreal-practice-2.json: 70 push laps, 18 cars, end -1.1215%, fit RMS 0.273%
+- f1ti-2025-montreal-practice-3.json: 92 push laps, 20 cars, end -0.9757%, fit RMS 0.2874%
+- f1ti-2025-montreal-qualifying.json: 107 push laps, 20 cars, end -2.4681%, fit RMS 0.2626%
+- f1ti-2025-shanghai-practice-1.json: 70 push laps, 20 cars, end -2.5051%, fit RMS 0.2336%
+- f1ti-2025-shanghai-qualifying.json: 88 push laps, 19 cars, end -1.445%, fit RMS 0.1996%
+- f1ti-2025-shanghai-sprint-qualifying.json: 65 push laps, 19 cars, end -2.1948%, fit RMS 0.2107%
+- f1ti-2025-zandvoort-practice-1.json: 53 push laps, 17 cars, end -2.9186%, fit RMS 0.2272%
+- f1ti-2025-zandvoort-practice-2.json: 34 push laps, 13 cars, end -1.5175%, fit RMS 0.2616%
+- f1ti-2025-zandvoort-practice-3.json: 74 push laps, 19 cars, end -1.2174%, fit RMS 0.3213%
+- f1ti-2025-zandvoort-qualifying.json: 94 push laps, 19 cars, end -1.6604%, fit RMS 0.1936%
+- f1ti-2025-imola-practice-1.json: 71 push laps, 20 cars, end -2.1658%, fit RMS 0.2907%
+- f1ti-2025-imola-practice-2.json: 77 push laps, 20 cars, end -2.3595%, fit RMS 0.2739%
+- f1ti-2025-imola-practice-3.json: 84 push laps, 20 cars, end 0.6853%, fit RMS 0.401%
+- f1ti-2025-imola-qualifying.json: 77 push laps, 17 cars, end -1.0385%, fit RMS 0.2272%
+- f1ti-2025-hungaroring-practice-1.json: 55 push laps, 20 cars, end -2.693%, fit RMS 0.187%
+- f1ti-2025-hungaroring-practice-2.json: 66 push laps, 19 cars, end -1.6894%, fit RMS 0.1573%
+- f1ti-2025-hungaroring-practice-3.json: 73 push laps, 20 cars, end -0.8568%, fit RMS 0.2481%
+- f1ti-2025-hungaroring-qualifying.json: 83 push laps, 20 cars, end -1.5013%, fit RMS 0.209%
+- f1ti-2025-monza-practice-1.json: 95 push laps, 20 cars, end 1.7532%, fit RMS 0.3862%
+- f1ti-2025-monza-practice-2.json: 72 push laps, 19 cars, end -1.5315%, fit RMS 0.242%
+- f1ti-2025-monza-practice-3.json: 96 push laps, 20 cars, end -1.5564%, fit RMS 0.2864%
+- f1ti-2025-monza-qualifying.json: 96 push laps, 19 cars, end 6.3657%, fit RMS 0.2223%
+- f1ti-2025-suzuka-practice-1.json: 84 push laps, 20 cars, end -2.494%, fit RMS 0.2788%
+- f1ti-2025-suzuka-practice-2.json: few laps
+- f1ti-2025-suzuka-practice-3.json: 61 push laps, 20 cars, end -2.3871%, fit RMS 0.2784%
+- f1ti-2025-suzuka-qualifying.json: 93 push laps, 19 cars, end -1.7982%, fit RMS 0.1784%
+- f1ti-2025-las-vegas-practice-1.json: 63 push laps, 18 cars, end -1.4711%, fit RMS 0.276%
+- f1ti-2025-las-vegas-practice-2.json: 47 push laps, 18 cars, end -2.5029%, fit RMS 0.1509%
+- f1ti-2025-las-vegas-practice-3.json: 31 push laps, 14 cars, end -2.1751%, fit RMS 0.1819%
+- f1ti-2025-las-vegas-qualifying.json: rain
+- f1ti-2025-mexico-city-practice-1.json: 57 push laps, 19 cars, end -0.7553%, fit RMS 0.2555%
+- f1ti-2025-mexico-city-practice-2.json: 76 push laps, 20 cars, end -1.9421%, fit RMS 0.2432%
+- f1ti-2025-mexico-city-practice-3.json: 92 push laps, 20 cars, end -3.7417%, fit RMS 0.2616%
+- f1ti-2025-mexico-city-qualifying.json: 94 push laps, 20 cars, end -2.3739%, fit RMS 0.2056%
+- f1ti-2025-miami-practice-1.json: 71 push laps, 20 cars, end -2.8619%, fit RMS 0.2975%
+- f1ti-2025-miami-qualifying.json: 97 push laps, 20 cars, end -1.77%, fit RMS 0.1882%
+- f1ti-2025-miami-sprint-qualifying.json: 61 push laps, 17 cars, end -2.4503%, fit RMS 0.1666%
+- f1ti-2025-monte-carlo-practice-1.json: 98 push laps, 19 cars, end 2.4227%, fit RMS 0.3122%
+- f1ti-2025-monte-carlo-practice-2.json: 89 push laps, 20 cars, end -4.8022%, fit RMS 0.2857%
+- f1ti-2025-monte-carlo-practice-3.json: 112 push laps, 20 cars, end -2.2147%, fit RMS 0.2497%
+- f1ti-2025-monte-carlo-qualifying.json: 103 push laps, 20 cars, end -2.6366%, fit RMS 0.2594%
+- f1ti-2025-lusail-practice-1.json: 64 push laps, 20 cars, end -2.9961%, fit RMS 0.2304%
+- f1ti-2025-lusail-qualifying.json: 103 push laps, 20 cars, end -3.0703%, fit RMS 0.1961%
+- f1ti-2025-lusail-sprint-qualifying.json: 88 push laps, 20 cars, end -2.1133%, fit RMS 0.2634%
+- f1ti-2025-jeddah-practice-1.json: 77 push laps, 20 cars, end 6.0233%, fit RMS 0.1744%
+- f1ti-2025-jeddah-practice-2.json: 69 push laps, 19 cars, end -1.9681%, fit RMS 0.2259%
+- f1ti-2025-jeddah-practice-3.json: 83 push laps, 20 cars, end -1.5961%, fit RMS 0.2691%
+- f1ti-2025-jeddah-qualifying.json: 76 push laps, 19 cars, end -1.759%, fit RMS 0.1469%
+- f1ti-2025-singapore-practice-1.json: 63 push laps, 18 cars, end -1.1895%, fit RMS 0.2786%
+- f1ti-2025-singapore-practice-2.json: 48 push laps, 16 cars, end -0.6688%, fit RMS 0.3877%
+- f1ti-2025-singapore-practice-3.json: 42 push laps, 14 cars, end -4.1439%, fit RMS 0.1812%
+- f1ti-2025-singapore-qualifying.json: 73 push laps, 17 cars, end -1.1501%, fit RMS 0.2131%
+- f1ti-2025-catalunya-practice-1.json: 36 push laps, 13 cars, end -0.034%, fit RMS 0.2548%
+- f1ti-2025-catalunya-practice-2.json: 51 push laps, 20 cars, end -0.6699%, fit RMS 0.2115%
+- f1ti-2025-catalunya-practice-3.json: 29 push laps, 12 cars, end -0.2098%, fit RMS 0.1537%
+- f1ti-2025-catalunya-qualifying.json: 77 push laps, 20 cars, end -2.148%, fit RMS 0.1679%
+- f1ti-2025-interlagos-practice-1.json: 79 push laps, 20 cars, end -2.1956%, fit RMS 0.2259%
+- f1ti-2025-interlagos-qualifying.json: 94 push laps, 19 cars, end -1.4009%, fit RMS 0.2426%
+- f1ti-2025-interlagos-sprint-qualifying.json: 76 push laps, 19 cars, end -0.6309%, fit RMS 0.1742%
+- f1ti-2025-austin-practice-1.json: 42 push laps, 17 cars, end -4.1301%, fit RMS 0.1872%
+- f1ti-2025-austin-qualifying.json: 68 push laps, 17 cars, end -1.2186%, fit RMS 0.1547%
+- f1ti-2025-austin-sprint-qualifying.json: 47 push laps, 15 cars, end -0.2229%, fit RMS 0.1806%
+- f1ti-2026-melbourne-practice-1.json: 85 push laps, 20 cars, end -1.3003%, fit RMS 0.3314%
+- f1ti-2026-melbourne-practice-2.json: 85 push laps, 21 cars, end -3.0931%, fit RMS 0.3431%
+- f1ti-2026-melbourne-practice-3.json: 66 push laps, 18 cars, end -3.0748%, fit RMS 0.4261%
+- f1ti-2026-melbourne-qualifying.json: 99 push laps, 19 cars, end 4.3846%, fit RMS 0.3424%
+- f1ti-2026-spielberg-practice-1.json: 66 push laps, 19 cars, end -3.6235%, fit RMS 0.2699%
+- f1ti-2026-spielberg-practice-2.json: 60 push laps, 19 cars, end -2.8685%, fit RMS 0.2168%
+- f1ti-2026-spielberg-practice-3.json: 92 push laps, 22 cars, end -1.6681%, fit RMS 0.2616%
+- f1ti-2026-spielberg-qualifying.json: 88 push laps, 22 cars, end -2.0902%, fit RMS 0.2059%
+- f1ti-2026-baku-practice-1.json: 71 push laps, 21 cars, end 1.6849%, fit RMS 0.3088%
+- f1ti-2026-baku-practice-2.json: 64 push laps, 20 cars, end 0.7981%, fit RMS 0.233%
+- f1ti-2026-baku-practice-3.json: 56 push laps, 20 cars, end -2.2083%, fit RMS 0.2853%
+- f1ti-2026-baku-qualifying.json: 71 push laps, 20 cars, end -0.3029%, fit RMS 0.2575%
+- f1ti-2026-sakhir-practice-1.json: 77 push laps, 22 cars, end -1.635%, fit RMS 0.229%
+- f1ti-2026-sakhir-practice-2.json: 75 push laps, 18 cars, end -1.7027%, fit RMS 0.2653%
+- f1ti-2026-sakhir-practice-3.json: 65 push laps, 22 cars, end -0.4633%, fit RMS 0.2627%
+- f1ti-2026-sakhir-qualifying.json: 73 push laps, 21 cars, end -1.5913%, fit RMS 0.1675%
+- f1ti-2026-catalunya-practice-1.json: 72 push laps, 19 cars, end 0.66%, fit RMS 0.3106%
+- f1ti-2026-catalunya-practice-2.json: 68 push laps, 22 cars, end 1.2605%, fit RMS 0.2948%
+- f1ti-2026-catalunya-practice-3.json: 68 push laps, 22 cars, end -0.9173%, fit RMS 0.2654%
+- f1ti-2026-catalunya-qualifying.json: 71 push laps, 22 cars, end -2.2515%, fit RMS 0.2084%
+- f1ti-2026-spa-francorchamps-practice-1.json: 88 push laps, 21 cars, end -1.5799%, fit RMS 0.307%
+- f1ti-2026-spa-francorchamps-practice-2.json: 76 push laps, 22 cars, end -1.0231%, fit RMS 0.2408%
+- f1ti-2026-spa-francorchamps-practice-3.json: 80 push laps, 22 cars, end -1.7153%, fit RMS 0.3105%
+- f1ti-2026-spa-francorchamps-qualifying.json: 85 push laps, 22 cars, end -1.4968%, fit RMS 0.1637%
+- f1ti-2026-silverstone-practice-1.json: 91 push laps, 22 cars, end -1.2056%, fit RMS 0.2353%
+- f1ti-2026-silverstone-qualifying.json: 73 push laps, 19 cars, end -1.098%, fit RMS 0.207%
+- f1ti-2026-silverstone-sprint-qualifying.json: 74 push laps, 21 cars, end -1.0684%, fit RMS 0.1765%
+- f1ti-2026-montreal-practice-1.json: 127 push laps, 21 cars, end 0.3345%, fit RMS 0.482%
+- f1ti-2026-montreal-qualifying.json: 104 push laps, 22 cars, end -2.4569%, fit RMS 0.3072%
+- f1ti-2026-montreal-sprint-qualifying.json: 75 push laps, 20 cars, end -1.6313%, fit RMS 0.274%
+- f1ti-2026-shanghai-practice-1.json: 71 push laps, 20 cars, end -1.7476%, fit RMS 0.2079%
+- f1ti-2026-shanghai-qualifying.json: 94 push laps, 22 cars, end -1.9239%, fit RMS 0.1712%
+- f1ti-2026-shanghai-sprint-qualifying.json: 84 push laps, 20 cars, end -0.1883%, fit RMS 0.1822%
+- f1ti-2026-zandvoort-practice-1.json: rain
+- f1ti-2026-zandvoort-qualifying.json: 83 push laps, 22 cars, end -2.9705%, fit RMS 0.1785%
+- f1ti-2026-zandvoort-sprint-qualifying.json: rain
+- f1ti-2026-hungaroring-practice-1.json: 64 push laps, 21 cars, end 1.0815%, fit RMS 0.416%
+- f1ti-2026-hungaroring-practice-2.json: 60 push laps, 18 cars, end -1.357%, fit RMS 0.2263%
+- f1ti-2026-hungaroring-practice-3.json: 73 push laps, 20 cars, end -0.9251%, fit RMS 0.2089%
+- f1ti-2026-hungaroring-qualifying.json: 71 push laps, 22 cars, end -1.4295%, fit RMS 0.1514%
+- f1ti-2026-monza-practice-1.json: 102 push laps, 21 cars, end -0.9945%, fit RMS 0.4035%
+- f1ti-2026-monza-practice-2.json: 95 push laps, 22 cars, end -3.2516%, fit RMS 0.2517%
+- f1ti-2026-monza-practice-3.json: 105 push laps, 22 cars, end -1.3972%, fit RMS 0.382%
+- f1ti-2026-monza-qualifying.json: 95 push laps, 21 cars, end -1.1311%, fit RMS 0.265%
+- f1ti-2026-suzuka-practice-1.json: 99 push laps, 22 cars, end -0.1417%, fit RMS 0.3448%
+- f1ti-2026-suzuka-practice-2.json: 79 push laps, 21 cars, end -2.9945%, fit RMS 0.231%
+- f1ti-2026-suzuka-practice-3.json: 114 push laps, 22 cars, end -1.1956%, fit RMS 0.276%
+- f1ti-2026-suzuka-qualifying.json: 108 push laps, 22 cars, end -1.3104%, fit RMS 0.1905%
+- f1ti-2026-mexico-city-practice-1.json: 93 push laps, 22 cars, end -1.2506%, fit RMS 0.3714%
+- f1ti-2026-mexico-city-practice-2.json: 79 push laps, 22 cars, end -1.0086%, fit RMS 0.1755%
+- f1ti-2026-mexico-city-practice-3.json: 90 push laps, 20 cars, end -1.6187%, fit RMS 0.2509%
+- f1ti-2026-mexico-city-qualifying.json: 81 push laps, 20 cars, end -3.7687%, fit RMS 0.2537%
+- f1ti-2026-miami-practice-1.json: 112 push laps, 22 cars, end -1.1339%, fit RMS 0.3364%
+- f1ti-2026-miami-qualifying.json: 95 push laps, 21 cars, end 0.1739%, fit RMS 0.2556%
+- f1ti-2026-miami-sprint-qualifying.json: 57 push laps, 18 cars, end -13.8952%, fit RMS 0.2112%
+- f1ti-2026-monte-carlo-practice-1.json: 98 push laps, 22 cars, end -1.9227%, fit RMS 0.2498%
+- f1ti-2026-monte-carlo-practice-2.json: rain
+- f1ti-2026-monte-carlo-practice-3.json: 110 push laps, 22 cars, end -1.2504%, fit RMS 0.3211%
+- f1ti-2026-monte-carlo-qualifying.json: 97 push laps, 22 cars, end -3.9117%, fit RMS 0.2985%
+- f1ti-2026-singapore-practice-1.json: 73 push laps, 22 cars, end -3.9644%, fit RMS 0.2792%
+- f1ti-2026-singapore-qualifying.json: 88 push laps, 21 cars, end -0.447%, fit RMS 0.2952%
+- f1ti-2026-singapore-sprint-qualifying.json: 52 push laps, 17 cars, end -2.2945%, fit RMS 0.2156%
+- f1ti-2026-madring-practice-1.json: 91 push laps, 22 cars, end -1.737%, fit RMS 0.4291%
+- f1ti-2026-madring-practice-2.json: 74 push laps, 20 cars, end -1.4007%, fit RMS 0.2585%
+- f1ti-2026-madring-practice-3.json: 55 push laps, 18 cars, end -1.659%, fit RMS 0.219%
+- f1ti-2026-madring-qualifying.json: 75 push laps, 19 cars, end -2.0848%, fit RMS 0.1934%
+- f1ti-2026-interlagos-practice-1.json: 63 push laps, 17 cars, end -2.6027%, fit RMS 0.4456%
+- f1ti-2026-interlagos-practice-2.json: 84 push laps, 20 cars, end -1.9702%, fit RMS 0.1691%
+- f1ti-2026-interlagos-practice-3.json: 97 push laps, 21 cars, end -1.1334%, fit RMS 0.2186%
+- f1ti-2026-interlagos-qualifying.json: rain
+- f1ti-2026-austin-practice-1.json: 66 push laps, 20 cars, end -1.1847%, fit RMS 0.2618%
+- f1ti-2026-austin-practice-2.json: 69 push laps, 21 cars, end -1.6139%, fit RMS 0.2694%
+- f1ti-2026-austin-practice-3.json: 76 push laps, 21 cars, end -1.5961%, fit RMS 0.266%
+- f1ti-2026-austin-qualifying.json: 82 push laps, 22 cars, end -1.6773%, fit RMS 0.1837%
+- wec-2025-lusail-free-practice-1.json: 554 push laps, 34 cars, end -0.8807%, fit RMS 0.526%
+- wec-2025-lusail-free-practice-2.json: 432 push laps, 32 cars, end 0.3804%, fit RMS 0.533%
+- wec-2025-lusail-free-practice-3.json: 376 push laps, 36 cars, end -0.255%, fit RMS 0.5001%
+- wec-2025-lusail-qualifying-lmgt3.json: 59 push laps, 18 cars, end -0.4249%, fit RMS 0.3658%
+- wec-2025-lusail-hyperpole-lmgt3.json: 29 push laps, 10 cars, end 0.3021%, fit RMS 0.2926%
+- wec-2025-lusail-qualifying-hypercar.json: 30 push laps, 15 cars, end 0.3085%, fit RMS 0.1435%
+- wec-2025-lusail-hyperpole-hypercar.json: few laps
+- wec-2025-imola-free-practice-1.json: 418 push laps, 36 cars, end -0.9256%, fit RMS 0.5656%
+- wec-2025-imola-free-practice-2.json: 543 push laps, 36 cars, end 0.2802%, fit RMS 0.5377%
+- wec-2025-imola-free-practice-3.json: 265 push laps, 33 cars, end 0.9809%, fit RMS 0.5254%
+- wec-2025-imola-qualifying-lmgt3.json: 69 push laps, 18 cars, end -1.101%, fit RMS 0.2944%
+- wec-2025-imola-hyperpole-lmgt3.json: 32 push laps, 10 cars, end -1.0457%, fit RMS 0.1653%
+- wec-2025-imola-qualifying-hypercar.json: 49 push laps, 18 cars, end -0.9644%, fit RMS 0.2631%
+- wec-2025-imola-hyperpole-hypercar.json: few laps
+- wec-2025-spa-francorchamps-free-practice-1.json: 370 push laps, 36 cars, end 0.1112%, fit RMS 0.5317%
+- wec-2025-spa-francorchamps-free-practice-2.json: 246 push laps, 35 cars, end 0.936%, fit RMS 0.487%
+- wec-2025-spa-francorchamps-free-practice-3.json: 247 push laps, 30 cars, end 0.3977%, fit RMS 0.5172%
+- wec-2025-spa-francorchamps-qualifying-lmgt3.json: 46 push laps, 16 cars, end 0.0602%, fit RMS 0.3059%
+- wec-2025-spa-francorchamps-hyperpole-lmgt3.json: few laps
+- wec-2025-spa-francorchamps-qualifying-hypercar.json: 26 push laps, 13 cars, end 0.6271%, fit RMS 0.136%
+- wec-2025-spa-francorchamps-hyperpole-hypercar.json: few laps
+- wec-2025-interlagos-free-practice-1.json: 655 push laps, 36 cars, end 0.9808%, fit RMS 0.4791%
+- wec-2025-interlagos-free-practice-2.json: 494 push laps, 35 cars, end 0.9791%, fit RMS 0.5026%
+- wec-2025-interlagos-free-practice-3.json: 430 push laps, 35 cars, end 0.7218%, fit RMS 0.4356%
+- wec-2025-interlagos-qualifying-lmgt3.json: 66 push laps, 18 cars, end -0.1808%, fit RMS 0.2535%
+- wec-2025-interlagos-hyperpole-lmgt3.json: 38 push laps, 10 cars, end -0.3441%, fit RMS 0.3917%
+- wec-2025-interlagos-qualifying-hypercar.json: 38 push laps, 16 cars, end -0.4652%, fit RMS 0.2331%
+- wec-2025-interlagos-hyperpole-hypercar.json: few laps
+- wec-2025-austin-free-practice-1.json: 446 push laps, 36 cars, end 0.4164%, fit RMS 0.5416%
+- wec-2025-austin-free-practice-2.json: 463 push laps, 34 cars, end 0.5041%, fit RMS 0.4829%
+- wec-2025-austin-free-practice-3.json: 345 push laps, 35 cars, end 0.1008%, fit RMS 0.4772%
+- wec-2025-austin-qualifying-lmgt3.json: few laps
+- wec-2025-austin-hyperpole-lmgt3.json: 27 push laps, 10 cars, end -2.5198%, fit RMS 0.4055%
+- wec-2025-austin-qualifying-hypercar.json: few laps
+- wec-2025-austin-hyperpole-hypercar.json: few laps
+- wec-2025-sakhir-free-practice-1.json: 290 push laps, 36 cars, end 1.7462%, fit RMS 0.4633%
+- wec-2025-sakhir-free-practice-2.json: 264 push laps, 29 cars, end 1.0323%, fit RMS 0.4877%
+- wec-2025-sakhir-free-practice-3.json: 280 push laps, 35 cars, end 0.9308%, fit RMS 0.4546%
+- wec-2025-sakhir-qualifying-lmgt3.json: 36 push laps, 16 cars, end -1.0367%, fit RMS 0.163%
+- wec-2025-sakhir-hyperpole-lmgt3.json: few laps
+- wec-2025-sakhir-qualifying-hypercar.json: few laps
+- wec-2025-sakhir-hyperpole-hypercar.json: few laps
+- wec-2026-imola-free-practice-1.json: 623 push laps, 35 cars, end 0.19%, fit RMS 0.5255%
+- wec-2026-imola-free-practice-2.json: 545 push laps, 35 cars, end 0.2927%, fit RMS 0.5251%
+- wec-2026-imola-free-practice-3.json: 409 push laps, 35 cars, end -0.1018%, fit RMS 0.5306%
+- wec-2026-imola-qualifying-lmgt3.json: 76 push laps, 18 cars, end -0.8778%, fit RMS 0.3869%
+- wec-2026-imola-hyperpole-lmgt3.json: 27 push laps, 10 cars, end -8.7827%, fit RMS 0.3513%
+- wec-2026-imola-qualifying-hypercar.json: 42 push laps, 17 cars, end -0.3164%, fit RMS 0.2208%
+- wec-2026-imola-hyperpole-hypercar.json: few laps
+- wec-2026-spa-francorchamps-free-practice-1.json: 419 push laps, 35 cars, end 0.5856%, fit RMS 0.5457%
+- wec-2026-spa-francorchamps-free-practice-2.json: 304 push laps, 35 cars, end 0.8223%, fit RMS 0.5199%
+- wec-2026-spa-francorchamps-free-practice-3.json: 210 push laps, 35 cars, end -0.4115%, fit RMS 0.4944%
+- wec-2026-spa-francorchamps-qualifying-lmgt3.json: 54 push laps, 17 cars, end -0.2749%, fit RMS 0.2168%
+- wec-2026-spa-francorchamps-hyperpole-lmgt3.json: few laps
+- wec-2026-spa-francorchamps-qualifying-hypercar.json: 32 push laps, 14 cars, end -1.6558%, fit RMS 0.1751%
+- wec-2026-spa-francorchamps-hyperpole-hypercar.json: few laps
+- wec-2026-interlagos-free-practice-1.json: 676 push laps, 35 cars, end 0.7017%, fit RMS 0.5238%
+- wec-2026-interlagos-free-practice-2.json: 536 push laps, 35 cars, end 0.5793%, fit RMS 0.5215%
+- wec-2026-interlagos-free-practice-3.json: 485 push laps, 35 cars, end 0.5912%, fit RMS 0.4737%
+- wec-2026-interlagos-qualifying-lmgt3.json: 71 push laps, 18 cars, end 0.2018%, fit RMS 0.3498%
+- wec-2026-interlagos-hyperpole-lmgt3.json: 36 push laps, 10 cars, end -0.4098%, fit RMS 0.3586%
+- wec-2026-interlagos-qualifying-hypercar.json: 41 push laps, 17 cars, end 0.671%, fit RMS 0.2141%
+- wec-2026-interlagos-hyperpole-hypercar.json: 25 push laps, 10 cars, end -1.0351%, fit RMS 0.3355%
+- wec-2026-austin-free-practice-1.json: 598 push laps, 35 cars, end 0.0367%, fit RMS 0.5503%
+- wec-2026-austin-free-practice-2.json: 452 push laps, 35 cars, end 1.2832%, fit RMS 0.491%
+- wec-2026-austin-free-practice-3.json: 402 push laps, 35 cars, end 0.5734%, fit RMS 0.4278%
+- wec-2026-austin-qualifying-lmgt3.json: 50 push laps, 17 cars, end -0.4247%, fit RMS 0.3491%
+- wec-2026-austin-hyperpole-lmgt3.json: few laps
+- wec-2026-austin-qualifying-hypercar.json: 34 push laps, 15 cars, end 0.1805%, fit RMS 0.2489%
+- wec-2026-austin-hyperpole-hypercar.json: few laps
+- wec-2026-catalunya-free-practice-1.json: 282 push laps, 35 cars, end 2.2611%, fit RMS 0.4645%
+- wec-2026-catalunya-free-practice-2.json: 324 push laps, 34 cars, end 1.2959%, fit RMS 0.533%
+- wec-2026-catalunya-free-practice-3-lmgt3.json: 270 push laps, 18 cars, end 0.4903%, fit RMS 0.5326%
+- wec-2026-catalunya-qualifying-lmgt3.json: 48 push laps, 16 cars, end 0.1631%, fit RMS 0.3612%
+- wec-2026-catalunya-hyperpole-lmgt3.json: 26 push laps, 9 cars, end 1.4739%, fit RMS 0.1485%
+- wec-2026-catalunya-free-practice-3-hypercar.json: 68 push laps, 17 cars, end 0.6597%, fit RMS 0.2999%
+- wec-2026-catalunya-qualifying-hypercar.json: 45 push laps, 17 cars, end 1.9417%, fit RMS 0.1968%
+- wec-2026-catalunya-hyperpole-hypercar.json: few laps
+- wec-2026-monza-free-practice-1.json: 163 push laps, 33 cars, end -1.5436%, fit RMS 0.488%
+- wec-2026-monza-free-practice-2.json: 164 push laps, 34 cars, end -1.5586%, fit RMS 0.5605%
+- wec-2026-monza-free-practice-3.json: 309 push laps, 35 cars, end -0.9282%, fit RMS 0.5093%
+- wec-2026-monza-qualifying-lmgt3.json: 46 push laps, 16 cars, end -2.8345%, fit RMS 0.3723%
+- wec-2026-monza-hyperpole-lmgt3.json: 35 push laps, 10 cars, end -1.7546%, fit RMS 0.2856%
+- wec-2026-monza-qualifying-hypercar.json: 54 push laps, 17 cars, end -1.535%, fit RMS 0.344%
+- wec-2026-monza-hyperpole-hypercar.json: 27 push laps, 10 cars, end -1.6767%, fit RMS 0.2382%

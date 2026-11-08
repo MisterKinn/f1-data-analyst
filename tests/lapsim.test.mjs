@@ -131,11 +131,13 @@ test('geometry: alignment recovers a known rotation', () => {
   assert.ok(Math.abs(((al.theta - th + Math.PI) % (2 * Math.PI)) - Math.PI) < 0.03);
 });
 
-test('cars: 2027 and 2028 apply the ratified power-unit changes', () => {
+test('cars: 2027 and 2028 apply the power-unit changes in the regulations', () => {
   const c27 = applyRules(PRIOR[2026], 2027), c28 = applyRules(PRIOR[2026], 2028);
   assert.equal(c27.ers.pMax, 300e3); assert.equal(c27.ers.regenMax, 375e3);
   assert.ok(Math.abs(c27.pIce / PRIOR[2026].pIce - 1.05) < 1e-9);
-  assert.ok(Math.abs(c28.pIce / PRIOR[2026].pIce - 1.125) < 1e-9);
+  // 2028: 3400 MJ/h fuel flow (Appendix C7 of the 2027 Section C), 400 kW ERS-K, 5 MJ battery window
+  assert.ok(Math.abs(c28.pIce / PRIOR[2026].pIce - 3400 / 3000) < 1e-9);
+  assert.equal(c28.ers.regenMax, 400e3); assert.equal(c27.ers.socWindow, 4.5e6); assert.equal(c28.ers.socWindow, 5e6);
   const d = applyDevelopment(PRIOR[2026], 0.06);
   assert.ok(d.clA > PRIOR[2026].clA && d.muY > PRIOR[2026].muY);
 });
@@ -205,7 +207,7 @@ test('track resolver avoids partial-word matches', async () => {
 test('common calibration: timing-only laps with shared track factors recover a WEC car', async () => {
   const {SERIES} = await import('../worker/lapsim/series.js');
   const {fitSeason, holdout, withGrip} = await import('../scripts/sim/calibrate-lib.mjs');
-  const def = SERIES.wec.classes.hypercar;
+  const def = SERIES.wec.classes.lmdh;
   const truth = {...structuredClone(def.prior), muY: 1.85, clA: 3.9, cdA: 1.15, clALow: 3.9, cdALow: 1.15};
   truth.muX = def.prior.muX * 1.85 / 1.75; truth.muXTrac = def.prior.muXTrac * 1.85 / 1.75;
   // four synthetic tracks: stadiums with different corner radii
@@ -230,4 +232,21 @@ test('uncertainty: projections are wider than the calibrated season', async () =
   const {uncertainty} = await import('../worker/lapsim/scenario.js');
   assert.equal(uncertainty({kind: 'base'}).confidence, 'not-fitted');
   assert.equal(uncertainty({kind: 'prior'}).confidence, 'not-fitted');
+});
+
+test('FIA notes: the race director signature is not a change', () => {
+  const doc = '19. | Changes to the circuit\n- | Add blue line at the apex of Turn 11\nR ui Marques | The FIA Formula 1 Race Director\n';
+  assert.equal(parseTrackChanges(doc).changes.length, 1);
+});
+
+test('sector correction: a raced track reproduces the real pole sectors in its weather', async () => {
+  const {lapsimCalibration: c} = await import('../worker/lapsim/calibration-data.js');
+  const t = c?.seasons?.[2026]?.tracks?.monza; if (!t) return;
+  const saved = t.realSectors; t.realSectors = [26.5, 27.1, 26.9];
+  try {
+    const {simulate} = await import('../worker/lapsim/tool.js');
+    const r = simulate({track: 'monza'});
+    assert.ok(Math.abs(r.result.lap_seconds - 80.5) < 0.002);
+    assert.deepEqual(r.result.sectors_s, [26.5, 27.1, 26.9]);
+  } finally { t.realSectors = saved; }
 });

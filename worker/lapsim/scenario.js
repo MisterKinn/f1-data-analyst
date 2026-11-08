@@ -2,45 +2,66 @@
 // /simulation page and the lapsim_simulate connector tool so both give the same answer.
 import {lapsimCalibration} from './calibration-data.js';
 import {lapsimTrackChanges} from './track-changes-data.js';
-import {TUM_2019, PRIOR, applyRules} from './cars.js';
+import {lapsimChangeEffects} from './change-effects-data.js';
+import {TUM_2019, PRIOR, applyRules, applyDevelopment} from './cars.js';
 import {SERIES} from './series.js';
 
-export const CAR_ORDER = ['base2019', '2025', '2026', '2027', '2028', 'wec-hypercar', 'wec-lmgt3'];
+export const CAR_ORDER = ['base2019', '2025', '2026', '2027', '2028', 'wec-lmh', 'wec-lmdh', 'wec-lmgt3'];
 
 // grip: the per-track factor fitted with that season's car (absorbs asphalt and line differences)
 export function carsFor(id) {
   const s = lapsimCalibration?.seasons || {}, p = lapsimCalibration?.projections || {};
-  const gripOf = y => [y, 2026, 2025].map(k => s[k]?.tracks?.[id]?.grip).find(g => g != null) ?? 1;
+  const gripOf = y => [y, ...Object.keys(s).sort().reverse()].map(k => s[k]?.tracks?.[id]?.grip).find(g => g != null) ?? 1;
+  // drag: per-track straight-line factor shared by the F1 seasons (when the calibration fitted one)
+  const drag = [...Object.keys(s).sort().reverse()].map(k => s[k]?.tracks?.[id]?.drag).find(d => d != null) ?? 1;
+  const withDrag = c => drag === 1 ? c : {...c, cdA: c.cdA * drag, cdALow: (c.cdALow ?? c.cdA) * drag};
   const out = {base2019: {car: TUM_2019, grip: 1, kind: 'base', year: 2019}};
-  for (const y of [2025, 2026]) out[y] = {car: s[y]?.car || PRIOR[y], grip: s[y]?.car ? gripOf(y) : 1, kind: s[y]?.car ? 'calibrated' : 'prior', year: y};
-  for (const y of [2027, 2028]) out[y] = {car: p[y]?.car || applyRules(s[2026]?.car || PRIOR[2026], y), grip: gripOf(2026), kind: 'projected', year: y};
+  for (const y of [2025, 2026]) out[y] = {car: s[y]?.car ? withDrag(s[y].car) : PRIOR[y], grip: s[y]?.car ? gripOf(y) : 1, kind: s[y]?.car ? 'calibrated' : 'prior', year: y};
+  // projected cars are rebuilt from the current regulation values (rules-data.js) plus the fitted
+  // development factor, so a regulation update applies without a new calibration run
+  for (const y of [2027, 2028]) {
+    const c = applyDevelopment(applyRules(s[2026]?.car || PRIOR[2026], y), p[y]?.development ?? 0); c.label = String(y);
+    out[y] = {car: s[2026]?.car ? withDrag(c) : c, grip: gripOf(2026), kind: 'projected', year: y};
+  }
   // WEC classes (latest calibrated season), on the same track factor as F1
   for (const [cls, def] of Object.entries(SERIES.wec.classes)) {
     const seasons = lapsimCalibration?.series?.wec?.[cls] || {}, y = Object.keys(seasons).sort().at(-1);
     out['wec-' + cls] = y ? {car: seasons[y].car, grip: gripOf(2026), kind: 'calibrated', year: Number(y), series: 'wec', cls}
       : {car: def.prior, grip: gripOf(2026), kind: 'prior', year: 2026, series: 'wec', cls};
   }
-  for (const c of Object.values(out)) c.unc = uncertainty(c);
+  // Sector correction on tracks raced with this rule set: the real pole's sector times minus the
+  // fitted 2026 car's sectors in the same weather (worked out where the lap is simulated). Projected
+  // cars keep the 2026 correction (it describes the track, not the car).
+  const t26 = s[2026]?.tracks?.[id], t25 = s[2025]?.tracks?.[id];
+  const fix = t => t?.realSectors && t.position === 1 && !t.weather?.rain ? {real: t.realSectors, weather: t.weather, ref: '2026'} : null;
+  if (out[2026].kind === 'calibrated' && fix(t26)) for (const y of [2026, 2027, 2028]) out[y].fix = fix(t26);
+  if (out[2025].kind === 'calibrated' && fix(t25)) out[2025].fix = {...fix(t25), ref: '2025'};
+  for (const c of Object.values(out)) c.unc = uncertainty(c, id);
   return out;
 }
 
-// Error range (1 sigma, % of lap time) and confidence label, from the holdout test (common rule).
+// Error range (1 sigma, % of lap time) and confidence label (common rule).
+// On a track the car was fitted on: the season's in-sample lap-time error (RMS over its tracks).
+// On a track it was not fitted on: the holdout error (tracks left out of the fit, predicted).
 // Projections add half the historical development range for each projected year.
-export function uncertainty(c) {
+export function uncertainty(c, id) {
   const cal = lapsimCalibration || {};
   if (c.kind === 'base' || c.kind === 'prior') return {pct: null, confidence: 'not-fitted'};
-  const h = c.series ? cal.series?.[c.series]?.[c.cls]?.[c.year]?.holdout : c.kind === 'projected' ? cal.seasons?.[2026]?.holdout : cal.seasons?.[c.year]?.holdout;
-  if (!h?.rmsPct) return {pct: null, confidence: 'low'};
-  let pct = h.rmsPct;
+  const season = c.series ? cal.series?.[c.series]?.[c.cls]?.[c.year] : c.kind === 'projected' ? cal.seasons?.[2026] : cal.seasons?.[c.year];
+  if (!season) return {pct: null, confidence: 'low'};
+  const errs = Object.values(season.tracks || {}).filter(t => t.realLap > 0).map(t => t.errorSec / t.realLap * 100);
+  const inSample = errs.length ? Math.sqrt(errs.reduce((a, e) => a + e * e, 0) / errs.length) : null;
+  const fitted = !!season.tracks?.[id];
+  let pct = fitted ? inSample : season.holdout?.rmsPct ?? null;
+  if (pct == null) return {pct: null, confidence: 'low'};
   if (c.kind === 'projected') {
     let band = 0;
     for (const y of [2027, 2028]) if (y <= c.year) { const b = cal.projections?.[y]?.bandPct; if (b) band += Math.abs(b[0] - b[1]) / 2; }
     pct = Math.hypot(pct, band);
   }
-  // acceptance thresholds (holdout RMS of lap time): ≤1% medium, ≤3% low, above that very low.
-  // Never "high": every result is a provisional estimate.
-  const confidence = pct > 3 ? 'very-low' : c.kind === 'projected' || pct > 1 || h.n < 4 ? 'low' : 'medium';
-  return {pct: Math.round(pct * 100) / 100, confidence, holdoutLaps: h.n};
+  // thresholds: ≤1% medium, ≤3% low, above very low; never "high" (provisional estimates)
+  const confidence = pct > 3 ? 'very-low' : c.kind === 'projected' || pct > 1 ? 'low' : 'medium';
+  return {pct: Math.round(pct * 100) / 100, confidence, basis: fitted ? 'fit' : 'holdout', holdoutPct: season.holdout?.rmsPct ?? null};
 }
 
 // Weather of the real pole lap per season (OpenF1 session means), with the real lap time
@@ -58,7 +79,20 @@ export function realConditions(id) {
 // Latest "Changes to the circuit" list read from the race director's notes
 export function latestChanges(id) {
   const years = Object.keys(lapsimTrackChanges[id] || {}).sort();
-  return years.length ? {year: Number(years.at(-1)), ...lapsimTrackChanges[id][years.at(-1)]} : null;
+  if (!years.length) return null;
+  const e = lapsimTrackChanges[id][years.at(-1)];
+  // drop a signature line read by older parser versions ("… The FIA Formula 1 Race Director")
+  return {year: Number(years.at(-1)), ...e, changes: (e.changes || []).filter(c => !/race director\s*$/i.test(c.text)).map(learnedEffect)};
+}
+
+// Use the effect size learned from past changes (speed traces before/after) instead of the assumed
+// one when at least 3 earlier cases of that kind exist.
+export function learnedEffect(c) {
+  const l = lapsimChangeEffects?.learned?.[c.type];
+  if (!c.effect || !l || l.n < 3) return c;
+  const pct = ((l.kind === 'grip' ? Math.sqrt(l.factor) : l.factor) - 1) * 100, sign = pct > 0 ? '+' : '';
+  return {...c, effect: {...c.effect, kind: l.kind, factor: l.factor, learned: true,
+    ko: `과거 ${l.n}건의 실제 변화에서 학습: 코너 속도 ${sign}${pct.toFixed(2)}%`, en: `Learned from ${l.n} past cases: ${sign}${pct.toFixed(2)}% corner speed`}};
 }
 
 // Latest season whose real lap on this track the cars were fitted to (null when none)
