@@ -299,12 +299,25 @@ export function lapsimKernel() {
       else if (Math.abs(v[i] - vLat[i]) < 0.05) limit[i] = 0;
       else limit[i] = powerLimited[i] ? 2 : 1;
     }
+    // energy flow per point (J), same accounting as account(): deployed, recovered under braking and at
+    // full throttle (2026 F1 super-clipping); the page builds the battery estimate from it
+    let flow = null;
+    if (ers.pMax || ers.rule === 'hypercar') {
+      const dep = new Array(n).fill(0), brk = new Array(n).fill(0), thr = new Array(n).fill(0);
+      for (let i = 0; i < n; i++) {
+        const j = (i + 1) % n, vm = 0.5 * (v[i] + v[j]), dt = ds / Math.max(vm, 1);
+        if (throttleHarvest && v[j] >= v[i] - 1e-6) thr[i] = harv[i] * dt;
+        if (v[j] > v[i] + 1e-6) dep[i] = ersUsed[i] * dt;
+        if (v[j] < v[i] - 1e-6 && ers.regenMax) brk[i] = Math.min(ers.regenMax, (ers.regenShare ?? 0.6) * t.m * (v[i] * v[i] - v[j] * v[j]) / (2 * ds) * vm * (ers.etaRegen ?? 0.9)) * dt;
+      }
+      flow = {dep, brk, thr, soc: ers.socWindow ?? (ers.rule === 'hypercar' ? 0.5e6 : 4e6), recharge: ers.rule === 'f1-2026' ? env.rechargeMax ?? ers.rechargeMax ?? 8.5e6 : null, rule: ers.rule || 'ers'};
+    }
     const sec = track.sectors ? track.sectors.map(sv => Math.round(sv / ds)) : null;
     const sectors = sec ? [time[sec[0]], time[sec[1]] - time[sec[0]], time[n] - time[sec[1]]] : null;
     return {
       lapTime: time[n], sectors, v: Array.from(v), time: Array.from(time.subarray(0, n)), limit: Array.from(limit),
       energy: {deployJ: acc.eDeploy, regenJ: acc.eRegen, budgetJ: budget(acc.eRegen), rechargeMaxJ: ers.rule === 'f1-2026' ? env.rechargeMax ?? ers.rechargeMax ?? 8.5e6 : null, throttleHarvestJ: acc.eHarv ?? 0, clipFromKph: Number.isFinite(vH) ? vH * 3.6 : null, cutoffKph: vCut > vMaxCar ? null : vCut * 3.6},
-      vMaxKph: Math.max(...v) * 3.6, vMinKph: Math.min(...v) * 3.6,
+      vMaxKph: Math.max(...v) * 3.6, vMinKph: Math.min(...v) * 3.6, flow,
     };
   }
 
