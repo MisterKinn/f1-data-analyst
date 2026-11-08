@@ -12,6 +12,7 @@ import {execFileSync} from 'node:child_process';
 import {existsSync, readdirSync} from 'node:fs';
 import {archive, readDocument} from '../../worker/wec.js';
 import {SERIES, WEC_SEASONS} from '../../worker/lapsim/series.js';
+import {tiTrack} from './ti-races.mjs';
 
 const CACHE = process.env.LAPSIM_CACHE || '.cache/lapsim', OUT = join(CACHE, 'evolution');
 const Q_YEARS = (process.env.LAPSIM_EVO_QUALI_YEARS || '2023,2024,2025,2026').split(',').map(Number);
@@ -45,11 +46,6 @@ const index = [];
 
 // F1 from TracingInsights — rows: [car, lap, time, minute, outLap, compound, tyreAge, neutral]
 const TI_YEARS = (process.env.LAPSIM_EVO_TI_YEARS || '2018,2019,2020,2021,2022,2023,2024,2025,2026').split(',').map(Number);
-const GP = {bahrain: 'sakhir', 'saudi-arabian': 'jeddah', 'emilia-romagna': 'imola', 'sao-paulo': 'interlagos', brazilian: 'interlagos', 'las-vegas': 'las-vegas', qatar: 'lusail',
-  'abu-dhabi': 'yas-marina-circuit', australian: 'melbourne', chinese: 'shanghai', japanese: 'suzuka', miami: 'miami', canadian: 'montreal', monaco: 'monte-carlo',
-  barcelona: 'catalunya', austrian: 'spielberg', british: 'silverstone', belgian: 'spa-francorchamps', hungarian: 'hungaroring', dutch: 'zandvoort', italian: 'monza',
-  azerbaijan: 'baku', singapore: 'singapore', 'united-states': 'austin', 'mexico-city': 'mexico-city', mexican: 'mexico-city'};
-const tiTrack = (event, year) => { const k = slug(event.normalize('NFD').replace(/[\u0300-\u036f]/g, '')).replace(/-grand-prix$/, ''); return k === 'spanish' ? (year >= 2026 ? 'madring' : 'catalunya') : GP[k] || k; };
 const tiType = s => /^Practice \d$/.test(s) ? 'practice' : /^(Qualifying|Sprint Qualifying|Sprint Shootout)$/.test(s) ? 'qualifying' : null;
 const val = v => v === 'None' || v == null ? null : v;
 if ((process.env.LAPSIM_EVO_F1 || 'ti') === 'ti') for (const year of TI_YEARS) {
