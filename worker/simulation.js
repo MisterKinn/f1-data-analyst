@@ -25,7 +25,8 @@ const T = {
   ko: {
     title: '랩 시뮬레이터', h1: '2026–2028 F1 머신으로 한 바퀴를 계산합니다',
     lead: '실제 예선 랩으로 보정한 물리 모델이 지금의 트랙 형상, 예선 날씨, FIA가 공지한 서킷 변경 사항을 반영해 랩타임과 속도를 계산합니다.',
-    track: '트랙', car: '머신', compare: '비교', none: '없음', conditions: '조건', real: '실제 예선 조건', manual: '직접 설정',
+    track: '트랙', series: '시리즈', car: '규정 · 클래스', compare: '비교', soonShort: '준비 중',
+    seriesNames: {f1: 'F1', wec: 'WEC', imsa: 'IMSA GTP', fe: '포뮬러 E', gt3: 'GT3 (GTWC · IGTC · FIA GT 월드컵 (마카오 GP) · DTM)'}, none: '없음', conditions: '조건', real: '실제 예선 조건', manual: '직접 설정',
     lap: '계산된 랩타임', vsPole: '실제 폴', realLap: '실제 랩', wecBest: '실제 예선·하이퍼폴 최고', errRange: '오차 범위(1σ)', conf: {medium: '신뢰도 보통', low: '신뢰도 낮음', 'very-low': '신뢰도 매우 낮음', 'not-fitted': '실측 보정 전'},
     soon: '준비 중: 기타 GT3(IMSA GTD·DTM·SP9), 포뮬러 E Gen4. 같은 보정 규칙을 쓰며 데이터 연결 후 추가됩니다.', sector: '섹터', vmax: '최고 속도', vmin: '최저 속도', energy: '배치 에너지', clip: '배치 상한 속도',
     map: '속도로 칠한 주행 라인', slow: '느림', fast: '빠름', trace: '거리별 속도', km: '거리 (km)',
@@ -56,7 +57,8 @@ const T = {
   en: {
     title: 'Lap simulator', h1: 'Simulate a lap in a 2026–2028 F1 car',
     lead: 'A physics model calibrated on real qualifying laps works out lap time and speed on today’s track layout, with qualifying weather and the circuit changes the FIA has announced.',
-    track: 'Track', car: 'Car', compare: 'Compare', none: 'None', conditions: 'Conditions', real: 'Real qualifying conditions', manual: 'Set my own',
+    track: 'Track', series: 'Series', car: 'Rules · class', compare: 'Compare', soonShort: 'coming soon',
+    seriesNames: {f1: 'F1', wec: 'WEC', imsa: 'IMSA GTP', fe: 'Formula E', gt3: 'GT3 (GTWC · IGTC · FIA GT World Cup (Macau GP) · DTM)'}, none: 'None', conditions: 'Conditions', real: 'Real qualifying conditions', manual: 'Set my own',
     lap: 'Simulated lap time', vsPole: 'Real pole', realLap: 'Real lap', wecBest: 'Real qualifying/Hyperpole best', errRange: 'Error range (1σ)', conf: {medium: 'medium confidence', low: 'low confidence', 'very-low': 'very low confidence', 'not-fitted': 'not fitted to real laps'},
     soon: 'Coming soon: other GT3 (IMSA GTD, DTM, SP9) and Formula E Gen4. They use the same calibration rules and are added once their data is connected.', sector: 'Sector', vmax: 'Top speed', vmin: 'Lowest speed', energy: 'Energy deployed', clip: 'Deploy cut-off',
     map: 'Racing line coloured by speed', slow: 'Slow', fast: 'Fast', trace: 'Speed over distance', km: 'Distance (km)',
@@ -154,7 +156,11 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
   // first render on the server with the same code the browser uses
   const view = computeView(K, data, {carId, compareId: '', mode: 'real', manual: null, active: {}, strength: 1, evo: null}, {renderMap, renderTrace, evolutionDelta, evolutionCurve});
   const options = ids.map(k => `<option value="${esc(k)}"${k === id ? ' selected' : ''}>${esc(trackName(k, lang))}</option>`).join('');
-  const carOpts = sel => data.carOrder.map(k => `<option value="${k}"${k === sel ? ' selected' : ''}>${esc(cars[k].label)}</option>`).join('');
+  // cascade: series → rules/class (the car models of that series); series without a model yet are listed as coming soon
+  const seriesOf = k => cars[k].series || 'f1', curSeries = seriesOf(carId);
+  const carOpts = (sel, only) => data.carOrder.filter(k => !only || seriesOf(k) === only).map(k => `<option value="${k}"${k === sel ? ' selected' : ''}>${esc(cars[k].label)}</option>`).join('');
+  const seriesOpts = SERIES_UI.map(se => { const live = data.carOrder.some(k => seriesOf(k) === se); return `<option value="${se}"${se === curSeries ? ' selected' : ''}${live ? '' : ' disabled'}>${esc(t.seriesNames[se] + (live ? '' : ' · ' + t.soonShort))}</option>`; }).join('');
+  const cmpOpts = SERIES_UI.filter(se => data.carOrder.some(k => seriesOf(k) === se)).map(se => `<optgroup label="${esc(t.seriesNames[se])}">${carOpts('', se)}</optgroup>`).join('');
   const evoSlider = (key, label, min, max, step, unit) => `<label class="ls-slider"><span>${esc(label)}</span><input type="range" data-evo="${key}" min="${min}" max="${max}" step="${step}" value="${view.evo[key]}"><output data-evo-out="${key}">${view.evo[key]}</output><span class="ls-unit">${unit}</span></label>`;
   const slider = (key, label, min, max, step, unit) => `<label class="ls-slider"><span>${esc(label)}</span><input type="range" data-cond="${key}" min="${min}" max="${max}" step="${step}"><output data-out="${key}"></output><span class="ls-unit">${unit}</span></label>`;
   const changeRows = changes?.changes?.length ? changes.changes.map((c, i) => `<li class="ls-change${c.affectsLap ? '' : ' is-info'}"><label>${c.affectsLap ? `<input type="checkbox" data-change="${i}">` : '<span class="ls-dot" aria-hidden="true"></span>'}<span><span class="ls-change-text" data-no-translate lang="en">${esc(c.text)}</span><small>${esc(c.affectsLap ? (lang === 'en' ? c.effect.en : c.effect.ko) : t.noLap)}</small></span></label></li>`).join('') : '';
@@ -166,8 +172,9 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
 <section class="hero ls-hero"><h1>${esc(t.h1)}</h1><p class="lead">${esc(t.lead)}</p></section>
 <form class="ls-controls" method="get" action="/simulation">
  <label>${esc(t.track)}<select name="track" data-no-translate onchange="this.form.submit()">${options}</select></label>
- <label>${esc(t.car)}<select name="car" data-ls="car">${carOpts(carId)}</select></label>
- <label>${esc(t.compare)}<select data-ls="compare"><option value="">${esc(t.none)}</option>${carOpts('')}</select></label>
+ <label>${esc(t.series)}<select data-ls="series">${seriesOpts}</select></label>
+ <label>${esc(t.car)}<select name="car" data-ls="car">${carOpts(carId, curSeries)}</select></label>
+ <label>${esc(t.compare)}<select data-ls="compare"><option value="">${esc(t.none)}</option>${cmpOpts}</select></label>
  <label>${esc(t.conditions)}<select data-ls="mode"><option value="real">${esc(t.real)}</option><option value="manual">${esc(t.manual)}</option></select></label>
  <noscript><button>${esc(t.track)}</button></noscript>
 </form>
@@ -270,6 +277,7 @@ function compoundGap(id) {
     return [y, {medium, hard}];
   }));
 }
+const SERIES_UI = ['f1', 'wec', 'imsa', 'fe', 'gt3'];
 const RT = {
   ko: {h: '레이스 페이스 예측', lead: '연료가 줄고, 타이어가 닳고, 피트 스톱을 하면서 랩타임이 어떻게 바뀌는지 실제 레이스 랩으로 맞춘 값입니다.', strat: '전략', time: '레이스 시간', gap: '차이', laps: '랩', pole: '기준 폴', refTop: '기준 랩 (예선 상위 {n}명 평균)', basis: {pred: '2026 예측', real: '2026 실제'}, test: '이전 시즌만으로 예측한 레이스 페이스 오차', season: '시즌', now: '예측/최근', repro: '이미 열린 레이스 재현 오차 (전 시즌 최대)', chart: '최적 전략의 예상 랩타임', c: {S: '소프트', M: '미디엄', H: '하드'}},
   en: {h: 'Race pace prediction', lead: 'How lap time changes as fuel burns, tyres wear and cars stop, fitted to real race laps.', strat: 'Strategy', time: 'Race time', gap: 'Gap', laps: 'laps', pole: 'Pole used', refTop: 'Reference lap (mean of the best {n} in qualifying)', basis: {pred: '2026 prediction', real: '2026 real'}, test: 'Race-pace error predicted from earlier seasons only', season: 'Season', now: 'Prediction/latest', repro: 'Races already run, reproduction error (largest, all seasons)', chart: 'Expected lap times, best strategy', c: {S: 'Soft', M: 'Medium', H: 'Hard'}},
@@ -442,6 +450,11 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
       document.querySelectorAll('[data-evo-out]').forEach(o => { const k = o.dataset.evoOut; o.textContent = v.evo[k]; const i = document.querySelector('input[data-evo="' + k + '"]'); if (i && document.activeElement !== i) i.value = v.evo[k]; });
     });
   };
+  q('series').addEventListener('change', e => {
+    const se = e.target.value, ids = data.carOrder.filter(k => (data.cars[k].series || 'f1') === se);
+    q('car').innerHTML = ids.map(k => '<option value="' + k + '">' + data.cars[k].label + '</option>').join('');
+    q('car').value = ids[0]; q('car').dispatchEvent(new Event('change'));
+  });
   q('car').addEventListener('change', e => { state.carId = e.target.value; const u = new URL(location.href); u.searchParams.set('car', state.carId); history.replaceState(null, '', u); update(); });
   q('compare').addEventListener('change', e => { state.compareId = e.target.value; update(); });
   q('mode').addEventListener('change', e => { state.mode = e.target.value; q('manual').hidden = state.mode !== 'manual'; if (state.mode === 'manual') { const c = data.cars[state.carId], real = data.conds[c.series ? state.carId : String(c.year)]; if (real) Object.assign(state.manual, real); syncSliders(); } update(); });
