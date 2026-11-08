@@ -1,0 +1,444 @@
+{
+ "lusail": {
+  "2024": {
+   "hypercar": {
+    "dry": [
+     "medium",
+     "hard"
+    ],
+    "basis": "stated",
+    "allocation": "FP 12, Hyperpole 4, Q+R 32",
+    "source": "https://espacioprensa.michelin.es/wp-content/uploads/2024/03/Michelin-FIA-WEC-2024-POR.pdf"
+   },
+   "lmgt3": {
+    "dry": [
+     "medium"
+    ],
+    "source": "https://racer.com/2024/04/17/how-fia-wec-tire-makers-are-chasing-sustainable-performance"
+   }
+  },
+  "2025": {
+   "hypercar": {
+    "dry": [
+     "medium",
+     "hard"
+    ],
+    "basis": "used",
+    "allocation": "NOT FOUND (rule: Q+R 32 for 10h)",
+    "source": "https://news.motorsport.michelin.com/en/articles/a-landmark-1-2-3-finish-for-ferrari-michelin-in-qatar"
+   },
+   "lmgt3": {
+    "dry": [
+     "medium"
+    ],
+    "source": "https://news.goodyear.eu/download/86c8270b-6332-433e-8404-b573af244a69/goodyear2025mediaguide.pdf"
+   }
+  }
+ },
+ "imola": {
+  "2024": {
+   "hypercar": {
+    "dry": [
+     "medium",
+     "hard"
+    ],
+    "basis": "stated",
+    "allocation": "FP 12, Hyperpole 4, Q+R 18",
+    "source": "https://dgaddcosprod.blob.core.windows.net/b2c-experience-production/attachments/clvbqfaw602r001lb2ipbgmg4-racecard-2024-wec-r02-imola.pdf"
+   },
+   "lmgt3": {
+    "dry": [
+     "medium"
+    ],
+    "source": "https://www.dailysportscar.com/2025/07/11/goodyear-debuts-new-lmgt3-hard-tyre.html"
+   }
+  },
+  "2025": {
+   "hypercar": {
+    "dry": [
+     "soft",
+     "medium"
+    ],
+    "q": "medium",
+    "basis": "stated",
+    "allocation": "FP 12, Hyperpole 4, Q+R 18",
+    "source": "https://dgaddcosprod.blob.core.windows.net/b2c-experience-production/attachments/cm9tdeg8f0a0t01ordxk4rt9d-rececard-2025-wec-r02-imola.pdf"
+   },
+   "lmgt3": {
+    "dry": [
+     "medium"
+    ],
+    "source": "https://news.goodyear.eu/download/86c8270b-6332-433e-8404-b573af244a69/goodyear2025mediaguide.pdf"
+   }
+  },
+  "2026": {
+   "hypercar": {
+    "dry": [
+     "soft",
+     "medium"
+    ],
+    "q": "soft",
+    "basis": "stated",
+    "allocation": "FP 12, Hyperpole 4, Q+R 18",
+    "source": "https://dgaddcosprod.blob.core.windows.net/cxf-multisite/clsnd2leu002711ow8tgx7mfc/attachments/opdljnram7gmqvrad21oogx2-rececard-2026-wec-r01-imola.pdf"
+   },
+   "lmgt3": {
+    "dry": [
+     "medium"
+    ],
+    "allocation": "FP 16, Hyperpole 4, Q+R 24",
+    "source": "https://news.goodyear.eu/goodyear-racing-notes--wec-6-hours-of-imola/"
+   }
+  }
+ },
+ "spa-francorchamps": {
+  "2024": {
+   "hypercar": {
+    "dry": [
+     "soft",
+     "medium"
+    ],
+    "q": "soft",
+    "basis": "stated",
+    "allocation": "FP 12, Hyperpole 4, Q+R 18",
+    "source": "https://dgaddcosprod.blob.core.windows.net/b2c-experience-production/attachments/clw8vq7ee02vm01o4z91k9jac-racecard-2024-wec-r03-spa-francorchamps.pdf"
+   },
+   "lmgt3": {
+    "dry": [
+     "medium"
+    ],
+    "source": "https://www.dailysportscar.com/2025/07/11/goodyear-debuts-new-lmgt3-hard-tyre.html"
+   }
+  },
+  "2025": {
+   "hypercar": {
+    "dry": [
+     "soft",
+     "medium"
+    ],
+    "q": "medium",
+    "basis": "stated",
+    "allocation": "FP 12, Hyperpole 4, Q+R 18",
+    "source": "https://dgaddcosprod.blob.core.windows.net/b2c-experience-production/attachments/cmalzwq1h00dv01hxw00uuqxu-rececard-2025-wec-r03-spa-francorchamps.pdf"
+   },
+   "lmgt3": {
+    "dry": [
+     "medium"
+    ],
+    "source": "https://news.goodyear.eu/download/86c8270b-6332-433e-8404-b573af244a69/goodyear2025mediaguide.pdf"
+   }
+  },
+  "2026": {
+   "hypercar": {
+    "dry": [
+     "soft",
+     "medium"
+    ],
+    "q": "medium",
+    "basis": "stated",
+    "allocation": "FP 12, Hyperpole 4, Q+R 18",
+    "source": "https://dgaddcosprod.blob.core.windows.net/cxf-multisite/clsnd2leu002711ow8tgx7mfc/attachments/syzr0e6ddl6fo4b2glhgw389-rececard-2026-wec-r02-spa-francorchamps.pdf"
+   },
+   "lmgt3": {
+    "dry": [
+     "medium"
+    ],
+    "source": "https://sportscar365.com/?p=139745"
+   }
+  }
+ },
+ "le-mans": {
+  "2024": {
+   "hypercar": {
+    "dry": [
+     "soft",
+     "medium",
+     "hard"
+    ],
+    "basis": "stated",
+    "allocation": "NOT FOUND",
+    "source": "https://espacioprensa.michelin.es/wp-content/uploads/2024/03/Michelin-FIA-WEC-2024-POR.pdf"
+   },
+   "lmgt3": {
+    "dry": [
+     "medium"
+    ],
+    "source": "https://www.dailysportscar.com/2025/07/11/goodyear-debuts-new-lmgt3-hard-tyre.html"
+   }
+  },
+  "2025": {
+   "hypercar": {
+    "dry": [
+     "soft",
+     "medium",
+     "hard"
+    ],
+    "basis": "stated",
+    "allocation": "FP+Q 24, Hyperpole 12, race 56",
+    "source": "https://dgaddcosprod.blob.core.windows.net/b2c-experience-production/attachments/cmc08gq9z077501lu624a1yrr-rececard-2025-wec-r04-lemans.pdf"
+   },
+   "lmgt3": {
+    "dry": [
+     "medium"
+    ],
+    "source": "https://news.goodyear.eu/download/86c8270b-6332-433e-8404-b573af244a69/goodyear2025mediaguide.pdf"
+   }
+  },
+  "2026": {
+   "hypercar": {
+    "dry": [
+     "soft",
+     "medium",
+     "hard"
+    ],
+    "basis": "used (all three run)",
+    "allocation": "Hyperpole 12; rest NOT FOUND",
+    "source": "https://news.motorsport.michelin.com/en/articles/victory-and-more-records-for-michelin-at-le-mans"
+   },
+   "lmgt3": {
+    "dry": [
+     "medium"
+    ],
+    "source": "https://sportscar365.com/?p=139745"
+   }
+  }
+ },
+ "interlagos": {
+  "2024": {
+   "hypercar": {
+    "dry": [
+     "medium",
+     "hard"
+    ],
+    "basis": "used",
+    "allocation": "NOT FOUND",
+    "source": "https://news.motorsport.michelin.com/en/articles/toyota-michelin-s-win-in-sao-paulo"
+   },
+   "lmgt3": {
+    "dry": [
+     "medium"
+    ],
+    "source": "https://www.dailysportscar.com/2025/07/11/goodyear-debuts-new-lmgt3-hard-tyre.html"
+   }
+  },
+  "2025": {
+   "hypercar": {
+    "dry": [
+     "medium",
+     "hard"
+    ],
+    "q": "medium",
+    "basis": "stated",
+    "allocation": "FP 12, Hyperpole 4, Q+R 18",
+    "source": "https://www.fiawec.com/en/news/michelin-ready-for-interlagos-challenge/8392"
+   },
+   "lmgt3": {
+    "dry": [
+     "hard"
+    ],
+    "source": "https://sportscar365.com/?p=135676"
+   }
+  },
+  "2026": {
+   "hypercar": {
+    "dry": [
+     "medium",
+     "hard"
+    ],
+    "basis": "stated",
+    "allocation": "30 tyres per weekend (3 sets FP+Q, 4.5 sets race); 34 for Hyperpole cars",
+    "source": "https://sportscar365.com/?p=148896"
+   },
+   "lmgt3": {
+    "dry": [
+     "medium"
+    ],
+    "allocation": "FP 16, Hyperpole 4, Q+R 24",
+    "source": "https://news.goodyear.eu/goodyear-racing-notes--wec-6-hours-of-so-paulo/"
+   }
+  }
+ },
+ "austin": {
+  "2024": {
+   "hypercar": {
+    "dry": [
+     "medium",
+     "hard"
+    ],
+    "basis": "stated",
+    "allocation": "NOT FOUND",
+    "source": "https://news.motorsport.michelin.com/en/articles/victory-for-ferrari-michelin-in-texas"
+   },
+   "lmgt3": {
+    "dry": [
+     "medium"
+    ],
+    "source": "https://www.dailysportscar.com/2025/07/11/goodyear-debuts-new-lmgt3-hard-tyre.html"
+   }
+  },
+  "2025": {
+   "hypercar": {
+    "dry": [
+     "medium",
+     "hard"
+    ],
+    "q": "medium",
+    "basis": "stated",
+    "allocation": "FP 12, Hyperpole 4, Q+R 18",
+    "source": "https://www.fiawec.com/en/news/michelin-returns-to-the-lone-star-state/8443"
+   },
+   "lmgt3": {
+    "dry": [
+     "hard"
+    ],
+    "source": "https://news.goodyear.eu/download/86c8270b-6332-433e-8404-b573af244a69/goodyear2025mediaguide.pdf"
+   }
+  },
+  "2026": {
+   "hypercar": {
+    "dry": [
+     "medium",
+     "hard"
+    ],
+    "basis": "used",
+    "allocation": "NOT FOUND",
+    "source": "https://news.motorsport.michelin.com/en/articles/lone-star-le-mans-smiles-for-ferrari-and-woes-for-toyota-once-more-in-texas"
+   },
+   "lmgt3": {
+    "dry": [
+     "medium"
+    ],
+    "allocation": "FP 16, Hyperpole 4, Q+R 24",
+    "source": "https://news.goodyear.eu/goodyear-racing-notes--wec-lone-star-le-mans/"
+   }
+  }
+ },
+ "fuji": {
+  "2024": {
+   "hypercar": {
+    "dry": [
+     "medium",
+     "hard"
+    ],
+    "q": "medium",
+    "basis": "stated",
+    "allocation": "FP 12, Hyperpole 4, Q+R 18",
+    "source": "https://dgaddcosprod.blob.core.windows.net/b2c-experience-production/attachments/cm174b40p006o01n8eqpwhtay-rececard-2024-wec-r07-fuji.pdf"
+   },
+   "lmgt3": {
+    "dry": [
+     "medium"
+    ],
+    "source": "https://www.dailysportscar.com/2025/07/11/goodyear-debuts-new-lmgt3-hard-tyre.html"
+   }
+  },
+  "2025": {
+   "hypercar": {
+    "dry": [
+     "soft",
+     "medium"
+    ],
+    "q": "medium",
+    "basis": "stated",
+    "allocation": "FP 12, Hyperpole 4, Q+R 18",
+    "source": "https://www.fiawec.com/en/news/michelin-mixes-up-tyre-choices-for-fuji/8489"
+   },
+   "lmgt3": {
+    "dry": [
+     "medium"
+    ],
+    "source": "https://news.goodyear.eu/download/86c8270b-6332-433e-8404-b573af244a69/goodyear2025mediaguide.pdf"
+   }
+  },
+  "2026": {
+   "hypercar": {
+    "dry": [
+     "soft",
+     "medium"
+    ],
+    "basis": "used",
+    "allocation": "NOT FOUND",
+    "source": "https://news.motorsport.michelin.com/en/articles/fuji-win-10-for-toyota-michelin"
+   },
+   "lmgt3": {
+    "dry": [
+     "medium"
+    ],
+    "source": "https://www.fiawec.com/en/news/tyre-partners/8259"
+   }
+  }
+ },
+ "sakhir": {
+  "2024": {
+   "hypercar": {
+    "dry": [
+     "medium",
+     "hard"
+    ],
+    "basis": "used",
+    "allocation": "NOT FOUND",
+    "source": "https://news.motorsport.michelin.com/en/articles/8-hours-of-bahrain-toyota-clinches-2024-world-title-with-bahrain-victory"
+   },
+   "lmgt3": {
+    "dry": [
+     "medium"
+    ],
+    "source": "https://www.dailysportscar.com/2025/07/11/goodyear-debuts-new-lmgt3-hard-tyre.html"
+   }
+  },
+  "2025": {
+   "hypercar": {
+    "dry": [
+     "medium",
+     "hard"
+    ],
+    "q": "medium",
+    "basis": "stated",
+    "allocation": "FP 12, Hyperpole 4, Q+R 26",
+    "source": "https://dgaddcosprod.blob.core.windows.net/cxf-multisite/clsnd2leu002711ow8tgx7mfc/attachments/jz614hb9fm4c974uejp1ne7p-rececard-2025-wec-r08-bahrain.pdf"
+   },
+   "lmgt3": {
+    "dry": [
+     "hard"
+    ],
+    "source": "https://news.goodyear.eu/download/86c8270b-6332-433e-8404-b573af244a69/goodyear2025mediaguide.pdf"
+   }
+  }
+ },
+ "catalunya": {
+  "2026": {
+   "hypercar": {
+    "dry": [
+     "soft",
+     "medium"
+    ],
+    "basis": "used",
+    "allocation": "NOT FOUND",
+    "source": "https://news.motorsport.michelin.com/en/articles/barcelona-1-2-clinches-2026-title-for-toyota-michelin"
+   },
+   "lmgt3": {
+    "dry": [
+     "medium"
+    ],
+    "source": "https://www.fiawec.com/en/news/tyre-partners/8259"
+   }
+  }
+ },
+ "monza": {
+  "2026": {
+   "hypercar": {
+    "dry": [
+     "soft",
+     "medium"
+    ],
+    "source": "https://www.pitdebrief.com/post/michelin-prepares-for-high-speed-tyre-challenge-at-2026-wec-6-hours-of-monza/"
+   },
+   "lmgt3": {
+    "dry": [
+     "medium"
+    ],
+    "source": "https://www.fiawec.com/en/news/tyre-partners/8259"
+   }
+  }
+ }
+}

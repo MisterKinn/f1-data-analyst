@@ -2,14 +2,18 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import worker from '../worker/index.js';
 import {lapsimCompounds} from '../worker/lapsim/compounds-data.js';
+import {lapsimWecTyres} from '../worker/lapsim/wec-tyres-data.js';
 
 const page = async q => (await worker.fetch(new Request('https://example.com/simulation?' + q), {})).text();
 const tyres = h => (h.match(/data-ls="tyre">(.*?)<\/select>/) || [])[1].match(/value="(\w+)"/g).map(v => v.slice(7, -1));
 
 test('each series offers only the tyres it really has', async () => {
   assert.deepEqual(tyres(await page('track=monza&car=2026')), ['soft', 'medium', 'hard', 'inter', 'wet']);
-  for (const car of ['wec-lmh', 'wec-lmdh']) assert.deepEqual(tyres(await page('track=monza&car=' + car)), ['soft', 'medium', 'hard', 'wet'], car);
+  // WEC: only what Michelin/Goodyear supplied at that event (Monza 2026: soft + medium; COTA 2026: medium + hard), never an intermediate
+  for (const car of ['wec-lmh', 'wec-lmdh']) assert.deepEqual(tyres(await page('track=monza&car=' + car)), ['soft', 'medium', 'wet'], car);
+  assert.deepEqual(tyres(await page('track=austin&car=wec-lmh')), ['medium', 'hard', 'wet']);
   assert.deepEqual(tyres(await page('track=monza&car=wec-lmgt3')), ['medium', 'wet']);
+  assert.deepEqual(tyres(await page('track=silverstone&car=wec-lmh')), ['soft', 'medium', 'hard', 'wet'], 'no WEC event: whole range');
 });
 
 test('Pirelli nominations are C-numbers, hard to soft, and name the race strategies', async () => {
@@ -33,4 +37,12 @@ test('compound gaps: measured events reproduce exactly, others follow the C-step
   assert.match(h, /data-ls="tyre"/);
   for (const [, ys] of Object.entries(G.measured)) for (const v of Object.values(ys)) if (v.MEDIUM && v.HARD) assert.ok(v.HARD.pct >= v.MEDIUM.pct - 0.5);
   assert.ok(Number.isFinite(m));
+});
+
+test('WEC tyre table: only known compound names, Hyperpole tyre is one of the event slicks', () => {
+  for (const [id, ys] of Object.entries(lapsimWecTyres)) for (const [y, c] of Object.entries(ys)) for (const [cls, v] of Object.entries(c)) {
+    assert.ok(v.dry.length && v.dry.every(x => ['soft', 'medium', 'hard'].includes(x)), `${id} ${y} ${cls}`);
+    if (v.q) assert.ok(v.dry.includes(v.q), `${id} ${y} hyperpole tyre`);
+    if (cls === 'lmgt3') assert.ok(!v.dry.includes('soft'), 'Goodyear LMGT3 has no soft');
+  }
 });
