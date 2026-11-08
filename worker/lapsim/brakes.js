@@ -8,7 +8,7 @@ export function brakeZones(track, car, env, v, limit, opts = {}) {
   const G = 9.81, n = v.length, ds = track.ds, rho = env?.rho ?? 1.2, m = car.mass, L = car.wheelbase ?? 3.4, h = car.cogHeight ?? 0.3;
   const rearW = car.rearWeight ?? 0.55, ers = car.ers || {}, axle = ers.axle || (ers.rule === 'f1-2026' || ers.pMax ? 'rear' : null);
   const regenMax = ers.regenMax ?? ers.eMax ?? 0, share = ers.regenShare ?? 0.6;
-  const pedalPerG = opts.pedalPerG ?? 33, ratio = opts.pedalRatio ?? 3.5, mcMm = opts.masterCylMm ?? 17.8;
+  const ramp = opts.rampS ?? 0, pedalPerG = opts.pedalPerG ?? 33, ratio = opts.pedalRatio ?? 3.5, mcMm = opts.masterCylMm ?? 17.8;
   const zones = [];
   let energy = {total: 0, drag: 0, regen: 0, front: 0, rear: 0};
   for (let i = 0; i < n; i++) {
@@ -30,12 +30,15 @@ export function brakeZones(track, car, env, v, limit, opts = {}) {
       if (dec / G >= (opts.hardG ?? 1.5)) { hd += ds; ht += ds / Math.max(vm, 1); gsum += dec / G * ds; if (hs < 0) hs = a; he = b; }
       j++;
     }
-    if (j - i < 2 || (v[i] - v[j % n]) * 3.6 < 10) continue;
+    // a braking zone counts from a speed drop of minDropKph (30 km/h matches Brembo's zone counts)
+    if (j - i < 2 || (v[i] - v[j % n]) * 3.6 < (opts.minDropKph ?? 10)) continue;
     // pedal load from the mean deceleration of the hard part; front-circuit pressure from the pedal force,
     // pedal ratio and master-cylinder bore, with the balance bar sending the front friction share forward
     const meanG = hd ? gsum / hd : peak, pedalKg = pedalPerG * meanG, front = zf / Math.max(1, zf + zr);
     const barPerKg = G * ratio * front / (Math.PI * (mcMm / 2000) ** 2) / 1e5;
-    zones.push({start: i, end: j % n, vFrom: v[hs < 0 ? i : hs] * 3.6, vTo: v[he < 0 ? j % n : he] * 3.6, distM: hd || dist, timeS: ht || time, peakG: peak, meanG, liftDistM: dist,
+    // effective pressure build-up (fitted on Brembo): the real zone is longer by v0·t/2 and t/2
+    const v0 = v[hs < 0 ? i : hs];
+    zones.push({start: i, end: j % n, vFrom: v0 * 3.6, vTo: v[he < 0 ? j % n : he] * 3.6, distM: (hd || dist) + v0 * ramp / 2, timeS: (ht || time) + ramp / 2, peakG: peak, meanG, liftDistM: dist,
       frontPct: 100 * zf / Math.max(1, zf + zr), regenPct: 100 * zg / Math.max(1, zf + zr + zg), pedalKg, bar: pedalKg * barPerKg});
     i = j;
   }

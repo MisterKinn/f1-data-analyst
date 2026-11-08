@@ -20,6 +20,8 @@ test('one braking zone: speeds, deceleration, and regen taken on its own axle', 
 test('fit on Brembo figures: pedal load per g and held-out errors are reported', () => {
   assert.ok(lapsimBrakes.pedalKgPerG > 20 && lapsimBrakes.pedalKgPerG < 45);
   assert.ok(lapsimBrakes.test.decelG.n >= 30 && lapsimBrakes.test.decelG.rmsPct < 30);
+  // the fitted pressure build-up must make braking distance better than without it
+  assert.ok(lapsimBrakes.rampS > 0 && lapsimBrakes.test.distRampM.rmsPct < lapsimBrakes.test.distM.rmsPct);
 });
 
 test('brake panel shows Brembo real figures next to the model for F1', async () => {
@@ -27,4 +29,10 @@ test('brake panel shows Brembo real figures next to the model for F1', async () 
   assert.match(h, /data-ls="brakes"/);
   assert.match(h, /Brembo 실측/);
   assert.match(h, /앞 브레이크 압력 \(추정\)/);
+});
+
+test('pressure build-up lengthens a zone by v0*t/2 and t/2; small speed drops are not braking zones', () => {
+  const a = brakeZones(track, car(null), {rho: 1.2}, v, limit), b = brakeZones(track, car(null), {rho: 1.2}, v, limit, {rampS: 0.5});
+  assert.ok(Math.abs(b.zones[0].distM - a.zones[0].distM - 83.3 * 0.25) < 1e-6 && Math.abs(b.zones[0].timeS - a.zones[0].timeS - 0.25) < 1e-9);
+  assert.equal(brakeZones(track, car(null), {rho: 1.2}, v, limit, {minDropKph: 300}).zones.length, 0);
 });
