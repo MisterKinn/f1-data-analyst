@@ -29,9 +29,8 @@ test('every stored line lies between its edges and TUM tracks stay close to the 
   }
 });
 
-test('simulation page shows the racing line panel with corner zoom', async () => {
+test('simulation page draws the racing line on the track map', async () => {
   const html = await (await worker.fetch(new Request('https://example.com/simulation?track=monza'), {})).text();
-  assert.match(html, /class="panel ls-panel ls-line-panel"/);
-  assert.match(html, /data-line-zoom="0 0 \d+ \d+"/);
-  assert.match(html, /class="ls-line-map"/);
+  assert.match(html, /data-ls-zoom/);
+  assert.match(html, /class="ls-mk ls-mk-b"/);
 });
