@@ -32,7 +32,7 @@ const T = {
     soon: '준비 중: 기타 GT3(IMSA GTD·DTM·SP9), 포뮬러 E Gen4. 같은 보정 규칙을 쓰며 데이터 연결 후 추가됩니다.', sector: '섹터', vmax: '최고 속도', vmin: '최저 속도', energy: '배치 에너지', clip: '배치 상한 속도',
     map: '속도로 칠한 주행 라인', slow: '느림', fast: '빠름', trace: '거리별 속도', km: '거리 (km)',
     air: '공기', airTemp: '기온', trackTemp: '노면 온도', humidity: '습도', pressure: '기압', wind: '풍속', windFrom: '바람 방향',
-    motor: '하이브리드 모터', axleFront: '앞 차축', axleRear: '뒤 차축', deployFrom: '{v} 이상에서만 구동', hybridE: '모터 사용 / 회생 (랩당)',
+    motor: '하이브리드 모터', axleFront: '앞 차축', axleRear: '뒤 차축', deployFrom: '{v} 이상에서만 구동', hybridE: '모터 사용 / 회생 (랩당)', soc: {old: '2025년까지 규정: 랩당 모터 배치 4 MJ 한도만 모델에 들어 있습니다 (MGU-H가 채우는 회생은 모델에 없어 배터리 흐름은 그리지 않습니다).', h: '배터리 에너지 (추정)', lead: 'F1·WEC 모두 실제 배터리 충전량(SoC)과 모터 사용 기록은 공개되지 않습니다. 아래는 규정 한도(배터리 사용 폭, 대회별 랩당 회생 한도)와 이 시뮬레이션 랩에서 계산한 추정값입니다.', line: '배터리에 남은 에너지', dep: '모터 배치', rec: '회생 (브레이크)', thr: '회생 (풀 스로틀, 슈퍼 클리핑)', sum: '배치 {d} MJ · 회생 {r} MJ (브레이크 {b} + 풀 스로틀 {t}){cap}', capT: ' · 한도 {c} MJ', ok: '확인: 회생 ≤ 한도 {a} · 랩 안 에너지 변동 {s} MJ ≤ 배터리 사용 폭 {w} MJ {b}', over: '({x} MJ 초과: 이 시뮬레이터는 에너지를 랩 합계로만 맞추기 때문입니다. 실제 차는 이만큼 배치를 줄이거나 순서를 바꿉니다)', start: '예선 랩: 배터리 가득 찬 상태에서 시작 (점선 = 사용 폭 한계)', hyper: '하이퍼카: 랩마다 충전 유지, 가장 낮은 지점을 0으로 둠 · 필요한 배터리 사용 폭 {s} MJ'},
     recharge: '퀄리 회생 한도', energy_official: 'FIA PU 문서', energy_provisional: 'FIA 잠정값, 보도 기준', energy_estimated: '추정', density: '공기 밀도', seaLevel: '해수면 표준 대비', ice: '엔진 출력', grip: '타이어 그립', mainStraight: '메인 스트레이트',
     headwind: '맞바람', tailwind: '뒷바람', calm: '무풍', fia: 'FIA 서킷 변경 사항', fiaLead: '레이스 디렉터 노트의 “Changes to the circuit” 목록입니다. 랩에 영향을 주는 항목은 켜고 끌 수 있으며, 효과 크기는 가정값입니다.',
     inFit: y => `${y}년 실제 랩으로 머신을 보정할 때 이미 반영된 변경 사항입니다. 켜면 효과가 한 번 더 더해집니다.`, notInFit: '아직 보정에 쓴 실제 랩에는 없는 변경 사항입니다. 켜서 효과를 미리 계산해 보세요.',
@@ -64,7 +64,7 @@ const T = {
     soon: 'Coming soon: other GT3 (IMSA GTD, DTM, SP9) and Formula E Gen4. They use the same calibration rules and are added once their data is connected.', sector: 'Sector', vmax: 'Top speed', vmin: 'Lowest speed', energy: 'Energy deployed', clip: 'Deploy cut-off',
     map: 'Racing line coloured by speed', slow: 'Slow', fast: 'Fast', trace: 'Speed over distance', km: 'Distance (km)',
     air: 'Air', airTemp: 'Air temperature', trackTemp: 'Track temperature', humidity: 'Humidity', pressure: 'Pressure', wind: 'Wind speed', windFrom: 'Wind from',
-    motor: 'Hybrid motor', axleFront: 'front axle', axleRear: 'rear axle', deployFrom: 'drives only above {v}', hybridE: 'Motor use / recovery (per lap)',
+    motor: 'Hybrid motor', axleFront: 'front axle', axleRear: 'rear axle', deployFrom: 'drives only above {v}', hybridE: 'Motor use / recovery (per lap)', soc: {old: 'Rules up to 2025: only the 4 MJ per-lap deploy limit is modelled (recovery topped up by the MGU-H is not, so no battery flow is drawn).', h: 'Battery energy (estimate)', lead: 'Neither F1 nor WEC publishes the real battery state of charge (SoC) or motor use. This is an estimate from the rule limits (usable battery window, per-event recharge limit per lap) and the simulated lap.', line: 'Energy left in the battery', dep: 'Motor deploy', rec: 'Recovery (braking)', thr: 'Recovery at full throttle (super-clipping)', sum: 'Deploy {d} MJ · recovery {r} MJ (braking {b} + full throttle {t}){cap}', capT: ' · limit {c} MJ', ok: 'Checks: recovery ≤ limit {a} · energy swing within the lap {s} MJ ≤ usable window {w} MJ {b}', over: '({x} MJ over: the simulator balances energy over the whole lap only; a real car deploys this much less or in a different order)', start: 'Qualifying lap: starts with a full battery (dashed = usable window)', hyper: 'Hypercar: charge-sustaining every lap, lowest point set to 0 · battery window needed {s} MJ'},
     recharge: 'Qualifying recharge limit', energy_official: 'FIA PU document', energy_provisional: 'FIA provisional, press', energy_estimated: 'estimated', density: 'Air density', seaLevel: 'vs standard sea level', ice: 'Engine power', grip: 'Tyre grip', mainStraight: 'Main straight',
     headwind: 'headwind', tailwind: 'tailwind', calm: 'calm', fia: 'FIA circuit changes', fiaLead: 'The “Changes to the circuit” list from the race director’s notes. Items that affect the lap can be switched on or off; their size is an assumption.',
     inFit: y => `These changes were already in the real ${y} lap the cars were fitted to; switching them on adds them a second time.`, notInFit: 'These changes are not in the real laps used for fitting yet: switch them on to estimate their effect.',
@@ -189,7 +189,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
   <dl class="ls-facts" data-ls="facts">${view.factsHtml}</dl>
  </div>
 </section>
-<section class="panel ls-panel"><h2>${esc(t.trace)}</h2><div class="ls-scroll" data-ls="trace">${view.traceSvg}</div><p class="ls-key" data-ls="key">${view.keyHtml}</p></section>
+<section class="panel ls-panel"><h2>${esc(t.trace)}</h2><div class="ls-scroll" data-ls="trace">${view.traceSvg}</div><p class="ls-key" data-ls="key">${view.keyHtml}</p><div data-ls="soc">${view.socHtml}</div></section>
 <section class="panel ls-panel ls-air"><h2>${esc(t.air)}</h2>
  <dl class="ls-facts ls-air-facts" data-ls="air">${view.airHtml}</dl>
  <div class="ls-sliders" data-ls="manual" hidden>${slider('airTempC', t.airTemp, -5, 45, 0.5, '°C')}${slider('trackTempC', t.trackTemp, 5, 65, 0.5, '°C')}${slider('humidityPct', t.humidity, 0, 100, 1, '%')}${slider('pressureHpa', t.pressure, 760, 1040, 1, 'hPa')}${slider('windSpeed', t.wind, 0, 15, 0.1, 'm/s')}${slider('windFromDeg', t.windFrom, 0, 359, 1, '°')}</div>
@@ -411,6 +411,25 @@ function computeView(K, data, state, R) {
   const series = [{v: res.v.map(x => x * 3.6)}];
   if (cmp) series.push({v: cmp.v.map(x => x * 3.6)});
   const traceSvg = R.renderTrace(d.ds, series, {sectors: d.sectors || [], label: t.trace, km: t.km});
+  // battery estimate along the lap: recovery capped at the per-lap limit, battery clamped to its window
+  let socHtml = '';
+  const F = res.flow;
+  if (F && F.rule !== 'f1-2026' && F.rule !== 'hypercar') socHtml = '<h3>' + t.soc.h + '</h3><p class="fine">' + t.soc.old + '</p>';
+  else if (F) {
+    const T = t.soc, n = F.dep.length, W = 1000, H = 150, L0 = 48, top = 12, B = 26, win = F.soc, cap = F.recharge ?? Infinity;
+    // net energy along the lap (no clamping, so a profile the battery window cannot hold is shown, not hidden)
+    let cum = 0, got = 0, mn = 0, mx = 0; const c = [], sumB = F.brk.reduce((a, x) => a + x, 0), sumT = F.thr.reduce((a, x) => a + x, 0);
+    for (let i = 0; i < n; i++) { let r = F.brk[i] + F.thr[i]; if (got + r > cap) r = Math.max(0, cap - got); got += r; cum += r - F.dep[i]; c.push(cum); mn = Math.min(mn, cum); mx = Math.max(mx, cum); }
+    // F1 qualifying lap: starts full; Hypercar (charge-sustaining race lap): lowest point at 0
+    const s0 = F.rule === 'hypercar' ? -mn : win, s = c.map(e => s0 + e), swing = mx - mn, top0 = Math.max(win, s0 + mx), bot0 = Math.min(0, s0 + mn);
+    const x = i => (L0 + i / n * (W - L0 - 8)).toFixed(1), y = e => (top + (1 - (e - bot0) / (top0 - bot0)) * (H - top - B)).toFixed(1), pk = Math.max(...F.dep, ...F.brk.map((b, i) => b + F.thr[i]), 1);
+    const bars = F.dep.map((e, i) => e > 0 ? '<rect x="' + x(i) + '" y="' + (H - B + 4) + '" width="' + ((W - L0) / n + 0.5).toFixed(1) + '" height="8" fill="#e5484d" opacity="' + (0.25 + 0.75 * e / pk).toFixed(2) + '"/>' : (F.brk[i] + F.thr[i] > 0 ? '<rect x="' + x(i) + '" y="' + (H - B + 4) + '" width="' + ((W - L0) / n + 0.5).toFixed(1) + '" height="8" fill="' + (F.thr[i] > F.brk[i] ? '#f5a524' : '#30a46c') + '" opacity="' + (0.25 + 0.75 * (F.brk[i] + F.thr[i]) / pk).toFixed(2) + '"/>' : '')).join('');
+    const svg = '<svg class="ls-soc" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + T.h + '"><text x="4" y="' + (+y(win) + 4) + '" font-size="12" fill="currentColor">' + (win / 1e6).toFixed(1) + ' MJ</text><text x="4" y="' + (+y(0) + 4) + '" font-size="12" fill="currentColor">0</text><line x1="' + L0 + '" x2="' + (W - 8) + '" y1="' + y(0) + '" y2="' + y(0) + '" stroke="currentColor" opacity=".2"/>' + (F.rule === 'hypercar' ? '' : '<line x1="' + L0 + '" x2="' + (W - 8) + '" y1="' + y(win) + '" y2="' + y(win) + '" stroke="currentColor" opacity=".35" stroke-dasharray="6 4"/>') + '<polyline fill="none" stroke="var(--mint)" stroke-width="2.4" points="' + s.map((e, i) => x(i) + ',' + y(e)).join(' ') + '"/>' + bars + '</svg>';
+    const M = v => (v / 1e6).toFixed(2), recUsed = Math.min(sumB + sumT, cap);
+    socHtml = '<h3>' + T.h + '</h3><p class="fine">' + T.lead + '</p><div class="ls-scroll">' + svg + '</div><p class="ls-key"><span class="ls-key-0"></span>' + T.line + ' <span class="ls-sw" style="background:#e5484d"></span>' + T.dep + ' <span class="ls-sw" style="background:#30a46c"></span>' + T.rec + (sumT > 0 ? ' <span class="ls-sw" style="background:#f5a524"></span>' + T.thr : '') + '</p>'
+      + '<p class="fine">' + T.sum.replace('{d}', M(F.dep.reduce((a, x) => a + x, 0))).replace('{r}', M(recUsed)).replace('{b}', M(sumB)).replace('{t}', M(sumT)).replace('{cap}', Number.isFinite(cap) ? T.capT.replace('{c}', M(cap)) : '')
+      + ' · ' + (F.rule === 'hypercar' ? T.hyper.replace('{s}', M(swing)) : T.start) + '</p>' + (F.rule === 'hypercar' ? '' : '<p class="fine">' + T.ok.replace('{a}', recUsed <= cap + 1 ? '✓' : '✗').replace('{w}', M(win)).replace('{s}', M(swing)).replace('{b}', swing <= win + 1e4 ? '✓' : '✗ ' + T.over.replace('{x}', M(swing - win))) + '</p>');
+  }
   const keyHtml = '<span class="ls-key-0"></span>' + sel.label + (cmp ? ' <span class="ls-key-1"></span>' + data.cars[state.compareId].label : '');
   // Track evolution: lap over the session from the simulated lap (= end-of-qualifying track state)
   const se = sel.series === 'wec' ? 'wec' : 'f1', ev = Object.assign({type: 'qualifying', tyre: 'slick', useCurve: true}, state.evo || {});
@@ -443,7 +462,7 @@ function computeView(K, data, state, R) {
   const evoSvg = '<svg class="ls-race" viewBox="0 0 ' + ew + ' ' + eh + '" role="img" aria-label="' + t.evoChart + '"><polyline fill="none" stroke="currentColor" stroke-width="2" points="' + curve.points.map(p => ex(p.minute).toFixed(1) + ',' + ey(p.lap).toFixed(1)).join(' ') + '"/>'
     + '<text x="2" y="16" font-size="11" fill="currentColor">' + fmt(hi) + '</text><text x="2" y="' + (eh - 28) + '" font-size="11" fill="currentColor">' + fmt(lo) + '</text>'
     + '<text x="44" y="' + (eh - 6) + '" font-size="11" fill="currentColor">0</text><text x="' + (ew - 12) + '" y="' + (eh - 6) + '" font-size="11" text-anchor="end" fill="currentColor">' + evo.end + ' ' + t.min + '</text></svg>';
-  return {lap: fmt(res.lapTime), poleHtml, factsHtml, airHtml, kindLabel, mapSvg, traceSvg, keyHtml, windHtml, weather: w, evo, evoFacts, evoSvg, tyreHtml};
+  return {lap: fmt(res.lapTime), poleHtml, factsHtml, airHtml, kindLabel, mapSvg, traceSvg, keyHtml, windHtml, weather: w, evo, evoFacts, evoSvg, socHtml, tyreHtml};
 }
 
 // Browser controller
@@ -467,7 +486,7 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
       pending = false;
       const v = computeView(K, data, state, R);
       q('lap').textContent = v.lap; q('pole').innerHTML = v.poleHtml; q('facts').innerHTML = v.factsHtml; q('air').innerHTML = v.airHtml;
-      q('map').innerHTML = v.mapSvg; q('trace').innerHTML = v.traceSvg; q('key').innerHTML = v.keyHtml; q('wind').innerHTML = v.windHtml;
+      q('map').innerHTML = v.mapSvg; q('trace').innerHTML = v.traceSvg; q('soc').innerHTML = v.socHtml; q('key').innerHTML = v.keyHtml; q('wind').innerHTML = v.windHtml;
       q('carLabel').textContent = data.cars[state.carId].label; q('carKind').textContent = v.kindLabel;
       q('evoFacts').innerHTML = v.evoFacts; q('evoChart').innerHTML = v.evoSvg; q('tyre').innerHTML = v.tyreHtml;
       document.querySelectorAll('[data-evo-out]').forEach(o => { const k = o.dataset.evoOut; o.textContent = v.evo[k]; const i = document.querySelector('input[data-evo="' + k + '"]'); if (i && document.activeElement !== i) i.value = v.evo[k]; });
@@ -517,7 +536,7 @@ const CSS = `:root{--sim-slow:#ffa94d}:root[data-theme="light"]{--sim-slow:#245d
 .ls-air-facts{grid-template-columns:repeat(4,minmax(0,1fr));border-top:0;padding-top:0}
 .ls-scroll{overflow-x:auto}.ls-trace{width:100%;height:auto;min-width:560px}.ls-grid{stroke:var(--line)}.ls-sector{stroke:var(--muted);stroke-dasharray:4 4;opacity:.6}.ls-axis{fill:var(--muted);font-size:13px}
 .ls-line{fill:none;stroke-width:2.4;stroke-linejoin:round}.ls-line-0{stroke:var(--mint)}.ls-line-1{stroke:var(--sim-slow);stroke-dasharray:6 4}
-.ls-key{font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:center;flex-wrap:wrap}.ls-key span{display:inline-block;width:22px;height:3px;border-radius:2px}.ls-key-0{background:var(--mint)}.ls-key-1{background:var(--sim-slow)}
+.ls-key{font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:center;flex-wrap:wrap}.ls-key span{display:inline-block;width:22px;height:3px;border-radius:2px}.ls-key-0{background:var(--mint)}.ls-sw{display:inline-block;width:14px;height:8px;border-radius:2px;margin-left:8px}.ls-soc{width:100%;height:auto}.ls-key-1{background:var(--sim-slow)}
 .ls-sliders{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 28px}.ls-slider{display:grid;grid-template-columns:minmax(110px,1fr) minmax(0,2fr) 52px 36px;align-items:center;gap:10px;min-width:0}.ls-slider input{min-height:32px;padding:0;accent-color:var(--mint);border:0;background:none}.ls-slider output{text-align:right;font-variant-numeric:tabular-nums;color:var(--text)}.ls-unit{font-size:12px;color:var(--muted)}
 .ls-strength{max-width:520px;grid-template-columns:minmax(110px,1fr) minmax(0,2fr) 52px}
 .ls-changes{list-style:none;margin:0;padding:0;display:grid;gap:10px}.ls-change label{display:flex;gap:12px;align-items:flex-start;color:var(--text);font-size:14px;min-width:0}.ls-change input{width:20px;height:20px;min-height:0;margin-top:2px;accent-color:var(--mint)}.ls-change small{display:block;color:var(--muted);font-size:12px;margin-top:2px}.ls-change.is-info label{color:var(--muted)}.ls-dot{width:20px;flex:0 0 20px;text-align:center}.ls-dot::before{content:'·'}
