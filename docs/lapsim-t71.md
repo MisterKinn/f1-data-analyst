@@ -79,3 +79,34 @@ over stint start time, removes track evolution and fuel); car mean removed; resi
 
 Stint-to-stint noise (~1.4%) is far larger than any compound step. The page keeps
 "not measured, lap unchanged". No further variants were tried (that would tune on the test set).
+
+## J6 — Stints (2026-11-09)
+
+**Full-stint rule.** Timing71 marks local yellows as `yellow`; Al Kamel's flag column only marks
+full-course neutralisations. A full stint is therefore "no FCY / VSC / SC / Code 60 / red lap"
+(local yellows are racing laps). With this rule Timing71 and Al Kamel give the same full stint (±1 lap)
+for **68 / 80** Hypercar cars in 2025–2026; the other 12 are cases where Timing71 finds no full stint
+(stricter), never a different value. Stint lengths themselves are identical in both sources.
+
+**Duplicates.** Two archive replays can share series, description and minute; session files are now named
+by the archive's own file name, duplicates are dropped at merge (more laps kept), unreadable files skipped.
+
+**Stint energy fit with 2024 rows** (`scripts/sim/t71-stints.mjs` → `scripts/sim/data/t71-wec-stints.json`,
+used by `stint-fit.mjs` for events with no Al Kamel file; 2024 BoP stint energy from the eight FIA
+decisions, see `docs/lapsim-wec-bop.md`):
+
+| Rows (leave one event out) | Previous model (k from 2025 only) | Candidate (k from 2024 + 2025) |
+|---|---|---|
+| 2024: 30 rows, 4 events — **never used to fit the previous model** | **3.04 %** | 3.11 % |
+| 2025: 29 rows, 4 events | 3.74 % | 3.58 % |
+| All | 3.40 % | 3.35 % |
+
+Gate: **rejected (gain within noise)** → model unchanged (k = 0.857). The unseen-season test (3.04 % on 2024)
+is shown on the page under the stint table.
+
+**IMSA GTP energy per lap from VFT** (`scripts/sim/t71-imsa-vft.mjs` → `scripts/sim/data/t71-imsa-vft.json`):
+a measurement, not a model. Stints with no full-course lap, ≥10 laps, starting on a full virtual tank
+(VFT ≥85 %) and ending ≤40 %; % per lap = ΔVFT / (laps − 1), median per car. Examples (median %/lap of the
+stint energy): Road Atlanta 2024 2.27, 2025 2.25; Indianapolis 2025 2.16, 2026 2.26; Sebring 2025 3.32;
+Daytona 2026 3.28; Road America 2026 3.66 (× 912 MJ BoP ≈ 33 MJ/lap). Turning this into the lap-simulator
+energy model needs IMSA track geometry (step 9). VFT exists from late 2024 (21 races).

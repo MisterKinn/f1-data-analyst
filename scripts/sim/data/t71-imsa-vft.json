@@ -15,18 +15,18 @@
     },
     "7": {
      "make": "PORSCHE 963",
-     "pctPerLap": 2.209,
-     "stints": 3
+     "pctPerLap": 2.23,
+     "stints": 4
     },
     "10": {
      "make": "ACURA ARX-06",
      "pctPerLap": 2.317,
-     "stints": 4
+     "stints": 5
     },
     "24": {
      "make": "BMW M HYBRID V8",
-     "pctPerLap": 2.258,
-     "stints": 2
+     "pctPerLap": 2.184,
+     "stints": 4
     },
     "25": {
      "make": "BMW M HYBRID V8",
@@ -36,7 +36,7 @@
     "31": {
      "make": "CADILLAC V-SERIES.R",
      "pctPerLap": 2.262,
-     "stints": 3
+     "stints": 4
     },
     "40": {
      "make": "ACURA ARX-06",
@@ -62,6 +62,16 @@
   }
  },
  "2025": {
+  "daytona": {
+   "event": "Rolex 24 at Daytona - Race",
+   "cars": {
+    "63": {
+     "make": "LAMBORGHINI SC63",
+     "pctPerLap": 3.179,
+     "stints": 1
+    }
+   }
+  },
   "sebring": {
    "event": "73rd Annual Mobil 1 Twelve Hours of Sebring - Race",
    "cars": {
@@ -82,8 +92,8 @@
     },
     "10": {
      "make": "CADILLAC V-SERIES.R",
-     "pctPerLap": 3.317,
-     "stints": 4
+     "pctPerLap": 3.276,
+     "stints": 5
     },
     "23": {
      "make": "ASTON MARTIN VALKYRIE",
@@ -247,8 +257,8 @@
    "cars": {
     "6": {
      "make": "PORSCHE 963",
-     "pctPerLap": 2.187,
-     "stints": 3
+     "pctPerLap": 2.189,
+     "stints": 4
     },
     "7": {
      "make": "PORSCHE 963",
@@ -262,8 +272,8 @@
     },
     "23": {
      "make": "ASTON MARTIN VALKYRIE",
-     "pctPerLap": 2.247,
-     "stints": 3
+     "pctPerLap": 2.251,
+     "stints": 4
     },
     "24": {
      "make": "BMW M HYBRID V8",

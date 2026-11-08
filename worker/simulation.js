@@ -289,9 +289,9 @@ function compoundGap(id) {
 // published: its stint energy is estimated from the real stints.
 const ST = {
   ko: {h: '하이퍼카 스틴트 에너지', lead: 'WEC 하이퍼카는 한 스틴트(피트 아웃~피트 인)에 드라이브샤프트로 쓸 수 있는 에너지가 BoP로 정해져 있습니다(가상 에너지 탱크). 랩 시뮬레이터로 한 랩에 필요한 구동 에너지를 계산하고, 레이스 페이스 계수로 바꿔 몇 랩을 갈 수 있는지 봅니다.',
-    cols: ['제조사', '연도', '스틴트 에너지', '실제 풀 스틴트', '모델 예측', '랩당 에너지'], est: '추정, 2026 BoP 비공개', estLow: '추정 신뢰 낮음: 차 1대뿐이거나 세이프티카·FCY로 스틴트가 짧아진 레이스', laps: '랩', test: '모델 검증 (대회 하나씩 빼고 예측): 스틴트 길이 오차 RMS {e}% · {n}개 대회 · 레이스 계수 k = {k}', note: '실제 풀 스틴트: 같은 차가 두 번 이상 달린 가장 긴 그린 플래그 스틴트 (Al Kamel 레이스 타이밍). 2025 BoP: FIA WEC 결정문.'},
+    cols: ['제조사', '연도', '스틴트 에너지', '실제 풀 스틴트', '모델 예측', '랩당 에너지'], est: '추정, 2026 BoP 비공개', estLow: '추정 신뢰 낮음: 차 1대뿐이거나 세이프티카·FCY로 스틴트가 짧아진 레이스', laps: '랩', test: '모델 검증 (대회 하나씩 빼고 예측): 스틴트 길이 오차 RMS {e}% · {n}개 대회 · 레이스 계수 k = {k}', unseen: '처음 보는 시즌으로 검증 ({y}, 모델 학습에 안 쓴 {n}개 대회 · {r}개 행, Timing71 스틴트 + FIA BoP): 스틴트 길이 오차 RMS {e}%', note: '실제 풀 스틴트: 같은 차가 두 번 이상 달린 가장 긴 그린 플래그 스틴트 (Al Kamel 레이스 타이밍). 2025 BoP: FIA WEC 결정문.'},
   en: {h: 'Hypercar stint energy', lead: 'A WEC Hypercar may deliver only a set amount of energy at the driveshafts per stint (pit-out to pit-in), fixed by the BoP (virtual energy tank). The lap simulator works out the drive energy one lap needs; a race-pace factor turns it into how many laps a stint lasts.',
-    cols: ['Manufacturer', 'Year', 'Stint energy', 'Real full stint', 'Model', 'Energy per lap'], est: 'estimated, 2026 BoP not published', estLow: 'low-confidence estimate: one car only, or stints cut short by safety car/FCY', laps: 'laps', test: 'Model test (each event left out and predicted): stint length RMS error {e}% · {n} events · race factor k = {k}', note: 'Real full stint: the longest green-flag stint a car ran at least twice (Al Kamel race timing). 2025 BoP: FIA WEC decisions.'},
+    cols: ['Manufacturer', 'Year', 'Stint energy', 'Real full stint', 'Model', 'Energy per lap'], est: 'estimated, 2026 BoP not published', estLow: 'low-confidence estimate: one car only, or stints cut short by safety car/FCY', laps: 'laps', test: 'Model test (each event left out and predicted): stint length RMS error {e}% · {n} events · race factor k = {k}', unseen: 'Unseen-season test ({y}, {n} events · {r} rows never used in the fit, Timing71 stints + FIA BoP): stint length RMS error {e}%', note: 'Real full stint: the longest green-flag stint a car ran at least twice (Al Kamel race timing). 2025 BoP: FIA WEC decisions.'},
 };
 function stintPanel(id, lang) {
   const S = lapsimStints?.tracks?.[id]; if (!S) return '';
@@ -303,7 +303,7 @@ function stintPanel(id, lang) {
   const T = lapsimStints.test;
   return `<section class="panel ls-panel"><h2>${esc(t.h)}</h2><p>${esc(t.lead)}</p>
  <div class="output"><table class="ls-table"><thead><tr>${t.cols.map(c => `<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div>
- <p class="fine">${esc(t.test.replace('{e}', T.rmsPct).replace('{n}', T.events).replace('{k}', lapsimStints.k))}</p><p class="fine">${esc(t.note)}</p></section>`;
+ <p class="fine">${esc(t.test.replace('{e}', T.rmsPct).replace('{n}', T.events).replace('{k}', lapsimStints.k))}</p>${T.unseen ? `<p class="fine">${esc(t.unseen.replace('{y}', T.unseen.year).replace('{n}', T.unseen.events).replace('{r}', T.unseen.rows).replace('{e}', T.unseen.rmsPct))}</p>` : ''}<p class="fine">${esc(t.note)}</p></section>`;
 }
 // Brake panel texts
 const BT = {
