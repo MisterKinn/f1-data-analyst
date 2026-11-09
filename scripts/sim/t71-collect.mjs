@@ -35,7 +35,9 @@ export function weatherOf(spec = [], samples = []) {
   const col = (k, f = num) => I[k] < 0 ? [] : samples.map(s => Array.isArray(s.v) ? f(s.v[I[k]]) : null);
   const wind = I.wind < 0 ? [] : samples.map(s => { const v = s.v?.[I.wind]; const x = num(v); return x == null ? null : /kph|km/i.test(v?.[1] || '') ? x / 3.6 : x; });
   const cond = col('cond', v => typeof v === 'string' ? v : null).filter(Boolean);
-  const w = {air: median(col('air')), track: median(col('track')), hum: median(col('hum')), wind: r3(median(wind)), press: median(col('press'))};
+  // some feeds store missing values as 0 or garbage: keep plausible values only
+  const plaus = (a, lo, hi) => a.filter(x => x != null && x >= lo && x <= hi);
+  const w = {air: median(plaus(col('air'), 1, 45)), track: median(plaus(col('track'), 1, 70)), hum: median(col('hum')), wind: r3(median(wind)), press: median(col('press'))};
   if (cond.length) w.wet = cond.filter(c => !/dry/i.test(c)).length / cond.length;
   return Object.values(w).some(x => x != null) ? w : null;
 }

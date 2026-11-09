@@ -53,7 +53,9 @@ if (T71) {
     const key = f.slice(0, -5);
     for (const s of mapSessions(read(join(T71, f)).sessions.map(x => ({...x, key})))) {
       const ll = TRACK_LL[s.track], w = s.weather; const y = new Date(s.start * 1e3).getUTCFullYear();
-      if (!ll || !w || w.air == null || w.track == null || w.wet > 0 || y < 2023 || !s.duration) continue;
+      // clean data: some feeds store missing values as 0 or garbage (e.g. air 255)
+      const ok = w && w.air >= 1 && w.air <= 45 && w.track >= 1 && w.track <= 70 && w.track >= w.air - 5;
+      if (!ll || !ok || w.wet > 0 || y < 2023 || !s.duration) continue;
       const mid = s.start * 1e3 + s.duration * 500, d0 = new Date(mid).toISOString().slice(0, 10);
       let H; try { H = (await (await fetch(`https://archive-api.open-meteo.com/v1/archive?latitude=${ll[0]}&longitude=${ll[1]}&start_date=${d0}&end_date=${d0}&hourly=shortwave_radiation&timezone=GMT`)).json()).hourly; } catch { continue; }
       if (!H?.time) continue;
