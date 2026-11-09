@@ -1,0 +1,7 @@
+{
+ "note": "Banking of corners with a published angle (degrees). Corner numbers as in the track's corner list; the banked part is the contiguous arc around the corner where |curvature| > 1/400 m.",
+ "tracks": {
+  "zandvoort": {"corners": {"3": 19, "14": 18}, "source": "https://www.formula1.com/en/latest/article/first-look-images-of-zandvoorts-new-banked-corners-revealed.5BXXjRKQadkAX35ZOIWR2F"}
+ },
+ "notPlaced": {"jeddah": "Turn 13 is banked (about 12°) but this track has no official corner positions in tracks-data, so it is not placed (not guessed)."}
+}
