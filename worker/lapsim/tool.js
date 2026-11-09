@@ -5,13 +5,13 @@ import {lapsimTracks} from './tracks-data.js';
 import {lapsimCalibration} from './calibration-data.js';
 import {RULE_CHANGES} from './cars.js';
 import {TRACK_NAMES, resolveTrack} from './names.js';
-import {carsFor, realConditions, latestChanges, fittedYear} from './scenario.js';
+import {carsFor, realConditions, latestChanges, fittedYear, SERIES_CARS} from './scenario.js';
 import {rechargeLimitMJ} from './energy-limits.js';
 import {evolutionCoeffs, evolutionDelta, evolutionCurve} from './evolution.js';
 
 const K = lapsimKernel();
 const SITE = 'https://kongboda-motorsports.vercel.app';
-const CARS = ['2019', '2025', '2026', '2027', '2028', 'wec-lmh', 'wec-lmdh', 'wec-lmgt3'];
+const CARS = ['2019', '2025', '2026', '2027', '2028', 'wec-lmh', 'wec-lmdh', 'wec-lmgt3', ...Object.keys(SERIES_CARS)];
 const ro = {readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false};
 const num = (min, max, description) => ({type: 'number', minimum: min, maximum: max, description});
 
@@ -19,7 +19,7 @@ export const LAPSIM_TOOLS = [{name: 'lapsim_simulate',
   description: 'Kongboda lap simulator: a qualifying lap worked out by a quasi-steady-state model (TUM method) on the real driving line built from OpenF1 qualifying car positions. Cars: F1 2019 (TUM base), 2025 and 2026 (fitted to real pole laps), 2027 and 2028 (projected from the ratified power-unit changes and historical development); WEC Hypercar and LMGT3 class cars (fitted to Al Kamel lap times and speed traps). Every result carries a one-sigma error range and a confidence label from a holdout test. Inputs override the real qualifying weather: air and track temperature, humidity, pressure (or altitude), wind speed and direction; FIA "Changes to the circuit" (resurfacing, bumps, kerbs) can be switched on. Returns lap and sector times, top and lowest speed, corner minimum speeds, 2026 energy use, what limits the lap, air density and the model error against the real pole. Call without track to list tracks.',
   inputSchema: {type: 'object', properties: {
     track: {type: 'string', maxLength: 60, description: 'Track id, name or Grand Prix, e.g. "mexico-city", "Monza", "COTA", "멕시코시티".'},
-    car: {type: 'string', enum: CARS, description: 'F1 generation (2019 TUM base, 2025, 2026, 2027, 2028) or WEC class car (wec-lmh, wec-lmdh, wec-lmgt3). Default 2026.'},
+    car: {type: 'string', enum: CARS, description: 'F1 generation (2019 TUM base, 2025, 2026, 2027, 2028), WEC class car (wec-lmh, wec-lmdh, wec-lmgt3), or a provisional series car (imsa-gtp = LMDh car; imsa-gtd/gtdpro, elms-lmgt3, alms-gt3, gtwc-gt3, dtm-gt3, igtc-gt3, nur-gt3, macau-gt3 = LMGT3 car; raced sessions reproduce the real best lap). Default 2026.'},
     compare_car: {type: 'string', enum: CARS, description: 'Second car on the same track and conditions.'},
     air_temp_c: num(-10, 50, 'Air temperature (°C).'),
     track_temp_c: num(0, 70, 'Track temperature (°C).'),
@@ -74,7 +74,7 @@ export function simulate(args = {}) {
   const own = sel.series ? selKey : String(sel.year);
   const realYear = conds[own] ? own : conds['2026'] ? '2026' : Object.keys(conds)[0];
   const real = realYear ? conds[realYear] : null;
-  const realSrc = !real ? null : sel.series && realYear === own ? `real ${real.year} WEC qualifying/Hyperpole (Al Kamel weather, session mean)` : `real ${realYear} F1 qualifying (OpenF1 weather, session mean)`;
+  const realSrc = !real ? null : real.source === 'timing71' && realYear === own ? `real ${real.year} ${sel.series.toUpperCase()} qualifying (Timing71 weather, session median)` : sel.series && realYear === own ? `real ${real.year} WEC qualifying/Hyperpole (Al Kamel weather, session mean)` : `real ${realYear} F1 qualifying (OpenF1 weather, session mean)`;
   const pick = (given, key, fallback) => Number.isFinite(given) ? [given, 'given'] : Number.isFinite(real?.[key]) ? [real[key], realSrc] : [fallback, 'default'];
   const [airTempC, airSrc] = pick(args.air_temp_c, 'airTempC', 25), [trackTempC, trackSrc] = pick(args.track_temp_c, 'trackTempC', 35);
   const [humidityPct, humSrc] = pick(args.humidity_pct, 'humidityPct', 50), [windSpeed, windSrc] = pick(args.wind_speed_ms, 'windSpeed', 0);
@@ -98,6 +98,11 @@ export function simulate(args = {}) {
   // reference car's simulated sectors in the real pole weather, added to every result for that car
   const secOf = r => { if (d.sectors?.length !== 2) return null; const i1 = Math.round(d.sectors[0] / d.ds), i2 = Math.round(d.sectors[1] / d.ds); return [r.time[i1], r.time[i2] - r.time[i1], r.lapTime - r.time[i2]]; };
   const corrOf = c => {
+    if (c.fix?.lap != null) { // lap-level correction (series whose sector lines may differ from these): spread by sector share
+      const ref = cars[c.fix.ref], fw = Object.fromEntries(Object.entries(c.fix.weather || {}).filter(([, v]) => Number.isFinite(v)));
+      const r = K.simulateLap(withGrip(base, ref.grip || 1), ref.car, K.conditionsFromWeather({pressureHpa: 1013.25, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0, ...fw}));
+      const ss = secOf(r) || [r.lapTime, 0, 0], dl = c.fix.lap - r.lapTime; return ss.map(x => dl * x / r.lapTime);
+    }
     if (!c.fix || d.sectors?.length !== 2) return null;
     const ref = cars[c.fix.ref], fw = Object.fromEntries(Object.entries(c.fix.weather || {}).filter(([, v]) => Number.isFinite(v)));
     const ss = secOf(K.simulateLap(withGrip(base, ref.grip || 1), ref.car, K.conditionsFromWeather({pressureHpa: 1013.25, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0, ...fw, rechargeMJ: rechargeMJ ?? undefined})));
@@ -105,7 +110,7 @@ export function simulate(args = {}) {
   };
   const run = c => {
     const r = K.simulateLap(withGrip(track, c.grip || 1), c.car, env), k = corrOf(c), sec = secOf(r);
-    return k && sec ? {...r, lapTime: r.lapTime + k[0] + k[1] + k[2], sectors: sec.map((x, i) => x + k[i]), sectorCorrection: k} : r;
+    return k && sec ? {...r, lapTime: r.lapTime + k[0] + k[1] + k[2], sectors: sec.map((x, i) => x + k[i]), sectorCorrection: k} : k ? {...r, lapTime: r.lapTime + k.reduce((a, b) => a + b, 0), sectorCorrection: k} : r;
   };
   const res = run(sel);
   const out = {status: 'ok', model: 'quasi-steady-state lap simulation (estimate, not a prediction of a real session)',

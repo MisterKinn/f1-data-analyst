@@ -47,6 +47,8 @@ jobs:
         run: node scripts/sim/compound-gap.mjs
       - name: Qualifying Q1/Q2/Q3 windows and segment bests
         run: node scripts/sim/qsplit.mjs
+      - name: Real F1 pole laps (sector correction for raced sessions)
+        run: LAPSIM_TI_DIR=.cache/lapsim/ti node scripts/sim/f1-poles.mjs
       - uses: actions/upload-artifact@v4
         with:
           name: lapsim-evolution
@@ -56,10 +58,11 @@ jobs:
             worker/lapsim/evolution-data.js
             worker/lapsim/compound-gap-data.js
             worker/lapsim/qsplit-data.js
+            worker/lapsim/f1-poles-data.js
       - name: Commit the fit
         if: github.event_name == 'push'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
-          git add worker/lapsim/evolution-data.js docs/lapsim-evolution.md worker/lapsim/compound-gap-data.js worker/lapsim/qsplit-data.js
+          git add worker/lapsim/evolution-data.js docs/lapsim-evolution.md worker/lapsim/compound-gap-data.js worker/lapsim/qsplit-data.js worker/lapsim/f1-poles-data.js
           git diff --cached --quiet || { git commit -m "Lapsim track evolution: fit from official lap data"; git push; }
