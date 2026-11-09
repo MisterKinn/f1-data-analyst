@@ -223,6 +223,10 @@ Connectors and accounts in this environment and what each was for:
 | WEC from F1, track left out: LMH / LMDh / LMGT3 2025 | 1.42 / 1.41 / 1.99 % |
 | WEC from F1, track left out: LMH / LMDh / LMGT3 2026 | 1.62 / 1.44 / 1.60 % |
 
+**After PR `feat/physics-steps` (2026-11-09):** F1 unchanged (0.84 / 0.90 % held-out in the production model);
+WEC held-out with per-class-season transfer factors: LMH 1.54 / 1.14 %, LMDh 1.37 / 1.18 %, LMGT3 1.81 / 1.37 %
+(2025 / 2026); pooled WEC 1.58 → 1.41 % (gate: accepted), no group worse.
+
 ### 4.3 Validation details (variant A, in-sample F1 pole laps; `scripts/sim/validate.mjs`)
 | Season | Lap | Sectors | Corner min speed RMS / bias | Trap RMS / bias | Braking point RMS / bias |
 |---|---|---|---|---|---|
