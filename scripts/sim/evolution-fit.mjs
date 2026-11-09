@@ -18,7 +18,7 @@ const index = JSON.parse(await readFile(join(DIR, 'index.json'), 'utf8')).map(e 
 // Timing71 WEC sessions of seasons with no Al Kamel files (t71-collect.mjs T71_EVO=1), gated per session type
 const T71 = process.env.LAPSIM_T71_EVO;
 if (T71) for (const f of readdirSync(T71).filter(f => /^t71-wec-.*\.json$/.test(f))) { const S = JSON.parse(await readFile(join(T71, f), 'utf8')); index.push({file: f, dir: T71, series: 'wec', year: S.year, track: S.track, type: S.type, session: S.session, t71: true}); }
-// session names differ between sources: compare a normalised key (practice N, qualifying/Hyperpole + class)
+// WEC session names differ between Al Kamel and Timing71: compare a normalised key there (F1 unchanged)
 const median = a => { const s = [...a].sort((x, y) => x - y); return s.length ? (s[(s.length - 1) >> 1] + s[s.length >> 1]) / 2 : NaN; };
 const rms = a => a.length ? Math.sqrt(a.reduce((s, v) => s + v * v, 0) / a.length) : null;
 const r4 = x => Math.round(x * 1e4) / 1e4;
@@ -113,7 +113,7 @@ for (const series of [...new Set(sessions.map(s => s.series))]) {
     const at = (c, t) => { if (t <= c[0][0]) return c[0][1]; for (let i = 1; i < c.length; i++) if (t <= c[i][0]) return c[i - 1][1] + (c[i][1] - c[i - 1][1]) * (t - c[i - 1][0]) / (c[i][0] - c[i - 1][0]); return c.at(-1)[1]; };
     const holdoutOf = L => { const errC = [], errE = [], base = [], keys = [];
       for (const s of L.filter(x => !x.t71)) {
-        const same = L.filter(o => o.track === s.track && o !== s && sessionKey(o.session) === sessionKey(s.session) && o.year !== s.year);
+        const same = L.filter(o => o.track === s.track && o !== s && (series === 'wec' ? sessionKey(o.session) === sessionKey(s.session) : o.session === s.session) && o.year !== s.year);
         const others = L.filter(o => o.track !== s.track);
         if (!same.length && others.length < 2) continue;
         const q = same.length ? null : pool(others), t0 = s.curve[0][0];
