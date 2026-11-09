@@ -12,7 +12,7 @@ import {rechargeLimitMJ} from '../../worker/lapsim/energy-limits.js';
 import {PRIOR, applyRules, applyDevelopment, RULE_CHANGES} from '../../worker/lapsim/cars.js';
 import {simulateLap} from '../../worker/lapsim/engine.js';
 import {conditionsFromWeather} from '../../worker/lapsim/atmosphere.js';
-import {fitSeason, withGrip, holdout, fitJoint, holdoutJoint} from './calibrate-lib.mjs';
+import {fitSeason, withGrip, holdout, fitJoint, holdoutJoint, addBanking} from './calibrate-lib.mjs';
 import {fitJointBCD, holdoutBCD, backtestBCD, poleMult} from './joint-bcd.mjs';
 import {SERIES} from '../../worker/lapsim/series.js';
 import {lapsimWecBop} from '../../worker/lapsim/wec-bop-data.js';
@@ -42,6 +42,8 @@ const tracks = Object.fromEntries(Object.entries(lapsimTracks).map(([id, d]) => 
 // S3 candidate: axle-level car (load transfer, aero balance vs weight split, degressive tyre load law).
 // Track widths (m) are typical values for each class; roll-stiffness split 50/50.
 const AXLE = tw => E.LAPSIM_AXLE === 'on' ? {axle: true, loadExp: Number(E.LAPSIM_LOADEXP || 0.85), trackWidth: tw, rollFront: Number(E.LAPSIM_ROLLFRONT || 0.5)} : {};
+// S2 candidate: banking of corners with a published angle (scripts/sim/data/banking.json)
+if (E.LAPSIM_BANK === 'on') { const bd = JSON.parse(await readFile('scripts/sim/data/banking.json', 'utf8')); for (const [id, tr] of Object.entries(tracks)) addBanking(id, tr, bd); }
 // S2 candidate: vertical curvature from the measured grade (crests unload, dips load the tyres)
 if (E.LAPSIM_KV === 'on') for (const tr of Object.values(tracks)) if (tr.grade) {
   const g = tr.grade, n = g.length; tr.kv = Float64Array.from(g, (_, i) => (g[(i + 1) % n] - g[(i - 1 + n) % n]) / (2 * tr.ds));

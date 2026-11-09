@@ -280,3 +280,17 @@ export function holdoutJoint(groups, key, {folds = 4, iters = 40, ...opts} = {})
   const rmsPct = errors.length ? Math.sqrt(errors.reduce((a, e) => a + e.pct ** 2, 0) / errors.length) : null;
   return {errors, rmsPct, n: errors.length};
 }
+
+// Banking of corners with a published angle (scripts/sim/data/banking.json): the contiguous arc around
+// the corner where |curvature| > 1/400 m gets the angle. Tracks without corner positions are skipped.
+export function addBanking(id, tr, data) {
+  const b = data.tracks?.[id]; if (!b || !tr.corners?.length) return;
+  const n = tr.kappa.length, bank = new Float64Array(n);
+  for (const [num, deg] of Object.entries(b.corners)) {
+    const c = tr.corners.find(x => String(x.number) === num && !x.letter); if (!c) continue;
+    const i0 = Math.round(c.s / tr.ds) % n, on = i => Math.abs(tr.kappa[((i % n) + n) % n]) > 1 / 400;
+    let a = i0, e = i0; while (on(a - 1) && i0 - a < 200) a--; while (on(e + 1) && e - i0 < 200) e++;
+    for (let i = a; i <= e; i++) bank[((i % n) + n) % n] = deg * Math.PI / 180;
+  }
+  tr.bank = bank;
+}

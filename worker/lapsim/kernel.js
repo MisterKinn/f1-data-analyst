@@ -153,7 +153,12 @@ export function lapsimKernel() {
     }
     // Vertical curvature (1/m, + = dip/compression, − = crest): adds m·v²·kv to the normal load
     const kv = track.kv || null;
-    const normalAt = (v, i, L) => Math.max(0.1 * mg, mg * cosG[i] + L + (kv ? t.m * v * v * kv[i] : 0));
+    // Banking (rad, tilted towards the corner centre): part of gravity holds the car in the corner and the
+    // centripetal force adds load. bankLat(v, i): lateral force still needed from the tyres; bankN: extra load.
+    const bank = track.bank || null;
+    const bankLat = (v, i) => { const ay = v * v * Math.abs(track.kappa[i]); if (!bank || !bank[i]) return t.m * ay; const c = Math.cos(bank[i]), s = Math.sin(bank[i]); return Math.max(0, t.m * (ay * c - G * s)); };
+    const bankN = (v, i) => { if (!bank || !bank[i]) return 0; const ay = v * v * Math.abs(track.kappa[i]), c = Math.cos(bank[i]), s = Math.sin(bank[i]); return mg * cosG[i] * (c - 1) + t.m * ay * s; };
+    const normalAt = (v, i, L) => Math.max(0.1 * mg, mg * cosG[i] + L + (kv ? t.m * v * v * kv[i] : 0) + (bank ? bankN(v, i) : 0));
     // Lateral capacity (N) at speed v on point i with aero load L (axle model or point mass)
     const latCap = (v, i, L) => {
       const N = normalAt(v, i, L);
@@ -176,7 +181,7 @@ export function lapsimKernel() {
       const m = muAt(i), cl = car.clA;
       const f = v => {
         const va = vAir(v, i), L = aeroFactor * cl * va * va;
-        return m * latCap(v, i, L) - t.m * v * v * kap;
+        return m * latCap(v, i, L) - (bank ? bankLat(v, i) : t.m * v * v * kap);
       };
       let lo = 1, hi = vMaxCar;
       if (f(hi) >= 0) { vLat[i] = vMaxCar; continue; }
@@ -188,7 +193,7 @@ export function lapsimKernel() {
     const ellipse = (v, i, lat) => {
       const kap = Math.abs(track.kappa[i]);
       if (kap < 1e-6) return 1;
-      const ay = v * v * kap;
+      const ay = bank ? bankLat(v, i) / t.m : v * v * kap;
       const va = vAir(v, i), L = aeroFactor * car.clA * va * va;
       const ayMax = muAt(i) * latCap(v, i, L) / t.m;
       const r = Math.min(1, ay / ayMax);

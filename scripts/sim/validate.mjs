@@ -9,7 +9,7 @@ import {trackFromData} from '../../worker/lapsim/tracks.js';
 import {simulateLap} from '../../worker/lapsim/engine.js';
 import {conditionsFromWeather} from '../../worker/lapsim/atmosphere.js';
 import {rechargeLimitMJ} from '../../worker/lapsim/energy-limits.js';
-import {withGrip, bestShift, traceOnTrack, realExtremes, sampleAt} from './calibrate-lib.mjs';
+import {withGrip, bestShift, traceOnTrack, realExtremes, addBanking} from './calibrate-lib.mjs';
 
 const name = process.argv[2] || 'run';
 const {lapsimCalibration: cal} = await import(`../../worker/lapsim/calibration-data.js?${Date.now()}`);
@@ -18,6 +18,8 @@ const rms = a => a.length ? Math.sqrt(a.reduce((s, x) => s + x * x, 0) / a.lengt
 const mean = a => a.length ? a.reduce((s, x) => s + x, 0) / a.length : null;
 const r3 = x => x == null ? null : +x.toFixed(3);
 const kv = process.env.LAPSIM_KV === 'on';
+const bankData = process.env.LAPSIM_BANK === 'on' ? JSON.parse(readFileSync('scripts/sim/data/banking.json', 'utf8')) : null;
+const addBankingTo = (id, tr) => addBanking(id, tr, bankData);
 
 // braking point before a corner minimum: last point (going backwards) where speed is within 3 km/h of the
 // preceding maximum
@@ -33,6 +35,7 @@ for (const [year, season] of Object.entries(cal.seasons || {})) for (const [id, 
   const t = traces.find(x => String(x.year) === year && x.track === id && x.session_key === r.sessionKey && x.position === r.position);
   if (!t || !lapsimTracks[id]) continue;
   const tr = trackFromData(lapsimTracks[id]);
+  if (bankData) addBankingTo(id, tr);
   if (kv && tr.grade) { const g = tr.grade, n = g.length; tr.kv = Float64Array.from(g, (_, i) => (g[(i + 1) % n] - g[(i - 1 + n) % n]) / (2 * tr.ds)); }
   const car = r.drag ? {...season.car, cdA: season.car.cdA * r.drag, cdALow: season.car.cdALow * r.drag} : season.car;
   const mj = +year >= 2026 ? rechargeLimitMJ(id, +year) : null;
