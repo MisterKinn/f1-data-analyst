@@ -166,6 +166,44 @@ Earlier handoffs (still valid for features outside physics): Project docs `claud
   `worker/lapsim/tool.js` `corrOf` spreads the correction per sector (or per lap share for lap-only data).
 - `uncertainty()` reports in-sample error for fitted tracks and the held-out RMS for unseen ones.
 
+### 3.6 How the physics model was built — history, and the connectors and skills used at each stage
+
+| When | Stage | What was done and why | Connectors / skills / tools used |
+|---|---|---|---|
+| 2026-11-07 | Choice of base | Owner chose the three TUMFTM tools (laptime-simulation, global_racetrajectory_optimization + racetrack-database, race-simulation). Plan in Project doc `claude/simulation-plan.md`. | WebSearch/WebFetch (TUM repos, Formula Student calibration practice: Chalmers 2024, TU Delft 2018, OpenLAP, FSAE TTC), Projects (plan doc) |
+| 11-07 | Kernel port | TUM laptime-simulation (Python) ported to JavaScript `worker/lapsim/kernel.js`, same QSS method; validated against TUM's own example results within 0.3–1.2 %. | git clone of TUMFTM repos, Bash/Node, test files |
+| 11-07 | Tracks | Racing path = real F1 qualifying positions from OpenF1 snapped path (`build-geometry.mjs`), curvature/grade/heading on a uniform grid, `tune-geometry.mjs`; 26 tracks. TUM racetrack-database only for widths/lines. | OpenF1 API (Actions only), TUMFTM racetrack-database (git) |
+| 11-07 | First F1 fit | 2025/2026 cars fitted to real pole speed traces: only CdA, ClA, μ (+ power ±15 %) inside physical bounds; one grip factor per track; weather → air density; holdout by track. Common calibration rules written (§9 of the plan). | Node scripts, GitHub Actions `lapsim-data.yml` |
+| 11-07 | Rules and projections | FIA documents read for 2026–2028 parameters (`rule-params.mjs`, `energy-docs.mjs`, rule monitor); 2027/2028 projected cars; FIA circuit changes as scenarios. | Kongboda MCP `fia_list_documents`, `fia_read_document`, `rules_lookup`; WebFetch |
+| 11-07 | Fitter upgrades | Nelder–Mead → joint fit over 2023–2026 → block-coordinate descent (`joint-bcd.mjs`) with team multipliers, sector weights, per-track drag, prior weight; experiment workflow `lapsim-experiment.yml` for settings. Winning settings became production env. | GitHub Actions matrix experiments |
+| 11-07 | Reproduction layer | Sector correction on raced tracks (real pole sectors − simulated, same weather) on the page and in the MCP tool. | — |
+| 11-07–08 | WEC classes | LMH (front-axle hybrid above a speed), LMDh, LMGT3 in `series.js`; fitted on top-3 Al Kamel laps with F1 track factors; leave-one-track-out. | Kongboda MCP `wec_list_archive`, `wec_read_document`; Actions (`fetch-wec.mjs`) because the shell cannot reach Al Kamel |
+| 11-08 | Around the lap model | Track evolution, race pace (143 races reproduced), compounds (C-numbers, measured gaps), racing lines per car, brakes (Brembo), battery (causal 2026 energy in the kernel), Q-split, forecast (Météo-France via Open-Meteo), track temperature, stint energy. Details in `claude/handoff-chatgpt.md`. | TracingInsights (git sparse clone), WebSearch/WebFetch + background research agents (Pirelli, Michelin, Goodyear, Brembo, BoP), Playwright, built-in browser |
+| 11-08 | LAPSIM_CARRY test | Carrying a track's remaining error into an unseen season — tested as an option. | experiment workflow |
+| 11-08 | Handoff to ChatGPT | Failed (owner judged the result poor); work came back to Claude on 11-09. Lesson: the receiver needs the method and the gate, not only the task list — this document. | Projects (`claude/handoff-chatgpt.md`) |
+| 11-09 | Timing71 | Reader, collector (1,845 sessions), track mapping, three-way check (0 conflicts), the **held-out gate** (`gate.mjs`) in every fit; most candidates rejected honestly. | karpathy-guidelines skill (goal + pass check, order of steps), GitHub Actions `probe/**`, Timing71 archive API |
+| 11-09 | Reproduction everywhere | F1 pole table from TracingInsights (39/39, Suzuka fixed), WEC (18/18), other series (9/9 where geometry exists), provisional series cars in the tool. | TracingInsights, Timing71, tests |
+| 11-09 | Physics review | Error budget, verification matrix, trade studies → findings F1–F7 and steps S1–S6 (Project doc `claude/physics-review.md`). | **mission-architect** skill (error budget, TAID verification, trade study, sensitivity), **thermal** skill (two-node tyre plan) |
+| 11-09 | S1 data check | Wet COTA 2025 WEC qualifying found and excluded (#147). | WebSearch (team/press reports for the session) |
+| 11-09 | S1–S5 experiments | Axle model, vertical curvature, banking, grip bounds, no-drag, per-event BoP, coverage test, validation table; 10 variants in parallel; transfer factors for WEC accepted (§5). | Actions export + matrix probes, `exp-compare.mjs`, `validate.mjs`, `intervals.mjs` |
+
+How changes were made, every time: goal + pass check (karpathy) → code behind a flag → tests (`tests/lapsim.test.mjs`
+incl. exact reproduction) → Actions run on real data → gate → docs with numbers → PR via the browser compare page →
+owner merges → live check (Firecrawl or browser).
+
+Connectors and accounts in this environment and what each was for:
+| Connector / tool | Used for | Notes |
+|---|---|---|
+| Kongboda Motorsports MCP (the site's own) | FIA/WEC documents, rules lookup, `lapsim_simulate` checks | slow for bulk; single files only |
+| GitHub MCP + `gh` CLI | fork branches, run status, logs, artifacts | upstream API returns 403 → PRs via browser |
+| Built-in browser (Claude desktop) / Claude in Chrome | creating PRs on upstream, live page checks | the safety layer blocks the Merge click |
+| Firecrawl MCP | owner's rule for live checks after merge | credits can run out; browser as fallback |
+| WebSearch / WebFetch | rules, tyre allocations, BoP, Brembo, wet-session reports | Wikipedia not reachable |
+| Projects (claude.ai) | plans and handoffs (`claude/*.md`) | read before acting; update after |
+| Memory | owner preferences and decisions across chats | the background pass files them |
+| Background agents | parallel data research (compounds, BoP, Brembo) | brief them like a peer; verify their numbers |
+| Skills | karpathy-guidelines, mission-architect, thermal; Ponytail plugin; Graphify | see §10 |
+
 ---
 
 ## 4. Where the error is today
