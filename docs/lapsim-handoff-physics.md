@@ -7,6 +7,11 @@ habits and tacit knowledge that made the work go well. Read it once top to botto
 
 Owner: Jeongmin (GitHub `kangjeongmin1229`, site <https://kongboda-motorsports.vercel.app>).
 Production repo: `MisterKinn/f1-data-analyst` (merge to `main` = automatic Vercel deploy).
+**State at handoff:** PR #148 (`feat/physics-steps`) open for the owner to merge — WEC transfer track factors,
+kernel options (off), experiment tools, this document. Experiments B and F–I (axle model) were still running
+in Actions run 42558077604; their results are committed to `probe/lapsim-exp` (`probe-out/`) by the collect job.
+First task for the receiver: read them with `exp-compare.mjs` (§8) and fill §5.3.
+
 Earlier handoffs (still valid for features outside physics): Project docs `claude/handoff-chatgpt.md`
 (all simulator features to 2026-11-08), `claude/work-plan.md` (Timing71 work), `claude/physics-review.md`
 (the review that produced steps S1–S6 below). Repo docs: `docs/lapsim-*.md`.
