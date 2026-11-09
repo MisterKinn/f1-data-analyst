@@ -122,3 +122,19 @@ Every candidate below went through the held-out gate. Only accepted changes reac
 | Track temperature + 189 Timing71 sessions of other series at the same circuits (F1 replays excluded) | leave-one-event-out on the F1 events | **rejected** (3.97 → 3.97 °C). Unseen-series test of the current model: **4.96 °C** on those sessions (recorded in `tracktemp-data.js`). First run showed 16.9 °C: some feeds store missing weather as 0 or garbage (air 255 °C); values outside air 1–45 °C / track 1–70 °C are now dropped in the collector. |
 | LMGT3 full-stint lengths (`t71-lmgt3-stints.mjs`) | measurement | table per event and brand (e.g. Le Mans 11 laps for all, Bahrain ~25, Interlagos ~33). No fuel model: per-car fuel capacity is not published with the BoP. Some 2025–26 feeds have no car make. |
 | Track evolution + 60 Timing71 WEC practice/qualifying tables 2021–24 (`t71-collect.mjs` with `T71_EVO=1`) | same-track-other-season holdout on the Al Kamel sessions only | **rejected**: practice end error 0.827 → 0.885 %, qualifying 1.235 → 1.946 %. WEC evolution stays off; F1 unchanged (WEC-only session-name matching). |
+
+## Step 1a — wet session hidden in the data (2026-11-09)
+
+COTA 2025 WEC qualifying/Hyperpole ran on a wet track (official reports), but the Al Kamel weather shows no
+rain. It was fitted as a dry session: Hypercar laps 5 % slower than 2026 and speed traps 241–259 km/h
+(~300 in 2026). Now listed in `scripts/sim/data/wet-sessions.json` with sources and skipped like any wet session.
+`calibrate.mjs` warns when a class speed trap is under 90 % of the same class at that track in other years.
+
+| WEC 2025 holdout (track left out) | Before | After |
+|---|---|---|
+| LMH | 3.80 % | 1.54 % |
+| LMDh | 3.87 % | 1.61 % |
+| LMGT3 | 2.22 % | 2.14 % |
+
+F1 and all 2026 cars unchanged (identical). Note for step 3: Hypercar ClA sits at its upper bound (7.0) and
+LMGT3 at 3.5 in every fit — the fit compensates for missing physics.
