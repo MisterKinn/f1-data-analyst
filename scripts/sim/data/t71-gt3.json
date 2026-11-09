@@ -1,0 +1,36 @@
+{
+ "method": "LMGT3 car (calibrated WEC) vs GT3 qualifying bests; candidate = one pace factor per series, leave one track out",
+ "series": {
+  "gtwc": {
+   "rows": 1,
+   "tracks": [
+    "austin"
+   ],
+   "factor": 1.0016,
+   "looRmsLmgt3": 0.16,
+   "looRmsWithFactor": 0.16,
+   "gate": "rejected: only 1 held-out rows",
+   "accept": false,
+   "detail": [
+    "2026 austin real 123.563 sim 123.366"
+   ]
+  },
+  "dtm": {
+   "rows": 3,
+   "tracks": [
+    "spielberg",
+    "zandvoort"
+   ],
+   "factor": 1.0698,
+   "looRmsLmgt3": 7.1,
+   "looRmsWithFactor": 3.94,
+   "gate": "rejected: only 3 held-out rows",
+   "accept": false,
+   "detail": [
+    "2024 spielberg real 95.798 sim 87.005",
+    "2025 zandvoort real 102.194 sim 95.531",
+    "2026 spielberg real 87.575 sim 87.055"
+   ]
+  }
+ }
+}
