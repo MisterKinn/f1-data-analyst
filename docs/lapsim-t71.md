@@ -110,3 +110,14 @@ a measurement, not a model. Stints with no full-course lap, ≥10 laps, starting
 stint energy): Road Atlanta 2024 2.27, 2025 2.25; Indianapolis 2025 2.16, 2026 2.26; Sebring 2025 3.32;
 Daytona 2026 3.28; Road America 2026 3.66 (× 912 MJ BoP ≈ 33 MJ/lap). Turning this into the lap-simulator
 energy model needs IMSA track geometry (step 9). VFT exists from late 2024 (21 races).
+
+## Fits round 2 (2026-11-09)
+
+Every candidate below went through the held-out gate. Only accepted changes reach the page.
+
+| Candidate | Test | Result |
+|---|---|---|
+| WEC class fits + Timing71 2023–24 qualifying bests (half weight; `t71-wec-extra.json`, 11 rows) | leave-one-track-out on each calibrated season, **inside `calibrate.mjs`** (real pipeline: top-3 Al Kamel laps) | **all 6 class-seasons rejected** — LMH 2025 3.80→3.76 % (noise), 2026 1.28→1.42 %; LMDh 2025 3.87→4.01 %, 2026 1.40→1.42 %; LMGT3 2025 2.22→2.15 % (noise), 2026 1.48→1.45 % (noise). Model unchanged. A simplified local experiment (best car only, `t71-wec-pool.mjs`) had accepted 2025; the pipeline gate shows it does not hold with the real inputs. The gate stays in `calibrate.mjs` and re-tests on every run. `LAPSIM_ONLY=wec` refits WEC alone (F1 kept). |
+| GT3 transfer: WEC LMGT3 car vs GTWC / DTM / IGTC qualifying (`t71-gt3.mjs`) | one pace factor per series, leave one track out | **not enough data**: 4 usable sessions on simulator tracks (GTWC Europe in the archive is mostly 2018–19; GTWC America meets our tracks only at COTA). A GT3 class needs new track geometry. |
+| Track temperature + 189 Timing71 sessions of other series at the same circuits (F1 replays excluded) | leave-one-event-out on the F1 events | **rejected** (3.97 → 3.97 °C). Unseen-series test of the current model: **4.96 °C** on those sessions (recorded in `tracktemp-data.js`). First run showed 16.9 °C: some feeds store missing weather as 0 or garbage (air 255 °C); values outside air 1–45 °C / track 1–70 °C are now dropped in the collector. |
+| LMGT3 full-stint lengths (`t71-lmgt3-stints.mjs`) | measurement | table per event and brand (e.g. Le Mans 11 laps for all, Bahrain ~25, Interlagos ~33). No fuel model: per-car fuel capacity is not published with the BoP. Some 2025–26 feeds have no car make. |
