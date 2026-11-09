@@ -102,7 +102,8 @@ function fmtLap(s) { if (!Number.isFinite(s)) return '–'; const m = Math.floor
 function carsFor(id, lang) {
   const t = T[lang], label = {base2019: lang === 'en' ? '2019 base (TUM)' : '2019 기준 (TUM)', 2027: `2027 (${t.projected})`, 2028: `2028 (${t.projected})`};
   const wec = c => `WEC ${SERIES.wec.classes[c.cls].label[lang]} ${c.year}`;
-  return Object.fromEntries(Object.entries(scenarioCars(id)).map(([k, c]) => [k, {...c, label: c.series ? wec(c) : label[k] || k}]));
+  // provisional series cars (IMSA, GT3 series) are tool-only until their pages exist
+  return Object.fromEntries(Object.entries(scenarioCars(id)).filter(([, c]) => c.kind !== 'proxy').map(([k, c]) => [k, {...c, label: c.series ? wec(c) : label[k] || k}]));
 }
 
 // --- Rendering (shared with the browser; must only use its arguments) ---

@@ -2,6 +2,11 @@
 // /simulation page and the lapsim_simulate connector tool so both give the same answer.
 import {lapsimWecPoles} from './wec-poles-data.js';
 import {lapsimF1Poles} from './f1-poles-data.js';
+import {lapsimSeriesPoles} from './series-poles-data.js';
+// series cars: key → [series, class, calibrated base car]
+export const SERIES_CARS = {'imsa-gtp': ['imsa', 'gtp', 'wec-lmdh'], 'imsa-gtdpro': ['imsa', 'gtdpro', 'wec-lmgt3'], 'imsa-gtd': ['imsa', 'gtd', 'wec-lmgt3'],
+  'elms-lmgt3': ['elms', 'lmgt3', 'wec-lmgt3'], 'alms-gt3': ['alms', 'gt3', 'wec-lmgt3'], 'gtwc-gt3': ['gtwc', 'gt3', 'wec-lmgt3'], 'dtm-gt3': ['dtm', 'gt3', 'wec-lmgt3'],
+  'igtc-gt3': ['igtc', 'gt3', 'wec-lmgt3'], 'nur-gt3': ['nur', 'gt3', 'wec-lmgt3'], 'macau-gt3': ['macau', 'gt3', 'wec-lmgt3']};
 import {lapsimCalibration} from './calibration-data.js';
 import {lapsimTrackChanges} from './track-changes-data.js';
 import {lapsimChangeEffects} from './change-effects-data.js';
@@ -34,6 +39,15 @@ export function carsFor(id) {
     const p = y && lapsimWecPoles?.[id]?.[y]?.[cls];
     if (p) out['wec-' + cls].fix = {real: p.sectors, weather: p.weather, ref: 'wec-' + cls};
   }
+  // Series without their own car model yet: provisional car from the nearest calibrated class (IMSA GTP = LMDh,
+  // GT3 series = LMGT3). Raced sessions reproduce through a lap correction (real best lap minus the simulated
+  // lap in that weather); elsewhere the provisional car is an estimate with no fitted error range.
+  for (const [key, [ser, cls, base]] of Object.entries(SERIES_CARS)) {
+    const b = out[base]; if (!b) continue;
+    const ys = lapsimSeriesPoles?.[ser]?.[id] || {}, y = Object.keys(ys).filter(k => ys[k][cls]).sort().at(-1), p = y && ys[y][cls];
+    out[key] = {car: b.car, grip: b.grip, kind: 'proxy', year: y ? Number(y) : b.year, series: ser, cls, proxyOf: base,
+      ...(p ? {fix: {lap: p.lap, weather: p.weather || {}, ref: key, session: p.session}} : {})};
+  }
   // Sector correction on tracks raced with this rule set: the real pole's sector times minus the
   // fitted 2026 car's sectors in the same weather (worked out where the lap is simulated). Projected
   // cars keep the 2026 correction (it describes the track, not the car).
@@ -54,6 +68,7 @@ export function carsFor(id) {
 export function uncertainty(c, id) {
   const cal = lapsimCalibration || {};
   if (c.kind === 'base' || c.kind === 'prior') return {pct: null, confidence: 'not-fitted'};
+  if (c.kind === 'proxy') return {pct: null, confidence: c.fix ? 'reproduced' : 'provisional'};
   const season = c.series ? cal.series?.[c.series]?.[c.cls]?.[c.year] : c.kind === 'projected' ? cal.seasons?.[2026] : cal.seasons?.[c.year];
   if (!season) return {pct: null, confidence: 'low'};
   const errs = Object.values(season.tracks || {}).filter(t => t.realLap > 0).map(t => t.errorSec / t.realLap * 100);
@@ -79,6 +94,11 @@ export function realConditions(id) {
   for (const [cls, seasons] of Object.entries(lapsimCalibration?.series?.wec || {})) {
     const y = Object.keys(seasons).filter(k => seasons[k].tracks?.[id]).sort().at(-1), r = y && seasons[y].tracks[id];
     if (r?.weather) out['wec-' + cls] = {...r.weather, realLap: r.realLap, year: Number(y), event: r.event, car: r.car, manufacturer: r.manufacturer, position: 1};
+  }
+  // series cars: the real session of their latest raced season here (Timing71 weather, session median)
+  for (const [key, [ser, cls]] of Object.entries(SERIES_CARS)) {
+    const ys = lapsimSeriesPoles?.[ser]?.[id] || {}, y = Object.keys(ys).filter(k => ys[k][cls]).sort().at(-1), p = y && ys[y][cls];
+    if (p) out[key] = {...Object.fromEntries(Object.entries(p.weather || {}).filter(([, v]) => Number.isFinite(v))), realLap: p.lap, year: Number(y), event: p.session, car: p.car, manufacturer: p.make, position: 1, source: 'timing71'};
   }
   return out;
 }

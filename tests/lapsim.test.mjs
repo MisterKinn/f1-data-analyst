@@ -281,3 +281,17 @@ test('F1 sector correction: every raced dry session of 2025 and 2026 reproduces 
   }
   assert.ok(n >= 30);
 });
+
+test('series cars: every raced session on a simulator track reproduces the real best lap (Timing71 table)', async () => {
+  const {lapsimSeriesPoles: P} = await import('../worker/lapsim/series-poles-data.js');
+  const {SERIES_CARS} = await import('../worker/lapsim/scenario.js');
+  const {simulate} = await import('../worker/lapsim/tool.js');
+  let n = 0;
+  for (const [key, [ser, cls]] of Object.entries(SERIES_CARS)) for (const [t, ys] of Object.entries(P[ser] || {})) {
+    const y = Object.keys(ys).filter(k => ys[k][cls]).sort().at(-1); if (!y) continue;
+    const r = simulate({track: t, car: key, conditions: 'real'});
+    assert.ok(Math.abs(r.result.lap_seconds - ys[y][cls].lap) < 0.0015, `${key} ${t}`); n++;
+  }
+  assert.ok(n > 0);
+  assert.equal(simulate({track: 'montreal', car: 'imsa-gtp'}).uncertainty.confidence, 'provisional');
+});

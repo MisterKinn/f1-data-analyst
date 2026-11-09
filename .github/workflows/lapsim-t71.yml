@@ -67,6 +67,7 @@ jobs:
       - run: node scripts/sim/t71-imsa-vft.mjs
       - run: node scripts/sim/t71-lmgt3-stints.mjs
       - run: node scripts/sim/t71-gt3.mjs
+      - run: node scripts/sim/series-poles.mjs
       - uses: actions/cache/save@v4
         with:
           path: scripts/sim/data/t71
@@ -74,5 +75,5 @@ jobs:
       - run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
-          git add scripts/sim/data/t71/counts.json scripts/sim/data/t71/check.json scripts/sim/data/wec-tyre-effect.json scripts/sim/data/t71-wec-stints.json scripts/sim/data/t71-imsa-vft.json scripts/sim/data/t71-lmgt3-stints.json scripts/sim/data/t71-gt3.json
+          git add scripts/sim/data/t71/counts.json scripts/sim/data/t71/check.json scripts/sim/data/wec-tyre-effect.json scripts/sim/data/t71-wec-stints.json scripts/sim/data/t71-imsa-vft.json scripts/sim/data/t71-lmgt3-stints.json scripts/sim/data/t71-gt3.json scripts/sim/data/series-poles.json worker/lapsim/series-poles-data.js
           git diff --cached --quiet || (git commit -m "Timing71: counts, three-way check, WEC tyre fit" && git push)
