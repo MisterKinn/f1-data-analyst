@@ -192,10 +192,11 @@ const wecYears = new Set(wec.map(w => +w.year));
 // LAPSIM_WEC_GRIP=f1 forces the F1 fit's own grip.
 const TRANSFER = E.LAPSIM_WEC_GRIP === 'f1' ? null : await import('../../worker/lapsim/transfer-grip-data.js').then(m => m.lapsimTransferGrip).catch(() => null);
 const f1GripOwn = id => Object.keys(seasons).sort().reverse().map(y => seasons[y]?.tracks?.[id]?.grip).find(g => g != null) ?? null;
-const f1Grip = id => TRANSFER ? (TRANSFER.grip[id] ?? null) : f1GripOwn(id);
+const transferGrip = id => TRANSFER?.grip[id] ?? null;
 for (const [cls, def] of Object.entries(SERIES.wec.classes)) {
   for (const year of [...new Set(wec.map(w => w.year))].sort()) {
-    const sessions = wec.filter(w => w.cls === cls && w.year === year && tracks[w.track] && !w.weather?.rain && f1Grip(w.track) != null);
+    const sessions = wec.filter(w => w.cls === cls && w.year === year && tracks[w.track] && !w.weather?.rain && f1GripOwn(w.track) != null);
+    let f1Grip = f1GripOwn;
     // data check: a class speed trap far below the same class at the same track in other years hints at a wet or
     // unusual session that the timing does not mark (add it to scripts/sim/data/wet-sessions.json after checking)
     for (const w of sessions) {
@@ -206,12 +207,25 @@ for (const [cls, def] of Object.entries(SERIES.wec.classes)) {
     // speed traps sit at different places on each track: use one only when it looks like a top speed
     const traps = sessions.flatMap(w => w.laps.map(l => l.topSpeedKph)).filter(Number.isFinite).sort((a, b) => a - b);
     const medTrap = traps[Math.floor(traps.length / 2)];
-    const laps = sessions.flatMap(w => w.laps.map((l, i) => ({name: w.track, track: tracks[w.track], lapSeconds: l.lap, trapKph: l.topSpeedKph >= 0.92 * medTrap ? l.topSpeedKph : null,
-      weight: i === 0 ? 1 : 0.5, grip: f1Grip(w.track), weather: w.weather || {}, meta: {event: w.event, car: l.car, manufacturer: l.manufacturer, session: l.session}})));
+    const lapsWith = gf => sessions.flatMap(w => w.laps.map((l, i) => ({name: w.track, track: tracks[w.track], lapSeconds: l.lap, trapKph: l.topSpeedKph >= 0.92 * medTrap ? l.topSpeedKph : null,
+      weight: i === 0 ? 1 : 0.5, grip: gf(w.track), weather: w.weather || {}, meta: {event: w.event, car: l.car, manufacturer: l.manufacturer, session: l.session}})));
+    let laps = lapsWith(f1Grip);
     if (new Set(laps.map(l => l.name)).size < 3) { report.push(`WEC ${cls} ${year}: not enough tracks (${new Set(laps.map(l => l.name)).size})`); continue; }
     const base = {...structuredClone(def.prior), linkMu: true, ...AXLE(cls === 'lmgt3' ? 1.62 : 1.65)};
     const params = Object.entries(def.bounds).map(([k, [lo, hi]]) => ({key: k, path: k, base: base[k], step: 0.08, min: lo, max: hi}));
     let h = holdout(laps, base, params, {iters: HOLDOUT_ITERS, folds: 99, gripFor: l => l.grip});
+    // Transfer track factors (F1 fit without per-track drag): used for this class-season only when its
+    // leave-one-track-out error is not higher than with the F1 fit's own factors (never worse); gate verdict recorded.
+    let gripSource = {used: 'f1'};
+    if (TRANSFER && sessions.every(w => transferGrip(w.track) != null)) {
+      const lt = lapsWith(transferGrip), ht = holdout(lt, base, params, {iters: HOLDOUT_ITERS, folds: 99, gripFor: l => l.grip});
+      const a = Object.fromEntries(h.errors.map(e => [e.name, e.pct])), b = Object.fromEntries(ht.errors.map(e => [e.name, e.pct])), names = Object.keys(a).filter(n => n in b);
+      const g = gate(names.map(n => a[n]), names.map(n => b[n]), {minRows: 4});
+      const use = g.rmsNew <= g.rmsCur;
+      gripSource = {used: use ? 'transfer' : 'f1', f1RmsPct: +g.rmsCur.toFixed(2), transferRmsPct: +g.rmsNew.toFixed(2), gate: g.reason};
+      report.push(`WEC ${cls} ${year}: transfer track factors — holdout ${g.rmsCur.toFixed(2)}% → ${g.rmsNew.toFixed(2)}%, ${use ? 'used' : 'not used (worse)'} (${g.reason})`);
+      if (use) { laps = lt; h = ht; f1Grip = transferGrip; }
+    }
     // Timing71 rows of the two seasons before (only seasons with no Al Kamel data), half weight; kept only if the
     // leave-one-track-out error on this season improves beyond noise (gate, docs/lapsim-t71.md)
     const extra = t71Extra.filter(r => r.cls === cls && r.year < +year && r.year >= +year - 2 && !wecYears.has(r.year) && tracks[r.track] && f1Grip(r.track) != null)
@@ -247,7 +261,7 @@ for (const [cls, def] of Object.entries(SERIES.wec.classes)) {
       perTrack[p.name] = {grip: +p.grip.toFixed(4), errorSec: +p.dt.toFixed(3), simLap: +p.simLap.toFixed(3), realLap: p.realLap,
         trapKph: p.vMaxReal, simTopKph: +p.vMaxSim.toFixed(1), event: p.meta.event, car: p.meta.car, manufacturer: p.meta.manufacturer, weather: w?.weather || null};
     }
-    ((series.wec ||= {})[cls] ||= {})[year] = {car, tracks: perTrack, pooled, bop, score: +fit.score.toFixed(3), laps: laps.length,
+    ((series.wec ||= {})[cls] ||= {})[year] = {car, tracks: perTrack, pooled, bop, gripSource, score: +fit.score.toFixed(3), laps: laps.length,
       holdout: {rmsPct: h.rmsPct != null ? +h.rmsPct.toFixed(2) : null, n: h.n, tracks: h.errors.map(e => ({track: e.name, errorSec: +e.dt.toFixed(3)}))}};
     report.push(`## WEC ${def.label.en} ${year}`, '', `${laps.length} laps on ${Object.keys(perTrack).length} tracks, fit score ${fit.score.toFixed(3)}. Holdout (one track left out at a time): ${h.rmsPct?.toFixed(2) ?? '–'}% RMS over ${h.n} laps.`, '',
       `Car: grip μy ${car.muY.toFixed(3)}, downforce ClA ${car.clA.toFixed(2)} m², drag CdA ${car.cdA.toFixed(3)} m² (mass ${car.mass} kg and ${(car.pIce / 1e3).toFixed(0)} kW fixed).`, '',
