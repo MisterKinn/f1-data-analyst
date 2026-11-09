@@ -1,0 +1,181 @@
+{
+ "source": "Timing71 archive, calibration use only",
+ "rows": [
+  {
+   "cls": "lmh",
+   "track": "interlagos",
+   "year": 2024,
+   "lap": 83.14,
+   "trapKph": null,
+   "weather": {
+    "airTempC": 15,
+    "trackTempC": 19.7,
+    "humidityPct": 84,
+    "pressureHpa": 934.5,
+    "windSpeed": 2.5,
+    "windFromDeg": 0,
+    "rain": false
+   }
+  },
+  {
+   "cls": "lmh",
+   "track": "austin",
+   "year": 2024,
+   "lap": 110.734,
+   "trapKph": null,
+   "weather": {
+    "airTempC": 33.4,
+    "trackTempC": 52.5,
+    "humidityPct": 54,
+    "pressureHpa": 993.2,
+    "windSpeed": 4.3,
+    "windFromDeg": 0,
+    "rain": false
+   }
+  },
+  {
+   "cls": "lmh",
+   "track": "sakhir",
+   "year": 2024,
+   "lap": 106.714,
+   "trapKph": null,
+   "weather": {
+    "airTempC": 27.6,
+    "trackTempC": 30.8,
+    "humidityPct": 68,
+    "pressureHpa": 1014.2,
+    "windSpeed": 5,
+    "windFromDeg": 0,
+    "rain": false
+   }
+  },
+  {
+   "cls": "lmdh",
+   "track": "interlagos",
+   "year": 2024,
+   "lap": 83.263,
+   "trapKph": null,
+   "weather": {
+    "airTempC": 14.8,
+    "trackTempC": 19.6,
+    "humidityPct": 85,
+    "pressureHpa": 934.8,
+    "windSpeed": 2.5,
+    "windFromDeg": 0,
+    "rain": false
+   }
+  },
+  {
+   "cls": "lmdh",
+   "track": "austin",
+   "year": 2024,
+   "lap": 111.073,
+   "trapKph": null,
+   "weather": {
+    "airTempC": 33.4,
+    "trackTempC": 52.5,
+    "humidityPct": 54,
+    "pressureHpa": 993.2,
+    "windSpeed": 4.3,
+    "windFromDeg": 0,
+    "rain": false
+   }
+  },
+  {
+   "cls": "lmdh",
+   "track": "sakhir",
+   "year": 2024,
+   "lap": 107.234,
+   "trapKph": null,
+   "weather": {
+    "airTempC": 27.6,
+    "trackTempC": 30.8,
+    "humidityPct": 68,
+    "pressureHpa": 1014.2,
+    "windSpeed": 5,
+    "windFromDeg": 0,
+    "rain": false
+   }
+  },
+  {
+   "cls": "lmgt3",
+   "track": "lusail",
+   "year": 2024,
+   "lap": 114.372,
+   "trapKph": null,
+   "weather": {
+    "airTempC": 20.2,
+    "trackTempC": 30.7,
+    "humidityPct": 50,
+    "pressureHpa": 1016.4,
+    "windSpeed": 8.1,
+    "windFromDeg": 0,
+    "rain": false
+   }
+  },
+  {
+   "cls": "lmgt3",
+   "track": "imola",
+   "year": 2024,
+   "lap": 102.734,
+   "trapKph": null,
+   "weather": {
+    "airTempC": 17.5,
+    "trackTempC": 23.9,
+    "humidityPct": 36,
+    "pressureHpa": 1003.8,
+    "windSpeed": 3.7,
+    "windFromDeg": 0,
+    "rain": false
+   }
+  },
+  {
+   "cls": "lmgt3",
+   "track": "interlagos",
+   "year": 2024,
+   "lap": 94.413,
+   "trapKph": null,
+   "weather": {
+    "airTempC": 14.8,
+    "trackTempC": 19.6,
+    "humidityPct": 86,
+    "pressureHpa": 934.6,
+    "windSpeed": 2.5,
+    "windFromDeg": 0,
+    "rain": false
+   }
+  },
+  {
+   "cls": "lmgt3",
+   "track": "austin",
+   "year": 2024,
+   "lap": 125.587,
+   "trapKph": null,
+   "weather": {
+    "airTempC": 33.2,
+    "trackTempC": 52.3,
+    "humidityPct": 54,
+    "pressureHpa": 993.7,
+    "windSpeed": 3.7,
+    "windFromDeg": 0,
+    "rain": false
+   }
+  },
+  {
+   "cls": "lmgt3",
+   "track": "sakhir",
+   "year": 2024,
+   "lap": 122.201,
+   "trapKph": null,
+   "weather": {
+    "airTempC": 28.3,
+    "trackTempC": 33.4,
+    "humidityPct": 65,
+    "pressureHpa": 1014,
+    "windSpeed": 5.6,
+    "windFromDeg": 0,
+    "rain": false
+   }
+  }
+ ]
+}

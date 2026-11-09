@@ -6,12 +6,19 @@
 // pooled into gain and time constant, and tested leaving each track out.
 // Writes worker/lapsim/evolution-data.js and docs/lapsim-evolution.md.
 import {readFile, writeFile} from 'node:fs/promises';
+import {readdirSync} from 'node:fs';
+import {gate} from './gate.mjs';
+import {sessionKey} from './t71-collect.mjs';
 import {join} from 'node:path';
 import {ridge} from '../../worker/lapsim/race-pace.js';
 import {SESSION_SCALE} from '../../worker/lapsim/evolution.js';
 
 const DIR = join(process.env.LAPSIM_CACHE || '.cache/lapsim', 'evolution');
-const index = JSON.parse(await readFile(join(DIR, 'index.json'), 'utf8'));
+const index = JSON.parse(await readFile(join(DIR, 'index.json'), 'utf8')).map(e => ({...e, dir: DIR}));
+// Timing71 WEC sessions of seasons with no Al Kamel files (t71-collect.mjs T71_EVO=1), gated per session type
+const T71 = process.env.LAPSIM_T71_EVO;
+if (T71) for (const f of readdirSync(T71).filter(f => /^t71-wec-.*\.json$/.test(f))) { const S = JSON.parse(await readFile(join(T71, f), 'utf8')); index.push({file: f, dir: T71, series: 'wec', year: S.year, track: S.track, type: S.type, session: S.session, t71: true}); }
+// WEC session names differ between Al Kamel and Timing71: compare a normalised key there (F1 unchanged)
 const median = a => { const s = [...a].sort((x, y) => x - y); return s.length ? (s[(s.length - 1) >> 1] + s[s.length >> 1]) / 2 : NaN; };
 const rms = a => a.length ? Math.sqrt(a.reduce((s, v) => s + v * v, 0) / a.length) : null;
 const r4 = x => Math.round(x * 1e4) / 1e4;
@@ -84,7 +91,7 @@ function pool(list) {
 const sessions = [];
 const log = [];
 for (const e of index) {
-  const S = JSON.parse(await readFile(join(DIR, e.file), 'utf8'));
+  const S = JSON.parse(await readFile(join(e.dir, e.file), 'utf8'));
   const f = fitSession(S);
   if (f.skip) { log.push(`${e.file}: ${f.skip}`); continue; }
   sessions.push({...e, ...f});
@@ -99,23 +106,34 @@ for (const series of [...new Set(sessions.map(s => s.series))]) {
   const S = out.series[series] = {sessions: {}, tracks: {}};
   for (const type of [...new Set(sessions.filter(s => s.series === series).map(s => s.type))]) {
     // sessions with an implausible change (mixed conditions the filters missed) stay out of the pool
-    const list = sessions.filter(s => s.series === series && s.type === type && Math.abs(s.curve.at(-1)[1]) <= 4);
-    const scale = SESSION_SCALE[type] ?? 1, all = pool(list);
+    let list = sessions.filter(s => s.series === series && s.type === type && Math.abs(s.curve.at(-1)[1]) <= 4);
     // Each session predicted without itself: from the same track's other seasons when there are any
-    // (how a new season's session is predicted), else from the pooled curve of the other tracks
-    const errC = [], errE = [], base = [];
+    // (how a new season's session is predicted), else from the pooled curve of the other tracks.
+    // Only sessions of the original sources are scored (Timing71 sessions only help predict them).
     const at = (c, t) => { if (t <= c[0][0]) return c[0][1]; for (let i = 1; i < c.length; i++) if (t <= c[i][0]) return c[i - 1][1] + (c[i][1] - c[i - 1][1]) * (t - c[i - 1][0]) / (c[i][0] - c[i - 1][0]); return c.at(-1)[1]; };
-    for (const s of list) {
-      const same = list.filter(o => o.track === s.track && o !== s && o.session === s.session && o.year !== s.year);
-      const others = list.filter(o => o.track !== s.track);
-      if (!same.length && others.length < 2) continue;
-      const q = same.length ? null : pool(others), t0 = s.curve[0][0];
-      const pred = t => same.length ? same.reduce((a, o) => a + at(o.curve, t) - at(o.curve, t0), 0) / same.length : para(q.gainPct, q.tauMin, t) - para(q.gainPct, q.tauMin, t0);
-      const d = s.curve.map(([t, v]) => pred(t) - v);
-      errC.push(rms(d)); errE.push(d.at(-1)); base.push(s.curve.at(-1)[1]);
+    const holdoutOf = L => { const errC = [], errE = [], base = [], keys = [];
+      for (const s of L.filter(x => !x.t71)) {
+        const same = L.filter(o => o.track === s.track && o !== s && (series === 'wec' ? sessionKey(o.session) === sessionKey(s.session) : o.session === s.session) && o.year !== s.year);
+        const others = L.filter(o => o.track !== s.track);
+        if (!same.length && others.length < 2) continue;
+        const q = same.length ? null : pool(others), t0 = s.curve[0][0];
+        const pred = t => same.length ? same.reduce((a, o) => a + at(o.curve, t) - at(o.curve, t0), 0) / same.length : para(q.gainPct, q.tauMin, t) - para(q.gainPct, q.tauMin, t0);
+        const d = s.curve.map(([t, v]) => pred(t) - v);
+        errC.push(rms(d)); errE.push(d.at(-1)); base.push(s.curve.at(-1)[1]); keys.push(s.file);
+      }
+      return {errC, errE, base, keys}; };
+    let h = holdoutOf(list.filter(x => !x.t71)), t71Gate = null;
+    if (list.some(x => x.t71)) {
+      const h2 = holdoutOf(list), k2 = Object.fromEntries(h2.keys.map((k, i) => [k, i])), both = h.keys.filter(k => k in k2);
+      const g = gate(both.map(k => h.errE[h.keys.indexOf(k)]), both.map(k => h2.errE[k2[k]]));
+      t71Gate = {sessions: list.filter(x => x.t71).length, previousEndPct: r4(g.rmsCur), candidateEndPct: r4(g.rmsNew), reason: g.reason, used: g.accept};
+      log.push(`Timing71 ${series} ${type}: ${t71Gate.sessions} sessions, end error ${t71Gate.previousEndPct}% → ${t71Gate.candidateEndPct}%, ${g.reason}`);
+      if (g.accept) h = h2; else list = list.filter(x => !x.t71);
     }
+    const scale = SESSION_SCALE[type] ?? 1, all = pool(list);
+    const {errC, errE, base} = h;
     S.sessions[type] = {coeffs: {gainPct: r4(all.gainPct / scale), tauMin: all.tauMin, warmupPct: all.warmupPct}, n: list.length,
-      holdoutPct: errC.length ? r4(rms(errC)) : null, holdoutEndPct: errE.length ? r4(rms(errE)) : null, noModelEndPct: base.length ? r4(rms(base)) : null};
+      holdoutPct: errC.length ? r4(rms(errC)) : null, holdoutEndPct: errE.length ? r4(rms(errE)) : null, noModelEndPct: base.length ? r4(rms(base)) : null, ...(t71Gate ? {t71: t71Gate} : {})};
     report.push(`| ${series} | ${type} | ${list.length} | ${all.gainPct.toFixed(2)} | ${all.tauMin} | ${S.sessions[type].holdoutPct ?? '–'} | ${S.sessions[type].holdoutEndPct ?? '–'} | ${S.sessions[type].noModelEndPct ?? '–'} |`);
     // measured curve per track: latest season, main session of that type
     for (const s of list.sort((a, b) => a.year - b.year || /sprint/i.test(b.session) - /sprint/i.test(a.session))) {

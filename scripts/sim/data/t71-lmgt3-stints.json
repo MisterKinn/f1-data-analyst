@@ -1,0 +1,332 @@
+{
+ "2024": {
+  "lusail": {
+   "aston": {
+    "laps": 26.5,
+    "cars": 2
+   },
+   "bmw": {
+    "laps": 26,
+    "cars": 2
+   },
+   "ferrari": {
+    "laps": 26,
+    "cars": 2
+   },
+   "mclaren": {
+    "laps": 24.5,
+    "cars": 2
+   },
+   "lamborghini": {
+    "laps": 25.5,
+    "cars": 2
+   },
+   "ford": {
+    "laps": 25.5,
+    "cars": 2
+   },
+   "lexus": {
+    "laps": 26,
+    "cars": 2
+   },
+   "corvette": {
+    "laps": 26,
+    "cars": 1
+   },
+   "porsche": {
+    "laps": 26.5,
+    "cars": 2
+   }
+  },
+  "imola": {
+   "bmw": {
+    "laps": 27,
+    "cars": 2
+   },
+   "ferrari": {
+    "laps": 26.5,
+    "cars": 2
+   },
+   "mclaren": {
+    "laps": 27,
+    "cars": 1
+   },
+   "lamborghini": {
+    "laps": 27,
+    "cars": 1
+   },
+   "lexus": {
+    "laps": 27,
+    "cars": 1
+   },
+   "corvette": {
+    "laps": 26.5,
+    "cars": 2
+   },
+   "porsche": {
+    "laps": 18.5,
+    "cars": 2
+   },
+   "aston": {
+    "laps": 12,
+    "cars": 1
+   }
+  },
+  "le-mans": {
+   "aston": {
+    "laps": 11,
+    "cars": 2
+   },
+   "bmw": {
+    "laps": 11,
+    "cars": 2
+   },
+   "ford": {
+    "laps": 11,
+    "cars": 3
+   },
+   "ferrari": {
+    "laps": 11,
+    "cars": 4
+   },
+   "mclaren": {
+    "laps": 11,
+    "cars": 3
+   },
+   "lamborghini": {
+    "laps": 11,
+    "cars": 2
+   },
+   "lexus": {
+    "laps": 11,
+    "cars": 2
+   },
+   "corvette": {
+    "laps": 11,
+    "cars": 2
+   },
+   "porsche": {
+    "laps": 10.5,
+    "cars": 2
+   }
+  },
+  "interlagos": {
+   "aston": {
+    "laps": 33,
+    "cars": 2
+   },
+   "bmw": {
+    "laps": 31.5,
+    "cars": 2
+   },
+   "ferrari": {
+    "laps": 34,
+    "cars": 1
+   },
+   "lamborghini": {
+    "laps": 33,
+    "cars": 2
+   },
+   "ford": {
+    "laps": 21.5,
+    "cars": 2
+   },
+   "corvette": {
+    "laps": 31,
+    "cars": 1
+   },
+   "lexus": {
+    "laps": 33,
+    "cars": 1
+   },
+   "porsche": {
+    "laps": 33,
+    "cars": 2
+   },
+   "mclaren": {
+    "laps": 33,
+    "cars": 1
+   }
+  },
+  "fuji": {
+   "lamborghini": {
+    "laps": 31,
+    "cars": 1
+   },
+   "porsche": {
+    "laps": 33,
+    "cars": 1
+   }
+  },
+  "sakhir": {
+   "aston": {
+    "laps": 25.5,
+    "cars": 2
+   },
+   "bmw": {
+    "laps": 25,
+    "cars": 2
+   },
+   "ferrari": {
+    "laps": 25,
+    "cars": 2
+   },
+   "mclaren": {
+    "laps": 25,
+    "cars": 2
+   },
+   "lamborghini": {
+    "laps": 25,
+    "cars": 2
+   },
+   "ford": {
+    "laps": 26,
+    "cars": 2
+   },
+   "corvette": {
+    "laps": 25.5,
+    "cars": 2
+   },
+   "lexus": {
+    "laps": 25,
+    "cars": 1
+   },
+   "porsche": {
+    "laps": 25,
+    "cars": 2
+   }
+  }
+ },
+ "2025": {
+  "lusail": {
+   "aston": {
+    "laps": 26,
+    "cars": 2
+   },
+   "ferrari": {
+    "laps": 27,
+    "cars": 2
+   },
+   "bmw": {
+    "laps": 27,
+    "cars": 1
+   },
+   "mclaren": {
+    "laps": 24,
+    "cars": 1
+   },
+   "mercedes-amg": {
+    "laps": 18,
+    "cars": 1
+   },
+   "porsche": {
+    "laps": 27,
+    "cars": 1
+   },
+   "ford": {
+    "laps": 26,
+    "cars": 1
+   }
+  },
+  "spa-francorchamps": {
+   "ferrari": {
+    "laps": 15,
+    "cars": 1
+   },
+   "mclaren": {
+    "laps": 11,
+    "cars": 1
+   }
+  },
+  "le-mans": {
+   "": {
+    "laps": 11,
+    "cars": 24
+   }
+  },
+  "interlagos": {
+   "bmw": {
+    "laps": 33,
+    "cars": 2
+   },
+   "corvette": {
+    "laps": 33.5,
+    "cars": 2
+   },
+   "ferrari": {
+    "laps": 33,
+    "cars": 1
+   },
+   "mclaren": {
+    "laps": 31,
+    "cars": 1
+   },
+   "lexus": {
+    "laps": 32.5,
+    "cars": 2
+   },
+   "porsche": {
+    "laps": 32.5,
+    "cars": 2
+   }
+  },
+  "sakhir": {
+   "aston": {
+    "laps": 25,
+    "cars": 2
+   },
+   "ferrari": {
+    "laps": 25.5,
+    "cars": 2
+   },
+   "bmw": {
+    "laps": 25,
+    "cars": 2
+   },
+   "corvette": {
+    "laps": 25,
+    "cars": 2
+   },
+   "mclaren": {
+    "laps": 26,
+    "cars": 2
+   },
+   "mercedes-amg": {
+    "laps": 25.5,
+    "cars": 2
+   },
+   "ford": {
+    "laps": 26,
+    "cars": 2
+   },
+   "porsche": {
+    "laps": 25,
+    "cars": 2
+   },
+   "lexus": {
+    "laps": 25,
+    "cars": 1
+   }
+  }
+ },
+ "2026": {
+  "imola": {
+   "": {
+    "laps": 31,
+    "cars": 12
+   }
+  },
+  "le-mans": {
+   "": {
+    "laps": 11,
+    "cars": 25
+   }
+  },
+  "interlagos": {
+   "": {
+    "laps": 41,
+    "cars": 13
+   }
+  }
+ }
+}

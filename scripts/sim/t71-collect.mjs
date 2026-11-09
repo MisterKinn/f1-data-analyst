@@ -6,6 +6,7 @@
 import {existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync} from 'node:fs';
 import {join} from 'node:path';
 import {readReplay} from './t71-read.mjs';
+import {trackOf} from './t71-tracks.mjs';
 
 const API = 'https://archive.timing71.org';
 const CACHE = '.cache/lapsim/t71';
@@ -35,7 +36,9 @@ export function weatherOf(spec = [], samples = []) {
   const col = (k, f = num) => I[k] < 0 ? [] : samples.map(s => Array.isArray(s.v) ? f(s.v[I[k]]) : null);
   const wind = I.wind < 0 ? [] : samples.map(s => { const v = s.v?.[I.wind]; const x = num(v); return x == null ? null : /kph|km/i.test(v?.[1] || '') ? x / 3.6 : x; });
   const cond = col('cond', v => typeof v === 'string' ? v : null).filter(Boolean);
-  const w = {air: median(col('air')), track: median(col('track')), hum: median(col('hum')), wind: r3(median(wind)), press: median(col('press'))};
+  // some feeds store missing values as 0 or garbage: keep plausible values only
+  const plaus = (a, lo, hi) => a.filter(x => x != null && x >= lo && x <= hi);
+  const w = {air: median(plaus(col('air'), 1, 45)), track: median(plaus(col('track'), 1, 70)), hum: median(col('hum')), wind: r3(median(wind)), press: median(col('press'))};
   if (cond.length) w.wet = cond.filter(c => !/dry/i.test(c)).length / cond.length;
   return Object.values(w).some(x => x != null) ? w : null;
 }
@@ -73,6 +76,24 @@ export function summarise(rep, analysis) {
   return cars;
 }
 
+// Track-evolution table in the Al Kamel format of fetch-evolution.mjs (WEC seasons with no Al Kamel files):
+// minute = lap end since the first lap start of the session; out-lap = first lap of a stint; neutral = full-course lap.
+export const sessionKey = d => { const t = String(d).toLowerCase(), cls = /hypercar/.test(t) ? 'hypercar' : /gt3|gte/.test(t) ? 'gt' : /lmp2/.test(t) ? 'lmp2' : '';
+  const n = (t.match(/(?:practice|fp)\s*(\d)/) || [])[1]; return /hyperpole/.test(t) ? 'hp' + cls : /qualif/.test(t) ? 'q' + cls : n ? 'p' + n : t; };
+function writeEvolution(r, analysis, year, track) {
+  const laps = [];
+  for (const c of Object.values(analysis?.cars?.cars || {})) for (const st of c.stints || []) (st.laps || []).forEach((l, i) =>
+    l.laptime > 0 && l.timestamp && laps.push([String(c.raceNum), l.lapNumber, l.laptime, l.timestamp, i === 0 ? 1 : 0, c.raceClass ?? null, null, ['green', 'yellow', 'chequered'].includes(l.flag) ? 0 : 1]));
+  if (laps.length < 25) return;
+  const t0 = Math.min(...laps.map(l => l[3] - l[2] * 1000));
+  const rows = laps.map(l => [l[0], l[1], l[2], +((l[3] - t0) / 60000).toFixed(3), l[4], l[5], l[6], l[7]]);
+  const type = /practice|\bfp\d/i.test(r.description) ? 'practice' : 'qualifying';
+  const file = `t71-wec-${year}-${track}-${sessionKey(r.description)}-${r.startTime}.json`;
+  mkdirSync(join(CACHE, 'evolution'), {recursive: true});
+  writeFileSync(join(CACHE, 'evolution', file), JSON.stringify({series: 'wec', source: 'timing71', year, track, session: sessionKey(r.description), type,
+    columns: ['car', 'lap', 'time', 'minute', 'outLap', 'class', 'tyreAge', 'neutral'], rows}));
+}
+
 async function collect() {
   const shard = +(process.env.T71_SHARD || 0), shards = +(process.env.T71_SHARDS || 1);
   const all = [];
@@ -80,8 +101,10 @@ async function collect() {
     const page = await (await get(`${API}/replays?filter[order]=startTime%20ASC&filter[limit]=500&filter[skip]=${skip}`)).json();
     all.push(...page); if (page.length < 500) break;
   }
-  const pick = all.map(r => ({...r, key: Object.keys(SERIES).find(k => SERIES[k].test(r.series)), kind: kind(r.description || '')}))
-    .filter(r => r.key && r.kind && r.startTime >= Date.UTC(2018, 0, 1) / 1e3);
+  const EVO = process.env.T71_EVO === '1', KEYS = process.env.T71_KEYS ? process.env.T71_KEYS.split(',') : null;
+  const pick = all.map(r => ({...r, key: Object.keys(SERIES).find(k => SERIES[k].test(r.series))}))
+    .map(r => ({...r, kind: kind(r.description || '') || (EVO && r.key === 'wec' && /practice|\bfp\d/i.test(r.description || '') ? 'P' : null)}))
+    .filter(r => r.key && r.kind && r.startTime >= Date.UTC(2018, 0, 1) / 1e3 && (!KEYS || KEYS.includes(r.key)));
   const only = process.env.T71_MATCH ? new RegExp(process.env.T71_MATCH, 'i') : null;
   const mine = pick.filter((r, i) => only ? only.test(r.description) : i % shards === shard);
   mkdirSync(join(CACHE, 'sessions'), {recursive: true});
@@ -97,6 +120,8 @@ async function collect() {
       writeFileSync(f, JSON.stringify({key: r.key, series: r.series, description: r.description, kind: r.kind, start: r.startTime,
         duration: r.duration, cols: rep.manifest.colSpec, weather: weatherOf(rep.manifest.trackDataSpec, rep.weather),
         frameLaps: rep.laps.length, endFlag: rep.endFlag, analysis: !!analysis, cars: summarise(rep, analysis)}));
+      const yr = new Date(r.startTime * 1e3).getUTCFullYear(), track = trackOf(r.series, r.description);
+      if (EVO && r.key === 'wec' && analysis && track && yr >= 2021 && yr <= 2024) writeEvolution(r, analysis, yr, track);
       log.done++;
     } catch (x) { log.failed.push([r.description, String(x).slice(0, 120), (x.stack || '').split('\n').slice(1, 4).join(' | ').replace(/file:\/\/\S*\//g, '')]); }
   }
