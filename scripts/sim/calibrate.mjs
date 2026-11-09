@@ -180,6 +180,13 @@ const f1Grip = id => Object.keys(seasons).sort().reverse().map(y => seasons[y]?.
 for (const [cls, def] of Object.entries(SERIES.wec.classes)) {
   for (const year of [...new Set(wec.map(w => w.year))].sort()) {
     const sessions = wec.filter(w => w.cls === cls && w.year === year && tracks[w.track] && !w.weather?.rain && f1Grip(w.track) != null);
+    // data check: a class speed trap far below the same class at the same track in other years hints at a wet or
+    // unusual session that the timing does not mark (add it to scripts/sim/data/wet-sessions.json after checking)
+    for (const w of sessions) {
+      const other = wec.filter(x => x.cls === cls && x.track === w.track && x.year !== w.year && !x.weather?.rain).map(x => x.laps[0]?.topSpeedKph).filter(Number.isFinite).sort((a, b) => a - b);
+      const v = w.laps[0]?.topSpeedKph, med = other[other.length >> 1];
+      if (Number.isFinite(v) && med && v < 0.9 * med) report.push(`WARNING WEC ${cls} ${year} ${w.track}: best-lap speed trap ${v} km/h vs ${med} km/h in other years — check for a wet or unusual session`);
+    }
     // speed traps sit at different places on each track: use one only when it looks like a top speed
     const traps = sessions.flatMap(w => w.laps.map(l => l.topSpeedKph)).filter(Number.isFinite).sort((a, b) => a - b);
     const medTrap = traps[Math.floor(traps.length / 2)];

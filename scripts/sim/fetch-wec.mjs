@@ -12,6 +12,7 @@ const YEARS = (process.env.LAPSIM_WEC_YEARS || Object.keys(WEC_SEASONS).join(','
 const CLASSES = {HYPERCAR: ['lmh', 'lmdh'], LMGT3: ['lmgt3']};
 const secs = t => { const p = String(t || '').split(':').map(Number); return p.some(x => !Number.isFinite(x)) || !p.length ? NaN : p.reduce((a, x) => a * 60 + x, 0); };
 const num = x => { const v = Number(String(x ?? '').replace(',', '.')); return Number.isFinite(v) ? v : null; };
+const WET = JSON.parse(await (await import('node:fs/promises')).readFile('scripts/sim/data/wet-sessions.json', 'utf8').catch(() => '{}')).wec || {};
 const rows = async url => (await readDocument({url, limit: 100000})).records;
 
 await mkdir(CACHE, {recursive: true});
@@ -53,6 +54,8 @@ for (const year of YEARS) {
       const weather = weatherRows.length ? {airTempC: mean('AIR_TEMP'), trackTempC: mean('TRACK_TEMP'), humidityPct: mean('HUMIDITY'), pressureHpa: mean('PRESSURE'),
         windSpeed: Math.hypot(we, wn) / weatherRows.length, windFromDeg: (Math.atan2(we, wn) * 180 / Math.PI + 360) % 360,
         rain: weatherRows.some(r => num(r.RAIN) > 0)} : null;
+      // sessions reported wet although the timing shows no rain (scripts/sim/data/wet-sessions.json)
+      if (weather && WET[`${year} ${track}`]) Object.assign(weather, {rain: true, rainSource: WET[`${year} ${track}`].sources?.[0] || 'report'});
       // every car of the class (set-up and team reading); `laps` keeps the top 3 for the class fit
       const cars = [...best.values()].filter(l => !def.manufacturers || def.manufacturers.test(l.manufacturer || '')).sort((x, y) => x.lap - y.lap);
       out.push({series: 'wec', year, event, track, cls, laps, cars, weather});

@@ -1,0 +1,6 @@
+{
+  "note": "Sessions the timing data does not mark as wet but official/press reports do. fetch-wec.mjs sets rain=true for them, so calibration and the pole tables skip them like any wet session.",
+  "wec": {
+    "2025 austin": {"reason": "rain during qualifying/Hyperpole; Hypercar speed traps 241-259 km/h vs ~300 km/h in 2026, lap 5% slower", "sources": ["https://toyotagazooracing.com/wec/release/2025/rd06-qualify/", "https://speedwaymedia.com/?p=310892"]}
+  }
+}
