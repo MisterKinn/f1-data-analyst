@@ -7,7 +7,7 @@ name: Lap simulator Timing71 archive
 on:
   push:
     branches: ['lapsim-t71/**']
-    paths-ignore: ['scripts/sim/data/t71/**', 'scripts/sim/data/wec-tyre-effect.json', 'docs/lapsim-t71.md']
+    paths-ignore: ['scripts/sim/data/t71/**', 'scripts/sim/data/wec-tyre-effect.json', 'scripts/sim/data/t71-*.json', 'docs/lapsim-t71.md']
   workflow_dispatch:
 
 permissions:
@@ -63,6 +63,8 @@ jobs:
       - run: node scripts/sim/t71-collect.mjs merge
       - run: node scripts/sim/t71-check.mjs
       - run: node scripts/sim/wec-tyre-fit.mjs
+      - run: node scripts/sim/t71-stints.mjs
+      - run: node scripts/sim/t71-imsa-vft.mjs
       - uses: actions/cache/save@v4
         with:
           path: scripts/sim/data/t71
@@ -70,5 +72,5 @@ jobs:
       - run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
-          git add scripts/sim/data/t71/counts.json scripts/sim/data/t71/check.json scripts/sim/data/wec-tyre-effect.json
+          git add scripts/sim/data/t71/counts.json scripts/sim/data/t71/check.json scripts/sim/data/wec-tyre-effect.json scripts/sim/data/t71-wec-stints.json scripts/sim/data/t71-imsa-vft.json
           git diff --cached --quiet || (git commit -m "Timing71: counts, three-way check, WEC tyre fit" && git push)

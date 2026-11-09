@@ -1,4 +1,4 @@
-# WEC Hypercar BoP 2025-2026 (+ IMSA GTP sample)
+# WEC Hypercar BoP 2024-2026 (+ IMSA GTP sample)
 
 Built 2026-11-08. Columns: min dry weight (kg), max power below 250 kph (kW), power gain above 250 kph (%), max stint energy (MJ), front-axle deployment speed dry/wet (kph), additional docking time (s). '-' = not applicable, '?' = not found.
 
@@ -8,6 +8,23 @@ Built 2026-11-08. Columns: min dry weight (kg), max power below 250 kph (kW), po
 Source: https://au.motorsport.com/wec/news/wec-will-stop-publishing-bop-data-2026/10813086/
 
 All 2026 events (Imola, Spa, Le Mans, Sao Paulo, COTA, Fuji, Barcelona, Monza) are null.
+
+## 2024
+
+Eight FIA WEC Hypercar BoP decisions (power threshold 210 kph in 2024). Values: kg | kW | power gain above 210 kph | stint energy MJ | additional docking s. Front-axle deployment 190 kph dry/wet for Ferrari, Toyota, Isotta (Peugeot 150 at Qatar, 190 later).
+
+| Event | Decision | Source |
+|---|---|---|
+| Qatar | WEC_2024_D21 (16/02/2024) | https://www.fia.com/sites/default/files/wec_2024_d21_hypercar_bop_16022024.pdf |
+| Imola | WEC_2024_D33 (12/04/2024) | https://www.fia.com/sites/default/files/wec_2024_d33_hypercar_bop_12042024.pdf |
+| Spa | WEC_2024_D37 (07/05/2024) | https://www.fia.com/sites/default/files/wec_2024_d37_hypercar_bop_07052024.pdf |
+| Le Mans | WEC_2024_D39 (31/05/2024) | https://sportscar365.com/wp-content/uploads/2024/06/wec_2024_d39_hypercar_bop_31052024.pdf |
+| Sao Paulo | WEC_2024_D45 (05/07/2024) | https://www.fia.com/sites/default/files/wec_2024_d45_hypercar_bop_05072024.pdf |
+| COTA | WEC_2024_D48 (23/08/2024) | https://www.fia.com/sites/default/files/wec_2024_d48_hypercar_bop_23082024.pdf |
+| Fuji | WEC_2024_D53 (10/09/2024) | https://fia.com/sites/default/files/wec_2024_d53_hypercar_bop_10092024.pdf |
+| Bahrain | WEC_2024_D56 (25/10/2024) | https://www.fia.com/sites/default/files/wec_2024_d56_hypercar_bop_25102024.pdf |
+
+Per-car values are in `scripts/sim/data/wec-bop.json` (key "2024"). The PDF text has no clean column labels; values were mapped by their position, which is the same in all eight files (kg, kW, gain, front-axle dry, wet, MJ, docking). Isotta Fraschini entered Qatar to Sao Paulo only.
 
 ## 2025
 
