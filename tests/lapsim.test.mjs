@@ -250,3 +250,20 @@ test('sector correction: a raced track reproduces the real pole sectors in its w
     assert.deepEqual(r.result.sectors_s, [26.5, 27.1, 26.9]);
   } finally { t.realSectors = saved; }
 });
+
+test('WEC sector correction: every raced dry session of the calibrated season reproduces the real best lap', async () => {
+  const {lapsimWecPoles: P} = await import('../worker/lapsim/wec-poles-data.js');
+  const {lapsimCalibration: c} = await import('../worker/lapsim/calibration-data.js');
+  const {simulate} = await import('../worker/lapsim/tool.js');
+  let n = 0;
+  for (const [cls, seasons] of Object.entries(c?.series?.wec || {})) {
+    const y = Object.keys(seasons).sort().at(-1);
+    for (const [track, ys] of Object.entries(P)) {
+      const p = ys[y]?.[cls]; if (!p) continue;
+      const r = simulate({track, car: 'wec-' + cls, conditions: 'real'});
+      assert.ok(Math.abs(r.result.lap_seconds - p.lap) < 0.0015, `${track} ${cls}: ${r.result.lap_seconds} vs ${p.lap}`);
+      n++;
+    }
+  }
+  assert.ok(n > 0);
+});
