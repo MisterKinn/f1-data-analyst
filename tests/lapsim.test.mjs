@@ -240,15 +240,15 @@ test('FIA notes: the race director signature is not a change', () => {
 });
 
 test('sector correction: a raced track reproduces the real pole sectors in its weather', async () => {
-  const {lapsimCalibration: c} = await import('../worker/lapsim/calibration-data.js');
-  const t = c?.seasons?.[2026]?.tracks?.monza; if (!t) return;
-  const saved = t.realSectors; t.realSectors = [26.5, 27.1, 26.9];
+  const {lapsimF1Poles: P} = await import('../worker/lapsim/f1-poles-data.js');
+  const p = P?.monza?.[2026]; if (!p) return;
+  const saved = p.sectors; p.sectors = [26.5, 27.1, 26.9];
   try {
     const {simulate} = await import('../worker/lapsim/tool.js');
     const r = simulate({track: 'monza'});
     assert.ok(Math.abs(r.result.lap_seconds - 80.5) < 0.002);
     assert.deepEqual(r.result.sectors_s, [26.5, 27.1, 26.9]);
-  } finally { t.realSectors = saved; }
+  } finally { p.sectors = saved; }
 });
 
 test('WEC sector correction: every raced dry session of the calibrated season reproduces the real best lap', async () => {
@@ -266,4 +266,18 @@ test('WEC sector correction: every raced dry session of the calibrated season re
     }
   }
   assert.ok(n > 0);
+});
+
+test('F1 sector correction: every raced dry session of 2025 and 2026 reproduces the real pole (TracingInsights table)', async () => {
+  const {lapsimF1Poles: P} = await import('../worker/lapsim/f1-poles-data.js');
+  const {lapsimCalibration: c} = await import('../worker/lapsim/calibration-data.js');
+  const {simulate} = await import('../worker/lapsim/tool.js');
+  let n = 0;
+  for (const y of ['2025', '2026']) for (const [id, t] of Object.entries(c?.seasons?.[y]?.tracks || {})) {
+    if (t.weather?.rain) continue;
+    const real = P[id]?.[y]?.lap ?? (t.position === 1 ? t.realLap : null); if (real == null) continue;
+    const r = simulate({track: id, car: y, conditions: 'real'});
+    assert.ok(Math.abs(r.result.lap_seconds - real) < 0.0015, `${y} ${id}: ${r.result.lap_seconds} vs ${real}`); n++;
+  }
+  assert.ok(n >= 30);
 });

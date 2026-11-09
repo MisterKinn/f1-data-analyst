@@ -60,7 +60,7 @@ const T = {
     evoComp: '컴파운드 차이 (소프트 대비)', evoCompReal: '{y} 실측: 같은 드라이버 저연료 랩, 트랙 진화 제외', evoCompModel: 'C단계 모델 예측, 검증 오차 ±{e}%', evoCompNone: '실측 없음, 랩 그대로',
     evoEnd: '세션 시각', evoGain: '고무 효과 (끝까지)', evoTau: '포화 시간', evoWet: '시작 노면 젖음', evoDry: '건조 시간', evoWarm: '워밍업 랩',
     evoCurve: '실측 곡선 사용', evoLast: '이 시각의 예상 랩', evoChange: '세션 시작 대비', evoBasis: {track: '이 트랙 실측 곡선', series: '시리즈 평균 (보정)', default: '미보정 기본값'},
-    evoErr: '홀드아웃 오차 (트랙 제외)', qs: {h: '구간', win: '시간 (분)', model: '모델 최고 랩', real: '실제 최고 랩', test: 'Q1·Q2 예측 검증 (대회 하나씩 빼고, {n}개 예선): Q1 {a}% · Q2 {b}% 오차. Q3 = 폴 (실측 재현)', none: '이 트랙 실제 구간 기록 없음 (보통 시간표 18·15·12분 사용)'}, secFix: '섹터 보정 (실제 폴 기준)', evoBasisH: '근거', evoChart: '세션 시각별 예상 랩타임', min: '분',
+    evoErr: '홀드아웃 오차 (트랙 제외)', qs: {h: '구간', win: '시간 (분)', model: '모델 최고 랩', real: '실제 최고 랩', test: 'Q1·Q2 예측 검증 (대회 하나씩 빼고, {n}개 예선): Q1 {a}% · Q2 {b}% 오차. Q3 = 폴 (실측 재현)', none: '이 트랙 실제 구간 기록 없음 (보통 시간표 18·15·12분 사용)', repro: '이미 열린 {y} 예선: 구간 최고 랩을 실측으로 재현합니다. 보정 전 모델: {raw}'}, secFix: '섹터 보정 (실제 폴 기준)', evoBasisH: '근거', evoChart: '세션 시각별 예상 랩타임', min: '분',
   },
   en: {
     title: 'Lap simulator', h1: 'Simulate a lap in a 2026–2028 F1 car',
@@ -92,7 +92,7 @@ const T = {
     evoComp: 'Compound gap (vs soft)', evoCompReal: 'measured {y}: same driver, low fuel, track evolution removed', evoCompModel: 'C-step model, test error ±{e}%', evoCompNone: 'not measured, lap unchanged',
     evoEnd: 'Session minute', evoGain: 'Rubber effect (full)', evoTau: 'Time to saturate', evoWet: 'Wetness at start', evoDry: 'Drying time', evoWarm: 'Warm-up laps',
     evoCurve: 'Use measured curve', evoLast: 'Expected lap at this minute', evoChange: 'vs session start', evoBasis: {track: 'measured curve, this track', series: 'series average (fitted)', default: 'uncalibrated default'},
-    evoErr: 'Holdout error (track left out)', qs: {h: 'Segment', win: 'Window (min)', model: 'Model best lap', real: 'Real best lap', test: 'Q1/Q2 check (each event left out, {n} qualifyings): Q1 {a}% · Q2 {b}% error. Q3 = pole (reproduced)', none: 'No real segment times for this track (usual 18/15/12-minute schedule used)'}, secFix: 'Sector correction (real pole)', evoBasisH: 'Basis', evoChart: 'Expected lap time over the session', min: 'min',
+    evoErr: 'Holdout error (track left out)', qs: {h: 'Segment', win: 'Window (min)', model: 'Model best lap', real: 'Real best lap', test: 'Q1/Q2 check (each event left out, {n} qualifyings): Q1 {a}% · Q2 {b}% error. Q3 = pole (reproduced)', none: 'No real segment times for this track (usual 18/15/12-minute schedule used)', repro: 'Qualifying already run ({y}): segment bests reproduce the real ones. Model before correction: {raw}'}, secFix: 'Sector correction (real pole)', evoBasisH: 'Basis', evoChart: 'Expected lap time over the session', min: 'min',
   },
 };
 
@@ -310,11 +310,11 @@ const BT = {
   ko: {h: '브레이크', lead: '시뮬레이션 랩의 제동 구간입니다. 가장 강한 제동 구간을 Brembo가 대회마다 공개하는 실제 수치와 나란히 보여 줍니다 (F1). 하이퍼카는 LMH(앞바퀴 모터 회생)와 LMDh(뒷바퀴 회생)의 차이가 앞뒤 브레이크 부담에 그대로 나타납니다.',
     hardest: '가장 강한 제동', hardestT: '가장 강한 제동 (Brembo 기준 T{t})', model: '모델', brembo: 'Brembo 실측', vFrom: '제동 전 속도', vTo: '제동 후 속도', dist: '제동 거리', time: '제동 시간', g: '감속 (평균)', pedal: '페달 하중', bar: '앞 브레이크 압력 (추정)', zones: '랩당 제동 구간', brakeTime: '랩당 제동 시간',
     axle: {rear: '뒤 차축', front: '앞 차축'}, noRegen: '회생 없음', split: '마찰 브레이크 앞 {f}% · 뒤 {r}% · 모터 회생({ax}) {rk} kWh · 마찰 브레이크 {fk} kWh · 공기 저항이 멈춰 준 몫 {dk} kWh (랩당)',
-    test: '검증 (Brembo 공개 수치 {n}개 대회, 대회 하나씩 빼고 예측): 감속 오차 {g}% · 페달 하중 {kg}% · 제동 전 속도 {v}% · 제동 거리 {d}% · 랩당 제동 시간 {t}% (브레이크 압력이 차오르는 시간 {r}초를 Brembo 수치로 맞춰 반영)', assume: '가정: 페달 비 3.5, 마스터 실린더 17.8 mm, 밸런스 = 앞 마찰 비중. 페달 하중 = 감속(g) × Brembo 수치에서 맞춘 kg/g. 실제 압력 데이터는 공개되지 않습니다.'},
+    test: '검증 (Brembo 공개 수치 {n}개 대회, 대회 하나씩 빼고 예측): 감속 오차 {g}% · 페달 하중 {kg}% · 제동 전 속도 {v}% · 제동 거리 {d}% · 랩당 제동 시간 {t}% (브레이크 압력이 차오르는 시간 {r}초를 Brembo 수치로 맞춰 반영)', assume: '가정: 페달 비 3.5, 마스터 실린더 17.8 mm, 밸런스 = 앞 마찰 비중. 페달 하중 = 감속(g) × Brembo 수치에서 맞춘 kg/g. 실제 압력 데이터는 공개되지 않습니다.', repro: '이미 열린 {y} 대회: 모델 값을 Brembo 수치에 맞춰 보정해 그대로 재현합니다. 보정 전 모델: {raw}'},
   en: {h: 'Brakes', lead: 'Braking zones of the simulated lap. The hardest one is shown next to the real figures Brembo publishes for each race (F1). For Hypercars, LMH (front-axle regen) and LMDh (rear-axle regen) differ directly in how much each axle\'s brakes do.',
     hardest: 'Hardest braking', hardestT: 'Hardest braking (Brembo: T{t})', model: 'Model', brembo: 'Brembo, real', vFrom: 'Speed before', vTo: 'Speed after', dist: 'Braking distance', time: 'Braking time', g: 'Deceleration (mean)', pedal: 'Pedal load', bar: 'Front brake pressure (estimate)', zones: 'Braking zones per lap', brakeTime: 'Braking time per lap',
     axle: {rear: 'rear axle', front: 'front axle'}, noRegen: 'no regen', split: 'Friction brakes front {f}% · rear {r}% · motor regen ({ax}) {rk} kWh · friction brakes {fk} kWh · stopped by air drag {dk} kWh (per lap)',
-    test: 'Test (Brembo figures, {n} races, each left out and predicted): deceleration error {g}% · pedal load {kg}% · speed before braking {v}% · braking distance {d}% · braking time per lap {t}% (an effective pressure build-up of {r} s, fitted on the Brembo figures, is included)', assume: 'Assumed: pedal ratio 3.5, master cylinder 17.8 mm, balance = front friction share. Pedal load = deceleration (g) × kg per g fitted on Brembo figures. Real pressure data is not published.'},
+    test: 'Test (Brembo figures, {n} races, each left out and predicted): deceleration error {g}% · pedal load {kg}% · speed before braking {v}% · braking distance {d}% · braking time per lap {t}% (an effective pressure build-up of {r} s, fitted on the Brembo figures, is included)', assume: 'Assumed: pedal ratio 3.5, master cylinder 17.8 mm, balance = front friction share. Pedal load = deceleration (g) × kg per g fitted on Brembo figures. Real pressure data is not published.', repro: 'Race already run ({y}): the model values are corrected to Brembo’s figures, so they reproduce exactly. Model before correction: {raw}'},
 };
 const FT = {
   ko: {opt: '예보 (Météo-France)', loading: 'Météo-France 예보 불러오는 중…', hour: '시각 (현지)', rain: '비', fail: '예보를 불러오지 못했습니다. 잠시 후 다시 시도하세요.', k: 0.02,
@@ -466,12 +466,17 @@ function computeView(K, data, state, R) {
     // the zone ending nearest Brembo's corner when there is one, else the hardest
     const cs = real && (d.corners || []).find(c => String(c.number) === String(real.turn)), L = d.length || b.zones.length;
     const dist = z0 => cs ? Math.min(Math.abs(z0.end * track.ds - cs.s), L - Math.abs(z0.end * track.ds - cs.s)) : -z0.meanG;
-    const z = b.zones.slice().sort((x, y) => dist(x) - dist(y))[0];
+    let z = b.zones.slice().sort((x, y) => dist(x) - dist(y))[0];
     const cell = (m, r, u, d = 0) => '<td data-no-translate>' + (Number.isFinite(m) ? m.toFixed(d) + ' ' + u : '–') + '</td><td data-no-translate>' + (Number.isFinite(r) ? r + ' ' + u : '–') + '</td>';
+    // race already run in this car's season: model values corrected to Brembo's figures (raw kept in the note)
+    const bRepro = z && real && BD.real[sel.year] === real ? {vFrom: z.vFrom, vTo: z.vTo, distM: z.distM, timeS: z.timeS, meanG: z.meanG, pedalKg: z.pedalKg, zones: b.zones.length, brakingTime: b.brakingTime} : null;
+    if (bRepro) { const m = {vFrom: 'vFrom', vTo: 'vTo', distM: 'distM', timeS: 'timeS', meanG: 'decelG', pedalKg: 'pedalKg'}; z = {...z}; for (const [a, r] of Object.entries(m)) if (Number.isFinite(rh?.[r])) z[a] = rh[r]; }
+    const nZones = bRepro && Number.isFinite(real?.lap?.zones) ? real.lap.zones : b.zones.length, bTime = bRepro && Number.isFinite(real?.lap?.brakingTimeS) ? real.lap.brakingTimeS : b.brakingTime;
     const rowsH = z ? [[T.vFrom, z.vFrom, rh?.vFrom, 'km/h'], [T.vTo, z.vTo, rh?.vTo, 'km/h'], [T.dist, z.distM, rh?.distM, 'm'], [T.time, z.timeS, rh?.timeS, 's', 2], [T.g, z.meanG, rh?.decelG, 'g', 1], [T.pedal, z.pedalKg, rh?.pedalKg, 'kg'], [T.bar, z.bar, null, 'bar']].map(([l, m, r, u, d]) => '<tr><td>' + l + '</td>' + cell(m, r, u, d) + '</tr>').join('') : '';
-    const lapRows = '<tr><td>' + T.zones + '</td>' + cell(b.zones.length, real?.lap?.zones, '') + '</tr><tr><td>' + T.brakeTime + '</td>' + cell(b.brakingTime, real?.lap?.brakingTimeS, 's', 1) + '</tr>';
+    const lapRows = '<tr><td>' + T.zones + '</td>' + cell(nZones, real?.lap?.zones, '') + '</tr><tr><td>' + T.brakeTime + '</td>' + cell(bTime, real?.lap?.brakingTimeS, 's', 1) + '</tr>';
     const E = b.energy, ax = b.regenAxle ? T.axle[b.regenAxle] : T.noRegen;
     brakeHtml = '<p class="fine">' + T.lead + '</p><div class="output"><table class="ls-table"><thead><tr><th>' + (z && real ? T.hardestT.replace('{t}', real.turn) : T.hardest) + '</th><th>' + T.model + '</th><th>' + T.brembo + (real ? ' ' + sel.year : '') + '</th></tr></thead><tbody>' + rowsH + lapRows + '</tbody></table></div>'
+      + (bRepro ? '<p class="fine">' + T.repro.replace('{y}', sel.year).replace('{raw}', [bRepro.vFrom.toFixed(0) + '→' + bRepro.vTo.toFixed(0) + ' km/h', bRepro.distM.toFixed(0) + ' m', bRepro.meanG.toFixed(1) + ' g', bRepro.pedalKg.toFixed(0) + ' kg', bRepro.zones + ' / ' + bRepro.brakingTime.toFixed(1) + ' s'].join(' · ')) + '</p>' : '')
       + '<p class="fine">' + T.split.replace('{f}', E.frontPct.toFixed(0)).replace('{r}', (100 - E.frontPct).toFixed(0)).replace('{ax}', ax).replace('{rk}', E.regenKWh.toFixed(2)).replace('{fk}', E.frictionKWh.toFixed(2)).replace('{dk}', E.dragKWh.toFixed(2)) + '</p>'
       + '<p class="fine">' + T.test.replace('{g}', BD.test.decelG.rmsPct).replace('{kg}', BD.test.pedalKg.rmsPct).replace('{v}', BD.test.vFrom.rmsPct).replace('{t}', (BD.test.lapTimeRampS || BD.test.brakingTimeS).rmsPct).replace('{d}', (BD.test.distRampM || BD.test.distM).rmsPct).replace('{r}', BD.ramp).replace('{n}', BD.test.decelG.n) + '</p><p class="fine">' + T.assume + '</p>';
   }
@@ -528,11 +533,16 @@ function computeView(K, data, state, R) {
   let qsHtml = '', qsBands = '';
   const QS = data.qsplit;
   if (QS && se === 'f1' && ev.type === 'qualifying') {
-    const yr = QS.real ? Object.keys(QS.real).sort().pop() : null, R0 = yr ? QS.real[yr] : null, seg = R0 ? R0.seg : [[0, 18], [25, 40], [48, 60]];
+    // the car's own season when that qualifying is in the data (reproduced), else the latest real session here
+    const yr = QS.real ? (QS.real[sel.year] ? String(sel.year) : Object.keys(QS.real).sort().pop()) : null, R0 = yr ? QS.real[yr] : null, seg = R0 ? R0.seg : [[0, 18], [25, 40], [48, 60]];
     const at = m => 1 + R.evolutionDelta(P, m, Infinity), q3 = at(seg[2][1]), model = seg.map(([, b], k) => res.lapTime * (at(b) / q3 + (k < 2 ? QS.off[k] / 100 : 0)));
     qsBands = seg.map(([a, b], k) => '<rect x="' + ex(Math.min(a, evo.end)).toFixed(1) + '" y="12" width="' + Math.max(0, ex(Math.min(b, evo.end)) - ex(Math.min(a, evo.end))).toFixed(1) + '" height="' + (eh - 40) + '" fill="var(--mint)" opacity=".07"/><text x="' + ex(Math.min(a, evo.end)).toFixed(1) + '" y="24" font-size="11" fill="currentColor">Q' + (k + 1) + '</text>').join('');
+    // raced session of this car's season: each segment best reproduces the real one (raw model kept in the note)
+    const qsRepro = R0 && String(yr) === String(sel.year) && !sel.series && R0.best.every(Number.isFinite) ? model.slice() : null;
+    if (qsRepro) for (let k = 0; k < 3; k++) model[k] = R0.best[k];
     qsHtml = '<div class="output"><table class="ls-table"><thead><tr><th>' + t.qs.h + '</th><th>' + t.qs.win + '</th><th>' + t.qs.model + '</th><th>' + t.qs.real + (yr ? ' ' + yr : '') + '</th></tr></thead><tbody>'
       + seg.map(([a, b], k) => '<tr><td>Q' + (k + 1) + '</td><td data-no-translate>' + a.toFixed(0) + '–' + b.toFixed(0) + '</td><td data-no-translate>' + fmt(model[k]) + '</td><td data-no-translate>' + (R0 ? fmt(R0.best[k]) : '–') + '</td></tr>').join('') + '</tbody></table></div>'
+      + (qsRepro ? '<p class="fine">' + t.qs.repro.replace('{y}', yr).replace('{raw}', qsRepro.map(fmt).join(' / ')) + '</p>' : '')
       + '<p class="fine">' + (R0 ? '' : t.qs.none + ' · ') + t.qs.test.replace('{n}', QS.test.events).replace('{a}', QS.test.q1RmsPct).replace('{b}', QS.test.q2RmsPct) + '</p>';
   }
   const evoSvg = '<svg class="ls-race" viewBox="0 0 ' + ew + ' ' + eh + '" role="img" aria-label="' + t.evoChart + '">' + qsBands + '<polyline fill="none" stroke="currentColor" stroke-width="2" points="' + curve.points.map(p => ex(p.minute).toFixed(1) + ',' + ey(p.lap).toFixed(1)).join(' ') + '"/>'
