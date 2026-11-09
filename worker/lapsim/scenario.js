@@ -1,5 +1,6 @@
 // Cars, real qualifying conditions and FIA circuit changes for one track. Shared by the
 // /simulation page and the lapsim_simulate connector tool so both give the same answer.
+import {lapsimWecPoles} from './wec-poles-data.js';
 import {lapsimCalibration} from './calibration-data.js';
 import {lapsimTrackChanges} from './track-changes-data.js';
 import {lapsimChangeEffects} from './change-effects-data.js';
@@ -28,6 +29,9 @@ export function carsFor(id) {
     const seasons = lapsimCalibration?.series?.wec?.[cls] || {}, y = Object.keys(seasons).sort().at(-1);
     out['wec-' + cls] = y ? {car: seasons[y].car, grip: gripOf(2026), kind: 'calibrated', year: Number(y), series: 'wec', cls}
       : {car: def.prior, grip: gripOf(2026), kind: 'prior', year: 2026, series: 'wec', cls};
+    // sector correction on tracks this class raced in its calibrated season (Al Kamel best lap, dry)
+    const p = y && lapsimWecPoles?.[id]?.[y]?.[cls];
+    if (p) out['wec-' + cls].fix = {real: p.sectors, weather: p.weather, ref: 'wec-' + cls};
   }
   // Sector correction on tracks raced with this rule set: the real pole's sector times minus the
   // fitted 2026 car's sectors in the same weather (worked out where the lap is simulated). Projected
