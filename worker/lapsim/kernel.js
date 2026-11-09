@@ -102,6 +102,7 @@ export function lapsimKernel() {
       muX0: car.muX, muY0: car.muY, dmu: car.dmuDfz ?? -5e-5, fz0: car.fz0 ?? 3000,
       rearStatic: car.rearWeight ?? 0.55, rearAero: car.rearAero ?? 0.55,
       muXTrac: car.muXTrac ?? car.muX, inertia: car.inertiaFactor ?? 1.0, awdAbove: car.awdAboveKph != null ? car.awdAboveKph / 3.6 : null,
+      axle: !!car.axle, q: car.loadExp ?? 0.85, hOverTw: h / (car.trackWidth ?? 1.6), rollFront: car.rollFront ?? 0.5,
     };
   }
 
@@ -111,6 +112,21 @@ export function lapsimKernel() {
     const mu = Math.max(0.3, mu0 + dmu * (fzT - fz0));
     return mu * normal;
   }
+
+  // Axle model (car.axle): lateral capacity limited by the weaker axle. Loads per axle from static
+  // weight + aero balance (rearAero) + vertical curvature share; lateral load transfer m·ay·h/tw split by
+  // roll-stiffness share (rollFront); each tyre Fy = mu0·fz0·(Fz/fz0)^q (q < 1: degressive, Pacejka-like).
+  // The lateral force each axle must give follows the mass distribution: Fy_r = m·ay·rearWeight.
+  // Returns the largest total lateral force (N) both axles can carry, so it is used like capacity().
+  function axleLateral(t, mu0, Nf, Nr, ay) {
+    const tyre = fz => fz <= 0 ? 0 : mu0 * t.fz0 * Math.pow(fz / t.fz0, t.q);
+    const dF = t.m * Math.abs(ay) * t.hOverTw;
+    const pair = (Nax, d) => tyre(Nax / 2 + d) + tyre(Nax / 2 - d);
+    const cf = pair(Nf, dF * t.rollFront), cr = pair(Nr, dF * (1 - t.rollFront));
+    return Math.min(cf / (1 - t.rearStatic), cr / t.rearStatic);
+  }
+  // Same tyre law for the friction available in x on all four (or two driven) tyres, no transfer
+  function tyreSum(t, mu0, N, nTyres = 4) { return nTyres * (N <= 0 ? 0 : mu0 * t.fz0 * Math.pow(N / nTyres / t.fz0, t.q)); }
 
   function simulateLap(track, car, env = {}, opts = {}) {
     const n = track.kappa.length, ds = track.ds;
@@ -135,6 +151,17 @@ export function lapsimKernel() {
       tail[i] = heading && windSpeed ? tailwind(heading[i], windSpeed, windFrom) : 0;
       const g = grade ? grade[i] : 0; sinG[i] = Math.sin(g); cosG[i] = Math.cos(g);
     }
+    // Vertical curvature (1/m, + = dip/compression, − = crest): adds m·v²·kv to the normal load
+    const kv = track.kv || null;
+    const normalAt = (v, i, L) => Math.max(0.1 * mg, mg * cosG[i] + L + (kv ? t.m * v * v * kv[i] : 0));
+    // Lateral capacity (N) at speed v on point i with aero load L (axle model or point mass)
+    const latCap = (v, i, L) => {
+      const N = normalAt(v, i, L);
+      if (!t.axle) return capacity(t.muY0, t.dmu, t.fz0, N);
+      const W = N - L; // weight part (incl. grade and vertical curvature)
+      return axleLateral(t, t.muY0, W * (1 - t.rearStatic) + L * (1 - t.rearAero), W * t.rearStatic + L * t.rearAero, v * v * Math.abs(track.kappa[i]));
+    };
+    const pureCap = (i, N) => t.axle ? tyreSum(t, t.muY0, N) : capacity(t.muY0, t.dmu, t.fz0, N);
     const lowAt = i => !!(aeroLow && aeroLow[i]);
     const clAt = (i, low) => low ? (car.clALow ?? car.clA) : car.clA;
     const cdAt = (i, low) => low ? (car.cdALow ?? car.cdA) : car.cdA;
@@ -148,8 +175,8 @@ export function lapsimKernel() {
       if (kap < 1e-5) { vLat[i] = vMaxCar; continue; }
       const m = muAt(i), cl = car.clA;
       const f = v => {
-        const va = vAir(v, i), L = aeroFactor * cl * va * va, N = mg * cosG[i] + L;
-        return m * capacity(t.muY0, t.dmu, t.fz0, N) - t.m * v * v * kap;
+        const va = vAir(v, i), L = aeroFactor * cl * va * va;
+        return m * latCap(v, i, L) - t.m * v * v * kap;
       };
       let lo = 1, hi = vMaxCar;
       if (f(hi) >= 0) { vLat[i] = vMaxCar; continue; }
@@ -162,8 +189,8 @@ export function lapsimKernel() {
       const kap = Math.abs(track.kappa[i]);
       if (kap < 1e-6) return 1;
       const ay = v * v * kap;
-      const va = vAir(v, i), L = aeroFactor * car.clA * va * va, N = mg * cosG[i] + L;
-      const ayMax = muAt(i) * capacity(t.muY0, t.dmu, t.fz0, N) / t.m;
+      const va = vAir(v, i), L = aeroFactor * car.clA * va * va;
+      const ayMax = muAt(i) * latCap(v, i, L) / t.m;
       const r = Math.min(1, ay / ayMax);
       return Math.pow(Math.max(0, 1 - Math.pow(r, k)), 1 / k);
     };
@@ -171,8 +198,8 @@ export function lapsimKernel() {
     // 2) Backward pass (braking): independent of the ERS strategy, so computed once.
     //    Straight Mode is closed under braking: corner-mode aero.
     const brakeAcc = (v, i) => {
-      const va = vAir(v, i), L = aeroFactor * car.clA * va * va, N = mg * cosG[i] + L;
-      const fx = muAt(i) * (t.muX0 / t.muY0) * capacity(t.muY0, t.dmu, t.fz0, N) * ellipse(v, i);
+      const va = vAir(v, i), L = aeroFactor * car.clA * va * va, N = normalAt(v, i, L);
+      const fx = muAt(i) * (t.muX0 / t.muY0) * pureCap(i, N) * ellipse(v, i);
       const drag = aeroFactor * car.cdA * va * va, roll = cRoll * N;
       let a = (fx + drag + roll) / t.m + G * sinG[i];
       if (car.brakeDecelMax) a = Math.min(a, car.brakeDecelMax);
@@ -212,11 +239,11 @@ export function lapsimKernel() {
           const i = (start + c) % n, j = (i + 1) % n;
           const vi = Math.max(v[i], 1);
           const low = lowAt(i);
-          const va = vAir(vi, i), L = aeroFactor * clAt(i, low) * va * va, N = mg * cosG[i] + L;
+          const va = vAir(vi, i), L = aeroFactor * clAt(i, low) * va * va, N = normalAt(vi, i, L);
           const pErs = vi < vCut && (!track || soc > 0) ? erskLimitW(ers.rule, vi, ers.pMax || 0) : 0;
           const fPow = (pIce * etaD + pErs * etaK * etaD) / vi;
-          const nRear = t.rearStatic * mg * cosG[i] + t.rearAero * L;
-          const muX = muAt(i) * (t.muXTrac / t.muY0) * capacity(t.muY0, t.dmu, t.fz0, N) / N;
+          const nRear = t.rearStatic * (kv ? N - L : mg * cosG[i]) + t.rearAero * L;
+          const muX = muAt(i) * (t.muXTrac / t.muY0) * pureCap(i, N) / N;
           // LMH hybrids also drive the front axle above a set speed (awdAboveKph): all four tyres
           const awd = t.awdAbove != null && vi > t.awdAbove;
           const fTrac = (awd ? muX * N : muX * nRear / Math.max(0.2, 1 - muX * t.hOverWb)) * ellipse(vi, i);

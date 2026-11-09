@@ -39,6 +39,13 @@ const ONLY_WEC = E.LAPSIM_ONLY === 'wec';
 const prevCal = ONLY_WEC ? (await import('../../worker/lapsim/calibration-data.js')).lapsimCalibration : null;
 const traces = ONLY_WEC ? [] : JSON.parse(await readFile(join(CACHE, 'traces.json'), 'utf8'));
 const tracks = Object.fromEntries(Object.entries(lapsimTracks).map(([id, d]) => [id, trackFromData(d)]));
+// S3 candidate: axle-level car (load transfer, aero balance vs weight split, degressive tyre load law).
+// Track widths (m) are typical values for each class; roll-stiffness split 50/50.
+const AXLE = tw => E.LAPSIM_AXLE === 'on' ? {axle: true, loadExp: Number(E.LAPSIM_LOADEXP || 0.85), trackWidth: tw, rollFront: Number(E.LAPSIM_ROLLFRONT || 0.5)} : {};
+// S2 candidate: vertical curvature from the measured grade (crests unload, dips load the tyres)
+if (E.LAPSIM_KV === 'on') for (const tr of Object.values(tracks)) if (tr.grade) {
+  const g = tr.grade, n = g.length; tr.kv = Float64Array.from(g, (_, i) => (g[(i + 1) % n] - g[(i - 1 + n) % n]) / (2 * tr.ds));
+}
 const PARAMS = ['muY', 'clA', 'cdA', 'cdALow', 'pIce'];
 // physical bounds, so geometry error cannot be absorbed by impossible cars. ClA up to 8 m²:
 // modern F1 cars make about 3.5x their weight in downforce near 300 km/h (ClA ≈ 6.5–7). The fitted
@@ -63,7 +70,7 @@ for (const year of [...new Set(traces.map(t => t.year))].sort()) {
       feat: {ftf: t.throttle?.length ? t.throttle.filter(x => x >= 98).length / t.throttle.length : null, vmean: tracks[t.track].kappa.length * tracks[t.track].ds / t.lap_seconds},
       obs: {s: t.s, v: t.v.map(x => x / 3.6)}, weather: withEnergy(t.weather, t.track, year), meta: {sessionKey: t.session_key, driver: t.driver_number, position: t.position}}));
   if (laps.length < 4) { report.push(`${year}: not enough laps (${laps.length})`); continue; }
-  const base = {...structuredClone(prior), linkMu: true};
+  const base = {...structuredClone(prior), linkMu: true, ...AXLE(1.55)};
   if (process.env.LAPSIM_THROTTLE_HARVEST === 'off' && base.ers) base.ers.throttleHarvest = false;
   const params = PARAMS.map(k => {
     const [lo, hi] = BOUNDS[k], rel = k === 'pIce';
@@ -195,7 +202,7 @@ for (const [cls, def] of Object.entries(SERIES.wec.classes)) {
     const laps = sessions.flatMap(w => w.laps.map((l, i) => ({name: w.track, track: tracks[w.track], lapSeconds: l.lap, trapKph: l.topSpeedKph >= 0.92 * medTrap ? l.topSpeedKph : null,
       weight: i === 0 ? 1 : 0.5, grip: f1Grip(w.track), weather: w.weather || {}, meta: {event: w.event, car: l.car, manufacturer: l.manufacturer, session: l.session}})));
     if (new Set(laps.map(l => l.name)).size < 3) { report.push(`WEC ${cls} ${year}: not enough tracks (${new Set(laps.map(l => l.name)).size})`); continue; }
-    const base = {...structuredClone(def.prior), linkMu: true};
+    const base = {...structuredClone(def.prior), linkMu: true, ...AXLE(cls === 'lmgt3' ? 1.62 : 1.65)};
     const params = Object.entries(def.bounds).map(([k, [lo, hi]]) => ({key: k, path: k, base: base[k], step: 0.08, min: lo, max: hi}));
     let h = holdout(laps, base, params, {iters: HOLDOUT_ITERS, folds: 99, gripFor: l => l.grip});
     // Timing71 rows of the two seasons before (only seasons with no Al Kamel data), half weight; kept only if the
