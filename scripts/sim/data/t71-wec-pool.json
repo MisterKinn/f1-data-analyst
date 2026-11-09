@@ -1,0 +1,87 @@
+{
+ "method": "leave-one-track-out on the calibrated season; candidate adds Timing71 2023–2024 qualifying bests (chequered replays, weight 0.5)",
+ "classes": {
+  "lmh/2025": {
+   "refTracks": 6,
+   "extraRows": 3,
+   "extraTracks": [
+    "interlagos",
+    "austin",
+    "sakhir"
+   ],
+   "looRmsCurrent": 3.47,
+   "looRmsCandidate": 3.3,
+   "gate": "accepted: held-out error lower beyond noise",
+   "accept": true
+  },
+  "lmh/2026": {
+   "refTracks": 6,
+   "extraRows": 3,
+   "extraTracks": [
+    "interlagos",
+    "austin",
+    "sakhir"
+   ],
+   "looRmsCurrent": 1.29,
+   "looRmsCandidate": 1.39,
+   "gate": "rejected: worse on held-out rows",
+   "accept": false
+  },
+  "lmdh/2025": {
+   "refTracks": 6,
+   "extraRows": 3,
+   "extraTracks": [
+    "interlagos",
+    "austin",
+    "sakhir"
+   ],
+   "looRmsCurrent": 3.65,
+   "looRmsCandidate": 3.46,
+   "gate": "accepted: held-out error lower beyond noise",
+   "accept": true
+  },
+  "lmdh/2026": {
+   "refTracks": 6,
+   "extraRows": 3,
+   "extraTracks": [
+    "interlagos",
+    "austin",
+    "sakhir"
+   ],
+   "looRmsCurrent": 1.35,
+   "looRmsCandidate": 1.4,
+   "gate": "rejected: worse on held-out rows",
+   "accept": false
+  },
+  "lmgt3/2025": {
+   "refTracks": 6,
+   "extraRows": 5,
+   "extraTracks": [
+    "lusail",
+    "imola",
+    "interlagos",
+    "austin",
+    "sakhir"
+   ],
+   "looRmsCurrent": 2,
+   "looRmsCandidate": 1.91,
+   "gate": "accepted: held-out error lower beyond noise",
+   "accept": true
+  },
+  "lmgt3/2026": {
+   "refTracks": 6,
+   "extraRows": 5,
+   "extraTracks": [
+    "lusail",
+    "imola",
+    "interlagos",
+    "austin",
+    "sakhir"
+   ],
+   "looRmsCurrent": 1.26,
+   "looRmsCandidate": 1.2,
+   "gate": "rejected: gain within noise",
+   "accept": false
+  }
+ }
+}
