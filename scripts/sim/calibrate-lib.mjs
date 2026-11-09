@@ -175,9 +175,10 @@ export function fitSeason(laps, base, params, {iters = 120, wTime = 2, wGrip = 5
     // car grip and track grip only appear as a product: keep the average fitted track factor at 1
     return total / prepared.length + (free ? wGrip * (logGrip / free) ** 2 : 0) + 100 * outside;
   };
-  const evalLap = (l, car) => l.grip != null
+  // l.patch(car) → car for this lap (e.g. per-event BoP weight and power); no patch = season car
+  const evalLap = (l, car) => (car = l.patch ? l.patch(car) : car, l.grip != null
     ? {grip: l.grip, ...lapError(withGrip(l.track, l.grip), car, l.env, l.obs, l.lapSeconds, {wTime, trapKph: l.trapKph})}
-    : fitGrip(l.track, car, l.env, l.obs, l.lapSeconds, 0.85, 1.15, {wTime, trapKph: l.trapKph});
+    : fitGrip(l.track, car, l.env, l.obs, l.lapSeconds, 0.85, 1.15, {wTime, trapKph: l.trapKph}));
   const x0 = params.map(() => 0);
   const result = nelderMead(objective, x0, {step: params.map(p => p.step ?? 0.08), iters});
   const car = build(result.x);
@@ -203,7 +204,7 @@ export function holdout(laps, base, params, {folds = 4, iters = 40, gripFor, ...
     const fit = fitSeason(train, base, params, {...opts, iters});
     for (const l of laps.filter(x => test.has(x.name) && (x.weight ?? 1) >= 1)) {
       const g = gripFor(l); if (g == null) continue;
-      const res = simulateLap(withGrip(l.track, g), fit.car, conditionsFromWeather(l.weather || {}));
+      const res = simulateLap(withGrip(l.track, g), l.patch ? l.patch(fit.car) : fit.car, conditionsFromWeather(l.weather || {}));
       errors.push({name: l.name, dt: res.lapTime - l.lapSeconds, pct: (res.lapTime / l.lapSeconds - 1) * 100});
     }
   }
