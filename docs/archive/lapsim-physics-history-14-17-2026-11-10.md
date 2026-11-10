@@ -651,4 +651,3 @@ Runtime estimate, not a promise: the historical B job took about 3 h 36 min on G
 - All WEC classes are too fast at Interlagos on both geometries, up to about 1.5 s for LMGT3. The shared Interlagos factor is supported by one dry F1 season only. Does that factor transfer across classes, or does it absorb another missing effect? This is an open question, not authorization to change the factor.
 
 Disposition: A stopped at the approved ceiling; B stopped at the explicit requirement conflict; C is a blocked conditional plan. Diagnostic code and results are backed up in PR #154. No production geometry/calibration change, model PR, merge, workflow trigger or Vercel action was performed.
-
