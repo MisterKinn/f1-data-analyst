@@ -759,7 +759,7 @@ This status replaces the earlier continuation sections. Detailed history is in
 | Sector weight 2 retest at R | Rejected: pooled 1.196784%, control 1.166709%, n=33 |
 | WEC follow-up caps / downforce | 0 cap hits; no class-season left its downforce bound |
 | Hypercar 2025 trap RMS | control 11.023611, BoP 12.246551, sector2 11.015988 km/h; n=10 class-track rows |
-| Dry Las Vegas candidate | Built from session 9640; paired F1 held-out fits still running at this checkpoint |
+| Dry Las Vegas candidate | Parked at the time box: main fits converged at 6 rounds; only 2/8 held-out folds complete per arm; dry 2024 raw error worsens from -0.143109 to -0.145542 s |
 | Per-model Hypercar | All-car paired fits and hidden-track/model tests running at this checkpoint |
 | All-car inventory | 425 timed car-event rows; 389 dry; 204 model-event rows |
 | Gear measurement | 41 team-season folds, 82 Monza laps; correct distance 79.857–83.439%; absolute gearbox ratios unverified |
@@ -770,7 +770,7 @@ This status replaces the earlier continuation sections. Detailed history is in
 Keep sector and trap flags off. Trap position and aero ratio remain on hold.
 Interlagos stays on the dry geometry source, session 9865. Session 11408 was wet.
 One geometry serves every series. The dry-source guard remains in draft PR #155.
-Montreal and Zandvoort remain unchanged. Las Vegas is isolated until its declared checks pass.
+Montreal and Zandvoort were not started in the used geometry time box. All three remain unchanged.
 The old WEC baseline mismatch came from archive versus repository Interlagos geometry;
 the exact historical recipe remains in physics rules section 5.2.
 
@@ -788,6 +788,7 @@ Experiment runners, forced BoP fitting, model hierarchy and full result files st
 See the [night report](lapsim-night-session-2026-11-10.md),
 [consistent comparison](archive/lapsim-consistent-candidate-2026-11-10.md),
 [WEC follow-up](archive/lapsim-wec-followup-2026-11-10.md),
+[dry Vegas](archive/lapsim-dry-vegas-2026-11-10.md),
 [fixed-input audit](lapsim-wec-fixed-inputs-2026-11-10.md),
 [all-car inventory](lapsim-wec-all-car-inventory-2026-11-10.md), and
 [gear measurements](lapsim-f1-gears-2026-11-10.md).

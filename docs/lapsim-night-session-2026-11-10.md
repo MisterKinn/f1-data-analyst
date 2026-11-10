@@ -172,3 +172,23 @@ The existing PR now contains a clean commit on current main with reusable conver
 Build and artifact validation passed. The GitHub test workflow also passed. The automatic Vercel check requests authorization; it was left untouched. The PR has no base conflict and was marked ready for review. No merge was made. Its title and description were updated on the GitHub page because the connector cannot edit PR metadata.
 
 The earlier continuation sections were preserved under `docs/archive/`; the current handoff has one concise status section. Remaining experiment outcomes will update that status and this report, while full outputs stay on the experiment branch. A plan for predicting factors on never-raced circuits is saved without a new fit.
+
+
+## Block 2 — parked: time box ended before held-out completion
+
+The declared clock ended with both main fits converged, but most held-out folds unfinished. No final calibration was exported. The completed dry Las Vegas replay also worsens the later dry row slightly; corner bias and trap checks are mixed. These diagnostics do not support adoption. Keep current geometry. Montreal and Zandvoort were not started because the geometry time box was used up.
+
+| Check | Control | Dry-source candidate |
+|---|---:|---:|
+| Main rounds | 6 | 6 |
+| Last main score decrease, % | 0.773481 | 0.584693 |
+| Completed held-out folds / required | 2 / 8 | 2 / 8 |
+| Partial F1 2025 held-out n / RMS, % | 11 / 0.622745 | 11 / 0.641319 |
+| F1 2026 completed held-out rows | 0 | 0 |
+| Las Vegas 2023 dry raw replay error, s | +0.283826 | +0.265002 |
+| Las Vegas 2024 dry raw replay error, s | -0.143109 | -0.145542 |
+| Las Vegas grip factor | 0.947102 | 0.932803 |
+| Las Vegas 2026 main-fit prediction, s | 93.875294 | 94.491136 |
+| Fit cap hits | 0 | 0 |
+
+The partial held-out RMS is not a season result or an acceptance result. The saved predictions use the same latest dry source weather in both arms. Wet Vegas data is diagnostic only. Current production still reproduces all dry F1 rows exactly; the unfinished candidates have no final reproduction result. Full per-round scores, corner/trap errors, source hashes and checkpoints are in the experiment archive; the readable summary is [dry Vegas](archive/lapsim-dry-vegas-2026-11-10.md).
