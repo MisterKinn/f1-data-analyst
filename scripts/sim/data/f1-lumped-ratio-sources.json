@@ -1,0 +1,81 @@
+{
+  "definition": "Road speed in km/h per 1000 engine rpm = 1000 / median(RPM per km/h). Includes final drive, tyre radius and slip. Not a pure gearbox ratio. Stable-gear sampling filters unchanged.",
+  "sources": [
+    {
+      "sessionKey": 9153,
+      "year": 2023,
+      "url": "https://api.openf1.org/v1/car_data?session_key=9153",
+      "sessionSha256": "09505309eff589f5a5c78c9afffe972525616431df6ce0ecf52a59e5d460acc4"
+    },
+    {
+      "sessionKey": 9586,
+      "year": 2024,
+      "url": "https://api.openf1.org/v1/car_data?session_key=9586",
+      "sessionSha256": "616707a40ba449c6c5ddcb5bf028fd93238da4abc76cbd462f476d4f42318d0e"
+    },
+    {
+      "sessionKey": 9908,
+      "year": 2025,
+      "url": "https://api.openf1.org/v1/car_data?session_key=9908",
+      "sessionSha256": "d874fa9bd7fce9016c8736cc2d03574baabe158deadf9f3a905f8522fa27a149"
+    },
+    {
+      "sessionKey": 11357,
+      "year": 2026,
+      "url": "https://api.openf1.org/v1/car_data?session_key=11357",
+      "sessionSha256": "55ee2a316c9c267ebebc05b9732fa8b9192da76bbe04fba2ce7d365032ffbeb2"
+    }
+  ],
+  "sampleRates": [
+    {
+      "year": 2023,
+      "teams": 10,
+      "laps": 20,
+      "samples": 6123,
+      "medianIntervalSec": 0.24000000953674316,
+      "medianIntervalHz": 4.166666501098216,
+      "observedSamplesPerSecond": 3.7603207191309345,
+      "distanceM": 114032.15071085426,
+      "accuracyPct": 81.64011847470972
+    },
+    {
+      "year": 2024,
+      "teams": 10,
+      "laps": 20,
+      "samples": 6116,
+      "medianIntervalSec": 0.24000000953674316,
+      "medianIntervalHz": 4.166666501098216,
+      "observedSamplesPerSecond": 3.818926975569303,
+      "distanceM": 114341.70209801859,
+      "accuracyPct": 83.25535125187838
+    },
+    {
+      "year": 2025,
+      "teams": 10,
+      "laps": 20,
+      "samples": 5961,
+      "medianIntervalSec": 0.24000000953674316,
+      "medianIntervalHz": 4.166666501098216,
+      "observedSamplesPerSecond": 3.748424747091269,
+      "distanceM": 114065.96163342395,
+      "accuracyPct": 83.43949481269087
+    },
+    {
+      "year": 2026,
+      "teams": 11,
+      "laps": 22,
+      "samples": 6833,
+      "medianIntervalSec": 0.24000000953674316,
+      "medianIntervalHz": 4.166666501098216,
+      "observedSamplesPerSecond": 3.751186747115943,
+      "distanceM": 123207.67941299411,
+      "accuracyPct": 79.85675360606535
+    }
+  ],
+  "limitations": [
+    "Phases are signal-based proxies, not mapped corner landmarks.",
+    "100 m bins use integrated sampled speed from first retained lap timestamp; gaps are not interpolated. These are approximate positions.",
+    "Low-RPM upshift proxy: within 0.75 s of an observed upshift above 250 km/h, RPM below 90% of same team-season/from-gear median, at least 3 shifts. Not proof of driver intent.",
+    "Single circuit, Monza qualifying. Median spacing about 0.24 s. Segment analysis is descriptive and does not tune or retest the predictor."
+  ]
+}

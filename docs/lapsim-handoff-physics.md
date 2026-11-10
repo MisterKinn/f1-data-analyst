@@ -738,65 +738,61 @@ No improved model or gate acceptance is claimed. The workflow is unchanged; invo
 this report automatically from that workflow is outside this physics-only task.
 
 
-## 14. Current status — 2026-11-10
+## 14. Current status — 2026-11-11
 
-Production is unchanged. No model has been adopted. No merge or Vercel action was made.
-This status replaces the earlier continuation sections. Detailed history is in
-[archive part one](archive/lapsim-physics-history-14-17-2026-11-10.md) and
-[archive part two](archive/lapsim-physics-history-18-22-2026-11-10.md).
+Production stays unchanged. LMGT3 stays parked. No merge or Vercel action.
+The owner will review PR #154 and draft #155 separately.
 
-| Item | Current result |
-|---|---|
-| Standard WEC yardstick R | tolerance 1e-4, cap 2000; verified against 1e-6; maximum group change 0.001061 pp, no choice flips |
-| Consistent candidate | Failed: pooled RMS 1.166709% control, 1.179080% candidate; n=33 |
-| Round-five secondary arm | RMS 1.094332%, n=33; diagnostic only because B round five was not converged |
-| B main fit | Converged at round 7; last decrease 0.344391%; held-out folds not needed for table export |
-| Interlagos B grip | round 5: 0.9623445984; final: 0.9654634398; old table: 0.9823 |
-| Production F1, existing logs only | Round 4: 23.9813; round 5: 23.6060; decrease 1.564969%; fails the 1% rule |
-| Dry raced reproduction | WEC 33 rows and F1 39 rows; largest error 0 s |
-| Wet WEC exclusion | Austin 2025: 3 class rows, reported separately |
-| Model-matched BoP at R | Rejected: pooled 1.271006%, control 1.166709%, n=33 |
-| Sector weight 2 retest at R | Rejected: pooled 1.196784%, control 1.166709%, n=33 |
-| WEC follow-up caps / downforce | 0 cap hits; no class-season left its downforce bound |
-| Hypercar 2025 trap RMS | control 11.023611, BoP 12.246551, sector2 11.015988 km/h; n=10 class-track rows |
-| Dry Las Vegas candidate | Parked at the time box: main fits converged at 6 rounds; only 2/8 held-out folds complete per arm; dry 2024 raw error worsens from -0.143109 to -0.145542 s |
-| Per-model Hypercar | Rejected: all-model pooled RMS 1.391909% → 1.314548%, n=22, but every class-best result is worse than production; 0 cap hits |
-| Optional per-model LMGT3 | Parked: 2025 main and 2026 hidden-Austin fold hit cap 2000; 0 completed held-out folds |
-| All-car inventory | 425 timed car-event rows; 389 dry; 204 model-event rows |
-| Gear measurement | 41 team-season folds, 82 Monza laps; correct distance 79.857–83.439%; absolute gearbox ratios unverified |
-| Production integrity | 45 runtime/gate files and 12 pinned inputs verified unchanged |
-| Core PR review checks | Latest local tests 432/432; build and artifact validation passed; earlier GitHub workflow passed, latest-head CI unconfirmed |
-| Review state | PR #154 ready for review; full experiment history saved separately; no merge |
+| Item | State | Evidence |
+|---|---|---|
+| Block 0: deployed control | Exact requested metric blocked by baseline identity | [Geometry and fold replay audit](archive/lapsim-deployed-control-review-2026-11-11.md) |
+| Block 1: rules | Revised fold rule in §5.1; cap stops are not numerical convergence | [Rules](lapsim-physics-rules.md#51-numbers-for-the-checks) |
+| Block 2: Las Vegas | Finished; rejected; baseline validity also failed | [Final F1 report](archive/lapsim-f1-actions-final-2026-11-11.md) |
+| Block 3: WEC at R | BoP and sector2 rejected; original sector failure retained | [Verified WEC report](archive/lapsim-wec-actions-final-2026-11-11.md) |
+| Block 4: per-model | Hypercar rejected for production; analysis complete; LMGT3 parked | [Own-lap metrics and parameter differences](archive/lapsim-per-model-followup-2026-11-11.md) |
+| Block 5: gears | Lumped ratios and segment analysis complete; no kernel change | [Ratios and errors](archive/lapsim-gears-followup-2026-11-11.md) |
+| Block 6: review split | Core/test/small-data/docs PR separated from runners/results | [Evidence branch](https://github.com/kangjeongmin1229/f1-data-analyst-deploy/tree/exp/lapsim-owner-evidence-2026-11-11) |
 
-Keep sector and trap flags off. Trap position and aero ratio remain on hold.
-Interlagos stays on the dry geometry source, session 9865. Session 11408 was wet.
-One geometry serves every series. The dry-source guard remains in draft PR #155.
-Montreal and Zandvoort were not started in the used geometry time box. All three remain unchanged.
-The old WEC baseline mismatch came from archive versus repository Interlagos geometry;
-the exact historical recipe remains in physics rules section 5.2.
+Block 0's R control and candidate both used repository geometry, SHA256
+`fe67d1ecf2a4c151f35f98e3da334d835881904ffb4ebda24488983952cee5eb`.
+All 33 saved held-out states replayed within 1e-8 seconds; no Interlagos geometry changed.
+R control RMS is 1.166709%, candidate 1.179080% (difference 0.012371 pp).
+The R control is a refit, not frozen deployed production: cars and some choices differ.
+Do not label its number “control as deployed”. Original deployed held-out states are missing.
+No consistent-baseline model PR was opened. Keep production under the owner’s decision.
 
-The shared wet-session helper and integration test keep fit and audit scopes equal, including
-an audit called from another checkout with a different manual wet list.
-The BoP model join uses exact season, event and entry identity, including leading zeros.
-Unverified aero limits and event values stay blank; no prior, bound, weight or gate changed.
-The fresh WEC control matches the earlier R control exactly for saved series values.
-Small class-season gains below the declared minimum are not established.
+Fresh WEC: control 1.166709%, BoP 1.271006%, sector2 1.196784%, n=33.
+All three have zero cap hits and exact dry reproduction on 33 rows, maximum error 0 seconds.
+Austin 2025 remains excluded as wet. F1 values stayed unchanged in the WEC jobs.
+Sector2 adds a LMGT3 2025 drag-bound hit. No bound/weight/gate change was made.
+Corrected independent WEC comparison run: 42918109977; only artifact extraction was fixed.
 
-The review branch contains reusable fitting/audit code, tests, derived tables and documentation.
-Experiment runners, forced BoP fitting, model hierarchy and full result files stay on the
-[experiment branch](https://github.com/kangjeongmin1229/f1-data-analyst-deploy/tree/exp/lapsim-physics-night-2026-11-10). No experiment result directory is added to the core PR.
-[Artifact index](archive/lapsim-experiment-index-2026-11-10.md) gives manifest hashes and source links.
+Per-model own-lap predictions improve most clearly for LMH 2025; class-best predictions
+remain worse than production in every class-season. This is not evidence of a GT3 pass.
+Gears: 328 team-season-gear cells, 189 populated; 41 hidden-team tests and 82 Monza laps.
+Braking/entry accuracy is lowest; low-RPM straight upshifts explain little measured error.
+Signal-based segments and integrated distance bins are approximate, not corner landmarks.
 
-See the [night report](lapsim-night-session-2026-11-10.md),
-[consistent comparison](archive/lapsim-consistent-candidate-2026-11-10.md),
-[WEC follow-up](archive/lapsim-wec-followup-2026-11-10.md),
-[dry Vegas](archive/lapsim-dry-vegas-2026-11-10.md),
-[model tests](archive/lapsim-wec-models-2026-11-10.md),
-[fixed-input audit](lapsim-wec-fixed-inputs-2026-11-10.md),
-[all-car inventory](lapsim-wec-all-car-inventory-2026-11-10.md), and
-[gear measurements](lapsim-f1-gears-2026-11-10.md).
-The [unseen-track plan](lapsim-unseen-track-plan.md) is a plan only; no fit was run.
+Latest owner decisions: keep production, keep LMGT3 parked, no merge of #154 or #155.
+Any passing model change needs its own draft PR. No candidate has passed here.
 
-Open decisions: keep production as baseline; decide later how to address its F1 convergence
-failure and incomplete Las Vegas / LMGT3 validation. Hypercar is rejected.
-Do not select the unconverged secondary table. All runs have ended; there is no model PR.
+### Evidence and restart
+
+- [Original partial checkpoint snapshot](https://github.com/kangjeongmin1229/f1-data-analyst-deploy/tree/203e22850e355539241f2c2d30eb36a9d1224304/scripts/sim/results/vegas-owner-save-2026-11-11)
+- [Canonical fits](https://github.com/kangjeongmin1229/f1-data-analyst-deploy/actions/runs/42913368752)
+- [Sector recovery](https://github.com/kangjeongmin1229/f1-data-analyst-deploy/actions/runs/42913698920)
+- [Postprocessing instructions](lapsim-postprocessing-2026-11-11.md)
+- [Historical status](archive/lapsim-status-before-owner-review-2026-11-11.md)
+
+Resume only unfinished work from hash-verified saved inputs/checkpoints in an isolated fork
+checkout. Check all active runs first. Do not start duplicate fits. Long fits use fork-only
+Actions. Final export replays nine saved F1 states per arm with zero optimizer rounds.
+Production/main/Vercel remain untouched. Full runners, checkpoints, logs and results live on
+the evidence/experiment branches; review PR #154 has no experiment result bundle.
+
+Final F1 held-out RMS: 2025 control 0.841682%, candidate 0.851894% (n20);
+2026 control 1.194146%, candidate 1.306054% (n14). Both worse.
+Dry reproduction: 39 rows per arm, largest error 0 s. All 18 checkpoint hashes match.
+Candidate 2026 fold 1 stopped at six rounds without numerical convergence.
+Las Vegas 2026 experiment prediction: 93.875 s control, 94.491 s candidate.
+Final local review checks: 114 physics/reproduction tests passed; no new model code.
