@@ -119,7 +119,7 @@ Reference data for the refit:
 | Data | Where |
 |---|---|
 | WEC per-car laps, sectors, speed traps, manufacturer and team per row | Al Kamel files through `scripts/sim/fetch-wec.mjs` (rows carry `MANUFACTURER`, `TEAM`, car number). The current code keeps only the best three per class: keep all cars. |
-| Hypercar BoP per event, 2024 and 2025 | `scripts/sim/data/wec-bop.json`, sources in `docs/lapsim-wec-bop.md`. 2026 is not published: mark as unknown. |
+| Hypercar BoP per event, 2024 and 2025 | `scripts/sim/data/wec-bop.json`, sources in `docs/lapsim-wec-bop.md`. 2026 event values were not verified in this session: mark as unknown. |
 | GT3 in other series (IMSA, GTWC, DTM, IGTC, NLS, ELMS, ALMS, Macau) | `scripts/sim/data/t71-gt3.json`, `series-poles.json`, collector notes in `docs/lapsim-t71.md` |
 | IMSA GTP energy per lap | `scripts/sim/data/t71-imsa-vft.json` |
 | Stints and tyres | `wec-stints.json`, `t71-wec-stints.json`, `t71-lmgt3-stints.json`, `wec-tyres.json` |
@@ -274,7 +274,7 @@ LAPSIM_ONLY=wec LAPSIM_ITERS=70 LAPSIM_HOLDOUT_ITERS=25 node scripts/sim/calibra
 
 Run in a clean environment: no other LAPSIM_* overrides. The new timing flags, axle, banking and vertical-curvature features are off; LAPSIM_WEC_GRIP is unset, allowing the existing F1-versus-transfer selection. WEC weights are the unchanged defaults (lap 2, trap 0.5). BCD rounds/iterations do not control WEC. There are 36 raw class-session rows / 108 selected laps; existing wet exclusions remove 9 Austin 2025 laps, leaving 99. The 11 Timing71 candidate rows remain in scripts/sim/data/t71-wec-extra.json.
 
-The generatedAt field records the execution date and is not a fitted number; compare it separately. Numerical/model output must match exactly, not merely within 0.05 pp. Full evidence and the checked-in-versus-fit geometry discrepancy are in docs/lapsim-handoff-physics.md section 15.
+The generatedAt field records the execution date and is not a fitted number; compare it separately. Numerical/model output must match exactly, not merely within 0.05 pp. Full evidence and the checked-in-versus-fit geometry discrepancy are in [archived handoff section 15](archive/lapsim-physics-history-14-17-2026-11-10.md).
 
 ### 5.3 Stop conditions
 
@@ -335,7 +335,7 @@ When the owner has an iRacing account: iRacing telemetry (60 Hz, with position, 
 | Downforce at the upper bound (F1 2024 and 2025, Hypercar 2025, LMGT3 all seasons) | Open. The axle model did not remove it. |
 | WEC sim top speed against real trap differs by 10–20 km/h on some tracks | Not a like-for-like comparison today (section 4.3, limit 2). Fix the comparison before drawing conclusions. |
 | WEC grip and downforce not separable | Open (section 4.3, limits 1 and 3). |
-| 2026 WEC BoP | Not published. |
+| 2026 WEC event BoP | Not verified in this session; unknown, not an assumed absence. |
 | Track edges and height for tracks outside the public database | Manual work per track. |
 | GT3 series table (BoP body, torque sensors) | Not verified. First task of the GT3 refit. |
 
@@ -346,13 +346,13 @@ When the owner has an iRacing account: iRacing telemetry (60 Hz, with position, 
 | Work | Current state |
 |---|---|
 | Axle screen | Rejected at unconverged settings; this is not a final rejection of axle physics. Flags remain off. |
-| Sector term | Rejected at the historical 70/25 settings. One separately declared weight-2 re-test at R is authorized; no result yet. |
+| Sector term | Rejected at historical 70/25 and in the one allowed weight-2 re-test at R: pooled RMS 1.166709% → 1.196784%, n=33. Flag stays off. |
 | WEC yardstick | R = 1e-4, cap 2,000. Verified against 1e-6 across 6 groups: under 0.02 pp and no choice flips. |
 | Geometry mismatch | PR #149 WEC and B used archive Interlagos geometry; the repository uses dry session 9865. Exact historical recipe remains in section 5.2. |
 | Consistent candidate | B converged at round 7. Pooled WEC RMS at R increased from 1.166709% to 1.179080%; candidate rejected. Production remains the baseline. |
 | Round-five secondary | Pooled WEC RMS 1.094332%, but B failed convergence. Diagnostic only; no substitution after seeing results. |
 | Geometry guard | Draft PR #155 selects the latest zero-rain session, or retains existing geometry. One geometry per track for all series. |
-| Rain-source tracks | Las Vegas, Montreal and Zandvoort remain unchanged in production. A dry Las Vegas candidate is authorized for a separate comparison. |
+| Rain-source tracks | All unchanged. Dry Las Vegas parked at its time box with only 2/8 held-out folds complete per arm; Montreal and Zandvoort not started. |
 | Production F1 | Existing main-fit scores 23.9813 → 23.6060: 1.56497% decrease, fails the 1% rule. Report only; not adopted or silently refitted. |
 
 No production model, geometry, bounds, weights or gate change has been adopted. Detailed history is in the handoff and its archive; current block status is in `docs/lapsim-night-session-2026-11-10.md`.

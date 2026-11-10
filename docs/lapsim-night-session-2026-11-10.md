@@ -192,3 +192,8 @@ The declared clock ended with both main fits converged, but most held-out folds 
 | Fit cap hits | 0 | 0 |
 
 The partial held-out RMS is not a season result or an acceptance result. The saved predictions use the same latest dry source weather in both arms. Wet Vegas data is diagnostic only. Current production still reproduces all dry F1 rows exactly; the unfinished candidates have no final reproduction result. Full per-round scores, corner/trap errors, source hashes and checkpoints are in the experiment archive; the readable summary is [dry Vegas](archive/lapsim-dry-vegas-2026-11-10.md).
+
+
+### Block 4 interruption and fixed restart declaration
+
+The execution handle disappeared while two Hypercar groups were unfinished. Their objective logs stopped advancing; the other two groups and the fresh production control had already finished. Preserve all original files and completed fits. Use one separate restart directory, reuse only completed converged main fits and folds, and rerun the interrupted fold from its unchanged training inputs. Do not resume a partially saved optimizer state. Keep the original deadline, bounds, weights, shrink penalty, source tables and stopping settings. No new choice is made from held-out results. Start the optional LMGT3 extension only after every Hypercar group finishes inside the same box.
