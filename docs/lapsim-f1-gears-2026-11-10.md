@@ -344,4 +344,4 @@ Absolute gearbox ratios remain empty: loaded tyre radius and final drive were no
 | 2026 | Williams | 7 | 112 | 38.6925 | 1.1234 | 8 |
 | 2026 | Williams | 8 | 153 | 34.4431 | 1.0000 | 8 |
 
-Derived values, source URLs, source hashes and every hidden-team fold are in `scripts/sim/data/f1-gear-measurements.json`. Raw OpenF1 responses are not committed.
+Derived values, source URLs, source hashes and every hidden-team fold are in `scripts/sim/data/f1-gear-measurements.json`. Selected normalized session snapshots are preserved on the experiment branch with their input hashes. The raw HTTP response cache is not committed.

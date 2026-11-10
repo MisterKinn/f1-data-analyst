@@ -139,7 +139,7 @@ The whole-team gear test finished without fitting a physics model. All selected 
 | Team-season-gear rows with enough ratio samples | 189 |
 | Total team-season-gear rows | 328 |
 
-The derived table is `scripts/sim/data/f1-gear-measurements.json`; the readable report is `docs/lapsim-f1-gears-2026-11-10.md`. Raw source responses remain in the experiment cache. Accuracy covers selected Monza qualifying laps only. Low gears often have too few stable, full-throttle samples; those values stay blank. No claim is made about other circuits or absolute gearbox ratios.
+The derived table is `scripts/sim/data/f1-gear-measurements.json`; the readable report is `docs/lapsim-f1-gears-2026-11-10.md`. Selected normalized source sessions are archived with their hashes on the experiment branch; the raw HTTP response cache stays local. Accuracy covers selected Monza qualifying laps only. Low gears often have too few stable, full-throttle samples; those values stay blank. No claim is made about other circuits or absolute gearbox ratios.
 
 
 ## Block 3 — done: both tests rejected
@@ -167,7 +167,7 @@ The existing PR now contains a clean commit on current main with reusable conver
 | Added core files above 100 KB | 0 |
 | Offline Node 22 tests passed / total | 432 / 432 |
 | Production runtime and gate hashes unchanged | 45 |
-| Current handoff status lines | 56 |
+| Handoff status lines at the first split | 56 |
 
 Build and artifact validation passed. The GitHub test workflow also passed. The automatic Vercel check requests authorization; it was left untouched. The PR has no base conflict and was marked ready for review. No merge was made. Its title and description were updated on the GitHub page because the connector cannot edit PR metadata.
 
