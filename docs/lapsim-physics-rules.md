@@ -197,13 +197,16 @@ When a time box ends, park and continue. Record incomplete fits and their conver
 
 | Check | Pass value |
 |---|---|
-| F1 BCD convergence | Fit score falls by less than 1 % between the last two rounds, in the main fit and in every held-out fold |
+| F1 BCD main-fit convergence | Nonnegative score decrease strictly below 1% between the last two rounds; retain the existing main-fit minimum and maximum of 5 and 10 rounds. |
+| F1 held-out fold stopping — owner revision, 2026-11-11 | Stop at the first nonnegative score decrease strictly below 1% (at least two scores are needed), or at the round count where that arm's main fit converged, whichever comes first. Apply the same rule to control and candidate. Preserve already finished folds and report rounds used and stop reason for every fold. A fold stopped by the main-round limit is complete under this rule, but is not claimed to have met numerical convergence. |
 | WEC convergence | Compare two tolerances a factor of 100 apart on identical inputs and settings. Every class-season held-out RMS difference must be strictly below 0.02 percentage points, with no pooled/bop/gripSource choice flips. The main fit and folds must stop on both objective change and simplex size. |
 | Baseline is valid | The baseline in the experiment is within 0.05 percentage points of the same baseline at production settings, per group. If not, the settings are too short: results are not usable. |
 | Gate | `gate.mjs` says "accepted" on all rows, and no group is "worse" |
 | F1 protection | F1 2025 and F1 2026 held-out error not higher than the baseline |
 | Physical sense | No new value at a bound. Corner minimum bias and trap error not worse than the baseline. |
 | Reproduction | `node --test tests/lapsim-*.test.mjs` passes (raced sessions stay at 0.000 %) |
+
+**Owner continuation instruction, 2026-11-11:** push checkpoints, completed main fits/folds and logs to the PR #154 branch before a session limit; label incomplete results partial. Resume from pushed states, never from the beginning when a valid checkpoint exists. If the remaining F1 folds need more than 60 minutes in the session, use fork-only GitHub Actions with one job per fold in parallel, hash-pinned inputs, uploaded result artifacts and a handoff summary. Use the same route for later F1 fits requiring more than 60 minutes. Do not add workflows to the production repository. Blocks 3, 4 and 5 are independent of Block 2; WEC remains at R = 1e-4, cap 2,000. Production, gate, bounds, weights, main and Vercel remain unchanged; model proposals remain separate draft PRs.
 
 **B transfer-only exception, accepted by the owner on 2026-11-10:** For the consistent-geometry candidate, the <1 % score-decrease rule applies to B's main fit only. Start with five rounds, then add one round at a time with the existing warm-start state, up to ten. Keep iterations, weights, priors, teams, bounds, drag off and repository geometry unchanged. Held-out folds run only if the transfer-table pipeline needs them; report their state without extending them for convergence. Save round five during the required run if possible and use it as a secondary WEC arm; do not add a B rerun just to recover that table. Report production F1 convergence from existing logs only.
 

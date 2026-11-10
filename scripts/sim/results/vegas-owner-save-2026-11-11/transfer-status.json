@@ -1,0 +1,7 @@
+{
+  "state": "paused-for-owner-authorized-Actions-transfer",
+  "complete": false,
+  "localProcessExitCode": 130,
+  "at": "2026-11-10T22:08:11.363598+00:00",
+  "reason": "Keep completed rounds; resume unfinished folds under revised paired rule on fork Actions."
+}
