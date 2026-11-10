@@ -155,3 +155,20 @@ The fixed-input source audit is in `docs/lapsim-wec-fixed-inputs-2026-11-10.md`.
 Model-matched BoP worsens both Hypercar classes in the tested season. The sector retest worsens several class-seasons and pooled WEC. Keep both flags off; no further sector retest is authorized by this block. Neither test supplies a reason to loosen the downforce bound. The detailed report records car values, bound hits, selections, trap diagnostics and each class-season error. Production stays the baseline for Block 4.
 
 The optional LMGT3 extension in Block 4 is assessed separately. It cannot alter the predeclared Hypercar pooled gate or rescue a failed Hypercar result. No model retention choice is used to re-score the same held-out data.
+
+
+## Block 6 — done: review PR separated
+
+The existing PR now contains a clean commit on current main with reusable convergence/timing diagnostics, shared audit scope, tests, verified tables and documentation. Full experiment runners, forced BoP fitting, per-model fitting and result files are preserved on `exp/lapsim-physics-night-2026-11-10`. The experiment branch is not proposed for main.
+
+| Review check | Result |
+|---|---:|
+| Changed core files at split | 38 |
+| Added core files above 100 KB | 0 |
+| Offline Node 22 tests passed / total | 432 / 432 |
+| Production runtime and gate hashes unchanged | 45 |
+| Current handoff status lines | 56 |
+
+Build and artifact validation passed. The GitHub test workflow also passed. The automatic Vercel check requests authorization; it was left untouched. The PR has no base conflict and was marked ready for review. No merge was made. Its title and description were updated on the GitHub page because the connector cannot edit PR metadata.
+
+The earlier continuation sections were preserved under `docs/archive/`; the current handoff has one concise status section. Remaining experiment outcomes will update that status and this report, while full outputs stay on the experiment branch. A plan for predicting factors on never-raced circuits is saved without a new fit.
