@@ -1,5 +1,55 @@
 # F1 Data Analyst 최종 배포 Handoff
 
+## 2026-11-10 최신 인수인계 — 이 섹션부터 읽기
+
+**한 줄 요약:** 전체 CI baseline과 계정·Preview 누락을 복구하고 축 모델 B/F/G/H/I 재실행 자동화를 배포했으며, Production은 `f461c6c`로 정상 운영 중입니다.
+
+### 상태
+
+| 항목 | 현재 값·상태 |
+|---|---|
+| 정식 저장소 | `MisterKinn/f1-data-analyst` |
+| 기준 브랜치·커밋 | `main` · `f461c6ce3b84dad84da7e2d463a7f3efd73416b3` |
+| 병합 PR | [#150](https://github.com/MisterKinn/f1-data-analyst/pull/150) · MERGED |
+| 운영 주소 | `https://kongboda-motorsports.vercel.app` |
+| Vercel Production | `dpl_6oFWTvRVGMyFLrbG1vdEP9ssFacR` · READY |
+| immutable URL | `https://kongboda-motorsports-ii3y64iqb-kinn.vercel.app` |
+| 전체 CI | run `42732415299` · PASS |
+| axle 선별 실험 | run `42732407545` · B/F/G/H/I 실행 중(2026-11-10 10:22 KST) |
+
+### 이번에 변경한 것
+
+- 누락된 대회별 설명과 계정 `crew`/`live-access` 영역을 복구했습니다.
+- `/about`의 현재 홈 리다이렉트에 맞게 정적 Preview 목록과 테스트를 정리했습니다.
+- Preview export에 `ui-motion.js`를 포함했습니다.
+- 종전 340분 timeout으로 결과가 없던 B/F/G/H/I를 checksum-pinned 입력으로 병렬 실행하고 자동 비교 artifact를 생성하도록 워크플로를 개편했습니다.
+- 실험 설정은 3 rounds/100 iterations 선별용이며, 실험 결과 모델은 아직 Production에 반영하지 않았습니다.
+
+### 검증
+
+- Node 22 전체 테스 386/386 PASS, features-off 1/1 PASS
+- Collector Python 183 PASS / 1 SKIP, Discord Python 29 PASS
+- build·artifact validate, workflow YAML, experiment JSON, SHA-256, diff/secret scan PASS
+- Vercel Preview `dpl_5gT3YF4wLnJ8dt6xcNDVJQvzVV3p` READY
+- Production `/`, `/championships/f1`, `/account`, `/assets/ui-motion.js`, `/api/race-calendar` HTTP 200
+- Production 익명 `/mcp` HTTP 401(의도한 인증 경계), 정적 JS 문법·캘린더 JSON PASS
+- 운영 별칭과 immutable URL이 동일한 READY 배포를 가리키는 것을 확인했습니다.
+
+### 다음 작업자가 할 일
+
+1. 기존 run `42732407545`를 먼저 확인하고, 실행 중이면 중복 재실행하지 않습니다.
+2. 성공하면 `exp-comparison`과 `exp-B/F/G/H/I` artifact를 내려받아 held-out gate로 B 대비 비교합니다.
+3. 선별 결과가 개선이어도 바로 운영 모델을 바꾸지 말고 full-settings로 재검증합니다.
+4. full-settings에서 F1·WEC 그룹이 기준 B 대비 비악화 gate를 통과한 경우에만 별도 PR·사용자 승인·Production 배포를 진행합니다.
+5. GitHub Actions의 Node 20 deprecation 경고에 맞춰 `actions/checkout`, `setup-node`, `setup-python`의 상위 major 전환을 별도 유지보수 PR로 검토합니다.
+
+### 중단·안전 조건
+
+- 실험 매트릭스 일부만 성공하거나 checksum·artifact 검증이 실패하면 결과를 채택하지 않습니다.
+- 운영 환경 변수·Firebase·Firestore·Render·MCP 비밀값은 이 작업에서 변경하지 않았습니다.
+- 비밀값·서비스 계정 JSON·사용자 데이터를 Git·PR·handoff에 기록하지 않습니다.
+- 이 섹션 아래 기록은 이관 과정의 역사적 참고입니다. 현재 판단은 이 섹션과 `origin/main`을 우선합니다.
+
 > 2026-11-03 갱신: 정식 저장소는 `MisterKinn/f1-data-analyst`이며, Vercel 프로젝트 `kinn/kongboda-motorsports`가 `main` 변경을 Production에 자동 배포한다. 아래 2026-11-02 기록의 저장소·배포 상태는 당시 이관 과정의 이력이다. ChatGPT Sites 배포는 Vercel 배포와 별개로 계속 수동 승인한다.
 
 ## 한눈에 보는 현재 상태
