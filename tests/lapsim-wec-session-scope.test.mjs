@@ -4,6 +4,7 @@ import {mkdtemp, cp, mkdir, readFile, writeFile, rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {execFileSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
 import {splitWecSessions} from '../scripts/sim/wec-session-scope.mjs';
 import {lapsimCalibration} from '../worker/lapsim/calibration-data.js';
 import {lapsimWecPoles} from '../worker/lapsim/wec-poles-data.js';
@@ -63,6 +64,11 @@ test('real fit and historical audit follow both shared exclusion sources, includ
       assert.deepEqual(report.rows[0].errors.map(e => e.track), addManual ? ['lusail'] : ['lusail', 'imola']);
       assert.deepEqual(report.excluded.map(e => e.track).sort(),
         (addManual ? ['austin', 'imola', 'spa-francorchamps'] : ['austin', 'spa-francorchamps']).sort());
+      // Calling the audit from another checkout must still use the target fit's list.
+      execFileSync(process.execPath, [fileURLToPath(new URL('../scripts/sim/verify-wec-reproduction.mjs', import.meta.url)),
+        dir, join(dir, '.cache/external-audit.json')], {cwd: dir, env});
+      const external = JSON.parse(await readFile(join(dir, '.cache/external-audit.json'), 'utf8'));
+      assert.deepEqual(external, report);
     }
     delete poles.lusail;
     await writeFile(join(dir, 'worker/lapsim/wec-poles-data.js'), `export const lapsimWecPoles=${JSON.stringify(poles)};`);

@@ -214,3 +214,18 @@ The single restart preserved every completed fit and reran only interrupted fold
 The pooled all-model gate accepts the gain, but the declared no-worse-class check fails. Every class-best model result is worse than the fresh production reference, and several are worse than the matched all-car class base. Keep production. No Hypercar model PR is opened. Small group improvements remain unestablished under the declared rule. Independent checks confirm fold membership, model exclusion, input row counts and reported error arithmetic.
 
 The [model report](archive/lapsim-wec-models-2026-11-10.md) lists fitted values, bounds, per-model tests and hidden-model errors. No values are selected for adoption. Optional LMGT3 began only after Hypercar finished; its result is separate and cannot change this rejection.
+
+
+## Audit follow-up — target checkout scope verified
+
+Final review found that an audit called from another checkout could read the caller's manual wet list. The audit now loads the shared helper from the target checkout. The regression test changes that target list, calls the real fit, then calls the audit from both locations and requires identical reports. This fixes audit scope only; no fitted value or running experiment changed.
+
+| Verification after the fix | Result |
+|---|---:|
+| Target-checkout regression tests | 2 / 2 passed |
+| Full offline Node 22 tests | 432 / 432 passed |
+| Current production dry WEC rows | 33 |
+| Largest production reproduction error, s | 0 |
+| Runtime/gate files and pinned inputs unchanged | 45 / 12 |
+
+The production audit uses the verified processed WEC input explicitly; the main worktree has no default fit-cache file. Build and artifact validation had already passed on the unchanged runtime and build sources.

@@ -775,7 +775,8 @@ Montreal and Zandvoort were not started in the used geometry time box. All three
 The old WEC baseline mismatch came from archive versus repository Interlagos geometry;
 the exact historical recipe remains in physics rules section 5.2.
 
-The common wet-session helper and its integration test keep fit and historical audit scopes equal.
+The shared wet-session helper and integration test keep fit and audit scopes equal, including
+an audit called from another checkout with a different manual wet list.
 The BoP model join uses exact season, event and entry identity, including leading zeros.
 Unverified aero limits and event values stay blank; no prior, bound, weight or gate changed.
 The fresh WEC control matches the earlier R control exactly for saved series values.

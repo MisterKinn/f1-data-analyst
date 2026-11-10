@@ -3,9 +3,10 @@ import {readFile,writeFile} from 'node:fs/promises';
 import {resolve,join} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import assert from 'node:assert/strict';
-import {splitWecSessions} from './wec-session-scope.mjs';
 const [folder='.',output='.cache/wec-reproduction.json',sessionFile='.cache/lapsim/wec.json']=process.argv.slice(2),root=resolve(folder);
 const load=p=>import(pathToFileURL(join(root,p)).href);
+// The audit may target another checkout; use that checkout's fit exclusion list.
+const {splitWecSessions}=await load('scripts/sim/wec-session-scope.mjs');
 const {lapsimCalibration:c}=await load('worker/lapsim/calibration-data.js');
 const {lapsimWecPoles:P}=await load('worker/lapsim/wec-poles-data.js');
 const {simulate}=await load('worker/lapsim/tool.js');
