@@ -197,3 +197,20 @@ The partial held-out RMS is not a season result or an acceptance result. The sav
 ### Block 4 interruption and fixed restart declaration
 
 The execution handle disappeared while two Hypercar groups were unfinished. Their objective logs stopped advancing; the other two groups and the fresh production control had already finished. Preserve all original files and completed fits. Use one separate restart directory, reuse only completed converged main fits and folds, and rerun the interrupted fold from its unchanged training inputs. Do not resume a partially saved optimizer state. Keep the original deadline, bounds, weights, shrink penalty, source tables and stopping settings. No new choice is made from held-out results. Start the optional LMGT3 extension only after every Hypercar group finishes inside the same box.
+
+
+## Block 4 — Hypercar complete and rejected; optional LMGT3 running
+
+The single restart preserved every completed fit and reran only interrupted folds in a separate directory. All Hypercar main fits, hidden-track folds and hidden-model folds finished at R without cap hits. The original time box remains in force. The fresh production control finished before the interruption and its saved results were preserved.
+
+| Group | Hidden-track n | All-car base RMS, % | Model RMS, % | Class-best model RMS, % | Production class-best RMS, % |
+|---|---:|---:|---:|---:|---:|
+| LMH 2025 | 5 | 1.694380 | 1.423168 | 1.486128 | 1.112168 |
+| LMH 2026 | 6 | 1.213176 | 1.212137 | 1.392195 | 1.110032 |
+| LMDh 2025 | 5 | 1.555579 | 1.539785 | 1.729234 | 1.281673 |
+| LMDh 2026 | 6 | 1.105933 | 1.096921 | 1.206808 | 1.055043 |
+| Hypercar pooled, all-model track clusters | 22 | 1.391909 | 1.314548 | — | — |
+
+The pooled all-model gate accepts the gain, but the declared no-worse-class check fails. Every class-best model result is worse than the fresh production reference, and several are worse than the matched all-car class base. Keep production. No Hypercar model PR is opened. Small group improvements remain unestablished under the declared rule. Independent checks confirm fold membership, model exclusion, input row counts and reported error arithmetic.
+
+The [model report](archive/lapsim-wec-models-2026-11-10.md) lists fitted values, bounds, per-model tests and hidden-model errors. No values are selected for adoption. Optional LMGT3 began only after Hypercar finished; its result is separate and cannot change this rejection.

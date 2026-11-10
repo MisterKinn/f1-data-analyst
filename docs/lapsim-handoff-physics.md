@@ -760,7 +760,8 @@ This status replaces the earlier continuation sections. Detailed history is in
 | WEC follow-up caps / downforce | 0 cap hits; no class-season left its downforce bound |
 | Hypercar 2025 trap RMS | control 11.023611, BoP 12.246551, sector2 11.015988 km/h; n=10 class-track rows |
 | Dry Las Vegas candidate | Parked at the time box: main fits converged at 6 rounds; only 2/8 held-out folds complete per arm; dry 2024 raw error worsens from -0.143109 to -0.145542 s |
-| Per-model Hypercar | All-car paired fits and hidden-track/model tests running at this checkpoint |
+| Per-model Hypercar | Rejected: all-model pooled RMS 1.391909% → 1.314548%, n=22, but every class-best result is worse than production; 0 cap hits |
+| Optional per-model LMGT3 | Running inside the original time box after Hypercar finished |
 | All-car inventory | 425 timed car-event rows; 389 dry; 204 model-event rows |
 | Gear measurement | 41 team-season folds, 82 Monza laps; correct distance 79.857–83.439%; absolute gearbox ratios unverified |
 | Production integrity | 45 runtime/gate files and 12 pinned inputs verified unchanged |
@@ -789,6 +790,7 @@ See the [night report](lapsim-night-session-2026-11-10.md),
 [consistent comparison](archive/lapsim-consistent-candidate-2026-11-10.md),
 [WEC follow-up](archive/lapsim-wec-followup-2026-11-10.md),
 [dry Vegas](archive/lapsim-dry-vegas-2026-11-10.md),
+[model tests](archive/lapsim-wec-models-2026-11-10.md),
 [fixed-input audit](lapsim-wec-fixed-inputs-2026-11-10.md),
 [all-car inventory](lapsim-wec-all-car-inventory-2026-11-10.md), and
 [gear measurements](lapsim-f1-gears-2026-11-10.md).
