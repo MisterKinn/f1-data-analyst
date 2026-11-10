@@ -171,7 +171,7 @@ The existing PR now contains a clean commit on current main with reusable conver
 
 Build and artifact validation passed. The GitHub test workflow also passed. The automatic Vercel check requests authorization; it was left untouched. The PR has no base conflict and was marked ready for review. No merge was made. Its title and description were updated on the GitHub page because the connector cannot edit PR metadata.
 
-The earlier continuation sections were preserved under `docs/archive/`; the current handoff has one concise status section. Remaining experiment outcomes will update that status and this report, while full outputs stay on the experiment branch. A plan for predicting factors on never-raced circuits is saved without a new fit.
+The earlier continuation sections were preserved under `docs/archive/`; the current handoff has one concise status section. Final experiment outcomes are recorded below and in the current status; full outputs stay on the experiment branch. A plan for predicting factors on never-raced circuits is saved without a new fit.
 
 
 ## Block 2 — parked: time box ended before held-out completion
@@ -199,7 +199,7 @@ The partial held-out RMS is not a season result or an acceptance result. The sav
 The execution handle disappeared while two Hypercar groups were unfinished. Their objective logs stopped advancing; the other two groups and the fresh production control had already finished. Preserve all original files and completed fits. Use one separate restart directory, reuse only completed converged main fits and folds, and rerun the interrupted fold from its unchanged training inputs. Do not resume a partially saved optimizer state. Keep the original deadline, bounds, weights, shrink penalty, source tables and stopping settings. No new choice is made from held-out results. Start the optional LMGT3 extension only after every Hypercar group finishes inside the same box.
 
 
-## Block 4 — Hypercar complete and rejected; optional LMGT3 running
+## Block 4 — completed Hypercar checkpoint
 
 The single restart preserved every completed fit and reran only interrupted folds in a separate directory. All Hypercar main fits, hidden-track folds and hidden-model folds finished at R without cap hits. The original time box remains in force. The fresh production control finished before the interruption and its saved results were preserved.
 
@@ -229,3 +229,36 @@ Final review found that an audit called from another checkout could read the cal
 | Runtime/gate files and pinned inputs unchanged | 45 / 12 |
 
 The production audit uses the verified processed WEC input explicitly; the main worktree has no default fit-cache file. Build and artifact validation had already passed on the unchanged runtime and build sources.
+
+
+## Block 4 — final: Hypercar rejected, LMGT3 parked
+
+All active processes have ended. Hypercar's completed result above is unchanged. The optional LMGT3 extension cannot provide a held-out result: its earlier-season main fit reached the cap, and its later-season first hidden-track fit also reached the cap. No extra restart or higher cap was used. No model PR is opened.
+
+| LMGT3 group / fit | Training car rows | Iterations | Final objective | Simplex size | State |
+|---|---:|---:|---:|---:|---|
+| 2025 main | 90 | 2000 | 3.522192 | 0.000140698 | cap; held-out folds not started |
+| 2026 main | 107 | 1929 | 3.838130 | 0.000097465 | converged |
+| 2026 hidden Austin | 89 | 2000 | 3.976717 | 0.000178323 | cap; no held-out error accepted |
+
+These are optimizer objectives, not lap-error percentages. The required simplex size is below the fixed R tolerance. The final archive includes both cap records, complete Hypercar hidden-track and hidden-model errors, fitted values, bounds, the interruption evidence and the verified preserved control.
+
+## Final state and decisions for review
+
+Production remains the baseline. Keep the sector and trap flags off and do not use the unconverged round-five secondary table. Review the reusable code and source tables in PR #154; keep experiment runners and full results on the experiment branch. No model PR, merge or Vercel action was made.
+
+Recommended next decision: address production F1 convergence before another geometry model proposal. Its saved fit fails the rule, and the dry Las Vegas paired validation did not finish within its box. Keep the current WEC values; neither the consistent candidate nor the BoP, sector or per-model Hypercar tests met every declared pass check. Any further per-model work needs a new declaration; the optional LMGT3 cap must not be hidden by reporting its partial scores as held-out accuracy.
+
+Not checked: full paired Las Vegas held-out validation and final candidate reproduction; Montreal and Zandvoort replacements; accepted LMGT3 hidden-track or hidden-model results; unavailable numeric aero homologation limits and unverified event BoP; absolute gearbox ratios or gear accuracy away from the sampled Monza sessions. The unseen-track-factor document is a plan only.
+
+
+| Final review and evidence check | Result |
+|---|---:|
+| Core PR changed files | 40 |
+| Core PR added files above 100 KB / experiment result directories | 0 / 0 |
+| Current handoff status lines | 62 |
+| Archived file hashes verified | 355 |
+| Production runtime/gate files unchanged | 45 |
+| Pinned input hashes matched | 12 |
+
+All declared blocks are closed or parked. No simulation is left running. Detailed experiment files remain separate from the review PR.

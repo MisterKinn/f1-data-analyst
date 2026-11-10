@@ -761,7 +761,7 @@ This status replaces the earlier continuation sections. Detailed history is in
 | Hypercar 2025 trap RMS | control 11.023611, BoP 12.246551, sector2 11.015988 km/h; n=10 class-track rows |
 | Dry Las Vegas candidate | Parked at the time box: main fits converged at 6 rounds; only 2/8 held-out folds complete per arm; dry 2024 raw error worsens from -0.143109 to -0.145542 s |
 | Per-model Hypercar | Rejected: all-model pooled RMS 1.391909% → 1.314548%, n=22, but every class-best result is worse than production; 0 cap hits |
-| Optional per-model LMGT3 | Running inside the original time box after Hypercar finished |
+| Optional per-model LMGT3 | Parked: 2025 main and 2026 hidden-Austin fold hit cap 2000; 0 completed held-out folds |
 | All-car inventory | 425 timed car-event rows; 389 dry; 204 model-event rows |
 | Gear measurement | 41 team-season folds, 82 Monza laps; correct distance 79.857–83.439%; absolute gearbox ratios unverified |
 | Production integrity | 45 runtime/gate files and 12 pinned inputs verified unchanged |
@@ -798,4 +798,5 @@ See the [night report](lapsim-night-session-2026-11-10.md),
 The [unseen-track plan](lapsim-unseen-track-plan.md) is a plan only; no fit was run.
 
 Open decisions: keep production as baseline; decide later how to address its F1 convergence
-failure and the unfinished geometry/model tests. Do not select the unconverged secondary table.
+failure and incomplete Las Vegas / LMGT3 validation. Hypercar is rejected.
+Do not select the unconverged secondary table. All runs have ended; there is no model PR.

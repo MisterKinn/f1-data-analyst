@@ -12,6 +12,8 @@ Both all-car arms use the same rows and verified event corrections. The fresh pr
 |---|---|---:|---:|---:|---:|
 | wec-lmdh/2025 | complete | 45 | 5 | 9 | 0 |
 | wec-lmdh/2026 | complete | 48 | 6 | 10 | 0 |
+| wec-lmgt3/2025 | Main fit reached the iteration cap; held-out folds not run | 90 | 5 | 0 | 1 |
+| wec-lmgt3/2026 | track fold reached cap: austin | 107 | 6 | 0 | 1 |
 | wec-lmh/2025 | complete | 45 | 5 | 9 | 0 |
 | wec-lmh/2026 | complete | 54 | 6 | 10 | 0 |
 
@@ -40,6 +42,28 @@ Both all-car arms use the same rows and verified event corrections. The fresh pr
 | wec-lmdh/2026 / BMW M Hybrid V8 | 0.970733 | 6.293595 | 1.516220 | none |
 | wec-lmdh/2026 / Cadillac V-Series.R | 0.968333 | 6.305731 | 1.527475 | none |
 | wec-lmdh/2026 / Genesis GMR-001-Hypercar | 0.971424 | 6.299116 | 1.520811 | none |
+| wec-lmgt3/2025 / control | 1.300000 | 3.500000 | 1.537495 | clA upper; cdA upper |
+| wec-lmgt3/2025 / hierarchy class base | 1.295124 | 3.497290 | 1.534340 | none |
+| wec-lmgt3/2025 / Aston Martin Vantage AMR LMGT3 | 1.296552 | 3.500000 | 1.543521 | clA upper |
+| wec-lmgt3/2025 / BMW M4 LMGT3 | 1.298231 | 3.497199 | 1.533697 | none |
+| wec-lmgt3/2025 / Corvette Z06 LMGT3.R | 1.295741 | 3.496259 | 1.520751 | none |
+| wec-lmgt3/2025 / Ferrari 296 LMGT3 | 1.295438 | 3.500000 | 1.546669 | clA upper |
+| wec-lmgt3/2025 / Ford Mustang LMGT3 | 1.296126 | 3.500000 | 1.541416 | clA upper |
+| wec-lmgt3/2025 / Lexus RC F LMGT3 | 1.286751 | 3.500000 | 1.574138 | clA upper |
+| wec-lmgt3/2025 / McLaren 720S LMGT3 Evo | 1.297348 | 3.500000 | 1.538640 | clA upper |
+| wec-lmgt3/2025 / Mercedes-AMG LMGT3 | 1.300000 | 3.484364 | 1.495463 | cdA upper |
+| wec-lmgt3/2025 / Porsche 911 GT3 R LMGT3 | 1.296101 | 3.496299 | 1.518585 | none |
+| wec-lmgt3/2026 / control | 1.300000 | 3.500000 | 1.564055 | clA upper; cdA upper |
+| wec-lmgt3/2026 / hierarchy class base | 1.297260 | 3.500000 | 1.562189 | clA upper |
+| wec-lmgt3/2026 / Aston Martin Vantage AMR LMGT3 | 1.299091 | 3.500000 | 1.570174 | clA upper |
+| wec-lmgt3/2026 / BMW M4 LMGT3 Evo | 1.300000 | 3.499859 | 1.556277 | cdA upper |
+| wec-lmgt3/2026 / Corvette Z06 LMGT3.R | 1.293958 | 3.499302 | 1.555723 | none |
+| wec-lmgt3/2026 / Ferrari 296 LMGT3 Evo | 1.300000 | 3.500000 | 1.553138 | clA upper; cdA upper |
+| wec-lmgt3/2026 / Ford Mustang LMGT3 | 1.294944 | 3.500000 | 1.578269 | clA upper |
+| wec-lmgt3/2026 / Lexus RC F LMGT3 | 1.294059 | 3.500000 | 1.583434 | clA upper |
+| wec-lmgt3/2026 / McLaren 720S LMGT3 Evo | 1.300000 | 3.500000 | 1.555517 | clA upper; cdA upper |
+| wec-lmgt3/2026 / Mercedes-AMG LMGT3 | 1.300000 | 3.498166 | 1.553302 | cdA upper |
+| wec-lmgt3/2026 / Porsche 911 GT3 R LMGT3 | 1.299826 | 3.500000 | 1.560747 | clA upper |
 | wec-lmh/2025 / control | 1.057002 | 7.000000 | 1.529561 | clA upper |
 | wec-lmh/2025 / hierarchy class base | 1.058478 | 6.966309 | 1.525697 | none |
 | wec-lmh/2025 / Aston Martin Valkyrie | 1.065177 | 6.935309 | 1.494710 | none |
@@ -79,6 +103,8 @@ Both all-car arms use the same rows and verified event corrections. The fresh pr
 | wec-lmh/2025 | 4 | 20 | 1.844460 | 1.829761 |
 | wec-lmh/2026 | 4 | 24 | 0.854179 | 0.850683 |
 
+The pass checks below apply to Hypercar and its production control. Optional LMGT3 is assessed separately.
+
 | Pass check | Result |
 |---|---|
 | allHypercarComplete | true |
@@ -91,4 +117,7 @@ Both all-car arms use the same rows and verified event corrections. The fresh pr
 
 No per-model values were adopted. The car values above are fitted effective values, not measured physical facts. The experiment branch retains the main car values, every bound hit, fold memberships, errors, source hashes and objective diagnostics. The displayed Hypercar model remains class-level.
 
-Completed Hypercar checkpoint. Optional LMGT3 is still running in the original time box.
+| Capped group / fit | Iterations | Final objective | Simplex size | Required size below |
+|---|---:|---:|---:|---:|
+| wec-lmgt3/2025 / main / models | 2000 | 3.522192 | 0.00014069755 | 0.0001 |
+| wec-lmgt3/2026 / track:austin / models | 2000 | 3.976717 | 0.00017832307 | 0.0001 |
