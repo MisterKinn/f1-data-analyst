@@ -11,7 +11,7 @@ export function zeroRain(session, wet = {}) {
   if (wet.f1?.[String(session.session_key)] || wet.f1?.[`${session.year} ${id}`]) return false;
   const rows = session.weather;
   return Array.isArray(rows) && rows.length > 0 && rows.every(r =>
-    (Array.isArray(r) ? r[5] : r.rainfall) === 0);
+    (Array.isArray(r) ? r[5] : r?.rainfall) === 0);
 }
 
 export function chooseGeometrySources(sessions, existing = {}, wet = {}) {
