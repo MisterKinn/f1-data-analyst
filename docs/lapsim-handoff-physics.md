@@ -673,3 +673,64 @@ check and re-create them after a restart notice.
   `feat/t71`, `lapsim/exp-staging`; keep `probe/lapsim-export` and `probe/lapsim-exp` while experimenting.
 - Open: how much of the corner-speed bias is sampling (§6.1-1); whether one GT3 base car + BoP is enough across
   tyre suppliers; FE Gen4 mass/energy values.
+
+
+---
+
+## 13. Task 9.5.0: physical diagnostics in experiment comparison (2026-11-10)
+
+Decision: reporting change only. No calibration experiment or production model change.
+Baseline: source commit `887cb5489610926c1c739b537b65c2e47e667b68`.
+Model values, fitting bounds, weights and `gate.mjs`: zero changes.
+
+The existing command and output are unchanged. Opt in with calibration/validation pairs,
+baseline first (use files from the same variant and run):
+
+```sh
+node scripts/sim/exp-compare.mjs --physics \
+  cal-A.js validate-A.json \
+  cal-H.js validate-H.json > compare-physics.json
+```
+
+`--physics` is a reporting switch, not a model flag. It does not run calibration.
+The JSON includes SHA-256 hashes of both supplied files, per-variant diagnostics by
+season/class, and paired physical comparisons alongside the existing held-out gate.
+A third or later pair is always compared with the first pair.
+
+| Output | Meaning |
+|---|---|
+| Corner bias / RMS (km/h) | From F1 validation rows, equal weight per track as in `validate.mjs`; positive bias means simulated speed is too high. Track and corner counts are separate. |
+| Trap bias / RMS (km/h) | F1: simulated lap maximum minus sampled trace maximum. WEC: simulated lap maximum minus measured trap from calibration tracks, checked against the validation summary. **WEC is not yet a trap-position comparison.** |
+| Bound hits | Parameter, fitted value, lower/upper side, limit, and whether it is outside the limit. All five fitted F1 car parameters and three WEC car parameters are checked. F1 ICE power limits use the season prior. |
+| Bound reference | Current source limits, with reporting tolerance `1e-6 * max(1, abs(limit))`. A test guards the F1 copy against `calibrate.mjs`; WEC uses `SERIES` directly. This changes no fitting bound. |
+| Paired changes | Corner absolute-bias change and trap RMS change on common valid tracks, with track IDs and n. Positive means worse. New bound hits are compared by parameter and side. |
+| Missing information | Null metrics and zero sample counts, never an invented zero error. WEC corners are unavailable. Original run-specific track grip/drag limits are not stored, so those bound checks are explicitly unavailable. |
+| Evidence | These physical residuals are **in-sample** comparisons of layer 3 fitted values with layer 2 measurements. Held-out lap error and n are separate. No physical metric is presented as held-out accuracy. |
+
+Malformed input, duplicate/unknown F1 tracks, inconsistent validation counts or summaries,
+missing files and incomplete CLI pairs fail before printing a partial JSON report.
+Input hashes identify the supplied files; older validation artifacts do not contain a
+calibration hash, so hashes alone cannot prove that the caller supplied the correct pair.
+
+Predeclared pass checks: 3 diagnostic types per variant; numeric fixture error at most
+0.000001; 0 byte changes with the switch off; 0 model/bound/weight/gate changes;
+0 test failures; raced-session reproduction remains 0.000%; one PR.
+
+| Verification | Result |
+|---|---|
+| New diagnostic tests, Node 22.23.4 | 12/12 passed |
+| `node --test tests/lapsim-*.test.mjs tests/lapsim.test.mjs` | 78/78 passed, including all raced-session reproduction tests |
+| `KONGBODA_FEATURES=all node --test tests/*.test.mjs` | 398/398 passed |
+| `npm run build` / `npm run validate` | Both passed |
+| Original vs new default CLI on the unchanged production calibration | 1,173 bytes each; byte-identical |
+| Source audit | All pre-existing source files except `exp-compare.mjs` and this handoff remain unchanged |
+
+Initial environment check: Node 26 ran the reproduction tests successfully but nine other
+test files could not load `unpdf` because the isolated snapshot had no dependency link.
+After linking the existing installed dependencies and using Node 22, the complete checks
+above passed. No test failure was hidden or fixed by changing production code.
+
+Not checked: a new fit, convergence, a new production-baseline experiment, held-out
+corner/trap accuracy, WEC trap position, or run-specific track-factor bound hits.
+No improved model or gate acceptance is claimed. The workflow is unchanged; invoking
+this report automatically from that workflow is outside this physics-only task.
