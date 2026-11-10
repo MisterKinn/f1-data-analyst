@@ -7,6 +7,10 @@ Use one shared Site and MCP endpoint for all viewers: project appgprj_6ac9b61074
 Normal ChatGPT editing must write to GitHub; it must not independently publish a divergent Sites-only source. If GitHub access is missing, explain the missing repository permission and do not claim deployment. Vercel's native Git integration handles Production deployment from main; verify the resulting deployment and public URL after a release. ChatGPT Sites deployment notifications and the owner event subscription remain disabled. For an explicitly requested Sites release, verify the exact GitHub source and passing checks, then use the existing shared Sites publication workflow; see .github/DEPLOYMENT.md. Never restore periodic repository polling.
 
 
+## Lap simulator physics work
+
+Before any change to the lap simulator physics model or its calibration (`worker/lapsim/`, `scripts/sim/`, `docs/lapsim-*.md`, `tests/lapsim-*.test.mjs`), read `docs/lapsim-physics-rules.md` and follow it. It is the only source of rules for that work. A physics task must not change the website, accounts, collector or deployment.
+
 ## All-championship product principle
 
 Read and preserve docs/answer-principles.md for all answer, demo and tool changes. The core value is: 눈으로 읽기 어려운 복잡한 기록들을 알기 쉽게 시각화하고 설명한다. Prefer regulations, decisions and timing databases to podium-only or generic analysis. Keep the runtime ANSWER_POLICY synchronized with that document.
