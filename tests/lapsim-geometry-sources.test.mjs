@@ -32,6 +32,7 @@ test('unknown weather is not zero rain; explicit F1 exclusions veto a source', (
   for (const weather of [[], [null], [undefined], [false], [1]])
     assert.equal(zeroRain(session(1, 2025, weather)), false);
   const s = session(1, 2025, [0]);
+  assert.equal(zeroRain({...s, weather: [null]}), false);
   assert.equal(zeroRain(s, {f1: {'1': {reason: 'wet'}}}), false);
   assert.equal(zeroRain(s, {f1: {'2025 test-track': {reason: 'wet'}}}), false);
   assert.equal(zeroRain(s, {wec: {'2025 test-track': {reason: 'wet'}}}), true);
