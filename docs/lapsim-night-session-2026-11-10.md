@@ -260,5 +260,6 @@ Not checked: full paired Las Vegas held-out validation and final candidate repro
 | Archived file hashes verified | 355 |
 | Production runtime/gate files unchanged | 45 |
 | Pinned input hashes matched | 12 |
+| Latest-head GitHub workflow result | Not returned by the API at close; latest local suite passed |
 
 All declared blocks are closed or parked. No simulation is left running. Detailed experiment files remain separate from the review PR.

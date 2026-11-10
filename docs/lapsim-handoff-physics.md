@@ -765,7 +765,7 @@ This status replaces the earlier continuation sections. Detailed history is in
 | All-car inventory | 425 timed car-event rows; 389 dry; 204 model-event rows |
 | Gear measurement | 41 team-season folds, 82 Monza laps; correct distance 79.857–83.439%; absolute gearbox ratios unverified |
 | Production integrity | 45 runtime/gate files and 12 pinned inputs verified unchanged |
-| Core PR review checks | 432/432 offline tests, build, artifact validation and GitHub test workflow passed |
+| Core PR review checks | Latest local tests 432/432; build and artifact validation passed; earlier GitHub workflow passed, latest-head CI unconfirmed |
 | Review state | PR #154 ready for review; full experiment history saved separately; no merge |
 
 Keep sector and trap flags off. Trap position and aero ratio remain on hold.
