@@ -1,5 +1,7 @@
 # Handoff — lap-simulator physics to "0.000 %" (2026-11-09, from Claude)
 
+**Current continuation state is in [section 14](#14-current-status--2026-11-10). Earlier sections are historical.**
+
 This document hands over all physics-model work of the Kongboda Motorsports lap simulator: the goal, the
 owner's rules, how the model and the calibration work, everything measured so far, today's engineering
 experiments and their results, the work left (including Formula E and every GT3 series), and the working
@@ -734,3 +736,63 @@ Not checked: a new fit, convergence, a new production-baseline experiment, held-
 corner/trap accuracy, WEC trap position, or run-specific track-factor bound hits.
 No improved model or gate acceptance is claimed. The workflow is unchanged; invoking
 this report automatically from that workflow is outside this physics-only task.
+
+
+## 14. Current status — 2026-11-11
+
+Production stays unchanged. LMGT3 stays parked. No merge or Vercel action.
+The owner will review PR #154 and draft #155 separately.
+
+| Item | State | Evidence |
+|---|---|---|
+| Block 0: deployed control | Exact requested metric blocked by baseline identity | [Geometry and fold replay audit](archive/lapsim-deployed-control-review-2026-11-11.md) |
+| Block 1: rules | Revised fold rule in §5.1; cap stops are not numerical convergence | [Rules](lapsim-physics-rules.md#51-numbers-for-the-checks) |
+| Block 2: Las Vegas | Finished; rejected; baseline validity also failed | [Final F1 report](archive/lapsim-f1-actions-final-2026-11-11.md) |
+| Block 3: WEC at R | BoP and sector2 rejected; original sector failure retained | [Verified WEC report](archive/lapsim-wec-actions-final-2026-11-11.md) |
+| Block 4: per-model | Hypercar rejected for production; analysis complete; LMGT3 parked | [Own-lap metrics and parameter differences](archive/lapsim-per-model-followup-2026-11-11.md) |
+| Block 5: gears | Lumped ratios and segment analysis complete; no kernel change | [Ratios and errors](archive/lapsim-gears-followup-2026-11-11.md) |
+| Block 6: review split | Core/test/small-data/docs PR separated from runners/results | [Evidence branch](https://github.com/kangjeongmin1229/f1-data-analyst-deploy/tree/exp/lapsim-owner-evidence-2026-11-11) |
+
+Block 0's R control and candidate both used repository geometry, SHA256
+`fe67d1ecf2a4c151f35f98e3da334d835881904ffb4ebda24488983952cee5eb`.
+All 33 saved held-out states replayed within 1e-8 seconds; no Interlagos geometry changed.
+R control RMS is 1.166709%, candidate 1.179080% (difference 0.012371 pp).
+The R control is a refit, not frozen deployed production: cars and some choices differ.
+Do not label its number “control as deployed”. Original deployed held-out states are missing.
+No consistent-baseline model PR was opened. Keep production under the owner’s decision.
+
+Fresh WEC: control 1.166709%, BoP 1.271006%, sector2 1.196784%, n=33.
+All three have zero cap hits and exact dry reproduction on 33 rows, maximum error 0 seconds.
+Austin 2025 remains excluded as wet. F1 values stayed unchanged in the WEC jobs.
+Sector2 adds a LMGT3 2025 drag-bound hit. No bound/weight/gate change was made.
+Corrected independent WEC comparison run: 42918109977; only artifact extraction was fixed.
+
+Per-model own-lap predictions improve most clearly for LMH 2025; class-best predictions
+remain worse than production in every class-season. This is not evidence of a GT3 pass.
+Gears: 328 team-season-gear cells, 189 populated; 41 hidden-team tests and 82 Monza laps.
+Braking/entry accuracy is lowest; low-RPM straight upshifts explain little measured error.
+Signal-based segments and integrated distance bins are approximate, not corner landmarks.
+
+Latest owner decisions: keep production, keep LMGT3 parked, no merge of #154 or #155.
+Any passing model change needs its own draft PR. No candidate has passed here.
+
+### Evidence and restart
+
+- [Original partial checkpoint snapshot](https://github.com/kangjeongmin1229/f1-data-analyst-deploy/tree/203e22850e355539241f2c2d30eb36a9d1224304/scripts/sim/results/vegas-owner-save-2026-11-11)
+- [Canonical fits](https://github.com/kangjeongmin1229/f1-data-analyst-deploy/actions/runs/42913368752)
+- [Sector recovery](https://github.com/kangjeongmin1229/f1-data-analyst-deploy/actions/runs/42913698920)
+- [Postprocessing instructions](lapsim-postprocessing-2026-11-11.md)
+- [Historical status](archive/lapsim-status-before-owner-review-2026-11-11.md)
+
+Resume only unfinished work from hash-verified saved inputs/checkpoints in an isolated fork
+checkout. Check all active runs first. Do not start duplicate fits. Long fits use fork-only
+Actions. Final export replays nine saved F1 states per arm with zero optimizer rounds.
+Production/main/Vercel remain untouched. Full runners, checkpoints, logs and results live on
+the evidence/experiment branches; review PR #154 has no experiment result bundle.
+
+Final F1 held-out RMS: 2025 control 0.841682%, candidate 0.851894% (n20);
+2026 control 1.194146%, candidate 1.306054% (n14). Both worse.
+Dry reproduction: 39 rows per arm, largest error 0 s. All 18 checkpoint hashes match.
+Candidate 2026 fold 1 stopped at six rounds without numerical convergence.
+Las Vegas 2026 experiment prediction: 93.875 s control, 94.491 s candidate.
+Final local review checks: 114 physics/reproduction tests passed; no new model code.
