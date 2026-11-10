@@ -9,7 +9,7 @@ const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const at=process.argv.indexOf('--output');
 const output=resolve(at<0?resolve(root,'../../../outputs/preview'):process.argv[at+1]);
 const origin='https://preview.invalid';
-const paths=['/','/guide','/about','/resources','/account',...championships.map(c=>'/championships/'+c.slug)];
+const paths=['/','/guide','/resources','/account',...championships.map(c=>'/championships/'+c.slug)];
 const filename=(path,lang)=>((path==='/'?'index':path.slice(1).replaceAll('/','-'))+(lang==='en'?'.en':'')+'.html');
 const routeFiles=Object.fromEntries(paths.map(path=>[path,{ko:filename(path,'ko'),en:filename(path,'en')}]));
 const assetCache=new Map();
@@ -26,7 +26,7 @@ async function asset(path){
 // An offline review shows the explicitly dated source fixture, not runtime freshness.
 const calendar=await websiteRoute(new Request(origin+'/api/race-calendar')).json();
 const scripts=[];
-for(const path of ['/assets/race-features.js','/assets/website.js','/assets/examples.js','/assets/i18n.js']){
+for(const path of ['/assets/race-features.js','/assets/ui-motion.js','/assets/website.js','/assets/examples.js','/assets/i18n.js']){
  const response=await get(path);if(response.ok)scripts.push({path,source:await response.text()});
 }
 // Include literal local assets used by dynamically created calendar elements.

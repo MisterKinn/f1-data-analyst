@@ -65,3 +65,45 @@
 
 - export 이후 원본 R2 변경 여부는 현재 연결 계정에서 확인할 수 없습니다.
 - 영구 수집기와 Discord 봇은 기존 외부 호스트를 계속 사용하며 이번 Vercel 함수로 이전하지 않습니다.
+
+## 2026-11-10 전체 테스 baseline 복구·axle 실험 재실행 준비
+
+### 상태
+
+- 정식 `main` 기준 `f486cf1`에서 기존 전체 테스 실패를 복구했습니다.
+- 축 모델 F/G/H/I의 기존 작업은 340분 제한으로 종료됐고 결과 artifact가 없었습니다.
+- 체크섬으로 고정한 입력으로 B/F/G/H/I를 병렬 재실행하고 B 대비 비교 artifact를 남기는 GitHub Actions 워크플로를 준비했습니다.
+- 로컬 작업 브랜치는 `lapsim-exp/axle-screen`이며, push 시 실험 워크플로가 자동 시작됩니다. 아직 커밋·푸시·PR·병합·배포는 하지 않았습니다.
+
+### 결정
+
+- `/about`은 현재 홈 리다이렉트를 유지하고 정적 preview 대상에서 제외합니다.
+- 계정 페이지에서 생성만 되고 출력되지 않던 crew/live-access 영역을 복구합니다.
+- 3-round/100-iteration 결과는 빠른 선별용입니다. 우승 후보는 운영 반영 전에 full-settings 재검증합니다.
+
+### 변경 위치
+
+- 사이트·preview baseline: `worker/website.js`, `scripts/export-preview.mjs`, 관련 테스 3개
+- 실험 구성·자동화: `scripts/sim/experiments.json`, `.github/workflows/lapsim-experiment.yml`
+- 물리 인수인계: `docs/lapsim-handoff-physics.md`
+
+### 검증
+
+- Node 22 전체 테스 386/386 PASS
+- 기능 비활성 모드 1/1 PASS
+- build·artifact validate PASS
+- Collector Python 183 PASS / 1 SKIP, Discord Python 29 PASS
+- 워크플로 YAML, 실험 JSON, `git diff --check`, 변경 diff 민감정보 패턴 검사 PASS
+- 고정 입력 archive 다운로드·SHA-256 검증 PASS
+- 축 모델 최소 스모크 보정(1 round/1 iteration) PASS
+
+### 다음 작업
+
+1. 사용자 승인 후 로컬 변경을 커밋하고 `MisterKinn/f1-data-analyst` 새 브랜치에 push해 PR과 GitHub Actions 실험을 시작합니다.
+2. B/F/G/H/I 선별 결과를 held-out gate로 비교합니다.
+3. 개선 후보가 있으면 full-settings로 다시 확인한 뒤 별도 승인으로 병합·Production 배포합니다.
+
+### 제약
+
+- GitHub Actions 실제 실행 결과는 원격 push 전이므로 아직 없습니다.
+- 로컬에 Docker가 없어 이미지 기반 검증은 수행하지 못했습니다.

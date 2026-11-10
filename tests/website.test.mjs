@@ -23,9 +23,10 @@ test('each registered championship card reaches its working page and unknown rou
  assert.equal((await get('/championships/unlisted')).status,404);
  assert.equal((await get('/championships/f1','POST')).status,404);
 });
-test('introduction and local logo/script work without changing data authentication',async()=>{
- const about=await (await get('/about')).text();
- assert.match(about,/꽁 — 인사이트를 ‘꽁’으로 얻다/);assert.match(about,/보다 — 알고 보면 더 보이는 레이스/);
+test('home introduction and local logo/script work without changing data authentication',async()=>{
+ const aboutRedirect=await get('/about');assert.equal(aboutRedirect.status,301);assert.equal(aboutRedirect.headers.get('location'),'https://test/');
+ const about=await (await get('/')).text();
+ assert.match(about,/라이브타이밍은/);assert.match(about,/당신은 화면 속 휠투휠에 집중하세요/);
  const guide=await (await get('/guide')).text();
  assert.match(guide,/https:\/\/chatgpt.com\/plugins/);
  assert.match(guide,/이렇게 알려 드립니다/);assert.match(guide,/레이스 중에는 짧게/);assert.match(guide,/경기가 끝나면 자세히/);
