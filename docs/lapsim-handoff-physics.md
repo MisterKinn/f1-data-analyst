@@ -1,5 +1,7 @@
 # Handoff — lap-simulator physics to "0.000 %" (2026-11-09, from Claude)
 
+**Current continuation state is in [section 14](#14-current-status--2026-11-10). Earlier sections are historical.**
+
 This document hands over all physics-model work of the Kongboda Motorsports lap simulator: the goal, the
 owner's rules, how the model and the calibration work, everything measured so far, today's engineering
 experiments and their results, the work left (including Formula E and every GT3 series), and the working
@@ -734,3 +736,60 @@ Not checked: a new fit, convergence, a new production-baseline experiment, held-
 corner/trap accuracy, WEC trap position, or run-specific track-factor bound hits.
 No improved model or gate acceptance is claimed. The workflow is unchanged; invoking
 this report automatically from that workflow is outside this physics-only task.
+
+
+## 14. Current status — 2026-11-10
+
+Production is unchanged. No model has been adopted. No merge or Vercel action was made.
+This status replaces the earlier continuation sections. Detailed history is in
+[archive part one](archive/lapsim-physics-history-14-17-2026-11-10.md) and
+[archive part two](archive/lapsim-physics-history-18-22-2026-11-10.md).
+
+| Item | Current result |
+|---|---|
+| Standard WEC yardstick R | tolerance 1e-4, cap 2000; verified against 1e-6; maximum group change 0.001061 pp, no choice flips |
+| Consistent candidate | Failed: pooled RMS 1.166709% control, 1.179080% candidate; n=33 |
+| Round-five secondary arm | RMS 1.094332%, n=33; diagnostic only because B round five was not converged |
+| B main fit | Converged at round 7; last decrease 0.344391%; held-out folds not needed for table export |
+| Interlagos B grip | round 5: 0.9623445984; final: 0.9654634398; old table: 0.9823 |
+| Production F1, existing logs only | Round 4: 23.9813; round 5: 23.6060; decrease 1.564969%; fails the 1% rule |
+| Dry raced reproduction | WEC 33 rows and F1 39 rows; largest error 0 s |
+| Wet WEC exclusion | Austin 2025: 3 class rows, reported separately |
+| Model-matched BoP at R | Rejected: pooled 1.271006%, control 1.166709%, n=33 |
+| Sector weight 2 retest at R | Rejected: pooled 1.196784%, control 1.166709%, n=33 |
+| WEC follow-up caps / downforce | 0 cap hits; no class-season left its downforce bound |
+| Hypercar 2025 trap RMS | control 11.023611, BoP 12.246551, sector2 11.015988 km/h; n=10 class-track rows |
+| Dry Las Vegas candidate | Built from session 9640; paired F1 held-out fits still running at this checkpoint |
+| Per-model Hypercar | All-car paired fits and hidden-track/model tests running at this checkpoint |
+| All-car inventory | 425 timed car-event rows; 389 dry; 204 model-event rows |
+| Gear measurement | 41 team-season folds, 82 Monza laps; correct distance 79.857–83.439%; absolute gearbox ratios unverified |
+| Production integrity | 45 runtime/gate files and 12 pinned inputs verified unchanged |
+
+Keep sector and trap flags off. Trap position and aero ratio remain on hold.
+Interlagos stays on the dry geometry source, session 9865. Session 11408 was wet.
+One geometry serves every series. The dry-source guard remains in draft PR #155.
+Montreal and Zandvoort remain unchanged. Las Vegas is isolated until its declared checks pass.
+The old WEC baseline mismatch came from archive versus repository Interlagos geometry;
+the exact historical recipe remains in physics rules section 5.2.
+
+The common wet-session helper and its integration test keep fit and historical audit scopes equal.
+The BoP model join uses exact season, event and entry identity, including leading zeros.
+Unverified aero limits and event values stay blank; no prior, bound, weight or gate changed.
+The fresh WEC control matches the earlier R control exactly for saved series values.
+Small class-season gains below the declared minimum are not established.
+
+The review branch contains reusable fitting/audit code, tests, derived tables and documentation.
+Experiment runners, forced BoP fitting, model hierarchy and full result files stay on the
+[experiment branch](https://github.com/kangjeongmin1229/f1-data-analyst-deploy/tree/exp/lapsim-physics-night-2026-11-10). No experiment result directory is added to the core PR.
+[Artifact index](archive/lapsim-experiment-index-2026-11-10.md) gives manifest hashes and source links.
+
+See the [night report](lapsim-night-session-2026-11-10.md),
+[consistent comparison](archive/lapsim-consistent-candidate-2026-11-10.md),
+[WEC follow-up](archive/lapsim-wec-followup-2026-11-10.md),
+[fixed-input audit](lapsim-wec-fixed-inputs-2026-11-10.md),
+[all-car inventory](lapsim-wec-all-car-inventory-2026-11-10.md), and
+[gear measurements](lapsim-f1-gears-2026-11-10.md).
+The [unseen-track plan](lapsim-unseen-track-plan.md) is a plan only; no fit was run.
+
+Open decisions: keep production as baseline; decide later how to address its F1 convergence
+failure and the unfinished geometry/model tests. Do not select the unconverged secondary table.

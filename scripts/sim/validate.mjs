@@ -64,8 +64,9 @@ for (const y of [...new Set(rows.map(r => r.year))]) {
 }
 for (const [cls, ys] of Object.entries(cal.series?.wec || {})) for (const [y, s] of Object.entries(ys)) {
   const tr = Object.values(s.tracks), traps = tr.filter(t => t.trapKph);
-  summary[`wec-${cls}/${y}`] = {tracks: tr.length, lapRmsPct: r3(rms(tr.map(t => t.errorSec / t.realLap * 100))), trapRmsKph: r3(rms(traps.map(t => t.simTopKph - t.trapKph))),
-    trapBiasKph: r3(mean(traps.map(t => t.simTopKph - t.trapKph))), f1ToWecHoldoutPct: s.holdout?.rmsPct ?? null, clA: r3(s.car.clA), muY: r3(s.car.muY)};
+  const trapSpeed = t => t.timing?.trapPositionUsed ? t.simTrapKph : t.simTopKph;
+  summary[`wec-${cls}/${y}`] = {tracks: tr.length, lapRmsPct: r3(rms(tr.map(t => t.errorSec / t.realLap * 100))), trapRmsKph: r3(rms(traps.map(t => trapSpeed(t) - t.trapKph))),
+    trapBiasKph: r3(mean(traps.map(t => trapSpeed(t) - t.trapKph))), f1ToWecHoldoutPct: s.holdout?.rmsPct ?? null, clA: r3(s.car.clA), muY: r3(s.car.muY)};
 }
 mkdirSync('probe-out', {recursive: true});
 writeFileSync(`probe-out/validate-${name}.json`, JSON.stringify({summary, rows}, null, 1));

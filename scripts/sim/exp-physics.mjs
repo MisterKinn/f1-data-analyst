@@ -76,7 +76,9 @@ export function physicalDiagnostics(cal, validation) {
     let rows = by[group] || [];
     if (wec && summary) rows = Object.entries(season.tracks || {}).map(([track, t]) => ({
       track, cornerN: 0, cornerBiasKph: null, cornerRmsKph: null,
-      trapKph: finite(t.trapKph) && t.trapKph > 0 && finite(t.simTopKph) ? t.simTopKph - t.trapKph : null,
+      trapKph: finite(t.trapKph) && t.trapKph > 0 && finite(t.timing?.trapPositionUsed ? t.simTrapKph : t.simTopKph)
+        ? (t.timing?.trapPositionUsed ? t.simTrapKph : t.simTopKph) - t.trapKph : null,
+      ...(t.timing?.trapPositionUsed ? {trapDistance: t.trapDistance, trapSourceUrl: t.timing.trapSourceUrl} : {}),
     }));
     if (rows.length && !summary) throw new Error(`Missing validation summary: ${group}`);
     const stats = metrics(rows);
@@ -100,7 +102,9 @@ export function physicalDiagnostics(cal, validation) {
       boundReference: 'Current source limits; original run bounds are not stored in the calibration',
       uncheckedTrackBounds: 'Grip/drag run settings are not stored; no bound check is inferred',
       cornerNote: wec ? 'Unavailable: validate.mjs has no WEC corner measurements' : 'Equal weight per track, as in validate.mjs; sampled minima',
-      trapDefinition: wec ? 'Simulated lap maximum minus measured trap; NOT a trap-position comparison'
+      trapDefinition: wec ? rows.some(r => r.trapDistance != null)
+        ? 'Verified positions use simulated speed at the trap; other rows retain lap maximum. Compare only matching definitions.'
+        : 'Simulated lap maximum minus measured trap; NOT a trap-position comparison'
         : 'Simulated lap maximum minus measured trace maximum',
       rows,
     };
@@ -115,7 +119,8 @@ export function comparePhysical(base, cand) {
     const br = new Map((b?.rows || []).map(r => [r.track, r]));
     const pairs = (a?.rows || []).filter(r => br.has(r.track)).map(r => [r, br.get(r.track)]);
     const cornerPairs = pairs.filter(p => p.every(r => r.cornerN > 0 && finite(r.cornerBiasKph)));
-    const trapPairs = pairs.filter(p => p.every(r => finite(r.trapKph)));
+    const trapPairs = pairs.filter(p => p.every(r => finite(r.trapKph))
+      && p[0].trapDistance === p[1].trapDistance && p[0].trapSourceUrl === p[1].trapSourceUrl);
     const cb = mean(cornerPairs.map(p => p[0].cornerBiasKph)), cc = mean(cornerPairs.map(p => p[1].cornerBiasKph));
     const tb = rms(trapPairs.map(p => p[0].trapKph)), tc = rms(trapPairs.map(p => p[1].trapKph));
     const hitKey = h => `${h.parameter}/${h.side}`;

@@ -1,0 +1,101 @@
+{
+  "checkedAt": "2026-11-10",
+  "sources": [
+    {
+      "name": "lmh-2025",
+      "url": "https://www.fia.com/sites/default/files/2025_lmh_technical_regs_2024.10.17_published_2024.10.18_clean_version.pdf",
+      "resolvedUrl": "https://www.fia.com/sites/default/files/2025_lmh_technical_regs_2024.10.17_published_2024.10.18_clean_version.pdf",
+      "sha256": "11da7c5bdc62fee18baf731e0197e9be6ef788ace6f997ba0eb0413f13846b79",
+      "bytes": 4490681,
+      "retrievedAt": "2026-11-10T14:35:37.282Z"
+    },
+    {
+      "name": "lmh-2026",
+      "url": "https://www.fia.com/system/files/documents/2026_lmh_technical_regs_2025.10.16_published_2025.10.17_clean_version_0.pdf",
+      "resolvedUrl": "https://www.fia.com/system/files/documents/2026_lmh_technical_regs_2025.10.16_published_2025.10.17_clean_version_0.pdf",
+      "sha256": "ceba3aa1b01154c0f4110fbfa43ecdc5873647c1196f6a8b4598fa1fcf7f483b",
+      "bytes": 4455728,
+      "retrievedAt": "2026-11-10T14:35:39.328Z"
+    },
+    {
+      "name": "lmgt3-2026",
+      "url": "https://www.fia.com/system/files/documents/2026_lmgt3_technical_regulations_2025.10.16_published_2025.10.17_clean_version.pdf",
+      "resolvedUrl": "https://www.fia.com/system/files/documents/2026_lmgt3_technical_regulations_2025.10.16_published_2025.10.17_clean_version.pdf",
+      "sha256": "22eecabe21a86b9c74d6f3e0e8f02896956926ea75e2091ca39f272286ec205f",
+      "bytes": 494561,
+      "retrievedAt": "2026-11-10T14:35:41.217Z"
+    },
+    {
+      "name": "lmdh-2025",
+      "url": "https://www.imsa.com/wp-content/uploads/sites/32/2025/10/23/LMDh-Technical-Regulations-2025.04.02-blackline.pdf",
+      "resolvedUrl": "https://www.imsa.com/wp-content/uploads/sites/32/2025/10/23/LMDh-Technical-Regulations-2025.04.02-blackline.pdf",
+      "sha256": "6f965456c9f3652c2b6bce633cc764f7bcdc4c60e3c7615daf0e00277cf541d5",
+      "bytes": 4908772,
+      "retrievedAt": "2026-11-10T14:35:47.898Z"
+    },
+    {
+      "name": "lmdh-2026",
+      "url": "https://www.fia.com/system/files/documents/lmdh-technical-regulations-2025.10.16-blackline.pdf",
+      "resolvedUrl": "https://www.fia.com/system/files/documents/lmdh-technical-regulations-2025.10.16-blackline.pdf",
+      "sha256": "36b30366a5c5e690f034fc394daefad4da907d65931189dd5629847e5c2585d6",
+      "bytes": 4860654,
+      "retrievedAt": "2026-11-10T14:35:55.630Z"
+    },
+    {
+      "name": "lmdh-appendix-2025",
+      "url": "https://www.imsa.com/wp-content/uploads/sites/32/2025/10/23/LMDh-appendices-2025.04.02-COMPETITORS-blackline.pdf",
+      "resolvedUrl": "https://www.imsa.com/wp-content/uploads/sites/32/2025/10/23/LMDh-appendices-2025.04.02-COMPETITORS-blackline.pdf",
+      "sha256": "95d37e889a06741d0c951cc00a376a0c0df25fae4a8b24d85cbefa62b4278a6d",
+      "bytes": 991563,
+      "retrievedAt": "2026-11-10T14:36:02.198Z"
+    },
+    {
+      "name": "bop-lusail-2025",
+      "url": "https://www.fia.com/sites/default/files/wec_2025_d09_hypercar_bop_amended_20022025.pdf",
+      "resolvedUrl": "https://www.fia.com/sites/default/files/wec_2025_d09_hypercar_bop_amended_20022025.pdf",
+      "sha256": "206c2760725a71b42ae92fb41042023ace1be880e8122eb8e739d406bd0013b1",
+      "bytes": 210480,
+      "retrievedAt": "2026-11-10T14:36:07.777Z"
+    },
+    {
+      "name": "bop-imola-2025",
+      "url": "https://www.fia.com/sites/default/files/wec_2025_d18_hypercar_bop_amended_16042025.pdf",
+      "resolvedUrl": "https://www.fia.com/sites/default/files/wec_2025_d18_hypercar_bop_amended_16042025.pdf",
+      "sha256": "6a1daeccb5a83e2b2a9c55e72b9f5315fd3efe269bfb86da554c9cc3478e2432",
+      "bytes": 223343,
+      "retrievedAt": "2026-11-10T14:36:08.671Z"
+    },
+    {
+      "name": "bop-spa-2025",
+      "url": "https://www.fia.com/sites/default/files/wec_2025_d24_hypercar_bop_05052025.pdf",
+      "resolvedUrl": "https://www.fia.com/sites/default/files/wec_2025_d24_hypercar_bop_05052025.pdf",
+      "sha256": "a2a850647784b7e0bc8a727ce0f2dc78b1ee01f2915eb3093116eb64352cca62",
+      "bytes": 193258,
+      "retrievedAt": "2026-11-10T14:36:09.390Z"
+    },
+    {
+      "name": "bop-interlagos-2025",
+      "url": "https://www.fia.com/sites/default/files/wec_2025_d36_hypercar_bop_07072025.pdf",
+      "resolvedUrl": "https://www.fia.com/sites/default/files/wec_2025_d36_hypercar_bop_07072025.pdf",
+      "sha256": "b220792f89782684412ad20d7efc673acea4af547d11fb1c0be5696e4cddb87a",
+      "bytes": 295736,
+      "retrievedAt": "2026-11-10T14:36:09.812Z"
+    },
+    {
+      "name": "bop-sakhir-2025",
+      "url": "https://www.fia.com/sites/default/files/wec_2025_d46_hypercar_bop_31102025.pdf",
+      "sha256": "46c0406ce78b45a23c7567049048289449a6df616ba0d906133078a00132f4e0",
+      "bytes": 311744,
+      "retrievedAt": "2026-11-10T14:38:18.464Z"
+    },
+    {
+      "name": "lmgt3-2025",
+      "url": "https://www.fia.com/sites/default/files/2025_lmgt3_technical_regulations_2024.12.11_published_2024.12.12_marked_up_version.pdf",
+      "sha256": null,
+      "access": "Official indexed text read; current binary URL returned HTTP 404. No new numeric value used in fitting."
+    }
+  ],
+  "numericAeroCoefficientLimit": null,
+  "reason": "The public regulation text points to homologation appendices. No numeric coefficient limit was verified in the accessible documents.",
+  "eventInputs": "wec-bop-verified-2025.json"
+}

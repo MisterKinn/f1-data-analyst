@@ -6,10 +6,22 @@
 // This converges much further than one Nelder–Mead over all cars at once.
 import {Worker} from 'node:worker_threads';
 import os from 'node:os';
+import {mkdir, writeFile} from 'node:fs/promises';
+import {join} from 'node:path';
 import {lapError, withGrip, realExtremes, nelderMead} from './calibrate-lib.mjs';
 import {conditionsFromWeather} from '../../worker/lapsim/atmosphere.js';
 
 export const DEFAULTS = {rounds: 4, iters: 150, wTime: 2, wSector: 0, wPrior: 2, lo: 0.7, hi: 1.3, trackDrag: false, dragLo: 0.85, dragHi: 1.15};
+
+// Opt-in experiment rule; legacy callers keep their exact round count and output.
+export function bcdConverged(scores, minRounds = 5) {
+  if (scores.length < minRounds || scores.length < 2) return false;
+  const previous = scores.at(-2), current = scores.at(-1);
+  if (previous === 0) return current === 0;
+  const decrease = 100 * (previous - current) / previous;
+  return decrease >= 0 && decrease < 1;
+}
+let fitSequence = 0;
 
 export function prepGroups(groups) {
   return groups.map(g => ({key: g.key, base: g.base, params: g.params, laps: g.laps.map(l => ({...l, group: g.key,
@@ -111,6 +123,8 @@ class Pool {
 
 export async function fitJointBCD(groups, opts = {}) {
   const o = {...DEFAULTS, ...opts};
+  const convergence = o.convergence === true;
+  const scores = [], fitNumber = convergence ? ++fitSequence : null;
   const prep = prepGroups(groups);
   const nW = Math.max(1, Math.min(o.workers ?? os.availableParallelism?.() ?? os.cpus().length, 8));
   const pool = new Pool(nW, prep, o);
@@ -120,7 +134,7 @@ export async function fitJointBCD(groups, opts = {}) {
     for (const n of names) factors[n] ||= {grip: 1, drag: 1};
     let xs = Object.fromEntries(prep.map(g => [g.key, o.startX?.[g.key] || g.params.map(() => 0)]));
     let score = Infinity, adj = o.teams ? (o.startAdj ? structuredClone(o.startAdj) : {}) : null;
-    for (let r = 0; r < o.rounds; r++) {
+    for (let r = 0; r < (convergence ? 10 : o.rounds); r++) {
       const fits = await Promise.all(prep.map(g => pool.run({type: 'group', key: g.key, factors, x0: xs[g.key], adj})));
       prep.forEach((g, k) => { xs[g.key] = fits[k].x; });
       if (o.teams) {
@@ -132,6 +146,19 @@ export async function fitJointBCD(groups, opts = {}) {
       factors = Object.fromEntries(names.map((n, k) => [n, {grip: tf[k].grip, drag: tf[k].drag}]));
       score = tf.reduce((a, t) => a + t.score, 0) / prep.reduce((a, g) => a + g.laps.length, 0);
       o.log?.(`round ${r + 1}: score ${score.toFixed(4)}`);
+      if (convergence) {
+        scores.push(score);
+        const converged = bcdConverged(scores);
+        if (o.convergenceDir) {
+          await mkdir(o.convergenceDir, {recursive: true});
+          await writeFile(join(o.convergenceDir, `fit-${fitNumber}.json`), JSON.stringify({
+            groups: groups.map(g => ({key: g.key, laps: g.laps.length})), scores,
+            converged, capHit: r === 9 && !converged, xs, factors, adj,
+          }, null, 2) + '\n');
+        }
+        if (converged) break;
+        if (r === 9) throw Error(`BCD convergence cap reached: ${JSON.stringify(scores)}`);
+      }
     }
     const cars = Object.fromEntries(prep.map(g => [g.key, buildCar(g, xs[g.key]).car]));
     const perLap = [];
