@@ -291,7 +291,7 @@ Held-out RMS error (%), track left out. ✓ = accepted by the gate vs A, ≈ = b
 | E no drag + vertical curvature | 0.89 ✗ | 1.27 ✗ | 1.52 ✗ | 1.73 ✗ | 2.02 ✗ | 1.02 ✓ | 1.14 ✓ | 1.55 ≈ | 1.06 ✗ | 1.51 ≈ |
 | **J no drag + banking** | 0.90 ✗ | 1.37 ✗ | 1.38 ≈ | 1.30 ≈ | 1.81 ≈ | 1.10 ✓ | 1.13 ✓ | 1.39 ✓ | 1.12 ✗ | **1.36 ✓** |
 | **B no drag** | 0.90 ✗ | 1.28 ✗ | 1.57 ✗ | 1.24 ≈ | 1.73 ≈ | 1.04 ✓ | 1.07 ✓ | 1.37 ≈ | 1.07 ✗ | **1.35 ✓** |
-| F, G, H, I axle model | running at handoff time (slow; 340 min limit) | | | | | | | | | |
+| F, G, H, I axle model | original jobs timed out at 340 min; no result artifact was produced | | | | | | | | | |
 
 Per-event WEC BoP (Hypercar 2025): rejected in every variant (e.g. A: LMH 1.42 → 1.94 %, LMDh 1.41 → 1.44 %).
 
@@ -303,6 +303,11 @@ Other measurements:
 
 Raw results: branch `probe/lapsim-exp` (`probe-out/` after the collect job) or Actions run 42558077604
 artifacts `exp-<X>`.
+
+Follow-up: `.github/workflows/lapsim-experiment.yml` in the current repository can rerun B/F/G/H/I from
+the checksum-pinned export. It uses the same production weights and team model with a 3-round/100-iteration
+screen, then creates an automatic B-vs-axle comparison artifact. A screening winner still needs a full-settings
+confirmation before any production-model change.
 
 ### 5.4 Decisions
 1. **F1: keep A** (per-track drag on, grip 0.7–1.3). Every variant made F1 held-out worse. ("나빠지게 하면 안돼.")

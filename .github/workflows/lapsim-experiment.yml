@@ -1,28 +1,37 @@
 name: Lap simulator experiment
 
 # Calibration experiments in parallel: each matrix entry runs calibrate.mjs with its own settings on
-# the derived data of a "Lap simulator data" run (artifact lapsim-derived). Push to lapsim-exp/**.
-# Settings: scripts/sim/experiments.json ({"source_run": id, "configs": [{"name", "env"}]}).
+# a checksum-pinned input archive. Push to lapsim-exp/**.
+# Settings: scripts/sim/experiments.json (input URL/checksum, common env, and variant env).
 on:
   push:
     branches: ['lapsim-exp/**']
+  workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
   actions: read
+
+concurrency:
+  group: lapsim-experiment-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   plan:
     runs-on: ubuntu-latest
     outputs:
       configs: ${{ steps.p.outputs.configs }}
-      run: ${{ steps.p.outputs.run }}
+      input_url: ${{ steps.p.outputs.input_url }}
+      input_sha256: ${{ steps.p.outputs.input_sha256 }}
+      common_env: ${{ steps.p.outputs.common_env }}
     steps:
       - uses: actions/checkout@v4
       - id: p
         run: |
           echo "configs=$(jq -c '.configs' scripts/sim/experiments.json)" >> "$GITHUB_OUTPUT"
-          echo "run=$(jq -r '.source_run' scripts/sim/experiments.json)" >> "$GITHUB_OUTPUT"
+          echo "input_url=$(jq -r '.input_url' scripts/sim/experiments.json)" >> "$GITHUB_OUTPUT"
+          echo "input_sha256=$(jq -r '.input_sha256' scripts/sim/experiments.json)" >> "$GITHUB_OUTPUT"
+          echo "common_env=$(jq -c '.common_env' scripts/sim/experiments.json)" >> "$GITHUB_OUTPUT"
   run:
     needs: plan
     runs-on: ubuntu-latest
@@ -36,48 +45,52 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Get derived data
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Get checksum-pinned inputs
         run: |
-          gh run download ${{ needs.plan.outputs.run }} -R ${{ github.repository }} -n lapsim-derived -D derived
-          mkdir -p .cache/lapsim
-          cp derived/.cache/lapsim/*.json .cache/lapsim/
-          [ -d derived/.cache/lapsim/races ] && cp -r derived/.cache/lapsim/races .cache/lapsim/ || true
-          cp derived/worker/lapsim/tracks-data.js worker/lapsim/tracks-data.js
+          curl --fail --location --retry 3 '${{ needs.plan.outputs.input_url }}' --output /tmp/lapsim-inputs.tgz
+          echo '${{ needs.plan.outputs.input_sha256 }}  /tmp/lapsim-inputs.tgz' | sha256sum --check
+          tar xzf /tmp/lapsim-inputs.tgz
+          node -e "const fs=require('fs');const W=JSON.parse(fs.readFileSync('scripts/sim/data/wet-sessions.json','utf8')).wec;const p='.cache/lapsim/wec.json';const rows=JSON.parse(fs.readFileSync(p,'utf8'));let n=0;for(const row of rows)if(row.weather&&W[row.year+' '+row.track]){row.weather.rain=true;n++}fs.writeFileSync(p,JSON.stringify(rows));console.log('wet sessions marked:',n)"
       - name: Calibrate (${{ matrix.config.name }})
-        # RACE_ONLY=on skips the calibration (hours) to test the race-pace model in minutes
-        if: matrix.config.env.RACE_ONLY != 'on'
         run: |
+          for kv in $(echo '${{ needs.plan.outputs.common_env }}' | jq -r 'to_entries[] | "\(.key)=\(.value)"'); do export "$kv"; done
           for kv in $(echo '${{ toJson(matrix.config.env) }}' | jq -r 'to_entries[] | "\(.key)=\(.value)"'); do export "$kv"; done
-          node scripts/sim/calibrate.mjs
-      - name: Circuit-change effects
-        if: matrix.config.env.LAPSIM_CHANGES == 'on'
-        continue-on-error: true
-        env:
-          LAPSIM_CHANGE_YEARS: '2023,2024,2025,2026'
-        run: npm ci --omit=dev --ignore-scripts > /dev/null && node scripts/sim/fia-changes.mjs > /dev/null && node scripts/sim/change-effects.mjs
-      - name: Race pace
-        if: hashFiles('.cache/lapsim/races.json') != ''
-        continue-on-error: true
-        run: |
-          for kv in $(echo '${{ toJson(matrix.config.env) }}' | jq -r 'to_entries[] | "\(.key)=\(.value)"'); do export "$kv"; done
-          node scripts/sim/race-pace.mjs && cat docs/lapsim-race.md
-      # race-only runs commit the race fit back to the experiment branch (artifacts cannot always be downloaded)
-      - name: Commit race fit
-        if: matrix.config.env.RACE_ONLY == 'on' && hashFiles('worker/lapsim/race-data.js') != ''
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
-          git add worker/lapsim/race-data.js docs/lapsim-race.md
-          git diff --cached --quiet || { git commit -m "Race pace fit from the race-only run [skip ci]"; git push origin HEAD:${{ github.ref_name }}; }
+          env | grep '^LAPSIM_' | sort
+          node scripts/sim/calibrate.mjs 2>&1 | tee /tmp/calibrate.log
+          node scripts/sim/exp-summary.mjs '${{ matrix.config.name }}'
+          node scripts/sim/validate.mjs '${{ matrix.config.name }}' > /tmp/validate-summary.json
+          node scripts/sim/intervals.mjs "$PWD/worker/lapsim/calibration-data.js" > 'probe-out/intervals-${{ matrix.config.name }}.json'
+          cp worker/lapsim/calibration-data.js 'probe-out/cal-${{ matrix.config.name }}.js'
+          cp /tmp/calibrate.log 'probe-out/log-${{ matrix.config.name }}.txt'
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: exp-${{ matrix.config.name }}
           path: |
+            probe-out/
             docs/lapsim-report.md
-            docs/lapsim-race.md
-            worker/lapsim/calibration-data.js
-            worker/lapsim/race-data.js
-          retention-days: 5
+          retention-days: 14
+
+  compare:
+    needs: run
+    if: always() && needs.run.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: exp-*
+          path: results
+      - name: Compare axle variants with B
+        run: |
+          mkdir -p comparison
+          node scripts/sim/exp-compare.mjs results/exp-B/probe-out/cal-B.js \
+            results/exp-F/probe-out/cal-F.js \
+            results/exp-G/probe-out/cal-G.js \
+            results/exp-H/probe-out/cal-H.js \
+            results/exp-I/probe-out/cal-I.js | tee comparison/B-vs-axle.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: exp-comparison
+          path: comparison/
+          retention-days: 14

@@ -1,112 +1,20 @@
 {
- "source_run": 42350255568,
- "configs": [
-  {
-   "name": "t20",
-   "env": {
+  "input_url": "https://raw.githubusercontent.com/kangjeongmin1229/f1-data-analyst-deploy/probe/lapsim-export/probe-out/lapsim-inputs.tgz.part-aa",
+  "input_sha256": "268039a6acd2fd589336fede690e3321d723f6f50665718a55f6021cde1ac186",
+  "common_env": {
     "LAPSIM_FITTER": "bcd",
-    "LAPSIM_SKIP_WEC": "1",
     "LAPSIM_ROUNDS": "3",
     "LAPSIM_BCD_ITERS": "100",
-    "LAPSIM_WSECTOR": "2",
-    "LAPSIM_WTIME": "20"
-   }
-  },
-  {
-   "name": "t20-drag",
-   "env": {
-    "LAPSIM_FITTER": "bcd",
-    "LAPSIM_SKIP_WEC": "1",
-    "LAPSIM_ROUNDS": "3",
-    "LAPSIM_BCD_ITERS": "100",
-    "LAPSIM_WSECTOR": "2",
     "LAPSIM_WTIME": "20",
-    "LAPSIM_TRACK_DRAG": "on"
-   }
-  },
-  {
-   "name": "t20-drag-resid",
-   "env": {
-    "LAPSIM_FITTER": "bcd",
-    "LAPSIM_SKIP_WEC": "1",
-    "LAPSIM_ROUNDS": "3",
-    "LAPSIM_BCD_ITERS": "100",
     "LAPSIM_WSECTOR": "2",
-    "LAPSIM_WTIME": "20",
-    "LAPSIM_TRACK_DRAG": "on",
-    "LAPSIM_RESIDUAL": "on",
-    "LAPSIM_BACKTEST": "on"
-   }
-  },
-  {
-   "name": "t20-teams-top3",
-   "env": {
-    "LAPSIM_FITTER": "bcd",
-    "LAPSIM_SKIP_WEC": "1",
-    "LAPSIM_ROUNDS": "3",
-    "LAPSIM_BCD_ITERS": "100",
-    "LAPSIM_WSECTOR": "2",
-    "LAPSIM_WTIME": "20",
     "LAPSIM_TEAMS": "on",
-    "LAPSIM_BACKTEST": "on"
-   }
+    "LAPSIM_WPRIOR": "8"
   },
-  {
-   "name": "t20-teams-top10",
-   "env": {
-    "LAPSIM_FITTER": "bcd",
-    "LAPSIM_SKIP_WEC": "1",
-    "LAPSIM_ROUNDS": "3",
-    "LAPSIM_BCD_ITERS": "100",
-    "LAPSIM_WSECTOR": "2",
-    "LAPSIM_WTIME": "20",
-    "LAPSIM_TEAMS": "on",
-    "LAPSIM_MAX_POS": "10",
-    "LAPSIM_BACKTEST": "on"
-   }
-  },
-  {
-   "name": "t20-drag-teams-top10-resid",
-   "env": {
-    "LAPSIM_FITTER": "bcd",
-    "LAPSIM_SKIP_WEC": "1",
-    "LAPSIM_ROUNDS": "3",
-    "LAPSIM_BCD_ITERS": "100",
-    "LAPSIM_WSECTOR": "2",
-    "LAPSIM_WTIME": "20",
-    "LAPSIM_TRACK_DRAG": "on",
-    "LAPSIM_TEAMS": "on",
-    "LAPSIM_RESIDUAL": "on",
-    "LAPSIM_MAX_POS": "10",
-    "LAPSIM_BACKTEST": "on"
-   }
-  },
-  {
-   "name": "t50-drag-resid",
-   "env": {
-    "LAPSIM_FITTER": "bcd",
-    "LAPSIM_SKIP_WEC": "1",
-    "LAPSIM_ROUNDS": "3",
-    "LAPSIM_BCD_ITERS": "100",
-    "LAPSIM_WSECTOR": "2",
-    "LAPSIM_WTIME": "50",
-    "LAPSIM_TRACK_DRAG": "on",
-    "LAPSIM_RESIDUAL": "on",
-    "LAPSIM_BACKTEST": "on"
-   }
-  },
-  {
-   "name": "t20-drag-resid-long",
-   "env": {
-    "LAPSIM_FITTER": "bcd",
-    "LAPSIM_SKIP_WEC": "1",
-    "LAPSIM_ROUNDS": "5",
-    "LAPSIM_BCD_ITERS": "150",
-    "LAPSIM_WSECTOR": "2",
-    "LAPSIM_WTIME": "20",
-    "LAPSIM_TRACK_DRAG": "on",
-    "LAPSIM_RESIDUAL": "on"
-   }
-  }
- ]
+  "configs": [
+    {"name": "B", "env": {"LAPSIM_TRACK_DRAG": "off"}},
+    {"name": "F", "env": {"LAPSIM_TRACK_DRAG": "off", "LAPSIM_AXLE": "on"}},
+    {"name": "G", "env": {"LAPSIM_TRACK_DRAG": "off", "LAPSIM_AXLE": "on", "LAPSIM_KV": "on"}},
+    {"name": "H", "env": {"LAPSIM_TRACK_DRAG": "on", "LAPSIM_AXLE": "on", "LAPSIM_KV": "on"}},
+    {"name": "I", "env": {"LAPSIM_TRACK_DRAG": "off", "LAPSIM_AXLE": "on", "LAPSIM_KV": "on", "LAPSIM_LOADEXP": "0.75"}}
+  ]
 }
