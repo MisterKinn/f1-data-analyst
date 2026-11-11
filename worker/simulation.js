@@ -23,6 +23,7 @@ import {brakeZones} from './lapsim/brakes.js';
 import {lapsimBrakes} from './lapsim/brake-data.js';
 import {lapsimQsplit} from './lapsim/qsplit-data.js';
 import {lapsimCarLines} from './lapsim/car-lines-data.js';
+import {trackLabel, trackOrder, evoPairs, carEvent} from './simulator-controls.js';
 
 const K = lapsimKernel();
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -33,7 +34,7 @@ const T = {
   ko: {
     title: '랩 시뮬레이터', h1: '2026–2028 F1 머신으로 한 바퀴를 계산합니다',
     lead: '실제 예선 랩으로 보정한 물리 모델이 지금의 트랙 형상, 예선 날씨, FIA가 공지한 서킷 변경 사항을 반영해 랩타임과 속도를 계산합니다.',
-    track: '트랙', series: '시리즈', car: '규정 · 클래스', compare: '비교', soonShort: '준비 중',
+    track: '트랙', series: '시리즈', car: '규정 · 클래스', evoNone: '이 차는 Evo 데이터가 없습니다', eventFor: '이 차의 대회: {n} ({a} – {b}) · 세션 날씨: {y} 시즌', compare: '비교', soonShort: '준비 중',
     seriesNames: {f1: 'F1', wec: 'WEC', imsa: 'IMSA GTP', fe: '포뮬러 E', gt3: 'GT3 (GTWC · IGTC · FIA GT 월드컵 (마카오 GP) · DTM)'}, none: '없음', conditions: '조건', real: '실제 예선 조건', manual: '직접 설정',
     lap: '계산된 랩타임', vsPole: '실제 폴', realLap: '실제 랩', wecBest: '실제 예선·하이퍼폴 최고', errRange: '오차 범위(1σ)', conf: {medium: '신뢰도 보통', low: '신뢰도 낮음', 'very-low': '신뢰도 매우 낮음', 'not-fitted': '실측 보정 전'},
     soon: '준비 중: 기타 GT3(IMSA GTD·DTM·SP9), 포뮬러 E Gen4. 같은 보정 규칙을 쓰며 데이터 연결 후 추가됩니다.', sector: '섹터', vmax: '최고 속도', vmin: '최저 속도', energy: '배치 에너지', clip: '배치 상한 속도',
@@ -65,7 +66,7 @@ const T = {
   en: {
     title: 'Lap simulator', h1: 'Simulate a lap in a 2026–2028 F1 car',
     lead: 'A physics model calibrated on real qualifying laps works out lap time and speed on today’s track layout, with qualifying weather and the circuit changes the FIA has announced.',
-    track: 'Track', series: 'Series', car: 'Rules · class', compare: 'Compare', soonShort: 'coming soon',
+    track: 'Track', series: 'Series', car: 'Rules · class', evoNone: 'No Evo data for this car', eventFor: 'Event for this car: {n} ({a} – {b}) · session weather: {y} season', compare: 'Compare', soonShort: 'coming soon',
     seriesNames: {f1: 'F1', wec: 'WEC', imsa: 'IMSA GTP', fe: 'Formula E', gt3: 'GT3 (GTWC · IGTC · FIA GT World Cup (Macau GP) · DTM)'}, none: 'None', conditions: 'Conditions', real: 'Real qualifying conditions', manual: 'Set my own',
     lap: 'Simulated lap time', vsPole: 'Real pole', realLap: 'Real lap', wecBest: 'Real qualifying/Hyperpole best', errRange: 'Error range (1σ)', conf: {medium: 'medium confidence', low: 'low confidence', 'very-low': 'very low confidence', 'not-fitted': 'not fitted to real laps'},
     soon: 'Coming soon: other GT3 (IMSA GTD, DTM, SP9) and Formula E Gen4. They use the same calibration rules and are added once their data is connected.', sector: 'Sector', vmax: 'Top speed', vmin: 'Lowest speed', energy: 'Energy deployed', clip: 'Deploy cut-off',
@@ -165,22 +166,28 @@ function renderTrace(ds, series, opts) {
 // --- Page ---
 export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
   lang = lang === 'en' ? 'en' : 'ko';
-  const t = T[lang], ids = Object.keys(lapsimTracks).sort((a, b) => trackName(a, lang).localeCompare(trackName(b, lang), lang));
+  const t = T[lang], ids = trackOrder(lapsimTracks);
   if (!ids.length) return `<section class="hero ls-hero"><h1>${esc(t.h1)}</h1><p class="lead">${esc(t.pending)} · ${esc(t.pendingLead)}</p></section>`;
   const id = ids.includes(query.track) ? query.track : (ids.includes('monza') ? 'monza' : ids[0]);
   const td = lapsimTracks[id], cars = carsFor(id, lang), conds = realConditions(id);
-  const carId = cars[query.car] ? query.car : '2026';
+  // Evo kit: listed as a tick box beside its base car (only when the data has that Evo entry)
+  const evoOf = evoPairs(cars, CAR_ORDER), evoKeys = new Set(Object.values(evoOf));
+  const askedCar = cars[query.car] ? query.car : '2026', carId = query.evo === '1' && evoOf[askedCar] ? evoOf[askedCar] : askedCar;
+  const baseId = Object.keys(evoOf).find(k => evoOf[k] === carId) || carId;
+  // event this car races at here (calendar data) with the season of its session weather; absent = nothing shown
+  const events = Object.fromEntries(CAR_ORDER.filter(k => cars[k]).map(k => [k, carEvent(id, k, cars[k], conds)]).filter(([, e]) => e)
+    .map(([k, e]) => [k, t.eventFor.replace('{n}', lang === 'en' ? e.nameEn : e.name).replace('{a}', e.start).replace('{b}', e.end).replace('{y}', e.weatherYear)]));
   const changes = latestChanges(id);
-  const data = {lang, t, id, track: td, cars, carOrder: CAR_ORDER, carId, conds, changes, energy: (liveEnergy && (query.track || 'monza') === id ? liveEnergy : energyLimit(id, 2026)),
+  const data = {lang, t, id, track: td, cars, carOrder: CAR_ORDER, carId, evoOf, events, conds, changes, energy: (liveEnergy && (query.track || 'monza') === id ? liveEnergy : energyLimit(id, 2026)),
     compounds: lapsimCompounds?.[id] || {}, wecTyres: lapsimWecTyres?.[id] || {}, line: lineData(id), lineText: LT[lang], qsplit: lapsimQsplit ? {off: lapsimQsplit.offsetPct, test: lapsimQsplit.test, real: lapsimQsplit.tracks?.[id] || null} : null, brakes: lapsimBrakes ? {ramp: lapsimBrakes.rampS ?? 0, k: lapsimBrakes.pedalKgPerG, g: lapsimBrakes.gScale, t: lapsimBrakes.timeScale, test: lapsimBrakes.test, real: lapsimBrakes.races?.[id] || null, text: BT[lang]} : null, compoundGap: compoundGap(id), compoundTest: lapsimCompoundGap?.test?.rmsPct ?? null,
     evo: Object.fromEntries(['f1', 'wec'].map(se => [se, Object.fromEntries(['practice', 'qualifying'].map(ty => [ty, evolutionCoeffs(se, id, ty)]))])),
     calibration: {generatedAt: lapsimCalibration?.generatedAt || null, seasons: Object.fromEntries(Object.entries(lapsimCalibration?.seasons || {}).map(([y, s]) => [y, s.tracks?.[id] || null]))}};
   // first render on the server with the same code the browser uses
   const view = computeView(K, data, {carId, compareId: '', mode: 'real', manual: null, active: {}, strength: 1, evo: null}, {renderMap, renderTrace, evolutionDelta, evolutionCurve, lineTrack, brakeZones});
-  const options = ids.map(k => `<option value="${esc(k)}"${k === id ? ' selected' : ''}>${esc(trackName(k, lang))}</option>`).join('');
+  const options = ids.map(k => `<option value="${esc(k)}"${k === id ? ' selected' : ''}>${esc(trackLabel(k, lapsimTracks[k]))}</option>`).join('');
   // cascade: series → rules/class (the car models of that series); series without a model yet are listed as coming soon
   const seriesOf = k => cars[k].series || 'f1', curSeries = seriesOf(carId);
-  const carOpts = (sel, only) => data.carOrder.filter(k => !only || seriesOf(k) === only).map(k => `<option value="${k}"${k === sel ? ' selected' : ''}>${esc(cars[k].label)}</option>`).join('');
+  const carOpts = (sel, only, noEvo) => data.carOrder.filter(k => (!only || seriesOf(k) === only) && !(noEvo && evoKeys.has(k))).map(k => `<option value="${k}"${k === sel ? ' selected' : ''}>${esc(cars[k].label)}</option>`).join('');
   const seriesOpts = SERIES_UI.map(se => { const live = data.carOrder.some(k => seriesOf(k) === se); return `<option value="${se}"${se === curSeries ? ' selected' : ''}${live ? '' : ' disabled'}>${esc(t.seriesNames[se] + (live ? '' : ' · ' + t.soonShort))}</option>`; }).join('');
   const cmpOpts = SERIES_UI.filter(se => data.carOrder.some(k => seriesOf(k) === se)).map(se => `<optgroup label="${esc(t.seriesNames[se])}">${carOpts('', se)}</optgroup>`).join('');
   const evoSlider = (key, label, min, max, step, unit) => `<label class="ls-slider"><span>${esc(label)}</span><input type="range" data-evo="${key}" min="${min}" max="${max}" step="${step}" value="${view.evo[key]}"><output data-evo-out="${key}">${view.evo[key]}</output><span class="ls-unit">${unit}</span></label>`;
@@ -195,11 +202,13 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
 <form class="ls-controls" method="get" action="/simulation">
  <label>${esc(t.track)}<select name="track" data-no-translate onchange="this.form.submit()">${options}</select></label>
  <label>${esc(t.series)}<select data-ls="series">${seriesOpts}</select></label>
- <label>${esc(t.car)}<select name="car" data-ls="car">${carOpts(carId, curSeries)}</select></label>
+ <label>${esc(t.car)}<select name="car" data-ls="car">${carOpts(baseId, curSeries, true)}</select></label>
+ <label class="ls-check"><input type="checkbox" name="evo" value="1" data-ls="evo"${evoOf[baseId] ? (carId !== baseId ? ' checked' : '') : ' disabled'}><span data-no-translate>Evo</span><small data-no-translate data-ls="evoHint">${esc(evoOf[baseId] ? '' : t.evoNone)}</small></label>
  <label>${esc(t.compare)}<select data-ls="compare"><option value="">${esc(t.none)}</option>${cmpOpts}</select></label>
  <label>${esc(t.conditions)}<select data-ls="mode"><option value="real">${esc(t.real)}</option><option value="manual">${esc(t.manual)}</option>${TRACK_LL[id] ? `<option value="forecast">${esc(FT[lang].opt)}</option>` : ''}</select></label>
  <noscript><button>${esc(t.track)}</button></noscript>
 </form>
+<p class="fine ls-event" data-no-translate data-ls="event"${events[carId] ? '' : ' hidden'}>${esc(events[carId] || '')}</p>
 <section class="ls-stage">
  <figure class="ls-map-wrap">${lineControls(lang, view)}<div class="ls-zoombox" data-ls-zoom><div data-ls="map">${view.mapSvg}</div></div><figcaption><span class="ls-legend" aria-hidden="true"></span><span>${esc(t.slow)}</span><span>${esc(t.fast)}</span><span class="ls-windkey" data-ls="wind">${view.windHtml}</span></figcaption></figure>
  <div class="ls-readout">
@@ -582,7 +591,7 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
     box.addEventListener('pointerup', up); box.addEventListener('pointercancel', up);
   }
   const data = JSON.parse(el.textContent);
-  const q = s => document.querySelector('[data-ls="' + s + '"]');
+  const q = s => document.querySelector('[data-ls="' + s + '"]'), evoKeys = Object.values(data.evoOf);
   const yearKey = data.conds['2026'] ? '2026' : Object.keys(data.conds)[0];
   const state = {carId: data.carId, compareId: '', mode: 'real', manual: Object.assign({pressureHpa: 1013, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0}, data.conds[yearKey] || {}), active: {}, strength: 1, evo: {type: 'qualifying', tyre: '', useCurve: true, over: {}}};
   const sliders = document.querySelectorAll('[data-cond]');
@@ -602,11 +611,19 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
     });
   };
   q('series').addEventListener('change', e => {
-    const se = e.target.value, ids = data.carOrder.filter(k => (data.cars[k].series || 'f1') === se);
+    const se = e.target.value, ids = data.carOrder.filter(k => (data.cars[k].series || 'f1') === se && !evoKeys.includes(k));
     q('car').innerHTML = ids.map(k => '<option value="' + k + '">' + data.cars[k].label + '</option>').join('');
     q('car').value = ids[0]; q('car').dispatchEvent(new Event('change'));
   });
-  q('car').addEventListener('change', e => { state.carId = e.target.value; const u = new URL(location.href); u.searchParams.set('car', state.carId); history.replaceState(null, '', u); update(); });
+  // base car + Evo tick box (enabled only when the data has that Evo entry); the event line follows the car
+  const pickCar = () => {
+    const b = q('car').value, e = data.evoOf[b], box = q('evo');
+    box.disabled = !e; if (!e) box.checked = false; q('evoHint').textContent = e ? '' : data.t.evoNone;
+    state.carId = e && box.checked ? e : b;
+    const ev = data.events[state.carId]; q('event').hidden = !ev; q('event').textContent = ev || '';
+    const u = new URL(location.href); u.searchParams.set('car', state.carId); u.searchParams.delete('evo'); history.replaceState(null, '', u); update();
+  };
+  q('car').addEventListener('change', pickCar); q('evo').addEventListener('change', pickCar);
   q('compare').addEventListener('change', e => { state.compareId = e.target.value; update(); });
   // Météo-France forecast (ARPEGE/AROME through Open-Meteo): pick an hour, its weather fills the sliders
   const fc = q('forecast'), FT = fc && fc.dataset.ft ? JSON.parse(fc.dataset.ft) : null;
@@ -648,7 +665,7 @@ export function lapsimScriptVersion() {
 }
 
 const CSS = `:root{--sim-slow:#ffa94d}:root[data-theme="light"]{--sim-slow:#245d9c}@media(prefers-color-scheme:light){:root:not([data-theme]){--sim-slow:#245d9c}}
-.ls-hero h1{font-size:44px;max-width:20ch}.ls-controls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.ls-controls label{min-width:0}.ls-controls select{width:100%}
+.ls-hero h1{font-size:44px;max-width:20ch}.ls-controls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.ls-controls label{min-width:0}.ls-controls select{width:100%}.ls-controls .ls-check{display:flex;align-items:center;gap:8px;flex-wrap:wrap;align-self:end;min-height:44px}.ls-check input{width:18px;height:18px;margin:0}.ls-check input:disabled+span{color:var(--muted)}.ls-check small{color:var(--muted);font-size:13px}.ls-event{margin:8px 0 0}
 .ls-stage{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(280px,1fr);gap:40px;align-items:center}.ls-map-wrap{margin:0;display:grid;gap:12px}.ls-map{width:100%;height:auto;max-height:540px;color:var(--text)}
 .ls-start{fill:var(--text)}.ls-corner{fill:var(--muted);text-anchor:middle;font-weight:600}
 .ls-map-wrap figcaption{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}.ls-legend{order:1;width:120px;height:8px;border-radius:4px;background:linear-gradient(90deg,var(--sim-slow),var(--mint))}.ls-map-wrap figcaption>span:nth-child(3){order:2}.ls-windkey{order:3;margin-left:auto;display:inline-flex;align-items:center;gap:6px}.ls-compass{fill:var(--text)}
