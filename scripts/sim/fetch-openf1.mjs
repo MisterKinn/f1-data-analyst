@@ -6,6 +6,8 @@
 import {mkdir, readFile, writeFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {join} from 'node:path';
+import {lapsimTracks} from '../../worker/lapsim/tracks-data.js';
+import {chooseGeometrySources, slug} from './geometry-sources.mjs';
 
 const CACHE = process.env.LAPSIM_CACHE || '.cache/lapsim';
 const YEARS = (process.argv[2] || process.env.LAPSIM_YEARS || '2023,2024,2025,2026').split(',').map(Number);
@@ -82,13 +84,26 @@ await mkdir(join(CACHE, 'sessions'), {recursive: true});
 const index = [];
 const byYear = {};
 for (const year of YEARS) byYear[year] = (await openf1('sessions', {year})).filter(s => s.session_name === 'Qualifying' && Date.parse(s.date_end) < Date.now() - 3 * 3600e3);
-// each track's shape comes from its latest season (a track not raced this year keeps last year's)
-const latest = {};
-for (const year of YEARS) for (const s of byYear[year]) latest[s.circuit_short_name] = Math.max(latest[s.circuit_short_name] || 0, year);
+// Fetch session weather before selecting geometry; older dry sources need the full
+// geometry driver count and matching-year corner coordinates too.
+const wet = JSON.parse(await readFile(new URL('./data/wet-sessions.json', import.meta.url), 'utf8'));
+const candidates = [];
+for (const year of YEARS) for (const s of byYear[year]) {
+  let weather = [];
+  try { weather = await openf1('weather', {session_key: s.session_key}); }
+  catch (e) { console.warn(`${s.circuit_short_name}: weather unavailable for session ${s.session_key}: ${e.message}`); }
+  candidates.push({...s, circuit: s.circuit_short_name, weather});
+}
+const choices = chooseGeometrySources(candidates, lapsimTracks, wet);
+for (const choice of Object.values(choices)) if (choice.warning) console.warn(choice.warning);
+const isGeometry = s => {
+  const id = slug(s.circuit_short_name ?? s.circuit);
+  return choices[id]?.source?.session_key === s.session_key || lapsimTracks[id]?.sessionKey === s.session_key;
+};
 for (const year of YEARS) {
   for (const s of byYear[year]) {
     try {
-      const data = await session(s, year === latest[s.circuit_short_name]);
+      const data = await session(s, isGeometry(s));
       if (!data.laps.length) { console.log(`skip ${year} ${s.circuit_short_name}: no laps`); continue; }
       const file = `${year}-${s.circuit_short_name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.json`;
       await writeFile(join(CACHE, 'sessions', file), JSON.stringify(data));
@@ -99,7 +114,7 @@ for (const year of YEARS) {
 }
 // Official corner positions (MultiViewer, same coordinate frame as OpenF1 positions)
 const circuits = {};
-for (const {circuit_key, year} of index.filter(x => x.year === latest[x.circuit])) {
+for (const {circuit_key, year} of index.filter(isGeometry)) {
   try { circuits[`${circuit_key}/${year}`] = await cachedJson(`https://api.multiviewer.app/api/v1/circuits/${circuit_key}/${year}`, {throttle: 0}); await sleep(400); }
   catch (e) { console.log(`no circuit info for ${circuit_key}: ${e.message}`); }
 }
