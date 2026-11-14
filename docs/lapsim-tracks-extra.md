@@ -22,6 +22,16 @@ Check per track: simulate the production WEC class cars (LMH, LMDh, LMGT3; neare
 | sakhir-outer | Outer circuit 3.543 km | europe-africa-asia | 3507 (3543) | 7–28 m | 0 (0) | – | – | ⚠️ no real lap of a calibrated class |
 | kyalami | Grand Prix 4.522 km | europe-africa-asia | 4457 (4522) | 1458–1501 m | 0 (0) | – | – | ⚠️ no real lap of a calibrated class |
 | fuji | Fuji Speedway 4.563 km | europe-africa-asia | 4460 (4563) | 544–594 m | 5 (5) | 1.34 | -1.13 | pass |
+| daytona | Road course (IMSA) 5.729 km | imsa | 5677 (5729) | 8–14 m | 6 (0) | 6.6 | -6.51 | ⚠️ error above 3 % |
+| laguna-seca | Raceway 3.602 km | imsa | 3550 (3602) | 229–282 m | 6 (0) | 3.03 | 1.99 | ⚠️ error above 3 % |
+| watkins-glen | Long course (IMSA) 5.472 km | imsa | 5401 (5472) | 454–496 m | 7 (0) | 2.07 | 1.8 | pass |
+| mosport | Grand Prix track (IMSA) 3.957 km | imsa | 3891 (3957) | 289–340 m | 5 (0) | 1.75 | -0.58 | pass |
+| road-america | Elkhart Lake 6.514 km | imsa | 6434 (6514) | 270–324 m | 8 (0) | 3.1 | 2.94 | ⚠️ error above 3 % |
+| vir | Full course (IMSA) 5.263 km | imsa | 5198 (5263) | 113–151 m | 4 (0) | 1.6 | -1.43 | pass |
+| indianapolis | Road course 3.910 km | imsa | 3844 (3910) | 221–224 m | 8 (0) | 3.83 | 3.79 | ⚠️ error above 3 % |
+| road-atlanta | Road Atlanta 4.088 km | imsa | 4047 (4088) | 275–308 m | 5 (0) | 1.74 | 0.81 | pass |
+| mid-ohio | IMSA layout 3.634 km | imsa | 3566 (3634) | 398–437 m | 0 (0) | – | – | ⚠️ no real lap of a calibrated class |
+| lime-rock | IMSA layout 2.414 km | imsa | 2370 (2414) | 164–180 m | 1 (0) | 2.36 | 2.36 | pass |
 
 Length is the least-curvature line; it is shorter than the official centre-line distance. "Own class" rows are WEC cars on WEC laps; the other rows use a borrowed car (IMSA GTP = LMDh car, every other GT3 series = LMGT3 car).
 
@@ -40,6 +50,56 @@ Length is the least-curvature line; it is shorter than the official centre-line 
 | fuji | wec | 2024 | LMGT3 | Ferrari 296 LMGT3 | lmgt3 2025 | 100.893 | 98.625 | -2.25 |
 | fuji | wec | 2025 | Hypercar | Cadillac V-Series.R | lmdh 2025 | 88.637 | 87.862 | -0.87 |
 | fuji | wec | 2025 | LMGT3 | McLaren 720S LMGT3 Evo | lmgt3 2025 | 100.011 | 98.531 | -1.48 |
+| daytona | imsa | 2024 | GTP | CADILLAC V-SERIES.R | lmdh 2025 (borrowed) | 92.656 | 87.011 | -6.09 |
+| daytona | imsa | 2024 | GTDPRO | PORSCHE 911 GT3 R (992) | lmgt3 2025 (borrowed) | 104.382 | 99.01 | -5.15 |
+| daytona | imsa | 2025 | GTP | BMW M HYBRID V8 | lmdh 2025 (borrowed) | 93.895 | 87.336 | -6.99 |
+| daytona | imsa | 2025 | GTDPRO | FORD MUSTANG GT3 | lmgt3 2025 (borrowed) | 105.523 | 99.302 | -5.9 |
+| daytona | imsa | 2026 | GTP | CADILLAC V-SERIES.R | lmdh 2026 (borrowed) | 93.939 | 85.803 | -8.66 |
+| daytona | imsa | 2026 | GTDPRO | CHEVROLET CORVETTE Z06 GT3.R | lmgt3 2026 (borrowed) | 105.106 | 98.508 | -6.28 |
+| laguna-seca | imsa | 2023 | GTP | PORSCHE 963 | lmdh 2025 (borrowed) | 74.774 | 74.224 | -0.74 |
+| laguna-seca | imsa | 2023 | GTD | ASTON MARTIN VANTAGE GT3 | lmgt3 2025 (borrowed) | 84.647 | 83.817 | -0.98 |
+| laguna-seca | imsa | 2024 | GTP | CADILLAC V-SERIES.R | lmdh 2025 (borrowed) | 72.445 | 74.196 | 2.42 |
+| laguna-seca | imsa | 2024 | GTDPRO | CHEVROLET CORVETTE Z06 GT3.R | lmgt3 2025 (borrowed) | 79.727 | 83.895 | 5.23 |
+| laguna-seca | imsa | 2025 | GTP | BMW M HYBRID V8 | lmdh 2025 (borrowed) | 72.854 | 74.227 | 1.89 |
+| laguna-seca | imsa | 2025 | GTDPRO | BMW M4 GT3 EVO | lmgt3 2025 (borrowed) | 80.644 | 83.945 | 4.09 |
+| watkins-glen | imsa | 2023 | GTDPRO | LAMBORGHINI HURACAN GT3 EVO2 | lmgt3 2025 (borrowed) | 105.139 | 107.153 | 1.92 |
+| watkins-glen | imsa | 2024 | GTP | ACURA ARX-06 | lmdh 2025 (borrowed) | 92.209 | 92.172 | -0.04 |
+| watkins-glen | imsa | 2024 | GTDPRO | FERRARI 296 GT3 | lmgt3 2025 (borrowed) | 104.203 | 107.214 | 2.89 |
+| watkins-glen | imsa | 2025 | GTP | ACURA ARX-06 | lmdh 2025 (borrowed) | 91.558 | 92.22 | 0.72 |
+| watkins-glen | imsa | 2025 | GTDPRO | LAMBORGHINI HURACAN GT3 EVO2 | lmgt3 2025 (borrowed) | 104.595 | 107.425 | 2.71 |
+| watkins-glen | imsa | 2026 | GTP | CADILLAC V-SERIES.R | lmdh 2026 (borrowed) | 91.284 | 92.856 | 1.72 |
+| watkins-glen | imsa | 2026 | GTDPRO | LEXUS RC F GT3 | lmgt3 2026 (borrowed) | 103.701 | 106.468 | 2.67 |
+| mosport | imsa | 2023 | GTP | ACURA ARX-06 | lmdh 2025 (borrowed) | 65.653 | 63.151 | -3.81 |
+| mosport | imsa | 2023 | GTDPRO | LEXUS RC F GT3 | lmgt3 2025 (borrowed) | 75.029 | 74.89 | -0.18 |
+| mosport | imsa | 2024 | GTDPRO | CHEVROLET CORVETTE Z06 GT3.R | lmgt3 2025 (borrowed) | 74.373 | 74.945 | 0.77 |
+| mosport | imsa | 2025 | GTDPRO | BMW M4 GT3 EVO | lmgt3 2025 (borrowed) | 75.046 | 74.952 | -0.12 |
+| mosport | imsa | 2026 | GTDPRO | BMW M4 GT3 EVO | lmgt3 2026 (borrowed) | 74.382 | 74.696 | 0.42 |
+| road-america | imsa | 2023 | GTP | CADILLAC V-SERIES.R | lmdh 2025 (borrowed) | 107.73 | 110.544 | 2.61 |
+| road-america | imsa | 2023 | GTDPRO | ASTON MARTIN VANTAGE GT3 | lmgt3 2025 (borrowed) | 122.918 | 127.986 | 4.12 |
+| road-america | imsa | 2024 | GTP | ACURA ARX-06 | lmdh 2025 (borrowed) | 108.601 | 110.712 | 1.94 |
+| road-america | imsa | 2024 | GTDPRO | CHEVROLET CORVETTE Z06 GT3.R | lmgt3 2025 (borrowed) | 122.198 | 127.986 | 4.74 |
+| road-america | imsa | 2025 | GTP | ACURA ARX-06 | lmdh 2025 (borrowed) | 108.628 | 110.591 | 1.81 |
+| road-america | imsa | 2025 | GTD | MERCEDES-AMG GT3 | lmgt3 2025 (borrowed) | 123.745 | 127.986 | 3.43 |
+| road-america | imsa | 2026 | GTP | ACURA ARX-06 | lmdh 2026 (borrowed) | 109.233 | 111.518 | 2.09 |
+| road-america | imsa | 2026 | GTDPRO | PORSCHE 911 GT3 R (992) | lmgt3 2026 (borrowed) | 124.042 | 127.483 | 2.77 |
+| vir | gtwc | 2025 | Pro | PORSCHE 992 GT3 R | lmgt3 2025 (borrowed) | 105.004 | 102.819 | -2.08 |
+| vir | imsa | 2023 | GTDPRO | LEXUS RC F GT3 | lmgt3 2025 (borrowed) | 104.78 | 102.834 | -1.86 |
+| vir | imsa | 2024 | GTDPRO | BMW M4 GT3 | lmgt3 2025 (borrowed) | 103.206 | 102.955 | -0.24 |
+| vir | imsa | 2025 | GTDPRO | FERRARI 296 GT3 | lmgt3 2025 (borrowed) | 104.433 | 102.815 | -1.55 |
+| indianapolis | igtc | 2025 | Pro | BMW M4 GT3 EVO | lmgt3 2025 (borrowed) | 82.271 | 86.296 | 4.89 |
+| indianapolis | imsa | 2023 | GTP | PORSCHE 963 | lmdh 2025 (borrowed) | 73.672 | 76.713 | 4.13 |
+| indianapolis | imsa | 2023 | GTD | BMW M4 GT3 | lmgt3 2025 (borrowed) | 83.075 | 86.252 | 3.82 |
+| indianapolis | imsa | 2024 | GTP | CADILLAC V-SERIES.R | lmdh 2025 (borrowed) | 74.592 | 76.887 | 3.08 |
+| indianapolis | imsa | 2024 | GTDPRO | PORSCHE 911 GT3 R (992) | lmgt3 2025 (borrowed) | 83.15 | 86.314 | 3.81 |
+| indianapolis | imsa | 2025 | GTP | ACURA ARX-06 | lmdh 2025 (borrowed) | 74.569 | 76.827 | 3.03 |
+| indianapolis | imsa | 2025 | GTD | ASTON MARTIN VANTAGE GT3 EVO | lmgt3 2025 (borrowed) | 83.088 | 86.254 | 3.81 |
+| indianapolis | imsa | 2026 | GTP | ACURA ARX-06 | lmdh 2026 (borrowed) | 74.674 | 77.476 | 3.75 |
+| road-atlanta | gtwc | 2026 | Pro | MERCEDES-AMG GT3 EVO | lmgt3 2026 (borrowed) | 80.501 | 79.713 | -0.98 |
+| road-atlanta | imsa | 2024 | GTP | CADILLAC V-SERIES.R | lmdh 2025 (borrowed) | 69.639 | 69.496 | -0.21 |
+| road-atlanta | imsa | 2024 | GTDPRO | PORSCHE 911 GT3 R (992) | lmgt3 2025 (borrowed) | 77.881 | 80.136 | 2.9 |
+| road-atlanta | imsa | 2025 | GTP | ACURA ARX-06 | lmdh 2025 (borrowed) | 69.628 | 69.583 | -0.06 |
+| road-atlanta | imsa | 2025 | GTD | FERRARI 296 GT3 | lmgt3 2025 (borrowed) | 78.316 | 80.185 | 2.39 |
+| lime-rock | imsa | 2023 | GTDPRO | ASTON MARTIN VANTAGE GT3 | lmgt3 2025 (borrowed) | 50.593 | 51.788 | 2.36 |
 
 ## Evidence layer per value
 
@@ -55,6 +115,16 @@ Length is the least-curvature line; it is shorter than the official centre-line 
 | sakhir-outer | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | kyalami | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 4 assumed 12 m | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | fuji | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| daytona | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 4 assumed 12 m | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| laguna-seca | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| watkins-glen | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 4 assumed 12 m | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| mosport | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 4 assumed 12 m | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| road-america | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| vir | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 4 assumed 12 m | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| indianapolis | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| road-atlanta | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| mid-ohio | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 4 assumed 12 m | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| lime-rock | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 4 assumed 12 m | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 
 ## Sources
 
@@ -68,6 +138,16 @@ Length is the least-curvature line; it is shorter than the official centre-line 
 - **sakhir-outer**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
 - **kyalami**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); kyalamigrandprixcircuit.com/grand-prix-circuit (4.522 km, 16 turns, anti-clockwise, pole left); Terrarium elevation tiles (Mapzen/Tilezen open data)
 - **fuji**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **daytona**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); imsa.com/weathertech/weathertech-2026-schedule (3.56 miles, 12 corners) [rounded to 0.01 mile]; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **laguna-seca**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **watkins-glen**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); imsa.com/news/tracks/watkins-glen-international (3.4 miles) [rounded to 0.1 mile: too coarse for the 0.5 % check, treated as weak]; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **mosport**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); imsa.com/weathertech/weathertech-2024-schedule (2.459 miles, 10 corners); Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **road-america**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **vir**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); imsa.com/virginia-international-raceway (3.27 miles) [rounded to 0.01 mile]; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **indianapolis**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **road-atlanta**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **mid-ohio**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); imsa.com/vpracingsportscarchallenge/imsa-vp-racing-sportscar-challenge-2024-schedule (2.258 miles, 13 corners); Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **lime-rock**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); imsa.com/weathertech/weathertech-2022-schedule (1.50 miles, 7 corners) [rounded to 0.01 mile]; Terrarium elevation tiles (Mapzen/Tilezen open data)
 
 ## Not checked, known limits
 
@@ -75,5 +155,6 @@ Length is the least-curvature line; it is shorter than the official centre-line 
 - Height comes from a 30 m ground grid, smoothed over 150 m: crests and dips shorter than that are missing. No banking (Daytona).
 - The driven line is a model line, not compared with a real driven line.
 - Lap-time error only. Corner minimum speed, end-of-straight speed and sectors are not checked (rule 3.4): a pass does not prove the parts of the lap.
+- Surface changes in scripts/sim/data/tracks/track-state.json were not applied to the reference rows: Laguna Seca 2023 rows are on the old surface.
 - Error includes geometry, car and borrowed-car error together; rows with a borrowed car say less about the track.
 - The Timing71 venue id "nurburgring-gp" holds three layouts; rows were split by lap time (80–90 s sprint, 105–125 s Grand Prix, 470–520 s 24 Hours lap). No Grand Prix lap of a GT3 or Hypercar class exists in the table.
