@@ -90,10 +90,10 @@ const shift=(date,days)=>{const d=new Date(date+'T12:00:00Z');d.setUTCDate(d.get
 // Taikyu, Rally Saudi Arabia) or as a JSON programme feed (Macau). Both readers return
 // {month,day,from,to,title} rows; eventSessions() turns them into stamped sessions.
 const MONTHS=['january','february','march','april','may','june','july','august','september','october','november','december'];
-const TIME=/^(\d{1,2}):(\d\d)(?:\s*[-–~〜]\s*(\d{1,2}):(\d\d))?(?:\s*[•·]?\s*(\S.*))?$/;
+const TIME=/^(\d{1,2}):(\d\d)(?:\s*[-\u2010-\u2015\u2212~〜]\s*(\d{1,2}):(\d\d))?(?:\s*[•·]?\s*(\S.*))?$/;
 const clock=(h,m)=>h===undefined?null:String(h).padStart(2,'0')+':'+m;
 export function parseTimetableText(html){
- const lines=html.replace(/<(script|style)\b[\s\S]*?<\/\1>/gi,' ').replace(/<!--[\s\S]*?-->/g,' ').replace(/<[^>]+>/g,'\n').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').split('\n').map(l=>l.trim()).filter(Boolean);
+ const lines=html.replace(/<(script|style)\b[\s\S]*?<\/\1>/gi,' ').replace(/<!--[\s\S]*?-->/g,' ').replace(/<[^>]+>/g,'\n').replace(/&nbsp;/g,' ').replace(/&(?:ndash|mdash|minus);/g,'–').replace(/&(?:bull|middot);/g,'•').replace(/&#(x[0-9a-f]+|\d+);/gi,(_,code)=>String.fromCodePoint(code[0]==='x'||code[0]==='X'?parseInt(code.slice(1),16):+code)).replace(/&amp;/g,'&').split('\n').map(l=>l.trim()).filter(Boolean);
  const rows=[];let date=null;
  for(let i=0;i<lines.length;i++){
   const line=lines[i],time=TIME.exec(line);
