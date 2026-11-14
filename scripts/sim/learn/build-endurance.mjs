@@ -19,16 +19,19 @@ export const secs = t => { const p = String(t || '').split(':').map(Number); ret
 const num = x => { const s = String(x ?? '').trim().replace(',', '.'); const v = Number(s); return s !== '' && Number.isFinite(v) ? v : null; };
 const mean = a => a.length ? a.reduce((p, q) => p + q, 0) / a.length : null, med = a => { const s = [...a].sort((x, y) => x - y); return s.length ? s[s.length >> 1] : null; };
 export const sessionType = n => /race-hour|-hour-\d/.test(n) ? null : /qualifying-race|quali-race/.test(n) ? 'R' : /hyperpole|qualif|shootout|superpole/.test(n) ? 'Q' : /practice|session|test|warm|bronze|collective/.test(n) ? 'P' : /race/.test(n) ? 'R' : 'other';
-// Weather units differ by file: IMSA is °F and inHg; the others are °C and hPa in some seasons and °F in others. The unit column
-// decides when the file has one; otherwise a session mean of air or track temperature above 55 can only be °F.
-const wx = rows => { const c = k => rows.map(r => num(r[k])).filter(v => v != null), air = mean(c('AIR_TEMP')), trk = mean(c('TRACK_TEMP')), p = mean(c('PRESSURE')), unit = rows.find(r => r.AIR_TEMP_UNIT)?.AIR_TEMP_UNIT;
-  const isF = unit ? /F/i.test(unit) : Math.max(air ?? 0, trk ?? 0) > 55, t = v => v == null ? null : isF ? (v - 32) / 1.8 : v;
-  return {airC: t(air), trackC: t(trk), hum: mean(c('HUMIDITY')), hpa: p == null ? null : p < 40 ? p * 33.8639 : p, rainShare: rows.length ? c('RAIN').filter(v => v > 0).length / rows.length : null}; };
+// Weather units in the archive are not uniform: its importer converts °C to °F, but some files were left in °C and some were
+// converted twice (Le Mans 2026: 19.5 °C stored as 152.8). IMSA is °F at the source. So the unit is decided by plausibility:
+// convert °F -> °C while the session mean air temperature is above 45 (at most twice; IMSA at least once). The track temperature
+// gets the same number of conversions. Pressure under 40 is inHg. A mean air temperature of 33-45 in a non-IMSA file is read as °C.
+export function wx(rows, series) { const c = k => rows.map(r => num(r[k])).filter(v => v != null), p = mean(c('PRESSURE')), f = v => (v - 32) / 1.8;
+  let air = mean(c('AIR_TEMP')), trk = mean(c('TRACK_TEMP')), n = 0; const ref = () => air ?? (trk == null ? null : trk - 8);
+  while (n < 2 && ref() != null && (ref() > 45 || (n === 0 && series === 'imsa'))) { if (air != null) air = f(air); if (trk != null) trk = f(trk); n++; }
+  return {airC: air, trackC: trk, hum: mean(c('HUMIDITY')), hpa: p == null ? null : p < 40 ? p * 33.8639 : p, rainShare: rows.length ? c('RAIN').filter(v => v > 0).length / rows.length : null}; }
 
 // One session -> one row per car: [cls, entry, vehicle, manufacturer, team, tyres, best, s1, s2, s3, ideal, trapKph, lenKm, laps, clean, median, airC, trackC, hum, hpa, rainShare]
-export function sessionCars(laps, res, w) {
+export function sessionCars(laps, res, w, series) {
   const out = [];
-  const info = new Map(res.map(r => [String(r.NUMBER), r])), W = wx(w), cars = new Map(); let prevPit = new Map();
+  const info = new Map(res.map(r => [String(r.NUMBER), r])), W = wx(w, series), cars = new Map(); let prevPit = new Map();
   for (const r of laps) {
         const e = String(r.NUMBER), c = cars.get(e) || cars.set(e, {r, laps: 0, clean: [], trap: 0, bs: [Infinity, Infinity, Infinity], best: null}).get(e);
         const t = secs(r.LAP_TIME), sx = [r.S1_SECONDS ?? r.S1, r.S2_SECONDS ?? r.S2, r.S3_SECONDS ?? r.S3].map(v => num(v) ?? secs(v)), flag = r.FLAG_AT_FL;
@@ -56,7 +59,7 @@ if (process.argv[1]?.endsWith('build-endurance.mjs')) {
       let laps, res = [], w = []; try { laps = parseCsv(readFileSync(join(dir, lf), 'utf8')); } catch (e) { log.push(`${dir}/${lf}: ${e.message}`); continue; }
       if (existsSync(join(dir, session + '-results.csv'))) res = parseCsv(readFileSync(join(dir, session + '-results.csv'), 'utf8'));
       if (existsSync(join(dir, session + '-weather.csv'))) w = parseCsv(readFileSync(join(dir, session + '-weather.csv'), 'utf8'));
-      for (const c of sessionCars(laps, res, w)) out.push([series, season, event.replace(/^\d+-/, ''), session, type, ...c]);
+      for (const c of sessionCars(laps, res, w, series)) out.push([series, season, event.replace(/^\d+-/, ''), session, type, ...c]);
     }
   }
   writeFileSync(OUT, COLS.join(',') + '\n' + out.map(csvLine).join('\n') + '\n');

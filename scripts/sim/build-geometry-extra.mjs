@@ -19,7 +19,11 @@ const read = f => JSON.parse(readFileSync(D + f, 'utf8'));
 export function buildTrack(id, spec, c) {
   if (spec.driven) { // F1 car positions: already the driven line, with height, sectors and corner numbers
     const turn = c.kappa.reduce((a, k) => a + k / 1e5 * c.ds, 0) * 180 / Math.PI, n = c.kappa.length, step = Math.max(1, Math.floor(n / 360)), map = {x: [], y: []};
-    for (let i = 0, h = 0, x = 0, y = 0; i < n; i++) { if (i % step === 0) { map.x.push(Math.round(x)); map.y.push(Math.round(y)); } h += c.kappa[i] / 1e5 * c.ds; x += Math.cos(h) * c.ds; y += Math.sin(h) * c.ds; }
+    // Map outline only (the lap uses kappa as measured): rounded curvature does not add up to one full turn, so the drawn loop
+    // stayed open (Paul Ricard 153 m, Nürburgring 106 m, Sakhir Outer 31 m). Spread the heading error and the end gap along the lap.
+    const dh = (Math.sign(turn) * 360 - turn) * Math.PI / 180 / n, px = [], py = [];
+    for (let i = 0, h = 0, x = 0, y = 0; i < n; i++) { px.push(x); py.push(y); h += c.kappa[i] / 1e5 * c.ds + dh; x += Math.cos(h) * c.ds; y += Math.sin(h) * c.ds; if (i === n - 1) { px.push(x); py.push(y); } }
+    for (let i = 0; i < n; i += step) { map.x.push(Math.round(px[i] - px[n] * i / n)); map.y.push(Math.round(py[i] - py[n] * i / n)); }
     return {id, name: spec.name, circuit: spec.name, layout: spec.layout, year: c.year, ds: c.ds, length: c.length, officialLengthM: c.officialLengthM, sectors: c.sectors || [], corners: c.corners || [], kappa: c.kappa, grade: c.grade, heading: null, map,
       quality: {laps: c.lapsUsed, totalTurnDeg: Math.round(turn), startVerified: true, elevation: {source: 'car positions'},
         evidence: {lapLength: '1 fixed (official) and 2 measured (driven line)', planShape: `2 measured (F1 car positions, ${c.lapsUsed} qualifying laps, ${c.year})`, drivenLine: '2 measured (mean of the fastest qualifying laps)', width: 'not used', height: '2 measured (F1 car positions)', trackGrip: '4 borrowed (mean factor of the class\'s fitted tracks)'}},

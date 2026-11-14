@@ -35,7 +35,7 @@ const T = {
     title: '랩 시뮬레이터', h1: '2026–2028 F1 머신으로 한 바퀴를 계산합니다',
     lead: '실제 예선 랩으로 보정한 물리 모델이 지금의 트랙 형상, 예선 날씨, FIA가 공지한 서킷 변경 사항을 반영해 랩타임과 속도를 계산합니다.',
     track: '트랙', series: '시리즈', car: '규정 · 클래스', evoNone: '이 차는 Evo 데이터가 없습니다', eventFor: '이 차의 대회: {n} ({a} – {b}) · 세션 날씨: {y} 시즌', compare: '비교', soonShort: '준비 중',
-    seriesNames: {f1: 'F1', wec: 'WEC', imsa: 'IMSA GTP', fe: '포뮬러 E', gt3: 'GT3 (GTWC · IGTC · FIA GT 월드컵 (마카오 GP) · DTM)'}, none: '없음', conditions: '조건', real: '실제 예선 조건', manual: '직접 설정',
+    seriesNames: {f1: 'F1', wec: 'WEC', imsa: 'IMSA GTP', fe: '포뮬러 E', gt3: 'GT3 (차종별)'}, none: '없음', conditions: '조건', real: '실제 예선 조건', manual: '직접 설정',
     lap: '계산된 랩타임', vsPole: '실제 폴', realLap: '실제 랩', wecBest: '실제 예선·하이퍼폴 최고', errRange: '오차 범위(1σ)', conf: {medium: '신뢰도 보통', low: '신뢰도 낮음', 'very-low': '신뢰도 매우 낮음', 'not-fitted': '실측 보정 전'},
     soon: '준비 중: 기타 GT3(IMSA GTD·DTM·SP9), 포뮬러 E Gen4. 같은 보정 규칙을 쓰며 데이터 연결 후 추가됩니다.', sector: '섹터', vmax: '최고 속도', vmin: '최저 속도', energy: '배치 에너지', clip: '배치 상한 속도',
     map: '속도로 칠한 주행 라인', slow: '느림', fast: '빠름', trace: '거리별 속도', km: '거리 (km)',
@@ -48,7 +48,7 @@ const T = {
     calib: '보정과 예측', calibLead: '실제 폴 랩의 속도 기록과 랩타임에 맞춰 머신 값을 찾았습니다.', fitErr: '랩타임 오차', speedRms: '속도 오차(RMS)',
     proj: '2027–2028 예측', projRules: '확정된 파워유닛 규정 변경', projDev: '규정 주기 2·3년 차의 역대 개발 속도',
     model: '이 계산의 범위', pending: '데이터 준비 중', pendingLead: '트랙과 보정 데이터를 만드는 중입니다. 잠시 후 다시 확인해 주세요.',
-    calibrated: '실측 보정', prior: '규정값 기반', projected: '예측',
+    calibrated: '실측 보정', learned: '실제 랩으로 학습', prior: '규정값 기반', projected: '예측',
     m1: '트랙 형상은 OpenF1의 예선 차량 위치(여러 드라이버의 베스트 랩)로 만든 실제 주행 라인입니다. 코너 번호는 공식 위치, 방위는 실제 지도와 맞췄습니다.',
     m2: '2019 기준 머신은 TUM(뮌헨공대)이 공개한 범용 F1 모델이고, 2025·2026 머신은 실제 폴 랩에 맞춰 보정했습니다.',
     m3: '2026년 규정: MGU-K 350kW(290km/h 이상에서 감소, 345km/h에서 0), 배터리 사용 폭 4MJ, 랩당 회생 최대 8.5MJ (Section C 5.2, Issue 21). 퀄리파잉 회생 한도는 FIA가 서킷별로 정한 값(5–9MJ, 언론 보도 기준)을 씁니다.',
@@ -67,7 +67,7 @@ const T = {
     title: 'Lap simulator', h1: 'Simulate a lap in a 2026–2028 F1 car',
     lead: 'A physics model calibrated on real qualifying laps works out lap time and speed on today’s track layout, with qualifying weather and the circuit changes the FIA has announced.',
     track: 'Track', series: 'Series', car: 'Rules · class', evoNone: 'No Evo data for this car', eventFor: 'Event for this car: {n} ({a} – {b}) · session weather: {y} season', compare: 'Compare', soonShort: 'coming soon',
-    seriesNames: {f1: 'F1', wec: 'WEC', imsa: 'IMSA GTP', fe: 'Formula E', gt3: 'GT3 (GTWC · IGTC · FIA GT World Cup (Macau GP) · DTM)'}, none: 'None', conditions: 'Conditions', real: 'Real qualifying conditions', manual: 'Set my own',
+    seriesNames: {f1: 'F1', wec: 'WEC', imsa: 'IMSA GTP', fe: 'Formula E', gt3: 'GT3 (by car model)'}, none: 'None', conditions: 'Conditions', real: 'Real qualifying conditions', manual: 'Set my own',
     lap: 'Simulated lap time', vsPole: 'Real pole', realLap: 'Real lap', wecBest: 'Real qualifying/Hyperpole best', errRange: 'Error range (1σ)', conf: {medium: 'medium confidence', low: 'low confidence', 'very-low': 'very low confidence', 'not-fitted': 'not fitted to real laps'},
     soon: 'Coming soon: other GT3 (IMSA GTD, DTM, SP9) and Formula E Gen4. They use the same calibration rules and are added once their data is connected.', sector: 'Sector', vmax: 'Top speed', vmin: 'Lowest speed', energy: 'Energy deployed', clip: 'Deploy cut-off',
     map: 'Racing line coloured by speed', slow: 'Slow', fast: 'Fast', trace: 'Speed over distance', km: 'Distance (km)',
@@ -80,7 +80,7 @@ const T = {
     calib: 'Calibration and projection', calibLead: 'Car values were fitted to the speed trace and lap time of real pole laps.', fitErr: 'Lap-time error', speedRms: 'Speed error (RMS)',
     proj: '2027–2028 projection', projRules: 'Ratified power-unit rule changes', projDev: 'Historical development in years 2 and 3 of a rules cycle',
     model: 'What this calculation covers', pending: 'Data in preparation', pendingLead: 'Track and calibration data are being built. Please check back shortly.',
-    calibrated: 'Fitted to real laps', prior: 'From the regulations', projected: 'Projection',
+    calibrated: 'Fitted to real laps', learned: 'Learned from real laps', prior: 'From the regulations', projected: 'Projection',
     m1: 'Track shapes are the real driving line built from OpenF1 car positions in qualifying (several drivers’ best laps). Corners use official positions; headings are aligned to real maps.',
     m2: 'The 2019 base car is TUM’s published generic F1 model; the 2025 and 2026 cars are fitted to real pole laps.',
     m3: '2026 rules: MGU-K 350 kW (reduced above 290 km/h, zero at 345 km/h), 4 MJ battery window, up to 8.5 MJ recharge per lap (Section C 5.2, Issue 21). Qualifying uses the per-circuit recharge limit the FIA sets (5–9 MJ, from press reports).',
@@ -104,7 +104,7 @@ function carsFor(id, lang) {
   const t = T[lang], label = {base2019: lang === 'en' ? '2019 base (TUM)' : '2019 기준 (TUM)', 2027: `2027 (${t.projected})`, 2028: `2028 (${t.projected})`};
   const wec = c => `WEC ${SERIES.wec.classes[c.cls].label[lang]} ${c.year}`;
   // provisional series cars (IMSA, GT3 series) are tool-only until their pages exist
-  return Object.fromEntries(Object.entries(scenarioCars(id)).filter(([, c]) => c.kind !== 'proxy').map(([k, c]) => [k, {...c, label: c.series ? wec(c) : label[k] || k}]));
+  return Object.fromEntries(Object.entries(scenarioCars(id)).filter(([, c]) => c.kind !== 'proxy').map(([k, c]) => [k, {...c, label: c.label || (c.series === 'wec' ? wec(c) : label[k] || k)}]));
 }
 
 // --- Rendering (shared with the browser; must only use its arguments) ---
@@ -390,7 +390,8 @@ function computeView(K, data, state, R) {
   const active = (data.changes?.changes || []).filter((c, i) => state.active[i]);
   if (active.length) track = K.applyTrackChanges(base, active, d.corners || [], {strength: state.strength}).track;
   const withGrip = (tr, g) => { const n = tr.kappa.length, mu = new Float64Array(n); for (let i = 0; i < n; i++) mu[i] = g * tr.mu[i]; return {...tr, mu}; };
-  const run = c => K.simulateLap(withGrip(track, c.grip || 1), c.car, env);
+  // learned lap-time factor (GT3 car models, class cars on tracks learned from real laps): lap and sector times scale
+  const run = c => { const r = K.simulateLap(withGrip(track, c.grip || 1), c.car, env), f = c.timeScale; if (f && f !== 1) { r.lapTime *= f; for (let i = 0; i < r.time.length; i++) r.time[i] *= f; } return r; };
   const secOf = r => { const i1 = Math.round(d.sectors[0] / d.ds), i2 = Math.round(d.sectors[1] / d.ds); return [r.time[i1], r.time[i2] - r.time[i1], r.lapTime - r.time[i2]]; };
   // sector correction (raced tracks): real pole sectors minus the reference car's sectors in that weather
   const corrOf = c => {
@@ -438,7 +439,7 @@ function computeView(K, data, state, R) {
     + fact(t.pressure, Math.round(w.pressureHpa) + ' hPa') + fact(t.density, env.rho.toFixed(3) + ' kg/m³ (' + pct(env.rho / 1.225) + ' ' + t.seaLevel + ')')
     + fact(t.ice, pct(env.iceFactor)) + fact(t.grip, pct(env.grip)) + fact(t.mainStraight, windTxt)
     + (data.energy && sel.car.ers?.rule === 'f1-2026' ? fact(t.recharge, data.energy.mj + ' MJ (' + (t['energy_' + data.energy.status] || data.energy.status) + ')') : '');
-  const kindLabel = sel.kind === 'calibrated' ? t.calibrated : sel.kind === 'projected' ? t.projected : sel.kind === 'prior' ? t.prior : 'TUM';
+  const kindLabel = sel.learned ? t.learned : sel.kind === 'calibrated' ? t.calibrated : sel.kind === 'projected' ? t.projected : sel.kind === 'prior' ? t.prior : 'TUM';
   // racing line of the selected car on the map (F1 projections use the 2026 line), coloured by its own
   // simulated speed; markers: braking starts, lowest speed of that corner, back to full power
   let line = null, lineNote = '';

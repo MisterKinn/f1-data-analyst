@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {trackLabel, trackOrder, isCandidate, evoPairs, carEvent} from '../worker/simulator-controls.js';
+import {trackLabel, trackOrder, isCandidate, evoPairs, carEvent, trackWarn} from '../worker/simulator-controls.js';
 import {simulationPage} from '../worker/simulation.js';
 import {lapsimAllTracks as lapsimTracks} from '../worker/lapsim/tracks.js';
 import {carsFor, realConditions, CAR_ORDER} from '../worker/lapsim/scenario.js';
@@ -28,8 +28,11 @@ test('tracks are sorted by the 3-letter code, then by name', () => {
 test('a map-built candidate track shows the warning mark, a surveyed one does not', () => {
   assert.equal(isCandidate(lapsimTracks.monza), false);
   assert.equal(trackLabel('monza', lapsimTracks.monza), 'ITA - Monza');
-  assert.equal(trackLabel('mugello', {candidate: true}), 'ITA - Mugello⚠️');
-  assert.equal(trackLabel('mugello', {sources: ['OpenStreetMap raceway centre line']}), 'ITA - Mugello⚠️');
+  assert.equal(trackLabel('yeongam', {candidate: true}), 'KOR - Yeongam⚠️');
+  assert.equal(trackLabel('yeongam', {sources: ['OpenStreetMap raceway centre line']}), 'KOR - Yeongam⚠️');
+  // a track with real laps of every car model: the learned error with one event hidden decides (owner rule 2026-11-14, docs/lapsim-learn.md)
+  assert.equal(trackLabel('mugello', {candidate: true}), 'ITA - Mugello');
+  assert.equal(trackWarn('daytona', lapsimTracks.daytona), false); assert.equal(trackWarn('rwanda', lapsimTracks.rwanda), true);
   assert.equal(trackLabel('rwanda', {candidate: true}), 'RWA - Rwanda⚠️'); // never doubled
 });
 
@@ -41,7 +44,7 @@ test('the page lists only tracks that exist in the data, with the new labels', (
   assert.ok(opts.some(o => o[1] === 'ITA - Monza'));
   assert.ok(opts.some(o => o[1] === 'FRA - Le Mans') && opts.some(o => o[1] === 'RWA - Rwanda⚠️')); // extra circuits: passed the check / provisional
   assert.ok(opts.some(o => o[1] === 'USA - Las Vegas') && !opts.some(o => /[\u{1F1E6}-\u{1F1FF}]/u.test(o[1]))); // no flag in the track list
-  for (const [id, label] of opts) assert.equal(label.endsWith('⚠️'), lapsimTracks[id].fit === false || id === 'rwanda', id); // ⚠️ only on a track that failed its check
+  for (const [id, label] of opts) assert.equal(label.endsWith('⚠️'), trackWarn(id, lapsimTracks[id]), id); // ⚠️: not built, no real lap to check, or a larger error
 });
 
 test('Evo tick box: paired only with a real Evo entry of the same base car', () => {
@@ -55,7 +58,7 @@ test('Evo tick box: paired only with a real Evo entry of the same base car', () 
 });
 
 test('Evo tick box is disabled with a hint when the data has no Evo entry (never invented)', () => {
-  assert.deepEqual(evoPairs(carsFor('monza'), CAR_ORDER), {});
+  assert.ok(Object.keys(evoPairs(carsFor('monza'), CAR_ORDER)).every(k => k.startsWith('gt3-'))); // F1 and WEC cars have no Evo entry; GT3 car models do
   const html = simulationPage({track: 'monza'}, 'en');
   assert.match(html, /<input type="checkbox" name="evo" value="1" data-ls="evo" disabled>/);
   assert.match(html, /data-ls="evoHint">No Evo data for this car</);

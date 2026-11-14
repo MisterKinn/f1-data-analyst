@@ -27,10 +27,14 @@ export function groupOf(r) {
 }
 const CAR = {lmh: 'lmh', lmdh: 'lmdh', gt3: 'lmgt3', lmp2: 'lmdh'}, calSeason = y => String(Math.min(2026, Math.max(2025, y)));
 const simCache = new Map(), trk = new Map();
-function simLap(simId, group, season, w, grip = 1) {
-  const k = [simId, group, calSeason(season), Math.round(w.airC ?? 25), Math.round(w.trackC ?? 35), Math.round((w.hpa ?? 1013) / 5), Math.round((w.hum ?? 50) / 10), grip].join('|'); if (simCache.has(k)) return simCache.get(k);
+// The learning step always simulates with the LATEST calibrated class car (the car the page shows), whatever the season of the
+// row: the 2025 and 2026 class cars differ by several percent on one track, so a layout term learned on one does not fit the other.
+// Season differences go to S. Only the "before" column uses the season's own car, as the page did.
+const LATEST = Object.fromEntries(Object.entries(WEC).map(([c, s]) => [c, Object.keys(s).sort().at(-1)]));
+function simLap(simId, group, season, w, grip = 1, own = false) {
+  const cs = own ? calSeason(season) : LATEST[CAR[group]], k = [simId, group, cs, Math.round(w.airC ?? 25), Math.round(w.trackC ?? 35), Math.round((w.hpa ?? 1013) / 5), Math.round((w.hum ?? 50) / 10), grip].join('|'); if (simCache.has(k)) return simCache.get(k);
   const t = trk.get(simId) || trk.set(simId, K.trackFromData(ALL[simId])).get(simId), env = K.conditionsFromWeather({pressureHpa: w.hpa ?? 1013.25, airTempC: w.airC ?? 25, humidityPct: w.hum ?? 50, trackTempC: w.trackC ?? 35, windSpeed: 0, windFromDeg: 0});
-  const lap = K.simulateLap(grip === 1 ? t : {...t, mu: Float64Array.from(t.mu, m => m * grip)}, WEC[CAR[group]][calSeason(season)].car, env).lapTime; simCache.set(k, lap); return lap;
+  const lap = K.simulateLap(grip === 1 ? t : {...t, mu: Float64Array.from(t.mu, m => m * grip)}, WEC[CAR[group]][cs].car, env).lapTime; simCache.set(k, lap); return lap;
 }
 // what the page predicts today for a car that has no real lap here (worker/lapsim/scenario.js gripOf)
 const prodGrip = (simId, group, season) => { const s = WEC[CAR[group]]; return [calSeason(season), ...Object.keys(s).sort().reverse()].map(k => s[k]?.tracks?.[simId]?.grip).find(g => g != null) ?? lapsimExtraTracks[simId]?.trackFactor?.grip ?? 1; };
@@ -41,15 +45,16 @@ export function loadRows(file) {
   for (const l of lines) { const a = split(l), r = Object.fromEntries(cols.map((c, i) => [c, a[i]])); if (r.type !== 'Q') continue;
     r.season = +r.season; r.best = +r.best; r.model = modelOf(r.vehicle, r.season, r.cls); const group = groupOf(r); if (!group) continue;
     const num = v => v === '' ? null : +v, w = {airC: num(r.airC), trackC: num(r.trackC), hum: num(r.hum), hpa: num(r.hpa)}; if (w.trackC != null && w.airC != null && w.trackC > w.airC + 35) w.trackC = null; // IMSA 2021 track temperatures are not usable
-    const wet = +r.rainShare > 0.02, tr = resolveTrack({name: r.event, lengthKm: num(r.lenKm), season: r.season}), why = wet ? 'wet qualifying' : !tr.layout ? 'layout not resolved' : !tr.sim ? 'no simulator geometry: ' + tr.layout : ALL[tr.sim].fit === false ? 'geometry marked ⚠️: ' + tr.sim : null;
+    const wet = +r.rainShare > 0.02, tr = resolveTrack({name: r.event, lengthKm: num(r.lenKm), season: r.season}), why = wet ? 'wet qualifying' : !tr.layout ? 'layout not resolved' : !(tr.sim || tr.near) ? 'no simulator geometry: ' + tr.layout : null; // a ⚠️ track is learned too: its layout term absorbs the geometry error and the held-out error decides the mark
     if (why) { skipped[why] = (skipped[why] || 0) + 1; continue; }
     const k = [r.series, r.season, r.event, group, r.model.key].join('|'), o = best.get(k);
-    if (!o || r.best < o.real) best.set(k, {series: r.series, season: r.season, event: r.event, layout: tr.layout, sim: tr.sim, group, model: r.model.key, entry: r.entry, real: r.best, trap: num(r.trapKph), w, eventKey: [r.series, r.season, r.event].join('|')});
+    if (!o || r.best < o.real) best.set(k, {series: r.series, season: r.season, event: r.event, layout: tr.layout, sim: tr.sim || tr.near, sibling: !tr.sim, group, model: r.model.key, entry: r.entry, real: r.best, trap: num(r.trapKph), w, eventKey: [r.series, r.season, r.event].join('|')});
   }
-  const rows = [...best.values()]; for (const r of rows) { r.sim0 = simLap(r.sim, r.group, r.season, r.w); r.y = Math.log(r.real / r.sim0); r.prod = simLap(r.sim, r.group, r.season, r.w, prodGrip(r.sim, r.group, r.season)); }
+  const rows = [...best.values()]; for (const r of rows) { r.sim0 = simLap(r.sim, r.group, r.season, r.w); r.y = Math.log(r.real / r.sim0); r.prod = simLap(r.sim, r.group, r.season, r.w, prodGrip(r.sim, r.group, r.season), true); }
+  const zStat = {};
   // z: how fast the layout is (class car mean speed, standard weather), standardised per group
-  for (const g of new Set(rows.map(r => r.group))) { const R = rows.filter(r => r.group === g), v = r => Math.log(ALL[r.sim].length / simLap(r.sim, g, 2026, {})), m = R.reduce((a, r) => a + v(r), 0) / R.length, sd = Math.sqrt(R.reduce((a, r) => a + (v(r) - m) ** 2, 0) / R.length) || 1; for (const r of R) r.z = (v(r) - m) / sd; }
-  return {rows, skipped};
+  for (const g of new Set(rows.map(r => r.group))) { const R = rows.filter(r => r.group === g), v = r => Math.log(ALL[r.sim].length / simLap(r.sim, g, 2026, {})), m = R.reduce((a, r) => a + v(r), 0) / R.length, sd = Math.sqrt(R.reduce((a, r) => a + (v(r) - m) ** 2, 0) / R.length) || 1; for (const r of R) r.z = (v(r) - m) / sd; zStat[g] = {m, sd}; }
+  return {rows, skipped, zStat};
 }
 const kind = g => g === 'gt3' ? 'gt' : 'proto';
 const terms = r => [['S', r.group + '|' + r.series + '|' + r.season, 1], ['T', r.layout, 1], ['TG', r.layout + '|' + kind(r.group), 1], ['M', r.model, 1], ['MB', r.model + '|' + body(r.series), 1], ['MY', r.model + '|' + body(r.series) + '|' + r.season, 1], ['B', r.model, r.z]];
@@ -95,5 +100,29 @@ if (process.argv[1]?.endsWith('fit-endurance.mjs')) {
     sensitivity: sens, coef: Object.fromEntries(Object.entries(full.coef).map(([k, v]) => [k, +v.toFixed(5)])),
     worst: rows.map((r, i) => ({...r, e: preds.eventOut[i] / r.real - 1})).sort((a, b) => Math.abs(b.e) - Math.abs(a.e)).slice(0, 25).map(r => `${r.eventKey} ${r.group} ${r.model} real ${r.real} err ${(r.e * 100).toFixed(2)} %`)};
   writeFileSync(OUT, JSON.stringify(res, null, 1));
+  // ---- what the page and the tool read: worker/lapsim/learned-data.js ----
+  // Lap-time factors on the class car with NO track factor (grip 1), standard weather handled by the simulator as usual.
+  // Class cars (regulation level: LMH, LMDh, LMGT3) = level of the latest WEC season + layout + the fastest current model.
+  // GT3 model cars = their own model terms; BoP body ACO (WEC, ELMS, Asian LMS) when the model races there, else IMSA.
+  const c = full.coef, g0 = k => c[k] ?? 0, last = Math.max(...rows.map(r => r.season)), zOf = (simId, g) => (Math.log(ALL[simId].length / simLap(simId, g, 2026, {})) - loaded.zStat[g].m) / loaded.zStat[g].sd;
+  const slug = k => 'gt3-' + k.toLowerCase().replace(/\+evo2?/, m => m.slice(1)).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  const info = {}; for (const r of rows) { const o = info[r.model] ||= {group: r.group, bodies: {}}; const b = o.bodies[body(r.series)] ||= {last: 0, n: 0}; b.last = Math.max(b.last, r.season); b.n++; }
+  const mTerm = (m, b, y, z) => g0('M:' + m) + g0(`MB:${m}|${b}`) + g0(`MY:${m}|${b}|${y}`) + g0('B:' + m) * z;
+  const levelOf = (g, b) => g0(`S:${g}|${b === 'imsa' ? 'imsa' : 'wec'}|${last}`);
+  const current = g => Object.entries(info).filter(([, o]) => o.group === g && o.bodies.aco?.last >= last - 1).map(([m, o]) => [m, o.bodies.aco.last]);
+  const classTerm = (g, z) => levelOf(g, 'aco') + Math.min(...current(g).map(([m, y]) => mTerm(m, 'aco', y, z)));
+  const gt3 = Object.entries(info).filter(([, o]) => o.group === 'gt3').map(([m, o]) => { const b = o.bodies.aco ? 'aco' : 'imsa'; return {m, b, y: o.bodies[b].last, n: Object.values(o.bodies).reduce((a, x) => a + x.n, 0)}; });
+  const evoBases = new Set(gt3.filter(x => x.y >= last - 1 && / \+EVO/.test(x.m)).map(x => x.m.replace(/ \+EVO2?$/, ''))), shown = gt3.filter(x => x.y >= last - 1 || evoBases.has(x.m));
+  const f5 = v => +Math.exp(v).toFixed(5), ownLayouts = [...new Set(rows.filter(r => !r.sibling).map(r => r.layout))], tracks = {};
+  for (const id of ownLayouts) { const R = rows.filter(r => r.layout === id), kinds = new Set(R.map(r => kind(r.group))), T = k => g0('T:' + id) + g0(`TG:${id}|${k}`), bl = res.byGroupLayout;
+    tracks[id] = {events: new Set(R.map(r => r.eventKey)).size, cls: Object.fromEntries(['lmh', 'lmdh', 'gt3'].filter(g => kinds.has(kind(g))).map(g => ['wec-' + (g === 'gt3' ? 'lmgt3' : g), f5(classTerm(g, zOf(id, g)) + T(kind(g)))])),
+      errPct: Object.fromEntries(['lmh', 'lmdh', 'gt3'].map(g => [g, bl[g + ' @ ' + id]?.eventOutClass ?? null]).filter(([, v]) => v != null)),
+      models: kinds.has('gt') ? Object.fromEntries(shown.map(x => [slug(x.m), f5(levelOf('gt3', x.b) + mTerm(x.m, x.b, x.y, zOf(id, 'gt3')) + T('gt'))])) : {}}; }
+  const learned = {generated: res.generated, source: 'Al Kamel published timing 2021-2026 (IMSA, WEC, ELMS, Asian Le Mans Series): best dry qualifying lap of every car model. scripts/sim/learn/fit-endurance.mjs, docs/lapsim-learn.md',
+    heldOutPct: Object.fromEntries(['lmh', 'lmdh', 'gt3'].map(g => [g, {event: res.byGroup[g].eventOutClass, eventModel: res.byGroup[g].eventOut, model: res.byGroup[g].modelOut, before: res.byGroup[g].beforeClass, n: res.byGroup[g].events}])),
+    models: shown.sort((a, b) => a.m.localeCompare(b.m)).map(x => ({key: slug(x.m), name: x.m.replace(/ \+EVO(2?)$/, (_, n) => ' Evo' + n), base: x.m.replace(/ \+EVO2?$/, ''), ...(/ \+EVO/.test(x.m) ? {evo: /EVO2/.test(x.m) ? 'evo2' : 'evo'} : {}), bop: x.b === 'aco' ? 'ACO (WEC)' : 'IMSA', season: x.y, rows: x.n,
+      rel: f5(levelOf('gt3', x.b) + mTerm(x.m, x.b, x.y, 0) - classTerm('gt3', 0))})), tracks};
+  writeFileSync('worker/lapsim/learned-data.js', '// Generated by scripts/sim/learn/fit-endurance.mjs. Do not edit by hand. Lap-time factors learned from real laps (docs/lapsim-learn.md).\nexport const lapsimLearned=' + JSON.stringify(learned) + ';\n');
+  console.log('learned-data.js:', Object.keys(tracks).length, 'tracks,', learned.models.length, 'GT3 models'); console.table(learned.models.map(m => ({key: m.key, bop: m.bop, season: m.season, rows: m.rows, rel: m.rel})));
   console.log('rows', rows.length, 'events', res.events, 'layouts', res.layouts, 'models', res.models, 'params', Object.keys(full.coef).length); console.log('skipped', skipped); console.log('slow sessions', slow.map(s => s.session + ' +' + s.slowerPct + '%').join('; ')); console.table(res.byGroup); console.table(res.byGroupSeries);
 }

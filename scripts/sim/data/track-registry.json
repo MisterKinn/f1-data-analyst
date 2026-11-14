@@ -1044,7 +1044,8 @@
    ],
    "sources": [
     "alkamel:wec"
-   ]
+   ],
+   "near": "austin"
   },
   {
    "id": "austin",
@@ -1255,7 +1256,8 @@
    ],
    "sources": [
     "f1db:catalunya-3"
-   ]
+   ],
+   "near": "catalunya"
   },
   {
    "id": "catalunya-4655",
@@ -1266,7 +1268,8 @@
    ],
    "sources": [
     "f1db:catalunya-4"
-   ]
+   ],
+   "near": "catalunya"
   },
   {
    "id": "catalunya",
@@ -1292,7 +1295,8 @@
    "sources": [
     "f1db:catalunya-5",
     "alkamel:elms"
-   ]
+   ],
+   "near": "catalunya"
   },
   {
    "id": "catalunya-4730",
@@ -1303,7 +1307,8 @@
    ],
    "sources": [
     "f1db:catalunya-2"
-   ]
+   ],
+   "near": "catalunya"
   },
   {
    "id": "catalunya-4747",
@@ -1314,7 +1319,8 @@
    ],
    "sources": [
     "f1db:catalunya-1"
-   ]
+   ],
+   "near": "catalunya"
   },
   {
    "id": "clermont-ferrand-8055",
@@ -1615,7 +1621,8 @@
    ],
    "sources": [
     "f1db:imola-2"
-   ]
+   ],
+   "near": "imola"
   },
   {
    "id": "imola-5040",
@@ -2016,7 +2023,8 @@
    ],
    "sources": [
     "f1db:melbourne-1"
-   ]
+   ],
+   "near": "melbourne"
   },
   {
    "id": "mexico-city",
@@ -2136,7 +2144,8 @@
    ],
    "sources": [
     "f1db:monaco-3"
-   ]
+   ],
+   "near": "monte-carlo"
   },
   {
    "id": "monte-carlo-3312",
@@ -2147,7 +2156,8 @@
    ],
    "sources": [
     "f1db:monaco-4"
-   ]
+   ],
+   "near": "monte-carlo"
   },
   {
    "id": "monte-carlo-3328",
@@ -2158,7 +2168,8 @@
    ],
    "sources": [
     "f1db:monaco-5"
-   ]
+   ],
+   "near": "monte-carlo"
   },
   {
    "id": "monte-carlo",
@@ -2213,7 +2224,8 @@
    ],
    "sources": [
     "f1db:montreal-3"
-   ]
+   ],
+   "near": "montreal"
   },
   {
    "id": "montreal-4410",
@@ -2225,7 +2237,8 @@
    "sources": [
     "f1db:montreal-1",
     "f1db:montreal-2"
-   ]
+   ],
+   "near": "montreal"
   },
   {
    "id": "montreal-4421",
@@ -2236,7 +2249,8 @@
    ],
    "sources": [
     "f1db:montreal-5"
-   ]
+   ],
+   "near": "montreal"
   },
   {
    "id": "montreal-4450",
@@ -2259,7 +2273,8 @@
    ],
    "sources": [
     "f1db:monza-3"
-   ]
+   ],
+   "near": "monza"
   },
   {
    "id": "monza-5775",
@@ -2270,7 +2285,8 @@
    ],
    "sources": [
     "f1db:monza-4"
-   ]
+   ],
+   "near": "monza"
   },
   {
    "id": "monza-5780",
@@ -2281,7 +2297,8 @@
    ],
    "sources": [
     "f1db:monza-5"
-   ]
+   ],
+   "near": "monza"
   },
   {
    "id": "monza",
@@ -2308,7 +2325,8 @@
    ],
    "sources": [
     "f1db:monza-6"
-   ]
+   ],
+   "near": "monza"
   },
   {
    "id": "monza-6300",
@@ -2472,7 +2490,8 @@
    ],
    "sources": [
     "alkamel:elms"
-   ]
+   ],
+   "near": "paul-ricard-f1"
   },
   {
    "id": "paul-ricard-5809",
@@ -2489,7 +2508,8 @@
    ],
    "sources": [
     "f1db:paul-ricard-1"
-   ]
+   ],
+   "near": "paul-ricard-f1"
   },
   {
    "id": "paul-ricard-5821",
@@ -2501,7 +2521,8 @@
    "sources": [
     "alkamel:elms"
    ],
-   "default": true
+   "default": true,
+   "near": "paul-ricard-f1"
   },
   {
    "id": "paul-ricard-f1",
@@ -2937,7 +2958,8 @@
    ],
    "sources": [
     "f1db:spa-francorchamps-2"
-   ]
+   ],
+   "near": "spa-francorchamps"
   },
   {
    "id": "spa-francorchamps-6976",
@@ -2948,7 +2970,8 @@
    ],
    "sources": [
     "f1db:spa-francorchamps-3"
-   ]
+   ],
+   "near": "spa-francorchamps"
   },
   {
    "id": "spa-francorchamps",
@@ -3043,7 +3066,8 @@
    ],
    "sources": [
     "f1db:suzuka-1"
-   ]
+   ],
+   "near": "suzuka"
   },
   {
    "id": "valencia-5419",
@@ -3094,7 +3118,8 @@
    "sources": [
     "f1db:watkins-glen-2",
     "f1db:watkins-glen-3"
-   ]
+   ],
+   "near": "watkins-glen"
   },
   {
    "id": "watkins-glen",
@@ -3172,7 +3197,8 @@
    ],
    "sources": [
     "f1db:zandvoort-1"
-   ]
+   ],
+   "near": "zandvoort"
   },
   {
    "id": "zandvoort-4226",
@@ -3184,7 +3210,8 @@
    "sources": [
     "f1db:zandvoort-2",
     "f1db:zandvoort-3"
-   ]
+   ],
+   "near": "zandvoort"
   },
   {
    "id": "zandvoort-4252",
@@ -3195,7 +3222,8 @@
    ],
    "sources": [
     "f1db:zandvoort-4"
-   ]
+   ],
+   "near": "zandvoort"
   },
   {
    "id": "zandvoort",

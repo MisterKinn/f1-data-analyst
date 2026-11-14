@@ -9,12 +9,14 @@ export const SERIES_CARS = {'imsa-gtp': ['imsa', 'gtp', 'wec-lmdh'], 'imsa-gtdpr
   'igtc-gt3': ['igtc', 'gt3', 'wec-lmgt3'], 'nur-gt3': ['nur', 'gt3', 'wec-lmgt3'], 'macau-gt3': ['macau', 'gt3', 'wec-lmgt3']};
 import {lapsimCalibration} from './calibration-data.js';
 import {lapsimExtraTracks} from './tracks-data.js';
+import {lapsimLearned} from './learned-data.js';
 import {lapsimTrackChanges} from './track-changes-data.js';
 import {lapsimChangeEffects} from './change-effects-data.js';
 import {TUM_2019, PRIOR, applyRules, applyDevelopment} from './cars.js';
 import {SERIES} from './series.js';
 
-export const CAR_ORDER = ['base2019', '2025', '2026', '2027', '2028', 'wec-lmh', 'wec-lmdh', 'wec-lmgt3'];
+// GT3 is shown per car model (base model + Evo tick box); F1, LMH and LMDh are shown per regulation (owner rule, 2026-11-14)
+export const CAR_ORDER = ['base2019', '2025', '2026', '2027', '2028', 'wec-lmh', 'wec-lmdh', 'wec-lmgt3', ...(lapsimLearned?.models || []).map(m => m.key)];
 
 // grip: the per-track factor fitted with that season's car (absorbs asphalt and line differences)
 export function carsFor(id) {
@@ -58,6 +60,15 @@ export function carsFor(id) {
     const real = p?.sectors || (t.position === 1 ? t.realSectors : null); return real ? {real, weather: t.weather, ref: '2026'} : null; };
   if (out[2026].kind === 'calibrated' && fix(t26, 2026)) for (const y of [2026, 2027, 2028]) out[y].fix = fix(t26, 2026);
   if (out[2025].kind === 'calibrated' && fix(t25, 2025)) out[2025].fix = {...fix(t25, 2025), ref: '2025'};
+  // Learned from real laps (docs/lapsim-learn.md): a lap-time factor on the class car with no track factor.
+  // Class cars take it only where their own calibration has no value for this track; GT3 model cars always (elsewhere: the
+  // LMGT3 class car of this track times the model's gap to the fastest model).
+  const L = lapsimLearned?.tracks?.[id], H = lapsimLearned?.heldOutPct || {};
+  for (const cls of Object.keys(SERIES.wec.classes)) { const k = 'wec-' + cls, c = out[k], own = Object.values(lapsimCalibration?.series?.wec?.[cls] || {}).some(se => se.tracks?.[id]);
+    if (L?.cls?.[k] && c.kind === 'calibrated' && !own) Object.assign(c, {grip: 1, timeScale: L.cls[k], learned: {pct: L.errPct?.[cls === 'lmgt3' ? 'gt3' : cls] ?? H[cls === 'lmgt3' ? 'gt3' : cls]?.event ?? null, events: L.events}}); }
+  const g3 = out['wec-lmgt3'];
+  if (g3?.kind === 'calibrated') for (const m of lapsimLearned?.models || []) out[m.key] = {car: g3.car, grip: L?.models?.[m.key] ? 1 : g3.grip, timeScale: L?.models?.[m.key] ?? (g3.timeScale || 1) * m.rel, kind: 'learned', year: m.season, series: 'gt3', cls: 'gt3',
+    base: m.base, ...(m.evo ? {evo: m.evo} : {}), label: `${m.name} · ${m.bop} BoP`, learned: {pct: L?.models?.[m.key] ? Math.max(H.gt3?.eventModel ?? 0, L.errPct?.gt3 ?? 0) : null, events: L?.events ?? 0, model: true}};
   // Extra circuit: a car that has a real qualifying lap here reproduces it (lap-level correction, as for the series cars)
   for (const [k, r] of Object.entries(lapsimExtraTracks[id]?.realLaps || {})) if (out[k] && !out[k].fix) out[k].fix = {lap: r.lap, weather: r.weather || {}, ref: k, session: r.event};
   for (const c of Object.values(out)) c.unc = uncertainty(c, id);
@@ -72,6 +83,9 @@ export function uncertainty(c, id) {
   const cal = lapsimCalibration || {};
   if (c.kind === 'base' || c.kind === 'prior') return {pct: null, confidence: 'not-fitted'};
   if (c.kind === 'proxy') return {pct: null, confidence: c.fix ? 'reproduced' : 'provisional'};
+  if (c.learned) { // error of the learning step with this event hidden; a GT3 model on a track with no endurance lap: class error and model error together
+    const base = c.learned.pct ?? (c.learned.model ? Math.hypot(cal.series?.wec?.lmgt3?.[Object.keys(cal.series?.wec?.lmgt3 || {}).sort().at(-1)]?.holdout?.rmsPct ?? 2, lapsimLearned.heldOutPct?.gt3?.model ?? 1) : null);
+    return base == null ? {pct: null, confidence: 'low'} : {pct: Math.round(base * 100) / 100, confidence: base > 3 ? 'very-low' : base > 1 ? 'low' : 'medium', basis: 'holdout', holdoutPct: base}; }
   const season = c.series ? cal.series?.[c.series]?.[c.cls]?.[c.year] : c.kind === 'projected' ? cal.seasons?.[2026] : cal.seasons?.[c.year];
   if (!season) return {pct: null, confidence: 'low'};
   const errs = Object.values(season.tracks || {}).filter(t => t.realLap > 0).map(t => t.errorSec / t.realLap * 100);
