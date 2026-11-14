@@ -13,7 +13,7 @@ export const calendarSources = {
  elms:'https://www.europeanlemansseries.com/en/page/elms-home',
  alms:'https://www.asianlemansseries.com/en/news/maximum-47-car-grid-for-2026-27-asian-le-mans-series-in-europe/13834',
  'gtwc-europe':'https://gt-world-challenge-europe.com/calendar',
- 'gtwc-asia':'https://www.gt-world-challenge-asia.com/entry-lists',
+ 'gtwc-asia':'https://www.gt-world-challenge-asia.com/calendar',
  'gtwc-america':'https://www.gt-world-challenge-america.com/calendar',
  'gtwc-australia':'https://www.gt-world-challenge-australia.com/calendar',
  wrc:'https://www.wrc.com/en/calendar/wrc-2026',

@@ -97,6 +97,8 @@ export function parseTimetableText(html){
  const rows=[];let date=null;
  for(let i=0;i<lines.length;i++){
   const line=lines[i],time=TIME.exec(line);
+  // SRO timetable tables read as "Session / Local Time / GMT": the title sits before two bare times.
+  if(time&&date&&!time[3]&&!time[5]&&i>0&&TIME.test(lines[i+1]||'')&&!TIME.test(lines[i-1])){rows.push({...date,from:clock(time[1],time[2]),to:null,title:lines[i-1]});i++;continue;}
   if(time){if(!date)continue;const title=(time[5]||lines[i+1]||'').replace(/^[•·]\s*/,'').trim();if(title&&!TIME.test(title))rows.push({...date,from:clock(time[1],time[2]),to:clock(time[3],time[4]),title});continue;}
   if(line.length>40)continue;
   const numeric=/^20\d\d[.\/-](\d{1,2})[.\/-](\d{1,2})$/.exec(line),named=/(\d{1,2})\s+([A-Za-z]+)/.exec(line),reversed=/([A-Za-z]+)\s+(\d{1,2})\b/.exec(line);
@@ -129,24 +131,38 @@ export function eventSessions(rows,event){
  }
  return sessions.sort((a,b)=>Date.parse(a.start)-Date.parse(b.start));
 }
-export async function loadEventSessions(series,allowed,now,events=calendarEvents,get=getText){
+// One organiser page -> a function that gives the sessions falling inside a given event.
+async function pageReader(page,hosts,get){
+ const body=await get(page,hosts);
+ if(/^\s*[\[{]/.test(body)){const rows=parseTimetableJson(body);return event=>eventSessions(rows,event);}
+ const href=/href=["']([^"']*\/race\/calendar\/\d+|[^"']+\.ics(?:\?[^"']*)?)["']/i.exec(body)?.[1],file=href?new URL(href,page):null;
+ if(file&&hosts.has(file.hostname)){const rows=parseICalendar(await get(file.href,hosts)).filter(r=>stamp(r.startDate)).sort((a,b)=>Date.parse(a.startDate)-Date.parse(b.startDate));
+  return event=>rows.filter(r=>day(r.startDate)>=shift(event.start,-1)&&day(r.startDate)<=shift(event.end,1)).map(r=>({...sessionLabel(r.name),start:r.startDate,...(stamp(r.endDate)?{end:r.endDate}:{})}));}
+ const rows=parseTimetableText(body);return event=>eventSessions(rows,event);
+}
+// Event pages linked from the season page (ACO /race/<slug>, SRO /event/<id>/<slug>, ...), same host only.
+export function eventPageLinks(html,base,allowed,limit=12){
+ const found=new Set();
+ for(const [,href] of html.matchAll(/href=["']([^"'#?]*\/(?:race|races|event|events)\/[^"'#?]+)["']/gi)){
+  try{const url=new URL(href,base);if(url.protocol==='https:'&&allowed.has(url.hostname)&&!/\/calendar(?:\/|$)/.test(url.pathname))found.add(url.href);}catch{}
+  if(found.size>=limit)break;
+ }
+ return [...found];
+}
+export async function loadEventSessions(series,allowed,now,events=calendarEvents,get=getText,seasonHtml=''){
  const today=day(new Date(now).toISOString()),horizon=shift(today,21),records=[];
- const due=events.filter(e=>e.series===series&&(e.sessionsUrl||(e.url&&e.url!==calendarSources[series]))&&e.end>=today&&e.start<=horizon).slice(0,2);
+ const due=events.filter(e=>e.series===series&&e.end>=today&&e.start<=horizon).slice(0,2);if(!due.length)return records;
+ // Read every linked event page once, and only when an event near enough has no page of its own that works.
+ let pool;const discovered=()=>pool??=Promise.all(eventPageLinks(seasonHtml,calendarSources[series],allowed).map(page=>pageReader(page,allowed,get).catch(()=>null)));
  for(const event of due){
+  let sessions=[];
   try{
    // sessionsUrl is checked in with the event, so its host is trusted like the season source.
-   const page=event.sessionsUrl||event.url,hosts=event.sessionsUrl?new Set([...allowed,new URL(page).hostname]):allowed;
-   if(!hosts.has(new URL(page).hostname))continue;
-   const body=await get(page,hosts);let sessions;
-   if(/^\s*[\[{]/.test(body))sessions=eventSessions(parseTimetableJson(body),event);
-   else{
-    const href=/href=["']([^"']*\/race\/calendar\/\d+|[^"']+\.ics(?:\?[^"']*)?)["']/i.exec(body)?.[1],file=href?new URL(href,page):null;
-    if(file&&hosts.has(file.hostname))sessions=parseICalendar(await get(file.href,hosts)).filter(r=>stamp(r.startDate)&&day(r.startDate)>=shift(event.start,-1)&&day(r.startDate)<=shift(event.end,1)).sort((a,b)=>Date.parse(a.startDate)-Date.parse(b.startDate)).map(r=>({...sessionLabel(r.name),start:r.startDate,...(stamp(r.endDate)?{end:r.endDate}:{})}));
-    else sessions=eventSessions(parseTimetableText(body),event);
-   }
-   if(sessions.length<2)continue;
-   records.push({name:event.nameEn||event.name,startDate:event.start,endDate:event.end,sessions});
+   const page=event.sessionsUrl||(event.url!==calendarSources[series]?event.url:null),hosts=event.sessionsUrl?new Set([...allowed,new URL(page).hostname]):allowed;
+   if(page&&hosts.has(new URL(page).hostname))sessions=(await pageReader(page,hosts,get))(event);
   }catch{}
+  if(sessions.length<2)for(const reader of await discovered()){const found=reader?reader(event):[];if(found.length>=2){sessions=found;break;}}
+  if(sessions.length>=2)records.push({name:event.nameEn||event.name,startDate:event.start,endDate:event.end,sessions});
  }
  return records;
 }
@@ -155,10 +171,11 @@ async function loadSource(series,now){
  if(series==='f1'){source='https://raw.githubusercontent.com/theOehrly/f1schedule/master/schedule_'+new Date(now).getUTCFullYear()+'.json';records=parseFastF1Schedule(JSON.parse(await getText(source,new Set(['raw.githubusercontent.com']))));}
  else{const allowed=new Set([new URL(url).hostname]);records=[];
   // A season page without structured data must not stop the per-event session files.
-  try{const text=await getText(url,allowed);records=text.includes('BEGIN:VCALENDAR')?parseICalendar(text):parseJsonLdEvents(text);
+  let season='';
+  try{const text=season=await getText(url,allowed);records=text.includes('BEGIN:VCALENDAR')?parseICalendar(text):parseJsonLdEvents(text);
    if(!records.length){const links=[...text.matchAll(/href=["']([^"']+\.ics(?:\?[^"']*)?)["']/gi)].slice(0,2);for(const [,href]of links){const next=new URL(href,url);if(allowed.has(next.hostname))records.push(...parseICalendar(await getText(next.href,allowed)));}}
   }catch{}
-  records.push(...await loadEventSessions(series,allowed,now));
+  records.push(...await loadEventSessions(series,allowed,now,calendarEvents,getText,season));
  }
  const events=normalizeOfficialEvents(records,series,source,calendarEvents,now);if(!events.length)throw Error('No verifiable structured schedule found');return {events,checkedAt:now,source,provider:series==='f1'?'FastF1 schedule backend':'Official organizer'};
 }
