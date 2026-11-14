@@ -10,6 +10,7 @@ export const SERIES_CARS = {'imsa-gtp': ['imsa', 'gtp', 'wec-lmdh'], 'imsa-gtdpr
 import {lapsimCalibration} from './calibration-data.js';
 import {lapsimExtraTracks} from './tracks-data.js';
 import {lapsimLearned} from './learned-data.js';
+import {lapsimRaceRecords} from './race-records-data.js';
 import {lapsimTrackChanges} from './track-changes-data.js';
 import {lapsimChangeEffects} from './change-effects-data.js';
 import {TUM_2019, PRIOR, applyRules, applyDevelopment} from './cars.js';
@@ -69,6 +70,12 @@ export function carsFor(id) {
   const g3 = out['wec-lmgt3'];
   if (g3?.kind === 'calibrated') for (const m of lapsimLearned?.models || []) out[m.key] = {car: g3.car, grip: L?.models?.[m.key] ? 1 : g3.grip, timeScale: L?.models?.[m.key] ?? (g3.timeScale || 1) * m.rel, kind: 'learned', year: m.season, series: 'gt3', cls: 'gt3',
     base: m.base, ...(m.evo ? {evo: m.evo} : {}), label: `${m.name} · ${m.bop} BoP`, learned: {pct: L?.models?.[m.key] ? Math.max(H.gt3?.eventModel ?? 0, L.errPct?.gt3 ?? 0) : null, events: L?.events ?? 0, model: true}};
+  // A car that raced here reproduces its real lap exactly (owner rule 2026-11-14, as F1 does): GT3 car models their own lap, class
+  // cars the class-best of their latest season here (Al Kamel, every series), where nothing above already gives a correction.
+  // The fastest real lap of that car on this track wins over a slower stored one (a newer season's pole is not always the fastest).
+  const fixLap = f => f ? f.lap ?? f.real?.reduce((a, b) => a + b, 0) : Infinity;
+  for (const [k, r] of Object.entries({...(L?.classReal || {}), ...(L?.real || {})})) if (out[k] && r.lap < fixLap(out[k].fix) - 5e-4)
+    out[k].fix = {lap: r.lap, weather: r.weather || {}, ref: k, session: `${r.series.toUpperCase()} ${r.year} ${r.event}${r.type === 'Q' ? '' : r.type === 'R' ? ' (race)' : ' (practice/test)'}`, year: r.year, model: r.model, entry: r.entry, type: r.type};
   // Extra circuit: a car that has a real qualifying lap here reproduces it (lap-level correction, as for the series cars)
   for (const [k, r] of Object.entries(lapsimExtraTracks[id]?.realLaps || {})) if (out[k] && !out[k].fix) out[k].fix = {lap: r.lap, weather: r.weather || {}, ref: k, session: r.event};
   for (const c of Object.values(out)) c.unc = uncertainty(c, id);
@@ -117,8 +124,21 @@ export function realConditions(id) {
     const ys = lapsimSeriesPoles?.[ser]?.[id] || {}, y = Object.keys(ys).filter(k => ys[k][cls]).sort().at(-1), p = y && ys[y][cls];
     if (p) out[key] = {...Object.fromEntries(Object.entries(p.weather || {}).filter(([, v]) => Number.isFinite(v))), realLap: p.lap, year: Number(y), event: p.session, car: p.car, manufacturer: p.make, position: 1, source: 'timing71'};
   }
+  // A car that reproduces a learned real lap (carsFor: the fastest real lap of that car here) shows that session's conditions, so the
+  // lap shown is exactly the real one (docs/lapsim-learn.md, rule 9).
+  for (const [k, c] of Object.entries(carsFor(id))) if (c.series && c.fix?.year && c.fix.lap != null)
+    out[k] = {...c.fix.weather, realLap: c.fix.lap, year: c.fix.year, event: c.fix.session, car: c.fix.entry, manufacturer: c.fix.model, position: 1, source: 'Al Kamel'};
   // extra circuits: the real lap of each car that raced here (docs/lapsim-tracks-extra.md)
   for (const [k, r] of Object.entries(lapsimExtraTracks[id]?.realLaps || {})) if (!out[k]) out[k] = {...r.weather, realLap: r.lap, year: r.year, event: r.event, car: r.car, manufacturer: r.manufacturer, position: 1, source: r.source};
+  return out;
+}
+
+// Fastest real RACE lap of each car on this track (owner rule 2026-11-14): F1 cars = that season's race (f1db),
+// WEC/GT3 cars = the fastest dry race lap of that car (class or model) in any season here (Al Kamel). Null = never raced here.
+export function raceRecords(id) {
+  const out = {}, f = lapsimRaceRecords?.f1?.[id] || {};
+  for (const y of ['2025', '2026']) if (f[y]) out[y] = {lap: f[y].lap, year: +y, who: `${f[y].driver} (${f[y].team})`, event: f[y].race, lapNumber: f[y].lapNumber, source: 'f1db'};
+  for (const [k, r] of Object.entries(lapsimLearned?.tracks?.[id]?.raceReal || {})) out[k] = {lap: r.lap, year: r.year, who: `#${r.entry} ${r.model}`, event: `${r.series.toUpperCase()} ${r.year} ${r.event}`, source: 'Al Kamel'};
   return out;
 }
 

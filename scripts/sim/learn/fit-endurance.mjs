@@ -42,19 +42,28 @@ const prodGrip = (simId, group, season) => { const s = WEC[CAR[group]]; return [
 export function loadRows(file) {
   const [head, ...lines] = (file.endsWith('.gz') ? gunzipSync(readFileSync(file)).toString() : readFileSync(file, 'utf8')).trim().split('\n'), cols = head.split(','), best = new Map(), skipped = {};
   const split = l => { const o = []; let f = '', q = false; for (const c of l) { if (c === '"') q = !q; else if (c === ',' && !q) { o.push(f); f = ''; } else f += c; } o.push(f); return o; };
-  for (const l of lines) { const a = split(l), r = Object.fromEntries(cols.map((c, i) => [c, a[i]])); if (r.type !== 'Q') continue;
+  // records: the FASTEST real lap of every car model and of every class on every layout, any season, any dry session (owner rule
+  // 2026-11-14: a car + track combination that really ran shows its fastest real lap). Race laps are kept apart (fastest race lap).
+  const records = new Map(), keep = (k, o) => { const p = records.get(k); if (!p || o.real < p.real) records.set(k, o); };
+  for (const l of lines) { const a = split(l), r = Object.fromEntries(cols.map((c, i) => [c, a[i]]));
+    if (r.type !== 'Q') { if (!['P', 'R'].includes(r.type) || +r.rainShare > 0.02) continue; r.season = +r.season; r.model = modelOf(r.vehicle, r.season, r.cls); const g = groupOf(r); if (!g) continue;
+      const num = v => v === '' ? null : +v, tr = resolveTrack({name: r.event, lengthKm: num(r.lenKm), season: r.season}); if (!tr.sim) continue;
+      const o = {series: r.series, season: r.season, event: r.event, layout: tr.layout, group: g, model: r.model.key, entry: r.entry, real: +r.best, type: r.type, session: r.session,
+        w: {airC: num(r.airC), trackC: num(r.trackC) != null && num(r.airC) != null && num(r.trackC) > num(r.airC) + 35 ? null : num(r.trackC), hum: num(r.hum), hpa: num(r.hpa)}};
+      for (const k of [`${tr.layout}|m|${o.model}`, `${tr.layout}|c|${g}`]) { keep(k, o); if (r.type === 'R') keep(k + '|race', o); } continue; }
     r.season = +r.season; r.best = +r.best; r.model = modelOf(r.vehicle, r.season, r.cls); const group = groupOf(r); if (!group) continue;
     const num = v => v === '' ? null : +v, w = {airC: num(r.airC), trackC: num(r.trackC), hum: num(r.hum), hpa: num(r.hpa)}; if (w.trackC != null && w.airC != null && w.trackC > w.airC + 35) w.trackC = null; // IMSA 2021 track temperatures are not usable
     const wet = +r.rainShare > 0.02, tr = resolveTrack({name: r.event, lengthKm: num(r.lenKm), season: r.season}), why = wet ? 'wet qualifying' : !tr.layout ? 'layout not resolved' : !(tr.sim || tr.near) ? 'no simulator geometry: ' + tr.layout : null; // a ⚠️ track is learned too: its layout term absorbs the geometry error and the held-out error decides the mark
     if (why) { skipped[why] = (skipped[why] || 0) + 1; continue; }
     const k = [r.series, r.season, r.event, group, r.model.key].join('|'), o = best.get(k);
     if (!o || r.best < o.real) best.set(k, {series: r.series, season: r.season, event: r.event, layout: tr.layout, sim: tr.sim || tr.near, sibling: !tr.sim, group, model: r.model.key, entry: r.entry, real: r.best, trap: num(r.trapKph), w, eventKey: [r.series, r.season, r.event].join('|')});
+    if (tr.sim) { const o = {series: r.series, season: r.season, event: r.event, layout: tr.layout, group, model: r.model.key, entry: r.entry, real: r.best, type: 'Q', session: r.session, w}; keep(`${tr.layout}|m|${o.model}`, o); keep(`${tr.layout}|c|${group}`, o); }
   }
   const rows = [...best.values()]; for (const r of rows) { r.sim0 = simLap(r.sim, r.group, r.season, r.w); r.y = Math.log(r.real / r.sim0); r.prod = simLap(r.sim, r.group, r.season, r.w, prodGrip(r.sim, r.group, r.season), true); }
   const zStat = {};
   // z: how fast the layout is (class car mean speed, standard weather), standardised per group
   for (const g of new Set(rows.map(r => r.group))) { const R = rows.filter(r => r.group === g), v = r => Math.log(ALL[r.sim].length / simLap(r.sim, g, 2026, {})), m = R.reduce((a, r) => a + v(r), 0) / R.length, sd = Math.sqrt(R.reduce((a, r) => a + (v(r) - m) ** 2, 0) / R.length) || 1; for (const r of R) r.z = (v(r) - m) / sd; zStat[g] = {m, sd}; }
-  return {rows, skipped, zStat};
+  return {rows, skipped, zStat, records};
 }
 const kind = g => g === 'gt3' ? 'gt' : 'proto';
 const terms = r => [['S', r.group + '|' + r.series + '|' + r.season, 1], ['T', r.layout, 1], ['TG', r.layout + '|' + kind(r.group), 1], ['M', r.model, 1], ['MB', r.model + '|' + body(r.series), 1], ['MY', r.model + '|' + body(r.series) + '|' + r.season, 1], ['B', r.model, r.z]];
@@ -118,6 +127,15 @@ if (process.argv[1]?.endsWith('fit-endurance.mjs')) {
     tracks[id] = {events: new Set(R.map(r => r.eventKey)).size, cls: Object.fromEntries(['lmh', 'lmdh', 'gt3'].filter(g => kinds.has(kind(g))).map(g => ['wec-' + (g === 'gt3' ? 'lmgt3' : g), f5(classTerm(g, zOf(id, g)) + T(kind(g)))])),
       errPct: Object.fromEntries(['lmh', 'lmdh', 'gt3'].map(g => [g, bl[g + ' @ ' + id]?.eventOutClass ?? null]).filter(([, v]) => v != null)),
       models: kinds.has('gt') ? Object.fromEntries(shown.map(x => [slug(x.m), f5(levelOf('gt3', x.b) + mTerm(x.m, x.b, x.y, zOf(id, 'gt3')) + T('gt'))])) : {}}; }
+  // Real laps to REPRODUCE (owner rule 2026-11-14: a car that raced on a track shows its real lap exactly, as F1 does):
+  // per layout, each car model's best dry qualifying lap of its latest season there, and each class's best of its latest season.
+  // Only dry rows that were not set aside as wet or disrupted. Weather = that session's mean.
+  const realOf = r => ({lap: r.real, year: r.season, series: r.series, event: r.event, session: r.session, type: r.type, entry: r.entry, model: r.model,
+    weather: Object.fromEntries(Object.entries({airTempC: r.w.airC, trackTempC: r.w.trackC, humidityPct: r.w.hum, pressureHpa: r.w.hpa}).filter(([, v]) => Number.isFinite(v)).map(([k, v]) => [k, +v.toFixed(2)]))});
+  const rec = loaded.records, only = (pre, keys) => Object.fromEntries(keys.map(([k, key]) => [k, rec.get(pre + key)]).filter(([, v]) => v).map(([k, v]) => [k, realOf(v)]));
+  for (const id of ownLayouts) { const t = tracks[id]; if (!t) continue;
+    t.real = only(id + '|m|', shown.map(x => [slug(x.m), x.m])); t.classReal = only(id + '|c|', ['lmh', 'lmdh', 'gt3'].map(g => ['wec-' + (g === 'gt3' ? 'lmgt3' : g), g]));
+    t.raceReal = {...only(id + '|m|', shown.map(x => [slug(x.m), x.m + '|race'])), ...only(id + '|c|', ['lmh', 'lmdh', 'gt3'].map(g => ['wec-' + (g === 'gt3' ? 'lmgt3' : g), g + '|race']))}; }
   const learned = {generated: res.generated, source: 'Al Kamel published timing 2021-2026 (IMSA, WEC, ELMS, Asian Le Mans Series): best dry qualifying lap of every car model. scripts/sim/learn/fit-endurance.mjs, docs/lapsim-learn.md',
     heldOutPct: Object.fromEntries(['lmh', 'lmdh', 'gt3'].map(g => [g, {event: res.byGroup[g].eventOutClass, eventModel: res.byGroup[g].eventOut, model: res.byGroup[g].modelOut, before: res.byGroup[g].beforeClass, n: res.byGroup[g].events}])),
     models: shown.sort((a, b) => a.m.localeCompare(b.m)).map(x => ({key: slug(x.m), name: x.m.replace(/ \+EVO(2?)$/, (_, n) => ' Evo' + n), base: x.m.replace(/ \+EVO2?$/, ''), ...(/ \+EVO/.test(x.m) ? {evo: /EVO2/.test(x.m) ? 'evo2' : 'evo'} : {}), bop: x.b === 'aco' ? 'ACO (WEC)' : 'IMSA', season: x.y, rows: x.n,

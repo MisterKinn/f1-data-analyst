@@ -23,12 +23,14 @@ Read `docs/lapsim-learn.md` first and follow it together with `docs/lapsim-physi
 6. Check the data before the physics: weather units, wet sessions without a rain mark, layout changes, map outlines that do not close. The cases found so far are listed in `docs/lapsim-learn.md` section 2.
 7. Outside programs (MATLAB, the Python tools of the M17 power-unit project) may be used. An unfinished or inaccurate tool must never make a working feature worse.
 8. Use the engineering skills and the Karpathy guidelines: goal and pass check first, smallest change, verify before saying done.
+9. A car + track combination that really ran must show its FASTEST real lap exactly (0.000 %), in every category: F1, LMH, LMDh, LMGT3, every GT3 model and Evo kit, Formula E (Gen3, Gen3 Evo, Gen4 once raced), every series. Fastest over every season and every dry session; the page names the session and uses its conditions. The fastest real race lap of that car on that track is shown too. Test: `tests/lapsim-learn.test.mjs`.
+10. Use the Wolfram tools (Wolfram|Alpha, Wolfram Language) for unit conversions, physics checks and arithmetic that a result depends on.
 
 Sources learned so far or to be learned (the full table with the state of each is `docs/lapsim-learn.md` section 6; add every new source there and here):
 
 - Al Kamel Systems result sites, index: https://alkamelsystems.com/live-results/ — FIA WEC http://fiawec.alkamelsystems.com/ · IMSA https://imsa.results.alkamelcloud.com/ · ELMS http://elms.alkamelsystems.com/ · Asian Le Mans Series http://alms.alkamelsystems.com/ · Formula E https://results.fiaformulae.com/ · Michelin Le Mans Cup https://lemanscup.alkamelsystems.com/ · SRO/USAC live timing https://livetiming.alkamelsystems.com/usac_sro
 - Al Kamel CSV archive and IMSA analysis skill: https://github.com/tobi/imsa_data · https://mcpmarket.com/tools/skills/imsa-data-analyst
-- F1: https://f1archive.org/ · https://github.com/f1db/f1db · https://github.com/TracingInsights · https://openf1.org/
+- F1: https://f1archive.org/ · https://github.com/f1db/f1db (circuits, layouts, fastest race laps) · https://github.com/TracingInsights · https://openf1.org/
 - WEC and sportscars: https://www.openwec.com/explore · https://github.com/Hanspeter007/wec-data
 - GT3: https://51gt3.com/en/track
 - Timing71: https://github.com/timing71/livetiming-core · https://archive.timing71.org/

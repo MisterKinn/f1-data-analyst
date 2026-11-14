@@ -5,7 +5,7 @@ import {lapsimAllTracks as lapsimTracks} from './lapsim/tracks.js';
 import {lapsimCalibration} from './lapsim/calibration-data.js';
 import {RULE_CHANGES} from './lapsim/cars.js';
 import {SERIES} from './lapsim/series.js';
-import {carsFor as scenarioCars, realConditions, latestChanges, fittedYear, CAR_ORDER} from './lapsim/scenario.js';
+import {carsFor as scenarioCars, realConditions, latestChanges, fittedYear, CAR_ORDER, raceRecords} from './lapsim/scenario.js';
 import {TRACK_NAMES as NAMES} from './lapsim/names.js';
 import {energyLimit} from './lapsim/energy-limits.js';
 import {lapsimRace} from './lapsim/race-data.js';
@@ -36,7 +36,7 @@ const T = {
     lead: '실제 예선 랩으로 보정한 물리 모델이 지금의 트랙 형상, 예선 날씨, FIA가 공지한 서킷 변경 사항을 반영해 랩타임과 속도를 계산합니다.',
     track: '트랙', series: '시리즈', car: '규정 · 클래스', evoNone: '이 차는 Evo 데이터가 없습니다', eventFor: '이 차의 대회: {n} ({a} – {b}) · 세션 날씨: {y} 시즌', compare: '비교', soonShort: '준비 중',
     seriesNames: {f1: 'F1', wec: 'WEC', imsa: 'IMSA GTP', fe: '포뮬러 E', gt3: 'GT3 (차종별)'}, none: '없음', conditions: '조건', real: '실제 예선 조건', manual: '직접 설정',
-    lap: '계산된 랩타임', vsPole: '실제 폴', realLap: '실제 랩', wecBest: '실제 예선·하이퍼폴 최고', errRange: '오차 범위(1σ)', conf: {medium: '신뢰도 보통', low: '신뢰도 낮음', 'very-low': '신뢰도 매우 낮음', 'not-fitted': '실측 보정 전'},
+    lap: '계산된 랩타임', vsPole: '실제 폴', realLap: '실제 랩', wecBest: '실제 최고 랩', raceBest: '실제 레이스 최고 랩', errRange: '오차 범위(1σ)', conf: {medium: '신뢰도 보통', low: '신뢰도 낮음', 'very-low': '신뢰도 매우 낮음', 'not-fitted': '실측 보정 전'},
     soon: '준비 중: 기타 GT3(IMSA GTD·DTM·SP9), 포뮬러 E Gen4. 같은 보정 규칙을 쓰며 데이터 연결 후 추가됩니다.', sector: '섹터', vmax: '최고 속도', vmin: '최저 속도', energy: '배치 에너지', clip: '배치 상한 속도',
     map: '속도로 칠한 주행 라인', slow: '느림', fast: '빠름', trace: '거리별 속도', km: '거리 (km)',
     air: '공기', airTemp: '기온', trackTemp: '노면 온도', humidity: '습도', pressure: '기압', wind: '풍속', windFrom: '바람 방향',
@@ -68,7 +68,7 @@ const T = {
     lead: 'A physics model calibrated on real qualifying laps works out lap time and speed on today’s track layout, with qualifying weather and the circuit changes the FIA has announced.',
     track: 'Track', series: 'Series', car: 'Rules · class', evoNone: 'No Evo data for this car', eventFor: 'Event for this car: {n} ({a} – {b}) · session weather: {y} season', compare: 'Compare', soonShort: 'coming soon',
     seriesNames: {f1: 'F1', wec: 'WEC', imsa: 'IMSA GTP', fe: 'Formula E', gt3: 'GT3 (by car model)'}, none: 'None', conditions: 'Conditions', real: 'Real qualifying conditions', manual: 'Set my own',
-    lap: 'Simulated lap time', vsPole: 'Real pole', realLap: 'Real lap', wecBest: 'Real qualifying/Hyperpole best', errRange: 'Error range (1σ)', conf: {medium: 'medium confidence', low: 'low confidence', 'very-low': 'very low confidence', 'not-fitted': 'not fitted to real laps'},
+    lap: 'Simulated lap time', vsPole: 'Real pole', realLap: 'Real lap', wecBest: 'Real best lap', raceBest: 'Real fastest race lap', errRange: 'Error range (1σ)', conf: {medium: 'medium confidence', low: 'low confidence', 'very-low': 'very low confidence', 'not-fitted': 'not fitted to real laps'},
     soon: 'Coming soon: other GT3 (IMSA GTD, DTM, SP9) and Formula E Gen4. They use the same calibration rules and are added once their data is connected.', sector: 'Sector', vmax: 'Top speed', vmin: 'Lowest speed', energy: 'Energy deployed', clip: 'Deploy cut-off',
     map: 'Racing line coloured by speed', slow: 'Slow', fast: 'Fast', trace: 'Speed over distance', km: 'Distance (km)',
     air: 'Air', airTemp: 'Air temperature', trackTemp: 'Track temperature', humidity: 'Humidity', pressure: 'Pressure', wind: 'Wind speed', windFrom: 'Wind from',
@@ -178,7 +178,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
   const events = Object.fromEntries(CAR_ORDER.filter(k => cars[k]).map(k => [k, carEvent(id, k, cars[k], conds)]).filter(([, e]) => e)
     .map(([k, e]) => [k, t.eventFor.replace('{n}', lang === 'en' ? e.nameEn : e.name).replace('{a}', e.start).replace('{b}', e.end).replace('{y}', e.weatherYear)]));
   const changes = latestChanges(id);
-  const data = {lang, t, id, track: td, cars, carOrder: CAR_ORDER, carId, evoOf, events, conds, changes, energy: (liveEnergy && (query.track || 'monza') === id ? liveEnergy : energyLimit(id, 2026)),
+  const data = {lang, t, id, track: td, cars, carOrder: CAR_ORDER, carId, evoOf, events, conds, raceRec: raceRecords(id), changes, energy: (liveEnergy && (query.track || 'monza') === id ? liveEnergy : energyLimit(id, 2026)),
     compounds: lapsimCompounds?.[id] || {}, wecTyres: lapsimWecTyres?.[id] || {}, line: lineData(id), lineText: LT[lang], qsplit: lapsimQsplit ? {off: lapsimQsplit.offsetPct, test: lapsimQsplit.test, real: lapsimQsplit.tracks?.[id] || null} : null, brakes: lapsimBrakes ? {ramp: lapsimBrakes.rampS ?? 0, k: lapsimBrakes.pedalKgPerG, g: lapsimBrakes.gScale, t: lapsimBrakes.timeScale, test: lapsimBrakes.test, real: lapsimBrakes.races?.[id] || null, text: BT[lang]} : null, compoundGap: compoundGap(id), compoundTest: lapsimCompoundGap?.test?.rmsPct ?? null,
     evo: Object.fromEntries(['f1', 'wec'].map(se => [se, Object.fromEntries(['practice', 'qualifying'].map(ty => [ty, evolutionCoeffs(se, id, ty)]))])),
     calibration: {generatedAt: lapsimCalibration?.generatedAt || null, seasons: Object.fromEntries(Object.entries(lapsimCalibration?.seasons || {}).map(([y, s]) => [y, s.tracks?.[id] || null]))}};
@@ -395,7 +395,20 @@ function computeView(K, data, state, R) {
   const secOf = r => { const i1 = Math.round(d.sectors[0] / d.ds), i2 = Math.round(d.sectors[1] / d.ds); return [r.time[i1], r.time[i2] - r.time[i1], r.lapTime - r.time[i2]]; };
   // sector correction (raced tracks): real pole sectors minus the reference car's sectors in that weather
   const corrOf = c => {
-    if (!c.fix || !c.fix.real || !d.sectors || d.sectors.length !== 2) return null; // a lap-only correction (no real sectors) is not a sector correction
+    if (!c.fix) return null;
+    // lap-only correction (raced session with a real lap but no sector lines on this track: Le Mans, IMSA tracks, …):
+    // real lap minus the reference car's lap in that session's weather, a number (same rule as the tool, tool.js corrOf)
+    if (c.fix.lap != null) {
+      const keyL = data.id + '|lap|' + c.fix.ref; computeView.fixCache = computeView.fixCache || {};
+      if (computeView.fixCache[keyL] == null) {
+        const ref = data.cars[c.fix.ref], fw = {};
+        for (const k of ['pressureHpa', 'airTempC', 'humidityPct', 'trackTempC', 'windSpeed', 'windFromDeg']) if (Number.isFinite(c.fix.weather && c.fix.weather[k])) fw[k] = c.fix.weather[k];
+        const envR = K.conditionsFromWeather(Object.assign({pressureHpa: 1013.25, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0}, fw));
+        computeView.fixCache[keyL] = c.fix.lap - K.simulateLap(withGrip(base, ref.grip || 1), ref.car, envR).lapTime * (ref.timeScale || 1);
+      }
+      return computeView.fixCache[keyL];
+    }
+    if (!c.fix.real || !d.sectors || d.sectors.length !== 2) return null;
     const key = data.id + '|' + c.fix.ref; computeView.fixCache = computeView.fixCache || {};
     if (!computeView.fixCache[key]) {
       const ref = data.cars[c.fix.ref], fw = {};
@@ -406,7 +419,9 @@ function computeView(K, data, state, R) {
     }
     return computeView.fixCache[key];
   };
-  const corrected = (c, r) => { const k = corrOf(c), sec = d.sectors && d.sectors.length === 2 ? secOf(r) : null; return k && sec ? {lapTime: r.lapTime + k[0] + k[1] + k[2], sectors: sec.map((x, i) => x + k[i]), corr: k} : {lapTime: r.lapTime, sectors: sec, corr: null}; };
+  const corrected = (c, r) => { const k = corrOf(c), sec = d.sectors && d.sectors.length === 2 ? secOf(r) : null;
+    if (typeof k === 'number') return {lapTime: r.lapTime + k, sectors: sec ? sec.map(x => x + k * x / r.lapTime) : null, corr: [k]}; // lap correction spread by sector share
+    return k && sec ? {lapTime: r.lapTime + k[0] + k[1] + k[2], sectors: sec.map((x, i) => x + k[i]), corr: k} : {lapTime: r.lapTime, sectors: sec, corr: null}; };
   const raw = run(sel), fixd = corrected(sel, raw);
   const res = Object.assign({}, raw, {lapTime: fixd.lapTime});
   const cmpRaw = state.compareId && data.cars[state.compareId] ? run(data.cars[state.compareId]) : null;
@@ -415,9 +430,11 @@ function computeView(K, data, state, R) {
   const sectors = fixd.sectors;
   const real = data.conds[condKey];
   const sameConditions = state.mode !== 'manual' && !active.length;
-  const poleHtml = real && real.realLap && sameConditions && sel.kind === 'calibrated'
-    ? (sel.series ? t.wecBest : real.position > 1 ? t.realLap + ' P' + real.position : t.vsPole) + ' <span data-no-translate>' + fmt(real.realLap) + '</span> · <span data-no-translate>' + ((res.lapTime - real.realLap) >= 0 ? '+' : '−') + Math.abs(res.lapTime - real.realLap).toFixed(3) + ' s</span>'
+  const poleHtml = real && real.realLap && sameConditions && (sel.kind === 'calibrated' || sel.kind === 'learned')
+    ? (sel.series ? t.wecBest : real.position > 1 ? t.realLap + ' P' + real.position : t.vsPole) + ' <span data-no-translate>' + fmt(real.realLap) + '</span> · <span data-no-translate>' + ((res.lapTime - real.realLap) >= 0 ? '+' : '−') + Math.abs(res.lapTime - real.realLap).toFixed(3) + ' s</span>' + (sel.series && real.event ? ' · <span data-no-translate>' + real.event + (real.manufacturer ? ' · ' + real.manufacturer : '') + '</span>' : '')
     : (cmp ? data.cars[state.compareId].label + ' <span data-no-translate>' + fmt(cmp.lapTime) + ' · ' + ((res.lapTime - cmp.lapTime) >= 0 ? '+' : '−') + Math.abs(res.lapTime - cmp.lapTime).toFixed(3) + ' s</span>' : '');
+  // fastest real race lap of this car here (a car + track that really raced shows it; owner rule 2026-11-14)
+  const rr = data.raceRec && data.raceRec[condKey], raceHtml = rr ? '<br>' + t.raceBest + ' <span data-no-translate>' + fmt(rr.lap) + '</span> · <span data-no-translate>' + rr.year + ' ' + rr.who + '</span>' : '';
   const fact = (k, v) => '<div><dt>' + k + '</dt><dd data-no-translate>' + v + '</dd></div>';
   let factsHtml = '';
   if (sel.unc) factsHtml += fact(t.errRange, (sel.unc.pct ? '±' + (res.lapTime * sel.unc.pct / 100).toFixed(2) + ' s · ' : '') + t.conf[sel.unc.confidence]);
@@ -559,7 +576,7 @@ function computeView(K, data, state, R) {
   const evoSvg = '<svg class="ls-race" viewBox="0 0 ' + ew + ' ' + eh + '" role="img" aria-label="' + t.evoChart + '">' + qsBands + '<polyline fill="none" stroke="currentColor" stroke-width="2" points="' + curve.points.map(p => ex(p.minute).toFixed(1) + ',' + ey(p.lap).toFixed(1)).join(' ') + '"/>'
     + '<text x="2" y="16" font-size="11" fill="currentColor">' + fmt(hi) + '</text><text x="2" y="' + (eh - 28) + '" font-size="11" fill="currentColor">' + fmt(lo) + '</text>'
     + '<text x="44" y="' + (eh - 6) + '" font-size="11" fill="currentColor">0</text><text x="' + (ew - 12) + '" y="' + (eh - 6) + '" font-size="11" text-anchor="end" fill="currentColor">' + evo.end + ' ' + t.min + '</text></svg>';
-  return {lineNote, lap: fmt(res.lapTime), poleHtml, factsHtml, airHtml, kindLabel, mapSvg, traceSvg, keyHtml, windHtml, weather: w, evo, evoFacts, evoSvg, qsHtml, socHtml, brakeHtml, tyreHtml};
+  return {lineNote, lap: fmt(res.lapTime), poleHtml: poleHtml + raceHtml, factsHtml, airHtml, kindLabel, mapSvg, traceSvg, keyHtml, windHtml, weather: w, evo, evoFacts, evoSvg, qsHtml, socHtml, brakeHtml, tyreHtml};
 }
 
 // Browser controller
