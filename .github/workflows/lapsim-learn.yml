@@ -10,6 +10,7 @@ on:
 
 permissions:
   contents: write
+  actions: read
 
 concurrency:
   group: lapsim-learn-${{ github.ref }}
@@ -21,16 +22,24 @@ jobs:
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
+        with: {fetch-depth: 2}
       - uses: actions/setup-node@v4
         with: {node-version: '22'}
       - run: npm ci --ignore-scripts
-      - run: node scripts/sim/learn/probe-sources.mjs
-        continue-on-error: true
-      - run: node scripts/sim/learn/fetch-fe.mjs
-        continue-on-error: true
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
+      - name: Stored lap rows of the all-laps run (for fetch-rows.mjs)
+        if: ${{ contains(github.event.head_commit.message, 'rows') || github.event_name == 'workflow_dispatch' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: mkdir -p .cache/t71-rows && gh run download 42927630531 -R ${{ github.repository }} -p 'laps-t71-*' -p 'laps-wec' -D .cache/t71-rows || true
+      # push: run the fetch/probe scripts changed by the pushed commit; manual run: all of them
+      - name: Run the fetch scripts
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then JOBS=$(git diff --name-only HEAD~1 HEAD -- 'scripts/sim/learn/fetch-*.mjs' 'scripts/sim/learn/probe-*.mjs'); else JOBS=$(ls scripts/sim/learn/fetch-*.mjs scripts/sim/learn/probe-*.mjs); fi
+          for j in $JOBS; do echo "::group::$j"; node "$j" || echo "::warning::$j failed"; echo "::endgroup::"; done
       - name: Commit the derived tables
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
           git add scripts/sim/data/learn
-          git diff --cached --quiet || (git commit -m "Learning data: Formula E cars per session, source probes" && (git push origin HEAD:"${{ github.ref_name }}" || (git pull --rebase origin "${{ github.ref_name }}" && git push origin HEAD:"${{ github.ref_name }}")))
+          git diff --cached --quiet || (git commit -m "Learning data from the network sources (fetch scripts of the pushed commit)" && (git push origin HEAD:"${{ github.ref_name }}" || (git pull --rebase origin "${{ github.ref_name }}" && git push origin HEAD:"${{ github.ref_name }}")))
