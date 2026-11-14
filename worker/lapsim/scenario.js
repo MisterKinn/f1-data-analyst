@@ -10,6 +10,8 @@ export const SERIES_CARS = {'imsa-gtp': ['imsa', 'gtp', 'wec-lmdh'], 'imsa-gtdpr
 import {lapsimCalibration} from './calibration-data.js';
 import {lapsimExtraTracks} from './tracks-data.js';
 import {lapsimLearned} from './learned-data.js';
+import {lapsimFe} from './fe-data.js';
+import {FE_GENS} from './fe-cars.js';
 import {lapsimRaceRecords} from './race-records-data.js';
 import {lapsimTrackChanges} from './track-changes-data.js';
 import {lapsimChangeEffects} from './change-effects-data.js';
@@ -17,7 +19,7 @@ import {TUM_2019, PRIOR, applyRules, applyDevelopment} from './cars.js';
 import {SERIES} from './series.js';
 
 // GT3 is shown per car model (base model + Evo tick box); F1, LMH and LMDh are shown per regulation (owner rule, 2026-11-14)
-export const CAR_ORDER = ['base2019', '2025', '2026', '2027', '2028', 'wec-lmh', 'wec-lmdh', 'wec-lmgt3', ...(lapsimLearned?.models || []).map(m => m.key)];
+export const CAR_ORDER = ['base2019', '2025', '2026', '2027', '2028', 'wec-lmh', 'wec-lmdh', 'wec-lmgt3', ...(lapsimLearned?.models || []).map(m => m.key), ...Object.keys(FE_GENS)];
 
 // grip: the per-track factor fitted with that season's car (absorbs asphalt and line differences)
 export function carsFor(id) {
@@ -70,6 +72,13 @@ export function carsFor(id) {
   const g3 = out['wec-lmgt3'];
   if (g3?.kind === 'calibrated') for (const m of lapsimLearned?.models || []) out[m.key] = {car: g3.car, grip: L?.models?.[m.key] ? 1 : g3.grip, timeScale: L?.models?.[m.key] ?? (g3.timeScale || 1) * m.rel, kind: 'learned', year: m.season, series: 'gt3', cls: 'gt3-' + m.body,
     base: m.base, ...(m.evo ? {evo: m.evo} : {}), label: `${m.name} · ${m.bop}`, learned: {pct: L?.models?.[m.key] ? Math.max(H.gt3?.eventModel ?? 0, L.errPct?.gt3 ?? 0) : null, events: L?.events ?? 0, model: true}};
+  // Formula E per rule set (scripts/sim/learn/build-fe.mjs): reference car x exp(G rule set + T layout); Gen4 = prior car x exp(T).
+  // A rule set that raced this layout reproduces its fastest real lap (lap-level correction, owner rule 2026-11-14).
+  const F = lapsimFe?.tracks?.[id];
+  for (const [k, d] of Object.entries(FE_GENS)) { const h = lapsimFe?.heldOutPct?.[k], prior = k === 'fe-gen4', r = F?.real?.[k];
+    out[k] = {car: d.car, grip: 1, timeScale: Math.exp((prior ? 0 : lapsimFe?.G?.[k] ?? 0) + (F?.T ?? 0)), kind: prior ? 'prior' : 'learned', year: d.seasons.at(-1), series: 'fe', cls: d.gen, label: d.label,
+      ...(prior ? {} : {learned: {pct: F ? F.errPct ?? h?.event ?? null : h?.layoutOut ?? null, events: F?.seasons?.length ?? 0}}),
+      ...(r ? {fix: {lap: r.lap, weather: r.weather || {}, ref: k, session: `FE ${r.year} ${r.event} ${r.session}${r.type === 'Q' ? '' : r.type === 'R' ? ' (race)' : ' (practice/test)'}`, year: r.year, model: r.model, entry: r.entry, type: r.type}} : {})}; }
   // A car that raced here reproduces its real lap exactly (owner rule 2026-11-14, as F1 does): GT3 car models their own lap, class
   // cars the class-best of their latest season here (Al Kamel, every series), where nothing above already gives a correction.
   // The fastest real lap of that car on this track wins over a slower stored one (a newer season's pole is not always the fastest).
@@ -140,6 +149,7 @@ export function raceRecords(id) {
   const out = {}, f = lapsimRaceRecords?.f1?.[id] || {};
   for (const y of ['2025', '2026']) if (f[y]) out[y] = {lap: f[y].lap, year: +y, who: `${f[y].driver} (${f[y].team})`, event: f[y].race, lapNumber: f[y].lapNumber, source: 'f1db'};
   for (const [k, r] of Object.entries(lapsimLearned?.tracks?.[id]?.raceReal || {})) out[k] = {lap: r.lap, year: r.year, who: `#${r.entry} ${r.model}`, event: `${r.series.toUpperCase()} ${r.year} ${r.event}`, source: 'Al Kamel'};
+  for (const [k, r] of Object.entries(lapsimFe?.tracks?.[id]?.raceReal || {})) out[k] = {lap: r.lap, year: r.year, who: `#${r.entry} ${r.model}`, event: `FE ${r.year} ${r.event}`, source: 'Al Kamel'};
   return out;
 }
 

@@ -240,3 +240,60 @@ Rows that could not be used, by reason: no simulator geometry: sebring-6019: 301
 - F1 per-team cars: unchanged in this step (F1 is shown per regulation and its production calibration was not touched).
 - Practice and race laps are in the car table (type P and R) but only qualifying is fitted: a fuel and tyre-age term must be declared first.
 - Sector times and speed traps are in the table and are not fitted yet (physics rule 3.4).
+
+## 8. Formula E (2026-11-15)
+
+Script: `scripts/sim/learn/build-fe.mjs` (runs offline in seconds). Inputs: `fe-maps.json` (69 official FIA Formula E circuit
+maps of seasons 9-12, vector lines read by `fe-lines.mjs`) and `fe-cars.csv.gz` (Al Kamel, seasons 5-12, every session, one row per car).
+
+- **Tracks.** One simulator track per layout (venue + printed track length, 0.4 % tolerance). The lap line is the coloured line of
+  the map, stitched from its strokes, scaled to the printed length, then the least-curvature line inside 11 m (`buildTrack`).
+  Monaco uses the existing `monte-carlo` track (same 3.337 km lap). Hyderabad and Shanghai 2026 maps have no vector line.
+  23 Formula E tracks: `worker/lapsim/fe-tracks-data.js`; each is one layout in `track-registry.json` (source `fia-fe-map`).
+- **Cars per rule set** (`worker/lapsim/fe-cars.js`): Gen2 (2019-22, 250 kW, rear drive), Gen3 (2023-24, 350 kW, rear drive),
+  Gen3 Evo (2025-26, 350 kW, all-wheel drive) and Gen4 (2026-27 prior from `fe-gen4.js`, docs/lapsim-fe-gen4-prep.md).
+- **Model.** log(real) = log(sim) + G(rule set) + T(layout), T ridge σ 0.05, fitted on the best dry qualifying lap per layout,
+  season and rule set. Gen4 has no laps yet: prior car × exp(T).
+- **Reproduction.** Every layout and rule set that raced shows its fastest real lap (any session; Formula E practice runs at full
+  power, so it is often the fastest) on the page and in the tool, and the fastest race lap. Test: `tests/lapsim-learn.test.mjs`.
+- **⚠️** on a Formula E track when the event-hidden error is above 3 % or the track factor is above 8 % (doubtful map line:
+  Rome, Mexico 2023-25, Jarama), or when no qualifying lap exists to check it.
+
+Error, % RMS of lap time (event hidden = that layout and season left out of the fit):
+
+| Rule set | Rows (layout × season) | Bare car | **Event hidden** | Layout hidden | In-sample |
+|---|---|---|---|---|---|
+| Gen3 Evo | 21 | 6.4 | **2.35** | 4.61 | 0.95 |
+| Gen3 | 22 | 5.87 | **2.88** | 5.64 | 1.51 |
+| Gen2 | 15 | 9.11 | **1.86** | 6.66 | 1.35 |
+
+Per track:
+
+| Track | Rows | Bare car | Event hidden |
+|---|---|---|---|
+| fe-london | 4 | 6.48 | 0.34 |
+| fe-tokyo | 3 | 5.28 | 3.85 |
+| fe-shanghai | 3 | 2.44 | 2.8 |
+| fe-sanya | 1 | 7.79 | 3.99 |
+| monte-carlo | 4 | 1.56 | 0.37 |
+| fe-berlin | 2 | 1.65 | 0.9 |
+| jarama | 1 | 10.43 | 6.65 |
+| fe-jeddah | 2 | 0.15 | 0.19 |
+| fe-miami | 1 | 1.66 | 2.19 |
+| fe-mexico | 3 | 5.3 | 0.82 |
+| fe-sao-paulo | 4 | 7.49 | 0.61 |
+| fe-jakarta | 3 | 5.5 | 2.99 |
+| fe-miami-2025 | 1 | 4.83 | 1 |
+| fe-mexico-2023 | 3 | 12.45 | 1.87 |
+| fe-portland | 2 | 0.17 | 0.3 |
+| fe-berlin-2024 | 5 | 3.49 | 3.11 |
+| fe-misano | 1 | 4.84 | 6.38 |
+| fe-diriyah | 5 | 6.1 | 2.99 |
+| fe-london-2023 | 1 | 4.4 | 3.14 |
+| fe-rome | 3 | 18.25 | 1.26 |
+| fe-berlin-2023 | 4 | 5.98 | 0.46 |
+| fe-cape-town | 1 | 5.64 | 4.41 |
+| fe-valencia | 1 | 7.4 | 1.9 |
+
+Not done: Gen2 layouts with no map (Hong Kong, Paris, Santiago, Seoul, New York, Puebla, Marrakesh, Bern, older London/Monaco/Rome/
+Valencia layouts) have records only in the data, not on the page; group qualifying (300 kW) and duels (350 kW) are not separated.

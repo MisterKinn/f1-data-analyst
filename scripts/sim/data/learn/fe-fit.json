@@ -1,0 +1,1270 @@
+{
+ "generated": "2026-11-14",
+ "byKey": {
+  "fe-gen3evo": {
+   "rows": 21,
+   "before": 6.4,
+   "event": 2.35,
+   "layoutOut": 4.61,
+   "inSample": 0.95
+  },
+  "fe-gen3": {
+   "rows": 22,
+   "before": 5.87,
+   "event": 2.88,
+   "layoutOut": 5.64,
+   "inSample": 1.51
+  },
+  "fe-gen2": {
+   "rows": 15,
+   "before": 9.11,
+   "event": 1.86,
+   "layoutOut": 6.66,
+   "inSample": 1.35
+  }
+ },
+ "byLayout": {
+  "fe-london": {
+   "rows": 4,
+   "before": 6.48,
+   "event": 0.34,
+   "layoutOut": 3.83,
+   "inSample": 0.24
+  },
+  "fe-tokyo": {
+   "rows": 3,
+   "before": 5.28,
+   "event": 3.85,
+   "layoutOut": 3.39,
+   "inSample": 2.35
+  },
+  "fe-shanghai": {
+   "rows": 3,
+   "before": 2.44,
+   "event": 2.8,
+   "layoutOut": 5.82,
+   "inSample": 1.72
+  },
+  "fe-sanya": {
+   "rows": 1,
+   "before": 7.79,
+   "event": 3.99,
+   "layoutOut": 3.99,
+   "inSample": 0.14
+  },
+  "monte-carlo": {
+   "rows": 4,
+   "before": 1.56,
+   "event": 0.37,
+   "layoutOut": 2.12,
+   "inSample": 0.27
+  },
+  "fe-berlin": {
+   "rows": 2,
+   "before": 1.65,
+   "event": 0.9,
+   "layoutOut": 2.31,
+   "inSample": 0.46
+  },
+  "jarama": {
+   "rows": 1,
+   "before": 10.43,
+   "event": 6.65,
+   "layoutOut": 6.65,
+   "inSample": 0.24
+  },
+  "fe-jeddah": {
+   "rows": 2,
+   "before": 0.15,
+   "event": 0.19,
+   "layoutOut": 3.73,
+   "inSample": 0.1
+  },
+  "fe-miami": {
+   "rows": 1,
+   "before": 1.66,
+   "event": 2.19,
+   "layoutOut": 2.19,
+   "inSample": 0.08
+  },
+  "fe-mexico": {
+   "rows": 3,
+   "before": 5.3,
+   "event": 0.82,
+   "layoutOut": 0.9,
+   "inSample": 0.46
+  },
+  "fe-sao-paulo": {
+   "rows": 4,
+   "before": 7.49,
+   "event": 0.61,
+   "layoutOut": 4.88,
+   "inSample": 0.43
+  },
+  "fe-jakarta": {
+   "rows": 3,
+   "before": 5.5,
+   "event": 2.99,
+   "layoutOut": 2.23,
+   "inSample": 1.78
+  },
+  "fe-miami-2025": {
+   "rows": 1,
+   "before": 4.83,
+   "event": 1,
+   "layoutOut": 1,
+   "inSample": 0.04
+  },
+  "fe-mexico-2023": {
+   "rows": 3,
+   "before": 12.45,
+   "event": 1.87,
+   "layoutOut": 10.31,
+   "inSample": 1.15
+  },
+  "fe-portland": {
+   "rows": 2,
+   "before": 0.17,
+   "event": 0.3,
+   "layoutOut": 1.33,
+   "inSample": 0.15
+  },
+  "fe-berlin-2024": {
+   "rows": 5,
+   "before": 3.49,
+   "event": 3.11,
+   "layoutOut": 6.05,
+   "inSample": 2.31
+  },
+  "fe-misano": {
+   "rows": 1,
+   "before": 4.84,
+   "event": 6.38,
+   "layoutOut": 6.38,
+   "inSample": 0.24
+  },
+  "fe-diriyah": {
+   "rows": 5,
+   "before": 6.1,
+   "event": 2.99,
+   "layoutOut": 2.7,
+   "inSample": 2.28
+  },
+  "fe-london-2023": {
+   "rows": 1,
+   "before": 4.4,
+   "event": 3.14,
+   "layoutOut": 3.14,
+   "inSample": 0.11
+  },
+  "fe-rome": {
+   "rows": 3,
+   "before": 18.25,
+   "event": 1.26,
+   "layoutOut": 15.89,
+   "inSample": 0.75
+  },
+  "fe-berlin-2023": {
+   "rows": 4,
+   "before": 5.98,
+   "event": 0.46,
+   "layoutOut": 1.45,
+   "inSample": 0.33
+  },
+  "fe-cape-town": {
+   "rows": 1,
+   "before": 5.64,
+   "event": 4.41,
+   "layoutOut": 4.41,
+   "inSample": 0.16
+  },
+  "fe-valencia": {
+   "rows": 1,
+   "before": 7.4,
+   "event": 1.9,
+   "layoutOut": 1.9,
+   "inSample": 0.07
+  }
+ },
+ "rows": [
+  {
+   "layout": "fe-london",
+   "season": 2026,
+   "key": "fe-gen3evo",
+   "real": 68.616,
+   "sim": 63.61689637130608,
+   "event": 0.36,
+   "before": 7.86,
+   "inSample": 0.26,
+   "layoutOut": 4.07
+  },
+  {
+   "layout": "fe-tokyo",
+   "season": 2026,
+   "key": "fe-gen3evo",
+   "real": 73.652,
+   "sim": 70.70210545952209,
+   "event": -2.55,
+   "before": 4.17,
+   "inSample": -1.67,
+   "layoutOut": 0.1
+  },
+  {
+   "layout": "fe-shanghai",
+   "season": 2026,
+   "key": "fe-gen3evo",
+   "real": 70.125,
+   "sim": 72.03264283802942,
+   "event": -1.76,
+   "before": -2.65,
+   "inSample": -1.15,
+   "layoutOut": -6.7
+  },
+  {
+   "layout": "fe-sanya",
+   "season": 2026,
+   "key": "fe-gen3evo",
+   "real": 67.337,
+   "sim": 62.468019168617836,
+   "event": 3.99,
+   "before": 7.79,
+   "inSample": 0.14,
+   "layoutOut": 3.99
+  },
+  {
+   "layout": "monte-carlo",
+   "season": 2026,
+   "key": "fe-gen3evo",
+   "real": 88.492,
+   "sim": 86.89281030580263,
+   "event": 0.1,
+   "before": 1.84,
+   "inSample": 0.07,
+   "layoutOut": -1.97
+  },
+  {
+   "layout": "fe-berlin",
+   "season": 2026,
+   "key": "fe-gen3evo",
+   "real": 58.337,
+   "sim": 57.68978195339535,
+   "event": -0.98,
+   "before": 1.12,
+   "inSample": -0.5,
+   "layoutOut": -2.71
+  },
+  {
+   "layout": "jarama",
+   "season": 2026,
+   "key": "fe-gen3evo",
+   "real": 100.927,
+   "sim": 91.39732345319976,
+   "event": 6.65,
+   "before": 10.43,
+   "inSample": 0.24,
+   "layoutOut": 6.65
+  },
+  {
+   "layout": "fe-jeddah",
+   "season": 2026,
+   "key": "fe-gen3evo",
+   "real": 77.151,
+   "sim": 77.09991918414245,
+   "event": -0.27,
+   "before": 0.07,
+   "inSample": -0.14,
+   "layoutOut": -3.79
+  },
+  {
+   "layout": "fe-miami",
+   "season": 2026,
+   "key": "fe-gen3evo",
+   "real": 56.562,
+   "sim": 55.63878228603774,
+   "event": -2.19,
+   "before": 1.66,
+   "inSample": -0.08,
+   "layoutOut": -2.19
+  },
+  {
+   "layout": "fe-mexico",
+   "season": 2026,
+   "key": "fe-gen3evo",
+   "real": 66.328,
+   "sim": 63.00457704222082,
+   "event": 1.23,
+   "before": 5.27,
+   "inSample": 0.67,
+   "layoutOut": 1.51
+  },
+  {
+   "layout": "fe-sao-paulo",
+   "season": 2026,
+   "key": "fe-gen3evo",
+   "real": 72.14,
+   "sim": 66.12596977599266,
+   "event": 0.65,
+   "before": 9.09,
+   "inSample": 0.46,
+   "layoutOut": 5.31
+  },
+  {
+   "layout": "fe-london",
+   "season": 2025,
+   "key": "fe-gen3evo",
+   "real": 68.447,
+   "sim": 63.661404739828725,
+   "event": -0.08,
+   "before": 7.52,
+   "inSample": -0.06,
+   "layoutOut": 3.74
+  },
+  {
+   "layout": "fe-berlin",
+   "season": 2025,
+   "key": "fe-gen3evo",
+   "real": 59.048,
+   "sim": 57.862572682766604,
+   "event": 0.81,
+   "before": 2.05,
+   "inSample": 0.41,
+   "layoutOut": -1.82
+  },
+  {
+   "layout": "fe-jakarta",
+   "season": 2025,
+   "key": "fe-gen3evo",
+   "real": 68.968,
+   "sim": 64.18450501862895,
+   "event": 4.31,
+   "before": 7.45,
+   "inSample": 2.53,
+   "layoutOut": 3.81
+  },
+  {
+   "layout": "fe-shanghai",
+   "season": 2025,
+   "key": "fe-gen3evo",
+   "real": 69.939,
+   "sim": 72.01842710077301,
+   "event": -2.13,
+   "before": -2.89,
+   "inSample": -1.39,
+   "layoutOut": -6.93
+  },
+  {
+   "layout": "fe-tokyo",
+   "season": 2025,
+   "key": "fe-gen3evo",
+   "real": 73.671,
+   "sim": 70.62917463100118,
+   "event": -2.36,
+   "before": 4.31,
+   "inSample": -1.55,
+   "layoutOut": 0.23
+  },
+  {
+   "layout": "monte-carlo",
+   "season": 2025,
+   "key": "fe-gen3evo",
+   "real": 88.661,
+   "sim": 86.79646940949212,
+   "event": 0.52,
+   "before": 2.15,
+   "inSample": 0.37,
+   "layoutOut": -1.67
+  },
+  {
+   "layout": "fe-miami-2025",
+   "season": 2025,
+   "key": "fe-gen3evo",
+   "real": 84.756,
+   "sim": 80.85024708791235,
+   "event": 1,
+   "before": 4.83,
+   "inSample": 0.04,
+   "layoutOut": 1
+  },
+  {
+   "layout": "fe-jeddah",
+   "season": 2025,
+   "key": "fe-gen3evo",
+   "real": 76.922,
+   "sim": 76.76757749832032,
+   "event": -0.01,
+   "before": 0.2,
+   "inSample": 0,
+   "layoutOut": -3.67
+  },
+  {
+   "layout": "fe-mexico-2023",
+   "season": 2025,
+   "key": "fe-gen3evo",
+   "real": 73.352,
+   "sim": 63.40967645899505,
+   "event": 2.7,
+   "before": 15.68,
+   "inSample": 1.61,
+   "layoutOut": 12.04
+  },
+  {
+   "layout": "fe-sao-paulo",
+   "season": 2025,
+   "key": "fe-gen3evo",
+   "real": 71.717,
+   "sim": 66.15948398104094,
+   "event": -0.25,
+   "before": 8.4,
+   "inSample": -0.18,
+   "layoutOut": 4.64
+  },
+  {
+   "layout": "fe-london",
+   "season": 2024,
+   "key": "fe-gen3",
+   "real": 70.323,
+   "sim": 67.1724946701001,
+   "event": -0.43,
+   "before": 4.69,
+   "inSample": -0.31,
+   "layoutOut": 3.45
+  },
+  {
+   "layout": "fe-portland",
+   "season": 2024,
+   "key": "fe-gen3",
+   "real": 69.665,
+   "sim": 69.71618547971937,
+   "event": -0.34,
+   "before": -0.07,
+   "inSample": -0.18,
+   "layoutOut": -1.47
+  },
+  {
+   "layout": "fe-shanghai",
+   "season": 2024,
+   "key": "fe-gen3",
+   "real": 74.14,
+   "sim": 75.32965053610816,
+   "event": 3.99,
+   "before": -1.58,
+   "inSample": 2.38,
+   "layoutOut": -2.95
+  },
+  {
+   "layout": "fe-berlin-2024",
+   "season": 2024,
+   "key": "fe-gen3",
+   "real": 62.518,
+   "sim": 61.66355889981488,
+   "event": -6.15,
+   "before": 1.39,
+   "inSample": -4.53,
+   "layoutOut": 0.03
+  },
+  {
+   "layout": "monte-carlo",
+   "season": 2024,
+   "key": "fe-gen3",
+   "real": 90.593,
+   "sim": 91.47360787985504,
+   "event": -0.43,
+   "before": -0.96,
+   "inSample": -0.31,
+   "layoutOut": -2.43
+  },
+  {
+   "layout": "fe-misano",
+   "season": 2024,
+   "key": "fe-gen3",
+   "real": 77.61,
+   "sim": 81.55511710466499,
+   "event": -6.38,
+   "before": -4.84,
+   "inSample": -0.24,
+   "layoutOut": -6.38
+  },
+  {
+   "layout": "fe-tokyo",
+   "season": 2024,
+   "key": "fe-gen3",
+   "real": 79.391,
+   "sim": 74.25701139009438,
+   "event": 5.69,
+   "before": 6.91,
+   "inSample": 3.38,
+   "layoutOut": 5.86
+  },
+  {
+   "layout": "fe-sao-paulo",
+   "season": 2024,
+   "key": "fe-gen3",
+   "real": 73.516,
+   "sim": 69.04185646432735,
+   "event": 0.63,
+   "before": 6.48,
+   "inSample": 0.45,
+   "layoutOut": 5.26
+  },
+  {
+   "layout": "fe-diriyah",
+   "season": 2024,
+   "key": "fe-gen3",
+   "real": 70.486,
+   "sim": 68.76666901466008,
+   "event": 2.96,
+   "before": 2.5,
+   "inSample": 2.16,
+   "layoutOut": 1.24
+  },
+  {
+   "layout": "fe-mexico-2023",
+   "season": 2024,
+   "key": "fe-gen3",
+   "real": 73.691,
+   "sim": 66.34928841339689,
+   "event": -0.09,
+   "before": 11.07,
+   "inSample": -0.06,
+   "layoutOut": 9.92
+  },
+  {
+   "layout": "fe-london-2023",
+   "season": 2023,
+   "key": "fe-gen3",
+   "real": 70.521,
+   "sim": 67.5486026346018,
+   "event": 3.14,
+   "before": 4.4,
+   "inSample": 0.11,
+   "layoutOut": 3.14
+  },
+  {
+   "layout": "fe-london",
+   "season": 2023,
+   "key": "fe-gen3",
+   "real": 70.689,
+   "sim": 67.14618653696903,
+   "event": 0.35,
+   "before": 5.28,
+   "inSample": 0.25,
+   "layoutOut": 4.03
+  },
+  {
+   "layout": "fe-rome",
+   "season": 2023,
+   "key": "fe-gen3",
+   "real": 98.214,
+   "sim": 115.43877863152662,
+   "event": -1.97,
+   "before": -14.92,
+   "inSample": -1.16,
+   "layoutOut": -16.75
+  },
+  {
+   "layout": "fe-portland",
+   "season": 2023,
+   "key": "fe-gen3",
+   "real": 69.808,
+   "sim": 69.64967012828296,
+   "event": 0.25,
+   "before": 0.23,
+   "inSample": 0.13,
+   "layoutOut": -1.18
+  },
+  {
+   "layout": "fe-jakarta",
+   "season": 2023,
+   "key": "fe-gen3",
+   "real": 68.416,
+   "sim": 67.79461437444952,
+   "event": -2.16,
+   "before": 0.92,
+   "inSample": -1.35,
+   "layoutOut": -0.53
+  },
+  {
+   "layout": "monte-carlo",
+   "season": 2023,
+   "key": "fe-gen3",
+   "real": 90.138,
+   "sim": 90.92333240739757,
+   "event": -0.29,
+   "before": -0.86,
+   "inSample": -0.21,
+   "layoutOut": -2.33
+  },
+  {
+   "layout": "fe-berlin-2023",
+   "season": 2023,
+   "key": "fe-gen3",
+   "real": 65.975,
+   "sim": 66.21190530839262,
+   "event": -0.52,
+   "before": -0.36,
+   "inSample": -0.33,
+   "layoutOut": -1.78
+  },
+  {
+   "layout": "fe-berlin-2024",
+   "season": 2023,
+   "key": "fe-gen3",
+   "real": 66.055,
+   "sim": 61.34843019353969,
+   "event": 1.9,
+   "before": 7.67,
+   "inSample": 1.38,
+   "layoutOut": 6.23
+  },
+  {
+   "layout": "fe-sao-paulo",
+   "season": 2023,
+   "key": "fe-gen3",
+   "real": 72.669,
+   "sim": 68.9329094419257,
+   "event": -0.77,
+   "before": 5.42,
+   "inSample": -0.55,
+   "layoutOut": 4.21
+  },
+  {
+   "layout": "fe-cape-town",
+   "season": 2023,
+   "key": "fe-gen3",
+   "real": 68.844,
+   "sim": 65.17091485511246,
+   "event": 4.41,
+   "before": 5.64,
+   "inSample": 0.16,
+   "layoutOut": 4.41
+  },
+  {
+   "layout": "fe-diriyah",
+   "season": 2023,
+   "key": "fe-gen3",
+   "real": 69.361,
+   "sim": 68.95412965786657,
+   "event": 0.35,
+   "before": 0.59,
+   "inSample": 0.25,
+   "layoutOut": -0.65
+  },
+  {
+   "layout": "fe-mexico-2023",
+   "season": 2023,
+   "key": "fe-gen3",
+   "real": 73.074,
+   "sim": 66.5349651629117,
+   "event": -1.79,
+   "before": 9.83,
+   "inSample": -1.17,
+   "layoutOut": 8.7
+  },
+  {
+   "layout": "fe-jakarta",
+   "season": 2022,
+   "key": "fe-gen2",
+   "real": 68.715,
+   "sim": 72.9951515912959,
+   "event": -1.89,
+   "before": -5.86,
+   "inSample": -1.1,
+   "layoutOut": -0.46
+  },
+  {
+   "layout": "fe-berlin-2023",
+   "season": 2022,
+   "key": "fe-gen2",
+   "real": 66.753,
+   "sim": 71.40185326624707,
+   "event": 0.68,
+   "before": -6.51,
+   "inSample": 0.5,
+   "layoutOut": -0.89
+  },
+  {
+   "layout": "fe-berlin-2024",
+   "season": 2022,
+   "key": "fe-gen2",
+   "real": 66.532,
+   "sim": 66.68966735595842,
+   "event": 1.25,
+   "before": -0.24,
+   "inSample": 0.96,
+   "layoutOut": 6.72
+  },
+  {
+   "layout": "fe-rome",
+   "season": 2022,
+   "key": "fe-gen2",
+   "real": 99.416,
+   "sim": 123.40369350625909,
+   "event": 0.91,
+   "before": -19.44,
+   "inSample": 0.59,
+   "layoutOut": -15.15
+  },
+  {
+   "layout": "fe-mexico",
+   "season": 2022,
+   "key": "fe-gen2",
+   "real": 67.675,
+   "sim": 71.49536631052064,
+   "event": -0.54,
+   "before": -5.34,
+   "inSample": -0.35,
+   "layoutOut": 0.25
+  },
+  {
+   "layout": "fe-diriyah",
+   "season": 2022,
+   "key": "fe-gen2",
+   "real": 67.724,
+   "sim": 74.74469897227098,
+   "event": -3.81,
+   "before": -9.39,
+   "inSample": -2.95,
+   "layoutOut": -4.42
+  },
+  {
+   "layout": "fe-berlin-2024",
+   "season": 2021,
+   "key": "fe-gen2",
+   "real": 66.425,
+   "sim": 66.44013585402236,
+   "event": 1.53,
+   "before": -0.02,
+   "inSample": 1.18,
+   "layoutOut": 6.95
+  },
+  {
+   "layout": "fe-berlin-2023",
+   "season": 2021,
+   "key": "fe-gen2",
+   "real": 66.239,
+   "sim": 71.3970833869552,
+   "event": -0.36,
+   "before": -7.22,
+   "inSample": -0.26,
+   "layoutOut": -1.64
+  },
+  {
+   "layout": "fe-valencia",
+   "season": 2021,
+   "key": "fe-gen2",
+   "real": 86.799,
+   "sim": 93.73544140029469,
+   "event": -1.9,
+   "before": -7.4,
+   "inSample": -0.07,
+   "layoutOut": -1.9
+  },
+  {
+   "layout": "fe-rome",
+   "season": 2021,
+   "key": "fe-gen2",
+   "real": 98.491,
+   "sim": 123.07563463395738,
+   "event": -0.12,
+   "before": -19.98,
+   "inSample": -0.08,
+   "layoutOut": -15.72
+  },
+  {
+   "layout": "fe-diriyah",
+   "season": 2021,
+   "key": "fe-gen2",
+   "real": 67.81,
+   "sim": 74.24893442740412,
+   "event": -2.82,
+   "before": -8.67,
+   "inSample": -2.17,
+   "layoutOut": -3.66
+  },
+  {
+   "layout": "fe-berlin-2023",
+   "season": 2020,
+   "key": "fe-gen2",
+   "real": 66.484,
+   "sim": 71.44159056850269,
+   "event": 0.06,
+   "before": -6.94,
+   "inSample": 0.04,
+   "layoutOut": -1.34
+  },
+  {
+   "layout": "fe-berlin-2024",
+   "season": 2020,
+   "key": "fe-gen2",
+   "real": 66.575,
+   "sim": 66.4835803118159,
+   "event": 1.74,
+   "before": 0.14,
+   "inSample": 1.34,
+   "layoutOut": 7.12
+  },
+  {
+   "layout": "fe-mexico",
+   "season": 2020,
+   "key": "fe-gen2",
+   "real": 68.174,
+   "sim": 71.98182430992344,
+   "event": -0.45,
+   "before": -5.29,
+   "inSample": -0.29,
+   "layoutOut": 0.31
+  },
+  {
+   "layout": "fe-diriyah",
+   "season": 2020,
+   "key": "fe-gen2",
+   "real": 71.418,
+   "sim": 74.41879724654383,
+   "event": 3.65,
+   "before": -4.03,
+   "inSample": 2.8,
+   "layoutOut": 1.23
+  }
+ ],
+ "geometry": [
+  {
+   "id": "fe-london",
+   "from": "Season 12 - 2025-26 R17 London",
+   "turn": -360,
+   "length": 2034
+  },
+  {
+   "id": "fe-tokyo",
+   "from": "Season 12 - 2025-26 R15 Tokyo",
+   "turn": -360,
+   "length": 2511
+  },
+  {
+   "id": "fe-shanghai",
+   "from": "Season 11 - 2024-25 R11 Shanghai",
+   "turn": -360,
+   "length": 2988
+  },
+  {
+   "id": "fe-sanya",
+   "from": "Season 12 - 2025-26 R11 Sanya",
+   "turn": -360,
+   "length": 2473
+  },
+  {
+   "id": "monte-carlo",
+   "from": "existing simulator track"
+  },
+  {
+   "id": "fe-berlin",
+   "from": "Season 12 - 2025-26 R08 Berlin",
+   "turn": -360,
+   "length": 2334
+  },
+  {
+   "id": "jarama",
+   "from": "Season 12 - 2025-26 R06 Madrid",
+   "turn": -360,
+   "length": 3859
+  },
+  {
+   "id": "fe-jeddah",
+   "from": "Season 12 - 2025-26 R05 Jeddah",
+   "turn": -360,
+   "length": 2954
+  },
+  {
+   "id": "fe-miami",
+   "from": "Season 12 - 2025-26 R03 Miami",
+   "turn": -360,
+   "length": 2283
+  },
+  {
+   "id": "fe-mexico",
+   "from": "Season 12 - 2025-26 R02 Mexico",
+   "turn": 360,
+   "length": 2576
+  },
+  {
+   "id": "fe-sao-paulo",
+   "from": "Season 11 - 2024-25 R01 São Paolo",
+   "turn": 360,
+   "length": 2885
+  },
+  {
+   "id": "fe-valencia",
+   "from": "Season 12 - 2025-26 R00 Valencia",
+   "turn": 360,
+   "length": 3327
+  },
+  {
+   "id": "fe-jakarta",
+   "from": "Season 11 - 2024-25 R12 Jakarta",
+   "turn": 360,
+   "length": 2315
+  },
+  {
+   "id": "fe-miami-2025",
+   "from": "Season 11 - 2024-25 R05 Miami",
+   "turn": -360,
+   "length": 3509
+  },
+  {
+   "id": "fe-mexico-2023",
+   "from": "Season 11 - 2024-25 R02 Mexico",
+   "turn": 360,
+   "length": 2598
+  },
+  {
+   "id": "jarama-2025",
+   "from": "Season 11 - 2024-25 R00 Jarama",
+   "turn": -360,
+   "length": 3860
+  },
+  {
+   "id": "fe-portland",
+   "from": "Season 10 - 2023-24 R14 Portland",
+   "turn": 360,
+   "length": 3147
+  },
+  {
+   "id": "fe-berlin-2024",
+   "from": "Season 10 - 2023-24 R10 Berlin",
+   "turn": -360,
+   "length": 2296
+  },
+  {
+   "id": "fe-misano",
+   "from": "Season 10 - 2023-24 R07 Misano",
+   "turn": 360,
+   "length": 3350
+  },
+  {
+   "id": "fe-diriyah",
+   "from": "Season 9 - 2022-23 R03 Diriyah",
+   "turn": -360,
+   "length": 2433
+  },
+  {
+   "id": "fe-london-2023",
+   "from": "Season 9 - 2022-23 R16 London",
+   "turn": 360,
+   "length": 2040
+  },
+  {
+   "id": "fe-rome",
+   "from": "Season 9 - 2022-23 R14 Rome",
+   "turn": -360,
+   "length": 3209
+  },
+  {
+   "id": "fe-berlin-2023",
+   "from": "Season 9 - 2022-23 R08 Berlin",
+   "turn": 360,
+   "length": 2316
+  },
+  {
+   "id": "fe-cape-town",
+   "from": "Season 9 - 2022-23 R05 Cape Town",
+   "turn": -360,
+   "length": 2899
+  },
+  {
+   "id": "fe-hyderabad",
+   "from": "no usable lap line on the maps"
+  }
+ ],
+ "skipped": {
+  "London 1969": 1,
+  "London 1971": 1,
+  "Hyderabad 2834": 18,
+  "Hyderabad 2121": 7,
+  "Hyderabad 2835": 31,
+  "Hyderabad 2122": 1,
+  "Hyderabad 2120": 3,
+  "Hyderabad 2836": 24,
+  "Seoul 2620": 44,
+  "Seoul 2621": 63,
+  "Seoul 2622": 39,
+  "London 2142": 41,
+  "London 2140": 42,
+  "London 2141": 69,
+  "New York 2319": 97,
+  "New York 2320": 230,
+  "New York 2321": 99,
+  "Marrakesh 2971": 155,
+  "Marrakesh 2972": 98,
+  "Marrakesh 2970": 81,
+  "Monaco 3319": 63,
+  "Monaco 3317": 59,
+  "Monaco 3318": 60,
+  "London 2252": 67,
+  "London 2253": 43,
+  "London 2251": 55,
+  "Puebla 2981": 53,
+  "Puebla 2982": 69,
+  "Puebla 2983": 45,
+  "Monaco 3320": 1,
+  "Valencia 3095": 92,
+  "Valencia 3094": 178,
+  "Valencia 3093": 99,
+  "Berlin 2487": 83,
+  "Berlin 2488": 40,
+  "Berlin 2486": 41,
+  "Santiago 2286": 20,
+  "Santiago 2287": 48,
+  "Santiago 2288": 26,
+  "Bern 2751": 20,
+  "Bern 2750": 37,
+  "Bern 2749": 8,
+  "Monaco 1765": 45,
+  "Monaco 1766": 11,
+  "Monaco 1764": 10,
+  "Paris 1540": 11,
+  "Paris 1919": 9,
+  "Paris 1920": 29,
+  "Paris 1541": 2,
+  "Paris 1921": 13,
+  "Paris 1539": 1,
+  "Rome 2871": 16,
+  "Rome 2870": 35,
+  "Rome 2869": 14,
+  "Sanya 2360": 31,
+  "Sanya 2359": 20,
+  "Sanya 2361": 12,
+  "Hong Kong 1860": 35,
+  "Hong Kong 1859": 16,
+  "Hong Kong 1861": 11,
+  "Hong Kong 1758": 1,
+  "Hong Kong 1759": 1,
+  "Hong Kong 1757": 1,
+  "Mexico 2093": 63,
+  "Mexico 2092": 28,
+  "Mexico 2094": 19,
+  "Santiago 2348": 34,
+  "Santiago 2347": 14,
+  "Santiago 2349": 18
+ },
+ "layouts": [
+  {
+   "id": "fe-london",
+   "venue": "London",
+   "lengthM": 2077,
+   "seasons": [
+    2024,
+    2025,
+    2026
+   ]
+  },
+  {
+   "id": "fe-tokyo",
+   "venue": "Tokyo",
+   "lengthM": 2575,
+   "seasons": [
+    2024,
+    2025,
+    2026
+   ]
+  },
+  {
+   "id": "fe-shanghai",
+   "venue": "Shanghai",
+   "lengthM": 3051,
+   "seasons": [
+    2024,
+    2025,
+    2026
+   ]
+  },
+  {
+   "id": "fe-sanya",
+   "venue": "Sanya",
+   "lengthM": 2520,
+   "seasons": [
+    2026
+   ]
+  },
+  {
+   "id": "monte-carlo",
+   "venue": "Monaco",
+   "lengthM": 3337,
+   "seasons": [
+    2023,
+    2024,
+    2025,
+    2026
+   ]
+  },
+  {
+   "id": "fe-berlin",
+   "venue": "Berlin",
+   "lengthM": 2374,
+   "seasons": [
+    2025,
+    2026
+   ]
+  },
+  {
+   "id": "jarama",
+   "venue": "Jarama",
+   "lengthM": 3934,
+   "seasons": [
+    2026
+   ]
+  },
+  {
+   "id": "fe-jeddah",
+   "venue": "Jeddah",
+   "lengthM": 3001,
+   "seasons": [
+    2025,
+    2026
+   ]
+  },
+  {
+   "id": "fe-miami",
+   "venue": "Miami",
+   "lengthM": 2320,
+   "seasons": [
+    2026
+   ]
+  },
+  {
+   "id": "fe-mexico",
+   "venue": "Mexico",
+   "lengthM": 2608,
+   "seasons": [
+    2026
+   ]
+  },
+  {
+   "id": "fe-sao-paulo",
+   "venue": "São Paulo",
+   "lengthM": 2933,
+   "seasons": [
+    2023,
+    2024,
+    2025,
+    2026
+   ]
+  },
+  {
+   "id": "fe-valencia",
+   "venue": "Valencia",
+   "lengthM": 3376,
+   "seasons": [
+    2024,
+    2026
+   ]
+  },
+  {
+   "id": "fe-jakarta",
+   "venue": "Jakarta",
+   "lengthM": 2370,
+   "seasons": [
+    2023,
+    2025
+   ]
+  },
+  {
+   "id": "fe-miami-2025",
+   "venue": "Miami",
+   "lengthM": 3551,
+   "seasons": [
+    2025
+   ]
+  },
+  {
+   "id": "fe-mexico-2023",
+   "venue": "Mexico",
+   "lengthM": 2630,
+   "seasons": [
+    2023,
+    2024,
+    2025
+   ]
+  },
+  {
+   "id": "jarama-2025",
+   "venue": "Jarama",
+   "lengthM": 3915,
+   "seasons": [
+    2025
+   ]
+  },
+  {
+   "id": "fe-portland",
+   "venue": "Portland",
+   "lengthM": 3190,
+   "seasons": [
+    2023,
+    2024
+   ]
+  },
+  {
+   "id": "fe-berlin-2024",
+   "venue": "Berlin",
+   "lengthM": 2345,
+   "seasons": [
+    2024
+   ]
+  },
+  {
+   "id": "fe-misano",
+   "venue": "Misano",
+   "lengthM": 3382,
+   "seasons": [
+    2024
+   ]
+  },
+  {
+   "id": "fe-diriyah",
+   "venue": "Diriyah",
+   "lengthM": 2495,
+   "seasons": [
+    2023,
+    2024
+   ]
+  },
+  {
+   "id": "fe-london-2023",
+   "venue": "London",
+   "lengthM": 2086,
+   "seasons": [
+    2023
+   ]
+  },
+  {
+   "id": "fe-rome",
+   "venue": "Rome",
+   "lengthM": 3380,
+   "seasons": [
+    2023
+   ]
+  },
+  {
+   "id": "fe-berlin-2023",
+   "venue": "Berlin",
+   "lengthM": 2355,
+   "seasons": [
+    2023
+   ]
+  },
+  {
+   "id": "fe-cape-town",
+   "venue": "Cape Town",
+   "lengthM": 2921,
+   "seasons": [
+    2023
+   ]
+  },
+  {
+   "id": "fe-hyderabad",
+   "venue": "Hyderabad",
+   "lengthM": 2835,
+   "seasons": [
+    2023
+   ]
+  }
+ ]
+}
