@@ -48,27 +48,28 @@ export function parseImsaSessions(html,series='weathertech'){
  return out;
 }
 // IMSA's own site (Cloudflare) refuses server requests, so session times come from the
-// official YouTube channel @imsaofficial: each WeatherTech qualifying and race is a
-// scheduled live stream. Titles: "2026 IMSA Motul Petit Le Mans | Qualifying | WeatherTech
-// Championship | Braselton, GA"; the race stream has no session part.
+// official YouTube channel @imsaofficial: WeatherTech qualifying and race plus the support
+// series are scheduled live streams. Titles: "2026 IMSA Motul Petit Le Mans | Qualifying |
+// WeatherTech Championship | Braselton, GA"; a race stream has no session part.
 export const IMSA_YOUTUBE_CHANNEL='UC58em84jwiyM20qR-iqBDZw';
+const IMSA_SERIES=[[/WeatherTech (?:SportsCar )?Championship/i,''],[/Michelin Pilot Challenge/i,'Pilot Challenge'],[/VP Racing SportsCar Challenge/i,'VP Racing Challenge'],[/Carrera Cup/i,'Carrera Cup'],[/Mustang Challenge/i,'Mustang Challenge'],[/Super Trofeo/i,'Super Trofeo'],[/MX-5 Cup/i,'MX-5 Cup'],[/GR Cup/i,'GR Cup']];
 export function imsaStreamSession(title){
- const parts=String(title||'').split('|').map(p=>p.trim());
- if(!/WeatherTech (?:SportsCar )?Championship/i.test(title)||/esports|michelin pilot|vp racing|carrera|historic|hsr|recap|highlight|sights|podcast/i.test(title))return null;
+ const parts=String(title||'').split('|').map(p=>p.trim()),series=IMSA_SERIES.find(([pattern])=>pattern.test(title));
+ if(!series||/esports|historic|\bhsr\b|recap|highlight|sights|podcast|interview/i.test(title))return null;
  if(parts.some(p=>/\bpart\s*[2-9]\b/i.test(p)))return null;
- const label=parts.slice(1).find(p=>/qualif|practice|warm|test|race/i.test(p)&&!/championship/i.test(p))||'';
- if(/qualif/i.test(label))return 'Qualifying';
- const practice=/practice\s*(\d)?/i.exec(label);if(practice)return practice[1]?'Practice '+practice[1]:'Practice';
- if(/warm/i.test(label))return 'Warm-up';
- if(/test/i.test(label))return null;
- return 'Race';
+ const label=parts.slice(1).find(p=>/qualif|practice|warm|\btest\b|\brace\b/i.test(p)&&!/championship|challenge|cup|trofeo/i.test(p))||'';
+ let session=/qualif/i.test(label)?'Qualifying':/warm/i.test(label)?'Warm-up':/\btest\b/i.test(label)?null:'Race';
+ const number=/(?:practice|race)\s*(\d)/i.exec(label);
+ if(/practice/i.test(label))session='Practice'+(number?' '+number[1]:'');else if(session==='Race'&&number)session='Race '+number[1];
+ return session&&(series[1]?series[1]+' '+session:session);
 }
+const imsaKorean=name=>name.replace(/(^|\s)Practice\b/,'$1연습').replace(/(^|\s)Qualifying$/,'$1퀄리파잉').replace(/(^|\s)Race\b/,'$1레이스').replace(/(^|\s)Warm-up$/,'$1웜업');
 export function imsaYouTubeSessions(videos,events){
  const byEvent=new Map();
  for(const video of videos){
   const start=utc(video.liveStreamingDetails?.scheduledStartTime||'')||utc(video.liveStreamingDetails?.actualStartTime||''),nameEn=start&&imsaStreamSession(video.snippet?.title);if(!nameEn)continue;
   const at=Date.parse(start),event=events.find(e=>Date.parse(e.start+'T00:00:00Z')-86400000<=at&&at<=Date.parse(e.end+'T23:59:59Z')+86400000);if(!event)continue;
-  const list=byEvent.get(event)||[];if(!list.some(s=>s.nameEn===nameEn))list.push({name:korean(nameEn).replace(/^Warm-up$/,'웜업'),nameEn,start,source:'https://www.youtube.com/watch?v='+video.id});byEvent.set(event,list);
+  const list=byEvent.get(event)||[];if(!list.some(s=>s.nameEn===nameEn))list.push({name:imsaKorean(nameEn),nameEn,start,source:'https://www.youtube.com/watch?v='+video.id});byEvent.set(event,list);
  }
  return [...byEvent].map(([event,sessions])=>({name:event.nameEn,startDate:event.start,endDate:event.end,circuit:event.circuit,timezone:event.timezone,sessions:sessions.sort((a,b)=>Date.parse(a.start)-Date.parse(b.start))}));
 }
