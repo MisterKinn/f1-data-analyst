@@ -1,6 +1,6 @@
 # M17 power unit and LapSim: data contract
 
-Contract version: **0.2.0 (draft)**. Date: 2026-11-14. Code read: upstream `main` at `fe3d758`.
+Contract version: **0.2.1 (draft)**. Date: 2026-11-14. Code read: upstream `main` at `fe3d758`.
 Status: proposal. No code reads or writes these files yet. This document changes no code.
 
 Rules that stand above this file: `docs/lapsim-physics-rules.md` (the project copy is
@@ -14,7 +14,7 @@ Two projects exchange data. They share no code.
 
 | Project | What it is | Where |
 |---|---|---|
-| **M17** | The owner's own model of an F1 power unit, with the Mercedes M17 as its subject. It is a separate, unfinished project. This contract assumes it is built from regulations and public information, not from manufacturer data (section 10.2). | Outside this repo |
+| **M17** | The owner's own model of an F1 power unit, with the Mercedes M17 as its subject. It is a separate, unfinished project. It has two parts: a CAD model and analysis models (section 10.2). It is built from regulations and public information, not from manufacturer data. | Outside this repo |
 | **LapSim** | The lap simulator | `worker/lapsim/`, `scripts/sim/` |
 
 The only link is a set of **table files**. Each file flows **one way**.
@@ -288,16 +288,23 @@ These are working decisions, chosen to be the safest option under the physics ru
 | 11 | Site | No M17-based number is shown to users before it has passed the gate. After that it carries the layer 4 label. |
 | 12 | Later years | M17 is a 2026 model. LapSim keeps scaling 2027 and 2028 from the rules, without M17. |
 
-### 10.2 Only the owner can answer
+### 10.2 M17 scope (decided 2026-11-14)
 
-1. **M17 scope.** Is M17 a CAD model only, or also a performance model? This decides which tables of section 6 can exist. Until answered, no table is expected and nothing waits on M17.
+M17 is treated as both a CAD model and an analysis model. Basis: the owner's site plan describes power units that are estimated in CAD and then simulated, and the M17 project is choosing analysis programs to install. Both parts are unfinished.
+
+| M17 part | Tables it can supply | State today |
+|---|---|---|
+| CAD | `m17-scalars`: mass, centre of gravity, crank inertia | Not delivered. `draft` when it arrives. |
+| Analysis (engine and electrical simulation) | `m17-ice-fullload`, `m17-mguk-envelope`, efficiencies in `m17-scalars` | Not delivered. `draft` when it arrives. |
+
+A table becomes `released` only when M17 states how it checked the table against a source outside LapSim. Until then hard rule 10 applies and LapSim does not compute with it. Nothing in LapSim waits on M17.
 
 ### 10.3 Findings for the LapSim side (not fixed here, docs only)
 
 | Finding | Where | Why it matters |
 |---|---|---|
 | `pIce` is at its lower bound for 2025 and 2026 | `calibration-data.js`, `calibrate.mjs` | Section 2.1. Add it to the known open points of the physics rules. |
-| The tool's assumption text says 2026–2028 energy is harvested only under braking | `tool.js`, assumptions list | The kernel harvests at full throttle by default for `f1-2026` (`throttleHarvest`). Text and model disagree. One of them should change. |
+| The tool and page text said 2026–2028 energy is harvested only under braking | `tool.js`, `simulation.js`, `docs/simulation-plan.md` | Checked by running the kernel: the fitted 2026 car recovers 0.4–1.5 MJ per lap on throttle (Monza, Silverstone, Suzuka, Miami). The text is corrected in its own PR (`fix/lapsim-harvest-assumption-text`). The model is unchanged. |
 | The shown lap time and the trace differ on raced tracks | `tool.js`, `sectorCorrection` | Section 7.4. Any export must carry both lap times. |
 
 ### 10.4 Still not checked
