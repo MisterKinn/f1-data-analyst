@@ -335,3 +335,48 @@ Gate: every variant rejected on all rows, on F1 and on WEC. One group accepted: 
 3. Replace the guessed axle inputs with per-car values from regulations. Fit the load exponent inside a bound.
 4. Start section 6 step 1 (F1 gear ratios). It does not depend on the axle result.
 5. Build the GT3 series table (section 4.2), keep every car in `fetch-wec.mjs`, then the per-car refit (section 4.1).
+
+---
+
+## 10. Circuits without F1 position data: how the track error was reduced (2026-11-14)
+
+Standing method for adding a circuit that is not in `lapsimTracks`. Code: `scripts/sim/build-geometry-extra.mjs`, `scripts/sim/build-geometry-f1-history.mjs`. Declaration and reference laps: `scripts/sim/data/track-extra.json`. Results: `docs/lapsim-tracks-extra.md`. These tracks live in `lapsimExtraTracks`; the fit scripts read `lapsimTracks` only.
+
+### 10.1 Geometry, highest evidence first
+
+| Order | Source | Use when | Result measured |
+|---|---|---|---|
+| 1 | F1 car positions of a 2018–2021 qualifying session (TracingInsights), through the production builder with the production smoothing | The circuit hosted F1 and the geometry flag of 10.2 is inside its limit | Four production circuits rebuilt this way: 0.3–0.9 % from the production track with the F1 car, within 0.3 % with the LMGT3 car |
+| 2 | Map centre line (OpenStreetMap, accepted within 0.5 % of the official length) with the least-curvature line inside the FIA width | No usable F1 positions | Centre line alone is 11–14 % too slow. With the least-curvature line the unseen error is 0.3–3.9 % |
+| 3 | Hand-traced diagram | Nothing else exists | Always ⚠️ |
+
+Never use a map centre line as the driven line. Keep only measured position samples (whole decimetres); the samples interpolated onto the car-data clock add false curvature.
+
+### 10.2 Geometry flag without a car
+
+The lateral acceleration that the pole lap's real speed implies on the built curvature (mean over about 25 m). Production circuits give 5.0–6.6 g. Limit 7.0 g. Above the limit the curvature is too high in a fast corner: keep the map line, or mark ⚠️ when there is none. Sparse positions cause this (2019 data come every 300 ms).
+
+### 10.3 Reference laps
+
+1. Use every series in the lap tables, not only the series of the fitted cars. Decide by car model (a GT3 model, not GT4, GT2 or Cup): the series label of a row can be wrong.
+2. Split rows of a venue by layout before use: a lap-time band per layout, and drop a row whose official length ÷ lap time is outside 120–215 km/h.
+3. A weather record of zeros is a missing record: use standard weather.
+4. Seasons 2023–2026 first. Use 2018–2022 only for a track with no newer row, and label it "older".
+5. An F1 lap older than the fitted seasons is compared with the 2023 car times the pace ratio of that season, learned on production circuits with an unchanged layout (2020: 0.9686, held-out 1.4 %; 2021: 0.9864, held-out 1.05 %). Without the ratio the row measures the car, not the track.
+
+### 10.4 Decision, in this order (limit 3.0 % RMS, never moved after a result)
+
+| Step | Track factor | Error reported | Level (section 3.2) |
+|---|---|---|---|
+| 1. Unseen | Mean factor of the class's fitted tracks | RMS over all rows | C, track-unseen |
+| 2. Sibling | Factor of a layout that shares most of the lap (production Sakhir for Sakhir Outer, sprint for Nürburgring GP) | RMS over all rows | C for this layout |
+| 3. Learned | One grip factor fitted on the track's own rows | Leave one row out, fit on the others, error on the row left out | A or B, not C |
+
+A learned factor must be inside 0.88–1.21, the range of the production track factors. Outside it the geometry is wrong and the track stays ⚠️ (Daytona: 0.76). A learned factor never passes on the rows it was fitted on. No pass: ⚠️ and `fit: false`.
+
+### 10.5 Known limits
+
+- Lap time only. Sectors, corner minimum speeds and traps are not checked (section 3.4).
+- A learned factor absorbs line and car error as well as surface grip. Seven map-line tracks need 1.05–1.12: the map line is too slow there.
+- Most rows use a borrowed car (IMSA GTP = LMDh, other GT3 series = LMGT3). Only Fuji and Le Mans have own-class rows.
+- The 7.0 g limit was chosen after the values of the new tracks were seen.

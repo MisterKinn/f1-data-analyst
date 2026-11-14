@@ -8,6 +8,7 @@ export const SERIES_CARS = {'imsa-gtp': ['imsa', 'gtp', 'wec-lmdh'], 'imsa-gtdpr
   'elms-lmgt3': ['elms', 'lmgt3', 'wec-lmgt3'], 'alms-gt3': ['alms', 'gt3', 'wec-lmgt3'], 'gtwc-gt3': ['gtwc', 'gt3', 'wec-lmgt3'], 'dtm-gt3': ['dtm', 'gt3', 'wec-lmgt3'],
   'igtc-gt3': ['igtc', 'gt3', 'wec-lmgt3'], 'nur-gt3': ['nur', 'gt3', 'wec-lmgt3'], 'macau-gt3': ['macau', 'gt3', 'wec-lmgt3']};
 import {lapsimCalibration} from './calibration-data.js';
+import {lapsimExtraTracks} from './tracks-data.js';
 import {lapsimTrackChanges} from './track-changes-data.js';
 import {lapsimChangeEffects} from './change-effects-data.js';
 import {TUM_2019, PRIOR, applyRules, applyDevelopment} from './cars.js';
@@ -18,7 +19,7 @@ export const CAR_ORDER = ['base2019', '2025', '2026', '2027', '2028', 'wec-lmh',
 // grip: the per-track factor fitted with that season's car (absorbs asphalt and line differences)
 export function carsFor(id) {
   const s = lapsimCalibration?.seasons || {}, p = lapsimCalibration?.projections || {};
-  const gripOf = y => [y, ...Object.keys(s).sort().reverse()].map(k => s[k]?.tracks?.[id]?.grip).find(g => g != null) ?? 1;
+  const gripOf = y => [y, ...Object.keys(s).sort().reverse()].map(k => s[k]?.tracks?.[id]?.grip).find(g => g != null) ?? lapsimExtraTracks[id]?.trackFactor?.grip ?? 1; // extra circuit: factor learned from its real laps, if any
   // drag: per-track straight-line factor shared by the F1 seasons (when the calibration fitted one)
   const drag = [...Object.keys(s).sort().reverse()].map(k => s[k]?.tracks?.[id]?.drag).find(d => d != null) ?? 1;
   const withDrag = c => drag === 1 ? c : {...c, cdA: c.cdA * drag, cdALow: (c.cdALow ?? c.cdA) * drag};
