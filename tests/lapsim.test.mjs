@@ -251,8 +251,9 @@ test('sector correction: a raced track reproduces the real pole sectors in its w
   } finally { p.sectors = saved; }
 });
 
-test('WEC sector correction: every raced dry session of the calibrated season reproduces the real best lap', async () => {
+test('WEC: a raced track reproduces the real best lap, the calibrated season\'s or a faster one of another season (docs/lapsim-learn.md rule 9)', async () => {
   const {lapsimWecPoles: P} = await import('../worker/lapsim/wec-poles-data.js');
+  const {lapsimLearned: Lr} = await import('../worker/lapsim/learned-data.js');
   const {lapsimCalibration: c} = await import('../worker/lapsim/calibration-data.js');
   const {simulate} = await import('../worker/lapsim/tool.js');
   let n = 0;
@@ -261,7 +262,8 @@ test('WEC sector correction: every raced dry session of the calibrated season re
     for (const [track, ys] of Object.entries(P)) {
       const p = ys[y]?.[cls]; if (!p) continue;
       const r = simulate({track, car: 'wec-' + cls, conditions: 'real'});
-      assert.ok(Math.abs(r.result.lap_seconds - p.lap) < 0.0015, `${track} ${cls}: ${r.result.lap_seconds} vs ${p.lap}`);
+      const want = Math.min(p.lap, Lr.tracks[track]?.classReal?.['wec-' + cls]?.lap ?? Infinity);
+      assert.ok(Math.abs(r.result.lap_seconds - want) < 0.0015, `${track} ${cls}: ${r.result.lap_seconds} vs ${want}`);
       n++;
     }
   }

@@ -5,7 +5,7 @@ import {lapsimAllTracks as lapsimTracks} from './tracks.js';
 import {lapsimCalibration} from './calibration-data.js';
 import {RULE_CHANGES} from './cars.js';
 import {TRACK_NAMES, resolveTrack} from './names.js';
-import {carsFor, realConditions, latestChanges, fittedYear, SERIES_CARS, CAR_ORDER} from './scenario.js';
+import {carsFor, realConditions, latestChanges, fittedYear, SERIES_CARS, CAR_ORDER, raceRecords} from './scenario.js';
 import {rechargeLimitMJ} from './energy-limits.js';
 import {lapsimLearned} from './learned-data.js';
 import {evolutionCoeffs, evolutionDelta, evolutionCurve} from './evolution.js';
@@ -170,6 +170,8 @@ export function simulate(args = {}) {
     out.real_lap = {year: sel.year, position: cal.position ?? 1, lap_time: fmt(cal.realLap), driver_number: cal.driver ?? null, fit_error_s: r3(cal.errorSec), speed_rms_kph: cal.rmsKph,
       ...(same ? {simulated_minus_real_s: r3(res.lapTime - cal.realLap)} : {})};
   }
+  const rr = raceRecords(id)[sel.series ? selKey : String(sel.year)];
+  if (rr) out.real_race_lap = {lap_time: fmt(rr.lap), lap_seconds: rr.lap, year: rr.year, by: rr.who, event: rr.event, source: rr.source, note: 'fastest real race lap of this car on this track'};
   const proj = lapsimCalibration?.projections?.[sel.year];
   if (sel.kind === 'projected') out.projection = {rules: RULE_CHANGES[sel.year]?.note?.en, rules_effect_pct: proj?.rulesEffectPct ?? null,
     development_pct: proj?.developmentTargetPct ?? null, development_band_pct: proj?.bandPct ?? null};

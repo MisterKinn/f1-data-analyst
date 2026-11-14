@@ -18,6 +18,15 @@ the first run. Sections 4 and 5 are results. Section 6 is the source list: add a
 5. **Reduce the error, and report it per class and per track**, always on rows the fit did not see.
 6. **Publish unless the error is really bad.** A track gets ⚠️ when it is not built yet (Rwanda), has no real lap to check, or its
    error with one event hidden is above 3 % in any class (`trackWarn()` in `worker/simulator-controls.js`).
+9. **A car + track combination that really ran shows its fastest real lap, exactly (0.000 %), as F1 does.** In every category:
+   F1 (that season's car: its pole), LMH, LMDh, LMGT3 (class-best of any season), each GT3 car model and Evo kit (its own fastest
+   lap, e.g. Road Atlanta + Huracan GT3), Formula E (Gen3, Gen3 Evo, and Gen4 once it has raced), every series (WEC, IMSA, ELMS,
+   Asian LMS, GT World Challenge, …). Fastest = over every season and every dry session in the data (qualifying, practice, test, race);
+   the page names the session it comes from. The conditions shown are the conditions of that session, so the lap is exact.
+   The **fastest real race lap** of that car on that track is shown too (F1: that season's race, from f1db; endurance: Al Kamel).
+   Code: `carsFor()` and `realConditions()` and `raceRecords()` in `worker/lapsim/scenario.js`, records from
+   `scripts/sim/learn/fit-endurance.mjs` (`real`, `classReal`, `raceReal`) and `scripts/sim/learn/f1-race-records.mjs`.
+   Test: `tests/lapsim-learn.test.mjs` checks every combination on the page and in the tool. A new source or a new car must keep it green.
 7. Data with a different structure is converted to the one table shape of section 2. Outside programs (MATLAB, Python tools of the
    M17 power-unit project) may be used when they help; an unfinished or inaccurate tool must never make a working feature worse.
 8. Use the engineering skills and the Karpathy guidelines for this work: goal and pass check first, smallest change, verify.

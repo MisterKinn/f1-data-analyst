@@ -7,7 +7,9 @@ import {parseCsv, sessionCars, wx} from '../scripts/sim/learn/build-endurance.mj
 import {fit} from '../scripts/sim/learn/fit-endurance.mjs';
 import {lapsimLearned} from '../worker/lapsim/learned-data.js';
 import {lapsimTracks, lapsimExtraTracks} from '../worker/lapsim/tracks-data.js';
-import {carsFor, CAR_ORDER} from '../worker/lapsim/scenario.js';
+import {carsFor, CAR_ORDER, raceRecords} from '../worker/lapsim/scenario.js';
+import {lapsimAllTracks} from '../worker/lapsim/tracks.js';
+import {simulationPage} from '../worker/simulation.js';
 import {simulate} from '../worker/lapsim/tool.js';
 import {evoPairs} from '../worker/simulator-controls.js';
 
@@ -79,7 +81,28 @@ test('page and tool: GT3 per car model with an Evo pair; raced sessions still re
   assert.equal(evoPairs(cars, CAR_ORDER)['gt3-bmw-m4-gt3'], 'gt3-bmw-m4-gt3-evo');
   assert.equal(carsFor('monza')['2026'].timeScale, undefined);                         // F1 is untouched
   assert.equal(carsFor('spa-francorchamps')['wec-lmgt3'].timeScale, undefined);        // a class fitted on this track keeps its own calibration
-  const lm = lapsimExtraTracks['le-mans'].realLaps['wec-lmh'];
-  assert.equal(simulate({track: 'le-mans', car: 'wec-lmh'}).result.lap_seconds, lm.lap); // real lap reproduced exactly
+  assert.equal(simulate({track: 'le-mans', car: 'wec-lmh'}).result.lap_seconds, 202.982); // fastest real LMH lap at Le Mans (Ferrari 499P, 2023)
   const g = simulate({track: 'le-mans', car: 'gt3-ferrari-296-gt3'}); assert.equal(g.status, 'ok'); assert.ok(g.result.lap_seconds > 225 && g.result.lap_seconds < 245);
+});
+
+// Owner rule 2026-11-14 (docs/lapsim-learn.md rule 9): a car + track combination that really ran shows its FASTEST real lap,
+// exactly, on the page and in the tool, in every category. Race laps: the fastest real race lap is shown too.
+test('every car that raced on a track reproduces its fastest real lap exactly (page and tool)', () => {
+  const fmt = s => { const m = Math.floor(s / 60); return (m ? m + ':' : '') + (s - m * 60).toFixed(3).padStart(m ? 6 : 5, '0'); };
+  const keys = ['2025', '2026', 'wec-lmh', 'wec-lmdh', 'wec-lmgt3', ...CAR_ORDER.filter(k => k.startsWith('gt3-'))]; let n = 0;
+  for (const id of Object.keys(lapsimAllTracks)) { const cars = carsFor(id), L = lapsimLearned.tracks[id];
+    for (const k of keys) { const c = cars[k]; if (!c?.fix) continue; const want = c.fix.lap ?? c.fix.real.reduce((a, b) => a + b, 0); n++;
+      const known = [L?.classReal?.[k]?.lap, L?.real?.[k]?.lap, lapsimExtraTracks[id]?.realLaps?.[k]?.lap].filter(Number.isFinite);
+      if (c.series) for (const v of known) assert.ok(want <= v + 5e-4, `${id} ${k}: shows ${want}, a faster real lap ${v} exists`);
+      assert.ok(Math.abs(simulate({track: id, car: k}).result.lap_seconds - want) < 0.0015, `${id} ${k} tool`);
+      assert.equal((simulationPage({track: id, car: k}, 'en').match(/data-ls="lap"[^>]*>([^<]*)/) || [])[1], fmt(want), `${id} ${k} page`); } }
+  assert.ok(n > 300, String(n));
+  for (const [id, k] of [['road-atlanta', 'gt3-lamborghini-huracan-gt3'], ['daytona', 'wec-lmdh'], ['le-mans', 'wec-lmgt3']]) assert.ok(carsFor(id)[k].fix, `${id} ${k} raced there`);
+});
+
+test('fastest real race lap: F1 per season (f1db), endurance per car (Al Kamel), only on its own layout', () => {
+  assert.equal(raceRecords('monza')['2025'].lap, 80.901);                       // Norris, Monza 2025
+  assert.ok(raceRecords('road-atlanta')['gt3-lamborghini-huracan-gt3'].lap > 70);
+  assert.ok(raceRecords('nurburgring-gp') && !raceRecords('nurburgring-gp')['2025']); // F1 raced there in 2020 only
+  const sim = simulate({track: 'monza', car: '2025'}); assert.equal(sim.real_race_lap.lap_seconds, 80.901);
 });

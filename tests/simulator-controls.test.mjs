@@ -68,9 +68,9 @@ test('event defaults come from the calendar event of the car\'s own series at th
   const at = (id, key) => carEvent(id, key, carsFor(id)[key], realConditions(id));
   assert.deepEqual(at('monza', '2026'), {name: '이탈리아 그랑프리', nameEn: 'Italian Grand Prix', start: '2026-09-04', end: '2026-09-06', weatherYear: 2026});
   assert.deepEqual(at('monza', 'wec-lmh'), {name: '몬자 6시간', nameEn: '6 Hours of Monza', start: '2026-11-06', end: '2026-11-08', weatherYear: 2026});
-  // WEC at Bahrain: the 8 Hours of Bahrain, not a Grand Prix; the weather in the data is the 2025 session
+  // WEC at Bahrain: the 8 Hours of Bahrain, not a Grand Prix; the weather is that of the fastest real LMH lap there (2024 session)
   const b = at('sakhir', 'wec-lmh');
-  assert.equal(b.nameEn, '8 Hours of Bahrain'); assert.equal(b.weatherYear, 2025);
+  assert.equal(b.nameEn, '8 Hours of Bahrain'); assert.equal(b.weatherYear, 2024);
 });
 
 test('no event or no own weather in the data: nothing new is shown', () => {
