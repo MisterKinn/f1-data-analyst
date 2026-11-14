@@ -8,3 +8,4 @@ mkdirSync(D, {recursive: true}); copyFileSync('scripts/sim/data/tracks/fia-circu
 for (const s of ['fetch-osm', 'assemble', 'build-extra']) execFileSync('node', [`scripts/sim/tracks/${s}.mjs`], {env, stdio: 'inherit'});
 copyFileSync(D + '/loops-summary.json', 'scripts/sim/data/tracks/loops-2026-11-15.json');
 if (existsSync(D + '/extra-tracks.json')) copyFileSync(D + '/extra-tracks.json', 'scripts/sim/data/tracks/extra-tracks-2026-11-15.json');
+// rerun 1794699588

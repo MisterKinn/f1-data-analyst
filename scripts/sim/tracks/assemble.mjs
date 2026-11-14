@@ -1,4 +1,5 @@
-// Step 2 of new-track geometry: turn the OpenStreetMap raceway ways of a venue into closed laps.
+// Step 2 of new-track geometry: turn the OpenStreetMap raceway ways of a venue into closed laps (t.tol in a request: a stated wider
+// length tolerance for a venue whose map misses a short piece).
 // The ways are split where they meet, then every simple closed loop is listed with its length. A layout is ACCEPTED only
 // when a loop is within 0.5 % of the official lap length stored in track-requests.json (lengthM with lengthSource).
 // Without an official length the loops are only listed. © OpenStreetMap contributors, ODbL.
@@ -87,11 +88,11 @@ if (process.argv[1]?.endsWith('assemble.mjs')) {
     let r = both(12), snapUsed = 12;
     const accepted = targets.map(g => { // nearest loops by length; a loop that crosses itself (total turn not ±360°) is not a lap
       const best = r.loops.map(l => ({l, err: Math.abs(l.m - g.lengthM) / g.lengthM})).sort((a, b) => a.err - b.err).slice(0, 40).find(c => t.crossover || Math.abs(Math.abs(totalTurnDeg(c.l.line())) - 360) < 30); if (!best) return {id: g.id, officialM: g.lengthM, source: g.src, accepted: false};
-      const ok = best.err <= (t.tol ?? 0.005); // t.tol: a venue whose map is known to miss a short piece (stated in the request) if (ok) lines[g.id] = best.l.line().map(p => [+p[0].toFixed(7), +p[1].toFixed(7)]); return {id: g.id, officialM: g.lengthM, source: g.src, grade: g.fia?.grade, pole: g.fia?.pole, widthM: g.fia?.widthM, loopM: best.l.m, errorPct: +(best.err * 100).toFixed(2), accepted: ok}; });
+      const ok = best.err <= (t.tol ?? 0.005); if (ok) lines[g.id] = best.l.line().map(p => [+p[0].toFixed(7), +p[1].toFixed(7)]); return {id: g.id, officialM: g.lengthM, source: g.src, grade: g.fia?.grade, pole: g.fia?.pole, widthM: g.fia?.widthM, loopM: best.l.m, errorPct: +(best.err * 100).toFixed(2), accepted: ok}; });
     // a venue with no accepted lap is tried again with wider gap closing; the length check still decides
     const pick = () => targets.map(g => { const best = r.loops.map(l => ({l, err: Math.abs(l.m - g.lengthM) / g.lengthM})).sort((a, b) => a.err - b.err).slice(0, 40).find(c => t.crossover || Math.abs(Math.abs(totalTurnDeg(c.l.line())) - 360) < 30);
       if (!best) return {id: g.id, officialM: g.lengthM, source: g.src, accepted: false};
-      const ok = best.err <= (t.tol ?? 0.005); // t.tol: a venue whose map is known to miss a short piece (stated in the request) if (ok) lines[g.id] = best.l.line().map(p => [+p[0].toFixed(7), +p[1].toFixed(7)]);
+      const ok = best.err <= (t.tol ?? 0.005); if (ok) lines[g.id] = best.l.line().map(p => [+p[0].toFixed(7), +p[1].toFixed(7)]);
       return {id: g.id, officialM: g.lengthM, source: g.src, grade: g.fia?.grade, pole: g.fia?.pole, widthM: g.fia?.widthM, loopM: best.l.m, errorPct: +(best.err * 100).toFixed(2), accepted: ok, gapClosedM: snapUsed}; });
     let acc2 = accepted;
     for (const sm of [30, 60]) { if (!targets.length || acc2.some(a => a.accepted)) break; r = both(sm); snapUsed = sm; acc2 = pick(); }
