@@ -1,6 +1,6 @@
 import {championships} from './website.js';
 import{calendarEvents,calendarSources,circuitInfo,calendarReviewedAt}from'./race-calendar-data.js';
-import{sessionSchedule}from'./session-schedule.js';import{trackMaps}from'./track-map-data.js';
+import{sessionSchedule}from'./session-schedule.js';import{seasonReaders}from'./calendar-season-readers.js';import{trackMaps}from'./track-map-data.js';
 const TTL=6*3600000,MAX_AGE=86400000,RETRY=60000;
 // A visitor-pressed refresh re-checks a source at most once per 5 minutes, waits up
 // to 12 seconds, then returns whatever is saved so the button never hangs the page.
@@ -12,9 +12,11 @@ const validDay=value=>/^\d{4}-\d{2}-\d{2}$/.test(value)&&Number.isFinite(Date.pa
 const stamp=value=>typeof value==='string'&&/T.*(?:Z|[+-]\d\d:\d\d)$/.test(value)&&Number.isFinite(Date.parse(value));
 const WEEK=7*86400000,dayAfter=d=>new Date(Date.parse(d+'T12:00:00Z')+86400000).toISOString().slice(0,10);
 // A name only identifies an event within its own weekend; the same E-Prix recurs every season.
-function matchEvent(series,name,start,existing){
+function matchEvent(series,name,start,existing,end=start,circuit=null){
  const target=slug(name),near=e=>Math.abs(Date.parse(e.start)-Date.parse(start))<=WEEK;
- return existing.find(e=>e.series===series&&near(e)&&[e.name,e.nameEn].some(v=>slug(v)===target))||existing.find(e=>e.series===series&&e.start===start);
+ return existing.find(e=>e.series===series&&near(e)&&[e.name,e.nameEn].some(v=>slug(v)===target))||existing.find(e=>e.series===series&&e.start===start)
+  // Organisers name races differently from our cards ("Xfinity 500" vs "NASCAR · Martinsville"): same circuit, same weekend.
+  ||(circuit?existing.find(e=>e.series===series&&e.circuit===circuit&&e.start<=end&&start<=e.end):undefined);
 }
 // Some organisers list each race of a doubleheader as its own entry with a round number
 // ("R06 Jeddah E-Prix", "R07 Jeddah E-Prix"). Our calendar has one card per weekend.
@@ -36,11 +38,11 @@ export function normalizeOfficialEvents(records,series,url,existing=calendarEven
  for(const record of foldWeekends(records)){
   const start=day(record.startDate),end=day(record.endDate||record.startDate),name=String(record.name||'').trim();
   if(!validDay(start)||!validDay(end)||end<start||!name||name.length>240||!/^20\d\d/.test(start))continue;
-  const old=matchEvent(series,name,start,existing),sameDates=old?.start===start&&old?.end===end;
+  const old=matchEvent(series,name,start,existing,end,record.circuit),sameDates=old?.start===start&&old?.end===end;
   const fresh=Array.isArray(record.sessions)?record.sessions.filter(s=>s.name&&stamp(s.start)).map(s=>({...s,source:url,verifiedAt:new Date(now).toISOString()})):[];
   const sessions=fresh.length?fresh:sameDates?(old?.sessions||sessionSchedule[old?.id]||[]):[];
   const race=sessions.find(s=>/^(?:race|경기)$/i.test(s.nameEn||s.name));
-  result.push({...old,raceStart:race?.start||(sameDates?old?.raceStart:null),id:old?.id||series+'-official-'+slug(name)+'-'+start,series,name:old?.name||name,nameEn:name,start,end,timezone:old?.timezone||null,url,precision:race?'time':'date',sessions,reviewedAt:new Date(now).toISOString().slice(0,10),verifiedAt:new Date(now).toISOString()});
+  result.push({...old,raceStart:race?.start||(sameDates?old?.raceStart:null),id:old?.id||series+'-official-'+slug(name)+'-'+start,series,name:old?.name||name,nameEn:name,start,end,timezone:old?.timezone||record.timezone||null,...(!old?.circuit&&record.circuit?{circuit:record.circuit}:{}),url,precision:race?'time':'date',sessions,reviewedAt:new Date(now).toISOString().slice(0,10),verifiedAt:new Date(now).toISOString()});
  }
  return [...new Map(result.map(e=>[e.id,e])).values()];
 }
@@ -126,6 +128,17 @@ export function parseTimetableText(html){
  }
  return rows;
 }
+// Timetable tables with one row per session: name, "Fri 15 Jan", "16:15 – 17:00" (fiaformulae.com/en/<city>).
+export function parseTimetableRows(html){
+ const rows=[];
+ for(const [,row] of String(html).matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)){
+  const cells=[...row.matchAll(/<t[hd]\b[^>]*>([\s\S]*?)<\/t[hd]>/gi)].map(c=>c[1].replace(/<[^>]+>/g,' ').replace(/&nbsp;/g,' ').replace(/&(?:ndash|mdash);/g,'–').replace(/\s+/g,' ').trim());
+  const time=cells.map(c=>TIME.exec(c)).find(Boolean),dateCell=cells.find(c=>/^(?:[A-Za-z]{3,9},?\s+)?\d{1,2}\s+[A-Za-z]{3,9}$/.test(c)),title=cells.find(c=>c&&c!==dateCell&&!TIME.test(c));
+  const date=/(\d{1,2})\s+([A-Za-z]{3,9})$/.exec(dateCell||''),m=date&&MONTHS.findIndex(x=>x.startsWith(date[2].toLowerCase().slice(0,3)));
+  if(time&&date&&m>=0&&title)rows.push({month:m+1,day:+date[1],from:clock(time[1],time[2]),to:clock(time[3],time[4]),title});
+ }
+ return rows;
+}
 export function parseTimetableJson(text){
  const data=JSON.parse(text),days=Array.isArray(data)?data:Array.isArray(data?.data)?data.data:[],rows=[];
  for(const item of days){
@@ -156,7 +169,16 @@ async function pageReader(page,hosts,get){
  const href=/href=["']([^"']*\/race\/calendar\/\d+|[^"']+\.ics(?:\?[^"']*)?)["']/i.exec(body)?.[1],file=href?new URL(href,page):null;
  if(file&&hosts.has(file.hostname)){const rows=parseICalendar(await get(file.href,hosts)).filter(r=>stamp(r.startDate)).sort((a,b)=>Date.parse(a.startDate)-Date.parse(b.startDate));
   return event=>rows.filter(r=>day(r.startDate)>=shift(event.start,-1)&&day(r.startDate)<=shift(event.end,1)).map(r=>({...sessionLabel(r.name),start:r.startDate,...(stamp(r.endDate)?{end:r.endDate}:{})}));}
- const rows=parseTimetableText(body);return event=>eventSessions(rows,event);
+ const table=parseTimetableRows(body),rows=table.length>=2?table:parseTimetableText(body);return event=>eventSessions(rows,event);
+}
+// Race pages named after the venue city (fiaformulae.com/en/mexicocity), same host only.
+export function cityPageLinks(html,base,allowed,events){
+ const found=new Set();
+ for(const event of events){
+  const city=slug(String(event.nameEn||'').replace(/\b(?:E-?Prix|Grand Prix|GP)\b/gi,'')).replace(/-/g,'');if(city.length<4)continue;
+  for(const [,href] of String(html).matchAll(new RegExp('href=["\']((?:https://[^/"\']+)?/(?:[a-z]{2}/)?'+city+')["\']','gi'))){try{const url=new URL(href,base);if(allowed.has(url.hostname))found.add(url.href);}catch{}}
+ }
+ return [...found];
 }
 // Event pages linked from the season page (ACO /race/<slug>, SRO /event/<id>/<slug>, ...), same host only.
 export function eventPageLinks(html,base,allowed,limit=12){
@@ -171,7 +193,7 @@ export async function loadEventSessions(series,allowed,now,events=calendarEvents
  const today=day(new Date(now).toISOString()),horizon=shift(today,21),records=[];
  const due=events.filter(e=>e.series===series&&e.end>=today&&e.start<=horizon).slice(0,2);if(!due.length)return records;
  // Read every linked event page once, and only when an event near enough has no page of its own that works.
- let pool;const discovered=()=>pool??=Promise.all(eventPageLinks(seasonHtml,calendarSources[series],allowed).map(page=>pageReader(page,allowed,get).catch(()=>null)));
+ let pool;const discovered=()=>pool??=Promise.all([...new Set([...cityPageLinks(seasonHtml,calendarSources[series],allowed,due),...eventPageLinks(seasonHtml,calendarSources[series],allowed)])].slice(0,12).map(page=>pageReader(page,allowed,get).catch(()=>null)));
  for(const event of due){
   let sessions=[];
   try{
@@ -187,13 +209,22 @@ export async function loadEventSessions(series,allowed,now,events=calendarEvents
 async function loadSource(series,now){
  const url=calendarSources[series];let records,source=url;
  if(series==='f1'){source='https://raw.githubusercontent.com/theOehrly/f1schedule/master/schedule_'+new Date(now).getUTCFullYear()+'.json';records=parseFastF1Schedule(JSON.parse(await getText(source,new Set(['raw.githubusercontent.com']))));}
+ else if(seasonReaders[series]){
+  // Organisers with their own season format (IMSA, NASCAR, SUPER GT, NLS, Dakar).
+  const read=await seasonReaders[series]({now,get:getText,stampAt:zonedStamp});records=read.records;source=read.source||source;
+  if(!read.reached)throw Error('Calendar source unavailable');
+  if(!records.length)return {events:[],checkedAt:now,source,provider:'Official organizer',note:'Nothing new published yet'};
+ }
  else{const allowed=new Set([new URL(url).hostname]);records=[];
   // A season page without structured data must not stop the per-event session files.
-  let season='';
-  try{const text=season=await getText(url,allowed);records=text.includes('BEGIN:VCALENDAR')?parseICalendar(text):parseJsonLdEvents(text);
+  let season='',reached=false;
+  try{const text=season=await getText(url,allowed);reached=true;records=text.includes('BEGIN:VCALENDAR')?parseICalendar(text):parseJsonLdEvents(text);
    if(!records.length){const links=[...text.matchAll(/href=["']([^"']+\.ics(?:\?[^"']*)?)["']/gi)].slice(0,2);for(const [,href]of links){const next=new URL(href,url);if(allowed.has(next.hostname))records.push(...parseICalendar(await getText(next.href,allowed)));}}
   }catch{}
   records.push(...await loadEventSessions(series,allowed,now,calendarEvents,getText,season));
+  // The organiser's page answered but has no dates or timetable to read yet (next season
+  // not announced, timetable not out). That is not a failure: keep the checked-in schedule.
+  if(!records.length&&reached)return {events:[],checkedAt:now,source,provider:'Official organizer',note:'Nothing new published yet'};
  }
  const events=normalizeOfficialEvents(records,series,source,calendarEvents,now);if(!events.length)throw Error('No verifiable structured schedule found');return {events,checkedAt:now,source,provider:series==='f1'?'FastF1 schedule backend':'Official organizer'};
 }
@@ -225,7 +256,7 @@ export async function calendarRoute(request,env={},ctx={},now=Date.now()){
   const combined=mergeCalendarEvents(base,record?.events);
   if(available)events.push(...combined);
   else events.push(...combined.map(event=>({...event,verified:false})));
-  statuses.push({series:name,source:record?.source||calendarSources[name],lastVerifiedAt:record?.checkedAt?new Date(record.checkedAt).toISOString():calendarReviewedAt,lastAttemptAt:record?.attemptedAt?new Date(record.attemptedAt).toISOString():null,available,stale:!!record?.error||!record?.checkedAt,error:record?.error||(!record?.checkedAt?'Using checked-in schedule snapshot':null)});
+  statuses.push({series:name,source:record?.source||calendarSources[name],lastVerifiedAt:record?.checkedAt?new Date(record.checkedAt).toISOString():calendarReviewedAt,lastAttemptAt:record?.attemptedAt?new Date(record.attemptedAt).toISOString():null,available,stale:!!record?.error||!record?.checkedAt,error:record?.error||(!record?.checkedAt?'Using checked-in schedule snapshot':null),...(record?.note&&!record?.error?{note:record.note}:{})});
  }
  if(env.BUCKET&&ctx?.waitUntil){
   let tasks=inflight.get(env.BUCKET);if(!tasks){tasks=new Map();inflight.set(env.BUCKET,tasks);}
