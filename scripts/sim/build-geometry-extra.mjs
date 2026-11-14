@@ -27,7 +27,7 @@ export function buildTrack(id, spec, c) {
     officialLengthM: spec.officialLengthM ?? c.officialLengthM ?? null, sectors: [], corners: [],
     kappa: Array.from(line.kappa, v => Math.round(v * 1e5)), grade: flat ? null : Array.from({length: n}, (_, j) => c.grade[Math.min(n0 - 1, Math.floor(j / n * n0))]), heading: null, map,
     quality: {centreLengthM: c.length, widthM: width, halfWidthM: +halfW.toFixed(1), totalTurnDeg: Math.round(turn), startVerified: false, elevation: flat ? null : {minM: c.elevation?.minM, maxM: c.elevation?.maxM, maxGradePct: c.elevation?.maxGradePct},
-      evidence: {lapLength: c.officialLengthM || spec.officialLengthM ? '1 fixed (official list)' : '4 stated on a diagram', planShape: spec.shapeEvidence || '2 measured (map centre line)',
+      evidence: {lapLength: c.officialLengthM ? '1 fixed (official list)' : '4 stated on a diagram', planShape: spec.shapeEvidence || '2 measured (map centre line)',
         drivenLine: '3 inferred (least-curvature line inside the width)', width: width ? (c.widthM ? '1 fixed (FIA list)' : '4 stated or assumed') : '4 assumed 12 m',
         height: flat ? 'none (flat assumed)' : (spec.heightEvidence || '2 measured, coarse (about 30 m ground grid)'), trackGrip: '4 borrowed (mean factor of the class\'s fitted tracks)'}},
     sources: [...(c.sources || []), ...(spec.sources || [])]};
@@ -64,7 +64,7 @@ if (process.argv[1]?.endsWith('build-geometry-extra.mjs')) {
     `These tracks are in \`lapsimExtraTracks\` (second export of \`worker/lapsim/tracks-data.js\`). \`lapsimTracks\` is unchanged, so the fit scripts, the tool and the site do not read them yet.`, '',
     '## Declared before the first run (2026-11-14)', '', spec.declared, '',
     '## Result', '', '| Track | Layout | Group | Length m (official) | Height | Rows (own class) | RMS % | Bias % | State |', '|---|---|---|---|---|---|---|---|---|'];
-  for (const e of Object.values(out)) { const q = e.quality, c = q.check; L.push(`| ${e.id} | ${e.layout} | ${e.group} | ${e.length} (${e.officialLengthM ?? '?'}) | ${q.elevation ? `${q.elevation.minM}–${q.elevation.maxM} m` : 'flat assumed'} | ${c.n} (${c.ownClassRows}) | ${c.rmsPct ?? '–'} | ${c.biasPct ?? '–'} | ${e.fit ? 'pass' : e.warn} |`); }
+  for (const e of Object.values(out)) { const q = e.quality, c = q.check; L.push(`| ${e.id} | ${e.layout} | ${e.group} | ${e.length} (${e.officialLengthM ?? '?'}) | ${q.elevation ? (q.elevation.minM == null ? 'diagram labels' : `${q.elevation.minM}–${q.elevation.maxM} m`) : 'flat assumed'} | ${c.n} (${c.ownClassRows}) | ${c.rmsPct ?? '–'} | ${c.biasPct ?? '–'} | ${e.fit ? 'pass' : e.warn} |`); }
   L.push('', 'Length is the least-curvature line; it is shorter than the official centre-line distance. "Own class" rows are WEC cars on WEC laps; the other rows use a borrowed car (IMSA GTP = LMDh car, every other GT3 series = LMGT3 car).', '', '## Check rows', '', '| Track | Series | Season | Class | Car model | Sim car | Real s | Sim s | Error % |', '|---|---|---|---|---|---|---|---|---|');
   for (const e of Object.values(out)) for (const r of e.quality.check.rows) L.push(`| ${e.id} | ${r.series} | ${r.season} | ${r.cls} | ${r.model ?? '?'} | ${r.car}${r.borrowed ? ' (borrowed)' : ''} | ${r.real} | ${r.sim} | ${r.errPct} |`);
   L.push('', '## Evidence layer per value', '', '| Track | Lap length | Plan shape | Driven line | Width | Height | Track grip |', '|---|---|---|---|---|---|---|');

@@ -153,6 +153,26 @@
    "candidate": "lime-rock-imsa-layout",
    "name": "Lime Rock",
    "layout": "IMSA layout 2.414 km"
+  },
+  "rwanda": {
+   "group": "rwanda",
+   "file": "extra-tracks-rwanda.json",
+   "candidate": "k0.7",
+   "variants": [
+    "k0.5",
+    "k0.7",
+    "k1.0"
+   ],
+   "name": "Rwanda",
+   "layout": "Provisional 5.302 km (owner diagram)",
+   "officialLengthM": 5302,
+   "widthM": 13,
+   "shapeEvidence": "4 hand-traced from an oblique diagram of unknown origin",
+   "heightEvidence": "4 seven labels on the diagram, linear between",
+   "provisional": "provisional: hand-traced from a diagram that disagrees with the official October 2026 figures (about 6 km, 17 corners, anti-clockwise)",
+   "sources": [
+    "Owner's diagram (origin unknown), traced by scripts/sim/tracks/rwanda_trace.py on branch lapsim-laps/all-laps-2026-11-11"
+   ]
   }
  },
  "laps": [

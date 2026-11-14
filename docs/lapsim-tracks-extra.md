@@ -32,6 +32,7 @@ Check per track: simulate the production WEC class cars (LMH, LMDh, LMGT3; neare
 | road-atlanta | Road Atlanta 4.088 km | imsa | 4047 (4088) | 275–308 m | 5 (0) | 1.74 | 0.81 | pass |
 | mid-ohio | IMSA layout 3.634 km | imsa | 3566 (3634) | 398–437 m | 0 (0) | – | – | ⚠️ no real lap of a calibrated class |
 | lime-rock | IMSA layout 2.414 km | imsa | 2370 (2414) | 164–180 m | 1 (0) | 2.36 | 2.36 | pass |
+| rwanda | Provisional 5.302 km (owner diagram) | rwanda | 5196 (5302) | diagram labels | 0 (0) | – | – | ⚠️ provisional: hand-traced from a diagram that disagrees with the official October 2026 figures (about 6 km, 17 corners, anti-clockwise) |
 
 Length is the least-curvature line; it is shorter than the official centre-line distance. "Own class" rows are WEC cars on WEC laps; the other rows use a borrowed car (IMSA GTP = LMDh car, every other GT3 series = LMGT3 car).
 
@@ -125,6 +126,7 @@ Length is the least-curvature line; it is shorter than the official centre-line 
 | road-atlanta | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | mid-ohio | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 4 assumed 12 m | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | lime-rock | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 4 assumed 12 m | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| rwanda | 4 stated on a diagram | 4 hand-traced from an oblique diagram of unknown origin | 3 inferred (least-curvature line inside the width) | 4 stated or assumed | 4 seven labels on the diagram, linear between | 4 borrowed (mean factor of the class's fitted tracks) |
 
 ## Sources
 
@@ -148,6 +150,7 @@ Length is the least-curvature line; it is shorter than the official centre-line 
 - **road-atlanta**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
 - **mid-ohio**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); imsa.com/vpracingsportscarchallenge/imsa-vp-racing-sportscar-challenge-2024-schedule (2.258 miles, 13 corners); Terrarium elevation tiles (Mapzen/Tilezen open data)
 - **lime-rock**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); imsa.com/weathertech/weathertech-2022-schedule (1.50 miles, 7 corners) [rounded to 0.01 mile]; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **rwanda**: Owner's diagram (origin unknown), traced by scripts/sim/tracks/rwanda_trace.py on branch lapsim-laps/all-laps-2026-11-11
 
 ## Not checked, known limits
 
