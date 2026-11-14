@@ -1,6 +1,8 @@
 {
  "note": "Extra circuits for the lap simulator: which candidate track becomes which simulator track, and the real laps used for the quality check. Read by scripts/sim/build-geometry-extra.mjs. Candidates: scripts/sim/data/tracks/.",
  "declared": "Check per track: simulate the production WEC class cars (LMH, LMDh, LMGT3; nearest fitted season, 2025 or 2026) on the track with the mean track factor of that class's fitted tracks and the weather of the real lap. Compare with the fastest clean dry qualifying lap per series, season (2023 to 2026) and car class. Borrowed cars: IMSA GTP uses the LMDh car; IMSA GTD, ELMS LMGT3, IGTC Pro, GTWC Pro, ADAC GT Masters and Nürburgring SP 9 use the LMGT3 car. Pass: at least one row and RMS error at or below 3.0 % (the error of this geometry method on known tracks: 3.0 to 3.2 % RMS in scripts/sim/data/tracks/method-check.json on the source branch). Otherwise the track is marked ⚠️ and fit = false. Baseline: none needed, no model is changed. Not checked: sectors, corner minimum speeds, speed traps.",
+ "declared2": "F1 car positions of a 2018 to 2021 qualifying session were built into tracks with the production builder and its production smoothing (scripts/sim/build-geometry-f1-history.mjs). Method check on four production circuits built the same way from 2025 sessions (Spielberg, Silverstone, Monza, Hungaroring): lap time within 0.3 to 0.9 % of the production track with the F1 car (RMS 0.6 %) and within 0.3 % with the LMGT3 car. Car-free geometry flag: the lateral acceleration that the pole lap's real speed implies on the built curvature. The four production circuits give 5.0 to 6.6 g; the limit is 7.0 g. This limit was set after the values of the new tracks were seen, so it is a description, not a blind test. A track from F1 positions replaces the map line only when it is inside the limit: Nürburgring Grand Prix (6.8 g) and Sakhir Outer (6.8 g). Outside the limit, the map line is kept: Hockenheim (8.7 g), Mugello (8.7 g), Portimão (7.6 g). Paul Ricard F1 layout (7.6 g) has no map line and is stored with ⚠️. Extra check row for F1-position tracks: the F1 pole of that session against the F1 car of the nearest fitted season (2023), mean F1 track factor, no per-track drag factor. Borrowed-season car: real 2023 poles were 1.8 to 4.3 % slower than 2020 poles on circuits raced dry in both years, so this row mostly measures the car. Also added as a borrowed LMGT3 row: GT World Challenge Europe Endurance, Pro class. The pass rule is unchanged.",
+ "declared3": "Timing71 sweep over every series (owner request): a row counts when its car model names a GT3 car (not GT4, GT2 or Cup) or its class is IMSA GTD or IGTC Pro/Overall; the series label in the table can be wrong (GT World Challenge Sprint rows sit under other series names), so the car model decides. Fastest such row per track and season, added only where the track had no LMGT3 row for that season. Seasons 2018 to 2022 are used only for a track with no 2023 to 2026 row and are labelled \"older\". DPi and GTLM rows are not used (no matching fitted car). A row is dropped when the official lap length divided by its lap time is outside 120 to 215 km/h (another layout of the same venue, for example Le Mans Bugatti). Rows stored under the venue id \"nordschleife\" with laps of 99 to 125 s are not used: the venue label cannot be trusted there. The pass rule is unchanged.",
  "passRmsPct": 3,
  "lapSource": "Timing71 rows; derived table scripts/sim/data/laps/t71-bests-counts.json on branch lapsim-laps/all-laps-2026-11-11 at commit 47c8822 (raw files are not in git)",
  "limits": [
@@ -35,11 +37,12 @@
    "layout": "Grand Prix 5.245 km"
   },
   "nurburgring-gp": {
-   "group": "europe-africa-asia",
-   "file": "extra-tracks.json",
-   "candidate": "nurburgring-nurburgring-grand-prix",
+   "group": "f1-history",
+   "file": "extra-tracks-f1.json",
+   "driven": true,
    "name": "Nürburgring",
-   "layout": "Grand Prix 5.148 km"
+   "layout": "Grand Prix 5.148 km",
+   "candidate": "nurburgring-gp"
   },
   "nurburgring-sprint": {
    "group": "europe-africa-asia",
@@ -64,11 +67,12 @@
    "shapeEvidence": "2 measured (TUM racetrack database centre line)"
   },
   "sakhir-outer": {
-   "group": "europe-africa-asia",
-   "file": "extra-tracks.json",
-   "candidate": "sakhir-outer-bahrain-outer-circuit",
+   "group": "f1-history",
+   "file": "extra-tracks-f1.json",
+   "driven": true,
    "name": "Sakhir",
-   "layout": "Outer circuit 3.543 km"
+   "layout": "Outer circuit 3.543 km",
+   "candidate": "sakhir-outer"
   },
   "kyalami": {
    "group": "europe-africa-asia",
@@ -182,6 +186,15 @@
    "name": "Bathurst",
    "layout": "Mount Panorama 6.213 km"
   },
+  "paul-ricard-f1": {
+   "group": "f1-history",
+   "file": "extra-tracks-f1.json",
+   "driven": true,
+   "name": "Paul Ricard",
+   "layout": "F1 layout with the Mistral chicane 5.842 km",
+   "candidate": "paul-ricard-f1",
+   "provisional": "curvature too high in fast corners: the pole lap implies 7.6 g against the 7.0 g limit"
+  },
   "rwanda": {
    "group": "rwanda",
    "file": "extra-tracks-rwanda.json",
@@ -227,6 +240,20 @@
    "borrowed": true,
    "model": "Mercedes-AMG GT3 EVO",
    "lap": 121.563,
+   "airC": null,
+   "trackC": null,
+   "humidityPct": null,
+   "pressureHpa": null
+  },
+  {
+   "track": "brands-hatch",
+   "series": "x-miata-trophy",
+   "season": 2026,
+   "cls": "Pro",
+   "car": "lmgt3",
+   "borrowed": true,
+   "model": "BMW M4 GT3 EVO",
+   "lap": 83.26,
    "airC": null,
    "trackC": null,
    "humidityPct": null,
@@ -387,6 +414,48 @@
    "pressureHpa": 951
   },
   {
+   "track": "hockenheim",
+   "series": "dtm",
+   "season": 2024,
+   "cls": "null",
+   "car": "lmgt3",
+   "borrowed": true,
+   "model": "Lamborghini Huracan GT3 EVO 2",
+   "lap": 96.708,
+   "airC": null,
+   "trackC": null,
+   "humidityPct": null,
+   "pressureHpa": null
+  },
+  {
+   "track": "hockenheim",
+   "series": "dtm",
+   "season": 2025,
+   "cls": "PAM",
+   "car": "lmgt3",
+   "borrowed": true,
+   "model": "Porsche 911 GT3 R 992",
+   "lap": 98.088,
+   "airC": null,
+   "trackC": null,
+   "humidityPct": null,
+   "pressureHpa": null
+  },
+  {
+   "track": "hockenheim",
+   "series": "dtm",
+   "season": 2026,
+   "cls": "Silver",
+   "car": "lmgt3",
+   "borrowed": true,
+   "model": "Lamborghini Huracan GT3 EVO 2",
+   "lap": 97.456,
+   "airC": null,
+   "trackC": null,
+   "humidityPct": null,
+   "pressureHpa": null
+  },
+  {
    "track": "indianapolis",
    "series": "igtc",
    "season": 2025,
@@ -497,6 +566,36 @@
    "trackC": 35,
    "humidityPct": 61,
    "pressureHpa": null
+  },
+  {
+   "track": "kyalami",
+   "series": "igtc",
+   "season": 2019,
+   "cls": "Pro",
+   "car": "lmgt3",
+   "borrowed": true,
+   "model": null,
+   "lap": 102.378,
+   "airC": 26.3,
+   "trackC": 38.3,
+   "humidityPct": 49,
+   "pressureHpa": null,
+   "older": true
+  },
+  {
+   "track": "kyalami",
+   "series": "igtc",
+   "season": 2020,
+   "cls": "Overall",
+   "car": "lmgt3",
+   "borrowed": true,
+   "model": null,
+   "lap": 101.979,
+   "airC": 28.9,
+   "trackC": 52.2,
+   "humidityPct": 44,
+   "pressureHpa": null,
+   "older": true
   },
   {
    "track": "laguna-seca",
@@ -653,6 +752,21 @@
    "pressureHpa": 1019.7
   },
   {
+   "track": "le-mans",
+   "series": "x-le-mans-cup",
+   "season": 2023,
+   "cls": "GT3",
+   "car": "lmgt3",
+   "borrowed": true,
+   "model": "BMW M4 GT3",
+   "lap": 236.181,
+   "airC": null,
+   "trackC": null,
+   "humidityPct": null,
+   "pressureHpa": null,
+   "weatherMissing": true
+  },
+  {
    "track": "lime-rock",
    "series": "imsa",
    "season": 2023,
@@ -665,6 +779,51 @@
    "trackC": 32,
    "humidityPct": 62,
    "pressureHpa": null
+  },
+  {
+   "track": "mid-ohio",
+   "series": "imsa",
+   "season": 2018,
+   "cls": "GTD",
+   "car": "lmgt3",
+   "borrowed": true,
+   "model": null,
+   "lap": 79.317,
+   "airC": 19.8,
+   "trackC": 23.3,
+   "humidityPct": 52,
+   "pressureHpa": 1017.03,
+   "older": true
+  },
+  {
+   "track": "mid-ohio",
+   "series": "imsa",
+   "season": 2020,
+   "cls": "GTD",
+   "car": "lmgt3",
+   "borrowed": true,
+   "model": null,
+   "lap": 80.974,
+   "airC": 17,
+   "trackC": 17,
+   "humidityPct": 88,
+   "pressureHpa": null,
+   "older": true
+  },
+  {
+   "track": "mid-ohio",
+   "series": "imsa",
+   "season": 2021,
+   "cls": "GTD",
+   "car": "lmgt3",
+   "borrowed": true,
+   "model": null,
+   "lap": 80.083,
+   "airC": 20,
+   "trackC": 22,
+   "humidityPct": 36,
+   "pressureHpa": null,
+   "older": true
   },
   {
    "track": "mosport",
@@ -793,6 +952,20 @@
    "pressureHpa": null
   },
   {
+   "track": "nurburgring-gp",
+   "series": "f1",
+   "season": 2020,
+   "cls": "F1",
+   "car": "f1",
+   "borrowed": true,
+   "model": "BOT (Mercedes), pole Q3",
+   "lap": 85.269,
+   "airC": 10.1,
+   "trackC": 19.4,
+   "humidityPct": 53.3,
+   "pressureHpa": 949.1
+  },
+  {
    "track": "nurburgring-sprint",
    "series": "x-adac-gt-masters",
    "season": 2024,
@@ -821,6 +994,20 @@
    "pressureHpa": null
   },
   {
+   "track": "paul-ricard-f1",
+   "series": "f1",
+   "season": 2021,
+   "cls": "F1",
+   "car": "f1",
+   "borrowed": true,
+   "model": "VER (Red Bull Racing), pole Q3",
+   "lap": 89.99,
+   "airC": 29.9,
+   "trackC": 45.4,
+   "humidityPct": 41.2,
+   "pressureHpa": 966.6
+  },
+  {
    "track": "portimao",
    "series": "elms",
    "season": 2025,
@@ -847,6 +1034,34 @@
    "trackC": 44.9,
    "humidityPct": 36.4,
    "pressureHpa": 1006.7
+  },
+  {
+   "track": "portimao",
+   "series": "x-gtworldcheu-pwrd-by-aws-endurance-cup",
+   "season": 2026,
+   "cls": "Pro",
+   "car": "lmgt3",
+   "borrowed": true,
+   "model": "Porsche 911 GT3 R EVO",
+   "lap": 102.445,
+   "airC": null,
+   "trackC": null,
+   "humidityPct": null,
+   "pressureHpa": null
+  },
+  {
+   "track": "portimao",
+   "series": "x-le-mans-cup",
+   "season": 2024,
+   "cls": "GT3",
+   "car": "lmgt3",
+   "borrowed": true,
+   "model": "Aston Martin Vantage GT3 EVO",
+   "lap": 104.325,
+   "airC": 21.2,
+   "trackC": 25.5,
+   "humidityPct": 70,
+   "pressureHpa": 1014.5
   },
   {
    "track": "road-america",
@@ -1029,6 +1244,20 @@
    "trackC": 23,
    "humidityPct": 56,
    "pressureHpa": null
+  },
+  {
+   "track": "sakhir-outer",
+   "series": "f1",
+   "season": 2020,
+   "cls": "F1",
+   "car": "f1",
+   "borrowed": true,
+   "model": "BOT (Mercedes), pole Q3",
+   "lap": 53.377,
+   "airC": 24.1,
+   "trackC": 27.1,
+   "humidityPct": 77.2,
+   "pressureHpa": 1012.1
   },
   {
    "track": "vir",

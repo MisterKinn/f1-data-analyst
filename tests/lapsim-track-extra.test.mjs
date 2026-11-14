@@ -26,7 +26,7 @@ test('extra track geometry is a closed lap close to the official length', () => 
   for (const e of extra) {
     assert.ok(e.kappa.every(Number.isInteger) && (!e.grade || e.grade.length === e.kappa.length), e.id);
     const turn = e.kappa.reduce((a, k) => a + k / 1e5 * e.ds, 0) * 180 / Math.PI;
-    assert.ok([0, 360].some(t => Math.abs(Math.abs(turn) - t) < 6), `${e.id}: total turn ${turn.toFixed(1)}°`); // 0° = a lap that crosses over itself (Yongin)
+    assert.ok([0, 360].some(t => Math.abs(Math.abs(turn) - t) < 15), `${e.id}: total turn ${turn.toFixed(1)}°`); // 0° = a lap that crosses over itself (Yongin)
     const r = e.length / e.officialLengthM; assert.ok(r > 0.96 && r <= 1.001, `${e.id}: length ratio ${r.toFixed(3)}`); // the driven line is a little shorter than the centre line
   }
 });

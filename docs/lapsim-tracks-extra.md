@@ -8,6 +8,14 @@ These tracks are in `lapsimExtraTracks` (second export of `worker/lapsim/tracks-
 
 Check per track: simulate the production WEC class cars (LMH, LMDh, LMGT3; nearest fitted season, 2025 or 2026) on the track with the mean track factor of that class's fitted tracks and the weather of the real lap. Compare with the fastest clean dry qualifying lap per series, season (2023 to 2026) and car class. Borrowed cars: IMSA GTP uses the LMDh car; IMSA GTD, ELMS LMGT3, IGTC Pro, GTWC Pro, ADAC GT Masters and Nürburgring SP 9 use the LMGT3 car. Pass: at least one row and RMS error at or below 3.0 % (the error of this geometry method on known tracks: 3.0 to 3.2 % RMS in scripts/sim/data/tracks/method-check.json on the source branch). Otherwise the track is marked ⚠️ and fit = false. Baseline: none needed, no model is changed. Not checked: sectors, corner minimum speeds, speed traps.
 
+## Second declaration (2026-11-14): tracks from F1 car positions
+
+F1 car positions of a 2018 to 2021 qualifying session were built into tracks with the production builder and its production smoothing (scripts/sim/build-geometry-f1-history.mjs). Method check on four production circuits built the same way from 2025 sessions (Spielberg, Silverstone, Monza, Hungaroring): lap time within 0.3 to 0.9 % of the production track with the F1 car (RMS 0.6 %) and within 0.3 % with the LMGT3 car. Car-free geometry flag: the lateral acceleration that the pole lap's real speed implies on the built curvature. The four production circuits give 5.0 to 6.6 g; the limit is 7.0 g. This limit was set after the values of the new tracks were seen, so it is a description, not a blind test. A track from F1 positions replaces the map line only when it is inside the limit: Nürburgring Grand Prix (6.8 g) and Sakhir Outer (6.8 g). Outside the limit, the map line is kept: Hockenheim (8.7 g), Mugello (8.7 g), Portimão (7.6 g). Paul Ricard F1 layout (7.6 g) has no map line and is stored with ⚠️. Extra check row for F1-position tracks: the F1 pole of that session against the F1 car of the nearest fitted season (2023), mean F1 track factor, no per-track drag factor. Borrowed-season car: real 2023 poles were 1.8 to 4.3 % slower than 2020 poles on circuits raced dry in both years, so this row mostly measures the car. Also added as a borrowed LMGT3 row: GT World Challenge Europe Endurance, Pro class. The pass rule is unchanged.
+
+## Third declaration (2026-11-14, before the run): all Timing71 series
+
+Timing71 sweep over every series (owner request): a row counts when its car model names a GT3 car (not GT4, GT2 or Cup) or its class is IMSA GTD or IGTC Pro/Overall; the series label in the table can be wrong (GT World Challenge Sprint rows sit under other series names), so the car model decides. Fastest such row per track and season, added only where the track had no LMGT3 row for that season. Seasons 2018 to 2022 are used only for a track with no 2023 to 2026 row and are labelled "older". DPi and GTLM rows are not used (no matching fitted car). A row is dropped when the official lap length divided by its lap time is outside 120 to 215 km/h (another layout of the same venue, for example Le Mans Bugatti). Rows stored under the venue id "nordschleife" with laps of 99 to 125 s are not used: the venue label cannot be trusted there. The pass rule is unchanged.
+
 ## Result
 
 | Track | Layout | Group | Length m (official) | Height | Rows (own class) | RMS % | Bias % | State |
@@ -15,12 +23,12 @@ Check per track: simulate the production WEC class cars (LMH, LMDh, LMGT3; neare
 | yeongam | Korea International Circuit, Grand Prix 5.615 km | korea | 5498 (5615) | 0–1 m | 0 (0) | – | – | ⚠️ no real lap of a calibrated class |
 | yongin | Everland Speedway, full course 4.346 km | korea | 4251 (4346) | 92–146 m | 0 (0) | – | – | ⚠️ no real lap of a calibrated class |
 | mugello | Grand Prix 5.245 km | europe-africa-asia | 5184 (5245) | 246–289 m | 1 (0) | 1.74 | 1.74 | pass |
-| nurburgring-gp | Grand Prix 5.148 km | europe-africa-asia | 5056 (5148) | 567–621 m | 0 (0) | – | – | ⚠️ no real lap of a calibrated class |
+| nurburgring-gp | Grand Prix 5.148 km | f1-history | 5084 (5148) | car positions | 1 (0) | 6.24 | 6.24 | ⚠️ error above 3 % |
 | nurburgring-sprint | Sprint 3.629 km (DTM, ADAC GT Masters) | europe-africa-asia | 3559 (3629) | 588–621 m | 2 (0) | 1.18 | 1.18 | pass |
 | nurburgring-24h | 24 Hours combined lap 25.378 km | europe-africa-asia | 25016 (25378) | 340–627 m | 3 (0) | 2.08 | -1.99 | pass |
-| brands-hatch | Grand Prix 3.916 km | europe-africa-asia | 3876 (3916) | flat assumed | 0 (0) | – | – | ⚠️ no real lap of a calibrated class |
-| sakhir-outer | Outer circuit 3.543 km | europe-africa-asia | 3507 (3543) | 7–28 m | 0 (0) | – | – | ⚠️ no real lap of a calibrated class |
-| kyalami | Grand Prix 4.522 km | europe-africa-asia | 4457 (4522) | 1458–1501 m | 0 (0) | – | – | ⚠️ no real lap of a calibrated class |
+| brands-hatch | Grand Prix 3.916 km | europe-africa-asia | 3876 (3916) | flat assumed | 1 (0) | 0.25 | -0.25 | pass |
+| sakhir-outer | Outer circuit 3.543 km | f1-history | 3499 (3543) | car positions | 1 (0) | 3.81 | 3.81 | ⚠️ error above 3 % |
+| kyalami | Grand Prix 4.522 km | europe-africa-asia | 4457 (4522) | 1458–1501 m | 2 (0) | 3.02 | -2.99 | ⚠️ error above 3 % |
 | fuji | Fuji Speedway 4.563 km | europe-africa-asia | 4460 (4563) | 544–594 m | 5 (5) | 1.34 | -1.13 | pass |
 | daytona | Road course (IMSA) 5.729 km | imsa | 5677 (5729) | 8–14 m | 6 (0) | 6.6 | -6.51 | ⚠️ error above 3 % |
 | laguna-seca | Raceway 3.602 km | imsa | 3550 (3602) | 229–282 m | 6 (0) | 3.03 | 1.99 | ⚠️ error above 3 % |
@@ -30,12 +38,13 @@ Check per track: simulate the production WEC class cars (LMH, LMDh, LMGT3; neare
 | vir | Full course (IMSA) 5.263 km | imsa | 5198 (5263) | 113–151 m | 4 (0) | 1.6 | -1.43 | pass |
 | indianapolis | Road course 3.910 km | imsa | 3844 (3910) | 221–224 m | 8 (0) | 3.83 | 3.79 | ⚠️ error above 3 % |
 | road-atlanta | Road Atlanta 4.088 km | imsa | 4047 (4088) | 275–308 m | 5 (0) | 1.74 | 0.81 | pass |
-| mid-ohio | IMSA layout 3.634 km | imsa | 3566 (3634) | 398–437 m | 0 (0) | – | – | ⚠️ no real lap of a calibrated class |
+| mid-ohio | IMSA layout 3.634 km | imsa | 3566 (3634) | 398–437 m | 3 (0) | 3.48 | 3.4 | ⚠️ error above 3 % |
 | lime-rock | IMSA layout 2.414 km | imsa | 2370 (2414) | 164–180 m | 1 (0) | 2.36 | 2.36 | pass |
-| le-mans | Circuit des 24 Heures 13.626 km | owner-list-other | 13556 (13626) | 46–82 m | 5 (5) | 2.37 | 2.27 | pass |
-| portimao | Algarve 4.653 km | owner-list-other | 4539 (4653) | 95–124 m | 2 (0) | 3.85 | 3.85 | ⚠️ error above 3 % |
-| hockenheim | Grand Prix 4.574 km | owner-list-other | 4525 (4574) | 101–118 m | 0 (0) | – | – | ⚠️ no real lap of a calibrated class |
+| le-mans | Circuit des 24 Heures 13.626 km | owner-list-other | 13556 (13626) | 46–82 m | 6 (5) | 2.31 | 2.23 | pass |
+| portimao | Algarve 4.653 km | owner-list-other | 4539 (4653) | 95–124 m | 4 (0) | 3.78 | 3.76 | ⚠️ error above 3 % |
+| hockenheim | Grand Prix 4.574 km | owner-list-other | 4525 (4574) | 101–118 m | 3 (0) | 3.69 | 3.62 | ⚠️ error above 3 % |
 | bathurst | Mount Panorama 6.213 km | owner-list-other | 6156 (6213) | 700–874 m | 2 (0) | 0.46 | 0.29 | pass |
+| paul-ricard-f1 | F1 layout with the Mistral chicane 5.842 km | f1-history | 5746 (5842) | car positions | 1 (0) | 1.22 | 1.22 | ⚠️ curvature too high in fast corners: the pole lap implies 7.6 g against the 7.0 g limit |
 | rwanda | Provisional 5.302 km (owner diagram) | rwanda | 5196 (5302) | diagram labels | 0 (0) | – | – | ⚠️ provisional: hand-traced from a diagram that disagrees with the official October 2026 figures (about 6 km, 17 corners, anti-clockwise) |
 
 Length is the least-curvature line; it is shorter than the official centre-line distance. "Own class" rows are WEC cars on WEC laps; the other rows use a borrowed car (IMSA GTP = LMDh car, every other GT3 series = LMGT3 car).
@@ -45,11 +54,16 @@ Length is the least-curvature line; it is shorter than the official centre-line 
 | Track | Series | Season | Class | Car model | Sim car | Real s | Sim s | Error % |
 |---|---|---|---|---|---|---|---|---|
 | mugello | elms | 2024 | LMGT3 | Aston Martin Vantage AMR LMGT3 | lmgt3 2025 (borrowed) | 107.891 | 109.765 | 1.74 |
+| nurburgring-gp | f1 | 2020 | F1 | BOT (Mercedes), pole Q3 | f1 2023 (borrowed) | 85.269 | 90.586 | 6.24 |
 | nurburgring-sprint | x-adac-gt-masters | 2024 | Silver | Mercedes-AMG GT3 | lmgt3 2025 (borrowed) | 85.186 | 86.243 | 1.24 |
 | nurburgring-sprint | x-adac-gt-masters | 2025 | Silver | Ford Mustang GT3 | lmgt3 2025 (borrowed) | 85.294 | 86.243 | 1.11 |
 | nurburgring-24h | nur | 2023 | SP 9 | Mercedes-AMG GT3 | lmgt3 2025 (borrowed) | 496.609 | 482.857 | -2.77 |
 | nurburgring-24h | nur | 2024 | SP 9 | Porsche 911 GT3 R (992) | lmgt3 2025 (borrowed) | 489.591 | 482.857 | -1.38 |
 | nurburgring-24h | nur | 2025 | SP 9 | Porsche 911 GT3 R (992) | lmgt3 2025 (borrowed) | 491.855 | 482.857 | -1.83 |
+| brands-hatch | x-miata-trophy | 2026 | Pro | BMW M4 GT3 EVO | lmgt3 2026 (borrowed) | 83.26 | 83.049 | -0.25 |
+| sakhir-outer | f1 | 2020 | F1 | BOT (Mercedes), pole Q3 | f1 2023 (borrowed) | 53.377 | 55.409 | 3.81 |
+| kyalami | igtc | 2019 (older) | Pro | ? | lmgt3 2025 (borrowed) | 102.378 | 98.867 | -3.43 |
+| kyalami | igtc | 2020 (older) | Overall | ? | lmgt3 2025 (borrowed) | 101.979 | 99.383 | -2.55 |
 | fuji | wec | 2023 | Hypercar H | Toyota GR010 HYBRID | lmh 2025 | 87.794 | 87.767 | -0.03 |
 | fuji | wec | 2024 | Hypercar | Cadillac V-Series.R | lmdh 2025 | 88.901 | 88.014 | -1 |
 | fuji | wec | 2024 | LMGT3 | Ferrari 296 LMGT3 | lmgt3 2025 | 100.893 | 98.625 | -2.25 |
@@ -104,16 +118,26 @@ Length is the least-curvature line; it is shorter than the official centre-line 
 | road-atlanta | imsa | 2024 | GTDPRO | PORSCHE 911 GT3 R (992) | lmgt3 2025 (borrowed) | 77.881 | 80.136 | 2.9 |
 | road-atlanta | imsa | 2025 | GTP | ACURA ARX-06 | lmdh 2025 (borrowed) | 69.628 | 69.583 | -0.06 |
 | road-atlanta | imsa | 2025 | GTD | FERRARI 296 GT3 | lmgt3 2025 (borrowed) | 78.316 | 80.185 | 2.39 |
+| mid-ohio | imsa | 2018 (older) | GTD | ? | lmgt3 2025 (borrowed) | 79.317 | 82.728 | 4.3 |
+| mid-ohio | imsa | 2020 (older) | GTD | ? | lmgt3 2025 (borrowed) | 80.974 | 83.021 | 2.53 |
+| mid-ohio | imsa | 2021 (older) | GTD | ? | lmgt3 2025 (borrowed) | 80.083 | 82.789 | 3.38 |
 | lime-rock | imsa | 2023 | GTDPRO | ASTON MARTIN VANTAGE GT3 | lmgt3 2025 (borrowed) | 50.593 | 51.788 | 2.36 |
 | le-mans | wec | 2024 | Hypercar | Porsche 963 | lmdh 2025 | 204.634 | 208.351 | 1.82 |
 | le-mans | wec | 2024 | LMGT3 | McLaren 720S LMGT3 Evo | lmgt3 2025 | 238.12 | 241.544 | 1.44 |
 | le-mans | wec | 2025 | Hypercar | Cadillac V-Series.R | lmdh 2025 | 203.333 | 207.851 | 2.22 |
 | le-mans | wec | 2025 | LMGT3 | BMW M4 LMGT3 | lmgt3 2025 | 234.966 | 240.78 | 2.47 |
 | le-mans | wec | 2026 | LMGT3 | ? | lmgt3 2026 | 232.41 | 240.352 | 3.42 |
+| le-mans | x-le-mans-cup | 2023 | GT3 | BMW M4 GT3 | lmgt3 2025 (borrowed) | 236.181 | 240.855 | 1.98 |
 | portimao | elms | 2025 | LMGT3 | Corvette Z06 LMGT3.R | lmgt3 2025 (borrowed) | 103.446 | 107.564 | 3.98 |
 | portimao | elms | 2026 | LMGT3 | ? | lmgt3 2026 (borrowed) | 103.151 | 106.991 | 3.72 |
+| portimao | x-gtworldcheu-pwrd-by-aws-endurance-cup | 2026 | Pro | Porsche 911 GT3 R EVO | lmgt3 2026 (borrowed) | 102.445 | 106.748 | 4.2 |
+| portimao | x-le-mans-cup | 2024 | GT3 | Aston Martin Vantage GT3 EVO | lmgt3 2025 (borrowed) | 104.325 | 107.604 | 3.14 |
+| hockenheim | dtm | 2024 | null | Lamborghini Huracan GT3 EVO 2 | lmgt3 2025 (borrowed) | 96.708 | 101.14 | 4.58 |
+| hockenheim | dtm | 2025 | PAM | Porsche 911 GT3 R 992 | lmgt3 2025 (borrowed) | 98.088 | 101.14 | 3.11 |
+| hockenheim | dtm | 2026 | Silver | Lamborghini Huracan GT3 EVO 2 | lmgt3 2026 (borrowed) | 97.456 | 100.558 | 3.18 |
 | bathurst | igtc | 2025 | PRO | Mercedes-AMG GT3 EVO | lmgt3 2025 (borrowed) | 121.276 | 122.064 | 0.65 |
 | bathurst | igtc | 2026 | PRO | Mercedes-AMG GT3 EVO | lmgt3 2026 (borrowed) | 121.563 | 121.471 | -0.08 |
+| paul-ricard-f1 | f1 | 2021 | F1 | VER (Red Bull Racing), pole Q3 | f1 2023 (borrowed) | 89.99 | 91.09 | 1.22 |
 
 ## Evidence layer per value
 
@@ -122,11 +146,11 @@ Length is the least-curvature line; it is shorter than the official centre-line 
 | yeongam | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | yongin | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 4 assumed 12 m | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | mugello | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
-| nurburgring-gp | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| nurburgring-gp | 1 fixed (official) and 2 measured (driven line) | 2 measured (F1 car positions, 8 qualifying laps, 2020) | 2 measured (mean of the fastest qualifying laps) | not used | 2 measured (F1 car positions) | 4 borrowed (mean factor of the class's fitted tracks) |
 | nurburgring-sprint | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | nurburgring-24h | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 4 assumed 12 m | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | brands-hatch | 1 fixed (official list) | 2 measured (TUM racetrack database centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | none (flat assumed) | 4 borrowed (mean factor of the class's fitted tracks) |
-| sakhir-outer | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| sakhir-outer | 1 fixed (official) and 2 measured (driven line) | 2 measured (F1 car positions, 8 qualifying laps, 2020) | 2 measured (mean of the fastest qualifying laps) | not used | 2 measured (F1 car positions) | 4 borrowed (mean factor of the class's fitted tracks) |
 | kyalami | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 4 assumed 12 m | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | fuji | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | daytona | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 4 assumed 12 m | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
@@ -143,6 +167,7 @@ Length is the least-curvature line; it is shorter than the official centre-line 
 | portimao | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | hockenheim | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | bathurst | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| paul-ricard-f1 | 1 fixed (official) and 2 measured (driven line) | 2 measured (F1 car positions, 8 qualifying laps, 2021) | 2 measured (mean of the fastest qualifying laps) | not used | 2 measured (F1 car positions) | 4 borrowed (mean factor of the class's fitted tracks) |
 | rwanda | 4 stated on a diagram | 4 hand-traced from an oblique diagram of unknown origin | 3 inferred (least-curvature line inside the width) | 4 stated or assumed | 4 seven labels on the diagram, linear between | 4 borrowed (mean factor of the class's fitted tracks) |
 
 ## Sources
@@ -150,11 +175,11 @@ Length is the least-curvature line; it is shorter than the official centre-line 
 - **yeongam**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2025-12-01; Terrarium elevation tiles (Mapzen/Tilezen open data)
 - **yongin**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); hyundai-n.com/en/motorsport/nf-calendar-ncup-r4.do (4.346 km, 16 corners, pole left); Terrarium elevation tiles (Mapzen/Tilezen open data)
 - **mugello**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
-- **nurburgring-gp**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **nurburgring-gp**: TracingInsights/2020 on GitHub: Eifel Grand Prix, Qualifying (FastF1 car positions, lap times, corner positions)
 - **nurburgring-sprint**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
 - **nurburgring-24h**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); ADAC RAVENOL 24h Nürburgring press information (24h-media.de): 25.378 km combination of Grand Prix circuit and Nordschleife; clockwise; Terrarium elevation tiles (Mapzen/Tilezen open data)
 - **brands-hatch**: github.com/TUMFTM/racetrack-database @ e59595d1f3573b30d1ded6a08984935b957688e0 (LGPL-3.0); FIA list 2026-03-31
-- **sakhir-outer**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **sakhir-outer**: TracingInsights/2020 on GitHub: Sakhir Grand Prix, Qualifying (FastF1 car positions, lap times, corner positions)
 - **kyalami**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); kyalamigrandprixcircuit.com/grand-prix-circuit (4.522 km, 16 turns, anti-clockwise, pole left); Terrarium elevation tiles (Mapzen/Tilezen open data)
 - **fuji**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
 - **daytona**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); imsa.com/weathertech/weathertech-2026-schedule (3.56 miles, 12 corners) [rounded to 0.01 mile]; Terrarium elevation tiles (Mapzen/Tilezen open data)
@@ -171,6 +196,7 @@ Length is the least-curvature line; it is shorter than the official centre-line 
 - **portimao**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
 - **hockenheim**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
 - **bathurst**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **paul-ricard-f1**: TracingInsights/2021 on GitHub: French Grand Prix, Qualifying (FastF1 car positions, lap times, corner positions)
 - **rwanda**: Owner's diagram (origin unknown), traced by scripts/sim/tracks/rwanda_trace.py on branch lapsim-laps/all-laps-2026-11-11
 
 ## Not checked, known limits
