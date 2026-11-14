@@ -59,6 +59,29 @@ sessionSchedule['wec-2026-11-06-monza']=timedRows('https://www.fiawec.com/en/rac
  ['하이퍼카 하이퍼폴','Hypercar Hyperpole','2026-11-07T15:20:00+01:00','2026-11-07T15:30:00+01:00'],
  ['레이스','Race','2026-11-08T11:00:00+01:00','2026-11-08T17:00:00+01:00']
 ]);
+// 73rd Macau Grand Prix official programme (organiser homepage), checked 2026-11-14. Macau is UTC+08:00.
+const macau=(day,from,to,name,nameEn)=>[name,nameEn,'2026-11-'+day+'T'+from+':00+08:00','2026-11-'+day+'T'+to+':00+08:00'];
+sessionSchedule['macau-2026-11-19-guia']=timedRows('https://www.macau.grandprix.gov.mo/en/',[
+ macau('19','07:45','08:15','모터사이클 FP1','Motorcycle FP1'),macau('19','08:25','08:55','모터사이클 퀄리파잉 1','Motorcycle Qualifying 1'),
+ macau('19','09:25','10:05','FR 월드컵 FP1','FR World Cup FP1'),macau('19','10:20','11:00','F4 월드컵 FP1','F4 World Cup FP1'),
+ macau('19','11:15','11:45','기아 레이스(TCR) FP1','Guia Race (TCR) FP1'),macau('19','12:15','12:45','GT 월드컵 FP1','GT World Cup FP1'),
+ macau('19','13:00','13:30','로드스포츠 FP','Roadsport FP'),macau('19','13:45','14:15','GBA GT컵 FP','GBA GT Cup FP'),
+ macau('19','14:30','15:00','기아 레이스(TCR) FP2','Guia Race (TCR) FP2'),macau('19','15:15','15:45','GT 월드컵 FP2','GT World Cup FP2'),
+ macau('19','16:00','16:40','FR 월드컵 퀄리파잉 1','FR World Cup Qualifying 1'),macau('19','16:55','17:25','로드스포츠 퀄리파잉','Roadsport Qualifying'),
+ macau('20','07:45','08:15','모터사이클 FP2','Motorcycle FP2'),macau('20','08:25','08:55','모터사이클 퀄리파잉 2','Motorcycle Qualifying 2'),
+ macau('20','09:25','10:05','F4 월드컵 FP2','F4 World Cup FP2'),macau('20','10:25','11:05','FR 월드컵 FP2','FR World Cup FP2'),
+ macau('20','11:20','11:50','GBA GT컵 퀄리파잉','GBA GT Cup Qualifying'),macau('20','12:20','12:50','기아 레이스(TCR) 퀄리파잉 1','Guia Race (TCR) Qualifying 1'),
+ macau('20','13:05','13:20','기아 레이스(TCR) 퀄리파잉 2','Guia Race (TCR) Qualifying 2'),macau('20','13:40','14:20','F4 월드컵 퀄리파잉','F4 World Cup Qualifying'),
+ macau('20','14:40','15:20','FR 월드컵 퀄리파잉 2','FR World Cup Qualifying 2'),macau('20','15:50','16:20','GT 월드컵 퀄리파잉 1','GT World Cup Qualifying 1'),
+ macau('20','16:40','17:05','GT 월드컵 퀄리파잉 2','GT World Cup Qualifying 2'),
+ macau('21','07:10','07:30','모터사이클 웜업','Motorcycle Warm-up'),macau('21','09:10','10:00','모터사이클 레이스','Motorcycle Race'),
+ macau('21','10:25','11:05','로드스포츠 레이스','Roadsport Race'),macau('21','11:40','12:45','F4 월드컵 예선 레이스','F4 World Cup Qualification Race'),
+ macau('21','13:20','14:00','기아 레이스(TCR) 레이스 1','Guia Race (TCR) Race 1'),macau('21','14:35','15:40','GT 월드컵 예선 레이스','GT World Cup Qualification Race'),
+ macau('21','16:15','17:20','FR 월드컵 예선 레이스','FR World Cup Qualifying Race'),
+ macau('22','08:00','08:40','GBA GT컵 레이스','GBA GT Cup Race'),macau('22','09:15','10:20','F4 월드컵 결승','F4 World Cup Main Race'),
+ macau('22','11:00','11:40','기아 레이스(TCR) 레이스 2','Guia Race (TCR) Race 2'),macau('22','12:35','13:50','GT 월드컵 결승','GT World Cup Main Race'),
+ macau('22','15:30','16:35','마카오 그랑프리 · FR 월드컵 결승','Macau Grand Prix · FR World Cup')
+]);
 sessionSchedule['super-gt-2026-11-06-motegi']=timedRows('https://www.mr-motegi.jp/supergt_m/',[
  ['전용 연습','Exclusive practice','2026-11-06T09:30:00+09:00','2026-11-06T11:00:00+09:00'],
  ['Rd.3 GT300 퀄리파잉','Rd.3 GT300 Qualifying','2026-11-07T09:00:00+09:00','2026-11-07T09:20:00+09:00'],
