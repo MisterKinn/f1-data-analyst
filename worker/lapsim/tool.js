@@ -74,7 +74,8 @@ export function simulate(args = {}) {
   const own = sel.series ? selKey : String(sel.year);
   const realYear = conds[own] ? own : conds['2026'] ? '2026' : Object.keys(conds)[0];
   const real = realYear ? conds[realYear] : null;
-  const realSrc = !real ? null : real.source === 'timing71' && realYear === own ? `real ${real.year} ${sel.series.toUpperCase()} qualifying (Timing71 weather, session median)` : sel.series && realYear === own ? `real ${real.year} WEC qualifying/Hyperpole (Al Kamel weather, session mean)` : `real ${realYear} F1 qualifying (OpenF1 weather, session mean)`;
+  const realSrc = !real ? null : real.source && real.source !== 'timing71' && realYear === own ? `real ${real.year} ${real.event} (${real.source}, session mean weather)` // extra circuit: the source is stored with the lap
+    : real.source === 'timing71' && realYear === own ? `real ${real.year} ${sel.series.toUpperCase()} qualifying (Timing71 weather, session median)` : sel.series && realYear === own ? `real ${real.year} WEC qualifying/Hyperpole (Al Kamel weather, session mean)` : `real ${realYear} F1 qualifying (OpenF1 weather, session mean)`;
   const pick = (given, key, fallback) => Number.isFinite(given) ? [given, 'given'] : Number.isFinite(real?.[key]) ? [real[key], realSrc] : [fallback, 'default'];
   const [airTempC, airSrc] = pick(args.air_temp_c, 'airTempC', 25), [trackTempC, trackSrc] = pick(args.track_temp_c, 'trackTempC', 35);
   const [humidityPct, humSrc] = pick(args.humidity_pct, 'humidityPct', 50), [windSpeed, windSrc] = pick(args.wind_speed_ms, 'windSpeed', 0);
