@@ -10,12 +10,30 @@ const slug=s=>String(s||'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toL
 const day=value=>String(value||'').slice(0,10);
 const validDay=value=>/^\d{4}-\d{2}-\d{2}$/.test(value)&&Number.isFinite(Date.parse(value+'T12:00:00Z'))&&new Date(value+'T12:00:00Z').toISOString().slice(0,10)===value;
 const stamp=value=>typeof value==='string'&&/T.*(?:Z|[+-]\d\d:\d\d)$/.test(value)&&Number.isFinite(Date.parse(value));
+const WEEK=7*86400000,dayAfter=d=>new Date(Date.parse(d+'T12:00:00Z')+86400000).toISOString().slice(0,10);
+// A name only identifies an event within its own weekend; the same E-Prix recurs every season.
 function matchEvent(series,name,start,existing){
- const target=slug(name);return existing.find(e=>e.series===series&&[e.name,e.nameEn].some(v=>slug(v)===target))||existing.find(e=>e.series===series&&e.start===start);
+ const target=slug(name),near=e=>Math.abs(Date.parse(e.start)-Date.parse(start))<=WEEK;
+ return existing.find(e=>e.series===series&&near(e)&&[e.name,e.nameEn].some(v=>slug(v)===target))||existing.find(e=>e.series===series&&e.start===start);
+}
+// Some organisers list each race of a doubleheader as its own entry with a round number
+// ("R06 Jeddah E-Prix", "R07 Jeddah E-Prix"). Our calendar has one card per weekend.
+const roundless=name=>String(name||'').trim().replace(/^R(?:ound)?\s*\d{1,2}\s*[:·–—-]?\s+/i,'');
+function foldWeekends(records){
+ const out=[];
+ for(const record of records){
+  const name=roundless(record.name),start=day(record.startDate),end=day(record.endDate||record.startDate);
+  if(!validDay(start)||!validDay(end)){out.push(record);continue;}
+  const prev=out.find(p=>p.folded&&slug(p.name)===slug(name)&&p.startDate<=dayAfter(end)&&start<=dayAfter(p.endDate));
+  if(!prev){out.push({...record,name,startDate:start,endDate:end,folded:true});continue;}
+  if(start<prev.startDate)prev.startDate=start;if(end>prev.endDate)prev.endDate=end;
+  prev.sessions=[...(prev.sessions||[]),...(record.sessions||[])];
+ }
+ return out;
 }
 export function normalizeOfficialEvents(records,series,url,existing=calendarEvents,now=Date.now()){
  const result=[];
- for(const record of records){
+ for(const record of foldWeekends(records)){
   const start=day(record.startDate),end=day(record.endDate||record.startDate),name=String(record.name||'').trim();
   if(!validDay(start)||!validDay(end)||end<start||!name||name.length>240||!/^20\d\d/.test(start))continue;
   const old=matchEvent(series,name,start,existing),sameDates=old?.start===start&&old?.end===end;
