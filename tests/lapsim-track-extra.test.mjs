@@ -18,7 +18,10 @@ test('every extra track has a source line, an evidence layer per value and a che
     assert.deepEqual(Object.keys(e.quality.evidence), ['lapLength', 'planShape', 'drivenLine', 'width', 'height', 'trackGrip'], e.id);
     const c = e.quality.check; assert.ok(['pass', 'warn'].includes(c.status), e.id);
     assert.equal(e.fit, c.status === 'pass', e.id);
-    if (e.fit) assert.ok(c.n >= 1 && c.rmsPct <= spec.passRmsPct, e.id); else assert.match(e.warn, /^⚠️ \S/, e.id);
+    if (!e.fit) { assert.match(e.warn, /^⚠️ \S/, e.id); continue; }
+    if (c.mode === 'unseen') assert.ok(c.n >= 1 && c.rmsPct <= spec.passRmsPct, e.id);
+    else if (c.mode === 'sibling') assert.ok(c.sibling.n >= 1 && c.sibling.rmsPct <= spec.passRmsPct, e.id);
+    else assert.ok(c.mode === 'learned' && c.learned.inBounds && c.learned.heldOut.n >= 2 && c.learned.heldOut.rmsPct <= spec.passRmsPct && e.trackFactor.grip === c.learned.grip, e.id); // a learned factor never passes on the rows it was fitted on
   }
 });
 
@@ -35,4 +38,12 @@ test('an extra track runs in the lap kernel', () => {
   const K = lapsimKernel(), car = lapsimCalibration.series.wec.lmgt3['2026'].car;
   const lap = K.simulateLap(K.trackFromData(extra[0]), car, K.conditionsFromWeather({pressureHpa: 1013.25, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0})).lapTime;
   assert.ok(lap > 40 && lap < 700, String(lap));
+});
+
+test('a learned track factor removes the mean error and more grip is faster', async () => {
+  const {learnFactor, simRows} = await import('../scripts/sim/build-geometry-extra.mjs');
+  const K = lapsimKernel(), e = extra.find(x => x.quality.check.n >= 3), track = K.trackFromData(e), laps = spec.laps.filter(l => l.track === e.id);
+  const g = learnFactor(track, laps, {}), mean = f => { const r = simRows(track, laps, {}, (b, cal) => f * Math.exp(Object.values(cal.tracks).reduce((a, x, _, arr) => a + Math.log(x.grip) / arr.length, 0))); return r.reduce((a, x) => a + x.errPct, 0) / r.length; };
+  assert.ok(Math.abs(mean(g)) < 0.05, `mean error ${mean(g)} at factor ${g}`);
+  assert.ok(mean(g * 1.05) < mean(g) && mean(g * 0.95) > mean(g));
 });

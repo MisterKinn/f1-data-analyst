@@ -27,6 +27,27 @@ async function get(year, path) { // one file from the season repository, kept in
   const t = await r.text(); mkdirSync(join(f, '..'), {recursive: true}); writeFileSync(f, t); return JSON.parse(t);
 }
 
+// Clean dry laps of one qualifying session and its pole: fastest lap of the last segment (rule 3.3)
+async function sessionLaps(year, event) {
+  const dir = `${event}/Qualifying`, drivers = (await get(year, `${dir}/drivers.json`)).drivers, all = [];
+  for (const d of drivers) {
+    let lt; try { lt = await get(year, `${dir}/${d.driver}/laptimes.json`); } catch { continue; }
+    lt.time.forEach((t, i) => { // not deleted, slick tyre, sectors add up, no rain flag
+      const lap = num(t), s = [num(lt.s1[i]), num(lt.s2[i]), num(lt.s3[i])];
+      if (lap == null || lt.del?.[i] || lt.wR?.[i] || !['SOFT', 'MEDIUM', 'HARD', 'ULTRASOFT', 'SUPERSOFT', 'HYPERSOFT'].includes(lt.compound?.[i]) || s.some(x => x == null) || Math.abs(s[0] + s[1] + s[2] - lap) > 0.002) return;
+      all.push({driver: d.driver, team: d.team, dn: +d.dn, n: lt.lap[i], lap, s, seg: lt.qs?.[i] || '', start: iso(lt.lSD[i]), air: num(lt.wAT?.[i]), trackC: num(lt.wTT?.[i]), hum: num(lt.wH?.[i]), press: num(lt.wP?.[i]), trap: num(lt.vst?.[i])});
+    });
+  }
+  const last = all.map(l => l.seg).filter(Boolean).sort().at(-1) ?? '', pole = all.filter(l => l.seg === last).sort((a, b) => a.lap - b.lap)[0];
+  return {all, pole};
+}
+// Poles of the same seasons on production circuits whose layout has not changed since: used to learn how much faster
+// that season's cars were than the nearest fitted season (build-geometry-extra.mjs). [event, production track id]
+export const SEASON_POLES = {
+  2020: [['Austrian Grand Prix', 'spielberg'], ['Hungarian Grand Prix', 'hungaroring'], ['British Grand Prix', 'silverstone'], ['Belgian Grand Prix', 'spa-francorchamps'], ['Italian Grand Prix', 'monza'], ['Emilia Romagna Grand Prix', 'imola'], ['Bahrain Grand Prix', 'sakhir']],
+  2021: [['Austrian Grand Prix', 'spielberg'], ['Hungarian Grand Prix', 'hungaroring'], ['British Grand Prix', 'silverstone'], ['Italian Grand Prix', 'monza'], ['Emilia Romagna Grand Prix', 'imola'], ['Bahrain Grand Prix', 'sakhir'], ['Monaco Grand Prix', 'monte-carlo'], ['Azerbaijan Grand Prix', 'baku'], ['Dutch Grand Prix', 'zandvoort'], ['United States Grand Prix', 'austin'], ['Mexico City Grand Prix', 'mexico-city'], ['Abu Dhabi Grand Prix', 'yas-marina-circuit']],
+};
+
 if (process.argv[1]?.endsWith('build-geometry-f1-history.mjs')) {
   // method check: LAPSIM_F1H_EXTRA='[{"id":"x-spielberg","year":2025,"event":"Austrian Grand Prix",...}]' builds a production circuit the same way (not written to the data file)
   const extra = JSON.parse(process.env.LAPSIM_F1H_EXTRA || '[]'); EVENTS.push(...extra);
@@ -34,17 +55,7 @@ if (process.argv[1]?.endsWith('build-geometry-f1-history.mjs')) {
   mkdirSync(join(CACHE, 'sessions'), {recursive: true});
   for (const [k, ev] of EVENTS.entries()) {
     if (only.length && !only.includes(ev.id)) continue;
-    const dir = `${ev.event}/Qualifying`, drivers = (await get(ev.year, `${dir}/drivers.json`)).drivers, all = [];
-    for (const d of drivers) {
-      let lt; try { lt = await get(ev.year, `${dir}/${d.driver}/laptimes.json`); } catch { continue; }
-      lt.time.forEach((t, i) => { // a clean dry lap: not deleted, slick tyre, sectors add up, no rain flag
-        const lap = num(t), s = [num(lt.s1[i]), num(lt.s2[i]), num(lt.s3[i])];
-        if (lap == null || lt.del?.[i] || lt.wR?.[i] || !['SOFT', 'MEDIUM', 'HARD', 'ULTRASOFT', 'SUPERSOFT', 'HYPERSOFT'].includes(lt.compound?.[i]) || s.some(x => x == null) || Math.abs(s[0] + s[1] + s[2] - lap) > 0.002) return;
-        all.push({driver: d.driver, team: d.team, dn: +d.dn, n: lt.lap[i], lap, s, seg: lt.qs?.[i] || '', start: iso(lt.lSD[i]), air: num(lt.wAT?.[i]), trackC: num(lt.wTT?.[i]), hum: num(lt.wH?.[i]), press: num(lt.wP?.[i]), trap: num(lt.vst?.[i])});
-      });
-    }
-    // pole = fastest lap of the last segment (rule 3.3); then each other driver's best lap, fastest first
-    const last = all.map(l => l.seg).filter(Boolean).sort().at(-1) ?? '', pole = all.filter(l => l.seg === last).sort((a, b) => a.lap - b.lap)[0];
+    const dir = `${ev.event}/Qualifying`, {all, pole} = await sessionLaps(ev.year, ev.event);
     if (!pole) { console.log(`${ev.id}: no clean dry qualifying lap`); continue; }
     const best = new Map(); for (const l of all.sort((a, b) => a.lap - b.lap)) if (l.driver !== pole.driver && !best.has(l.driver)) best.set(l.driver, l);
     const laps = [];
@@ -73,7 +84,10 @@ if (process.argv[1]?.endsWith('build-geometry-f1-history.mjs')) {
     const g = latG(t);
     tracks[ev.id] = {...t, latG: {max: g, limit: LATG_LIMIT, ok: g != null && g <= LATG_LIMIT}, name: ev.name, circuit: ev.name, layout: ev.layout, circuitKey: undefined, sessionKey: undefined, officialLengthM: ev.officialLengthM, lengthErrorPct: +((t.length / ev.officialLengthM - 1) * 100).toFixed(2), ...meta[ev.id],
       sources: [`TracingInsights/${ev.year} on GitHub: ${ev.event}, Qualifying (FastF1 car positions, lap times, corner positions)`]}; }
+  const seasonPoles = {};
+  for (const [year, list] of Object.entries(SEASON_POLES)) for (const [event, id] of list) { try { const {pole: p} = await sessionLaps(+year, event);
+    if (p) (seasonPoles[year] ||= {})[id] = {event, driver: p.driver, lap: p.lap, segment: p.seg, airC: p.air, trackC: p.trackC, humidityPct: p.hum, pressureHpa: p.press}; else console.log(`${year} ${event}: no clean dry pole`); } catch (e) { console.log(`${year} ${event}: ${e.message}`); } }
   const file = 'scripts/sim/data/tracks/extra-tracks-f1.json', prev = existsSync(file) && only.length ? JSON.parse(readFileSync(file, 'utf8')).tracks : {};
-  writeFileSync(file, JSON.stringify({note: 'Tracks from F1 car positions of a 2018-2021 qualifying session, built by scripts/sim/build-geometry-f1-history.mjs with the production builder. The line is the driven line (mean of the fastest laps). Same integer scales as worker/lapsim/tracks-data.js.', tracks: {...prev, ...tracks}}));
+  writeFileSync(file, JSON.stringify({note: 'Tracks from F1 car positions of a 2018-2021 qualifying session, built by scripts/sim/build-geometry-f1-history.mjs with the production builder. The line is the driven line (mean of the fastest laps). Same integer scales as worker/lapsim/tracks-data.js.', seasonPoles, tracks: {...prev, ...tracks}}));
   console.table(Object.values(tracks).map(t => ({id: t.id, year: t.year, length: t.length, official: t.officialLengthM, 'err %': t.lengthErrorPct, 'max g': t.latG.max, ok: t.latG.ok, laps: t.lapsUsed, corners: t.corners.length, pole: t.pole.lap, by: t.pole.driver, seg: t.pole.segment})));
 }

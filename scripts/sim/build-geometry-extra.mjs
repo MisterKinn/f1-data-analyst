@@ -5,9 +5,10 @@
 // Output: a second export `lapsimExtraTracks` at the end of worker/lapsim/tracks-data.js (the `lapsimTracks`
 // text above it is copied byte for byte) and docs/lapsim-tracks-extra.md.
 // Nothing is fitted here. Run again after scripts/sim/build-geometry.mjs, which rewrites the whole file.
-import {readFileSync, writeFileSync} from 'node:fs';
+import {existsSync, readFileSync, writeFileSync} from 'node:fs';
 import {lapsimKernel} from '../../worker/lapsim/kernel.js';
 import {lapsimCalibration} from '../../worker/lapsim/calibration-data.js';
+import {lapsimTracks} from '../../worker/lapsim/tracks-data.js';
 import {minCurvatureLine, lineTrack} from '../../worker/lapsim/racing-line.js';
 
 const K = lapsimKernel(), D = 'scripts/sim/data/', OUT = 'worker/lapsim/tracks-data.js', DOC = 'docs/lapsim-tracks-extra.md';
@@ -41,43 +42,104 @@ export function buildTrack(id, spec, c) {
     sources: [...(c.sources || []), ...(spec.sources || [])]};
 }
 
-// Real lap of a known class against the simulated lap. Car = production calibration of that class, nearest fitted season.
-export function checkTrack(entry, laps, pass) {
-  const wec = lapsimCalibration.series.wec, track = K.trackFromData(entry), rows = [];
+// Real laps of known classes against the simulated lap. Car = production calibration of that class, nearest fitted season.
+// factor(row, cal) = track grip relative to 1; the default is the mean factor of the class's fitted tracks (track-unseen).
+const wec = lapsimCalibration.series.wec, STD = {pressureHpa: 1013.25, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0};
+const meanGrip = cal => Math.exp(Object.values(cal.tracks).map(x => Math.log(x.grip)).filter(Number.isFinite).reduce((a, x, _, arr) => a + x / arr.length, 0));
+const calOf = b => { const f1 = b.car === 'f1', season = String(Math.min(2026, Math.max(f1 ? 2023 : 2025, b.season))); return {season, cal: f1 ? lapsimCalibration.seasons[season] : wec[b.car]?.[season]}; };
+const envOf = b => K.conditionsFromWeather({...STD, pressureHpa: b.pressureHpa ?? 1013.25, airTempC: b.airC ?? 25, humidityPct: b.humidityPct ?? 50, trackTempC: b.trackC ?? 35});
+const stat = rows => rows.length ? {n: rows.length, rmsPct: +Math.sqrt(rows.reduce((s, r) => s + r.errPct ** 2, 0) / rows.length).toFixed(2), biasPct: +(rows.reduce((s, r) => s + r.errPct, 0) / rows.length).toFixed(2)} : {n: 0, rmsPct: null, biasPct: null};
+export function simRows(track, laps, offsets = {}, factor = (b, cal) => meanGrip(cal)) {
+  const rows = [];
   for (const b of laps) {
-    const f1 = b.car === 'f1', season = String(Math.min(2026, Math.max(f1 ? 2023 : 2025, b.season))), cal = f1 ? lapsimCalibration.seasons[season] : wec[b.car]?.[season]; if (!cal) continue;
-    const g = Math.exp(Object.values(cal.tracks).map(x => Math.log(x.grip)).filter(Number.isFinite).reduce((a, x, _, arr) => a + x / arr.length, 0));
-    const env = K.conditionsFromWeather({pressureHpa: b.pressureHpa ?? 1013.25, airTempC: b.airC ?? 25, humidityPct: b.humidityPct ?? 50, trackTempC: b.trackC ?? 35, windSpeed: 0, windFromDeg: 0});
-    const sim = K.simulateLap({...track, mu: Float64Array.from(track.mu, m => m * g)}, cal.car, env);
-    rows.push({series: b.series, season: b.season, older: b.older || undefined, cls: b.cls, model: b.model, car: b.car + ' ' + season, borrowed: !!b.borrowed, real: b.lap, sim: +sim.lapTime.toFixed(3), errPct: +((sim.lapTime / b.lap - 1) * 100).toFixed(2)});
+    const {season, cal} = calOf(b); if (!cal) continue;
+    const fac = factor(b, cal), g = fac.grip ?? fac, car = fac.drag ? {...cal.car, cdA: cal.car.cdA * fac.drag, cdALow: (cal.car.cdALow ?? cal.car.cdA) * fac.drag} : cal.car;
+    // an F1 lap older than the fitted seasons: the 2023 car times the learned pace ratio of that season
+    const off = b.car === 'f1' && b.season < 2023 ? offsets[b.season]?.ratio ?? null : 1; if (off == null) continue;
+    const sim = K.simulateLap({...track, mu: Float64Array.from(track.mu, m => m * g)}, car, envOf(b)).lapTime * off;
+    rows.push({series: b.series, season: b.season, older: b.older || undefined, cls: b.cls, model: b.model, car: b.car + ' ' + season + (off !== 1 ? ` × ${off.toFixed(4)}` : ''), borrowed: !!b.borrowed, real: b.lap, sim: +sim.toFixed(3), errPct: +((sim / b.lap - 1) * 100).toFixed(2)});
   }
-  const rms = rows.length ? +Math.sqrt(rows.reduce((s, r) => s + r.errPct ** 2, 0) / rows.length).toFixed(2) : null, bias = rows.length ? +(rows.reduce((s, r) => s + r.errPct, 0) / rows.length).toFixed(2) : null;
-  const status = rows.length && rms <= pass ? 'pass' : 'warn';
-  return {status, level: 'C track-unseen, no fit', n: rows.length, rmsPct: rms, biasPct: bias, ownClassRows: rows.filter(r => !r.borrowed).length,
-    reason: !rows.length ? 'no real lap of a calibrated class' : status === 'warn' ? `error above ${pass} %` : null, rows};
+  return rows;
+}
+// One grip factor for the track (relative to the class mean), fitted so the mean signed error of the rows is zero.
+// More grip always gives a faster lap, so bisection is enough. Bounds = the range of the production track factors.
+export const GRIP_BOUNDS = [0.88, 1.21];
+export function learnFactor(track, laps, offsets) {
+  const mean = g => { const r = simRows(track, laps, offsets, (b, cal) => meanGrip(cal) * g); return r.reduce((a, x) => a + x.errPct, 0) / r.length; };
+  let lo = 0.75, hi = 1.35; if (mean(lo) < 0) return lo; if (mean(hi) > 0) return hi;
+  for (let i = 0; i < 14; i++) { const m = (lo + hi) / 2; if (mean(m) > 0) lo = m; else hi = m; }
+  return +((lo + hi) / 2).toFixed(4);
+}
+// Held-out error of the learned factor: leave one row out, fit on the others, predict the row left out (rule 2.3).
+export function learnedCheck(track, laps, offsets) {
+  const usable = laps.filter(b => calOf(b).cal && (b.car !== 'f1' || b.season >= 2023 || offsets[b.season])); if (usable.length < 2) return null;
+  const grip = learnFactor(track, usable, offsets), held = usable.map((b, i) => { const g = learnFactor(track, usable.filter((_, j) => j !== i), offsets); return simRows(track, [b], offsets, (x, cal) => meanGrip(cal) * g)[0]; });
+  return {grip, inBounds: grip >= GRIP_BOUNDS[0] && grip <= GRIP_BOUNDS[1], heldOut: stat(held), level: 'row left out (season or class unseen), track factor fitted on the other rows', rows: held};
+}
+// How much faster an older F1 season was than the 2023 car: real pole of that season over the simulated 2023 lap with the
+// circuit's own 2023 factors, on production circuits. ratio = geometric mean; heldOutRmsPct = each circuit predicted from the others.
+export function seasonOffsets(seasonPoles) {
+  const cal = lapsimCalibration.seasons['2023'], out = {};
+  for (const [season, poles] of Object.entries(seasonPoles || {})) {
+    const r = []; for (const [id, p] of Object.entries(poles)) { const f = cal.tracks[id]; if (!f || !lapsimTracks[id]) continue;
+      r.push({id, ratio: p.lap / simRows(K.trackFromData(lapsimTracks[id]), [{car: 'f1', season: 2023, lap: p.lap, ...p}], {}, () => ({grip: f.grip, drag: f.drag || 1}))[0].sim}); }
+    if (r.length < 3) continue; const gm = a => Math.exp(a.reduce((s, x) => s + Math.log(x.ratio), 0) / a.length);
+    out[season] = {ratio: +gm(r).toFixed(4), n: r.length, heldOutRmsPct: +(Math.sqrt(r.reduce((s, x) => s + (gm(r.filter(y => y !== x)) / x.ratio - 1) ** 2, 0) / r.length) * 100).toFixed(2), circuits: r.map(x => `${x.id} ${x.ratio.toFixed(4)}`)};
+  }
+  return out;
 }
 
 if (process.argv[1]?.endsWith('build-geometry-extra.mjs')) {
-  const spec = read('track-extra.json'), files = {}, out = {}, text = readFileSync(OUT, 'utf8');
+  const spec = read('track-extra.json'), files = {}, out = {}, text = readFileSync(OUT, 'utf8'), pass = spec.passRmsPct;
   const base = text.includes(MARK) ? text.slice(0, text.indexOf(MARK)) : text;
+  const offsets = seasonOffsets(existsSync(D + 'tracks/extra-tracks-f1.json') ? read('tracks/extra-tracks-f1.json').seasonPoles : null);
+  const lapsOf = id => spec.laps.filter(l => l.track === id);
   for (const [id, s] of Object.entries(spec.tracks)) {
     const f = files[s.file] ??= read('tracks/' + s.file), c = (f.tracks || f.variants)[s.candidate]; if (!c) throw new Error(`${id}: candidate ${s.candidate} not in ${s.file}`);
-    const e = buildTrack(id, s, c), chk = checkTrack(e, spec.laps.filter(l => l.track === id), spec.passRmsPct);
+    const e = buildTrack(id, s, c), track = K.trackFromData(e), rows = simRows(track, lapsOf(id), offsets), u = stat(rows);
+    const chk = {status: u.n && u.rmsPct <= pass ? 'pass' : 'warn', mode: 'unseen', level: 'C track-unseen, no fit', ...u, ownClassRows: rows.filter(r => !r.borrowed).length, reason: !u.n ? 'no real lap of a calibrated class' : u.rmsPct > pass ? `error above ${pass} %` : null, rows};
+    chk.learned = learnedCheck(track, lapsOf(id), offsets);
+    if (s.variants) chk.variantLaps = Object.fromEntries(s.variants.map(v => [v, +K.simulateLap(K.trackFromData(buildTrack(id, s, f.variants[v])), wec.lmgt3['2026'].car, K.conditionsFromWeather(STD)).lapTime.toFixed(2)]));
+    e.group = s.group; e.quality.check = chk; out[id] = e;
+  }
+  // Second pass: a track that fails or has no usable row takes its track factor from data (fourth declaration)
+  for (const [id, s] of Object.entries(spec.tracks)) {
+    const e = out[id], chk = e.quality.check, track = K.trackFromData(e), L = chk.learned;
+    if (chk.status !== 'pass' && s.factorFromProduction) { // a production circuit that shares most of this lap: its own fitted factors
+      const pid = s.factorFromProduction, rows = simRows(track, lapsOf(id), offsets, (b, cal) => { const t = cal.tracks[pid]; return t ? {grip: t.grip, drag: b.car === 'f1' ? t.drag || 1 : 1} : meanGrip(cal); }), st = stat(rows);
+      chk.sibling = {from: pid + ' (production)', ...st, rows}; if (st.n && st.rmsPct <= pass) Object.assign(chk, {status: 'pass', mode: 'sibling', reason: null});
+    }
+    if (chk.status !== 'pass' && s.factorFrom) { // another layout of the same venue: its learned factor
+      const g = out[s.factorFrom]?.quality.check.learned?.grip;
+      if (g) { const rows = simRows(track, lapsOf(id), offsets, (b, cal) => meanGrip(cal) * g), st = stat(rows); chk.sibling = {from: s.factorFrom, grip: g, ...st, rows}; if (st.n && st.rmsPct <= pass) Object.assign(chk, {status: 'pass', mode: 'sibling', reason: null}); }
+    }
+    if (chk.status !== 'pass' && L) {
+      if (!L.inBounds) chk.reason = `learned track factor ${L.grip} is outside ${GRIP_BOUNDS.join('–')}: the track, not the grip, is wrong`;
+      else if (L.heldOut.rmsPct <= pass) Object.assign(chk, {status: 'pass', mode: 'learned', reason: null});
+      else chk.reason = `held-out error ${L.heldOut.rmsPct} % with a learned track factor, above ${pass} %`;
+    }
     if (s.provisional) { chk.status = 'warn'; chk.reason = s.provisional; }
-    if (s.variants) chk.variantLaps = Object.fromEntries(s.variants.map(v => { const t = K.trackFromData(buildTrack(id, s, f.variants[v])), cal = lapsimCalibration.series.wec.lmgt3['2026']; return [v, +K.simulateLap(t, cal.car, K.conditionsFromWeather({pressureHpa: 1013.25, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0})).lapTime.toFixed(2)]; }));
-    e.group = s.group; e.fit = chk.status === 'pass'; if (!e.fit) e.warn = '⚠️ ' + chk.reason; e.quality.check = chk; out[id] = e;
+    e.fit = chk.status === 'pass'; if (!e.fit) e.warn = '⚠️ ' + chk.reason;
+    if (chk.mode !== 'unseen') { e.trackFactor = chk.mode === 'learned' ? {grip: L.grip, source: `learned from ${L.heldOut.n} real laps on this track`} : {grip: chk.sibling.grip ?? null, source: `from ${chk.sibling.from}`}; e.quality.evidence.trackGrip = chk.mode === 'learned' ? '3 inferred (one factor fitted on real laps of this track)' : `4 borrowed (${chk.sibling.from})`; }
   }
   writeFileSync(OUT, base + MARK + 'export const lapsimExtraTracks=' + JSON.stringify(out) + ';\n');
-  const L = [`# Extra circuits: sources, evidence and check`, '', `Generated by \`scripts/sim/build-geometry-extra.mjs\` from \`scripts/sim/data/track-extra.json\`. Calibration used for the check: \`calibration-data.js\` generated ${lapsimCalibration.generatedAt}. No fit was run.`, '',
+  const hgt = q => q.elevation ? (q.elevation.source || q.elevation.minM == null ? (q.elevation.source || 'diagram labels') : `${q.elevation.minM}–${q.elevation.maxM} m`) : 'flat assumed';
+  const L = [`# Extra circuits: sources, evidence and check`, '', `Generated by \`scripts/sim/build-geometry-extra.mjs\` from \`scripts/sim/data/track-extra.json\`. Calibration used for the check: \`calibration-data.js\` generated ${lapsimCalibration.generatedAt}. The production calibration was not rerun or changed.`, '',
     `These tracks are in \`lapsimExtraTracks\` (second export of \`worker/lapsim/tracks-data.js\`). \`lapsimTracks\` is unchanged, so the fit scripts, the tool and the site do not read them yet.`, '',
-    '## Declared before the first run (2026-11-14)', '', spec.declared, '', ...(spec.declared2 ? ['## Second declaration (2026-11-14): tracks from F1 car positions', '', spec.declared2, ''] : []), ...(spec.declared3 ? ['## Third declaration (2026-11-14, before the run): all Timing71 series', '', spec.declared3, ''] : []),
-    '## Result', '', '| Track | Layout | Group | Length m (official) | Height | Rows (own class) | RMS % | Bias % | State |', '|---|---|---|---|---|---|---|---|---|'];
-  for (const e of Object.values(out)) { const q = e.quality, c = q.check; L.push(`| ${e.id} | ${e.layout} | ${e.group} | ${e.length} (${e.officialLengthM ?? '?'}) | ${q.elevation ? (q.elevation.source || q.elevation.minM == null ? (q.elevation.source || 'diagram labels') : `${q.elevation.minM}–${q.elevation.maxM} m`) : 'flat assumed'} | ${c.n} (${c.ownClassRows}) | ${c.rmsPct ?? '–'} | ${c.biasPct ?? '–'} | ${e.fit ? 'pass' : e.warn} |`); }
-  L.push('', 'Length is the least-curvature line; it is shorter than the official centre-line distance. "Own class" rows are WEC cars on WEC laps; the other rows use a borrowed car (IMSA GTP = LMDh car, every other GT3 series = LMGT3 car).', '', '## Check rows', '', '| Track | Series | Season | Class | Car model | Sim car | Real s | Sim s | Error % |', '|---|---|---|---|---|---|---|---|---|');
-  for (const e of Object.values(out)) for (const r of e.quality.check.rows) L.push(`| ${e.id} | ${r.series} | ${r.season}${r.older ? ' (older)' : ''} | ${r.cls} | ${r.model ?? '?'} | ${r.car}${r.borrowed ? ' (borrowed)' : ''} | ${r.real} | ${r.sim} | ${r.errPct} |`);
+    '## Declared before the first run (2026-11-14)', '', spec.declared, '', ...(spec.declared2 ? ['## Second declaration (2026-11-14): tracks from F1 car positions', '', spec.declared2, ''] : []), ...(spec.declared3 ? ['## Third declaration (2026-11-14, before the run): all Timing71 series', '', spec.declared3, ''] : []), ...(spec.declared4 ? ['## Fourth declaration (2026-11-14, before the run): track factors learned from data', '', spec.declared4, ''] : []),
+    '## Result', '', '"Unseen" = no value from this track is used (level C). "Held-out" = one track factor fitted on the other rows of the track, error on the row left out.', '', '| Track | Layout | Group | Length m (official) | Height | Rows (own class) | Unseen RMS % | Unseen bias % | Learned factor | Held-out RMS % | Sibling factor: RMS % | State |', '|---|---|---|---|---|---|---|---|---|---|---|---|'];
+  for (const e of Object.values(out)) { const q = e.quality, c = q.check, l = c.learned; L.push(`| ${e.id} | ${e.layout} | ${e.group} | ${e.length} (${e.officialLengthM ?? '?'}) | ${hgt(q)} | ${c.n} (${c.ownClassRows}) | ${c.rmsPct ?? '–'} | ${c.biasPct ?? '–'} | ${l ? l.grip + (l.inBounds ? '' : ' (out of bounds)') : '–'} | ${l ? l.heldOut.rmsPct : '–'} | ${c.sibling ? `${c.sibling.from}: ${c.sibling.rmsPct ?? '–'}` : '–'} | ${e.fit ? `pass (${c.mode})` : e.warn} |`); }
+  L.push('', 'Length is the driven or least-curvature line; it is shorter than the official centre-line distance. "Own class" rows are WEC cars on WEC laps; the other rows use a borrowed car (IMSA GTP = LMDh car, every other GT3 series = LMGT3 car, an older F1 season = the 2023 F1 car times the season ratio).');
+  if (Object.keys(offsets).length) L.push('', '## F1 season pace ratio (older season against the 2023 car)', '', '| Season | Ratio | Circuits | Held-out RMS % (one circuit left out) | Per circuit |', '|---|---|---|---|---|', ...Object.entries(offsets).map(([y, o]) => `| ${y} | ${o.ratio} | ${o.n} | ${o.heldOutRmsPct} | ${o.circuits.join(', ')} |`));
+  L.push('', '## Check rows (unseen)', '', '| Track | Series | Season | Class | Car model | Sim car | Real s | Sim s | Error % |', '|---|---|---|---|---|---|---|---|---|');
+  const row = (e, r) => `| ${e.id} | ${r.series} | ${r.season}${r.older ? ' (older)' : ''} | ${r.cls} | ${r.model ?? '?'} | ${r.car}${r.borrowed ? ' (borrowed)' : ''} | ${r.real} | ${r.sim} | ${r.errPct} |`;
+  for (const e of Object.values(out)) for (const r of e.quality.check.rows) L.push(row(e, r));
+  L.push('', '## Held-out rows with a learned or sibling track factor', '', '| Track | Series | Season | Class | Car model | Sim car | Real s | Sim s | Error % |', '|---|---|---|---|---|---|---|---|---|');
+  for (const e of Object.values(out)) for (const r of [...(e.quality.check.sibling?.rows || []), ...(e.quality.check.learned?.rows || [])]) L.push(row(e, r));
   L.push('', '## Evidence layer per value', '', '| Track | Lap length | Plan shape | Driven line | Width | Height | Track grip |', '|---|---|---|---|---|---|---|');
   for (const e of Object.values(out)) { const v = e.quality.evidence; L.push(`| ${e.id} | ${v.lapLength} | ${v.planShape} | ${v.drivenLine} | ${v.width} | ${v.height} | ${v.trackGrip} |`); }
   L.push('', '## Sources', '', ...Object.values(out).map(e => `- **${e.id}**: ${e.sources.join('; ')}`), '', '## Not checked, known limits', '', ...spec.limits.map(x => '- ' + x), '');
   writeFileSync(DOC, L.join('\n'));
-  console.table(Object.values(out).map(e => ({id: e.id, len: e.length, official: e.officialLengthM, n: e.quality.check.n, rms: e.quality.check.rmsPct, bias: e.quality.check.biasPct, state: e.fit ? 'pass' : e.warn})));
+  console.table(Object.values(out).map(e => { const c = e.quality.check; return {id: e.id, n: c.n, unseen: c.rmsPct, bias: c.biasPct, grip: c.learned?.grip, heldOut: c.learned?.heldOut.rmsPct, sibling: c.sibling?.rmsPct, state: e.fit ? 'pass ' + c.mode : (e.warn || '').slice(0, 60)}; }));
+  console.log(offsets);
 }
