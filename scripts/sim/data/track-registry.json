@@ -957,6 +957,76 @@
    "aliases": [
     "zeltweg"
    ]
+  },
+  "fe-london": {
+   "name": "London (Formula E street circuit)",
+   "country": null,
+   "aliases": [
+    "london"
+   ]
+  },
+  "fe-tokyo": {
+   "name": "Tokyo (Formula E street circuit)",
+   "country": null,
+   "aliases": [
+    "tokyo"
+   ]
+  },
+  "fe-sanya": {
+   "name": "Sanya (Formula E street circuit)",
+   "country": null,
+   "aliases": [
+    "sanya"
+   ]
+  },
+  "fe-berlin": {
+   "name": "Berlin (Formula E street circuit)",
+   "country": null,
+   "aliases": [
+    "berlin"
+   ]
+  },
+  "fe-sao-paulo": {
+   "name": "São Paulo (Formula E street circuit)",
+   "country": null,
+   "aliases": [
+    "sao paulo"
+   ]
+  },
+  "fe-jakarta": {
+   "name": "Jakarta (Formula E street circuit)",
+   "country": null,
+   "aliases": [
+    "jakarta"
+   ]
+  },
+  "fe-portland": {
+   "name": "Portland (Formula E street circuit)",
+   "country": null,
+   "aliases": [
+    "portland"
+   ]
+  },
+  "fe-diriyah": {
+   "name": "Diriyah (Formula E street circuit)",
+   "country": null,
+   "aliases": [
+    "diriyah"
+   ]
+  },
+  "fe-rome": {
+   "name": "Rome (Formula E street circuit)",
+   "country": null,
+   "aliases": [
+    "rome"
+   ]
+  },
+  "fe-cape-town": {
+   "name": "Cape Town (Formula E street circuit)",
+   "country": null,
+   "aliases": [
+    "cape town"
+   ]
   }
  },
  "layouts": [
@@ -3273,6 +3343,282 @@
     "f1db:zolder-2"
    ],
    "default": true
+  },
+  {
+   "id": "fe-london",
+   "venue": "fe-london",
+   "lengthKm": 2.077,
+   "seasons": [
+    [2024, 2026]
+   ],
+   "sources": [
+    "fia-fe-map"
+   ],
+   "sim": "fe-london"
+  },
+  {
+   "id": "fe-tokyo",
+   "venue": "fe-tokyo",
+   "lengthKm": 2.575,
+   "seasons": [
+    [2024, 2026]
+   ],
+   "sources": [
+    "fia-fe-map"
+   ],
+   "sim": "fe-tokyo"
+  },
+  {
+   "id": "fe-shanghai",
+   "venue": "shanghai",
+   "lengthKm": 3.051,
+   "seasons": [
+    [2024, 2026]
+   ],
+   "sources": [
+    "fia-fe-map"
+   ],
+   "sim": "fe-shanghai"
+  },
+  {
+   "id": "fe-sanya",
+   "venue": "fe-sanya",
+   "lengthKm": 2.52,
+   "seasons": [
+    [2026, 2026]
+   ],
+   "sources": [
+    "fia-fe-map"
+   ],
+   "sim": "fe-sanya"
+  },
+  {
+   "id": "fe-berlin",
+   "venue": "fe-berlin",
+   "lengthKm": 2.374,
+   "seasons": [
+    [2025, 2026]
+   ],
+   "sources": [
+    "fia-fe-map"
+   ],
+   "sim": "fe-berlin"
+  },
+  {
+   "id": "jarama",
+   "venue": "jarama",
+   "lengthKm": 3.934,
+   "seasons": [
+    [2026, 2026]
+   ],
+   "sources": [
+    "fia-fe-map"
+   ],
+   "sim": "jarama"
+  },
+  {
+   "id": "fe-jeddah",
+   "venue": "jeddah",
+   "lengthKm": 3.001,
+   "seasons": [
+    [2025, 2026]
+   ],
+   "sources": [
+    "fia-fe-map"
+   ],
+   "sim": "fe-jeddah"
+  },
+  {
+   "id": "fe-miami",
+   "venue": "miami",
+   "lengthKm": 2.32,
+   "seasons": [
+    [2026, 2026]
+   ],
+   "sources": [
+    "fia-fe-map"
+   ],
+   "sim": "fe-miami"
+  },
+  {
+   "id": "fe-mexico",
+   "venue": "mexico-city",
+   "lengthKm": 2.608,
+   "seasons": [
+    [2026, 2026]
+   ],
+   "sources": [
+    "fia-fe-map"
+   ],
+   "sim": "fe-mexico"
+  },
+  {
+   "id": "fe-sao-paulo",
+   "venue": "fe-sao-paulo",
+   "lengthKm": 2.933,
+   "seasons": [
+    [2023, 2026]
+   ],
+   "sources": [
+    "fia-fe-map"
+   ],
+   "sim": "fe-sao-paulo"
+  },
+  {
+   "id": "fe-valencia",
+   "venue": "valencia",
+   "lengthKm": 3.376,
+   "seasons": [
+    [2024, 2026]
+   ],
+   "sources": [
+    "fia-fe-map"
+   ],
+   "sim": "fe-valencia"
+  },
+  {
+   "id": "fe-jakarta",
+   "venue": "fe-jakarta",
+   "lengthKm": 2.37,
+   "seasons": [
+    [2023, 2025]
+   ],
+   "sources": [
+    "fia-fe-map"
+   ],
+   "sim": "fe-jakarta"
+  },
+  {
+   "id": "fe-miami-2025",
+   "venue": "miami",
+   "lengthKm": 3.551,
+   "seasons": [
+    [2025, 2025]
+   ],
+   "sources": [
+    "fia-fe-map"
+   ],
+   "sim": "fe-miami-2025"
+  },
+  {
+   "id": "fe-mexico-2023",
+   "venue": "mexico-city",
+   "lengthKm": 2.63,
+   "seasons": [
+    [2023, 2025]
+   ],
+   "sources": [
+    "fia-fe-map"
+   ],
+   "sim": "fe-mexico-2023"
+  },
+  {
+   "id": "jarama-2025",
+   "venue": "jarama",
+   "lengthKm": 3.915,
+   "seasons": [
+    [2025, 2025]
+   ],
+   "sources": [
+    "fia-fe-map"
+   ],
+   "sim": "jarama-2025"
+  },
+  {
+   "id": "fe-portland",
+   "venue": "fe-portland",
+   "lengthKm": 3.19,
+   "seasons": [
+    [2023, 2024]
+   ],
+   "sources": [
+    "fia-fe-map"
+   ],
+   "sim": "fe-portland"
+  },
+  {
+   "id": "fe-berlin-2024",
+   "venue": "fe-berlin",
+   "lengthKm": 2.345,
+   "seasons": [
+    [2024, 2024]
+   ],
+   "sources": [
+    "fia-fe-map"
+   ],
+   "sim": "fe-berlin-2024"
+  },
+  {
+   "id": "fe-misano",
+   "venue": "misano",
+   "lengthKm": 3.382,
+   "seasons": [
+    [2024, 2024]
+   ],
+   "sources": [
+    "fia-fe-map"
+   ],
+   "sim": "fe-misano"
+  },
+  {
+   "id": "fe-diriyah",
+   "venue": "fe-diriyah",
+   "lengthKm": 2.495,
+   "seasons": [
+    [2023, 2024]
+   ],
+   "sources": [
+    "fia-fe-map"
+   ],
+   "sim": "fe-diriyah"
+  },
+  {
+   "id": "fe-london-2023",
+   "venue": "fe-london",
+   "lengthKm": 2.086,
+   "seasons": [
+    [2023, 2023]
+   ],
+   "sources": [
+    "fia-fe-map"
+   ],
+   "sim": "fe-london-2023"
+  },
+  {
+   "id": "fe-rome",
+   "venue": "fe-rome",
+   "lengthKm": 3.38,
+   "seasons": [
+    [2023, 2023]
+   ],
+   "sources": [
+    "fia-fe-map"
+   ],
+   "sim": "fe-rome"
+  },
+  {
+   "id": "fe-berlin-2023",
+   "venue": "fe-berlin",
+   "lengthKm": 2.355,
+   "seasons": [
+    [2023, 2023]
+   ],
+   "sources": [
+    "fia-fe-map"
+   ],
+   "sim": "fe-berlin-2023"
+  },
+  {
+   "id": "fe-cape-town",
+   "venue": "fe-cape-town",
+   "lengthKm": 2.921,
+   "seasons": [
+    [2023, 2023]
+   ],
+   "sources": [
+    "fia-fe-map"
+   ],
+   "sim": "fe-cape-town"
   }
  ]
 }

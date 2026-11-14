@@ -1,4 +1,7 @@
 // Learning step (docs/lapsim-learn.md): track identity, car-model identity, the car table builder and what the page reads.
+import {lapsimFeTracks} from '../worker/lapsim/fe-tracks-data.js';
+import {lapsimFe} from '../worker/lapsim/fe-data.js';
+import {simulate as feTool} from '../worker/lapsim/tool.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {resolveTrack, registry} from '../scripts/sim/learn/track-registry.mjs';
@@ -32,7 +35,7 @@ test('track identity: one id per layout, and the cases that once went wrong', ()
 
 test('every simulator track is exactly one layout of the registry', () => {
   const sims = registry().layouts.filter(l => l.sim).map(l => l.sim);
-  assert.deepEqual([...sims].sort(), Object.keys({...lapsimTracks, ...lapsimExtraTracks}).sort());
+  assert.deepEqual([...sims].sort(), Object.keys({...lapsimTracks, ...lapsimExtraTracks, ...lapsimFeTracks}).sort());
   assert.equal(new Set(sims).size, sims.length);
 });
 
@@ -112,4 +115,14 @@ test('the page URL keeps the base car with evo=0 (a car with an Evo kit opens on
   const src = (await import('node:fs')).readFileSync(new URL('../worker/website.js', import.meta.url), 'utf8');
   assert.match(src, /evo:url\.searchParams\.get\('evo'\)/);
   assert.notEqual(simulationPage({track: 'brands-hatch', car: 'gt3-bmw-m4-gt3'}, 'en'), simulationPage({track: 'brands-hatch', car: 'gt3-bmw-m4-gt3', evo: '0'}, 'en'));
+});
+
+test('Formula E: every raced layout and rule set shows its fastest real lap (page and tool); learning beats the bare car', () => {
+  const fmt = x => x < 60 ? x.toFixed(3) : `${Math.floor(x / 60)}:${(x % 60).toFixed(3).padStart(6, '0')}`; let n = 0;
+  for (const [id, t] of Object.entries(lapsimFe.tracks)) for (const [k, r] of Object.entries(t.real)) { n++;
+    assert.equal(/data-ls="lap"[^>]*>([^<]+)/.exec(simulationPage({track: id, car: k}, 'en'))?.[1], fmt(r.lap), `${id} ${k}`);
+    assert.ok(Math.abs(feTool({track: id, car: k}).result.lap_seconds - r.lap) < 5e-4, `tool ${id} ${k}`); }
+  assert.ok(n >= 30, 'raced FE combinations: ' + n);
+  for (const [k, h] of Object.entries(lapsimFe.heldOutPct)) assert.ok(h.event < h.before, `${k}: event hidden ${h.event} % not below the bare car ${h.before} %`);
+  assert.ok(simulationPage({track: 'fe-london', car: 'fe-gen4'}, 'en').includes('Gen4'));
 });

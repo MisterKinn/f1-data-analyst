@@ -46,7 +46,7 @@ export const SERIES = {
       'AUTODROMO NAZIONALE DI MONZA': 'monza', 'MONZA': 'monza'},
   },
   gt3: {label: {ko: '기타 GT3 (IMSA GTD·DTM·SP9)', en: 'Other GT3 (IMSA GTD, DTM, SP9)'}, status: 'coming-soon'},
-  fe: {label: {ko: '포뮬러 E Gen4', en: 'Formula E Gen4'}, status: 'coming-soon'},
+  fe: {label: {ko: '포뮬러 E (Gen2 · Gen3 · Gen3 Evo · Gen4)', en: 'Formula E (Gen2, Gen3, Gen3 Evo, Gen4)'}, status: 'learned'},
 };
 
 // Al Kamel season ids for the seasons the simulator uses

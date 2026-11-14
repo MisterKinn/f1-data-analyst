@@ -2,6 +2,7 @@
 // rule and the event a car races at on a track. Nothing here changes a model or calibration value.
 import {calendarEvents} from './race-calendar-data.js';
 import {lapsimLearned} from './lapsim/learned-data.js';
+import {lapsimFe} from './lapsim/fe-data.js';
 
 // Track labels in the owner's format: 3-letter code + " - " + name (no flag, owner 2026-11-14). [ISO country, code, name, always ⚠️].
 // The codes are the owner's (Bahrain is BHA). Requested tracks come from scripts/sim/data/track-requests.json
@@ -19,6 +20,12 @@ const L = {
   lusail: ['QA', 'QAT', 'Lusail'], kyalami: ['ZA', 'RSA', 'Kyalami'], rwanda: ['RW', 'RWA', 'Rwanda', true], singapore: ['SG', 'SGP', 'Singapore'],
   'yas-marina-circuit': ['AE', 'UAE', 'Yas Marina'], austin: ['US', 'USA', 'COTA'], indianapolis: ['US', 'USA', 'Indianapolis'], 'las-vegas': ['US', 'USA', 'Las Vegas'],
   sebring: ['US', 'USA', 'Sebring'], 'road-atlanta': ['US', 'USA', 'Road Atlanta'], miami: ['US', 'USA', 'Miami'], daytona: ['US', 'USA', 'Daytona'],
+  // Formula E street circuits (official FIA circuit maps); an older layout carries its seasons
+  'fe-london': ['GB', 'GBR', 'London ExCeL'], 'fe-london-2023': ['GB', 'GBR', 'London ExCeL (2023)'], 'fe-shanghai': ['CN', 'CHN', 'Shanghai (FE)'], 'fe-berlin-2024': ['DE', 'GER', 'Berlin Tempelhof (2024)'],
+  'fe-berlin-2023': ['DE', 'GER', 'Berlin Tempelhof (2023)'], 'jarama-2025': ['ES', 'ESP', 'Jarama (2025)'], 'fe-valencia': ['ES', 'ESP', 'Valencia (FE)'], 'fe-jeddah': ['SA', 'KSA', 'Jeddah Corniche (FE)'],
+  'fe-diriyah': ['SA', 'KSA', 'Diriyah'], 'fe-miami': ['US', 'USA', 'Miami (FE)'], 'fe-miami-2025': ['US', 'USA', 'Homestead-Miami (FE)'], 'fe-portland': ['US', 'USA', 'Portland'],
+  'fe-mexico': ['MX', 'MEX', 'Mexico City (FE)'], 'fe-mexico-2023': ['MX', 'MEX', 'Mexico City (FE 2023-25)'], 'fe-jakarta': ['ID', 'IDN', 'Jakarta'], 'fe-misano': ['IT', 'ITA', 'Misano (FE)'],
+  'fe-rome': ['IT', 'ITA', 'Rome EUR'], 'fe-cape-town': ['ZA', 'RSA', 'Cape Town'],
   'laguna-seca': ['US', 'USA', 'Laguna Seca'], 'watkins-glen': ['US', 'USA', 'Watkins Glen'], 'road-america': ['US', 'USA', 'Road America'], 'long-beach': ['US', 'USA', 'Long Beach'],
   detroit: ['US', 'USA', 'Detroit'], vir: ['US', 'USA', 'VIR'], 'mid-ohio': ['US', 'USA', 'Mid-Ohio'], 'lime-rock': ['US', 'USA', 'Lime Rock'],
 };
@@ -34,6 +41,8 @@ export const isCandidate = track => !!track && (track.candidate === true || (typ
 export const WARN_PCT = 3;
 export function trackWarn(id, track) {
   if (L[id]?.[3]) return true;
+  const fe = lapsimFe?.tracks?.[id]; // Formula E: event-hidden error, or a track factor above 8 % (the map line itself is doubtful)
+  if (fe && id.startsWith('fe-') || fe && !lapsimLearned?.tracks?.[id]) return (fe.errPct ?? Infinity) > WARN_PCT || Math.abs(fe.T) > 0.08;
   const e = Object.values(lapsimLearned?.tracks?.[id]?.errPct || {}); if (e.length) return Math.max(...e) > WARN_PCT;
   return isCandidate(track);
 }

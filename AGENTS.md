@@ -27,6 +27,7 @@ Read `docs/lapsim-learn.md` first and follow it together with `docs/lapsim-physi
 10. Use the Wolfram tools (Wolfram|Alpha, Wolfram Language) for unit conversions, physics checks and arithmetic that a result depends on.
 11. GT3 is learned per BoP body. SRO GT3 (no torque sensor) is the basic GT3, first in the list, key `gt3-<model>`; IMSA GTD `gt3-imsa-<model>`, WEC LMGT3 / ELMS / Asian LMS `gt3-aco-<model>`, DTM `gt3-dtm-<model>`. SRO records come from the official SRO results sites (GTWC Europe, America, Asia, British GT) and must reproduce exactly.
 12. WEC class cars (`wec-lmh`, `wec-lmdh`, `wec-lmgt3`) show WEC records first; another series only fills a track WEC never raced. A car with an Evo or Evo 2 kit opens on its newest kit.
+13. Formula E is learned per rule set (Gen2, Gen3, Gen3 Evo; Gen4 prior) on tracks built from the official FIA Formula E circuit maps (`scripts/sim/learn/build-fe.mjs`, docs/lapsim-learn.md section 8). Every raced layout and rule set must show its fastest real lap. Source: Al Kamel Formula E results, https://results.formulae.fia.com
 
 Sources learned so far or to be learned (the full table with the state of each is `docs/lapsim-learn.md` section 6; add every new source there and here):
 
