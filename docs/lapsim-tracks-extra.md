@@ -14,6 +14,14 @@ Check per track: simulate the production WEC class cars (LMH, LMDh, LMGT3; neare
 |---|---|---|---|---|---|---|---|---|
 | yeongam | Korea International Circuit, Grand Prix 5.615 km | korea | 5498 (5615) | 0–1 m | 0 (0) | – | – | ⚠️ no real lap of a calibrated class |
 | yongin | Everland Speedway, full course 4.346 km | korea | 4251 (4346) | 92–146 m | 0 (0) | – | – | ⚠️ no real lap of a calibrated class |
+| mugello | Grand Prix 5.245 km | europe-africa-asia | 5184 (5245) | 246–289 m | 1 (0) | 1.74 | 1.74 | pass |
+| nurburgring-gp | Grand Prix 5.148 km | europe-africa-asia | 5056 (5148) | 567–621 m | 0 (0) | – | – | ⚠️ no real lap of a calibrated class |
+| nurburgring-sprint | Sprint 3.629 km (DTM, ADAC GT Masters) | europe-africa-asia | 3559 (3629) | 588–621 m | 2 (0) | 1.18 | 1.18 | pass |
+| nurburgring-24h | 24 Hours combined lap 25.378 km | europe-africa-asia | 25016 (25378) | 340–627 m | 3 (0) | 2.08 | -1.99 | pass |
+| brands-hatch | Grand Prix 3.916 km | europe-africa-asia | 3876 (3916) | flat assumed | 0 (0) | – | – | ⚠️ no real lap of a calibrated class |
+| sakhir-outer | Outer circuit 3.543 km | europe-africa-asia | 3507 (3543) | 7–28 m | 0 (0) | – | – | ⚠️ no real lap of a calibrated class |
+| kyalami | Grand Prix 4.522 km | europe-africa-asia | 4457 (4522) | 1458–1501 m | 0 (0) | – | – | ⚠️ no real lap of a calibrated class |
+| fuji | Fuji Speedway 4.563 km | europe-africa-asia | 4460 (4563) | 544–594 m | 5 (5) | 1.34 | -1.13 | pass |
 
 Length is the least-curvature line; it is shorter than the official centre-line distance. "Own class" rows are WEC cars on WEC laps; the other rows use a borrowed car (IMSA GTP = LMDh car, every other GT3 series = LMGT3 car).
 
@@ -21,6 +29,17 @@ Length is the least-curvature line; it is shorter than the official centre-line 
 
 | Track | Series | Season | Class | Car model | Sim car | Real s | Sim s | Error % |
 |---|---|---|---|---|---|---|---|---|
+| mugello | elms | 2024 | LMGT3 | Aston Martin Vantage AMR LMGT3 | lmgt3 2025 (borrowed) | 107.891 | 109.765 | 1.74 |
+| nurburgring-sprint | x-adac-gt-masters | 2024 | Silver | Mercedes-AMG GT3 | lmgt3 2025 (borrowed) | 85.186 | 86.243 | 1.24 |
+| nurburgring-sprint | x-adac-gt-masters | 2025 | Silver | Ford Mustang GT3 | lmgt3 2025 (borrowed) | 85.294 | 86.243 | 1.11 |
+| nurburgring-24h | nur | 2023 | SP 9 | Mercedes-AMG GT3 | lmgt3 2025 (borrowed) | 496.609 | 482.857 | -2.77 |
+| nurburgring-24h | nur | 2024 | SP 9 | Porsche 911 GT3 R (992) | lmgt3 2025 (borrowed) | 489.591 | 482.857 | -1.38 |
+| nurburgring-24h | nur | 2025 | SP 9 | Porsche 911 GT3 R (992) | lmgt3 2025 (borrowed) | 491.855 | 482.857 | -1.83 |
+| fuji | wec | 2023 | Hypercar H | Toyota GR010 HYBRID | lmh 2025 | 87.794 | 87.767 | -0.03 |
+| fuji | wec | 2024 | Hypercar | Cadillac V-Series.R | lmdh 2025 | 88.901 | 88.014 | -1 |
+| fuji | wec | 2024 | LMGT3 | Ferrari 296 LMGT3 | lmgt3 2025 | 100.893 | 98.625 | -2.25 |
+| fuji | wec | 2025 | Hypercar | Cadillac V-Series.R | lmdh 2025 | 88.637 | 87.862 | -0.87 |
+| fuji | wec | 2025 | LMGT3 | McLaren 720S LMGT3 Evo | lmgt3 2025 | 100.011 | 98.531 | -1.48 |
 
 ## Evidence layer per value
 
@@ -28,11 +47,27 @@ Length is the least-curvature line; it is shorter than the official centre-line 
 |---|---|---|---|---|---|---|
 | yeongam | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | yongin | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 4 assumed 12 m | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| mugello | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| nurburgring-gp | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| nurburgring-sprint | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| nurburgring-24h | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 4 assumed 12 m | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| brands-hatch | 1 fixed (official list) | 2 measured (TUM racetrack database centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | none (flat assumed) | 4 borrowed (mean factor of the class's fitted tracks) |
+| sakhir-outer | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| kyalami | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 4 assumed 12 m | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| fuji | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 
 ## Sources
 
 - **yeongam**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2025-12-01; Terrarium elevation tiles (Mapzen/Tilezen open data)
 - **yongin**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); hyundai-n.com/en/motorsport/nf-calendar-ncup-r4.do (4.346 km, 16 corners, pole left); Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **mugello**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **nurburgring-gp**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **nurburgring-sprint**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **nurburgring-24h**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); ADAC RAVENOL 24h Nürburgring press information (24h-media.de): 25.378 km combination of Grand Prix circuit and Nordschleife; clockwise; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **brands-hatch**: github.com/TUMFTM/racetrack-database @ e59595d1f3573b30d1ded6a08984935b957688e0 (LGPL-3.0); FIA list 2026-03-31
+- **sakhir-outer**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **kyalami**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); kyalamigrandprixcircuit.com/grand-prix-circuit (4.522 km, 16 turns, anti-clockwise, pole left); Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **fuji**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
 
 ## Not checked, known limits
 

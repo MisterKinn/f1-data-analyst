@@ -25,7 +25,219 @@
    "candidate": "yongin-everland-speedway-full-course",
    "name": "Yongin",
    "layout": "Everland Speedway, full course 4.346 km"
+  },
+  "mugello": {
+   "group": "europe-africa-asia",
+   "file": "extra-tracks.json",
+   "candidate": "mugello-mugello",
+   "name": "Mugello",
+   "layout": "Grand Prix 5.245 km"
+  },
+  "nurburgring-gp": {
+   "group": "europe-africa-asia",
+   "file": "extra-tracks.json",
+   "candidate": "nurburgring-nurburgring-grand-prix",
+   "name": "Nürburgring",
+   "layout": "Grand Prix 5.148 km"
+  },
+  "nurburgring-sprint": {
+   "group": "europe-africa-asia",
+   "file": "extra-tracks.json",
+   "candidate": "nurburgring-nurburgring-sprint-strecke",
+   "name": "Nürburgring",
+   "layout": "Sprint 3.629 km (DTM, ADAC GT Masters)"
+  },
+  "nurburgring-24h": {
+   "group": "europe-africa-asia",
+   "file": "extra-tracks.json",
+   "candidate": "nurburgring-24-hours-combined-lap",
+   "name": "Nürburgring",
+   "layout": "24 Hours combined lap 25.378 km"
+  },
+  "brands-hatch": {
+   "group": "europe-africa-asia",
+   "file": "extra-tracks-tum.json",
+   "candidate": "brands-hatch",
+   "name": "Brands Hatch",
+   "layout": "Grand Prix 3.916 km",
+   "shapeEvidence": "2 measured (TUM racetrack database centre line)"
+  },
+  "sakhir-outer": {
+   "group": "europe-africa-asia",
+   "file": "extra-tracks.json",
+   "candidate": "sakhir-outer-bahrain-outer-circuit",
+   "name": "Sakhir",
+   "layout": "Outer circuit 3.543 km"
+  },
+  "kyalami": {
+   "group": "europe-africa-asia",
+   "file": "extra-tracks.json",
+   "candidate": "kyalami-grand-prix-circuit",
+   "name": "Kyalami",
+   "layout": "Grand Prix 4.522 km"
+  },
+  "fuji": {
+   "group": "europe-africa-asia",
+   "file": "extra-tracks.json",
+   "candidate": "fuji-fuji-speedway",
+   "name": "Fuji",
+   "layout": "Fuji Speedway 4.563 km"
   }
  },
- "laps": []
+ "laps": [
+  {
+   "track": "fuji",
+   "series": "wec",
+   "season": 2023,
+   "cls": "Hypercar H",
+   "car": "lmh",
+   "borrowed": false,
+   "model": "Toyota GR010 HYBRID",
+   "lap": 87.794,
+   "airC": 23.5,
+   "trackC": 27,
+   "humidityPct": 90,
+   "pressureHpa": 944.8
+  },
+  {
+   "track": "fuji",
+   "series": "wec",
+   "season": 2024,
+   "cls": "Hypercar",
+   "car": "lmdh",
+   "borrowed": false,
+   "model": "Cadillac V-Series.R",
+   "lap": 88.901,
+   "airC": 28.6,
+   "trackC": 40.3,
+   "humidityPct": 68,
+   "pressureHpa": 944.6
+  },
+  {
+   "track": "fuji",
+   "series": "wec",
+   "season": 2024,
+   "cls": "LMGT3",
+   "car": "lmgt3",
+   "borrowed": false,
+   "model": "Ferrari 296 LMGT3",
+   "lap": 100.893,
+   "airC": 29.2,
+   "trackC": 42.2,
+   "humidityPct": 70,
+   "pressureHpa": 944.5
+  },
+  {
+   "track": "fuji",
+   "series": "wec",
+   "season": 2025,
+   "cls": "Hypercar",
+   "car": "lmdh",
+   "borrowed": false,
+   "model": "Cadillac V-Series.R",
+   "lap": 88.637,
+   "airC": 23.7,
+   "trackC": 31.3,
+   "humidityPct": 62,
+   "pressureHpa": 951
+  },
+  {
+   "track": "fuji",
+   "series": "wec",
+   "season": 2025,
+   "cls": "LMGT3",
+   "car": "lmgt3",
+   "borrowed": false,
+   "model": "McLaren 720S LMGT3 Evo",
+   "lap": 100.011,
+   "airC": 23.5,
+   "trackC": 34.3,
+   "humidityPct": 64,
+   "pressureHpa": 951
+  },
+  {
+   "track": "mugello",
+   "series": "elms",
+   "season": 2024,
+   "cls": "LMGT3",
+   "car": "lmgt3",
+   "borrowed": true,
+   "model": "Aston Martin Vantage AMR LMGT3",
+   "lap": 107.891,
+   "airC": 23.1,
+   "trackC": 33.2,
+   "humidityPct": 45,
+   "pressureHpa": 982.5
+  },
+  {
+   "track": "nurburgring-24h",
+   "series": "nur",
+   "season": 2023,
+   "cls": "SP 9",
+   "car": "lmgt3",
+   "borrowed": true,
+   "model": "Mercedes-AMG GT3",
+   "lap": 496.609,
+   "airC": null,
+   "trackC": null,
+   "humidityPct": null,
+   "pressureHpa": null
+  },
+  {
+   "track": "nurburgring-24h",
+   "series": "nur",
+   "season": 2024,
+   "cls": "SP 9",
+   "car": "lmgt3",
+   "borrowed": true,
+   "model": "Porsche 911 GT3 R (992)",
+   "lap": 489.591,
+   "airC": null,
+   "trackC": null,
+   "humidityPct": null,
+   "pressureHpa": null
+  },
+  {
+   "track": "nurburgring-24h",
+   "series": "nur",
+   "season": 2025,
+   "cls": "SP 9",
+   "car": "lmgt3",
+   "borrowed": true,
+   "model": "Porsche 911 GT3 R (992)",
+   "lap": 491.855,
+   "airC": null,
+   "trackC": null,
+   "humidityPct": null,
+   "pressureHpa": null
+  },
+  {
+   "track": "nurburgring-sprint",
+   "series": "x-adac-gt-masters",
+   "season": 2024,
+   "cls": "Silver",
+   "car": "lmgt3",
+   "borrowed": true,
+   "model": "Mercedes-AMG GT3",
+   "lap": 85.186,
+   "airC": null,
+   "trackC": null,
+   "humidityPct": null,
+   "pressureHpa": null
+  },
+  {
+   "track": "nurburgring-sprint",
+   "series": "x-adac-gt-masters",
+   "season": 2025,
+   "cls": "Silver",
+   "car": "lmgt3",
+   "borrowed": true,
+   "model": "Ford Mustang GT3",
+   "lap": 85.294,
+   "airC": null,
+   "trackC": null,
+   "humidityPct": null,
+   "pressureHpa": null
+  }
+ ]
 }
