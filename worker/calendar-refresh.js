@@ -86,19 +86,83 @@ async function getText(url,allowed){
 // that are running or start within three weeks, and only keep rows inside the event dates.
 const sessionLabel=text=>{const i=text.indexOf(' - '),title=(i<0?text:text.slice(i+3)).trim();const nameEn=title.replace(/^Free Practice\s*/i,'FP').replace(/^Qualifications\b/i,'Qualifying');return {name:nameEn.replace(/^Qualifying\b/,'퀄리파잉').replace(/^Race\b/,'레이스'),nameEn};};
 const shift=(date,days)=>{const d=new Date(date+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+days);return d.toISOString().slice(0,10);};
-export async function loadEventSessions(series,allowed,now,events=calendarEvents,get=getText){
+// Organisers without a calendar file still publish the timetable as page text (Super
+// Taikyu, Rally Saudi Arabia) or as a JSON programme feed (Macau). Both readers return
+// {month,day,from,to,title} rows; eventSessions() turns them into stamped sessions.
+const MONTHS=['january','february','march','april','may','june','july','august','september','october','november','december'];
+const TIME=/^(\d{1,2}):(\d\d)(?:\s*[-–~〜]\s*(\d{1,2}):(\d\d))?(?:\s*[•·]?\s*(\S.*))?$/;
+const clock=(h,m)=>h===undefined?null:String(h).padStart(2,'0')+':'+m;
+export function parseTimetableText(html){
+ const lines=html.replace(/<(script|style)\b[\s\S]*?<\/\1>/gi,' ').replace(/<!--[\s\S]*?-->/g,' ').replace(/<[^>]+>/g,'\n').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').split('\n').map(l=>l.trim()).filter(Boolean);
+ const rows=[];let date=null;
+ for(let i=0;i<lines.length;i++){
+  const line=lines[i],time=TIME.exec(line);
+  // SRO timetable tables read as "Session / Local Time / GMT": the title sits before two bare times.
+  if(time&&date&&!time[3]&&!time[5]&&i>0&&TIME.test(lines[i+1]||'')&&!TIME.test(lines[i-1])){rows.push({...date,from:clock(time[1],time[2]),to:null,title:lines[i-1]});i++;continue;}
+  if(time){if(!date)continue;const title=(time[5]||lines[i+1]||'').replace(/^[•·]\s*/,'').trim();if(title&&!TIME.test(title))rows.push({...date,from:clock(time[1],time[2]),to:clock(time[3],time[4]),title});continue;}
+  if(line.length>40)continue;
+  const numeric=/^20\d\d[.\/-](\d{1,2})[.\/-](\d{1,2})$/.exec(line),named=/(\d{1,2})\s+([A-Za-z]+)/.exec(line),reversed=/([A-Za-z]+)\s+(\d{1,2})\b/.exec(line);
+  if(numeric)date={month:+numeric[1],day:+numeric[2]};
+  else if(named&&MONTHS.includes(named[2].toLowerCase()))date={month:MONTHS.indexOf(named[2].toLowerCase())+1,day:+named[1]};
+  else if(reversed&&MONTHS.includes(reversed[1].toLowerCase()))date={month:MONTHS.indexOf(reversed[1].toLowerCase())+1,day:+reversed[2]};
+ }
+ return rows;
+}
+export function parseTimetableJson(text){
+ const data=JSON.parse(text),days=Array.isArray(data)?data:Array.isArray(data?.data)?data.data:[],rows=[];
+ for(const item of days){
+  const date=/^(\d{1,2})\/(\d{1,2})$/.exec(String(item?.date||''));if(!date)continue;
+  const list=Object.values(item).find(v=>Array.isArray(v)&&v.some(x=>x?.time&&x?.title))||[];
+  for(const row of list){const time=TIME.exec(String(row?.time||'').trim());if(time&&row.title)rows.push({month:+date[2],day:+date[1],from:clock(time[1],time[2]),to:clock(time[3],time[4]),title:String(row.title).trim()});}
+ }
+ return rows;
+}
+// Paddock and ceremony items are not sessions.
+const NOT_A_SESSION=/pit\s*walk|スタート進行|セレモニー|グリッドウォーク|circuit (?:closed|opened|inspection)|special event|lion dance|parc ferm|^(?:out|in)$|podium|ceremony|briefing/i;
+const english=title=>[[/S耐/g,'S-Tai '],[/フリー走行/g,' FP'],[/チャレンジ/g,' Challenge '],[/公式予選|予選/g,' Qualifying '],[/決勝/g,' Race'],[/ドライバー/g,' driver'],[/（/g,' ('],[/）/g,')']].reduce((t,[from,to])=>t.replace(from,to),title).replace(/\s+/g,' ').replace(/\( /g,'(').trim();
+const korean=title=>[[/\bFree Practice\b/gi,'FP'],[/\bQualifying\b/gi,'퀄리파잉'],[/\bQualification Race\b/gi,'예선 레이스'],[/\bRace\b/g,'레이스'],[/\bShakedown\b/gi,'셰이크다운'],[/\bwarm[- ]?up\b/gi,'웜업']].reduce((t,[from,to])=>t.replace(from,to),title);
+export function eventSessions(rows,event){
+ const year=event.start.slice(0,4),zone=event.timezone,sessions=[];
+ for(const row of rows){
+  const date=year+'-'+String(row.month).padStart(2,'0')+'-'+String(row.day).padStart(2,'0');
+  if(!zone||!validDay(date)||date<shift(event.start,-1)||date>shift(event.end,1)||NOT_A_SESSION.test(row.title))continue;
+  const start=zonedStamp(date+'T'+row.from+':00',zone),end=row.to?zonedStamp(date+'T'+row.to+':00',zone):null;if(!start)continue;
+  const nameEn=english(row.title);sessions.push({name:korean(nameEn),nameEn,start,...(end?{end}:{})});
+ }
+ return sessions.sort((a,b)=>Date.parse(a.start)-Date.parse(b.start));
+}
+// One organiser page -> a function that gives the sessions falling inside a given event.
+async function pageReader(page,hosts,get){
+ const body=await get(page,hosts);
+ if(/^\s*[\[{]/.test(body)){const rows=parseTimetableJson(body);return event=>eventSessions(rows,event);}
+ const href=/href=["']([^"']*\/race\/calendar\/\d+|[^"']+\.ics(?:\?[^"']*)?)["']/i.exec(body)?.[1],file=href?new URL(href,page):null;
+ if(file&&hosts.has(file.hostname)){const rows=parseICalendar(await get(file.href,hosts)).filter(r=>stamp(r.startDate)).sort((a,b)=>Date.parse(a.startDate)-Date.parse(b.startDate));
+  return event=>rows.filter(r=>day(r.startDate)>=shift(event.start,-1)&&day(r.startDate)<=shift(event.end,1)).map(r=>({...sessionLabel(r.name),start:r.startDate,...(stamp(r.endDate)?{end:r.endDate}:{})}));}
+ const rows=parseTimetableText(body);return event=>eventSessions(rows,event);
+}
+// Event pages linked from the season page (ACO /race/<slug>, SRO /event/<id>/<slug>, ...), same host only.
+export function eventPageLinks(html,base,allowed,limit=12){
+ const found=new Set();
+ for(const [,href] of html.matchAll(/href=["']([^"'#?]*\/(?:race|races|event|events)\/[^"'#?]+)["']/gi)){
+  try{const url=new URL(href,base);if(url.protocol==='https:'&&allowed.has(url.hostname)&&!/\/calendar(?:\/|$)/.test(url.pathname))found.add(url.href);}catch{}
+  if(found.size>=limit)break;
+ }
+ return [...found];
+}
+export async function loadEventSessions(series,allowed,now,events=calendarEvents,get=getText,seasonHtml=''){
  const today=day(new Date(now).toISOString()),horizon=shift(today,21),records=[];
- const due=events.filter(e=>e.series===series&&e.url&&e.url!==calendarSources[series]&&e.end>=today&&e.start<=horizon).slice(0,2);
+ const due=events.filter(e=>e.series===series&&e.end>=today&&e.start<=horizon).slice(0,2);if(!due.length)return records;
+ // Read every linked event page once, and only when an event near enough has no page of its own that works.
+ let pool;const discovered=()=>pool??=Promise.all(eventPageLinks(seasonHtml,calendarSources[series],allowed).map(page=>pageReader(page,allowed,get).catch(()=>null)));
  for(const event of due){
+  let sessions=[];
   try{
-   if(!allowed.has(new URL(event.url).hostname))continue;
-   const href=/href=["']([^"']*\/race\/calendar\/\d+|[^"']+\.ics(?:\?[^"']*)?)["']/i.exec(await get(event.url,allowed))?.[1];if(!href)continue;
-   const file=new URL(href,event.url);if(!allowed.has(file.hostname))continue;
-   const rows=parseICalendar(await get(file.href,allowed)).filter(r=>stamp(r.startDate)&&day(r.startDate)>=shift(event.start,-1)&&day(r.startDate)<=shift(event.end,1));
-   if(rows.length<2)continue;
-   const sessions=rows.sort((a,b)=>Date.parse(a.startDate)-Date.parse(b.startDate)).map(r=>({...sessionLabel(r.name),start:r.startDate,...(stamp(r.endDate)?{end:r.endDate}:{})}));
-   records.push({name:event.nameEn||event.name,startDate:event.start,endDate:event.end,sessions});
+   // sessionsUrl is checked in with the event, so its host is trusted like the season source.
+   const page=event.sessionsUrl||(event.url!==calendarSources[series]?event.url:null),hosts=event.sessionsUrl?new Set([...allowed,new URL(page).hostname]):allowed;
+   if(page&&hosts.has(new URL(page).hostname))sessions=(await pageReader(page,hosts,get))(event);
   }catch{}
+  if(sessions.length<2)for(const reader of await discovered()){const found=reader?reader(event):[];if(found.length>=2){sessions=found;break;}}
+  if(sessions.length>=2)records.push({name:event.nameEn||event.name,startDate:event.start,endDate:event.end,sessions});
  }
  return records;
 }
@@ -107,10 +171,11 @@ async function loadSource(series,now){
  if(series==='f1'){source='https://raw.githubusercontent.com/theOehrly/f1schedule/master/schedule_'+new Date(now).getUTCFullYear()+'.json';records=parseFastF1Schedule(JSON.parse(await getText(source,new Set(['raw.githubusercontent.com']))));}
  else{const allowed=new Set([new URL(url).hostname]);records=[];
   // A season page without structured data must not stop the per-event session files.
-  try{const text=await getText(url,allowed);records=text.includes('BEGIN:VCALENDAR')?parseICalendar(text):parseJsonLdEvents(text);
+  let season='';
+  try{const text=season=await getText(url,allowed);records=text.includes('BEGIN:VCALENDAR')?parseICalendar(text):parseJsonLdEvents(text);
    if(!records.length){const links=[...text.matchAll(/href=["']([^"']+\.ics(?:\?[^"']*)?)["']/gi)].slice(0,2);for(const [,href]of links){const next=new URL(href,url);if(allowed.has(next.hostname))records.push(...parseICalendar(await getText(next.href,allowed)));}}
   }catch{}
-  records.push(...await loadEventSessions(series,allowed,now));
+  records.push(...await loadEventSessions(series,allowed,now,calendarEvents,getText,season));
  }
  const events=normalizeOfficialEvents(records,series,source,calendarEvents,now);if(!events.length)throw Error('No verifiable structured schedule found');return {events,checkedAt:now,source,provider:series==='f1'?'FastF1 schedule backend':'Official organizer'};
 }
