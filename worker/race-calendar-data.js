@@ -7,7 +7,7 @@ export const calendarReviewedAt = '2026-11-03';
 export const calendarSources = {
  f1:'https://www.formula1.com/en/racing/2026',
  wec:'https://www.fiawec.com/en/page/homepage-world-endurance-championship/1',
- imsa:'https://www.imsa.com/weathertech/weathertech-2026-schedule/',
+ imsa:'https://www.imsa.com/2027/schedule',
  'formula-e':'https://www.fiaformulae.com/en/calendar',
  nls:'https://www.nuerburgring-langstrecken-serie.de/language/de/termine-adac-ravenol-nuerburgring-langstrecken-serie-2026/',
  elms:'https://www.europeanlemansseries.com/en/page/elms-home',
@@ -23,7 +23,7 @@ export const calendarSources = {
  igtc:'https://www.intercontinentalgtchallenge.com/calendar',
  'british-gt':'https://www.britishgt.com/calendar',
  'super-gt':'https://supergt.net/en/calendar',
- dakar:'https://www.dakar.com/en/',
+ dakar:'https://www.dakar.com/en/overall-route',
  macau:'https://www.macau.grandprix.gov.mo/en/news/event/1880'
 };
 const events=[];
@@ -159,7 +159,7 @@ add('super-taikyu','Asia/Tokyo',[
  ['motegi','모테기','Motegi','03-21','03-22'],['suzuka','스즈카','Suzuka','04-18','04-19'],['fuji','후지 24시간','Fuji 24 Hours','06-05','06-07'],['sugo','스고','SUGO','07-04','07-05'],['autopolis','오토폴리스','Autopolis','07-25','07-26'],['okayama','오카야마 3시간','Okayama 3 Hours','10-24','10-25',{url:'https://supertaikyu.com/race/round_06.html'}],['fuji','후지 4시간','Fuji 4 Hours','11-14','11-15',{url:'https://supertaikyu.com/race/round_07.html'}]]);
 add('wrc','Asia/Tokyo',[['rally-japan','랠리 재팬','Rally Japan','05-28','05-31',{url:'https://www.wrc.com/en/events/wrc-rally-japan-2026'}]]);
 // The WRC finale moved to Sardinia (1-4 Oct); the rally runs 12-14 Nov as the FIA Middle East Rally Championship finale.
-add('wrc','Asia/Riyadh',[['rally-saudi','사우디아라비아 랠리','Saudi Arabia Rally','11-12','11-14',{url:'https://rally-saudiarabia.com/event-programme'}]]);
+add('wrc','Asia/Riyadh',[['rally-saudi','사우디아라비아 랠리 · FIA 중동 랠리 챔피언십','Rally Saudi Arabia · FIA Middle East Rally Championship','11-12','11-14',{url:'https://rally-saudiarabia.com/event-programme',seriesLabel:'FIA MERC'}]]);
 export const calendarEvents=events.sort((a,b)=>a.start.localeCompare(b.start)||a.id.localeCompare(b.id));
 // Where the refresher finds each event's own timetable (calendar-refresh.js reads it when the event is near):
 // url = ACO race page linking a per-session calendar file; sessionsUrl = organiser timetable page or programme feed.
