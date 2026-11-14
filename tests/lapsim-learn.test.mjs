@@ -107,3 +107,9 @@ test('fastest real race lap: F1 per season (f1db), endurance per car (Al Kamel),
   assert.ok(raceRecords('nurburgring-gp') && !raceRecords('nurburgring-gp')['2025']); // F1 raced there in 2020 only
   const sim = simulate({track: 'monza', car: '2025'}); assert.equal(sim.real_race_lap.lap_seconds, 80.901);
 });
+
+test('the page URL keeps the base car with evo=0 (a car with an Evo kit opens on its newest kit)', async () => {
+  const src = (await import('node:fs')).readFileSync(new URL('../worker/website.js', import.meta.url), 'utf8');
+  assert.match(src, /evo:url\.searchParams\.get\('evo'\)/);
+  assert.notEqual(simulationPage({track: 'brands-hatch', car: 'gt3-bmw-m4-gt3'}, 'en'), simulationPage({track: 'brands-hatch', car: 'gt3-bmw-m4-gt3', evo: '0'}, 'en'));
+});
