@@ -160,8 +160,15 @@ add('super-taikyu','Asia/Tokyo',[
 add('wrc','Asia/Tokyo',[['rally-japan','랠리 재팬','Rally Japan','05-28','05-31',{url:'https://www.wrc.com/en/events/wrc-rally-japan-2026'}]]);
 add('wrc','Asia/Riyadh',[['rally-saudi','사우디아라비아 랠리','Saudi Arabia Rally','11-11','11-14']]);
 export const calendarEvents=events.sort((a,b)=>a.start.localeCompare(b.start)||a.id.localeCompare(b.id));
-// ACO race pages link a per-session calendar file; calendar-refresh.js reads it when the event is near.
-for(const [id,page] of [['alms-2027-01-15-jerez','4-hours-of-jerez-by-alms-2027'],['alms-2027-02-19-portimao','4-hours-of-portimao-by-alms-2027']]){const event=events.find(e=>e.id===id);if(event)event.url='https://www.asianlemansseries.com/en/race/'+page;}
+// Where the refresher finds each event's own timetable (calendar-refresh.js reads it when the event is near):
+// url = ACO race page linking a per-session calendar file; sessionsUrl = organiser timetable page or programme feed.
+for(const [series,circuit,start,field,value] of [
+ ['alms','jerez','2027-01-15','url','https://www.asianlemansseries.com/en/race/4-hours-of-jerez-by-alms-2027'],
+ ['alms','portimao','2027-02-19','url','https://www.asianlemansseries.com/en/race/4-hours-of-portimao-by-alms-2027'],
+ ['super-taikyu','fuji','2026-11-14','sessionsUrl','https://supertaikyu.com/race/round_07.html'],
+ ['wrc','rally-saudi','2026-11','sessionsUrl','https://rally-saudiarabia.com/event-programme'],
+ ['macau','guia','2026-11-19','sessionsUrl','https://www.macau.grandprix.gov.mo/api/game/event_day?_locale=en&year=2026']
+]){const event=events.find(e=>e.series===series&&e.circuit===circuit&&e.start.startsWith(start));if(event)event[field]=value;}
 const unknown={lengthKm:null,elevationM:null,elevationChangeM:null,offsetM:null,sourceUrl:null,notes:'공식 수치를 추가 확인 중입니다.',notesEn:'Additional official measurements are being verified.'};
 export const circuitInfo={
  'dakar-route':{...unknown,name:'Portugal · Morocco',sourceUrl:calendarSources.dakar,notes:'포르투갈·모로코 구간을 이동하는 랠리 레이드. 고정 서킷이 아니며 스테이지별 코스·출발시각은 공식 일정 확인 후 안내합니다.',notesEn:'A rally raid across Portugal and Morocco, not a fixed circuit. Stage routes and start times require the published itinerary.'},
