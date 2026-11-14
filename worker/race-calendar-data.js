@@ -8,7 +8,7 @@ export const calendarSources = {
  f1:'https://www.formula1.com/en/racing/2026',
  wec:'https://www.fiawec.com/en/page/homepage-world-endurance-championship/1',
  imsa:'https://www.imsa.com/weathertech/weathertech-2026-schedule/',
- 'formula-e':'https://www.fiaformulae.com/en/news/races/the-202627-formula-e-calendar-is-here',
+ 'formula-e':'https://www.fiaformulae.com/en/calendar',
  nls:'https://www.nuerburgring-langstrecken-serie.de/language/de/termine-adac-ravenol-nuerburgring-langstrecken-serie-2026/',
  elms:'https://www.europeanlemansseries.com/en/page/elms-home',
  alms:'https://www.asianlemansseries.com/en/news/maximum-47-car-grid-for-2026-27-asian-le-mans-series-in-europe/13834',
@@ -125,14 +125,14 @@ add('24h-series','Europe/Paris', [['paul-ricard','폴 리카르 12시간','12H P
 add('24h-series','Europe/Berlin', [['nurburgring-gp','뉘르부르크링 12시간','12H Nürburgring','07-03','07-05']]);
 add('24h-series','Europe/Madrid', [['barcelona','바르셀로나 24시간','24H Barcelona','09-18','09-20']]);
 add('24h-series','Africa/Johannesburg', [['kyalami','키알라미 24시간','24H Kyalami','2027-01-08','2027-01-10']]);
-add('formula-e','Asia/Riyadh', [['jeddah-fe','제다 E-Prix','Jeddah E-Prix','12-18','12-19']]);
+add('formula-e','Asia/Riyadh', [['jeddah-fe','제다 E-Prix','Jeddah E-Prix','2027-04-16','2027-04-17']]);
 add('formula-e','America/Mexico_City', [['mexico-fe','멕시코시티 E-Prix','Mexico City E-Prix','2027-01-16']]);
 add('formula-e','America/Chicago', [['cota-fe','오스틴 E-Prix','Austin E-Prix','2027-02-06']]);
 add('formula-e','America/New_York', [['miami-fe','마이애미 E-Prix','Miami E-Prix','2027-02-20']]);
 add('formula-e','America/Sao_Paulo', [['sao-paulo-fe','상파울루 E-Prix','São Paulo E-Prix','2027-03-13']]);
-add('formula-e','Asia/Shanghai', [['sanya','싼야 E-Prix','Sanya E-Prix','2027-04-17'],['shanghai-fe','상하이 E-Prix','Shanghai E-Prix','2027-07-10','2027-07-11']]);
+add('formula-e','Asia/Shanghai', [['sanya','싼야 E-Prix','Sanya E-Prix','2027-04-03'],['shanghai-fe','상하이 E-Prix','Shanghai E-Prix','2027-07-10','2027-07-11']]);
 add('formula-e','Europe/Berlin', [['berlin','베를린 E-Prix','Berlin E-Prix','2027-05-08','2027-05-09']]);
-add('formula-e','Europe/Monaco', [['monaco-fe','모나코 E-Prix','Monaco E-Prix','2027-05-15','2027-05-16']]);
+add('formula-e','Europe/Monaco', [['monaco-fe','모나코 E-Prix','Monaco E-Prix','2027-05-01','2027-05-02']]);
 add('formula-e','Europe/London', [['brands-hatch-fe','런던 E-Prix','London E-Prix','2027-05-29','2027-05-30']]);
 add('formula-e','Europe/Amsterdam', [['zandvoort-fe','잔드보르트 E-Prix','Zandvoort E-Prix','2027-06-18','2027-06-19']]);
 add('formula-e','Europe/Madrid', [['jarama','마드리드 E-Prix','Madrid E-Prix','2027-06-26','2027-06-27']]);
