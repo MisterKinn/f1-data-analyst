@@ -1,3 +1,4 @@
+// rows 2026-11-15
 // Lap rows already collected (Actions run 42927630531, built on branch lapsim-laps/all-laps-2026-11-11):
 //  - laps-t71-*: Timing71, every series. Kept: GT3 cars (SRO GT World Challenge in every region, IGTC, DTM, Nürburgring, Macau, …)
 //  - laps-wec:  Al Kamel FIA WEC 2021-2026, every car (fills the WEC events the CSV archive lacks: Monza 2024+, Barcelona 2026, …)

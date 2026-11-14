@@ -1,3 +1,4 @@
+// rerun 2026-11-15
 // What the SRO result sites publish (structure only, for the GT3 reader): result list pages and one session page per site.
 import {writeFileSync} from 'node:fs';
 const SITES = ['gt-world-challenge-europe.com', 'gt-world-challenge-america.com', 'gt-world-challenge-asia.com', 'gt-world-challenge-australia.com', 'intercontinentalgtchallenge.com', 'britishgt.com', 'fanatec-gt-world-challenge-europe.com'];
