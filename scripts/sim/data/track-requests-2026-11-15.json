@@ -1,0 +1,345 @@
+{
+ "note": "Owner 2026-11-15: add every track that Al Kamel, f1db and the other sources have and the simulator lacks. Read by scripts/sim/tracks/fetch-osm.mjs and assemble.mjs (TRACK_REQUESTS). Lengths come from the FIA circuit list.",
+ "tracks": [
+  {
+   "id": "sebring",
+   "status": "osm",
+   "seed": [
+    27.455,
+    -81.35
+   ],
+   "radius": 4000,
+   "fia": "^SEBRING$",
+   "tol": 0.025,
+   "tolNote": "OpenStreetMap lap is about 2 % short of the official 6.019 km"
+  },
+  {
+   "id": "long-beach",
+   "status": "osm",
+   "seed": [
+    33.7637,
+    -118.1922
+   ],
+   "radius": 2500,
+   "fia": "^LONG BEACH$",
+   "kind": "street",
+   "via": [
+    "East Shoreline Drive",
+    "South Pine Avenue",
+    "East Seaside Way",
+    "South Linden Avenue"
+   ],
+   "viaSource": "IMSA / IndyCar Long Beach circuit map (Shoreline Drive, Pine Avenue, Seaside Way)"
+  },
+  {
+   "id": "detroit",
+   "status": "osm",
+   "seed": [
+    42.3291,
+    -83.0437
+   ],
+   "radius": 2500,
+   "fia": "DETROIT GRAND PRIX",
+   "kind": "street",
+   "via": [
+    "East Jefferson Avenue",
+    "Bates Street",
+    "Atwater Street",
+    "Franklin Street"
+   ],
+   "viaSource": "Detroit Grand Prix downtown circuit map"
+  },
+  {
+   "id": "dubai",
+   "status": "osm",
+   "seed": [
+    25.0517,
+    55.2397
+   ],
+   "radius": 3000,
+   "fia": "^DUBAI GRAND PRIX"
+  },
+  {
+   "id": "aragon",
+   "status": "osm",
+   "seed": [
+    41.0786,
+    -0.2066
+   ],
+   "radius": 3000,
+   "fia": "^MOTORLAND ARAGON$"
+  },
+  {
+   "id": "valencia-ricardo-tormo",
+   "status": "osm",
+   "seed": [
+    39.4867,
+    -0.6289
+   ],
+   "radius": 2500,
+   "fia": "^VALENCIA RICARDO TORMO$"
+  },
+  {
+   "id": "magny-cours",
+   "status": "osm",
+   "seed": [
+    46.8642,
+    3.1636
+   ],
+   "radius": 2500,
+   "fia": "^MAGNY"
+  },
+  {
+   "id": "misano",
+   "status": "osm",
+   "seed": [
+    43.9617,
+    12.6847
+   ],
+   "radius": 2500,
+   "fia": "^MISANO ADRIATICO"
+  },
+  {
+   "id": "sonoma",
+   "status": "osm",
+   "seed": [
+    38.1611,
+    -122.4547
+   ],
+   "radius": 3000,
+   "fia": "^SONOMA"
+  },
+  {
+   "id": "barber",
+   "status": "osm",
+   "seed": [
+    33.5328,
+    -86.6193
+   ],
+   "radius": 2500,
+   "fia": "^BARBER"
+  },
+  {
+   "id": "norisring",
+   "status": "osm",
+   "seed": [
+    49.4317,
+    11.1236
+   ],
+   "radius": 2000,
+   "fia": "^NORISRING"
+  },
+  {
+   "id": "lausitz",
+   "status": "osm",
+   "seed": [
+    51.5333,
+    13.9264
+   ],
+   "radius": 3000,
+   "fia": "^EUROSPEEDWAY LAUSITZ"
+  },
+  {
+   "id": "sachsenring",
+   "status": "osm",
+   "seed": [
+    50.7917,
+    12.6878
+   ],
+   "radius": 2500,
+   "fia": "^SACHSENRING"
+  },
+  {
+   "id": "oschersleben",
+   "status": "osm",
+   "seed": [
+    52.0275,
+    11.2775
+   ],
+   "radius": 2500,
+   "fia": "^OSCHERSLEBEN"
+  },
+  {
+   "id": "zolder",
+   "status": "osm",
+   "seed": [
+    50.9906,
+    5.2575
+   ],
+   "radius": 2500,
+   "fia": "^ZOLDER"
+  },
+  {
+   "id": "donington",
+   "status": "osm",
+   "seed": [
+    52.8306,
+    -1.3797
+   ],
+   "radius": 2500,
+   "fia": "^DONINGTON PARK$"
+  },
+  {
+   "id": "snetterton",
+   "status": "osm",
+   "seed": [
+    52.4636,
+    0.9461
+   ],
+   "radius": 2500,
+   "fia": "^SNETTERTON"
+  },
+  {
+   "id": "oulton-park",
+   "status": "osm",
+   "seed": [
+    53.1797,
+    -2.6128
+   ],
+   "radius": 2500,
+   "fia": "^OULTON"
+  },
+  {
+   "id": "motegi",
+   "status": "osm",
+   "seed": [
+    36.5333,
+    140.2272
+   ],
+   "radius": 3000,
+   "fia": "MOTEGI"
+  },
+  {
+   "id": "buriram",
+   "status": "osm",
+   "seed": [
+    14.9583,
+    103.0847
+   ],
+   "radius": 2500,
+   "fia": "^BURIRAM"
+  },
+  {
+   "id": "okayama",
+   "status": "osm",
+   "seed": [
+    34.9147,
+    134.2211
+   ],
+   "radius": 2500,
+   "fia": "^OKAYAMA"
+  },
+  {
+   "id": "sugo",
+   "status": "osm",
+   "seed": [
+    38.1406,
+    140.7747
+   ],
+   "radius": 2500,
+   "fia": "^SUGO"
+  },
+  {
+   "id": "autopolis",
+   "status": "osm",
+   "seed": [
+    33.0369,
+    130.9764
+   ],
+   "radius": 3000,
+   "fia": "^AUTOPOLIS"
+  },
+  {
+   "id": "mandalika",
+   "status": "osm",
+   "seed": [
+    -8.8947,
+    116.3022
+   ],
+   "radius": 3000,
+   "fia": "^MANDALIKA"
+  },
+  {
+   "id": "zhuhai",
+   "status": "osm",
+   "seed": [
+    22.3711,
+    113.5622
+   ],
+   "radius": 2500,
+   "fia": "^ZHUHAI"
+  },
+  {
+   "id": "vallelunga",
+   "status": "osm",
+   "seed": [
+    42.1592,
+    12.3706
+   ],
+   "radius": 2500,
+   "fia": "^VALLELUNGA"
+  },
+  {
+   "id": "estoril",
+   "status": "osm",
+   "seed": [
+    38.7506,
+    -9.3939
+   ],
+   "radius": 2500,
+   "fia": "^ESTORIL$"
+  },
+  {
+   "id": "jerez",
+   "status": "osm",
+   "seed": [
+    36.7083,
+    -6.0342
+   ],
+   "radius": 2500,
+   "fia": "^JEREZ"
+  },
+  {
+   "id": "phillip-island",
+   "status": "osm",
+   "seed": [
+    -38.5,
+    145.2317
+   ],
+   "radius": 3000,
+   "fia": "^PHILLIP"
+  },
+  {
+   "id": "sydney",
+   "status": "osm",
+   "seed": [
+    -33.8036,
+    150.8711
+   ],
+   "radius": 2500,
+   "fia": "^SYDNEY MOTORSPORT"
+  },
+  {
+   "id": "the-bend",
+   "status": "osm",
+   "seed": [
+    -35.2681,
+    139.5272
+   ],
+   "radius": 4000,
+   "fia": "^THE BEND"
+  },
+  {
+   "id": "inje",
+   "status": "osm",
+   "seed": [
+    38.0,
+    128.29
+   ],
+   "radius": 3000,
+   "fia": "^INJE$",
+   "tol": 0.012,
+   "tolNote": "OpenStreetMap lap is 1 % longer than the official 3.908 km"
+  }
+ ]
+}
