@@ -10,7 +10,9 @@ const BASE = [[/VALKYRIE/, 'Aston Martin Valkyrie'], [/499P/, 'Ferrari 499P'], [
   [/720S/, 'McLaren 720S GT3'], [/AMG/, 'Mercedes-AMG GT3'], [/911 GT3 ?R/, 'Porsche 911 GT3 R'], [/ORECA|07 GIBSON/, 'Oreca 07'], [/LIGIER JS ?P2|JSP217/, 'Ligier JS P217']];
 export function modelOf(vehicle, season, cls = '') {
   const t = up(vehicle); if (!t) return null;
-  const hit = BASE.find(([re]) => re.test(t)); if (!hit) return null; let base = hit[1];
+  if (/\b(GT4|GT2|GTE|RSR|CUP|TCR|SUPER TROFEO|CHALLENGE|TROFEO)\b/.test(t)) return null; // other categories that share a model name
+  // GT3 names need a GT3 word in the text: "Ford Mustang GT" (NASCAR), "Toyota GR86" (R8 inside), "BMW M4" (touring) are other cars
+  const hit = BASE.find(([re, b]) => re.test(t) && (!/GT3/.test(b) || /GT3|GTD\b/.test(t))); if (!hit) return null; let base = hit[1];
   if (/GT3|GTD|LMGT3|^GT$/.test(up(cls)) === false && /GT3/.test(base)) return null;               // a GT3 name in a non-GT3 class (GTE Vantage AMR, Cup cars)
   if (base === 'Porsche 911 GT3 R') base += /992/.test(t) || (!/991/.test(t) && season >= 2023) ? ' (992)' : ' (991.2)';
   if (base === 'Aston Martin Vantage GT3' && season <= 2023) base = 'Aston Martin Vantage AMR GT3 (2019)';

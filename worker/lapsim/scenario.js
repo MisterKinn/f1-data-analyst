@@ -68,13 +68,14 @@ export function carsFor(id) {
   for (const cls of Object.keys(SERIES.wec.classes)) { const k = 'wec-' + cls, c = out[k], own = Object.values(lapsimCalibration?.series?.wec?.[cls] || {}).some(se => se.tracks?.[id]);
     if (L?.cls?.[k] && c.kind === 'calibrated' && !own) Object.assign(c, {grip: 1, timeScale: L.cls[k], learned: {pct: L.errPct?.[cls === 'lmgt3' ? 'gt3' : cls] ?? H[cls === 'lmgt3' ? 'gt3' : cls]?.event ?? null, events: L.events}}); }
   const g3 = out['wec-lmgt3'];
-  if (g3?.kind === 'calibrated') for (const m of lapsimLearned?.models || []) out[m.key] = {car: g3.car, grip: L?.models?.[m.key] ? 1 : g3.grip, timeScale: L?.models?.[m.key] ?? (g3.timeScale || 1) * m.rel, kind: 'learned', year: m.season, series: 'gt3', cls: 'gt3',
-    base: m.base, ...(m.evo ? {evo: m.evo} : {}), label: `${m.name} · ${m.bop} BoP`, learned: {pct: L?.models?.[m.key] ? Math.max(H.gt3?.eventModel ?? 0, L.errPct?.gt3 ?? 0) : null, events: L?.events ?? 0, model: true}};
+  if (g3?.kind === 'calibrated') for (const m of lapsimLearned?.models || []) out[m.key] = {car: g3.car, grip: L?.models?.[m.key] ? 1 : g3.grip, timeScale: L?.models?.[m.key] ?? (g3.timeScale || 1) * m.rel, kind: 'learned', year: m.season, series: 'gt3', cls: 'gt3-' + m.body,
+    base: m.base, ...(m.evo ? {evo: m.evo} : {}), label: `${m.name} · ${m.bop}`, learned: {pct: L?.models?.[m.key] ? Math.max(H.gt3?.eventModel ?? 0, L.errPct?.gt3 ?? 0) : null, events: L?.events ?? 0, model: true}};
   // A car that raced here reproduces its real lap exactly (owner rule 2026-11-14, as F1 does): GT3 car models their own lap, class
   // cars the class-best of their latest season here (Al Kamel, every series), where nothing above already gives a correction.
   // The fastest real lap of that car on this track wins over a slower stored one (a newer season's pole is not always the fastest).
+  // A WEC class car keeps its WEC record unless a faster WEC lap exists; a lap of another series fills only an empty slot.
   const fixLap = f => f ? f.lap ?? f.real?.reduce((a, b) => a + b, 0) : Infinity;
-  for (const [k, r] of Object.entries({...(L?.classReal || {}), ...(L?.real || {})})) if (out[k] && r.lap < fixLap(out[k].fix) - 5e-4)
+  for (const [k, r] of Object.entries({...(L?.classReal || {}), ...(L?.real || {})})) if (out[k] && (r.lap < fixLap(out[k].fix) - 5e-4 && (r.series === 'wec' || !out[k].fix || k.startsWith('gt3-')) || !out[k].fix))
     out[k].fix = {lap: r.lap, weather: r.weather || {}, ref: k, session: `${r.series.toUpperCase()} ${r.year} ${r.event}${r.type === 'Q' ? '' : r.type === 'R' ? ' (race)' : ' (practice/test)'}`, year: r.year, model: r.model, entry: r.entry, type: r.type};
   // Extra circuit: a car that has a real qualifying lap here reproduces it (lap-level correction, as for the series cars)
   for (const [k, r] of Object.entries(lapsimExtraTracks[id]?.realLaps || {})) if (out[k] && !out[k].fix) out[k].fix = {lap: r.lap, weather: r.weather || {}, ref: k, session: r.event};

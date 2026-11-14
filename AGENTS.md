@@ -25,13 +25,15 @@ Read `docs/lapsim-learn.md` first and follow it together with `docs/lapsim-physi
 8. Use the engineering skills and the Karpathy guidelines: goal and pass check first, smallest change, verify before saying done.
 9. A car + track combination that really ran must show its FASTEST real lap exactly (0.000 %), in every category: F1, LMH, LMDh, LMGT3, every GT3 model and Evo kit, Formula E (Gen3, Gen3 Evo, Gen4 once raced), every series. Fastest over every season and every dry session; the page names the session and uses its conditions. The fastest real race lap of that car on that track is shown too. Test: `tests/lapsim-learn.test.mjs`.
 10. Use the Wolfram tools (Wolfram|Alpha, Wolfram Language) for unit conversions, physics checks and arithmetic that a result depends on.
+11. GT3 is learned per BoP body. SRO GT3 (no torque sensor) is the basic GT3, first in the list, key `gt3-<model>`; IMSA GTD `gt3-imsa-<model>`, WEC LMGT3 / ELMS / Asian LMS `gt3-aco-<model>`, DTM `gt3-dtm-<model>`. SRO records come from the official SRO results sites (GTWC Europe, America, Asia, British GT) and must reproduce exactly.
+12. WEC class cars (`wec-lmh`, `wec-lmdh`, `wec-lmgt3`) show WEC records first; another series only fills a track WEC never raced. A car with an Evo or Evo 2 kit opens on its newest kit.
 
 Sources learned so far or to be learned (the full table with the state of each is `docs/lapsim-learn.md` section 6; add every new source there and here):
 
 - Al Kamel Systems result sites, index: https://alkamelsystems.com/live-results/ — FIA WEC http://fiawec.alkamelsystems.com/ · IMSA https://imsa.results.alkamelcloud.com/ · ELMS http://elms.alkamelsystems.com/ · Asian Le Mans Series http://alms.alkamelsystems.com/ · Formula E https://results.fiaformulae.com/ · Michelin Le Mans Cup https://lemanscup.alkamelsystems.com/ · SRO/USAC live timing https://livetiming.alkamelsystems.com/usac_sro
 - Al Kamel CSV archive and IMSA analysis skill: https://github.com/tobi/imsa_data · https://mcpmarket.com/tools/skills/imsa-data-analyst
 - F1: https://f1archive.org/ · https://github.com/f1db/f1db (circuits, layouts, fastest race laps) · https://github.com/TracingInsights · https://openf1.org/
-- WEC and sportscars: https://www.openwec.com/explore · https://github.com/Hanspeter007/wec-data
+- WEC and sportscars: https://www.openwec.com/explore, SRO results: https://www.gt-world-challenge-europe.com/results, https://www.gt-world-challenge-america.com/results, https://www.gt-world-challenge-asia.com/results, https://www.britishgt.com/results · https://github.com/Hanspeter007/wec-data
 - GT3: https://51gt3.com/en/track
 - Timing71: https://github.com/timing71/livetiming-core · https://archive.timing71.org/
 - Track geometry: https://github.com/TUMFTM/racetrack-database · https://www.openstreetmap.org/
