@@ -1,6 +1,7 @@
 // Lap simulator page controls (display only, no physics): track list labels, the Evo tick box
 // rule and the event a car races at on a track. Nothing here changes a model or calibration value.
 import {calendarEvents} from './race-calendar-data.js';
+import {lapsimLearned} from './lapsim/learned-data.js';
 
 // Track labels in the owner's format: 3-letter code + " - " + name (no flag, owner 2026-11-14). [ISO country, code, name, always ⚠️].
 // The codes are the owner's (Bahrain is BHA). Requested tracks come from scripts/sim/data/track-requests.json
@@ -27,10 +28,20 @@ const WARN = '⚠️';
 // a track without a check result is a candidate when it was built from a map centre line.
 export const isCandidate = track => !!track && (track.candidate === true || (typeof track.fit === 'boolean' ? !track.fit : (track.sources || []).some(s => /openstreetmap/i.test(s))));
 
+// Owner rule (2026-11-14): a track is published unless its error is really bad; ⚠️ marks a track that is not built yet (Rwanda),
+// has no real lap to check, or has a larger error. Where the learning step has real laps of this track (docs/lapsim-learn.md),
+// its error with one event hidden decides: above WARN_PCT in any class = ⚠️, whatever the older single-factor check said.
+export const WARN_PCT = 3;
+export function trackWarn(id, track) {
+  if (L[id]?.[3]) return true;
+  const e = Object.values(lapsimLearned?.tracks?.[id]?.errPct || {}); if (e.length) return Math.max(...e) > WARN_PCT;
+  return isCandidate(track);
+}
+
 // "ITA - Monza"; a track with no label entry keeps its plain data name (no invented code)
 export function trackLabel(id, track) {
-  const e = L[id]; if (!e) return (track?.name || id) + (isCandidate(track) ? WARN : '');
-  return e[1] + ' - ' + e[2] + (e[3] || isCandidate(track) ? WARN : '');
+  const e = L[id], w = trackWarn(id, track) ? WARN : ''; if (!e) return (track?.name || id) + w;
+  return e[1] + ' - ' + e[2] + w;
 }
 
 // Track ids sorted by the 3-letter code, then by name (unlabelled tracks last, by name)

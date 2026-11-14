@@ -6,6 +6,7 @@ History and detailed results are in `docs/lapsim-handoff-physics.md`. If that fi
 Do not touch the website, accounts, collector, or deployment in a physics task.
 
 Section 9 is dated status. Replace it when it is old. Sections 1–8 are standing rules.
+Lap data, track identity, car-model identity and the source list are in `docs/lapsim-learn.md` (owner rules of 2026-11-14): read it before adding laps, tracks or cars.
 
 ---
 

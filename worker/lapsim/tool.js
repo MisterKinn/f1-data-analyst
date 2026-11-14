@@ -5,13 +5,14 @@ import {lapsimAllTracks as lapsimTracks} from './tracks.js';
 import {lapsimCalibration} from './calibration-data.js';
 import {RULE_CHANGES} from './cars.js';
 import {TRACK_NAMES, resolveTrack} from './names.js';
-import {carsFor, realConditions, latestChanges, fittedYear, SERIES_CARS} from './scenario.js';
+import {carsFor, realConditions, latestChanges, fittedYear, SERIES_CARS, CAR_ORDER} from './scenario.js';
 import {rechargeLimitMJ} from './energy-limits.js';
+import {lapsimLearned} from './learned-data.js';
 import {evolutionCoeffs, evolutionDelta, evolutionCurve} from './evolution.js';
 
 const K = lapsimKernel();
 const SITE = 'https://kongboda-motorsports.vercel.app';
-const CARS = ['2019', '2025', '2026', '2027', '2028', 'wec-lmh', 'wec-lmdh', 'wec-lmgt3', ...Object.keys(SERIES_CARS)];
+const CARS = ['2019', '2025', '2026', '2027', '2028', 'wec-lmh', 'wec-lmdh', 'wec-lmgt3', ...Object.keys(SERIES_CARS), ...CAR_ORDER.filter(k => k.startsWith('gt3-'))];
 const ro = {readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false};
 const num = (min, max, description) => ({type: 'number', minimum: min, maximum: max, description});
 
@@ -19,7 +20,7 @@ export const LAPSIM_TOOLS = [{name: 'lapsim_simulate',
   description: 'Kongboda lap simulator: a qualifying lap worked out by a quasi-steady-state model (TUM method) on the real driving line built from OpenF1 qualifying car positions. Cars: F1 2019 (TUM base), 2025 and 2026 (fitted to real pole laps), 2027 and 2028 (projected from the ratified power-unit changes and historical development); WEC Hypercar and LMGT3 class cars (fitted to Al Kamel lap times and speed traps). Every result carries a one-sigma error range and a confidence label from a holdout test. Inputs override the real qualifying weather: air and track temperature, humidity, pressure (or altitude), wind speed and direction; FIA "Changes to the circuit" (resurfacing, bumps, kerbs) can be switched on. Returns lap and sector times, top and lowest speed, corner minimum speeds, 2026 energy use, what limits the lap, air density and the model error against the real pole. Call without track to list tracks.',
   inputSchema: {type: 'object', properties: {
     track: {type: 'string', maxLength: 60, description: 'Track id, name or Grand Prix, e.g. "mexico-city", "Monza", "COTA", "멕시코시티".'},
-    car: {type: 'string', enum: CARS, description: 'F1 generation (2019 TUM base, 2025, 2026, 2027, 2028), WEC class car (wec-lmh, wec-lmdh, wec-lmgt3), or a provisional series car (imsa-gtp = LMDh car; imsa-gtd/gtdpro, elms-lmgt3, alms-gt3, gtwc-gt3, dtm-gt3, igtc-gt3, nur-gt3, macau-gt3 = LMGT3 car; raced sessions reproduce the real best lap). Default 2026.'},
+    car: {type: 'string', enum: CARS, description: 'F1 generation (2019 TUM base, 2025, 2026, 2027, 2028), WEC class car (wec-lmh, wec-lmdh, wec-lmgt3), a GT3 car model learned from real laps (gt3-...; base model and Evo kit are separate cars), or a provisional series car (imsa-gtp = LMDh car; imsa-gtd/gtdpro, elms-lmgt3, alms-gt3, gtwc-gt3, dtm-gt3, igtc-gt3, nur-gt3, macau-gt3 = LMGT3 car; raced sessions reproduce the real best lap). Default 2026.'},
     compare_car: {type: 'string', enum: CARS, description: 'Second car on the same track and conditions.'},
     air_temp_c: num(-10, 50, 'Air temperature (°C).'),
     track_temp_c: num(0, 70, 'Track temperature (°C).'),
@@ -46,6 +47,8 @@ const r3 = x => Math.round(x * 1000) / 1000;
 const fmt = s => { const m = Math.floor(s / 60); return (m ? m + ':' : '') + (s - m * 60).toFixed(3).padStart(m ? 6 : 5, '0'); };
 const carKey = c => c === '2019' ? 'base2019' : c;
 const withGrip = (tr, g) => ({...tr, mu: Float64Array.from(tr.mu, m => m * g)});
+// learned lap-time factor (docs/lapsim-learn.md): lap and sector times scale, the speed trace stays the class car's
+const scaled = (r, f) => !f || f === 1 ? r : {...r, lapTime: r.lapTime * f, time: Float64Array.from(r.time, t => t * f)};
 
 function summary(res, d, car) {
   const n = res.v.length, share = [0, 0, 0, 0];
@@ -102,7 +105,7 @@ export function simulate(args = {}) {
     if (c.fix?.lap != null) { // lap-level correction (series whose sector lines may differ from these): spread by sector share
       const ref = cars[c.fix.ref], fw = Object.fromEntries(Object.entries(c.fix.weather || {}).filter(([, v]) => Number.isFinite(v)));
       const r = K.simulateLap(withGrip(base, ref.grip || 1), ref.car, K.conditionsFromWeather({pressureHpa: 1013.25, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0, ...fw}));
-      const ss = secOf(r) || [r.lapTime, 0, 0], dl = c.fix.lap - r.lapTime; return ss.map(x => dl * x / r.lapTime);
+      const rs = scaled(r, ref.timeScale), ss = secOf(rs) || [rs.lapTime, 0, 0], dl = c.fix.lap - rs.lapTime; return ss.map(x => dl * x / rs.lapTime);
     }
     if (!c.fix || d.sectors?.length !== 2) return null;
     const ref = cars[c.fix.ref], fw = Object.fromEntries(Object.entries(c.fix.weather || {}).filter(([, v]) => Number.isFinite(v)));
@@ -110,16 +113,18 @@ export function simulate(args = {}) {
     return c.fix.real.map((x, i) => x - ss[i]);
   };
   const run = c => {
-    const r = K.simulateLap(withGrip(track, c.grip || 1), c.car, env), k = corrOf(c), sec = secOf(r);
+    const r = scaled(K.simulateLap(withGrip(track, c.grip || 1), c.car, env), c.timeScale), k = corrOf(c), sec = secOf(r);
     return k && sec ? {...r, lapTime: r.lapTime + k[0] + k[1] + k[2], sectors: sec.map((x, i) => x + k[i]), sectorCorrection: k} : k ? {...r, lapTime: r.lapTime + k.reduce((a, b) => a + b, 0), sectorCorrection: k} : r;
   };
   const res = run(sel);
   const xc = d.quality?.check; // set on extra circuits only
+  const lt = lapsimLearned?.tracks?.[id]; // real laps of every car model on this track (docs/lapsim-learn.md)
   const out = {status: 'ok', model: 'quasi-steady-state lap simulation (estimate, not a prediction of a real session)',
     track: {id, name: TRACK_NAMES[id]?.[1] || (xc ? `${d.name}, ${d.layout}` : id), length_m: Math.round(d.length || d.kappa.length * d.ds), corners: (d.corners || []).length,
       // an extra circuit says where its line came from and how it did in its check (docs/lapsim-tracks-extra.md)
       geometry: xc ? `${d.quality.evidence.planShape}; driven line: ${d.quality.evidence.drivenLine}` : 'driving line from OpenF1 qualifying car positions; corner numbers from official positions',
-      ...(xc ? {check: d.fit ? `passed (${xc.mode}): ${xc.mode === 'learned' ? `held-out error ${xc.learned.heldOut.rmsPct} % with a track factor learned from ${xc.learned.heldOut.n} real laps` : `error ${xc.rmsPct} % on ${xc.n} real lap(s), no value from this track used`}` : d.warn} : {})},
+      ...(xc ? {check: d.fit ? `passed (${xc.mode}): ${xc.mode === 'learned' ? `held-out error ${xc.learned.heldOut.rmsPct} % with a track factor learned from ${xc.learned.heldOut.n} real laps` : `error ${xc.rmsPct} % on ${xc.n} real lap(s), no value from this track used`}` : d.warn} : {}),
+      ...(lt ? {learned: `lap times learned from ${lt.events} real qualifying events here (every car model); class-best error with one event hidden: ${Object.entries(lt.errPct).map(([g, v]) => `${g} ${v} %`).join(', ')}`} : {})},
     car: {series: sel.series || 'f1', class: sel.cls || null, year: sel.year, kind: sel.kind, mass_kg: sel.car.mass, track_grip_factor: r3(sel.grip || 1)},
     conditions: {air_temp_c: r3(airTempC), track_temp_c: r3(trackTempC), humidity_pct: Math.round(humidityPct), pressure_hpa: Math.round(pressureHpa * 10) / 10,
       wind_speed_ms: r3(windSpeed), wind_from_deg: Math.round(windFromDeg),

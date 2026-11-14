@@ -11,6 +11,31 @@ Normal ChatGPT editing must write to GitHub; it must not independently publish a
 
 Before any change to the lap simulator physics model or its calibration (`worker/lapsim/`, `scripts/sim/`, `docs/lapsim-*.md`, `tests/lapsim-*.test.mjs`), read `docs/lapsim-physics-rules.md` and follow it. It is the only source of rules for that work. A physics task must not change the website, accounts, collector or deployment.
 
+## Lap simulator learning data (owner rules, 2026-11-14) — read before adding laps, tracks or cars
+
+Read `docs/lapsim-learn.md` first and follow it together with `docs/lapsim-physics-rules.md`. The rules, in short:
+
+1. Use every source below, every lap and every car (not only pole or class-best laps). Convert any data shape to the one car table of `docs/lapsim-learn.md` section 2.
+2. Learn each car type separately: F1, LMH, LMDh, Formula E, GT3. Show F1, LMH and LMDh per regulation (class-best lap). Show GT3 per car model; a base model and its Evo kit are two cars (base model + Evo tick box).
+3. Track identity: every lap goes through `resolveTrack()` in `scripts/sim/learn/track-registry.mjs` (data: `scripts/sim/data/track-registry.json`). One id per layout, never per venue. Never learn a lap on the geometry of another layout (Sakhir Grand Prix vs Outer, Paul Ricard 5.842 vs 5.771 km, Barcelona with and without the chicane). F1 raced the Nürburgring (2020) and Hockenheim (to 2019): historic sessions must resolve to their layout. An unknown venue or layout is added to the registry, never guessed. A new track must be one geometry entry plus one registry rebuild.
+4. Report the error per class and per track, always on rows the fit did not see, before and after.
+5. Publish a track unless its error is really bad. ⚠️ = not built yet (Rwanda), no real lap to check, or error above 3 % with one event hidden (`trackWarn()` in `worker/simulator-controls.js`).
+6. Check the data before the physics: weather units, wet sessions without a rain mark, layout changes, map outlines that do not close. The cases found so far are listed in `docs/lapsim-learn.md` section 2.
+7. Outside programs (MATLAB, the Python tools of the M17 power-unit project) may be used. An unfinished or inaccurate tool must never make a working feature worse.
+8. Use the engineering skills and the Karpathy guidelines: goal and pass check first, smallest change, verify before saying done.
+
+Sources learned so far or to be learned (the full table with the state of each is `docs/lapsim-learn.md` section 6; add every new source there and here):
+
+- Al Kamel Systems result sites, index: https://alkamelsystems.com/live-results/ — FIA WEC http://fiawec.alkamelsystems.com/ · IMSA https://imsa.results.alkamelcloud.com/ · ELMS http://elms.alkamelsystems.com/ · Asian Le Mans Series http://alms.alkamelsystems.com/ · Formula E https://results.fiaformulae.com/ · Michelin Le Mans Cup https://lemanscup.alkamelsystems.com/ · SRO/USAC live timing https://livetiming.alkamelsystems.com/usac_sro
+- Al Kamel CSV archive and IMSA analysis skill: https://github.com/tobi/imsa_data · https://mcpmarket.com/tools/skills/imsa-data-analyst
+- F1: https://f1archive.org/ · https://github.com/f1db/f1db · https://github.com/TracingInsights · https://openf1.org/
+- WEC and sportscars: https://www.openwec.com/explore · https://github.com/Hanspeter007/wec-data
+- GT3: https://51gt3.com/en/track
+- Timing71: https://github.com/timing71/livetiming-core · https://archive.timing71.org/
+- Track geometry: https://github.com/TUMFTM/racetrack-database · https://www.openstreetmap.org/
+
+The shell of a Claude session cannot reach most of these hosts. Use a clone from GitHub where one exists, otherwise fetch in GitHub Actions (workflow `lapsim-learn.yml`, push to `lapsim-learn/**`) and commit only derived tables.
+
 ## All-championship product principle
 
 Read and preserve docs/answer-principles.md for all answer, demo and tool changes. The core value is: 눈으로 읽기 어려운 복잡한 기록들을 알기 쉽게 시각화하고 설명한다. Prefer regulations, decisions and timing databases to podium-only or generic analysis. Keep the runtime ANSWER_POLICY synchronized with that document.
