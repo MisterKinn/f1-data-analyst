@@ -34,7 +34,9 @@ test('WEC finds the right race page from the home page by itself and fills the s
  const data=await (await calendarRoute(new Request('https://test/api/race-calendar'),env,{},now)).json();
  const qatar=data.events.find(e=>e.id==='wec-2027-03-25-lusail');
  assert.deepEqual(qatar.sessions.map(s=>s.nameEn),['FP1','Qualifying - Hypercar','Race']);assert.equal(qatar.sessions[2].start,'2027-03-27T14:00:00+03:00');
- assert.equal(data.events.find(e=>e.id==='wec-2027-04-09-imola').sessions.length,0);
+ // Imola is within 21 days too: its own calendar file fills the 2027 event, never the 2026 one of the same name.
+ assert.deepEqual(data.events.find(e=>e.id==='wec-2027-04-09-imola').sessions.map(s=>s.start.slice(0,16)),['2027-04-09T11:00','2027-04-11T13:00']);
+ assert.ok(!data.events.find(e=>e.id==='wec-2026-04-17-imola').sessions.some(s=>s.start.startsWith('2027')));
 });
 
 test('GTWC Australia reads the Adelaide timetable from its own event page once it is published',async t=>{
