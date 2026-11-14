@@ -263,6 +263,7 @@ When the owner has an iRacing account: iRacing telemetry (60 Hz, with position, 
 | Point | State |
 |---|---|
 | Downforce at the upper bound (F1 2024 and 2025, Hypercar 2025, LMGT3 all seasons) | Open. The axle model did not remove it. |
+| F1 engine power (`pIce`) at the lower bound in every fitted season: 476 kW for 2023–2025 and 340 kW for 2026, both 0.85 × the rules estimate (`calibration-data.js`, generated 2026-11-09) | Open. Found 2026-11-14. A value at its bound means physics is missing (section 3.4). Low power and high downforce at their bounds together suggest the fit trades one for the other. Do not read these numbers as real engine power. See `docs/m17-lapsim-contract.md`, section 2.1. |
 | WEC sim top speed against real trap differs by 10–20 km/h on some tracks | Not a like-for-like comparison today (section 4.3, limit 2). Fix the comparison before drawing conclusions. |
 | WEC grip and downforce not separable | Open (section 4.3, limits 1 and 3). |
 | 2026 WEC BoP | Not published. |
