@@ -50,12 +50,12 @@ export function trackOrder(tracks) {
   return Object.keys(tracks).sort((a, b) => { const [ca, na] = key(a), [cb, nb] = key(b); return ca < cb ? -1 : ca > cb ? 1 : na.localeCompare(nb, 'en'); });
 }
 
-// Evo tick box: base car key → key of its Evo entry. An Evo entry is a car of the same series, class and base
+// Evo tick box: base car key → key of its NEWEST Evo entry (owner 2026-11-15: the box starts ticked on the newest spec). An Evo entry is a car of the same series, class and base
 // model whose data carries an `evo` kit mark; with no such entry there is no pair (the box stays disabled).
 export function evoPairs(cars, order = Object.keys(cars)) {
   const out = {}, same = (a, b) => a.base === b.base && (a.series || 'f1') === (b.series || 'f1') && a.cls === b.cls;
   for (const k of order) { const c = cars[k]; if (!c?.base || c.evo) continue;
-    const e = order.filter(j => cars[j]?.evo && same(cars[j], c)).sort((a, b) => String(cars[a].evo).localeCompare(String(cars[b].evo)))[0];
+    const e = order.filter(j => cars[j]?.evo && same(cars[j], c)).sort((a, b) => String(cars[b].evo).localeCompare(String(cars[a].evo)))[0]; // newest kit (Evo 2 over Evo): the default spec
     if (e) out[k] = e; }
   return out;
 }

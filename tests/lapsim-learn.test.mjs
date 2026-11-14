@@ -91,18 +91,19 @@ test('every car that raced on a track reproduces its fastest real lap exactly (p
   const fmt = s => { const m = Math.floor(s / 60); return (m ? m + ':' : '') + (s - m * 60).toFixed(3).padStart(m ? 6 : 5, '0'); };
   const keys = ['2025', '2026', 'wec-lmh', 'wec-lmdh', 'wec-lmgt3', ...CAR_ORDER.filter(k => k.startsWith('gt3-'))]; let n = 0;
   for (const id of Object.keys(lapsimAllTracks)) { const cars = carsFor(id), L = lapsimLearned.tracks[id];
+    // a WEC pole stays unless WEC was faster; a lap of another series fills only an empty slot
     for (const k of keys) { const c = cars[k]; if (!c?.fix) continue; const want = c.fix.lap ?? c.fix.real.reduce((a, b) => a + b, 0); n++;
-      const known = [L?.classReal?.[k]?.lap, L?.real?.[k]?.lap, lapsimExtraTracks[id]?.realLaps?.[k]?.lap].filter(Number.isFinite);
+      const cr = L?.classReal?.[k], known = [k.startsWith('wec-') && cr?.series !== 'wec' && c.fix.series !== cr?.series ? NaN : cr?.lap, L?.real?.[k]?.lap, lapsimExtraTracks[id]?.realLaps?.[k]?.lap].filter(Number.isFinite);
       if (c.series) for (const v of known) assert.ok(want <= v + 5e-4, `${id} ${k}: shows ${want}, a faster real lap ${v} exists`);
       assert.ok(Math.abs(simulate({track: id, car: k}).result.lap_seconds - want) < 0.0015, `${id} ${k} tool`);
-      assert.equal((simulationPage({track: id, car: k}, 'en').match(/data-ls="lap"[^>]*>([^<]*)/) || [])[1], fmt(want), `${id} ${k} page`); } }
+      assert.equal((simulationPage({track: id, car: k, evo: '0'}, 'en').match(/data-ls="lap"[^>]*>([^<]*)/) || [])[1], fmt(want), `${id} ${k} page`); } }
   assert.ok(n > 300, String(n));
-  for (const [id, k] of [['road-atlanta', 'gt3-lamborghini-huracan-gt3'], ['daytona', 'wec-lmdh'], ['le-mans', 'wec-lmgt3']]) assert.ok(carsFor(id)[k].fix, `${id} ${k} raced there`);
+  for (const [id, k] of [['road-atlanta', 'gt3-imsa-lamborghini-huracan-gt3'], ['daytona', 'wec-lmdh'], ['le-mans', 'wec-lmgt3']]) assert.ok(carsFor(id)[k].fix, `${id} ${k} raced there`);
 });
 
 test('fastest real race lap: F1 per season (f1db), endurance per car (Al Kamel), only on its own layout', () => {
   assert.equal(raceRecords('monza')['2025'].lap, 80.901);                       // Norris, Monza 2025
-  assert.ok(raceRecords('road-atlanta')['gt3-lamborghini-huracan-gt3'].lap > 70);
+  assert.ok(raceRecords('road-atlanta')['gt3-imsa-lamborghini-huracan-gt3'].lap > 70);
   assert.ok(raceRecords('nurburgring-gp') && !raceRecords('nurburgring-gp')['2025']); // F1 raced there in 2020 only
   const sim = simulate({track: 'monza', car: '2025'}); assert.equal(sim.real_race_lap.lap_seconds, 80.901);
 });

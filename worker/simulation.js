@@ -172,7 +172,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
   const td = lapsimTracks[id], cars = carsFor(id, lang), conds = realConditions(id);
   // Evo kit: listed as a tick box beside its base car (only when the data has that Evo entry)
   const evoOf = evoPairs(cars, CAR_ORDER), evoKeys = new Set(Object.values(evoOf));
-  const askedCar = cars[query.car] ? query.car : '2026', carId = query.evo === '1' && evoOf[askedCar] ? evoOf[askedCar] : askedCar;
+  const askedCar = cars[query.car] ? query.car : '2026', carId = query.evo !== '0' && evoOf[askedCar] ? evoOf[askedCar] : askedCar; // a car with an Evo kit opens on its newest spec unless evo=0
   const baseId = Object.keys(evoOf).find(k => evoOf[k] === carId) || carId;
   // event this car races at here (calendar data) with the season of its session weather; absent = nothing shown
   const events = Object.fromEntries(CAR_ORDER.filter(k => cars[k]).map(k => [k, carEvent(id, k, cars[k], conds)]).filter(([, e]) => e)
@@ -634,12 +634,13 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
     q('car').value = ids[0]; q('car').dispatchEvent(new Event('change'));
   });
   // base car + Evo tick box (enabled only when the data has that Evo entry); the event line follows the car
-  const pickCar = () => {
+  const pickCar = ev0 => {
     const b = q('car').value, e = data.evoOf[b], box = q('evo');
-    box.disabled = !e; if (!e) box.checked = false; q('evoHint').textContent = e ? '' : data.t.evoNone;
+    box.disabled = !e; if (!e) box.checked = false; else if (ev0 && ev0.target === q('car')) box.checked = true; // a newly chosen car starts on its newest spec
+    q('evoHint').textContent = e ? '' : data.t.evoNone;
     state.carId = e && box.checked ? e : b;
     const ev = data.events[state.carId]; q('event').hidden = !ev; q('event').textContent = ev || '';
-    const u = new URL(location.href); u.searchParams.set('car', state.carId); u.searchParams.delete('evo'); history.replaceState(null, '', u); update();
+    const u = new URL(location.href); u.searchParams.set('car', state.carId); if (e && !box.checked) u.searchParams.set('evo', '0'); else u.searchParams.delete('evo'); history.replaceState(null, '', u); update();
   };
   q('car').addEventListener('change', pickCar); q('evo').addEventListener('change', pickCar);
   q('compare').addEventListener('change', e => { state.compareId = e.target.value; update(); });

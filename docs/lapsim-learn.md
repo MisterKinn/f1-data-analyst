@@ -30,6 +30,15 @@ the first run. Sections 4 and 5 are results. Section 6 is the source list: add a
 7. Data with a different structure is converted to the one table shape of section 2. Outside programs (MATLAB, Python tools of the
    M17 power-unit project) may be used when they help; an unfinished or inaccurate tool must never make a working feature worse.
 8. Use the engineering skills and the Karpathy guidelines for this work: goal and pass check first, smallest change, verify.
+10. **GT3 per BoP body (owner 2026-11-15).** SRO GT3 (no torque sensor; GT World Challenge in every region, IGTC, British GT,
+   Nürburgring, Macau) is the basic GT3 and comes first in the list with the plain key `gt3-<model>`. The other bodies are
+   `gt3-imsa-<model>` (IMSA GTD), `gt3-aco-<model>` (WEC LMGT3, ELMS, Asian LMS) and `gt3-dtm-<model>` (DTM, records only).
+   SRO measured records (Brands Hatch, Silverstone, Spa, Monza, Nürburgring GP and 24h, Suzuka, Fuji, Shanghai, Jeddah, …) are
+   reproduced exactly from the official SRO results sites.
+11. **WEC class cars keep WEC records.** `wec-lmh`, `wec-lmdh` and `wec-lmgt3` show the fastest WEC lap of that class on the track.
+   A lap of another series (IMSA GTP at Daytona, GTWC at Road Atlanta) fills the slot only where WEC never raced. WEC LMGT3 has
+   raced from 2024; WEC last raced at Monza in 2023 (LMGTE Am), so Monza shows that pole, and SRO GT3 at Monza shows the GTWC record.
+12. **A car with an Evo or Evo 2 kit opens on its newest kit** (Evo box ticked; `evo=0` in the URL for the base car).
 
 ## 2. Data shape and pipeline
 
@@ -85,30 +94,40 @@ This layer does not change the physics model or `calibration-data.js`. BoP is no
 
 ## 4. Result per class (RMS error, %)
 
-1106 model rows, 123 events, 29 layouts, 42 car models. Generated 2026-11-14.
+1311 model rows, 152 events, 33 layouts, 44 car models. Generated 2026-11-14.
 
 | Class | Events | Before, class-best | **Event hidden, class-best** | Before, per model | **Event hidden, per model** | Car model hidden | Layout hidden (track-unseen) | In-sample |
 |---|---|---|---|---|---|---|---|---|
-| LMH | 34 | 2.14 | **0.82** | 2.23 | **0.92** | 1.45 | 3.09 | 0.52 |
-| LMDh | 46 | 2.73 | **0.98** | 2.87 | **1.04** | 0.87 | 3.74 | 0.57 |
-| GT3 | 85 | 2.77 | **1.08** | 2.85 | **1.22** | 1.02 | 3.23 | 0.69 |
+| LMH | 34 | 2.14 | **0.82** | 2.23 | **0.92** | 1.57 | 3.03 | 0.52 |
+| LMDh | 47 | 2.7 | **0.98** | 2.86 | **1.05** | 0.88 | 3.67 | 0.57 |
+| GT3 | 113 | 2.89 | **1.19** | 3.04 | **1.35** | 0.95 | 3.27 | 0.63 |
 
 By series (event hidden, class-best; before → after):
 
 | Class and series | Events | Before | After |
 |---|---|---|---|
-| GT3 ALMS | 5 | 2.21 | 1.18 |
-| GT3 ELMS | 13 | 2.25 | 0.98 |
+| GT3 Asian LMS | 6 | 2.03 | 2.06 |
+| GT3 ELMS | 11 | 2.43 | 1.14 |
+| GT3 GTWC (Timing71) | 4 | 1.61 | 1.6 |
+| GT3 IGTC | 5 | 1.26 | 1.02 |
 | GT3 IMSA | 49 | 3.21 | 1.2 |
-| GT3 WEC | 18 | 1.76 | 0.73 |
+| GT3 Nürburgring 24h | 6 | 1.93 | 1.6 |
+| GT3 WEC | 21 | 1.67 | 0.67 |
+| GT3 Spa 24h | 2 | 2.39 | 1.47 |
+| GT3 GTWC Europe Endurance 2024 | 2 | 3.87 | 0.23 |
+| GT3 GTWC Europe Endurance 2025–26 | 6 | 5.74 | 0.81 |
+| GT3 Suzuka 1000 km (IGTC) | 1 | 3.13 | 1.52 |
 | LMDh IMSA | 23 | 3.53 | 1.14 |
-| LMDh WEC | 23 | 1.54 | 0.79 |
+| LMDh WEC | 24 | 1.52 | 0.79 |
 | LMH IMSA | 11 | 3.13 | 0.88 |
 | LMH WEC | 23 | 1.44 | 0.79 |
 
-Sensitivity (event hidden, class-best): widths ×0.5: LMH 0.82, LMDh 0.98, GT3 1.08; widths ×2: LMH 0.82, LMDh 0.98, GT3 1.08.
+Sensitivity (event hidden, class-best): {half: {gt3: {models: 925, eventOut: 1.34, events: 113, eventOutClass: 1.19}, lmp2: {models: 92, eventOut: 1.62, events: 92, eventOutClass: 1.62}, lmdh: {models: 190, eventOut: 1.03, events: 47, eventOutClass: 0.97}, lmh: {models: 104, eventOut: 0.85, events: 34, eventOutClass: 0.82}}, double: {gt3: {models: 925, eventOut: 1.36, events: 113, eventOutClass: 1.19}, lmp2: {models: 92, eventOut: 1.61, events: 92, eventOutClass: 1.61}, lmdh: {models: 190, eventOut: 1.05, events: 47, eventOutClass: 0.98}, lmh: {models: 104, eventOut: 0.96, events: 34, eventOutClass: 0.82}}}
 
-Reading: with the event hidden the class-best error is about one percent in every class, less than half of before. A track that has
+Reading: with the event hidden the class-best error is about one percent in every class, less than half of before. GT3 rose from
+1.08 (2026-11-14, 85 events) to 1.19 because the Timing71 SRO, IGTC and Nürburgring 24h events were added: the Nordschleife (8 to
+9 minute laps, traffic) is the hardest. Of the earlier series, IMSA (1.20) and WEC (0.73 → 0.67) held, while ELMS (0.98 → 1.14)
+and Asian LMS (1.18 → 2.06) got worse: they now share the ACO body term with more rows. Open item (section 7). A track that has
 no lap of any endurance series stays at the old level (layout hidden: about 3 %): on such a track the page keeps the production
 calibration and does not use this layer. LMP2 is not shown on the page.
 
@@ -116,64 +135,69 @@ calibration and does not use this layer. LMP2 is not shown on the page.
 
 | Track (layout) | Class | Events | Models rows | Before | After |
 |---|---|---|---|---|---|
-| austin | GT3 | 1 | 9 | 0.39 | 0.36 |
-| austin | LMDh | 1 | 5 | 0.23 | 0.19 |
-| austin | LMH | 1 | 3 | 0.22 | 0.05 |
-| catalunya | GT3 | 3 | 16 | 0.82 | 0.63 |
+| austin | GT3 | 3 | 18 | 0.52 | 1.33 |
+| austin | LMDh | 1 | 5 | 0.23 | 0.82 |
+| austin | LMH | 1 | 3 | 0.22 | 0.69 |
+| bathurst | GT3 | 3 | 16 | 0.75 | 1.09 |
+| catalunya | GT3 | 5 | 27 | 1.21 | 0.6 |
 | daytona | GT3 | 6 | 58 | 6.15 | 0.94 |
 | daytona | LMDh | 4 | 17 | 7.13 | 0.98 |
 | daytona | LMH | 1 | 1 | 9.49 | 0.6 |
-| fuji | GT3 | 2 | 18 | 1.44 | 0.07 |
-| fuji | LMDh | 3 | 11 | 0.28 | 0.37 |
+| fuji | GT3 | 2 | 18 | 1.44 | 0.08 |
+| fuji | LMDh | 3 | 11 | 0.28 | 0.38 |
 | fuji | LMH | 3 | 11 | 0.63 | 0.5 |
-| imola | GT3 | 6 | 43 | 1.36 | 0.81 |
+| imola | GT3 | 6 | 43 | 1.36 | 0.9 |
 | imola | LMDh | 3 | 13 | 1.69 | 0.62 |
-| imola | LMH | 3 | 12 | 1.5 | 1.22 |
-| indianapolis | GT3 | 3 | 29 | 1.15 | 1.3 |
+| imola | LMH | 3 | 12 | 1.5 | 1.21 |
+| indianapolis | GT3 | 5 | 45 | 1.43 | 1.16 |
 | indianapolis | LMDh | 4 | 18 | 0.61 | 0.89 |
 | indianapolis | LMH | 2 | 2 | 1.08 | 0.66 |
-| interlagos | GT3 | 2 | 18 | 1.56 | 0.53 |
-| interlagos | LMDh | 2 | 9 | 1.11 | 0.38 |
-| interlagos | LMH | 2 | 8 | 0.62 | 0.67 |
-| kuala-lumpur | GT3 | 2 | 14 | 0.69 | 0.29 |
-| laguna-seca | GT3 | 6 | 56 | 3.34 | 2.02 |
+| interlagos | GT3 | 3 | 21 | 1.53 | 0.49 |
+| interlagos | LMDh | 3 | 10 | 1.07 | 0.3 |
+| interlagos | LMH | 2 | 8 | 0.62 | 0.66 |
+| kuala-lumpur | GT3 | 2 | 14 | 0.69 | 2.05 |
+| laguna-seca | GT3 | 6 | 56 | 3.34 | 1.99 |
 | laguna-seca | LMDh | 4 | 16 | 2.71 | 1.93 |
 | laguna-seca | LMH | 2 | 2 | 1.85 | 1.27 |
-| le-mans | GT3 | 3 | 27 | 3.51 | 0.64 |
+| le-mans | GT3 | 3 | 27 | 3.51 | 0.62 |
 | le-mans | LMDh | 4 | 15 | 2.57 | 0.26 |
 | le-mans | LMH | 4 | 17 | 2.36 | 0.3 |
 | lime-rock | GT3 | 3 | 24 | 2.24 | 0.52 |
-| lusail | GT3 | 2 | 18 | 0.73 | 0.75 |
+| lusail | GT3 | 2 | 18 | 0.73 | 0.77 |
 | lusail | LMDh | 2 | 9 | 0.56 | 0.87 |
 | lusail | LMH | 2 | 8 | 0.88 | 0.99 |
 | mid-ohio | GT3 | 2 | 16 | 0.38 | 1.64 |
-| monza | LMDh | 1 | 2 | 2.89 | 1.24 |
-| monza | LMH | 1 | 5 | 2.76 | 1.06 |
+| monza | GT3 | 2 | 19 | 1.68 | 0.12 |
+| monza | LMDh | 1 | 2 | 2.89 | 1.17 |
+| monza | LMH | 1 | 5 | 2.76 | 0.98 |
 | mosport | GT3 | 5 | 46 | 0.78 | 0.73 |
 | mosport | LMDh | 1 | 4 | 3.16 | 0.02 |
-| mugello | GT3 | 1 | 4 | 2.31 | 2.23 |
-| paul-ricard-5771 | GT3 | 1 | 4 | 6.69 | 1.06 |
-| paul-ricard-5821 | GT3 | 2 | 12 | 0.6 | 0.31 |
-| portimao | GT3 | 2 | 10 | 1.31 | 0.63 |
-| portimao | LMDh | 1 | 2 | 0.49 | 2.07 |
-| portimao | LMH | 1 | 5 | 1.72 | 0.54 |
+| mugello | GT3 | 1 | 4 | 2.31 | 2.46 |
+| nurburgring-24h | GT3 | 6 | 37 | 1.93 | 1.6 |
+| nurburgring-gp | GT3 | 2 | 19 | 4.98 | 0.36 |
+| paul-ricard-5771 | GT3 | 1 | 4 | 6.69 | 0.58 |
+| paul-ricard-5821 | GT3 | 2 | 21 | 9.12 | 0.75 |
+| portimao | GT3 | 2 | 10 | 1.31 | 0.68 |
+| portimao | LMDh | 1 | 2 | 0.49 | 2.09 |
+| portimao | LMH | 1 | 5 | 1.72 | 0.56 |
 | road-america | GT3 | 6 | 56 | 3.69 | 1.11 |
 | road-america | LMDh | 4 | 16 | 2.74 | 0.86 |
 | road-america | LMH | 2 | 2 | 1.52 | 0.58 |
-| road-atlanta | GT3 | 5 | 50 | 2.67 | 0.66 |
+| road-atlanta | GT3 | 6 | 57 | 2.45 | 0.99 |
 | road-atlanta | LMDh | 3 | 14 | 0.67 | 0.31 |
 | road-atlanta | LMH | 2 | 2 | 0.57 | 0.41 |
 | sakhir | GT3 | 2 | 18 | 1.1 | 0.63 |
 | sakhir | LMDh | 2 | 9 | 0.25 | 0.83 |
 | sakhir | LMH | 2 | 7 | 0.5 | 0.9 |
-| spa-francorchamps | GT3 | 4 | 31 | 1.01 | 1.22 |
-| spa-francorchamps | LMDh | 4 | 15 | 1.34 | 0.95 |
-| spa-francorchamps | LMH | 4 | 17 | 0.97 | 0.84 |
-| vir | GT3 | 6 | 56 | 1.04 | 1.33 |
+| spa-francorchamps | GT3 | 7 | 60 | 1.52 | 1.34 |
+| spa-francorchamps | LMDh | 4 | 15 | 1.34 | 0.96 |
+| spa-francorchamps | LMH | 4 | 17 | 0.97 | 0.83 |
+| suzuka | GT3 | 2 | 15 | 2.92 | 1.32 |
+| vir | GT3 | 7 | 64 | 1.16 | 1.24 |
 | watkins-glen | GT3 | 7 | 67 | 3.03 | 0.98 |
 | watkins-glen | LMDh | 3 | 14 | 1.96 | 1.25 |
 | watkins-glen | LMH | 2 | 2 | 1.26 | 1.21 |
-| yas-marina-circuit | GT3 | 3 | 21 | 2.8 | 1.5 |
+| yas-marina-circuit | GT3 | 4 | 27 | 2.44 | 2.07 |
 
 A layout with one event has the layout term hidden too in this test, so its number is a track-unseen number.
 
@@ -199,6 +223,7 @@ Rows that could not be used, by reason: no simulator geometry: sebring-6019: 301
 | OpenWEC | https://www.openwec.com/explore | WEC, ELMS, Asian LMS, Le Mans Cup, IMSA since 2012, REST API | Not reachable from the shell; probe in Actions. Needed for 2012–2020 |
 | wec-data | https://github.com/Hanspeter007/wec-data | Schemas and 2026 examples of classifications, entry lists, line-ups | Read: schema only, no lap data |
 | 51GT3 | https://51gt3.com/en/track | GT3 tracks and lap records | Not reachable from the shell; probe in Actions |
+| SRO official results | https://www.gt-world-challenge-europe.com/results · https://www.gt-world-challenge-america.com/results · https://www.gt-world-challenge-asia.com/results · https://www.britishgt.com/results · https://www.intercontinentalgtchallenge.com/results | Every session table (position, car, best lap) of every meeting | Learned 2022–2026 (`fetch-sro.mjs` in Actions → `build-sro.mjs` → `sro-gt3-cars.csv.gz`, 28,017 rows): records only. IGTC gives PDFs (not read yet); GTWC Australia pages have no session tables |
 | Timing71 core | https://github.com/timing71/livetiming-core | How Timing71 services record sessions (format of the replay archive) | Read |
 | Timing71 replay archive | https://archive.timing71.org/ | 15,808 replays, all series | Rows built on 2026-11-11 (Actions run 42927630531, artifacts until 2026-12-11); 46 % had no track id: re-map them with `resolveTrack()` |
 | TracingInsights | https://github.com/TracingInsights | F1 laps and telemetry 2018–2026 | Used by the F1 pipeline and the F1-history tracks |
@@ -209,7 +234,9 @@ Rows that could not be used, by reason: no simulator geometry: sebring-6019: 301
 ## 7. Not done yet
 
 - Formula E: cars table is being fetched; no Formula E track geometry except Monaco; Gen3 Evo fit and the Gen4 model on the page are not done.
-- Timing71 rows (GTWC, DTM, IGTC, NLS, Macau, Super GT): not re-mapped with the registry and not in this fit. GT3 models seen only there are missing.
+- Timing71 rows: GTWC, IGTC, Nürburgring 24h and DTM are in (DTM as records only: its layouts disagree across seasons). NLS, Macau, Misano, Sonoma and Barber are not resolved yet.
+- GT3 ELMS and Asian LMS error rose with the new sources (section 4): try a series term inside the ACO body.
+- SRO official tables carry no weather, so they are records only (shown with the event weather unknown).
 - F1 per-team cars: unchanged in this step (F1 is shown per regulation and its production calibration was not touched).
 - Practice and race laps are in the car table (type P and R) but only qualifying is fitted: a fuel and tyre-age term must be declared first.
 - Sector times and speed traps are in the table and are not fitted yet (physics rule 3.4).

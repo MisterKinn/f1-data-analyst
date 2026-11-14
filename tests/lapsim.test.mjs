@@ -262,7 +262,8 @@ test('WEC: a raced track reproduces the real best lap, the calibrated season\'s 
     for (const [track, ys] of Object.entries(P)) {
       const p = ys[y]?.[cls]; if (!p) continue;
       const r = simulate({track, car: 'wec-' + cls, conditions: 'real'});
-      const want = Math.min(p.lap, Lr.tracks[track]?.classReal?.['wec-' + cls]?.lap ?? Infinity);
+      const rec = Lr.tracks[track]?.classReal?.['wec-' + cls]; // a lap of another series (e.g. GTWC at Monza) does not replace a WEC pole
+      const want = Math.min(p.lap, rec?.series === 'wec' ? rec.lap : Infinity);
       assert.ok(Math.abs(r.result.lap_seconds - want) < 0.0015, `${track} ${cls}: ${r.result.lap_seconds} vs ${want}`);
       n++;
     }
