@@ -121,8 +121,9 @@ simulations (Chalmers 2024, TU Delft 2018, KU coast-down study, OpenLAP, FSAE TT
    range (1 sigma). Confidence: ≤1% medium, ≤3% low, above very low; projections are always low.
 6. Report a sensitivity table (lap-time change for +10% mass, grip, ClA, CdA, power) with results.
 7. Clean data only: frozen telemetry dropped, wet sessions skipped, pit and flagged laps excluded.
-8. State the QSS limits: no transients, gear shifts, tyre temperature or car-to-car effects; 2026
-   energy harvest only under braking.
+8. State the QSS limits: no transients, gear shifts, tyre temperature or car-to-car effects. 2026
+   energy is recovered under braking and on throttle (spare engine power, and super-clipping when
+   it makes the lap faster).
 
 ## 10. Risk control
 
