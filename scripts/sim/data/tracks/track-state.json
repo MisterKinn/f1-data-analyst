@@ -1,0 +1,92 @@
+{
+ "note": "Documented track state for the new tracks: surface and layout changes with a source. Used to decide which seasons of lap data describe the track as it is now. First batch, 2026-11-11; not complete.",
+ "tracks": {
+  "laguna-seca": [
+   {
+    "change": "Full resurfacing, done right after the 2023 IMSA weekend; first IMSA race on the new surface in May 2024",
+    "effect": "Use laps from 2024 on. Laps up to 2023 are the old surface",
+    "source": "https://www.imsa.com/news/2024/05/06/when-old-becomes-new-imsa-approaching-spate-of-new-track-surfaces/"
+   }
+  ],
+  "mid-ohio": [
+   {
+    "change": "New surface on the 2.258-mile course, first raced by IMSA series in June 2024",
+    "effect": "Use laps from 2024 on",
+    "source": "https://www.imsa.com/news/2024/05/06/when-old-becomes-new-imsa-approaching-spate-of-new-track-surfaces/"
+   }
+  ],
+  "detroit": [
+   {
+    "change": "IMSA races on a downtown street circuit since 2023; Belle Isle was used 2007–2022",
+    "effect": "Belle Isle laps and Belle Isle sim tracks do not describe the current circuit",
+    "source": "https://www.imsa.com/news/2024/05/06/when-old-becomes-new-imsa-approaching-spate-of-new-track-surfaces/"
+   }
+  ],
+  "daytona": [
+   {
+    "change": "Described as an older surface in 2024",
+    "effect": "No break in the lap data found",
+    "source": "https://www.imsa.com/news/2024/05/06/when-old-becomes-new-imsa-approaching-spate-of-new-track-surfaces/"
+   }
+  ],
+  "sebring": [
+   {
+    "change": "Described as an older surface in 2024",
+    "effect": "No break in the lap data found",
+    "source": "https://www.imsa.com/news/2024/05/06/when-old-becomes-new-imsa-approaching-spate-of-new-track-surfaces/"
+   }
+  ],
+  "long-beach": [
+   {
+    "change": "Described as an older surface in 2024",
+    "effect": "No break in the lap data found",
+    "source": "https://www.imsa.com/news/2024/05/06/when-old-becomes-new-imsa-approaching-spate-of-new-track-surfaces/"
+   }
+  ],
+  "road-atlanta": [
+   {
+    "change": "Partial or full repave within the decade before 2024 (year not stated in the source)",
+    "effect": "Year to be found before splitting the data",
+    "source": "https://www.imsa.com/news/2024/05/06/when-old-becomes-new-imsa-approaching-spate-of-new-track-surfaces/"
+   }
+  ],
+  "watkins-glen": [
+   {
+    "change": "Partial or full repave within the decade before 2024 (year not stated in the source)",
+    "effect": "Year to be found before splitting the data",
+    "source": "https://www.imsa.com/news/2024/05/06/when-old-becomes-new-imsa-approaching-spate-of-new-track-surfaces/"
+   }
+  ],
+  "vir": [
+   {
+    "change": "Partial or full repave within the decade before 2024 (year not stated in the source)",
+    "effect": "Year to be found before splitting the data",
+    "source": "https://www.imsa.com/news/2024/05/06/when-old-becomes-new-imsa-approaching-spate-of-new-track-surfaces/"
+   }
+  ],
+  "le-mans": [
+   {
+    "change": "Mulsanne Straight resurfaced from the Daytona Chicane to Mulsanne Corner; work began 21 July 2025",
+    "effect": "The 2026 race is the first on the new surface there: 2025 and 2026 laps are not the same track state",
+    "source": "https://www.24h-lemans.com/en/news/mulsanne-straight-resurfaced-from-daytona-chicane-to-mulsanne-corner-59875"
+   },
+   {
+    "change": "Lap length 13.626 km since the Porsche Curves work for 2018 (three metres shorter)",
+    "effect": "Matches the FIA length used for the acceptance check",
+    "source": "https://www.24h-lemans.com/en/news/24-hours-of-le-mans-second-phase-of-safety-work-at-the-porsche-curves-now-completed-47817"
+   },
+   {
+    "change": "Start line moved 145 metres in March 2018",
+    "effect": "Start position for sector and lap alignment",
+    "source": "https://www.24h-lemans.com/en/news/new-start-line-work-has-begun-at-the-24-hours-circuit-48453"
+   }
+  ],
+  "suzuka": [
+   {
+    "change": "West Course closed for resurfacing ahead of the 2026 Grand Prix",
+    "effect": "Existing simulator track; 2026 laps are on a partly new surface",
+    "source": "https://racingnews365.com/iconic-f1-circuit-undergoes-changes-ahead-of-2026-season"
+   }
+  ]
+ }
+}

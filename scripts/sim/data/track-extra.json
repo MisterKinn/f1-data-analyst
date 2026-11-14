@@ -1,0 +1,31 @@
+{
+ "note": "Extra circuits for the lap simulator: which candidate track becomes which simulator track, and the real laps used for the quality check. Read by scripts/sim/build-geometry-extra.mjs. Candidates: scripts/sim/data/tracks/.",
+ "declared": "Check per track: simulate the production WEC class cars (LMH, LMDh, LMGT3; nearest fitted season, 2025 or 2026) on the track with the mean track factor of that class's fitted tracks and the weather of the real lap. Compare with the fastest clean dry qualifying lap per series, season (2023 to 2026) and car class. Borrowed cars: IMSA GTP uses the LMDh car; IMSA GTD, ELMS LMGT3, IGTC Pro, GTWC Pro, ADAC GT Masters and Nürburgring SP 9 use the LMGT3 car. Pass: at least one row and RMS error at or below 3.0 % (the error of this geometry method on known tracks: 3.0 to 3.2 % RMS in scripts/sim/data/tracks/method-check.json on the source branch). Otherwise the track is marked ⚠️ and fit = false. Baseline: none needed, no model is changed. Not checked: sectors, corner minimum speeds, speed traps.",
+ "passRmsPct": 3,
+ "lapSource": "Timing71 rows; derived table scripts/sim/data/laps/t71-bests-counts.json on branch lapsim-laps/all-laps-2026-11-11 at commit 47c8822 (raw files are not in git)",
+ "limits": [
+  "Start line, direction, sectors and corner numbers are not verified (start = first mapped point).",
+  "Height comes from a 30 m ground grid, smoothed over 150 m: crests and dips shorter than that are missing. No banking (Daytona).",
+  "The driven line is a model line, not compared with a real driven line.",
+  "Lap-time error only. Corner minimum speed, end-of-straight speed and sectors are not checked (rule 3.4): a pass does not prove the parts of the lap.",
+  "Error includes geometry, car and borrowed-car error together; rows with a borrowed car say less about the track.",
+  "The Timing71 venue id \"nurburgring-gp\" holds three layouts; rows were split by lap time (80–90 s sprint, 105–125 s Grand Prix, 470–520 s 24 Hours lap). No Grand Prix lap of a GT3 or Hypercar class exists in the table."
+ ],
+ "tracks": {
+  "yeongam": {
+   "group": "korea",
+   "file": "extra-tracks.json",
+   "candidate": "yeongam-korea",
+   "name": "Yeongam",
+   "layout": "Korea International Circuit, Grand Prix 5.615 km"
+  },
+  "yongin": {
+   "group": "korea",
+   "file": "extra-tracks.json",
+   "candidate": "yongin-everland-speedway-full-course",
+   "name": "Yongin",
+   "layout": "Everland Speedway, full course 4.346 km"
+  }
+ },
+ "laps": []
+}
