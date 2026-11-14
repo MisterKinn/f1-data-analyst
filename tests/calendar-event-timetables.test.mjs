@@ -57,3 +57,12 @@ test('each of the three series fills its event automatically on refresh',async t
  assert.ok(count('super-taikyu','fuji')>=5);assert.ok(count('wrc','rally-saudi')>=4);assert.ok(count('macau','guia')>=2);
  for(const series of ['super-taikyu','wrc','macau'])assert.equal(data.sourceStatus.find(s=>s.series===series).available,true);
 });
+
+test('time ranges written with HTML entities or other dashes still split into start, end and title',()=>{
+ const saudiEvent=event('wrc','rally-saudi');
+ for(const dash of ['&#8211;','&ndash;','&#x2013;','—','−']){
+  const [shakedown,stage]=eventSessions(parseTimetableText(`<h4>Thursday, 12 November</h4><p>10:56 ${dash} 11:01 &bull; Shakedown</p><h4>Friday, 13 November</h4><p>10:00 &#8226; SS1 &#8211; Bryman 1</p>`),saudiEvent);
+  assert.equal(shakedown.nameEn,'Shakedown',dash);assert.equal(shakedown.start,'2026-11-12T10:56:00+03:00');assert.equal(shakedown.end,'2026-11-12T11:01:00+03:00');
+  assert.equal(stage.nameEn,'SS1 – Bryman 1');
+ }
+});
