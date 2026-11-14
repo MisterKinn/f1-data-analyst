@@ -1,6 +1,6 @@
 # M17 power unit and LapSim: data contract
 
-Contract version: **0.1.0 (draft)**. Date: 2026-11-14. Base commit read: `main` at `ebab90e`.
+Contract version: **0.2.0 (draft)**. Date: 2026-11-14. Code read: upstream `main` at `fe3d758`.
 Status: proposal. No code reads or writes these files yet. This document changes no code.
 
 Rules that stand above this file: `docs/lapsim-physics-rules.md` (the project copy is
@@ -14,7 +14,7 @@ Two projects exchange data. They share no code.
 
 | Project | What it is | Where |
 |---|---|---|
-| **M17** | The owner's own model of an F1 power unit, with the Mercedes M17 as its subject. It is a separate, unfinished project. This contract assumes it is built from regulations and public information, not from manufacturer data (open question 1). | Outside this repo |
+| **M17** | The owner's own model of an F1 power unit, with the Mercedes M17 as its subject. It is a separate, unfinished project. This contract assumes it is built from regulations and public information, not from manufacturer data (section 10.2). | Outside this repo |
 | **LapSim** | The lap simulator | `worker/lapsim/`, `scripts/sim/` |
 
 The only link is a set of **table files**. Each file flows **one way**.
@@ -45,11 +45,16 @@ No file is edited by the receiving side. A correction is a new file version from
 |---|---|---|---|
 | Fuel energy flow limit, ERS-K power limit and speed taper, battery window, recharge per lap | Regulations (`rules-data.js`, `erskLimitW`, `energy-limits.js`) | 1 | None. M17 is checked against these and rejected if it exceeds them. |
 | Gear ratios | RPM, speed and gear channels (build step 1) | 2 | None |
-| ICE power level (`pIce`) | Fitted to real laps, within ±15 % of the rules estimate (`docs/simulation-plan.md`, section 9) | 3 | None for the level |
+| ICE power level (`pIce`) | Fitted to real laps, bounded to ±15 % of the rules estimate (`calibrate.mjs`, `BOUNDS.pIce`) | 3 | None for the level. See the warning below. |
 | Torque curve shape | Not in the model today (constant power). Build step 2 will infer it from acceleration. | 3, when built | Shape only, normalised, until step 2 exists. Then step 2 wins. |
 | `etaErs` 0.95, `etaRegen` 0.9, `etaDrive` 0.96, `inertiaFactor` 1.06, air-density exponent 0.15 | Assumed constants in `cars.js` and `kernel.js` | 4 | Candidate replacement, layer 4 against layer 4, through the gate |
 
 When M17 and a higher layer disagree, LapSim does not average them. It keeps the higher layer and reports the conflict.
+
+**Warning about `pIce`.** In `calibration-data.js` (generated 2026-11-09) the fitted `pIce` is 340 kW for 2026 and 476 kW for 2025. Both are exactly the lower bound (400 kW and 560 kW × 0.85). Under physics rule 3.4 a value at its bound is a finding: physics is missing, and the number absorbs other errors. So:
+
+- M17 must not use the LapSim `pIce` as the real ICE power, as a target, or as a check of its own curve.
+- LapSim must not move `pIce` toward an M17 number either. An M17 curve that disagrees is written down as a conflict, nothing more.
 
 ## 3. File rules (both directions)
 
@@ -194,6 +199,7 @@ M17 may read only what `simulateLap` returns today, plus values derived from it 
 | `t_s` | s | `time[]` |
 | `v_m_s` | m/s | `v[]` |
 | `a_x_m_s2` | m/s² | Derived from `v[]` and `ds` |
+| `a_y_m_s2` | m/s² | `v²` × curvature. Positive curvature is a left turn (`geometry.js`: heading counter-clockwise from east, curvature = change of heading per metre). No banking term. |
 | `limit_code` | — | `limit[]` |
 | `ice_full_power` | 0 or 1 | 1 where `limit_code` = 2. Approximate: see the limits below. |
 | `power_k_dc_W` | W | (`flow.dep` − `flow.brk` − `flow.thr`) ÷ step time, signed |
@@ -210,7 +216,8 @@ Limits of this trace, read from `kernel.js`:
 
 | Column | Unit | From |
 |---|---|---|
-| `lap_time_s` | s | `lapTime` |
+| `lap_time_raw_s` | s | `lapTime` from the kernel. Equal to the sum of the trace step times. |
+| `lap_time_shown_s` | s | Lap time the site and the `lapsim_simulate` tool show. On raced tracks it is the raw time plus a sector correction (`sectorCorrection` in `tool.js`). |
 | `energy_deploy_J`, `energy_regen_J`, `energy_budget_J` | J | `energy.deployJ`, `regenJ`, `budgetJ`. `regenJ` already includes the throttle harvest. |
 | `energy_recharge_max_J` | J | `energy.rechargeMaxJ`, with its status: official, provisional or estimated |
 | `energy_throttle_harvest_J` | J | `energy.throttleHarvestJ` |
@@ -233,7 +240,9 @@ The inputs of the run go in the manifest: track, car, year, air density, tempera
 ### 7.4 How M17 must treat a load case
 
 - It is model output, not a measurement. M17 labels it "LapSim model output" with the held-out error of that car group.
-- A raced session reproduces the real lap time. Its speed trace is **not** checked to that level: corner minimum speeds are too low and some top speeds differ from the real trap (physics rules 3.4).
+- A raced session reproduces the real lap time only because `tool.js` adds a sector correction (real pole sectors minus simulated sectors) after the simulation. The speed trace is **not** corrected. M17 must use `lap_time_raw_s` with the trace, never `lap_time_shown_s`.
+- The trace is not checked to lap-time level: corner minimum speeds are too low and some top speeds differ from the real trap (physics rules 3.4).
+- The held-out error in `calibration-data.js` is 0.84 % for F1 2025 (n = 20) and 0.90 % for F1 2026 (n = 14). It is a lap-time error. No error is measured for power or energy along the lap.
 - A load case from a run with experiment flags on must say so in the manifest.
 
 ## 8. Versioning
@@ -258,19 +267,39 @@ A file with a different major version is rejected. Table data versions are separ
 
 Known limit: F1 is fitted per season with a small team factor today. A value for Mercedes-powered cars only cannot be tested per team until the per-car fit of physics rules 4.1 exists. With n under 5 the gate rejects by rule.
 
-## 10. Open questions for the owner
+## 10. Decisions and open points
 
-1. **M17 scope.** Is M17 a CAD model only, or also a performance model? Which of the tables in section 6 can it really produce?
-2. **Cars.** One M17 table for every Mercedes-powered 2026 car, or one per team? Which teams are in the list?
-3. **Flag.** Is `LAPSIM_M17` with one setting per table (for example `ice-shape`, `mguk-eff`) acceptable?
-4. **Format.** CSV plus `manifest.json`, or JSON like the other files in `scripts/sim/data/`?
-5. **Place.** Is `scripts/sim/data/m17/` right for incoming tables? Should load cases stay as artifacts, or go to the private data repo?
-6. **Axes.** Does the M17 CAD use the FIA regulation car axes? If yes, should this contract adopt them instead of ISO 8855, or should M17 convert before delivery?
-7. **Uncertainty.** Is one low–high fraction per column enough, or is a range per row needed?
-8. **Sources.** Which public sources may M17 use (regulations, patents, press, photos)? Each row needs one.
-9. **Engine speed.** Does M17 need engine speed and gear in the load case? If yes, it waits for build steps 1–3. Borrowed gear ratios would be layer 4 on top of layer 4.
-10. **Load case scope.** Qualifying lap only (available now), or race stints too? Which tracks first?
-11. **Export script.** May a later, separate PR add an export script in `scripts/sim/` and the part-load output in the kernel behind a flag?
-12. **Site.** Should any M17-based number be shown to users, and with which label?
-13. **Later years.** Does M17 stay a 2026 model, or follow the 2027 and 2028 power unit rule changes?
-14. **Not checked in this document.** The sign of track curvature in `tracks-data.js`. Until it is verified, the load case gives no signed lateral acceleration. Also not checked: the fitted values in `calibration-data.js` and the output of `tool.js`. To verify before version 1.0.
+### 10.1 Decided by default
+
+These are working decisions, chosen to be the safest option under the physics rules. The owner can change any of them with a PR to this file.
+
+| # | Topic | Decision |
+|---|---|---|
+| 1 | Cars | One M17 table set for all cars that use the power unit. LapSim fits F1 per season, so a per-team table has no test today. |
+| 2 | Flag | `LAPSIM_M17`, one setting per table (`ice-shape`, `mguk-eff`, `scalars:<key>`). Unset means off. |
+| 3 | Format | CSV plus `manifest.json`, as in section 3. |
+| 4 | Place | Released M17 tables in `scripts/sim/data/m17/`. Load cases stay workflow artifacts and are not committed. |
+| 5 | Axes | Files use the section 5 axes. If the M17 CAD uses other axes, M17 converts on export and says so in the manifest. |
+| 6 | Uncertainty | One low–high fraction per column or scalar is required. A range per row is optional. |
+| 7 | Sources | Regulations, FIA documents, patents, published papers, manufacturer statements. A press report is marked `press`. A value read from photos or guessed is marked `assumption`. |
+| 8 | Engine speed and gear | Not in the load case until build steps 1–3 exist. No borrowed gear ratios. |
+| 9 | Load case scope | One qualifying lap, 2026 car, tracks the 2026 car was fitted on. Start with one low-recharge and one high-recharge track. |
+| 10 | Export script | Allowed later as its own PR: a read-only script in `scripts/sim/` that changes no kernel output. A part-load output in the kernel is a separate flagged PR. |
+| 11 | Site | No M17-based number is shown to users before it has passed the gate. After that it carries the layer 4 label. |
+| 12 | Later years | M17 is a 2026 model. LapSim keeps scaling 2027 and 2028 from the rules, without M17. |
+
+### 10.2 Only the owner can answer
+
+1. **M17 scope.** Is M17 a CAD model only, or also a performance model? This decides which tables of section 6 can exist. Until answered, no table is expected and nothing waits on M17.
+
+### 10.3 Findings for the LapSim side (not fixed here, docs only)
+
+| Finding | Where | Why it matters |
+|---|---|---|
+| `pIce` is at its lower bound for 2025 and 2026 | `calibration-data.js`, `calibrate.mjs` | Section 2.1. Add it to the known open points of the physics rules. |
+| The tool's assumption text says 2026–2028 energy is harvested only under braking | `tool.js`, assumptions list | The kernel harvests at full throttle by default for `f1-2026` (`throttleHarvest`). Text and model disagree. One of them should change. |
+| The shown lap time and the trace differ on raced tracks | `tool.js`, `sectorCorrection` | Section 7.4. Any export must carry both lap times. |
+
+### 10.4 Still not checked
+
+Curvature sign was checked only in `geometry.js`. Tracks built by other scripts, or mirrored during alignment, are not checked one by one.
