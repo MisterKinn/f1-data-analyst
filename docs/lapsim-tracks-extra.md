@@ -32,6 +32,10 @@ Check per track: simulate the production WEC class cars (LMH, LMDh, LMGT3; neare
 | road-atlanta | Road Atlanta 4.088 km | imsa | 4047 (4088) | 275–308 m | 5 (0) | 1.74 | 0.81 | pass |
 | mid-ohio | IMSA layout 3.634 km | imsa | 3566 (3634) | 398–437 m | 0 (0) | – | – | ⚠️ no real lap of a calibrated class |
 | lime-rock | IMSA layout 2.414 km | imsa | 2370 (2414) | 164–180 m | 1 (0) | 2.36 | 2.36 | pass |
+| le-mans | Circuit des 24 Heures 13.626 km | owner-list-other | 13556 (13626) | 46–82 m | 5 (5) | 2.37 | 2.27 | pass |
+| portimao | Algarve 4.653 km | owner-list-other | 4539 (4653) | 95–124 m | 2 (0) | 3.85 | 3.85 | ⚠️ error above 3 % |
+| hockenheim | Grand Prix 4.574 km | owner-list-other | 4525 (4574) | 101–118 m | 0 (0) | – | – | ⚠️ no real lap of a calibrated class |
+| bathurst | Mount Panorama 6.213 km | owner-list-other | 6156 (6213) | 700–874 m | 2 (0) | 0.46 | 0.29 | pass |
 | rwanda | Provisional 5.302 km (owner diagram) | rwanda | 5196 (5302) | diagram labels | 0 (0) | – | – | ⚠️ provisional: hand-traced from a diagram that disagrees with the official October 2026 figures (about 6 km, 17 corners, anti-clockwise) |
 
 Length is the least-curvature line; it is shorter than the official centre-line distance. "Own class" rows are WEC cars on WEC laps; the other rows use a borrowed car (IMSA GTP = LMDh car, every other GT3 series = LMGT3 car).
@@ -101,6 +105,15 @@ Length is the least-curvature line; it is shorter than the official centre-line 
 | road-atlanta | imsa | 2025 | GTP | ACURA ARX-06 | lmdh 2025 (borrowed) | 69.628 | 69.583 | -0.06 |
 | road-atlanta | imsa | 2025 | GTD | FERRARI 296 GT3 | lmgt3 2025 (borrowed) | 78.316 | 80.185 | 2.39 |
 | lime-rock | imsa | 2023 | GTDPRO | ASTON MARTIN VANTAGE GT3 | lmgt3 2025 (borrowed) | 50.593 | 51.788 | 2.36 |
+| le-mans | wec | 2024 | Hypercar | Porsche 963 | lmdh 2025 | 204.634 | 208.351 | 1.82 |
+| le-mans | wec | 2024 | LMGT3 | McLaren 720S LMGT3 Evo | lmgt3 2025 | 238.12 | 241.544 | 1.44 |
+| le-mans | wec | 2025 | Hypercar | Cadillac V-Series.R | lmdh 2025 | 203.333 | 207.851 | 2.22 |
+| le-mans | wec | 2025 | LMGT3 | BMW M4 LMGT3 | lmgt3 2025 | 234.966 | 240.78 | 2.47 |
+| le-mans | wec | 2026 | LMGT3 | ? | lmgt3 2026 | 232.41 | 240.352 | 3.42 |
+| portimao | elms | 2025 | LMGT3 | Corvette Z06 LMGT3.R | lmgt3 2025 (borrowed) | 103.446 | 107.564 | 3.98 |
+| portimao | elms | 2026 | LMGT3 | ? | lmgt3 2026 (borrowed) | 103.151 | 106.991 | 3.72 |
+| bathurst | igtc | 2025 | PRO | Mercedes-AMG GT3 EVO | lmgt3 2025 (borrowed) | 121.276 | 122.064 | 0.65 |
+| bathurst | igtc | 2026 | PRO | Mercedes-AMG GT3 EVO | lmgt3 2026 (borrowed) | 121.563 | 121.471 | -0.08 |
 
 ## Evidence layer per value
 
@@ -126,6 +139,10 @@ Length is the least-curvature line; it is shorter than the official centre-line 
 | road-atlanta | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | mid-ohio | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 4 assumed 12 m | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | lime-rock | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 4 assumed 12 m | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| le-mans | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| portimao | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| hockenheim | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| bathurst | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | rwanda | 4 stated on a diagram | 4 hand-traced from an oblique diagram of unknown origin | 3 inferred (least-curvature line inside the width) | 4 stated or assumed | 4 seven labels on the diagram, linear between | 4 borrowed (mean factor of the class's fitted tracks) |
 
 ## Sources
@@ -150,6 +167,10 @@ Length is the least-curvature line; it is shorter than the official centre-line 
 - **road-atlanta**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
 - **mid-ohio**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); imsa.com/vpracingsportscarchallenge/imsa-vp-racing-sportscar-challenge-2024-schedule (2.258 miles, 13 corners); Terrarium elevation tiles (Mapzen/Tilezen open data)
 - **lime-rock**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); imsa.com/weathertech/weathertech-2022-schedule (1.50 miles, 7 corners) [rounded to 0.01 mile]; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **le-mans**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2024-06-03; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **portimao**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **hockenheim**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **bathurst**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
 - **rwanda**: Owner's diagram (origin unknown), traced by scripts/sim/tracks/rwanda_trace.py on branch lapsim-laps/all-laps-2026-11-11
 
 ## Not checked, known limits
