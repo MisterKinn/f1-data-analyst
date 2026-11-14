@@ -49,9 +49,11 @@ test('each of the three series fills its event automatically on refresh',async t
  t.mock.method(globalThis,'fetch',async url=>new Response(pages[new URL(url).hostname]??'<html>season page without a schedule</html>',{status:200}));
  const saved=new Map(),env={BUCKET:{get:async key=>saved.has(key)?{json:async()=>JSON.parse(saved.get(key))}:null,put:async(key,value)=>{saved.set(key,value);}}};
  const now=Date.parse('2026-11-10T00:00:00Z');
- for(const series of ['super-taikyu','wrc','macau'])assert.equal((await refreshCalendarSource(env,series,now)).error,null,series);
+ // Assert on what the refresh read, not on the merged card: a longer hand-entered timetable may still win there.
+ const read={};for(const series of ['super-taikyu','wrc','macau']){const result=await refreshCalendarSource(env,series,now);assert.equal(result.error,null,series);read[series]=result.events[0].sessions.length;}
+ assert.deepEqual(read,{'super-taikyu':5,wrc:4,macau:2});
  const data=await (await calendarRoute(new Request('https://test/api/race-calendar'),env,{},now)).json();
  const count=(series,circuit)=>data.events.find(e=>e.series===series&&e.circuit===circuit&&e.start.startsWith('2026-11')).sessions.length;
- assert.equal(count('super-taikyu','fuji'),5);assert.equal(count('wrc','rally-saudi'),4);assert.equal(count('macau','guia'),2);
+ assert.ok(count('super-taikyu','fuji')>=5);assert.ok(count('wrc','rally-saudi')>=4);assert.ok(count('macau','guia')>=2);
  for(const series of ['super-taikyu','wrc','macau'])assert.equal(data.sourceStatus.find(s=>s.series===series).available,true);
 });
