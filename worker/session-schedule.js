@@ -93,3 +93,27 @@ sessionSchedule['super-gt-2026-11-06-motegi']=timedRows('https://www.mr-motegi.j
  ['Rd.8 웜업','Rd.8 Warm-up','2026-11-08T12:30:00+09:00','2026-11-08T12:50:00+09:00'],
  ['Rd.8 레이스','Rd.8 Race','2026-11-08T14:00:00+09:00','2026-11-08T15:45:00+09:00']
 ]);
+
+// Official organiser timetables, checked 2026-11-14. Circuit-local offsets.
+sessionSchedule['alms-2026-11-13-paul-ricard']=timedRows('https://www.asianlemansseries.com/en/race/4-hours-of-le-castellet-by-alms-2026',[
+ ['FP1','FP1','2026-11-13T10:10:00+01:00'],
+ ['FP2','FP2','2026-11-13T13:30:00+01:00'],
+ ['GT3 퀄리파잉 1','GT3 Qualifying 1','2026-11-13T16:05:00+01:00'],
+ ['GT3 퀄리파잉 2','GT3 Qualifying 2','2026-11-13T16:25:00+01:00'],
+ ['하이퍼카·LMP2 퀄리파잉 1','Hypercar & LMP2 Qualifying 1','2026-11-13T16:50:00+01:00'],
+ ['하이퍼카·LMP2 퀄리파잉 2','Hypercar & LMP2 Qualifying 2','2026-11-13T17:10:00+01:00'],
+ ['레이스 1','Race 1','2026-11-14T13:15:00+01:00','2026-11-14T17:15:00+01:00'],
+ ['레이스 2','Race 2','2026-11-15T13:15:00+01:00','2026-11-15T17:15:00+01:00']
+]);
+sessionSchedule['wrc-2026-11-12-rally-saudi']=rows('https://rally-saudiarabia.com/event-programme',[
+ ['셰이크다운','Shakedown','2026-11-12T10:56:00+03:00'],
+ ...[['13','10:00'],['13','10:23'],['13','11:03'],['13','14:08'],['13','14:31'],['13','15:11'],['14','10:00'],['14','10:28'],['14','11:04'],['14','14:25'],['14','14:53'],['14','15:29']].map(([day,time],i)=>['SS'+(i+1),'SS'+(i+1),'2026-11-'+day+'T'+time+':00+03:00'])]);
+sessionSchedule['super-taikyu-2026-11-14-fuji']=timedRows('https://supertaikyu.com/race/round_07.html',[
+ ['FP','FP','2026-11-14T09:05:00+09:00','2026-11-14T09:45:00+09:00'],
+ ['S耐 챌린지 A 퀄리파잉','S-Tai Challenge A Qualifying','2026-11-14T09:55:00+09:00','2026-11-14T10:10:00+09:00'],
+ ['S耐 챌린지 B 퀄리파잉','S-Tai Challenge B Qualifying','2026-11-14T10:25:00+09:00','2026-11-14T10:40:00+09:00'],
+ ['A 퀄리파잉','A Qualifying','2026-11-14T14:15:00+09:00','2026-11-14T15:05:00+09:00'],
+ ['B 퀄리파잉','B Qualifying','2026-11-14T15:15:00+09:00','2026-11-14T16:00:00+09:00'],
+ ['S耐 챌린지 레이스','S-Tai Challenge Race','2026-11-15T08:50:00+09:00','2026-11-15T09:50:00+09:00'],
+ ['S耐 FINAL 4시간 레이스','S-Tai FINAL 4 Hours Race','2026-11-15T12:30:00+09:00','2026-11-15T16:30:00+09:00']
+]);

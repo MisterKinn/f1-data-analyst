@@ -78,7 +78,7 @@ add('elms','Europe/Brussels', [['spa','스파 4시간','4 Hours of Spa-Francorch
 add('elms','Europe/London', [['silverstone','실버스톤 4시간','4 Hours of Silverstone','09-11','09-13']]);
 // The current series homepage lists 8–10 October; older announcement pages differ.
 add('elms','Europe/Lisbon', [['portimao','포르티망 4시간','4 Hours of Portimão','10-08','10-10']]);
-add('alms','Europe/Paris', [['paul-ricard','르 카스텔레','Le Castellet','11-13','11-15']]);
+add('alms','Europe/Paris', [['paul-ricard','르 카스텔레','Le Castellet','11-13','11-15',{url:'https://www.asianlemansseries.com/en/race/4-hours-of-le-castellet-by-alms-2026'}]]);
 add('alms','Europe/Madrid', [['jerez','헤레스','Jerez','2027-01-15','2027-01-17']]);
 add('alms','Europe/Lisbon', [['portimao','포르티망','Portimão','2027-02-19','2027-02-21']]);
 add('nls','Europe/Berlin', [
@@ -156,9 +156,10 @@ add('elms','Europe/London', [['silverstone','실버스톤 4시간','4 Hours of S
 add('elms','Europe/Lisbon', [['portimao','포르티망 4시간','4 Hours of Portimão','2027-10-14','2027-10-16',{url:elms2027Source}]]);
 // Schedule-only series: deliberately excluded from the analysis championship registry.
 add('super-taikyu','Asia/Tokyo',[
- ['motegi','모테기','Motegi','03-21','03-22'],['suzuka','스즈카','Suzuka','04-18','04-19'],['fuji','후지 24시간','Fuji 24 Hours','06-05','06-07'],['sugo','스고','SUGO','07-04','07-05'],['autopolis','오토폴리스','Autopolis','07-25','07-26'],['okayama','오카야마 3시간','Okayama 3 Hours','10-24','10-25',{url:'https://supertaikyu.com/race/round_06.html'}],['fuji','후지','Fuji','11-14','11-15']]);
+ ['motegi','모테기','Motegi','03-21','03-22'],['suzuka','스즈카','Suzuka','04-18','04-19'],['fuji','후지 24시간','Fuji 24 Hours','06-05','06-07'],['sugo','스고','SUGO','07-04','07-05'],['autopolis','오토폴리스','Autopolis','07-25','07-26'],['okayama','오카야마 3시간','Okayama 3 Hours','10-24','10-25',{url:'https://supertaikyu.com/race/round_06.html'}],['fuji','후지 4시간','Fuji 4 Hours','11-14','11-15',{url:'https://supertaikyu.com/race/round_07.html'}]]);
 add('wrc','Asia/Tokyo',[['rally-japan','랠리 재팬','Rally Japan','05-28','05-31',{url:'https://www.wrc.com/en/events/wrc-rally-japan-2026'}]]);
-add('wrc','Asia/Riyadh',[['rally-saudi','사우디아라비아 랠리','Saudi Arabia Rally','11-11','11-14']]);
+// The WRC finale moved to Sardinia (1-4 Oct); the rally runs 12-14 Nov as the FIA Middle East Rally Championship finale.
+add('wrc','Asia/Riyadh',[['rally-saudi','사우디아라비아 랠리','Saudi Arabia Rally','11-12','11-14',{url:'https://rally-saudiarabia.com/event-programme'}]]);
 export const calendarEvents=events.sort((a,b)=>a.start.localeCompare(b.start)||a.id.localeCompare(b.id));
 // ACO race pages link a per-session calendar file; calendar-refresh.js reads it when the event is near.
 for(const [id,page] of [['alms-2027-01-15-jerez','4-hours-of-jerez-by-alms-2027'],['alms-2027-02-19-portimao','4-hours-of-portimao-by-alms-2027']]){const event=events.find(e=>e.id===id);if(event)event.url='https://www.asianlemansseries.com/en/race/'+page;}
