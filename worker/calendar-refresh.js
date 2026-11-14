@@ -50,9 +50,20 @@ export function parseJsonLdEvents(html){
  for(const m of html.matchAll(/<script\b[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi))try{walk(JSON.parse(m[1]));}catch{}
  return found;
 }
+// Organiser calendar files give wall-clock times with a TZID. Turn them into the same
+// explicit-offset stamps as the checked-in timetable; an unknown zone yields null.
+export function zonedStamp(iso,zone){
+ try{
+  const format=new Intl.DateTimeFormat('en-US',{timeZone:zone,hourCycle:'h23',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const offsetAt=utc=>{const p=Object.fromEntries(format.formatToParts(utc).map(x=>[x.type,x.value]));return Math.round((Date.UTC(p.year,p.month-1,p.day,p.hour,p.minute,p.second)-utc)/60000);};
+  const wall=Date.parse(iso+'Z');if(!Number.isFinite(wall))return null;
+  const minutes=offsetAt(wall-offsetAt(wall)*60000),abs=Math.abs(minutes);
+  return iso+(minutes<0?'-':'+')+String(Math.floor(abs/60)).padStart(2,'0')+':'+String(abs%60).padStart(2,'0');
+ }catch{return null;}
+}
 export function parseICalendar(text){
  const rows=text.replace(/\r?\n[ \t]/g,'').split(/\r?\n/),events=[];let item=null;
- const date=(key,value)=>{if(/^\d{8}$/.test(value))return value.slice(0,4)+'-'+value.slice(4,6)+'-'+value.slice(6,8);if(/^\d{8}T\d{6}Z$/.test(value))return value.slice(0,4)+'-'+value.slice(4,6)+'-'+value.slice(6,8)+'T'+value.slice(9,11)+':'+value.slice(11,13)+':'+value.slice(13,15)+'Z';return null;};
+ const date=(key,value)=>{if(/^\d{8}$/.test(value))return value.slice(0,4)+'-'+value.slice(4,6)+'-'+value.slice(6,8);const local=/^(\d{4})(\d\d)(\d\d)T(\d\d)(\d\d)(\d\d)(Z?)$/.exec(value);if(!local)return null;const iso=local[1]+'-'+local[2]+'-'+local[3]+'T'+local[4]+':'+local[5]+':'+local[6];if(local[7])return iso+'Z';const zone=/;TZID=([^;:]+)/.exec(key)?.[1];return zone?zonedStamp(iso,zone):null;};
  for(const row of rows){if(row==='BEGIN:VEVENT'){item={};continue;}if(row==='END:VEVENT'){if(item?.name&&item.startDate){if(item.allDay&&item.endDate){const d=new Date(item.endDate+'T12:00:00Z');d.setUTCDate(d.getUTCDate()-1);item.endDate=d.toISOString().slice(0,10);}events.push(item);}item=null;continue;}if(!item)continue;const i=row.indexOf(':');if(i<0)continue;const key=row.slice(0,i),value=row.slice(i+1);if(key==='SUMMARY')item.name=value.replace(/\\n/g,' ').replace(/\\([,;\\])/g,'$1');if(key.startsWith('DTSTART')){item.startDate=date(key,value);item.allDay=/^\d{8}$/.test(value);}if(key.startsWith('DTEND'))item.endDate=date(key,value);}
  return events;
 }
@@ -70,11 +81,36 @@ async function getText(url,allowed){
  const reader=response.body.getReader(),chunks=[];let size=0;try{for(;;){const {done,value}=await reader.read();if(done)break;size+=value.length;if(size>1500000){await reader.cancel();throw Error('Calendar source exceeds limit');}chunks.push(value);}}finally{reader.releaseLock();}
  const bytes=new Uint8Array(size);let offset=0;for(const c of chunks){bytes.set(c,offset);offset+=c.length;}return new TextDecoder().decode(bytes);
 }
+// Season pages rarely carry session times, but an event page can link the organiser's
+// own per-session calendar file (ACO sites: /race/calendar/<id>). Read it for events
+// that are running or start within three weeks, and only keep rows inside the event dates.
+const sessionLabel=text=>{const i=text.indexOf(' - '),title=(i<0?text:text.slice(i+3)).trim();const nameEn=title.replace(/^Free Practice\s*/i,'FP').replace(/^Qualifications\b/i,'Qualifying');return {name:nameEn.replace(/^Qualifying\b/,'퀄리파잉').replace(/^Race\b/,'레이스'),nameEn};};
+const shift=(date,days)=>{const d=new Date(date+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+days);return d.toISOString().slice(0,10);};
+export async function loadEventSessions(series,allowed,now,events=calendarEvents,get=getText){
+ const today=day(new Date(now).toISOString()),horizon=shift(today,21),records=[];
+ const due=events.filter(e=>e.series===series&&e.url&&e.url!==calendarSources[series]&&e.end>=today&&e.start<=horizon).slice(0,2);
+ for(const event of due){
+  try{
+   if(!allowed.has(new URL(event.url).hostname))continue;
+   const href=/href=["']([^"']*\/race\/calendar\/\d+|[^"']+\.ics(?:\?[^"']*)?)["']/i.exec(await get(event.url,allowed))?.[1];if(!href)continue;
+   const file=new URL(href,event.url);if(!allowed.has(file.hostname))continue;
+   const rows=parseICalendar(await get(file.href,allowed)).filter(r=>stamp(r.startDate)&&day(r.startDate)>=shift(event.start,-1)&&day(r.startDate)<=shift(event.end,1));
+   if(rows.length<2)continue;
+   const sessions=rows.sort((a,b)=>Date.parse(a.startDate)-Date.parse(b.startDate)).map(r=>({...sessionLabel(r.name),start:r.startDate,...(stamp(r.endDate)?{end:r.endDate}:{})}));
+   records.push({name:event.nameEn||event.name,startDate:event.start,endDate:event.end,sessions});
+  }catch{}
+ }
+ return records;
+}
 async function loadSource(series,now){
  const url=calendarSources[series];let records,source=url;
  if(series==='f1'){source='https://raw.githubusercontent.com/theOehrly/f1schedule/master/schedule_'+new Date(now).getUTCFullYear()+'.json';records=parseFastF1Schedule(JSON.parse(await getText(source,new Set(['raw.githubusercontent.com']))));}
- else{const allowed=new Set([new URL(url).hostname]);const text=await getText(url,allowed);records=text.includes('BEGIN:VCALENDAR')?parseICalendar(text):parseJsonLdEvents(text);
-  if(!records.length){const links=[...text.matchAll(/href=["']([^"']+\.ics(?:\?[^"']*)?)["']/gi)].slice(0,2);for(const [,href]of links){const next=new URL(href,url);if(allowed.has(next.hostname))records.push(...parseICalendar(await getText(next.href,allowed)));}}
+ else{const allowed=new Set([new URL(url).hostname]);records=[];
+  // A season page without structured data must not stop the per-event session files.
+  try{const text=await getText(url,allowed);records=text.includes('BEGIN:VCALENDAR')?parseICalendar(text):parseJsonLdEvents(text);
+   if(!records.length){const links=[...text.matchAll(/href=["']([^"']+\.ics(?:\?[^"']*)?)["']/gi)].slice(0,2);for(const [,href]of links){const next=new URL(href,url);if(allowed.has(next.hostname))records.push(...parseICalendar(await getText(next.href,allowed)));}}
+  }catch{}
+  records.push(...await loadEventSessions(series,allowed,now));
  }
  const events=normalizeOfficialEvents(records,series,source,calendarEvents,now);if(!events.length)throw Error('No verifiable structured schedule found');return {events,checkedAt:now,source,provider:series==='f1'?'FastF1 schedule backend':'Official organizer'};
 }
