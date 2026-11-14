@@ -1,0 +1,2051 @@
+{
+ "https://api.gt-world-challenge-europe.com/results": {
+  "status": 200,
+  "url": "https://api.gt-world-challenge-europe.com/results",
+  "type": "text/html; charset=\"UTF-8\"",
+  "bytes": 68984,
+  "selects": [
+   {
+    "name": "filter_season_id",
+    "options": [
+     [
+      "0",
+      "Change Season"
+     ],
+     [
+      "27",
+      "2027"
+     ],
+     [
+      "26",
+      "2026"
+     ],
+     [
+      "25",
+      "2025"
+     ],
+     [
+      "24",
+      "2024"
+     ],
+     [
+      "23",
+      "2023"
+     ],
+     [
+      "22",
+      "2022"
+     ],
+     [
+      "21",
+      "2021"
+     ],
+     [
+      "10",
+      "2020"
+     ],
+     [
+      "9",
+      "2019"
+     ],
+     [
+      "8",
+      "2018"
+     ],
+     [
+      "7",
+      "2017"
+     ],
+     [
+      "6",
+      "2016"
+     ],
+     [
+      "5",
+      "2015"
+     ],
+     [
+      "1",
+      "2014"
+     ],
+     [
+      "2",
+      "2013"
+     ],
+     [
+      "3",
+      "2012"
+     ],
+     [
+      "4",
+      "2011"
+     ],
+     [
+      "11",
+      "2010"
+     ],
+     [
+      "12",
+      "2009"
+     ],
+     [
+      "13",
+      "2008"
+     ],
+     [
+      "14",
+      "2007"
+     ],
+     [
+      "15",
+      "2006"
+     ],
+     [
+      "16",
+      "2005"
+     ],
+     [
+      "17",
+      "2004"
+     ],
+     [
+      "18",
+      "2003"
+     ],
+     [
+      "19",
+      "2002"
+     ],
+     [
+      "20",
+      "2001"
+     ]
+    ]
+   },
+   {
+    "name": "filter_meeting_id",
+    "options": [
+     [
+      "0",
+      "Meeting"
+     ],
+     [
+      "246",
+      "Circuit Paul Ricard"
+     ],
+     [
+      "247",
+      "Brands Hatch"
+     ],
+     [
+      "248",
+      "Monza"
+     ],
+     [
+      "249",
+      "CrowdStrike 24 Hours of Spa"
+     ],
+     [
+      "250",
+      "Misano"
+     ],
+     [
+      "251",
+      "Magny-Cours"
+     ],
+     [
+      "252",
+      "N&uuml;rburgring"
+     ],
+     [
+      "253",
+      "Zandvoort"
+     ],
+     [
+      "254",
+      "Barcelona"
+     ],
+     [
+      "255",
+      "Portimao"
+     ]
+    ]
+   },
+   {
+    "name": "filter_race_id",
+    "options": [
+     [
+      "",
+      "Session"
+     ]
+    ]
+   }
+  ],
+  "links": [
+   "https://api.gt-world-challenge-europe.com",
+   "https://api.gt-world-challenge-europe.com/results",
+   "https://api.gt-world-challenge-europe.com/favicon-96x96.png",
+   "https://api.gt-world-challenge-europe.com/favicon.svg",
+   "https://api.gt-world-challenge-europe.com/favicon.ico",
+   "https://api.gt-world-challenge-europe.com/apple-touch-icon.png",
+   "https://api.gt-world-challenge-europe.com/site.webmanifest",
+   "https://api.gt-world-challenge-europe.com/assets/css/core.min.2025.10.css",
+   "https://api.gt-world-challenge-europe.com/assets/css/theme.min.2025.css",
+   "https://api.gt-world-challenge-europe.com/assets/css/news.min.2024.css",
+   "https://api.gt-world-challenge-europe.com/assets/css/wf-theme.2025.css",
+   "https://fonts.googleapis.com",
+   "https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap",
+   "https://api.gt-world-challenge-europe.com/results#primary",
+   "/results",
+   "https://racevision.sro-motorsports.com/",
+   "/results/2026/official-test-days",
+   "/results/2026/circuit-paul-ricard",
+   "/results/2026/brands-hatch",
+   "/results/2026/crowdstrike-24-hours-of-spa--test-days",
+   "/results/2026/monza",
+   "/results/2026/crowdstrike-24-hours-of-spa",
+   "/results/2026/misano",
+   "/results/2026/magny-cours",
+   "/results/2026/n&uuml;rburgring",
+   "/results/2026/zandvoort",
+   "/results/2026/barcelona",
+   "/results/2026/portimao"
+  ],
+  "text": " Race Results 2026 | GT World Challenge Europe Powered by AWS Skip to Main Content Please enable JavaScript in your browser. Some elements of this website may not function correctly with JavaScript disabled. Menu Home News Next Race Last Race Featured Articles Promotions --> Calendar Tickets VIP Packages Accomodation Gallery Videos Photos Sustainability --> Competitors Cars Teams Drivers Entry Lists Results Teams Drivers Champions Race Results Entry Lists Live Crowdstrike 24 Hours of Spa Official Test Days --> Watch Live Live Timing TV Guide TV Schedule Links GTWC App --> Merchandise SRO Esports RaceVision Dashboard --> About SRO Motosports Group GTWC Europe Partners Regulations Recruitment Contact Fan Account Sign in Create Account Media &amp; Teams Press Members Teams Home News Calendar Photos Videos Tickets Sign In Fan Account Press Members Teams SRO SRO Motorsports Group SRO Motorsports Group America Intercontinental GT Challenge GT World Challenge GT World Challenge Europe Crowdstrike 24 Hours of Spa GT World Challenge Asia GT World Challenge America GT World Challenge Australia GT2 European Series British GT Championship Japan Cup GT4 European Series FFSA GT – GT4 France GT4 America GT4 Australia GT4 Manufacturer Ranking GT America TC America FFSA Tourisme TC France GR Cup 6ore di Roma --> GT3 Revival Series FIA Motorsport Games SRO Motorsports Group - Race Centre by MMC Curbstone Track Events SRO E-Sport GT Series Championship 2026 Results Change Season 2027 2026 2025 2024 2023 2022 2021 2020 2019 2018 2017 2016 2015 2014 2013 2012 2011 2010 2009 2008 2007 2006 2005 2004 2003 2002 2001 Meeting Circuit Paul Ricard Brands Hatch Monza CrowdStrike 24 Hours of Spa Misano Magny-Cours N&uuml;rburgring Zandvoort Barcelona Portimao Session 2026 Results Season Race Series Session Car # Team Car Time Laps Circuit Paul Ricard Test Day Circuit Paul Ricard GT World Challenge Europe - Endurance Cup Main Race 7 Comtoyou Racing Aston Martin Vantage AMR GT3 EVO 6:01:45.539 176 Brands Hatch GT World Challenge Europe - Sprint Cup Race 1 50 AF Corse Ferrari 296 GT3 EVO 1:16:41.275 39 Race 2 80 Lionspeed GP Porsche 911 GT3 R EVO 1:01:02.133 43 CrowdStrike 24 Hours of Spa Test Day Monza GT World Challenge Europe - Endurance Cup Main Race 66 Tresor Attempto Racing Audi R8 LMS GT3 EVO II 3:01:03.675 79 CrowdStrike 24 Hours of Spa GT World Challenge Europe - Endurance Cup Main Race 80 Lionspeed GP Porsche 911 GT3 R (992) EVO 24:00:51.689 541 Misano GT World Challenge Europe - Sprint Cup Qualifying 1 Combined 46 Team WRT BMW M4 GT3 EVO Race 1 32 Team WRT BMW M4 GT3 EVO 1:01:12.084 35 Race 2 32 Team WRT BMW M4 GT3 EVO 1:01:25.741 38 Magny-Cours GT World Challenge Europe - Sprint Cup Qualifying 1 Combined 3 Mercedes-AMG Team Verstappen Racing Mercedes-AMG GT3 EVO Race 1 3 Mercedes-AMG Team Verstappen Racing Mercedes-AMG GT3 EVO 1:00:13.636 33 Qualifying 2 Combined 7 Comtoyou Racing Aston Martin Vantage AMR GT3 EVO Race 2 80 Lionspeed GP Porsche 911 GT3 R (992) EVO 1:29:26.089 34 N&uuml;rburgring GT World Challenge Europe - Endurance Cup Main Race 7 Comtoyou Racing Aston Martin Vantage AMR GT3 EVO 3:00:29.639 83 Zandvoort GT World Challenge Europe - Sprint Cup Qualifying 1 Combined 2 Boutsen VDS Porsche 911 GT3 R (992) EVO Race 1 58 Garage 59 McLaren 720S GT3 EVO 1:00:39.130 35 Qualifying 2 Combined 14 Emil Frey Racing Ferrari 296 GT3 EVO Race 2 69 Emil Frey Racing Ferrari 296 GT3 EVO 1:00:44.793 36 Barcelona GT World Challenge Europe - Sprint Cup Race 1 99 Tresor Attempto Racing Audi R8 LMS GT3 EVO II 1:22:22.511 23 Race 2 69 Emil Frey Racing Ferrari 296 GT3 EVO 1:01:21.834 33 Portimao GT World Challenge Europe - Endurance Cup Main Race 17 Mercedes-AMG Team GetSpeed Mercedes-AMG GT3 EVO 3:01:38.316 94 Competitors Aston Martin Racing --> Audi --> BMW --> Chevrolet --> Ferrari --> Ford --> Lamborghini --> McLaren --> Mercedes-AMG --> Porsche --> Official Partners AWS --> Pirelli --> TotalEnergies --> Rowe --> Maserati --> STX --> TM Performance --> Assetto Corsa Competizione --> Gullwing --> Spark --> RACB --> SRO --> Visit GTWC Europe on Facebook Visit GTWC Europe on Instagram Visit GTWC Europe on X Visit GTWC Europe on YouTube &copy; 2026 SRO Motorsports Group. All Rights Reserved. About Press Members Teams Privacy Policy Contact ",
+  "scripts": [],
+  "sample": {
+   "url": "/results/2026/official-test-days",
+   "status": 200,
+   "text": " Race Results 2026 | Circuit Paul Ricard | France | | GT World Challenge Europe Powered by AWS Skip to Main Content Please enable JavaScript in your browser. Some elements of this website may not function correctly with JavaScript disabled. Menu Home News Next Race Last Race Featured Articles Promotions --> Calendar Tickets VIP Packages Accomodation Gallery Videos Photos Sustainability --> Competitors Cars Teams Drivers Entry Lists Results Teams Drivers Champions Race Results Entry Lists Live Crowdstrike 24 Hours of Spa Official Test Days --> Watch Live Live Timing TV Guide TV Schedule Links GTWC App --> Merchandise SRO Esports RaceVision Dashboard --> About SRO Motosports Group GTWC Europe Partners Regulations Recruitment Contact Fan Account Sign in Create Account Media &amp; Teams Press Members Teams Home News Calendar Photos Videos Tickets Sign In Fan Account Press Members Teams SRO SRO Motorsports Group SRO Motorsports Group America Intercontinental GT Challenge GT World Challenge GT World Challenge Europe Crowdstrike 24 Hours of Spa GT World Challenge Asia GT World Challenge America GT World Challenge Australia GT2 European Series British GT Championship Japan Cup GT4 European Series FFSA GT – GT4 France GT4 America GT4 Australia GT4 Manufacturer Ranking GT America TC America FFSA Tourisme TC France GR Cup 6ore di Roma --> GT3 Revival Series FIA Motorsport Games SRO Motorsports Group - Race Centre by MMC Curbstone Track Events SRO E-Sport GT Series Championship 2026 Results Change Season 2027 2026 2025 2024 2023 2022 2021 2020 2019 2018 2017 2016 2015 2014 2013 2012 2011 2010 2009 2008 2007 2006 2005 2004 2003 2002 2001 Meeting Circuit Paul Ricard Brands Hatch Monza CrowdStrike 24 Hours of Spa Misano Magny-Cours N&uuml;rburgring Zandvoort Barcelona Portimao Session Test Day 2 Morning Session Test Day 1 Afternoon Session Test Day 1 Morning Session Circuit Paul Ricard France 2026 Results Sessions Session Car # Drivers Team Car Time Laps Test Day 1 Morning Session 80 Bastian Buus, Ricardo Feller, Thomas Preining Lionspeed GP Porsche 911 GT3 R EVO 1:54.682 Test Day 1 Afternoon Session 23 Horatio Fitz-Simon, Maxwell Lynn, Ben D&ouml;rr Team RJN McLaren 720S GT3 EVO 1:54.762 Test Day 2 Morning Session 84 Simon Reicher, Christopher Haase, Markus Winkelhock Eastalent Racing Audi R8 LMS GT3 EVO II 1:54.352 Competitors Aston Martin Racing --> Audi --> BMW --> Chevrolet --> Ferrari --> Ford --> Lamborghini --> McLaren --> Mercedes-AMG --> Porsche --> Official Partners AWS --> Pirelli --> TotalEnergies --> Rowe --> Maserati --> STX --> TM Performance --> Assetto Corsa Competizione --> Gullwing --> Spark --> RACB --> SRO --> Visit GTWC Europe on Facebook Visit GTWC Europe on Instagram Visit GTWC Europe on X Visit GTWC Europe on YouTube &copy; 2026 SRO Motorsports Group. All Rights Reserved. About Press Members Teams Privacy Policy Contact ",
+   "links": []
+  }
+ },
+ "https://www.gt-world-challenge-europe.com/results": {
+  "status": 200,
+  "url": "https://www.gt-world-challenge-europe.com/results",
+  "type": "text/html; charset=\"UTF-8\"",
+  "bytes": 68984,
+  "selects": [
+   {
+    "name": "filter_season_id",
+    "options": [
+     [
+      "0",
+      "Change Season"
+     ],
+     [
+      "27",
+      "2027"
+     ],
+     [
+      "26",
+      "2026"
+     ],
+     [
+      "25",
+      "2025"
+     ],
+     [
+      "24",
+      "2024"
+     ],
+     [
+      "23",
+      "2023"
+     ],
+     [
+      "22",
+      "2022"
+     ],
+     [
+      "21",
+      "2021"
+     ],
+     [
+      "10",
+      "2020"
+     ],
+     [
+      "9",
+      "2019"
+     ],
+     [
+      "8",
+      "2018"
+     ],
+     [
+      "7",
+      "2017"
+     ],
+     [
+      "6",
+      "2016"
+     ],
+     [
+      "5",
+      "2015"
+     ],
+     [
+      "1",
+      "2014"
+     ],
+     [
+      "2",
+      "2013"
+     ],
+     [
+      "3",
+      "2012"
+     ],
+     [
+      "4",
+      "2011"
+     ],
+     [
+      "11",
+      "2010"
+     ],
+     [
+      "12",
+      "2009"
+     ],
+     [
+      "13",
+      "2008"
+     ],
+     [
+      "14",
+      "2007"
+     ],
+     [
+      "15",
+      "2006"
+     ],
+     [
+      "16",
+      "2005"
+     ],
+     [
+      "17",
+      "2004"
+     ],
+     [
+      "18",
+      "2003"
+     ],
+     [
+      "19",
+      "2002"
+     ],
+     [
+      "20",
+      "2001"
+     ]
+    ]
+   },
+   {
+    "name": "filter_meeting_id",
+    "options": [
+     [
+      "0",
+      "Meeting"
+     ],
+     [
+      "246",
+      "Circuit Paul Ricard"
+     ],
+     [
+      "247",
+      "Brands Hatch"
+     ],
+     [
+      "248",
+      "Monza"
+     ],
+     [
+      "249",
+      "CrowdStrike 24 Hours of Spa"
+     ],
+     [
+      "250",
+      "Misano"
+     ],
+     [
+      "251",
+      "Magny-Cours"
+     ],
+     [
+      "252",
+      "N&uuml;rburgring"
+     ],
+     [
+      "253",
+      "Zandvoort"
+     ],
+     [
+      "254",
+      "Barcelona"
+     ],
+     [
+      "255",
+      "Portimao"
+     ]
+    ]
+   },
+   {
+    "name": "filter_race_id",
+    "options": [
+     [
+      "",
+      "Session"
+     ]
+    ]
+   }
+  ],
+  "links": [
+   "https://www.gt-world-challenge-europe.com/results",
+   "https://fonts.googleapis.com",
+   "https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap",
+   "https://www.gt-world-challenge-europe.com/results#primary",
+   "/results",
+   "https://racevision.sro-motorsports.com/",
+   "/results/2026/official-test-days",
+   "/results/2026/circuit-paul-ricard",
+   "/results/2026/brands-hatch",
+   "/results/2026/crowdstrike-24-hours-of-spa--test-days",
+   "/results/2026/monza",
+   "/results/2026/crowdstrike-24-hours-of-spa",
+   "/results/2026/misano",
+   "/results/2026/magny-cours",
+   "/results/2026/n&uuml;rburgring",
+   "/results/2026/zandvoort",
+   "/results/2026/barcelona",
+   "/results/2026/portimao"
+  ],
+  "text": " Race Results 2026 | GT World Challenge Europe Powered by AWS Skip to Main Content Please enable JavaScript in your browser. Some elements of this website may not function correctly with JavaScript disabled. Menu Home News Next Race Last Race Featured Articles Promotions --> Calendar Tickets VIP Packages Accomodation Gallery Videos Photos Sustainability --> Competitors Cars Teams Drivers Entry Lists Results Teams Drivers Champions Race Results Entry Lists Live Crowdstrike 24 Hours of Spa Official Test Days --> Watch Live Live Timing TV Guide TV Schedule Links GTWC App --> Merchandise SRO Esports RaceVision Dashboard --> About SRO Motosports Group GTWC Europe Partners Regulations Recruitment Contact Fan Account Sign in Create Account Media &amp; Teams Press Members Teams Home News Calendar Photos Videos Tickets Sign In Fan Account Press Members Teams SRO SRO Motorsports Group SRO Motorsports Group America Intercontinental GT Challenge GT World Challenge GT World Challenge Europe Crowdstrike 24 Hours of Spa GT World Challenge Asia GT World Challenge America GT World Challenge Australia GT2 European Series British GT Championship Japan Cup GT4 European Series FFSA GT – GT4 France GT4 America GT4 Australia GT4 Manufacturer Ranking GT America TC America FFSA Tourisme TC France GR Cup 6ore di Roma --> GT3 Revival Series FIA Motorsport Games SRO Motorsports Group - Race Centre by MMC Curbstone Track Events SRO E-Sport GT Series Championship 2026 Results Change Season 2027 2026 2025 2024 2023 2022 2021 2020 2019 2018 2017 2016 2015 2014 2013 2012 2011 2010 2009 2008 2007 2006 2005 2004 2003 2002 2001 Meeting Circuit Paul Ricard Brands Hatch Monza CrowdStrike 24 Hours of Spa Misano Magny-Cours N&uuml;rburgring Zandvoort Barcelona Portimao Session 2026 Results Season Race Series Session Car # Team Car Time Laps Circuit Paul Ricard Test Day Circuit Paul Ricard GT World Challenge Europe - Endurance Cup Main Race 7 Comtoyou Racing Aston Martin Vantage AMR GT3 EVO 6:01:45.539 176 Brands Hatch GT World Challenge Europe - Sprint Cup Race 1 50 AF Corse Ferrari 296 GT3 EVO 1:16:41.275 39 Race 2 80 Lionspeed GP Porsche 911 GT3 R EVO 1:01:02.133 43 CrowdStrike 24 Hours of Spa Test Day Monza GT World Challenge Europe - Endurance Cup Main Race 66 Tresor Attempto Racing Audi R8 LMS GT3 EVO II 3:01:03.675 79 CrowdStrike 24 Hours of Spa GT World Challenge Europe - Endurance Cup Main Race 80 Lionspeed GP Porsche 911 GT3 R (992) EVO 24:00:51.689 541 Misano GT World Challenge Europe - Sprint Cup Qualifying 1 Combined 46 Team WRT BMW M4 GT3 EVO Race 1 32 Team WRT BMW M4 GT3 EVO 1:01:12.084 35 Race 2 32 Team WRT BMW M4 GT3 EVO 1:01:25.741 38 Magny-Cours GT World Challenge Europe - Sprint Cup Qualifying 1 Combined 3 Mercedes-AMG Team Verstappen Racing Mercedes-AMG GT3 EVO Race 1 3 Mercedes-AMG Team Verstappen Racing Mercedes-AMG GT3 EVO 1:00:13.636 33 Qualifying 2 Combined 7 Comtoyou Racing Aston Martin Vantage AMR GT3 EVO Race 2 80 Lionspeed GP Porsche 911 GT3 R (992) EVO 1:29:26.089 34 N&uuml;rburgring GT World Challenge Europe - Endurance Cup Main Race 7 Comtoyou Racing Aston Martin Vantage AMR GT3 EVO 3:00:29.639 83 Zandvoort GT World Challenge Europe - Sprint Cup Qualifying 1 Combined 2 Boutsen VDS Porsche 911 GT3 R (992) EVO Race 1 58 Garage 59 McLaren 720S GT3 EVO 1:00:39.130 35 Qualifying 2 Combined 14 Emil Frey Racing Ferrari 296 GT3 EVO Race 2 69 Emil Frey Racing Ferrari 296 GT3 EVO 1:00:44.793 36 Barcelona GT World Challenge Europe - Sprint Cup Race 1 99 Tresor Attempto Racing Audi R8 LMS GT3 EVO II 1:22:22.511 23 Race 2 69 Emil Frey Racing Ferrari 296 GT3 EVO 1:01:21.834 33 Portimao GT World Challenge Europe - Endurance Cup Main Race 17 Mercedes-AMG Team GetSpeed Mercedes-AMG GT3 EVO 3:01:38.316 94 Competitors Aston Martin Racing --> Audi --> BMW --> Chevrolet --> Ferrari --> Ford --> Lamborghini --> McLaren --> Mercedes-AMG --> Porsche --> Official Partners AWS --> Pirelli --> TotalEnergies --> Rowe --> Maserati --> STX --> TM Performance --> Assetto Corsa Competizione --> Gullwing --> Spark --> RACB --> SRO --> Visit GTWC Europe on Facebook Visit GTWC Europe on Instagram Visit GTWC Europe on X Visit GTWC Europe on YouTube &copy; 2026 SRO Motorsports Group. All Rights Reserved. About Press Members Teams Privacy Policy Contact ",
+  "scripts": [],
+  "sample": {
+   "url": "/results/2026/official-test-days",
+   "status": 200,
+   "text": " Race Results 2026 | Circuit Paul Ricard | France | | GT World Challenge Europe Powered by AWS Skip to Main Content Please enable JavaScript in your browser. Some elements of this website may not function correctly with JavaScript disabled. Menu Home News Next Race Last Race Featured Articles Promotions --> Calendar Tickets VIP Packages Accomodation Gallery Videos Photos Sustainability --> Competitors Cars Teams Drivers Entry Lists Results Teams Drivers Champions Race Results Entry Lists Live Crowdstrike 24 Hours of Spa Official Test Days --> Watch Live Live Timing TV Guide TV Schedule Links GTWC App --> Merchandise SRO Esports RaceVision Dashboard --> About SRO Motosports Group GTWC Europe Partners Regulations Recruitment Contact Fan Account Sign in Create Account Media &amp; Teams Press Members Teams Home News Calendar Photos Videos Tickets Sign In Fan Account Press Members Teams SRO SRO Motorsports Group SRO Motorsports Group America Intercontinental GT Challenge GT World Challenge GT World Challenge Europe Crowdstrike 24 Hours of Spa GT World Challenge Asia GT World Challenge America GT World Challenge Australia GT2 European Series British GT Championship Japan Cup GT4 European Series FFSA GT – GT4 France GT4 America GT4 Australia GT4 Manufacturer Ranking GT America TC America FFSA Tourisme TC France GR Cup 6ore di Roma --> GT3 Revival Series FIA Motorsport Games SRO Motorsports Group - Race Centre by MMC Curbstone Track Events SRO E-Sport GT Series Championship 2026 Results Change Season 2027 2026 2025 2024 2023 2022 2021 2020 2019 2018 2017 2016 2015 2014 2013 2012 2011 2010 2009 2008 2007 2006 2005 2004 2003 2002 2001 Meeting Circuit Paul Ricard Brands Hatch Monza CrowdStrike 24 Hours of Spa Misano Magny-Cours N&uuml;rburgring Zandvoort Barcelona Portimao Session Test Day 2 Morning Session Test Day 1 Afternoon Session Test Day 1 Morning Session Circuit Paul Ricard France 2026 Results Sessions Session Car # Drivers Team Car Time Laps Test Day 1 Morning Session 80 Bastian Buus, Ricardo Feller, Thomas Preining Lionspeed GP Porsche 911 GT3 R EVO 1:54.682 Test Day 1 Afternoon Session 23 Horatio Fitz-Simon, Maxwell Lynn, Ben D&ouml;rr Team RJN McLaren 720S GT3 EVO 1:54.762 Test Day 2 Morning Session 84 Simon Reicher, Christopher Haase, Markus Winkelhock Eastalent Racing Audi R8 LMS GT3 EVO II 1:54.352 Competitors Aston Martin Racing --> Audi --> BMW --> Chevrolet --> Ferrari --> Ford --> Lamborghini --> McLaren --> Mercedes-AMG --> Porsche --> Official Partners AWS --> Pirelli --> TotalEnergies --> Rowe --> Maserati --> STX --> TM Performance --> Assetto Corsa Competizione --> Gullwing --> Spark --> RACB --> SRO --> Visit GTWC Europe on Facebook Visit GTWC Europe on Instagram Visit GTWC Europe on X Visit GTWC Europe on YouTube &copy; 2026 SRO Motorsports Group. All Rights Reserved. About Press Members Teams Privacy Policy Contact ",
+   "links": []
+  }
+ },
+ "https://api.gt-world-challenge-europe.com/results?season=2025": {
+  "status": 200,
+  "url": "https://api.gt-world-challenge-europe.com/results?season=2025",
+  "type": "text/html; charset=\"UTF-8\"",
+  "bytes": 69020,
+  "selects": [
+   {
+    "name": "filter_season_id",
+    "options": [
+     [
+      "0",
+      "Change Season"
+     ],
+     [
+      "27",
+      "2027"
+     ],
+     [
+      "26",
+      "2026"
+     ],
+     [
+      "25",
+      "2025"
+     ],
+     [
+      "24",
+      "2024"
+     ],
+     [
+      "23",
+      "2023"
+     ],
+     [
+      "22",
+      "2022"
+     ],
+     [
+      "21",
+      "2021"
+     ],
+     [
+      "10",
+      "2020"
+     ],
+     [
+      "9",
+      "2019"
+     ],
+     [
+      "8",
+      "2018"
+     ],
+     [
+      "7",
+      "2017"
+     ],
+     [
+      "6",
+      "2016"
+     ],
+     [
+      "5",
+      "2015"
+     ],
+     [
+      "1",
+      "2014"
+     ],
+     [
+      "2",
+      "2013"
+     ],
+     [
+      "3",
+      "2012"
+     ],
+     [
+      "4",
+      "2011"
+     ],
+     [
+      "11",
+      "2010"
+     ],
+     [
+      "12",
+      "2009"
+     ],
+     [
+      "13",
+      "2008"
+     ],
+     [
+      "14",
+      "2007"
+     ],
+     [
+      "15",
+      "2006"
+     ],
+     [
+      "16",
+      "2005"
+     ],
+     [
+      "17",
+      "2004"
+     ],
+     [
+      "18",
+      "2003"
+     ],
+     [
+      "19",
+      "2002"
+     ],
+     [
+      "20",
+      "2001"
+     ]
+    ]
+   },
+   {
+    "name": "filter_meeting_id",
+    "options": [
+     [
+      "0",
+      "Meeting"
+     ],
+     [
+      "246",
+      "Circuit Paul Ricard"
+     ],
+     [
+      "247",
+      "Brands Hatch"
+     ],
+     [
+      "248",
+      "Monza"
+     ],
+     [
+      "249",
+      "CrowdStrike 24 Hours of Spa"
+     ],
+     [
+      "250",
+      "Misano"
+     ],
+     [
+      "251",
+      "Magny-Cours"
+     ],
+     [
+      "252",
+      "N&uuml;rburgring"
+     ],
+     [
+      "253",
+      "Zandvoort"
+     ],
+     [
+      "254",
+      "Barcelona"
+     ],
+     [
+      "255",
+      "Portimao"
+     ]
+    ]
+   },
+   {
+    "name": "filter_race_id",
+    "options": [
+     [
+      "",
+      "Session"
+     ]
+    ]
+   }
+  ],
+  "links": [
+   "https://api.gt-world-challenge-europe.com",
+   "https://api.gt-world-challenge-europe.com/results?season=2025",
+   "https://api.gt-world-challenge-europe.com/favicon-96x96.png",
+   "https://api.gt-world-challenge-europe.com/favicon.svg",
+   "https://api.gt-world-challenge-europe.com/favicon.ico",
+   "https://api.gt-world-challenge-europe.com/apple-touch-icon.png",
+   "https://api.gt-world-challenge-europe.com/site.webmanifest",
+   "https://api.gt-world-challenge-europe.com/assets/css/core.min.2025.10.css",
+   "https://api.gt-world-challenge-europe.com/assets/css/theme.min.2025.css",
+   "https://api.gt-world-challenge-europe.com/assets/css/news.min.2024.css",
+   "https://api.gt-world-challenge-europe.com/assets/css/wf-theme.2025.css",
+   "https://fonts.googleapis.com",
+   "https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap",
+   "https://api.gt-world-challenge-europe.com/results?season=2025#primary",
+   "/results",
+   "https://racevision.sro-motorsports.com/",
+   "/results/2026/official-test-days",
+   "/results/2026/circuit-paul-ricard",
+   "/results/2026/brands-hatch",
+   "/results/2026/crowdstrike-24-hours-of-spa--test-days",
+   "/results/2026/monza",
+   "/results/2026/crowdstrike-24-hours-of-spa",
+   "/results/2026/misano",
+   "/results/2026/magny-cours",
+   "/results/2026/n&uuml;rburgring",
+   "/results/2026/zandvoort",
+   "/results/2026/barcelona",
+   "/results/2026/portimao"
+  ],
+  "text": " Race Results 2026 | GT World Challenge Europe Powered by AWS Skip to Main Content Please enable JavaScript in your browser. Some elements of this website may not function correctly with JavaScript disabled. Menu Home News Next Race Last Race Featured Articles Promotions --> Calendar Tickets VIP Packages Accomodation Gallery Videos Photos Sustainability --> Competitors Cars Teams Drivers Entry Lists Results Teams Drivers Champions Race Results Entry Lists Live Crowdstrike 24 Hours of Spa Official Test Days --> Watch Live Live Timing TV Guide TV Schedule Links GTWC App --> Merchandise SRO Esports RaceVision Dashboard --> About SRO Motosports Group GTWC Europe Partners Regulations Recruitment Contact Fan Account Sign in Create Account Media &amp; Teams Press Members Teams Home News Calendar Photos Videos Tickets Sign In Fan Account Press Members Teams SRO SRO Motorsports Group SRO Motorsports Group America Intercontinental GT Challenge GT World Challenge GT World Challenge Europe Crowdstrike 24 Hours of Spa GT World Challenge Asia GT World Challenge America GT World Challenge Australia GT2 European Series British GT Championship Japan Cup GT4 European Series FFSA GT – GT4 France GT4 America GT4 Australia GT4 Manufacturer Ranking GT America TC America FFSA Tourisme TC France GR Cup 6ore di Roma --> GT3 Revival Series FIA Motorsport Games SRO Motorsports Group - Race Centre by MMC Curbstone Track Events SRO E-Sport GT Series Championship 2026 Results Change Season 2027 2026 2025 2024 2023 2022 2021 2020 2019 2018 2017 2016 2015 2014 2013 2012 2011 2010 2009 2008 2007 2006 2005 2004 2003 2002 2001 Meeting Circuit Paul Ricard Brands Hatch Monza CrowdStrike 24 Hours of Spa Misano Magny-Cours N&uuml;rburgring Zandvoort Barcelona Portimao Session 2026 Results Season Race Series Session Car # Team Car Time Laps Circuit Paul Ricard Test Day Circuit Paul Ricard GT World Challenge Europe - Endurance Cup Main Race 7 Comtoyou Racing Aston Martin Vantage AMR GT3 EVO 6:01:45.539 176 Brands Hatch GT World Challenge Europe - Sprint Cup Race 1 50 AF Corse Ferrari 296 GT3 EVO 1:16:41.275 39 Race 2 80 Lionspeed GP Porsche 911 GT3 R EVO 1:01:02.133 43 CrowdStrike 24 Hours of Spa Test Day Monza GT World Challenge Europe - Endurance Cup Main Race 66 Tresor Attempto Racing Audi R8 LMS GT3 EVO II 3:01:03.675 79 CrowdStrike 24 Hours of Spa GT World Challenge Europe - Endurance Cup Main Race 80 Lionspeed GP Porsche 911 GT3 R (992) EVO 24:00:51.689 541 Misano GT World Challenge Europe - Sprint Cup Qualifying 1 Combined 46 Team WRT BMW M4 GT3 EVO Race 1 32 Team WRT BMW M4 GT3 EVO 1:01:12.084 35 Race 2 32 Team WRT BMW M4 GT3 EVO 1:01:25.741 38 Magny-Cours GT World Challenge Europe - Sprint Cup Qualifying 1 Combined 3 Mercedes-AMG Team Verstappen Racing Mercedes-AMG GT3 EVO Race 1 3 Mercedes-AMG Team Verstappen Racing Mercedes-AMG GT3 EVO 1:00:13.636 33 Qualifying 2 Combined 7 Comtoyou Racing Aston Martin Vantage AMR GT3 EVO Race 2 80 Lionspeed GP Porsche 911 GT3 R (992) EVO 1:29:26.089 34 N&uuml;rburgring GT World Challenge Europe - Endurance Cup Main Race 7 Comtoyou Racing Aston Martin Vantage AMR GT3 EVO 3:00:29.639 83 Zandvoort GT World Challenge Europe - Sprint Cup Qualifying 1 Combined 2 Boutsen VDS Porsche 911 GT3 R (992) EVO Race 1 58 Garage 59 McLaren 720S GT3 EVO 1:00:39.130 35 Qualifying 2 Combined 14 Emil Frey Racing Ferrari 296 GT3 EVO Race 2 69 Emil Frey Racing Ferrari 296 GT3 EVO 1:00:44.793 36 Barcelona GT World Challenge Europe - Sprint Cup Race 1 99 Tresor Attempto Racing Audi R8 LMS GT3 EVO II 1:22:22.511 23 Race 2 69 Emil Frey Racing Ferrari 296 GT3 EVO 1:01:21.834 33 Portimao GT World Challenge Europe - Endurance Cup Main Race 17 Mercedes-AMG Team GetSpeed Mercedes-AMG GT3 EVO 3:01:38.316 94 Competitors Aston Martin Racing --> Audi --> BMW --> Chevrolet --> Ferrari --> Ford --> Lamborghini --> McLaren --> Mercedes-AMG --> Porsche --> Official Partners AWS --> Pirelli --> TotalEnergies --> Rowe --> Maserati --> STX --> TM Performance --> Assetto Corsa Competizione --> Gullwing --> Spark --> RACB --> SRO --> Visit GTWC Europe on Facebook Visit GTWC Europe on Instagram Visit GTWC Europe on X Visit GTWC Europe on YouTube &copy; 2026 SRO Motorsports Group. All Rights Reserved. About Press Members Teams Privacy Policy Contact ",
+  "scripts": [],
+  "sample": {
+   "url": "/results/2026/official-test-days",
+   "status": 200,
+   "text": " Race Results 2026 | Circuit Paul Ricard | France | | GT World Challenge Europe Powered by AWS Skip to Main Content Please enable JavaScript in your browser. Some elements of this website may not function correctly with JavaScript disabled. Menu Home News Next Race Last Race Featured Articles Promotions --> Calendar Tickets VIP Packages Accomodation Gallery Videos Photos Sustainability --> Competitors Cars Teams Drivers Entry Lists Results Teams Drivers Champions Race Results Entry Lists Live Crowdstrike 24 Hours of Spa Official Test Days --> Watch Live Live Timing TV Guide TV Schedule Links GTWC App --> Merchandise SRO Esports RaceVision Dashboard --> About SRO Motosports Group GTWC Europe Partners Regulations Recruitment Contact Fan Account Sign in Create Account Media &amp; Teams Press Members Teams Home News Calendar Photos Videos Tickets Sign In Fan Account Press Members Teams SRO SRO Motorsports Group SRO Motorsports Group America Intercontinental GT Challenge GT World Challenge GT World Challenge Europe Crowdstrike 24 Hours of Spa GT World Challenge Asia GT World Challenge America GT World Challenge Australia GT2 European Series British GT Championship Japan Cup GT4 European Series FFSA GT – GT4 France GT4 America GT4 Australia GT4 Manufacturer Ranking GT America TC America FFSA Tourisme TC France GR Cup 6ore di Roma --> GT3 Revival Series FIA Motorsport Games SRO Motorsports Group - Race Centre by MMC Curbstone Track Events SRO E-Sport GT Series Championship 2026 Results Change Season 2027 2026 2025 2024 2023 2022 2021 2020 2019 2018 2017 2016 2015 2014 2013 2012 2011 2010 2009 2008 2007 2006 2005 2004 2003 2002 2001 Meeting Circuit Paul Ricard Brands Hatch Monza CrowdStrike 24 Hours of Spa Misano Magny-Cours N&uuml;rburgring Zandvoort Barcelona Portimao Session Test Day 2 Morning Session Test Day 1 Afternoon Session Test Day 1 Morning Session Circuit Paul Ricard France 2026 Results Sessions Session Car # Drivers Team Car Time Laps Test Day 1 Morning Session 80 Bastian Buus, Ricardo Feller, Thomas Preining Lionspeed GP Porsche 911 GT3 R EVO 1:54.682 Test Day 1 Afternoon Session 23 Horatio Fitz-Simon, Maxwell Lynn, Ben D&ouml;rr Team RJN McLaren 720S GT3 EVO 1:54.762 Test Day 2 Morning Session 84 Simon Reicher, Christopher Haase, Markus Winkelhock Eastalent Racing Audi R8 LMS GT3 EVO II 1:54.352 Competitors Aston Martin Racing --> Audi --> BMW --> Chevrolet --> Ferrari --> Ford --> Lamborghini --> McLaren --> Mercedes-AMG --> Porsche --> Official Partners AWS --> Pirelli --> TotalEnergies --> Rowe --> Maserati --> STX --> TM Performance --> Assetto Corsa Competizione --> Gullwing --> Spark --> RACB --> SRO --> Visit GTWC Europe on Facebook Visit GTWC Europe on Instagram Visit GTWC Europe on X Visit GTWC Europe on YouTube &copy; 2026 SRO Motorsports Group. All Rights Reserved. About Press Members Teams Privacy Policy Contact ",
+   "links": []
+  }
+ },
+ "https://api.gt-world-challenge-america.com/results": {
+  "status": 200,
+  "url": "https://api.gt-world-challenge-america.com/results",
+  "type": "text/html; charset=\"utf-8\"",
+  "bytes": 56382,
+  "selects": [
+   {
+    "name": "filter_season_id",
+    "options": [
+     [
+      "0",
+      "Season"
+     ],
+     [
+      "12",
+      "2027"
+     ],
+     [
+      "11",
+      "2026"
+     ],
+     [
+      "10",
+      "2025"
+     ],
+     [
+      "9",
+      "2024"
+     ],
+     [
+      "8",
+      "2023"
+     ],
+     [
+      "7",
+      "2022"
+     ],
+     [
+      "6",
+      "2021"
+     ],
+     [
+      "5",
+      "2020"
+     ],
+     [
+      "1",
+      "2019"
+     ],
+     [
+      "2",
+      "2018"
+     ],
+     [
+      "4",
+      "2017"
+     ],
+     [
+      "3",
+      "2016"
+     ]
+    ]
+   },
+   {
+    "name": "filter_meeting_id",
+    "options": [
+     [
+      "0",
+      "Meeting"
+     ],
+     [
+      "111",
+      "Sonoma Raceway"
+     ],
+     [
+      "112",
+      "Circuit of the Americas"
+     ],
+     [
+      "113",
+      "Sebring International Raceway"
+     ],
+     [
+      "114",
+      "Michelin Raceway Road Atlanta"
+     ],
+     [
+      "115",
+      "Road America"
+     ],
+     [
+      "116",
+      "Barber Motorsports Park"
+     ],
+     [
+      "117",
+      "Indianapolis Motor Speedway"
+     ],
+     [
+      "128",
+      "2026 End of Year Gala"
+     ]
+    ]
+   },
+   {
+    "name": "filter_race_id",
+    "options": [
+     [
+      "",
+      "Session"
+     ]
+    ]
+   }
+  ],
+  "links": [
+   "https://www.gt-world-challenge-america.com/results",
+   "https://fonts.googleapis.com",
+   "https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap",
+   "https://www.gt-world-challenge-america.com/results#primary",
+   "/results",
+   "/results/2026/sonoma-raceway",
+   "/results?filter_season_id=11&filter_meeting_id=111",
+   "/results/2026/circuit-of-the-americas",
+   "/results?filter_season_id=11&filter_meeting_id=112",
+   "/results/2026/sebring-international-raceway",
+   "/results?filter_season_id=11&filter_meeting_id=113",
+   "/results/2026/road-atlanta",
+   "/results?filter_season_id=11&filter_meeting_id=114",
+   "/results/2026/road-america",
+   "/results?filter_season_id=11&filter_meeting_id=115",
+   "/results/2026/barber-motorsports-park",
+   "/results?filter_season_id=11&filter_meeting_id=116",
+   "/results/2026/indianpolis-8-hour",
+   "/results?filter_season_id=11&filter_meeting_id=117",
+   "/results/2026/2026-end-of-year-gala",
+   "/results?filter_season_id=11&filter_meeting_id=128"
+  ],
+  "text": " Race Results 2026 | GT World Challenge America Powered by AWS Skip to Main Content Please enable JavaScript in your browser. Some elements of this website may not function correctly with JavaScript disabled. Menu Home News Calendar Tickets VIP Packages Gallery Videos Photos Competitors Cars Teams Drivers Entry Lists Results Teams Drivers Manufacturers Race Results Entry Lists Live Watch Live Live Timing TV Schedule Links Shop Fan Guide About SRO Motorsports GTWC America Partners Regulations Careers Contact Fan Account Sign in Create Account Media &amp; Teams Press Members Teams Home News Calendar Photos Videos Live Sign In Fan Account Press Members Teams Shop SRO SRO Motorsports Group SRO Motorsports Group America Intercontinental GT Challenge GT World Challenge GT World Challenge Europe Crowdstrike 24 Hours of Spa GT World Challenge Asia GT World Challenge America GT World Challenge Australia GT2 European Series British GT Championship Japan Cup GT4 European Series FFSA GT – GT4 France GT4 America GT4 Australia GT4 Manufacturer Ranking GT America TC America FFSA Tourisme TC France GR Cup 6ore di Roma --> GT3 Revival Series FIA Motorsport Games SRO Motorsports Group - Race Centre by MMC Curbstone Track Events SRO E-Sport GT Series Championship 2026 Results Season 2027 2026 2025 2024 2023 2022 2021 2020 2019 2018 2017 2016 Meeting Sonoma Raceway Circuit of the Americas Sebring International Raceway Michelin Raceway Road Atlanta Road America Barber Motorsports Park Indianapolis Motor Speedway 2026 End of Year Gala Session 2026 Results Season Meeting Round Class Car # Team Car Time Laps Sonoma Raceway R1 Pro 34 JMF Motorsports Mercedes-AMG GT3 EVO 3:00:51.624 109 Circuit of the Americas R2 Pro-Am 31 Wright Motorsports Porsche 911 GT3-R (992) EVO 3:00:26.554 82 Sebring International Raceway R3 Pro 29 Turner Motorsport BMW M4 GT3 EVO 3:01:52.172 83 Michelin Raceway Road Atlanta R4 Pro-Am 27 JMF Motorsports Mercedes-AMG GT3 EVO 3:00:59.873 122 Road America R5 Pro 29 Turner Motorsport BMW M4 GT3 EVO 3:01:08.756 70 Barber Motorsports Park R6 Pro 12 AF Corse USA Ferrari 296 GT3 EVO 3:00:36.357 125 Indianapolis Motor Speedway R7 Pro-Am 32 GMG Racing Porsche 911 GT3-R (992) EVO 8:00:03.910 323 AWARDS Banquet R8 Competitors Acura --> Aston Martin --> Audi Sport --> BMW M --> Corvette --> Ferrari --> Ford --> Lamborghini --> McLaren --> Mercedes AMG --> Porsche --> Official Partners Visit GTWC America on Discord Visit GTWC America on Facebook Visit GTWC America on Instagram Visit GTWC America on X Visit GTWC America on Twitch Visit GTWC America on YouTube &copy; 2026 SRO Motorsports Group. All Rights Reserved. About Press Members Teams Privacy Policy Contact ",
+  "scripts": [],
+  "sample": {
+   "url": "/results/2026/sonoma-raceway",
+   "status": 200,
+   "text": " Race Results 2026 | Sonoma Raceway | United States of America | GT World Challenge America Powered by AWS Skip to Main Content Please enable JavaScript in your browser. Some elements of this website may not function correctly with JavaScript disabled. Menu Home News Calendar Tickets VIP Packages Gallery Videos Photos Competitors Cars Teams Drivers Entry Lists Results Teams Drivers Manufacturers Race Results Entry Lists Live Watch Live Live Timing TV Schedule Links Shop Fan Guide About SRO Motorsports GTWC America Partners Regulations Careers Contact Fan Account Sign in Create Account Media &amp; Teams Press Members Teams Home News Calendar Photos Videos Live Sign In Fan Account Press Members Teams Shop SRO SRO Motorsports Group SRO Motorsports Group America Intercontinental GT Challenge GT World Challenge GT World Challenge Europe Crowdstrike 24 Hours of Spa GT World Challenge Asia GT World Challenge America GT World Challenge Australia GT2 European Series British GT Championship Japan Cup GT4 European Series FFSA GT – GT4 France GT4 America GT4 Australia GT4 Manufacturer Ranking GT America TC America FFSA Tourisme TC France GR Cup 6ore di Roma --> GT3 Revival Series FIA Motorsport Games SRO Motorsports Group - Race Centre by MMC Curbstone Track Events SRO E-Sport GT Series Championship 2026 Results Season 2027 2026 2025 2024 2023 2022 2021 2020 2019 2018 2017 2016 Meeting Sonoma Raceway Circuit of the Americas Sebring International Raceway Michelin Raceway Road Atlanta Road America Barber Motorsports Park Indianapolis Motor Speedway 2026 End of Year Gala Session Practice 1 Practice 2 Practice 3 Qualifying Race Sonoma Raceway 2026 Results Sessions Session Class Car # Drivers Team Car Time Laps Practice 1 Pro-Am 32 Kyle Washington, Tom Sargent GMG Racing Porsche 911 GT3-R (992) EVO 25 Practice 2 Pro 34 Michai Stephens, Mikael Grenier JMF Motorsports Mercedes-AMG GT3 EVO 32 Practice 3 Pro-Am 017 Michael Clark, Colin Braun Kellymoss Porsche 911 GT3-R (992) 17 Qualifying Pro 34 Michai Stephens, Mikael Grenier JMF Motorsports Mercedes-AMG GT3 EVO Race Pro 34 Michai Stephens, Mikael Grenier JMF Motorsports Mercedes-AMG GT3 EVO 3:00:51.624 109 Competitors Acura --> Aston Martin --> Audi Sport --> BMW M --> Corvette --> Ferrari --> Ford --> Lamborghini --> McLaren --> Mercedes AMG --> Porsche --> Official Partners Visit GTWC America on Discord Visit GTWC America on Facebook Visit GTWC America on Instagram Visit GTWC America on X Visit GTWC America on Twitch Visit GTWC America on YouTube &copy; 2026 SRO Motorsports Group. All Rights Reserved. About Press Members Teams Privacy Policy Contact ",
+   "links": []
+  }
+ },
+ "https://www.gt-world-challenge-america.com/results": {
+  "status": 200,
+  "url": "https://www.gt-world-challenge-america.com/results",
+  "type": "text/html; charset=\"utf-8\"",
+  "bytes": 56382,
+  "selects": [
+   {
+    "name": "filter_season_id",
+    "options": [
+     [
+      "0",
+      "Season"
+     ],
+     [
+      "12",
+      "2027"
+     ],
+     [
+      "11",
+      "2026"
+     ],
+     [
+      "10",
+      "2025"
+     ],
+     [
+      "9",
+      "2024"
+     ],
+     [
+      "8",
+      "2023"
+     ],
+     [
+      "7",
+      "2022"
+     ],
+     [
+      "6",
+      "2021"
+     ],
+     [
+      "5",
+      "2020"
+     ],
+     [
+      "1",
+      "2019"
+     ],
+     [
+      "2",
+      "2018"
+     ],
+     [
+      "4",
+      "2017"
+     ],
+     [
+      "3",
+      "2016"
+     ]
+    ]
+   },
+   {
+    "name": "filter_meeting_id",
+    "options": [
+     [
+      "0",
+      "Meeting"
+     ],
+     [
+      "111",
+      "Sonoma Raceway"
+     ],
+     [
+      "112",
+      "Circuit of the Americas"
+     ],
+     [
+      "113",
+      "Sebring International Raceway"
+     ],
+     [
+      "114",
+      "Michelin Raceway Road Atlanta"
+     ],
+     [
+      "115",
+      "Road America"
+     ],
+     [
+      "116",
+      "Barber Motorsports Park"
+     ],
+     [
+      "117",
+      "Indianapolis Motor Speedway"
+     ],
+     [
+      "128",
+      "2026 End of Year Gala"
+     ]
+    ]
+   },
+   {
+    "name": "filter_race_id",
+    "options": [
+     [
+      "",
+      "Session"
+     ]
+    ]
+   }
+  ],
+  "links": [
+   "https://www.gt-world-challenge-america.com/results",
+   "https://fonts.googleapis.com",
+   "https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap",
+   "https://www.gt-world-challenge-america.com/results#primary",
+   "/results",
+   "/results/2026/sonoma-raceway",
+   "/results?filter_season_id=11&filter_meeting_id=111",
+   "/results/2026/circuit-of-the-americas",
+   "/results?filter_season_id=11&filter_meeting_id=112",
+   "/results/2026/sebring-international-raceway",
+   "/results?filter_season_id=11&filter_meeting_id=113",
+   "/results/2026/road-atlanta",
+   "/results?filter_season_id=11&filter_meeting_id=114",
+   "/results/2026/road-america",
+   "/results?filter_season_id=11&filter_meeting_id=115",
+   "/results/2026/barber-motorsports-park",
+   "/results?filter_season_id=11&filter_meeting_id=116",
+   "/results/2026/indianpolis-8-hour",
+   "/results?filter_season_id=11&filter_meeting_id=117",
+   "/results/2026/2026-end-of-year-gala",
+   "/results?filter_season_id=11&filter_meeting_id=128"
+  ],
+  "text": " Race Results 2026 | GT World Challenge America Powered by AWS Skip to Main Content Please enable JavaScript in your browser. Some elements of this website may not function correctly with JavaScript disabled. Menu Home News Calendar Tickets VIP Packages Gallery Videos Photos Competitors Cars Teams Drivers Entry Lists Results Teams Drivers Manufacturers Race Results Entry Lists Live Watch Live Live Timing TV Schedule Links Shop Fan Guide About SRO Motorsports GTWC America Partners Regulations Careers Contact Fan Account Sign in Create Account Media &amp; Teams Press Members Teams Home News Calendar Photos Videos Live Sign In Fan Account Press Members Teams Shop SRO SRO Motorsports Group SRO Motorsports Group America Intercontinental GT Challenge GT World Challenge GT World Challenge Europe Crowdstrike 24 Hours of Spa GT World Challenge Asia GT World Challenge America GT World Challenge Australia GT2 European Series British GT Championship Japan Cup GT4 European Series FFSA GT – GT4 France GT4 America GT4 Australia GT4 Manufacturer Ranking GT America TC America FFSA Tourisme TC France GR Cup 6ore di Roma --> GT3 Revival Series FIA Motorsport Games SRO Motorsports Group - Race Centre by MMC Curbstone Track Events SRO E-Sport GT Series Championship 2026 Results Season 2027 2026 2025 2024 2023 2022 2021 2020 2019 2018 2017 2016 Meeting Sonoma Raceway Circuit of the Americas Sebring International Raceway Michelin Raceway Road Atlanta Road America Barber Motorsports Park Indianapolis Motor Speedway 2026 End of Year Gala Session 2026 Results Season Meeting Round Class Car # Team Car Time Laps Sonoma Raceway R1 Pro 34 JMF Motorsports Mercedes-AMG GT3 EVO 3:00:51.624 109 Circuit of the Americas R2 Pro-Am 31 Wright Motorsports Porsche 911 GT3-R (992) EVO 3:00:26.554 82 Sebring International Raceway R3 Pro 29 Turner Motorsport BMW M4 GT3 EVO 3:01:52.172 83 Michelin Raceway Road Atlanta R4 Pro-Am 27 JMF Motorsports Mercedes-AMG GT3 EVO 3:00:59.873 122 Road America R5 Pro 29 Turner Motorsport BMW M4 GT3 EVO 3:01:08.756 70 Barber Motorsports Park R6 Pro 12 AF Corse USA Ferrari 296 GT3 EVO 3:00:36.357 125 Indianapolis Motor Speedway R7 Pro-Am 32 GMG Racing Porsche 911 GT3-R (992) EVO 8:00:03.910 323 AWARDS Banquet R8 Competitors Acura --> Aston Martin --> Audi Sport --> BMW M --> Corvette --> Ferrari --> Ford --> Lamborghini --> McLaren --> Mercedes AMG --> Porsche --> Official Partners Visit GTWC America on Discord Visit GTWC America on Facebook Visit GTWC America on Instagram Visit GTWC America on X Visit GTWC America on Twitch Visit GTWC America on YouTube &copy; 2026 SRO Motorsports Group. All Rights Reserved. About Press Members Teams Privacy Policy Contact ",
+  "scripts": [],
+  "sample": {
+   "url": "/results/2026/sonoma-raceway",
+   "status": 200,
+   "text": " Race Results 2026 | Sonoma Raceway | United States of America | GT World Challenge America Powered by AWS Skip to Main Content Please enable JavaScript in your browser. Some elements of this website may not function correctly with JavaScript disabled. Menu Home News Calendar Tickets VIP Packages Gallery Videos Photos Competitors Cars Teams Drivers Entry Lists Results Teams Drivers Manufacturers Race Results Entry Lists Live Watch Live Live Timing TV Schedule Links Shop Fan Guide About SRO Motorsports GTWC America Partners Regulations Careers Contact Fan Account Sign in Create Account Media &amp; Teams Press Members Teams Home News Calendar Photos Videos Live Sign In Fan Account Press Members Teams Shop SRO SRO Motorsports Group SRO Motorsports Group America Intercontinental GT Challenge GT World Challenge GT World Challenge Europe Crowdstrike 24 Hours of Spa GT World Challenge Asia GT World Challenge America GT World Challenge Australia GT2 European Series British GT Championship Japan Cup GT4 European Series FFSA GT – GT4 France GT4 America GT4 Australia GT4 Manufacturer Ranking GT America TC America FFSA Tourisme TC France GR Cup 6ore di Roma --> GT3 Revival Series FIA Motorsport Games SRO Motorsports Group - Race Centre by MMC Curbstone Track Events SRO E-Sport GT Series Championship 2026 Results Season 2027 2026 2025 2024 2023 2022 2021 2020 2019 2018 2017 2016 Meeting Sonoma Raceway Circuit of the Americas Sebring International Raceway Michelin Raceway Road Atlanta Road America Barber Motorsports Park Indianapolis Motor Speedway 2026 End of Year Gala Session Practice 1 Practice 2 Practice 3 Qualifying Race Sonoma Raceway 2026 Results Sessions Session Class Car # Drivers Team Car Time Laps Practice 1 Pro-Am 32 Kyle Washington, Tom Sargent GMG Racing Porsche 911 GT3-R (992) EVO 25 Practice 2 Pro 34 Michai Stephens, Mikael Grenier JMF Motorsports Mercedes-AMG GT3 EVO 32 Practice 3 Pro-Am 017 Michael Clark, Colin Braun Kellymoss Porsche 911 GT3-R (992) 17 Qualifying Pro 34 Michai Stephens, Mikael Grenier JMF Motorsports Mercedes-AMG GT3 EVO Race Pro 34 Michai Stephens, Mikael Grenier JMF Motorsports Mercedes-AMG GT3 EVO 3:00:51.624 109 Competitors Acura --> Aston Martin --> Audi Sport --> BMW M --> Corvette --> Ferrari --> Ford --> Lamborghini --> McLaren --> Mercedes AMG --> Porsche --> Official Partners Visit GTWC America on Discord Visit GTWC America on Facebook Visit GTWC America on Instagram Visit GTWC America on X Visit GTWC America on Twitch Visit GTWC America on YouTube &copy; 2026 SRO Motorsports Group. All Rights Reserved. About Press Members Teams Privacy Policy Contact ",
+   "links": []
+  }
+ },
+ "https://api.gt-world-challenge-america.com/results?season=2025": {
+  "status": 200,
+  "url": "https://api.gt-world-challenge-america.com/results?season=2025",
+  "type": "text/html; charset=\"utf-8\"",
+  "bytes": 56418,
+  "selects": [
+   {
+    "name": "filter_season_id",
+    "options": [
+     [
+      "0",
+      "Season"
+     ],
+     [
+      "12",
+      "2027"
+     ],
+     [
+      "11",
+      "2026"
+     ],
+     [
+      "10",
+      "2025"
+     ],
+     [
+      "9",
+      "2024"
+     ],
+     [
+      "8",
+      "2023"
+     ],
+     [
+      "7",
+      "2022"
+     ],
+     [
+      "6",
+      "2021"
+     ],
+     [
+      "5",
+      "2020"
+     ],
+     [
+      "1",
+      "2019"
+     ],
+     [
+      "2",
+      "2018"
+     ],
+     [
+      "4",
+      "2017"
+     ],
+     [
+      "3",
+      "2016"
+     ]
+    ]
+   },
+   {
+    "name": "filter_meeting_id",
+    "options": [
+     [
+      "0",
+      "Meeting"
+     ],
+     [
+      "111",
+      "Sonoma Raceway"
+     ],
+     [
+      "112",
+      "Circuit of the Americas"
+     ],
+     [
+      "113",
+      "Sebring International Raceway"
+     ],
+     [
+      "114",
+      "Michelin Raceway Road Atlanta"
+     ],
+     [
+      "115",
+      "Road America"
+     ],
+     [
+      "116",
+      "Barber Motorsports Park"
+     ],
+     [
+      "117",
+      "Indianapolis Motor Speedway"
+     ],
+     [
+      "128",
+      "2026 End of Year Gala"
+     ]
+    ]
+   },
+   {
+    "name": "filter_race_id",
+    "options": [
+     [
+      "",
+      "Session"
+     ]
+    ]
+   }
+  ],
+  "links": [
+   "https://www.gt-world-challenge-america.com/results?season=2025",
+   "https://fonts.googleapis.com",
+   "https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap",
+   "https://www.gt-world-challenge-america.com/results?season=2025#primary",
+   "/results",
+   "/results/2026/sonoma-raceway",
+   "/results?filter_season_id=11&filter_meeting_id=111",
+   "/results/2026/circuit-of-the-americas",
+   "/results?filter_season_id=11&filter_meeting_id=112",
+   "/results/2026/sebring-international-raceway",
+   "/results?filter_season_id=11&filter_meeting_id=113",
+   "/results/2026/road-atlanta",
+   "/results?filter_season_id=11&filter_meeting_id=114",
+   "/results/2026/road-america",
+   "/results?filter_season_id=11&filter_meeting_id=115",
+   "/results/2026/barber-motorsports-park",
+   "/results?filter_season_id=11&filter_meeting_id=116",
+   "/results/2026/indianpolis-8-hour",
+   "/results?filter_season_id=11&filter_meeting_id=117",
+   "/results/2026/2026-end-of-year-gala",
+   "/results?filter_season_id=11&filter_meeting_id=128"
+  ],
+  "text": " Race Results 2026 | GT World Challenge America Powered by AWS Skip to Main Content Please enable JavaScript in your browser. Some elements of this website may not function correctly with JavaScript disabled. Menu Home News Calendar Tickets VIP Packages Gallery Videos Photos Competitors Cars Teams Drivers Entry Lists Results Teams Drivers Manufacturers Race Results Entry Lists Live Watch Live Live Timing TV Schedule Links Shop Fan Guide About SRO Motorsports GTWC America Partners Regulations Careers Contact Fan Account Sign in Create Account Media &amp; Teams Press Members Teams Home News Calendar Photos Videos Live Sign In Fan Account Press Members Teams Shop SRO SRO Motorsports Group SRO Motorsports Group America Intercontinental GT Challenge GT World Challenge GT World Challenge Europe Crowdstrike 24 Hours of Spa GT World Challenge Asia GT World Challenge America GT World Challenge Australia GT2 European Series British GT Championship Japan Cup GT4 European Series FFSA GT – GT4 France GT4 America GT4 Australia GT4 Manufacturer Ranking GT America TC America FFSA Tourisme TC France GR Cup 6ore di Roma --> GT3 Revival Series FIA Motorsport Games SRO Motorsports Group - Race Centre by MMC Curbstone Track Events SRO E-Sport GT Series Championship 2026 Results Season 2027 2026 2025 2024 2023 2022 2021 2020 2019 2018 2017 2016 Meeting Sonoma Raceway Circuit of the Americas Sebring International Raceway Michelin Raceway Road Atlanta Road America Barber Motorsports Park Indianapolis Motor Speedway 2026 End of Year Gala Session 2026 Results Season Meeting Round Class Car # Team Car Time Laps Sonoma Raceway R1 Pro 34 JMF Motorsports Mercedes-AMG GT3 EVO 3:00:51.624 109 Circuit of the Americas R2 Pro-Am 31 Wright Motorsports Porsche 911 GT3-R (992) EVO 3:00:26.554 82 Sebring International Raceway R3 Pro 29 Turner Motorsport BMW M4 GT3 EVO 3:01:52.172 83 Michelin Raceway Road Atlanta R4 Pro-Am 27 JMF Motorsports Mercedes-AMG GT3 EVO 3:00:59.873 122 Road America R5 Pro 29 Turner Motorsport BMW M4 GT3 EVO 3:01:08.756 70 Barber Motorsports Park R6 Pro 12 AF Corse USA Ferrari 296 GT3 EVO 3:00:36.357 125 Indianapolis Motor Speedway R7 Pro-Am 32 GMG Racing Porsche 911 GT3-R (992) EVO 8:00:03.910 323 AWARDS Banquet R8 Competitors Acura --> Aston Martin --> Audi Sport --> BMW M --> Corvette --> Ferrari --> Ford --> Lamborghini --> McLaren --> Mercedes AMG --> Porsche --> Official Partners Visit GTWC America on Discord Visit GTWC America on Facebook Visit GTWC America on Instagram Visit GTWC America on X Visit GTWC America on Twitch Visit GTWC America on YouTube &copy; 2026 SRO Motorsports Group. All Rights Reserved. About Press Members Teams Privacy Policy Contact ",
+  "scripts": [],
+  "sample": {
+   "url": "/results/2026/sonoma-raceway",
+   "status": 200,
+   "text": " Race Results 2026 | Sonoma Raceway | United States of America | GT World Challenge America Powered by AWS Skip to Main Content Please enable JavaScript in your browser. Some elements of this website may not function correctly with JavaScript disabled. Menu Home News Calendar Tickets VIP Packages Gallery Videos Photos Competitors Cars Teams Drivers Entry Lists Results Teams Drivers Manufacturers Race Results Entry Lists Live Watch Live Live Timing TV Schedule Links Shop Fan Guide About SRO Motorsports GTWC America Partners Regulations Careers Contact Fan Account Sign in Create Account Media &amp; Teams Press Members Teams Home News Calendar Photos Videos Live Sign In Fan Account Press Members Teams Shop SRO SRO Motorsports Group SRO Motorsports Group America Intercontinental GT Challenge GT World Challenge GT World Challenge Europe Crowdstrike 24 Hours of Spa GT World Challenge Asia GT World Challenge America GT World Challenge Australia GT2 European Series British GT Championship Japan Cup GT4 European Series FFSA GT – GT4 France GT4 America GT4 Australia GT4 Manufacturer Ranking GT America TC America FFSA Tourisme TC France GR Cup 6ore di Roma --> GT3 Revival Series FIA Motorsport Games SRO Motorsports Group - Race Centre by MMC Curbstone Track Events SRO E-Sport GT Series Championship 2026 Results Season 2027 2026 2025 2024 2023 2022 2021 2020 2019 2018 2017 2016 Meeting Sonoma Raceway Circuit of the Americas Sebring International Raceway Michelin Raceway Road Atlanta Road America Barber Motorsports Park Indianapolis Motor Speedway 2026 End of Year Gala Session Practice 1 Practice 2 Practice 3 Qualifying Race Sonoma Raceway 2026 Results Sessions Session Class Car # Drivers Team Car Time Laps Practice 1 Pro-Am 32 Kyle Washington, Tom Sargent GMG Racing Porsche 911 GT3-R (992) EVO 25 Practice 2 Pro 34 Michai Stephens, Mikael Grenier JMF Motorsports Mercedes-AMG GT3 EVO 32 Practice 3 Pro-Am 017 Michael Clark, Colin Braun Kellymoss Porsche 911 GT3-R (992) 17 Qualifying Pro 34 Michai Stephens, Mikael Grenier JMF Motorsports Mercedes-AMG GT3 EVO Race Pro 34 Michai Stephens, Mikael Grenier JMF Motorsports Mercedes-AMG GT3 EVO 3:00:51.624 109 Competitors Acura --> Aston Martin --> Audi Sport --> BMW M --> Corvette --> Ferrari --> Ford --> Lamborghini --> McLaren --> Mercedes AMG --> Porsche --> Official Partners Visit GTWC America on Discord Visit GTWC America on Facebook Visit GTWC America on Instagram Visit GTWC America on X Visit GTWC America on Twitch Visit GTWC America on YouTube &copy; 2026 SRO Motorsports Group. All Rights Reserved. About Press Members Teams Privacy Policy Contact ",
+   "links": []
+  }
+ },
+ "https://api.gt-world-challenge-asia.com/results": {
+  "error": "fetch failed",
+  "bytes": 0,
+  "selects": [],
+  "links": [],
+  "text": "",
+  "scripts": []
+ },
+ "https://www.gt-world-challenge-asia.com/results": {
+  "status": 200,
+  "url": "https://www.gt-world-challenge-asia.com/results",
+  "type": "text/html; charset=\"utf-8\"",
+  "bytes": 56988,
+  "selects": [
+   {
+    "name": "filter_season_id",
+    "options": [
+     [
+      "0",
+      "Season"
+     ],
+     [
+      "11",
+      "2027"
+     ],
+     [
+      "10",
+      "2026"
+     ],
+     [
+      "9",
+      "2025"
+     ],
+     [
+      "8",
+      "2024"
+     ],
+     [
+      "7",
+      "2023"
+     ],
+     [
+      "6",
+      "2022"
+     ],
+     [
+      "5",
+      "2021"
+     ],
+     [
+      "4",
+      "2020"
+     ],
+     [
+      "3",
+      "2019"
+     ],
+     [
+      "2",
+      "2018"
+     ],
+     [
+      "1",
+      "2017"
+     ]
+    ]
+   },
+   {
+    "name": "filter_meeting_id",
+    "options": [
+     [
+      "0",
+      "Meeting"
+     ]
+    ]
+   },
+   {
+    "name": "filter_race_id",
+    "options": [
+     [
+      "",
+      "Session"
+     ]
+    ]
+   }
+  ],
+  "links": [
+   "https://www.gt-world-challenge-asia.com/results",
+   "https://fonts.googleapis.com",
+   "https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap",
+   "https://www.gt-world-challenge-asia.com/results#primary",
+   "/results",
+   "/results/2026/sepang",
+   "/results/2026/pertamina-mandalika-international-circuit",
+   "/results/2026/fuji-international-speedway",
+   "/results/2026/okayama-international-circuit",
+   "/results/2026/beijing-street-circuit",
+   "/results/2026/shanghai-international-circuit"
+  ],
+  "text": " Race Results 2026 | GT World Challenge Asia Powered by AWS Skip to Main Content Please enable JavaScript in your browser. Some elements of this website may not function correctly with JavaScript disabled. Menu Home Calendar News Gallery Videos Photos Competitors Cars Teams Drivers Entry Lists Results Teams Drivers Race Results Entry Lists Live Watch Live Live Timing TV Schedule About SRO Motorsports Partners Contact Fan Account Sign in Create Account Media &amp; Teams Press Members Downloads Home News Calendar Photos Videos Live Sign In Fan Account Press Members Downloads SRO SRO Motorsports Group SRO Motorsports Group America Intercontinental GT Challenge GT World Challenge GT World Challenge Europe Crowdstrike 24 Hours of Spa GT World Challenge Asia GT World Challenge America GT World Challenge Australia GT2 European Series British GT Championship Japan Cup GT4 European Series FFSA GT – GT4 France GT4 America GT4 Australia GT4 Manufacturer Ranking GT America TC America FFSA Tourisme TC France GR Cup 6ore di Roma --> GT3 Revival Series FIA Motorsport Games SRO Motorsports Group - Race Centre by MMC Curbstone Track Events SRO E-Sport GT Series Championship Season 2027 2026 2025 2024 2023 2022 2021 2020 2019 2018 2017 Meeting Session 2026 Results Season Meeting Series Round Class Cat Car # Team Car Time Laps Sepang International Circuit GT World Challenge Asia R1 GT3 PRO-AM 911 Absolute Racing Porsche 911 GT3 R (992) Evo 01:01:18.375 26 Sepang International Circuit GT World Challenge Asia R2 GT3 PRO-AM 4 Origine Motorsport Porsche 911 GT3 R (992) Evo 01:00:11.893 27 Mandalika International Circuit GT World Challenge Asia R3 GT3 SILVER 16 FAW Audi Sport Asia Team Phantom Audi R8 LMS GT3 EVO II 1:00:47.263 33 Mandalika International Circuit GT World Challenge Asia R4 GT3 PRO-AM 37 Phantom Global Racing Porsche 911 GT3 R (992) Evo 1:01:20.722 36 Fuji International Speedway GT World Challenge Asia R5 GT3 SILVER 96 Harmony Racing Ferrari 296 GT3 1:00:28.625 34 Fuji International Speedway GT World Challenge Asia R6 GT3 PRO-AM 11 Origine Motorsport Porsche 911 GT3 R (992) Evo 1:00:03.001 34 Okayama International Circuit GT World Challenge Asia R7 GT3 SILVER 16 FAW Audi Sport Asia Team Phantom Audi R8 LMS GT3 EVO II 1:01:24.358 33 Okayama International Circuit GT World Challenge Asia R8 GT3 PRO-AM 15 Audi Sport Asia Team Phantom Audi R8 LMS GT3 EVO II 1:01:00.717 37 Beijing Street Circuit GT World Challenge Asia R9 GT3 SILVER 96 Harmony Racing Ferrari 296 GT3 1:00:20.771 26 Beijing Street Circuit GT World Challenge Asia R10 GT3 PRO-AM 911 Absolute Racing Porsche 911 GT3 R (992) EVO 1:01:22.300 28 Shanghai International Circuit GT World Challenge Asia R11 GT3 SILVER 96 Harmony Racing Ferrari 296 GT3 1:02:00.370 29 Shanghai International Circuit GT World Challenge Asia R12 GT3 PRO-AM 11 Origine Motorsport Porsche 911 GT3 R (992) EVO 1:00:01.462 28 Competitors Audi --> BMW --> Ferrari --> Lamborghini --> Mercedes-AMG --> Nissan --> Porsche --> Official Partners AWS --> Pirelli --> TotalEnergies --> ROWE --> KW --> Toyota Gazoo Racing --> JAS Logistics --> Dixcel --> TSL --> Visit GTWC Asia on Facebook Visit GTWC Asia on Instagram Visit GTWC Asia on X Visit GTWC Asia on YouTube &copy; 2026 SRO Motorsports Group. All Rights Reserved. About Press Members Downloads Privacy Policy Contact ",
+  "scripts": [],
+  "sample": {
+   "url": "/results/2026/sepang",
+   "status": 200,
+   "text": " Race Results 2026 | Sepang International Circuit | Malaysia | GT World Challenge Asia Powered by AWS Skip to Main Content Please enable JavaScript in your browser. Some elements of this website may not function correctly with JavaScript disabled. Menu Home Calendar News Gallery Videos Photos Competitors Cars Teams Drivers Entry Lists Results Teams Drivers Race Results Entry Lists Live Watch Live Live Timing TV Schedule About SRO Motorsports Partners Contact Fan Account Sign in Create Account Media &amp; Teams Press Members Downloads Home News Calendar Photos Videos Live Sign In Fan Account Press Members Downloads SRO SRO Motorsports Group SRO Motorsports Group America Intercontinental GT Challenge GT World Challenge GT World Challenge Europe Crowdstrike 24 Hours of Spa GT World Challenge Asia GT World Challenge America GT World Challenge Australia GT2 European Series British GT Championship Japan Cup GT4 European Series FFSA GT – GT4 France GT4 America GT4 Australia GT4 Manufacturer Ranking GT America TC America FFSA Tourisme TC France GR Cup 6ore di Roma --> GT3 Revival Series FIA Motorsport Games SRO Motorsports Group - Race Centre by MMC Curbstone Track Events SRO E-Sport GT Series Championship Season 2027 2026 2025 2024 2023 2022 2021 2020 2019 2018 2017 Meeting Sepang International Circuit Pertamina Mandalika International Circuit Fuji International Speedway (SRO GT PowerTour) Okayama International Circuit (SRO GT PowerTour) Beijing Street Circuit Shanghai International Circuit Session Test Session 1 Test Session 2 Test Session 3 Test Session 4 Official Practice Bronze Session Pre-Qualifying Qualifying 1 Qualifying 2 Race 1 Race 2 Sepang International Circuit Malaysia GT World Challenge Asia 2026 Results Sessions Session Class Cat Car # Team Drivers Car Time Laps Race 1 GT3 PRO-AM 911 Absolute Racing Ruohan HUANG, Alessandro GHIRETTI Porsche 911 GT3 R (992) Evo 01:01:18.375 26 Race 2 GT3 PRO-AM 4 Origine Motorsport Wei LU, Alessio PICARIELLO Porsche 911 GT3 R (992) Evo 01:00:11.893 27 Competitors Audi --> BMW --> Ferrari --> Lamborghini --> Mercedes-AMG --> Nissan --> Porsche --> Official Partners AWS --> Pirelli --> TotalEnergies --> ROWE --> KW --> Toyota Gazoo Racing --> JAS Logistics --> Dixcel --> TSL --> Visit GTWC Asia on Facebook Visit GTWC Asia on Instagram Visit GTWC Asia on X Visit GTWC Asia on YouTube &copy; 2026 SRO Motorsports Group. All Rights Reserved. About Press Members Downloads Privacy Policy Contact ",
+   "links": []
+  }
+ },
+ "https://api.gt-world-challenge-asia.com/results?season=2025": {
+  "error": "fetch failed",
+  "bytes": 0,
+  "selects": [],
+  "links": [],
+  "text": "",
+  "scripts": []
+ },
+ "https://api.gt-world-challenge-australia.com/results": {
+  "error": "fetch failed",
+  "bytes": 0,
+  "selects": [],
+  "links": [],
+  "text": "",
+  "scripts": []
+ },
+ "https://www.gt-world-challenge-australia.com/results": {
+  "status": 200,
+  "url": "https://www.gt-world-challenge-australia.com/results",
+  "type": "text/html; charset=\"utf-8\"",
+  "bytes": 52982,
+  "selects": [
+   {
+    "name": "filter_season_id",
+    "options": [
+     [
+      "0",
+      "Season"
+     ],
+     [
+      "7",
+      "2027"
+     ],
+     [
+      "6",
+      "2026"
+     ],
+     [
+      "5",
+      "2025"
+     ],
+     [
+      "1",
+      "2024"
+     ],
+     [
+      "2",
+      "2023"
+     ],
+     [
+      "3",
+      "2022"
+     ],
+     [
+      "4",
+      "2021"
+     ]
+    ]
+   },
+   {
+    "name": "filter_meeting_id",
+    "options": [
+     [
+      "0",
+      "Meeting"
+     ],
+     [
+      "22",
+      "GT Festival Phillip Island"
+     ],
+     [
+      "29",
+      "GT Festival The Bend"
+     ],
+     [
+      "26",
+      "GT Festival Queensland"
+     ],
+     [
+      "27",
+      "GT Festival Darwin"
+     ],
+     [
+      "24",
+      "GT Festival Sydney"
+     ],
+     [
+      "28",
+      "Adelaide Grand Final"
+     ]
+    ]
+   }
+  ],
+  "links": [
+   "https://www.gt-world-challenge-australia.com/results",
+   "https://fonts.googleapis.com",
+   "https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap",
+   "https://www.gt-world-challenge-australia.com/results#primary",
+   "/results",
+   "/results/2026/gt-festival-phillip-island",
+   "/results/2026/The Bend",
+   "/results/2026/gt-festival-queensland",
+   "/results/2026/gt-festival-darwin",
+   "/results/2026/Sydney",
+   "https://trakracer.com.au"
+  ],
+  "text": " Race Results 2026 | GT World Challenge Australia Powered by AWS Skip to Main Content Please enable JavaScript in your browser. Some elements of this website may not function correctly with JavaScript disabled. Menu Home Calendar News Gallery Videos Photos Competitors Cars Teams Drivers Entry Lists Results Teams Drivers Race Results Entry Lists Live Watch Live Live Timing About SRO Motorsports GTWC Australia Partners Regulations Contact Fan Account Sign in Create Account Media &amp; Teams Press Members Teams Home News Calendar Photos Videos Live Sign In Fan Account Press Members Teams SRO SRO Motorsports Group SRO Motorsports Group America Intercontinental GT Challenge GT World Challenge GT World Challenge Europe Crowdstrike 24 Hours of Spa GT World Challenge Asia GT World Challenge America GT World Challenge Australia GT2 European Series British GT Championship Japan Cup GT4 European Series FFSA GT – GT4 France GT4 America GT4 Australia GT4 Manufacturer Ranking GT America TC America FFSA Tourisme TC France GR Cup 6ore di Roma --> GT3 Revival Series FIA Motorsport Games SRO Motorsports Group - Race Centre by MMC Curbstone Track Events SRO E-Sport GT Series Championship 2026 Results Season 2027 2026 2025 2024 2023 2022 2021 Meeting GT Festival Phillip Island GT Festival The Bend GT Festival Queensland GT Festival Darwin GT Festival Sydney Adelaide Grand Final Results 2026 Season Race Date GT Festival Phillip Island 27 - 29 March 2026 View GT Festival The Bend 8 - 10 May 2026 View GT Festival Queensland 12 - 14 June 2026 View GT Festival Darwin 24 - 26 July 2026 View GT Festival Sydney 18 - 20 September 2026 View Adelaide Grand Final 26 - 29 November 2026 Not Available Competitors Aston Martin --> Audi Sport --> Ferrari --> Lamborghini --> McLaren --> Mercedes-AMG --> Porsche --> Official Partners AWS --> Pirelli --> Rowe --> Amadio Wines --> Shell Card --> Trak Racer Simulation --> Visit GTWC Australia on Facebook Visit GTWC Australia on Instagram Visit GTWC Australia on X Visit GTWC Australia on YouTube &copy; 2026 SRO Motorsports Group. All Rights Reserved. About Press Members Teams Privacy Policy Contact ",
+  "scripts": [],
+  "sample": {
+   "url": "/results/2026/gt-festival-phillip-island",
+   "status": 200,
+   "text": " Race Results 2026 | Phillip Island Grand Prix Circuit | Australia | GT World Challenge Australia Powered by AWS Skip to Main Content Please enable JavaScript in your browser. Some elements of this website may not function correctly with JavaScript disabled. Menu Home Calendar News Gallery Videos Photos Competitors Cars Teams Drivers Entry Lists Results Teams Drivers Race Results Entry Lists Live Watch Live Live Timing About SRO Motorsports GTWC Australia Partners Regulations Contact Fan Account Sign in Create Account Media &amp; Teams Press Members Teams Home News Calendar Photos Videos Live Sign In Fan Account Press Members Teams SRO SRO Motorsports Group SRO Motorsports Group America Intercontinental GT Challenge GT World Challenge GT World Challenge Europe Crowdstrike 24 Hours of Spa GT World Challenge Asia GT World Challenge America GT World Challenge Australia GT2 European Series British GT Championship Japan Cup GT4 European Series FFSA GT – GT4 France GT4 America GT4 Australia GT4 Manufacturer Ranking GT America TC America FFSA Tourisme TC France GR Cup 6ore di Roma --> GT3 Revival Series FIA Motorsport Games SRO Motorsports Group - Race Centre by MMC Curbstone Track Events SRO E-Sport GT Series Championship 2026 Results Season 2027 2026 2025 2024 2023 2022 2021 Meeting GT Festival Phillip Island GT Festival The Bend GT Festival Queensland GT Festival Darwin GT Festival Sydney Adelaide Grand Final Phillip Island Grand Prix Circuit Australia 2026 Practice 1 Practice 2 Qualifying 1 Qualifying 2 Race 1 Race 2 Competitors Aston Martin --> Audi Sport --> Ferrari --> Lamborghini --> McLaren --> Mercedes-AMG --> Porsche --> Official Partners AWS --> Pirelli --> Rowe --> Amadio Wines --> Shell Card --> Trak Racer Simulation --> Visit GTWC Australia on Facebook Visit GTWC Australia on Instagram Visit GTWC Australia on X Visit GTWC Australia on YouTube &copy; 2026 SRO Motorsports Group. All Rights Reserved. About Press Members Teams Privacy Policy Contact ",
+   "links": [
+    "/images/results/22/Final Results GTWC Australia powered by AWS R1 Free Practice 1 (1).pdf",
+    "/images/results/22/Final Results GTWC Australia powered by AWS R1 Free Practice 2.pdf",
+    "/images/results/22/Final Results GTWC Australia powered by AWS R1 Qualifying 1.pdf",
+    "/images/results/22/Final Results GTWC Australia powered by AWS R1 Qualifying 2.pdf",
+    "/images/results/22/PHIL_28032026_1555_Race_R5_GT3_RES_F_1.pdf",
+    "/images/results/22/Final Results GTWC Australia powered by AWS R1  Race 2 (2).pdf"
+   ]
+  }
+ },
+ "https://api.gt-world-challenge-australia.com/results?season=2025": {
+  "error": "fetch failed",
+  "bytes": 0,
+  "selects": [],
+  "links": [],
+  "text": "",
+  "scripts": []
+ },
+ "https://api.intercontinentalgtchallenge.com/results": {
+  "status": 200,
+  "url": "https://api.intercontinentalgtchallenge.com/results",
+  "type": "text/html; charset=\"utf-8\"",
+  "bytes": 42484,
+  "selects": [
+   {
+    "name": "filter_season_id",
+    "options": [
+     [
+      "0",
+      "Season"
+     ],
+     [
+      "17",
+      "2027"
+     ],
+     [
+      "16",
+      "2026"
+     ],
+     [
+      "15",
+      "2025"
+     ],
+     [
+      "14",
+      "2024"
+     ],
+     [
+      "13",
+      "2023"
+     ],
+     [
+      "12",
+      "2022"
+     ],
+     [
+      "11",
+      "2021"
+     ],
+     [
+      "10",
+      "2020"
+     ],
+     [
+      "9",
+      "2019"
+     ],
+     [
+      "8",
+      "2018"
+     ],
+     [
+      "7",
+      "2017"
+     ],
+     [
+      "6",
+      "2016"
+     ],
+     [
+      "5",
+      "2015"
+     ],
+     [
+      "1",
+      "2014"
+     ],
+     [
+      "2",
+      "2013"
+     ],
+     [
+      "3",
+      "2012"
+     ],
+     [
+      "4",
+      "2011"
+     ]
+    ]
+   },
+   {
+    "name": "filter_meeting_id",
+    "options": [
+     [
+      "0",
+      "Meeting"
+     ]
+    ]
+   }
+  ],
+  "links": [
+   "https://www.intercontinentalgtchallenge.com/results",
+   "https://fonts.googleapis.com",
+   "https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap",
+   "https://www.intercontinentalgtchallenge.com/results#maincontent",
+   "/results",
+   "/results/2026/bathurst-12-hour",
+   "/results/2026/adac-ravenol-24h-nuerburgring",
+   "/results/2026/crowdstrike-24-hours-of-spa",
+   "/results/2026/suzuka-1000km",
+   "/results/2026/Indianapolis 8 Hour"
+  ],
+  "text": " Intercontinental GT Challenge Skip to Main Content Please enable JavaScript in your browser. Some elements of this website may not function correctly with JavaScript disabled. Menu Home Calendar News Gallery Videos Photos Manufacturers Entry Lists Results Drivers Standings GT3 Manufacturers Standings Independent Cup Standings Race Results Entry Lists Live Watch Live Live Timing About SRO Motorsports Intercontinental GT Challenge Contact Fan Account Sign in Create Account Media &amp; Teams Press Members Teams Home News Calendar Photos Videos Live Sign In Fan Account Press Members Teams SRO SRO Motorsports Group SRO Motorsports Group America Intercontinental GT Challenge GT World Challenge GT World Challenge Europe Crowdstrike 24 Hours of Spa GT World Challenge Asia GT World Challenge America GT World Challenge Australia GT2 European Series British GT Championship Japan Cup GT4 European Series FFSA GT – GT4 France GT4 America GT4 Australia GT4 Manufacturer Ranking GT America TC America FFSA Tourisme TC France GR Cup 6ore di Roma --> GT3 Revival Series FIA Motorsport Games SRO Motorsports Group - Race Centre by MMC Curbstone Track Events SRO E-Sport GT Series Championship 2026 Results Season 2027 2026 2025 2024 2023 2022 2021 2020 2019 2018 2017 2016 2015 2014 2013 2012 2011 Meeting Results 2026 Season Race Date Meguiar&#039;s Bathurst 12 Hour 11 - 15 February 2026 Race Results ADAC RAVENOL 24h N&uuml;rburgring 14 - 17 May 2026 Race Results CrowdStrike 24 Hours of Spa 23 - 28 June 2026 Race Results Suzuka 1000km 11 - 13 September 2026 Race Results Indianapolis 8 Hour 8 - 10 October 2026 Race Results Visit IGTC on Facebook Visit IGTC on Instagram Visit IGTC on X Visit IGTC on YouTube &copy; 2026 SRO Motorsports Group. All Rights Reserved. About Press Members Teams Privacy Policy Contact ",
+  "scripts": [],
+  "sample": {
+   "url": "/results/2026/bathurst-12-hour",
+   "status": 200,
+   "text": " Intercontinental GT Challenge Skip to Main Content Please enable JavaScript in your browser. Some elements of this website may not function correctly with JavaScript disabled. Menu Home Calendar News Gallery Videos Photos Manufacturers Entry Lists Results Drivers Standings GT3 Manufacturers Standings Independent Cup Standings Race Results Entry Lists Live Watch Live Live Timing About SRO Motorsports Intercontinental GT Challenge Contact Fan Account Sign in Create Account Media &amp; Teams Press Members Teams Home News Calendar Photos Videos Live Sign In Fan Account Press Members Teams SRO SRO Motorsports Group SRO Motorsports Group America Intercontinental GT Challenge GT World Challenge GT World Challenge Europe Crowdstrike 24 Hours of Spa GT World Challenge Asia GT World Challenge America GT World Challenge Australia GT2 European Series British GT Championship Japan Cup GT4 European Series FFSA GT – GT4 France GT4 America GT4 Australia GT4 Manufacturer Ranking GT America TC America FFSA Tourisme TC France GR Cup 6ore di Roma --> GT3 Revival Series FIA Motorsport Games SRO Motorsports Group - Race Centre by MMC Curbstone Track Events SRO E-Sport GT Series Championship 2026 Results Season 2027 2026 2025 2024 2023 2022 2021 2020 2019 2018 2017 2016 2015 2014 2013 2012 2011 Meeting Meguiar&#039;s Bathurst 12 Hour ADAC RAVENOL 24h N&uuml;rburgring CrowdStrike 24 Hours of Spa Suzuka 1000km Indianapolis 8 Hour Mount Panorama 2026 Free Practice 1 Free Practice 2 (Bronze Drivers) Free Practice 3 Free Practice 4 (Bronze Drivers) Free Practice 5 Free Practice 6 Qualifying Combined Qualifying 3 Race Visit IGTC on Facebook Visit IGTC on Instagram Visit IGTC on X Visit IGTC on YouTube &copy; 2026 SRO Motorsports Group. All Rights Reserved. About Press Members Teams Privacy Policy Contact ",
+   "links": [
+    "/images/results/149/Practice 1 - Provisional Results.pdf",
+    "/images/results/149/MOUN_13_02_2026_1100_Practice_P4_12H_STD_P_1.pdf",
+    "/images/results/149/MOUN_13_02_2026_1410_Practice_P5_12H_STD_P_1.pdf",
+    "/images/results/149/MOUN_13_02_2026_1645_Practice_P6_12H_RES_F_1.pdf",
+    "/images/results/149/MOUN_14_02_2026_0807_Practice_P7_12H_STD_P_1.pdf",
+    "/images/results/149/Practice 6 - Provisional Results.pdf",
+    "/images/results/149/Qualifying Classification - Combined Provisional.pdf",
+    "/images/results/149/Pirelli Pole Battle Results - Provisional.pdf",
+    "/images/results/149/MOUN_15_02_2026_0545_Race_R6_12H_RES_F_1.pdf"
+   ]
+  }
+ },
+ "https://www.intercontinentalgtchallenge.com/results": {
+  "status": 200,
+  "url": "https://www.intercontinentalgtchallenge.com/results",
+  "type": "text/html; charset=\"utf-8\"",
+  "bytes": 42484,
+  "selects": [
+   {
+    "name": "filter_season_id",
+    "options": [
+     [
+      "0",
+      "Season"
+     ],
+     [
+      "17",
+      "2027"
+     ],
+     [
+      "16",
+      "2026"
+     ],
+     [
+      "15",
+      "2025"
+     ],
+     [
+      "14",
+      "2024"
+     ],
+     [
+      "13",
+      "2023"
+     ],
+     [
+      "12",
+      "2022"
+     ],
+     [
+      "11",
+      "2021"
+     ],
+     [
+      "10",
+      "2020"
+     ],
+     [
+      "9",
+      "2019"
+     ],
+     [
+      "8",
+      "2018"
+     ],
+     [
+      "7",
+      "2017"
+     ],
+     [
+      "6",
+      "2016"
+     ],
+     [
+      "5",
+      "2015"
+     ],
+     [
+      "1",
+      "2014"
+     ],
+     [
+      "2",
+      "2013"
+     ],
+     [
+      "3",
+      "2012"
+     ],
+     [
+      "4",
+      "2011"
+     ]
+    ]
+   },
+   {
+    "name": "filter_meeting_id",
+    "options": [
+     [
+      "0",
+      "Meeting"
+     ]
+    ]
+   }
+  ],
+  "links": [
+   "https://www.intercontinentalgtchallenge.com/results",
+   "https://fonts.googleapis.com",
+   "https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap",
+   "https://www.intercontinentalgtchallenge.com/results#maincontent",
+   "/results",
+   "/results/2026/bathurst-12-hour",
+   "/results/2026/adac-ravenol-24h-nuerburgring",
+   "/results/2026/crowdstrike-24-hours-of-spa",
+   "/results/2026/suzuka-1000km",
+   "/results/2026/Indianapolis 8 Hour"
+  ],
+  "text": " Intercontinental GT Challenge Skip to Main Content Please enable JavaScript in your browser. Some elements of this website may not function correctly with JavaScript disabled. Menu Home Calendar News Gallery Videos Photos Manufacturers Entry Lists Results Drivers Standings GT3 Manufacturers Standings Independent Cup Standings Race Results Entry Lists Live Watch Live Live Timing About SRO Motorsports Intercontinental GT Challenge Contact Fan Account Sign in Create Account Media &amp; Teams Press Members Teams Home News Calendar Photos Videos Live Sign In Fan Account Press Members Teams SRO SRO Motorsports Group SRO Motorsports Group America Intercontinental GT Challenge GT World Challenge GT World Challenge Europe Crowdstrike 24 Hours of Spa GT World Challenge Asia GT World Challenge America GT World Challenge Australia GT2 European Series British GT Championship Japan Cup GT4 European Series FFSA GT – GT4 France GT4 America GT4 Australia GT4 Manufacturer Ranking GT America TC America FFSA Tourisme TC France GR Cup 6ore di Roma --> GT3 Revival Series FIA Motorsport Games SRO Motorsports Group - Race Centre by MMC Curbstone Track Events SRO E-Sport GT Series Championship 2026 Results Season 2027 2026 2025 2024 2023 2022 2021 2020 2019 2018 2017 2016 2015 2014 2013 2012 2011 Meeting Results 2026 Season Race Date Meguiar&#039;s Bathurst 12 Hour 11 - 15 February 2026 Race Results ADAC RAVENOL 24h N&uuml;rburgring 14 - 17 May 2026 Race Results CrowdStrike 24 Hours of Spa 23 - 28 June 2026 Race Results Suzuka 1000km 11 - 13 September 2026 Race Results Indianapolis 8 Hour 8 - 10 October 2026 Race Results Visit IGTC on Facebook Visit IGTC on Instagram Visit IGTC on X Visit IGTC on YouTube &copy; 2026 SRO Motorsports Group. All Rights Reserved. About Press Members Teams Privacy Policy Contact ",
+  "scripts": [],
+  "sample": {
+   "url": "/results/2026/bathurst-12-hour",
+   "status": 200,
+   "text": " Intercontinental GT Challenge Skip to Main Content Please enable JavaScript in your browser. Some elements of this website may not function correctly with JavaScript disabled. Menu Home Calendar News Gallery Videos Photos Manufacturers Entry Lists Results Drivers Standings GT3 Manufacturers Standings Independent Cup Standings Race Results Entry Lists Live Watch Live Live Timing About SRO Motorsports Intercontinental GT Challenge Contact Fan Account Sign in Create Account Media &amp; Teams Press Members Teams Home News Calendar Photos Videos Live Sign In Fan Account Press Members Teams SRO SRO Motorsports Group SRO Motorsports Group America Intercontinental GT Challenge GT World Challenge GT World Challenge Europe Crowdstrike 24 Hours of Spa GT World Challenge Asia GT World Challenge America GT World Challenge Australia GT2 European Series British GT Championship Japan Cup GT4 European Series FFSA GT – GT4 France GT4 America GT4 Australia GT4 Manufacturer Ranking GT America TC America FFSA Tourisme TC France GR Cup 6ore di Roma --> GT3 Revival Series FIA Motorsport Games SRO Motorsports Group - Race Centre by MMC Curbstone Track Events SRO E-Sport GT Series Championship 2026 Results Season 2027 2026 2025 2024 2023 2022 2021 2020 2019 2018 2017 2016 2015 2014 2013 2012 2011 Meeting Meguiar&#039;s Bathurst 12 Hour ADAC RAVENOL 24h N&uuml;rburgring CrowdStrike 24 Hours of Spa Suzuka 1000km Indianapolis 8 Hour Mount Panorama 2026 Free Practice 1 Free Practice 2 (Bronze Drivers) Free Practice 3 Free Practice 4 (Bronze Drivers) Free Practice 5 Free Practice 6 Qualifying Combined Qualifying 3 Race Visit IGTC on Facebook Visit IGTC on Instagram Visit IGTC on X Visit IGTC on YouTube &copy; 2026 SRO Motorsports Group. All Rights Reserved. About Press Members Teams Privacy Policy Contact ",
+   "links": [
+    "/images/results/149/Practice 1 - Provisional Results.pdf",
+    "/images/results/149/MOUN_13_02_2026_1100_Practice_P4_12H_STD_P_1.pdf",
+    "/images/results/149/MOUN_13_02_2026_1410_Practice_P5_12H_STD_P_1.pdf",
+    "/images/results/149/MOUN_13_02_2026_1645_Practice_P6_12H_RES_F_1.pdf",
+    "/images/results/149/MOUN_14_02_2026_0807_Practice_P7_12H_STD_P_1.pdf",
+    "/images/results/149/Practice 6 - Provisional Results.pdf",
+    "/images/results/149/Qualifying Classification - Combined Provisional.pdf",
+    "/images/results/149/Pirelli Pole Battle Results - Provisional.pdf",
+    "/images/results/149/MOUN_15_02_2026_0545_Race_R6_12H_RES_F_1.pdf"
+   ]
+  }
+ },
+ "https://api.intercontinentalgtchallenge.com/results?season=2025": {
+  "status": 200,
+  "url": "https://api.intercontinentalgtchallenge.com/results?season=2025",
+  "type": "text/html; charset=\"utf-8\"",
+  "bytes": 42520,
+  "selects": [
+   {
+    "name": "filter_season_id",
+    "options": [
+     [
+      "0",
+      "Season"
+     ],
+     [
+      "17",
+      "2027"
+     ],
+     [
+      "16",
+      "2026"
+     ],
+     [
+      "15",
+      "2025"
+     ],
+     [
+      "14",
+      "2024"
+     ],
+     [
+      "13",
+      "2023"
+     ],
+     [
+      "12",
+      "2022"
+     ],
+     [
+      "11",
+      "2021"
+     ],
+     [
+      "10",
+      "2020"
+     ],
+     [
+      "9",
+      "2019"
+     ],
+     [
+      "8",
+      "2018"
+     ],
+     [
+      "7",
+      "2017"
+     ],
+     [
+      "6",
+      "2016"
+     ],
+     [
+      "5",
+      "2015"
+     ],
+     [
+      "1",
+      "2014"
+     ],
+     [
+      "2",
+      "2013"
+     ],
+     [
+      "3",
+      "2012"
+     ],
+     [
+      "4",
+      "2011"
+     ]
+    ]
+   },
+   {
+    "name": "filter_meeting_id",
+    "options": [
+     [
+      "0",
+      "Meeting"
+     ]
+    ]
+   }
+  ],
+  "links": [
+   "https://www.intercontinentalgtchallenge.com/results?season=2025",
+   "https://fonts.googleapis.com",
+   "https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap",
+   "https://www.intercontinentalgtchallenge.com/results?season=2025#maincontent",
+   "/results",
+   "/results/2026/bathurst-12-hour",
+   "/results/2026/adac-ravenol-24h-nuerburgring",
+   "/results/2026/crowdstrike-24-hours-of-spa",
+   "/results/2026/suzuka-1000km",
+   "/results/2026/Indianapolis 8 Hour"
+  ],
+  "text": " Intercontinental GT Challenge Skip to Main Content Please enable JavaScript in your browser. Some elements of this website may not function correctly with JavaScript disabled. Menu Home Calendar News Gallery Videos Photos Manufacturers Entry Lists Results Drivers Standings GT3 Manufacturers Standings Independent Cup Standings Race Results Entry Lists Live Watch Live Live Timing About SRO Motorsports Intercontinental GT Challenge Contact Fan Account Sign in Create Account Media &amp; Teams Press Members Teams Home News Calendar Photos Videos Live Sign In Fan Account Press Members Teams SRO SRO Motorsports Group SRO Motorsports Group America Intercontinental GT Challenge GT World Challenge GT World Challenge Europe Crowdstrike 24 Hours of Spa GT World Challenge Asia GT World Challenge America GT World Challenge Australia GT2 European Series British GT Championship Japan Cup GT4 European Series FFSA GT – GT4 France GT4 America GT4 Australia GT4 Manufacturer Ranking GT America TC America FFSA Tourisme TC France GR Cup 6ore di Roma --> GT3 Revival Series FIA Motorsport Games SRO Motorsports Group - Race Centre by MMC Curbstone Track Events SRO E-Sport GT Series Championship 2026 Results Season 2027 2026 2025 2024 2023 2022 2021 2020 2019 2018 2017 2016 2015 2014 2013 2012 2011 Meeting Results 2026 Season Race Date Meguiar&#039;s Bathurst 12 Hour 11 - 15 February 2026 Race Results ADAC RAVENOL 24h N&uuml;rburgring 14 - 17 May 2026 Race Results CrowdStrike 24 Hours of Spa 23 - 28 June 2026 Race Results Suzuka 1000km 11 - 13 September 2026 Race Results Indianapolis 8 Hour 8 - 10 October 2026 Race Results Visit IGTC on Facebook Visit IGTC on Instagram Visit IGTC on X Visit IGTC on YouTube &copy; 2026 SRO Motorsports Group. All Rights Reserved. About Press Members Teams Privacy Policy Contact ",
+  "scripts": [],
+  "sample": {
+   "url": "/results/2026/bathurst-12-hour",
+   "status": 200,
+   "text": " Intercontinental GT Challenge Skip to Main Content Please enable JavaScript in your browser. Some elements of this website may not function correctly with JavaScript disabled. Menu Home Calendar News Gallery Videos Photos Manufacturers Entry Lists Results Drivers Standings GT3 Manufacturers Standings Independent Cup Standings Race Results Entry Lists Live Watch Live Live Timing About SRO Motorsports Intercontinental GT Challenge Contact Fan Account Sign in Create Account Media &amp; Teams Press Members Teams Home News Calendar Photos Videos Live Sign In Fan Account Press Members Teams SRO SRO Motorsports Group SRO Motorsports Group America Intercontinental GT Challenge GT World Challenge GT World Challenge Europe Crowdstrike 24 Hours of Spa GT World Challenge Asia GT World Challenge America GT World Challenge Australia GT2 European Series British GT Championship Japan Cup GT4 European Series FFSA GT – GT4 France GT4 America GT4 Australia GT4 Manufacturer Ranking GT America TC America FFSA Tourisme TC France GR Cup 6ore di Roma --> GT3 Revival Series FIA Motorsport Games SRO Motorsports Group - Race Centre by MMC Curbstone Track Events SRO E-Sport GT Series Championship 2026 Results Season 2027 2026 2025 2024 2023 2022 2021 2020 2019 2018 2017 2016 2015 2014 2013 2012 2011 Meeting Meguiar&#039;s Bathurst 12 Hour ADAC RAVENOL 24h N&uuml;rburgring CrowdStrike 24 Hours of Spa Suzuka 1000km Indianapolis 8 Hour Mount Panorama 2026 Free Practice 1 Free Practice 2 (Bronze Drivers) Free Practice 3 Free Practice 4 (Bronze Drivers) Free Practice 5 Free Practice 6 Qualifying Combined Qualifying 3 Race Visit IGTC on Facebook Visit IGTC on Instagram Visit IGTC on X Visit IGTC on YouTube &copy; 2026 SRO Motorsports Group. All Rights Reserved. About Press Members Teams Privacy Policy Contact ",
+   "links": [
+    "/images/results/149/Practice 1 - Provisional Results.pdf",
+    "/images/results/149/MOUN_13_02_2026_1100_Practice_P4_12H_STD_P_1.pdf",
+    "/images/results/149/MOUN_13_02_2026_1410_Practice_P5_12H_STD_P_1.pdf",
+    "/images/results/149/MOUN_13_02_2026_1645_Practice_P6_12H_RES_F_1.pdf",
+    "/images/results/149/MOUN_14_02_2026_0807_Practice_P7_12H_STD_P_1.pdf",
+    "/images/results/149/Practice 6 - Provisional Results.pdf",
+    "/images/results/149/Qualifying Classification - Combined Provisional.pdf",
+    "/images/results/149/Pirelli Pole Battle Results - Provisional.pdf",
+    "/images/results/149/MOUN_15_02_2026_0545_Race_R6_12H_RES_F_1.pdf"
+   ]
+  }
+ },
+ "https://api.britishgt.com/results": {
+  "status": 200,
+  "url": "https://api.britishgt.com/results",
+  "type": "text/html; charset=\"utf-8\"",
+  "bytes": 52745,
+  "selects": [
+   {
+    "name": "filter_season_id",
+    "options": [
+     [
+      "0",
+      "Season"
+     ],
+     [
+      "14",
+      "2027"
+     ],
+     [
+      "13",
+      "2026"
+     ],
+     [
+      "12",
+      "2025"
+     ],
+     [
+      "11",
+      "2024"
+     ],
+     [
+      "10",
+      "2023"
+     ],
+     [
+      "9",
+      "2022"
+     ],
+     [
+      "8",
+      "2021"
+     ],
+     [
+      "7",
+      "2020"
+     ],
+     [
+      "6",
+      "2019"
+     ],
+     [
+      "5",
+      "2018"
+     ],
+     [
+      "4",
+      "2017"
+     ],
+     [
+      "1",
+      "2016"
+     ],
+     [
+      "2",
+      "2015"
+     ]
+    ]
+   },
+   {
+    "name": "filter_meeting_id",
+    "options": [
+     [
+      "0",
+      "Meeting"
+     ]
+    ]
+   },
+   {
+    "name": "filter_race_id",
+    "options": [
+     [
+      "",
+      "Session"
+     ]
+    ]
+   }
+  ],
+  "links": [
+   "https://www.britishgt.com/results",
+   "https://fonts.googleapis.com",
+   "https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap",
+   "https://www.britishgt.com/results#primary",
+   "/results",
+   "/results/2026/silverstone",
+   "/results/2026/oulton-park",
+   "/results/2026/spa-francorchamps",
+   "/results/2026/snetterton",
+   "/results/2026/donington-park",
+   "/results/2026/brands-hatch"
+  ],
+  "text": " Race Results 2026 - 2026 | British GT Championship Skip to Main Content Please enable JavaScript in your browser. Some elements of this website may not function correctly with JavaScript disabled. Menu Home Calendar News Shop Gallery Videos Photos Competitors Cars Teams Drivers Entry Lists Results Teams Drivers Race Results Entry Lists Live Watch Live Live Timing About SRO Motorsports British GT Partners Contact Fan Account Sign in Create Account Media &amp; Teams Press Members Teams Home News Calendar Photos Videos Live Sign In Fan Account Press Members Teams Shop SRO SRO Motorsports Group SRO Motorsports Group America Intercontinental GT Challenge GT World Challenge GT World Challenge Europe Crowdstrike 24 Hours of Spa GT World Challenge Asia GT World Challenge America GT World Challenge Australia GT2 European Series British GT Championship Japan Cup GT4 European Series FFSA GT – GT4 France GT4 America GT4 Australia GT4 Manufacturer Ranking GT America TC America FFSA Tourisme TC France GR Cup 6ore di Roma --> GT3 Revival Series FIA Motorsport Games SRO Motorsports Group - Race Centre by MMC Curbstone Track Events SRO E-Sport GT Series Championship 2026 Results Season 2027 2026 2025 2024 2023 2022 2021 2020 2019 2018 2017 2016 2015 Meeting Session 2026 Results Season Meeting Round Class Car # Team Car Time Laps Silverstone GP R1 GT3 3 Optimum Motorsport McLaren 720S GT3 Evo 3:00:55.382 71 Silverstone GP R1 GT4 74 Innovation Racing Ginetta G56 GT4 Evo 3:01:46.118 67 Oulton Park R2 GT3 63 Barwell Motorsport Lamborghini Huracan GT3 Evo2 59:59.683 33 Oulton Park R2 GT4 24 Century Motorsport BMW M4 GT4 Evo 1:01:20.236 32 Oulton Park R3 GT3 77 Optimum Motorsport McLaren 720S GT3 Evo 1:00:49.522 36 Oulton Park R3 GT4 27 Grange Racing by FSR Aston Martin Vantage AMR GT4 Evo 1:01:01.287 33 Spa-Francorchamps R4 GT3 78 Barwell Motorsport Lamborghini Huracan GT3 Evo2 02:01:23.252 37 Spa-Francorchamps R4 GT4 27 Grange Racing with FSR Aston Martin Vantage AMR GT4 Evo 02:01:27.428 36 Snetterton 300 R5 GT3 90 Optimum Motorsport McLaren 720S GT3 Evo 1:01:11.052 33 Snetterton 300 R5 GT4 74 Innovation Racing Ginetta G56 GT4 Evo 1:03:05.758 31 Snetterton 300 R6 GT3 77 Optimum Motorsport McLaren 720S GT3 Evo 1:01:35.470 33 Snetterton 300 R6 GT4 59 Optimum Motorsport McLaren Artura GT4 1:02:52.600 31 Donington Park GP R7 GT3 63 Barwell Motorsport Lamborghini Huracan GT3 EVO2 2:00:52.842 75 Donington Park GP R7 GT4 84 Paddock Motorsport McLaren Artura GT4 2:02:28.255 70 Brands Hatch GP R8 GT3 67 Orange Racing by JMH McLaren 720S GT3 EVO 2:00:47.104 80 Brands Hatch GP R8 GT4 59 Optimum Motorsport McLaren Artura GT4 2:00:48.297 74 Competitors Aston Martin Racing --> BMW --> Ferrari --> Ginetta --> Lamborghini --> McLaren --> Mercedes-AMG --> Porsche --> Official Partners Visit British GT on Facebook Visit British GT on Instagram Visit British GT on X Visit British GT on YouTube &copy; 2026 SRO Motorsports Group. All Rights Reserved. About Press Members Teams Privacy Policy Contact ",
+  "scripts": [],
+  "sample": {
+   "url": "/results/2026/silverstone",
+   "status": 200,
+   "text": " Race Results 2026 | Silverstone GP | Great Britain | British GT Championship Skip to Main Content Please enable JavaScript in your browser. Some elements of this website may not function correctly with JavaScript disabled. Menu Home Calendar News Shop Gallery Videos Photos Competitors Cars Teams Drivers Entry Lists Results Teams Drivers Race Results Entry Lists Live Watch Live Live Timing About SRO Motorsports British GT Partners Contact Fan Account Sign in Create Account Media &amp; Teams Press Members Teams Home News Calendar Photos Videos Live Sign In Fan Account Press Members Teams Shop SRO SRO Motorsports Group SRO Motorsports Group America Intercontinental GT Challenge GT World Challenge GT World Challenge Europe Crowdstrike 24 Hours of Spa GT World Challenge Asia GT World Challenge America GT World Challenge Australia GT2 European Series British GT Championship Japan Cup GT4 European Series FFSA GT – GT4 France GT4 America GT4 Australia GT4 Manufacturer Ranking GT America TC America FFSA Tourisme TC France GR Cup 6ore di Roma --> GT3 Revival Series FIA Motorsport Games SRO Motorsports Group - Race Centre by MMC Curbstone Track Events SRO E-Sport GT Series Championship 2026 Results Season 2027 2026 2025 2024 2023 2022 2021 2020 2019 2018 2017 2016 2015 Meeting Silverstone 500 Oulton Park Spa-Francorchamps Snetterton Donington Park Brands Hatch Session Set-up Test 1 Test 2 Event Free Practice 1 Pre-Qualifying GT3 Qualifying 1 GT3 Qualifying 2 GT3 Qualifying Combined GT4 Qualifying 1 GT4 Qualifying 2 GT4 Qualifying Combined Warm Up Race Silverstone GP Great Britain 2026 Results Sessions Session Class Car # Team Driver Car Time Laps Test 1 GT3 63 Barwell Motorsport Rob COLLARD, Hugo COOK Lamborghini Huracan GT3 Evo2 1:58.658 20 Test 1 GT4 21 MK Racing Jessica HAWKINS, Will ORTON Aston Martin Vantage AMR GT4 Evo 2:10.583 13 Test 2 GT3 78 Barwell Motorsport Alex MARTIN, Jarrod WABERSKI Lamborghini Huracan GT3 Evo2 1:58.329 20 Test 2 GT4 21 MK Racing Jessica HAWKINS, Will ORTON Aston Martin Vantage AMR GT4 Evo 2:09.733 17 Free Practice 1 GT3 63 Barwell Motorsport Rob COLLARD, Hugo COOK Lamborghini Huracan GT3 Evo2 1:57.908 23 Free Practice 1 GT4 84 Mahiki Racing Revie LAKE, Blake ANGLISS McLaren Artura GT4 2:09.422 19 Pre-Qualifying GT3 1 2 Seas Motorsport Charles DAWSON, Kiern JEWISS Mercedes-AMG GT3 Evo 1:58.851 20 Pre-Qualifying GT4 61 WSR FlexiFly Ernie GRAHAM, Colin TURKINGTON BMW M4 GT4 Evo 2:10.184 19 GT3 Qualifying 1 GT3 91 Paradine Motorsport Darren LEUNG, Dan HARPER BMW M4 GT3 Evo 1:58.709 5 GT3 Qualifying 2 GT3 77 Optimum Motorsport Morgan TILLBROOK, Ben BARNICOAT McLaren 720S GT3 Evo 1:57.214 5 GT3 Qualifying Combined GT3 91 Paradine Motorsport Darren LEUNG, Dan HARPER BMW M4 GT3 Evo 3:56.320 8 GT4 Qualifying 1 GT4 74 Innovation Racing Thomas HOLLAND, Hadley SIMPSON Ginetta G56 GT4 Evo 2:09.222 4 GT4 Qualifying 2 GT4 42 Toro Verde GT Luke SHAW, Jack MITCHELL Ginetta G56 GT4 Evo 2:08.601 4 GT4 Qualifying Combined GT4 74 Innovation Racing Thomas HOLLAND, Hadley SIMPSON Ginetta G56 GT4 Evo 4:18.723 8 Warm Up GT3 3 Optimum Motorsport Yasser SHAHIN, Garnet PATTERSON McLaren 720S GT3 Evo 1:58.467 7 Warm Up GT4 8 Toro Verde GT Ian DUGGAN, Tom BRADSHAW Porsche 718 Cayman GT4 RS CS 2:10.058 6 Race GT3 3 Optimum Motorsport Yasser SHAHIN, Garnet PATTERSON McLaren 720S GT3 Evo 3:00:55.382 71 Race GT4 74 Innovation Racing Thomas HOLLAND, Hadley SIMPSON Ginetta G56 GT4 Evo 3:01:46.118 67 Competitors Aston Martin Racing --> BMW --> Ferrari --> Ginetta --> Lamborghini --> McLaren --> Mercedes-AMG --> Porsche --> Official Partners Visit British GT on Facebook Visit British GT on Instagram Visit British GT on X Visit British GT on YouTube &copy; 2026 SRO Motorsports Group. All Rights Reserved. About Press Members Teams Privacy Policy Contact ",
+   "links": []
+  }
+ },
+ "https://www.britishgt.com/results": {
+  "status": 200,
+  "url": "https://www.britishgt.com/results",
+  "type": "text/html; charset=\"utf-8\"",
+  "bytes": 52745,
+  "selects": [
+   {
+    "name": "filter_season_id",
+    "options": [
+     [
+      "0",
+      "Season"
+     ],
+     [
+      "14",
+      "2027"
+     ],
+     [
+      "13",
+      "2026"
+     ],
+     [
+      "12",
+      "2025"
+     ],
+     [
+      "11",
+      "2024"
+     ],
+     [
+      "10",
+      "2023"
+     ],
+     [
+      "9",
+      "2022"
+     ],
+     [
+      "8",
+      "2021"
+     ],
+     [
+      "7",
+      "2020"
+     ],
+     [
+      "6",
+      "2019"
+     ],
+     [
+      "5",
+      "2018"
+     ],
+     [
+      "4",
+      "2017"
+     ],
+     [
+      "1",
+      "2016"
+     ],
+     [
+      "2",
+      "2015"
+     ]
+    ]
+   },
+   {
+    "name": "filter_meeting_id",
+    "options": [
+     [
+      "0",
+      "Meeting"
+     ]
+    ]
+   },
+   {
+    "name": "filter_race_id",
+    "options": [
+     [
+      "",
+      "Session"
+     ]
+    ]
+   }
+  ],
+  "links": [
+   "https://www.britishgt.com/results",
+   "https://fonts.googleapis.com",
+   "https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap",
+   "https://www.britishgt.com/results#primary",
+   "/results",
+   "/results/2026/silverstone",
+   "/results/2026/oulton-park",
+   "/results/2026/spa-francorchamps",
+   "/results/2026/snetterton",
+   "/results/2026/donington-park",
+   "/results/2026/brands-hatch"
+  ],
+  "text": " Race Results 2026 - 2026 | British GT Championship Skip to Main Content Please enable JavaScript in your browser. Some elements of this website may not function correctly with JavaScript disabled. Menu Home Calendar News Shop Gallery Videos Photos Competitors Cars Teams Drivers Entry Lists Results Teams Drivers Race Results Entry Lists Live Watch Live Live Timing About SRO Motorsports British GT Partners Contact Fan Account Sign in Create Account Media &amp; Teams Press Members Teams Home News Calendar Photos Videos Live Sign In Fan Account Press Members Teams Shop SRO SRO Motorsports Group SRO Motorsports Group America Intercontinental GT Challenge GT World Challenge GT World Challenge Europe Crowdstrike 24 Hours of Spa GT World Challenge Asia GT World Challenge America GT World Challenge Australia GT2 European Series British GT Championship Japan Cup GT4 European Series FFSA GT – GT4 France GT4 America GT4 Australia GT4 Manufacturer Ranking GT America TC America FFSA Tourisme TC France GR Cup 6ore di Roma --> GT3 Revival Series FIA Motorsport Games SRO Motorsports Group - Race Centre by MMC Curbstone Track Events SRO E-Sport GT Series Championship 2026 Results Season 2027 2026 2025 2024 2023 2022 2021 2020 2019 2018 2017 2016 2015 Meeting Session 2026 Results Season Meeting Round Class Car # Team Car Time Laps Silverstone GP R1 GT3 3 Optimum Motorsport McLaren 720S GT3 Evo 3:00:55.382 71 Silverstone GP R1 GT4 74 Innovation Racing Ginetta G56 GT4 Evo 3:01:46.118 67 Oulton Park R2 GT3 63 Barwell Motorsport Lamborghini Huracan GT3 Evo2 59:59.683 33 Oulton Park R2 GT4 24 Century Motorsport BMW M4 GT4 Evo 1:01:20.236 32 Oulton Park R3 GT3 77 Optimum Motorsport McLaren 720S GT3 Evo 1:00:49.522 36 Oulton Park R3 GT4 27 Grange Racing by FSR Aston Martin Vantage AMR GT4 Evo 1:01:01.287 33 Spa-Francorchamps R4 GT3 78 Barwell Motorsport Lamborghini Huracan GT3 Evo2 02:01:23.252 37 Spa-Francorchamps R4 GT4 27 Grange Racing with FSR Aston Martin Vantage AMR GT4 Evo 02:01:27.428 36 Snetterton 300 R5 GT3 90 Optimum Motorsport McLaren 720S GT3 Evo 1:01:11.052 33 Snetterton 300 R5 GT4 74 Innovation Racing Ginetta G56 GT4 Evo 1:03:05.758 31 Snetterton 300 R6 GT3 77 Optimum Motorsport McLaren 720S GT3 Evo 1:01:35.470 33 Snetterton 300 R6 GT4 59 Optimum Motorsport McLaren Artura GT4 1:02:52.600 31 Donington Park GP R7 GT3 63 Barwell Motorsport Lamborghini Huracan GT3 EVO2 2:00:52.842 75 Donington Park GP R7 GT4 84 Paddock Motorsport McLaren Artura GT4 2:02:28.255 70 Brands Hatch GP R8 GT3 67 Orange Racing by JMH McLaren 720S GT3 EVO 2:00:47.104 80 Brands Hatch GP R8 GT4 59 Optimum Motorsport McLaren Artura GT4 2:00:48.297 74 Competitors Aston Martin Racing --> BMW --> Ferrari --> Ginetta --> Lamborghini --> McLaren --> Mercedes-AMG --> Porsche --> Official Partners Visit British GT on Facebook Visit British GT on Instagram Visit British GT on X Visit British GT on YouTube &copy; 2026 SRO Motorsports Group. All Rights Reserved. About Press Members Teams Privacy Policy Contact ",
+  "scripts": [],
+  "sample": {
+   "url": "/results/2026/silverstone",
+   "status": 200,
+   "text": " Race Results 2026 | Silverstone GP | Great Britain | British GT Championship Skip to Main Content Please enable JavaScript in your browser. Some elements of this website may not function correctly with JavaScript disabled. Menu Home Calendar News Shop Gallery Videos Photos Competitors Cars Teams Drivers Entry Lists Results Teams Drivers Race Results Entry Lists Live Watch Live Live Timing About SRO Motorsports British GT Partners Contact Fan Account Sign in Create Account Media &amp; Teams Press Members Teams Home News Calendar Photos Videos Live Sign In Fan Account Press Members Teams Shop SRO SRO Motorsports Group SRO Motorsports Group America Intercontinental GT Challenge GT World Challenge GT World Challenge Europe Crowdstrike 24 Hours of Spa GT World Challenge Asia GT World Challenge America GT World Challenge Australia GT2 European Series British GT Championship Japan Cup GT4 European Series FFSA GT – GT4 France GT4 America GT4 Australia GT4 Manufacturer Ranking GT America TC America FFSA Tourisme TC France GR Cup 6ore di Roma --> GT3 Revival Series FIA Motorsport Games SRO Motorsports Group - Race Centre by MMC Curbstone Track Events SRO E-Sport GT Series Championship 2026 Results Season 2027 2026 2025 2024 2023 2022 2021 2020 2019 2018 2017 2016 2015 Meeting Silverstone 500 Oulton Park Spa-Francorchamps Snetterton Donington Park Brands Hatch Session Set-up Test 1 Test 2 Event Free Practice 1 Pre-Qualifying GT3 Qualifying 1 GT3 Qualifying 2 GT3 Qualifying Combined GT4 Qualifying 1 GT4 Qualifying 2 GT4 Qualifying Combined Warm Up Race Silverstone GP Great Britain 2026 Results Sessions Session Class Car # Team Driver Car Time Laps Test 1 GT3 63 Barwell Motorsport Rob COLLARD, Hugo COOK Lamborghini Huracan GT3 Evo2 1:58.658 20 Test 1 GT4 21 MK Racing Jessica HAWKINS, Will ORTON Aston Martin Vantage AMR GT4 Evo 2:10.583 13 Test 2 GT3 78 Barwell Motorsport Alex MARTIN, Jarrod WABERSKI Lamborghini Huracan GT3 Evo2 1:58.329 20 Test 2 GT4 21 MK Racing Jessica HAWKINS, Will ORTON Aston Martin Vantage AMR GT4 Evo 2:09.733 17 Free Practice 1 GT3 63 Barwell Motorsport Rob COLLARD, Hugo COOK Lamborghini Huracan GT3 Evo2 1:57.908 23 Free Practice 1 GT4 84 Mahiki Racing Revie LAKE, Blake ANGLISS McLaren Artura GT4 2:09.422 19 Pre-Qualifying GT3 1 2 Seas Motorsport Charles DAWSON, Kiern JEWISS Mercedes-AMG GT3 Evo 1:58.851 20 Pre-Qualifying GT4 61 WSR FlexiFly Ernie GRAHAM, Colin TURKINGTON BMW M4 GT4 Evo 2:10.184 19 GT3 Qualifying 1 GT3 91 Paradine Motorsport Darren LEUNG, Dan HARPER BMW M4 GT3 Evo 1:58.709 5 GT3 Qualifying 2 GT3 77 Optimum Motorsport Morgan TILLBROOK, Ben BARNICOAT McLaren 720S GT3 Evo 1:57.214 5 GT3 Qualifying Combined GT3 91 Paradine Motorsport Darren LEUNG, Dan HARPER BMW M4 GT3 Evo 3:56.320 8 GT4 Qualifying 1 GT4 74 Innovation Racing Thomas HOLLAND, Hadley SIMPSON Ginetta G56 GT4 Evo 2:09.222 4 GT4 Qualifying 2 GT4 42 Toro Verde GT Luke SHAW, Jack MITCHELL Ginetta G56 GT4 Evo 2:08.601 4 GT4 Qualifying Combined GT4 74 Innovation Racing Thomas HOLLAND, Hadley SIMPSON Ginetta G56 GT4 Evo 4:18.723 8 Warm Up GT3 3 Optimum Motorsport Yasser SHAHIN, Garnet PATTERSON McLaren 720S GT3 Evo 1:58.467 7 Warm Up GT4 8 Toro Verde GT Ian DUGGAN, Tom BRADSHAW Porsche 718 Cayman GT4 RS CS 2:10.058 6 Race GT3 3 Optimum Motorsport Yasser SHAHIN, Garnet PATTERSON McLaren 720S GT3 Evo 3:00:55.382 71 Race GT4 74 Innovation Racing Thomas HOLLAND, Hadley SIMPSON Ginetta G56 GT4 Evo 3:01:46.118 67 Competitors Aston Martin Racing --> BMW --> Ferrari --> Ginetta --> Lamborghini --> McLaren --> Mercedes-AMG --> Porsche --> Official Partners Visit British GT on Facebook Visit British GT on Instagram Visit British GT on X Visit British GT on YouTube &copy; 2026 SRO Motorsports Group. All Rights Reserved. About Press Members Teams Privacy Policy Contact ",
+   "links": []
+  }
+ },
+ "https://api.britishgt.com/results?season=2025": {
+  "status": 200,
+  "url": "https://api.britishgt.com/results?season=2025",
+  "type": "text/html; charset=\"utf-8\"",
+  "bytes": 52781,
+  "selects": [
+   {
+    "name": "filter_season_id",
+    "options": [
+     [
+      "0",
+      "Season"
+     ],
+     [
+      "14",
+      "2027"
+     ],
+     [
+      "13",
+      "2026"
+     ],
+     [
+      "12",
+      "2025"
+     ],
+     [
+      "11",
+      "2024"
+     ],
+     [
+      "10",
+      "2023"
+     ],
+     [
+      "9",
+      "2022"
+     ],
+     [
+      "8",
+      "2021"
+     ],
+     [
+      "7",
+      "2020"
+     ],
+     [
+      "6",
+      "2019"
+     ],
+     [
+      "5",
+      "2018"
+     ],
+     [
+      "4",
+      "2017"
+     ],
+     [
+      "1",
+      "2016"
+     ],
+     [
+      "2",
+      "2015"
+     ]
+    ]
+   },
+   {
+    "name": "filter_meeting_id",
+    "options": [
+     [
+      "0",
+      "Meeting"
+     ]
+    ]
+   },
+   {
+    "name": "filter_race_id",
+    "options": [
+     [
+      "",
+      "Session"
+     ]
+    ]
+   }
+  ],
+  "links": [
+   "https://www.britishgt.com/results?season=2025",
+   "https://fonts.googleapis.com",
+   "https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap",
+   "https://www.britishgt.com/results?season=2025#primary",
+   "/results",
+   "/results/2026/silverstone",
+   "/results/2026/oulton-park",
+   "/results/2026/spa-francorchamps",
+   "/results/2026/snetterton",
+   "/results/2026/donington-park",
+   "/results/2026/brands-hatch"
+  ],
+  "text": " Race Results 2026 - 2026 | British GT Championship Skip to Main Content Please enable JavaScript in your browser. Some elements of this website may not function correctly with JavaScript disabled. Menu Home Calendar News Shop Gallery Videos Photos Competitors Cars Teams Drivers Entry Lists Results Teams Drivers Race Results Entry Lists Live Watch Live Live Timing About SRO Motorsports British GT Partners Contact Fan Account Sign in Create Account Media &amp; Teams Press Members Teams Home News Calendar Photos Videos Live Sign In Fan Account Press Members Teams Shop SRO SRO Motorsports Group SRO Motorsports Group America Intercontinental GT Challenge GT World Challenge GT World Challenge Europe Crowdstrike 24 Hours of Spa GT World Challenge Asia GT World Challenge America GT World Challenge Australia GT2 European Series British GT Championship Japan Cup GT4 European Series FFSA GT – GT4 France GT4 America GT4 Australia GT4 Manufacturer Ranking GT America TC America FFSA Tourisme TC France GR Cup 6ore di Roma --> GT3 Revival Series FIA Motorsport Games SRO Motorsports Group - Race Centre by MMC Curbstone Track Events SRO E-Sport GT Series Championship 2026 Results Season 2027 2026 2025 2024 2023 2022 2021 2020 2019 2018 2017 2016 2015 Meeting Session 2026 Results Season Meeting Round Class Car # Team Car Time Laps Silverstone GP R1 GT3 3 Optimum Motorsport McLaren 720S GT3 Evo 3:00:55.382 71 Silverstone GP R1 GT4 74 Innovation Racing Ginetta G56 GT4 Evo 3:01:46.118 67 Oulton Park R2 GT3 63 Barwell Motorsport Lamborghini Huracan GT3 Evo2 59:59.683 33 Oulton Park R2 GT4 24 Century Motorsport BMW M4 GT4 Evo 1:01:20.236 32 Oulton Park R3 GT3 77 Optimum Motorsport McLaren 720S GT3 Evo 1:00:49.522 36 Oulton Park R3 GT4 27 Grange Racing by FSR Aston Martin Vantage AMR GT4 Evo 1:01:01.287 33 Spa-Francorchamps R4 GT3 78 Barwell Motorsport Lamborghini Huracan GT3 Evo2 02:01:23.252 37 Spa-Francorchamps R4 GT4 27 Grange Racing with FSR Aston Martin Vantage AMR GT4 Evo 02:01:27.428 36 Snetterton 300 R5 GT3 90 Optimum Motorsport McLaren 720S GT3 Evo 1:01:11.052 33 Snetterton 300 R5 GT4 74 Innovation Racing Ginetta G56 GT4 Evo 1:03:05.758 31 Snetterton 300 R6 GT3 77 Optimum Motorsport McLaren 720S GT3 Evo 1:01:35.470 33 Snetterton 300 R6 GT4 59 Optimum Motorsport McLaren Artura GT4 1:02:52.600 31 Donington Park GP R7 GT3 63 Barwell Motorsport Lamborghini Huracan GT3 EVO2 2:00:52.842 75 Donington Park GP R7 GT4 84 Paddock Motorsport McLaren Artura GT4 2:02:28.255 70 Brands Hatch GP R8 GT3 67 Orange Racing by JMH McLaren 720S GT3 EVO 2:00:47.104 80 Brands Hatch GP R8 GT4 59 Optimum Motorsport McLaren Artura GT4 2:00:48.297 74 Competitors Aston Martin Racing --> BMW --> Ferrari --> Ginetta --> Lamborghini --> McLaren --> Mercedes-AMG --> Porsche --> Official Partners Visit British GT on Facebook Visit British GT on Instagram Visit British GT on X Visit British GT on YouTube &copy; 2026 SRO Motorsports Group. All Rights Reserved. About Press Members Teams Privacy Policy Contact ",
+  "scripts": [],
+  "sample": {
+   "url": "/results/2026/silverstone",
+   "status": 200,
+   "text": " Race Results 2026 | Silverstone GP | Great Britain | British GT Championship Skip to Main Content Please enable JavaScript in your browser. Some elements of this website may not function correctly with JavaScript disabled. Menu Home Calendar News Shop Gallery Videos Photos Competitors Cars Teams Drivers Entry Lists Results Teams Drivers Race Results Entry Lists Live Watch Live Live Timing About SRO Motorsports British GT Partners Contact Fan Account Sign in Create Account Media &amp; Teams Press Members Teams Home News Calendar Photos Videos Live Sign In Fan Account Press Members Teams Shop SRO SRO Motorsports Group SRO Motorsports Group America Intercontinental GT Challenge GT World Challenge GT World Challenge Europe Crowdstrike 24 Hours of Spa GT World Challenge Asia GT World Challenge America GT World Challenge Australia GT2 European Series British GT Championship Japan Cup GT4 European Series FFSA GT – GT4 France GT4 America GT4 Australia GT4 Manufacturer Ranking GT America TC America FFSA Tourisme TC France GR Cup 6ore di Roma --> GT3 Revival Series FIA Motorsport Games SRO Motorsports Group - Race Centre by MMC Curbstone Track Events SRO E-Sport GT Series Championship 2026 Results Season 2027 2026 2025 2024 2023 2022 2021 2020 2019 2018 2017 2016 2015 Meeting Silverstone 500 Oulton Park Spa-Francorchamps Snetterton Donington Park Brands Hatch Session Set-up Test 1 Test 2 Event Free Practice 1 Pre-Qualifying GT3 Qualifying 1 GT3 Qualifying 2 GT3 Qualifying Combined GT4 Qualifying 1 GT4 Qualifying 2 GT4 Qualifying Combined Warm Up Race Silverstone GP Great Britain 2026 Results Sessions Session Class Car # Team Driver Car Time Laps Test 1 GT3 63 Barwell Motorsport Rob COLLARD, Hugo COOK Lamborghini Huracan GT3 Evo2 1:58.658 20 Test 1 GT4 21 MK Racing Jessica HAWKINS, Will ORTON Aston Martin Vantage AMR GT4 Evo 2:10.583 13 Test 2 GT3 78 Barwell Motorsport Alex MARTIN, Jarrod WABERSKI Lamborghini Huracan GT3 Evo2 1:58.329 20 Test 2 GT4 21 MK Racing Jessica HAWKINS, Will ORTON Aston Martin Vantage AMR GT4 Evo 2:09.733 17 Free Practice 1 GT3 63 Barwell Motorsport Rob COLLARD, Hugo COOK Lamborghini Huracan GT3 Evo2 1:57.908 23 Free Practice 1 GT4 84 Mahiki Racing Revie LAKE, Blake ANGLISS McLaren Artura GT4 2:09.422 19 Pre-Qualifying GT3 1 2 Seas Motorsport Charles DAWSON, Kiern JEWISS Mercedes-AMG GT3 Evo 1:58.851 20 Pre-Qualifying GT4 61 WSR FlexiFly Ernie GRAHAM, Colin TURKINGTON BMW M4 GT4 Evo 2:10.184 19 GT3 Qualifying 1 GT3 91 Paradine Motorsport Darren LEUNG, Dan HARPER BMW M4 GT3 Evo 1:58.709 5 GT3 Qualifying 2 GT3 77 Optimum Motorsport Morgan TILLBROOK, Ben BARNICOAT McLaren 720S GT3 Evo 1:57.214 5 GT3 Qualifying Combined GT3 91 Paradine Motorsport Darren LEUNG, Dan HARPER BMW M4 GT3 Evo 3:56.320 8 GT4 Qualifying 1 GT4 74 Innovation Racing Thomas HOLLAND, Hadley SIMPSON Ginetta G56 GT4 Evo 2:09.222 4 GT4 Qualifying 2 GT4 42 Toro Verde GT Luke SHAW, Jack MITCHELL Ginetta G56 GT4 Evo 2:08.601 4 GT4 Qualifying Combined GT4 74 Innovation Racing Thomas HOLLAND, Hadley SIMPSON Ginetta G56 GT4 Evo 4:18.723 8 Warm Up GT3 3 Optimum Motorsport Yasser SHAHIN, Garnet PATTERSON McLaren 720S GT3 Evo 1:58.467 7 Warm Up GT4 8 Toro Verde GT Ian DUGGAN, Tom BRADSHAW Porsche 718 Cayman GT4 RS CS 2:10.058 6 Race GT3 3 Optimum Motorsport Yasser SHAHIN, Garnet PATTERSON McLaren 720S GT3 Evo 3:00:55.382 71 Race GT4 74 Innovation Racing Thomas HOLLAND, Hadley SIMPSON Ginetta G56 GT4 Evo 3:01:46.118 67 Competitors Aston Martin Racing --> BMW --> Ferrari --> Ginetta --> Lamborghini --> McLaren --> Mercedes-AMG --> Porsche --> Official Partners Visit British GT on Facebook Visit British GT on Instagram Visit British GT on X Visit British GT on YouTube &copy; 2026 SRO Motorsports Group. All Rights Reserved. About Press Members Teams Privacy Policy Contact ",
+   "links": []
+  }
+ },
+ "https://api.fanatec-gt-world-challenge-europe.com/results": {
+  "error": "fetch failed",
+  "bytes": 0,
+  "selects": [],
+  "links": [],
+  "text": "",
+  "scripts": []
+ },
+ "https://www.fanatec-gt-world-challenge-europe.com/results": {
+  "error": "fetch failed",
+  "bytes": 0,
+  "selects": [],
+  "links": [],
+  "text": "",
+  "scripts": []
+ },
+ "https://api.fanatec-gt-world-challenge-europe.com/results?season=2025": {
+  "error": "fetch failed",
+  "bytes": 0,
+  "selects": [],
+  "links": [],
+  "text": "",
+  "scripts": []
+ }
+}
