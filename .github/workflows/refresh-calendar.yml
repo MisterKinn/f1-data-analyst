@@ -18,4 +18,8 @@ jobs:
         with:
           node-version: '22'
       - name: Refresh and verify published calendar timestamps
-        run: node scripts/refresh-published-calendars.mjs
+        run: node scripts/refresh-published-calendars.mjs refresh
+      # Runs even when a source refresh failed, so a missing timetable is never hidden.
+      - name: Session timetable gaps in the next 10 days
+        if: always()
+        run: node scripts/refresh-published-calendars.mjs coverage
