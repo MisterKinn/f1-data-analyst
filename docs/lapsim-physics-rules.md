@@ -363,6 +363,8 @@ The lateral acceleration that the pole lap's real speed implies on the built cur
 3. A weather record of zeros is a missing record: use standard weather.
 4. Seasons 2023–2026 first. Use 2018–2022 only for a track with no newer row, and label it "older".
 5. An F1 lap older than the fitted seasons is compared with the 2023 car times the pace ratio of that season, learned on production circuits with an unchanged layout (2020: 0.9686, held-out 1.4 %; 2021: 0.9864, held-out 1.05 %). Without the ratio the row measures the car, not the track.
+6. A class-best table hides car types. Take the best clean lap per car type (LMH, LMDh, LMGT3, GTD Pro, GTD) from Al Kamel's published qualifying timing (`scripts/sim/fetch-track-laps.mjs`, run in Actions): an LMH that was not on pole still has a real lap (Aston Martin in IMSA GTP, Ferrari at Le Mans). These rows replace the Timing71 rows of the same track, series and season, and give each car its real lap on the page and in the tool.
+7. IMSA weather files are in °F and inHg. Convert before use.
 
 ### 10.4 Decision, in this order (limit 3.0 % RMS, never moved after a result)
 

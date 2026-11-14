@@ -1,0 +1,4283 @@
+{
+ "source": "Al Kamel Systems published timing: FIA WEC (Analysis files of Qualifying and Hyperpole) and IMSA WeatherTech (Time Cards of Qualifying). Best clean lap per car type; raw files are not stored.",
+ "note": "type: lmh / lmdh by manufacturer (worker/lapsim/series.js), lmgt3 (WEC), gtdpro / gtd (IMSA GT3). An IMSA GTP lap of an LMH (Aston Martin) is an LMH lap.",
+ "fetched": "2026-11-14",
+ "log": [
+  "wec 2023 SEBRING -> sebring: lmdh 106.082 #2 Cadillac, lmh 105.067 #50 Ferrari",
+  "wec 2023 AUTODROMO DO ALGARVE -> portimao: lmdh 92.404 #6 Porsche, lmh 90.171 #8 Toyota",
+  "wec 2023 LE MANS -> le-mans: lmdh 204.531 #75 Porsche, lmh 202.982 #50 Ferrari",
+  "wec 2023 FUJI SPEEDWAY -> fuji: lmdh 88.687 #6 Porsche, lmh 87.794 #7 Toyota",
+  "wec 2024 LE MANS -> le-mans: lmh 204.731 #50 Ferrari, lmdh 204.465 #15 BMW, lmgt3 235.263 #77 Ford",
+  "wec 2024 FUJI SPEEDWAY -> fuji: lmgt3 100.893 #55 Ferrari, lmdh 88.901 #2 Cadillac, lmh 88.942 #8 Toyota",
+  "wec 2025 LE MANS -> le-mans: lmgt3 232.789 #27 Aston Martin, lmh 203.163 #51 Ferrari, lmdh 202.742 #311 Cadillac",
+  "wec 2025 FUJI SPEEDWAY -> fuji: lmgt3 99.981 #10 Aston Martin, lmh 88.705 #009 Aston Martin, lmdh 88.236 #12 Cadillac",
+  "wec 2026 LE MANS -> le-mans: lmgt3 232.410 #27 Aston Martin, lmh 203.406 #51 Ferrari, lmdh 202.559 #38 Cadillac",
+  "wec 2026 FUJI SPEEDWAY -> fuji: no qualifying file",
+  "imsa 2023 Daytona International Speedway: no qualifying time cards",
+  "imsa 2023 Sebring Prologue: no qualifying time cards",
+  "imsa 2023 Sebring International Raceway -> sebring: lmdh 105.836 #31 Cadillac, gtd 119.714 #93 Acura, gtdpro 119.315 #3 Chevrolet",
+  "imsa 2023 Long Beach Street Circuit -> long-beach: lmdh 69.909 #10 Acura, gtd 77.811 #27 Aston Martin, gtdpro 77.817 #14 Lexus",
+  "imsa 2023 Weathertech Raceway Laguna Seca -> laguna-seca: lmdh 74.774 #7 Porsche, gtd 84.539 #92 Porsche, gtdpro 84.529 #9 Porsche",
+  "imsa 2023 Detroit Street Course: no qualifying time cards",
+  "imsa 2023 Watkins Glen International -> watkins-glen: gtd 104.430 #78 Lamborghini, gtdpro 104.829 #62 Ferrari",
+  "imsa 2023 Canadian Tire Motorsport Park -> mosport: lmdh 65.653 #60 Acura, gtd 75.478 #27 Aston Martin, gtdpro 75.029 #14 Lexus",
+  "imsa 2023 Lime Rock Park -> lime-rock: gtd 51.157 #32 Mercedes-AMG, gtdpro 50.593 #23 Aston Martin",
+  "imsa 2023 PCCNA Road America: no qualifying time cards",
+  "imsa 2023 Road America -> road-america: lmdh 107.730 #31 Cadillac, gtd 123.291 #1 BMW, gtdpro 122.918 #23 Aston Martin",
+  "imsa 2023 VIRginia International Raceway -> vir: gtd 105.225 #1 BMW, gtdpro 104.780 #14 Lexus",
+  "imsa 2023 Indianapolis Motor Speedway RC -> indianapolis: lmdh 73.672 #7 Porsche, gtd 83.075 #1 BMW, gtdpro 83.140 #9 Porsche",
+  "imsa 2023 Weathertech Raceway Laguna Seca: no qualifying time cards",
+  "imsa 2023 Road Atlanta -> road-atlanta: lmdh 75.402 #10 Acura, gtd 83.116 #27 Aston Martin, gtdpro 83.168 #14 Lexus",
+  "imsa 2024 Daytona International Speedway: no qualifying time cards",
+  "imsa 2024 Sebring International Raceway -> sebring: lmdh 108.038 #10 Acura, gtd 118.778 #57 Mercedes AMG, gtdpro 118.714 #14 Lexus",
+  "imsa 2024 Long Beach Street Circuit -> long-beach: lmdh 71.388 #31 Cadillac, gtd 77.357 #89 Lexus",
+  "imsa 2024 Weathertech Raceway Laguna Seca -> laguna-seca: lmdh 72.445 #01 Cadillac, gtdpro 79.727 #4 Chevrolet, gtd 80.866 #45 Lamborghini",
+  "imsa 2024 Detroit Street Course -> detroit: lmdh 65.390 #6 Porsche, gtdpro 69.092 #3 Chevrolet",
+  "imsa 2024 Mid-Ohio Sports Car Course: no qualifying time cards",
+  "imsa 2024 Watkins Glen International -> watkins-glen: lmdh 92.209 #40 Acura, gtd 104.642 #12 Lexus, gtdpro 104.203 #62 Ferrari",
+  "imsa 2024 Canadian Tire Motorsport Park -> mosport: gtdpro 74.373 #3 Chevrolet, gtd 75.060 #12 Lexus",
+  "imsa 2024 Road America -> road-america: lmdh 108.601 #10 Acura, gtd 123.634 #32 Mercedes-AMG, gtdpro 122.198 #4 Chevrolet",
+  "imsa 2024 VIRginia International Raceway -> vir: gtdpro 103.206 #1 BMW, gtd 103.900 #55 Ford",
+  "imsa 2024 Indianapolis Motor Speedway RC: no qualifying time cards",
+  "imsa 2024 Road Atlanta -> road-atlanta: lmdh 69.639 #31 Cadillac, gtdpro 77.881 #77 Porsche, gtd 78.281 #80 Mercedes-AMG",
+  "imsa 2024 Daytona International Speedway: no qualifying time cards",
+  "imsa 2025 Daytona International Speedway -> daytona: gtdpro 105.523 #64 Ford, gtd 106.634 #120 Porsche, lmdh 93.895 #24 BMW",
+  "imsa 2025 Watkins Glen International: no qualifying time cards",
+  "imsa 2025 Sebring International Raceway -> sebring: gtd 119.131 #21 Ferrari, gtdpro 119.225 #81 Ferrari, lmdh 107.091 #24 BMW, lmh 109.400 #23 Aston Martin",
+  "imsa 2025 Long Beach Street Circuit -> long-beach: gtd 77.877 #12 Lexus, lmdh 71.539 #24 BMW, lmh 73.392 #23 Aston Martin",
+  "imsa 2025 Weathertech Raceway Laguna Seca -> laguna-seca: gtd 80.810 #32 Mercedes-AMG, gtdpro 80.608 #81 Ferrari, lmdh 72.854 #24 BMW, lmh 73.718 #23 Aston Martin",
+  "imsa 2025 Detroit Street Course -> detroit: gtdpro 70.922 #64 Ford, lmdh 65.762 #93 Acura, lmh 67.907 #23 Aston Martin",
+  "imsa 2025 Mid-Ohio Sports Car Course: no qualifying time cards",
+  "imsa 2025 Watkins Glen International -> watkins-glen: gtd 104.788 #27 Aston Martin, gtdpro 104.595 #9 Lamborghini, lmdh 91.558 #93 Acura, lmh 93.360 #23 Aston Martin",
+  "imsa 2025 Canadian Tire Motorsport Park -> mosport: gtd 75.101 #12 Lexus, gtdpro 75.046 #1 BMW",
+  "imsa 2025 Road America -> road-america: gtd 123.745 #57 Mercedes-AMG, gtdpro 123.904 #81 Ferrari, lmdh 108.628 #93 Acura, lmh 109.309 #23 Aston Martin",
+  "imsa 2025 VIRginia International Raceway -> vir: gtd 104.860 #12 Lexus, gtdpro 104.433 #81 Ferrari",
+  "imsa 2025 Indianapolis Motor Speedway RC -> indianapolis: gtd 83.088 #27 Aston Martin, gtdpro 83.259 #48 BMW, lmdh 74.569 #60 Acura, lmh 75.434 #23 Aston Martin",
+  "imsa 2025 Road Atlanta -> road-atlanta: gtd 78.316 #47 Ferrari, gtdpro 78.430 #81 Ferrari, lmdh 69.628 #60 Acura, lmh 70.254 #23 Aston Martin",
+  "imsa 2026 Daytona International Speedway -> daytona: gtd 105.113 #27 Aston Martin, gtdpro 105.106 #3 Chevrolet, lmdh 93.939 #31 Cadillac, lmh 95.382 #23 Aston Martin",
+  "imsa 2026 Sebring International Raceway -> sebring: gtd 118.856 #27 Aston Martin, gtdpro 118.480 #14 Lexus, lmdh 106.153 #31 Cadillac, lmh 107.363 #23 Aston Martin",
+  "imsa 2026 Long Beach Street Circuit -> long-beach: lmdh 71.626 #93 Acura, gtd 78.411 #89 Lexus, lmh 71.997 #23 Aston Martin",
+  "imsa 2026 Weathertech Raceway Laguna Seca -> laguna-seca: gtdpro 81.228 #14 Lexus, lmdh 73.221 #40 Cadillac, gtd 81.441 #34 Ferrari, lmh 73.939 #23 Aston Martin",
+  "imsa 2026 Detroit Street Course -> detroit: gtdpro 69.354 #3 Chevrolet, lmdh 65.313 #31 Cadillac, lmh 67.270 #23 Aston Martin",
+  "imsa 2026 Mid-Ohio Sports Car Course: no qualifying time cards",
+  "imsa 2026 Watkins Glen International -> watkins-glen: gtd 104.906 #12 Lexus, gtdpro 103.701 #14 Lexus, lmdh 91.284 #31 Cadillac, lmh 92.626 #23 Aston Martin",
+  "imsa 2026 Canadian Tire Motorsport Park -> mosport: gtdpro 74.382 #1 BMW, gtd 75.130 #27 Aston Martin",
+  "imsa 2026 Road America -> road-america: gtd 124.688 #21 Ferrari, gtdpro 124.042 #77 Porsche, lmdh 109.233 #93 Acura, lmh 110.525 #23 Aston Martin",
+  "imsa 2026 VIRginia International Raceway -> vir: gtdpro 104.773 #9 Lamborghini, gtd 105.188 #81 Chevrolet",
+  "imsa 2026 Indianapolis Motor Speedway RC -> indianapolis: lmdh 74.674 #60 Acura, lmh 75.578 #23 Aston Martin",
+  "imsa 2026 Road Atlanta -> road-atlanta: gtd 78.674 #57 Mercedes-AMG, gtdpro 78.194 #1 BMW, lmdh 69.703 #60 Acura, lmh 70.363 #23 Aston Martin"
+ ],
+ "laps": [
+  {
+   "track": "daytona",
+   "series": "imsa",
+   "season": 2025,
+   "type": "gtd",
+   "lap": 106.634,
+   "car": "120",
+   "manufacturer": "Porsche",
+   "team": "Wright Motorsports",
+   "driver": "Elliott Skeer",
+   "cls": "GTD",
+   "sectors": [
+    24.658,
+    49.669,
+    32.307
+   ],
+   "topSpeedKph": null,
+   "event": "Daytona International Speedway",
+   "session": "202501231410_Qualifying",
+   "weather": {
+    "airTempC": 9.11,
+    "trackTempC": 17.31,
+    "humidityPct": 63.42,
+    "pressureHpa": 1020.3,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/02_Daytona%20International%20Speedway/01_IMSA%20WeatherTech%20SportsCar%20Championship/202501231410_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "daytona",
+   "series": "imsa",
+   "season": 2025,
+   "type": "gtdpro",
+   "lap": 105.523,
+   "car": "64",
+   "manufacturer": "Ford",
+   "team": "Ford Multimatic Motorsports",
+   "driver": "Mike Rockenfeller",
+   "cls": "GTDPRO",
+   "sectors": [
+    24.627,
+    49.287,
+    31.609
+   ],
+   "topSpeedKph": null,
+   "event": "Daytona International Speedway",
+   "session": "202501231410_Qualifying",
+   "weather": {
+    "airTempC": 9.11,
+    "trackTempC": 17.31,
+    "humidityPct": 63.42,
+    "pressureHpa": 1020.3,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/02_Daytona%20International%20Speedway/01_IMSA%20WeatherTech%20SportsCar%20Championship/202501231410_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "daytona",
+   "series": "imsa",
+   "season": 2025,
+   "type": "lmdh",
+   "lap": 93.89500000000001,
+   "car": "24",
+   "manufacturer": "BMW",
+   "team": "BMW M Team RLL",
+   "driver": "Dries Vanthoor",
+   "cls": "GTP",
+   "sectors": [
+    22.468,
+    43.766,
+    27.661
+   ],
+   "topSpeedKph": null,
+   "event": "Daytona International Speedway",
+   "session": "202501231410_Qualifying",
+   "weather": {
+    "airTempC": 9.11,
+    "trackTempC": 17.31,
+    "humidityPct": 63.42,
+    "pressureHpa": 1020.3,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/02_Daytona%20International%20Speedway/01_IMSA%20WeatherTech%20SportsCar%20Championship/202501231410_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "daytona",
+   "series": "imsa",
+   "season": 2026,
+   "type": "gtd",
+   "lap": 105.113,
+   "car": "27",
+   "manufacturer": "Aston Martin",
+   "team": "Heart of Racing Team",
+   "driver": "Zacharie Robichon",
+   "cls": "GTD",
+   "sectors": [
+    24.79,
+    48.944,
+    31.379
+   ],
+   "topSpeedKph": 285,
+   "event": "Daytona International Speedway",
+   "session": "202601221410_Qualifying",
+   "weather": {
+    "airTempC": 21.12,
+    "trackTempC": 29.42,
+    "humidityPct": 72.3,
+    "pressureHpa": 1017.3,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/26_2026/02_Daytona%20International%20Speedway/01_IMSA%20WeatherTech%20SportsCar%20Championship/202601221410_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "daytona",
+   "series": "imsa",
+   "season": 2026,
+   "type": "gtdpro",
+   "lap": 105.106,
+   "car": "3",
+   "manufacturer": "Chevrolet",
+   "team": "Corvette Racing by Pratt Miller Motorsports",
+   "driver": "Alexander Sims",
+   "cls": "GTDPRO",
+   "sectors": [
+    24.504,
+    49.014,
+    31.588
+   ],
+   "topSpeedKph": 278.9,
+   "event": "Daytona International Speedway",
+   "session": "202601221410_Qualifying",
+   "weather": {
+    "airTempC": 21.12,
+    "trackTempC": 29.42,
+    "humidityPct": 72.3,
+    "pressureHpa": 1017.3,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/26_2026/02_Daytona%20International%20Speedway/01_IMSA%20WeatherTech%20SportsCar%20Championship/202601221410_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "daytona",
+   "series": "imsa",
+   "season": 2026,
+   "type": "lmdh",
+   "lap": 93.939,
+   "car": "31",
+   "manufacturer": "Cadillac",
+   "team": "Cadillac Whelen",
+   "driver": "Jack Aitken",
+   "cls": "GTP",
+   "sectors": [
+    22.776,
+    43.971,
+    27.192
+   ],
+   "topSpeedKph": 323.5,
+   "event": "Daytona International Speedway",
+   "session": "202601221410_Qualifying",
+   "weather": {
+    "airTempC": 21.12,
+    "trackTempC": 29.42,
+    "humidityPct": 72.3,
+    "pressureHpa": 1017.3,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/26_2026/02_Daytona%20International%20Speedway/01_IMSA%20WeatherTech%20SportsCar%20Championship/202601221410_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "daytona",
+   "series": "imsa",
+   "season": 2026,
+   "type": "lmh",
+   "lap": 95.382,
+   "car": "23",
+   "manufacturer": "Aston Martin",
+   "team": "ASTON MARTIN THOR Team",
+   "driver": "Ross Gunn",
+   "cls": "GTP",
+   "sectors": [
+    22.935,
+    44.424,
+    28.023
+   ],
+   "topSpeedKph": 318.8,
+   "event": "Daytona International Speedway",
+   "session": "202601221410_Qualifying",
+   "weather": {
+    "airTempC": 21.12,
+    "trackTempC": 29.42,
+    "humidityPct": 72.3,
+    "pressureHpa": 1017.3,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/26_2026/02_Daytona%20International%20Speedway/01_IMSA%20WeatherTech%20SportsCar%20Championship/202601221410_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "detroit",
+   "series": "imsa",
+   "season": 2024,
+   "type": "gtdpro",
+   "lap": 69.092,
+   "car": "3",
+   "manufacturer": "Chevrolet",
+   "team": "Corvette Racing by Pratt Miller Motorsports",
+   "driver": "Antonio Garcia",
+   "cls": "GTDPRO",
+   "sectors": [
+    19.925,
+    23.102,
+    26.065
+   ],
+   "topSpeedKph": null,
+   "event": "Detroit Street Course",
+   "session": "202405311640_Qualifying",
+   "weather": {
+    "airTempC": 24.19,
+    "trackTempC": 16.7,
+    "humidityPct": 35.18,
+    "pressureHpa": 1007.5,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/24_2024/09_Detroit%20Street%20Course/01_IMSA%20WeatherTech%20SportsCar%20Championship/202405311640_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "detroit",
+   "series": "imsa",
+   "season": 2024,
+   "type": "lmdh",
+   "lap": 65.39,
+   "car": "6",
+   "manufacturer": "Porsche",
+   "team": "Porsche Penske Motorsport",
+   "driver": "Nick Tandy",
+   "cls": "GTP",
+   "sectors": [
+    18.431,
+    21.886,
+    25.073
+   ],
+   "topSpeedKph": null,
+   "event": "Detroit Street Course",
+   "session": "202405311640_Qualifying",
+   "weather": {
+    "airTempC": 24.19,
+    "trackTempC": 16.7,
+    "humidityPct": 35.18,
+    "pressureHpa": 1007.5,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/24_2024/09_Detroit%20Street%20Course/01_IMSA%20WeatherTech%20SportsCar%20Championship/202405311640_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "detroit",
+   "series": "imsa",
+   "season": 2025,
+   "type": "gtdpro",
+   "lap": 70.922,
+   "car": "64",
+   "manufacturer": "Ford",
+   "team": "Ford Multimatic Motorsports",
+   "driver": "Sebastian Priaulx",
+   "cls": "GTDPRO",
+   "sectors": [
+    20.528,
+    23.702,
+    26.692
+   ],
+   "topSpeedKph": null,
+   "event": "Detroit Street Course",
+   "session": "202505301650_Qualifying",
+   "weather": {
+    "airTempC": 24.31,
+    "trackTempC": 35.18,
+    "humidityPct": 41.94,
+    "pressureHpa": 1002,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/11_Detroit%20Street%20Course/01_IMSA%20WeatherTech%20SportsCar%20Championship/202505301650_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "detroit",
+   "series": "imsa",
+   "season": 2025,
+   "type": "lmdh",
+   "lap": 65.762,
+   "car": "93",
+   "manufacturer": "Acura",
+   "team": "Acura Meyer Shank Racing w/Curb Agajanian",
+   "driver": "Nick Yelloly",
+   "cls": "GTP",
+   "sectors": [
+    18.745,
+    22.012,
+    25.005
+   ],
+   "topSpeedKph": null,
+   "event": "Detroit Street Course",
+   "session": "202505301650_Qualifying",
+   "weather": {
+    "airTempC": 24.31,
+    "trackTempC": 35.18,
+    "humidityPct": 41.94,
+    "pressureHpa": 1002,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/11_Detroit%20Street%20Course/01_IMSA%20WeatherTech%20SportsCar%20Championship/202505301650_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "detroit",
+   "series": "imsa",
+   "season": 2025,
+   "type": "lmh",
+   "lap": 67.907,
+   "car": "23",
+   "manufacturer": "Aston Martin",
+   "team": "ASTON MARTIN THOR Team",
+   "driver": "Roman De Angelis",
+   "cls": "GTP",
+   "sectors": [
+    19.22,
+    22.852,
+    25.835
+   ],
+   "topSpeedKph": null,
+   "event": "Detroit Street Course",
+   "session": "202505301650_Qualifying",
+   "weather": {
+    "airTempC": 24.31,
+    "trackTempC": 35.18,
+    "humidityPct": 41.94,
+    "pressureHpa": 1002,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/11_Detroit%20Street%20Course/01_IMSA%20WeatherTech%20SportsCar%20Championship/202505301650_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "detroit",
+   "series": "imsa",
+   "season": 2026,
+   "type": "gtdpro",
+   "lap": 69.354,
+   "car": "3",
+   "manufacturer": "Chevrolet",
+   "team": "Corvette Racing by Pratt Miller Motorsports",
+   "driver": "Alexander Sims",
+   "cls": "GTDPRO",
+   "sectors": [
+    20.168,
+    23.189,
+    25.997
+   ],
+   "topSpeedKph": 250.2,
+   "event": "Detroit Street Course",
+   "session": "202605291650_Qualifying",
+   "weather": {
+    "airTempC": 27.74,
+    "trackTempC": 39.38,
+    "humidityPct": 34.76,
+    "pressureHpa": 990.5,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/26_2026/11_Detroit%20Street%20Course/01_IMSA%20WeatherTech%20SportsCar%20Championship/202605291650_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "detroit",
+   "series": "imsa",
+   "season": 2026,
+   "type": "lmdh",
+   "lap": 65.313,
+   "car": "31",
+   "manufacturer": "Cadillac",
+   "team": "Cadillac Whelen",
+   "driver": "Earl Bamber",
+   "cls": "GTP",
+   "sectors": [
+    18.724,
+    21.699,
+    24.89
+   ],
+   "topSpeedKph": 290.4,
+   "event": "Detroit Street Course",
+   "session": "202605291650_Qualifying",
+   "weather": {
+    "airTempC": 27.74,
+    "trackTempC": 39.38,
+    "humidityPct": 34.76,
+    "pressureHpa": 990.5,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/26_2026/11_Detroit%20Street%20Course/01_IMSA%20WeatherTech%20SportsCar%20Championship/202605291650_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "detroit",
+   "series": "imsa",
+   "season": 2026,
+   "type": "lmh",
+   "lap": 67.27,
+   "car": "23",
+   "manufacturer": "Aston Martin",
+   "team": "ASTON MARTIN THOR Team",
+   "driver": "Ross Gunn",
+   "cls": "GTP",
+   "sectors": [
+    19.257,
+    22.324,
+    25.689
+   ],
+   "topSpeedKph": 294.9,
+   "event": "Detroit Street Course",
+   "session": "202605291650_Qualifying",
+   "weather": {
+    "airTempC": 27.74,
+    "trackTempC": 39.38,
+    "humidityPct": 34.76,
+    "pressureHpa": 990.5,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/26_2026/11_Detroit%20Street%20Course/01_IMSA%20WeatherTech%20SportsCar%20Championship/202605291650_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "fuji",
+   "series": "wec",
+   "season": 2023,
+   "type": "lmdh",
+   "lap": 88.687,
+   "car": "6",
+   "manufacturer": "Porsche",
+   "team": "Porsche Penske Motorsport",
+   "driver": "Kévin ESTRE",
+   "cls": "HYPERCAR",
+   "sectors": [
+    22.028,
+    27.766,
+    38.893
+   ],
+   "topSpeedKph": 314,
+   "session": "Qualifying LMGTE Am",
+   "event": "FUJI SPEEDWAY",
+   "weather": {
+    "airTempC": 24.19,
+    "trackTempC": 27.55,
+    "humidityPct": 88.93,
+    "pressureHpa": 944.65,
+    "rain": false
+   },
+   "url": "https://files.alkamelcloud.com/wec/results/12_2023/06_FUJI%20SPEEDWAY/497_FIA%20WEC/202309091440_Qualifying%20LMGTE%20Am/23_Analysis_Qualifying%20LMGTE%20Am.CSV"
+  },
+  {
+   "track": "fuji",
+   "series": "wec",
+   "season": 2023,
+   "type": "lmh",
+   "lap": 87.794,
+   "car": "7",
+   "manufacturer": "Toyota",
+   "team": "Toyota Gazoo Racing",
+   "driver": "Kamui KOBAYASHI",
+   "cls": "HYPERCAR",
+   "sectors": [
+    21.857,
+    27.352,
+    38.585
+   ],
+   "topSpeedKph": 319.5,
+   "session": "Qualifying LMGTE Am",
+   "event": "FUJI SPEEDWAY",
+   "weather": {
+    "airTempC": 24.19,
+    "trackTempC": 27.55,
+    "humidityPct": 88.93,
+    "pressureHpa": 944.65,
+    "rain": false
+   },
+   "url": "https://files.alkamelcloud.com/wec/results/12_2023/06_FUJI%20SPEEDWAY/497_FIA%20WEC/202309091440_Qualifying%20LMGTE%20Am/23_Analysis_Qualifying%20LMGTE%20Am.CSV"
+  },
+  {
+   "track": "fuji",
+   "series": "wec",
+   "season": 2024,
+   "type": "lmdh",
+   "lap": 88.901,
+   "car": "2",
+   "manufacturer": "Cadillac",
+   "team": "Cadillac Racing",
+   "driver": "Alex LYNN",
+   "cls": "HYPERCAR",
+   "sectors": [
+    21.899,
+    27.484,
+    39.518
+   ],
+   "topSpeedKph": 315.8,
+   "session": "Qualifying LMGT3",
+   "event": "FUJI SPEEDWAY",
+   "weather": {
+    "airTempC": 29.4,
+    "trackTempC": 42.31,
+    "humidityPct": 66.17,
+    "pressureHpa": 944.57,
+    "rain": false
+   },
+   "url": "https://files.alkamelcloud.com/wec/results/13_2024/07_FUJI%20SPEEDWAY/559_FIA%20WEC/202409141420_Qualifying%20LMGT3/23_Analysis_Qualifying%20LMGT3.CSV"
+  },
+  {
+   "track": "fuji",
+   "series": "wec",
+   "season": 2024,
+   "type": "lmgt3",
+   "lap": 100.893,
+   "car": "55",
+   "manufacturer": "Ferrari",
+   "team": "Vista AF Corse",
+   "driver": "François HERIAU",
+   "cls": "LMGT3",
+   "sectors": [
+    24.775,
+    31.868,
+    44.25
+   ],
+   "topSpeedKph": 267.3,
+   "session": "Qualifying LMGT3",
+   "event": "FUJI SPEEDWAY",
+   "weather": {
+    "airTempC": 29.4,
+    "trackTempC": 42.31,
+    "humidityPct": 66.17,
+    "pressureHpa": 944.57,
+    "rain": false
+   },
+   "url": "https://files.alkamelcloud.com/wec/results/13_2024/07_FUJI%20SPEEDWAY/559_FIA%20WEC/202409141420_Qualifying%20LMGT3/23_Analysis_Qualifying%20LMGT3.CSV"
+  },
+  {
+   "track": "fuji",
+   "series": "wec",
+   "season": 2024,
+   "type": "lmh",
+   "lap": 88.94200000000001,
+   "car": "8",
+   "manufacturer": "Toyota",
+   "team": "Toyota Gazoo Racing",
+   "driver": "Ryo HIRAKAWA",
+   "cls": "HYPERCAR",
+   "sectors": [
+    21.97,
+    27.548,
+    39.424
+   ],
+   "topSpeedKph": 314,
+   "session": "Qualifying LMGT3",
+   "event": "FUJI SPEEDWAY",
+   "weather": {
+    "airTempC": 29.4,
+    "trackTempC": 42.31,
+    "humidityPct": 66.17,
+    "pressureHpa": 944.57,
+    "rain": false
+   },
+   "url": "https://files.alkamelcloud.com/wec/results/13_2024/07_FUJI%20SPEEDWAY/559_FIA%20WEC/202409141420_Qualifying%20LMGT3/23_Analysis_Qualifying%20LMGT3.CSV"
+  },
+  {
+   "track": "fuji",
+   "series": "wec",
+   "season": 2025,
+   "type": "lmdh",
+   "lap": 88.236,
+   "car": "12",
+   "manufacturer": "Cadillac",
+   "team": "Cadillac Hertz Team JOTA",
+   "driver": "Alex LYNN",
+   "cls": "HYPERCAR",
+   "sectors": [
+    21.68,
+    27.428,
+    39.128
+   ],
+   "topSpeedKph": 307.7,
+   "session": "Qualifying LMGT3",
+   "event": "FUJI SPEEDWAY",
+   "weather": {
+    "airTempC": 23.34,
+    "trackTempC": 35.23,
+    "humidityPct": 65.55,
+    "pressureHpa": 951.04,
+    "rain": false
+   },
+   "url": "https://files.alkamelcloud.com/wec/results/14_2025/07_FUJI%20SPEEDWAY/626_FIA%20WEC/202509271420_Qualifying%20LMGT3/23_Analysis_Qualifying%20LMGT3.CSV"
+  },
+  {
+   "track": "fuji",
+   "series": "wec",
+   "season": 2025,
+   "type": "lmgt3",
+   "lap": 99.981,
+   "car": "10",
+   "manufacturer": "Aston Martin",
+   "team": "Racing Spirit of Leman",
+   "driver": "Eduardo BARRICHELLO",
+   "cls": "LMGT3",
+   "sectors": [
+    24.7,
+    31.363,
+    43.918
+   ],
+   "topSpeedKph": 260.2,
+   "session": "Qualifying LMGT3",
+   "event": "FUJI SPEEDWAY",
+   "weather": {
+    "airTempC": 23.34,
+    "trackTempC": 35.23,
+    "humidityPct": 65.55,
+    "pressureHpa": 951.04,
+    "rain": false
+   },
+   "url": "https://files.alkamelcloud.com/wec/results/14_2025/07_FUJI%20SPEEDWAY/626_FIA%20WEC/202509271420_Qualifying%20LMGT3/23_Analysis_Qualifying%20LMGT3.CSV"
+  },
+  {
+   "track": "fuji",
+   "series": "wec",
+   "season": 2025,
+   "type": "lmh",
+   "lap": 88.705,
+   "car": "009",
+   "manufacturer": "Aston Martin",
+   "team": "Aston Martin Thor Team",
+   "driver": "Marco SORENSEN",
+   "cls": "HYPERCAR",
+   "sectors": [
+    21.813,
+    27.636,
+    39.256
+   ],
+   "topSpeedKph": 308.6,
+   "session": "Qualifying LMGT3",
+   "event": "FUJI SPEEDWAY",
+   "weather": {
+    "airTempC": 23.34,
+    "trackTempC": 35.23,
+    "humidityPct": 65.55,
+    "pressureHpa": 951.04,
+    "rain": false
+   },
+   "url": "https://files.alkamelcloud.com/wec/results/14_2025/07_FUJI%20SPEEDWAY/626_FIA%20WEC/202509271420_Qualifying%20LMGT3/23_Analysis_Qualifying%20LMGT3.CSV"
+  },
+  {
+   "track": "indianapolis",
+   "series": "imsa",
+   "season": 2023,
+   "type": "gtd",
+   "lap": 83.075,
+   "car": "1",
+   "manufacturer": "BMW",
+   "team": "Paul Miller Racing",
+   "driver": "Madison Snow",
+   "cls": "GTD",
+   "sectors": [
+    28.469,
+    28.579,
+    26.027
+   ],
+   "topSpeedKph": null,
+   "event": "Indianapolis Motor Speedway RC",
+   "session": "202309161300_Qualifying",
+   "weather": {
+    "airTempC": 22.12,
+    "trackTempC": 29.27,
+    "humidityPct": 53.27,
+    "pressureHpa": 1015.6,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/23_2023/19_Indianapolis%20Motor%20Speedway%20RC/01_IMSA%20WeatherTech%20SportsCar%20Championship/202309161300_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "indianapolis",
+   "series": "imsa",
+   "season": 2023,
+   "type": "gtdpro",
+   "lap": 83.14,
+   "car": "9",
+   "manufacturer": "Porsche",
+   "team": "Pfaff Motorsports",
+   "driver": "Klaus Bachler",
+   "cls": "GTDPRO",
+   "sectors": [
+    28.521,
+    28.649,
+    25.97
+   ],
+   "topSpeedKph": null,
+   "event": "Indianapolis Motor Speedway RC",
+   "session": "202309161300_Qualifying",
+   "weather": {
+    "airTempC": 22.12,
+    "trackTempC": 29.27,
+    "humidityPct": 53.27,
+    "pressureHpa": 1015.6,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/23_2023/19_Indianapolis%20Motor%20Speedway%20RC/01_IMSA%20WeatherTech%20SportsCar%20Championship/202309161300_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "indianapolis",
+   "series": "imsa",
+   "season": 2023,
+   "type": "lmdh",
+   "lap": 73.672,
+   "car": "7",
+   "manufacturer": "Porsche",
+   "team": "Porsche Penske Motorsports",
+   "driver": "Matt Campbell",
+   "cls": "GTP",
+   "sectors": [
+    25.229,
+    25.504,
+    22.939
+   ],
+   "topSpeedKph": null,
+   "event": "Indianapolis Motor Speedway RC",
+   "session": "202309161300_Qualifying",
+   "weather": {
+    "airTempC": 22.12,
+    "trackTempC": 29.27,
+    "humidityPct": 53.27,
+    "pressureHpa": 1015.6,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/23_2023/19_Indianapolis%20Motor%20Speedway%20RC/01_IMSA%20WeatherTech%20SportsCar%20Championship/202309161300_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "indianapolis",
+   "series": "imsa",
+   "season": 2025,
+   "type": "gtd",
+   "lap": 83.088,
+   "car": "27",
+   "manufacturer": "Aston Martin",
+   "team": "Heart of Racing Team",
+   "driver": "Casper Stevenson",
+   "cls": "GTD",
+   "sectors": [
+    28.495,
+    28.492,
+    26.101
+   ],
+   "topSpeedKph": null,
+   "event": "Indianapolis Motor Speedway RC",
+   "session": "202509201515_Qualifying",
+   "weather": {
+    "airTempC": 32.29,
+    "trackTempC": 38.93,
+    "humidityPct": 41.02,
+    "pressureHpa": 1015.2,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/20_Indianapolis%20Motor%20Speedway%20RC/01_IMSA%20WeatherTech%20SportsCar%20Championship/202509201515_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "indianapolis",
+   "series": "imsa",
+   "season": 2025,
+   "type": "gtdpro",
+   "lap": 83.259,
+   "car": "48",
+   "manufacturer": "BMW",
+   "team": "Paul Miller Racing",
+   "driver": "Dan Harper",
+   "cls": "GTDPRO",
+   "sectors": [
+    28.52,
+    28.462,
+    26.277
+   ],
+   "topSpeedKph": null,
+   "event": "Indianapolis Motor Speedway RC",
+   "session": "202509201515_Qualifying",
+   "weather": {
+    "airTempC": 32.29,
+    "trackTempC": 38.93,
+    "humidityPct": 41.02,
+    "pressureHpa": 1015.2,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/20_Indianapolis%20Motor%20Speedway%20RC/01_IMSA%20WeatherTech%20SportsCar%20Championship/202509201515_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "indianapolis",
+   "series": "imsa",
+   "season": 2025,
+   "type": "lmdh",
+   "lap": 74.569,
+   "car": "60",
+   "manufacturer": "Acura",
+   "team": "Acura Meyer Shank Racing w/Curb Agajanian",
+   "driver": "Tom Blomqvist",
+   "cls": "GTP",
+   "sectors": [
+    25.561,
+    25.582,
+    23.426
+   ],
+   "topSpeedKph": null,
+   "event": "Indianapolis Motor Speedway RC",
+   "session": "202509201515_Qualifying",
+   "weather": {
+    "airTempC": 32.29,
+    "trackTempC": 38.93,
+    "humidityPct": 41.02,
+    "pressureHpa": 1015.2,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/20_Indianapolis%20Motor%20Speedway%20RC/01_IMSA%20WeatherTech%20SportsCar%20Championship/202509201515_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "indianapolis",
+   "series": "imsa",
+   "season": 2025,
+   "type": "lmh",
+   "lap": 75.434,
+   "car": "23",
+   "manufacturer": "Aston Martin",
+   "team": "ASTON MARTIN THOR Team",
+   "driver": "Roman De Angelis",
+   "cls": "GTP",
+   "sectors": [
+    25.809,
+    25.907,
+    23.718
+   ],
+   "topSpeedKph": null,
+   "event": "Indianapolis Motor Speedway RC",
+   "session": "202509201515_Qualifying",
+   "weather": {
+    "airTempC": 32.29,
+    "trackTempC": 38.93,
+    "humidityPct": 41.02,
+    "pressureHpa": 1015.2,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/20_Indianapolis%20Motor%20Speedway%20RC/01_IMSA%20WeatherTech%20SportsCar%20Championship/202509201515_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "indianapolis",
+   "series": "imsa",
+   "season": 2026,
+   "type": "lmdh",
+   "lap": 74.674,
+   "car": "60",
+   "manufacturer": "Acura",
+   "team": "Acura Meyer Shank Racing w/Curb Agajanian",
+   "driver": "Tom Blomqvist",
+   "cls": "GTP",
+   "sectors": [
+    25.701,
+    25.645,
+    23.328
+   ],
+   "topSpeedKph": 290.7,
+   "event": "Indianapolis Motor Speedway RC",
+   "session": "202609191745_Qualifying",
+   "weather": {
+    "airTempC": 29.29,
+    "trackTempC": 34.72,
+    "humidityPct": 61,
+    "pressureHpa": 986.5,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/26_2026/20_Indianapolis%20Motor%20Speedway%20RC/01_IMSA%20WeatherTech%20SportsCar%20Championship/202609191745_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "indianapolis",
+   "series": "imsa",
+   "season": 2026,
+   "type": "lmh",
+   "lap": 75.578,
+   "car": "23",
+   "manufacturer": "Aston Martin",
+   "team": "ASTON MARTIN THOR Team",
+   "driver": "Ross Gunn",
+   "cls": "GTP",
+   "sectors": [
+    26.022,
+    25.982,
+    23.574
+   ],
+   "topSpeedKph": 286.9,
+   "event": "Indianapolis Motor Speedway RC",
+   "session": "202609191745_Qualifying",
+   "weather": {
+    "airTempC": 29.29,
+    "trackTempC": 34.72,
+    "humidityPct": 61,
+    "pressureHpa": 986.5,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/26_2026/20_Indianapolis%20Motor%20Speedway%20RC/01_IMSA%20WeatherTech%20SportsCar%20Championship/202609191745_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "laguna-seca",
+   "series": "imsa",
+   "season": 2023,
+   "type": "gtd",
+   "lap": 84.539,
+   "car": "92",
+   "manufacturer": "Porsche",
+   "team": "Kellymoss with Riley",
+   "driver": "Alec Udell",
+   "cls": "GTD",
+   "sectors": [
+    31.849,
+    32.585,
+    20.105
+   ],
+   "topSpeedKph": null,
+   "event": "Weathertech Raceway Laguna Seca",
+   "session": "202305131255_Qualifying",
+   "weather": {
+    "airTempC": 24.97,
+    "trackTempC": 45.79,
+    "humidityPct": 57.52,
+    "pressureHpa": 1002,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/23_2023/10_Weathertech%20Raceway%20Laguna%20Seca/01_IMSA%20WeatherTech%20SportsCar%20Championship/202305131255_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "laguna-seca",
+   "series": "imsa",
+   "season": 2023,
+   "type": "gtdpro",
+   "lap": 84.529,
+   "car": "9",
+   "manufacturer": "Porsche",
+   "team": "Pfaff Motorsports",
+   "driver": "Klaus Bachler",
+   "cls": "GTDPRO",
+   "sectors": [
+    31.807,
+    32.692,
+    20.03
+   ],
+   "topSpeedKph": null,
+   "event": "Weathertech Raceway Laguna Seca",
+   "session": "202305131255_Qualifying",
+   "weather": {
+    "airTempC": 24.97,
+    "trackTempC": 45.79,
+    "humidityPct": 57.52,
+    "pressureHpa": 1002,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/23_2023/10_Weathertech%20Raceway%20Laguna%20Seca/01_IMSA%20WeatherTech%20SportsCar%20Championship/202305131255_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "laguna-seca",
+   "series": "imsa",
+   "season": 2023,
+   "type": "lmdh",
+   "lap": 74.774,
+   "car": "7",
+   "manufacturer": "Porsche",
+   "team": "Porsche Penske Motorsports",
+   "driver": "Matt Campbell",
+   "cls": "GTP",
+   "sectors": [
+    28.284,
+    28.802,
+    17.688
+   ],
+   "topSpeedKph": null,
+   "event": "Weathertech Raceway Laguna Seca",
+   "session": "202305131255_Qualifying",
+   "weather": {
+    "airTempC": 24.97,
+    "trackTempC": 45.79,
+    "humidityPct": 57.52,
+    "pressureHpa": 1002,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/23_2023/10_Weathertech%20Raceway%20Laguna%20Seca/01_IMSA%20WeatherTech%20SportsCar%20Championship/202305131255_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "laguna-seca",
+   "series": "imsa",
+   "season": 2024,
+   "type": "gtd",
+   "lap": 80.866,
+   "car": "45",
+   "manufacturer": "Lamborghini",
+   "team": "Wayne Taylor Racing with Andretti",
+   "driver": "Danny Formal",
+   "cls": "GTD",
+   "sectors": [
+    29.288,
+    33.79,
+    17.788
+   ],
+   "topSpeedKph": null,
+   "event": "Weathertech Raceway Laguna Seca",
+   "session": "202405111635_Qualifying",
+   "weather": {
+    "airTempC": 22.63,
+    "trackTempC": 47.44,
+    "humidityPct": 54.95,
+    "pressureHpa": 991.5,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/24_2024/08_Weathertech%20Raceway%20Laguna%20Seca/01_IMSA%20WeatherTech%20SportsCar%20Championship/202405111635_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "laguna-seca",
+   "series": "imsa",
+   "season": 2024,
+   "type": "gtdpro",
+   "lap": 79.727,
+   "car": "4",
+   "manufacturer": "Chevrolet",
+   "team": "Corvette Racing by Pratt Miller Motorsports",
+   "driver": "Nicky Catsburg",
+   "cls": "GTDPRO",
+   "sectors": [
+    28.918,
+    33.335,
+    17.474
+   ],
+   "topSpeedKph": null,
+   "event": "Weathertech Raceway Laguna Seca",
+   "session": "202405111635_Qualifying",
+   "weather": {
+    "airTempC": 22.63,
+    "trackTempC": 47.44,
+    "humidityPct": 54.95,
+    "pressureHpa": 991.5,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/24_2024/08_Weathertech%20Raceway%20Laguna%20Seca/01_IMSA%20WeatherTech%20SportsCar%20Championship/202405111635_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "laguna-seca",
+   "series": "imsa",
+   "season": 2024,
+   "type": "lmdh",
+   "lap": 72.445,
+   "car": "01",
+   "manufacturer": "Cadillac",
+   "team": "Cadillac Racing",
+   "driver": "Sebastien Bourdais",
+   "cls": "GTP",
+   "sectors": [
+    26.1,
+    30.302,
+    16.043
+   ],
+   "topSpeedKph": null,
+   "event": "Weathertech Raceway Laguna Seca",
+   "session": "202405111635_Qualifying",
+   "weather": {
+    "airTempC": 22.63,
+    "trackTempC": 47.44,
+    "humidityPct": 54.95,
+    "pressureHpa": 991.5,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/24_2024/08_Weathertech%20Raceway%20Laguna%20Seca/01_IMSA%20WeatherTech%20SportsCar%20Championship/202405111635_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "laguna-seca",
+   "series": "imsa",
+   "season": 2025,
+   "type": "gtd",
+   "lap": 80.81,
+   "car": "32",
+   "manufacturer": "Mercedes-AMG",
+   "team": "Korthoff Competition Motors",
+   "driver": "Kenton Koch",
+   "cls": "GTD",
+   "sectors": [
+    29.502,
+    33.492,
+    17.816
+   ],
+   "topSpeedKph": null,
+   "event": "Weathertech Raceway Laguna Seca",
+   "session": "202505101515_Qualifying",
+   "weather": {
+    "airTempC": 20.44,
+    "trackTempC": 50.58,
+    "humidityPct": 41.57,
+    "pressureHpa": 985.1,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/10_Weathertech%20Raceway%20Laguna%20Seca/01_IMSA%20WeatherTech%20SportsCar%20Championship/202505101515_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "laguna-seca",
+   "series": "imsa",
+   "season": 2025,
+   "type": "gtdpro",
+   "lap": 80.608,
+   "car": "81",
+   "manufacturer": "Ferrari",
+   "team": "DragonSpeed",
+   "driver": "Giacomo Altoè",
+   "cls": "GTDPRO",
+   "sectors": [
+    29.28,
+    33.637,
+    17.691
+   ],
+   "topSpeedKph": null,
+   "event": "Weathertech Raceway Laguna Seca",
+   "session": "202505101515_Qualifying",
+   "weather": {
+    "airTempC": 20.44,
+    "trackTempC": 50.58,
+    "humidityPct": 41.57,
+    "pressureHpa": 985.1,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/10_Weathertech%20Raceway%20Laguna%20Seca/01_IMSA%20WeatherTech%20SportsCar%20Championship/202505101515_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "laguna-seca",
+   "series": "imsa",
+   "season": 2025,
+   "type": "lmdh",
+   "lap": 72.854,
+   "car": "24",
+   "manufacturer": "BMW",
+   "team": "BMW M Team RLL",
+   "driver": "Dries Vanthoor",
+   "cls": "GTP",
+   "sectors": [
+    26.504,
+    30.285,
+    16.065
+   ],
+   "topSpeedKph": null,
+   "event": "Weathertech Raceway Laguna Seca",
+   "session": "202505101515_Qualifying",
+   "weather": {
+    "airTempC": 20.44,
+    "trackTempC": 50.58,
+    "humidityPct": 41.57,
+    "pressureHpa": 985.1,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/10_Weathertech%20Raceway%20Laguna%20Seca/01_IMSA%20WeatherTech%20SportsCar%20Championship/202505101515_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "laguna-seca",
+   "series": "imsa",
+   "season": 2025,
+   "type": "lmh",
+   "lap": 73.718,
+   "car": "23",
+   "manufacturer": "Aston Martin",
+   "team": "ASTON MARTIN THOR Team",
+   "driver": "Roman De Angelis",
+   "cls": "GTP",
+   "sectors": [
+    26.806,
+    30.685,
+    16.227
+   ],
+   "topSpeedKph": null,
+   "event": "Weathertech Raceway Laguna Seca",
+   "session": "202505101515_Qualifying",
+   "weather": {
+    "airTempC": 20.44,
+    "trackTempC": 50.58,
+    "humidityPct": 41.57,
+    "pressureHpa": 985.1,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/10_Weathertech%20Raceway%20Laguna%20Seca/01_IMSA%20WeatherTech%20SportsCar%20Championship/202505101515_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "laguna-seca",
+   "series": "imsa",
+   "season": 2026,
+   "type": "gtd",
+   "lap": 81.441,
+   "car": "34",
+   "manufacturer": "Ferrari",
+   "team": "Conquest Racing",
+   "driver": "Lorenzo Patrese",
+   "cls": "GTD",
+   "sectors": [
+    29.789,
+    33.659,
+    17.993
+   ],
+   "topSpeedKph": 216.7,
+   "event": "Weathertech Raceway Laguna Seca",
+   "session": "202605021515_Qualifying",
+   "weather": {
+    "airTempC": 13.88,
+    "trackTempC": 32.52,
+    "humidityPct": 77.92,
+    "pressureHpa": 984.1,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/26_2026/09_Weathertech%20Raceway%20Laguna%20Seca/01_IMSA%20WeatherTech%20SportsCar%20Championship/202605021515_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "laguna-seca",
+   "series": "imsa",
+   "season": 2026,
+   "type": "gtdpro",
+   "lap": 81.22800000000001,
+   "car": "14",
+   "manufacturer": "Lexus",
+   "team": "Vasser Sullivan Racing",
+   "driver": "Jack Hawksworth",
+   "cls": "GTDPRO",
+   "sectors": [
+    29.689,
+    33.64,
+    17.899
+   ],
+   "topSpeedKph": 218.5,
+   "event": "Weathertech Raceway Laguna Seca",
+   "session": "202605021515_Qualifying",
+   "weather": {
+    "airTempC": 13.88,
+    "trackTempC": 32.52,
+    "humidityPct": 77.92,
+    "pressureHpa": 984.1,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/26_2026/09_Weathertech%20Raceway%20Laguna%20Seca/01_IMSA%20WeatherTech%20SportsCar%20Championship/202605021515_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "laguna-seca",
+   "series": "imsa",
+   "season": 2026,
+   "type": "lmdh",
+   "lap": 73.221,
+   "car": "40",
+   "manufacturer": "Cadillac",
+   "team": "Cadillac Wayne Taylor Racing",
+   "driver": "Louis Deletraz",
+   "cls": "GTP",
+   "sectors": [
+    26.71,
+    30.451,
+    16.06
+   ],
+   "topSpeedKph": 256.6,
+   "event": "Weathertech Raceway Laguna Seca",
+   "session": "202605021515_Qualifying",
+   "weather": {
+    "airTempC": 13.88,
+    "trackTempC": 32.52,
+    "humidityPct": 77.92,
+    "pressureHpa": 984.1,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/26_2026/09_Weathertech%20Raceway%20Laguna%20Seca/01_IMSA%20WeatherTech%20SportsCar%20Championship/202605021515_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "laguna-seca",
+   "series": "imsa",
+   "season": 2026,
+   "type": "lmh",
+   "lap": 73.939,
+   "car": "23",
+   "manufacturer": "Aston Martin",
+   "team": "ASTON MARTIN THOR Team",
+   "driver": "Ross Gunn",
+   "cls": "GTP",
+   "sectors": [
+    26.972,
+    30.744,
+    16.223
+   ],
+   "topSpeedKph": 259.2,
+   "event": "Weathertech Raceway Laguna Seca",
+   "session": "202605021515_Qualifying",
+   "weather": {
+    "airTempC": 13.88,
+    "trackTempC": 32.52,
+    "humidityPct": 77.92,
+    "pressureHpa": 984.1,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/26_2026/09_Weathertech%20Raceway%20Laguna%20Seca/01_IMSA%20WeatherTech%20SportsCar%20Championship/202605021515_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "le-mans",
+   "series": "wec",
+   "season": 2023,
+   "type": "lmdh",
+   "lap": 204.531,
+   "car": "75",
+   "manufacturer": "Porsche",
+   "team": "Porsche Penske Motorsport",
+   "driver": "Felipe NASR",
+   "cls": "HYPERCAR",
+   "sectors": [
+    32.025,
+    79.248,
+    93.258
+   ],
+   "topSpeedKph": 331.8,
+   "session": "Qualifying Practice",
+   "event": "LE MANS",
+   "weather": {
+    "airTempC": 29.86,
+    "trackTempC": 34.42,
+    "humidityPct": 25.68,
+    "pressureHpa": 1007.25,
+    "rain": false
+   },
+   "url": "https://files.alkamelcloud.com/wec/results/12_2023/04_LE%20MANS/474_FIA%20WEC/202306071900_Qualifying%20Practice/23_Analysis_Qualifying%20Practice.CSV"
+  },
+  {
+   "track": "le-mans",
+   "series": "wec",
+   "season": 2023,
+   "type": "lmh",
+   "lap": 202.982,
+   "car": "50",
+   "manufacturer": "Ferrari",
+   "team": "Ferrari AF Corse",
+   "driver": "Antonio FUOCO",
+   "cls": "HYPERCAR",
+   "sectors": [
+    31.604,
+    77.993,
+    93.385
+   ],
+   "topSpeedKph": 337,
+   "session": "Qualifying Practice",
+   "event": "LE MANS",
+   "weather": {
+    "airTempC": 29.86,
+    "trackTempC": 34.42,
+    "humidityPct": 25.68,
+    "pressureHpa": 1007.25,
+    "rain": false
+   },
+   "url": "https://files.alkamelcloud.com/wec/results/12_2023/04_LE%20MANS/474_FIA%20WEC/202306071900_Qualifying%20Practice/23_Analysis_Qualifying%20Practice.CSV"
+  },
+  {
+   "track": "le-mans",
+   "series": "wec",
+   "season": 2024,
+   "type": "lmdh",
+   "lap": 204.465,
+   "car": "15",
+   "manufacturer": "BMW",
+   "team": "BMW M Team WRT",
+   "driver": "Dries VANTHOOR",
+   "cls": "HYPERCAR",
+   "sectors": [
+    32.479,
+    78.889,
+    93.097
+   ],
+   "topSpeedKph": 332.9,
+   "session": "Qualifying Practice",
+   "event": "LE MANS",
+   "weather": {
+    "airTempC": 19.17,
+    "trackTempC": 27.94,
+    "humidityPct": 44.44,
+    "pressureHpa": 1013.4,
+    "rain": false
+   },
+   "url": "https://files.alkamelcloud.com/wec/results/13_2024/04_LE%20MANS/541_FIA%20WEC/202406121900_Qualifying%20Practice/23_Analysis_Qualifying%20Practice.CSV"
+  },
+  {
+   "track": "le-mans",
+   "series": "wec",
+   "season": 2024,
+   "type": "lmgt3",
+   "lap": 235.263,
+   "car": "77",
+   "manufacturer": "Ford",
+   "team": "Proton Competition",
+   "driver": "Benjamin BARKER",
+   "cls": "LMGT3",
+   "sectors": [
+    36.835,
+    90.715,
+    107.713
+   ],
+   "topSpeedKph": 290.8,
+   "session": "Qualifying Practice",
+   "event": "LE MANS",
+   "weather": {
+    "airTempC": 19.17,
+    "trackTempC": 27.94,
+    "humidityPct": 44.44,
+    "pressureHpa": 1013.4,
+    "rain": false
+   },
+   "url": "https://files.alkamelcloud.com/wec/results/13_2024/04_LE%20MANS/541_FIA%20WEC/202406121900_Qualifying%20Practice/23_Analysis_Qualifying%20Practice.CSV"
+  },
+  {
+   "track": "le-mans",
+   "series": "wec",
+   "season": 2024,
+   "type": "lmh",
+   "lap": 204.731,
+   "car": "50",
+   "manufacturer": "Ferrari",
+   "team": "Ferrari AF Corse",
+   "driver": "Antonio FUOCO",
+   "cls": "HYPERCAR",
+   "sectors": [
+    32.215,
+    78.957,
+    93.559
+   ],
+   "topSpeedKph": 336,
+   "session": "Qualifying Practice",
+   "event": "LE MANS",
+   "weather": {
+    "airTempC": 19.17,
+    "trackTempC": 27.94,
+    "humidityPct": 44.44,
+    "pressureHpa": 1013.4,
+    "rain": false
+   },
+   "url": "https://files.alkamelcloud.com/wec/results/13_2024/04_LE%20MANS/541_FIA%20WEC/202406121900_Qualifying%20Practice/23_Analysis_Qualifying%20Practice.CSV"
+  },
+  {
+   "track": "le-mans",
+   "series": "wec",
+   "season": 2025,
+   "type": "lmdh",
+   "lap": 202.742,
+   "car": "311",
+   "manufacturer": "Cadillac",
+   "team": "Cadillac Whelen",
+   "driver": "Jack AITKEN",
+   "cls": "HYPERCAR",
+   "sectors": [
+    31.801,
+    78.235,
+    92.706
+   ],
+   "topSpeedKph": 334.9,
+   "session": "Qualifying LMP2-LMGT3",
+   "event": "LE MANS",
+   "weather": {
+    "airTempC": 30.14,
+    "trackTempC": 42.62,
+    "humidityPct": 38.68,
+    "pressureHpa": 1005.66,
+    "rain": false
+   },
+   "url": "https://files.alkamelcloud.com/wec/results/14_2025/04_LE%20MANS/600_FIA%20WEC/202506111845_Qualifying%20LMP2-LMGT3/23_Analysis_Qualifying%20LMP2-LMGT3.CSV"
+  },
+  {
+   "track": "le-mans",
+   "series": "wec",
+   "season": 2025,
+   "type": "lmgt3",
+   "lap": 232.789,
+   "car": "27",
+   "manufacturer": "Aston Martin",
+   "team": "Heart of Racing Team",
+   "driver": "Mattia DRUDI",
+   "cls": "LMGT3",
+   "sectors": [
+    36.376,
+    89.893,
+    106.52
+   ],
+   "topSpeedKph": 290,
+   "session": "Qualifying LMP2-LMGT3",
+   "event": "LE MANS",
+   "weather": {
+    "airTempC": 30.14,
+    "trackTempC": 42.62,
+    "humidityPct": 38.68,
+    "pressureHpa": 1005.66,
+    "rain": false
+   },
+   "url": "https://files.alkamelcloud.com/wec/results/14_2025/04_LE%20MANS/600_FIA%20WEC/202506111845_Qualifying%20LMP2-LMGT3/23_Analysis_Qualifying%20LMP2-LMGT3.CSV"
+  },
+  {
+   "track": "le-mans",
+   "series": "wec",
+   "season": 2025,
+   "type": "lmh",
+   "lap": 203.163,
+   "car": "51",
+   "manufacturer": "Ferrari",
+   "team": "Ferrari AF Corse",
+   "driver": "Antonio GIOVINAZZI",
+   "cls": "HYPERCAR",
+   "sectors": [
+    31.999,
+    78.106,
+    93.058
+   ],
+   "topSpeedKph": 334.9,
+   "session": "Qualifying LMP2-LMGT3",
+   "event": "LE MANS",
+   "weather": {
+    "airTempC": 30.14,
+    "trackTempC": 42.62,
+    "humidityPct": 38.68,
+    "pressureHpa": 1005.66,
+    "rain": false
+   },
+   "url": "https://files.alkamelcloud.com/wec/results/14_2025/04_LE%20MANS/600_FIA%20WEC/202506111845_Qualifying%20LMP2-LMGT3/23_Analysis_Qualifying%20LMP2-LMGT3.CSV"
+  },
+  {
+   "track": "le-mans",
+   "series": "wec",
+   "season": 2026,
+   "type": "lmdh",
+   "lap": 202.559,
+   "car": "38",
+   "manufacturer": "Cadillac",
+   "team": "Cadillac Hertz Team Jota",
+   "driver": "Jack AITKEN",
+   "cls": "HYPERCAR",
+   "sectors": [
+    32.054,
+    78.189,
+    92.316
+   ],
+   "topSpeedKph": 337.6,
+   "session": "Qualifying LMP2-LMGT3",
+   "event": "LE MANS",
+   "weather": {
+    "airTempC": 19.04,
+    "trackTempC": 29.94,
+    "humidityPct": 45.62,
+    "pressureHpa": 1015.91,
+    "rain": false
+   },
+   "url": "https://files.alkamelcloud.com/wec/results/15_2026/03_LE%20MANS/657_FIA%20WEC/202606101845_Qualifying%20LMP2-LMGT3/23_Analysis_Qualifying%20LMP2-LMGT3.CSV"
+  },
+  {
+   "track": "le-mans",
+   "series": "wec",
+   "season": 2026,
+   "type": "lmgt3",
+   "lap": 232.41,
+   "car": "27",
+   "manufacturer": "Aston Martin",
+   "team": "Heart of Racing Team",
+   "driver": "Mattia DRUDI",
+   "cls": "LMGT3",
+   "sectors": [
+    36.101,
+    89.934,
+    106.375
+   ],
+   "topSpeedKph": 286.9,
+   "session": "Qualifying LMP2-LMGT3",
+   "event": "LE MANS",
+   "weather": {
+    "airTempC": 19.04,
+    "trackTempC": 29.94,
+    "humidityPct": 45.62,
+    "pressureHpa": 1015.91,
+    "rain": false
+   },
+   "url": "https://files.alkamelcloud.com/wec/results/15_2026/03_LE%20MANS/657_FIA%20WEC/202606101845_Qualifying%20LMP2-LMGT3/23_Analysis_Qualifying%20LMP2-LMGT3.CSV"
+  },
+  {
+   "track": "le-mans",
+   "series": "wec",
+   "season": 2026,
+   "type": "lmh",
+   "lap": 203.406,
+   "car": "51",
+   "manufacturer": "Ferrari",
+   "team": "Ferrari AF Corse",
+   "driver": "Antonio GIOVINAZZI",
+   "cls": "HYPERCAR",
+   "sectors": [
+    32.339,
+    78.385,
+    92.682
+   ],
+   "topSpeedKph": 336.6,
+   "session": "Qualifying LMP2-LMGT3",
+   "event": "LE MANS",
+   "weather": {
+    "airTempC": 19.04,
+    "trackTempC": 29.94,
+    "humidityPct": 45.62,
+    "pressureHpa": 1015.91,
+    "rain": false
+   },
+   "url": "https://files.alkamelcloud.com/wec/results/15_2026/03_LE%20MANS/657_FIA%20WEC/202606101845_Qualifying%20LMP2-LMGT3/23_Analysis_Qualifying%20LMP2-LMGT3.CSV"
+  },
+  {
+   "track": "lime-rock",
+   "series": "imsa",
+   "season": 2023,
+   "type": "gtd",
+   "lap": 51.157,
+   "car": "32",
+   "manufacturer": "Mercedes-AMG",
+   "team": "Team Korthoff Motorsports",
+   "driver": "Mike Skeen",
+   "cls": "GTD",
+   "sectors": [
+    20.777,
+    18.7,
+    11.68
+   ],
+   "topSpeedKph": null,
+   "event": "Lime Rock Park",
+   "session": "202307211740_Qualifying",
+   "weather": {
+    "airTempC": 27.44,
+    "trackTempC": 31.33,
+    "humidityPct": 62.2,
+    "pressureHpa": 1005.8,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/23_2023/14_Lime%20Rock%20Park/01_IMSA%20WeatherTech%20SportsCar%20Championship/202307211740_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "lime-rock",
+   "series": "imsa",
+   "season": 2023,
+   "type": "gtdpro",
+   "lap": 50.593,
+   "car": "23",
+   "manufacturer": "Aston Martin",
+   "team": "Heart of Racing Team",
+   "driver": "Ross Gunn",
+   "cls": "GTDPRO",
+   "sectors": [
+    20.828,
+    18.271,
+    11.494
+   ],
+   "topSpeedKph": null,
+   "event": "Lime Rock Park",
+   "session": "202307211740_Qualifying",
+   "weather": {
+    "airTempC": 27.44,
+    "trackTempC": 31.33,
+    "humidityPct": 62.2,
+    "pressureHpa": 1005.8,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/23_2023/14_Lime%20Rock%20Park/01_IMSA%20WeatherTech%20SportsCar%20Championship/202307211740_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "long-beach",
+   "series": "imsa",
+   "season": 2023,
+   "type": "gtd",
+   "lap": 77.811,
+   "car": "27",
+   "manufacturer": "Aston Martin",
+   "team": "Heart of Racing Team",
+   "driver": "Marco Sorensen",
+   "cls": "GTD",
+   "sectors": [
+    25.383,
+    29.456,
+    22.972
+   ],
+   "topSpeedKph": null,
+   "event": "Long Beach Street Circuit",
+   "session": "202304141715_Qualifying",
+   "weather": {
+    "airTempC": 16.83,
+    "trackTempC": 30,
+    "humidityPct": 63.36,
+    "pressureHpa": 1013.9,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/23_2023/08_Long%20Beach%20Street%20Circuit/01_IMSA%20WeatherTech%20SportsCar%20Championship/202304141715_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "long-beach",
+   "series": "imsa",
+   "season": 2023,
+   "type": "gtdpro",
+   "lap": 77.81700000000001,
+   "car": "14",
+   "manufacturer": "Lexus",
+   "team": "Vasser Sullivan",
+   "driver": "Jack Hawksworth",
+   "cls": "GTDPRO",
+   "sectors": [
+    25.26,
+    29.494,
+    23.063
+   ],
+   "topSpeedKph": null,
+   "event": "Long Beach Street Circuit",
+   "session": "202304141715_Qualifying",
+   "weather": {
+    "airTempC": 16.83,
+    "trackTempC": 30,
+    "humidityPct": 63.36,
+    "pressureHpa": 1013.9,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/23_2023/08_Long%20Beach%20Street%20Circuit/01_IMSA%20WeatherTech%20SportsCar%20Championship/202304141715_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "long-beach",
+   "series": "imsa",
+   "season": 2023,
+   "type": "lmdh",
+   "lap": 69.909,
+   "car": "10",
+   "manufacturer": "Acura",
+   "team": "Konica Minolta Acura ARX-06",
+   "driver": "Filipe Albuquerque",
+   "cls": "GTP",
+   "sectors": [
+    22.918,
+    26.318,
+    20.673
+   ],
+   "topSpeedKph": null,
+   "event": "Long Beach Street Circuit",
+   "session": "202304141715_Qualifying",
+   "weather": {
+    "airTempC": 16.83,
+    "trackTempC": 30,
+    "humidityPct": 63.36,
+    "pressureHpa": 1013.9,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/23_2023/08_Long%20Beach%20Street%20Circuit/01_IMSA%20WeatherTech%20SportsCar%20Championship/202304141715_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "long-beach",
+   "series": "imsa",
+   "season": 2024,
+   "type": "gtd",
+   "lap": 77.357,
+   "car": "89",
+   "manufacturer": "Lexus",
+   "team": "VasserSullivan",
+   "driver": "Parker Thompson",
+   "cls": "GTD",
+   "sectors": [
+    25.322,
+    29.243,
+    22.792
+   ],
+   "topSpeedKph": null,
+   "event": "Long Beach Street Circuit",
+   "session": "202404191700_Qualifying",
+   "weather": {
+    "airTempC": 18.02,
+    "trackTempC": 34.63,
+    "humidityPct": 68.49,
+    "pressureHpa": 1012.2,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/24_2024/06_Long%20Beach%20Street%20Circuit/01_IMSA%20WeatherTech%20SportsCar%20Championship/202404191700_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "long-beach",
+   "series": "imsa",
+   "season": 2024,
+   "type": "lmdh",
+   "lap": 71.388,
+   "car": "31",
+   "manufacturer": "Cadillac",
+   "team": "Whelen Cadillac Racing",
+   "driver": "Pipo Derani",
+   "cls": "GTP",
+   "sectors": [
+    23.41,
+    26.776,
+    21.202
+   ],
+   "topSpeedKph": null,
+   "event": "Long Beach Street Circuit",
+   "session": "202404191700_Qualifying",
+   "weather": {
+    "airTempC": 18.02,
+    "trackTempC": 34.63,
+    "humidityPct": 68.49,
+    "pressureHpa": 1012.2,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/24_2024/06_Long%20Beach%20Street%20Circuit/01_IMSA%20WeatherTech%20SportsCar%20Championship/202404191700_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "long-beach",
+   "series": "imsa",
+   "season": 2025,
+   "type": "gtd",
+   "lap": 77.877,
+   "car": "12",
+   "manufacturer": "Lexus",
+   "team": "Vasser Sullivan Racing",
+   "driver": "Parker Thompson",
+   "cls": "GTD",
+   "sectors": [
+    25.515,
+    29.272,
+    23.09
+   ],
+   "topSpeedKph": null,
+   "event": "Long Beach Street Circuit",
+   "session": "202504111710_Qualifying",
+   "weather": {
+    "airTempC": 17.07,
+    "trackTempC": 17.27,
+    "humidityPct": 81.26,
+    "pressureHpa": 1012.9,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/07_Long%20Beach%20Street%20Circuit/01_IMSA%20WeatherTech%20SportsCar%20Championship/202504111710_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "long-beach",
+   "series": "imsa",
+   "season": 2025,
+   "type": "lmdh",
+   "lap": 71.539,
+   "car": "24",
+   "manufacturer": "BMW",
+   "team": "BMW M Team RLL",
+   "driver": "Dries Vanthoor",
+   "cls": "GTP",
+   "sectors": [
+    23.497,
+    26.938,
+    21.104
+   ],
+   "topSpeedKph": null,
+   "event": "Long Beach Street Circuit",
+   "session": "202504111710_Qualifying",
+   "weather": {
+    "airTempC": 17.07,
+    "trackTempC": 17.27,
+    "humidityPct": 81.26,
+    "pressureHpa": 1012.9,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/07_Long%20Beach%20Street%20Circuit/01_IMSA%20WeatherTech%20SportsCar%20Championship/202504111710_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "long-beach",
+   "series": "imsa",
+   "season": 2025,
+   "type": "lmh",
+   "lap": 73.392,
+   "car": "23",
+   "manufacturer": "Aston Martin",
+   "team": "ASTON MARTIN THOR Team",
+   "driver": "Ross Gunn",
+   "cls": "GTP",
+   "sectors": [
+    23.971,
+    27.535,
+    21.886
+   ],
+   "topSpeedKph": null,
+   "event": "Long Beach Street Circuit",
+   "session": "202504111710_Qualifying",
+   "weather": {
+    "airTempC": 17.07,
+    "trackTempC": 17.27,
+    "humidityPct": 81.26,
+    "pressureHpa": 1012.9,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/07_Long%20Beach%20Street%20Circuit/01_IMSA%20WeatherTech%20SportsCar%20Championship/202504111710_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "long-beach",
+   "series": "imsa",
+   "season": 2026,
+   "type": "gtd",
+   "lap": 78.411,
+   "car": "89",
+   "manufacturer": "Lexus",
+   "team": "Vasser Sullivan Racing",
+   "driver": "Frankie Montecalvo",
+   "cls": "GTD",
+   "sectors": [
+    25.592,
+    29.561,
+    23.258
+   ],
+   "topSpeedKph": 216.1,
+   "event": "Long Beach Street Circuit",
+   "session": "202604171725_Qualifying",
+   "weather": {
+    "airTempC": 21.87,
+    "trackTempC": 37.63,
+    "humidityPct": 61.16,
+    "pressureHpa": 1011.2,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/26_2026/07_Long%20Beach%20Street%20Circuit/01_IMSA%20WeatherTech%20SportsCar%20Championship/202604171725_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "long-beach",
+   "series": "imsa",
+   "season": 2026,
+   "type": "lmdh",
+   "lap": 71.626,
+   "car": "93",
+   "manufacturer": "Acura",
+   "team": "Acura Meyer Shank Racing w/Curb Agajanian",
+   "driver": "Nick Yelloly",
+   "cls": "GTP",
+   "sectors": [
+    23.464,
+    26.917,
+    21.245
+   ],
+   "topSpeedKph": 253.3,
+   "event": "Long Beach Street Circuit",
+   "session": "202604171725_Qualifying",
+   "weather": {
+    "airTempC": 21.87,
+    "trackTempC": 37.63,
+    "humidityPct": 61.16,
+    "pressureHpa": 1011.2,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/26_2026/07_Long%20Beach%20Street%20Circuit/01_IMSA%20WeatherTech%20SportsCar%20Championship/202604171725_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "long-beach",
+   "series": "imsa",
+   "season": 2026,
+   "type": "lmh",
+   "lap": 71.997,
+   "car": "23",
+   "manufacturer": "Aston Martin",
+   "team": "ASTON MARTIN THOR Team",
+   "driver": "Ross Gunn",
+   "cls": "GTP",
+   "sectors": [
+    23.512,
+    26.981,
+    21.504
+   ],
+   "topSpeedKph": 253.8,
+   "event": "Long Beach Street Circuit",
+   "session": "202604171725_Qualifying",
+   "weather": {
+    "airTempC": 21.87,
+    "trackTempC": 37.63,
+    "humidityPct": 61.16,
+    "pressureHpa": 1011.2,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/26_2026/07_Long%20Beach%20Street%20Circuit/01_IMSA%20WeatherTech%20SportsCar%20Championship/202604171725_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "mosport",
+   "series": "imsa",
+   "season": 2023,
+   "type": "gtd",
+   "lap": 75.478,
+   "car": "27",
+   "manufacturer": "Aston Martin",
+   "team": "Heart of Racing Team",
+   "driver": "Roman De Angelis",
+   "cls": "GTD",
+   "sectors": [
+    22.287,
+    34.961,
+    18.23
+   ],
+   "topSpeedKph": null,
+   "event": "Canadian Tire Motorsport Park",
+   "session": "202307081245_Qualifying",
+   "weather": {
+    "airTempC": 23.68,
+    "trackTempC": 29.55,
+    "humidityPct": 53.14,
+    "pressureHpa": 1006.4,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/23_2023/13_Canadian%20Tire%20Motorsport%20Park/01_IMSA%20WeatherTech%20SportsCar%20Championship/202307081245_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "mosport",
+   "series": "imsa",
+   "season": 2023,
+   "type": "gtdpro",
+   "lap": 75.029,
+   "car": "14",
+   "manufacturer": "Lexus",
+   "team": "Vasser Sullivan",
+   "driver": "Jack Hawksworth",
+   "cls": "GTDPRO",
+   "sectors": [
+    22.38,
+    34.752,
+    17.897
+   ],
+   "topSpeedKph": null,
+   "event": "Canadian Tire Motorsport Park",
+   "session": "202307081245_Qualifying",
+   "weather": {
+    "airTempC": 23.68,
+    "trackTempC": 29.55,
+    "humidityPct": 53.14,
+    "pressureHpa": 1006.4,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/23_2023/13_Canadian%20Tire%20Motorsport%20Park/01_IMSA%20WeatherTech%20SportsCar%20Championship/202307081245_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "mosport",
+   "series": "imsa",
+   "season": 2023,
+   "type": "lmdh",
+   "lap": 65.653,
+   "car": "60",
+   "manufacturer": "Acura",
+   "team": "Meyer Shank Racing w/ Curb Agajanian",
+   "driver": "Tom Blomqvist",
+   "cls": "GTP",
+   "sectors": [
+    19.157,
+    30.599,
+    15.897
+   ],
+   "topSpeedKph": null,
+   "event": "Canadian Tire Motorsport Park",
+   "session": "202307081245_Qualifying",
+   "weather": {
+    "airTempC": 23.68,
+    "trackTempC": 29.55,
+    "humidityPct": 53.14,
+    "pressureHpa": 1006.4,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/23_2023/13_Canadian%20Tire%20Motorsport%20Park/01_IMSA%20WeatherTech%20SportsCar%20Championship/202307081245_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "mosport",
+   "series": "imsa",
+   "season": 2024,
+   "type": "gtd",
+   "lap": 75.06,
+   "car": "12",
+   "manufacturer": "Lexus",
+   "team": "VasserSullivan",
+   "driver": "Frankie Montecalvo",
+   "cls": "GTD",
+   "sectors": [
+    22.111,
+    34.853,
+    18.096
+   ],
+   "topSpeedKph": null,
+   "event": "Canadian Tire Motorsport Park",
+   "session": "202407131600_Qualifying",
+   "weather": {
+    "airTempC": 28.82,
+    "trackTempC": 39.36,
+    "humidityPct": 46.9,
+    "pressureHpa": 1035.2,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/24_2024/13_Canadian%20Tire%20Motorsport%20Park/01_IMSA%20WeatherTech%20SportsCar%20Championship/202407131600_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "mosport",
+   "series": "imsa",
+   "season": 2024,
+   "type": "gtdpro",
+   "lap": 74.373,
+   "car": "3",
+   "manufacturer": "Chevrolet",
+   "team": "Corvette Racing by Pratt Miller Motorsports",
+   "driver": "Alexander Sims",
+   "cls": "GTDPRO",
+   "sectors": [
+    22.072,
+    34.479,
+    17.822
+   ],
+   "topSpeedKph": null,
+   "event": "Canadian Tire Motorsport Park",
+   "session": "202407131600_Qualifying",
+   "weather": {
+    "airTempC": 28.82,
+    "trackTempC": 39.36,
+    "humidityPct": 46.9,
+    "pressureHpa": 1035.2,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/24_2024/13_Canadian%20Tire%20Motorsport%20Park/01_IMSA%20WeatherTech%20SportsCar%20Championship/202407131600_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "mosport",
+   "series": "imsa",
+   "season": 2025,
+   "type": "gtd",
+   "lap": 75.101,
+   "car": "12",
+   "manufacturer": "Lexus",
+   "team": "Vasser Sullivan Racing",
+   "driver": "Jack Hawksworth",
+   "cls": "GTD",
+   "sectors": [
+    21.88,
+    35.164,
+    18.057
+   ],
+   "topSpeedKph": null,
+   "event": "Canadian Tire Motorsport Park",
+   "session": "202507121600_Qualifying",
+   "weather": {
+    "airTempC": 31.35,
+    "trackTempC": 32.86,
+    "humidityPct": 56.44,
+    "pressureHpa": 1011.2,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/15_Canadian%20Tire%20Motorsport%20Park/01_IMSA%20WeatherTech%20SportsCar%20Championship/202507121600_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "mosport",
+   "series": "imsa",
+   "season": 2025,
+   "type": "gtdpro",
+   "lap": 75.04599999999999,
+   "car": "1",
+   "manufacturer": "BMW",
+   "team": "Paul Miller Racing",
+   "driver": "Neil Verhagen",
+   "cls": "GTDPRO",
+   "sectors": [
+    22.279,
+    34.686,
+    18.081
+   ],
+   "topSpeedKph": null,
+   "event": "Canadian Tire Motorsport Park",
+   "session": "202507121600_Qualifying",
+   "weather": {
+    "airTempC": 31.35,
+    "trackTempC": 32.86,
+    "humidityPct": 56.44,
+    "pressureHpa": 1011.2,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/15_Canadian%20Tire%20Motorsport%20Park/01_IMSA%20WeatherTech%20SportsCar%20Championship/202507121600_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "mosport",
+   "series": "imsa",
+   "season": 2026,
+   "type": "gtd",
+   "lap": 75.13,
+   "car": "27",
+   "manufacturer": "Aston Martin",
+   "team": "Heart of Racing Team",
+   "driver": "Dudu Barrichello",
+   "cls": "GTD",
+   "sectors": [
+    22.293,
+    34.766,
+    18.071
+   ],
+   "topSpeedKph": 250.9,
+   "event": "Canadian Tire Motorsport Park",
+   "session": "202607111600_Qualifying",
+   "weather": {
+    "airTempC": 26.13,
+    "trackTempC": 48.21,
+    "humidityPct": 46.33,
+    "pressureHpa": 984.1,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/26_2026/15_Canadian%20Tire%20Motorsport%20Park/01_IMSA%20WeatherTech%20SportsCar%20Championship/202607111600_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "mosport",
+   "series": "imsa",
+   "season": 2026,
+   "type": "gtdpro",
+   "lap": 74.382,
+   "car": "1",
+   "manufacturer": "BMW",
+   "team": "Paul Miller Racing",
+   "driver": "Neil Verhagen",
+   "cls": "GTDPRO",
+   "sectors": [
+    21.947,
+    34.513,
+    17.922
+   ],
+   "topSpeedKph": 253.9,
+   "event": "Canadian Tire Motorsport Park",
+   "session": "202607111600_Qualifying",
+   "weather": {
+    "airTempC": 26.13,
+    "trackTempC": 48.21,
+    "humidityPct": 46.33,
+    "pressureHpa": 984.1,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/26_2026/15_Canadian%20Tire%20Motorsport%20Park/01_IMSA%20WeatherTech%20SportsCar%20Championship/202607111600_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "portimao",
+   "series": "wec",
+   "season": 2023,
+   "type": "lmdh",
+   "lap": 92.404,
+   "car": "6",
+   "manufacturer": "Porsche",
+   "team": "Porsche Penske Motorsport",
+   "driver": "Kévin ESTRE",
+   "cls": "HYPERCAR",
+   "sectors": [
+    28.806,
+    29.564,
+    34.034
+   ],
+   "topSpeedKph": 302.5,
+   "session": "Qualifying LMGTE Am",
+   "event": "AUTODROMO DO ALGARVE",
+   "weather": {
+    "airTempC": 26.19,
+    "trackTempC": 44.73,
+    "humidityPct": 41.73,
+    "pressureHpa": 1007.57,
+    "rain": false
+   },
+   "url": "https://files.alkamelcloud.com/wec/results/12_2023/02_AUTODROMO%20DO%20ALGARVE/461_FIA%20WEC/202304151530_Qualifying%20LMGTE%20Am/23_Analysis_Qualifying%20LMGTE%20Am.CSV"
+  },
+  {
+   "track": "portimao",
+   "series": "wec",
+   "season": 2023,
+   "type": "lmh",
+   "lap": 90.17099999999999,
+   "car": "8",
+   "manufacturer": "Toyota",
+   "team": "Toyota Gazoo Racing",
+   "driver": "Brendon HARTLEY",
+   "cls": "HYPERCAR",
+   "sectors": [
+    28.174,
+    28.642,
+    33.355
+   ],
+   "topSpeedKph": 300.8,
+   "session": "Qualifying LMGTE Am",
+   "event": "AUTODROMO DO ALGARVE",
+   "weather": {
+    "airTempC": 26.19,
+    "trackTempC": 44.73,
+    "humidityPct": 41.73,
+    "pressureHpa": 1007.57,
+    "rain": false
+   },
+   "url": "https://files.alkamelcloud.com/wec/results/12_2023/02_AUTODROMO%20DO%20ALGARVE/461_FIA%20WEC/202304151530_Qualifying%20LMGTE%20Am/23_Analysis_Qualifying%20LMGTE%20Am.CSV"
+  },
+  {
+   "track": "road-america",
+   "series": "imsa",
+   "season": 2023,
+   "type": "gtd",
+   "lap": 123.291,
+   "car": "1",
+   "manufacturer": "BMW",
+   "team": "Paul Miller Racing",
+   "driver": "Madison Snow",
+   "cls": "GTD",
+   "sectors": [
+    13.209,
+    75.618,
+    34.464
+   ],
+   "topSpeedKph": null,
+   "event": "Road America",
+   "session": "202308051315_Qualifying",
+   "weather": {
+    "airTempC": 22.72,
+    "trackTempC": 31.63,
+    "humidityPct": 76.46,
+    "pressureHpa": 1014.6,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/23_2023/17_Road%20America/01_IMSA%20WeatherTech%20SportsCar%20Championship/202308051315_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "road-america",
+   "series": "imsa",
+   "season": 2023,
+   "type": "gtdpro",
+   "lap": 122.918,
+   "car": "23",
+   "manufacturer": "Aston Martin",
+   "team": "Heart of Racing Team",
+   "driver": "Alex Riberas",
+   "cls": "GTDPRO",
+   "sectors": [
+    13.224,
+    75.391,
+    34.303
+   ],
+   "topSpeedKph": null,
+   "event": "Road America",
+   "session": "202308051315_Qualifying",
+   "weather": {
+    "airTempC": 22.72,
+    "trackTempC": 31.63,
+    "humidityPct": 76.46,
+    "pressureHpa": 1014.6,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/23_2023/17_Road%20America/01_IMSA%20WeatherTech%20SportsCar%20Championship/202308051315_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "road-america",
+   "series": "imsa",
+   "season": 2023,
+   "type": "lmdh",
+   "lap": 107.72999999999999,
+   "car": "31",
+   "manufacturer": "Cadillac",
+   "team": "Whelen Engineering Cadillac Racing",
+   "driver": "Pipo Derani",
+   "cls": "GTP",
+   "sectors": [
+    11.372,
+    66.431,
+    29.927
+   ],
+   "topSpeedKph": null,
+   "event": "Road America",
+   "session": "202308051315_Qualifying",
+   "weather": {
+    "airTempC": 22.72,
+    "trackTempC": 31.63,
+    "humidityPct": 76.46,
+    "pressureHpa": 1014.6,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/23_2023/17_Road%20America/01_IMSA%20WeatherTech%20SportsCar%20Championship/202308051315_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "road-america",
+   "series": "imsa",
+   "season": 2024,
+   "type": "gtd",
+   "lap": 123.634,
+   "car": "32",
+   "manufacturer": "Mercedes-AMG",
+   "team": "Korthoff/Preston Motorsports",
+   "driver": "Mikael Grenier",
+   "cls": "GTD",
+   "sectors": [
+    13.384,
+    75.822,
+    34.428
+   ],
+   "topSpeedKph": null,
+   "event": "Road America",
+   "session": "202408031620_Qualifying",
+   "weather": {
+    "airTempC": 28.48,
+    "trackTempC": 34.49,
+    "humidityPct": 56.21,
+    "pressureHpa": 1011.5,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/24_2024/14_Road%20America/01_IMSA%20WeatherTech%20SportsCar%20Championship/202408031620_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "road-america",
+   "series": "imsa",
+   "season": 2024,
+   "type": "gtdpro",
+   "lap": 122.198,
+   "car": "4",
+   "manufacturer": "Chevrolet",
+   "team": "Corvette Racing by Pratt Miller Motorsports",
+   "driver": "Nicky Catsburg",
+   "cls": "GTDPRO",
+   "sectors": [
+    13.157,
+    75.002,
+    34.039
+   ],
+   "topSpeedKph": null,
+   "event": "Road America",
+   "session": "202408031620_Qualifying",
+   "weather": {
+    "airTempC": 28.48,
+    "trackTempC": 34.49,
+    "humidityPct": 56.21,
+    "pressureHpa": 1011.5,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/24_2024/14_Road%20America/01_IMSA%20WeatherTech%20SportsCar%20Championship/202408031620_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "road-america",
+   "series": "imsa",
+   "season": 2024,
+   "type": "lmdh",
+   "lap": 108.601,
+   "car": "10",
+   "manufacturer": "Acura",
+   "team": "Wayne Taylor Racing with Andretti",
+   "driver": "Filipe Albuquerque",
+   "cls": "GTP",
+   "sectors": [
+    11.387,
+    67.027,
+    30.187
+   ],
+   "topSpeedKph": null,
+   "event": "Road America",
+   "session": "202408031620_Qualifying",
+   "weather": {
+    "airTempC": 28.48,
+    "trackTempC": 34.49,
+    "humidityPct": 56.21,
+    "pressureHpa": 1011.5,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/24_2024/14_Road%20America/01_IMSA%20WeatherTech%20SportsCar%20Championship/202408031620_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "road-america",
+   "series": "imsa",
+   "season": 2025,
+   "type": "gtd",
+   "lap": 123.745,
+   "car": "57",
+   "manufacturer": "Mercedes-AMG",
+   "team": "Winward Racing",
+   "driver": "Russell Ward",
+   "cls": "GTD",
+   "sectors": [
+    13.429,
+    76.025,
+    34.291
+   ],
+   "topSpeedKph": null,
+   "event": "Road America",
+   "session": "202508021640_Qualifying",
+   "weather": {
+    "airTempC": 25.19,
+    "trackTempC": 33.81,
+    "humidityPct": 59.08,
+    "pressureHpa": 1023,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/16_Road%20America/01_IMSA%20WeatherTech%20SportsCar%20Championship/202508021640_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "road-america",
+   "series": "imsa",
+   "season": 2025,
+   "type": "gtdpro",
+   "lap": 123.904,
+   "car": "81",
+   "manufacturer": "Ferrari",
+   "team": "DragonSpeed",
+   "driver": "Giacomo Altoè",
+   "cls": "GTDPRO",
+   "sectors": [
+    13.333,
+    76.131,
+    34.44
+   ],
+   "topSpeedKph": null,
+   "event": "Road America",
+   "session": "202508021640_Qualifying",
+   "weather": {
+    "airTempC": 25.19,
+    "trackTempC": 33.81,
+    "humidityPct": 59.08,
+    "pressureHpa": 1023,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/16_Road%20America/01_IMSA%20WeatherTech%20SportsCar%20Championship/202508021640_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "road-america",
+   "series": "imsa",
+   "season": 2025,
+   "type": "lmdh",
+   "lap": 108.628,
+   "car": "93",
+   "manufacturer": "Acura",
+   "team": "Acura Meyer Shank Racing w/Curb Agajanian",
+   "driver": "Nick Yelloly",
+   "cls": "GTP",
+   "sectors": [
+    11.527,
+    66.939,
+    30.162
+   ],
+   "topSpeedKph": null,
+   "event": "Road America",
+   "session": "202508021640_Qualifying",
+   "weather": {
+    "airTempC": 25.19,
+    "trackTempC": 33.81,
+    "humidityPct": 59.08,
+    "pressureHpa": 1023,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/16_Road%20America/01_IMSA%20WeatherTech%20SportsCar%20Championship/202508021640_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "road-america",
+   "series": "imsa",
+   "season": 2025,
+   "type": "lmh",
+   "lap": 109.309,
+   "car": "23",
+   "manufacturer": "Aston Martin",
+   "team": "ASTON MARTIN THOR Team",
+   "driver": "Ross Gunn",
+   "cls": "GTP",
+   "sectors": [
+    11.623,
+    67.32,
+    30.366
+   ],
+   "topSpeedKph": null,
+   "event": "Road America",
+   "session": "202508021640_Qualifying",
+   "weather": {
+    "airTempC": 25.19,
+    "trackTempC": 33.81,
+    "humidityPct": 59.08,
+    "pressureHpa": 1023,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/16_Road%20America/01_IMSA%20WeatherTech%20SportsCar%20Championship/202508021640_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "road-america",
+   "series": "imsa",
+   "season": 2026,
+   "type": "gtd",
+   "lap": 124.688,
+   "car": "21",
+   "manufacturer": "Ferrari",
+   "team": "Af Corse Usa",
+   "driver": "Lilou Wadoux Ducellier",
+   "cls": "GTD",
+   "sectors": [
+    13.398,
+    76.669,
+    34.621
+   ],
+   "topSpeedKph": 255.6,
+   "event": "Road America",
+   "session": "202608011525_Qualifying",
+   "weather": {
+    "airTempC": 20.17,
+    "trackTempC": 24.68,
+    "humidityPct": 86.13,
+    "pressureHpa": 1010.5,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/26_2026/16_Road%20America/01_IMSA%20WeatherTech%20SportsCar%20Championship/202608011525_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "road-america",
+   "series": "imsa",
+   "season": 2026,
+   "type": "gtdpro",
+   "lap": 124.042,
+   "car": "77",
+   "manufacturer": "Porsche",
+   "team": "AO Racing",
+   "driver": "Harry King",
+   "cls": "GTDPRO",
+   "sectors": [
+    13.259,
+    76.26599999999999,
+    34.517
+   ],
+   "topSpeedKph": 253.7,
+   "event": "Road America",
+   "session": "202608011525_Qualifying",
+   "weather": {
+    "airTempC": 20.17,
+    "trackTempC": 24.68,
+    "humidityPct": 86.13,
+    "pressureHpa": 1010.5,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/26_2026/16_Road%20America/01_IMSA%20WeatherTech%20SportsCar%20Championship/202608011525_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "road-america",
+   "series": "imsa",
+   "season": 2026,
+   "type": "lmdh",
+   "lap": 109.233,
+   "car": "93",
+   "manufacturer": "Acura",
+   "team": "Acura Meyer Shank Racing w/Curb Agajanian",
+   "driver": "Nick Yelloly",
+   "cls": "GTP",
+   "sectors": [
+    11.469,
+    67.422,
+    30.342
+   ],
+   "topSpeedKph": 302,
+   "event": "Road America",
+   "session": "202608011525_Qualifying",
+   "weather": {
+    "airTempC": 20.17,
+    "trackTempC": 24.68,
+    "humidityPct": 86.13,
+    "pressureHpa": 1010.5,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/26_2026/16_Road%20America/01_IMSA%20WeatherTech%20SportsCar%20Championship/202608011525_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "road-america",
+   "series": "imsa",
+   "season": 2026,
+   "type": "lmh",
+   "lap": 110.525,
+   "car": "23",
+   "manufacturer": "Aston Martin",
+   "team": "ASTON MARTIN THOR Team",
+   "driver": "Ross Gunn",
+   "cls": "GTP",
+   "sectors": [
+    11.641,
+    68.334,
+    30.55
+   ],
+   "topSpeedKph": 298.5,
+   "event": "Road America",
+   "session": "202608011525_Qualifying",
+   "weather": {
+    "airTempC": 20.17,
+    "trackTempC": 24.68,
+    "humidityPct": 86.13,
+    "pressureHpa": 1010.5,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/26_2026/16_Road%20America/01_IMSA%20WeatherTech%20SportsCar%20Championship/202608011525_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "road-atlanta",
+   "series": "imsa",
+   "season": 2023,
+   "type": "gtd",
+   "lap": 83.116,
+   "car": "27",
+   "manufacturer": "Aston Martin",
+   "team": "Heart of Racing Team",
+   "driver": "Ian James",
+   "cls": "GTD",
+   "sectors": [
+    10.198,
+    44.336,
+    28.582
+   ],
+   "topSpeedKph": null,
+   "event": "Road Atlanta",
+   "session": "202310131520_Qualifying",
+   "weather": {
+    "airTempC": 19.03,
+    "trackTempC": 23.87,
+    "humidityPct": 84.13,
+    "pressureHpa": 1004.1,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/23_2023/21_Road%20Atlanta/01_IMSA%20WeatherTech%20SportsCar%20Championship/202310131520_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "road-atlanta",
+   "series": "imsa",
+   "season": 2023,
+   "type": "gtdpro",
+   "lap": 83.168,
+   "car": "14",
+   "manufacturer": "Lexus",
+   "team": "Vasser Sullivan",
+   "driver": "Jack Hawksworth",
+   "cls": "GTDPRO",
+   "sectors": [
+    10.007,
+    44.234,
+    28.927
+   ],
+   "topSpeedKph": null,
+   "event": "Road Atlanta",
+   "session": "202310131520_Qualifying",
+   "weather": {
+    "airTempC": 19.03,
+    "trackTempC": 23.87,
+    "humidityPct": 84.13,
+    "pressureHpa": 1004.1,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/23_2023/21_Road%20Atlanta/01_IMSA%20WeatherTech%20SportsCar%20Championship/202310131520_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "road-atlanta",
+   "series": "imsa",
+   "season": 2023,
+   "type": "lmdh",
+   "lap": 75.402,
+   "car": "10",
+   "manufacturer": "Acura",
+   "team": "Konica Minolta Acura ARX-06",
+   "driver": "Louis Deletraz",
+   "cls": "GTP",
+   "sectors": [
+    8.809,
+    40.659,
+    25.934
+   ],
+   "topSpeedKph": null,
+   "event": "Road Atlanta",
+   "session": "202310131520_Qualifying",
+   "weather": {
+    "airTempC": 19.03,
+    "trackTempC": 23.87,
+    "humidityPct": 84.13,
+    "pressureHpa": 1004.1,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/23_2023/21_Road%20Atlanta/01_IMSA%20WeatherTech%20SportsCar%20Championship/202310131520_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "road-atlanta",
+   "series": "imsa",
+   "season": 2024,
+   "type": "gtd",
+   "lap": 78.281,
+   "car": "80",
+   "manufacturer": "Mercedes-AMG",
+   "team": "Lone Star Racing",
+   "driver": "Scott Andrews",
+   "cls": "GTD",
+   "sectors": [
+    9.276,
+    41.412,
+    27.593
+   ],
+   "topSpeedKph": null,
+   "event": "Road Atlanta",
+   "session": "202410111525_Qualifying",
+   "weather": {
+    "airTempC": 23.65,
+    "trackTempC": 25.13,
+    "humidityPct": 45.08,
+    "pressureHpa": 995.3,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/24_2024/19_Road%20Atlanta/01_IMSA%20WeatherTech%20SportsCar%20Championship/202410111525_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "road-atlanta",
+   "series": "imsa",
+   "season": 2024,
+   "type": "gtdpro",
+   "lap": 77.881,
+   "car": "77",
+   "manufacturer": "Porsche",
+   "team": "AO Racing",
+   "driver": "Laurin Heinrich",
+   "cls": "GTDPRO",
+   "sectors": [
+    9.321,
+    41.14,
+    27.42
+   ],
+   "topSpeedKph": null,
+   "event": "Road Atlanta",
+   "session": "202410111525_Qualifying",
+   "weather": {
+    "airTempC": 23.65,
+    "trackTempC": 25.13,
+    "humidityPct": 45.08,
+    "pressureHpa": 995.3,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/24_2024/19_Road%20Atlanta/01_IMSA%20WeatherTech%20SportsCar%20Championship/202410111525_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "road-atlanta",
+   "series": "imsa",
+   "season": 2024,
+   "type": "lmdh",
+   "lap": 69.639,
+   "car": "31",
+   "manufacturer": "Cadillac",
+   "team": "Whelen Cadillac Racing",
+   "driver": "Jack Aitken",
+   "cls": "GTP",
+   "sectors": [
+    8.025,
+    37.142,
+    24.472
+   ],
+   "topSpeedKph": null,
+   "event": "Road Atlanta",
+   "session": "202410111525_Qualifying",
+   "weather": {
+    "airTempC": 23.65,
+    "trackTempC": 25.13,
+    "humidityPct": 45.08,
+    "pressureHpa": 995.3,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/24_2024/19_Road%20Atlanta/01_IMSA%20WeatherTech%20SportsCar%20Championship/202410111525_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "road-atlanta",
+   "series": "imsa",
+   "season": 2025,
+   "type": "gtd",
+   "lap": 78.316,
+   "car": "47",
+   "manufacturer": "Ferrari",
+   "team": "CETILAR RACING",
+   "driver": "Lorenzo Patrese",
+   "cls": "GTD",
+   "sectors": [
+    9.302,
+    41.207,
+    27.807
+   ],
+   "topSpeedKph": null,
+   "event": "Road Atlanta",
+   "session": "202510101520_Qualifying",
+   "weather": {
+    "airTempC": 22.17,
+    "trackTempC": 22.3,
+    "humidityPct": 57.42,
+    "pressureHpa": 1020.7,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/22_Road%20Atlanta/01_IMSA%20WeatherTech%20SportsCar%20Championship/202510101520_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "road-atlanta",
+   "series": "imsa",
+   "season": 2025,
+   "type": "gtdpro",
+   "lap": 78.43,
+   "car": "81",
+   "manufacturer": "Ferrari",
+   "team": "DragonSpeed",
+   "driver": "Albert Costa",
+   "cls": "GTDPRO",
+   "sectors": [
+    9.437,
+    41.227,
+    27.766
+   ],
+   "topSpeedKph": null,
+   "event": "Road Atlanta",
+   "session": "202510101520_Qualifying",
+   "weather": {
+    "airTempC": 22.17,
+    "trackTempC": 22.3,
+    "humidityPct": 57.42,
+    "pressureHpa": 1020.7,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/22_Road%20Atlanta/01_IMSA%20WeatherTech%20SportsCar%20Championship/202510101520_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "road-atlanta",
+   "series": "imsa",
+   "season": 2025,
+   "type": "lmdh",
+   "lap": 69.628,
+   "car": "60",
+   "manufacturer": "Acura",
+   "team": "Acura Meyer Shank Racing w/Curb Agajanian",
+   "driver": "Tom Blomqvist",
+   "cls": "GTP",
+   "sectors": [
+    8.002,
+    37.151,
+    24.475
+   ],
+   "topSpeedKph": null,
+   "event": "Road Atlanta",
+   "session": "202510101520_Qualifying",
+   "weather": {
+    "airTempC": 22.17,
+    "trackTempC": 22.3,
+    "humidityPct": 57.42,
+    "pressureHpa": 1020.7,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/22_Road%20Atlanta/01_IMSA%20WeatherTech%20SportsCar%20Championship/202510101520_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "road-atlanta",
+   "series": "imsa",
+   "season": 2025,
+   "type": "lmh",
+   "lap": 70.254,
+   "car": "23",
+   "manufacturer": "Aston Martin",
+   "team": "ASTON MARTIN THOR Team",
+   "driver": "Ross Gunn",
+   "cls": "GTP",
+   "sectors": [
+    8.225,
+    37.645,
+    24.384
+   ],
+   "topSpeedKph": null,
+   "event": "Road Atlanta",
+   "session": "202510101520_Qualifying",
+   "weather": {
+    "airTempC": 22.17,
+    "trackTempC": 22.3,
+    "humidityPct": 57.42,
+    "pressureHpa": 1020.7,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/22_Road%20Atlanta/01_IMSA%20WeatherTech%20SportsCar%20Championship/202510101520_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "road-atlanta",
+   "series": "imsa",
+   "season": 2026,
+   "type": "gtd",
+   "lap": 78.674,
+   "car": "57",
+   "manufacturer": "Mercedes-AMG",
+   "team": "Winward Racing",
+   "driver": "Philip Ellis",
+   "cls": "GTD",
+   "sectors": [
+    9.393,
+    41.37,
+    27.911
+   ],
+   "topSpeedKph": 242.2,
+   "event": "Road Atlanta",
+   "session": "202610021420_Qualifying",
+   "weather": {
+    "airTempC": 30.78,
+    "trackTempC": 32.6,
+    "humidityPct": 59.57,
+    "pressureHpa": 985.8,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/26_2026/21_Road%20Atlanta/01_IMSA%20WeatherTech%20SportsCar%20Championship/202610021420_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "road-atlanta",
+   "series": "imsa",
+   "season": 2026,
+   "type": "gtdpro",
+   "lap": 78.194,
+   "car": "1",
+   "manufacturer": "BMW",
+   "team": "Paul Miller Racing",
+   "driver": "Neil Verhagen",
+   "cls": "GTDPRO",
+   "sectors": [
+    9.24,
+    41.171,
+    27.783
+   ],
+   "topSpeedKph": 246.1,
+   "event": "Road Atlanta",
+   "session": "202610021420_Qualifying",
+   "weather": {
+    "airTempC": 30.78,
+    "trackTempC": 32.6,
+    "humidityPct": 59.57,
+    "pressureHpa": 985.8,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/26_2026/21_Road%20Atlanta/01_IMSA%20WeatherTech%20SportsCar%20Championship/202610021420_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "road-atlanta",
+   "series": "imsa",
+   "season": 2026,
+   "type": "lmdh",
+   "lap": 69.703,
+   "car": "60",
+   "manufacturer": "Acura",
+   "team": "Acura Meyer Shank Racing w/Curb Agajanian",
+   "driver": "Tom Blomqvist",
+   "cls": "GTP",
+   "sectors": [
+    8.114,
+    37.179,
+    24.41
+   ],
+   "topSpeedKph": 292.2,
+   "event": "Road Atlanta",
+   "session": "202610021420_Qualifying",
+   "weather": {
+    "airTempC": 30.78,
+    "trackTempC": 32.6,
+    "humidityPct": 59.57,
+    "pressureHpa": 985.8,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/26_2026/21_Road%20Atlanta/01_IMSA%20WeatherTech%20SportsCar%20Championship/202610021420_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "road-atlanta",
+   "series": "imsa",
+   "season": 2026,
+   "type": "lmh",
+   "lap": 70.363,
+   "car": "23",
+   "manufacturer": "Aston Martin",
+   "team": "ASTON MARTIN THOR Team",
+   "driver": "Ross Gunn",
+   "cls": "GTP",
+   "sectors": [
+    8.312,
+    37.493,
+    24.558
+   ],
+   "topSpeedKph": 289.7,
+   "event": "Road Atlanta",
+   "session": "202610021420_Qualifying",
+   "weather": {
+    "airTempC": 30.78,
+    "trackTempC": 32.6,
+    "humidityPct": 59.57,
+    "pressureHpa": 985.8,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/26_2026/21_Road%20Atlanta/01_IMSA%20WeatherTech%20SportsCar%20Championship/202610021420_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "sebring",
+   "series": "imsa",
+   "season": 2023,
+   "type": "gtd",
+   "lap": 119.714,
+   "car": "93",
+   "manufacturer": "Acura",
+   "team": "Racers Edge Motorsports with WTR",
+   "driver": "Kyle Marcelli",
+   "cls": "GTD",
+   "sectors": [
+    11.398,
+    74.57900000000001,
+    33.737
+   ],
+   "topSpeedKph": null,
+   "event": "Sebring International Raceway",
+   "session": "202303170915_Qualifying",
+   "weather": {
+    "airTempC": 20.15,
+    "trackTempC": 18.71,
+    "humidityPct": 70.91,
+    "pressureHpa": 1017.3,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/23_2023/07_Sebring%20International%20Raceway/01_IMSA%20WeatherTech%20SportsCar%20Championship/202303170915_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "sebring",
+   "series": "imsa",
+   "season": 2023,
+   "type": "gtdpro",
+   "lap": 119.315,
+   "car": "3",
+   "manufacturer": "Chevrolet",
+   "team": "Corvette Racing",
+   "driver": "Antonio Garcia",
+   "cls": "GTDPRO",
+   "sectors": [
+    11.266,
+    74.599,
+    33.45
+   ],
+   "topSpeedKph": null,
+   "event": "Sebring International Raceway",
+   "session": "202303170915_Qualifying",
+   "weather": {
+    "airTempC": 20.15,
+    "trackTempC": 18.71,
+    "humidityPct": 70.91,
+    "pressureHpa": 1017.3,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/23_2023/07_Sebring%20International%20Raceway/01_IMSA%20WeatherTech%20SportsCar%20Championship/202303170915_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "sebring",
+   "series": "imsa",
+   "season": 2023,
+   "type": "lmdh",
+   "lap": 105.836,
+   "car": "31",
+   "manufacturer": "Cadillac",
+   "team": "Whelen Engineering Racing Cadillac",
+   "driver": "Pipo Derani",
+   "cls": "GTP",
+   "sectors": [
+    9.737,
+    66.585,
+    29.514
+   ],
+   "topSpeedKph": null,
+   "event": "Sebring International Raceway",
+   "session": "202303170915_Qualifying",
+   "weather": {
+    "airTempC": 20.15,
+    "trackTempC": 18.71,
+    "humidityPct": 70.91,
+    "pressureHpa": 1017.3,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/23_2023/07_Sebring%20International%20Raceway/01_IMSA%20WeatherTech%20SportsCar%20Championship/202303170915_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "sebring",
+   "series": "imsa",
+   "season": 2024,
+   "type": "gtd",
+   "lap": 118.77799999999999,
+   "car": "57",
+   "manufacturer": "Mercedes AMG",
+   "team": "Winward Racing",
+   "driver": "Philip Ellis",
+   "cls": "GTD",
+   "sectors": [
+    11.264,
+    74.191,
+    33.323
+   ],
+   "topSpeedKph": null,
+   "event": "Sebring International Raceway",
+   "session": "202403151250_Qualifying",
+   "weather": {
+    "airTempC": 28.97,
+    "trackTempC": 26.65,
+    "humidityPct": 59.37,
+    "pressureHpa": 1016.3,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/24_2024/05_Sebring%20International%20Raceway/01_IMSA%20WeatherTech%20SportsCar%20Championship/202403151250_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "sebring",
+   "series": "imsa",
+   "season": 2024,
+   "type": "gtdpro",
+   "lap": 118.714,
+   "car": "14",
+   "manufacturer": "Lexus",
+   "team": "Vasser Sullivan",
+   "driver": "Jack Hawksworth",
+   "cls": "GTDPRO",
+   "sectors": [
+    11.122,
+    74.318,
+    33.274
+   ],
+   "topSpeedKph": null,
+   "event": "Sebring International Raceway",
+   "session": "202403151250_Qualifying",
+   "weather": {
+    "airTempC": 28.97,
+    "trackTempC": 26.65,
+    "humidityPct": 59.37,
+    "pressureHpa": 1016.3,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/24_2024/05_Sebring%20International%20Raceway/01_IMSA%20WeatherTech%20SportsCar%20Championship/202403151250_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "sebring",
+   "series": "imsa",
+   "season": 2024,
+   "type": "lmdh",
+   "lap": 108.038,
+   "car": "10",
+   "manufacturer": "Acura",
+   "team": "Wayne Taylor Racing with Andretti",
+   "driver": "Ricky Taylor",
+   "cls": "GTP",
+   "sectors": [
+    9.832,
+    68.271,
+    29.935
+   ],
+   "topSpeedKph": null,
+   "event": "Sebring International Raceway",
+   "session": "202403151250_Qualifying",
+   "weather": {
+    "airTempC": 28.97,
+    "trackTempC": 26.65,
+    "humidityPct": 59.37,
+    "pressureHpa": 1016.3,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/24_2024/05_Sebring%20International%20Raceway/01_IMSA%20WeatherTech%20SportsCar%20Championship/202403151250_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "sebring",
+   "series": "imsa",
+   "season": 2025,
+   "type": "gtd",
+   "lap": 119.131,
+   "car": "21",
+   "manufacturer": "Ferrari",
+   "team": "Af Corse",
+   "driver": "Alessandro Pier Guidi",
+   "cls": "GTD",
+   "sectors": [
+    11.174,
+    74.401,
+    33.556
+   ],
+   "topSpeedKph": null,
+   "event": "Sebring International Raceway",
+   "session": "202503141125_Qualifying",
+   "weather": {
+    "airTempC": 22.71,
+    "trackTempC": 20.07,
+    "humidityPct": 60.93,
+    "pressureHpa": 1013.2,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/06_Sebring%20International%20Raceway/01_IMSA%20WeatherTech%20SportsCar%20Championship/202503141125_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "sebring",
+   "series": "imsa",
+   "season": 2025,
+   "type": "gtdpro",
+   "lap": 119.225,
+   "car": "81",
+   "manufacturer": "Ferrari",
+   "team": "DragonSpeed",
+   "driver": "Albert Costa",
+   "cls": "GTDPRO",
+   "sectors": [
+    11.338,
+    74.363,
+    33.524
+   ],
+   "topSpeedKph": null,
+   "event": "Sebring International Raceway",
+   "session": "202503141125_Qualifying",
+   "weather": {
+    "airTempC": 22.71,
+    "trackTempC": 20.07,
+    "humidityPct": 60.93,
+    "pressureHpa": 1013.2,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/06_Sebring%20International%20Raceway/01_IMSA%20WeatherTech%20SportsCar%20Championship/202503141125_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "sebring",
+   "series": "imsa",
+   "season": 2025,
+   "type": "lmdh",
+   "lap": 107.09100000000001,
+   "car": "24",
+   "manufacturer": "BMW",
+   "team": "BMW M Team RLL",
+   "driver": "Dries Vanthoor",
+   "cls": "GTP",
+   "sectors": [
+    9.845,
+    67.404,
+    29.842
+   ],
+   "topSpeedKph": null,
+   "event": "Sebring International Raceway",
+   "session": "202503141125_Qualifying",
+   "weather": {
+    "airTempC": 22.71,
+    "trackTempC": 20.07,
+    "humidityPct": 60.93,
+    "pressureHpa": 1013.2,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/06_Sebring%20International%20Raceway/01_IMSA%20WeatherTech%20SportsCar%20Championship/202503141125_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "sebring",
+   "series": "imsa",
+   "season": 2025,
+   "type": "lmh",
+   "lap": 109.4,
+   "car": "23",
+   "manufacturer": "Aston Martin",
+   "team": "ASTON MARTIN THOR Team",
+   "driver": "Ross Gunn",
+   "cls": "GTP",
+   "sectors": [
+    10.208,
+    68.597,
+    30.595
+   ],
+   "topSpeedKph": null,
+   "event": "Sebring International Raceway",
+   "session": "202503141125_Qualifying",
+   "weather": {
+    "airTempC": 22.71,
+    "trackTempC": 20.07,
+    "humidityPct": 60.93,
+    "pressureHpa": 1013.2,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/06_Sebring%20International%20Raceway/01_IMSA%20WeatherTech%20SportsCar%20Championship/202503141125_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "sebring",
+   "series": "imsa",
+   "season": 2026,
+   "type": "gtd",
+   "lap": 118.856,
+   "car": "27",
+   "manufacturer": "Aston Martin",
+   "team": "Heart of Racing Team",
+   "driver": "Dudu Barrichello",
+   "cls": "GTD",
+   "sectors": [
+    11.305,
+    73.92099999999999,
+    33.63
+   ],
+   "topSpeedKph": 252.7,
+   "event": "Sebring International Raceway",
+   "session": "202603201125_Qualifying",
+   "weather": {
+    "airTempC": 22.86,
+    "trackTempC": 35.73,
+    "humidityPct": 56.3,
+    "pressureHpa": 1016.3,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/26_2026/06_Sebring%20International%20Raceway/01_IMSA%20WeatherTech%20SportsCar%20Championship/202603201125_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "sebring",
+   "series": "imsa",
+   "season": 2026,
+   "type": "gtdpro",
+   "lap": 118.47999999999999,
+   "car": "14",
+   "manufacturer": "Lexus",
+   "team": "Vasser Sullivan Racing",
+   "driver": "Jack Hawksworth",
+   "cls": "GTDPRO",
+   "sectors": [
+    11.128,
+    73.969,
+    33.383
+   ],
+   "topSpeedKph": 253.1,
+   "event": "Sebring International Raceway",
+   "session": "202603201125_Qualifying",
+   "weather": {
+    "airTempC": 22.86,
+    "trackTempC": 35.73,
+    "humidityPct": 56.3,
+    "pressureHpa": 1016.3,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/26_2026/06_Sebring%20International%20Raceway/01_IMSA%20WeatherTech%20SportsCar%20Championship/202603201125_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "sebring",
+   "series": "imsa",
+   "season": 2026,
+   "type": "lmdh",
+   "lap": 106.15299999999999,
+   "car": "31",
+   "manufacturer": "Cadillac",
+   "team": "Cadillac Whelen",
+   "driver": "Jack Aitken",
+   "cls": "GTP",
+   "sectors": [
+    9.549,
+    66.714,
+    29.89
+   ],
+   "topSpeedKph": 296,
+   "event": "Sebring International Raceway",
+   "session": "202603201125_Qualifying",
+   "weather": {
+    "airTempC": 22.86,
+    "trackTempC": 35.73,
+    "humidityPct": 56.3,
+    "pressureHpa": 1016.3,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/26_2026/06_Sebring%20International%20Raceway/01_IMSA%20WeatherTech%20SportsCar%20Championship/202603201125_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "sebring",
+   "series": "imsa",
+   "season": 2026,
+   "type": "lmh",
+   "lap": 107.363,
+   "car": "23",
+   "manufacturer": "Aston Martin",
+   "team": "ASTON MARTIN THOR Team",
+   "driver": "Ross Gunn",
+   "cls": "GTP",
+   "sectors": [
+    9.86,
+    67.503,
+    30
+   ],
+   "topSpeedKph": 296,
+   "event": "Sebring International Raceway",
+   "session": "202603201125_Qualifying",
+   "weather": {
+    "airTempC": 22.86,
+    "trackTempC": 35.73,
+    "humidityPct": 56.3,
+    "pressureHpa": 1016.3,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/26_2026/06_Sebring%20International%20Raceway/01_IMSA%20WeatherTech%20SportsCar%20Championship/202603201125_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "sebring",
+   "series": "wec",
+   "season": 2023,
+   "type": "lmdh",
+   "lap": 106.082,
+   "car": "2",
+   "manufacturer": "Cadillac",
+   "team": "Cadillac Racing",
+   "driver": "Alex LYNN",
+   "cls": "HYPERCAR",
+   "sectors": [
+    31.553,
+    37.081,
+    37.448
+   ],
+   "topSpeedKph": 294.1,
+   "session": "Qualifying LMGTE Am",
+   "event": "SEBRING",
+   "weather": {
+    "airTempC": 24.01,
+    "trackTempC": 32.49,
+    "humidityPct": 39.8,
+    "pressureHpa": 1018.1,
+    "rain": false
+   },
+   "url": "https://files.alkamelcloud.com/wec/results/12_2023/01_SEBRING/460_FIA%20WEC/202303161830_Qualifying%20LMGTE%20Am/23_Analysis_Qualifying%20LMGTE%20Am.CSV"
+  },
+  {
+   "track": "sebring",
+   "series": "wec",
+   "season": 2023,
+   "type": "lmh",
+   "lap": 105.06700000000001,
+   "car": "50",
+   "manufacturer": "Ferrari",
+   "team": "Ferrari AF Corse",
+   "driver": "Antonio FUOCO",
+   "cls": "HYPERCAR",
+   "sectors": [
+    31.13,
+    36.768,
+    37.169
+   ],
+   "topSpeedKph": 294.1,
+   "session": "Qualifying LMGTE Am",
+   "event": "SEBRING",
+   "weather": {
+    "airTempC": 24.01,
+    "trackTempC": 32.49,
+    "humidityPct": 39.8,
+    "pressureHpa": 1018.1,
+    "rain": false
+   },
+   "url": "https://files.alkamelcloud.com/wec/results/12_2023/01_SEBRING/460_FIA%20WEC/202303161830_Qualifying%20LMGTE%20Am/23_Analysis_Qualifying%20LMGTE%20Am.CSV"
+  },
+  {
+   "track": "vir",
+   "series": "imsa",
+   "season": 2023,
+   "type": "gtd",
+   "lap": 105.225,
+   "car": "1",
+   "manufacturer": "BMW",
+   "team": "Paul Miller Racing",
+   "driver": "Madison Snow",
+   "cls": "GTD",
+   "sectors": [
+    21.841,
+    43.782,
+    39.602
+   ],
+   "topSpeedKph": null,
+   "event": "VIRginia International Raceway",
+   "session": "202308261445_Qualifying",
+   "weather": {
+    "airTempC": 35.06,
+    "trackTempC": 38.74,
+    "humidityPct": 50.93,
+    "pressureHpa": 1030.1,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/23_2023/18_VIRginia%20International%20Raceway/01_IMSA%20WeatherTech%20SportsCar%20Championship/202308261445_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "vir",
+   "series": "imsa",
+   "season": 2023,
+   "type": "gtdpro",
+   "lap": 104.78,
+   "car": "14",
+   "manufacturer": "Lexus",
+   "team": "Vasser Sullivan",
+   "driver": "Jack Hawksworth",
+   "cls": "GTDPRO",
+   "sectors": [
+    21.58,
+    43.526,
+    39.674
+   ],
+   "topSpeedKph": null,
+   "event": "VIRginia International Raceway",
+   "session": "202308261445_Qualifying",
+   "weather": {
+    "airTempC": 35.06,
+    "trackTempC": 38.74,
+    "humidityPct": 50.93,
+    "pressureHpa": 1030.1,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/23_2023/18_VIRginia%20International%20Raceway/01_IMSA%20WeatherTech%20SportsCar%20Championship/202308261445_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "vir",
+   "series": "imsa",
+   "season": 2024,
+   "type": "gtd",
+   "lap": 103.9,
+   "car": "55",
+   "manufacturer": "Ford",
+   "team": "Proton Competition",
+   "driver": "Giammarco Levorato",
+   "cls": "GTD",
+   "sectors": [
+    21.487,
+    43.116,
+    39.297
+   ],
+   "topSpeedKph": null,
+   "event": "VIRginia International Raceway",
+   "session": "202408241650_Qualifying",
+   "weather": {
+    "airTempC": 29.28,
+    "trackTempC": 45.2,
+    "humidityPct": 46.86,
+    "pressureHpa": 1021.3,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/24_2024/15_VIRginia%20International%20Raceway/01_IMSA%20WeatherTech%20SportsCar%20Championship/202408241650_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "vir",
+   "series": "imsa",
+   "season": 2024,
+   "type": "gtdpro",
+   "lap": 103.206,
+   "car": "1",
+   "manufacturer": "BMW",
+   "team": "Paul Miller Racing",
+   "driver": "Madison Snow",
+   "cls": "GTDPRO",
+   "sectors": [
+    21.415,
+    42.834,
+    38.957
+   ],
+   "topSpeedKph": null,
+   "event": "VIRginia International Raceway",
+   "session": "202408241650_Qualifying",
+   "weather": {
+    "airTempC": 29.28,
+    "trackTempC": 45.2,
+    "humidityPct": 46.86,
+    "pressureHpa": 1021.3,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/24_2024/15_VIRginia%20International%20Raceway/01_IMSA%20WeatherTech%20SportsCar%20Championship/202408241650_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "vir",
+   "series": "imsa",
+   "season": 2025,
+   "type": "gtd",
+   "lap": 104.86,
+   "car": "12",
+   "manufacturer": "Lexus",
+   "team": "Vasser Sullivan Racing",
+   "driver": "Jack Hawksworth",
+   "cls": "GTD",
+   "sectors": [
+    21.59,
+    43.531,
+    39.739
+   ],
+   "topSpeedKph": null,
+   "event": "VIRginia International Raceway",
+   "session": "202508231655_Qualifying",
+   "weather": {
+    "airTempC": 28.28,
+    "trackTempC": 36.76,
+    "humidityPct": 62.45,
+    "pressureHpa": 1013.9,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/17_VIRginia%20International%20Raceway/01_IMSA%20WeatherTech%20SportsCar%20Championship/202508231655_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "vir",
+   "series": "imsa",
+   "season": 2025,
+   "type": "gtdpro",
+   "lap": 104.43299999999999,
+   "car": "81",
+   "manufacturer": "Ferrari",
+   "team": "DragonSpeed",
+   "driver": "Giacomo Altoè",
+   "cls": "GTDPRO",
+   "sectors": [
+    21.406,
+    43.489,
+    39.538
+   ],
+   "topSpeedKph": null,
+   "event": "VIRginia International Raceway",
+   "session": "202508231655_Qualifying",
+   "weather": {
+    "airTempC": 28.28,
+    "trackTempC": 36.76,
+    "humidityPct": 62.45,
+    "pressureHpa": 1013.9,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/17_VIRginia%20International%20Raceway/01_IMSA%20WeatherTech%20SportsCar%20Championship/202508231655_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "vir",
+   "series": "imsa",
+   "season": 2026,
+   "type": "gtd",
+   "lap": 105.188,
+   "car": "81",
+   "manufacturer": "Chevrolet",
+   "team": "DragonSpeed",
+   "driver": "Casper Stevenson",
+   "cls": "GTD",
+   "sectors": [
+    21.755,
+    43.823,
+    39.61
+   ],
+   "topSpeedKph": 260.2,
+   "event": "VIRginia International Raceway",
+   "session": "202608221650_Qualifying",
+   "weather": {
+    "airTempC": 29.91,
+    "trackTempC": 46.66,
+    "humidityPct": 62.04,
+    "pressureHpa": 998.3,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/26_2026/18_VIRginia%20International%20Raceway/01_IMSA%20WeatherTech%20SportsCar%20Championship/202608221650_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "vir",
+   "series": "imsa",
+   "season": 2026,
+   "type": "gtdpro",
+   "lap": 104.773,
+   "car": "9",
+   "manufacturer": "Lamborghini",
+   "team": "Pfaff Motorsports",
+   "driver": "Andrea Caldarelli",
+   "cls": "GTDPRO",
+   "sectors": [
+    21.506,
+    43.786,
+    39.481
+   ],
+   "topSpeedKph": 259.7,
+   "event": "VIRginia International Raceway",
+   "session": "202608221650_Qualifying",
+   "weather": {
+    "airTempC": 29.91,
+    "trackTempC": 46.66,
+    "humidityPct": 62.04,
+    "pressureHpa": 998.3,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/26_2026/18_VIRginia%20International%20Raceway/01_IMSA%20WeatherTech%20SportsCar%20Championship/202608221650_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "watkins-glen",
+   "series": "imsa",
+   "season": 2023,
+   "type": "gtd",
+   "lap": 104.43,
+   "car": "78",
+   "manufacturer": "Lamborghini",
+   "team": "Forte Racing Powered by USRT",
+   "driver": "Loris Spinelli",
+   "cls": "GTD",
+   "sectors": [
+    24.561,
+    39.27,
+    40.599
+   ],
+   "topSpeedKph": null,
+   "event": "Watkins Glen International",
+   "session": "202306241320_Qualifying",
+   "weather": {
+    "airTempC": 22.53,
+    "trackTempC": 29.97,
+    "humidityPct": 80.7,
+    "pressureHpa": 1007.5,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/23_2023/12_Watkins%20Glen%20International/01_IMSA%20WeatherTech%20SportsCar%20Championship/202306241320_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "watkins-glen",
+   "series": "imsa",
+   "season": 2023,
+   "type": "gtdpro",
+   "lap": 104.82900000000001,
+   "car": "62",
+   "manufacturer": "Ferrari",
+   "team": "Risi Competizione",
+   "driver": "Daniel Serra",
+   "cls": "GTDPRO",
+   "sectors": [
+    24.531,
+    39.611,
+    40.687
+   ],
+   "topSpeedKph": null,
+   "event": "Watkins Glen International",
+   "session": "202306241320_Qualifying",
+   "weather": {
+    "airTempC": 22.53,
+    "trackTempC": 29.97,
+    "humidityPct": 80.7,
+    "pressureHpa": 1007.5,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/23_2023/12_Watkins%20Glen%20International/01_IMSA%20WeatherTech%20SportsCar%20Championship/202306241320_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "watkins-glen",
+   "series": "imsa",
+   "season": 2024,
+   "type": "gtd",
+   "lap": 104.642,
+   "car": "12",
+   "manufacturer": "Lexus",
+   "team": "VasserSullivan",
+   "driver": "Parker Thompson",
+   "cls": "GTD",
+   "sectors": [
+    24.511,
+    39.224,
+    40.907
+   ],
+   "topSpeedKph": null,
+   "event": "Watkins Glen International",
+   "session": "202406221530_Qualifying",
+   "weather": {
+    "airTempC": 30.41,
+    "trackTempC": 34.71,
+    "humidityPct": 62.1,
+    "pressureHpa": 1011.2,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/24_2024/12_Watkins%20Glen%20International/01_IMSA%20WeatherTech%20SportsCar%20Championship/202406221530_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "watkins-glen",
+   "series": "imsa",
+   "season": 2024,
+   "type": "gtdpro",
+   "lap": 104.203,
+   "car": "62",
+   "manufacturer": "Ferrari",
+   "team": "Risi Competizione",
+   "driver": "Daniel Serra",
+   "cls": "GTDPRO",
+   "sectors": [
+    24.458,
+    38.988,
+    40.757
+   ],
+   "topSpeedKph": null,
+   "event": "Watkins Glen International",
+   "session": "202406221530_Qualifying",
+   "weather": {
+    "airTempC": 30.41,
+    "trackTempC": 34.71,
+    "humidityPct": 62.1,
+    "pressureHpa": 1011.2,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/24_2024/12_Watkins%20Glen%20International/01_IMSA%20WeatherTech%20SportsCar%20Championship/202406221530_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "watkins-glen",
+   "series": "imsa",
+   "season": 2024,
+   "type": "lmdh",
+   "lap": 92.209,
+   "car": "40",
+   "manufacturer": "Acura",
+   "team": "Wayne Taylor Racing with Andretti",
+   "driver": "Louis Deletraz",
+   "cls": "GTP",
+   "sectors": [
+    21.231,
+    35.131,
+    35.847
+   ],
+   "topSpeedKph": null,
+   "event": "Watkins Glen International",
+   "session": "202406221530_Qualifying",
+   "weather": {
+    "airTempC": 30.41,
+    "trackTempC": 34.71,
+    "humidityPct": 62.1,
+    "pressureHpa": 1011.2,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/24_2024/12_Watkins%20Glen%20International/01_IMSA%20WeatherTech%20SportsCar%20Championship/202406221530_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "watkins-glen",
+   "series": "imsa",
+   "season": 2025,
+   "type": "gtd",
+   "lap": 104.788,
+   "car": "27",
+   "manufacturer": "Aston Martin",
+   "team": "Heart of Racing Team",
+   "driver": "Zacharie Robichon",
+   "cls": "GTD",
+   "sectors": [
+    24.786,
+    39.27,
+    40.732
+   ],
+   "topSpeedKph": null,
+   "event": "Watkins Glen International",
+   "session": "202506211420_Qualifying",
+   "weather": {
+    "airTempC": 27.87,
+    "trackTempC": 45.88,
+    "humidityPct": 58.42,
+    "pressureHpa": 1017.9,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/14_Watkins%20Glen%20International/01_IMSA%20WeatherTech%20SportsCar%20Championship/202506211420_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "watkins-glen",
+   "series": "imsa",
+   "season": 2025,
+   "type": "gtdpro",
+   "lap": 104.595,
+   "car": "9",
+   "manufacturer": "Lamborghini",
+   "team": "Pfaff Motorsports",
+   "driver": "Andrea Caldarelli",
+   "cls": "GTDPRO",
+   "sectors": [
+    24.658,
+    39.123,
+    40.814
+   ],
+   "topSpeedKph": null,
+   "event": "Watkins Glen International",
+   "session": "202506211420_Qualifying",
+   "weather": {
+    "airTempC": 27.87,
+    "trackTempC": 45.88,
+    "humidityPct": 58.42,
+    "pressureHpa": 1017.9,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/14_Watkins%20Glen%20International/01_IMSA%20WeatherTech%20SportsCar%20Championship/202506211420_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "watkins-glen",
+   "series": "imsa",
+   "season": 2025,
+   "type": "lmdh",
+   "lap": 91.55799999999999,
+   "car": "93",
+   "manufacturer": "Acura",
+   "team": "Acura Meyer Shank Racing w/Curb Agajanian",
+   "driver": "Renger van der Zande",
+   "cls": "GTP",
+   "sectors": [
+    21.226,
+    34.414,
+    35.918
+   ],
+   "topSpeedKph": null,
+   "event": "Watkins Glen International",
+   "session": "202506211420_Qualifying",
+   "weather": {
+    "airTempC": 27.87,
+    "trackTempC": 45.88,
+    "humidityPct": 58.42,
+    "pressureHpa": 1017.9,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/14_Watkins%20Glen%20International/01_IMSA%20WeatherTech%20SportsCar%20Championship/202506211420_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "watkins-glen",
+   "series": "imsa",
+   "season": 2025,
+   "type": "lmh",
+   "lap": 93.36,
+   "car": "23",
+   "manufacturer": "Aston Martin",
+   "team": "ASTON MARTIN THOR Team",
+   "driver": "Ross Gunn",
+   "cls": "GTP",
+   "sectors": [
+    21.523,
+    35.316,
+    36.521
+   ],
+   "topSpeedKph": null,
+   "event": "Watkins Glen International",
+   "session": "202506211420_Qualifying",
+   "weather": {
+    "airTempC": 27.87,
+    "trackTempC": 45.88,
+    "humidityPct": 58.42,
+    "pressureHpa": 1017.9,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/25_2025/14_Watkins%20Glen%20International/01_IMSA%20WeatherTech%20SportsCar%20Championship/202506211420_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "watkins-glen",
+   "series": "imsa",
+   "season": 2026,
+   "type": "gtd",
+   "lap": 104.906,
+   "car": "12",
+   "manufacturer": "Lexus",
+   "team": "Vasser Sullivan Racing w/Dreyer & Reinbold",
+   "driver": "Frankie Montecalvo",
+   "cls": "GTD",
+   "sectors": [
+    24.747,
+    39.231,
+    40.928
+   ],
+   "topSpeedKph": 260.3,
+   "event": "Watkins Glen International",
+   "session": "202606271820_Qualifying",
+   "weather": {
+    "airTempC": 24.77,
+    "trackTempC": 37.13,
+    "humidityPct": 59.26,
+    "pressureHpa": 958,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/26_2026/14_Watkins%20Glen%20International/01_IMSA%20WeatherTech%20SportsCar%20Championship/202606271820_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "watkins-glen",
+   "series": "imsa",
+   "season": 2026,
+   "type": "gtdpro",
+   "lap": 103.701,
+   "car": "14",
+   "manufacturer": "Lexus",
+   "team": "Vasser Sullivan Racing w/Dreyer & Reinbold",
+   "driver": "Jack Hawksworth",
+   "cls": "GTDPRO",
+   "sectors": [
+    24.376,
+    38.681,
+    40.644
+   ],
+   "topSpeedKph": 262.9,
+   "event": "Watkins Glen International",
+   "session": "202606271820_Qualifying",
+   "weather": {
+    "airTempC": 24.77,
+    "trackTempC": 37.13,
+    "humidityPct": 59.26,
+    "pressureHpa": 958,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/26_2026/14_Watkins%20Glen%20International/01_IMSA%20WeatherTech%20SportsCar%20Championship/202606271820_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "watkins-glen",
+   "series": "imsa",
+   "season": 2026,
+   "type": "lmdh",
+   "lap": 91.28399999999999,
+   "car": "31",
+   "manufacturer": "Cadillac",
+   "team": "Cadillac Whelen",
+   "driver": "Jack Aitken",
+   "cls": "GTP",
+   "sectors": [
+    21.151,
+    34.358,
+    35.775
+   ],
+   "topSpeedKph": 311.8,
+   "event": "Watkins Glen International",
+   "session": "202606271820_Qualifying",
+   "weather": {
+    "airTempC": 24.77,
+    "trackTempC": 37.13,
+    "humidityPct": 59.26,
+    "pressureHpa": 958,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/26_2026/14_Watkins%20Glen%20International/01_IMSA%20WeatherTech%20SportsCar%20Championship/202606271820_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  {
+   "track": "watkins-glen",
+   "series": "imsa",
+   "season": 2026,
+   "type": "lmh",
+   "lap": 92.626,
+   "car": "23",
+   "manufacturer": "Aston Martin",
+   "team": "ASTON MARTIN THOR Team",
+   "driver": "Ross Gunn",
+   "cls": "GTP",
+   "sectors": [
+    21.297,
+    35.051,
+    36.278
+   ],
+   "topSpeedKph": 306.8,
+   "event": "Watkins Glen International",
+   "session": "202606271820_Qualifying",
+   "weather": {
+    "airTempC": 24.77,
+    "trackTempC": 37.13,
+    "humidityPct": 59.26,
+    "pressureHpa": 958,
+    "rain": false,
+    "units": "converted from °F and inHg"
+   },
+   "url": "https://imsa.results.alkamelcloud.com/Results/26_2026/14_Watkins%20Glen%20International/01_IMSA%20WeatherTech%20SportsCar%20Championship/202606271820_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  }
+ ]
+}

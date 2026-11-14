@@ -58,6 +58,8 @@ export function carsFor(id) {
     const real = p?.sectors || (t.position === 1 ? t.realSectors : null); return real ? {real, weather: t.weather, ref: '2026'} : null; };
   if (out[2026].kind === 'calibrated' && fix(t26, 2026)) for (const y of [2026, 2027, 2028]) out[y].fix = fix(t26, 2026);
   if (out[2025].kind === 'calibrated' && fix(t25, 2025)) out[2025].fix = {...fix(t25, 2025), ref: '2025'};
+  // Extra circuit: a car that has a real qualifying lap here reproduces it (lap-level correction, as for the series cars)
+  for (const [k, r] of Object.entries(lapsimExtraTracks[id]?.realLaps || {})) if (out[k] && !out[k].fix) out[k].fix = {lap: r.lap, weather: r.weather || {}, ref: k, session: r.event};
   for (const c of Object.values(out)) c.unc = uncertainty(c, id);
   return out;
 }
@@ -101,6 +103,8 @@ export function realConditions(id) {
     const ys = lapsimSeriesPoles?.[ser]?.[id] || {}, y = Object.keys(ys).filter(k => ys[k][cls]).sort().at(-1), p = y && ys[y][cls];
     if (p) out[key] = {...Object.fromEntries(Object.entries(p.weather || {}).filter(([, v]) => Number.isFinite(v))), realLap: p.lap, year: Number(y), event: p.session, car: p.car, manufacturer: p.make, position: 1, source: 'timing71'};
   }
+  // extra circuits: the real lap of each car that raced here (docs/lapsim-tracks-extra.md)
+  for (const [k, r] of Object.entries(lapsimExtraTracks[id]?.realLaps || {})) if (!out[k]) out[k] = {...r.weather, realLap: r.lap, year: r.year, event: r.event, car: r.car, manufacturer: r.manufacturer, position: 1, source: r.source};
   return out;
 }
 

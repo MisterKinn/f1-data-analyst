@@ -1,0 +1,32 @@
+name: Lap simulator real laps for extra circuits
+
+# Reads Al Kamel published timing (WEC, IMSA) and commits one derived table back to the branch. Push to tracks-laps/**.
+on:
+  push:
+    branches: ['tracks-laps/**']
+    paths-ignore: ['scripts/sim/data/**', 'docs/**']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: lapsim-track-laps-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  laps:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - run: npm ci --ignore-scripts
+      - run: node scripts/sim/fetch-track-laps.mjs
+      - name: Commit the table
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add scripts/sim/data/track-real-laps.json
+          git diff --cached --quiet || (git commit -m "Tracks: real laps per car type (Al Kamel)" && (git push origin HEAD:"${{ github.ref_name }}" || (git pull --rebase origin "${{ github.ref_name }}" && git push origin HEAD:"${{ github.ref_name }}")))

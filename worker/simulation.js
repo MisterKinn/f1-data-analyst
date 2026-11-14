@@ -394,7 +394,7 @@ function computeView(K, data, state, R) {
   const secOf = r => { const i1 = Math.round(d.sectors[0] / d.ds), i2 = Math.round(d.sectors[1] / d.ds); return [r.time[i1], r.time[i2] - r.time[i1], r.lapTime - r.time[i2]]; };
   // sector correction (raced tracks): real pole sectors minus the reference car's sectors in that weather
   const corrOf = c => {
-    if (!c.fix || !d.sectors || d.sectors.length !== 2) return null;
+    if (!c.fix || !c.fix.real || !d.sectors || d.sectors.length !== 2) return null; // a lap-only correction (no real sectors) is not a sector correction
     const key = data.id + '|' + c.fix.ref; computeView.fixCache = computeView.fixCache || {};
     if (!computeView.fixCache[key]) {
       const ref = data.cars[c.fix.ref], fw = {};
