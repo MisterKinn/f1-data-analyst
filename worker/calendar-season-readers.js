@@ -47,7 +47,39 @@ export function parseImsaSessions(html,series='weathertech'){
  }
  return out;
 }
-async function imsa({now,get}){
+// IMSA's own site (Cloudflare) refuses server requests, so session times come from the
+// official YouTube channel @imsaofficial: each WeatherTech qualifying and race is a
+// scheduled live stream. Titles: "2026 IMSA Motul Petit Le Mans | Qualifying | WeatherTech
+// Championship | Braselton, GA"; the race stream has no session part.
+export const IMSA_YOUTUBE_CHANNEL='UC58em84jwiyM20qR-iqBDZw';
+export function imsaStreamSession(title){
+ const parts=String(title||'').split('|').map(p=>p.trim());
+ if(!/WeatherTech (?:SportsCar )?Championship/i.test(title)||/esports|michelin pilot|vp racing|carrera|historic|hsr|recap|highlight|sights|podcast/i.test(title))return null;
+ if(parts.some(p=>/\bpart\s*[2-9]\b/i.test(p)))return null;
+ const label=parts.slice(1).find(p=>/qualif|practice|warm|test|race/i.test(p)&&!/championship/i.test(p))||'';
+ if(/qualif/i.test(label))return 'Qualifying';
+ const practice=/practice\s*(\d)?/i.exec(label);if(practice)return practice[1]?'Practice '+practice[1]:'Practice';
+ if(/warm/i.test(label))return 'Warm-up';
+ if(/test/i.test(label))return null;
+ return 'Race';
+}
+export function imsaYouTubeSessions(videos,events){
+ const byEvent=new Map();
+ for(const video of videos){
+  const start=utc(video.liveStreamingDetails?.scheduledStartTime||'')||utc(video.liveStreamingDetails?.actualStartTime||''),nameEn=start&&imsaStreamSession(video.snippet?.title);if(!nameEn)continue;
+  const at=Date.parse(start),event=events.find(e=>Date.parse(e.start+'T00:00:00Z')-86400000<=at&&at<=Date.parse(e.end+'T23:59:59Z')+86400000);if(!event)continue;
+  const list=byEvent.get(event)||[];if(!list.some(s=>s.nameEn===nameEn))list.push({name:korean(nameEn).replace(/^Warm-up$/,'웜업'),nameEn,start,source:'https://www.youtube.com/watch?v='+video.id});byEvent.set(event,list);
+ }
+ return [...byEvent].map(([event,sessions])=>({name:event.nameEn,startDate:event.start,endDate:event.end,circuit:event.circuit,timezone:event.timezone,sessions:sessions.sort((a,b)=>Date.parse(a.start)-Date.parse(b.start))}));
+}
+async function imsaYouTube(get,key){
+ // Two quota units per refresh: the channel's uploads list, then those videos' stream times.
+ const allowed=new Set(['www.googleapis.com']),api='https://www.googleapis.com/youtube/v3/';
+ const list=JSON.parse(await get(api+'playlistItems?part=contentDetails&maxResults=50&playlistId=UU'+IMSA_YOUTUBE_CHANNEL.slice(2)+'&key='+encodeURIComponent(key),allowed));
+ const ids=(list.items||[]).map(i=>i.contentDetails?.videoId).filter(Boolean);if(!ids.length)return [];
+ return JSON.parse(await get(api+'videos?part=snippet,liveStreamingDetails&id='+ids.join(',')+'&key='+encodeURIComponent(key),allowed)).items||[];
+}
+async function imsa({now,get,env}){
  const allowed=new Set(['www.imsa.com']),records=[];let reached=false,source;
  for(const year of years(now)){
   const page='https://www.imsa.com/'+year+'/schedule';let html;try{html=await get(page,allowed);reached=true;source??=page;}catch{continue;}
@@ -58,6 +90,10 @@ async function imsa({now,get}){
    records.push(record);
   }
  }
+ if(env?.YOUTUBE_API_KEY){try{
+  const sessions=imsaYouTubeSessions(await imsaYouTube(get,env.YOUTUBE_API_KEY),calendarEvents.filter(e=>e.series==='imsa'));
+  reached=true;source??='https://www.youtube.com/@imsaofficial';records.push(...sessions.filter(r=>r.sessions.length));
+ }catch{}}
  return {records,reached,source};
 }
 
