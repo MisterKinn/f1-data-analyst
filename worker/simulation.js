@@ -1,7 +1,7 @@
 // /simulation — lap simulator page. The physics runs in worker/lapsim/kernel.js on the server
 // (first render) and in the browser (every change), so sliders answer instantly.
 import {lapsimKernel} from './lapsim/kernel.js';
-import {lapsimTracks} from './lapsim/tracks-data.js';
+import {lapsimAllTracks as lapsimTracks} from './lapsim/tracks.js';
 import {lapsimCalibration} from './lapsim/calibration-data.js';
 import {RULE_CHANGES} from './lapsim/cars.js';
 import {SERIES} from './lapsim/series.js';

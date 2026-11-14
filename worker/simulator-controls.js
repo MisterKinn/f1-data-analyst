@@ -2,7 +2,7 @@
 // rule and the event a car races at on a track. Nothing here changes a model or calibration value.
 import {calendarEvents} from './race-calendar-data.js';
 
-// Track labels in the owner's format: flag + 3-letter code + " - " + name. [ISO country, code, name, always ⚠️].
+// Track labels in the owner's format: 3-letter code + " - " + name (no flag, owner 2026-11-14). [ISO country, code, name, always ⚠️].
 // The codes are the owner's (Bahrain is BHA). Requested tracks come from scripts/sim/data/track-requests.json
 // (owner list, 2026-11-11); a track is listed on the page only when it exists in tracks-data.js.
 const L = {
@@ -10,8 +10,8 @@ const L = {
   'spa-francorchamps': ['BE', 'BEL', 'Spa'], sakhir: ['BH', 'BHA', 'Bahrain'], 'sakhir-outer': ['BH', 'BHA', 'Bahrain(Outer)'],
   interlagos: ['BR', 'BRA', 'Interlagos'], 'fe-sao-paulo': ['BR', 'BRA', 'São Paulo Anhembi'], montreal: ['CA', 'CAN', 'Montreal'], mosport: ['CA', 'CAN', 'Mosport'],
   shanghai: ['CN', 'CHN', 'Shanghai'], 'fe-sanya': ['CN', 'CHN', 'Sanya Haitang Bay'], catalunya: ['ES', 'ESP', 'Barcelona'], madring: ['ES', 'ESP', 'Madrid'], jarama: ['ES', 'ESP', 'Jarama'],
-  'le-mans': ['FR', 'FRA', 'Le Mans'], 'paul-ricard': ['FR', 'FRA', 'Paul Ricard'], silverstone: ['GB', 'GBR', 'Silverstone'], 'brands-hatch': ['GB', 'GBR', 'Brands Hatch'],
-  nurburgring: ['DE', 'GER', 'Nürburgring'], hockenheim: ['DE', 'GER', 'Hockenheim'], 'fe-berlin': ['DE', 'GER', 'Berlin Tempelhof'], hungaroring: ['HU', 'HUN', 'Hungaroring'],
+  'le-mans': ['FR', 'FRA', 'Le Mans'], 'paul-ricard': ['FR', 'FRA', 'Paul Ricard'], 'paul-ricard-f1': ['FR', 'FRA', 'Paul Ricard(F1)'], silverstone: ['GB', 'GBR', 'Silverstone'], 'brands-hatch': ['GB', 'GBR', 'Brands Hatch'],
+  nurburgring: ['DE', 'GER', 'Nürburgring'], 'nurburgring-gp': ['DE', 'GER', 'Nürburgring GP'], 'nurburgring-sprint': ['DE', 'GER', 'Nürburgring Sprint'], 'nurburgring-24h': ['DE', 'GER', 'Nürburgring 24h'], hockenheim: ['DE', 'GER', 'Hockenheim'], 'fe-berlin': ['DE', 'GER', 'Berlin Tempelhof'], hungaroring: ['HU', 'HUN', 'Hungaroring'],
   monza: ['IT', 'ITA', 'Monza'], mugello: ['IT', 'ITA', 'Mugello'], imola: ['IT', 'ITA', 'Imola'], suzuka: ['JP', 'JPN', 'Suzuka'], fuji: ['JP', 'JPN', 'Fuji'], 'fe-tokyo': ['JP', 'JPN', 'Tokyo'],
   yeongam: ['KR', 'KOR', 'Yeongam'], yongin: ['KR', 'KOR', 'Yongin'], inje: ['KR', 'KOR', 'Inje'], jeddah: ['SA', 'KSA', 'Jeddah'], 'kuala-lumpur': ['MY', 'MAS', 'Sepang'],
   'mexico-city': ['MX', 'MEX', 'Mexico City'], 'monte-carlo': ['MC', 'MON', 'Monaco'], zandvoort: ['NL', 'NED', 'Zandvoort'], portimao: ['PT', 'POR', 'Portimão'],
@@ -21,16 +21,16 @@ const L = {
   'laguna-seca': ['US', 'USA', 'Laguna Seca'], 'watkins-glen': ['US', 'USA', 'Watkins Glen'], 'road-america': ['US', 'USA', 'Road America'], 'long-beach': ['US', 'USA', 'Long Beach'],
   detroit: ['US', 'USA', 'Detroit'], vir: ['US', 'USA', 'VIR'], 'mid-ohio': ['US', 'USA', 'Mid-Ohio'], 'lime-rock': ['US', 'USA', 'Lime Rock'],
 };
-const flag = iso => String.fromCodePoint(...[...iso].map(c => 0x1F1E6 + c.charCodeAt(0) - 65));
 const WARN = '⚠️';
 
-// A track built from a map centre line (not from driven laps) is a candidate: lower evidence, shown with ⚠️.
-export const isCandidate = track => !!track && (track.candidate === true || (track.sources || []).some(s => /openstreetmap/i.test(s)));
+// ⚠️ = lower evidence. An extra circuit carries its check result (fit: false = failed or not checkable, docs/lapsim-tracks-extra.md);
+// a track without a check result is a candidate when it was built from a map centre line.
+export const isCandidate = track => !!track && (track.candidate === true || (typeof track.fit === 'boolean' ? !track.fit : (track.sources || []).some(s => /openstreetmap/i.test(s))));
 
-// "🇮🇹ITA - Monza"; a track with no label entry keeps its plain data name (no invented flag or code)
+// "ITA - Monza"; a track with no label entry keeps its plain data name (no invented code)
 export function trackLabel(id, track) {
   const e = L[id]; if (!e) return (track?.name || id) + (isCandidate(track) ? WARN : '');
-  return flag(e[0]) + e[1] + ' - ' + e[2] + (e[3] || isCandidate(track) ? WARN : '');
+  return e[1] + ' - ' + e[2] + (e[3] || isCandidate(track) ? WARN : '');
 }
 
 // Track ids sorted by the 3-letter code, then by name (unlabelled tracks last, by name)

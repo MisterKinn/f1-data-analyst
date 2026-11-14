@@ -1,7 +1,7 @@
 // lapsim_simulate: the lap simulator as a connector tool. Same engine, tracks and calibration as
 // the /simulation page (worker/lapsim/scenario.js), so the page and the tool agree.
 import {lapsimKernel} from './kernel.js';
-import {lapsimTracks} from './tracks-data.js';
+import {lapsimAllTracks as lapsimTracks} from './tracks.js';
 import {lapsimCalibration} from './calibration-data.js';
 import {RULE_CHANGES} from './cars.js';
 import {TRACK_NAMES, resolveTrack} from './names.js';
@@ -113,9 +113,12 @@ export function simulate(args = {}) {
     return k && sec ? {...r, lapTime: r.lapTime + k[0] + k[1] + k[2], sectors: sec.map((x, i) => x + k[i]), sectorCorrection: k} : k ? {...r, lapTime: r.lapTime + k.reduce((a, b) => a + b, 0), sectorCorrection: k} : r;
   };
   const res = run(sel);
+  const xc = d.quality?.check; // set on extra circuits only
   const out = {status: 'ok', model: 'quasi-steady-state lap simulation (estimate, not a prediction of a real session)',
-    track: {id, name: TRACK_NAMES[id]?.[1] || id, length_m: Math.round(d.length || d.kappa.length * d.ds), corners: (d.corners || []).length,
-      geometry: 'driving line from OpenF1 qualifying car positions; corner numbers from official positions'},
+    track: {id, name: TRACK_NAMES[id]?.[1] || (xc ? `${d.name}, ${d.layout}` : id), length_m: Math.round(d.length || d.kappa.length * d.ds), corners: (d.corners || []).length,
+      // an extra circuit says where its line came from and how it did in its check (docs/lapsim-tracks-extra.md)
+      geometry: xc ? `${d.quality.evidence.planShape}; driven line: ${d.quality.evidence.drivenLine}` : 'driving line from OpenF1 qualifying car positions; corner numbers from official positions',
+      ...(xc ? {check: d.fit ? `passed (${xc.mode}): ${xc.mode === 'learned' ? `held-out error ${xc.learned.heldOut.rmsPct} % with a track factor learned from ${xc.learned.heldOut.n} real laps` : `error ${xc.rmsPct} % on ${xc.n} real lap(s), no value from this track used`}` : d.warn} : {})},
     car: {series: sel.series || 'f1', class: sel.cls || null, year: sel.year, kind: sel.kind, mass_kg: sel.car.mass, track_grip_factor: r3(sel.grip || 1)},
     conditions: {air_temp_c: r3(airTempC), track_temp_c: r3(trackTempC), humidity_pct: Math.round(humidityPct), pressure_hpa: Math.round(pressureHpa * 10) / 10,
       wind_speed_ms: r3(windSpeed), wind_from_deg: Math.round(windFromDeg),
