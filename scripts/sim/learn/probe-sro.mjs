@@ -1,18 +1,16 @@
-// rerun 2026-11-15
-// What the SRO result sites publish (structure only, for the GT3 reader): result list pages and one session page per site.
+// What one SRO meeting page holds (structure for the GT3 reader): tables, session selector, result files.
 import {writeFileSync} from 'node:fs';
-const SITES = ['gt-world-challenge-europe.com', 'gt-world-challenge-america.com', 'gt-world-challenge-asia.com', 'gt-world-challenge-australia.com', 'intercontinentalgtchallenge.com', 'britishgt.com', 'fanatec-gt-world-challenge-europe.com'];
 const UA = {headers: {'user-agent': 'Mozilla/5.0 (kongboda-motorsports lap simulator)'}};
-const get = async u => { try { const r = await fetch(u, {...UA, redirect: 'follow', signal: AbortSignal.timeout(30000)}); return {status: r.status, url: r.url, type: r.headers.get('content-type'), text: await r.text()}; } catch (e) { return {error: String(e.message)}; } };
+const get = async u => { try { const r = await fetch(u, {...UA, redirect: 'follow', signal: AbortSignal.timeout(30000)}); return {status: r.status, url: r.url, text: await r.text()}; } catch (e) { return {error: String(e.message)}; } };
+const strip = t => t.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi, '').replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ');
 const out = {};
-for (const s of SITES) for (const u of [`https://api.${s}/results`, `https://www.${s}/results`, `https://api.${s}/results?season=2025`]) {
+for (const u of ['https://www.gt-world-challenge-europe.com/results/2025/brands-hatch', 'https://www.gt-world-challenge-europe.com/results?filter_season_id=25&filter_meeting_id=0', 'https://www.gt-world-challenge-asia.com/results/2025/shanghai-international-circuit', 'https://www.intercontinentalgtchallenge.com/results/2025/suzuka-1000km', 'https://www.britishgt.com/results/2025/brands-hatch']) {
   const r = await get(u), t = r.text || '';
-  const links = [...new Set([...t.matchAll(/href="([^"]+)"/g)].map(m => m[1]))].filter(l => /result|session|race|season|\.pdf|\.csv|json|api/i.test(l)).slice(0, 200);
-  const selects = [...t.matchAll(/<select[^>]*name="([^"]+)"[^>]*>([\s\S]*?)<\/select>/g)].map(m => ({name: m[1], options: [...m[2].matchAll(/<option[^>]*value="([^"]*)"[^>]*>([^<]*)/g)].map(o => [o[1], o[2].trim()]).slice(0, 80)}));
-  out[u] = {status: r.status, error: r.error, url: r.url, type: r.type, bytes: t.length, selects, links, text: t.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi, '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').slice(0, 6000),
-    scripts: [...t.matchAll(/(?:fetch|axios\.get|url:)\s*\(?\s*["'`]([^"'`]+)/g)].map(m => m[1]).slice(0, 40)};
-  // first result-session link: its structure too
-  const first = links.find(l => /results?\/[^?#]+\d/.test(l)); if (first) { const v = await get(new URL(first, r.url || u).href); out[u].sample = {url: first, status: v.status, text: (v.text || '').replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi, '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').slice(0, 6000), links: [...new Set([...(v.text || '').matchAll(/href="([^"]+)"/g)].map(m => m[1]))].filter(l => /\.pdf|\.csv|json|download|lap|chart/i.test(l)).slice(0, 80)}; }
+  const tables = [...t.matchAll(/<table[\s\S]*?<\/table>/g)].map(m => [...m[0].matchAll(/<tr[\s\S]*?<\/tr>/g)].slice(0, 12).map(x => strip(x[0]).trim()));
+  const selects = [...t.matchAll(/<select[^>]*name="([^"]+)"[^>]*>([\s\S]*?)<\/select>/g)].map(m => ({name: m[1], options: [...m[2].matchAll(/<option[^>]*value="([^"]*)"[^>]*>([^<]*)/g)].map(o => [o[1], o[2].trim()]).slice(0, 60)}));
+  const files = [...new Set([...t.matchAll(/href="([^"]+\.(?:pdf|csv|json|xml)[^"]*)"/gi)].map(m => m[1]))].slice(0, 120);
+  const api = [...new Set([...t.matchAll(/["'`](\/?(?:api|ajax|results)[^"'`\s]{3,120})["'`]/g)].map(m => m[1]))].slice(0, 60);
+  out[u] = {status: r.status, error: r.error, bytes: t.length, tables, selects, files, api, text: strip(t).slice(0, 4000)};
 }
 writeFileSync('scripts/sim/data/learn/probe-sro.json', JSON.stringify(out, null, 1));
-console.log(Object.entries(out).map(([u, o]) => `${o.status ?? o.error} ${o.bytes ?? ''} ${u}`).join('\n'));
+console.log(Object.entries(out).map(([u, o]) => `${o.status ?? o.error} ${o.bytes} tables ${o.tables?.length} files ${o.files?.length} ${u}`).join('\n'));
