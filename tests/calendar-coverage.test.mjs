@@ -40,3 +40,17 @@ test('the public calendar keeps São Paulo and Homestead sessions even with an o
  assert.ok(data.events.find(e=>e.id==='nascar-2026-11-06-homestead').sessions.length>=9);
  assert.deepEqual(missingSessionCoverage(data.events,now,6),[]);
 });
+
+test('ALMS Le Castellet, Rally Saudi Arabia and Super Taikyu Fuji carry official session times',async()=>{
+ const now=Date.parse('2026-11-14T02:00:00Z');
+ const data=await (await calendarRoute(new Request('https://test/api/race-calendar'),{},{},now)).json();
+ const sessions=id=>data.events.find(e=>e.id===id)?.sessions||[];
+ const alms=sessions('alms-2026-11-13-paul-ricard');
+ assert.equal(alms.length,8);assert.equal(alms.find(s=>s.nameEn==='Race 1').start,'2026-11-14T13:15:00+01:00');assert.equal(alms.find(s=>s.nameEn==='Race 2').start,'2026-11-15T13:15:00+01:00');
+ // The WRC round moved to Sardinia; the rally runs 12-14 November as the MERC finale.
+ const saudi=data.events.find(e=>e.circuit==='rally-saudi');
+ assert.equal(saudi.start,'2026-11-12');assert.equal(saudi.end,'2026-11-14');assert.equal(saudi.sessions.length,13);assert.equal(saudi.sessions.at(-1).start,'2026-11-14T15:29:00+03:00');
+ const fuji=sessions('super-taikyu-2026-11-14-fuji');
+ assert.equal(fuji.length,7);assert.equal(fuji.at(-1).start,'2026-11-15T12:30:00+09:00');assert.equal(fuji.at(-1).end,'2026-11-15T16:30:00+09:00');
+ assert.deepEqual(missingSessionCoverage(data.events,now,3),[]);
+});
