@@ -3,7 +3,7 @@
 // A layout of the same venue within 0.4 % of the track's official length takes the track; otherwise a new layout is added.
 import {readFileSync, writeFileSync} from 'node:fs';
 import {lapsimTracks, lapsimExtraTracks} from '../../../worker/lapsim/tracks-data.js';
-export const ADDED = {'paul-ricard': 'paul-ricard', 'paul-ricard-2021': 'paul-ricard', dubai: 'dubai', 'ricardo-tormo': 'valencia', misano: 'misano', sonoma: 'sonoma', sachsenring: 'sachsenring',
+export const ADDED = {'paul-ricard-2021': 'paul-ricard', dubai: 'dubai', 'ricardo-tormo': 'valencia', misano: 'misano', sonoma: 'sonoma', sachsenring: 'sachsenring',
   oschersleben: 'oschersleben', zolder: 'zolder', donington: 'donington', 'oulton-park': 'oulton-park', motegi: 'motegi', buriram: 'buriram', okayama: 'okayama', zhuhai: 'zhuhai',
   vallelunga: 'vallelunga', estoril: 'estoril', jerez: 'jerez', sydney: 'sydney', 'sydney-gardner': 'sydney', inje: 'inje', sebring: 'sebring', aragon: 'aragon', lausitz: 'lausitz',
   autopolis: 'autopolis', mandalika: 'mandalika', 'magny-cours': 'magny-cours', 'phillip-island': 'phillip-island'};

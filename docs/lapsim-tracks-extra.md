@@ -56,7 +56,6 @@ Owner instruction (2026-11-14): where a real lap of a car type exists, use it. T
 | bathurst | Mount Panorama 6.213 km | owner-list-other | 6156 (6213) | 700–874 m | 2 (0) | 0.46 | 0.29 | 1.0102 | 0.72 | – | pass (unseen) |
 | paul-ricard-f1 | F1 layout with the Mistral chicane 5.842 km | f1-history | 5746 (5842) | car positions | 1 (0) | 0.15 | -0.15 | – | – | – | ⚠️ curvature too high in fast corners: the pole lap implies 7.6 g against the 7.0 g limit |
 | rwanda | Provisional 5.302 km (owner diagram) | rwanda | 5196 (5302) | diagram labels | 0 (0) | – | – | – | – | – | ⚠️ provisional: hand-traced from a diagram that disagrees with the official October 2026 figures (about 6 km, 17 corners, anti-clockwise) |
-| paul-ricard | GT / ELMS 5.822 km (FIA list 2026) | owner-2026-11-15 | 5645 (5822) | 414–441 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | paul-ricard-2021 | 1A-V2 5.791 km (FIA list 2024; ELMS timing states 5.771 km) | owner-2026-11-15 | 5668 (5791) | 414–441 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | dubai | Grand Prix circuit 5.390 km | owner-2026-11-15 | 5295 (5390) | 17–37 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | ricardo-tormo | Ricardo Tormo 4.005 km | owner-2026-11-15 | 3940 (4005) | 145–164 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
@@ -377,7 +376,6 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 | bathurst | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | paul-ricard-f1 | 1 fixed (official) and 2 measured (driven line) | 2 measured (F1 car positions, 8 qualifying laps, 2021) | 2 measured (mean of the fastest qualifying laps) | not used | 2 measured (F1 car positions) | 4 borrowed (mean factor of the class's fitted tracks) |
 | rwanda | 4 stated on a diagram | 4 hand-traced from an oblique diagram of unknown origin | 3 inferred (least-curvature line inside the width) | 4 stated or assumed | 4 seven labels on the diagram, linear between | 4 borrowed (mean factor of the class's fitted tracks) |
-| paul-ricard | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | paul-ricard-2021 | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 4 assumed 12 m | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | dubai | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | ricardo-tormo | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
@@ -431,7 +429,6 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 - **bathurst**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
 - **paul-ricard-f1**: TracingInsights/2021 on GitHub: French Grand Prix, Qualifying (FastF1 car positions, lap times, corner positions)
 - **rwanda**: Owner's diagram (origin unknown), traced by scripts/sim/tracks/rwanda_trace.py on branch lapsim-laps/all-laps-2026-11-11
-- **paul-ricard**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
 - **paul-ricard-2021**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2024-06-03; Terrarium elevation tiles (Mapzen/Tilezen open data)
 - **dubai**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
 - **ricardo-tormo**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)

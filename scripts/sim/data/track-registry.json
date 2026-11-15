@@ -3171,7 +3171,7 @@
    ]
   },
   {
-   "id": "paul-ricard-5771",
+   "id": "paul-ricard-2021",
    "venue": "paul-ricard",
    "lengthKm": 5.771,
    "seasons": [
@@ -3181,12 +3181,13 @@
     ]
    ],
    "sources": [
-    "alkamel:elms"
+    "alkamel:elms",
+    "simulator"
    ],
-   "near": "paul-ricard-2021"
+   "sim": "paul-ricard-2021"
   },
   {
-   "id": "paul-ricard-2021",
+   "id": "paul-ricard-5809",
    "venue": "paul-ricard",
    "lengthKm": 5.809,
    "seasons": [
@@ -3220,14 +3221,12 @@
     ]
    ],
    "sources": [
-    "f1db:paul-ricard-1",
-    "simulator"
+    "f1db:paul-ricard-1"
    ],
-   "near": "paul-ricard",
-   "sim": "paul-ricard-2021"
+   "near": "paul-ricard"
   },
   {
-   "id": "paul-ricard",
+   "id": "paul-ricard-5821",
    "venue": "paul-ricard",
    "lengthKm": 5.821,
    "seasons": [
@@ -3237,12 +3236,10 @@
     ]
    ],
    "sources": [
-    "alkamel:elms",
-    "simulator"
+    "alkamel:elms"
    ],
    "default": true,
-   "near": "paul-ricard-2021",
-   "sim": "paul-ricard"
+   "near": "paul-ricard-f1"
   },
   {
    "id": "paul-ricard-f1",

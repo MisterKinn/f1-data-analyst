@@ -23,8 +23,8 @@ test('track identity: one id per layout, and the cases that once went wrong', ()
   assert.equal(r({name: 'Sakhir Grand Prix', lengthKm: 3.543, season: 2020}).sim, 'sakhir-outer');                               // Outer layout is not the Grand Prix layout
   assert.equal(r({name: 'Bahrain Grand Prix', season: 2025}).sim, 'sakhir');
   assert.equal(r({name: 'Grand Prix de France', lengthKm: 5.842}).sim, 'paul-ricard-f1');
-  const elms = r({name: 'paul-ricard', lengthKm: 5.771, season: 2023});                                                           // ELMS layout: its own id, F1 geometry only as a neighbour
-  assert.equal(elms.layout, 'paul-ricard-5771'); assert.equal(elms.sim, null); assert.equal(elms.near, 'paul-ricard-f1');
+  const elms = r({name: 'paul-ricard', lengthKm: 5.771, season: 2023});                                                           // ELMS layout 2021-24: its own id and geometry
+  assert.equal(elms.layout, 'paul-ricard-2021'); assert.equal(elms.sim, 'paul-ricard-2021'); // owner 2026-11-15: the ELMS layout has its own map line now
   assert.equal(r({name: 'barcelona-catalunya', lengthKm: 4.675, season: 2022}).sim, null);                                        // with the chicane: not the 2023+ track
   assert.equal(r({name: 'LE MANS', lengthKm: 13.626}).sim, 'le-mans');
   assert.equal(r({name: 'Nürburgring 24h', lengthKm: 25.378}).sim, 'nurburgring-24h');

@@ -219,13 +219,6 @@
     "Owner's diagram (origin unknown), traced by scripts/sim/tracks/rwanda_trace.py on branch lapsim-laps/all-laps-2026-11-11"
    ]
   },
-  "paul-ricard": {
-   "group": "owner-2026-11-15",
-   "file": "extra-tracks.json",
-   "candidate": "paul-ricard-paul-ricard",
-   "name": "Paul Ricard",
-   "layout": "GT / ELMS 5.822 km (FIA list 2026)"
-  },
   "paul-ricard-2021": {
    "group": "owner-2026-11-15",
    "file": "extra-tracks.json",
