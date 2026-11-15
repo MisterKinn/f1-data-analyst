@@ -161,9 +161,9 @@ function renderMap(map, v, opts) {
       let k = 2.2, lab = at(a, k), fz = sw * 2.4, bx = () => { const [x, y] = P(lab).split(' ').map(Number), hw = z.label.length * fz * 0.32; return [x - hw, y - fz * 0.6, x + hw, y + fz * 0.6]; };
       while (k < 8 && zBoxes.some(o => !(bx()[2] < o[0] || bx()[0] > o[2] || bx()[3] < o[1] || bx()[1] > o[3]))) { k += 1.4; lab = at(a, k); }
       zBoxes.push(bx());
-      zones += '<path class="ls-zone ls-zone-' + opts.zones.kind + '" d="M' + pts.map(P).join('L') + '" stroke-width="' + (sw * 0.9).toFixed(1) + '"/><text class="ls-zone-t" x="' + P(lab).split(' ')[0] + '" y="' + P(lab).split(' ')[1] + '" font-size="' + (sw * 2.4).toFixed(1) + '">' + z.label + '</text>';
+      zones += '<path class="ls-zone ls-zone-' + opts.zones.kind + '" d="M' + pts.map(P).join('L') + '" stroke-width="' + (sw * 0.4).toFixed(1) + '"/><text class="ls-zone-t" x="' + P(lab).split(' ')[0] + '" y="' + P(lab).split(' ')[1] + '" font-size="' + (sw * 2.4).toFixed(1) + '">' + z.label + '</text>';
     }
-    for (const m of opts.zones.marks || []) { const k = idx(m.s), a = P(at(k, -0.7)).split(' '), b = P(at(k, 1.3)).split(' '), fm = sw * 2, hw = m.label.length * fm * 0.32; let o = 2.7, r = P(at(k, o)).split(' ').map(Number);
+    for (const m of opts.zones.marks || []) { const k = idx(m.s), a = P(at(k, -0.565)).split(' '), b = P(at(k, 0.565)).split(' '), fm = sw * 2, hw = m.label.length * fm * 0.32; let o = 2.7, r = P(at(k, o)).split(' ').map(Number);
       const box = () => [r[0] - hw, r[1] - fm * 0.6, r[0] + hw, r[1] + fm * 0.6], busy = () => zBoxes.some(q => !(box()[2] < q[0] || box()[0] > q[2] || box()[3] < q[1] || box()[1] > q[3]));
       while (o < 9 && busy()) { o += 1.3; r = P(at(k, o)).split(' ').map(Number); } zBoxes.push(box());
       zones += '<line class="ls-zone-m ls-zone-m-' + m.kind + '" x1="' + a[0] + '" y1="' + a[1] + '" x2="' + b[0] + '" y2="' + b[1] + '" stroke-width="' + (sw * 0.2).toFixed(1) + '"/><text class="ls-zone-mt ls-zone-mt-' + m.kind + '" x="' + r[0] + '" y="' + r[1] + '" font-size="' + (sw * 2).toFixed(1) + '">' + m.label + '</text>'; }
@@ -1068,7 +1068,7 @@ export function lapsimScriptVersion() {
   return (h >>> 0).toString(36);
 }
 
-const CSS = `:root{--sim-slow:#ffa94d;--kb-zone:#00d2be;--kb-zone-mark:#c0c4c8}:root[data-theme="light"]{--sim-slow:#245d9c;--kb-zone:#f2b300;--kb-zone-mark:#8a0000}@media(prefers-color-scheme:light){:root:not([data-theme]){--sim-slow:#245d9c;--kb-zone:#f2b300;--kb-zone-mark:#8a0000}}
+const CSS = `:root{--sim-slow:#ffa94d;--kb-zone:#c4c9ce;--kb-zone-mark:#00d2be}:root[data-theme="light"]{--sim-slow:#245d9c;--kb-zone:#e8b800;--kb-zone-mark:#8a0000}@media(prefers-color-scheme:light){:root:not([data-theme]){--sim-slow:#245d9c;--kb-zone:#e8b800;--kb-zone-mark:#8a0000}}
 .ls-hero h1{font-size:44px;max-width:20ch}.ls-controls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.ls-controls label{min-width:0}.ls-controls select{width:100%}.ls-controls .ls-check{display:flex;align-items:center;gap:8px;flex-wrap:wrap;align-self:end;min-height:44px}.ls-check input{width:18px;height:18px;margin:0}.ls-check input:disabled+span{color:var(--muted)}.ls-check small{color:var(--muted);font-size:13px}.ls-event{margin:8px 0 0}
 .ls-stage{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(280px,1fr);gap:40px;align-items:center}.ls-map-wrap{margin:0;display:grid;gap:12px}.ls-map{width:100%;height:auto;max-height:540px;color:var(--text)}
 .ls-start{fill:var(--text)}.ls-corner{fill:var(--muted);text-anchor:middle;font-weight:600}

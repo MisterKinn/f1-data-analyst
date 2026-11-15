@@ -73,7 +73,7 @@ export function simulatorUiClient(CORNER_NAMES) {
   svg.querySelector('.kb-flag')?.remove();
   const [a, b] = [geo.pts[0], geo.pts[Math.min(geo.pts.length - 1, 4)]]; if (!a || !b) return;
   const ang = Math.atan2(b[1] - a[1], b[0] - a[0]) * 180 / Math.PI;
-  const across = geo.sw * 3.4, along = geo.sw * 1.3, cols = 6, rows = 2, cw = across / cols, rh = along / rows;
+  const across = geo.sw * 5.8, /* = OT D/A tick length */ along = geo.sw * 1.3, cols = 6, rows = 2, cw = across / cols, rh = along / rows;
   const grp = svgEl('g', { class: 'kb-flag', transform: 'translate(' + a[0] + ' ' + a[1] + ') rotate(' + (ang + 90) + ')', 'aria-hidden': 'true' });
   for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) grp.append(svgEl('rect', { x: (-across / 2 + c * cw).toFixed(2), y: (-along / 2 + r * rh).toFixed(2), width: cw.toFixed(2), height: rh.toFixed(2), class: (r + c) % 2 ? 'kb-flag-light' : 'kb-flag-dark' }));
   grp.append(svgEl('rect', { x: (-across / 2).toFixed(2), y: (-along / 2).toFixed(2), width: across.toFixed(2), height: along.toFixed(2), class: 'kb-flag-edge', 'stroke-width': (geo.sw * 0.12).toFixed(2) }));
