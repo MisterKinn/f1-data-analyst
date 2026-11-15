@@ -6,7 +6,7 @@ import {lapsimTracks, lapsimExtraTracks} from '../../../worker/lapsim/tracks-dat
 export const ADDED = {'paul-ricard-2021': 'paul-ricard', dubai: 'dubai', 'ricardo-tormo': 'valencia', misano: 'misano', sonoma: 'sonoma', sachsenring: 'sachsenring',
   oschersleben: 'oschersleben', zolder: 'zolder', donington: 'donington', 'oulton-park': 'oulton-park', motegi: 'motegi', buriram: 'buriram', okayama: 'okayama', zhuhai: 'zhuhai',
   vallelunga: 'vallelunga', estoril: 'estoril', jerez: 'jerez', sydney: 'sydney', 'sydney-gardner': 'sydney', inje: 'inje', sebring: 'sebring', aragon: 'aragon', lausitz: 'lausitz',
-  autopolis: 'autopolis', mandalika: 'mandalika', 'magny-cours': 'magny-cours', 'phillip-island': 'phillip-island', snetterton: 'snetterton', istanbul: 'istanbul', sochi: 'sochi'};
+  autopolis: 'autopolis', mandalika: 'mandalika', 'magny-cours': 'magny-cours', 'phillip-island': 'phillip-island', snetterton: 'snetterton', istanbul: 'istanbul', sochi: 'sochi', 'long-beach': 'long-beach', detroit: 'detroit'};
 const REG = 'scripts/sim/data/track-registry.json', reg = JSON.parse(readFileSync(REG, 'utf8')), sim = {...lapsimTracks, ...lapsimExtraTracks};
 for (const [id, venue] of Object.entries(ADDED)) { const t = sim[id]; if (!t) continue; const km = +((t.officialLengthM || t.length) / 1000).toFixed(3);
   if (reg.layouts.some(l => l.sim === id)) continue;

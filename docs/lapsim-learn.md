@@ -353,3 +353,19 @@ within 0.5 % of the official length unless a wider tolerance is written in the r
 Aragón, Lausitz, Autopolis and Snetterton have no real lap of a calibrated class yet, so they carry ⚠️ (`trackWarn()`).
 Laps already in the tables that now have geometry: Sebring (IMSA and WEC, 301 rows) and Aragón (ELMS 2023, 17 rows); the learning
 step (`fit-endurance.mjs`) must be rerun to use them.
+
+## 10. Istanbul Park and Sochi; more real laps from the historic F1 database (2026-11-15)
+
+- **Tracks** from F1 car positions (`build-geometry-f1-history.mjs`, TracingInsights): Istanbul Park 2021 qualifying (2020 was wet),
+  Sochi 2020 qualifying (2021 Q3 was wet). Fastest race laps from f1db (`f1-race-records.mjs`).
+- **More real laps** (`scripts/sim/learn/f1db-poles.mjs` -> `scripts/sim/data/tracks/f1db-poles.json`): the fastest single qualifying
+  lap of every race 2006-2019 from f1db (Q3 of 2006-2009 ran on race fuel; 2005 used aggregate times, so it is left out). A session
+  slower than the race's fastest lap is flagged wet and not used. Seasons TracingInsights does not cover get a pace ratio against the
+  2023 car from the f1db laps on production circuits of the same layout (held-out RMS 0.8-2.7 % per season, table in
+  docs/lapsim-tracks-extra.md). Rows added on the tracks built from F1 car positions only.
+- **Track factor**: on those tracks the factor learned from the real laps is used when its held-out error is lower than the
+  no-factor error. Istanbul 2.54 % (one lap, no factor) -> **0.95 %** held-out (7 seasons); Sochi -> **0.73 %** (7 seasons);
+  Nürburgring GP 2.58 -> 1.04 %.
+- **Other series checked** (Wikipedia circuit pages): Istanbul hosted GP2, GP3, WTCC, the Le Mans Series 1000 km (2005-06, LMP1),
+  FIA GT (2005); Sochi GP2/F2, GP3/F3, WTCR, TCR and Russian series. None is a calibrated simulator class (F1, LMH, LMDh, GT3), so
+  they are not used.
