@@ -24,7 +24,7 @@ import {calendarSection,scheduleLogoCss,raceFeatureCss,sessionStateCss,raceFeatu
 import {calendarEvents,circuitInfo,calendarReviewedAt} from './race-calendar-data.js';
 import {gtTeamLogoFor} from './verified-logo-assets.js';
 import {teamLogoFor} from './team-logos.js';
-import {f1CarViews} from './f1-car-views.js';
+import {f1CarViews, f1CarViews2025} from './f1-car-views.js';
 import {brandVector} from './brand-vector.js';
 import {brandSymbol,brandIconBase64} from './brand.js';
 import {ciLogos,ciTabIcon} from './ci-logos.js';
@@ -180,7 +180,7 @@ export function websiteRoute(request,identity={}){
  else if(path==='/assets/team-logos.js'){content='export const teamLogoFor='+teamLogoFor.toString()+';';type='text/javascript; charset=utf-8';}
  else if(path.startsWith('/assets/ci/')&&ciLogos[path.slice(11).replace(/\.svg$/,'')]&&path.endsWith('.svg')){content=ciLogos[path.slice(11,-4)];type='image/svg+xml';}
  else if(path==='/assets/brand-icon.svg'){content=ciTabIcon;type='image/svg+xml';}
- else if(/^\/assets\/f1-2026\/(side|top|front|rear)\.webp$/.test(path)){content=Uint8Array.from(atob(f1CarViews[path.slice(16,-5)]),c=>c.charCodeAt(0));type='image/webp';}
+ else if(/^\/assets\/f1-202[56]\/(side|top|front|rear)\.webp$/.test(path)){content=Uint8Array.from(atob((path.startsWith('/assets/f1-2025/')?f1CarViews2025:f1CarViews)[path.slice(16,-5)]),c=>c.charCodeAt(0));type='image/webp';}
  else if(path==='/assets/brand-icon.png'){content=Uint8Array.from(atob(brandIconBase64),c=>c.charCodeAt(0));type='image/png';}
  else if(path==='/assets/brand-mark.svg'){content=ciLogos['ko-dark'];type='image/svg+xml';}
  else if(path==='/assets/brand-mark-light.svg'){content=ciLogos['ko-light'];type='image/svg+xml';}
