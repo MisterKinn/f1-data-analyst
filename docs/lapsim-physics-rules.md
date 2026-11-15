@@ -400,3 +400,59 @@ drag. Fixed for every car:
 - Drag bug: the sensitivity table compared the changed bare simulation with the corrected (real) lap; it now compares bare with
   bare. Test: `tests/lapsim.test.mjs` (sign of every sensitivity, more drag is slower).
 - Known limit: the 2026 F1 car on Daytona (a track F1 never ran) gives a wrong grip sign through the energy-management heuristic.
+
+## Telemetry channels and the racing line for every car (2026-11-15)
+
+Owner request 2026-11-15. Code: `worker/lapsim/channels.js` (`lapChannels`), `worker/lapsim/racing-line.js` (`minCurvatureLine` with
+`order: 2`, `blendLine`), `worker/simulation.js` (stacked charts, `lineData`, map zoom). Test: `tests/lapsim-telemetry.test.mjs`.
+These are display channels of the simulated lap. They do not change the lap time, the kernel or any calibration. Evidence layer 4
+(estimates) unless stated; no channel is compared with measured telemetry yet, so no held-out error exists for them.
+
+### Brake line pressure (bar, front circuit)
+
+Friction brake force = m · deceleration − aero drag − rolling resistance − regen (on its axle: F1 and LMDh rear, LMH front, Formula E
+rear). Front force = brake balance × total; front pressure = front force × tyre radius / (2 wheels × 2 pads × pad mu × effective disc
+radius × piston area on one side). Formula E (Gen3 on) has no rear friction brakes: the rear share left after regen goes to the front.
+
+| Class | Balance (front) | Pad mu | Disc r eff. front / rear (m) | Pistons one side, front / rear (mm) | Area front / rear (mm²) | N per bar (front axle) |
+|---|---|---|---|---|---|---|
+| F1 (carbon) | 0.57 | 0.50 | 0.137 / 0.115 | 34+36+38 / 28+30 | 3060 / 1323 | 232.9 |
+| Hypercar LMH, LMDh (carbon) | 0.56 | 0.50 | 0.160 / 0.150 | 36+38+40 / 32+34 | 3409 / 1712 | 307.3 |
+| GT3 (steel) | 0.58 | 0.45 | 0.160 / 0.150 | 32+36+38 / 30+32 | 2956 / 1511 | 250.4 |
+| Formula E | 0.60 | 0.45 | 0.115 / – | 34+36 / none | 1926 / 0 | 113.9 |
+
+Basis: disc sizes from the series limits and maker data sheets (F1 front 328 mm, Hypercar and GT3 front 380 mm, FE 278 mm), effective
+radius = disc radius − half the pad height; piston diameters typical of six- and four-piston race calipers; balance and mu typical set-up
+values. Checked with Wolfram Language (piston areas, N per bar). Cross-check: Brembo's published F1 pedal load (150 kg) through the
+pedal model already in `brakes.js` (ratio 3.5, 17.8 mm master cylinder, 57 % front) gives 118 bar; the geometry model gives a Monza
+F1 2026 peak of 116 bar (2025: 127 bar). At 330 km/h and 4.5 g the front needs 68 bar, because drag does much of the braking there.
+
+### Gear and engine rpm
+
+The gear with the most engine power at that speed, from the engine curve and the gear ratios of `powertrains.js` (the same rule as
+kernel `powertrain()`); a gear within 1 % of the best is kept, so the trace does not hunt on the flat top of the curve. Shift points are
+the changes of that gear. No shift time (the kernel shifts seamlessly). Check: F1 8th gear at 12 000 rpm = 345 km/h (Wolfram), as in
+`powertrains.js`. Formula E has one gear.
+
+### Steering wheel angle
+
+Road-wheel angle = wheelbase × path curvature + understeer gradient × lateral acceleration; wheel angle = steering ratio × road-wheel
+angle (+ = left). Ratio and understeer gradient: F1 11:1, 0.6 deg/g; Hypercar 12:1, 0.8 deg/g; GT3 14:1, 1.0 deg/g; Formula E 12:1,
+0.8 deg/g. Check: F1 hairpin of 12 m radius with 3.4 m wheelbase = 179° at the wheel (Wolfram); the Monaco hairpin in the model
+exceeds 150°, as the test checks.
+
+Driver corrections: three sine waves at 1.3, 2.4 and 3.7 Hz (weights 0.55, 0.30, 0.15) in lap time, phases from a seeded hash of track
+and car, so the page is stable. Amplitude (deg at the wheel) = 1.2 × u³ × (1 + 25 / max(v, 10 m/s)), u = grip use (combined
+acceleration over the point-mass capacity, scaled so the 98th percentile of the lap is 1). Corrections grow near the limit and at low
+speed, and are near zero on fast straights off the brakes (test). This is a model of the look of real steering traces, not a measurement.
+
+### Racing line for every car and track
+
+Base: the least-curvature line (`minCurvatureLine`, unchanged method). New: the shortest path inside the same corridor
+(`order: 2`). Each car gets its own blend (1 − e) × shortest + e × least-curvature (Braghin et al. 2008): one e for the lap by
+golden-section search, then up to 10 windows each try e ± 0.3, all judged by the lap kernel with that car (grip, downforce, drag, power,
+mass). The search runs on a 5 m spacing: at 10–20 m the three-point curvature hides hairpins and every blend looks too fast.
+Precomputed SPSA lines of an exact car (26 tracks with TUM edges: 2026 F1, LMH, LMDh, LMGT3) are kept. Tracks without TUM edges (73)
+use the map line as midline and an assumed 12 m width (1 m kept free each side); the page says so. Example: Monaco, F1 2026 mean e
+0.61, LMH 0.53, Formula E Gen3 Evo 0.32; Suzuka about 0.95–1 for every car. Limits: the line is not compared with a real driven
+line (section 6 step 7); assumed widths; the server draws the least-curvature line and the browser replaces it with the car's line.
