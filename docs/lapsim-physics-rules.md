@@ -404,6 +404,34 @@ drag. Fixed for every car:
   slower plan at Daytona. The check now allows 1.5 kJ (the battery test still holds: never below −1 kJ), several deploy cut-offs are tried, and the earlier plan stays a
   candidate: no F1 track got slower (largest change −0.44 %, RMS 0.10 % against the 0.9 % holdout error). Test in tests/lapsim.test.mjs.
 
+## Telemetry display: owner rules (2026-11-15, standing)
+
+Follow these in every later change to the /simulation telemetry, the racing line or the map. The model details and numbers are in the
+two sections after this one.
+
+1. **Channels.** Show speed, throttle (%), brake pressure (bar, not on/off), gear, engine rpm and steering wheel angle; add a time-delta
+   lane when a second car is compared, and a battery energy (SoC) lane for hybrid cars (F1 2026 rules, LMH, LMDh; the same deploy
+   and recovery model as the battery panel. F1 before 2026 and Formula E have no battery model yet, so no lane). Brake pressure comes from the deceleration, brake balance, pad mu, disc and caliper size per
+   car class; gear and rpm from the engine curve and gear ratios (the best gear, shift points); steering from the path curvature,
+   wheelbase, steering ratio per class and an understeer gradient.
+2. **Look like a human drove it.** A trace must not be "too honest". The brake is stabbed, overshoots a little, is modulated, eased
+   for a moment where a wheel would lock, and trailed off into the corner; the throttle is squeezed on, snapped off, shakes at the
+   traction limit and is sometimes lifted; the steering has small quick corrections around the mean angle. Corrections grow near the
+   grip limit and at low speed. There is no real trace to compare with: that is accepted, keep going, but say on the page that the
+   shapes are a model.
+3. **Where grip is easy to lose.** Use the track and the weather: weight lost over crests, braking downhill, downforce lost to a
+   tailwind, surface notes from the FIA documents (fresh asphalt, bumps, kerbs), track temperature against the tyre window, rain.
+   The human corrections grow there, and the page shows those zones.
+4. **Stable page.** All randomness is seeded by track and car, so a reload shows the same trace.
+5. **Physics stays honest.** The human shapes never change the lap time or the kernel; each brake zone keeps the impulse of the physics.
+6. **Layout.** Like a team data sheet (reference: the McLaren telemetry sheet Lewis Hamilton posted): stacked lanes on one distance axis
+   aligned left and right across every chart, official corner numbers (T1, T2, ...) on every lane, the compared car overlaid, and one
+   cursor across all lanes that reads every channel at that point.
+7. **Racing line.** Every car on every track has a line, and it depends on the car (grip, power, aero). The least-curvature method is
+   the base and stays tested.
+8. **Map.** The track map stays sharp at any zoom (vector, viewBox zoom; never a scaled bitmap).
+9. **Estimates.** Every estimated value is checked with the Wolfram tools and written in this file with its basis.
+
 ## Telemetry channels and the racing line for every car (2026-11-15)
 
 Owner request 2026-11-15. Code: `worker/lapsim/channels.js` (`lapChannels`), `worker/lapsim/racing-line.js` (`minCurvatureLine` with

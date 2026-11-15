@@ -6,7 +6,7 @@ import {lapsimAllTracks} from '../worker/lapsim/tracks.js';
 import {carsFor} from '../worker/lapsim/scenario.js';
 import {lapChannels} from '../worker/lapsim/channels.js';
 import {minCurvatureLine, blendLine} from '../worker/lapsim/racing-line.js';
-import {lapsimScript, lineData} from '../worker/simulation.js';
+import {lapsimScript, lineData, simulationPage} from '../worker/simulation.js';
 
 const K = lapsimKernel(), env = K.conditionsFromWeather({});
 const lap = (id, key) => { const c = carsFor(id)[key], tr = K.trackFromData(lapsimAllTracks[id]); return {c, tr, r: K.simulateLap(tr, c.car, env)}; };
@@ -80,4 +80,10 @@ test('every track has a racing line, and the line depends on the car', () => {
   const L = lineData('monte-carlo'), ref = [L.mid.map(p => p[0]), L.mid.map(p => p[1])], cars = carsFor('monte-carlo');
   const w = ['2026', 'fe-gen3evo'].map(k => blendLine(K, ref, L.nrm, L.base.map(x => x / 10), L.sp.map(x => x / 10), cars[k].car, env, cars[k].grip || 1).w.join());
   assert.notEqual(w[0], w[1]);
+});
+
+test('hybrid cars get a battery (SoC) lane; cars without a battery model do not', () => {
+  assert.match(simulationPage({track: 'monza', car: '2026'}, 'en'), /class="ls-ch-h">Battery energy \(SoC/);
+  assert.match(simulationPage({track: 'le-mans', car: 'wec-lmh'}, 'en'), /class="ls-ch-h">Battery energy \(SoC/);
+  assert.doesNotMatch(simulationPage({track: 'monza', car: 'gt3-audi-r8-lms-gt3'}, 'en'), /class="ls-ch-h">Battery energy \(SoC/);
 });
