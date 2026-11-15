@@ -9,6 +9,7 @@
 import {readFileSync, writeFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
 import {lapsimKernel} from '../../../worker/lapsim/kernel.js';
+import {SURFACE_ERAS} from '../../../worker/lapsim/surface.js';
 import {lapsimCalibration} from '../../../worker/lapsim/calibration-data.js';
 import {lapsimTracks, lapsimExtraTracks} from '../../../worker/lapsim/tracks-data.js';
 import {lapsimFeTracks} from '../../../worker/lapsim/fe-tracks-data.js';
@@ -20,7 +21,7 @@ const K = lapsimKernel(), WEC = lapsimCalibration.series.wec, ALL = {...lapsimTr
 export const WIDTH = {S: 0.02, SS: 0.10, SY: 0.05, T: 0.05, TG: 0.015, M: 0.015, MB: 0.010, MY: 0.007, B: 0.010, F: 1, F2: 0.05, AGE: 0.01, HOT: 0.02, TR: 0.01}, SIGMA = 0.005, HUBER = 2;
 // Surface eras (docs/lapsim-learn.md section 12): a full resurfacing starts a new track term; the year is the first season on the
 // new asphalt, from the circuits' own announcements. AGE = years on that asphalt (new asphalt is fastest, then slows; cap 3).
-export const SURFACE = {'laguna-seca': 2024, 'road-america': 2023, shanghai: 2024};
+export const SURFACE = SURFACE_ERAS;
 const era = (l, y) => SURFACE[l] && y >= SURFACE[l] ? l + '@' + SURFACE[l] : l, age = (l, y) => SURFACE[l] && y >= SURFACE[l] ? Math.min(3, y - SURFACE[l]) : 0;
 // F1 track factor (log grip of the F1 calibration, latest season): an independent measure of how far the map geometry is off.
 const F1G = {}; for (const y of Object.keys(lapsimCalibration.seasons).sort()) for (const [k, v] of Object.entries(lapsimCalibration.seasons[y].tracks || {})) if (v.grip != null) F1G[k] = Math.log(v.grip);
