@@ -1,0 +1,611 @@
+{
+ "source": "OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); loops found by scripts/sim/tracks/assemble.mjs",
+ "rule": "accepted = within 0.5 % of the official lap length",
+ "tracks": {
+  "sebring": {
+   "gapClosedM": 30,
+   "snappedEnds": 2,
+   "ways": 26,
+   "edges": 35,
+   "junctions": 10,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 0,
+   "loopsFound": 27,
+   "loopLengthsM": [
+    {
+     "m": 5887,
+     "names": [
+      "Sunset Bend",
+      "Ullman Straight",
+      "Le Mans Curve",
+      "Gendebien Bend"
+     ]
+    },
+    {
+     "m": 5869,
+     "names": [
+      "Sunset Bend",
+      "Ullman Straight",
+      "Gendebien Bend",
+      "Bishop Bend"
+     ]
+    },
+    {
+     "m": 5848,
+     "names": [
+      "Sunset Bend",
+      "Ullman Straight",
+      "Gendebien Bend",
+      "Bishop Bend"
+     ]
+    },
+    {
+     "m": 3482,
+     "names": [
+      "Sunset Bend",
+      "Ullman Straight",
+      "Le Mans Curve",
+      "Gendebien Bend"
+     ]
+    },
+    {
+     "m": 3464,
+     "names": [
+      "Sunset Bend",
+      "Ullman Straight",
+      "Gendebien Bend",
+      "Bishop Bend"
+     ]
+    },
+    {
+     "m": 3442,
+     "names": [
+      "Sunset Bend",
+      "Ullman Straight",
+      "Gendebien Bend",
+      "Bishop Bend"
+     ]
+    },
+    {
+     "m": 3140,
+     "names": [
+      "Sunset Bend",
+      "Ullman Straight",
+      "Le Mans Curve",
+      "Gendebien Bend"
+     ]
+    },
+    {
+     "m": 3122,
+     "names": [
+      "Sunset Bend",
+      "Ullman Straight",
+      "Gendebien Bend",
+      "Bishop Bend"
+     ]
+    },
+    {
+     "m": 3100,
+     "names": [
+      "Sunset Bend",
+      "Ullman Straight",
+      "Gendebien Bend",
+      "Bishop Bend"
+     ]
+    },
+    {
+     "m": 2944,
+     "names": [
+      "Gurney Bend",
+      "Hairpin",
+      "Fangio",
+      "Cunningham Corner"
+     ]
+    },
+    {
+     "m": 2688,
+     "names": [
+      "Gurney Bend",
+      "Hairpin",
+      "Fangio",
+      "Cunningham Corner"
+     ]
+    },
+    {
+     "m": 2055,
+     "names": [
+      "Ullman Straight",
+      "Le Mans Curve",
+      "Gendebien Bend"
+     ]
+    }
+   ],
+   "accepted": [
+    {
+     "id": "sebring | SEBRING",
+     "officialM": 6019,
+     "source": "FIA list 2026-03-31",
+     "grade": "2",
+     "pole": "Left",
+     "widthM": 12,
+     "loopM": 5887,
+     "errorPct": 2.19,
+     "accepted": true,
+     "gapClosedM": 30
+    }
+   ]
+  },
+  "aragon": {
+   "error": "no map data"
+  },
+  "magny-cours": {
+   "gapClosedM": 12,
+   "snappedEnds": 0,
+   "ways": 10,
+   "edges": 19,
+   "junctions": 14,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 0,
+   "loopsFound": 33,
+   "loopLengthsM": [
+    {
+     "m": 4458,
+     "names": [
+      "Circuit de Nevers Magny-Cours"
+     ]
+    },
+    {
+     "m": 2850,
+     "names": [
+      "Magny-Cours club"
+     ]
+    },
+    {
+     "m": 2825,
+     "names": [
+      "Magny-Cours club"
+     ]
+    },
+    {
+     "m": 2798,
+     "names": [
+      "Magny-Cours club"
+     ]
+    },
+    {
+     "m": 2695,
+     "names": [
+      "Magny-Cours club"
+     ]
+    },
+    {
+     "m": 2670,
+     "names": [
+      "Magny-Cours club"
+     ]
+    },
+    {
+     "m": 2643,
+     "names": [
+      "Magny-Cours club"
+     ]
+    },
+    {
+     "m": 2548,
+     "names": [
+      "Magny-Cours club"
+     ]
+    },
+    {
+     "m": 2523,
+     "names": [
+      "Magny-Cours club"
+     ]
+    },
+    {
+     "m": 2496,
+     "names": [
+      "Magny-Cours club"
+     ]
+    },
+    {
+     "m": 2358,
+     "names": []
+    },
+    {
+     "m": 2333,
+     "names": []
+    },
+    {
+     "m": 2306,
+     "names": []
+    },
+    {
+     "m": 2203,
+     "names": []
+    },
+    {
+     "m": 2178,
+     "names": []
+    },
+    {
+     "m": 2151,
+     "names": []
+    },
+    {
+     "m": 2055,
+     "names": []
+    },
+    {
+     "m": 2031,
+     "names": []
+    },
+    {
+     "m": 2016,
+     "names": []
+    },
+    {
+     "m": 1992,
+     "names": []
+    }
+   ],
+   "accepted": [
+    {
+     "id": "magny-cours | MAGNY-COURS",
+     "officialM": 4411,
+     "source": "FIA list 2026-03-31",
+     "grade": "1",
+     "pole": "Right",
+     "widthM": 11,
+     "loopM": 4458,
+     "errorPct": 1.07,
+     "accepted": true
+    }
+   ]
+  },
+  "lausitz": {
+   "gapClosedM": 60,
+   "snappedEnds": 0,
+   "wayList": [
+    [
+     "Slalom 2",
+     516
+    ],
+    [
+     "DEKRA Test Oval",
+     121
+    ],
+    [
+     "Anbindung",
+     490
+    ],
+    [
+     "Schikane Süd",
+     128
+    ],
+    [
+     "Innenstrecke Variante",
+     190
+    ],
+    [
+     "Innenstrecke Variante",
+     289
+    ],
+    [
+     "Schikane Nord",
+     134
+    ],
+    [
+     "DEKRA Lausitzring",
+     4582
+    ],
+    [
+     "2-Meilen-Superspeedway",
+     848
+    ],
+    [
+     "Anbindung",
+     1105
+    ],
+    [
+     null,
+     88
+    ],
+    [
+     "DEKRA Test Oval",
+     736
+    ],
+    [
+     "DEKRA Test Oval",
+     731
+    ],
+    [
+     "DEKRA Test Oval",
+     161
+    ],
+    [
+     "DEKRA Test Oval",
+     122
+    ],
+    [
+     "DEKRA Test Oval",
+     77
+    ],
+    [
+     "DEKRA Test Oval",
+     604
+    ],
+    [
+     "DEKRA Test Oval",
+     240
+    ],
+    [
+     "DEKRA Test Oval",
+     454
+    ],
+    [
+     "DEKRA Test Oval",
+     196
+    ],
+    [
+     "DEKRA Test Oval",
+     1453
+    ],
+    [
+     "DEKRA Test Oval",
+     935
+    ],
+    [
+     null,
+     97
+    ],
+    [
+     null,
+     23
+    ],
+    [
+     null,
+     525
+    ],
+    [
+     null,
+     39
+    ],
+    [
+     null,
+     43
+    ],
+    [
+     "DEKRA Lausitzring",
+     1225
+    ],
+    [
+     null,
+     748
+    ],
+    [
+     "Innenstrecke",
+     100
+    ],
+    [
+     "2-Meilen-Superspeedway",
+     31
+    ],
+    [
+     "Innenstrecke",
+     292
+    ],
+    [
+     null,
+     173
+    ],
+    [
+     null,
+     118
+    ],
+    [
+     "DEKRA Test Oval",
+     813
+    ]
+   ],
+   "ways": 35,
+   "edges": 70,
+   "junctions": 36,
+   "searchCapped": true,
+   "duplicateEdgesDropped": 0,
+   "openEnds": [],
+   "loopsFound": 2,
+   "loopLengthsM": [
+    {
+     "m": 1837,
+     "names": [
+      "DEKRA Test Oval",
+      "Schikane Süd"
+     ]
+    },
+    {
+     "m": 1662,
+     "names": [
+      "DEKRA Test Oval",
+      "Schikane Süd"
+     ]
+    }
+   ],
+   "accepted": [
+    {
+     "id": "lausitz | EUROSPEEDWAY LAUSITZ DTM",
+     "officialM": 3478,
+     "source": "FIA list 2026-03-31",
+     "grade": "2",
+     "pole": "Right",
+     "widthM": 12,
+     "loopM": 1837,
+     "errorPct": 47.18,
+     "accepted": false,
+     "gapClosedM": 60
+    },
+    {
+     "id": "lausitz | EUROSPEEDWAY LAUSITZ GRAND PRIX",
+     "officialM": 4535,
+     "source": "FIA list 2026-03-31",
+     "grade": "2",
+     "pole": "Right",
+     "widthM": 12,
+     "loopM": 1837,
+     "errorPct": 59.49,
+     "accepted": false,
+     "gapClosedM": 60
+    },
+    {
+     "id": "lausitz | EUROSPEEDWAY LAUSITZ - T1 OVAL",
+     "officialM": 4601,
+     "source": "FIA list 2024-06-03",
+     "grade": "3R",
+     "pole": "Right",
+     "widthM": 12,
+     "loopM": 1837,
+     "errorPct": 60.07,
+     "accepted": false,
+     "gapClosedM": 60
+    }
+   ]
+  },
+  "autopolis": {
+   "gapClosedM": 60,
+   "snappedEnds": 0,
+   "wayList": [
+    [
+     "レイクサイドコース",
+     1757
+    ],
+    [
+     "オートポリス",
+     4633
+    ],
+    [
+     "オートポリス",
+     149
+    ],
+    [
+     "オートポリス",
+     579
+    ],
+    [
+     "レイクサイドコース",
+     110
+    ],
+    [
+     "レイクサイドコース",
+     116
+    ]
+   ],
+   "ways": 6,
+   "edges": 14,
+   "junctions": 8,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 0,
+   "openEnds": [],
+   "loopsFound": 9,
+   "loopLengthsM": [
+    {
+     "m": 4640,
+     "names": [
+      "オートポリス"
+     ]
+    },
+    {
+     "m": 2983,
+     "names": [
+      "オートポリス"
+     ]
+    },
+    {
+     "m": 1956,
+     "names": [
+      "オートポリス"
+     ]
+    },
+    {
+     "m": 1764,
+     "names": [
+      "レイクサイドコース"
+     ]
+    }
+   ],
+   "accepted": [
+    {
+     "id": "autopolis | AUTOPOLIS",
+     "officialM": 4674,
+     "source": "FIA list 2026-03-31",
+     "grade": "2",
+     "pole": "Right",
+     "widthM": 12,
+     "loopM": 4640,
+     "errorPct": 0.73,
+     "accepted": false,
+     "gapClosedM": 60
+    }
+   ]
+  },
+  "mandalika": {
+   "gapClosedM": 12,
+   "snappedEnds": 0,
+   "ways": 1,
+   "edges": 1,
+   "junctions": 0,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 0,
+   "loopsFound": 1,
+   "loopLengthsM": [
+    {
+     "m": 4313,
+     "names": []
+    }
+   ],
+   "accepted": [
+    {
+     "id": "mandalika | MANDALIKA",
+     "officialM": 4300,
+     "source": "FIA list 2026-03-31",
+     "grade": "3",
+     "pole": "Left",
+     "widthM": 15,
+     "loopM": 4313,
+     "errorPct": 0.3,
+     "accepted": true
+    }
+   ]
+  },
+  "phillip-island": {
+   "gapClosedM": 12,
+   "snappedEnds": 0,
+   "ways": 7,
+   "edges": 13,
+   "junctions": 8,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 0,
+   "loopsFound": 1,
+   "loopLengthsM": [
+    {
+     "m": 4454,
+     "names": [
+      "Phillip Island GP Circuit"
+     ]
+    }
+   ],
+   "accepted": [
+    {
+     "id": "phillip-island | PHILLIP ISLAND",
+     "officialM": 4480,
+     "source": "FIA list 2026-03-31",
+     "grade": "3",
+     "pole": "Right",
+     "widthM": 10,
+     "loopM": 4454,
+     "errorPct": 0.58,
+     "accepted": true
+    }
+   ]
+  }
+ }
+}

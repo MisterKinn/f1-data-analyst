@@ -1,0 +1,2811 @@
+{
+ "source": "OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); loops found by scripts/sim/tracks/assemble.mjs",
+ "rule": "accepted = within 0.5 % of the official lap length",
+ "tracks": {
+  "sebring": {
+   "error": "no map data"
+  },
+  "long-beach": {
+   "gapClosedM": 60,
+   "snappedEnds": 3,
+   "wayList": [
+    [
+     "Grand Prix of Long Beach Infield Section",
+     291
+    ],
+    [
+     "Grand Prix of Long Beach Hairpin",
+     66
+    ]
+   ],
+   "ways": 2,
+   "edges": 2,
+   "junctions": 2,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 0,
+   "openEnds": [
+    {
+     "at": [
+      33.7656636,
+      -118.1858883
+     ],
+     "nearestOtherM": 214,
+     "way": "Grand Prix of Long Beach Infield Section",
+     "wayM": 291
+    },
+    {
+     "at": [
+      33.7643197,
+      -118.1842557
+     ],
+     "nearestOtherM": 4,
+     "way": "Grand Prix of Long Beach Infield Section",
+     "wayM": 291
+    }
+   ],
+   "loopsFound": 0,
+   "loopLengthsM": [],
+   "accepted": [
+    {
+     "id": "long-beach | LONG BEACH",
+     "officialM": 3168,
+     "source": "FIA list 2026-03-31",
+     "grade": "2",
+     "pole": "Left",
+     "widthM": 12.5,
+     "accepted": false,
+     "method": "public roads joined in the order of East Shoreline Drive > South Pine Avenue > East Seaside Way > South Linden Avenue",
+     "viaSource": "IMSA / IndyCar Long Beach circuit map (Shoreline Drive, Pine Avenue, Seaside Way)",
+     "reason": "road name not on the map: East Shoreline Drive"
+    }
+   ]
+  },
+  "detroit": {
+   "gapClosedM": 60,
+   "snappedEnds": 0,
+   "wayList": [],
+   "ways": 0,
+   "edges": 0,
+   "junctions": 0,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 0,
+   "openEnds": [],
+   "loopsFound": 0,
+   "loopLengthsM": [],
+   "accepted": [
+    {
+     "id": "detroit | DETROIT GRAND PRIX STREET CIRCUIT",
+     "officialM": 2650,
+     "source": "FIA list 2026-03-31",
+     "grade": "2",
+     "pole": "Left",
+     "widthM": 12,
+     "accepted": false,
+     "method": "public roads joined in the order of East Jefferson Avenue > Bates Street > Atwater Street > Franklin Street",
+     "viaSource": "Detroit Grand Prix downtown circuit map",
+     "reason": "East Jefferson Avenue: 22 ways with 3 free ends (need 2)"
+    }
+   ]
+  },
+  "dubai": {
+   "gapClosedM": 12,
+   "snappedEnds": 0,
+   "ways": 5,
+   "edges": 13,
+   "junctions": 8,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 0,
+   "loopsFound": 12,
+   "loopLengthsM": [
+    {
+     "m": 5406,
+     "names": [
+      "دبي أوتودروم"
+     ]
+    },
+    {
+     "m": 4701,
+     "names": [
+      "دبي أوتودروم"
+     ]
+    },
+    {
+     "m": 4368,
+     "names": [
+      "دبي أوتودروم"
+     ]
+    },
+    {
+     "m": 4031,
+     "names": [
+      "دبي أوتودروم"
+     ]
+    },
+    {
+     "m": 3594,
+     "names": [
+      "دبي أوتودروم"
+     ]
+    },
+    {
+     "m": 3326,
+     "names": [
+      "دبي أوتودروم"
+     ]
+    },
+    {
+     "m": 2993,
+     "names": [
+      "دبي أوتودروم"
+     ]
+    },
+    {
+     "m": 2888,
+     "names": [
+      "دبي أوتودروم"
+     ]
+    },
+    {
+     "m": 2556,
+     "names": [
+      "دبي أوتودروم"
+     ]
+    },
+    {
+     "m": 2137,
+     "names": [
+      "دبي أوتودروم"
+     ]
+    },
+    {
+     "m": 1953,
+     "names": [
+      "دبي أوتودروم"
+     ]
+    },
+    {
+     "m": 1773,
+     "names": [
+      "دبي أوتودروم"
+     ]
+    }
+   ],
+   "accepted": [
+    {
+     "id": "dubai | DUBAI GRAND PRIX CIRCUIT",
+     "officialM": 5390,
+     "source": "FIA list 2026-03-31",
+     "grade": "1",
+     "pole": "Left",
+     "widthM": 14,
+     "loopM": 5406,
+     "errorPct": 0.3,
+     "accepted": true
+    }
+   ]
+  },
+  "aragon": {
+   "error": "no map data"
+  },
+  "valencia-ricardo-tormo": {
+   "gapClosedM": 12,
+   "snappedEnds": 1,
+   "ways": 9,
+   "edges": 18,
+   "junctions": 9,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 0,
+   "loopsFound": 10,
+   "loopLengthsM": [
+    {
+     "m": 4043,
+     "names": [
+      "Circuit Ricardo Tormo",
+      "FE",
+      "MotoGp Long Lap"
+     ]
+    },
+    {
+     "m": 4006,
+     "names": [
+      "Circuit Ricardo Tormo",
+      "FE"
+     ]
+    },
+    {
+     "m": 3353,
+     "names": [
+      "Circuit Ricardo Tormo",
+      "FE"
+     ]
+    },
+    {
+     "m": 3143,
+     "names": [
+      "Shortcut 1",
+      "Circuit Ricardo Tormo",
+      "FE"
+     ]
+    },
+    {
+     "m": 1615,
+     "names": [
+      "Shortcut 1",
+      "Circuit Ricardo Tormo",
+      "MotoGp Long Lap"
+     ]
+    },
+    {
+     "m": 1579,
+     "names": [
+      "Shortcut 1",
+      "Circuit Ricardo Tormo"
+     ]
+    }
+   ],
+   "accepted": [
+    {
+     "id": "valencia-ricardo-tormo | VALENCIA RICARDO TORMO",
+     "officialM": 4005,
+     "source": "FIA list 2026-03-31",
+     "grade": "2",
+     "pole": "Right",
+     "widthM": 12,
+     "loopM": 4006,
+     "errorPct": 0.02,
+     "accepted": true
+    }
+   ]
+  },
+  "magny-cours": {
+   "gapClosedM": 60,
+   "snappedEnds": 6,
+   "wayList": [
+    [
+     "Magny-Cours club",
+     712
+    ],
+    [
+     null,
+     376
+    ],
+    [
+     null,
+     2004
+    ],
+    [
+     null,
+     205
+    ],
+    [
+     null,
+     164
+    ],
+    [
+     "Circuit de Nevers Magny-Cours",
+     4458
+    ],
+    [
+     null,
+     97
+    ],
+    [
+     null,
+     95
+    ],
+    [
+     null,
+     72
+    ],
+    [
+     null,
+     4
+    ]
+   ],
+   "ways": 10,
+   "edges": 23,
+   "junctions": 14,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 0,
+   "openEnds": [],
+   "loopsFound": 33,
+   "loopLengthsM": [
+    {
+     "m": 4458,
+     "names": [
+      "Circuit de Nevers Magny-Cours"
+     ]
+    },
+    {
+     "m": 2850,
+     "names": [
+      "Magny-Cours club"
+     ]
+    },
+    {
+     "m": 2825,
+     "names": [
+      "Magny-Cours club"
+     ]
+    },
+    {
+     "m": 2798,
+     "names": [
+      "Magny-Cours club"
+     ]
+    },
+    {
+     "m": 2695,
+     "names": [
+      "Magny-Cours club"
+     ]
+    },
+    {
+     "m": 2670,
+     "names": [
+      "Magny-Cours club"
+     ]
+    },
+    {
+     "m": 2643,
+     "names": [
+      "Magny-Cours club"
+     ]
+    },
+    {
+     "m": 2548,
+     "names": [
+      "Magny-Cours club"
+     ]
+    },
+    {
+     "m": 2523,
+     "names": [
+      "Magny-Cours club"
+     ]
+    },
+    {
+     "m": 2496,
+     "names": [
+      "Magny-Cours club"
+     ]
+    },
+    {
+     "m": 2358,
+     "names": []
+    },
+    {
+     "m": 2333,
+     "names": []
+    },
+    {
+     "m": 2306,
+     "names": []
+    },
+    {
+     "m": 2203,
+     "names": []
+    },
+    {
+     "m": 2178,
+     "names": []
+    },
+    {
+     "m": 2151,
+     "names": []
+    },
+    {
+     "m": 2055,
+     "names": []
+    },
+    {
+     "m": 2031,
+     "names": []
+    },
+    {
+     "m": 2016,
+     "names": []
+    },
+    {
+     "m": 1992,
+     "names": []
+    }
+   ],
+   "accepted": [
+    {
+     "id": "magny-cours | MAGNY-COURS",
+     "officialM": 4411,
+     "source": "FIA list 2026-03-31",
+     "grade": "1",
+     "pole": "Right",
+     "widthM": 11,
+     "loopM": 4458,
+     "errorPct": 1.07,
+     "accepted": false,
+     "gapClosedM": 60
+    }
+   ]
+  },
+  "misano": {
+   "gapClosedM": 12,
+   "snappedEnds": 0,
+   "ways": 32,
+   "edges": 49,
+   "junctions": 20,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 0,
+   "loopsFound": 44,
+   "loopLengthsM": [
+    {
+     "m": 4333,
+     "names": [
+      "Curva del Rio",
+      "Variante Arena",
+      "Variante del Parco",
+      "Curva della Brutapela"
+     ]
+    },
+    {
+     "m": 4284,
+     "names": [
+      "Curva del Rio",
+      "Variante Arena",
+      "Variante del Parco",
+      "Curva della Brutapela"
+     ]
+    },
+    {
+     "m": 4267,
+     "names": [
+      "Variante del Parco",
+      "Curva Misano",
+      "Curva del Carro",
+      "Curvone"
+     ]
+    },
+    {
+     "m": 4248,
+     "names": [
+      "Variante del Parco",
+      "Curva del Rio",
+      "Variante Arena",
+      "Curva Quercia"
+     ]
+    },
+    {
+     "m": 4218,
+     "names": [
+      "Variante del Parco",
+      "Curva Misano",
+      "Curva del Carro",
+      "Curvone"
+     ]
+    },
+    {
+     "m": 4199,
+     "names": [
+      "Variante del Parco",
+      "Curva del Rio",
+      "Variante Arena",
+      "Curva Quercia"
+     ]
+    },
+    {
+     "m": 4165,
+     "names": [
+      "Curva del Rio",
+      "Variante Arena",
+      "Curva Quercia",
+      "Curva Tramonto"
+     ]
+    },
+    {
+     "m": 4087,
+     "names": [
+      "Variante del Parco",
+      "Curva Misano",
+      "Curvone",
+      "Curva Tramonto"
+     ]
+    },
+    {
+     "m": 4068,
+     "names": [
+      "Variante del Parco",
+      "Curva del Rio",
+      "Variante Arena",
+      "Curva Quercia"
+     ]
+    },
+    {
+     "m": 4039,
+     "names": [
+      "Variante del Parco",
+      "Curva Misano",
+      "Curvone",
+      "Curva Tramonto"
+     ]
+    },
+    {
+     "m": 4020,
+     "names": [
+      "Variante del Parco",
+      "Curva del Rio",
+      "Variante Arena",
+      "Curva Quercia"
+     ]
+    },
+    {
+     "m": 3985,
+     "names": [
+      "Curva del Rio",
+      "Variante Arena",
+      "Curva Quercia",
+      "Curva Tramonto"
+     ]
+    },
+    {
+     "m": 3961,
+     "names": [
+      "Variante del Parco",
+      "Curva del Carro",
+      "Curvone",
+      "Curva Tramonto"
+     ]
+    },
+    {
+     "m": 3934,
+     "names": [
+      "Variante del Parco",
+      "Curva Quercia",
+      "MotoGP Long Lap Penalty",
+      "Curva Tramonto"
+     ]
+    },
+    {
+     "m": 3915,
+     "names": [
+      "Variante del Parco",
+      "Curva del Carro",
+      "Curvone",
+      "Curva Tramonto"
+     ]
+    },
+    {
+     "m": 3886,
+     "names": [
+      "Variante del Parco",
+      "Curva Quercia",
+      "Curva Tramonto",
+      "Curvone"
+     ]
+    },
+    {
+     "m": 3867,
+     "names": [
+      "Variante del Parco",
+      "Curva del Carro",
+      "Curvone",
+      "Curva Tramonto"
+     ]
+    },
+    {
+     "m": 3848,
+     "names": [
+      "Variante del Parco",
+      "Curva della Brutapela",
+      "Curva Quercia",
+      "MotoGP Long Lap Penalty"
+     ]
+    },
+    {
+     "m": 3829,
+     "names": [
+      "Variante del Parco",
+      "Curvone",
+      "Curva Tramonto",
+      "MotoGP Long Lap Penalty"
+     ]
+    },
+    {
+     "m": 3800,
+     "names": [
+      "Variante del Parco",
+      "Curva della Brutapela",
+      "Curva Quercia",
+      "Curva Tramonto"
+     ]
+    },
+    {
+     "m": 3781,
+     "names": [
+      "Variante del Parco",
+      "Curvone",
+      "Curva Tramonto",
+      "Curva Quercia"
+     ]
+    },
+    {
+     "m": 3754,
+     "names": [
+      "Variante del Parco",
+      "Curva Quercia",
+      "MotoGP Long Lap Penalty",
+      "Curva Tramonto"
+     ]
+    },
+    {
+     "m": 3736,
+     "names": [
+      "Variante del Parco",
+      "Curvone",
+      "Curva Tramonto",
+      "MotoGP Long Lap Penalty"
+     ]
+    },
+    {
+     "m": 3706,
+     "names": [
+      "Variante del Parco",
+      "Curva Quercia",
+      "Curva Tramonto",
+      "Curvone"
+     ]
+    },
+    {
+     "m": 3687,
+     "names": [
+      "Variante del Parco",
+      "Curvone",
+      "Curva Tramonto",
+      "Curva Quercia"
+     ]
+    },
+    {
+     "m": 3486,
+     "names": [
+      "Curva del Carro",
+      "Curvone",
+      "Curva Tramonto",
+      "MotoGP Long Lap Penalty"
+     ]
+    },
+    {
+     "m": 3438,
+     "names": [
+      "Curva del Carro",
+      "Curvone",
+      "Curva Tramonto",
+      "Curva Quercia"
+     ]
+    },
+    {
+     "m": 3307,
+     "names": [
+      "Curvone",
+      "Curva Tramonto",
+      "MotoGP Long Lap Penalty",
+      "Curva Quercia"
+     ]
+    },
+    {
+     "m": 3258,
+     "names": [
+      "Curvone",
+      "Curva Tramonto",
+      "Curva Quercia",
+      "Variante del Parco"
+     ]
+    },
+    {
+     "m": 3207,
+     "names": [
+      "Curva del Carro",
+      "Curvone",
+      "Curva Tramonto",
+      "Curva Quercia"
+     ]
+    },
+    {
+     "m": 3076,
+     "names": [
+      "Curvone",
+      "Curva Tramonto",
+      "MotoGP Long Lap Penalty",
+      "Curva Quercia"
+     ]
+    },
+    {
+     "m": 3027,
+     "names": [
+      "Curvone",
+      "Curva Tramonto",
+      "Curva Quercia",
+      "Curva della Brutapela"
+     ]
+    },
+    {
+     "m": 2632,
+     "names": [
+      "Curva del Rio",
+      "Variante Arena",
+      "Curva della Brutapela",
+      "Curva Misano"
+     ]
+    },
+    {
+     "m": 2573,
+     "names": [
+      "Curva del Rio",
+      "Variante Arena",
+      "Variante del Parco",
+      "Curva Misano"
+     ]
+    },
+    {
+     "m": 2353,
+     "names": [
+      "Variante del Parco",
+      "Curva della Brutapela",
+      "Curva Misano"
+     ]
+    },
+    {
+     "m": 2334,
+     "names": [
+      "Variante del Parco",
+      "Curva Misano",
+      "Curva della Brutapela"
+     ]
+    },
+    {
+     "m": 2089,
+     "names": [
+      "Variante del Parco",
+      "Curva Misano"
+     ]
+    },
+    {
+     "m": 2070,
+     "names": [
+      "Variante del Parco",
+      "Curva Misano"
+     ]
+    }
+   ],
+   "accepted": [
+    {
+     "id": "misano | MISANO ADRIATICO",
+     "officialM": 4048,
+     "source": "FIA list 2026-03-31",
+     "grade": "2",
+     "pole": "Left",
+     "widthM": 12,
+     "loopM": 4039,
+     "errorPct": 0.22,
+     "accepted": true
+    },
+    {
+     "id": "misano | MISANO ADRIATICO (LONG TRACK)",
+     "officialM": 4226,
+     "source": "FIA list 2026-03-31",
+     "grade": "2",
+     "pole": "Left",
+     "widthM": 12,
+     "loopM": 4218,
+     "errorPct": 0.19,
+     "accepted": true
+    }
+   ]
+  },
+  "sonoma": {
+   "gapClosedM": 12,
+   "snappedEnds": 0,
+   "ways": 20,
+   "edges": 46,
+   "junctions": 28,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 0,
+   "loopsFound": 125,
+   "loopLengthsM": [
+    {
+     "m": 3792,
+     "names": [
+      "Pit Road",
+      "Sonoma Raceway"
+     ]
+    },
+    {
+     "m": 3772,
+     "names": [
+      "Pit Road",
+      "Sonoma Raceway",
+      "Sonoma Raceway 2020"
+     ]
+    },
+    {
+     "m": 3749,
+     "names": [
+      "Sonoma Raceway",
+      "Sonoma Raceway 2020"
+     ]
+    },
+    {
+     "m": 3730,
+     "names": [
+      "Sonoma Raceway"
+     ]
+    },
+    {
+     "m": 3711,
+     "names": [
+      "Sonoma Raceway"
+     ]
+    },
+    {
+     "m": 3691,
+     "names": [
+      "Sonoma Raceway",
+      "Sonoma Raceway 2020"
+     ]
+    },
+    {
+     "m": 3661,
+     "names": [
+      "Sonoma Raceway",
+      "PWC lower hairpin",
+      "Sonoma Raceway 2020"
+     ]
+    },
+    {
+     "m": 3643,
+     "names": [
+      "Sonoma Raceway",
+      "PWC lower hairpin"
+     ]
+    },
+    {
+     "m": 3623,
+     "names": [
+      "Sonoma Raceway",
+      "Sonoma Raceway 2020",
+      "PWC lower hairpin"
+     ]
+    },
+    {
+     "m": 3606,
+     "names": [
+      "Sonoma Raceway"
+     ]
+    },
+    {
+     "m": 3585,
+     "names": [
+      "Sonoma Raceway",
+      "Sonoma Raceway 2020"
+     ]
+    },
+    {
+     "m": 3553,
+     "names": [
+      "Sonoma Raceway",
+      "Sonoma Raceway 2020"
+     ]
+    },
+    {
+     "m": 3523,
+     "names": [
+      "Sonoma Raceway",
+      "Sonoma Raceway 2020",
+      "PWC lower hairpin"
+     ]
+    },
+    {
+     "m": 3474,
+     "names": [
+      "Sonoma Raceway",
+      "PWC lower hairpin"
+     ]
+    },
+    {
+     "m": 3454,
+     "names": [
+      "Sonoma Raceway",
+      "PWC lower hairpin",
+      "Sonoma Raceway 2020"
+     ]
+    },
+    {
+     "m": 3436,
+     "names": [
+      "Sonoma Raceway"
+     ]
+    },
+    {
+     "m": 3420,
+     "names": [
+      "Sonoma Raceway",
+      "Sonoma Raceway 2020",
+      "PWC lower hairpin"
+     ]
+    },
+    {
+     "m": 3404,
+     "names": [
+      "Sonoma Raceway"
+     ]
+    },
+    {
+     "m": 3384,
+     "names": [
+      "Sonoma Raceway",
+      "Sonoma Raceway 2020"
+     ]
+    },
+    {
+     "m": 3354,
+     "names": [
+      "Sonoma Raceway",
+      "PWC lower hairpin",
+      "Sonoma Raceway 2020"
+     ]
+    },
+    {
+     "m": 3328,
+     "names": [
+      "Pit Road",
+      "Sonoma Raceway",
+      "PWC lower hairpin"
+     ]
+    },
+    {
+     "m": 3308,
+     "names": [
+      "Pit Road",
+      "Sonoma Raceway",
+      "PWC lower hairpin",
+      "Sonoma Raceway 2020"
+     ]
+    },
+    {
+     "m": 3283,
+     "names": [
+      "Sonoma Raceway",
+      "PWC lower hairpin"
+     ]
+    },
+    {
+     "m": 3263,
+     "names": [
+      "Pit Road",
+      "Sonoma Raceway"
+     ]
+    },
+    {
+     "m": 3248,
+     "names": [
+      "Pit Road",
+      "Sonoma Raceway",
+      "PWC lower hairpin"
+     ]
+    },
+    {
+     "m": 3231,
+     "names": [
+      "Pit Road",
+      "Sonoma Raceway"
+     ]
+    },
+    {
+     "m": 3214,
+     "names": [
+      "Sonoma Raceway",
+      "Sonoma Raceway 2020"
+     ]
+    },
+    {
+     "m": 3198,
+     "names": [
+      "Sonoma Raceway",
+      "Sonoma Raceway 2020",
+      "PWC lower hairpin"
+     ]
+    },
+    {
+     "m": 3181,
+     "names": [
+      "Sonoma Raceway",
+      "Sonoma Raceway 2020"
+     ]
+    },
+    {
+     "m": 3162,
+     "names": [
+      "Sonoma Raceway",
+      "PWC lower hairpin"
+     ]
+    },
+    {
+     "m": 3142,
+     "names": [
+      "Sonoma Raceway",
+      "PWC lower hairpin"
+     ]
+    },
+    {
+     "m": 3122,
+     "names": [
+      "Sonoma Raceway",
+      "Sonoma Raceway 2020",
+      "PWC lower hairpin"
+     ]
+    },
+    {
+     "m": 3094,
+     "names": [
+      "Sonoma Raceway",
+      "PWC lower hairpin",
+      "Sonoma Raceway 2020"
+     ]
+    },
+    {
+     "m": 3077,
+     "names": [
+      "Sonoma Raceway"
+     ]
+    },
+    {
+     "m": 3062,
+     "names": [
+      "Sonoma Raceway",
+      "PWC lower hairpin"
+     ]
+    },
+    {
+     "m": 3045,
+     "names": [
+      "Sonoma Raceway"
+     ]
+    },
+    {
+     "m": 3025,
+     "names": [
+      "Sonoma Raceway",
+      "Sonoma Raceway 2020"
+     ]
+    },
+    {
+     "m": 2993,
+     "names": [
+      "Sonoma Raceway",
+      "PWC lower hairpin"
+     ]
+    },
+    {
+     "m": 2973,
+     "names": [
+      "Sonoma Raceway",
+      "PWC lower hairpin"
+     ]
+    },
+    {
+     "m": 2953,
+     "names": [
+      "Sonoma Raceway",
+      "PWC lower hairpin",
+      "Sonoma Raceway 2020"
+     ]
+    }
+   ],
+   "accepted": [
+    {
+     "id": "sonoma | SONOMA RACEWAY",
+     "officialM": 3685,
+     "source": "FIA list 2026-03-31",
+     "grade": "2",
+     "pole": "Left",
+     "widthM": 10,
+     "loopM": 3681,
+     "errorPct": 0.11,
+     "accepted": true
+    }
+   ]
+  },
+  "barber": {
+   "gapClosedM": 60,
+   "snappedEnds": 0,
+   "wayList": [
+    [
+     null,
+     3720
+    ]
+   ],
+   "ways": 1,
+   "edges": 1,
+   "junctions": 0,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 0,
+   "openEnds": [],
+   "loopsFound": 1,
+   "loopLengthsM": [
+    {
+     "m": 3720,
+     "names": []
+    }
+   ],
+   "accepted": [
+    {
+     "id": "barber | BARBER MOTORSPORTS PARK",
+     "officialM": 3830,
+     "source": "FIA list 2026-03-31",
+     "grade": "2",
+     "pole": "Right",
+     "widthM": 11,
+     "loopM": 3720,
+     "errorPct": 2.87,
+     "accepted": false,
+     "gapClosedM": 60
+    }
+   ]
+  },
+  "norisring": {
+   "gapClosedM": 60,
+   "snappedEnds": 0,
+   "wayList": [],
+   "ways": 0,
+   "edges": 0,
+   "junctions": 0,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 0,
+   "openEnds": [],
+   "loopsFound": 0,
+   "loopLengthsM": [],
+   "accepted": [
+    {
+     "id": "norisring | NORISRING",
+     "officialM": 2162,
+     "source": "FIA list 2026-03-31",
+     "accepted": false
+    }
+   ]
+  },
+  "lausitz": {
+   "error": "no map data"
+  },
+  "sachsenring": {
+   "gapClosedM": 12,
+   "snappedEnds": 0,
+   "ways": 1,
+   "edges": 1,
+   "junctions": 0,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 0,
+   "loopsFound": 1,
+   "loopLengthsM": [
+    {
+     "m": 3649,
+     "names": [
+      "Sachsenring"
+     ]
+    }
+   ],
+   "accepted": [
+    {
+     "id": "sachsenring | SACHSENRING",
+     "officialM": 3645,
+     "source": "FIA list 2026-03-31",
+     "grade": "3",
+     "pole": "Left",
+     "widthM": 12,
+     "loopM": 3649,
+     "errorPct": 0.11,
+     "accepted": true
+    }
+   ]
+  },
+  "oschersleben": {
+   "gapClosedM": 12,
+   "snappedEnds": 0,
+   "ways": 11,
+   "edges": 17,
+   "junctions": 6,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 0,
+   "loopsFound": 6,
+   "loopLengthsM": [
+    {
+     "m": 3687,
+     "names": [
+      "Schikane",
+      "Triple",
+      "Hotelkurve",
+      "Variante"
+     ]
+    },
+    {
+     "m": 3664,
+     "names": [
+      "Schikane",
+      "Triple",
+      "Hotelkurve",
+      "Zeppelin-Kurve"
+     ]
+    },
+    {
+     "m": 2715,
+     "names": [
+      "Zeppelin-Kurve",
+      "Variante",
+      "Hotelkurve"
+     ]
+    },
+    {
+     "m": 2691,
+     "names": [
+      "Zeppelin-Kurve",
+      "Hotelkurve",
+      "Variante"
+     ]
+    },
+    {
+     "m": 2448,
+     "names": [
+      "Zeppelin-Kurve",
+      "Variante",
+      "Hotelkurve"
+     ]
+    },
+    {
+     "m": 2424,
+     "names": [
+      "Zeppelin-Kurve",
+      "Hotelkurve",
+      "Variante"
+     ]
+    }
+   ],
+   "accepted": [
+    {
+     "id": "oschersleben | OSCHERSLEBEN MOTORSPORT ARENA",
+     "officialM": 3696,
+     "source": "FIA list 2026-03-31",
+     "grade": "2",
+     "pole": "Right",
+     "widthM": 11,
+     "loopM": 3687,
+     "errorPct": 0.24,
+     "accepted": true
+    }
+   ]
+  },
+  "zolder": {
+   "gapClosedM": 12,
+   "snappedEnds": 0,
+   "ways": 24,
+   "edges": 27,
+   "junctions": 4,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 0,
+   "loopsFound": 2,
+   "loopLengthsM": [
+    {
+     "m": 4001,
+     "names": [
+      "Jacky Ickx",
+      "Jochen Rindt",
+      "Bolderberg",
+      "Terlamen"
+     ]
+    },
+    {
+     "m": 3980,
+     "names": [
+      "Jacky Ickx",
+      "Eerste linkse",
+      "Sterrenwacht",
+      "Kanaalbocht"
+     ]
+    }
+   ],
+   "accepted": [
+    {
+     "id": "zolder | ZOLDER",
+     "officialM": 4000,
+     "source": "FIA list 2026-03-31",
+     "grade": "2",
+     "pole": "Left",
+     "widthM": 10,
+     "loopM": 4001,
+     "errorPct": 0.03,
+     "accepted": true
+    }
+   ]
+  },
+  "donington": {
+   "gapClosedM": 12,
+   "snappedEnds": 0,
+   "ways": 19,
+   "edges": 20,
+   "junctions": 4,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 0,
+   "loopsFound": 2,
+   "loopLengthsM": [
+    {
+     "m": 3995,
+     "names": [
+      "Fogarty's",
+      "Melbourne Loop (down)",
+      "Melbourne Hairpin",
+      "Melbourne Loop (up)"
+     ]
+    },
+    {
+     "m": 3178,
+     "names": [
+      "Roberts",
+      "Wheatcroft Straight",
+      "Redgate",
+      "Hollywood"
+     ]
+    }
+   ],
+   "accepted": [
+    {
+     "id": "donington | DONINGTON PARK",
+     "officialM": 4003,
+     "source": "FIA list 2026-03-31",
+     "grade": "2",
+     "pole": "Right",
+     "widthM": 10,
+     "loopM": 3995,
+     "errorPct": 0.2,
+     "accepted": true
+    }
+   ]
+  },
+  "snetterton": {
+   "gapClosedM": 60,
+   "snappedEnds": 0,
+   "wayList": [
+    [
+     null,
+     151
+    ],
+    [
+     "Bomb Hole",
+     109
+    ],
+    [
+     "Coram",
+     343
+    ],
+    [
+     "Bentley Straight",
+     800
+    ],
+    [
+     "Riches",
+     155
+    ],
+    [
+     "Murrays",
+     36
+    ],
+    [
+     "Montreal",
+     87
+    ],
+    [
+     null,
+     266
+    ],
+    [
+     null,
+     106
+    ],
+    [
+     "Senna Straight",
+     814
+    ],
+    [
+     "Brundle",
+     60
+    ],
+    [
+     null,
+     96
+    ],
+    [
+     "Firmans",
+     39
+    ],
+    [
+     null,
+     235
+    ],
+    [
+     null,
+     60
+    ],
+    [
+     "Agostini",
+     75
+    ],
+    [
+     "Hamilton",
+     65
+    ],
+    [
+     "Nelson",
+     70
+    ],
+    [
+     "Oggies",
+     111
+    ],
+    [
+     "Palmer",
+     133
+    ],
+    [
+     null,
+     174
+    ],
+    [
+     null,
+     110
+    ],
+    [
+     null,
+     244
+    ],
+    [
+     null,
+     448
+    ],
+    [
+     null,
+     40
+    ],
+    [
+     "Williams",
+     96
+    ]
+   ],
+   "ways": 26,
+   "edges": 28,
+   "junctions": 4,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 0,
+   "openEnds": [],
+   "loopsFound": 3,
+   "loopLengthsM": [
+    {
+     "m": 3194,
+     "names": [
+      "Bentley Straight",
+      "Brundle",
+      "Nelson",
+      "Bomb Hole"
+     ]
+    },
+    {
+     "m": 1787,
+     "names": [
+      "Palmer",
+      "Agostini",
+      "Hamilton",
+      "Oggies"
+     ]
+    },
+    {
+     "m": 1562,
+     "names": [
+      "Firmans",
+      "Williams",
+      "Oggies",
+      "Hamilton"
+     ]
+    }
+   ],
+   "accepted": [
+    {
+     "id": "snetterton | SNETTERTON",
+     "officialM": 3141,
+     "source": "FIA list 2026-03-31",
+     "grade": "3",
+     "pole": "Right",
+     "widthM": 10,
+     "loopM": 3194,
+     "errorPct": 1.69,
+     "accepted": false,
+     "gapClosedM": 60
+    }
+   ]
+  },
+  "oulton-park": {
+   "gapClosedM": 12,
+   "snappedEnds": 0,
+   "ways": 31,
+   "edges": 33,
+   "junctions": 8,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 0,
+   "loopsFound": 12,
+   "loopLengthsM": [
+    {
+     "m": 4317,
+     "names": [
+      "Island Bend",
+      "Shell Oils Corner",
+      "Britten's",
+      "Hilltop"
+     ]
+    },
+    {
+     "m": 4302,
+     "names": [
+      "Island Bend",
+      "Shell Oils Corner",
+      "Hilltop",
+      "Hislop's"
+     ]
+    },
+    {
+     "m": 4279,
+     "names": [
+      "Island Bend",
+      "Shell Oils Corner",
+      "Hilltop",
+      "Hislop's"
+     ]
+    },
+    {
+     "m": 3658,
+     "names": [
+      "Island Hairpin",
+      "Britten's",
+      "Hilltop",
+      "Hislop's"
+     ]
+    },
+    {
+     "m": 3636,
+     "names": [
+      "Island Hairpin",
+      "Britten's",
+      "Hilltop",
+      "Hislop's"
+     ]
+    },
+    {
+     "m": 3568,
+     "names": [
+      "Island Hairpin",
+      "Hilltop",
+      "Hislop's",
+      "Knickerbrook"
+     ]
+    },
+    {
+     "m": 3546,
+     "names": [
+      "Island Hairpin",
+      "Hilltop",
+      "Hislop's",
+      "Knickerbrook"
+     ]
+    },
+    {
+     "m": 2681,
+     "names": [
+      "Hislop's",
+      "Foster's",
+      "Cascades",
+      "Denton's"
+     ]
+    },
+    {
+     "m": 2659,
+     "names": [
+      "Knickerbrook",
+      "Clay Hill",
+      "Water Tower",
+      "Druids Corner"
+     ]
+    },
+    {
+     "m": 1946,
+     "names": [
+      "Island Bend",
+      "Shell Oils Corner",
+      "Britten's",
+      "Hilltop"
+     ]
+    },
+    {
+     "m": 1931,
+     "names": [
+      "Island Bend",
+      "Shell Oils Corner",
+      "Hilltop",
+      "Foster's"
+     ]
+    }
+   ],
+   "accepted": [
+    {
+     "id": "oulton-park | OULTON PARK",
+     "officialM": 4332,
+     "source": "FIA list 2026-03-31",
+     "grade": "3",
+     "pole": "Right",
+     "widthM": 9,
+     "loopM": 4317,
+     "errorPct": 0.35,
+     "accepted": true
+    }
+   ]
+  },
+  "motegi": {
+   "gapClosedM": 12,
+   "snappedEnds": 2,
+   "ways": 20,
+   "edges": 44,
+   "junctions": 25,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 0,
+   "loopsFound": 7,
+   "loopLengthsM": [
+    {
+     "m": 4812,
+     "names": [
+      "Twin Ring Motegi"
+     ]
+    },
+    {
+     "m": 4731,
+     "names": [
+      "Twin Ring Motegi"
+     ]
+    },
+    {
+     "m": 3697,
+     "names": [
+      "Twin Ring Motegi"
+     ]
+    },
+    {
+     "m": 3617,
+     "names": [
+      "Twin Ring Motegi"
+     ]
+    },
+    {
+     "m": 3428,
+     "names": [
+      "Twin Ring Motegi"
+     ]
+    },
+    {
+     "m": 3347,
+     "names": [
+      "Twin Ring Motegi"
+     ]
+    },
+    {
+     "m": 1926,
+     "names": [
+      "Twin Ring Motegi"
+     ]
+    }
+   ],
+   "accepted": [
+    {
+     "id": "motegi | TWIN RING MOTEGI GRAND PRIX",
+     "officialM": 4801,
+     "source": "FIA list 2026-03-31",
+     "grade": "2",
+     "pole": "Left",
+     "widthM": 12,
+     "loopM": 4812,
+     "errorPct": 0.23,
+     "accepted": true
+    }
+   ]
+  },
+  "buriram": {
+   "gapClosedM": 12,
+   "snappedEnds": 0,
+   "ways": 12,
+   "edges": 32,
+   "junctions": 20,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 0,
+   "loopsFound": 6,
+   "loopLengthsM": [
+    {
+     "m": 4651,
+     "names": [
+      "ช้าง อินเตอร์เนชั่นแนล เซอร์กิต"
+     ]
+    },
+    {
+     "m": 4628,
+     "names": [
+      "ช้าง อินเตอร์เนชั่นแนล เซอร์กิต",
+      "แดรกสตริป"
+     ]
+    },
+    {
+     "m": 4567,
+     "names": [
+      "ช้าง อินเตอร์เนชั่นแนล เซอร์กิต"
+     ]
+    },
+    {
+     "m": 2271,
+     "names": [
+      "ช้าง อินเตอร์เนชั่นแนล เซอร์กิต"
+     ]
+    },
+    {
+     "m": 1737,
+     "names": [
+      "ช้าง อินเตอร์เนชั่นแนล เซอร์กิต",
+      "แดรกสตริป"
+     ]
+    }
+   ],
+   "accepted": [
+    {
+     "id": "buriram | BURIRAM",
+     "officialM": 4554,
+     "source": "FIA list 2026-03-31",
+     "grade": "1",
+     "pole": "Left",
+     "widthM": 13,
+     "loopM": 4567,
+     "errorPct": 0.29,
+     "accepted": true
+    }
+   ]
+  },
+  "okayama": {
+   "gapClosedM": 12,
+   "snappedEnds": 0,
+   "ways": 5,
+   "edges": 9,
+   "junctions": 6,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 0,
+   "loopsFound": 6,
+   "loopLengthsM": [
+    {
+     "m": 3700,
+     "names": [
+      "岡山国際サーキット"
+     ]
+    },
+    {
+     "m": 3652,
+     "names": [
+      "岡山国際サーキット"
+     ]
+    },
+    {
+     "m": 1958,
+     "names": [
+      "岡山国際サーキット"
+     ]
+    },
+    {
+     "m": 1934,
+     "names": [
+      "岡山国際サーキット"
+     ]
+    },
+    {
+     "m": 1910,
+     "names": [
+      "岡山国際サーキット"
+     ]
+    },
+    {
+     "m": 1699,
+     "names": [
+      "岡山国際サーキット"
+     ]
+    }
+   ],
+   "accepted": [
+    {
+     "id": "okayama | OKAYAMA",
+     "officialM": 3703,
+     "source": "FIA list 2026-03-31",
+     "grade": "2",
+     "pole": "Left",
+     "widthM": 12,
+     "loopM": 3700,
+     "errorPct": 0.08,
+     "accepted": true
+    }
+   ]
+  },
+  "sugo": {
+   "gapClosedM": 60,
+   "snappedEnds": 6,
+   "wayList": [
+    [
+     "スポーツランドSUGO",
+     989
+    ],
+    [
+     "スポーツランドSUGO",
+     973
+    ],
+    [
+     "スポーツランドSUGO",
+     980
+    ],
+    [
+     "スポーツランドSUGO",
+     639
+    ],
+    [
+     "スポーツランドSUGO 西コース",
+     285
+    ],
+    [
+     "スポーツランドSUGO 西コース",
+     17
+    ],
+    [
+     "スポーツランドSUGO 西コース",
+     18
+    ],
+    [
+     "スポーツランドSUGO 西コース",
+     10
+    ],
+    [
+     "スポーツランドSUGO 西コース",
+     10
+    ],
+    [
+     "スポーツランドSUGO 西コース",
+     26
+    ],
+    [
+     "スポーツランドSUGO 西コース",
+     17
+    ],
+    [
+     "スポーツランドSUGO 西コース",
+     55
+    ],
+    [
+     "スポーツランドSUGO 西コース",
+     23
+    ],
+    [
+     "スポーツランドSUGO 西コース",
+     36
+    ],
+    [
+     "スポーツランドSUGO 西コース",
+     953
+    ],
+    [
+     "スポーツランドSUGO",
+     110
+    ],
+    [
+     "ビギナーズフィールド",
+     768
+    ],
+    [
+     null,
+     51
+    ],
+    [
+     null,
+     23
+    ],
+    [
+     "インターナショナルモトクロスコース",
+     1655
+    ],
+    [
+     null,
+     106
+    ],
+    [
+     "マルチショートコース",
+     411
+    ],
+    [
+     null,
+     135
+    ],
+    [
+     null,
+     39
+    ]
+   ],
+   "ways": 24,
+   "edges": 58,
+   "junctions": 34,
+   "searchCapped": true,
+   "duplicateEdgesDropped": 0,
+   "openEnds": [],
+   "loopsFound": 2,
+   "loopLengthsM": [
+    {
+     "m": 3617,
+     "names": [
+      "スポーツランドSUGO"
+     ]
+    },
+    {
+     "m": 3581,
+     "names": [
+      "スポーツランドSUGO"
+     ]
+    }
+   ],
+   "accepted": [
+    {
+     "id": "sugo | SUGO",
+     "officialM": 3704,
+     "source": "FIA list 2026-03-31",
+     "grade": "2",
+     "pole": "Left",
+     "widthM": 10,
+     "loopM": 3617,
+     "errorPct": 2.35,
+     "accepted": false,
+     "gapClosedM": 60
+    }
+   ]
+  },
+  "autopolis": {
+   "error": "no map data"
+  },
+  "mandalika": {
+   "error": "no map data"
+  },
+  "zhuhai": {
+   "gapClosedM": 12,
+   "snappedEnds": 0,
+   "ways": 2,
+   "edges": 4,
+   "junctions": 2,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 0,
+   "loopsFound": 3,
+   "loopLengthsM": [
+    {
+     "m": 4310,
+     "names": []
+    },
+    {
+     "m": 4276,
+     "names": []
+    },
+    {
+     "m": 1510,
+     "names": []
+    }
+   ],
+   "accepted": [
+    {
+     "id": "zhuhai | ZHUHAI",
+     "officialM": 4318,
+     "source": "FIA list 2026-03-31",
+     "grade": "2",
+     "pole": "Left",
+     "widthM": 12,
+     "loopM": 4310,
+     "errorPct": 0.19,
+     "accepted": true
+    }
+   ]
+  },
+  "vallelunga": {
+   "gapClosedM": 12,
+   "snappedEnds": 0,
+   "ways": 36,
+   "edges": 55,
+   "junctions": 22,
+   "searchCapped": true,
+   "duplicateEdgesDropped": 0,
+   "loopsFound": 672,
+   "loopLengthsM": [
+    {
+     "m": 4200,
+     "names": [
+      "Campagnano",
+      "Soratte",
+      "Trincea",
+      "Semaforo"
+     ]
+    },
+    {
+     "m": 4182,
+     "names": [
+      "Cimini 2",
+      "Cimini 1",
+      "Curvone",
+      "Traguardo"
+     ]
+    },
+    {
+     "m": 4124,
+     "names": [
+      "Cimini 2",
+      "Cimini 1",
+      "Curvone",
+      "Traguardo"
+     ]
+    },
+    {
+     "m": 4098,
+     "names": [
+      "Cimini 2",
+      "Cimini 1",
+      "Curvone",
+      "Traguardo"
+     ]
+    },
+    {
+     "m": 3939,
+     "names": [
+      "Cimini 2",
+      "Cimini 1",
+      "Curvone",
+      "Traguardo"
+     ]
+    },
+    {
+     "m": 3924,
+     "names": [
+      "Cimini 2",
+      "Cimini 1",
+      "Curvone",
+      "Traguardo"
+     ]
+    },
+    {
+     "m": 3907,
+     "names": [
+      "Trincea",
+      "Semaforo",
+      "Tornantino",
+      "Esse"
+     ]
+    },
+    {
+     "m": 3892,
+     "names": [
+      "Trincea",
+      "Semaforo",
+      "Tornantino",
+      "Esse"
+     ]
+    },
+    {
+     "m": 3872,
+     "names": [
+      "Cimini 2",
+      "Cimini 1",
+      "Curvone",
+      "Traguardo"
+     ]
+    },
+    {
+     "m": 3856,
+     "names": [
+      "Cimini 2",
+      "Cimini 1",
+      "Curvone",
+      "Traguardo"
+     ]
+    },
+    {
+     "m": 3841,
+     "names": [
+      "Cimini 2",
+      "Cimini 1",
+      "Curvone",
+      "Traguardo"
+     ]
+    },
+    {
+     "m": 3826,
+     "names": [
+      "Cimini 2",
+      "Cimini 1",
+      "Curvone",
+      "Traguardo"
+     ]
+    },
+    {
+     "m": 3800,
+     "names": [
+      "Cimini 2",
+      "Cimini 1",
+      "Curvone",
+      "Traguardo"
+     ]
+    },
+    {
+     "m": 3775,
+     "names": [
+      "Cimini 2",
+      "Cimini 1",
+      "Curvone",
+      "Traguardo"
+     ]
+    },
+    {
+     "m": 3760,
+     "names": [
+      "Cimini 2",
+      "Cimini 1",
+      "Curvone",
+      "Traguardo"
+     ]
+    },
+    {
+     "m": 3735,
+     "names": [
+      "Cimini 2",
+      "Cimini 1",
+      "Curvone",
+      "Traguardo"
+     ]
+    },
+    {
+     "m": 3720,
+     "names": [
+      "Cimini 2",
+      "Cimini 1",
+      "Curvone",
+      "Traguardo"
+     ]
+    },
+    {
+     "m": 3695,
+     "names": [
+      "Cimini 2",
+      "Cimini 1",
+      "Curvone",
+      "Traguardo"
+     ]
+    },
+    {
+     "m": 3680,
+     "names": [
+      "Cimini 2",
+      "Cimini 1",
+      "Curvone",
+      "Traguardo"
+     ]
+    },
+    {
+     "m": 3655,
+     "names": [
+      "Cimini 2",
+      "Cimini 1",
+      "Curvone",
+      "Club Layout"
+     ]
+    },
+    {
+     "m": 3640,
+     "names": [
+      "Cimini 2",
+      "Cimini 1",
+      "Curvone",
+      "Club Layout"
+     ]
+    },
+    {
+     "m": 3616,
+     "names": [
+      "Cimini 2",
+      "Cimini 1",
+      "Curvone",
+      "Club Layout"
+     ]
+    },
+    {
+     "m": 3593,
+     "names": [
+      "Cimini 2",
+      "Cimini 1",
+      "Curvone",
+      "Club Layout"
+     ]
+    },
+    {
+     "m": 3578,
+     "names": [
+      "Cimini 2",
+      "Cimini 1",
+      "Curvone",
+      "Club Layout"
+     ]
+    },
+    {
+     "m": 3562,
+     "names": [
+      "Cimini 2",
+      "Cimini 1",
+      "Curvone",
+      "Club Layout"
+     ]
+    },
+    {
+     "m": 3547,
+     "names": [
+      "Cimini 2",
+      "Cimini 1",
+      "Curvone",
+      "Club Layout"
+     ]
+    },
+    {
+     "m": 3521,
+     "names": [
+      "Cimini 2",
+      "Cimini 1",
+      "Curvone",
+      "Club Layout"
+     ]
+    },
+    {
+     "m": 3506,
+     "names": [
+      "Campagnano",
+      "Soratte",
+      "Trincea",
+      "Club Layout"
+     ]
+    },
+    {
+     "m": 3482,
+     "names": [
+      "Campagnano",
+      "Soratte",
+      "Trincea",
+      "Club Layout"
+     ]
+    },
+    {
+     "m": 3467,
+     "names": [
+      "Cimini 2",
+      "Cimini 1",
+      "Curvone",
+      "Club Layout"
+     ]
+    },
+    {
+     "m": 3450,
+     "names": [
+      "Cimini 2",
+      "Cimini 1",
+      "Curvone",
+      "Traguardo"
+     ]
+    },
+    {
+     "m": 3427,
+     "names": [
+      "Trincea",
+      "Semaforo",
+      "Tornantino",
+      "Esse"
+     ]
+    },
+    {
+     "m": 3410,
+     "names": [
+      "Cimini 2",
+      "Cimini 1",
+      "Curvone",
+      "Traguardo"
+     ]
+    },
+    {
+     "m": 3389,
+     "names": [
+      "Trincea",
+      "Semaforo",
+      "Tornantino",
+      "Esse"
+     ]
+    },
+    {
+     "m": 3374,
+     "names": [
+      "Trincea",
+      "Semaforo",
+      "Tornantino",
+      "Esse"
+     ]
+    },
+    {
+     "m": 3358,
+     "names": [
+      "Trincea",
+      "Semaforo",
+      "Tornantino",
+      "Esse"
+     ]
+    },
+    {
+     "m": 3340,
+     "names": [
+      "Cimini 2",
+      "Cimini 1",
+      "Curvone",
+      "Traguardo"
+     ]
+    },
+    {
+     "m": 3325,
+     "names": [
+      "Cimini 2",
+      "Cimini 1",
+      "Curvone",
+      "Traguardo"
+     ]
+    },
+    {
+     "m": 3307,
+     "names": [
+      "Cimini 2",
+      "Cimini 1",
+      "Curvone",
+      "Trincea"
+     ]
+    },
+    {
+     "m": 3292,
+     "names": [
+      "Cimini 2",
+      "Cimini 1",
+      "Curvone",
+      "Trincea"
+     ]
+    }
+   ],
+   "accepted": [
+    {
+     "id": "vallelunga | VALLELUNGA INTERNATIONAL",
+     "officialM": 4085,
+     "source": "FIA list 2026-03-31",
+     "grade": "2",
+     "pole": "Right",
+     "widthM": 11.5,
+     "loopM": 4086,
+     "errorPct": 0.02,
+     "accepted": true
+    }
+   ]
+  },
+  "estoril": {
+   "gapClosedM": 12,
+   "snappedEnds": 0,
+   "ways": 22,
+   "edges": 26,
+   "junctions": 6,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 0,
+   "loopsFound": 5,
+   "loopLengthsM": [
+    {
+     "m": 4297,
+     "names": [
+      "Curva do Tanque",
+      "Esses",
+      "Parabólica Ayrton Senna",
+      "Recta da Meta"
+     ]
+    },
+    {
+     "m": 4236,
+     "names": [
+      "Circuito Estoril",
+      "Orelha",
+      "Descida para o Triângulo",
+      "Long Lap"
+     ]
+    },
+    {
+     "m": 4210,
+     "names": [
+      "Curva do Tanque",
+      "Esses",
+      "Parabólica Ayrton Senna",
+      "Recta da Meta"
+     ]
+    },
+    {
+     "m": 4191,
+     "names": [
+      "Circuito Estoril",
+      "Orelha",
+      "Descida para o Triângulo",
+      "Parabólica Interior"
+     ]
+    },
+    {
+     "m": 4165,
+     "names": [
+      "Curva do Tanque",
+      "Esses",
+      "Parabólica Ayrton Senna",
+      "Recta da Meta"
+     ]
+    }
+   ],
+   "accepted": [
+    {
+     "id": "estoril | ESTORIL",
+     "officialM": 4182,
+     "source": "FIA list 2025-12-01",
+     "grade": "1",
+     "pole": "Left",
+     "widthM": 10,
+     "loopM": 4191,
+     "errorPct": 0.22,
+     "accepted": true
+    }
+   ]
+  },
+  "jerez": {
+   "gapClosedM": 12,
+   "snappedEnds": 0,
+   "ways": 23,
+   "edges": 23,
+   "junctions": 2,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 0,
+   "loopsFound": 2,
+   "loopLengthsM": [
+    {
+     "m": 4430,
+     "names": [
+      "Circuito de Jerez",
+      "Curva Peluqui",
+      "Curva Angel Nieto",
+      "Curva Aspar"
+     ]
+    }
+   ],
+   "accepted": [
+    {
+     "id": "jerez | JEREZ",
+     "officialM": 4428,
+     "source": "FIA list 2026-03-31",
+     "grade": "1",
+     "pole": "Right",
+     "widthM": 11,
+     "loopM": 4430,
+     "errorPct": 0.05,
+     "accepted": true
+    }
+   ]
+  },
+  "phillip-island": {
+   "gapClosedM": 60,
+   "snappedEnds": 3,
+   "wayList": [
+    [
+     "Phillip Island GP Circuit",
+     4528
+    ],
+    [
+     "Pit exit - Motorcycles",
+     465
+    ],
+    [
+     "Go Cart Track",
+     715
+    ],
+    [
+     null,
+     101
+    ],
+    [
+     null,
+     56
+    ],
+    [
+     "Pit exit - Supercars",
+     90
+    ],
+    [
+     "Pit entry",
+     380
+    ]
+   ],
+   "ways": 7,
+   "edges": 14,
+   "junctions": 8,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 0,
+   "openEnds": [],
+   "loopsFound": 3,
+   "loopLengthsM": [
+    {
+     "m": 4581,
+     "names": [
+      "Phillip Island GP Circuit",
+      "Pit exit - Motorcycles",
+      "Pit exit - Supercars",
+      "Pit entry"
+     ]
+    },
+    {
+     "m": 4454,
+     "names": [
+      "Phillip Island GP Circuit"
+     ]
+    },
+    {
+     "m": 4398,
+     "names": [
+      "Phillip Island GP Circuit",
+      "Pit entry"
+     ]
+    }
+   ],
+   "accepted": [
+    {
+     "id": "phillip-island | PHILLIP ISLAND",
+     "officialM": 4480,
+     "source": "FIA list 2026-03-31",
+     "grade": "3",
+     "pole": "Right",
+     "widthM": 10,
+     "loopM": 4454,
+     "errorPct": 0.58,
+     "accepted": false,
+     "gapClosedM": 60
+    }
+   ]
+  },
+  "sydney": {
+   "gapClosedM": 12,
+   "snappedEnds": 0,
+   "ways": 13,
+   "edges": 18,
+   "junctions": 11,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 0,
+   "loopsFound": 6,
+   "loopLengthsM": [
+    {
+     "m": 4505,
+     "names": []
+    },
+    {
+     "m": 3902,
+     "names": []
+    },
+    {
+     "m": 3047,
+     "names": []
+    },
+    {
+     "m": 2842,
+     "names": []
+    },
+    {
+     "m": 2066,
+     "names": []
+    },
+    {
+     "m": 1808,
+     "names": []
+    }
+   ],
+   "accepted": [
+    {
+     "id": "sydney | SYDNEY MOTORSPORTS PARK - BRABHAM",
+     "officialM": 4500,
+     "source": "FIA list 2026-03-31",
+     "grade": "2",
+     "pole": "Right",
+     "widthM": 11,
+     "loopM": 4505,
+     "errorPct": 0.11,
+     "accepted": true
+    },
+    {
+     "id": "sydney | SYDNEY MOTORSPORTS PARK - DRUITT",
+     "officialM": 2843,
+     "source": "FIA list 2026-03-31",
+     "grade": "2",
+     "pole": "Right",
+     "widthM": 11,
+     "loopM": 2842,
+     "errorPct": 0.04,
+     "accepted": true
+    },
+    {
+     "id": "sydney | SYDNEY MOTORSPORTS PARK - GARDNER",
+     "officialM": 3905,
+     "source": "FIA list 2026-03-31",
+     "grade": "2",
+     "pole": "Right",
+     "widthM": 11,
+     "loopM": 3902,
+     "errorPct": 0.08,
+     "accepted": true
+    },
+    {
+     "id": "sydney | SYDNEY MOTORSPORT PARK",
+     "officialM": 4500,
+     "source": "FIA list 2024-06-03",
+     "grade": "2",
+     "pole": "Left",
+     "widthM": 11,
+     "loopM": 4505,
+     "errorPct": 0.11,
+     "accepted": true
+    }
+   ]
+  },
+  "the-bend": {
+   "gapClosedM": 60,
+   "snappedEnds": 2,
+   "wayList": [
+    [
+     "The Bend Asian Le Mans Series Circuit",
+     4771
+    ],
+    [
+     "The Bend West",
+     987
+    ]
+   ],
+   "ways": 2,
+   "edges": 2,
+   "junctions": 4,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 0,
+   "openEnds": [
+    {
+     "at": [
+      -35.307499,
+      139.5152731
+     ],
+     "nearestOtherM": 9,
+     "way": "The Bend Asian Le Mans Series Circuit",
+     "wayM": 4771
+    },
+    {
+     "at": [
+      -35.3074383,
+      139.5132337
+     ],
+     "nearestOtherM": 159,
+     "way": "The Bend Asian Le Mans Series Circuit",
+     "wayM": 4771
+    },
+    {
+     "at": [
+      -35.302305,
+      139.5120666
+     ],
+     "nearestOtherM": 490,
+     "way": "The Bend West",
+     "wayM": 987
+    },
+    {
+     "at": [
+      -35.307623,
+      139.5153935
+     ],
+     "nearestOtherM": 11,
+     "way": "The Bend West",
+     "wayM": 987
+    }
+   ],
+   "loopsFound": 0,
+   "loopLengthsM": [],
+   "accepted": [
+    {
+     "id": "the-bend | THE BEND MOTORSPORTS PARK",
+     "officialM": 7770,
+     "source": "FIA list 2026-03-31",
+     "accepted": false
+    },
+    {
+     "id": "the-bend | THE BEND MOTORSPORTS PARK",
+     "officialM": 4950,
+     "source": "FIA list 2026-03-31",
+     "accepted": false
+    },
+    {
+     "id": "the-bend | THE BEND MOTORSPORTS PARK",
+     "officialM": 3410,
+     "source": "FIA list 2026-03-31",
+     "accepted": false
+    }
+   ]
+  },
+  "inje": {
+   "gapClosedM": 12,
+   "snappedEnds": 0,
+   "ways": 4,
+   "edges": 10,
+   "junctions": 6,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 0,
+   "loopsFound": 6,
+   "loopLengthsM": [
+    {
+     "m": 3973,
+     "names": [
+      "풀코스"
+     ]
+    },
+    {
+     "m": 3947,
+     "names": [
+      "풀코스"
+     ]
+    },
+    {
+     "m": 2885,
+     "names": [
+      "풀코스",
+      "B 코스"
+     ]
+    },
+    {
+     "m": 2634,
+     "names": [
+      "풀코스",
+      "A 코스"
+     ]
+    },
+    {
+     "m": 1691,
+     "names": [
+      "풀코스",
+      "A 코스"
+     ]
+    },
+    {
+     "m": 1665,
+     "names": [
+      "풀코스",
+      "A 코스"
+     ]
+    }
+   ],
+   "accepted": [
+    {
+     "id": "inje | INJE",
+     "officialM": 3908,
+     "source": "FIA list 2026-03-31",
+     "grade": "2",
+     "pole": "Left",
+     "widthM": 14,
+     "loopM": 3947,
+     "errorPct": 1,
+     "accepted": true
+    }
+   ]
+  }
+ }
+}
