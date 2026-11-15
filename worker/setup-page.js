@@ -59,7 +59,7 @@ const pct = x => Math.round(x * 100) + '%';
 export const setupCss = drawingCss + `.su-cond-in{position:absolute;opacity:0}.su-conds{display:flex;gap:8px;margin:0 0 12px}.su-conds label{min-height:40px;padding:0 16px;border:1px solid var(--line);border-radius:999px;display:inline-flex;align-items:center;cursor:pointer;font-weight:700;color:var(--muted)}
 .su-pane{display:none}#su-dry:checked~.su-conds label[for=su-dry],#su-wet:checked~.su-conds label[for=su-wet]{border-color:var(--mint);color:var(--text);box-shadow:inset 0 0 0 1px var(--mint)}#su-dry:checked~.su-pane-dry,#su-wet:checked~.su-pane-wet{display:block}#su-dry:focus-visible~.su-conds label[for=su-dry],#su-wet:focus-visible~.su-conds label[for=su-wet]{outline:2px solid var(--mint)}
 .su-form{display:flex;flex-wrap:wrap;gap:12px;margin:0 0 20px}.su-form label{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--muted);min-width:200px;flex:1}
-.su-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:8px 0 4px}.su-grid div{border:1px solid var(--line);border-radius:12px;padding:10px 12px}.su-grid b{display:block;font-size:20px;font-variant-numeric:tabular-nums}.su-grid span{font-size:13px;color:var(--muted)}
+.su-car{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.8fr);grid-template-areas:'front side' 'rear top';align-items:center;gap:18px 28px;margin:16px 0 8px;padding:18px;border:1px solid var(--line);border-radius:16px}.su-car img{display:block;width:100%;height:auto;transition:transform .25s ease}.su-car img:hover{transform:scale(1.02)}.su-car-front{grid-area:front}.su-car-side{grid-area:side}.su-car-rear{grid-area:rear}.su-car-top{grid-area:top}@media (max-width:640px){.su-car{grid-template-columns:1fr 1fr;grid-template-areas:'side side' 'top top' 'front rear';gap:14px;padding:12px}}@media (prefers-reduced-motion:reduce){.su-car img{transition:none}.su-car img:hover{transform:none}}.su-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:8px 0 4px}.su-grid div{border:1px solid var(--line);border-radius:12px;padding:10px 12px}.su-grid b{display:block;font-size:20px;font-variant-numeric:tabular-nums}.su-grid span{font-size:13px;color:var(--muted)}
 .su-knob{border-top:1px solid var(--line);padding:14px 0}.su-knob h3{margin:0 0 4px;font-size:17px}.su-knob p{margin:4px 0;font-size:14px}.su-knob .fine{color:var(--muted);font-size:13px}
 .su-gauge{display:flex;align-items:center;gap:10px;margin:8px 0;font-size:13px}.su-end{color:var(--muted);min-width:76px}.su-end:last-child{text-align:right}.su-bar{position:relative;flex:1;height:8px;border-radius:999px;background:var(--line)}
 .su-bar i{position:absolute;top:50%;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:var(--mint)}.su-bar b{position:absolute;top:50%;width:4px;height:18px;margin:-9px 0 0 -2px;background:var(--text);opacity:.7}
@@ -67,6 +67,13 @@ export const setupCss = drawingCss + `.su-cond-in{position:absolute;opacity:0}.s
 .su-src{font-size:13px;color:var(--muted)}.su-src a{color:inherit}
 @media(max-width:700px){.su-end{min-width:56px}}`;
 
+// F1 car four-view drawings (owner 2026-11-15): 2x2 on PC, side/top full width then front|rear on mobile
+const CAR_VIEW_SIZES = {2026: {front: [696, 433], side: [1263, 287], rear: [693, 432], top: [1234, 438]}, 2025: {front: [365, 206], side: [684, 149], rear: [351, 200], top: [683, 249]}};
+function carFigure(year, t) {
+  const views = [['front', '정면', 'front'], ['side', '측면', 'side'], ['rear', '후면', 'rear'], ['top', '위', 'top']];
+  return `<figure class="su-car" aria-label="${esc(t(year + ' F1 차량 4면도', year + ' F1 car, four views'))}">${views.map(([v, ko, en]) => { const [w, h] = CAR_VIEW_SIZES[year][v];
+    return `<img class="su-car-${v}" src="/assets/f1-${year}/${v}.webp" width="${w}" height="${h}" loading="lazy" decoding="async" alt="${esc(t(year + ' F1 차량 ' + ko, year + ' F1 car, ' + en + ' view'))}">`; }).join('')}</figure>`;
+}
 export function setupPage(query = {}, lang = 'ko') {
   const L = lang === 'en' ? 1 : 0, t = (ko, en) => L ? en : ko;
   const kind = query.series === 'hypercar' ? 'hypercar' : 'f1';
@@ -77,11 +84,13 @@ export function setupPage(query = {}, lang = 'ko') {
   const carId = kind === 'f1' ? 'f1-2026:' + car : 'hyper:' + car, plan = setupPlan(id, carId), wetPlan = plan && setupPlan(id, carId, {wet: true});
   const opt = (v, label, sel) => `<option value="${esc(v)}"${v === sel ? ' selected' : ''}>${esc(label)}</option>`;
   const form = `<form class="su-form" method="get" action="/setup" data-no-translate>
-<label>${t('종목', 'Series')}<select name="series" onchange="this.form.car.value='';this.form.submit()">${opt('f1', 'F1 2026', kind)}${opt('hypercar', t('하이퍼카 LMH·LMDh', 'Hypercar LMH/LMDh'), kind)}</select></label>
+<label>${t('종목', 'Series')}<select name="series" onchange="if(this.form.car)this.form.car.value='';this.form.submit()">${opt('f1-2025', 'F1 2025', query.series === 'f1-2025' ? 'f1-2025' : kind)}${opt('f1', 'F1 2026', query.series === 'f1-2025' ? '' : kind)}${opt('hypercar', t('하이퍼카 LMH·LMDh', 'Hypercar LMH/LMDh'), kind)}</select></label>
 <label>${t('차량', 'Car')}<select name="car" onchange="this.form.submit()">${models.map(m => opt(m.key, m.label, car)).join('')}</select></label>
 <label>${t('서킷', 'Circuit')}<select name="track" onchange="this.form.submit()">${ids.map(k => opt(k, trackLabel(k, lapsimAllTracks[k]) + ' · ' + tracks[k].join('/'), id)).join('')}</select></label>
 <noscript><button class="button" type="submit">${t('보기', 'Show')}</button></noscript></form>`;
   const hero = `<section class="hero"><h1>${t('셋업 시뮬레이터', 'Setup simulator')}</h1><p class="lead">${t('차량과 서킷을 고르면, 규정상 어디를 조절할 수 있는지와 이 서킷이 각 셋업을 어느 쪽으로 미는지 보여 줍니다. 공력 레벨은 물리 시뮬레이션으로 계산하고, 타이어·브레이크는 공식 자료를, 나머지는 시뮬레이션이 읽은 서킷 특성으로 추정합니다.', 'Pick a car and a circuit to see which set-up knobs the rules allow and which way this circuit pushes each one. Aero level comes from the physics simulation, tyres and brakes from official data, the rest is estimated from the circuit the simulation reads.')}</p><p class="fine"><a href="/simulation?track=${esc(id)}">${t('같은 서킷 랩타임 시뮬레이션 →', 'Lap-time simulation for this circuit →')}</a></p></section>`;
+  // F1 2025: UI only for now (owner 2026-11-15); the 2025 setup model comes later
+  if (query.series === 'f1-2025') return hero + `<section class="panel">${form.split('</label>').filter(x => !/name="(car|track)"/.test(x)).join('</label>')}</section><section class="panel"><h2>F1 2025</h2>${carFigure('2025', t)}<p class="fine">${t('2025 F1 셋업 계산은 준비 중입니다. 곧 추가됩니다.', '2025 F1 set-up results are coming soon.')}</p></section>`;
   if (!plan) return hero + `<section class="panel">${form}<p>${t('이 조합은 아직 계산할 수 없습니다.', 'This combination cannot be computed yet.')}</p></section>`;
   const d = plan.demands, ev = plan.evidence || {}, model = plan.model;
   const alt = ALTITUDE_NOTE[id];
@@ -91,6 +100,7 @@ export function setupPage(query = {}, lang = 'ko') {
     .map(([v, k]) => `<div><b>${esc(v)}</b><span>${esc(k)}</span></div>`).join('');
   const summary = `<section class="panel"><h2>${esc(trackLabel(id, lapsimAllTracks[id]))} · ${esc(models.find(m => m.key === car).label)}</h2>
 <p class="fine">${t('물리 모델이 이 차로 한 바퀴를 돌며 읽은 서킷 특성(실제 세션 날씨)', 'Circuit as the physics model reads it over one lap with this car (real session weather)')}</p><div class="su-grid">${facts}</div>
+${kind === 'f1' ? carFigure('2026', t) : ''}
 ${model ? `<p class="fine">${esc(t(`섀시 ${model.chassis} · 하이브리드 ${model.hybrid === 'front' ? '앞바퀴 모터(BoP 속도 이상에서만 구동, 약 190km/h)' : model.hybrid === 'rear' ? '뒷바퀴 표준 모터 50kW(속도 제한 없음)' : '없음'} · ${model.series}`, `Chassis ${model.chassis} · hybrid ${model.hybrid === 'front' ? 'front motor (drives only above the BoP speed, about 190 km/h)' : model.hybrid === 'rear' ? 'spec 50 kW rear motor (any speed)' : 'none'} · ${model.series}`))}${model.hybrid === 'front' ? esc(t(` — 이 서킷은 랩의 ${pct(d.above190)}가 190km/h 이상이라 4륜 구동 구간이 그만큼.`, ` — ${pct(d.above190)} of this lap is above 190 km/h, so that is where it gets 4WD.`)) : ''}</p>` : ''}
 ${kind === 'f1' && plan.energy ? `<p class="fine">${esc(t(`에너지: 이 대회 랩당 회수 한도 ${plan.energy.mj} MJ(${plan.energy.status === 'official' ? 'FIA 문서' : '추정'}), 제동만으로 회수 가능한 양(모델) 약 ${fmt(d.regenMJ, 1)} MJ`, `Energy: per-lap recharge limit ${plan.energy.mj} MJ (${plan.energy.status === 'official' ? 'FIA document' : 'estimate'}); braking alone could recover about ${fmt(d.regenMJ, 1)} MJ (model)`))}</p>` : ''}</section>`;
   const knobsFor = plan => { const ev = plan.evidence || {};
