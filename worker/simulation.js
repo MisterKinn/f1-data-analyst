@@ -11,6 +11,7 @@ import {TRACK_NAMES as NAMES} from './lapsim/names.js';
 import {energyLimit} from './lapsim/energy-limits.js';
 import {lapsimRace} from './lapsim/race-data.js';
 import {lapsimRacingLines} from './lapsim/racing-lines-data.js';
+import {lapsimTrackWidths} from './lapsim/track-widths.js';
 import {lapsimCompounds} from './lapsim/compounds-data.js';
 import {lapsimStints} from './lapsim/stint-data.js';
 import {lapsimCompoundGap} from './lapsim/compound-gap-data.js';
@@ -379,16 +380,16 @@ function compassSvg(deg) {
 const LT = {
   ko: {h: '레이싱 라인', all: '전체', lead: '공개 F1 위치 데이터는 트랙마다 하나의 기준선에 맞춰져 있어 실제 주행 라인을 알 수 없습니다. 그래서 선택한 차로 랩 시뮬레이션을 돌려 트랙 폭 안에서 가장 빠른 라인을 찾습니다. 다운포스·그립·출력·무게가 다르면 라인도 달라지고, 레이스 라인은 연료 무게와 레이스 페이스(타이어·에너지 관리)를 넣어 따로 계산합니다.',
     modes: {q: '예선 라인', r: '레이스 라인'}, lineShow: '주행 라인', zin: '확대', zout: '축소', lineNote: '{car} · {mode} · 최소 곡률 라인보다 {gain} s · 평균 {shift} m 이동', uses: '라인:', raceNote: ' · 연료 +{fuel} kg, 그립 ×{grip} ({basis})', basis: {'race-fit': '실제 레이스 중반 페이스에 맞춤', assumed: 'F1 비율 가정'}, noCar: '최소 곡률 라인 (차별 라인은 브라우저에서 계산)', carLine: '차 기준 라인', driver: '드라이버 라인', driverNote: '{d} 라인 ({y} 예선 최고 랩의 속도 기록으로 추정, 실제 주행 위치 아님): 코너 최저 속도 오차, 전체 드라이버 라인 {a}% → 이 드라이버 {b}%', driverNoteEnd: '{d} 라인 ({s} 예선 최고 랩의 섹터 기록으로 추정, 실제 주행 위치 아님): 섹터 시간 오차, 전체 드라이버 라인 {a}% → 이 드라이버 {b}%', driverTest: ', 맞추는 데 쓰지 않은 다른 랩 {a}% → {b}%', blendNote: '{car} 전용 라인: 랩 시뮬레이션으로 고른 최단 거리·최소 곡률 라인 혼합 (최소 곡률 비중 평균 {e}%)', noRace: '이 차는 레이스 라인 보정이 없어 예선 라인과 같습니다',
-    edges: {TUM: '트랙 폭: TUM 측정값', 'TUM-widths': '트랙 폭: TUM 측정값 (레이아웃 변경 구간 근사)', assumed: '트랙 폭: 12 m 가정'}, pole: '속도·브레이크·스로틀: {y} 퀄리 폴 랩 실측 ({d}, {t})', nopole: '실측 폴 랩 없음',
+    edges: {TUM: '트랙 폭: TUM 측정값', 'TUM-widths': '트랙 폭: TUM 측정값 (레이아웃 변경 구간 근사)', assumed: '트랙 폭: 12 m 가정', stated: '트랙 폭: {m} m (서킷 공식 수치)', map: '트랙 폭: {m} m (지도 데이터)'}, pole: '속도·브레이크·스로틀: {y} 퀄리 폴 랩 실측 ({d}, {t})', nopole: '실측 폴 랩 없음',
     check: 'TUM 최적 라인과의 차이: 평균 {m} m', key: ['브레이크 시작', '최저 속도', '풀 스로틀']},
   en: {h: 'Racing line', all: 'All', lead: 'Public F1 position data is snapped to one reference path per track, so the real driven line is unknown. The lap simulator runs the selected car to find the fastest line inside the track width: different downforce, grip, power and weight give a different line. The race line is worked out separately with fuel weight and race pace (tyres, energy management).',
     modes: {q: 'Qualifying line', r: 'Race line'}, lineShow: 'Racing line', zin: 'Zoom in', zout: 'Zoom out', lineNote: '{car} · {mode} · {gain} s vs the least-curvature line · mean shift {shift} m', uses: 'line of', raceNote: ' · fuel +{fuel} kg, grip ×{grip} ({basis})', basis: {'race-fit': 'fitted to real mid-race pace', assumed: 'F1 ratio assumed'}, noCar: 'least-curvature line (the car\'s own line is computed in the browser)', carLine: 'Car line', driver: 'Driver line', driverNote: '{d} line (estimated from the speed trace of the {y} best qualifying lap, not a measured position): corner minimum speed error, field line {a}% → this driver {b}%', driverNoteEnd: '{d} line (estimated from the sector times of the {s} best qualifying lap, not a measured position): sector time error, field line {a}% → this driver {b}%', driverTest: ', on another lap not used in the fit {a}% → {b}%', blendNote: '{car} line: blend of the shortest and the least-curvature line chosen by the lap simulation (least-curvature share {e}% on average)', noRace: 'no race fit for this car, so the race line equals the qualifying line',
-    edges: {TUM: 'Track width: TUM measured', 'TUM-widths': 'Track width: TUM measured (approximate where the layout changed)', assumed: 'Track width: 12 m assumed'}, pole: 'Speed, brake, throttle: {y} qualifying pole lap, measured ({d}, {t})', nopole: 'No measured pole lap',
+    edges: {TUM: 'Track width: TUM measured', 'TUM-widths': 'Track width: TUM measured (approximate where the layout changed)', assumed: 'Track width: 12 m assumed', stated: 'Track width: {m} m (circuit figure)', map: 'Track width: {m} m (map data)'}, pole: 'Speed, brake, throttle: {y} qualifying pole lap, measured ({d}, {t})', nopole: 'No measured pole lap',
     check: 'Gap to the TUM optimal line: mean {m} m', key: ['Brake start', 'Lowest speed', 'Full throttle']},
 };
 // Track geometry for the line panel: midline, its normals, the least-curvature (base) and shortest-path (sp) offsets (0.1 m) and each
 // car's precomputed line. Every track has one (owner 2026-11-15): tracks without TUM edges use the map line as the midline and an
-// assumed 12 m width (1 m kept free for the car on each side). Computed once per track and kept.
+// width from track-widths.js, the map data or 12 m assumed (1 m kept free for the car on each side). Computed once per track and kept.
 const LINE_CACHE = new Map();
 // Savitzky-Golay 7-point quadratic, two passes, on a closed polyline: removes the wobble of points stored to the metre
 // (owner 2026-11-15: no wrinkled edges) and keeps the shape of real corners (Monaco hairpin, Montreal chicane checked)
@@ -398,22 +399,26 @@ export function lineData(id) {
   if (LINE_CACHE.has(id)) return LINE_CACHE.get(id);
   const L = lapsimRacingLines?.tracks?.[id], C = lapsimCarLines?.tracks?.[id], r1 = p => [+p[0].toFixed(1), +p[1].toFixed(1)];
   const normals = mid => mid.map((_, i, a) => { const n = a.length, p = a[(i - 1 + n) % n], q = a[(i + 1) % n], dx = q[0] - p[0], dy = q[1] - p[1], l = Math.hypot(dx, dy) || 1; return [+(-dy / l).toFixed(4), +(dx / l).toFixed(4)]; });
+  // Width where no TUM edges exist (task H): the circuit's own figure, else the map's width, else 12 m assumed
+  const wS = lapsimTrackWidths[id]?.m, wM = lapsimTracks[id]?.quality?.widthM, widthM = wS ?? wM ?? 12;
   let mid, left, right, nrm, base, half, edges;
   if (L?.line?.length) {
     mid = smoothClosed(L.left.map((l, i) => [(l[0] + L.right[i][0]) / 2, (l[1] + L.right[i][1]) / 2])); nrm = normals(mid); edges = L.edges;
-    const hw = smoothClosed(L.left.map((l, i) => [Math.hypot(l[0] - L.right[i][0], l[1] - L.right[i][1]) / 2])).map(v => v[0]), line = smoothClosed(L.line);
+    const own = edges === 'assumed' && wS, hw = own ? mid.map(() => wS / 2) : smoothClosed(L.left.map((l, i) => [Math.hypot(l[0] - L.right[i][0], l[1] - L.right[i][1]) / 2])).map(v => v[0]), line = smoothClosed(L.line);
+    if (own) edges = 'stated';
     left = mid.map((p, i) => [p[0] + nrm[i][0] * hw[i], p[1] + nrm[i][1] * hw[i]]); right = mid.map((p, i) => [p[0] - nrm[i][0] * hw[i], p[1] - nrm[i][1] * hw[i]]);
-    base = line.map((p, i) => Math.round(((p[0] - mid[i][0]) * nrm[i][0] + (p[1] - mid[i][1]) * nrm[i][1]) * 10));
     half = hw.map(h => Math.max(0.5, h - 1));
+    base = line.map((p, i) => Math.round(Math.max(-half[i], Math.min(half[i], (p[0] - mid[i][0]) * nrm[i][0] + (p[1] - mid[i][1]) * nrm[i][1])) * 10));
   } else {
     const m = lapsimTracks[id]?.map; if (!m?.x?.length) { LINE_CACHE.set(id, null); return null; }
-    mid = smoothClosed(m.x.map((x, i) => [x, m.y[i]])); nrm = normals(mid); half = mid.map(() => 5); edges = 'assumed';
-    left = mid.map((p, i) => [p[0] + nrm[i][0] * 6, p[1] + nrm[i][1] * 6]); right = mid.map((p, i) => [p[0] - nrm[i][0] * 6, p[1] - nrm[i][1] * 6]);
+    const h = widthM / 2; edges = wS ? 'stated' : wM ? 'map' : 'assumed';
+    mid = smoothClosed(m.x.map((x, i) => [x, m.y[i]])); nrm = normals(mid); half = mid.map(() => Math.max(0.5, h - 1));
+    left = mid.map((p, i) => [p[0] + nrm[i][0] * h, p[1] + nrm[i][1] * h]); right = mid.map((p, i) => [p[0] - nrm[i][0] * h, p[1] - nrm[i][1] * h]);
     base = minCurvatureLine(mid.map(p => p[0]), mid.map(p => p[1]), half).offset.map(v => Math.round(v * 10));
   }
   const sp = minCurvatureLine(mid.map(p => p[0]), mid.map(p => p[1]), half, {order: 2}).offset.map(v => Math.round(v * 10));
   const xs = [...left, ...right].map(p => p[0]), ys = [...left, ...right].map(p => p[1]);
-  const out = {mid: mid.map(r1), left: left.map(r1), right: right.map(r1), nrm, base, sp, edges, minX: Math.min(...xs), maxY: Math.max(...ys), pad: 40, cars: C || {}};
+  const out = {mid: mid.map(r1), left: left.map(r1), right: right.map(r1), nrm, base, sp, edges, widthM, minX: Math.min(...xs), maxY: Math.max(...ys), pad: 40, cars: C || {}};
   LINE_CACHE.set(id, out); return out;
 }
 // Map controls: racing line on/off, qualifying/race line, zoom (+, −, fit; wheel/pinch and drag on the map)
@@ -654,7 +659,7 @@ function computeView(K, data, state, R) {
       marks.push([i, 'b'], [a, 'a'], [j, 't']); last = j < i ? n : j;
     }
     line = {pts: P, v, marks, left: LD.left, right: LD.right};
-    const edge = LT0.edges[LD.edges] || '';
+    const edge = (LT0.edges[LD.edges] || '').replace('{m}', LD.widthM);
     const dname = (k, r) => (r.name || k) + (r.name && !sel.series ? ' (' + k + ')' : '') + (r.team ? ' · ' + r.team : r.manufacturer ? ' · ' + r.manufacturer : '');
     driverOpts = DLy ? '<option value="">' + LT0.carLine + '</option>' + Object.entries(DLy.drivers).sort((a, b) => String(a[1].name || a[0]).localeCompare(String(b[1].name || b[0]))).map(([k, r]) => '<option value="' + k + '"' + (k === state.driver ? ' selected' : '') + '>' + dname(k, r) + '</option>').join('') : '';
     lineNote = dl ? (sel.series ? LT0.driverNoteEnd.replace('{s}', String(dl.series || '').toUpperCase() + ' ' + (dl.season || '')) : LT0.driverNote.replace('{y}', sel.year)).replace('{d}', dl.name || state.driver).replace('{a}', dl.fit[0]).replace('{b}', dl.fit[1]) + (dl.test ? LT0.driverTest.replace('{a}', dl.test[0]).replace('{b}', dl.test[1]) : '') : cl ? LT0.lineNote.replace('{car}', sel.label).replace('{mode}', LT0.modes[mode]).replace('{gain}', (cl.gain >= 0 ? '+' : '−') + Math.abs(cl.gain).toFixed(3)).replace('{shift}', cl.shift)
