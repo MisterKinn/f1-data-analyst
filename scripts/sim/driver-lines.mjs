@@ -39,14 +39,12 @@ for (const year of years) {
       const R = n => shape(at(n)); R.abs = at; return R;
     };
     const td = lapsimAllTracks[id], Lm = td.length || td.kappa.length * td.ds;
-    // official corners; a track without a corner list (Sakhir, Jeddah, Madring) uses the curvature peaks (radius under 300 m, 150 m apart)
+    // official corners; a track without a corner list (Sakhir, Jeddah, Madring) gets its corners from the drivers' own speed traces
+    // below (local minima of the median trace, 150 m apart, at least 15 km/h deep): what the cars really slow for, not the map curvature
     let cs = (td.corners || []).map(c => c.s / Lm);
-    if (cs.length < 4) { const kp = td.kappa.map(k => Math.abs(k) / 1e5), n = kp.length, gap = Math.round(150 / td.ds); cs = [];
-      for (let i = 0; i < n; i++) if (kp[i] > 1 / 300 && kp.every((x, j) => Math.abs(j - i) > gap && n - Math.abs(j - i) > gap || x <= kp[i])) cs.push(i / n); }
     const mins = (v, f0) => cs.map(f => { let m = Infinity; const n = v.length; for (let i = Math.floor((f - 80 / Lm) * n); i <= Math.ceil((f + 80 / Lm) * n); i++) m = Math.min(m, v[((i % n) + n) % n]); return m; });
     // % RMS of the corner minimum speeds after one common scale (car pace is not the line); b: real corner minimum speeds
     const rmsV = (a, b) => { const k = b.reduce((q, x, i) => q + x / a[i], 0) / a.length; return 100 * Math.sqrt(a.reduce((q, x, i) => q + ((x * k - b[i]) / b[i]) ** 2, 0) / a.length); };
-    if (cs.length < 4) return;
     const memo = new Map(), simMins = w => { const k = w.join(); if (!memo.has(k)) memo.set(k, mins(sim(w))); return memo.get(k); };
     const search = (w0, target, steps) => { let w = w0.slice(), best = rmsV(simMins(w), target); const moved = new Set();
       for (const step of steps) for (let k = 0; k < w.length; k++) { if (step < steps[0] && !moved.has(k)) continue; for (const dv of [-step, step]) {
@@ -63,9 +61,15 @@ for (const year of years) {
       const tel = l => { const f = get(year, `${event}/Qualifying/${drv}/${l.lap}_tel.json`), t = f?.tel || f; return t?.rel_distance?.length > 100 ? t : null; };
       const t1 = tel(ls[0]); if (!t1) continue;
       const nxt = ls.slice(1).find(l => l.t < ls[0].t * 1.02), t2 = nxt ? tel(nxt) : null;
-      laps[drv] = {team: T.team?.[0] || null, lap: ls[0].t, b1: mins(realShape(t1).abs(400)), b2: t2 ? mins(realShape(t2).abs(400)) : null};
+      laps[drv] = {team: T.team?.[0] || null, lap: ls[0].t, a1: realShape(t1).abs(400), a2: t2 ? realShape(t2).abs(400) : null};
     }
     const D = Object.keys(laps); if (D.length < 3) return;
+    if (cs.length < 4) {
+      const med = Array.from({length: 400}, (_, i) => { const v = D.map(d => laps[d].a1[i]).sort((x, y) => x - y); return v[v.length >> 1]; }), g = Math.max(2, Math.round(150 / Lm * 400));
+      cs = med.map((v, i) => [v, i]).filter(([v, i]) => { let lo = true, hi = -Infinity; for (let k = -g; k <= g; k++) { const x = med[(i + k + 400) % 400]; if (k && x < v) lo = false; hi = Math.max(hi, x); } return lo && hi - v >= 15; }).map(([, i]) => (i + 0.5) / 400);
+    }
+    if (cs.length < 4) return;
+    for (const d of D) { laps[d].b1 = mins(laps[d].a1); laps[d].b2 = laps[d].a2 ? mins(laps[d].a2) : null; }
     // 2) the field line: fitted to the median corner shape of all drivers (what the track and the car model explain), so a driver's
     //    line below is only what differs from the field, and the test compares with the field line, not with the car line
     const norm = b => { const m = b.reduce((x, y) => x + y, 0) / b.length; return b.map(x => x / m); };

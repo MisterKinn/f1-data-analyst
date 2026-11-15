@@ -17,6 +17,13 @@ for (const [id, bs] of Object.entries(J.endurance)) for (const [b, t] of Object.
   rows.push({kind: b.toUpperCase(), id, fit: r.fit, test});
 }
 const groups = [...new Set(rows.map(r => r.kind))].sort(), sum = g => { const R = rows.filter(r => r.kind === g), T = R.filter(r => r.test); return {drivers: R.length, tracks: new Set(R.map(r => r.id)).size, fit: [mean(R.map(r => r.fit[0])), mean(R.map(r => r.fit[1]))], test: [mean(T.map(r => r.test[0])), mean(T.map(r => r.test[1]))], testBetter: T.filter(r => r.test[1] < r.test[0]).length, testN: T.length}; };
+// per track and class too: a group whose own drivers (5 or more tested) are not better than the field line on unseen laps is left out
+const dropped = [];
+for (const [id, t] of Object.entries(tracks)) for (const [k, grp] of [...Object.entries(t.f1 || {}).map(([y, v]) => ['F1 ' + y, v]), ...Object.entries(t.end || {}).map(([b, v]) => [b.toUpperCase(), v])]) {
+  const T = Object.values(grp.drivers).filter(r => r.test); if (T.length < 5) continue;
+  const a = T.reduce((q, r) => q + r.test[0], 0) / T.length, b = T.reduce((q, r) => q + r.test[1], 0) / T.length;
+  if (b >= a) { dropped.push(id + ' ' + k + ` (${a.toFixed(2)} → ${b.toFixed(2)} %, ${T.length} drivers)`); if (k.startsWith('F1 ')) delete t.f1[k.slice(3)]; else delete t.end[k.toLowerCase()]; }
+}
 const summary = Object.fromEntries(groups.map(g => [g, sum(g)]));
 // gate (physics rule 2.1): a group's driver lines are shown only when, on laps the fit did not see, they beat the field line on
 // average and for more than half of the drivers; otherwise the driver differences are noise and the page keeps the car line
@@ -58,6 +65,10 @@ exactly one known driver fits; F1 three-letter codes come with the full name fro
 ${multi.length} written in more than one way; ${amb.length} names left separate as ambiguous${amb.length ? ': ' + amb.slice(0, 20).map(a => a.name + ' (' + a.candidates.join(' / ') + ')').join(', ') : ''}.
 
 Written more than one way (first 40): ${multi.slice(0, 40).map(p => p.aliases.join(' = ')).join('; ')}.
+
+Track and class groups left out because their drivers were not better than the field line on unseen laps: ${dropped.join(', ') || 'none'}.
+
+2026 races not held (Bahrain, Saudi Arabia): the TracingInsights folders of those events are not a qualifying on the layout (field error above 50 %), so they give no driver lines.
 
 Not possible with the data we have: **SRO GT3** (GT World Challenge, IGTC, British GT) per driver. The SRO result tables give one best
 lap per car without sectors, and the Timing71 lap rows name the driver in only 54 of 775,064 GT3 rows (the rest carry a seat number).

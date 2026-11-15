@@ -20,6 +20,7 @@ import {lineData} from '../../../worker/simulation.js';
 import {parseCsv, secs} from './build-endurance.mjs';
 import {resolveTrack} from './track-registry.mjs';
 import {buildRegistry} from './drivers.mjs';
+import {trackWarn} from '../../../worker/simulator-controls.js';
 
 const [root, atlasFile, out, part = '0/1'] = process.argv.slice(2), [pi, pk] = part.split('/').map(Number), K = lapsimKernel();
 // sector boundaries (fractions of the lap) per simulator track
@@ -70,6 +71,8 @@ mkdirSync(out, {recursive: true});
 Object.keys(groups).sort().filter((k, i) => i % pk === pi).forEach(key => { try { fitGroup(key); } catch (e) { console.log('group failed', key, e.stack?.split('\n').slice(0, 3).join(' | ')); } });
 function fitGroup(key) {
   const [id, b] = key.split('|'), of = join(out, `dle-${id}-${b}.json`); if (existsSync(of)) return;
+  // Formula E on a track marked ⚠️ (doubtful map line or big track factor): the line there measures the map error, not the driver
+  if (b.startsWith('fe-') && trackWarn(id, lapsimAllTracks[id])) { console.log('skip', key, 'track marked ⚠️'); return; }
   const L = lineData(id), c = carsFor(id)[CAR[b]]; if (!L || !c) { console.log('skip', key, !L ? 'no line' : 'no car'); return; }
   const env = K.conditionsFromWeather(realConditions(id)[CAR[b]] || {}), ref = [L.mid.map(p => p[0]), L.mid.map(p => p[1])], mc = L.base.map(x => x / 10), sp = L.sp.map(x => x / 10);
   // sector cuts: track-atlas, else estimated from the field's median sector shares with the car line (0.01 steps)
@@ -78,16 +81,21 @@ function fitGroup(key) {
   const best = Object.values(groups[key]).map(ls => ls.slice().sort((a, b2) => a.t - b2.t)[0]); if (best.length < 3) { console.log('skip', key, 'fewer than 3 drivers'); return; }
   const med = [0, 1, 2].map(i => { const v = best.map(l => shareOf(l.s)[i]).sort((x, y) => x - y); return v[v.length >> 1]; });
   const cl0 = blendLine(K, ref, L.nrm, mc, sp, c.car, env, c.grip || 1), tr0 = lineTrack(K, ref[0].map((x, i) => x + L.nrm[i][0] * cl0.off[i]), ref[1].map((y, i) => y + L.nrm[i][1] * cl0.off[i]), 5); tr0.mu.fill(c.grip || 1);
-  const r0 = K.simulateLap(tr0, c.car, env), n0 = r0.time.length, at = f => r0.time[Math.min(n0 - 1, Math.round(f * n0))] / r0.lapTime;
-  const cutErr = ([a, b2]) => Math.sqrt(((at(a) - med[0]) ** 2 + (at(b2) - at(a) - med[1]) ** 2 + (1 - at(b2) - med[2]) ** 2) / 3);
+  // sector times between lap fractions, the lap starting at fraction o of our track (a timing line may sit away from our map start)
+  const sec3 = (r, o, cs) => { const n = r.time.length, T = r.lapTime, tf = f => r.time[Math.min(n - 1, Math.round(((f % 1) + 1) % 1 * n))], d = (x, y) => (((tf(y) - tf(x)) % T) + T) % T;
+    return [d(o, o + cs[0]), d(o + cs[0], o + cs[1]), d(o + cs[1], o)]; };
+  const r0 = K.simulateLap(tr0, c.car, env);
+  const cutErr = (cs, o = 0) => { const q = sec3(r0, o, cs), t = q[0] + q[1] + q[2]; return Math.sqrt(q.reduce((e, x, i) => e + (x / t - med[i]) ** 2, 0) / 3); };
   let est = null, eBest = Infinity; for (let a = 0.15; a <= 0.6; a += 0.01) for (let b2 = a + 0.15; b2 <= 0.88; b2 += 0.01) { const e = cutErr([a, b2]); if (e < eBest) { eBest = e; est = [+a.toFixed(2), +b2.toFixed(2)]; } }
-  // track-atlas positions (measured) unless they put the field sector shares far off (start line or layout of this track differs)
-  let cuts = atlas[id]?.cuts, cutSrc = atlas[id]?.source || null;
-  // measured positions are kept when they put the sector shares within 1.5 % of the lap
-  if (!cuts || cutErr(cuts) > 0.015) { cuts = est; cutSrc = 'estimated from the field sector times' + (atlas[id] ? ' (track-atlas positions did not fit this layout)' : ''); }
-  const W = 10, grp = k => { const f = (k + 0.5) / W; return f < cuts[0] ? 0 : f < cuts[1] ? 1 : 2; };
+  // track-atlas positions (measured) with the start line found by a shift of at most 8 % of the lap; kept when the field's sector
+  // shares then fit within 1.5 % of the lap and the shift is not at its bound, otherwise the positions are estimated from the field (labelled)
+  let cuts = atlas[id]?.cuts, cutSrc = atlas[id]?.source || null, o = 0;
+  if (cuts) { let eo = Infinity; for (let x = -0.08; x <= 0.0801; x += 0.002) { const e = cutErr(cuts, x); if (e < eo) { eo = e; o = +x.toFixed(3); } }
+    if (eo <= 0.015 && Math.abs(o) < 0.079) cutSrc += o ? ` (timing line ${Math.round(o * (lapsimAllTracks[id].length || 0))} m from our start)` : ''; else cuts = null; }
+  if (!cuts) { cuts = est; o = 0; cutSrc = 'estimated from the field sector times' + (atlas[id] ? ' (track-atlas positions did not fit this layout)' : ''); }
+  const W = 10, grp = k => { const f = (((k + 0.5) / W - o) % 1 + 1) % 1; return f < cuts[0] ? 0 : f < cuts[1] ? 1 : 2; };
   const run = w3 => { const w = Array.from({length: W}, (_, k) => w3[grp(k)]), off = blendOff(mc, sp, w), tr = lineTrack(K, ref[0].map((x, i) => x + L.nrm[i][0] * off[i]), ref[1].map((y, i) => y + L.nrm[i][1] * off[i]), 5); tr.mu.fill(c.grip || 1);
-    const r = K.simulateLap(tr, c.car, env), n = r.time.length, at = f => r.time[Math.min(n - 1, Math.round(f * n))]; return [at(cuts[0]), at(cuts[1]) - at(cuts[0]), r.lapTime - at(cuts[1])]; };
+    return sec3(K.simulateLap(tr, c.car, env), o, cuts); };
   const err = (sim, s) => { const k = (s[0] + s[1] + s[2]) / (sim[0] + sim[1] + sim[2]); return 100 * Math.sqrt(sim.reduce((q, x, i) => q + ((x * k - s[i]) / s[i]) ** 2, 0) / 3); };
   const carL = blendLine(K, ref, L.nrm, mc, sp, c.car, env, c.grip || 1), w0 = [0, 1, 2].map(g => { const ks = [...Array(W).keys()].filter(k => grp(k) === g); return +(ks.reduce((q, k) => q + carL.w[k], 0) / ks.length).toFixed(2); });
   const cache = new Map(), simOf = w => { const k = w.join(); if (!cache.has(k)) cache.set(k, run(w)); return cache.get(k); };
@@ -106,6 +114,6 @@ function fitGroup(key) {
     const S = search(F.w, L1.s, [0.15, 0.075]);
     res[name] = {name: reg.people[name]?.name || name, aliases: reg.people[name]?.aliases || [name], w3: S.w, series: L1.series, season: L1.season, manufacturer: L1.manufacturer, team: L1.team, lap: L1.t, fit: [+before.toFixed(3), +S.best.toFixed(3)], test: L2 ? [+err(simOf(F.w), L2.s).toFixed(3), +err(simOf(S.w), L2.s).toFixed(3)] : null};
   }
-  writeFileSync(of, JSON.stringify({id, bucket: b, cuts, atlas: cutSrc, names: Object.fromEntries(Object.keys(groups[key]).map(k => [k, reg.people[k]?.name || k])), carW3: w0, fieldW3: F.w, field: [+err(simOf(w0), field).toFixed(3), +F.best.toFixed(3)], drivers: res}));
+  writeFileSync(of, JSON.stringify({id, bucket: b, cuts, start: o, atlas: cutSrc, names: Object.fromEntries(Object.keys(groups[key]).map(k => [k, reg.people[k]?.name || k])), carW3: w0, fieldW3: F.w, field: [+err(simOf(w0), field).toFixed(3), +F.best.toFixed(3)], drivers: res}));
   console.log(id, b, Object.keys(res).length, 'drivers');
 }
