@@ -1,0 +1,1842 @@
+{
+ "source": "f1db (github.com/f1db/f1db, CC BY 4.0): qualifying-results.yml and fastest-laps.yml, 2006-2019; fastest single lap of the session; wet = slower than the race fastest lap",
+ "poles": {
+  "2006": {
+   "sakhir": {
+    "lap": 91.215,
+    "driver": "fernando-alonso",
+    "team": "renault",
+    "segment": "q2",
+    "raceFastest": 92.408,
+    "wet": false,
+    "race": "2006 Formula 1 Gulf Air Bahrain Grand Prix"
+   },
+   "kuala-lumpur": {
+    "lap": 93.527,
+    "driver": "jenson-button",
+    "team": "honda",
+    "segment": "q2",
+    "raceFastest": 94.803,
+    "wet": false,
+    "race": "2006 Formula 1 Petronas Malaysian Grand Prix"
+   },
+   "nurburgring-gp": {
+    "lap": 89.819,
+    "driver": "fernando-alonso",
+    "team": "renault",
+    "segment": "q3",
+    "raceFastest": 92.09899999999999,
+    "wet": false,
+    "race": "2006 Formula 1 Grand Prix of Europe"
+   },
+   "monte-carlo": {
+    "lap": 73.532,
+    "driver": "kimi-raikkonen",
+    "team": "mclaren",
+    "segment": "q2",
+    "raceFastest": 75.143,
+    "wet": false,
+    "race": "Formula 1 Grand Prix de Monaco 2006"
+   },
+   "montreal": {
+    "lap": 74.726,
+    "driver": "fernando-alonso",
+    "team": "renault",
+    "segment": "q2",
+    "raceFastest": 75.841,
+    "wet": false,
+    "race": "Formula 1 Grand Prix du Canada 2006"
+   },
+   "magny-cours": {
+    "lap": 75.111,
+    "driver": "michael-schumacher",
+    "team": "ferrari",
+    "segment": "q2",
+    "raceFastest": 77.111,
+    "wet": false,
+    "race": "Formula 1 Grand Prix de France 2006"
+   },
+   "hockenheim": {
+    "lap": 73.778,
+    "driver": "michael-schumacher",
+    "team": "ferrari",
+    "segment": "q2",
+    "raceFastest": 76.357,
+    "wet": false,
+    "race": "Formula 1 Grosser Mobil 1 Preis von Deutschland 2006"
+   },
+   "hungaroring": {
+    "lap": 79.504,
+    "driver": "felipe-massa",
+    "team": "ferrari",
+    "segment": "q2",
+    "raceFastest": 83.51599999999999,
+    "wet": false,
+    "race": "Formula 1 Magyar Nagydíj 2006"
+   },
+   "istanbul": {
+    "lap": 85.85,
+    "driver": "michael-schumacher",
+    "team": "ferrari",
+    "segment": "q2",
+    "raceFastest": 88.005,
+    "wet": false,
+    "race": "2006 Formula 1 Petrol Ofisi Turkish Grand Prix"
+   },
+   "monza": {
+    "lap": 81.225,
+    "driver": "felipe-massa",
+    "team": "ferrari",
+    "segment": "q2",
+    "raceFastest": 82.559,
+    "wet": false,
+    "race": "Formula 1 Gran Premio Vodafone d'Italia 2006"
+   },
+   "shanghai": {
+    "lap": 103.951,
+    "driver": "fernando-alonso",
+    "team": "renault",
+    "segment": "q2",
+    "raceFastest": 97.586,
+    "wet": true,
+    "race": "2006 Formula 1 Sinopec Chinese Grand Prix"
+   },
+   "suzuka": {
+    "lap": 88.954,
+    "driver": "michael-schumacher",
+    "team": "ferrari",
+    "segment": "q2",
+    "raceFastest": 92.676,
+    "wet": false,
+    "race": "2006 Formula 1 Fuji Television Japanese Grand Prix"
+   },
+   "interlagos": {
+    "lap": 70.313,
+    "driver": "michael-schumacher",
+    "team": "ferrari",
+    "segment": "q2",
+    "raceFastest": 72.162,
+    "wet": false,
+    "race": "Formula 1 Grande Prêmio do Brasil 2006"
+   }
+  },
+  "2007": {
+   "kuala-lumpur": {
+    "lap": 94.057,
+    "driver": "fernando-alonso",
+    "team": "mclaren",
+    "segment": "q2",
+    "raceFastest": 96.701,
+    "wet": false,
+    "race": "2007 Formula 1 Petronas Malaysian Grand Prix"
+   },
+   "sakhir": {
+    "lap": 91.359,
+    "driver": "felipe-massa",
+    "team": "ferrari",
+    "segment": "q2",
+    "raceFastest": 94.06700000000001,
+    "wet": false,
+    "race": "2007 Formula 1 Gulf Air Bahrain Grand Prix"
+   },
+   "monte-carlo": {
+    "lap": 75.431,
+    "driver": "fernando-alonso",
+    "team": "mclaren",
+    "segment": "q2",
+    "raceFastest": 75.284,
+    "wet": true,
+    "race": "Formula 1 Grand Prix de Monaco 2007"
+   },
+   "montreal": {
+    "lap": 75.486,
+    "driver": "lewis-hamilton",
+    "team": "mclaren",
+    "segment": "q2",
+    "raceFastest": 76.367,
+    "wet": false,
+    "race": "Formula 1 Grand Prix du Canada 2007"
+   },
+   "magny-cours": {
+    "lap": 74.795,
+    "driver": "lewis-hamilton",
+    "team": "mclaren",
+    "segment": "q2",
+    "raceFastest": 76.099,
+    "wet": false,
+    "race": "Formula 1 Grand Prix de France 2007"
+   },
+   "nurburgring-gp": {
+    "lap": 90.912,
+    "driver": "felipe-massa",
+    "team": "ferrari",
+    "segment": "q2",
+    "raceFastest": 92.85300000000001,
+    "wet": false,
+    "race": "2007 Formula 1 Grand Prix of Europe"
+   },
+   "hungaroring": {
+    "lap": 79.301,
+    "driver": "lewis-hamilton",
+    "team": "mclaren",
+    "segment": "q2",
+    "raceFastest": 80.047,
+    "wet": false,
+    "race": "Formula 1 Magyar Nagydíj 2007"
+   },
+   "istanbul": {
+    "lap": 86.841,
+    "driver": "fernando-alonso",
+    "team": "mclaren",
+    "segment": "q2",
+    "raceFastest": 87.295,
+    "wet": false,
+    "race": "2007 Formula 1 Petrol Ofisi Turkish Grand Prix"
+   },
+   "monza": {
+    "lap": 81.356,
+    "driver": "fernando-alonso",
+    "team": "mclaren",
+    "segment": "q2",
+    "raceFastest": 82.871,
+    "wet": false,
+    "race": "Formula 1 Gran Premio d'Italia 2007"
+   },
+   "spa-francorchamps": {
+    "lap": 105.07,
+    "driver": "kimi-raikkonen",
+    "team": "ferrari",
+    "segment": "q2",
+    "raceFastest": 108.036,
+    "wet": false,
+    "race": "2007 Formula 1 ING Belgian Grand Prix"
+   },
+   "fuji": {
+    "lap": 84.753,
+    "driver": "lewis-hamilton",
+    "team": "mclaren",
+    "segment": "q2",
+    "raceFastest": 88.193,
+    "wet": false,
+    "race": "2007 Formula 1 Fuji Television Japanese Grand Prix"
+   },
+   "shanghai": {
+    "lap": 95.381,
+    "driver": "kimi-raikkonen",
+    "team": "ferrari",
+    "segment": "q2",
+    "raceFastest": 97.45400000000001,
+    "wet": false,
+    "race": "2007 Formula 1 Sinopec Chinese Grand Prix"
+   },
+   "interlagos": {
+    "lap": 71.931,
+    "driver": "felipe-massa",
+    "team": "ferrari",
+    "segment": "q3",
+    "raceFastest": 72.445,
+    "wet": false,
+    "race": "Formula 1 Grande Prêmio do Brasil 2007"
+   }
+  },
+  "2008": {
+   "kuala-lumpur": {
+    "lap": 94.188,
+    "driver": "kimi-raikkonen",
+    "team": "ferrari",
+    "segment": "q2",
+    "raceFastest": 95.366,
+    "wet": false,
+    "race": "2008 Formula 1 Petronas Malaysian Grand Prix"
+   },
+   "sakhir": {
+    "lap": 91.188,
+    "driver": "felipe-massa",
+    "team": "ferrari",
+    "segment": "q2",
+    "raceFastest": 93.193,
+    "wet": false,
+    "race": "2008 Formula 1 Gulf Air Bahrain Grand Prix"
+   },
+   "istanbul": {
+    "lap": 85.994,
+    "driver": "felipe-massa",
+    "team": "ferrari",
+    "segment": "q1",
+    "raceFastest": 86.506,
+    "wet": false,
+    "race": "2008 Formula 1 Petrol Ofisi Turkish Grand Prix"
+   },
+   "monte-carlo": {
+    "lap": 75.11,
+    "driver": "felipe-massa",
+    "team": "ferrari",
+    "segment": "q2",
+    "raceFastest": 76.689,
+    "wet": false,
+    "race": "Formula 1 Grand Prix de Monaco 2008"
+   },
+   "montreal": {
+    "lap": 76.909,
+    "driver": "lewis-hamilton",
+    "team": "mclaren",
+    "segment": "q1",
+    "raceFastest": 77.387,
+    "wet": false,
+    "race": "Formula 1 Grand Prix du Canada 2008"
+   },
+   "magny-cours": {
+    "lap": 75.024,
+    "driver": "felipe-massa",
+    "team": "ferrari",
+    "segment": "q1",
+    "raceFastest": 76.63,
+    "wet": false,
+    "race": "Formula 1 Grand Prix de France 2008"
+   },
+   "hockenheim": {
+    "lap": 74.603,
+    "driver": "lewis-hamilton",
+    "team": "mclaren",
+    "segment": "q2",
+    "raceFastest": 75.987,
+    "wet": false,
+    "race": "Formula 1 Grosser Preis Santander von Deutschland 2008"
+   },
+   "hungaroring": {
+    "lap": 79.068,
+    "driver": "felipe-massa",
+    "team": "ferrari",
+    "segment": "q2",
+    "raceFastest": 81.195,
+    "wet": false,
+    "race": "Formula 1 ING Magyar Nagydíj 2008"
+   },
+   "spa-francorchamps": {
+    "lap": 106.037,
+    "driver": "heikki-kovalainen",
+    "team": "mclaren",
+    "segment": "q2",
+    "raceFastest": 107.93,
+    "wet": false,
+    "race": "2008 Formula 1 ING Belgian Grand Prix"
+   },
+   "monza": {
+    "lap": 95.214,
+    "driver": "heikki-kovalainen",
+    "team": "mclaren",
+    "segment": "q1",
+    "raceFastest": 88.047,
+    "wet": true,
+    "race": "Formula 1 Gran Premio Santander d'Italia 2008"
+   },
+   "fuji": {
+    "lap": 77.287,
+    "driver": "felipe-massa",
+    "team": "ferrari",
+    "segment": "q2",
+    "raceFastest": 78.426,
+    "wet": false,
+    "race": "2008 Formula 1 Fuji Television Japanese Grand Prix"
+   },
+   "shanghai": {
+    "lap": 94.947,
+    "driver": "lewis-hamilton",
+    "team": "mclaren",
+    "segment": "q2",
+    "raceFastest": 96.325,
+    "wet": false,
+    "race": "2008 Formula 1 Sinopec Chinese Grand Prix"
+   },
+   "interlagos": {
+    "lap": 71.768,
+    "driver": "heikki-kovalainen",
+    "team": "mclaren",
+    "segment": "q2",
+    "raceFastest": 73.736,
+    "wet": false,
+    "race": "Formula 1 Grande Prêmio do Brasil 2008"
+   }
+  },
+  "2009": {
+   "kuala-lumpur": {
+    "lap": 93.784,
+    "driver": "jenson-button",
+    "team": "brawn",
+    "segment": "q2",
+    "raceFastest": 96.64099999999999,
+    "wet": false,
+    "race": "2009 Formula 1 Petronas Malaysian Grand Prix"
+   },
+   "shanghai": {
+    "lap": 95.13,
+    "driver": "sebastian-vettel",
+    "team": "red-bull",
+    "segment": "q2",
+    "raceFastest": 112.592,
+    "wet": false,
+    "race": "2009 Formula 1 Chinese Grand Prix"
+   },
+   "sakhir": {
+    "lap": 92.474,
+    "driver": "sebastian-vettel",
+    "team": "red-bull",
+    "segment": "q2",
+    "raceFastest": 94.556,
+    "wet": false,
+    "race": "2009 Formula 1 Gulf Air Bahrain Grand Prix"
+   },
+   "monte-carlo": {
+    "lap": 74.514,
+    "driver": "kimi-raikkonen",
+    "team": "ferrari",
+    "segment": "q2",
+    "raceFastest": 75.154,
+    "wet": false,
+    "race": "Formula 1 Grand Prix de Monaco 2009"
+   },
+   "istanbul": {
+    "lap": 87.016,
+    "driver": "sebastian-vettel",
+    "team": "red-bull",
+    "segment": "q2",
+    "raceFastest": 87.57900000000001,
+    "wet": false,
+    "race": "2009 Formula 1 ING Turkish Grand Prix"
+   },
+   "nurburgring-gp": {
+    "lap": 91.257,
+    "driver": "mark-webber",
+    "team": "red-bull",
+    "segment": "q1",
+    "raceFastest": 93.36500000000001,
+    "wet": false,
+    "race": "Formula 1 Grosser Preis Santander von Deutschland 2009"
+   },
+   "hungaroring": {
+    "lap": 80.358,
+    "driver": "mark-webber",
+    "team": "red-bull",
+    "segment": "q2",
+    "raceFastest": 81.931,
+    "wet": false,
+    "race": "Formula 1 ING Magyar Nagydíj 2009"
+   },
+   "spa-francorchamps": {
+    "lap": 104.503,
+    "driver": "jarno-trulli",
+    "team": "toyota",
+    "segment": "q2",
+    "raceFastest": 107.263,
+    "wet": false,
+    "race": "2009 Formula 1 ING Belgian Grand Prix"
+   },
+   "monza": {
+    "lap": 82.955,
+    "driver": "jenson-button",
+    "team": "brawn",
+    "segment": "q2",
+    "raceFastest": 84.739,
+    "wet": false,
+    "race": "Formula 1 Gran Premio Santander d'Italia 2009"
+   },
+   "suzuka": {
+    "lap": 90.341,
+    "driver": "sebastian-vettel",
+    "team": "red-bull",
+    "segment": "q2",
+    "raceFastest": 92.569,
+    "wet": false,
+    "race": "2009 Formula 1 Fuji Television Japanese Grand Prix"
+   },
+   "interlagos": {
+    "lap": 79.576,
+    "driver": "rubens-barrichello",
+    "team": "brawn",
+    "segment": "q3",
+    "raceFastest": 73.733,
+    "wet": true,
+    "race": "Formula 1 Grande Prêmio Petrobras do Brasil 2009"
+   }
+  },
+  "2010": {
+   "kuala-lumpur": {
+    "lap": 106.283,
+    "driver": "robert-kubica",
+    "team": "renault",
+    "segment": "q1",
+    "raceFastest": 97.054,
+    "wet": true,
+    "race": "2010 Formula 1 Petronas Malaysian Grand Prix"
+   },
+   "shanghai": {
+    "lap": 94.558,
+    "driver": "sebastian-vettel",
+    "team": "red-bull",
+    "segment": "q3",
+    "raceFastest": 102.061,
+    "wet": false,
+    "race": "2010 Formula 1 Chinese Grand Prix"
+   },
+   "monte-carlo": {
+    "lap": 73.826,
+    "driver": "mark-webber",
+    "team": "red-bull",
+    "segment": "q3",
+    "raceFastest": 75.19200000000001,
+    "wet": false,
+    "race": "Formula 1 Grand Prix de Monaco 2010"
+   },
+   "istanbul": {
+    "lap": 86.295,
+    "driver": "mark-webber",
+    "team": "red-bull",
+    "segment": "q3",
+    "raceFastest": 89.16499999999999,
+    "wet": false,
+    "race": "2010 Formula 1 Turkish Grand Prix"
+   },
+   "montreal": {
+    "lap": 75.105,
+    "driver": "lewis-hamilton",
+    "team": "mclaren",
+    "segment": "q3",
+    "raceFastest": 76.97200000000001,
+    "wet": false,
+    "race": "Formula 1 Grand Prix du Canada 2010"
+   },
+   "silverstone": {
+    "lap": 89.615,
+    "driver": "sebastian-vettel",
+    "team": "red-bull",
+    "segment": "q3",
+    "raceFastest": 90.874,
+    "wet": false,
+    "race": "2010 Formula 1 Santander British Grand Prix"
+   },
+   "hockenheim": {
+    "lap": 73.791,
+    "driver": "sebastian-vettel",
+    "team": "red-bull",
+    "segment": "q3",
+    "raceFastest": 75.824,
+    "wet": false,
+    "race": "Formula 1 Grosser Preis Santander von Deutschland 2010"
+   },
+   "hungaroring": {
+    "lap": 78.773,
+    "driver": "sebastian-vettel",
+    "team": "red-bull",
+    "segment": "q3",
+    "raceFastest": 82.362,
+    "wet": false,
+    "race": "Formula 1 Eni Magyar Nagydíj 2010"
+   },
+   "spa-francorchamps": {
+    "lap": 105.778,
+    "driver": "mark-webber",
+    "team": "red-bull",
+    "segment": "q3",
+    "raceFastest": 109.069,
+    "wet": false,
+    "race": "2010 Formula 1 Belgian Grand Prix"
+   },
+   "monza": {
+    "lap": 81.962,
+    "driver": "fernando-alonso",
+    "team": "ferrari",
+    "segment": "q3",
+    "raceFastest": 84.139,
+    "wet": false,
+    "race": "Formula 1 Gran Premio Santander d'Italia 2010"
+   },
+   "suzuka": {
+    "lap": 90.785,
+    "driver": "sebastian-vettel",
+    "team": "red-bull",
+    "segment": "q3",
+    "raceFastest": 93.47399999999999,
+    "wet": false,
+    "race": "2010 Formula 1 Japanese Grand Prix"
+   },
+   "yeongam": {
+    "lap": 95.585,
+    "driver": "sebastian-vettel",
+    "team": "red-bull",
+    "segment": "q3",
+    "raceFastest": 110.257,
+    "wet": false,
+    "race": "2010 Formula 1 Korean Grand Prix"
+   },
+   "interlagos": {
+    "lap": 74.47,
+    "driver": "nico-hulkenberg",
+    "team": "williams",
+    "segment": "q3",
+    "raceFastest": 73.851,
+    "wet": true,
+    "race": "Formula 1 Grande Prêmio Petrobras do Brasil 2010"
+   }
+  },
+  "2011": {
+   "kuala-lumpur": {
+    "lap": 94.87,
+    "driver": "sebastian-vettel",
+    "team": "red-bull",
+    "segment": "q3",
+    "raceFastest": 100.571,
+    "wet": false,
+    "race": "2011 Petronas Malaysia Grand Prix"
+   },
+   "shanghai": {
+    "lap": 93.706,
+    "driver": "sebastian-vettel",
+    "team": "red-bull",
+    "segment": "q3",
+    "raceFastest": 98.993,
+    "wet": false,
+    "race": "2011 Formula 1 UBS Chinese Grand Prix"
+   },
+   "istanbul": {
+    "lap": 85.049,
+    "driver": "sebastian-vettel",
+    "team": "red-bull",
+    "segment": "q3",
+    "raceFastest": 89.703,
+    "wet": false,
+    "race": "2011 Formula 1 DHL Turkish Grand Prix"
+   },
+   "monte-carlo": {
+    "lap": 73.556,
+    "driver": "sebastian-vettel",
+    "team": "red-bull",
+    "segment": "q3",
+    "raceFastest": 76.23400000000001,
+    "wet": false,
+    "race": "Formula 1 Grand Prix de Monaco 2011"
+   },
+   "montreal": {
+    "lap": 73.014,
+    "driver": "sebastian-vettel",
+    "team": "red-bull",
+    "segment": "q3",
+    "raceFastest": 76.956,
+    "wet": false,
+    "race": "Formula 1 Grand Prix du Canada 2011"
+   },
+   "silverstone": {
+    "lap": 90.399,
+    "driver": "mark-webber",
+    "team": "red-bull",
+    "segment": "q3",
+    "raceFastest": 94.908,
+    "wet": false,
+    "race": "2011 Formula 1 Santander British Grand Prix"
+   },
+   "nurburgring-gp": {
+    "lap": 90.079,
+    "driver": "mark-webber",
+    "team": "red-bull",
+    "segment": "q3",
+    "raceFastest": 94.30199999999999,
+    "wet": false,
+    "race": "Formula 1 Grosser Preis Santander von Deutschland 2011"
+   },
+   "hungaroring": {
+    "lap": 79.815,
+    "driver": "sebastian-vettel",
+    "team": "red-bull",
+    "segment": "q3",
+    "raceFastest": 83.41499999999999,
+    "wet": false,
+    "race": "Formula 1 Eni Magyar Nagydíj 2011"
+   },
+   "spa-francorchamps": {
+    "lap": 108.298,
+    "driver": "sebastian-vettel",
+    "team": "red-bull",
+    "segment": "q3",
+    "raceFastest": 109.88300000000001,
+    "wet": false,
+    "race": "2011 Formula 1 Shell Belgian Grand Prix"
+   },
+   "monza": {
+    "lap": 82.275,
+    "driver": "sebastian-vettel",
+    "team": "red-bull",
+    "segment": "q3",
+    "raceFastest": 86.187,
+    "wet": false,
+    "race": "Formula 1 Gran Premio Santander d'Italia 2011"
+   },
+   "suzuka": {
+    "lap": 90.466,
+    "driver": "sebastian-vettel",
+    "team": "red-bull",
+    "segment": "q3",
+    "raceFastest": 96.568,
+    "wet": false,
+    "race": "2011 Formula 1 Japanese Grand Prix"
+   },
+   "yeongam": {
+    "lap": 95.82,
+    "driver": "lewis-hamilton",
+    "team": "mclaren",
+    "segment": "q3",
+    "raceFastest": 99.60499999999999,
+    "wet": false,
+    "race": "2011 Formula 1 Korean Grand Prix"
+   },
+   "interlagos": {
+    "lap": 71.918,
+    "driver": "sebastian-vettel",
+    "team": "red-bull",
+    "segment": "q3",
+    "raceFastest": 75.324,
+    "wet": false,
+    "race": "Formula 1 Grande Prêmio Petrobras do Brasil 2011"
+   }
+  },
+  "2012": {
+   "kuala-lumpur": {
+    "lap": 96.219,
+    "driver": "lewis-hamilton",
+    "team": "mclaren",
+    "segment": "q3",
+    "raceFastest": 100.72200000000001,
+    "wet": false,
+    "race": "2012 Formula 1 Petronas Malaysia Grand Prix"
+   },
+   "shanghai": {
+    "lap": 95.121,
+    "driver": "nico-rosberg",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 99.96000000000001,
+    "wet": false,
+    "race": "2012 Formula 1 UBS Chinese Grand Prix"
+   },
+   "sakhir": {
+    "lap": 92.422,
+    "driver": "sebastian-vettel",
+    "team": "red-bull",
+    "segment": "q3",
+    "raceFastest": 96.37899999999999,
+    "wet": false,
+    "race": "2012 Formula 1 Gulf Air Bahrain Grand Prix"
+   },
+   "monte-carlo": {
+    "lap": 74.301,
+    "driver": "michael-schumacher",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 77.29599999999999,
+    "wet": false,
+    "race": "Formula 1 Grand Prix de Monaco 2012"
+   },
+   "montreal": {
+    "lap": 73.784,
+    "driver": "sebastian-vettel",
+    "team": "red-bull",
+    "segment": "q3",
+    "raceFastest": 75.752,
+    "wet": false,
+    "race": "Formula 1 Grand Prix du Canada 2012"
+   },
+   "silverstone": {
+    "lap": 106.279,
+    "driver": "sebastian-vettel",
+    "team": "red-bull",
+    "segment": "q1",
+    "raceFastest": 94.661,
+    "wet": true,
+    "race": "2012 Formula 1 Santander British Grand Prix"
+   },
+   "hockenheim": {
+    "lap": 75.693,
+    "driver": "kimi-raikkonen",
+    "team": "lotus-f1",
+    "segment": "q1",
+    "raceFastest": 78.725,
+    "wet": false,
+    "race": "Formula 1 Grosser Preis Santander von Deutschland 2012"
+   },
+   "hungaroring": {
+    "lap": 80.953,
+    "driver": "lewis-hamilton",
+    "team": "mclaren",
+    "segment": "q3",
+    "raceFastest": 84.136,
+    "wet": false,
+    "race": "Formula 1 Eni Magyar Nagydij 2012"
+   },
+   "spa-francorchamps": {
+    "lap": 107.573,
+    "driver": "jenson-button",
+    "team": "mclaren",
+    "segment": "q3",
+    "raceFastest": 112.822,
+    "wet": false,
+    "race": "2012 Formula 1 Shell Belgian Grand Prix"
+   },
+   "monza": {
+    "lap": 84.01,
+    "driver": "lewis-hamilton",
+    "team": "mclaren",
+    "segment": "q3",
+    "raceFastest": 87.239,
+    "wet": false,
+    "race": "Formula 1 Gran Premio Santander d'Italia 2012"
+   },
+   "suzuka": {
+    "lap": 90.839,
+    "driver": "sebastian-vettel",
+    "team": "red-bull",
+    "segment": "q3",
+    "raceFastest": 95.774,
+    "wet": false,
+    "race": "2012 Formula 1 Japanese Grand Prix"
+   },
+   "yeongam": {
+    "lap": 97.242,
+    "driver": "mark-webber",
+    "team": "red-bull",
+    "segment": "q3",
+    "raceFastest": 102.037,
+    "wet": false,
+    "race": "2012 Formula 1 Korean Grand Prix"
+   },
+   "austin": {
+    "lap": 95.657,
+    "driver": "sebastian-vettel",
+    "team": "red-bull",
+    "segment": "q3",
+    "raceFastest": 99.34700000000001,
+    "wet": false,
+    "race": "2012 Formula 1 United States Grand Prix"
+   },
+   "interlagos": {
+    "lap": 72.458,
+    "driver": "lewis-hamilton",
+    "team": "mclaren",
+    "segment": "q3",
+    "raceFastest": 78.069,
+    "wet": false,
+    "race": "Formula 1 Grande Prêmio Petrobras do Brasil 2012"
+   }
+  },
+  "2013": {
+   "kuala-lumpur": {
+    "lap": 96.19,
+    "driver": "nico-rosberg",
+    "team": "mercedes",
+    "segment": "q2",
+    "raceFastest": 99.199,
+    "wet": false,
+    "race": "2013 Formula 1 Petronas Malaysia Grand Prix"
+   },
+   "shanghai": {
+    "lap": 94.484,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 96.80799999999999,
+    "wet": false,
+    "race": "2013 Formula 1 UBS Chinese Grand Prix"
+   },
+   "sakhir": {
+    "lap": 92.33,
+    "driver": "nico-rosberg",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 96.961,
+    "wet": false,
+    "race": "2013 Formula 1 Gulf Air Bahrain Grand Prix"
+   },
+   "monte-carlo": {
+    "lap": 73.876,
+    "driver": "nico-rosberg",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 76.577,
+    "wet": false,
+    "race": "Formula 1 Grand Prix de Monaco 2013"
+   },
+   "montreal": {
+    "lap": 82.318,
+    "driver": "sebastian-vettel",
+    "team": "red-bull",
+    "segment": "q1",
+    "raceFastest": 76.182,
+    "wet": true,
+    "race": "Formula 1 Grand Prix du Canada 2013"
+   },
+   "silverstone": {
+    "lap": 89.607,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 93.40100000000001,
+    "wet": false,
+    "race": "2013 Formula 1 Santander British Grand Prix"
+   },
+   "nurburgring-gp": {
+    "lap": 89.398,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 93.468,
+    "wet": false,
+    "race": "Formula 1 Grosser Preis Santander von Deutschland 2013"
+   },
+   "hungaroring": {
+    "lap": 79.388,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 84.069,
+    "wet": false,
+    "race": "Formula 1 Magyar Nagydíj 2013"
+   },
+   "spa-francorchamps": {
+    "lap": 108.296,
+    "driver": "kimi-raikkonen",
+    "team": "lotus-f1",
+    "segment": "q2",
+    "raceFastest": 110.756,
+    "wet": false,
+    "race": "2013 Formula 1 Shell Belgian Grand Prix"
+   },
+   "monza": {
+    "lap": 83.755,
+    "driver": "sebastian-vettel",
+    "team": "red-bull",
+    "segment": "q3",
+    "raceFastest": 85.849,
+    "wet": false,
+    "race": "Formula 1 Gran Premio d'Italia 2013"
+   },
+   "yeongam": {
+    "lap": 97.202,
+    "driver": "sebastian-vettel",
+    "team": "red-bull",
+    "segment": "q3",
+    "raceFastest": 101.38,
+    "wet": false,
+    "race": "2013 Formula 1 Korean Grand Prix"
+   },
+   "suzuka": {
+    "lap": 90.915,
+    "driver": "mark-webber",
+    "team": "red-bull",
+    "segment": "q3",
+    "raceFastest": 94.587,
+    "wet": false,
+    "race": "2013 Formula 1 Japanese Grand Prix"
+   },
+   "austin": {
+    "lap": 96.338,
+    "driver": "sebastian-vettel",
+    "team": "red-bull",
+    "segment": "q3",
+    "raceFastest": 99.856,
+    "wet": false,
+    "race": "2013 Formula 1 United States Grand Prix"
+   },
+   "interlagos": {
+    "lap": 85.342,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q1",
+    "raceFastest": 75.436,
+    "wet": true,
+    "race": "Formula 1 Grande Prêmio Petrobras do Brasil 2013"
+   }
+  },
+  "2014": {
+   "kuala-lumpur": {
+    "lap": 117.183,
+    "driver": "nico-rosberg",
+    "team": "mercedes",
+    "segment": "q1",
+    "raceFastest": 103.066,
+    "wet": true,
+    "race": "2014 Formula 1 Petronas Malaysia Grand Prix"
+   },
+   "sakhir": {
+    "lap": 93.185,
+    "driver": "nico-rosberg",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 97.02000000000001,
+    "wet": false,
+    "race": "2014 Formula 1 Gulf Air Bahrain Grand Prix"
+   },
+   "shanghai": {
+    "lap": 113.86,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 100.402,
+    "wet": true,
+    "race": "2014 Formula 1 UBS Chinese Grand Prix"
+   },
+   "monte-carlo": {
+    "lap": 75.989,
+    "driver": "nico-rosberg",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 78.479,
+    "wet": false,
+    "race": "Formula 1 Grand Prix de Monaco 2014"
+   },
+   "montreal": {
+    "lap": 74.874,
+    "driver": "nico-rosberg",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 78.504,
+    "wet": false,
+    "race": "Formula 1 Grand Prix du Canada 2014"
+   },
+   "spielberg": {
+    "lap": 68.759,
+    "driver": "felipe-massa",
+    "team": "williams",
+    "segment": "q3",
+    "raceFastest": 72.142,
+    "wet": false,
+    "race": "Formula 1 DHL Grosser Preis Von Österreich 2014"
+   },
+   "silverstone": {
+    "lap": 94.87,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q2",
+    "raceFastest": 97.176,
+    "wet": false,
+    "race": "2014 Formula 1 Santander British Grand Prix"
+   },
+   "hockenheim": {
+    "lap": 76.54,
+    "driver": "nico-rosberg",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 79.908,
+    "wet": false,
+    "race": "Formula 1 Grosser Preis Santander von Deutschland 2014"
+   },
+   "hungaroring": {
+    "lap": 82.715,
+    "driver": "nico-rosberg",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 85.724,
+    "wet": false,
+    "race": "Formula 1 Pirelli Magyar Nagydíj 2014"
+   },
+   "spa-francorchamps": {
+    "lap": 125.591,
+    "driver": "nico-rosberg",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 110.511,
+    "wet": true,
+    "race": "2014 Formula 1 Shell Belgian Grand Prix"
+   },
+   "monza": {
+    "lap": 84.109,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 88.004,
+    "wet": false,
+    "race": "Formula 1 Gran Premio d'Italia 2014"
+   },
+   "suzuka": {
+    "lap": 92.506,
+    "driver": "nico-rosberg",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 111.6,
+    "wet": false,
+    "race": "2014 Formula 1 Japanese Grand Prix"
+   },
+   "sochi": {
+    "lap": 98.338,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q2",
+    "raceFastest": 100.896,
+    "wet": false,
+    "race": "2014 Formula 1 Russian Grand Prix"
+   },
+   "austin": {
+    "lap": 96.067,
+    "driver": "nico-rosberg",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 101.37899999999999,
+    "wet": false,
+    "race": "2014 Formula 1 United States Grand Prix"
+   },
+   "interlagos": {
+    "lap": 70.023,
+    "driver": "nico-rosberg",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 73.555,
+    "wet": false,
+    "race": "Formula 1 Grande Prêmio Petrobras do Brasil 2014"
+   }
+  },
+  "2015": {
+   "kuala-lumpur": {
+    "lap": 99.269,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q1",
+    "raceFastest": 102.062,
+    "wet": false,
+    "race": "2015 Formula 1 Petronas Malaysia Grand Prix"
+   },
+   "shanghai": {
+    "lap": 95.782,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 102.208,
+    "wet": false,
+    "race": "2015 Formula 1 Chinese Grand Prix"
+   },
+   "sakhir": {
+    "lap": 92.571,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 96.311,
+    "wet": false,
+    "race": "2015 Formula 1 Gulf Air Bahrain Grand Prix"
+   },
+   "monte-carlo": {
+    "lap": 75.098,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 78.063,
+    "wet": false,
+    "race": "Formula 1 Grand Prix de Monaco 2015"
+   },
+   "montreal": {
+    "lap": 74.393,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 76.987,
+    "wet": false,
+    "race": "Formula 1 Grand Prix du Canada 2015"
+   },
+   "spielberg": {
+    "lap": 68.455,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 71.235,
+    "wet": false,
+    "race": "Formula 1 Rolex Grosser Preis von Österreich 2015"
+   },
+   "silverstone": {
+    "lap": 92.248,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 97.093,
+    "wet": false,
+    "race": "2015 Formula 1 British Grand Prix"
+   },
+   "hungaroring": {
+    "lap": 82.02,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 84.821,
+    "wet": false,
+    "race": "Formula 1 Pirelli Magyar Nagydíj 2015"
+   },
+   "spa-francorchamps": {
+    "lap": 107.197,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 112.416,
+    "wet": false,
+    "race": "2015 Formula 1 Shell Belgian Grand Prix"
+   },
+   "monza": {
+    "lap": 83.383,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q2",
+    "raceFastest": 86.672,
+    "wet": false,
+    "race": "Formula 1 Gran Premio d'Italia 2015"
+   },
+   "suzuka": {
+    "lap": 92.584,
+    "driver": "nico-rosberg",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 96.14500000000001,
+    "wet": false,
+    "race": "2015 Formula 1 Japanese Grand Prix"
+   },
+   "sochi": {
+    "lap": 97.113,
+    "driver": "nico-rosberg",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 100.071,
+    "wet": false,
+    "race": "2015 Formula 1 Russian Grand Prix"
+   },
+   "austin": {
+    "lap": 116.495,
+    "driver": "daniel-ricciardo",
+    "team": "red-bull",
+    "segment": "q1",
+    "raceFastest": 100.666,
+    "wet": true,
+    "race": "2015 Formula 1 United States Grand Prix"
+   },
+   "mexico-city": {
+    "lap": 79.48,
+    "driver": "nico-rosberg",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 80.521,
+    "wet": false,
+    "race": "Formula 1 Gran Premio de México 2015"
+   },
+   "interlagos": {
+    "lap": 71.282,
+    "driver": "nico-rosberg",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 74.832,
+    "wet": false,
+    "race": "Formula 1 Grande Prêmio Petrobras do Brasil 2015"
+   }
+  },
+  "2016": {
+   "sakhir": {
+    "lap": 89.493,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 94.482,
+    "wet": false,
+    "race": "2016 Formula 1 Gulf Air Bahrain Grand Prix"
+   },
+   "shanghai": {
+    "lap": 95.402,
+    "driver": "nico-rosberg",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 99.824,
+    "wet": false,
+    "race": "2016 Formula 1 Pirelli Chinese Grand Prix"
+   },
+   "sochi": {
+    "lap": 95.337,
+    "driver": "nico-rosberg",
+    "team": "mercedes",
+    "segment": "q2",
+    "raceFastest": 99.094,
+    "wet": false,
+    "race": "2016 Formula 1 Russian Grand Prix"
+   },
+   "monte-carlo": {
+    "lap": 73.622,
+    "driver": "daniel-ricciardo",
+    "team": "red-bull",
+    "segment": "q3",
+    "raceFastest": 77.939,
+    "wet": false,
+    "race": "Formula 1 Grand Prix de Monaco 2016"
+   },
+   "montreal": {
+    "lap": 72.812,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 75.599,
+    "wet": false,
+    "race": "Formula 1 Grand Prix du Canada 2016"
+   },
+   "baku": {
+    "lap": 102.52,
+    "driver": "nico-rosberg",
+    "team": "mercedes",
+    "segment": "q2",
+    "raceFastest": 106.485,
+    "wet": false,
+    "race": "Formula 1 Rolex Grand Prix of Europe 2016"
+   },
+   "spielberg": {
+    "lap": 66.228,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q2",
+    "raceFastest": 68.411,
+    "wet": false,
+    "race": "Formula 1 Pirelli Grosser Preis von Österreich 2016"
+   },
+   "silverstone": {
+    "lap": 89.243,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q2",
+    "raceFastest": 95.548,
+    "wet": false,
+    "race": "2016 Formula 1 British Grand Prix"
+   },
+   "hungaroring": {
+    "lap": 79.965,
+    "driver": "nico-rosberg",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 83.086,
+    "wet": false,
+    "race": "Formula 1 Magyar Nagydíj 2016"
+   },
+   "hockenheim": {
+    "lap": 74.363,
+    "driver": "nico-rosberg",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 78.44200000000001,
+    "wet": false,
+    "race": "Formula 1 Grosser Preis von Deutschland 2016"
+   },
+   "spa-francorchamps": {
+    "lap": 106.744,
+    "driver": "nico-rosberg",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 111.583,
+    "wet": false,
+    "race": "2016 Formula 1 Belgian Grand Prix"
+   },
+   "monza": {
+    "lap": 81.135,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 85.34,
+    "wet": false,
+    "race": "Formula 1 Gran Premio Heineken d'Italia 2016"
+   },
+   "kuala-lumpur": {
+    "lap": 92.85,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 96.424,
+    "wet": false,
+    "race": "2016 Formula 1 Petronas Malaysia Grand Prix"
+   },
+   "suzuka": {
+    "lap": 90.647,
+    "driver": "nico-rosberg",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 95.118,
+    "wet": false,
+    "race": "2016 Formula 1 Emirates Japanese Grand Prix"
+   },
+   "austin": {
+    "lap": 94.999,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 99.87700000000001,
+    "wet": false,
+    "race": "2016 Formula 1 United States Grand Prix"
+   },
+   "mexico-city": {
+    "lap": 78.704,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 81.134,
+    "wet": false,
+    "race": "Formula 1 Gran Premio de México 2016"
+   },
+   "interlagos": {
+    "lap": 70.736,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 85.305,
+    "wet": false,
+    "race": "Formula 1 Grande Prêmio do Brasil 2016"
+   }
+  },
+  "2017": {
+   "shanghai": {
+    "lap": 91.678,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 95.378,
+    "wet": false,
+    "race": "2017 Formula 1 Heineken Chinese Grand Prix"
+   },
+   "sakhir": {
+    "lap": 88.769,
+    "driver": "valtteri-bottas",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 92.798,
+    "wet": false,
+    "race": "2017 Formula 1 Gulf Air Bahrain Grand Prix"
+   },
+   "sochi": {
+    "lap": 93.194,
+    "driver": "sebastian-vettel",
+    "team": "ferrari",
+    "segment": "q3",
+    "raceFastest": 96.844,
+    "wet": false,
+    "race": "2017 Formula 1 VTB Russian Grand Prix"
+   },
+   "monte-carlo": {
+    "lap": 72.178,
+    "driver": "kimi-raikkonen",
+    "team": "ferrari",
+    "segment": "q3",
+    "raceFastest": 74.82,
+    "wet": false,
+    "race": "Formula 1 Grand Prix de Monaco 2017"
+   },
+   "montreal": {
+    "lap": 71.459,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 74.551,
+    "wet": false,
+    "race": "Formula 1 Grand Prix du Canada 2017"
+   },
+   "baku": {
+    "lap": 100.593,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 103.441,
+    "wet": false,
+    "race": "Formula 1 FlyEmirates Azerbaijan Grand Prix 2017"
+   },
+   "spielberg": {
+    "lap": 64.251,
+    "driver": "valtteri-bottas",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 67.411,
+    "wet": false,
+    "race": "Formula 1 FlyEmirates Grosser Preis von Österreich 2017"
+   },
+   "silverstone": {
+    "lap": 86.6,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 90.621,
+    "wet": false,
+    "race": "2017 Formula 1 Rolex British Grand Prix"
+   },
+   "hungaroring": {
+    "lap": 76.276,
+    "driver": "sebastian-vettel",
+    "team": "ferrari",
+    "segment": "q3",
+    "raceFastest": 80.182,
+    "wet": false,
+    "race": "Formula 1 Pirelli Magyar Nagydíj 2017"
+   },
+   "spa-francorchamps": {
+    "lap": 102.553,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 106.577,
+    "wet": false,
+    "race": "2017 Formula 1 Pirelli Belgian Grand Prix"
+   },
+   "monza": {
+    "lap": 94.66,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q2",
+    "raceFastest": 83.361,
+    "wet": true,
+    "race": "Formula 1 Gran Premio Heineken d'Italia 2017"
+   },
+   "kuala-lumpur": {
+    "lap": 90.076,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 94.08,
+    "wet": false,
+    "race": "2017 Formula 1 Petronas Malaysia Grand Prix"
+   },
+   "suzuka": {
+    "lap": 87.319,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 93.144,
+    "wet": false,
+    "race": "2017 Formula 1 Japanese Grand Prix"
+   },
+   "austin": {
+    "lap": 93.108,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 97.76599999999999,
+    "wet": false,
+    "race": "2017 Formula 1 United States Grand Prix"
+   },
+   "mexico-city": {
+    "lap": 76.488,
+    "driver": "sebastian-vettel",
+    "team": "ferrari",
+    "segment": "q3",
+    "raceFastest": 78.785,
+    "wet": false,
+    "race": "Formula 1 Gran Premio de México 2017"
+   },
+   "interlagos": {
+    "lap": 68.322,
+    "driver": "valtteri-bottas",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 71.044,
+    "wet": false,
+    "race": "Formula 1 Grande Prêmio Heineken do Brasil 2017"
+   }
+  },
+  "2018": {
+   "sakhir": {
+    "lap": 87.958,
+    "driver": "sebastian-vettel",
+    "team": "ferrari",
+    "segment": "q3",
+    "raceFastest": 93.74000000000001,
+    "wet": false,
+    "race": "Formula 1 2018 Gulf Air Bahrain Grand Prix"
+   },
+   "shanghai": {
+    "lap": 91.095,
+    "driver": "sebastian-vettel",
+    "team": "ferrari",
+    "segment": "q3",
+    "raceFastest": 95.785,
+    "wet": false,
+    "race": "Formula 1 2018 Heineken Chinese Grand Prix"
+   },
+   "baku": {
+    "lap": 101.498,
+    "driver": "sebastian-vettel",
+    "team": "ferrari",
+    "segment": "q3",
+    "raceFastest": 105.149,
+    "wet": false,
+    "race": "Formula 1 2018 Rolex Azerbaijan Grand Prix"
+   },
+   "monte-carlo": {
+    "lap": 70.81,
+    "driver": "daniel-ricciardo",
+    "team": "red-bull",
+    "segment": "q3",
+    "raceFastest": 74.26,
+    "wet": false,
+    "race": "Formula 1 Grand Prix de Monaco 2018"
+   },
+   "montreal": {
+    "lap": 70.764,
+    "driver": "sebastian-vettel",
+    "team": "ferrari",
+    "segment": "q3",
+    "raceFastest": 73.864,
+    "wet": false,
+    "race": "Formula 1 Grand Prix Heineken du Canada 2018"
+   },
+   "paul-ricard-f1": {
+    "lap": 90.029,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 94.225,
+    "wet": false,
+    "race": "Formula 1 Pirelli Grand Prix de France 2018"
+   },
+   "spielberg": {
+    "lap": 63.13,
+    "driver": "valtteri-bottas",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 66.957,
+    "wet": false,
+    "race": "Formula 1 Eyetime Grosser Preis von Österreich 2018"
+   },
+   "silverstone": {
+    "lap": 85.892,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 90.696,
+    "wet": false,
+    "race": "Formula 1 2018 Rolex British Grand Prix"
+   },
+   "hockenheim": {
+    "lap": 71.212,
+    "driver": "sebastian-vettel",
+    "team": "ferrari",
+    "segment": "q3",
+    "raceFastest": 75.545,
+    "wet": false,
+    "race": "Formula 1 Emirates Grosser Preis von Deutschland 2018"
+   },
+   "hungaroring": {
+    "lap": 76.666,
+    "driver": "sebastian-vettel",
+    "team": "ferrari",
+    "segment": "q1",
+    "raceFastest": 80.012,
+    "wet": false,
+    "race": "Formula 1 Rolex Magyar Nagydíj 2018"
+   },
+   "spa-francorchamps": {
+    "lap": 101.501,
+    "driver": "sebastian-vettel",
+    "team": "ferrari",
+    "segment": "q2",
+    "raceFastest": 106.286,
+    "wet": false,
+    "race": "Formula 1 2018 Johnnie Walker Belgian Grand Prix"
+   },
+   "monza": {
+    "lap": 79.119,
+    "driver": "kimi-raikkonen",
+    "team": "ferrari",
+    "segment": "q3",
+    "raceFastest": 82.497,
+    "wet": false,
+    "race": "Formula 1 Gran Premio Heineken d'Italia 2018"
+   },
+   "sochi": {
+    "lap": 91.387,
+    "driver": "valtteri-bottas",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 95.86099999999999,
+    "wet": false,
+    "race": "Formula 1 2018 VTB Russian Grand Prix"
+   },
+   "suzuka": {
+    "lap": 87.76,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 92.318,
+    "wet": false,
+    "race": "Formula 1 2018 Honda Japanese Grand Prix"
+   },
+   "austin": {
+    "lap": 92.237,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 97.392,
+    "wet": false,
+    "race": "Formula 1 Pirelli 2018 United States Grand Prix"
+   },
+   "mexico-city": {
+    "lap": 74.759,
+    "driver": "daniel-ricciardo",
+    "team": "red-bull",
+    "segment": "q3",
+    "raceFastest": 78.741,
+    "wet": false,
+    "race": "Formula 1 Gran Premio de México 2018"
+   },
+   "interlagos": {
+    "lap": 67.281,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 70.53999999999999,
+    "wet": false,
+    "race": "Formula 1 Grande Prêmio Heineken do Brasil 2018"
+   }
+  },
+  "2019": {
+   "sakhir": {
+    "lap": 87.866,
+    "driver": "charles-leclerc",
+    "team": "ferrari",
+    "segment": "q3",
+    "raceFastest": 93.411,
+    "wet": false,
+    "race": "Formula 1 Gulf Air Bahrain Grand Prix 2019"
+   },
+   "shanghai": {
+    "lap": 91.547,
+    "driver": "valtteri-bottas",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 94.74199999999999,
+    "wet": false,
+    "race": "Formula 1 Heineken Chinese Grand Prix 2019"
+   },
+   "baku": {
+    "lap": 100.495,
+    "driver": "valtteri-bottas",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 103.009,
+    "wet": false,
+    "race": "Formula 1 SOCAR Azerbaijan Grand Prix 2019"
+   },
+   "monte-carlo": {
+    "lap": 70.166,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 74.279,
+    "wet": false,
+    "race": "Formula 1 Grand Prix de Monaco 2019"
+   },
+   "montreal": {
+    "lap": 70.24,
+    "driver": "sebastian-vettel",
+    "team": "ferrari",
+    "segment": "q3",
+    "raceFastest": 73.078,
+    "wet": false,
+    "race": "Formula 1 Pirelli Grand Prix du Canada 2019"
+   },
+   "paul-ricard-f1": {
+    "lap": 88.319,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 92.74000000000001,
+    "wet": false,
+    "race": "Formula 1 Pirelli Grand Prix de France 2019"
+   },
+   "spielberg": {
+    "lap": 63.003,
+    "driver": "charles-leclerc",
+    "team": "ferrari",
+    "segment": "q3",
+    "raceFastest": 67.475,
+    "wet": false,
+    "race": "Formula 1 myWorld Grosser Preis von Österreich 2019"
+   },
+   "silverstone": {
+    "lap": 85.093,
+    "driver": "valtteri-bottas",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 87.369,
+    "wet": false,
+    "race": "Formula 1 Rolex British Grand Prix 2019"
+   },
+   "hockenheim": {
+    "lap": 71.767,
+    "driver": "lewis-hamilton",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 76.645,
+    "wet": false,
+    "race": "Formula 1 Mercedes-Benz Grosser Preis von Deutschland 2019"
+   },
+   "hungaroring": {
+    "lap": 74.572,
+    "driver": "max-verstappen",
+    "team": "red-bull",
+    "segment": "q3",
+    "raceFastest": 77.10300000000001,
+    "wet": false,
+    "race": "Formula 1 Rolex Magyar Nagydíj 2019"
+   },
+   "spa-francorchamps": {
+    "lap": 102.519,
+    "driver": "charles-leclerc",
+    "team": "ferrari",
+    "segment": "q3",
+    "raceFastest": 106.40899999999999,
+    "wet": false,
+    "race": "Formula 1 Johnnie Walker Belgian Grand Prix 2019"
+   },
+   "monza": {
+    "lap": 79.307,
+    "driver": "charles-leclerc",
+    "team": "ferrari",
+    "segment": "q3",
+    "raceFastest": 81.779,
+    "wet": false,
+    "race": "Formula 1 Gran Premio Heineken d'Italia 2019"
+   },
+   "sochi": {
+    "lap": 91.628,
+    "driver": "charles-leclerc",
+    "team": "ferrari",
+    "segment": "q3",
+    "raceFastest": 95.761,
+    "wet": false,
+    "race": "Formula 1 VTB Russian Grand Prix 2019"
+   },
+   "suzuka": {
+    "lap": 87.064,
+    "driver": "sebastian-vettel",
+    "team": "ferrari",
+    "segment": "q3",
+    "raceFastest": 90.983,
+    "wet": false,
+    "race": "Formula 1 Japanese Grand Prix 2019"
+   },
+   "mexico-city": {
+    "lap": 74.758,
+    "driver": "max-verstappen",
+    "team": "red-bull",
+    "segment": "q3",
+    "raceFastest": 79.232,
+    "wet": false,
+    "race": "Formula 1 Gran Premio de México 2019"
+   },
+   "austin": {
+    "lap": 92.029,
+    "driver": "valtteri-bottas",
+    "team": "mercedes",
+    "segment": "q3",
+    "raceFastest": 96.169,
+    "wet": false,
+    "race": "Formula 1 Emirates United States Grand Prix 2019"
+   },
+   "interlagos": {
+    "lap": 67.503,
+    "driver": "max-verstappen",
+    "team": "red-bull",
+    "segment": "q2",
+    "raceFastest": 70.69800000000001,
+    "wet": false,
+    "race": "Formula 1 Heineken Grande Prêmio do Brasil 2019"
+   }
+  }
+ }
+}
