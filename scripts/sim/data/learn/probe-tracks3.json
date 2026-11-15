@@ -1,0 +1,145 @@
+{
+ "source": "OpenStreetMap via Overpass (© OpenStreetMap contributors, ODbL). Raw ways in the job log only.",
+ "fetched": "2026-11-15T01:48:09.319Z",
+ "venues": {
+  "sebring": {
+   "ways": 45,
+   "raceway": 27,
+   "aeroway": 18
+  },
+  "aragon": {
+   "ways": 33,
+   "raceway": 33,
+   "aeroway": 0
+  },
+  "lausitz": {
+   "ways": 37,
+   "raceway": 37,
+   "aeroway": 0
+  },
+  "autopolis": {
+   "ways": 6,
+   "raceway": 6,
+   "aeroway": 0
+  },
+  "the-bend": {
+   "ways": 10,
+   "raceway": 10,
+   "aeroway": 0
+  },
+  "barber": {
+   "ways": 3,
+   "raceway": 3,
+   "aeroway": 0
+  },
+  "snetterton": {
+   "ways": 27,
+   "raceway": 27,
+   "aeroway": 0
+  },
+  "sugo": {
+   "ways": 25,
+   "raceway": 25,
+   "aeroway": 0
+  },
+  "long-beach": {
+   "ways": 2,
+   "raceway": 2,
+   "aeroway": 0,
+   "roads": 1573
+  },
+  "detroit": {
+   "ways": 1,
+   "raceway": 1,
+   "aeroway": 0,
+   "roads": 2529
+  },
+  "norisring": {
+   "ways": 0,
+   "raceway": 0,
+   "aeroway": 0,
+   "roads": 953
+  },
+  "fe-hong-kong": {
+   "ways": 0,
+   "raceway": 0,
+   "aeroway": 0,
+   "roads": 1722
+  },
+  "fe-paris": {
+   "ways": 0,
+   "raceway": 0,
+   "aeroway": 0,
+   "roads": 676
+  },
+  "fe-santiago-forestal": {
+   "ways": 0,
+   "raceway": 0,
+   "aeroway": 0,
+   "roads": 1148
+  },
+  "fe-santiago-ohiggins": {
+   "ways": 0,
+   "raceway": 0,
+   "aeroway": 0,
+   "roads": 1333
+  },
+  "fe-seoul": {
+   "ways": 4,
+   "raceway": 4,
+   "aeroway": 0,
+   "roads": 483
+  },
+  "fe-new-york": {
+   "ways": 0,
+   "raceway": 0,
+   "aeroway": 0,
+   "roads": 328
+  },
+  "fe-puebla": {
+   "ways": 0,
+   "raceway": 0,
+   "aeroway": 0
+  },
+  "fe-marrakesh": {
+   "ways": 110,
+   "raceway": 2,
+   "aeroway": 108
+  },
+  "fe-bern": {
+   "ways": 0,
+   "raceway": 0,
+   "aeroway": 0,
+   "roads": 1381
+  },
+  "fe-rome": {
+   "ways": 0,
+   "raceway": 0,
+   "aeroway": 0,
+   "roads": 1423
+  },
+  "fe-london-excel": {
+   "ways": 2,
+   "raceway": 0,
+   "aeroway": 2,
+   "roads": 895
+  },
+  "fe-london-battersea": {
+   "ways": 0,
+   "raceway": 0,
+   "aeroway": 0,
+   "roads": 945
+  },
+  "fe-monaco": {
+   "ways": 10,
+   "raceway": 10,
+   "aeroway": 0,
+   "roads": 954
+  },
+  "fe-valencia": {
+   "ways": 24,
+   "raceway": 24,
+   "aeroway": 0
+  }
+ }
+}
