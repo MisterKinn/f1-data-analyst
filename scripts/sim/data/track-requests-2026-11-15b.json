@@ -1,0 +1,81 @@
+{
+ "note": "Second run of track-requests-2026-11-15.json: venues whose map query failed (Overpass 504) or whose loop was just outside the 0.5 % rule.",
+ "tracks": [
+  {
+   "id": "sebring",
+   "status": "osm",
+   "seed": [
+    27.455,
+    -81.35
+   ],
+   "radius": 4000,
+   "fia": "^SEBRING$",
+   "tol": 0.025,
+   "tolNote": "OpenStreetMap lap is about 2 % short of the official 6.019 km"
+  },
+  {
+   "id": "aragon",
+   "status": "osm",
+   "seed": [
+    41.0786,
+    -0.2066
+   ],
+   "radius": 3000,
+   "fia": "^MOTORLAND ARAGON$"
+  },
+  {
+   "id": "magny-cours",
+   "status": "osm",
+   "seed": [
+    46.8642,
+    3.1636
+   ],
+   "radius": 2500,
+   "fia": "^MAGNY",
+   "tol": 0.012,
+   "tolNote": "OpenStreetMap lap 1.1 % longer than the FIA 4.411 km"
+  },
+  {
+   "id": "lausitz",
+   "status": "osm",
+   "seed": [
+    51.5333,
+    13.9264
+   ],
+   "radius": 3000,
+   "fia": "^EUROSPEEDWAY LAUSITZ"
+  },
+  {
+   "id": "autopolis",
+   "status": "osm",
+   "seed": [
+    33.0369,
+    130.9764
+   ],
+   "radius": 3000,
+   "fia": "^AUTOPOLIS"
+  },
+  {
+   "id": "mandalika",
+   "status": "osm",
+   "seed": [
+    -8.8947,
+    116.3022
+   ],
+   "radius": 3000,
+   "fia": "^MANDALIKA"
+  },
+  {
+   "id": "phillip-island",
+   "status": "osm",
+   "seed": [
+    -38.5,
+    145.2317
+   ],
+   "radius": 3000,
+   "fia": "^PHILLIP",
+   "tol": 0.007,
+   "tolNote": "OpenStreetMap lap 0.6 % shorter than the FIA 4.480 km"
+  }
+ ]
+}
