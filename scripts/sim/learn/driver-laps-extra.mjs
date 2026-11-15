@@ -54,4 +54,5 @@ for (const f of files(DIR)) {
 console.log('Timing71 dropped', JSON.stringify(Object.entries(drop).sort((a, b) => b[1] - a[1]).slice(0, 25)));
 console.log('Timing71 GT3 qualifying laps with a driver', t71, '· rows without a driver', noDriver, '· row fields', JSON.stringify(keys));
 writeFileSync(OUT, lines.map(x => JSON.stringify(x)).join('\n') + '\n');
+{ const c = {}; for (const l of lines) if (l.series !== 'fe') { const k = l.series + ' ' + l.trackId; c[k] = (c[k] || 0) + 1; } console.log('Timing71 kept by track', JSON.stringify(c)); }
 console.log('extra laps', lines.length, 'errors', log.length, log.slice(0, 5));

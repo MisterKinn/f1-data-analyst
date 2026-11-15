@@ -62,6 +62,7 @@ for (const f of (process.env.LAPSIM_DL_EXTRA || '').split(',').filter(x => x && 
   if ((r.bucket === 'gt3' && id.startsWith('fe-')) || vKph < band[0] || vKph > band[1]) continue;
   laps.push({id, b: r.bucket, name: String(r.driver).trim(), t: r.t, s: r.s, series: r.series, season: r.season, manufacturer: r.manufacturer || null, team: r.team || null});
 }
+{ const c = {}; for (const l of laps) if (!['wec', 'imsa', 'elms', 'alms', 'fe'].includes(l.series)) { const k = l.series + ' ' + l.id; c[k] = (c[k] || 0) + 1; } console.log('Timing71 laps by series and track', JSON.stringify(c)); }
 const reg = buildRegistry([...new Set(laps.map(l => l.name))].map(name => ({name})));
 for (const l of laps) { const pid = reg.ids.get(l.name) || l.name; ((groups[l.id + '|' + l.b] ||= {})[pid] ||= []).push(l); }
 console.log('laps', laps.length, '(extra', laps.filter(l => !['wec', 'imsa', 'elms', 'alms'].includes(l.series)).length + ')', 'groups', Object.keys(groups).length, 'people', Object.keys(reg.people).length);

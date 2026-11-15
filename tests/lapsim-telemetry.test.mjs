@@ -114,7 +114,10 @@ R(116.3,['Article C5.12.7',128.4],['OVERTAKE',418.1]),R(79.1,['Speed threshold',
 test('a racing line per driver in every series (estimated), with one id per driver across series', () => {
   const S = lapsimDriverLines.summary, groups = Object.keys(S);
   assert.ok(groups.some(g => g.startsWith('F1')) && groups.some(g => g === 'GT3') && groups.some(g => g === 'LMH' || g === 'LMDH'), groups.join());
-  for (const g of groups) { const x = S[g]; assert.ok(x.fit[1] <= x.fit[0] && x.test[1] <= x.test[0] && x.testBetter >= x.testN / 2, g + ' ' + JSON.stringify(x)); } // better than the field line on unseen laps
+  // gate: a group is shown only when its driver lines beat the field line on unseen laps; a hidden group leaves no driver line on the page
+  for (const g of groups) { const x = S[g]; assert.equal(x.shown, x.test[1] < x.test[0] && x.testBetter > x.testN / 2, g); }
+  for (const g of ['F1 2025', 'F1 2026', 'GT3', 'LMH', 'LMDH']) assert.ok(S[g]?.shown, g + ' ' + JSON.stringify(S[g]));
+  for (const t of Object.values(lapsimDriverLines.tracks)) { for (const y of Object.keys(t.f1 || {})) assert.ok(S['F1 ' + y].shown); for (const b of Object.keys(t.end || {})) assert.ok(S[b.toUpperCase()].shown, b); }
   for (const t of Object.values(lapsimDriverLines.tracks)) for (const grp of [...Object.values(t.f1 || {}), ...Object.values(t.end || {})]) for (const r of Object.values(grp.drivers)) assert.ok(r.w.length === 10 && r.w.every(x => x >= 0 && x <= 1) && r.name);
   const f1 = Object.keys(lapsimDriverLines.tracks).find(k => lapsimDriverLines.tracks[k].f1?.['2026']), gt = Object.keys(lapsimDriverLines.tracks).find(k => lapsimDriverLines.tracks[k].end?.gt3);
   assert.match(simulationPage({track: f1, car: '2026'}, 'en'), /data-ls="driverWrap">/);

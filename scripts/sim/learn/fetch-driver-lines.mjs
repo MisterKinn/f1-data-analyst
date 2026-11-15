@@ -21,13 +21,18 @@ const atlas = join(C, 'learn', 'tracks.jsonl');
 if (!existsSync(atlas)) execFileSync('curl', ['-sSf', '--max-time', '120', '-o', atlas, 'https://raw.githubusercontent.com/tobi/track-atlas/main/tracks.jsonl']);
 const run = (args, env = {}) => new Promise(ok => { const p = spawn('node', args, {stdio: 'inherit', env: {...process.env, ...env}}); p.on('exit', ok); });
 const OUT = join(C, 'driver-lines');
-await Promise.all(Array.from({length: N}, (_, i) => run(['scripts/sim/driver-lines.mjs', '2026,2025'], {LAPSIM_DL_PART: `${i}/${N}`, LAPSIM_DL_OUT: OUT})));
+// the F1 part is rerun only when its script changed in the pushed commit; otherwise the committed F1 lines are kept
+const prev = existsSync('scripts/sim/data/learn/driver-lines.json') ? JSON.parse(readFileSync('scripts/sim/data/learn/driver-lines.json', 'utf8')) : null;
+let f1Changed = true; try { f1Changed = !prev?.f1 || git('diff', '--name-only', 'HEAD~1', 'HEAD', '--', 'scripts/sim/driver-lines.mjs').trim() !== ''; } catch {}
+if (f1Changed) await Promise.all(Array.from({length: N}, (_, i) => run(['scripts/sim/driver-lines.mjs', '2026,2025'], {LAPSIM_DL_PART: `${i}/${N}`, LAPSIM_DL_OUT: OUT})));
+else console.log('F1 lines kept from the committed table (scripts/sim/driver-lines.mjs unchanged)');
 const extra = join(C, 'learn', 'extra-laps.ndjson');
 await run(['scripts/sim/learn/driver-laps-extra.mjs', extra]); // Formula E and SRO GT3 laps with their drivers
 await Promise.all(Array.from({length: N}, (_, i) => run(['scripts/sim/learn/driver-lines-endurance.mjs', imsa, atlas, OUT, `${i}/${N}`], {LAPSIM_DL_EXTRA: extra})));
 // merge, with one id per driver across series
 const f1 = [], end = [];
 for (const f of readdirSync(OUT)) { const j = JSON.parse(readFileSync(join(OUT, f), 'utf8')); (f.startsWith('dle-') ? end : f1).push(j); }
+if (!f1Changed) for (const [id, ys] of Object.entries(prev.f1)) for (const [y, v] of Object.entries(ys)) f1.push({id, year: y, fieldW: v.fieldW, field: v.field, names: Object.fromEntries(Object.entries(v.drivers).map(([c, r]) => [c, r.name])), drivers: v.drivers});
 const names = [];
 for (const t of f1) for (const [code, n] of Object.entries(t.names || {})) if (n) names.push({name: n, series: 'f1', code});
 for (const t of end) for (const r of Object.values(t.drivers)) for (const a of r.aliases || [r.name]) names.push({name: a, series: r.series});
