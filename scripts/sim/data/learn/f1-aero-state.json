@@ -1,0 +1,3947 @@
+{
+ "source": "OpenF1 race control (copies of F1 race-control messages)",
+ "generatedAt": "2026-11-15T21:52:56.143Z",
+ "sessions": {
+  "9684": {
+   "year": 2025,
+   "track": "sakhir",
+   "circuit": "Sakhir",
+   "session": "Day 2",
+   "start": "2025-02-27T07:00:00+00:00",
+   "end": "2025-02-27T16:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-02-27T15:55:01+00:00",
+     "kind": "drs",
+     "state": "off"
+    },
+    {
+     "t": "2025-02-27T15:55:21+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9685": {
+   "year": 2025,
+   "track": "sakhir",
+   "circuit": "Sakhir",
+   "session": "Day 3",
+   "start": "2025-02-28T07:00:00+00:00",
+   "end": "2025-02-28T16:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-02-28T10:20:31+00:00",
+     "kind": "drs",
+     "state": "on"
+    },
+    {
+     "t": "2025-02-28T10:23:26+00:00",
+     "kind": "drs",
+     "state": "on"
+    },
+    {
+     "t": "2025-02-28T12:10:10+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9686": {
+   "year": 2025,
+   "track": "melbourne",
+   "circuit": "Melbourne",
+   "session": "Practice 1",
+   "start": "2025-03-14T01:30:00+00:00",
+   "end": "2025-03-14T02:30:00+00:00",
+   "events": [
+    {
+     "t": "2025-03-14T01:54:05+00:00",
+     "kind": "drs",
+     "state": "on"
+    },
+    {
+     "t": "2025-03-14T02:18:07+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9688": {
+   "year": 2025,
+   "track": "melbourne",
+   "circuit": "Melbourne",
+   "session": "Practice 3",
+   "start": "2025-03-15T01:30:00+00:00",
+   "end": "2025-03-15T02:30:00+00:00",
+   "events": [
+    {
+     "t": "2025-03-15T01:40:02+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9693": {
+   "year": 2025,
+   "track": "melbourne",
+   "circuit": "Melbourne",
+   "session": "Race",
+   "start": "2025-03-16T04:00:00+00:00",
+   "end": "2025-03-16T06:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-03-16T03:15:05+00:00",
+     "kind": "grip",
+     "state": "low",
+     "lap": 1
+    },
+    {
+     "t": "2025-03-16T03:15:08+00:00",
+     "kind": "drs",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2025-03-16T04:42:06+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 12
+    },
+    {
+     "t": "2025-03-16T05:34:05+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 43
+    },
+    {
+     "t": "2025-03-16T05:55:31+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 54
+    }
+   ],
+   "grip": {
+    "start": "low",
+    "end": "low",
+    "changes": 0
+   }
+  },
+  "9834": {
+   "year": 2025,
+   "track": "yas-marina-circuit",
+   "circuit": "Yas Marina Circuit",
+   "session": "Practice 3",
+   "start": "2025-12-06T10:30:00+00:00",
+   "end": "2025-12-06T11:30:00+00:00",
+   "events": [
+    {
+     "t": "2025-12-06T11:11:11+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9839": {
+   "year": 2025,
+   "track": "yas-marina-circuit",
+   "circuit": "Yas Marina Circuit",
+   "session": "Race",
+   "start": "2025-12-07T13:00:00+00:00",
+   "end": "2025-12-07T15:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-12-07T12:57:03+00:00",
+     "kind": "drs",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2025-12-07T13:05:07+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 2
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9845": {
+   "year": 2025,
+   "track": "lusail",
+   "circuit": "Lusail",
+   "session": "Sprint",
+   "start": "2025-11-29T14:00:00+00:00",
+   "end": "2025-11-29T15:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-11-29T13:57:19+00:00",
+     "kind": "drs",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2025-11-29T14:05:25+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 2
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9846": {
+   "year": 2025,
+   "track": "lusail",
+   "circuit": "Lusail",
+   "session": "Qualifying",
+   "start": "2025-11-29T18:00:00+00:00",
+   "end": "2025-11-29T19:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-11-29T18:56:06+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9850": {
+   "year": 2025,
+   "track": "lusail",
+   "circuit": "Lusail",
+   "session": "Race",
+   "start": "2025-11-30T16:00:00+00:00",
+   "end": "2025-11-30T18:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-11-30T15:57:04+00:00",
+     "kind": "drs",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2025-11-30T16:05:21+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 2
+    },
+    {
+     "t": "2025-11-30T16:22:50+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 12
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9852": {
+   "year": 2025,
+   "track": "las-vegas",
+   "circuit": "Las Vegas",
+   "session": "Practice 2",
+   "start": "2025-11-21T04:00:00+00:00",
+   "end": "2025-11-21T05:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-11-21T04:41:34+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9853": {
+   "year": 2025,
+   "track": "las-vegas",
+   "circuit": "Las Vegas",
+   "session": "Practice 3",
+   "start": "2025-11-22T00:30:00+00:00",
+   "end": "2025-11-22T01:30:00+00:00",
+   "events": [
+    {
+     "t": "2025-11-22T00:18:41+00:00",
+     "kind": "wet",
+     "state": "wet"
+    },
+    {
+     "t": "2025-11-22T00:19:34+00:00",
+     "kind": "grip",
+     "state": "low"
+    }
+   ],
+   "grip": {
+    "start": "low",
+    "end": "low",
+    "changes": 0
+   }
+  },
+  "9854": {
+   "year": 2025,
+   "track": "las-vegas",
+   "circuit": "Las Vegas",
+   "session": "Qualifying",
+   "start": "2025-11-22T04:00:00+00:00",
+   "end": "2025-11-22T05:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-11-22T03:59:00+00:00",
+     "kind": "drs",
+     "state": "off"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9858": {
+   "year": 2025,
+   "track": "las-vegas",
+   "circuit": "Las Vegas",
+   "session": "Race",
+   "start": "2025-11-23T04:00:00+00:00",
+   "end": "2025-11-23T06:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-11-23T03:57:06+00:00",
+     "kind": "drs",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2025-11-23T04:05:49+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 1
+    },
+    {
+     "t": "2025-11-23T04:10:08+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 4
+    },
+    {
+     "t": "2025-11-23T04:30:59+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 16
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9864": {
+   "year": 2025,
+   "track": "interlagos",
+   "circuit": "Interlagos",
+   "session": "Sprint",
+   "start": "2025-11-08T14:00:00+00:00",
+   "end": "2025-11-08T15:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-11-08T13:57:02+00:00",
+     "kind": "drs",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2025-11-08T14:05:50+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 2
+    },
+    {
+     "t": "2025-11-08T14:38:29+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 9
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9869": {
+   "year": 2025,
+   "track": "interlagos",
+   "circuit": "Interlagos",
+   "session": "Race",
+   "start": "2025-11-09T17:00:00+00:00",
+   "end": "2025-11-09T19:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-11-09T16:57:08+00:00",
+     "kind": "drs",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2025-11-09T17:13:05+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 6
+    },
+    {
+     "t": "2025-11-09T17:16:39+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 8
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9877": {
+   "year": 2025,
+   "track": "mexico-city",
+   "circuit": "Mexico City",
+   "session": "Race",
+   "start": "2025-10-26T20:00:00+00:00",
+   "end": "2025-10-26T22:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-10-26T19:57:04+00:00",
+     "kind": "drs",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2025-10-26T20:05:11+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 2
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9878": {
+   "year": 2025,
+   "track": "austin",
+   "circuit": "Austin",
+   "session": "Practice 1",
+   "start": "2025-10-17T17:30:00+00:00",
+   "end": "2025-10-17T18:30:00+00:00",
+   "events": [
+    {
+     "t": "2025-10-17T17:53:00+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9883": {
+   "year": 2025,
+   "track": "austin",
+   "circuit": "Austin",
+   "session": "Sprint",
+   "start": "2025-10-18T17:00:00+00:00",
+   "end": "2025-10-18T17:30:00+00:00",
+   "events": [
+    {
+     "t": "2025-10-18T16:57:36+00:00",
+     "kind": "drs",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2025-10-18T17:17:40+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 7
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9884": {
+   "year": 2025,
+   "track": "austin",
+   "circuit": "Austin",
+   "session": "Qualifying",
+   "start": "2025-10-18T21:00:00+00:00",
+   "end": "2025-10-18T22:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-10-18T21:05:57+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9888": {
+   "year": 2025,
+   "track": "austin",
+   "circuit": "Austin",
+   "session": "Race",
+   "start": "2025-10-19T19:00:00+00:00",
+   "end": "2025-10-19T21:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-10-19T18:57:05+00:00",
+     "kind": "drs",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2025-10-19T19:05:36+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 2
+    },
+    {
+     "t": "2025-10-19T19:18:09+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 9
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9890": {
+   "year": 2025,
+   "track": "singapore",
+   "circuit": "Singapore",
+   "session": "Practice 2",
+   "start": "2025-10-03T13:00:00+00:00",
+   "end": "2025-10-03T14:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-10-03T13:20:53+00:00",
+     "kind": "drs",
+     "state": "on"
+    },
+    {
+     "t": "2025-10-03T13:37:40+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9891": {
+   "year": 2025,
+   "track": "singapore",
+   "circuit": "Singapore",
+   "session": "Practice 3",
+   "start": "2025-10-04T09:30:00+00:00",
+   "end": "2025-10-04T10:30:00+00:00",
+   "events": [
+    {
+     "t": "2025-10-04T09:47:37+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9896": {
+   "year": 2025,
+   "track": "singapore",
+   "circuit": "Singapore",
+   "session": "Race",
+   "start": "2025-10-05T12:00:00+00:00",
+   "end": "2025-10-05T14:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-10-05T11:57:04+00:00",
+     "kind": "drs",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2025-10-05T12:05:16+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 2
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9897": {
+   "year": 2025,
+   "track": "baku",
+   "circuit": "Baku",
+   "session": "Practice 1",
+   "start": "2025-09-19T08:30:00+00:00",
+   "end": "2025-09-19T09:30:00+00:00",
+   "events": [
+    {
+     "t": "2025-09-19T08:47:49+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9900": {
+   "year": 2025,
+   "track": "baku",
+   "circuit": "Baku",
+   "session": "Qualifying",
+   "start": "2025-09-20T12:00:00+00:00",
+   "end": "2025-09-20T13:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-09-20T12:09:08+00:00",
+     "kind": "drs",
+     "state": "on"
+    },
+    {
+     "t": "2025-09-20T12:23:24+00:00",
+     "kind": "drs",
+     "state": "on"
+    },
+    {
+     "t": "2025-09-20T12:37:24+00:00",
+     "kind": "drs",
+     "state": "on"
+    },
+    {
+     "t": "2025-09-20T12:53:44+00:00",
+     "kind": "drs",
+     "state": "on"
+    },
+    {
+     "t": "2025-09-20T13:27:31+00:00",
+     "kind": "drs",
+     "state": "on"
+    },
+    {
+     "t": "2025-09-20T13:45:17+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9904": {
+   "year": 2025,
+   "track": "baku",
+   "circuit": "Baku",
+   "session": "Race",
+   "start": "2025-09-21T11:00:00+00:00",
+   "end": "2025-09-21T13:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-09-21T10:57:04+00:00",
+     "kind": "drs",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2025-09-21T11:16:26+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 6
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9905": {
+   "year": 2025,
+   "track": "monza",
+   "circuit": "Monza",
+   "session": "Practice 1",
+   "start": "2025-09-05T11:30:00+00:00",
+   "end": "2025-09-05T12:30:00+00:00",
+   "events": [
+    {
+     "t": "2025-09-05T11:30:55+00:00",
+     "kind": "drs",
+     "state": "on"
+    },
+    {
+     "t": "2025-09-05T12:11:31+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9906": {
+   "year": 2025,
+   "track": "monza",
+   "circuit": "Monza",
+   "session": "Practice 2",
+   "start": "2025-09-05T15:00:00+00:00",
+   "end": "2025-09-05T16:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-09-05T15:01:05+00:00",
+     "kind": "drs",
+     "state": "on"
+    },
+    {
+     "t": "2025-09-05T15:13:30+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9912": {
+   "year": 2025,
+   "track": "monza",
+   "circuit": "Monza",
+   "session": "Race",
+   "start": "2025-09-07T13:00:00+00:00",
+   "end": "2025-09-07T15:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-09-07T12:57:04+00:00",
+     "kind": "drs",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2025-09-07T13:05:25+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 2
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9913": {
+   "year": 2025,
+   "track": "zandvoort",
+   "circuit": "Zandvoort",
+   "session": "Practice 1",
+   "start": "2025-08-29T10:30:00+00:00",
+   "end": "2025-08-29T11:30:00+00:00",
+   "events": [
+    {
+     "t": "2025-08-29T10:31:13+00:00",
+     "kind": "drs",
+     "state": "on"
+    },
+    {
+     "t": "2025-08-29T10:47:00+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9914": {
+   "year": 2025,
+   "track": "zandvoort",
+   "circuit": "Zandvoort",
+   "session": "Practice 2",
+   "start": "2025-08-29T14:00:00+00:00",
+   "end": "2025-08-29T15:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-08-29T14:01:26+00:00",
+     "kind": "drs",
+     "state": "on"
+    },
+    {
+     "t": "2025-08-29T14:21:02+00:00",
+     "kind": "drs",
+     "state": "on"
+    },
+    {
+     "t": "2025-08-29T14:29:27+00:00",
+     "kind": "drs",
+     "state": "on"
+    },
+    {
+     "t": "2025-08-29T14:43:02+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9915": {
+   "year": 2025,
+   "track": "zandvoort",
+   "circuit": "Zandvoort",
+   "session": "Practice 3",
+   "start": "2025-08-30T09:30:00+00:00",
+   "end": "2025-08-30T10:30:00+00:00",
+   "events": [
+    {
+     "t": "2025-08-30T09:29:01+00:00",
+     "kind": "wet",
+     "state": "wet"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9920": {
+   "year": 2025,
+   "track": "zandvoort",
+   "circuit": "Zandvoort",
+   "session": "Race",
+   "start": "2025-08-31T13:00:00+00:00",
+   "end": "2025-08-31T15:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-08-31T12:57:03+00:00",
+     "kind": "drs",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2025-08-31T13:04:40+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 2
+    },
+    {
+     "t": "2025-08-31T13:39:51+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 28
+    },
+    {
+     "t": "2025-08-31T13:45:58+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 32
+    },
+    {
+     "t": "2025-08-31T14:22:12+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 59
+    },
+    {
+     "t": "2025-08-31T14:38:12+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 70
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9921": {
+   "year": 2025,
+   "track": "hungaroring",
+   "circuit": "Hungaroring",
+   "session": "Practice 1",
+   "start": "2025-08-01T11:30:00+00:00",
+   "end": "2025-08-01T12:30:00+00:00",
+   "events": [
+    {
+     "t": "2025-08-01T11:59:23+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9928": {
+   "year": 2025,
+   "track": "hungaroring",
+   "circuit": "Hungaroring",
+   "session": "Race",
+   "start": "2025-08-03T13:00:00+00:00",
+   "end": "2025-08-03T15:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-08-03T12:57:05+00:00",
+     "kind": "drs",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2025-08-03T13:04:34+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 2
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9934": {
+   "year": 2025,
+   "track": "spa-francorchamps",
+   "circuit": "Spa-Francorchamps",
+   "session": "Sprint",
+   "start": "2025-07-26T10:00:00+00:00",
+   "end": "2025-07-26T10:30:00+00:00",
+   "events": [
+    {
+     "t": "2025-07-26T09:57:03+00:00",
+     "kind": "drs",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2025-07-26T10:05:40+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 2
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9939": {
+   "year": 2025,
+   "track": "spa-francorchamps",
+   "circuit": "Spa-Francorchamps",
+   "session": "Race",
+   "start": "2025-07-27T13:00:00+00:00",
+   "end": "2025-07-27T15:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-07-27T12:19:00+00:00",
+     "kind": "grip",
+     "state": "low",
+     "lap": 1
+    },
+    {
+     "t": "2025-07-27T12:57:01+00:00",
+     "kind": "drs",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2025-07-27T14:48:00+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 12
+    },
+    {
+     "t": "2025-07-27T14:48:01+00:00",
+     "kind": "grip",
+     "state": "normal",
+     "lap": 13
+    }
+   ],
+   "grip": {
+    "start": "low",
+    "end": "normal",
+    "changes": 1
+   }
+  },
+  "9942": {
+   "year": 2025,
+   "track": "silverstone",
+   "circuit": "Silverstone",
+   "session": "Practice 3",
+   "start": "2025-07-05T10:30:00+00:00",
+   "end": "2025-07-05T11:30:00+00:00",
+   "events": [
+    {
+     "t": "2025-07-05T11:28:54+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9943": {
+   "year": 2025,
+   "track": "silverstone",
+   "circuit": "Silverstone",
+   "session": "Qualifying",
+   "start": "2025-07-05T14:00:00+00:00",
+   "end": "2025-07-05T15:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-07-05T14:17:40+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9947": {
+   "year": 2025,
+   "track": "silverstone",
+   "circuit": "Silverstone",
+   "session": "Race",
+   "start": "2025-07-06T14:00:00+00:00",
+   "end": "2025-07-06T16:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-07-06T13:57:07+00:00",
+     "kind": "drs",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2025-07-06T13:57:09+00:00",
+     "kind": "grip",
+     "state": "low",
+     "lap": 1
+    },
+    {
+     "t": "2025-07-06T14:18:12+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 8
+    },
+    {
+     "t": "2025-07-06T14:18:15+00:00",
+     "kind": "grip",
+     "state": "normal",
+     "lap": 8
+    },
+    {
+     "t": "2025-07-06T14:23:23+00:00",
+     "kind": "drs",
+     "state": "off",
+     "lap": 11
+    },
+    {
+     "t": "2025-07-06T14:23:34+00:00",
+     "kind": "grip",
+     "state": "low",
+     "lap": 11
+    },
+    {
+     "t": "2025-07-06T15:11:42+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 34
+    },
+    {
+     "t": "2025-07-06T15:11:47+00:00",
+     "kind": "grip",
+     "state": "normal",
+     "lap": 34
+    }
+   ],
+   "grip": {
+    "start": "low",
+    "end": "normal",
+    "changes": 3
+   }
+  },
+  "9951": {
+   "year": 2025,
+   "track": "spielberg",
+   "circuit": "Spielberg",
+   "session": "Qualifying",
+   "start": "2025-06-28T14:00:00+00:00",
+   "end": "2025-06-28T15:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-06-28T14:44:02+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9955": {
+   "year": 2025,
+   "track": "spielberg",
+   "circuit": "Spielberg",
+   "session": "Race",
+   "start": "2025-06-29T13:00:00+00:00",
+   "end": "2025-06-29T15:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-06-29T12:57:30+00:00",
+     "kind": "drs",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2025-06-29T13:24:17+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 4
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9956": {
+   "year": 2025,
+   "track": "montreal",
+   "circuit": "Montreal",
+   "session": "Practice 1",
+   "start": "2025-06-13T17:30:00+00:00",
+   "end": "2025-06-13T18:30:00+00:00",
+   "events": [
+    {
+     "t": "2025-06-13T17:52:00+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9958": {
+   "year": 2025,
+   "track": "montreal",
+   "circuit": "Montreal",
+   "session": "Practice 3",
+   "start": "2025-06-14T16:30:00+00:00",
+   "end": "2025-06-14T17:30:00+00:00",
+   "events": [
+    {
+     "t": "2025-06-14T16:56:01+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9959": {
+   "year": 2025,
+   "track": "montreal",
+   "circuit": "Montreal",
+   "session": "Qualifying",
+   "start": "2025-06-14T20:00:00+00:00",
+   "end": "2025-06-14T21:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-06-14T20:17:00+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9963": {
+   "year": 2025,
+   "track": "montreal",
+   "circuit": "Montreal",
+   "session": "Race",
+   "start": "2025-06-15T18:00:00+00:00",
+   "end": "2025-06-15T20:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-06-15T17:57:03+00:00",
+     "kind": "drs",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2025-06-15T18:04:27+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 2
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9971": {
+   "year": 2025,
+   "track": "catalunya",
+   "circuit": "Catalunya",
+   "session": "Race",
+   "start": "2025-06-01T13:00:00+00:00",
+   "end": "2025-06-01T15:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-06-01T12:57:01+00:00",
+     "kind": "drs",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2025-06-01T13:04:41+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 2
+    },
+    {
+     "t": "2025-06-01T14:29:52+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 62
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9972": {
+   "year": 2025,
+   "track": "monte-carlo",
+   "circuit": "Monte Carlo",
+   "session": "Practice 1",
+   "start": "2025-05-23T11:30:00+00:00",
+   "end": "2025-05-23T12:30:00+00:00",
+   "events": [
+    {
+     "t": "2025-05-23T11:41:37+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9973": {
+   "year": 2025,
+   "track": "monte-carlo",
+   "circuit": "Monte Carlo",
+   "session": "Practice 2",
+   "start": "2025-05-23T15:00:00+00:00",
+   "end": "2025-05-23T16:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-05-23T15:09:16+00:00",
+     "kind": "drs",
+     "state": "on"
+    },
+    {
+     "t": "2025-05-23T15:21:25+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9975": {
+   "year": 2025,
+   "track": "monte-carlo",
+   "circuit": "Monte Carlo",
+   "session": "Qualifying",
+   "start": "2025-05-24T14:00:00+00:00",
+   "end": "2025-05-24T15:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-05-24T14:24:16+00:00",
+     "kind": "drs",
+     "state": "on"
+    },
+    {
+     "t": "2025-05-24T14:39:42+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9979": {
+   "year": 2025,
+   "track": "monte-carlo",
+   "circuit": "Monte Carlo",
+   "session": "Race",
+   "start": "2025-05-25T13:00:00+00:00",
+   "end": "2025-05-25T15:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-05-25T12:57:02+00:00",
+     "kind": "drs",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2025-05-25T13:09:31+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 4
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9981": {
+   "year": 2025,
+   "track": "imola",
+   "circuit": "Imola",
+   "session": "Practice 2",
+   "start": "2025-05-16T15:00:00+00:00",
+   "end": "2025-05-16T16:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-05-16T15:57:01+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9983": {
+   "year": 2025,
+   "track": "imola",
+   "circuit": "Imola",
+   "session": "Qualifying",
+   "start": "2025-05-17T14:00:00+00:00",
+   "end": "2025-05-17T15:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-05-17T14:18:23+00:00",
+     "kind": "drs",
+     "state": "on"
+    },
+    {
+     "t": "2025-05-17T14:57:13+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9987": {
+   "year": 2025,
+   "track": "imola",
+   "circuit": "Imola",
+   "session": "Race",
+   "start": "2025-05-18T13:00:00+00:00",
+   "end": "2025-05-18T15:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-05-18T12:57:02+00:00",
+     "kind": "drs",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2025-05-18T13:05:08+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 2
+    },
+    {
+     "t": "2025-05-18T13:46:15+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 31
+    },
+    {
+     "t": "2025-05-18T14:23:33+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 55
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9988": {
+   "year": 2025,
+   "track": "shanghai",
+   "circuit": "Shanghai",
+   "session": "Practice 1",
+   "start": "2025-03-21T03:30:00+00:00",
+   "end": "2025-03-21T04:30:00+00:00",
+   "events": [
+    {
+     "t": "2025-03-21T04:20:55+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9993": {
+   "year": 2025,
+   "track": "shanghai",
+   "circuit": "Shanghai",
+   "session": "Sprint",
+   "start": "2025-03-22T03:00:00+00:00",
+   "end": "2025-03-22T04:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-03-22T02:57:04+00:00",
+     "kind": "drs",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2025-03-22T03:05:37+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 2
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "9998": {
+   "year": 2025,
+   "track": "shanghai",
+   "circuit": "Shanghai",
+   "session": "Race",
+   "start": "2025-03-23T07:00:00+00:00",
+   "end": "2025-03-23T09:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-03-23T06:57:03+00:00",
+     "kind": "drs",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2025-03-23T07:05:33+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 2
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "10000": {
+   "year": 2025,
+   "track": "suzuka",
+   "circuit": "Suzuka",
+   "session": "Practice 2",
+   "start": "2025-04-04T06:00:00+00:00",
+   "end": "2025-04-04T07:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-04-04T06:28:00+00:00",
+     "kind": "drs",
+     "state": "on"
+    },
+    {
+     "t": "2025-04-04T06:39:30+00:00",
+     "kind": "drs",
+     "state": "on"
+    },
+    {
+     "t": "2025-04-04T06:52:00+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "10001": {
+   "year": 2025,
+   "track": "suzuka",
+   "circuit": "Suzuka",
+   "session": "Practice 3",
+   "start": "2025-04-05T02:30:00+00:00",
+   "end": "2025-04-05T03:30:00+00:00",
+   "events": [
+    {
+     "t": "2025-04-05T02:43:10+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "10002": {
+   "year": 2025,
+   "track": "suzuka",
+   "circuit": "Suzuka",
+   "session": "Qualifying",
+   "start": "2025-04-05T06:00:00+00:00",
+   "end": "2025-04-05T07:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-04-05T06:37:30+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "10006": {
+   "year": 2025,
+   "track": "suzuka",
+   "circuit": "Suzuka",
+   "session": "Race",
+   "start": "2025-04-06T05:00:00+00:00",
+   "end": "2025-04-06T07:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-04-06T04:57:06+00:00",
+     "kind": "drs",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2025-04-06T05:05:35+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 2
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "10009": {
+   "year": 2025,
+   "track": "sakhir",
+   "circuit": "Sakhir",
+   "session": "Practice 3",
+   "start": "2025-04-12T12:30:00+00:00",
+   "end": "2025-04-12T13:30:00+00:00",
+   "events": [
+    {
+     "t": "2025-04-12T13:02:57+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "10010": {
+   "year": 2025,
+   "track": "sakhir",
+   "circuit": "Sakhir",
+   "session": "Qualifying",
+   "start": "2025-04-12T16:00:00+00:00",
+   "end": "2025-04-12T17:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-04-12T16:36:00+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "10014": {
+   "year": 2025,
+   "track": "sakhir",
+   "circuit": "Sakhir",
+   "session": "Race",
+   "start": "2025-04-13T15:00:00+00:00",
+   "end": "2025-04-13T17:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-04-13T14:57:04+00:00",
+     "kind": "drs",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2025-04-13T15:05:28+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 2
+    },
+    {
+     "t": "2025-04-13T16:05:49+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 37
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "10016": {
+   "year": 2025,
+   "track": "jeddah",
+   "circuit": "Jeddah",
+   "session": "Practice 2",
+   "start": "2025-04-18T17:00:00+00:00",
+   "end": "2025-04-18T18:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-04-18T17:58:56+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "10018": {
+   "year": 2025,
+   "track": "jeddah",
+   "circuit": "Jeddah",
+   "session": "Qualifying",
+   "start": "2025-04-19T17:00:00+00:00",
+   "end": "2025-04-19T18:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-04-19T17:59:24+00:00",
+     "kind": "drs",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "10022": {
+   "year": 2025,
+   "track": "jeddah",
+   "circuit": "Jeddah",
+   "session": "Race",
+   "start": "2025-04-20T17:00:00+00:00",
+   "end": "2025-04-20T19:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-04-20T16:57:02+00:00",
+     "kind": "drs",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2025-04-20T17:13:13+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 5
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "10028": {
+   "year": 2025,
+   "track": "miami",
+   "circuit": "Miami",
+   "session": "Sprint",
+   "start": "2025-05-03T16:00:00+00:00",
+   "end": "2025-05-03T16:30:00+00:00",
+   "events": [
+    {
+     "t": "2025-05-03T15:57:04+00:00",
+     "kind": "drs",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2025-05-03T16:47:49+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 11
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "10033": {
+   "year": 2025,
+   "track": "miami",
+   "circuit": "Miami",
+   "session": "Race",
+   "start": "2025-05-04T20:00:00+00:00",
+   "end": "2025-05-04T22:00:00+00:00",
+   "events": [
+    {
+     "t": "2025-05-04T19:57:01+00:00",
+     "kind": "drs",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2025-05-04T20:09:09+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 3
+    },
+    {
+     "t": "2025-05-04T20:50:25+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 30
+    },
+    {
+     "t": "2025-05-04T20:56:44+00:00",
+     "kind": "drs",
+     "state": "on",
+     "lap": 34
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   }
+  },
+  "11227": {
+   "year": 2026,
+   "track": "melbourne",
+   "circuit": "Melbourne",
+   "session": "Practice 1",
+   "start": "2026-03-06T01:30:00+00:00",
+   "end": "2026-03-06T02:30:00+00:00",
+   "events": [
+    {
+     "t": "2026-03-06T01:34:57+00:00",
+     "kind": "ot",
+     "state": "on"
+    },
+    {
+     "t": "2026-03-06T02:21:40+00:00",
+     "kind": "ot",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
+   }
+  },
+  "11229": {
+   "year": 2026,
+   "track": "melbourne",
+   "circuit": "Melbourne",
+   "session": "Practice 3",
+   "start": "2026-03-07T01:30:00+00:00",
+   "end": "2026-03-07T02:30:00+00:00",
+   "events": [
+    {
+     "t": "2026-03-07T02:06:16+00:00",
+     "kind": "ot",
+     "state": "on"
+    },
+    {
+     "t": "2026-03-07T02:40:42+00:00",
+     "kind": "ot",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
+   }
+  },
+  "11230": {
+   "year": 2026,
+   "track": "melbourne",
+   "circuit": "Melbourne",
+   "session": "Qualifying",
+   "start": "2026-03-07T05:00:00+00:00",
+   "end": "2026-03-07T06:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-03-07T05:12:17+00:00",
+     "kind": "ot",
+     "state": "on"
+    },
+    {
+     "t": "2026-03-07T06:04:16+00:00",
+     "kind": "ot",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
+   }
+  },
+  "11234": {
+   "year": 2026,
+   "track": "melbourne",
+   "circuit": "Melbourne",
+   "session": "Race",
+   "start": "2026-03-08T04:00:00+00:00",
+   "end": "2026-03-08T06:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-03-08T03:57:02+00:00",
+     "kind": "ot",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2026-03-08T04:04:46+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 1
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "off",
+    "end": "on"
+   }
+  },
+  "11240": {
+   "year": 2026,
+   "track": "shanghai",
+   "circuit": "Shanghai",
+   "session": "Sprint",
+   "start": "2026-03-14T03:00:00+00:00",
+   "end": "2026-03-14T04:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-03-14T02:57:03+00:00",
+     "kind": "ot",
+     "state": "off"
+    },
+    {
+     "t": "2026-03-14T03:05:26+00:00",
+     "kind": "ot",
+     "state": "on"
+    },
+    {
+     "t": "2026-03-14T03:32:59+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 17
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "off",
+    "end": "on"
+   }
+  },
+  "11245": {
+   "year": 2026,
+   "track": "shanghai",
+   "circuit": "Shanghai",
+   "session": "Race",
+   "start": "2026-03-15T07:00:00+00:00",
+   "end": "2026-03-15T09:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-03-15T06:57:22+00:00",
+     "kind": "ot",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2026-03-15T07:05:32+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 1
+    },
+    {
+     "t": "2026-03-15T07:28:22+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 14
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "off",
+    "end": "on"
+   }
+  },
+  "11253": {
+   "year": 2026,
+   "track": "suzuka",
+   "circuit": "Suzuka",
+   "session": "Race",
+   "start": "2026-03-29T05:00:00+00:00",
+   "end": "2026-03-29T07:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-03-29T05:07:05+00:00",
+     "kind": "ot",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2026-03-29T05:15:26+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 1
+    },
+    {
+     "t": "2026-03-29T06:02:11+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 28
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
+   }
+  },
+  "11270": {
+   "year": 2026,
+   "track": "miami",
+   "circuit": "Miami",
+   "session": "Practice 1",
+   "start": "2026-05-01T16:00:00+00:00",
+   "end": "2026-05-01T17:30:00+00:00",
+   "events": [
+    {
+     "t": "2026-05-01T16:00:11+00:00",
+     "kind": "grip",
+     "state": "low"
+    },
+    {
+     "t": "2026-05-01T16:01:38+00:00",
+     "kind": "grip",
+     "state": "normal"
+    },
+    {
+     "t": "2026-05-01T17:38:46+00:00",
+     "kind": "grip",
+     "state": "low"
+    },
+    {
+     "t": "2026-05-01T17:39:49+00:00",
+     "kind": "grip",
+     "state": "normal"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 2
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
+   }
+  },
+  "11275": {
+   "year": 2026,
+   "track": "miami",
+   "circuit": "Miami",
+   "session": "Sprint",
+   "start": "2026-05-02T16:00:00+00:00",
+   "end": "2026-05-02T17:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-05-02T15:57:03+00:00",
+     "kind": "ot",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2026-05-02T16:05:13+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 1
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "off",
+    "end": "on"
+   }
+  },
+  "11280": {
+   "year": 2026,
+   "track": "miami",
+   "circuit": "Miami",
+   "session": "Race",
+   "start": "2026-05-03T17:00:00+00:00",
+   "end": "2026-05-03T19:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-05-03T16:57:05+00:00",
+     "kind": "ot",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2026-05-03T17:05:27+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 1
+    },
+    {
+     "t": "2026-05-03T17:12:15+00:00",
+     "kind": "ot",
+     "state": "off",
+     "lap": 6
+    },
+    {
+     "t": "2026-05-03T17:26:21+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 12
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "off",
+    "end": "on"
+   }
+  },
+  "11281": {
+   "year": 2026,
+   "track": "montreal",
+   "circuit": "Montreal",
+   "session": "Practice 1",
+   "start": "2026-05-22T16:30:00+00:00",
+   "end": "2026-05-22T17:30:00+00:00",
+   "events": [
+    {
+     "t": "2026-05-22T16:29:42+00:00",
+     "kind": "grip",
+     "state": "low"
+    },
+    {
+     "t": "2026-05-22T16:31:08+00:00",
+     "kind": "grip",
+     "state": "normal"
+    },
+    {
+     "t": "2026-05-22T16:43:14+00:00",
+     "kind": "ot",
+     "state": "on"
+    },
+    {
+     "t": "2026-05-22T17:00:56+00:00",
+     "kind": "ot",
+     "state": "on"
+    },
+    {
+     "t": "2026-05-22T17:45:24+00:00",
+     "kind": "ot",
+     "state": "on"
+    },
+    {
+     "t": "2026-05-22T17:55:17+00:00",
+     "kind": "grip",
+     "state": "low"
+    }
+   ],
+   "grip": {
+    "start": "low",
+    "end": "normal",
+    "changes": 1
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
+   }
+  },
+  "11282": {
+   "year": 2026,
+   "track": "montreal",
+   "circuit": "Montreal",
+   "session": "Sprint Qualifying",
+   "start": "2026-05-22T20:30:00+00:00",
+   "end": "2026-05-22T21:14:00+00:00",
+   "events": [
+    {
+     "t": "2026-05-22T20:42:21+00:00",
+     "kind": "ot",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
+   }
+  },
+  "11286": {
+   "year": 2026,
+   "track": "montreal",
+   "circuit": "Montreal",
+   "session": "Sprint",
+   "start": "2026-05-23T16:00:00+00:00",
+   "end": "2026-05-23T17:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-05-23T15:57:04+00:00",
+     "kind": "ot",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2026-05-23T16:04:26+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 1
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "off",
+    "end": "on"
+   }
+  },
+  "11291": {
+   "year": 2026,
+   "track": "montreal",
+   "circuit": "Montreal",
+   "session": "Race",
+   "start": "2026-05-24T20:00:00+00:00",
+   "end": "2026-05-24T22:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-05-24T19:57:04+00:00",
+     "kind": "ot",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2026-05-24T20:11:04+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 1
+    },
+    {
+     "t": "2026-05-24T20:51:47+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 32
+    },
+    {
+     "t": "2026-05-24T21:09:57+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 46
+    },
+    {
+     "t": "2026-05-24T21:19:46+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 54
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "off",
+    "end": "on"
+   }
+  },
+  "11292": {
+   "year": 2026,
+   "track": "monte-carlo",
+   "circuit": "Monte Carlo",
+   "session": "Practice 1",
+   "start": "2026-06-05T11:30:00+00:00",
+   "end": "2026-06-05T12:30:00+00:00",
+   "events": [
+    {
+     "t": "2026-06-05T12:00:03+00:00",
+     "kind": "ot",
+     "state": "on"
+    },
+    {
+     "t": "2026-06-05T12:07:18+00:00",
+     "kind": "ot",
+     "state": "on"
+    },
+    {
+     "t": "2026-06-05T12:29:02+00:00",
+     "kind": "ot",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
+   }
+  },
+  "11293": {
+   "year": 2026,
+   "track": "monte-carlo",
+   "circuit": "Monte Carlo",
+   "session": "Practice 2",
+   "start": "2026-06-05T15:00:00+00:00",
+   "end": "2026-06-05T16:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-06-05T15:57:04+00:00",
+     "kind": "ot",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
+   }
+  },
+  "11294": {
+   "year": 2026,
+   "track": "monte-carlo",
+   "circuit": "Monte Carlo",
+   "session": "Practice 3",
+   "start": "2026-06-06T10:30:00+00:00",
+   "end": "2026-06-06T11:30:00+00:00",
+   "events": [
+    {
+     "t": "2026-06-06T11:17:25+00:00",
+     "kind": "ot",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
+   }
+  },
+  "11295": {
+   "year": 2026,
+   "track": "monte-carlo",
+   "circuit": "Monte Carlo",
+   "session": "Qualifying",
+   "start": "2026-06-06T14:00:00+00:00",
+   "end": "2026-06-06T15:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-06-06T14:17:56+00:00",
+     "kind": "ot",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
+   }
+  },
+  "11299": {
+   "year": 2026,
+   "track": "monte-carlo",
+   "circuit": "Monte Carlo",
+   "session": "Race",
+   "start": "2026-06-07T13:00:00+00:00",
+   "end": "2026-06-07T15:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-06-07T12:57:03+00:00",
+     "kind": "ot",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2026-06-07T13:04:20+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 1
+    },
+    {
+     "t": "2026-06-07T14:20:02+00:00",
+     "kind": "ot",
+     "state": "off",
+     "lap": 60
+    },
+    {
+     "t": "2026-06-07T15:17:59+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 71
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "off",
+    "end": "off"
+   }
+  },
+  "11302": {
+   "year": 2026,
+   "track": "catalunya",
+   "circuit": "Catalunya",
+   "session": "Practice 3",
+   "start": "2026-06-13T10:30:00+00:00",
+   "end": "2026-06-13T11:30:00+00:00",
+   "events": [
+    {
+     "t": "2026-06-13T11:06:28+00:00",
+     "kind": "ot",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
+   }
+  },
+  "11303": {
+   "year": 2026,
+   "track": "catalunya",
+   "circuit": "Catalunya",
+   "session": "Qualifying",
+   "start": "2026-06-13T14:00:00+00:00",
+   "end": "2026-06-13T15:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-06-13T14:53:46+00:00",
+     "kind": "ot",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
+   }
+  },
+  "11307": {
+   "year": 2026,
+   "track": "catalunya",
+   "circuit": "Catalunya",
+   "session": "Race",
+   "start": "2026-06-14T13:00:00+00:00",
+   "end": "2026-06-14T15:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-06-14T12:57:03+00:00",
+     "kind": "ot",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2026-06-14T13:04:42+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 1
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "off",
+    "end": "on"
+   }
+  },
+  "11315": {
+   "year": 2026,
+   "track": "spielberg",
+   "circuit": "Spielberg",
+   "session": "Race",
+   "start": "2026-06-28T13:00:00+00:00",
+   "end": "2026-06-28T15:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-06-28T12:57:21+00:00",
+     "kind": "ot",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2026-06-28T13:04:24+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 1
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "off",
+    "end": "on"
+   }
+  },
+  "11321": {
+   "year": 2026,
+   "track": "silverstone",
+   "circuit": "Silverstone",
+   "session": "Sprint",
+   "start": "2026-07-04T11:00:00+00:00",
+   "end": "2026-07-04T12:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-07-04T10:57:20+00:00",
+     "kind": "ot",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2026-07-04T11:05:27+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 1
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "off",
+    "end": "on"
+   }
+  },
+  "11326": {
+   "year": 2026,
+   "track": "silverstone",
+   "circuit": "Silverstone",
+   "session": "Race",
+   "start": "2026-07-05T14:00:00+00:00",
+   "end": "2026-07-05T16:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-07-05T13:57:10+00:00",
+     "kind": "ot",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2026-07-05T14:05:23+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 1
+    },
+    {
+     "t": "2026-07-05T15:18:50+00:00",
+     "kind": "ot",
+     "state": "off",
+     "lap": 48
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "off",
+    "end": "off"
+   }
+  },
+  "11327": {
+   "year": 2026,
+   "track": "spa-francorchamps",
+   "circuit": "Spa-Francorchamps",
+   "session": "Practice 1",
+   "start": "2026-07-17T11:30:00+00:00",
+   "end": "2026-07-17T12:30:00+00:00",
+   "events": [
+    {
+     "t": "2026-07-17T11:29:50+00:00",
+     "kind": "grip",
+     "state": "low"
+    },
+    {
+     "t": "2026-07-17T11:31:54+00:00",
+     "kind": "grip",
+     "state": "normal"
+    }
+   ],
+   "grip": {
+    "start": "low",
+    "end": "normal",
+    "changes": 1
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
+   }
+  },
+  "11328": {
+   "year": 2026,
+   "track": "spa-francorchamps",
+   "circuit": "Spa-Francorchamps",
+   "session": "Practice 2",
+   "start": "2026-07-17T15:00:00+00:00",
+   "end": "2026-07-17T16:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-07-17T15:14:23+00:00",
+     "kind": "ot",
+     "state": "on"
+    },
+    {
+     "t": "2026-07-17T15:48:28+00:00",
+     "kind": "ot",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
+   }
+  },
+  "11330": {
+   "year": 2026,
+   "track": "spa-francorchamps",
+   "circuit": "Spa-Francorchamps",
+   "session": "Qualifying",
+   "start": "2026-07-18T14:00:00+00:00",
+   "end": "2026-07-18T15:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-07-18T14:57:28+00:00",
+     "kind": "ot",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
+   }
+  },
+  "11334": {
+   "year": 2026,
+   "track": "spa-francorchamps",
+   "circuit": "Spa-Francorchamps",
+   "session": "Race",
+   "start": "2026-07-19T13:00:00+00:00",
+   "end": "2026-07-19T15:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-07-19T12:57:25+00:00",
+     "kind": "ot",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2026-07-19T13:16:13+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 6
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "off",
+    "end": "on"
+   }
+  },
+  "11335": {
+   "year": 2026,
+   "track": "hungaroring",
+   "circuit": "Hungaroring",
+   "session": "Practice 1",
+   "start": "2026-07-24T11:30:00+00:00",
+   "end": "2026-07-24T12:30:00+00:00",
+   "events": [
+    {
+     "t": "2026-07-24T12:09:11+00:00",
+     "kind": "ot",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
+   }
+  },
+  "11336": {
+   "year": 2026,
+   "track": "hungaroring",
+   "circuit": "Hungaroring",
+   "session": "Practice 2",
+   "start": "2026-07-24T15:00:00+00:00",
+   "end": "2026-07-24T16:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-07-24T15:29:56+00:00",
+     "kind": "ot",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
+   }
+  },
+  "11337": {
+   "year": 2026,
+   "track": "hungaroring",
+   "circuit": "Hungaroring",
+   "session": "Practice 3",
+   "start": "2026-07-25T10:30:00+00:00",
+   "end": "2026-07-25T11:30:00+00:00",
+   "events": [
+    {
+     "t": "2026-07-25T10:52:25+00:00",
+     "kind": "ot",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
+   }
+  },
+  "11342": {
+   "year": 2026,
+   "track": "hungaroring",
+   "circuit": "Hungaroring",
+   "session": "Race",
+   "start": "2026-07-26T13:00:00+00:00",
+   "end": "2026-07-26T15:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-07-26T12:57:04+00:00",
+     "kind": "ot",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2026-07-26T13:04:39+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 1
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "off",
+    "end": "on"
+   }
+  },
+  "11343": {
+   "year": 2026,
+   "track": "zandvoort",
+   "circuit": "Zandvoort",
+   "session": "Practice 1",
+   "start": "2026-08-21T10:30:00+00:00",
+   "end": "2026-08-21T11:30:00+00:00",
+   "events": [
+    {
+     "t": "2026-08-21T10:27:43+00:00",
+     "kind": "wet",
+     "state": "wet"
+    },
+    {
+     "t": "2026-08-21T10:29:04+00:00",
+     "kind": "grip",
+     "state": "low"
+    },
+    {
+     "t": "2026-08-21T10:32:00+00:00",
+     "kind": "ot",
+     "state": "off"
+    },
+    {
+     "t": "2026-08-21T10:38:31+00:00",
+     "kind": "grip",
+     "state": "normal"
+    },
+    {
+     "t": "2026-08-21T10:38:42+00:00",
+     "kind": "ot",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "low",
+    "end": "normal",
+    "changes": 1
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
+   }
+  },
+  "11348": {
+   "year": 2026,
+   "track": "zandvoort",
+   "circuit": "Zandvoort",
+   "session": "Sprint",
+   "start": "2026-08-22T10:00:00+00:00",
+   "end": "2026-08-22T11:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-08-22T09:57:03+00:00",
+     "kind": "ot",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2026-08-22T10:04:16+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 1
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "off",
+    "end": "on"
+   }
+  },
+  "11353": {
+   "year": 2026,
+   "track": "zandvoort",
+   "circuit": "Zandvoort",
+   "session": "Race",
+   "start": "2026-08-23T13:00:00+00:00",
+   "end": "2026-08-23T15:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-08-23T12:14:24+00:00",
+     "kind": "grip",
+     "state": "low",
+     "lap": 1
+    },
+    {
+     "t": "2026-08-23T12:14:27+00:00",
+     "kind": "ot",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2026-08-23T12:51:54+00:00",
+     "kind": "grip",
+     "state": "normal",
+     "lap": 1
+    },
+    {
+     "t": "2026-08-23T13:04:38+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 1
+    },
+    {
+     "t": "2026-08-23T13:41:53+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 6
+    },
+    {
+     "t": "2026-08-23T14:48:55+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 57
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "off",
+    "end": "on"
+   }
+  },
+  "11354": {
+   "year": 2026,
+   "track": "monza",
+   "circuit": "Monza",
+   "session": "Practice 1",
+   "start": "2026-09-04T10:30:00+00:00",
+   "end": "2026-09-04T11:30:00+00:00",
+   "events": [
+    {
+     "t": "2026-09-04T10:51:36+00:00",
+     "kind": "ot",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
+   }
+  },
+  "11361": {
+   "year": 2026,
+   "track": "monza",
+   "circuit": "Monza",
+   "session": "Race",
+   "start": "2026-09-06T13:00:00+00:00",
+   "end": "2026-09-06T15:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-09-06T12:57:04+00:00",
+     "kind": "ot",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2026-09-06T13:04:46+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 1
+    },
+    {
+     "t": "2026-09-06T13:06:49+00:00",
+     "kind": "ot",
+     "state": "off",
+     "lap": 3
+    },
+    {
+     "t": "2026-09-06T13:46:54+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 6
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "off",
+    "end": "on"
+   }
+  },
+  "11363": {
+   "year": 2026,
+   "track": "madring",
+   "circuit": "Madring",
+   "session": "Practice 2",
+   "start": "2026-09-11T15:00:00+00:00",
+   "end": "2026-09-11T16:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-09-11T15:38:43+00:00",
+     "kind": "ot",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
+   }
+  },
+  "11364": {
+   "year": 2026,
+   "track": "madring",
+   "circuit": "Madring",
+   "session": "Practice 3",
+   "start": "2026-09-12T10:30:00+00:00",
+   "end": "2026-09-12T11:30:00+00:00",
+   "events": [
+    {
+     "t": "2026-09-12T10:56:21+00:00",
+     "kind": "ot",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
+   }
+  },
+  "11369": {
+   "year": 2026,
+   "track": "madring",
+   "circuit": "Madring",
+   "session": "Race",
+   "start": "2026-09-13T13:00:00+00:00",
+   "end": "2026-09-13T15:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-09-13T12:57:03+00:00",
+     "kind": "ot",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2026-09-13T13:05:39+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 1
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "off",
+    "end": "on"
+   }
+  },
+  "11370": {
+   "year": 2026,
+   "track": "baku",
+   "circuit": "Baku",
+   "session": "Practice 1",
+   "start": "2026-09-24T08:30:00+00:00",
+   "end": "2026-09-24T09:30:00+00:00",
+   "events": [
+    {
+     "t": "2026-09-24T08:55:57+00:00",
+     "kind": "ot",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
+   }
+  },
+  "11371": {
+   "year": 2026,
+   "track": "baku",
+   "circuit": "Baku",
+   "session": "Practice 2",
+   "start": "2026-09-24T12:00:00+00:00",
+   "end": "2026-09-24T13:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-09-24T12:25:02+00:00",
+     "kind": "ot",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
+   }
+  },
+  "11377": {
+   "year": 2026,
+   "track": "baku",
+   "circuit": "Baku",
+   "session": "Race",
+   "start": "2026-09-26T11:00:00+00:00",
+   "end": "2026-09-26T13:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-09-26T10:57:18+00:00",
+     "kind": "ot",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2026-09-26T11:05:18+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 1
+    },
+    {
+     "t": "2026-09-26T11:58:05+00:00",
+     "kind": "ot",
+     "state": "off",
+     "lap": 31
+    },
+    {
+     "t": "2026-09-26T12:21:01+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 40
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "off",
+    "end": "on"
+   }
+  },
+  "11379": {
+   "year": 2026,
+   "track": "singapore",
+   "circuit": "Singapore",
+   "session": "Sprint Qualifying",
+   "start": "2026-10-09T12:30:00+00:00",
+   "end": "2026-10-09T13:14:00+00:00",
+   "events": [
+    {
+     "t": "2026-10-09T12:52:08+00:00",
+     "kind": "ot",
+     "state": "on"
+    },
+    {
+     "t": "2026-10-09T12:52:36+00:00",
+     "kind": "ot",
+     "state": "off"
+    },
+    {
+     "t": "2026-10-09T13:05:13+00:00",
+     "kind": "ot",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
+   }
+  },
+  "11383": {
+   "year": 2026,
+   "track": "singapore",
+   "circuit": "Singapore",
+   "session": "Sprint",
+   "start": "2026-10-10T09:00:00+00:00",
+   "end": "2026-10-10T09:30:00+00:00",
+   "events": [
+    {
+     "t": "2026-10-10T08:54:48+00:00",
+     "kind": "grip",
+     "state": "low",
+     "lap": 1
+    },
+    {
+     "t": "2026-10-10T08:54:51+00:00",
+     "kind": "ot",
+     "state": "off",
+     "lap": 1
+    }
+   ],
+   "grip": {
+    "start": "low",
+    "end": "low",
+    "changes": 0
+   },
+   "ot": {
+    "start": "off",
+    "end": "off"
+   }
+  },
+  "11388": {
+   "year": 2026,
+   "track": "singapore",
+   "circuit": "Singapore",
+   "session": "Race",
+   "start": "2026-10-11T12:00:00+00:00",
+   "end": "2026-10-11T14:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-10-11T11:57:04+00:00",
+     "kind": "ot",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2026-10-11T12:05:07+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 1
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "off",
+    "end": "on"
+   }
+  },
+  "11389": {
+   "year": 2026,
+   "track": "austin",
+   "circuit": "Austin",
+   "session": "Practice 1",
+   "start": "2026-10-23T17:30:00+00:00",
+   "end": "2026-10-23T18:30:00+00:00",
+   "events": [
+    {
+     "t": "2026-10-23T18:31:46+00:00",
+     "kind": "grip",
+     "state": "low"
+    },
+    {
+     "t": "2026-10-23T18:31:49+00:00",
+     "kind": "ot",
+     "state": "off"
+    },
+    {
+     "t": "2026-10-23T18:37:15+00:00",
+     "kind": "ot",
+     "state": "on"
+    },
+    {
+     "t": "2026-10-23T18:37:27+00:00",
+     "kind": "grip",
+     "state": "normal"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
+   }
+  },
+  "11396": {
+   "year": 2026,
+   "track": "austin",
+   "circuit": "Austin",
+   "session": "Race",
+   "start": "2026-10-25T20:00:00+00:00",
+   "end": "2026-10-25T22:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-10-25T19:57:03+00:00",
+     "kind": "ot",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2026-10-25T20:05:23+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 1
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "off",
+    "end": "on"
+   }
+  },
+  "11397": {
+   "year": 2026,
+   "track": "mexico-city",
+   "circuit": "Mexico City",
+   "session": "Practice 1",
+   "start": "2026-10-30T18:30:00+00:00",
+   "end": "2026-10-30T19:30:00+00:00",
+   "events": [
+    {
+     "t": "2026-10-30T19:18:39+00:00",
+     "kind": "ot",
+     "state": "on"
+    },
+    {
+     "t": "2026-10-30T19:31:29+00:00",
+     "kind": "grip",
+     "state": "low"
+    },
+    {
+     "t": "2026-10-30T19:31:31+00:00",
+     "kind": "ot",
+     "state": "off"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
+   }
+  },
+  "11398": {
+   "year": 2026,
+   "track": "mexico-city",
+   "circuit": "Mexico City",
+   "session": "Practice 2",
+   "start": "2026-10-30T22:00:00+00:00",
+   "end": "2026-10-30T23:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-10-30T22:15:30+00:00",
+     "kind": "ot",
+     "state": "on"
+    },
+    {
+     "t": "2026-10-30T22:29:42+00:00",
+     "kind": "ot",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
+   }
+  },
+  "11404": {
+   "year": 2026,
+   "track": "mexico-city",
+   "circuit": "Mexico City",
+   "session": "Race",
+   "start": "2026-11-01T20:00:00+00:00",
+   "end": "2026-11-01T22:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-11-01T19:57:01+00:00",
+     "kind": "ot",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2026-11-01T20:04:32+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 1
+    },
+    {
+     "t": "2026-11-01T21:04:06+00:00",
+     "kind": "ot",
+     "state": "off",
+     "lap": 44
+    },
+    {
+     "t": "2026-11-01T21:49:18+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 47
+    },
+    {
+     "t": "2026-11-01T22:05:02+00:00",
+     "kind": "ot",
+     "state": "off",
+     "lap": 59
+    },
+    {
+     "t": "2026-11-01T22:13:00+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 63
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "off",
+    "end": "on"
+   }
+  },
+  "11405": {
+   "year": 2026,
+   "track": "interlagos",
+   "circuit": "Interlagos",
+   "session": "Practice 1",
+   "start": "2026-11-06T15:30:00+00:00",
+   "end": "2026-11-06T16:30:00+00:00",
+   "events": [
+    {
+     "t": "2026-11-06T15:44:24+00:00",
+     "kind": "ot",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
+   }
+  },
+  "11408": {
+   "year": 2026,
+   "track": "interlagos",
+   "circuit": "Interlagos",
+   "session": "Qualifying",
+   "start": "2026-11-07T18:00:00+00:00",
+   "end": "2026-11-07T19:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-11-07T17:52:48+00:00",
+     "kind": "wet",
+     "state": "wet"
+    },
+    {
+     "t": "2026-11-07T17:52:56+00:00",
+     "kind": "grip",
+     "state": "low"
+    },
+    {
+     "t": "2026-11-07T17:52:58+00:00",
+     "kind": "ot",
+     "state": "off"
+    }
+   ],
+   "grip": {
+    "start": "low",
+    "end": "low",
+    "changes": 0
+   },
+   "ot": {
+    "start": "off",
+    "end": "off"
+   }
+  },
+  "11412": {
+   "year": 2026,
+   "track": "interlagos",
+   "circuit": "Interlagos",
+   "session": "Race",
+   "start": "2026-11-08T17:00:00+00:00",
+   "end": "2026-11-08T19:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-11-08T16:13:20+00:00",
+     "kind": "grip",
+     "state": "low",
+     "lap": 1
+    },
+    {
+     "t": "2026-11-08T16:13:22+00:00",
+     "kind": "ot",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2026-11-08T17:35:46+00:00",
+     "kind": "grip",
+     "state": "normal",
+     "lap": 23
+    },
+    {
+     "t": "2026-11-08T17:35:48+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 23
+    },
+    {
+     "t": "2026-11-08T18:24:42+00:00",
+     "kind": "grip",
+     "state": "low",
+     "lap": 62
+    },
+    {
+     "t": "2026-11-08T18:24:44+00:00",
+     "kind": "ot",
+     "state": "off",
+     "lap": 62
+    }
+   ],
+   "grip": {
+    "start": "low",
+    "end": "low",
+    "changes": 2
+   },
+   "ot": {
+    "start": "off",
+    "end": "off"
+   }
+  },
+  "11465": {
+   "year": 2026,
+   "track": "sakhir",
+   "circuit": "Sakhir",
+   "session": "Day 1",
+   "start": "2026-02-11T07:00:00+00:00",
+   "end": "2026-02-11T16:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-02-11T08:38:43+00:00",
+     "kind": "ot",
+     "state": "on"
+    },
+    {
+     "t": "2026-02-11T13:34:24+00:00",
+     "kind": "ot",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
+   }
+  },
+  "11466": {
+   "year": 2026,
+   "track": "sakhir",
+   "circuit": "Sakhir",
+   "session": "Day 2",
+   "start": "2026-02-12T07:00:00+00:00",
+   "end": "2026-02-12T16:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-02-12T07:02:01+00:00",
+     "kind": "ot",
+     "state": "on"
+    },
+    {
+     "t": "2026-02-12T08:02:32+00:00",
+     "kind": "ot",
+     "state": "on"
+    },
+    {
+     "t": "2026-02-12T13:37:40+00:00",
+     "kind": "ot",
+     "state": "on"
+    },
+    {
+     "t": "2026-02-12T13:55:57+00:00",
+     "kind": "ot",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
+   }
+  },
+  "11467": {
+   "year": 2026,
+   "track": "sakhir",
+   "circuit": "Sakhir",
+   "session": "Day 3",
+   "start": "2026-02-13T07:00:00+00:00",
+   "end": "2026-02-13T16:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-02-13T07:51:48+00:00",
+     "kind": "ot",
+     "state": "on"
+    },
+    {
+     "t": "2026-02-13T16:51:01+00:00",
+     "kind": "ot",
+     "state": "on"
+    },
+    {
+     "t": "2026-02-13T16:51:05+00:00",
+     "kind": "grip",
+     "state": "low"
+    },
+    {
+     "t": "2026-02-13T16:53:24+00:00",
+     "kind": "ot",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
+   }
+  },
+  "11468": {
+   "year": 2026,
+   "track": "sakhir",
+   "circuit": "Sakhir",
+   "session": "Day 3",
+   "start": "2026-02-20T07:00:00+00:00",
+   "end": "2026-02-20T16:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-02-20T09:23:00+00:00",
+     "kind": "ot",
+     "state": "on"
+    },
+    {
+     "t": "2026-02-20T11:02:14+00:00",
+     "kind": "ot",
+     "state": "on"
+    },
+    {
+     "t": "2026-02-20T16:02:22+00:00",
+     "kind": "ot",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
+   }
+  },
+  "11469": {
+   "year": 2026,
+   "track": "sakhir",
+   "circuit": "Sakhir",
+   "session": "Day 2",
+   "start": "2026-02-19T07:00:00+00:00",
+   "end": "2026-02-19T16:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-02-19T11:01:26+00:00",
+     "kind": "ot",
+     "state": "on"
+    },
+    {
+     "t": "2026-02-19T11:57:07+00:00",
+     "kind": "ot",
+     "state": "on"
+    },
+    {
+     "t": "2026-02-19T13:17:02+00:00",
+     "kind": "ot",
+     "state": "on"
+    },
+    {
+     "t": "2026-02-19T16:01:54+00:00",
+     "kind": "ot",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
+   }
+  },
+  "11470": {
+   "year": 2026,
+   "track": "sakhir",
+   "circuit": "Sakhir",
+   "session": "Day 1",
+   "start": "2026-02-18T07:00:00+00:00",
+   "end": "2026-02-18T16:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-02-18T13:22:32+00:00",
+     "kind": "ot",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
+   }
+  },
+  "11731": {
+   "year": 2026,
+   "track": "kuala-lumpur",
+   "circuit": "Kuala Lumpur",
+   "session": "Race",
+   "start": "2026-10-04T07:00:00+00:00",
+   "end": "2026-10-04T09:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-10-04T06:19:37+00:00",
+     "kind": "grip",
+     "state": "low",
+     "lap": 1
+    },
+    {
+     "t": "2026-10-04T06:19:41+00:00",
+     "kind": "ot",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2026-10-04T09:04:57+00:00",
+     "kind": "grip",
+     "state": "normal",
+     "lap": 15
+    },
+    {
+     "t": "2026-10-04T09:05:00+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 15
+    },
+    {
+     "t": "2026-10-04T09:58:26+00:00",
+     "kind": "ot",
+     "state": "off",
+     "lap": 45
+    },
+    {
+     "t": "2026-10-04T10:13:59+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 52
+    }
+   ],
+   "grip": {
+    "start": "low",
+    "end": "low",
+    "changes": 0
+   },
+   "ot": {
+    "start": "off",
+    "end": "off"
+   }
+  }
+ }
+}

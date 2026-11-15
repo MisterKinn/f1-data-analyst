@@ -96,8 +96,10 @@ export function lapsimKernel() {
   // ERS-K DC power limit (W) as a function of speed (m/s) for each rule set.
   // 2026–2028: Section C, Article C5.2.7/C5.2.8i (Overtake not active). Issue 21, 19 Oct 2026.
   // 2027/2028 cap the deploy power at 300 kW (WMSC, June 2026); the speed taper is unchanged.
-  function erskLimitW(rule, v, pMax) {
+  function erskLimitW(rule, v, pMax, ot) {
     const kph = v * 3.6;
+    // C5.2.8 ii (Overtake active): 7100 - 20 * kph below 355 kph, under the 350 kW cap of C5.2.7
+    if (rule === 'f1-2026' && ot) return Math.max(0, Math.min(pMax / 1000, kph < 355 ? 7100 - 20 * kph : 0)) * 1000;
     if (rule === 'f1-2026') {
       let p;
       if (kph < 340) p = 1800 - 5 * kph;
@@ -149,7 +151,7 @@ export function lapsimKernel() {
     const windSpeed = env.windSpeed ?? 0, windFrom = env.windFromDeg ?? 0;
     const t = makeTyre(car);
     const mg = t.m * G;
-    const mu = track.mu, vScale = track.vScale, aeroLow = track.aeroLow, grade = track.grade, heading = track.heading;
+    const mu = track.mu, vScale = track.vScale, aeroLow = track.aeroLow, grade = track.grade, heading = track.heading, otOn = !!track.otOn;
     const etaD = car.etaDrive ?? 0.96, etaK = car.etaErs ?? 0.95;
     const pIce = car.pIce * iceFactor, pAt = powertrain(car, iceFactor); // pAt(v): engine power at road speed v (torque curve and gears; flat pIce without them)
     const ers = car.ers || {pMax: 0};
@@ -180,9 +182,10 @@ export function lapsimKernel() {
       return axleLateral(t, t.muY0, W * (1 - t.rearStatic) + L * (1 - t.rearAero), W * t.rearStatic + L * t.rearAero, v * v * Math.abs(track.kappa[i]));
     };
     const pureCap = (i, N) => t.axle ? tyreSum(t, t.muY0, N) : capacity(t.muY0, t.dmu, t.fz0, N);
-    const lowAt = i => !!(aeroLow && aeroLow[i]);
-    const clAt = (i, low) => low ? (car.clALow ?? car.clA) : car.clA;
-    const cdAt = (i, low) => low ? (car.cdALow ?? car.cdA) : car.cdA;
+    // aeroLow[i]: share of the low-drag change (1 = full activation; a fraction = partial activation, 2026 Low Grip zones, B7.1.2 b)
+    const lowAt = i => aeroLow ? Math.min(1, Math.max(0, Number(aeroLow[i]) || 0)) : 0;
+    const clAt = (i, low) => car.clA + low * ((car.clALow ?? car.clA) - car.clA);
+    const cdAt = (i, low) => car.cdA + low * ((car.cdALow ?? car.cdA) - car.cdA);
     const muAt = i => grip * (mu ? mu[i] : 1);
     const vAir = (v, i) => Math.max(0, v - tail[i]);
 
@@ -258,7 +261,7 @@ export function lapsimKernel() {
           const vi = Math.max(v[i], 1);
           const low = lowAt(i);
           const va = vAir(vi, i), L = aeroFactor * clAt(i, low) * va * va, N = normalAt(vi, i, L);
-          const pErs = vi < vCut && (!track || soc > 0) ? erskLimitW(ers.rule, vi, ers.pMax || 0) : 0;
+          const pErs = vi < vCut && (!track || soc > 0) ? erskLimitW(ers.rule, vi, ers.pMax || 0, otOn) : 0;
           const pI = pAt(vi), fPow = (pI * etaD + pErs * etaK * etaD) / vi;
           const nRear = t.rearStatic * (kv ? N - L : mg * cosG[i]) + t.rearAero * L;
           const muX = muAt(i) * (t.muXTrac / t.muY0) * pureCap(i, N) / N;

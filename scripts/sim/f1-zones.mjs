@@ -4,6 +4,7 @@
 // the braking point of the next numbered turn (the documents give only the start). Positions use the track's official turn numbers.
 import {readFileSync, writeFileSync} from 'node:fs';
 import {lapsimAllTracks as T} from '../../worker/lapsim/tracks.js';
+import {eventFor} from '../../worker/lapsim/names.js';
 import {lapsimTrackView} from '../../worker/lapsim/track-view-data.js';
 import {lapsimKernel} from '../../worker/lapsim/kernel.js';
 import {carsFor} from '../../worker/lapsim/scenario.js';
@@ -64,13 +65,19 @@ const out = {};
 for (const e of raw.events) {
   const id = e.year >= 2026 && /^Spanish/i.test(e.event) ? 'madring' : e.track; if (!T[id]) continue; // 2026: the Spanish GP moved to Madring
   // a race held away from its home circuit (2026 "Bahrain Grand Prix in Malaysia" ran at Sepang): its map is not this circuit's, so skip it
-  if ((e.docs || []).some(d => /_grand_prix_in_[a-z]+_-/.test(d.url || ''))) continue;
+  // (stored under the circuit it ran at, it is that circuit's map: eventFor gives the event there)
+  if ((e.docs || []).some(d => /_grand_prix_in_[a-z]+_-/.test(d.url || '')) && !eventFor(id, e.year)) continue;
   // two columns run together in the PDF text: "20m after T17 Exit T19" is "20m after T17" then "Exit T19", not the exit of T17
   const text = e.docs.flatMap(d => d.lines.map(l => l.text)).join('\n').replace(/(T\d+[A-Z]?) (Exit|Entry|Apex|Mid)(?= (?:of )?T(?:urn)?\s?\d)/gi, '$1 | $2'), doc = e.docs.find(d => d.lines.length) || e.docs[0];
   if (e.year >= 2026) {
     const zones = [], marks = [];
     for (const ln of text.split('\n')) { const m = /-\s*-?\s*ZONE\s*A(\d+)/i.exec(ln); if (!m) continue; const head = ln.slice(0, m.index), before = [...head.matchAll(new RegExp(POS, 'gi'))].pop(); if (!before || /n\/a/i.test(head.slice(before.index + before[0].length))) continue;
-      const s = at(id, before[0]), n = Number(m[1]); if (s != null && !zones.some(z => z.n === n)) zones.push({n, from: Math.round(s), to: Math.round(zoneEnd(id, s))}); }
+      const s = at(id, before[0]), n = Number(m[1]); if (s == null || zones.some(z => z.n === n)) continue;
+      const z = {n, from: Math.round(s), to: Math.round(zoneEnd(id, s))};
+      // owner 2026-11-16: the column after "ZONE An" is the low-grip activation (Alt set, Low Grip Conditions B1.5.11); n/a = zone off
+      const tail = ln.slice(ln.toUpperCase().lastIndexOf('ZONE A' + n) + 6 + String(n).length), lp = new RegExp(POS, 'i').exec(tail);
+      if (/n\/a/i.test(tail) && !lp) z.low = null; else if (lp) { const q = at(id, lp[0]); if (q != null) z.low = Math.round(q); }
+      zones.push(z); }
     // overtake lines: "DETECTION - Entry T11", "ACTIVATION - T11" (a bare turn = the turn itself)
     const ot = (word, kind, label) => { const m = new RegExp(word + String.raw`\s*-\s*(` + POS + String.raw`|T(\d+[A-Z]?)\b)`, 'i').exec(text); if (!m) return; const s = m[2] ? at(id, '0m after T' + m[2]) : at(id, m[1]); if (s != null) marks.push({s: Math.round(s), kind, label}); };
     ot('DETECTION', 'det', 'OT D'); ot('ACTIVATION', 'act', 'OT A');
