@@ -3,187 +3,187 @@
  "byKey": {
   "fe-gen3evo": {
    "rows": 21,
-   "before": 6.4,
-   "event": 2.35,
-   "layoutOut": 4.61,
+   "before": 5.09,
+   "event": 2.34,
+   "layoutOut": 4.49,
    "inSample": 0.95
   },
   "fe-gen3": {
    "rows": 22,
-   "before": 5.87,
-   "event": 2.88,
-   "layoutOut": 5.64,
-   "inSample": 1.51
+   "before": 5.34,
+   "event": 2.87,
+   "layoutOut": 5.5,
+   "inSample": 1.48
   },
   "fe-gen2": {
    "rows": 15,
-   "before": 9.11,
-   "event": 1.86,
-   "layoutOut": 6.66,
-   "inSample": 1.35
+   "before": 9.38,
+   "event": 2.13,
+   "layoutOut": 6.62,
+   "inSample": 1.57
   }
  },
  "byLayout": {
   "fe-london": {
    "rows": 4,
-   "before": 6.48,
+   "before": 5.38,
    "event": 0.34,
-   "layoutOut": 3.83,
+   "layoutOut": 4.31,
    "inSample": 0.24
   },
   "fe-tokyo": {
    "rows": 3,
-   "before": 5.28,
-   "event": 3.85,
-   "layoutOut": 3.39,
-   "inSample": 2.35
+   "before": 4.1,
+   "event": 3.86,
+   "layoutOut": 3.57,
+   "inSample": 2.36
   },
   "fe-shanghai": {
    "rows": 3,
-   "before": 2.44,
-   "event": 2.8,
-   "layoutOut": 5.82,
-   "inSample": 1.72
+   "before": 3.75,
+   "event": 2.67,
+   "layoutOut": 5.6,
+   "inSample": 1.65
   },
   "fe-sanya": {
    "rows": 1,
-   "before": 7.79,
-   "event": 3.99,
-   "layoutOut": 3.99,
+   "before": 5.7,
+   "event": 3.76,
+   "layoutOut": 3.76,
    "inSample": 0.14
   },
   "monte-carlo": {
    "rows": 4,
-   "before": 1.56,
-   "event": 0.37,
-   "layoutOut": 2.12,
-   "inSample": 0.27
+   "before": 1.31,
+   "event": 0.4,
+   "layoutOut": 1.85,
+   "inSample": 0.29
   },
   "fe-berlin": {
    "rows": 2,
-   "before": 1.65,
-   "event": 0.9,
-   "layoutOut": 2.31,
-   "inSample": 0.46
+   "before": 0.66,
+   "event": 0.92,
+   "layoutOut": 2.61,
+   "inSample": 0.47
   },
   "jarama": {
    "rows": 1,
-   "before": 10.43,
-   "event": 6.65,
-   "layoutOut": 6.65,
+   "before": 8.57,
+   "event": 6.71,
+   "layoutOut": 6.71,
    "inSample": 0.24
   },
   "fe-jeddah": {
    "rows": 2,
-   "before": 0.15,
-   "event": 0.19,
-   "layoutOut": 3.73,
-   "inSample": 0.1
+   "before": 1.65,
+   "event": 0.18,
+   "layoutOut": 3.78,
+   "inSample": 0.09
   },
   "fe-miami": {
    "rows": 1,
-   "before": 1.66,
-   "event": 2.19,
-   "layoutOut": 2.19,
-   "inSample": 0.08
+   "before": 0.23,
+   "event": 2.32,
+   "layoutOut": 2.32,
+   "inSample": 0.09
   },
   "fe-mexico": {
    "rows": 3,
-   "before": 5.3,
-   "event": 0.82,
+   "before": 5.25,
+   "event": 1.18,
    "layoutOut": 0.9,
-   "inSample": 0.46
+   "inSample": 0.73
   },
   "fe-sao-paulo": {
    "rows": 4,
-   "before": 7.49,
-   "event": 0.61,
-   "layoutOut": 4.88,
+   "before": 5.22,
+   "event": 0.6,
+   "layoutOut": 4.14,
    "inSample": 0.43
   },
   "fe-jakarta": {
    "rows": 3,
-   "before": 5.5,
-   "event": 2.99,
-   "layoutOut": 2.23,
-   "inSample": 1.78
+   "before": 5.13,
+   "event": 3.2,
+   "layoutOut": 2.39,
+   "inSample": 1.89
   },
   "fe-miami-2025": {
    "rows": 1,
-   "before": 4.83,
-   "event": 1,
-   "layoutOut": 1,
-   "inSample": 0.04
+   "before": 2.78,
+   "event": 0.77,
+   "layoutOut": 0.77,
+   "inSample": 0.03
   },
   "fe-mexico-2023": {
    "rows": 3,
-   "before": 12.45,
-   "event": 1.87,
-   "layoutOut": 10.31,
-   "inSample": 1.15
+   "before": 10.6,
+   "event": 1.74,
+   "layoutOut": 9.99,
+   "inSample": 1.07
   },
   "fe-portland": {
    "rows": 2,
-   "before": 0.17,
+   "before": 1.38,
    "event": 0.3,
-   "layoutOut": 1.33,
+   "layoutOut": 1.68,
    "inSample": 0.15
   },
   "fe-berlin-2024": {
    "rows": 5,
-   "before": 3.49,
-   "event": 3.11,
-   "layoutOut": 6.05,
-   "inSample": 2.31
+   "before": 2.91,
+   "event": 3.28,
+   "layoutOut": 6.18,
+   "inSample": 2.44
   },
   "fe-misano": {
    "rows": 1,
-   "before": 4.84,
-   "event": 6.38,
-   "layoutOut": 6.38,
-   "inSample": 0.24
+   "before": 6.19,
+   "event": 6.69,
+   "layoutOut": 6.69,
+   "inSample": 0.25
   },
   "fe-diriyah": {
    "rows": 5,
-   "before": 6.1,
-   "event": 2.99,
-   "layoutOut": 2.7,
-   "inSample": 2.28
+   "before": 6.35,
+   "event": 3.24,
+   "layoutOut": 2.78,
+   "inSample": 2.47
   },
   "fe-london-2023": {
    "rows": 1,
-   "before": 4.4,
-   "event": 3.14,
-   "layoutOut": 3.14,
-   "inSample": 0.11
+   "before": 3.7,
+   "event": 3.62,
+   "layoutOut": 3.62,
+   "inSample": 0.13
   },
   "fe-rome": {
    "rows": 3,
-   "before": 18.25,
-   "event": 1.26,
-   "layoutOut": 15.89,
-   "inSample": 0.75
+   "before": 18.43,
+   "event": 0.84,
+   "layoutOut": 15.44,
+   "inSample": 0.5
   },
   "fe-berlin-2023": {
    "rows": 4,
-   "before": 5.98,
-   "event": 0.46,
-   "layoutOut": 1.45,
+   "before": 6.31,
+   "event": 0.48,
+   "layoutOut": 1.29,
    "inSample": 0.33
   },
   "fe-cape-town": {
    "rows": 1,
-   "before": 5.64,
-   "event": 4.41,
-   "layoutOut": 4.41,
-   "inSample": 0.16
+   "before": 4.03,
+   "event": 3.96,
+   "layoutOut": 3.96,
+   "inSample": 0.14
   },
   "fe-valencia": {
    "rows": 1,
    "before": 7.4,
-   "event": 1.9,
-   "layoutOut": 1.9,
-   "inSample": 0.07
+   "event": 1.33,
+   "layoutOut": 1.33,
+   "inSample": 0.05
   }
  },
  "rows": [
@@ -192,329 +192,389 @@
    "season": 2026,
    "key": "fe-gen3evo",
    "real": 68.616,
-   "sim": 63.61689637130608,
-   "event": 0.36,
-   "before": 7.86,
-   "inSample": 0.26,
-   "layoutOut": 4.07
+   "sim": 64.44998971430061,
+   "kW": 300,
+   "session": "Qualifying Group B",
+   "event": 0.38,
+   "before": 6.46,
+   "inSample": 0.27,
+   "layoutOut": 4.56
   },
   {
    "layout": "fe-tokyo",
    "season": 2026,
    "key": "fe-gen3evo",
    "real": 73.652,
-   "sim": 70.70210545952209,
+   "sim": 71.76853434025249,
+   "kW": 300,
+   "session": "Qualifying Group B",
    "event": -2.55,
-   "before": 4.17,
+   "before": 2.62,
    "inSample": -1.67,
-   "layoutOut": 0.1
+   "layoutOut": 0.36
   },
   {
    "layout": "fe-shanghai",
    "season": 2026,
    "key": "fe-gen3evo",
    "real": 70.125,
-   "sim": 72.03264283802942,
-   "event": -1.76,
-   "before": -2.65,
-   "inSample": -1.15,
-   "layoutOut": -6.7
+   "sim": 73.11477446842493,
+   "kW": 300,
+   "session": "Qualifying Group B",
+   "event": -1.67,
+   "before": -4.09,
+   "inSample": -1.09,
+   "layoutOut": -6.44
   },
   {
    "layout": "fe-sanya",
    "season": 2026,
    "key": "fe-gen3evo",
    "real": 67.337,
-   "sim": 62.468019168617836,
-   "event": 3.99,
-   "before": 7.79,
+   "sim": 63.70603062427615,
+   "kW": 300,
+   "session": "Qualifying Group A",
+   "event": 3.76,
+   "before": 5.7,
    "inSample": 0.14,
-   "layoutOut": 3.99
+   "layoutOut": 3.76
   },
   {
    "layout": "monte-carlo",
    "season": 2026,
    "key": "fe-gen3evo",
    "real": 88.492,
-   "sim": 86.89281030580263,
-   "event": 0.1,
-   "before": 1.84,
-   "inSample": 0.07,
-   "layoutOut": -1.97
+   "sim": 88.16101264909553,
+   "kW": 300,
+   "session": "Qualifying Group A",
+   "event": 0.14,
+   "before": 0.38,
+   "inSample": 0.1,
+   "layoutOut": -1.65
   },
   {
    "layout": "fe-berlin",
    "season": 2026,
    "key": "fe-gen3evo",
    "real": 58.337,
-   "sim": 57.68978195339535,
-   "event": -0.98,
-   "before": 1.12,
-   "inSample": -0.5,
-   "layoutOut": -2.71
+   "sim": 58.88541167579226,
+   "kW": 300,
+   "session": "Qualifying Group B",
+   "event": -1.01,
+   "before": -0.93,
+   "inSample": -0.51,
+   "layoutOut": -3.02
   },
   {
    "layout": "jarama",
    "season": 2026,
    "key": "fe-gen3evo",
    "real": 100.927,
-   "sim": 91.39732345319976,
-   "event": 6.65,
-   "before": 10.43,
+   "sim": 92.95717615647338,
+   "kW": 300,
+   "session": "Qualifying Group B",
+   "event": 6.71,
+   "before": 8.57,
    "inSample": 0.24,
-   "layoutOut": 6.65
+   "layoutOut": 6.71
   },
   {
    "layout": "fe-jeddah",
    "season": 2026,
    "key": "fe-gen3evo",
    "real": 77.151,
-   "sim": 77.09991918414245,
-   "event": -0.27,
-   "before": 0.07,
-   "inSample": -0.14,
-   "layoutOut": -3.79
+   "sim": 78.48648673509267,
+   "kW": 300,
+   "session": "Qualifying Group A",
+   "event": -0.25,
+   "before": -1.7,
+   "inSample": -0.13,
+   "layoutOut": -3.83
   },
   {
    "layout": "fe-miami",
    "season": 2026,
    "key": "fe-gen3evo",
    "real": 56.562,
-   "sim": 55.63878228603774,
-   "event": -2.19,
-   "before": 1.66,
-   "inSample": -0.08,
-   "layoutOut": -2.19
+   "sim": 56.69033546734778,
+   "kW": 300,
+   "session": "Qualifying Group B",
+   "event": -2.32,
+   "before": -0.23,
+   "inSample": -0.09,
+   "layoutOut": -2.32
   },
   {
    "layout": "fe-mexico",
    "season": 2026,
    "key": "fe-gen3evo",
    "real": 66.328,
-   "sim": 63.00457704222082,
-   "event": 1.23,
-   "before": 5.27,
-   "inSample": 0.67,
-   "layoutOut": 1.51
+   "sim": 64.34527166555307,
+   "kW": 300,
+   "session": "Qualifying Group B",
+   "event": 1.01,
+   "before": 3.08,
+   "inSample": 0.55,
+   "layoutOut": 1.12
   },
   {
    "layout": "fe-sao-paulo",
    "season": 2026,
    "key": "fe-gen3evo",
    "real": 72.14,
-   "sim": 66.12596977599266,
-   "event": 0.65,
-   "before": 9.09,
-   "inSample": 0.46,
-   "layoutOut": 5.31
+   "sim": 67.76618757987085,
+   "kW": 300,
+   "session": "Qualifying Group A",
+   "event": 0.6,
+   "before": 6.45,
+   "inSample": 0.43,
+   "layoutOut": 4.54
   },
   {
    "layout": "fe-london",
    "season": 2025,
    "key": "fe-gen3evo",
    "real": 68.447,
-   "sim": 63.661404739828725,
-   "event": -0.08,
-   "before": 7.52,
-   "inSample": -0.06,
-   "layoutOut": 3.74
+   "sim": 64.49244349628611,
+   "kW": 300,
+   "session": "Qualifying Group B",
+   "event": -0.06,
+   "before": 6.13,
+   "inSample": -0.04,
+   "layoutOut": 4.23
   },
   {
    "layout": "fe-berlin",
    "season": 2025,
    "key": "fe-gen3evo",
    "real": 59.048,
-   "sim": 57.862572682766604,
-   "event": 0.81,
-   "before": 2.05,
-   "inSample": 0.41,
-   "layoutOut": -1.82
+   "sim": 59.05014475202204,
+   "kW": 300,
+   "session": "Qualifying Group B",
+   "event": 0.82,
+   "before": 0,
+   "inSample": 0.42,
+   "layoutOut": -2.11
   },
   {
    "layout": "fe-jakarta",
    "season": 2025,
    "key": "fe-gen3evo",
    "real": 68.968,
-   "sim": 64.18450501862895,
-   "event": 4.31,
-   "before": 7.45,
-   "inSample": 2.53,
-   "layoutOut": 3.81
+   "sim": 65.18527189505487,
+   "kW": 300,
+   "session": "Qualifying Group B",
+   "event": 4.58,
+   "before": 5.8,
+   "inSample": 2.69,
+   "layoutOut": 4.05
   },
   {
    "layout": "fe-shanghai",
    "season": 2025,
    "key": "fe-gen3evo",
    "real": 69.939,
-   "sim": 72.01842710077301,
-   "event": -2.13,
-   "before": -2.89,
-   "inSample": -1.39,
-   "layoutOut": -6.93
+   "sim": 73.10159495005595,
+   "kW": 300,
+   "session": "Qualifying Group A",
+   "event": -2.04,
+   "before": -4.33,
+   "inSample": -1.34,
+   "layoutOut": -6.67
   },
   {
    "layout": "fe-tokyo",
    "season": 2025,
    "key": "fe-gen3evo",
    "real": 73.671,
-   "sim": 70.62917463100118,
+   "sim": 71.69742742197923,
+   "kW": 300,
+   "session": "Qualifying Group B",
    "event": -2.36,
-   "before": 4.31,
+   "before": 2.75,
    "inSample": -1.55,
-   "layoutOut": 0.23
+   "layoutOut": 0.49
   },
   {
    "layout": "monte-carlo",
    "season": 2025,
    "key": "fe-gen3evo",
    "real": 88.661,
-   "sim": 86.79646940949212,
-   "event": 0.52,
-   "before": 2.15,
-   "inSample": 0.37,
-   "layoutOut": -1.67
+   "sim": 88.06845571570334,
+   "kW": 300,
+   "session": "Qualifying Group B",
+   "event": 0.56,
+   "before": 0.67,
+   "inSample": 0.4,
+   "layoutOut": -1.36
   },
   {
    "layout": "fe-miami-2025",
    "season": 2025,
    "key": "fe-gen3evo",
    "real": 84.756,
-   "sim": 80.85024708791235,
-   "event": 1,
-   "before": 4.83,
-   "inSample": 0.04,
-   "layoutOut": 1
+   "sim": 82.45990273786767,
+   "kW": 300,
+   "session": "Qualifying Group B",
+   "event": 0.77,
+   "before": 2.78,
+   "inSample": 0.03,
+   "layoutOut": 0.77
   },
   {
    "layout": "fe-jeddah",
    "season": 2025,
    "key": "fe-gen3evo",
    "real": 76.922,
-   "sim": 76.76757749832032,
-   "event": -0.01,
-   "before": 0.2,
-   "inSample": 0,
-   "layoutOut": -3.67
+   "sim": 78.16515922642083,
+   "kW": 300,
+   "session": "Qualifying Group B",
+   "event": -0.03,
+   "before": -1.59,
+   "inSample": -0.02,
+   "layoutOut": -3.72
   },
   {
    "layout": "fe-mexico-2023",
    "season": 2025,
    "key": "fe-gen3evo",
    "real": 73.352,
-   "sim": 63.40967645899505,
-   "event": 2.7,
-   "before": 15.68,
-   "inSample": 1.61,
-   "layoutOut": 12.04
+   "sim": 64.78082223917897,
+   "kW": 300,
+   "session": "Qualifying Group B",
+   "event": 2.49,
+   "before": 13.23,
+   "inSample": 1.49,
+   "layoutOut": 11.58
   },
   {
    "layout": "fe-sao-paulo",
    "season": 2025,
    "key": "fe-gen3evo",
    "real": 71.717,
-   "sim": 66.15948398104094,
-   "event": -0.25,
-   "before": 8.4,
-   "inSample": -0.18,
-   "layoutOut": 4.64
+   "sim": 67.79804033052955,
+   "kW": 300,
+   "session": "Qualifying Group B",
+   "event": -0.29,
+   "before": 5.78,
+   "inSample": -0.21,
+   "layoutOut": 3.88
   },
   {
    "layout": "fe-london",
    "season": 2024,
    "key": "fe-gen3",
    "real": 70.323,
-   "sim": 67.1724946701001,
-   "event": -0.43,
-   "before": 4.69,
+   "sim": 67.63344488357343,
+   "kW": 300,
+   "session": "Qualifying Group A",
+   "event": -0.44,
+   "before": 3.98,
    "inSample": -0.31,
-   "layoutOut": 3.45
+   "layoutOut": 3.92
   },
   {
    "layout": "fe-portland",
    "season": 2024,
    "key": "fe-gen3",
    "real": 69.665,
-   "sim": 69.71618547971937,
-   "event": -0.34,
-   "before": -0.07,
+   "sim": 70.73911725876208,
+   "kW": 300,
+   "session": "Qualifying Group A",
+   "event": -0.35,
+   "before": -1.52,
    "inSample": -0.18,
-   "layoutOut": -1.47
+   "layoutOut": -1.82
   },
   {
    "layout": "fe-shanghai",
    "season": 2024,
    "key": "fe-gen3",
    "real": 74.14,
-   "sim": 75.32965053610816,
-   "event": 3.99,
-   "before": -1.58,
-   "inSample": 2.38,
-   "layoutOut": -2.95
+   "sim": 76.10547584750772,
+   "kW": 300,
+   "session": "Qualifying Group B",
+   "event": 3.81,
+   "before": -2.58,
+   "inSample": 2.27,
+   "layoutOut": -2.85
   },
   {
    "layout": "fe-berlin-2024",
    "season": 2024,
    "key": "fe-gen3",
    "real": 62.518,
-   "sim": 61.66355889981488,
-   "event": -6.15,
-   "before": 1.39,
-   "inSample": -4.53,
-   "layoutOut": 0.03
+   "sim": 62.426377109305264,
+   "kW": 300,
+   "session": "Qualifying Group B",
+   "event": -6.31,
+   "before": 0.15,
+   "inSample": -4.66,
+   "layoutOut": -0.1
   },
   {
    "layout": "monte-carlo",
    "season": 2024,
    "key": "fe-gen3",
    "real": 90.593,
-   "sim": 91.47360787985504,
-   "event": -0.43,
-   "before": -0.96,
-   "inSample": -0.31,
-   "layoutOut": -2.43
+   "sim": 92.2628399404705,
+   "kW": 300,
+   "session": "Qualifying Group B",
+   "event": -0.45,
+   "before": -1.81,
+   "inSample": -0.32,
+   "layoutOut": -2.16
   },
   {
    "layout": "fe-misano",
    "season": 2024,
    "key": "fe-gen3",
    "real": 77.61,
-   "sim": 81.55511710466499,
-   "event": -6.38,
-   "before": -4.84,
-   "inSample": -0.24,
-   "layoutOut": -6.38
+   "sim": 82.73265685835409,
+   "kW": 300,
+   "session": "Qualifying Group B",
+   "event": -6.69,
+   "before": -6.19,
+   "inSample": -0.25,
+   "layoutOut": -6.69
   },
   {
    "layout": "fe-tokyo",
    "season": 2024,
    "key": "fe-gen3",
    "real": 79.391,
-   "sim": 74.25701139009438,
-   "event": 5.69,
-   "before": 6.91,
-   "inSample": 3.38,
-   "layoutOut": 5.86
+   "sim": 74.89439823355532,
+   "kW": 300,
+   "session": "Qualifying Group B",
+   "event": 5.72,
+   "before": 6,
+   "inSample": 3.39,
+   "layoutOut": 6.16
   },
   {
    "layout": "fe-sao-paulo",
    "season": 2024,
    "key": "fe-gen3",
    "real": 73.516,
-   "sim": 69.04185646432735,
-   "event": 0.63,
-   "before": 6.48,
-   "inSample": 0.45,
-   "layoutOut": 5.26
+   "sim": 70.27112885767211,
+   "kW": 300,
+   "session": "Qualifying Group B",
+   "event": 0.66,
+   "before": 4.62,
+   "inSample": 0.47,
+   "layoutOut": 4.55
   },
   {
    "layout": "fe-diriyah",
    "season": 2024,
    "key": "fe-gen3",
    "real": 70.486,
-   "sim": 68.76666901466008,
-   "event": 2.96,
-   "before": 2.5,
-   "inSample": 2.16,
+   "sim": 69.5328832328943,
+   "kW": 300,
+   "session": "Qualifying Group B",
+   "event": 2.81,
+   "before": 1.37,
+   "inSample": 2.05,
    "layoutOut": 1.24
   },
   {
@@ -522,209 +582,247 @@
    "season": 2024,
    "key": "fe-gen3",
    "real": 73.691,
-   "sim": 66.34928841339689,
-   "event": -0.09,
-   "before": 11.07,
-   "inSample": -0.06,
-   "layoutOut": 9.92
+   "sim": 67.2482556721864,
+   "kW": 300,
+   "session": "Qualifying Group B",
+   "event": -0.02,
+   "before": 9.58,
+   "inSample": -0.01,
+   "layoutOut": 9.67
   },
   {
    "layout": "fe-london-2023",
    "season": 2023,
    "key": "fe-gen3",
    "real": 70.521,
-   "sim": 67.5486026346018,
-   "event": 3.14,
-   "before": 4.4,
-   "inSample": 0.11,
-   "layoutOut": 3.14
+   "sim": 68.00233797834679,
+   "kW": 300,
+   "session": "Qualifying Group A",
+   "event": 3.62,
+   "before": 3.7,
+   "inSample": 0.13,
+   "layoutOut": 3.62
   },
   {
    "layout": "fe-london",
    "season": 2023,
    "key": "fe-gen3",
    "real": 70.689,
-   "sim": 67.14618653696903,
-   "event": 0.35,
-   "before": 5.28,
+   "sim": 67.608044555401,
+   "kW": 300,
+   "session": "Qualifying Group A",
+   "event": 0.34,
+   "before": 4.56,
    "inSample": 0.25,
-   "layoutOut": 4.03
+   "layoutOut": 4.5
   },
   {
    "layout": "fe-rome",
    "season": 2023,
    "key": "fe-gen3",
    "real": 98.214,
-   "sim": 115.43877863152662,
-   "event": -1.97,
-   "before": -14.92,
-   "inSample": -1.16,
-   "layoutOut": -16.75
+   "sim": 115.74384044524533,
+   "kW": 300,
+   "session": "Qualifying Group B",
+   "event": -1.4,
+   "before": -15.15,
+   "inSample": -0.82,
+   "layoutOut": -16
   },
   {
    "layout": "fe-portland",
    "season": 2023,
    "key": "fe-gen3",
    "real": 69.808,
-   "sim": 69.64967012828296,
-   "event": 0.25,
-   "before": 0.23,
-   "inSample": 0.13,
-   "layoutOut": -1.18
+   "sim": 70.67486623130961,
+   "kW": 300,
+   "session": "Qualifying Group B",
+   "event": 0.23,
+   "before": -1.23,
+   "inSample": 0.12,
+   "layoutOut": -1.53
   },
   {
    "layout": "fe-jakarta",
    "season": 2023,
    "key": "fe-gen3",
    "real": 68.416,
-   "sim": 67.79461437444952,
-   "event": -2.16,
-   "before": 0.92,
-   "inSample": -1.35,
-   "layoutOut": -0.53
+   "sim": 68.33721919003412,
+   "kW": 300,
+   "session": "Qualifying Group B",
+   "event": -1.73,
+   "before": 0.12,
+   "inSample": -1.08,
+   "layoutOut": -0.2
   },
   {
    "layout": "monte-carlo",
    "season": 2023,
    "key": "fe-gen3",
    "real": 90.138,
-   "sim": 90.92333240739757,
-   "event": -0.29,
-   "before": -0.86,
-   "inSample": -0.21,
-   "layoutOut": -2.33
+   "sim": 91.73129445769582,
+   "kW": 300,
+   "session": "Qualifying Group A",
+   "event": -0.34,
+   "before": -1.74,
+   "inSample": -0.24,
+   "layoutOut": -2.09
   },
   {
    "layout": "fe-berlin-2023",
    "season": 2023,
    "key": "fe-gen3",
    "real": 65.975,
-   "sim": 66.21190530839262,
-   "event": -0.52,
-   "before": -0.36,
-   "inSample": -0.33,
-   "layoutOut": -1.78
+   "sim": 66.91618004510198,
+   "kW": 300,
+   "session": "Qualifying Group B",
+   "event": -0.66,
+   "before": -1.41,
+   "inSample": -0.42,
+   "layoutOut": -1.71
   },
   {
    "layout": "fe-berlin-2024",
    "season": 2023,
    "key": "fe-gen3",
    "real": 66.055,
-   "sim": 61.34843019353969,
-   "event": 1.9,
-   "before": 7.67,
-   "inSample": 1.38,
-   "layoutOut": 6.23
+   "sim": 62.13080871311645,
+   "kW": 300,
+   "session": "Qualifying Group B",
+   "event": 1.67,
+   "before": 6.32,
+   "inSample": 1.22,
+   "layoutOut": 6.06
   },
   {
    "layout": "fe-sao-paulo",
    "season": 2023,
    "key": "fe-gen3",
    "real": 72.669,
-   "sim": 68.9329094419257,
-   "event": -0.77,
-   "before": 5.42,
-   "inSample": -0.55,
-   "layoutOut": 4.21
+   "sim": 70.16840054922554,
+   "kW": 300,
+   "session": "Qualifying Group B",
+   "event": -0.76,
+   "before": 3.56,
+   "inSample": -0.54,
+   "layoutOut": 3.5
   },
   {
    "layout": "fe-cape-town",
    "season": 2023,
    "key": "fe-gen3",
    "real": 68.844,
-   "sim": 65.17091485511246,
-   "event": 4.41,
-   "before": 5.64,
-   "inSample": 0.16,
-   "layoutOut": 4.41
+   "sim": 66.1775990187067,
+   "kW": 300,
+   "session": "Qualifying Group B",
+   "event": 3.96,
+   "before": 4.03,
+   "inSample": 0.14,
+   "layoutOut": 3.96
   },
   {
    "layout": "fe-diriyah",
    "season": 2023,
    "key": "fe-gen3",
    "real": 69.361,
-   "sim": 68.95412965786657,
-   "event": 0.35,
-   "before": 0.59,
-   "inSample": 0.25,
-   "layoutOut": -0.65
+   "sim": 69.71528934039257,
+   "kW": 300,
+   "session": "Qualifying Group A",
+   "event": 0.21,
+   "before": -0.51,
+   "inSample": 0.16,
+   "layoutOut": -0.63
   },
   {
    "layout": "fe-mexico-2023",
    "season": 2023,
    "key": "fe-gen3",
    "real": 73.074,
-   "sim": 66.5349651629117,
-   "event": -1.79,
-   "before": 9.83,
-   "inSample": -1.17,
-   "layoutOut": 8.7
+   "sim": 67.41707484340398,
+   "kW": 300,
+   "session": "Qualifying Group B",
+   "event": -1.68,
+   "before": 8.39,
+   "inSample": -1.1,
+   "layoutOut": 8.48
   },
   {
    "layout": "fe-jakarta",
    "season": 2022,
    "key": "fe-gen2",
    "real": 68.715,
-   "sim": 72.9951515912959,
-   "event": -1.89,
-   "before": -5.86,
-   "inSample": -1.1,
-   "layoutOut": -0.46
+   "sim": 73.66911061731591,
+   "kW": 220,
+   "session": "Qualifying Group B",
+   "event": -2.6,
+   "before": -6.72,
+   "inSample": -1.51,
+   "layoutOut": -0.89
   },
   {
    "layout": "fe-berlin-2023",
    "season": 2022,
    "key": "fe-gen2",
    "real": 66.753,
-   "sim": 71.40185326624707,
-   "event": 0.68,
-   "before": -6.51,
-   "inSample": 0.5,
-   "layoutOut": -0.89
+   "sim": 72.19640348502857,
+   "kW": 220,
+   "session": "Qualifying Group B",
+   "event": -0.28,
+   "before": -7.54,
+   "inSample": -0.2,
+   "layoutOut": -1.41
   },
   {
    "layout": "fe-berlin-2024",
    "season": 2022,
    "key": "fe-gen2",
    "real": 66.532,
-   "sim": 66.68966735595842,
-   "event": 1.25,
-   "before": -0.24,
-   "inSample": 0.96,
-   "layoutOut": 6.72
+   "sim": 67.57556071677001,
+   "kW": 220,
+   "session": "Qualifying Group A",
+   "event": 0.22,
+   "before": -1.54,
+   "inSample": 0.17,
+   "layoutOut": 5.97
   },
   {
    "layout": "fe-rome",
    "season": 2022,
    "key": "fe-gen2",
    "real": 99.416,
-   "sim": 123.40369350625909,
-   "event": 0.91,
-   "before": -19.44,
-   "inSample": 0.59,
-   "layoutOut": -15.15
+   "sim": 123.88259289612908,
+   "kW": 220,
+   "session": "Qualifying Group A",
+   "event": 0.37,
+   "before": -19.75,
+   "inSample": 0.24,
+   "layoutOut": -15.03
   },
   {
    "layout": "fe-mexico",
    "season": 2022,
    "key": "fe-gen2",
    "real": 67.675,
-   "sim": 71.49536631052064,
-   "event": -0.54,
-   "before": -5.34,
-   "inSample": -0.35,
-   "layoutOut": 0.25
+   "sim": 72.55388201993541,
+   "kW": 220,
+   "session": "Qualifying Group A",
+   "event": -1.6,
+   "before": -6.72,
+   "inSample": -1.02,
+   "layoutOut": -0.65
   },
   {
    "layout": "fe-diriyah",
    "season": 2022,
    "key": "fe-gen2",
    "real": 67.724,
-   "sim": 74.74469897227098,
-   "event": -3.81,
-   "before": -9.39,
-   "inSample": -2.95,
-   "layoutOut": -4.42
+   "sim": 75.56615627972188,
+   "kW": 220,
+   "session": "Qualifying Group B",
+   "event": -4.63,
+   "before": -10.38,
+   "inSample": -3.58,
+   "layoutOut": -4.89
   },
   {
    "layout": "fe-berlin-2024",
@@ -732,10 +830,12 @@
    "key": "fe-gen2",
    "real": 66.425,
    "sim": 66.44013585402236,
-   "event": 1.53,
+   "kW": 250,
+   "session": "Qualifying Group 4",
+   "event": 2.24,
    "before": -0.02,
-   "inSample": 1.18,
-   "layoutOut": 6.95
+   "inSample": 1.72,
+   "layoutOut": 7.61
   },
   {
    "layout": "fe-berlin-2023",
@@ -743,10 +843,12 @@
    "key": "fe-gen2",
    "real": 66.239,
    "sim": 71.3970833869552,
-   "event": -0.36,
+   "kW": 250,
+   "session": "Qualifying Group 2",
+   "event": 0.18,
    "before": -7.22,
-   "inSample": -0.26,
-   "layoutOut": -1.64
+   "inSample": 0.14,
+   "layoutOut": -1.07
   },
   {
    "layout": "fe-valencia",
@@ -754,10 +856,12 @@
    "key": "fe-gen2",
    "real": 86.799,
    "sim": 93.73544140029469,
-   "event": -1.9,
+   "kW": 250,
+   "session": "Qualifying Group 4",
+   "event": -1.33,
    "before": -7.4,
-   "inSample": -0.07,
-   "layoutOut": -1.9
+   "inSample": -0.05,
+   "layoutOut": -1.33
   },
   {
    "layout": "fe-rome",
@@ -765,10 +869,12 @@
    "key": "fe-gen2",
    "real": 98.491,
    "sim": 123.07563463395738,
-   "event": -0.12,
+   "kW": 250,
+   "session": "Qualifying Group 2",
+   "event": -0.07,
    "before": -19.98,
-   "inSample": -0.08,
-   "layoutOut": -15.72
+   "inSample": -0.04,
+   "layoutOut": -15.27
   },
   {
    "layout": "fe-diriyah",
@@ -776,10 +882,12 @@
    "key": "fe-gen2",
    "real": 67.81,
    "sim": 74.24893442740412,
-   "event": -2.82,
+   "kW": 250,
+   "session": "Qualifying Group 3",
+   "event": -2.26,
    "before": -8.67,
-   "inSample": -2.17,
-   "layoutOut": -3.66
+   "inSample": -1.75,
+   "layoutOut": -3.08
   },
   {
    "layout": "fe-berlin-2023",
@@ -787,10 +895,12 @@
    "key": "fe-gen2",
    "real": 66.484,
    "sim": 71.44159056850269,
-   "event": 0.06,
+   "kW": 250,
+   "session": "Qualifying Group 2",
+   "event": 0.6,
    "before": -6.94,
-   "inSample": 0.04,
-   "layoutOut": -1.34
+   "inSample": 0.44,
+   "layoutOut": -0.77
   },
   {
    "layout": "fe-berlin-2024",
@@ -798,10 +908,12 @@
    "key": "fe-gen2",
    "real": 66.575,
    "sim": 66.4835803118159,
-   "event": 1.74,
+   "kW": 250,
+   "session": "Qualifying Group 3",
+   "event": 2.45,
    "before": 0.14,
-   "inSample": 1.34,
-   "layoutOut": 7.12
+   "inSample": 1.88,
+   "layoutOut": 7.78
   },
   {
    "layout": "fe-mexico",
@@ -809,10 +921,12 @@
    "key": "fe-gen2",
    "real": 68.174,
    "sim": 71.98182430992344,
-   "event": -0.45,
+   "kW": 250,
+   "session": "Qualifying Group 2",
+   "event": 0.79,
    "before": -5.29,
-   "inSample": -0.29,
-   "layoutOut": 0.31
+   "inSample": 0.5,
+   "layoutOut": 0.88
   },
   {
    "layout": "fe-diriyah",
@@ -820,10 +934,12 @@
    "key": "fe-gen2",
    "real": 71.418,
    "sim": 74.41879724654383,
-   "event": 3.65,
+   "kW": 250,
+   "session": "Qualifying Group 3",
+   "event": 4.24,
    "before": -4.03,
-   "inSample": 2.8,
-   "layoutOut": 1.23
+   "inSample": 3.24,
+   "layoutOut": 1.85
   }
  ],
  "geometry": [
@@ -972,6 +1088,70 @@
   {
    "id": "fe-hyderabad",
    "from": "no usable lap line on the maps"
+  },
+  {
+   "id": "fe-seoul",
+   "from": "no usable lap line on the maps"
+  },
+  {
+   "id": "fe-london-2022",
+   "from": "no usable lap line on the maps"
+  },
+  {
+   "id": "fe-new-york",
+   "from": "no usable lap line on the maps"
+  },
+  {
+   "id": "fe-marrakesh",
+   "from": "no usable lap line on the maps"
+  },
+  {
+   "id": "fe-london-2021",
+   "from": "no usable lap line on the maps"
+  },
+  {
+   "id": "fe-monaco-2021",
+   "from": "no usable lap line on the maps"
+  },
+  {
+   "id": "fe-valencia-2021",
+   "from": "no usable lap line on the maps"
+  },
+  {
+   "id": "fe-berlin-2020",
+   "from": "no usable lap line on the maps"
+  },
+  {
+   "id": "fe-santiago",
+   "from": "no usable lap line on the maps"
+  },
+  {
+   "id": "fe-bern",
+   "from": "no usable lap line on the maps"
+  },
+  {
+   "id": "fe-monaco-2019",
+   "from": "no usable lap line on the maps"
+  },
+  {
+   "id": "fe-paris",
+   "from": "no usable lap line on the maps"
+  },
+  {
+   "id": "fe-rome-2019",
+   "from": "no usable lap line on the maps"
+  },
+  {
+   "id": "fe-sanya-2019",
+   "from": "no usable lap line on the maps"
+  },
+  {
+   "id": "fe-hong-kong",
+   "from": "no usable lap line on the maps"
+  },
+  {
+   "id": "fe-mexico-2019",
+   "from": "no usable lap line on the maps"
   }
  ],
  "skipped": {
@@ -1089,6 +1269,7 @@
    "venue": "Monaco",
    "lengthM": 3337,
    "seasons": [
+    2022,
     2023,
     2024,
     2025,
@@ -1134,6 +1315,8 @@
    "venue": "Mexico",
    "lengthM": 2608,
    "seasons": [
+    2020,
+    2022,
     2026
    ]
   },
@@ -1153,6 +1336,8 @@
    "venue": "Valencia",
    "lengthM": 3376,
    "seasons": [
+    2021,
+    2022,
     2024,
     2026
    ]
@@ -1222,6 +1407,10 @@
    "venue": "Diriyah",
    "lengthM": 2495,
    "seasons": [
+    2019,
+    2020,
+    2021,
+    2022,
     2023,
     2024
    ]
@@ -1239,6 +1428,8 @@
    "venue": "Rome",
    "lengthM": 3380,
    "seasons": [
+    2021,
+    2022,
     2023
    ]
   },
@@ -1247,6 +1438,9 @@
    "venue": "Berlin",
    "lengthM": 2355,
    "seasons": [
+    2020,
+    2021,
+    2022,
     2023
    ]
   },
@@ -1264,6 +1458,137 @@
    "lengthM": 2835,
    "seasons": [
     2023
+   ]
+  },
+  {
+   "id": "fe-seoul",
+   "venue": "Seoul",
+   "lengthM": 2621,
+   "seasons": [
+    2022
+   ]
+  },
+  {
+   "id": "fe-london-2022",
+   "venue": "London",
+   "lengthM": 2141,
+   "seasons": [
+    2022
+   ]
+  },
+  {
+   "id": "fe-new-york",
+   "venue": "New York",
+   "lengthM": 2320,
+   "seasons": [
+    2019,
+    2021,
+    2022
+   ]
+  },
+  {
+   "id": "fe-marrakesh",
+   "venue": "Marrakesh",
+   "lengthM": 2971,
+   "seasons": [
+    2020,
+    2022
+   ]
+  },
+  {
+   "id": "fe-london-2021",
+   "venue": "London",
+   "lengthM": 2252,
+   "seasons": [
+    2021
+   ]
+  },
+  {
+   "id": "fe-monaco-2021",
+   "venue": "Monaco",
+   "lengthM": 3318,
+   "seasons": [
+    2021
+   ]
+  },
+  {
+   "id": "fe-valencia-2021",
+   "venue": "Valencia",
+   "lengthM": 3138,
+   "seasons": [
+    2021
+   ]
+  },
+  {
+   "id": "fe-berlin-2020",
+   "venue": "Berlin",
+   "lengthM": 2505,
+   "seasons": [
+    2020
+   ]
+  },
+  {
+   "id": "fe-santiago",
+   "venue": "Santiago",
+   "lengthM": 2287,
+   "seasons": [
+    2020
+   ]
+  },
+  {
+   "id": "fe-bern",
+   "venue": "Bern",
+   "lengthM": 2750,
+   "seasons": [
+    2019
+   ]
+  },
+  {
+   "id": "fe-monaco-2019",
+   "venue": "Monaco",
+   "lengthM": 1765,
+   "seasons": [
+    2019
+   ]
+  },
+  {
+   "id": "fe-paris",
+   "venue": "Paris",
+   "lengthM": 1920,
+   "seasons": [
+    2019
+   ]
+  },
+  {
+   "id": "fe-rome-2019",
+   "venue": "Rome",
+   "lengthM": 2870,
+   "seasons": [
+    2019
+   ]
+  },
+  {
+   "id": "fe-sanya-2019",
+   "venue": "Sanya",
+   "lengthM": 2236,
+   "seasons": [
+    2019
+   ]
+  },
+  {
+   "id": "fe-hong-kong",
+   "venue": "Hong Kong",
+   "lengthM": 1860,
+   "seasons": [
+    2019
+   ]
+  },
+  {
+   "id": "fe-mexico-2019",
+   "venue": "Mexico",
+   "lengthM": 2093,
+   "seasons": [
+    2019
    ]
   }
  ]

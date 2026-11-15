@@ -46,8 +46,10 @@ if (process.argv[1]?.endsWith('build-extra.mjs')) {
       const loc = lonLatToLocal(pts.map(p => [p[1], p[0]]));
       let g = resampleClosed(loc.x, loc.y, DS); const w = Math.max(1, Math.round(POS_SMOOTH_M / g.ds) | 1);
       g = resampleClosed(Array.from(movingAverageClosed(g.x, w)), Array.from(movingAverageClosed(g.y, w)), DS);
-      // smoothing cuts corners, so the smoothed line is a little short: keep its shape, restore the mapped lap length
-      const shrink = g.length / (acc.loopM || g.length), {kappa: k0} = headingCurvature(g.x, g.y, g.ds, CURV_SMOOTH_M), n = g.x.length;
+      // smoothing cuts corners, so the smoothed line is a little short: keep its shape, restore the mapped lap length.
+      // scaleToOfficial (a request flag, Sebring): the whole map is short by the same share (every sub-layout of the venue too),
+      // so the shape is kept and the lap is scaled to the official length instead of the mapped one
+      const shrink = g.length / ((acc.scaleToOfficial ? acc.officialM : acc.loopM) || g.length), {kappa: k0} = headingCurvature(g.x, g.y, g.ds, CURV_SMOOTH_M), n = g.x.length;
       const kappa = Float64Array.from(k0, v => v * shrink), lapM = g.length / shrink, ds = g.ds / shrink;
       // height at every grid point (back to lat/lon), smoothed over the DEM grid size, then grade
       const lat0 = pts.reduce((a, p) => a + p[0], 0) / pts.length * Math.PI / 180, R = 6371008.8, z = new Float64Array(n);
@@ -60,7 +62,7 @@ if (process.argv[1]?.endsWith('build-extra.mjs')) {
       out.tracks[id] = {id, venue, name: fiaName, ds, length: Math.round(lapM), officialLengthM: acc.officialM ?? null, lengthSource: acc.source ?? null, fiaGrade: acc.grade ?? null, pole: acc.pole ?? null, widthM: acc.widthM ?? null,
         sectors: [], corners: [], kappa: Array.from(kappa, v => Math.round(v * 1e5)), grade: Array.from(grade, v => Math.round(v * 1e4)), heading: null, map,
         elevation: {minM: Math.round(zmin), maxM: Math.round(zmax), rangeM: +(zmax - zmin).toFixed(1), maxGradePct: +(Math.tan(maxGrade) * 100).toFixed(1), everyM: 50, m: Array.from({length: Math.ceil(n / 10)}, (_, i) => Math.round(zs[i * 10] * 10) / 10)},
-        centre: [+pts[0][0].toFixed(4), +pts[0][1].toFixed(4)], quality: {evidence: 'map centre line', mapPoints: pts.length, loopM: acc.loopM, lengthErrorPct: acc.errorPct, smoothedLengthM: Math.round(g.length), smoothingShrinkPct: +((1 - shrink) * 100).toFixed(2), rawHeightRangeM: +(Math.max(...z) - Math.min(...z)).toFixed(1), totalTurnDeg: Math.round(turn * 180 / Math.PI), direction: turn < 0 ? 'clockwise as mapped' : 'anti-clockwise as mapped', startVerified: false},
+        centre: [+pts[0][0].toFixed(4), +pts[0][1].toFixed(4)], quality: {evidence: 'map centre line', mapPoints: pts.length, loopM: acc.loopM, lengthErrorPct: acc.errorPct, smoothedLengthM: Math.round(g.length), smoothingShrinkPct: +((1 - shrink) * 100).toFixed(2), scaledToOfficial: acc.scaleToOfficial ? `map lap ${acc.loopM} m scaled to the official ${acc.officialM} m` : undefined, rawHeightRangeM: +(Math.max(...z) - Math.min(...z)).toFixed(1), totalTurnDeg: Math.round(turn * 180 / Math.PI), direction: turn < 0 ? 'clockwise as mapped' : 'anti-clockwise as mapped', startVerified: false},
         sources: ['OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL)', acc.source, 'Terrarium elevation tiles (Mapzen/Tilezen open data)'].filter(Boolean)};
       report.push(`${id}: ${Math.round(lapM)} m (official ${acc.officialM}, smoothing shrink ${((1 - shrink) * 100).toFixed(2)} %), raw height range ${(Math.max(...z) - Math.min(...z)).toFixed(0)} m, height ${Math.round(zmin)}–${Math.round(zmax)} m, max grade ${(Math.tan(maxGrade) * 100).toFixed(1)} %, turn ${Math.round(turn * 180 / Math.PI)}°`);
     } catch (e) { report.push(`${key}: ERROR ${String(e).slice(0, 160)}`); out.errors = [...(out.errors || []), `${key}: ${String(e).slice(0, 160)}`]; }
