@@ -15,6 +15,8 @@ import {conditionsFromWeather} from '../../worker/lapsim/atmosphere.js';
 import {fitSeason, withGrip, holdout, fitJoint, holdoutJoint, addBanking} from './calibrate-lib.mjs';
 import {fitJointBCD, holdoutBCD, backtestBCD, poleMult} from './joint-bcd.mjs';
 import {SERIES} from '../../worker/lapsim/series.js';
+import {lapsimF1Zones} from '../../worker/lapsim/f1-zones-data.js';
+import {capCurvature} from '../../worker/lapsim/geometry.js';
 import {lapsimWecBop} from '../../worker/lapsim/wec-bop-data.js';
 
 const CACHE = process.env.LAPSIM_CACHE || '.cache/lapsim';
@@ -38,7 +40,20 @@ const ONLY_YEARS = process.env.LAPSIM_SEASONS ? process.env.LAPSIM_SEASONS.split
 const ONLY_WEC = E.LAPSIM_ONLY === 'wec';
 const prevCal = ONLY_WEC ? (await import('../../worker/lapsim/calibration-data.js')).lapsimCalibration : null;
 const traces = ONLY_WEC ? [] : JSON.parse(await readFile(join(CACHE, 'traces.json'), 'utf8'));
+// LAPSIM_KAPPA_CAP_G=6.5: the speed-implied curvature cap (geometry.js) on tracks whose stored data predates it (experiment inputs)
+if (E.LAPSIM_KAPPA_CAP_G && !ONLY_WEC) for (const [id, d] of Object.entries(lapsimTracks)) { if (d.quality?.kappaCap || id === 'zandvoort') continue;
+  const dry = traces.filter(x => x.track === id && !x.weather?.rain && x.position <= 3), own = dry.filter(x => x.year === d.year), laps = own.length ? own : dry;
+  if (laps.length) d.kappa = capCurvature(d.kappa, d.ds, laps, Number(E.LAPSIM_KAPPA_CAP_G)).kappa; }
 const tracks = Object.fromEntries(Object.entries(lapsimTracks).map(([id, d]) => [id, trackFromData(d)]));
+// F1 cars open DRS (to 2025) or Straight Mode (2026) only in the FIA zones of the event notes (f1-zones-data.js); without a
+// document the automatic straight finder stands in. LAPSIM_FIA_ZONES=on (2026-11-15: the finder gave Jeddah 880 m of DRS, the FIA 2025 m)
+const ZT = new Map(), f1Track = (id, year) => {
+  if (!['on', '2025'].includes(E.LAPSIM_FIA_ZONES) || !tracks[id] || (E.LAPSIM_FIA_ZONES === '2025' && year >= 2026)) return tracks[id]; // 2025: DRS zones only
+  const z = lapsimF1Zones.tracks?.[id]?.[year >= 2026 ? '2026' : '2025'], key = id + ':' + (year >= 2026 ? 2026 : 2025);
+  if (!z?.zones?.length) return tracks[id];
+  if (!ZT.has(key)) ZT.set(key, {...tracks[id], aeroLow: trackFromData({...lapsimTracks[id], aeroZones: z.zones.map(q => [q.from, q.to])}, {aero: 'fia'}).aeroLow});
+  return ZT.get(key);
+};
 // S3 candidate: axle-level car (load transfer, aero balance vs weight split, degressive tyre load law).
 // Track widths (m) are typical values for each class; roll-stiffness split 50/50.
 const AXLE = tw => E.LAPSIM_AXLE === 'on' ? {axle: true, loadExp: Number(E.LAPSIM_LOADEXP || 0.85), trackWidth: tw, rollFront: Number(E.LAPSIM_ROLLFRONT || 0.5)} : {};
@@ -66,7 +81,7 @@ const groups = [];
 for (const year of [...new Set(traces.map(t => t.year))].sort()) {
   const prior = PRIOR[year]; if (!prior || (ONLY_YEARS && !ONLY_YEARS.includes(year))) continue;
   const laps = traces.filter(t => t.year === year && tracks[t.track] && !t.weather.rain && t.s.length > 100 && t.position <= MAX_POS)
-    .map(t => ({name: t.track, track: tracks[t.track], lapSeconds: t.lap_seconds, weight: t.position === 1 ? 1 : 0.5,
+    .map(t => ({name: t.track, track: f1Track(t.track, year), lapSeconds: t.lap_seconds, weight: t.position === 1 ? 1 : 0.5,
       // non-pole laps: other cars, so by default they count for the speed trace shape only
       timeScale: t.position === 1 || E.LAPSIM_NONPOLE === 'time' || BCD.teams ? 1 : 0, sectors: t.sectors, date: t.date, team: t.team, tau: tauOf(t.date, year),
       feat: {ftf: t.throttle?.length ? t.throttle.filter(x => x >= 98).length / t.throttle.length : null, vmean: tracks[t.track].kappa.length * tracks[t.track].ds / t.lap_seconds},
@@ -126,7 +141,7 @@ if (seasons[2026]) {
     const last = [...traces].filter(t => t.track === id && t.position === 1 && !t.weather.rain).sort((a, b) => b.year - a.year)[0];
     if (!last) continue;
     const drag = joint.factors?.[id]?.drag ?? 1, c = drag !== 1 ? {...car26, cdA: car26.cdA * drag, cdALow: car26.cdALow * drag} : car26;
-    const w = withEnergy(last.weather, id, 2026), res = simulateLap(withGrip(tracks[id], joint.grips[id]), c, conditionsFromWeather(w));
+    const w = withEnergy(last.weather, id, 2026), res = simulateLap(withGrip(f1Track(id, 2026), joint.grips[id]), c, conditionsFromWeather(w));
     const date26 = last.date ? '2026' + last.date.slice(4) : null, mult = poleMult(joint.adj?.[2026], tauOf(date26, 2026));
     res.lapTime *= mult; if (res.sectors) res.sectors = res.sectors.map(x => x * mult);
     preds[id] = {lap: +res.lapTime.toFixed(3), date: date26?.slice(0, 10) ?? null, poleMult: mult !== 1 ? +mult.toFixed(5) : undefined, sectors: res.sectors?.map(x => +x.toFixed(3)), grip: +joint.grips[id].toFixed(4), drag: drag !== 1 ? +drag.toFixed(4) : undefined,
@@ -154,7 +169,7 @@ if (s26 && !ONLY_WEC) {
   const ids = Object.keys(s26.tracks);
   const lapAt = (car, id) => {
     const r = s26.tracks[id];
-    return simulateLap(withGrip(tracks[id], r.grip), car, conditionsFromWeather(r.weather || {})).lapTime;
+    return simulateLap(withGrip(f1Track(id, 2026), r.grip), car, conditionsFromWeather(r.weather || {})).lapTime;
   };
   const meanChange = (a, b) => ids.reduce((acc, id) => acc + (lapAt(b, id) / lapAt(a, id) - 1), 0) / ids.length * 100;
   // find the development factor that gives the target lap-time change (%)
