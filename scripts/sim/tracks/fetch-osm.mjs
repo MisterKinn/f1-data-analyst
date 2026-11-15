@@ -8,7 +8,7 @@ const OUT = '.cache/lapsim/osm'; mkdirSync(OUT, {recursive: true});
 const API = ['https://overpass-api.de/api/interpreter', 'https://overpass.private.coffee/api/interpreter', 'https://maps.mail.ru/osm/tools/overpass/api/interpreter', 'https://overpass.kumi.systems/api/interpreter'];
 const hav = (a, b) => { const R = 6371008.8, r = Math.PI / 180, dφ = (b.lat - a.lat) * r, dλ = (b.lon - a.lon) * r; const h = Math.sin(dφ / 2) ** 2 + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(dλ / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(h)); };
 async function overpass(q, n = 0) {
-  try { const r = await fetch(API[n % API.length], {method: 'POST', body: 'data=' + encodeURIComponent(q), signal: AbortSignal.timeout(60000), headers: {'content-type': 'application/x-www-form-urlencoded', 'user-agent': 'kongboda-lapsim (github.com/MisterKinn/f1-data-analyst)'}}); if (!r.ok) throw new Error(r.status); return await r.json(); }
+  try { const r = await fetch(API[n % API.length], {method: 'POST', body: 'data=' + encodeURIComponent(q), signal: AbortSignal.timeout(150000), headers: {'content-type': 'application/x-www-form-urlencoded', 'user-agent': 'kongboda-lapsim (github.com/MisterKinn/f1-data-analyst)'}}); if (!r.ok) throw new Error(r.status); return await r.json(); }
   catch (e) { if (n >= 7) throw new Error(`${API[n % API.length]}: ${e.message || e}`); await new Promise(f => setTimeout(f, 4000 * (n + 1))); return overpass(q, n + 1); } // Overpass 504s: 8 tries over the mirrors
 }
 const summary = {source: 'OpenStreetMap via Overpass API (© OpenStreetMap contributors, ODbL)', fetched: new Date().toISOString(), tracks: {}};

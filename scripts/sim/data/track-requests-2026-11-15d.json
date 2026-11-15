@@ -1,0 +1,17 @@
+{
+ "note": "Lausitz DTM retry (Overpass timeout in the 2026-11-15c run). Same request as in track-requests-2026-11-15c.json.",
+ "tracks": [
+  {
+   "id": "lausitz",
+   "status": "osm",
+   "seed": [
+    51.5333,
+    13.9264
+   ],
+   "radius": 3000,
+   "fia": "^EUROSPEEDWAY LAUSITZ DTM$",
+   "skipName": "Test Oval|Slalom",
+   "oneway": true
+  }
+ ]
+}
