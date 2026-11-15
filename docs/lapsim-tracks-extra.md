@@ -40,7 +40,7 @@ Owner instruction (2026-11-14): where a real lap of a car type exists, use it. T
 | sakhir-outer | Outer circuit 3.543 km | f1-history | 3499 (3543) | car positions | 1 (0) | 0.55 | 0.55 | – | – | – | pass (unseen) |
 | kyalami | Grand Prix 4.522 km | europe-africa-asia | 4457 (4522) | 1458–1501 m | 2 (0) | 3.01 | -2.98 | 0.9188 | 0.96 | – | pass (learned) |
 | fuji | Fuji Speedway 4.563 km | europe-africa-asia | 4460 (4563) | 544–594 m | 8 (8) | 1.23 | -1.04 | 0.9714 | 0.84 | – | pass (unseen) |
-| daytona | Road course (IMSA) 5.729 km | imsa | 5679 (5729) | 8–14 m | 7 (0) | 7.51 | -7.35 | 0.75 (out of bounds) | 1.23 | – | ⚠️ learned track factor 0.75 is outside 0.88–1.21: the track, not the grip, is wrong |
+| daytona | Road course (IMSA) 5.729 km | imsa | 5679 (5729) | flat assumed | 7 (0) | 3.83 | 3.61 | 1.1585 | 1.78 | – | pass (learned) |
 | laguna-seca | Raceway 3.602 km | imsa | 3548 (3602) | 229–282 m | 10 (0) | 2.72 | 2.03 | 1.055 | 2.05 | – | pass (unseen) |
 | watkins-glen | Long course (IMSA) 5.472 km | imsa | 5401 (5472) | 454–496 m | 9 (0) | 2.05 | 1.4 | 1.0374 | 1.71 | – | pass (unseen) |
 | mosport | Grand Prix track (IMSA) 3.957 km | imsa | 3891 (3957) | 289–340 m | 5 (0) | 1.74 | -0.59 | 0.9833 | 2.05 | – | pass (unseen) |
@@ -140,13 +140,13 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 | fuji | wec | 2025 | HYPERCAR | Cadillac #12 | lmdh 2025 | 88.236 | 87.862 | -0.42 |
 | fuji | wec | 2025 | LMGT3 | Aston Martin #10 | lmgt3 2025 | 99.981 | 98.474 | -1.51 |
 | fuji | wec | 2025 | HYPERCAR | Aston Martin #009 | lmh 2025 | 88.705 | 87.641 | -1.2 |
-| daytona | imsa | 2024 | GTP | CADILLAC V-SERIES.R | lmdh 2025 (borrowed) | 92.656 | 86.743 | -6.38 |
-| daytona | imsa | 2024 | GTDPRO | PORSCHE 911 GT3 R (992) | lmgt3 2025 (borrowed) | 104.382 | 98.532 | -5.6 |
-| daytona | imsa | 2025 | GTDPRO | Ford #64 | lmgt3 2025 (borrowed) | 105.523 | 98.904 | -6.27 |
-| daytona | imsa | 2025 | GTP | BMW #24 | lmdh 2025 (borrowed) | 93.895 | 87.065 | -7.27 |
-| daytona | imsa | 2026 | GTDPRO | Chevrolet #3 | lmgt3 2026 (borrowed) | 105.106 | 98.054 | -6.71 |
-| daytona | imsa | 2026 | GTP | Cadillac #31 | lmdh 2026 (borrowed) | 93.939 | 85.473 | -9.01 |
-| daytona | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 95.382 | 85.638 | -10.22 |
+| daytona | imsa | 2024 | GTP | CADILLAC V-SERIES.R | lmdh 2025 (borrowed) | 92.656 | 96.536 | 4.19 |
+| daytona | imsa | 2024 | GTDPRO | PORSCHE 911 GT3 R (992) | lmgt3 2025 (borrowed) | 104.382 | 109.99 | 5.37 |
+| daytona | imsa | 2025 | GTDPRO | Ford #64 | lmgt3 2025 (borrowed) | 105.523 | 110.363 | 4.59 |
+| daytona | imsa | 2025 | GTP | BMW #24 | lmdh 2025 (borrowed) | 93.895 | 96.834 | 3.13 |
+| daytona | imsa | 2026 | GTDPRO | Chevrolet #3 | lmgt3 2026 (borrowed) | 105.106 | 109.465 | 4.15 |
+| daytona | imsa | 2026 | GTP | Cadillac #31 | lmdh 2026 (borrowed) | 93.939 | 96.405 | 2.63 |
+| daytona | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 95.382 | 96.518 | 1.19 |
 | laguna-seca | imsa | 2023 | GTDPRO | Porsche #9 | lmgt3 2025 (borrowed) | 84.529 | 83.872 | -0.78 |
 | laguna-seca | imsa | 2023 | GTP | Porsche #7 | lmdh 2025 (borrowed) | 74.774 | 74.364 | -0.55 |
 | laguna-seca | imsa | 2024 | GTDPRO | Chevrolet #4 | lmgt3 2025 (borrowed) | 79.727 | 83.929 | 5.27 |
@@ -307,13 +307,13 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 | fuji | wec | 2025 | HYPERCAR | Cadillac #12 | lmdh 2025 | 88.236 | 88.927 | 0.78 |
 | fuji | wec | 2025 | LMGT3 | Aston Martin #10 | lmgt3 2025 | 99.981 | 99.252 | -0.73 |
 | fuji | wec | 2025 | HYPERCAR | Aston Martin #009 | lmh 2025 | 88.705 | 88.599 | -0.12 |
-| daytona | imsa | 2024 | GTP | CADILLAC V-SERIES.R | lmdh 2025 (borrowed) | 92.656 | 93.432 | 0.84 |
-| daytona | imsa | 2024 | GTDPRO | PORSCHE 911 GT3 R (992) | lmgt3 2025 (borrowed) | 104.382 | 105.393 | 0.97 |
-| daytona | imsa | 2025 | GTDPRO | Ford #64 | lmgt3 2025 (borrowed) | 105.523 | 105.892 | 0.35 |
-| daytona | imsa | 2025 | GTP | BMW #24 | lmdh 2025 (borrowed) | 93.895 | 93.833 | -0.07 |
-| daytona | imsa | 2026 | GTDPRO | Chevrolet #3 | lmgt3 2026 (borrowed) | 105.106 | 104.674 | -0.41 |
-| daytona | imsa | 2026 | GTP | Cadillac #31 | lmdh 2026 (borrowed) | 93.939 | 92.773 | -1.24 |
-| daytona | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 95.382 | 92.844 | -2.66 |
+| daytona | imsa | 2024 | GTP | CADILLAC V-SERIES.R | lmdh 2025 (borrowed) | 92.656 | 93.076 | 0.45 |
+| daytona | imsa | 2024 | GTDPRO | PORSCHE 911 GT3 R (992) | lmgt3 2025 (borrowed) | 104.382 | 106.852 | 2.37 |
+| daytona | imsa | 2025 | GTDPRO | Ford #64 | lmgt3 2025 (borrowed) | 105.523 | 107.063 | 1.46 |
+| daytona | imsa | 2025 | GTP | BMW #24 | lmdh 2025 (borrowed) | 93.895 | 93.167 | -0.78 |
+| daytona | imsa | 2026 | GTDPRO | Chevrolet #3 | lmgt3 2026 (borrowed) | 105.106 | 106.227 | 1.07 |
+| daytona | imsa | 2026 | GTP | Cadillac #31 | lmdh 2026 (borrowed) | 93.939 | 92.486 | -1.55 |
+| daytona | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 95.382 | 92.348 | -3.18 |
 | laguna-seca | imsa | 2023 | GTDPRO | Porsche #9 | lmgt3 2025 (borrowed) | 84.529 | 82.242 | -2.71 |
 | laguna-seca | imsa | 2023 | GTP | Porsche #7 | lmdh 2025 (borrowed) | 74.774 | 72.517 | -3.02 |
 | laguna-seca | imsa | 2024 | GTDPRO | Chevrolet #4 | lmgt3 2025 (borrowed) | 79.727 | 82.761 | 3.81 |
@@ -462,7 +462,7 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 | sakhir-outer | 1 fixed (official) and 2 measured (driven line) | 2 measured (F1 car positions, 8 qualifying laps, 2020) | 2 measured (mean of the fastest qualifying laps) | not used | 2 measured (F1 car positions) | 4 borrowed (mean factor of the class's fitted tracks) |
 | kyalami | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 4 assumed 12 m | 2 measured, coarse (about 30 m ground grid) | 3 inferred (one factor fitted on real laps of this track) |
 | fuji | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
-| daytona | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 4 assumed 12 m | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| daytona | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 4 assumed 12 m | none (flat assumed) | 3 inferred (one factor fitted on real laps of this track) |
 | laguna-seca | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | watkins-glen | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 4 assumed 12 m | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | mosport | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 4 assumed 12 m | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
@@ -523,7 +523,7 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 - **sakhir-outer**: TracingInsights/2020 on GitHub: Sakhir Grand Prix, Qualifying (FastF1 car positions, lap times, corner positions)
 - **kyalami**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); kyalamigrandprixcircuit.com/grand-prix-circuit (4.522 km, 16 turns, anti-clockwise, pole left); Terrarium elevation tiles (Mapzen/Tilezen open data)
 - **fuji**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
-- **daytona**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); imsa.com/weathertech/weathertech-2026-schedule (3.56 miles, 12 corners) [rounded to 0.01 mile]; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **daytona**: tobi/track-atlas tracks/daytona/raw/layers/gp.geojson (MIT; geometry OpenStreetMap relation 5254136, ODbL), midline checked against NAIP imagery
 - **laguna-seca**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
 - **watkins-glen**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); imsa.com/news/tracks/watkins-glen-international (3.4 miles) [rounded to 0.1 mile: too coarse for the 0.5 % check, treated as weak]; Terrarium elevation tiles (Mapzen/Tilezen open data)
 - **mosport**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); imsa.com/weathertech/weathertech-2024-schedule (2.459 miles, 10 corners); Terrarium elevation tiles (Mapzen/Tilezen open data)
