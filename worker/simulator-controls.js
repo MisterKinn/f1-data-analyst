@@ -4,7 +4,8 @@ import {calendarEvents} from './race-calendar-data.js';
 import {lapsimLearned} from './lapsim/learned-data.js';
 import {lapsimFe} from './lapsim/fe-data.js';
 
-// Track labels in the owner's format: 3-letter code + " - " + name (no flag, owner 2026-11-14). [ISO country, code, name, always ⚠️].
+// Track labels in the owner's format: flag + 3-letter code + " - " + name (🇧🇭BHA - Bahrain; flag back on 2026-11-15, shown on PC by the
+// self-hosted flag font in website.js, since Windows has no flag emoji). [ISO country, code, name, always ⚠️].
 // The codes are the owner's (Bahrain is BHA). Requested tracks come from scripts/sim/data/track-requests.json
 // (owner list, 2026-11-11); a track is listed on the page only when it exists in tracks-data.js.
 const L = {
@@ -56,8 +57,11 @@ export function trackWarn(id, track) {
 // "ITA - Monza"; a track with no label entry keeps its plain data name (no invented code)
 export function trackLabel(id, track) {
   const e = L[id], w = trackWarn(id, track) ? WARN : ''; if (!e) return (track?.name || id) + w;
-  return e[1] + ' - ' + e[2] + w;
+  return flag(e[0]) + e[1] + ' - ' + e[2] + w;
 }
+
+// ISO country code → flag emoji (two regional indicator letters)
+export const flag = iso => String.fromCodePoint(...[...iso].map(c => 0x1F1A5 + c.charCodeAt(0)));
 
 // Track ids sorted by the 3-letter code, then by name (unlabelled tracks last, by name)
 export function trackOrder(tracks) {
