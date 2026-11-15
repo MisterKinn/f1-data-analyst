@@ -9,15 +9,24 @@ import {lapsimTrackView} from '../../worker/lapsim/track-view-data.js';
 const raw = JSON.parse(readFileSync(new URL('./data/learn/f1-zones-raw.json', import.meta.url), 'utf8'));
 // earlier years for circuits whose map of the wanted year is an image (fetch-f1-zones-extra.mjs); the 2025 slot keeps the newest year found
 try { raw.events.push(...JSON.parse(readFileSync(new URL('./data/learn/f1-zones-raw-extra.json', import.meta.url), 'utf8')).events); } catch (e) { /* optional */ }
-const POS = String.raw`(?:(\d+)\s?m\s+(before|after)\s+(?:(?:T|Turn\s?)(\d+)|(?:the\s)?(finish|control|start) line)|(Entry|Mid|Exit|Start of|End of)[- ]?(?:T|Turn\s?)(\d+))`;
+// zones read from the FIA map pictures (their legend is part of the picture, not text): scripts/sim/data/learn/f1-zones-visual.json
+try { raw.events.push(...JSON.parse(readFileSync(new URL('./data/learn/f1-zones-visual.json', import.meta.url), 'utf8')).events.map(e => ({...e, docs: [{title: e.doc + ' (read from the map picture)', url: e.url || '', lines: e.lines.map(text => ({text}))}]}))); } catch (e) { /* optional */ }
+// one FIA position: "90m after T15", "40m before T3", "12m after finish line", "Entry/Apex/Mid/Exit (of) T11", "T3 exit", "T1A-entry", "T11"
+const POS = String.raw`(?:\d+% from T\d+ to T\d+|\d+\s?m\s+(?:before|after)\s+(?:(?:T|Turn\s?)\d+[A-Z]?(?:[- ](?:entry|exit))?|(?:the\s)?(?:finish|control|start) line)|(?:Entry|Apex|Mid|Exit|Start|End)(?:\s+of)?[- ]?(?:T|Turn\s?)\d+[A-Z]?|T\d+[A-Z]?[- ](?:entry|exit))`;
 const posRe = new RegExp(POS, 'i');
 const cornersOf = id => (T[id].corners?.length ? T[id].corners : lapsimTrackView[id]?.corners) || [];
 function at(id, txt) {
   const m = posRe.exec(txt || ''); if (!m) return null;
-  const C = cornersOf(id), L = T[id].length, turn = Number(m[3] || m[6]);
-  const c = m[4] ? {s: 0} : C.find(k => k.number === turn && !k.letter) || C.find(k => k.number === turn); if (!c) return null; // the lap starts at the line
-  const d = m[1] ? Number(m[1]) * (m[2].toLowerCase() === 'before' ? -1 : 1) : /entry|start/i.test(m[5]) ? -40 : /exit|end/i.test(m[5]) ? 40 : 0;
-  return ((c.s + d) % L + L) % L;
+  const p = m[0], C = cornersOf(id), L = T[id].length;
+  const fr = /(\d+)% from T(\d+) to T(\d+)/i.exec(p); // read from a map picture: a share of the way between two turns
+  if (fr) { const a = C.find(k => k.number === +fr[2]), b = C.find(k => k.number === +fr[3]); if (!a || !b) return null; const span = ((b.s - a.s) % L + L) % L; return (a.s + span * fr[1] / 100) % L; }
+  const dm = /(\d+)\s?m\s+(before|after)/i.exec(p), tm = /(?:T|Turn\s?)(\d+)([A-Z]?)/i.exec(p.replace(/^\d+\s?m\s+(before|after)\s+/i, ''));
+  let base;
+  if (/line/i.test(p) && !tm) base = 0; // the lap starts at the line
+  else { if (!tm) return null; const n = Number(tm[1]), l = tm[2] || ''; const c = C.find(k => k.number === n && (k.letter || '') === l) || C.find(k => k.number === n && !k.letter) || C.find(k => k.number === n); if (!c) return null; base = c.s; }
+  const edge = /entry|start/i.test(p) ? -40 : /exit|end/i.test(p) ? 40 : 0;
+  const d = dm ? Number(dm[1]) * (dm[2].toLowerCase() === 'before' ? -1 : 1) + (/(T\d+[A-Z]?)[- ](entry|exit)/i.test(p) ? edge : 0) : edge;
+  return ((base + d) % L + L) % L;
 }
 // end of a zone: braking for the next numbered turn after the start (at least 150 m on)
 function zoneEnd(id, s0) {
@@ -26,14 +35,14 @@ function zoneEnd(id, s0) {
 }
 const out = {};
 for (const e of raw.events) {
-  const id = e.track; if (!T[id]) continue;
+  const id = e.year >= 2026 && /^Spanish/i.test(e.event) ? 'madring' : e.track; if (!T[id]) continue; // 2026: the Spanish GP moved to Madring
   const text = e.docs.flatMap(d => d.lines.map(l => l.text)).join('\n'), doc = e.docs.find(d => d.lines.length) || e.docs[0];
   if (e.year >= 2026) {
     const zones = [], marks = [];
-    for (const ln of text.split('\n')) { const m = /-\s*-?\s*ZONE\s*A(\d+)/i.exec(ln); if (!m) continue; const before = [...ln.slice(0, m.index).matchAll(new RegExp(POS, 'gi'))].pop(); if (!before) continue;
+    for (const ln of text.split('\n')) { const m = /-\s*-?\s*ZONE\s*A(\d+)/i.exec(ln); if (!m) continue; const head = ln.slice(0, m.index), before = [...head.matchAll(new RegExp(POS, 'gi'))].pop(); if (!before || /n\/a/i.test(head.slice(before.index + before[0].length))) continue;
       const s = at(id, before[0]), n = Number(m[1]); if (s != null && !zones.some(z => z.n === n)) zones.push({n, from: Math.round(s), to: Math.round(zoneEnd(id, s))}); }
     // overtake lines: "DETECTION - Entry T11", "ACTIVATION - T11" (a bare turn = the turn itself)
-    const ot = (word, kind, label) => { const m = new RegExp(word + String.raw`\s*-\s*(` + POS + String.raw`|T(\d+))`, 'i').exec(text); if (!m) return; const s = m[8] ? at(id, '0m after T' + m[8]) : at(id, m[1]); if (s != null) marks.push({s: Math.round(s), kind, label}); };
+    const ot = (word, kind, label) => { const m = new RegExp(word + String.raw`\s*-\s*(` + POS + String.raw`|T(\d+[A-Z]?)\b)`, 'i').exec(text); if (!m) return; const s = m[2] ? at(id, '0m after T' + m[2]) : at(id, m[1]); if (s != null) marks.push({s: Math.round(s), kind, label}); };
     ot('DETECTION', 'det', 'OT D'); ot('ACTIVATION', 'act', 'OT A');
     if (zones.length || marks.length) (out[id] ||= {})[String(e.year)] = {kind: 'sm', year: e.year, zones: zones.sort((a, b) => a.n - b.n), marks, doc: doc?.title || '', url: doc?.url || ''};
   } else {
