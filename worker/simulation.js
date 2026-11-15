@@ -390,20 +390,26 @@ const LT = {
 // car's precomputed line. Every track has one (owner 2026-11-15): tracks without TUM edges use the map line as the midline and an
 // assumed 12 m width (1 m kept free for the car on each side). Computed once per track and kept.
 const LINE_CACHE = new Map();
+// Savitzky-Golay 7-point quadratic, two passes, on a closed polyline: removes the wobble of points stored to the metre
+// (owner 2026-11-15: no wrinkled edges) and keeps the shape of real corners (Monaco hairpin, Montreal chicane checked)
+const SG7 = [-2, 3, 6, 7, 6, 3, -2].map(v => v / 21);
+const smoothClosed = P => { let a = P; for (let p = 0; p < 2; p++) { const n = a.length, b = a; a = b.map((q, i) => q.map((_, c) => SG7.reduce((s, w, k) => s + w * b[(i + k - 3 + n) % n][c], 0))); } return a; };
 export function lineData(id) {
   if (LINE_CACHE.has(id)) return LINE_CACHE.get(id);
   const L = lapsimRacingLines?.tracks?.[id], C = lapsimCarLines?.tracks?.[id], r1 = p => [+p[0].toFixed(1), +p[1].toFixed(1)];
   const normals = mid => mid.map((_, i, a) => { const n = a.length, p = a[(i - 1 + n) % n], q = a[(i + 1) % n], dx = q[0] - p[0], dy = q[1] - p[1], l = Math.hypot(dx, dy) || 1; return [+(-dy / l).toFixed(4), +(dx / l).toFixed(4)]; });
   let mid, left, right, nrm, base, half, edges;
   if (L?.line?.length) {
-    mid = L.left.map((l, i) => [(l[0] + L.right[i][0]) / 2, (l[1] + L.right[i][1]) / 2]); nrm = normals(mid); left = L.left; right = L.right; edges = L.edges;
-    base = L.line.map((p, i) => Math.round(((p[0] - mid[i][0]) * nrm[i][0] + (p[1] - mid[i][1]) * nrm[i][1]) * 10));
-    half = L.left.map((l, i) => Math.max(0.5, Math.hypot(l[0] - L.right[i][0], l[1] - L.right[i][1]) / 2 - 1));
+    mid = smoothClosed(L.left.map((l, i) => [(l[0] + L.right[i][0]) / 2, (l[1] + L.right[i][1]) / 2])); nrm = normals(mid); edges = L.edges;
+    const hw = smoothClosed(L.left.map((l, i) => [Math.hypot(l[0] - L.right[i][0], l[1] - L.right[i][1]) / 2])).map(v => v[0]), line = smoothClosed(L.line);
+    left = mid.map((p, i) => [p[0] + nrm[i][0] * hw[i], p[1] + nrm[i][1] * hw[i]]); right = mid.map((p, i) => [p[0] - nrm[i][0] * hw[i], p[1] - nrm[i][1] * hw[i]]);
+    base = line.map((p, i) => Math.round(((p[0] - mid[i][0]) * nrm[i][0] + (p[1] - mid[i][1]) * nrm[i][1]) * 10));
+    half = hw.map(h => Math.max(0.5, h - 1));
   } else {
     const m = lapsimTracks[id]?.map; if (!m?.x?.length) { LINE_CACHE.set(id, null); return null; }
-    mid = m.x.map((x, i) => [x, m.y[i]]); nrm = normals(mid); half = mid.map(() => 5); edges = 'assumed';
+    mid = smoothClosed(m.x.map((x, i) => [x, m.y[i]])); nrm = normals(mid); half = mid.map(() => 5); edges = 'assumed';
     left = mid.map((p, i) => [p[0] + nrm[i][0] * 6, p[1] + nrm[i][1] * 6]); right = mid.map((p, i) => [p[0] - nrm[i][0] * 6, p[1] - nrm[i][1] * 6]);
-    base = minCurvatureLine(m.x, m.y, half).offset.map(v => Math.round(v * 10));
+    base = minCurvatureLine(mid.map(p => p[0]), mid.map(p => p[1]), half).offset.map(v => Math.round(v * 10));
   }
   const sp = minCurvatureLine(mid.map(p => p[0]), mid.map(p => p[1]), half, {order: 2}).offset.map(v => Math.round(v * 10));
   const xs = [...left, ...right].map(p => p[0]), ys = [...left, ...right].map(p => p[1]);

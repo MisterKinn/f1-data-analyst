@@ -49,7 +49,9 @@ export function buildTrack(id, spec, c) {
   const width = spec.widthM || c.widthM || null, halfW = Math.max(1, (width || 12) / 2 - 1.2);
   const rl = minCurvatureLine(cx, cy, new Array(n0).fill(halfW)), line = lineTrack(K, rl.x, rl.y, 5), n = line.kappa.length;
   const flat = !c.grade || c.grade.every(g => g === 0), step = Math.max(1, Math.floor(n / 360)), map = {x: [], y: []};
-  for (let i = 0; i < n; i += step) { map.x.push(Math.round(line.x[i])); map.y.push(Math.round(line.y[i])); }
+  // the drawn map is the track's centre line (owner 2026-11-15: corners as angular as the circuit diagram); the lap uses the
+  // least-curvature line above, which rounds every corner by design. Same number of points, spread evenly along the centre line.
+  for (let j = 0, k = Math.ceil(n / step); j < k; j++) { const i = Math.min(n0 - 1, Math.round(j * n0 / k)); map.x.push(Math.round(cx[i])); map.y.push(Math.round(cy[i])); }
   const turn = line.kappa.reduce((a, k) => a + k * line.ds, 0) * 180 / Math.PI;
   return {id, name: spec.name, circuit: spec.name, layout: spec.layout, year: null, ds: line.ds, length: Math.round(line.length),
     officialLengthM: spec.officialLengthM ?? c.officialLengthM ?? null, sectors: [], corners: [],
