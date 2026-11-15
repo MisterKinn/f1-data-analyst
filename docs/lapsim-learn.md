@@ -39,6 +39,12 @@ the first run. Sections 4 and 5 are results. Section 6 is the source list: add a
    A lap of another series (IMSA GTP at Daytona, GTWC at Road Atlanta) fills the slot only where WEC never raced. WEC LMGT3 has
    raced from 2024; WEC last raced at Monza in 2023 (LMGTE Am), so Monza shows that pole, and SRO GT3 at Monza shows the GTWC record.
 12. **A car with an Evo or Evo 2 kit opens on its newest kit** (Evo box ticked; `evo=0` in the URL for the base car).
+13. **GT3 page controls and tyres (owner 2026-11-15).** GT3: choose the car model first, then the series spec (SRO GT3, IMSA GTD,
+   WEC LMGT3, DTM), then the kit. The WEC series lists only LMH and LMDh; LMGT3 is a GT3 model with the WEC LMGT3 spec.
+   Tyre supplier follows the spec: SRO GT World Challenge and DTM Pirelli, IMSA GTD Michelin, WEC / ELMS / Asian LMS LMGT3 Goodyear;
+   Formula E Gen2 Michelin, Gen3 and Gen3 Evo Hankook, Gen4 Bridgestone.
+14. **Every measured lap.** Every GT3 model that raced is listed, older generations too (SLS, R8 LMS ultra, 991, V12 Vantage, M6,
+   458, 650S, 12C, GT-R, Continental, Z4, first Huracán GT3 ...); the SRO official tables are read from 2013 on.
 
 ## 2. Data shape and pipeline
 
@@ -223,7 +229,7 @@ Rows that could not be used, by reason: no simulator geometry: sebring-6019: 301
 | OpenWEC | https://www.openwec.com/explore | WEC, ELMS, Asian LMS, Le Mans Cup, IMSA since 2012, REST API | Not reachable from the shell; probe in Actions. Needed for 2012–2020 |
 | wec-data | https://github.com/Hanspeter007/wec-data | Schemas and 2026 examples of classifications, entry lists, line-ups | Read: schema only, no lap data |
 | 51GT3 | https://51gt3.com/en/track | GT3 tracks and lap records | Not reachable from the shell; probe in Actions |
-| SRO official results | https://www.gt-world-challenge-europe.com/results · https://www.gt-world-challenge-america.com/results · https://www.gt-world-challenge-asia.com/results · https://www.britishgt.com/results · https://www.intercontinentalgtchallenge.com/results | Every session table (position, car, best lap) of every meeting | Learned 2022–2026 (`fetch-sro.mjs` in Actions → `build-sro.mjs` → `sro-gt3-cars.csv.gz`, 28,017 rows): records only. IGTC gives PDFs (not read yet); GTWC Australia pages have no session tables |
+| SRO official results | https://www.gt-world-challenge-europe.com/results · https://www.gt-world-challenge-america.com/results · https://www.gt-world-challenge-asia.com/results · https://www.britishgt.com/results · https://www.intercontinentalgtchallenge.com/results | Every session table (position, car, best lap) of every meeting | Learned 2013–2026 (`fetch-sro.mjs` in Actions → `build-sro.mjs` → `sro-gt3-cars.csv.gz`, 54,134 rows): records only. IGTC gives PDFs (not read yet); GTWC Australia pages have no session tables |
 | Timing71 core | https://github.com/timing71/livetiming-core | How Timing71 services record sessions (format of the replay archive) | Read |
 | Timing71 replay archive | https://archive.timing71.org/ | 15,808 replays, all series | Rows built on 2026-11-11 (Actions run 42927630531, artifacts until 2026-12-11); 46 % had no track id: re-map them with `resolveTrack()` |
 | TracingInsights | https://github.com/TracingInsights | F1 laps and telemetry 2018–2026 | Used by the F1 pipeline and the F1-history tracks |
