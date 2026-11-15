@@ -4,13 +4,13 @@ import {calendarEvents} from './race-calendar-data.js';
 import {lapsimLearned} from './lapsim/learned-data.js';
 import {lapsimFe} from './lapsim/fe-data.js';
 
-// Track labels in the owner's format: flag + 3-letter code + " - " + name (🇧🇭BHA - Bahrain; flag back on 2026-11-15, shown on PC by the
+// Track labels in the owner's format: flag + 3-letter code + " - " + name (🇧🇭BHR - Bahrain; flag back on 2026-11-15, shown on PC by the
 // self-hosted flag font in website.js, since Windows has no flag emoji). [ISO country, code, name, always ⚠️].
-// The codes are the owner's (Bahrain is BHA). Requested tracks come from scripts/sim/data/track-requests.json
+// The codes are the owner's (Bahrain is BHR, owner 2026-11-15). Requested tracks come from scripts/sim/data/track-requests.json
 // (owner list, 2026-11-11); a track is listed on the page only when it exists in tracks-data.js.
 const L = {
   melbourne: ['AU', 'AUS', 'Melbourne'], bathurst: ['AU', 'AUS', 'Bathurst'], spielberg: ['AT', 'AUT', 'Red Bull Ring'], baku: ['AZ', 'AZE', 'Baku'],
-  'spa-francorchamps': ['BE', 'BEL', 'Spa'], sakhir: ['BH', 'BHA', 'Bahrain'], 'sakhir-outer': ['BH', 'BHA', 'Bahrain(Outer)'],
+  'spa-francorchamps': ['BE', 'BEL', 'Spa'], sakhir: ['BH', 'BHR', 'Bahrain'], 'sakhir-outer': ['BH', 'BHR', 'Bahrain(Outer)'],
   interlagos: ['BR', 'BRA', 'Interlagos'], 'fe-sao-paulo': ['BR', 'BRA', 'São Paulo Anhembi'], montreal: ['CA', 'CAN', 'Montreal'], mosport: ['CA', 'CAN', 'Mosport'],
   shanghai: ['CN', 'CHN', 'Shanghai'], 'fe-sanya': ['CN', 'CHN', 'Sanya Haitang Bay'], catalunya: ['ES', 'ESP', 'Barcelona'], madring: ['ES', 'ESP', 'Madrid'], jarama: ['ES', 'ESP', 'Jarama'],
   'le-mans': ['FR', 'FRA', 'Le Mans'], 'paul-ricard': ['FR', 'FRA', 'Paul Ricard'], 'paul-ricard-f1': ['FR', 'FRA', 'Paul Ricard(F1)'], silverstone: ['GB', 'GBR', 'Silverstone'], 'brands-hatch': ['GB', 'GBR', 'Brands Hatch'],

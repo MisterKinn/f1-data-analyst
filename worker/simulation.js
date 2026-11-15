@@ -307,7 +307,7 @@ const UI = {
 // Owner's opening views (2026-11-15). straight: [corner, corner] laid horizontal on that side of the picture; left/right: corners
 // put on a horizontal line; longest: the longest straight on that side (back: not the start-line straight); deg: a fixed turn.
 export const VIEW = {
-  fuji: {longest: 'top'}, monza: {longest: 'bottom'}, interlagos: {straight: [3, 4], side: 'bottom'}, sakhir: {straight: [10, 11], side: 'bottom'},
+  fuji: {longest: 'top'}, monza: {longest: 'bottom'}, interlagos: {straight: [3, 4], side: 'bottom'}, sakhir: {straight: [10, 11], side: 'bottom'}, 'sakhir-outer': {longest: 'bottom'},
   silverstone: {left: 15, right: 9}, suzuka: {deg: 0}, portimao: {longest: 'bottom', back: true},
 };
 export function landscapeRot(map, north, spec, corners, length) {

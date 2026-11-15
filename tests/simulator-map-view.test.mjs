@@ -37,3 +37,7 @@ test('Sakhir 2026 zones come from the Bahrain pre-season test map, not the Sepan
   assert.deepEqual(z.marks.map(k => k.label), ['OT D', 'OT A']);
   assert.equal(tracks.sakhir['2025'].kind, 'drs');
 });
+
+test('Bahrain Outer opens with its long straight flat along the bottom (owner 2026-11-15)', () => {
+  assert.deepEqual(VIEW['sakhir-outer'], {longest: 'bottom'});
+});
