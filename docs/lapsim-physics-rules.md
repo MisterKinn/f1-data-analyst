@@ -459,3 +459,34 @@ Precomputed SPSA lines of an exact car (26 tracks with TUM edges: 2026 F1, LMH, 
 use the map line as midline and an assumed 12 m width (1 m kept free each side); the page says so. Example: Monaco, F1 2026 mean e
 0.61, LMH 0.53, Formula E Gen3 Evo 0.32; Suzuka about 0.95–1 for every car. Limits: the line is not compared with a real driven
 line (section 6 step 7); assumed widths; the server draws the least-curvature line and the browser replaces it with the car's line.
+
+### Human pedals, throttle and grip-loss zones (2026-11-15, second step)
+
+Owner: the brake trace was "too honest"; a driver stabs, holds and releases the pedal, and a throttle channel was missing. Reference
+for the layout: a team data sheet (one distance axis, both drivers overlaid, a time-delta lane, values at a cursor). No real trace is
+compared (there is no answer to compare with); the shapes below are a model of a human driver, labelled so on the page.
+
+Throttle the lap needs (0–1): 0 while the brake is needed, 1 where the kernel is power-limited or above the deploy cut-off / clipping
+speed (the battery, not the foot, limits the car there), else (m·a + drag + rolling) · v / (engine power in its gear × drivetrain
+efficiency + hybrid power).
+
+Human traces, on a grid half a lap point apart (2.5 m: 37 Hz at 330 km/h, 9 Hz at 80 km/h; ripple frequencies are capped at
+0.4 × the local sample rate so slow corners do not alias), seeded per track and car:
+
+| Part | Model | Value (Wolfram check) |
+|---|---|---|
+| Brake stab | 1 − e^(−t/τ), τ 0.035 s | 90 % in 0.081 s |
+| Overshoot | 4–10 % of the zone peak × (t/τ)·e^(1−t/τ), τ 0.09 s | peak 1 at t = τ, area e·τ |
+| Hold | 4–7 Hz ripple 1.5–3 % + 1–2 Hz wander 1.2 %, × (1 + 2 × grip risk) | |
+| Lock-up relief | 10–18 % dip for ±0.04 s, chance 0.25 + 0.6 × risk, at the riskiest point of the zone | |
+| Impulse | each zone rescaled to the physics brake impulse | test: within −2 / +15 % with the tail |
+| Trail-off | tail from max(6 % of peak, end pressure), τ 0.10–0.18 s, at most 0.5 s | 12 % left after 0.3 s (τ 0.14) |
+| Throttle | squeezed on τ 0.10 s, snapped off τ 0.025 s; 2.5–4 Hz ripple while part-open; lift of 15 % for 0.12 s on 20 % + 60 % × risk of pick-ups; 0 while braking | t90 0.23 s / 0.058 s |
+
+Grip risk per point (0–1): 0.6 × weight lost over a crest (v² × vertical curvature from the smoothed grade / g) + 0.3 × 5 × downhill
+slope while braking + 3 × downforce lost to a tailwind (aero share of the load × (1 − ((v − tailwind)/v)²)) + 2 × (1 − surface grip,
+FIA changes switched on) + 0.25 on fresh asphalt or patched bumps named in the latest FIA notes (0.15 on the whole lap for a
+resurfacing with no place) + 3 × (1 − temperature grip factor) + 0.5 in rain. The weights are engineering choices, not fitted.
+It scales the steering corrections (× (1 + 1.5 × risk)), the brake ripple and relief, and the throttle ripple and lifts; it is shaded on
+the speed lane where it is 0.2 or more. Check: at Spa the highest risk is the Raidillon crest (T4), at Monaco the Massenet crest (T2).
+Grade exists for 75 of 99 tracks and heading (wind) for 26; without them those terms are 0.

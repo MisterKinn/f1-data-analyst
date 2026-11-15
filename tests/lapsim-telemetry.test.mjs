@@ -41,6 +41,27 @@ test('brake pressure, gear, rpm and steering are physical and stable', () => {
   assert.ok(f2.gear.every(g => g === 1) && f2.shifts.length === 0 && Math.max(...f2.brakeBar) > 20);
 });
 
+test('human pedals: stab, overshoot, ripple and trail-off; throttle; grip-loss zones', () => {
+  const {c, tr, r} = lap('monza', '2026'), ch = lapChannels(tr, c.car, env, r, {cls: 'f1', seed: 'monza|2026'}), n = r.v.length;
+  assert.equal(ch.brakeHuman.length, 2 * n); assert.equal(ch.throttleHuman.length, 2 * n);
+  // same brake impulse as the physics (the trail-off tail adds a little), more peak than the physics (overshoot), not monotonic (ripple)
+  const sumP = ch.brakeBar.reduce((a, x) => a + x, 0) * 2, sumH = ch.brakeHuman.reduce((a, x) => a + x, 0);
+  assert.ok(sumH >= sumP * 0.98 && sumH < sumP * 1.15, sumH / sumP);
+  assert.ok(Math.max(...ch.brakeHuman) > Math.max(...ch.brakeBar));
+  let turns = 0; for (let k = 2; k < 2 * n; k++) if (ch.brakeHuman[k - 1] > 20 && (ch.brakeHuman[k] - ch.brakeHuman[k - 1]) * (ch.brakeHuman[k - 1] - ch.brakeHuman[k - 2]) < 0) turns++;
+  assert.ok(turns > 20, 'ripple ' + turns);
+  // brake only in braking zones and their short tails; no throttle while braking; flat out on the straights
+  ch.brakeHuman.forEach((b, k) => { if (b > 0) { const i = k >> 1; assert.ok([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].some(o => ch.brakeBar[(i - o + n) % n] > 0), 'brake at ' + k); } });
+  ch.throttleHuman.forEach((x, k) => { if (ch.brakeHuman[k] > 2) assert.equal(x, 0); });
+  assert.ok(ch.throttleHuman.filter(x => x === 100).length > n * 0.6 && ch.throttle.every(x => x >= 0 && x <= 1));
+  assert.deepEqual(lapChannels(tr, c.car, env, r, {cls: 'f1', seed: 'monza|2026'}).brakeHuman, ch.brakeHuman);
+  // Spa: the riskiest place is the Raidillon crest (T4), where the car goes light
+  const spa = lap('spa-francorchamps', '2026'), sc = lapChannels(spa.tr, spa.c.car, env, spa.r, {cls: 'f1'}), T4 = lapsimAllTracks['spa-francorchamps'].corners.find(x => x.number === 4).s;
+  const iMax = sc.risk.indexOf(Math.max(...sc.risk)); assert.ok(Math.abs(iMax * spa.tr.ds - T4) < 80, iMax * spa.tr.ds + ' vs ' + T4);
+  // rain raises the risk everywhere
+  assert.ok(lapChannels(spa.tr, spa.c.car, env, spa.r, {cls: 'f1', wet: true}).risk.every((x, i) => x >= sc.risk[i]));
+});
+
 test('least-curvature and shortest lines stay in the corridor and do what they say', () => {
   const n = 200, x = [], y = [];
   for (let i = 0; i < n; i++) { const a = 2 * Math.PI * i / n, r = 300 + 60 * Math.sin(3 * a); x.push(r * Math.cos(a)); y.push(r * Math.sin(a)); }

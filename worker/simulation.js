@@ -39,7 +39,7 @@ const T = {
     seriesNames: {f1: 'F1', wec: 'WEC', imsa: 'IMSA GTP', fe: '포뮬러 E', gt3: 'GT3 (차종별)'}, none: '없음', conditions: '조건', real: '실제 예선 조건', manual: '직접 설정',
     lap: '계산된 랩타임', vsPole: '실제 폴', realLap: '실제 랩', wecBest: '실제 최고 랩', raceBest: '실제 레이스 최고 랩', errRange: '오차 범위(1σ)', conf: {medium: '신뢰도 보통', low: '신뢰도 낮음', 'very-low': '신뢰도 매우 낮음', 'not-fitted': '실측 보정 전'},
     soon: '준비 중: 기타 GT3(IMSA GTD·DTM·SP9), 포뮬러 E Gen4. 같은 보정 규칙을 쓰며 데이터 연결 후 추가됩니다.', sector: '섹터', vmax: '최고 속도', vmin: '최저 속도', energy: '배치 에너지', clip: '배치 상한 속도',
-    map: '속도로 칠한 주행 라인', slow: '느림', fast: '빠름', trace: '거리별 텔레메트리', tel: {speed: '속도 (km/h)', brake: '브레이크 압력 (앞 라인, bar)', gear: '기어', rpm: '엔진 회전수 (rpm)', steer: '스티어링 휠 각도 (°, + = 왼쪽)', note: '브레이크 압력은 감속도·브레이크 밸런스·패드 마찰계수·디스크와 캘리퍼 크기(클래스별 추정값)로, 기어와 회전수는 엔진 곡선과 기어비에서 출력이 가장 큰 기어로, 스티어링은 라인 곡률·휠베이스·조향비·언더스티어 경사로 계산합니다. 한계 근처의 작은 수정 조향은 고정 시드로 만든 모델 값입니다. 모두 실측 텔레메트리가 아닌 시뮬레이션입니다.', shifts: '변속 {n}회'}, km: '거리 (km)',
+    map: '속도로 칠한 주행 라인', slow: '느림', fast: '빠름', trace: '거리별 텔레메트리', tel: {short: {speed: '속도', delta: '시간 차', throttle: '스로틀', brake: '브레이크', gear: '기어', rpm: 'rpm', steer: '조향'}, hover: '그래프 위에 마우스를 올리거나 터치하면 그 지점의 값이 모든 채널에 표시됩니다.', delta: '시간 차 (s, + = {car}가 뒤짐)', throttle: '스로틀 (%)', risk: '드라이버의 페달·핸들 떨림은 사람처럼 만든 모델입니다: 브레이크는 순간적으로 밟아 살짝 넘쳤다가 미세하게 조절하고, 잠김 직전에 잠깐 풀었다 다시 밟고, 코너 안쪽까지 끌며 놓습니다. 스로틀은 천천히 열고 빠르게 닫으며, 트랙션 한계에서 흔들리고 가끔 잠깐 뗍니다. 속도 그래프의 붉은 띠는 그립을 잃기 쉬운 구간(크레스트에서 줄어드는 하중, 내리막 제동, 뒷바람에 줄어드는 다운포스, 최근 FIA 공지의 새 포장·범프 보수 구간, 타이어 온도 창 밖의 노면 온도, 비)이며, 이곳에서 떨림이 커집니다.', speed: '속도 (km/h)', brake: '브레이크 압력 (앞 라인, bar)', gear: '기어', rpm: '엔진 회전수 (rpm)', steer: '스티어링 휠 각도 (°, + = 왼쪽)', note: '브레이크 압력은 감속도·브레이크 밸런스·패드 마찰계수·디스크와 캘리퍼 크기(클래스별 추정값)로, 기어와 회전수는 엔진 곡선과 기어비에서 출력이 가장 큰 기어로, 스티어링은 라인 곡률·휠베이스·조향비·언더스티어 경사로 계산합니다. 한계 근처의 작은 수정 조향은 고정 시드로 만든 모델 값입니다. 모두 실측 텔레메트리가 아닌 시뮬레이션입니다.', shifts: '변속 {n}회'}, km: '거리 (km)',
     air: '공기', airTemp: '기온', trackTemp: '노면 온도', humidity: '습도', pressure: '기압', wind: '풍속', windFrom: '바람 방향',
     motor: '하이브리드 모터', axleFront: '앞 차축', axleRear: '뒤 차축', deployFrom: '{v} 이상에서만 구동', hybridE: '모터 사용 / 회생 (랩당)', soc: {old: '2025년까지 규정: 랩당 모터 배치 4 MJ 한도만 모델에 들어 있습니다 (MGU-H가 채우는 회생은 모델에 없어 배터리 흐름은 그리지 않습니다).', h: '배터리 에너지 (추정)', lead: 'F1·WEC 모두 실제 배터리 충전량(SoC)과 모터 사용 기록은 공개되지 않습니다. 아래는 규정 한도(배터리 사용 폭, 대회별 랩당 회생 한도)와 이 시뮬레이션 랩에서 계산한 추정값입니다.', line: '배터리에 남은 에너지', dep: '모터 배치', rec: '회생 (브레이크)', thr: '회생 (풀 스로틀, 슈퍼 클리핑)', sum: '배치 {d} MJ · 회생 {r} MJ (브레이크 {b} + 풀 스로틀 {t}){cap}', capT: ' · 한도 {c} MJ', ok: '확인: 회생 ≤ 한도 {a} · 랩 안 에너지 변동 {s} MJ ≤ 배터리 사용 폭 {w} MJ {b}', over: '({x} MJ 초과: 이 시뮬레이터는 에너지를 랩 합계로만 맞추기 때문입니다. 실제 차는 이만큼 배치를 줄이거나 순서를 바꿉니다)', start: '예선 랩: 배터리 가득 찬 상태에서 시작 (점선 = 사용 폭 한계)', hyper: '하이퍼카: 랩마다 충전 유지, 가장 낮은 지점을 0으로 둠 · 필요한 배터리 사용 폭 {s} MJ'},
     recharge: '퀄리 회생 한도', energy_official: 'FIA PU 문서', energy_provisional: 'FIA 잠정값, 보도 기준', energy_estimated: '추정', density: '공기 밀도', seaLevel: '해수면 표준 대비', ice: '엔진 출력', grip: '타이어 그립', mainStraight: '메인 스트레이트',
@@ -71,7 +71,7 @@ const T = {
     seriesNames: {f1: 'F1', wec: 'WEC', imsa: 'IMSA GTP', fe: 'Formula E', gt3: 'GT3 (by car model)'}, none: 'None', conditions: 'Conditions', real: 'Real qualifying conditions', manual: 'Set my own',
     lap: 'Simulated lap time', vsPole: 'Real pole', realLap: 'Real lap', wecBest: 'Real best lap', raceBest: 'Real fastest race lap', errRange: 'Error range (1σ)', conf: {medium: 'medium confidence', low: 'low confidence', 'very-low': 'very low confidence', 'not-fitted': 'not fitted to real laps'},
     soon: 'Formula E: Gen2, Gen3 and Gen3 Evo are learned from Al Kamel laps; Gen4 is a prior from the 2026-27 regulations until its first laps.', sector: 'Sector', vmax: 'Top speed', vmin: 'Lowest speed', energy: 'Energy deployed', clip: 'Deploy cut-off',
-    map: 'Racing line coloured by speed', slow: 'Slow', fast: 'Fast', trace: 'Telemetry over distance', tel: {speed: 'Speed (km/h)', brake: 'Brake pressure (front line, bar)', gear: 'Gear', rpm: 'Engine speed (rpm)', steer: 'Steering wheel angle (°, + = left)', note: 'Brake pressure comes from the deceleration, brake balance, pad friction and disc and caliper size (estimates per class); gear and rpm from the engine curve and the gear ratios (the gear with the most power); steering from the line curvature, wheelbase, steering ratio and understeer gradient. The small corrections near the grip limit are a model with a fixed seed. All channels are simulated, not measured.', shifts: '{n} gear changes'}, km: 'Distance (km)',
+    map: 'Racing line coloured by speed', slow: 'Slow', fast: 'Fast', trace: 'Telemetry over distance', tel: {short: {speed: 'Speed', delta: 'Delta', throttle: 'Throttle', brake: 'Brake', gear: 'Gear', rpm: 'rpm', steer: 'Steer'}, hover: 'Hover or touch a chart to read every channel at that point.', delta: 'Time delta (s, + = {car} behind)', throttle: 'Throttle (%)', risk: 'The pedal and steering wobble is a model of a human driver: the brake is stabbed, overshoots a little and is then modulated, eased for a moment where a wheel would lock and trailed off into the corner; the throttle is squeezed on and snapped off, shakes at the traction limit and is sometimes lifted for a moment. Red bands on the speed chart are where grip is easy to lose (load lost over a crest, braking downhill, downforce lost to a tailwind, fresh asphalt or patched bumps in the latest FIA notes, a track outside the tyre temperature window, rain); the corrections grow there.', speed: 'Speed (km/h)', brake: 'Brake pressure (front line, bar)', gear: 'Gear', rpm: 'Engine speed (rpm)', steer: 'Steering wheel angle (°, + = left)', note: 'Brake pressure comes from the deceleration, brake balance, pad friction and disc and caliper size (estimates per class); gear and rpm from the engine curve and the gear ratios (the gear with the most power); steering from the line curvature, wheelbase, steering ratio and understeer gradient. The small corrections near the grip limit are a model with a fixed seed. All channels are simulated, not measured.', shifts: '{n} gear changes'}, km: 'Distance (km)',
     air: 'Air', airTemp: 'Air temperature', trackTemp: 'Track temperature', humidity: 'Humidity', pressure: 'Pressure', wind: 'Wind speed', windFrom: 'Wind from',
     motor: 'Hybrid motor', axleFront: 'front axle', axleRear: 'rear axle', deployFrom: 'drives only above {v}', hybridE: 'Motor use / recovery (per lap)', soc: {old: 'Rules up to 2025: only the 4 MJ per-lap deploy limit is modelled (recovery topped up by the MGU-H is not, so no battery flow is drawn).', h: 'Battery energy (estimate)', lead: 'Neither F1 nor WEC publishes the real battery state of charge (SoC) or motor use. This is an estimate from the rule limits (usable battery window, per-event recharge limit per lap) and the simulated lap.', line: 'Energy left in the battery', dep: 'Motor deploy', rec: 'Recovery (braking)', thr: 'Recovery at full throttle (super-clipping)', sum: 'Deploy {d} MJ · recovery {r} MJ (braking {b} + full throttle {t}){cap}', capT: ' · limit {c} MJ', ok: 'Checks: recovery ≤ limit {a} · energy swing within the lap {s} MJ ≤ usable window {w} MJ {b}', over: '({x} MJ over: the simulator balances energy over the whole lap only; a real car deploys this much less or in a different order)', start: 'Qualifying lap: starts with a full battery (dashed = usable window)', hyper: 'Hypercar: charge-sustaining every lap, lowest point set to 0 · battery window needed {s} MJ'},
     recharge: 'Qualifying recharge limit', energy_official: 'FIA PU document', energy_provisional: 'FIA provisional, press', energy_estimated: 'estimated', density: 'Air density', seaLevel: 'vs standard sea level', ice: 'Engine power', grip: 'Tyre grip', mainStraight: 'Main straight',
@@ -157,14 +157,15 @@ function renderTrace(ds, series, opts) {
   for (let v = lo; v <= hi; v += st) grid += '<line x1="' + L + '" x2="' + (W - 8) + '" y1="' + y(v) + '" y2="' + y(v) + '" class="ls-grid"/><text x="' + (L - 6) + '" y="' + y(v) + '" dy="4" text-anchor="end" class="ls-axis">' + v + '</text>';
   for (let k = 0; k <= len / 1000; k++) grid += '<text x="' + x(k * 1000) + '" y="' + (H - 8) + '" text-anchor="middle" class="ls-axis">' + k + '</text>';
   for (const sb of opts.sectors || []) grid += '<line x1="' + x(sb) + '" x2="' + x(sb) + '" y1="' + top + '" y2="' + (H - B) + '" class="ls-sector"/>';
+  for (const [a, b] of opts.bands || []) grid += '<rect x="' + x(a) + '" y="' + top + '" width="' + Math.max(1, x(b) - x(a)).toFixed(1) + '" height="' + (H - top - B) + '" class="ls-risk"/>';
   for (const c of opts.corners || []) grid += '<line x1="' + x(c.s) + '" x2="' + x(c.s) + '" y1="' + (top - 4) + '" y2="' + (H - B) + '" class="ls-cline"/><text x="' + x(c.s) + '" y="' + (top - 8) + '" text-anchor="middle" class="ls-axis ls-ctag">T' + c.number + (c.letter || '') + '</text>';
   let lines = '';
   series.forEach((s, j) => {
     let d = '';
-    for (let i = 0; i < n; i++) d += (i ? 'L' : 'M') + x(i * ds) + ' ' + y(s.v[i]);
+    for (let i = 0; i < n; i++) if (!i || i === n - 1 || s.v[i] !== s.v[i - 1] || s.v[i] !== s.v[i + 1]) d += (i ? 'L' : 'M') + x(i * ds) + ' ' + y(s.v[i]); // flat runs: ends only
     lines += '<path d="' + d + '" class="ls-line ls-line-' + j + '"/>';
   });
-  return '<svg class="ls-trace" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + opts.label + '">' + grid + lines + '<text x="' + (W - 8) + '" y="' + (H - 8) + '" text-anchor="end" class="ls-axis">' + opts.km + '</text><text x="' + (L + 6) + '" y="' + (top + 14) + '" class="ls-axis">' + (opts.unit ?? 'km/h') + '</text></svg>';
+  return '<svg class="ls-trace" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + opts.label + '">' + grid + lines + '<line class="ls-cursor" x1="-9" x2="-9" y1="' + top + '" y2="' + (H - B) + '"/>' + '<text x="' + (W - 8) + '" y="' + (H - 8) + '" text-anchor="end" class="ls-axis">' + opts.km + '</text><text x="' + (L + 6) + '" y="' + (top + 14) + '" class="ls-axis">' + (opts.unit ?? 'km/h') + '</text></svg>';
 }
 
 // --- Page ---
@@ -526,19 +527,32 @@ function computeView(K, data, state, R) {
   const mapSvg = R.renderMap(d.map || {x: [], y: []}, res.v, {corners: d.corners, length: d.length, label: t.map, line});
   // compass arrow pointing where the wind blows to (map north is up)
   const windHtml = env.windSpeed > 0.3 ? '<svg class="ls-compass" width="20" height="20" viewBox="-10 -10 20 20" aria-hidden="true"><path d="M0 -8L5 5L0 2L-5 5Z" transform="rotate(' + Math.round((env.windFromDeg + 180) % 360) + ')"/></svg><span>' + t.wind + ' <span data-no-translate>' + env.windSpeed.toFixed(1) + ' m/s</span></span>' : '';
-  // stacked telemetry: speed, front brake pressure, gear, rpm, steering (same distance axis, corners marked)
+  // stacked telemetry, laid out like a team data sheet: one distance axis, corners marked, the compared car overlaid, a time-delta
+  // lane, and (browser) one cursor across every lane with the values at that point. Grip-loss zones are shaded on the speed lane.
   const clsOf = c => !c.series ? 'f1' : c.series === 'fe' ? 'fe' : c.cls === 'lmh' || c.cls === 'lmdh' || c.cls === 'gtp' ? 'hyper' : 'gt3';
-  const chOf = (c, r, key) => R.lapChannels(track, c.car, env, r, {cls: clsOf(c), seed: data.id + '|' + key});
+  // surface named in the latest FIA notes: fresh asphalt (green, little rubber) and patched bumps are where grip goes first
+  const nP = track.kappa.length, surface = new Array(nP).fill(0);
+  for (const c of data.changes?.changes || []) {
+    if (c.type !== 'resurfacing' && c.type !== 'bump_removal') continue;
+    const w0 = c.range && K.windowFor(c.range.from, d.corners || []), w1 = c.range && K.windowFor(c.range.to, d.corners || []) || w0;
+    if (!w0) { if (c.type === 'resurfacing') surface.fill(0.15); continue; }
+    for (let x = w0[0]; x <= w1[1]; x += d.ds) surface[(Math.round(x / d.ds) % nP + nP) % nP] = 0.25;
+  }
+  const chOf = (c, r, key) => R.lapChannels(track, c.car, env, r, {cls: clsOf(c), seed: data.id + '|' + key, surface, wet: state.mode !== 'manual' && !!(data.conds[condKey] && data.conds[condKey].rain)});
   const ch = [chOf(sel, raw, state.carId)].concat(cmpRaw ? [chOf(data.cars[state.compareId], cmpRaw, state.compareId)] : []);
-  const TL = t.tel, cOpt = (unit, step, h, lo) => ({sectors: d.sectors || [], corners: d.corners || [], label: unit, km: t.km, unit, step, h, lo});
+  const TL = t.tel, cOpt = (unit, step, h, lo, more) => Object.assign({sectors: d.sectors || [], corners: d.corners || [], label: unit, km: t.km, unit, step, h, lo}, more);
+  const bands = []; ch[0].risk.forEach((x, i) => { if (x >= 0.2) { const last = bands[bands.length - 1]; if (last && i * d.ds - last[1] <= d.ds * 1.5) last[1] = (i + 1) * d.ds; else bands.push([i * d.ds, (i + 1) * d.ds]); } });
   const series = [{v: res.v.map(x => x * 3.6)}];
   if (cmp) series.push({v: cmp.v.map(x => x * 3.6)});
-  const chart = (title, ser, o) => '<h3 class="ls-ch-h">' + title + '</h3>' + R.renderTrace(d.ds, ser, o);
-  const traceSvg = chart(TL.speed, series, cOpt('km/h', 50, 260))
-    + chart(TL.brake, ch.map(c => ({v: c.brakeBar})), cOpt('bar', 20, 170, 0))
-    + (ch[0].gear ? chart(TL.gear + ' · ' + TL.shifts.replace('{n}', ch[0].shifts.length), ch.filter(c => c.gear).map(c => ({v: c.gear})), cOpt('', 1, 150, 0))
-      + chart(TL.rpm, ch.filter(c => c.rpm).map(c => ({v: c.rpm})), cOpt('rpm', 2000, 170)) : '')
-    + chart(TL.steer, ch.map(c => ({v: c.steerDeg})), cOpt('°', 45, 190)) + '<p class="fine">' + TL.note + '</p>';
+  const delta = cmpRaw ? raw.time.map((x, i) => +(x - cmpRaw.time[i]).toFixed(3)) : null;
+  const lanes = [['speed', TL.speed, 'km/h', d.ds, series.map(x => x.v), cOpt('km/h', 50, 230, null, {bands})]]
+    .concat(delta ? [['delta', TL.delta.replace('{car}', sel.label), 's', d.ds, [delta], cOpt('s', 0.5, 140)]] : [])
+    .concat([['throttle', TL.throttle, '%', d.ds / 2, ch.map(c => c.throttleHuman), cOpt('%', 25, 130, 0)], ['brake', TL.brake, 'bar', d.ds / 2, ch.map(c => c.brakeHuman), cOpt('bar', 25, 150, 0)]])
+    .concat(ch[0].gear ? [['gear', TL.gear + ' · ' + TL.shifts.replace('{n}', ch[0].shifts.length), '', d.ds, ch.filter(c => c.gear).map(c => c.gear), cOpt('', 1, 130, 0)], ['rpm', TL.rpm, 'rpm', d.ds, ch.filter(c => c.rpm).map(c => c.rpm), cOpt('rpm', 2000, 150)]] : [])
+    .concat([['steer', TL.steer, '°', d.ds, ch.map(c => c.steerDeg), cOpt('°', 45, 170)]]);
+  const traceSvg = '<div class="ls-cursor-read" data-ls="cursor">' + TL.hover + '</div>' + lanes.map(([, title, , ds, ser, o]) => '<h3 class="ls-ch-h">' + title + '</h3>' + R.renderTrace(ds, ser.map(v => ({v})), o)).join('')
+    + '<p class="fine">' + TL.note + ' ' + TL.risk + '</p>';
+  const tel = {len: nP * d.ds, lanes: lanes.map(([key, , unit, ds, ser]) => ({name: TL.short[key], unit, ds, ser}))};
   // brakes of the simulated lap: zones, the hardest one next to Brembo's published figures, regen split
   let brakeHtml = '';
   const BD = data.brakes;
@@ -633,7 +647,7 @@ function computeView(K, data, state, R) {
   const evoSvg = '<svg class="ls-race" viewBox="0 0 ' + ew + ' ' + eh + '" role="img" aria-label="' + t.evoChart + '">' + qsBands + '<polyline fill="none" stroke="currentColor" stroke-width="2" points="' + curve.points.map(p => ex(p.minute).toFixed(1) + ',' + ey(p.lap).toFixed(1)).join(' ') + '"/>'
     + '<text x="2" y="16" font-size="11" fill="currentColor">' + fmt(hi) + '</text><text x="2" y="' + (eh - 28) + '" font-size="11" fill="currentColor">' + fmt(lo) + '</text>'
     + '<text x="44" y="' + (eh - 6) + '" font-size="11" fill="currentColor">0</text><text x="' + (ew - 12) + '" y="' + (eh - 6) + '" font-size="11" text-anchor="end" fill="currentColor">' + evo.end + ' ' + t.min + '</text></svg>';
-  return {lineNote, lap: fmt(res.lapTime), poleHtml: poleHtml + raceHtml, factsHtml, airHtml, kindLabel, mapSvg, traceSvg, keyHtml, windHtml, weather: w, evo, evoFacts, evoSvg, qsHtml, socHtml, brakeHtml, tyreHtml};
+  return {tel, lineNote, lap: fmt(res.lapTime), poleHtml: poleHtml + raceHtml, factsHtml, airHtml, kindLabel, mapSvg, traceSvg, keyHtml, windHtml, weather: w, evo, evoFacts, evoSvg, qsHtml, socHtml, brakeHtml, tyreHtml};
 }
 
 // Browser controller
@@ -686,7 +700,7 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
     if (pending) return; pending = true;
     requestAnimationFrame(() => {
       pending = false;
-      const v = computeView(K, data, state, R);
+      const v = computeView(K, data, state, R); lastTel = v.tel;
       q('lap').textContent = v.lap; q('pole').innerHTML = v.poleHtml; q('facts').innerHTML = v.factsHtml; q('air').innerHTML = v.airHtml;
       q('map').innerHTML = v.mapSvg; apply(); q('trace').innerHTML = v.traceSvg; q('soc').innerHTML = v.socHtml; q('brakes').innerHTML = v.brakeHtml; q('key').innerHTML = v.keyHtml; q('wind').innerHTML = v.windHtml;
       q('carLabel').textContent = data.cars[state.carId].label; q('carKind').textContent = v.kindLabel;
@@ -695,6 +709,17 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
       document.querySelectorAll('[data-evo-out]').forEach(o => { const k = o.dataset.evoOut; o.textContent = v.evo[k]; const i = document.querySelector('input[data-evo="' + k + '"]'); if (i && document.activeElement !== i) i.value = v.evo[k]; });
     });
   };
+  // one cursor across every telemetry lane, with the value of each channel at that distance (like a team data sheet)
+  let lastTel = null;
+  const tq = q('trace');
+  tq.addEventListener('pointermove', e => {
+    const sv = lastTel && e.target.closest && e.target.closest('svg.ls-trace'); if (!sv) return;
+    const r = sv.getBoundingClientRect(), vx = (e.clientX - r.left) / r.width * 1000, f = (vx - 48) / (1000 - 56); if (f < 0 || f > 1) return;
+    const at = f * lastTel.len, num = (x, u) => !Number.isFinite(x) ? '–' : u === 's' ? (x >= 0 ? '+' : '') + x.toFixed(2) : u === '°' ? x.toFixed(0) : Math.round(x);
+    tq.querySelectorAll('.ls-cursor').forEach(l => { l.setAttribute('x1', vx.toFixed(1)); l.setAttribute('x2', vx.toFixed(1)); });
+    const out = tq.querySelector('[data-ls="cursor"]');
+    if (out) out.innerHTML = '<b>' + Math.round(at) + ' m</b>' + lastTel.lanes.map(L => '<b>' + L.name + ' ' + L.ser.map(a => num(a[Math.min(a.length - 1, Math.round(at / L.ds))], L.unit)).join(' / ') + (L.unit && L.unit !== 's' ? ' ' + L.unit : L.unit) + '</b>').join('');
+  });
   q('series').addEventListener('change', e => {
     const se = e.target.value, ids = se === 'gt3' ? Object.keys(data.fam).sort((a, b) => a.localeCompare(b, 'en')).map(b => { const f = data.fam[b]; return f[GT3B.find(x => f[x])].at(-1); })
       : data.carOrder.filter(k => k !== 'wec-lmgt3' && (data.cars[k].series || 'f1') === se && !evoKeys.includes(k));
@@ -774,7 +799,7 @@ const CSS = `:root{--sim-slow:#ffa94d}:root[data-theme="light"]{--sim-slow:#245d
 .ls-lap{font-size:clamp(56px,7vw,88px);line-height:1;font-weight:800;letter-spacing:-2px;color:var(--mint);font-variant-numeric:tabular-nums}.ls-pole{min-height:1.6em;font-size:14px;color:var(--text);margin-bottom:12px}
 .ls-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 18px;margin:0;padding-top:16px;border-top:1px solid var(--line)}.ls-facts dt{font-size:12px;color:var(--muted)}.ls-facts dd{margin:4px 0 0;font-size:17px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--text)}
 .ls-air-facts{grid-template-columns:repeat(4,minmax(0,1fr));border-top:0;padding-top:0}
-.ls-scroll{overflow-x:auto}.ls-trace{width:100%;height:auto;min-width:560px}.ls-grid{stroke:var(--line)}.ls-sector{stroke:var(--muted);stroke-dasharray:4 4;opacity:.6}.ls-cline{stroke:var(--muted);stroke-dasharray:2 3;opacity:.35}.ls-ctag{font-size:11px}.ls-ch-h{font-size:14px;margin:14px 0 2px;color:var(--muted)}.ls-axis{fill:var(--muted);font-size:13px}
+.ls-scroll{overflow-x:auto}.ls-trace{width:100%;height:auto;min-width:560px}.ls-grid{stroke:var(--line)}.ls-sector{stroke:var(--muted);stroke-dasharray:4 4;opacity:.6}.ls-cline{stroke:var(--muted);stroke-dasharray:2 3;opacity:.35}.ls-risk{fill:#e5484d;opacity:.12}.ls-cursor{stroke:var(--text);stroke-width:1;opacity:.6}.ls-cursor-read{position:sticky;top:0;z-index:1;background:var(--bg,#111);padding:6px 0;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}.ls-cursor-read b{color:var(--text);font-weight:600;margin-right:10px}.ls-ctag{font-size:11px}.ls-ch-h{font-size:14px;margin:14px 0 2px;color:var(--muted)}.ls-axis{fill:var(--muted);font-size:13px}
 .ls-line{fill:none;stroke-width:2.4;stroke-linejoin:round}.ls-line-0{stroke:var(--mint)}.ls-line-1{stroke:var(--sim-slow);stroke-dasharray:6 4}
 .ls-key{font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:center;flex-wrap:wrap}.ls-key span{display:inline-block;width:22px;height:3px;border-radius:2px}.ls-key-0{background:var(--mint)}.ls-sw{display:inline-block;width:14px;height:8px;border-radius:2px;margin-left:8px}.ls-soc{width:100%;height:auto}.ls-key-1{background:var(--sim-slow)}
 .ls-sliders{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 28px}.ls-slider{display:grid;grid-template-columns:minmax(110px,1fr) minmax(0,2fr) 52px 36px;align-items:center;gap:10px;min-width:0}.ls-slider input{min-height:32px;padding:0;accent-color:var(--mint);border:0;background:none}.ls-slider output{text-align:right;font-variant-numeric:tabular-nums;color:var(--text)}.ls-unit{font-size:12px;color:var(--muted)}
