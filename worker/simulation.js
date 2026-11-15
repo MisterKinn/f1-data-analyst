@@ -27,6 +27,8 @@ import {lapsimCarLines} from './lapsim/car-lines-data.js';
 import {lapsimPuDocs} from './lapsim/pu-docs-data.js';
 import {lapsimDriverLines} from './lapsim/driver-lines-data.js';
 import {trackLabel, trackOrder, evoPairs, carEvent} from './simulator-controls.js';
+import {lapsimTrackNorth} from './lapsim/track-north-data.js';
+import {lapsimTrackView} from './lapsim/track-view-data.js';
 
 const K = lapsimKernel();
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -112,7 +114,9 @@ function carsFor(id, lang) {
 
 // --- Rendering (shared with the browser; must only use its arguments) ---
 function renderMap(map, v, opts) {
-  const xs = map.x, ys = map.y, n = xs.length;
+  // view rotation (owner 2026-11-15): degrees counter-clockwise, applied to every point, so labels stay upright
+  const ra = (opts.rot || 0) * Math.PI / 180, rc = Math.cos(ra), rs = Math.sin(ra), R2 = p => [p[0] * rc - p[1] * rs, p[0] * rs + p[1] * rc];
+  const xs = ra ? map.x.map((x, i) => x * rc - map.y[i] * rs) : map.x, ys = ra ? map.x.map((x, i) => x * rs + map.y[i] * rc) : map.y, n = xs.length;
   if (!n) return '';
   let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
   for (let i = 0; i < n; i++) { minX = Math.min(minX, xs[i]); maxX = Math.max(maxX, xs[i]); minY = Math.min(minY, ys[i]); maxY = Math.max(maxY, ys[i]); }
@@ -123,7 +127,7 @@ function renderMap(map, v, opts) {
   const bucket = i => Math.min(5, Math.floor((vAt(i) - lo) / (hi - lo + 1e-9) * 6));
   let paths = '', run = [0], b = bucket(0);
   const flush = () => { if (run.length > 1) paths += '<path d="M' + run.map(i => px(i) + ' ' + py(i)).join('L') + '" stroke="color-mix(in oklab,var(--mint) ' + (b * 20) + '%,var(--sim-slow))"/>'; };
-  const sw = (Math.max(vw, vh) / 110).toFixed(1), L = opts.line;
+  const sw = (Math.max(vw, vh) / 110).toFixed(1), L = opts.line && ra ? Object.assign({}, opts.line, {pts: opts.line.pts.map(R2), left: opts.line.left.map(R2), right: opts.line.right.map(R2)}) : opts.line;
   let band = '', marks = '';
   if (L) {
     // racing line on the track band: the line replaces the centre path, coloured by the car's speed on it
@@ -179,7 +183,10 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
   const t = T[lang], ids = trackOrder(lapsimTracks);
   if (!ids.length) return `<section class="hero ls-hero"><h1>${esc(t.h1)}</h1><p class="lead">${esc(t.pending)} · ${esc(t.pendingLead)}</p></section>`;
   const id = ids.includes(query.track) ? query.track : (ids.includes('monza') ? 'monza' : ids[0]);
-  const td = lapsimTracks[id], cars = carsFor(id, lang), conds = realConditions(id);
+  // corner numbers on every map (owner 2026-11-15): the track's own official numbers, else MultiViewer's official numbers placed on
+  // this map, else numbers found from the curvature (marked as estimated)
+  const td0 = lapsimTracks[id], view0 = lapsimTrackView?.[id], ownC = td0.corners?.length ? td0.corners : view0?.corners?.length ? view0.corners : null;
+  const td = ownC === td0.corners ? td0 : {...td0, corners: ownC || autoCorners(td0), cornersEstimated: !ownC}, cars = carsFor(id, lang), conds = realConditions(id);
   // Evo kit: listed as a tick box beside its base car (only when the data has that Evo entry)
   const evoOf = evoPairs(cars, CAR_ORDER), evoKeys = new Set(Object.values(evoOf));
   // GT3 (owner 2026-11-15): car model first, then the series spec (BoP body: SRO GT3, IMSA GTD, WEC LMGT3, DTM), then the kit (newest by default)
@@ -194,6 +201,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
   const data = {driverLines: lapsimDriverLines?.tracks?.[id] || null, pu: lapsimPuDocs?.events?.[id] || null, lang, t, id, track: td, cars, carOrder: CAR_ORDER, carId, evoOf, fam, bodyLabel: BODY_LABEL, events, conds, raceRec: raceRecords(id), changes, energy: (liveEnergy && (query.track || 'monza') === id ? liveEnergy : energyLimit(id, 2026)),
     compounds: lapsimCompounds?.[id] || {}, wecTyres: lapsimWecTyres?.[id] || {}, line: lineData(id), lineText: LT[lang], qsplit: lapsimQsplit ? {off: lapsimQsplit.offsetPct, test: lapsimQsplit.test, real: lapsimQsplit.tracks?.[id] || null} : null, brakes: lapsimBrakes ? {ramp: lapsimBrakes.rampS ?? 0, k: lapsimBrakes.pedalKgPerG, g: lapsimBrakes.gScale, t: lapsimBrakes.timeScale, test: lapsimBrakes.test, real: lapsimBrakes.races?.[id] || null, text: BT[lang]} : null, compoundGap: compoundGap(id), compoundTest: lapsimCompoundGap?.test?.rmsPct ?? null,
     evo: Object.fromEntries(['f1', 'wec'].map(se => [se, Object.fromEntries(['practice', 'qualifying'].map(ty => [ty, evolutionCoeffs(se, id, ty)]))])),
+    mapRot0: Number.isFinite(view0?.openDeg) ? view0.openDeg : landscapeRot(td.map, lapsimTrackNorth?.[id], VIEW[id], td.corners, td.length), cornersEstimated: !!td.cornersEstimated, north: lapsimTrackNorth?.[id] || null, ui: UI[lang],
     calibration: {generatedAt: lapsimCalibration?.generatedAt || null, seasons: Object.fromEntries(Object.entries(lapsimCalibration?.seasons || {}).map(([y, s]) => [y, s.tracks?.[id] || null]))}};
   // first render on the server with the same code the browser uses
   const view = computeView(K, data, {carId, compareId: '', mode: 'real', manual: null, active: {}, strength: 1, evo: null}, {renderMap, renderTrace, evolutionDelta, evolutionCurve, lineTrack, brakeZones, lapChannels});
@@ -218,7 +226,8 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
  <label>${esc(t.car)}<select name="car" data-ls="car">${carOpts(baseId, curSeries, true)}</select></label>
  <label data-ls="specWrap"${fl ? '' : ' hidden'}>${esc(t.spec)}<select data-ls="spec">${fl ? specOpts(fam[cars[carId].base], cars[carId].cls) : ''}</select></label>
  <label class="ls-check"><input type="checkbox" name="evo" value="1" data-ls="evo"${fl ? (fl.length > 1 ? (carId === fl.at(-1) ? ' checked' : '') : ' disabled') : evoOf[baseId] ? (carId !== baseId ? ' checked' : '') : ' disabled'}><span data-no-translate>Evo</span><small data-no-translate data-ls="evoHint">${esc(evoOf[baseId] ? '' : t.evoNone)}</small></label>
- <label>${esc(t.compare)}<select data-ls="compare"><option value="">${esc(t.none)}</option>${cmpOpts}</select></label>
+ <label class="ls-cmp-only">${esc(UI[lang].cmp1)}<select data-ls="compare"><option value="">${esc(t.none)}</option>${cmpOpts}</select></label>
+ <label class="ls-cmp-only">${esc(UI[lang].cmp2)}<select data-ls="compare2"><option value="">${esc(t.none)}</option>${cmpOpts}</select></label>
  <label>${esc(t.conditions)}<select data-ls="mode"><option value="real">${esc(t.real)}</option><option value="manual">${esc(t.manual)}</option>${TRACK_LL[id] ? `<option value="forecast">${esc(FT[lang].opt)}</option>` : ''}</select></label>
  <noscript><button>${esc(t.track)}</button></noscript>
 </form>
@@ -233,7 +242,8 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
   <dl class="ls-facts" data-ls="facts">${view.factsHtml}</dl>
  </div>
 </section>
-<section class="panel ls-panel"><h2>${esc(t.trace)}</h2><div class="ls-scroll" data-ls="trace">${view.traceSvg}</div><p class="ls-key" data-ls="key">${view.keyHtml}</p><div data-ls="soc">${view.socHtml}</div></section>
+<section class="panel ls-panel ls-cmp-panel ls-cmp-only"><div class="ls-panel-head"><h2>${esc(UI[lang].cmpH)}</h2><button type="button" class="pill" data-ls="cmpCsv">${esc(UI[lang].csv)}</button></div><div class="output" data-ls="cmpTable"></div><p class="fine">${esc(UI[lang].cmpNote)}</p></section>
+<section class="panel ls-panel ls-tel"><div class="ls-panel-head"><h2>${esc(t.trace)}</h2><button type="button" class="pill" data-ls="telCsv">${esc(UI[lang].csv)}</button></div><div class="ls-chans" data-ls="chans" role="group" aria-label="${esc(UI[lang].chans)}"></div><div class="ls-scroll" data-ls="trace">${view.traceSvg}</div><p class="ls-key" data-ls="key">${view.keyHtml}</p><div data-ls="soc">${view.socHtml}</div></section>
 <section class="panel ls-panel ls-brakes"><h2>${esc(BT[lang].h)}</h2><div data-ls="brakes">${view.brakeHtml}</div></section>
 <section class="panel ls-panel ls-air"><h2>${esc(t.air)}</h2>
  <dl class="ls-facts ls-air-facts" data-ls="air">${view.airHtml}</dl>
@@ -266,6 +276,80 @@ ${racePanel(id, lang, query.race || null)}
 
 // Race pace: expected lap times over the race and the best strategies, from the 2026 pole
 // (predicted when the track has not been raced in 2026) and the fitted fuel/tyre/pit factors.
+// Page texts added 2026-11-15: compare tab, telemetry channels and export, map rotation and compass
+const UI = {
+  ko: {cmp1: '비교 차 1', cmp2: '비교 차 2', cmpH: '랩 비교', csv: 'CSV 내보내기', chans: '보여 줄 텔레메트리', cmpNote: '갭은 선택한 차 기준입니다. 섹터는 실제 섹터 경계가 있는 트랙에서만 나옵니다.',
+    move: '{c} 순서 옮기기 (끌거나 ← →)', cols: ['차', '랩타임', '갭', '섹터 1', '섹터 2', '섹터 3', '최고 속도', '최저 속도'], rotL: '왼쪽으로 돌리기', rotR: '오른쪽으로 돌리기', reset: '처음 보기로 돌아가기 (나침반: 실제 북쪽)', noNorth: '이 트랙은 실제 북쪽 방향 자료가 없습니다', dist: '거리 (m)', cap: '규정 상한'},
+  en: {cmp1: 'Compare car 1', cmp2: 'Compare car 2', cmpH: 'Lap comparison', csv: 'Export CSV', chans: 'Telemetry to show', cmpNote: 'Gaps are to the selected car. Sectors show only on tracks with real sector lines.',
+    move: 'Move {c} (drag, or ← →)', cols: ['Car', 'Lap', 'Gap', 'Sector 1', 'Sector 2', 'Sector 3', 'Top speed', 'Lowest speed'], rotL: 'Rotate left', rotR: 'Rotate right', reset: 'Back to the first view (compass: true north)', noNorth: 'No true-north data for this track', dist: 'Distance (m)', cap: 'regulation cap'},
+};
+// The map opens turned so the track uses the width (owner 2026-11-15: Monza, Jeddah, Fuji were drawn tall; "the long straight parallel
+// to the top or bottom of the page"): the longest straight is laid horizontal; of the two ways round, the one nearer true north up
+// (north unknown: the one with the start nearer the bottom). Degrees, counter-clockwise.
+// Owner's opening views (2026-11-15). straight: [corner, corner] laid horizontal on that side of the picture; left/right: corners
+// put on a horizontal line; longest: the longest straight on that side (back: not the start-line straight); deg: a fixed turn.
+export const VIEW = {
+  fuji: {longest: 'top'}, monza: {longest: 'bottom'}, interlagos: {straight: [3, 4], side: 'bottom'}, sakhir: {straight: [10, 11], side: 'bottom'},
+  silverstone: {left: 15, right: 9}, suzuka: {deg: 0}, portimao: {longest: 'bottom', back: true},
+};
+export function landscapeRot(map, north, spec, corners, length) {
+  const X = map?.x, Y = map?.y, n = X?.length || 0; if (n < 8) return 0;
+  if (spec && Number.isFinite(spec.deg)) return spec.deg;
+  const at = num => { const c = (corners || []).find(k => k.number === num && !k.letter) || (corners || []).find(k => k.number === num); return c ? Math.min(n - 1, Math.round(c.s / length * n)) : null; };
+  const turnY = (deg, i) => { const t = deg * Math.PI / 180; return X[i] * Math.sin(t) + Y[i] * Math.cos(t); };
+  const meanY = deg => { let a = 0; for (let i = 0; i < n; i++) a += turnY(deg, i); return a / n; };
+  const sided = (i, j, side) => { const ang = -Math.atan2(Y[j] - Y[i], X[j] - X[i]) * 180 / Math.PI, alt = ang + 180, lineY = d => (turnY(d, i) + turnY(d, j)) / 2;
+    const up = d => meanY(d) > lineY(d); return ((side === 'bottom') === up(ang) ? ang : alt + 360) % 360; }; // bottom: the rest of the lap above the line (y up)
+  if (spec && spec.left != null && at(spec.left) != null && at(spec.right) != null) { const i = at(spec.left), j = at(spec.right); return -Math.atan2(Y[j] - Y[i], X[j] - X[i]) * 180 / Math.PI; }
+  if (spec && spec.straight && at(spec.straight[0]) != null && at(spec.straight[1]) != null) return sided(at(spec.straight[0]), at(spec.straight[1]), spec.side);
+  const hd = i => Math.atan2(Y[(i + 1) % n] - Y[i], X[(i + 1) % n] - X[i]), dA = (a, b) => Math.abs(Math.atan2(Math.sin(a - b), Math.cos(a - b)));
+  let best = {len: -1, ang: 0};
+  for (let i = 0; i < n; i++) {
+    let len = 0, j = i;
+    // a straight: every step within 4° of the chord from its start
+    for (let k = 0; k < n - 1; k++) { const q = (i + k) % n, ch = Math.atan2(Y[(q + 1) % n] - Y[i], X[(q + 1) % n] - X[i]); if (k > 0 && dA(hd(q), ch) > 4 * Math.PI / 180) break; j = (q + 1) % n; }
+    len = Math.hypot(X[j] - X[i], Y[j] - Y[i]);
+    const hasStart = j < i || i === 0; // back: a straight other than the one through the start line
+    if (len > best.len && !(spec && spec.back && hasStart)) best = {len, i, j, ang: Math.atan2(Y[j] - Y[i], X[j] - X[i])};
+  }
+  const aspect = deg => { const t = deg * Math.PI / 180, c = Math.cos(t), s = Math.sin(t); let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+    for (let i = 0; i < n; i++) { const x = X[i] * c - Y[i] * s, y = X[i] * s + Y[i] * c; x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); } return (x1 - x0) / (y1 - y0); };
+  if (spec && spec.longest) return sided(best.i, best.j, spec.longest === 'top' ? 'top' : 'bottom');
+  let a = -best.ang * 180 / Math.PI; const norm = x => ((x % 360) + 540) % 360 - 180;
+  // a track whose longest straight does not give a wide picture (Sebring): the widest turn instead
+  let wide = a; for (let d = -90; d < 90; d++) if (aspect(d) > aspect(wide)) wide = d;
+  if (aspect(a) < 1.4 && aspect(wide) > aspect(a) * 1.2) a = wide;
+  const b = norm(a + 180); a = norm(a);
+  if (north && !north.mirror) return Math.abs(norm(north.deg - a)) <= Math.abs(norm(north.deg - b)) ? a : b; // needle closer to straight up
+  const yStart = r => { const t = r * Math.PI / 180; return X[0] * Math.sin(t) + Y[0] * Math.cos(t); }, cy = r => { const t = r * Math.PI / 180; let s = 0; for (let i = 0; i < n; i++) s += X[i] * Math.sin(t) + Y[i] * Math.cos(t); return s / n; };
+  return yStart(a) - cy(a) <= yStart(b) - cy(b) ? a : b;
+}
+// Corners from the curvature, for tracks without official numbers: a turn is a run where the radius stays under 300 m (smoothed over
+// about 30 m) and the heading changes by 20° or more; a change of direction starts a new turn (chicanes count twice, as official
+// numbering usually does). Numbered from the start line. Shown as estimated.
+export function autoCorners(t) {
+  const k = t.kappa, n = k?.length || 0, ds = t.ds; if (n < 20) return [];
+  const w = Math.max(1, Math.round(15 / ds)), sm = new Float64Array(n);
+  for (let i = 0; i < n; i++) { let a = 0; for (let j = -w; j <= w; j++) a += k[(i + j + n) % n]; sm[i] = a / (2 * w + 1) / 1e5; }
+  const lim = 1 / 300, out = []; let i0 = -1;
+  // start in a straight part so no turn is cut by the line
+  let st = 0; while (st < n && Math.abs(sm[st]) >= lim) st++;
+  for (let q = 0; q <= n; q++) {
+    const i = (st + q) % n, on = q < n && Math.abs(sm[i]) >= lim, sameSign = i0 >= 0 && Math.sign(sm[i]) === Math.sign(sm[i0]);
+    if (i0 >= 0 && (!on || !sameSign)) {
+      let turn = 0, apex = i0, best = 0; for (let j = i0; j !== i; j = (j + 1) % n) { turn += sm[j] * ds; if (Math.abs(sm[j]) > best) { best = Math.abs(sm[j]); apex = j; } }
+      if (Math.abs(turn) >= 20 * Math.PI / 180) out.push(apex);
+      i0 = -1;
+    }
+    if (on && i0 < 0) i0 = i;
+  }
+  return out.map(a => Math.round(a * ds)).sort((a, b) => a - b).map((s0, j) => ({number: j + 1, letter: '', s: s0}));
+}
+// Compass needle: N up when deg = 0, turned clockwise by deg; no north data: a plain reset mark
+function compassSvg(deg) {
+  if (deg == null) return '<svg class="ls-needle" width="22" height="22" viewBox="-11 -11 22 22" aria-hidden="true"><circle r="9" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M-4 0a4 4 0 1 0 4-4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>';
+  return '<svg class="ls-needle" width="24" height="24" viewBox="-12 -12 24 24" aria-hidden="true"><circle r="11" fill="none" stroke="currentColor" stroke-width="1" opacity=".45"/><g transform="rotate(' + Math.round(deg) + ')"><text y="-5.2" text-anchor="middle" font-size="5.5" font-weight="700" fill="#e5484d">N</text><path d="M0 -4L3 0H-3Z" fill="#e5484d"/><path d="M0 9L3 0H-3Z" fill="currentColor" opacity=".55"/></g><circle r="1.6" fill="currentColor"/></svg>';
+}
 // Racing line texts (the line is drawn on the track map; see lineData and computeView)
 const LT = {
   ko: {h: '레이싱 라인', all: '전체', lead: '공개 F1 위치 데이터는 트랙마다 하나의 기준선에 맞춰져 있어 실제 주행 라인을 알 수 없습니다. 그래서 선택한 차로 랩 시뮬레이션을 돌려 트랙 폭 안에서 가장 빠른 라인을 찾습니다. 다운포스·그립·출력·무게가 다르면 라인도 달라지고, 레이스 라인은 연료 무게와 레이스 페이스(타이어·에너지 관리)를 넣어 따로 계산합니다.',
@@ -304,8 +388,9 @@ export function lineData(id) {
 // Map controls: racing line on/off, qualifying/race line, zoom (+, −, fit; wheel/pinch and drag on the map)
 function lineControls(lang, view) {
   const t = LT[lang];
-  return `<div class="ls-line-bar"><button type="button" class="pill active" data-line-toggle aria-pressed="true">${esc(t.h)}</button>${['q', 'r'].map(m => `<button type="button" class="pill${m === 'q' ? ' active' : ''}" data-line-mode="${m}">${esc(t.modes[m])}</button>`).join('')}
- <label class="ls-driver" data-ls="driverWrap"${view.driverOpts ? '' : ' hidden'}><select data-ls="driver" aria-label="${esc(t.driver)}">${view.driverOpts}</select></label> <span class="ls-zoom-btns"><button type="button" class="pill" data-zoom="in" aria-label="${esc(t.zin)}">+</button><button type="button" class="pill" data-zoom="out" aria-label="${esc(t.zout)}">−</button><button type="button" class="pill" data-zoom="fit">${esc(t.all)}</button></span></div>
+  const u = UI[lang];
+  return `<div class="ls-line-bar">${['q', 'r'].map(m => `<button type="button" class="pill${m === 'q' ? ' active' : ''}" data-line-mode="${m}">${esc(t.modes[m])}</button>`).join('')}
+ <label class="ls-driver" data-ls="driverWrap"${view.driverOpts ? '' : ' hidden'}><select data-ls="driver" aria-label="${esc(t.driver)}">${view.driverOpts}</select></label> <span class="ls-zoom-btns"><button type="button" class="pill ls-icon" data-rot="-15" aria-label="${esc(u.rotL)}" title="${esc(u.rotL)}">⟲</button><button type="button" class="pill ls-icon" data-rot="15" aria-label="${esc(u.rotR)}" title="${esc(u.rotR)}">⟳</button><button type="button" class="pill ls-icon ls-compass-btn" data-compass aria-label="${esc(u.reset)}" title="${esc(u.reset)}">${compassSvg(view.compassDeg)}</button><button type="button" class="pill ls-icon" data-zoom="in" aria-label="${esc(t.zin)}">+</button><button type="button" class="pill ls-icon" data-zoom="out" aria-label="${esc(t.zout)}">−</button><button type="button" class="pill" data-zoom="fit">${esc(t.all)}</button></span></div>
  <p class="fine ls-line-key"><span class="ls-mk-b"></span>${esc(t.key[0])} <span class="ls-mk-a"></span>${esc(t.key[1])} <span class="ls-mk-t"></span>${esc(t.key[2])} · <span data-ls="lineNote">${esc(view.lineNote)}</span></p>`;
 }
 // Compound gap vs soft (% of lap) per season: the real low-fuel gap measured at that event (reproduced
@@ -462,15 +547,18 @@ function computeView(K, data, state, R) {
     return k && sec ? {lapTime: r.lapTime + k[0] + k[1] + k[2], sectors: sec.map((x, i) => x + k[i]), corr: k} : {lapTime: r.lapTime, sectors: sec, corr: null}; };
   const raw = run(sel), fixd = corrected(sel, raw);
   const res = Object.assign({}, raw, {lapTime: fixd.lapTime});
-  const cmpRaw = state.compareId && data.cars[state.compareId] ? run(data.cars[state.compareId]) : null;
-  const cmp = cmpRaw ? Object.assign({}, cmpRaw, {lapTime: corrected(data.cars[state.compareId], cmpRaw).lapTime}) : null;
+  // compared cars (compare tab, owner 2026-11-15): up to two more cars overlaid on the selected one
+  const cmpIds = (state.compareIds || (state.compareId ? [state.compareId] : [])).filter((k, j, a) => k && data.cars[k] && a.indexOf(k) === j).slice(0, 2);
+  const cmpRaws = cmpIds.map(k => run(data.cars[k])), cmpFix = cmpRaws.map((r, j) => corrected(data.cars[cmpIds[j]], r));
+  const cmps = cmpRaws.map((r, j) => Object.assign({}, r, {lapTime: cmpFix[j].lapTime}));
+  const cmpRaw = cmpRaws[0] || null, cmp = cmps[0] || null;
   const fmt = s => { if (!Number.isFinite(s)) return '–'; const m = Math.floor(s / 60); return (m ? m + ':' : '') + (s - m * 60).toFixed(3).padStart(m ? 6 : 5, '0'); };
   const sectors = fixd.sectors;
   const real = data.conds[condKey];
   const sameConditions = state.mode !== 'manual' && !active.length;
   const poleHtml = real && real.realLap && sameConditions && (sel.kind === 'calibrated' || sel.kind === 'learned')
     ? (sel.series ? t.wecBest : real.position > 1 ? t.realLap + ' P' + real.position : t.vsPole) + ' <span data-no-translate>' + fmt(real.realLap) + '</span> · <span data-no-translate>' + ((res.lapTime - real.realLap) >= 0 ? '+' : '−') + Math.abs(res.lapTime - real.realLap).toFixed(3) + ' s</span>' + (sel.series && real.event ? ' · <span data-no-translate>' + real.event + (real.manufacturer ? ' · ' + real.manufacturer : '') + '</span>' : '')
-    : (cmp ? data.cars[state.compareId].label + ' <span data-no-translate>' + fmt(cmp.lapTime) + ' · ' + ((res.lapTime - cmp.lapTime) >= 0 ? '+' : '−') + Math.abs(res.lapTime - cmp.lapTime).toFixed(3) + ' s</span>' : '');
+    : (cmp ? data.cars[cmpIds[0]].label + ' <span data-no-translate>' + fmt(cmp.lapTime) + ' · ' + ((res.lapTime - cmp.lapTime) >= 0 ? '+' : '−') + Math.abs(res.lapTime - cmp.lapTime).toFixed(3) + ' s</span>' : '');
   // fastest real race lap of this car here (a car + track that really raced shows it; owner rule 2026-11-14)
   const rr = data.raceRec && data.raceRec[condKey], raceHtml = rr ? '<br>' + t.raceBest + ' <span data-no-translate>' + fmt(rr.lap) + '</span> · <span data-no-translate>' + rr.year + ' ' + rr.who + '</span>' : '';
   const fact = (k, v) => '<div><dt>' + k + '</dt><dd data-no-translate>' + v + '</dd></div>';
@@ -538,7 +626,10 @@ function computeView(K, data, state, R) {
       : (bl ? LT0.blendNote.replace('{car}', sel.label).replace('{e}', Math.round(bl.e * 100)) + (mode === 'r' ? ' · ' + LT0.noRace : '') : LT0.noCar);
     lineNote += edge ? ' · ' + edge : '';
   }
-  const mapSvg = R.renderMap(d.map || {x: [], y: []}, res.v, {corners: d.corners, length: d.length, label: t.map, line});
+  const mapOpts = {corners: d.corners, length: d.length, label: t.map, line, rot: Number.isFinite(state.mapRot) ? state.mapRot : (data.mapRot0 || 0)};
+  // compass: the map frame turned by north.deg (counter-clockwise) is true east-north; the needle turns clockwise on screen
+  const compassDeg = data.north && !data.north.mirror ? ((data.north.deg - mapOpts.rot) % 360 + 360) % 360 : null;
+  const mapSvg = R.renderMap(d.map || {x: [], y: []}, res.v, mapOpts);
   // compass arrow pointing where the wind blows to (map north is up)
   const windHtml = env.windSpeed > 0.3 ? '<svg class="ls-compass" width="20" height="20" viewBox="-10 -10 20 20" aria-hidden="true"><path d="M0 -8L5 5L0 2L-5 5Z" transform="rotate(' + Math.round((env.windFromDeg + 180) % 360) + ')"/></svg><span>' + t.wind + ' <span data-no-translate>' + env.windSpeed.toFixed(1) + ' m/s</span></span>' : '';
   // stacked telemetry, laid out like a team data sheet: one distance axis, corners marked, the compared car overlaid, a time-delta
@@ -553,39 +644,45 @@ function computeView(K, data, state, R) {
     for (let x = w0[0]; x <= w1[1]; x += d.ds) surface[(Math.round(x / d.ds) % nP + nP) % nP] = 0.25;
   }
   const chOf = (c, r, key) => R.lapChannels(track, c.car, env, r, {cls: clsOf(c), seed: data.id + '|' + key, surface, wet: state.mode !== 'manual' && !!(data.conds[condKey] && data.conds[condKey].rain)});
-  const ch = [chOf(sel, raw, state.carId)].concat(cmpRaw ? [chOf(data.cars[state.compareId], cmpRaw, state.compareId)] : []);
+  const ch = [chOf(sel, raw, state.carId)].concat(cmpRaws.map((r, j) => chOf(data.cars[cmpIds[j]], r, cmpIds[j])));
+  const tag = arr => arr.map((v, j) => v ? {v, cls: 'ls-line-' + j} : null).filter(Boolean); // keeps each car's colour when one has no channel
   const TL = t.tel, cOpt = (unit, step, h, lo, more) => Object.assign({sectors: d.sectors || [], corners: d.corners || [], label: unit, km: t.km, unit, step, h, lo}, more);
   const bands = []; ch[0].risk.forEach((x, i) => { if (x >= 0.2) { const last = bands[bands.length - 1]; if (last && i * d.ds - last[1] <= d.ds * 1.5) last[1] = (i + 1) * d.ds; else bands.push([i * d.ds, (i + 1) * d.ds]); } });
-  const series = [{v: res.v.map(x => x * 3.6)}];
-  if (cmp) series.push({v: cmp.v.map(x => x * 3.6)});
+  const series = tag([res.v].concat(cmps.map(c => c.v)).map(v => v.map(x => x * 3.6)));
   // battery energy along the lap (J; recovery capped at the per-lap limit, no clamping, so a profile the battery window cannot hold
   // is shown, not hidden). F1 qualifying lap: starts full; Hypercar (charge-sustaining race lap): lowest point at 0
   const socOf = F => { const cap = F.recharge ?? Infinity; let cum = 0, got = 0, mn = 0, mx = 0; const c = [];
     for (let i = 0; i < F.dep.length; i++) { let r = F.brk[i] + F.thr[i]; if (got + r > cap) r = Math.max(0, cap - got); got += r; cum += r - F.dep[i]; c.push(cum); mn = Math.min(mn, cum); mx = Math.max(mx, cum); }
     const s0 = F.rule === 'hypercar' ? -mn : F.soc; return {s: c.map(e => s0 + e), s0, mn, mx}; };
   const hyb = r => r && r.flow && (r.flow.rule === 'f1-2026' || r.flow.rule === 'hypercar') ? socOf(r.flow).s.map(e => +(e / 1e6).toFixed(3)) : null;
-  const socLane = [hyb(raw), hyb(cmpRaw)].filter(Boolean);
+  const socLane = tag([hyb(raw)].concat(cmpRaws.map(hyb)));
   // motor (MGU-K / hybrid) power along the lap from the kernel's energy flow: deploy +, recovery −, with the regulation cap of the
   // selected car dashed (F1 2026: the speed taper of Art. C5.2.8, the qualifying curve; F1 before 2026: 120 kW; Hypercar: the BoP motor
   // power above its deploy speed). F1 2026: the event's FIA Power Unit Information shades the sectors where the race uses the
   // alternative curve (Alt 1, from Miami on) and is summarised under the lane. Display only: the kernel is not changed.
   const motorOf = r => { const F = r && r.flow; if (!F) return null; const n = F.dep.length; return F.dep.map((e, i) => { const j = (i + 1) % n, dt = d.ds / Math.max((r.v[i] + r.v[j]) / 2, 1); return Math.round((e - F.brk[i] - F.thr[i]) / dt / 1000); }); };
   const ersSel = sel.car.ers || {}, capOf = v => ersSel.rule === 'f1-2026' ? K.erskLimitW('f1-2026', v, ersSel.pMax) / 1000 : ersSel.rule === 'hypercar' ? (v >= (ersSel.deployFrom || 0) ? (ersSel.eMax || 0) / 1000 : 0) : (ersSel.pMax || 0) / 1000;
-  const motorLane = [motorOf(raw), motorOf(cmpRaw)].filter(Boolean).map(v => ({v}));
+  const motorLane = tag([motorOf(raw)].concat(cmpRaws.map(motorOf)));
   if (motorLane.length) motorLane.push({v: raw.v.map(v => Math.round(capOf(v))), cls: 'ls-cap'});
   const PU = ersSel.rule === 'f1-2026' ? data.pu : null, puK = PU && PU.centrelineKm ? (d.length || nP * d.ds) / (PU.centrelineKm * 1000) : 1, altBands = PU && PU.round > 3 ? (PU.alt || []).filter(z => !z.qOnly).map(z => [z.from * puK, z.to * puK]) : []; // FIA lap distances are on the FIA centreline
   const puNote = !PU ? '' : (PU.round <= 3 ? TL.puEarly : TL.puLate).replace('{r}', PU.round) + ' ' + TL.puDoc.replace('{q}', PU.qualiMJ ?? '–').replace('{race}', PU.raceMJ ?? '–').replace('{d}', PU.powerLimitedDistanceM ?? '–').replace('{rate}', PU.rampKWs ?? '–').replace('{alt}', (PU.alt || []).filter(z => !z.qOnly).map(z => z.sector + ' ' + z.from + '–' + z.to + ' m').join(', ') || '–') + (PU.speed && PU.speed.length ? ' ' + TL.puSpeed.replace('{s}', PU.speed.map(z => z.sector + ' ' + z.from + '–' + z.to + ' m ≥ ' + z.kph + ' km/h').join(', ')) : '') + (PU.document ? ' <a href="' + PU.document.url + '" target="_blank" rel="noopener noreferrer">' + PU.document.title + '</a>' : '');
-  const delta = cmpRaw ? raw.time.map((x, i) => +(x - cmpRaw.time[i]).toFixed(3)) : null;
+  const delta = cmpRaws.length ? cmpRaws.map((r, j) => ({v: raw.time.map((x, i) => +(x - r.time[i]).toFixed(3)), cls: 'ls-line-' + (j + 1)})) : null;
   const lanes = [['speed', TL.speed, 'km/h', d.ds, series.map(x => x.v), cOpt('km/h', 50, 230, null, {bands})]]
-    .concat(delta ? [['delta', TL.delta.replace('{car}', sel.label), 's', d.ds, [delta], cOpt('s', 0.5, 140)]] : [])
+    .concat(delta ? [['delta', TL.delta.replace('{car}', sel.label), 's', d.ds, delta, cOpt('s', 0.5, 140)]] : [])
     .concat(motorLane.length ? [['motor', TL.motor, 'kW', d.ds, motorLane, cOpt('kW', 50, 160, null, {bands: altBands, bandCls: 'ls-alt'})]] : [])
     .concat(socLane.length ? [['soc', TL.soc, 'MJ', d.ds, socLane, cOpt('MJ', 0.5, 140, 0)]] : [])
-    .concat([['throttle', TL.throttle, '%', d.ds / 2, ch.map(c => c.throttleHuman), cOpt('%', 25, 130, 0)], ['brake', TL.brake, 'bar', d.ds / 2, ch.map(c => c.brakeHuman), cOpt('bar', 25, 150, 0)]])
-    .concat(ch[0].gear ? [['gear', TL.gear + ' · ' + TL.shifts.replace('{n}', ch[0].shifts.length), '', d.ds, ch.filter(c => c.gear).map(c => c.gear), cOpt('', 1, 130, 0)], ['rpm', TL.rpm, 'rpm', d.ds, ch.filter(c => c.rpm).map(c => c.rpm), cOpt('rpm', 2000, 150)]] : [])
-    .concat([['steer', TL.steer, '°', d.ds, ch.map(c => c.steerDeg), cOpt('°', 45, 170)]]);
-  const traceSvg = '<div class="ls-cursor-read" data-ls="cursor">' + TL.hover + '</div>' + lanes.map(([, title, , ds, ser, o]) => '<h3 class="ls-ch-h">' + title + '</h3>' + R.renderTrace(ds, ser.map(v => Array.isArray(v) ? {v} : v), o)).join('')
+    .concat([['throttle', TL.throttle, '%', d.ds / 2, tag(ch.map(c => c.throttleHuman)), cOpt('%', 25, 130, 0)], ['brake', TL.brake, 'bar', d.ds / 2, tag(ch.map(c => c.brakeHuman)), cOpt('bar', 25, 150, 0)]])
+    .concat(ch[0].gear ? [['gear', TL.gear + ' · ' + TL.shifts.replace('{n}', ch[0].shifts.length), '', d.ds, tag(ch.map(c => c.gear)), cOpt('', 1, 130, 0)], ['rpm', TL.rpm, 'rpm', d.ds, tag(ch.map(c => c.rpm)), cOpt('rpm', 2000, 150)]] : [])
+    .concat([['steer', TL.steer, '°', d.ds, tag(ch.map(c => c.steerDeg)), cOpt('°', 45, 170)]]);
+  // each lane in its own box, so the channel tick boxes can hide it (owner 2026-11-15)
+  const traceSvg = '<div class="ls-cursor-read" data-ls="cursor">' + TL.hover + '</div>' + lanes.map(([key, title, , ds, ser, o]) => '<div class="ls-lane" data-lane="' + key + '"><h3 class="ls-ch-h">' + title + '</h3>' + R.renderTrace(ds, ser.map(v => Array.isArray(v) ? {v} : v), o) + '</div>').join('')
     + (puNote ? '<p class="fine">' + puNote + '</p>' : '') + '<p class="fine">' + TL.note + ' ' + TL.risk + '</p>';
-  const tel = {len: nP * d.ds, lanes: lanes.map(([key, , unit, ds, ser]) => ({name: TL.short[key], unit, ds, ser: ser.map(v => Array.isArray(v) ? v : v.v)}))};
+  // telemetry for the cursor read-out and the CSV export: each series keeps its car (index into cars) or 'cap' (regulation limit)
+  const carIdx = s0 => { const m = /ls-line-(\d)/.exec(s0.cls || ''); return m ? +m[1] : s0.cls === 'ls-cap' ? 'cap' : 0; };
+  const tel = {len: nP * d.ds, cars: [sel.label].concat(cmpIds.map(k => data.cars[k].label)), lanes: lanes.map(([key, title, unit, ds, ser]) => ({key, title, name: TL.short[key], unit, ds, ser: ser.map(v => Array.isArray(v) ? {v, car: 0} : {v: v.v, car: carIdx(v)})}))};
+  // compare table: lap, gap, sectors and speeds of every car, also exported as CSV
+  const allIds = [state.carId].concat(cmpIds), allRes = [{r: res, f: fixd}].concat(cmps.map((c, j) => ({r: c, f: cmpFix[j]})));
+  const cmpRows = allIds.map((k, j) => { const {r, f} = allRes[j]; return {car: data.cars[k].label, lap: r.lapTime, gap: r.lapTime - res.lapTime, sectors: f.sectors, vmax: r.vMaxKph, vmin: r.vMinKph}; });
   // brakes of the simulated lap: zones, the hardest one next to Brembo's published figures, regen split
   let brakeHtml = '';
   const BD = data.brakes;
@@ -625,7 +722,7 @@ function computeView(K, data, state, R) {
       + '<p class="fine">' + T.sum.replace('{d}', M(F.dep.reduce((a, x) => a + x, 0))).replace('{r}', M(recUsed)).replace('{b}', M(sumB)).replace('{t}', M(sumT)).replace('{cap}', Number.isFinite(cap) ? T.capT.replace('{c}', M(cap)) : '')
       + ' · ' + (F.rule === 'hypercar' ? T.hyper.replace('{s}', M(swing)) : T.start) + '</p>' + (F.rule === 'hypercar' ? '' : '<p class="fine">' + T.ok.replace('{a}', recUsed <= cap + 1 ? '✓' : '✗').replace('{w}', M(win)).replace('{s}', M(swing)).replace('{b}', swing <= win + 1e4 ? '✓' : '✗ ' + T.over.replace('{x}', M(swing - win))) + '</p>');
   }
-  const keyHtml = '<span class="ls-key-0"></span>' + sel.label + (cmp ? ' <span class="ls-key-1"></span>' + data.cars[state.compareId].label : '');
+  const keyHtml = '<span class="ls-key-0"></span>' + sel.label + cmpIds.map((k, j) => ' <span class="ls-key-' + (j + 1) + '"></span>' + data.cars[k].label).join('');
   // Track evolution: lap over the session from the simulated lap (= end-of-qualifying track state)
   const se = sel.series ? 'wec' : 'f1', ev = Object.assign({type: 'qualifying', tyre: 'slick', useCurve: true}, state.evo || {}); // closed-wheel and FE: the endurance evolution curves
   // tyres the selected car's series really has (no intermediate in WEC); F1 slick named by the race's Pirelli C-numbers
@@ -677,7 +774,7 @@ function computeView(K, data, state, R) {
   const evoSvg = '<svg class="ls-race" viewBox="0 0 ' + ew + ' ' + eh + '" role="img" aria-label="' + t.evoChart + '">' + qsBands + '<polyline fill="none" stroke="currentColor" stroke-width="2" points="' + curve.points.map(p => ex(p.minute).toFixed(1) + ',' + ey(p.lap).toFixed(1)).join(' ') + '"/>'
     + '<text x="2" y="16" font-size="11" fill="currentColor">' + fmt(hi) + '</text><text x="2" y="' + (eh - 28) + '" font-size="11" fill="currentColor">' + fmt(lo) + '</text>'
     + '<text x="44" y="' + (eh - 6) + '" font-size="11" fill="currentColor">0</text><text x="' + (ew - 12) + '" y="' + (eh - 6) + '" font-size="11" text-anchor="end" fill="currentColor">' + evo.end + ' ' + t.min + '</text></svg>';
-  return {driverOpts, tel, lineNote, lap: fmt(res.lapTime), poleHtml: poleHtml + raceHtml, factsHtml, airHtml, kindLabel, mapSvg, traceSvg, keyHtml, windHtml, weather: w, evo, evoFacts, evoSvg, qsHtml, socHtml, brakeHtml, tyreHtml};
+  return {compassDeg, cmpRows, mapArgs: [d.map || {x: [], y: []}, res.v, mapOpts], driverOpts, tel, lineNote, lap: fmt(res.lapTime), poleHtml: poleHtml + raceHtml, factsHtml, airHtml, kindLabel, mapSvg, traceSvg, keyHtml, windHtml, weather: w, evo, evoFacts, evoSvg, qsHtml, socHtml, brakeHtml, tyreHtml};
 }
 
 // Browser controller
@@ -730,17 +827,91 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
     if (pending) return; pending = true;
     requestAnimationFrame(() => {
       pending = false;
-      const v = computeView(K, data, state, R); lastTel = v.tel;
+      const v = computeView(K, data, state, R); lastTel = v.tel; lastView = v;
       q('lap').textContent = v.lap; q('pole').innerHTML = v.poleHtml; q('facts').innerHTML = v.factsHtml; q('air').innerHTML = v.airHtml;
-      q('map').innerHTML = v.mapSvg; apply(); q('trace').innerHTML = v.traceSvg; q('soc').innerHTML = v.socHtml; q('brakes').innerHTML = v.brakeHtml; q('key').innerHTML = v.keyHtml; q('wind').innerHTML = v.windHtml;
+      q('map').innerHTML = v.mapSvg; apply(); needle(v.compassDeg); q('trace').innerHTML = v.traceSvg; q('soc').innerHTML = v.socHtml; q('brakes').innerHTML = v.brakeHtml; q('key').innerHTML = v.keyHtml; q('wind').innerHTML = v.windHtml;
       q('carLabel').textContent = data.cars[state.carId].label; q('carKind').textContent = v.kindLabel;
       if (q('lineNote')) q('lineNote').textContent = v.lineNote;
       if (q('driver')) { if (q('driver').innerHTML !== v.driverOpts) q('driver').innerHTML = v.driverOpts; q('driverWrap').hidden = !v.driverOpts; }
       q('evoFacts').innerHTML = v.evoFacts; q('evoChart').innerHTML = v.evoSvg; q('qsplit').innerHTML = v.qsHtml; q('tyre').innerHTML = v.tyreHtml;
+      lanesUi(); cmpTable(v.cmpRows);
       document.querySelectorAll('[data-evo-out]').forEach(o => { const k = o.dataset.evoOut; o.textContent = v.evo[k]; const i = document.querySelector('input[data-evo="' + k + '"]'); if (i && document.activeElement !== i) i.value = v.evo[k]; });
     });
   };
   if (q('driver')) q('driver').addEventListener('change', e => { state.driver = e.target.value; update(); });
+  // map rotation (owner 2026-11-15): ⟲ ⟳ turn the map 15°; the compass needle shows true north; pressing it returns to the first view
+  let lastView = null;
+  const needle = deg => { const g = document.querySelector('[data-compass] svg g'); if (g && deg != null) g.setAttribute('transform', 'rotate(' + Math.round(deg) + ')'); };
+  const redrawMap = () => { if (!lastView) return; const [m, v, o] = lastView.mapArgs, rot = Number.isFinite(state.mapRot) ? state.mapRot : (data.mapRot0 || 0), opts = Object.assign({}, o, {rot});
+    Z.k = 1; Z.x = 0; Z.y = 0; q('map').innerHTML = renderMap(m, v, opts); apply();
+    if (data.north && !data.north.mirror) needle(((data.north.deg - rot) % 360 + 360) % 360); };
+  document.querySelectorAll('[data-rot]').forEach(b => b.addEventListener('click', () => { const r0 = Number.isFinite(state.mapRot) ? state.mapRot : (data.mapRot0 || 0); state.mapRot = r0 - Number(b.dataset.rot); redrawMap(); }));
+  const cb = document.querySelector('[data-compass]'); if (cb) { if (!data.north || data.north.mirror) cb.title = data.ui.noNorth + ' · ' + cb.title; cb.addEventListener('click', () => { state.mapRot = null; redrawMap(); }); }
+  // telemetry channels (owner 2026-11-15): tick the lanes to show; the choice is kept in this browser
+  let hidden = {}; try { hidden = JSON.parse(localStorage.getItem('kb-ls-hide') || '{}') || {}; } catch (e) { hidden = {}; }
+  // lane order (owner 2026-11-15): drag a chip by its grip, or focus the grip and press ← →; kept in this browser
+  let order = []; try { order = JSON.parse(localStorage.getItem('kb-ls-order') || '[]') || []; } catch (e) { order = []; }
+  const ordered = keys => keys.slice().sort((a, b) => { const ia = order.indexOf(a), ib = order.indexOf(b); return (ia < 0 ? 99 + keys.indexOf(a) : ia) - (ib < 0 ? 99 + keys.indexOf(b) : ib); });
+  const saveOrder = () => { const box = q('chans'); order = [...box.querySelectorAll('.ls-chan input')].map(i => i.value); try { localStorage.setItem('kb-ls-order', JSON.stringify(order)); } catch (e) {} showLanes(); };
+  const lanesUi = () => {
+    const box = q('chans'); if (!box || !lastTel) return;
+    const keys = ordered(lastTel.lanes.map(L => L.key)), names = Object.fromEntries(lastTel.lanes.map(L => [L.key, L.name]));
+    if (box.dataset.keys !== keys.join(',')) {
+      box.dataset.keys = keys.join(',');
+      box.innerHTML = keys.map(k => '<label class="ls-chan"><button type="button" class="ls-grip" aria-label="' + data.ui.move.replace('{c}', names[k]) + '">⠿</button><input type="checkbox" value="' + k + '"' + (hidden[k] ? '' : ' checked') + '><span>' + names[k] + '</span></label>').join('');
+      box.querySelectorAll('input').forEach(i => i.addEventListener('change', () => { hidden[i.value] = !i.checked; try { localStorage.setItem('kb-ls-hide', JSON.stringify(hidden)); } catch (e) {} showLanes(); }));
+      box.querySelectorAll('.ls-grip').forEach(g => {
+        const chip = g.closest('.ls-chan');
+        g.addEventListener('click', e => e.preventDefault());
+        g.addEventListener('keydown', e => { if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight' && e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return; e.preventDefault(); const back = e.key === 'ArrowLeft' || e.key === 'ArrowUp', sib = back ? chip.previousElementSibling : chip.nextElementSibling; if (!sib) return; if (back) sib.before(chip); else sib.after(chip); g.focus(); saveOrder(); });
+        g.addEventListener('pointerdown', e => {
+          e.preventDefault(); g.setPointerCapture(e.pointerId); chip.classList.add('is-drag');
+          const move = ev => { const over = document.elementFromPoint(ev.clientX, ev.clientY), other = over && over.closest && over.closest('.ls-chan'); if (!other || other === chip || other.parentElement !== box) return; const r = other.getBoundingClientRect(); if (ev.clientX < r.left + r.width / 2) other.before(chip); else other.after(chip); };
+          const up = () => { chip.classList.remove('is-drag'); g.removeEventListener('pointermove', move); g.removeEventListener('pointerup', up); g.removeEventListener('pointercancel', up); saveOrder(); };
+          g.addEventListener('pointermove', move); g.addEventListener('pointerup', up); g.addEventListener('pointercancel', up);
+        });
+      });
+    }
+    showLanes();
+  };
+  const showLanes = () => {
+    const tr = q('trace'), keys = ordered((lastTel ? lastTel.lanes : []).map(L => L.key));
+    for (const k of keys) { const d = tr.querySelector('[data-lane="' + k + '"]'); if (d) tr.append(d); }
+    const rest = [...tr.children].filter(c => !c.matches('[data-lane]') && !c.matches('[data-ls="cursor"]')); rest.forEach(c => tr.append(c));
+    tr.querySelectorAll('[data-lane]').forEach(d => { d.hidden = !!hidden[d.dataset.lane]; });
+  };
+  // CSV downloads (UTF-8 with BOM so spreadsheet apps read Korean names)
+  const csvCell = x => { const v = x == null ? '' : String(x); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+  const download = (name, rows) => { const blob = new Blob(['\ufeff' + rows.map(r => r.map(csvCell).join(',')).join('\r\n')], {type: 'text/csv;charset=utf-8'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.append(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000); };
+  const slug = x => String(x).toLowerCase().replace(/[^a-z0-9가-힣]+/g, '-').replace(/^-|-$/g, '');
+  if (q('telCsv')) q('telCsv').addEventListener('click', () => {
+    if (!lastTel) return; const lanes = ordered(lastTel.lanes.map(L => L.key)).map(k => lastTel.lanes.find(L => L.key === k)).filter(L => !hidden[L.key]); if (!lanes.length) return;
+    const step = Math.min(...lanes.map(L => L.ds)), cols = [];
+    for (const L of lanes) for (const s0 of L.ser) cols.push({L, s0, h: L.name + (L.unit ? ' (' + L.unit + ')' : '') + ' · ' + (s0.car === 'cap' ? data.ui.cap : lastTel.cars[s0.car])});
+    const rows = [[data.ui.dist].concat(cols.map(c => c.h))];
+    for (let x = 0; x < lastTel.len; x += step) rows.push([Math.round(x * 10) / 10].concat(cols.map(c => { const a = c.s0.v, y = a[Math.min(a.length - 1, Math.round(x / c.L.ds))]; return Number.isFinite(y) ? +(+y).toFixed(3) : ''; })));
+    download('kongboda-telemetry-' + data.id + '-' + lastTel.cars.map(slug).join('_vs_') + '.csv', rows);
+  });
+  // compare tab: a table of every car (lap, gap, sectors, speeds) with its own CSV
+  let lastCmp = [];
+  const fmtL = s0 => { if (!Number.isFinite(s0)) return '–'; const m = Math.floor(s0 / 60); return (m ? m + ':' : '') + (s0 - m * 60).toFixed(3).padStart(m ? 6 : 5, '0'); };
+  const cmpTable = rows => {
+    lastCmp = rows || []; const box = q('cmpTable'); if (!box) return; const C = data.ui.cols, hasSec = lastCmp.some(r => r.sectors);
+    box.innerHTML = '<table class="ls-table ls-cmp-table"><thead><tr>' + C.filter((_, i) => hasSec || i < 3 || i > 5).map(h => '<th>' + h + '</th>').join('') + '</tr></thead><tbody>'
+      + lastCmp.map((r, j) => '<tr><td><span class="ls-key-' + j + ' ls-key-dot"></span>' + r.car + '</td><td data-no-translate>' + fmtL(r.lap) + '</td><td data-no-translate>' + (j ? (r.gap >= 0 ? '+' : '−') + Math.abs(r.gap).toFixed(3) + ' s' : '–') + '</td>'
+        + (hasSec ? [0, 1, 2].map(i => '<td data-no-translate>' + (r.sectors ? r.sectors[i].toFixed(3) : '–') + '</td>').join('') : '') + '<td data-no-translate>' + Math.round(r.vmax) + ' km/h</td><td data-no-translate>' + Math.round(r.vmin) + ' km/h</td></tr>').join('') + '</tbody></table>';
+  };
+  if (q('cmpCsv')) q('cmpCsv').addEventListener('click', () => {
+    if (!lastCmp.length) return; const C = data.ui.cols;
+    download('kongboda-compare-' + data.id + '.csv', [[C[0], C[1] + ' (s)', C[2] + ' (s)', C[3] + ' (s)', C[4] + ' (s)', C[5] + ' (s)', C[6] + ' (km/h)', C[7] + ' (km/h)']].concat(lastCmp.map((r, j) => [r.car, +r.lap.toFixed(3), j ? +r.gap.toFixed(3) : 0].concat(r.sectors ? r.sectors.map(x => +x.toFixed(3)) : ['', '', ''], [Math.round(r.vmax), Math.round(r.vmin)]))));
+  });
+  // compare tab (the tab bar is drawn by simulator-ui.js and sends kb-sim-view): up to two more cars
+  const cmpSel = () => state.view === 'compare' ? [q('compare').value, q('compare2') ? q('compare2').value : ''].filter(Boolean) : [];
+  document.addEventListener('kb-sim-view', e => {
+    state.view = e.detail === 'compare' ? 'compare' : 'lap';
+    if (state.view === 'compare' && !q('compare').value) { const opts = [...q('compare').options].filter(o => o.value && o.value !== state.carId), same = opts.find(o => (data.cars[o.value].series || 'f1') === (data.cars[state.carId].series || 'f1')); const pick = same || opts[0]; if (pick) q('compare').value = pick.value; }
+    state.compareIds = cmpSel(); update();
+  });
   // one cursor across every telemetry lane, with the value of each channel at that distance (like a team data sheet)
   let lastTel = null;
   const tq = q('trace');
@@ -750,7 +921,7 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
     const at = f * lastTel.len, num = (x, u) => !Number.isFinite(x) ? '–' : u === 's' ? (x >= 0 ? '+' : '') + x.toFixed(2) : u === 'MJ' ? x.toFixed(2) : u === '°' ? x.toFixed(0) : Math.round(x);
     tq.querySelectorAll('.ls-cursor').forEach(l => { l.setAttribute('x1', vx.toFixed(1)); l.setAttribute('x2', vx.toFixed(1)); });
     const out = tq.querySelector('[data-ls="cursor"]');
-    if (out) out.innerHTML = '<b>' + Math.round(at) + ' m</b>' + lastTel.lanes.map(L => '<b>' + L.name + ' ' + L.ser.map(a => num(a[Math.min(a.length - 1, Math.round(at / L.ds))], L.unit)).join(' / ') + (L.unit && L.unit !== 's' ? ' ' + L.unit : L.unit) + '</b>').join('');
+    if (out) out.innerHTML = '<b>' + Math.round(at) + ' m</b>' + ordered(lastTel.lanes.map(L => L.key)).map(k => lastTel.lanes.find(L => L.key === k)).filter(L => !hidden[L.key]).map(L => '<b>' + L.name + ' ' + L.ser.map(s0 => s0.v).map(a => num(a[Math.min(a.length - 1, Math.round(at / L.ds))], L.unit)).join(' / ') + (L.unit && L.unit !== 's' ? ' ' + L.unit : L.unit) + '</b>').join('');
   });
   q('series').addEventListener('change', e => {
     const se = e.target.value, ids = se === 'gt3' ? Object.keys(data.fam).sort((a, b) => a.localeCompare(b, 'en')).map(b => { const f = data.fam[b]; return f[GT3B.find(x => f[x])].at(-1); })
@@ -780,7 +951,8 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
     const u = new URL(location.href); u.searchParams.set('car', state.carId); if (e && !box.checked) u.searchParams.set('evo', '0'); else u.searchParams.delete('evo'); history.replaceState(null, '', u); update();
   };
   q('car').addEventListener('change', pickCar); q('evo').addEventListener('change', pickCar); q('spec').addEventListener('change', pickCar);
-  q('compare').addEventListener('change', e => { state.compareId = e.target.value; update(); });
+  q('compare').addEventListener('change', () => { state.compareIds = cmpSel(); update(); });
+  if (q('compare2')) q('compare2').addEventListener('change', () => { state.compareIds = cmpSel(); update(); });
   // Météo-France forecast (ARPEGE/AROME through Open-Meteo): pick an hour, its weather fills the sliders
   const fc = q('forecast'), FT = fc && fc.dataset.ft ? JSON.parse(fc.dataset.ft) : null;
   const forecast = async () => {
@@ -839,8 +1011,14 @@ const CSS = `:root{--sim-slow:#ffa94d}:root[data-theme="light"]{--sim-slow:#245d
 .ls-changes{list-style:none;margin:0;padding:0;display:grid;gap:10px}.ls-change label{display:flex;gap:12px;align-items:flex-start;color:var(--text);font-size:14px;min-width:0}.ls-change input{width:20px;height:20px;min-height:0;margin-top:2px;accent-color:var(--mint)}.ls-change small{display:block;color:var(--muted);font-size:12px;margin-top:2px}.ls-change.is-info label{color:var(--muted)}.ls-dot{width:20px;flex:0 0 20px;text-align:center}.ls-dot::before{content:'·'}
 .ls-table td,.ls-table th{white-space:nowrap}.ls-notes{margin:0;padding-left:20px;display:grid;gap:10px;line-height:1.7;color:var(--muted);max-width:80ch}.ls-panel h3{font-size:18px;margin-top:6px}
 
-.ls-zoombox{overflow:hidden;position:relative;touch-action:pan-y;border-radius:12px}.ls-zoombox.is-zoomed{touch-action:none;cursor:grab}.ls-line-bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px}.ls-zoom-btns{margin-left:auto;display:inline-flex;gap:6px}.ls-map .ls-mk{stroke:#fff;transform-box:fill-box;transform-origin:center;scale:var(--inv,1)}.ls-zoombox text{transform-box:fill-box;transform-origin:center;scale:var(--inv,1)}.ls-map .ls-band{fill:color-mix(in oklab,var(--muted) 18%,transparent);stroke:none}
+.ls-zoombox{overflow:hidden;position:relative;touch-action:pan-y;border-radius:12px}.ls-zoombox.is-zoomed{touch-action:none;cursor:grab}.ls-line-bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px}.ls-zoom-btns{margin-left:auto;display:inline-flex;flex-wrap:wrap;gap:6px;max-width:100%}.ls-map .ls-mk{stroke:#fff;transform-box:fill-box;transform-origin:center;scale:var(--inv,1)}.ls-zoombox text{transform-box:fill-box;transform-origin:center;scale:var(--inv,1)}.ls-map .ls-band{fill:color-mix(in oklab,var(--muted) 18%,transparent);stroke:none}
 .ls-mk-b{fill:#e5484d}.ls-mk-a{fill:#f5a524}.ls-mk-t{fill:#30a46c}.ls-line-key [class^=ls-mk]{display:inline-block;width:10px;height:10px;border-radius:50%;margin:0 4px 0 10px;vertical-align:middle}.ls-line-key [class^=ls-mk]:first-child{margin-left:0}.ls-line-key .ls-mk-b{background:#e5484d}.ls-line-key .ls-mk-a{background:#f5a524}.ls-line-key .ls-mk-t{background:#30a46c}
 .ls-evo .ls-controls{grid-template-columns:repeat(3,minmax(0,1fr));margin:12px 0 16px}.ls-check{display:flex;align-items:center;gap:8px;align-self:end;min-height:40px}.ls-check input{width:20px;height:20px;min-height:0;accent-color:var(--mint)}.ls-evo .ls-facts{margin-top:16px}
+.ls-line-2{stroke:var(--text);stroke-dasharray:2 3}.ls-key-2{background:var(--text)}.ls-key-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;vertical-align:middle}
+main:not(.kb-cmp-view) .ls-cmp-only{display:none!important}
+.ls-panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.ls-panel-head h2{margin:0}.ls-panel-head .pill{min-height:44px}
+.ls-chans{display:flex;flex-wrap:wrap;gap:6px 8px;margin:12px 0 4px}.ls-chan{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1px solid var(--line);border-radius:999px;font-size:14px;color:var(--text);cursor:pointer;user-select:none}.ls-chan input{width:18px;height:18px;margin:0;accent-color:var(--mint)}.ls-chan:has(input:not(:checked)){color:var(--muted)}
+.ls-lane[hidden]{display:none}.ls-grip{border:0;background:none;color:var(--muted);font-size:16px;line-height:1;padding:6px 2px;min-width:24px;min-height:32px;cursor:grab;touch-action:none}.ls-chan.is-drag{border-color:var(--mint);opacity:.85}.ls-chan{padding-left:6px}.ls-cmp-table td:first-child{white-space:normal;min-width:10ch}
+.ls-line-bar .pill{min-height:44px}.ls-line-bar .ls-icon{min-width:44px;padding:0 10px;justify-content:center;font-size:18px;line-height:1}.ls-compass-btn svg{display:block}.ls-needle{color:var(--text)}
 @media(max-width:900px){.ls-stage{grid-template-columns:1fr;gap:24px}.ls-hero h1{font-size:32px}.ls-controls{grid-template-columns:1fr 1fr}.ls-air-facts{grid-template-columns:repeat(2,minmax(0,1fr))}.ls-sliders{grid-template-columns:1fr}}
 @media(max-width:520px){.ls-controls{grid-template-columns:1fr}.ls-facts{grid-template-columns:1fr 1fr}.ls-slider{grid-template-columns:1fr 52px 36px}.ls-slider>span:first-child{grid-column:1/-1}}`;

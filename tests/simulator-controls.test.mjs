@@ -5,45 +5,47 @@ import {simulationPage} from '../worker/simulation.js';
 import {lapsimAllTracks as lapsimTracks} from '../worker/lapsim/tracks.js';
 import {carsFor, realConditions, CAR_ORDER} from '../worker/lapsim/scenario.js';
 
+const noFlag = s => s.replace(/^[\u{1F1E6}-\u{1F1FF}]{2}/u, '');
 const OWNER = {melbourne: 'AUS - Melbourne', 'spa-francorchamps': 'BEL - Spa', sakhir: 'BHA - Bahrain', 'sakhir-outer': 'BHA - Bahrain(Outer)',
   interlagos: 'BRA - Interlagos', montreal: 'CAN - Montreal', 'le-mans': 'FRA - Le Mans', silverstone: 'GBR - Silverstone', monza: 'ITA - Monza',
   mugello: 'ITA - Mugello', yeongam: 'KOR - Yeongam', 'mexico-city': 'MEX - Mexico City', rwanda: 'RWA - Rwanda⚠️', austin: 'USA - COTA',
   indianapolis: 'USA - Indianapolis', 'las-vegas': 'USA - Las Vegas', sebring: 'USA - Sebring', 'road-atlanta': 'USA - Road Atlanta'};
 
-test('track labels use the owner format (no flag): 3-letter code, " - ", name', () => {
-  for (const [id, label] of Object.entries(OWNER)) assert.equal(trackLabel(id), label);
+test('track labels use the owner format: flag, 3-letter code, " - ", name', () => {
+  for (const [id, label] of Object.entries(OWNER)) assert.equal(noFlag(trackLabel(id)), label);
+  assert.equal(trackLabel('sakhir-outer'), '🇧🇭BHA - Bahrain(Outer)'); assert.equal(trackLabel('yeongam'), '🇰🇷KOR - Yeongam'); assert.equal(trackLabel('rwanda'), '🇷🇼RWA - Rwanda⚠️');
 });
 
 test('every track in the simulator data has a label in that format', () => {
-  for (const id of Object.keys(lapsimTracks)) assert.match(trackLabel(id, lapsimTracks[id]), /^[A-Z]{3} - \S.*$/u, id);
+  for (const id of Object.keys(lapsimTracks)) assert.match(trackLabel(id, lapsimTracks[id]), /^[\u{1F1E6}-\u{1F1FF}]{2}[A-Z]{3} - \S.*$/u, id);
 });
 
 test('tracks are sorted by the 3-letter code, then by name', () => {
   const ids = trackOrder(Object.fromEntries(Object.keys(OWNER).reverse().map(id => [id, {}])));
-  assert.deepEqual(ids.map(id => trackLabel(id)), ['AUS - Melbourne', 'BEL - Spa', 'BHA - Bahrain', 'BHA - Bahrain(Outer)', 'BRA - Interlagos',
+  assert.deepEqual(ids.map(id => noFlag(trackLabel(id))), ['AUS - Melbourne', 'BEL - Spa', 'BHA - Bahrain', 'BHA - Bahrain(Outer)', 'BRA - Interlagos',
     'CAN - Montreal', 'FRA - Le Mans', 'GBR - Silverstone', 'ITA - Monza', 'ITA - Mugello', 'KOR - Yeongam', 'MEX - Mexico City', 'RWA - Rwanda⚠️',
     'USA - COTA', 'USA - Indianapolis', 'USA - Las Vegas', 'USA - Road Atlanta', 'USA - Sebring']);
 });
 
 test('a map-built candidate track shows the warning mark, a surveyed one does not', () => {
   assert.equal(isCandidate(lapsimTracks.monza), false);
-  assert.equal(trackLabel('monza', lapsimTracks.monza), 'ITA - Monza');
-  assert.equal(trackLabel('yeongam', {candidate: true}), 'KOR - Yeongam⚠️');
-  assert.equal(trackLabel('yeongam', {sources: ['OpenStreetMap raceway centre line']}), 'KOR - Yeongam⚠️');
+  assert.equal(noFlag(trackLabel('monza', lapsimTracks.monza)), 'ITA - Monza');
+  assert.equal(noFlag(trackLabel('yeongam', {candidate: true})), 'KOR - Yeongam⚠️');
+  assert.equal(noFlag(trackLabel('yeongam', {sources: ['OpenStreetMap raceway centre line']})), 'KOR - Yeongam⚠️');
   // a track with real laps of every car model: the learned error with one event hidden decides (owner rule 2026-11-14, docs/lapsim-learn.md)
-  assert.equal(trackLabel('mugello', {candidate: true}), 'ITA - Mugello');
+  assert.equal(noFlag(trackLabel('mugello', {candidate: true})), 'ITA - Mugello');
   assert.equal(trackWarn('daytona', lapsimTracks.daytona), false); assert.equal(trackWarn('rwanda', lapsimTracks.rwanda), true);
-  assert.equal(trackLabel('rwanda', {candidate: true}), 'RWA - Rwanda⚠️'); // never doubled
+  assert.equal(noFlag(trackLabel('rwanda', {candidate: true})), 'RWA - Rwanda⚠️'); // never doubled
 });
 
 test('the page lists only tracks that exist in the data, with the new labels', () => {
   const html = simulationPage({track: 'monza'}, 'en');
-  const opts = [...html.match(/<select name="track"[^>]*>(.*?)<\/select>/s)[1].matchAll(/<option value="([^"]+)"[^>]*>([^<]+)</g)].map(m => [m[1], m[2]]);
+  const opts = [...html.match(/<select name="track"[^>]*>(.*?)<\/select>/s)[1].matchAll(/<option value="([^"]+)"[^>]*>([^<]+)</g)].map(m => [m[1], noFlag(m[2]), m[2]]);
   assert.deepEqual(opts.map(o => o[0]), trackOrder(lapsimTracks));
   assert.equal(opts.length, Object.keys(lapsimTracks).length);
   assert.ok(opts.some(o => o[1] === 'ITA - Monza'));
   assert.ok(opts.some(o => o[1] === 'FRA - Le Mans') && opts.some(o => o[1] === 'RWA - Rwanda⚠️')); // extra circuits: passed the check / provisional
-  assert.ok(opts.some(o => o[1] === 'USA - Las Vegas') && !opts.some(o => /[\u{1F1E6}-\u{1F1FF}]/u.test(o[1]))); // no flag in the track list
+  assert.ok(opts.some(o => o[1] === 'USA - Las Vegas') && opts.every(o => /^[\u{1F1E6}-\u{1F1FF}]{2}[A-Z]{3} /u.test(o[2]))); // flag in front of every listed track
   for (const [id, label] of opts) assert.equal(label.endsWith('⚠️'), trackWarn(id, lapsimTracks[id]), id); // ⚠️: not built, no real lap to check, or a larger error
 });
 

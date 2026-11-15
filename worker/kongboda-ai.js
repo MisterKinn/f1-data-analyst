@@ -1,4 +1,4 @@
-// "꽁보다 AI" page: ask anything about motorsport with the Kongboda connector, plus
+// "꽁보다 인텔리전스" page: ask anything about motorsport with the Kongboda connector, plus
 // copy-ready instructions for AI assistants built into the browser (Claude, ChatGPT).
 // Login steps are intentionally absent: the AI never signs in on the user's behalf.
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
@@ -85,7 +85,7 @@ const abilities=[['공식 규정 검색','F1·WEC 기술·스포팅 규정에서
 
 export const aiPageCss=`.ai-copy{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.ai-abilities{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:0;padding:0;list-style:none}.ai-abilities li{border:1px solid var(--line);border-radius:14px;padding:16px;background:var(--surface)}.ai-abilities strong{display:block;margin-bottom:6px;color:var(--mint)}.ai-examples{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}.ai-examples li{border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-size:14px}.ai-steps{margin:0;padding-left:20px;line-height:1.8}.ai-prompt pre{white-space:pre-wrap;word-break:break-word;max-height:360px;overflow:auto;margin:12px 0 0;padding:16px;border-radius:12px;background:var(--bg);border:1px solid var(--line);font-size:13px;line-height:1.6}.ai-prompt .section-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.ai-url{font-family:ui-monospace,monospace;overflow-wrap:anywhere;color:var(--mint)}.ai-page{display:grid;gap:24px}`;
 
-export function aiPage(){return `<div class="ai-page"><section class="hero"><h1>모터스포츠, 모르는 건<br><em>꽁보다 AI에게 물어보세요</em></h1><p class="lead">규정 조항부터 공식 기록, 텔레메트리, 기술 원리까지. 꽁보다가 모은 자료와 도구로 AI가 근거와 함께 답합니다.</p></section>
+export function aiPage(){return `<div class="ai-page"><section class="hero"><h1>모터스포츠, 모르는 건<br><em>꽁보다 인텔리전스에게 물어보세요</em></h1><p class="lead">규정 조항부터 공식 기록, 텔레메트리, 기술 원리까지. 꽁보다가 모은 자료와 도구로 AI가 근거와 함께 답합니다.</p></section>
 <section class="panel"><h2>연결하는 방법</h2><ol class="ai-steps"><li>사용하는 AI에 맞는 프롬프트를 복사합니다.<div class="ai-copy"><button type="button" class="button" data-copy-target="ai-claude">Claude용 프롬프트 복사</button><button type="button" class="button" data-copy-target="ai-chatgpt">ChatGPT용 프롬프트 복사</button></div><pre id="ai-claude" hidden data-no-translate>${esc(CLAUDE_PROMPT)}</pre><pre id="ai-chatgpt" hidden data-no-translate>${esc(CHATGPT_PROMPT)}</pre></li><li>Claude 또는 ChatGPT의 프로젝트 지침(또는 대화)에 붙여 넣습니다. 프롬프트 안의 꽁보다 커넥터 주소로 AI가 연결을 안내하고, 기본 지침은 연결되면 자동으로 적용됩니다.</li><li>궁금한 것을 바로 물어보세요.</li></ol></section>
 <section class="panel"><h2>꽁보다로 할 수 있는 것</h2><ul class="ai-abilities">${abilities.map(([t,d])=>`<li><strong>${t}</strong>${d}</li>`).join('')}</ul></section>
 <section class="panel"><h2>이렇게 물어보세요</h2><ul class="ai-examples">${examples.map(e=>`<li>${esc(e)}</li>`).join('')}</ul></section>

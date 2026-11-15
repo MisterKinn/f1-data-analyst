@@ -4,7 +4,8 @@ import {calendarEvents} from './race-calendar-data.js';
 import {lapsimLearned} from './lapsim/learned-data.js';
 import {lapsimFe} from './lapsim/fe-data.js';
 
-// Track labels in the owner's format: 3-letter code + " - " + name (no flag, owner 2026-11-14). [ISO country, code, name, always ⚠️].
+// Track labels in the owner's format: flag + 3-letter code + " - " + name (🇧🇭BHA - Bahrain; flag back on 2026-11-15, shown on PC by the
+// self-hosted flag font in website.js, since Windows has no flag emoji). [ISO country, code, name, always ⚠️].
 // The codes are the owner's (Bahrain is BHA). Requested tracks come from scripts/sim/data/track-requests.json
 // (owner list, 2026-11-11); a track is listed on the page only when it exists in tracks-data.js.
 const L = {
@@ -13,9 +14,9 @@ const L = {
   interlagos: ['BR', 'BRA', 'Interlagos'], 'fe-sao-paulo': ['BR', 'BRA', 'São Paulo Anhembi'], montreal: ['CA', 'CAN', 'Montreal'], mosport: ['CA', 'CAN', 'Mosport'],
   shanghai: ['CN', 'CHN', 'Shanghai'], 'fe-sanya': ['CN', 'CHN', 'Sanya Haitang Bay'], catalunya: ['ES', 'ESP', 'Barcelona'], madring: ['ES', 'ESP', 'Madrid'], jarama: ['ES', 'ESP', 'Jarama'],
   'le-mans': ['FR', 'FRA', 'Le Mans'], 'paul-ricard': ['FR', 'FRA', 'Paul Ricard'], 'paul-ricard-f1': ['FR', 'FRA', 'Paul Ricard(F1)'], silverstone: ['GB', 'GBR', 'Silverstone'], 'brands-hatch': ['GB', 'GBR', 'Brands Hatch'],
-  nurburgring: ['DE', 'GER', 'Nürburgring'], 'nurburgring-gp': ['DE', 'GER', 'Nürburgring GP'], 'nurburgring-sprint': ['DE', 'GER', 'Nürburgring Sprint'], 'nurburgring-24h': ['DE', 'GER', 'Nürburgring 24h'], hockenheim: ['DE', 'GER', 'Hockenheim'], 'fe-berlin': ['DE', 'GER', 'Berlin Tempelhof'], hungaroring: ['HU', 'HUN', 'Hungaroring'],
+  nurburgring: ['DE', 'GER', 'Nürburgring'], 'nurburgring-gp': ['DE', 'GER', 'Nürburgring GP'], 'nurburgring-sprint': ['DE', 'GER', 'Nürburgring Sprint'], 'nurburgring-24h': ['DE', 'GER', 'Nürburgring 24h'], hockenheim: ['DE', 'GER', 'Hockenheimring'], 'fe-berlin': ['DE', 'GER', 'Berlin Tempelhof'], hungaroring: ['HU', 'HUN', 'Hungaroring'],
   monza: ['IT', 'ITA', 'Monza'], mugello: ['IT', 'ITA', 'Mugello'], imola: ['IT', 'ITA', 'Imola'], suzuka: ['JP', 'JPN', 'Suzuka'], fuji: ['JP', 'JPN', 'Fuji'], 'fe-tokyo': ['JP', 'JPN', 'Tokyo'],
-  yeongam: ['KR', 'KOR', 'Yeongam'], yongin: ['KR', 'KOR', 'Yongin'], inje: ['KR', 'KOR', 'Inje'], jeddah: ['SA', 'KSA', 'Jeddah'], 'kuala-lumpur': ['MY', 'MAS', 'Sepang'],
+  yeongam: ['KR', 'KOR', 'Yeongam'], yongin: ['KR', 'KOR', 'Yongin'], inje: ['KR', 'KOR', 'Inje'], jeddah: ['SA', 'SAU', 'Jeddah'], 'kuala-lumpur': ['MY', 'MAS', 'Sepang'],
   'mexico-city': ['MX', 'MEX', 'Mexico City'], 'monte-carlo': ['MC', 'MON', 'Monaco'], zandvoort: ['NL', 'NED', 'Zandvoort'], portimao: ['PT', 'POR', 'Portimão'],
   lusail: ['QA', 'QAT', 'Lusail'], kyalami: ['ZA', 'RSA', 'Kyalami'], rwanda: ['RW', 'RWA', 'Rwanda', true], singapore: ['SG', 'SGP', 'Singapore'],
   'yas-marina-circuit': ['AE', 'UAE', 'Yas Marina'], austin: ['US', 'USA', 'COTA'], indianapolis: ['US', 'USA', 'Indianapolis'], 'las-vegas': ['US', 'USA', 'Las Vegas'],
@@ -28,7 +29,7 @@ const L = {
   aragon: ['ES', 'ESP', 'Aragón'], lausitz: ['DE', 'GER', 'Lausitzring (DTM)'], snetterton: ['GB', 'GBR', 'Snetterton 300'], istanbul: ['TR', 'TUR', 'Istanbul Park'], sochi: ['RU', 'RUS', 'Sochi'], autopolis: ['JP', 'JPN', 'Autopolis'], mandalika: ['ID', 'IDN', 'Mandalika'], 'magny-cours': ['FR', 'FRA', 'Magny-Cours'], 'phillip-island': ['AU', 'AUS', 'Phillip Island'],
   // Formula E street circuits (official FIA circuit maps); an older layout carries its seasons
   'fe-london': ['GB', 'GBR', 'London ExCeL'], 'fe-shanghai': ['CN', 'CHN', 'Shanghai (FE)'],
-  'jarama-2025': ['ES', 'ESP', 'Jarama (2025)'], 'fe-valencia': ['ES', 'ESP', 'Valencia (FE)'], 'fe-jeddah': ['SA', 'KSA', 'Jeddah Corniche (FE)'],
+  'jarama-2025': ['ES', 'ESP', 'Jarama (2025)'], 'fe-valencia': ['ES', 'ESP', 'Valencia (FE)'], 'fe-jeddah': ['SA', 'SAU', 'Jeddah Corniche (FE)'],
   'fe-miami': ['US', 'USA', 'Miami (FE)'], 'fe-miami-2025': ['US', 'USA', 'Homestead-Miami (FE)'],
   'fe-mexico': ['MX', 'MEX', 'Mexico City (FE)'], 'fe-mexico-2023': ['MX', 'MEX', 'Mexico City (FE 2023-25)'], 'fe-jakarta': ['ID', 'IDN', 'Jakarta'],
  
@@ -56,8 +57,11 @@ export function trackWarn(id, track) {
 // "ITA - Monza"; a track with no label entry keeps its plain data name (no invented code)
 export function trackLabel(id, track) {
   const e = L[id], w = trackWarn(id, track) ? WARN : ''; if (!e) return (track?.name || id) + w;
-  return e[1] + ' - ' + e[2] + w;
+  return flag(e[0]) + e[1] + ' - ' + e[2] + w;
 }
+
+// ISO country code → flag emoji (two regional indicator letters)
+export const flag = iso => String.fromCodePoint(...[...iso].map(c => 0x1F1A5 + c.charCodeAt(0)));
 
 // Track ids sorted by the 3-letter code, then by name (unlabelled tracks last, by name)
 export function trackOrder(tracks) {
