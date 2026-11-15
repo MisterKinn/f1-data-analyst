@@ -29,9 +29,11 @@ test('DRS zones and Straight Mode zones never mix (owner 2026-11-15)', async () 
   }
 });
 
-test('the 2026 Bahrain GP ran at Sepang, so Sakhir has no 2026 zones', async () => {
+test('Sakhir 2026 zones come from the Bahrain pre-season test map, not the Sepang-held Bahrain GP', async () => {
   const m = await import('../worker/lapsim/f1-zones-data.js');
   const {tracks} = Object.values(m).find(v => v && v.tracks);
-  assert.equal(tracks.sakhir['2026'], undefined);
+  const z = tracks.sakhir['2026'];
+  assert.equal(z.kind, 'sm'); assert.match(z.doc, /pre-season test/); assert.equal(z.zones.length, 4);
+  assert.deepEqual(z.marks.map(k => k.label), ['OT D', 'OT A']);
   assert.equal(tracks.sakhir['2025'].kind, 'drs');
 });

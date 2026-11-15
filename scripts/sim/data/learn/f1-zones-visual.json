@@ -92,6 +92,19 @@
     "DRS Detection2 (72m before T10)",
     "DRS Activation2 (70m after T10)"
    ]
+  },
+  {
+   "year": 2026,
+   "track": "sakhir",
+   "doc": "2026 Bahrain pre-season test - FIA Circuit Map (shared 10 Feb 2026; the 2026 Bahrain GP itself ran at Sepang)",
+   "lines": [
+    "DETECTION - 10m after T14",
+    "ACTIVATION - 50m after T14",
+    "30m after T15 - ZONE A1 -",
+    "40m after T3 - ZONE A2 -",
+    "120m after T10 - ZONE A3 -",
+    "40m after T13 - ZONE A4 -"
+   ]
   }
  ]
 }
