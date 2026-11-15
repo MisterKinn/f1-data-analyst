@@ -26,7 +26,7 @@ export const uiMotionCss = `
 .kb-fold .ls-changes{list-style:none;margin:8px 0;padding:0;display:grid;gap:0}.kb-fold .ls-change{border-bottom:1px solid var(--line)}.kb-fold .ls-change>label{display:grid;grid-template-columns:22px minmax(0,1fr);gap:10px;align-items:start;padding:10px 0;cursor:pointer}.kb-fold .ls-change.is-info>label{cursor:default}
 .kb-fold .ls-change input{margin:3px 0 0;accent-color:var(--mint)}.kb-fold .ls-change .ls-dot{width:8px;height:8px;margin:7px 0 0 4px;border-radius:50%;background:var(--line)}.kb-fold .ls-change-text{display:block;line-height:1.45}.kb-fold .ls-change small{display:block;color:var(--muted);font-size:12px;margin-top:2px}.kb-fold .ls-change.is-info .ls-change-text{color:var(--muted)}
 .kb-replay-seek{flex:1 1 180px;min-width:140px;accent-color:var(--mint)}.kb-replay button[hidden]{display:none}.ls-trace{cursor:col-resize;touch-action:pan-y}
-.kb-replay-time{font-variant-numeric:tabular-nums;color:var(--muted);font-size:14px}.kb-car{fill:var(--text);stroke:var(--bg);pointer-events:none}.kb-cursor{stroke:var(--text);stroke-width:2;opacity:.7;pointer-events:none}
+.kb-replay-rate{font:inherit;font-size:14px;min-height:40px;padding:0 10px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--text)}.kb-replay-time{font-variant-numeric:tabular-nums;color:var(--muted);font-size:14px}.kb-car{fill:var(--text);stroke:var(--bg);pointer-events:none}.kb-cursor{stroke:var(--text);stroke-width:2;opacity:.7;pointer-events:none}
 @media(prefers-reduced-motion:no-preference){
  .kb-skeleton .kb-bone{animation:kb-pulse 1.4s ease-in-out infinite}
  .kb-enter{animation:kb-enter var(--kb-base) var(--kb-ease) both}
@@ -230,9 +230,14 @@ export function uiMotionClient() {
   const stopBtn = el('button', '', '■'); stopBtn.type = 'button'; stopBtn.setAttribute('aria-label', t('재생 끝내기', 'End replay')); stopBtn.hidden = true;
   const seek = el('input', 'kb-replay-seek'); seek.type = 'range'; seek.min = '0'; seek.max = '1000'; seek.step = '1'; seek.value = '0'; seek.setAttribute('aria-label', t('랩 위치', 'Lap position'));
   const clock = el('span', 'kb-replay-time'); clock.setAttribute('aria-live', 'off');
-  bar.append(playBtn, stopBtn, seek, clock);
+  // playback speed (owner 2026-11-15): 1× (real time) up to 16×, or Auto (whole lap in about 9 s)
+  const rate = el('select', 'kb-replay-rate'); rate.setAttribute('aria-label', t('재생 속도', 'Playback speed'));
+  rate.innerHTML = ['auto', 1, 2, 4, 8, 16].map(v => '<option value="' + v + '">' + (v === 'auto' ? t('자동', 'Auto') : v + '×') + '</option>').join('');
+  try { const saved = localStorage.getItem('kb-replay-rate'); if (saved && [...rate.options].some(o => o.value === saved)) rate.value = saved; } catch (e) {}
+  rate.addEventListener('change', () => { try { localStorage.setItem('kb-replay-rate', rate.value); } catch (e) {} if (rp.running) rp.last = performance.now(); if (rp.model) render(); });
+  bar.append(playBtn, stopBtn, rate, seek, clock);
   (mapBox.closest('figure') || mapBox).append(bar);
-  const speedup = () => Math.max(4, Math.round(rp.lapS / 9));
+  const speedup = () => rate.value === 'auto' ? Math.max(4, Math.round(rp.lapS / 9)) : Number(rate.value);
   const label = () => { playBtn.textContent = rp.running ? t('❚❚ 일시정지', '❚❚ Pause') : rp.k > 0 && rp.k < 1 ? t('▶ 이어서 재생', '▶ Resume') : rp.k >= 1 ? t('▶ 다시 재생', '▶ Replay') : t('▶ 한 랩 재생', '▶ Replay the lap'); };
   function ensure() {
    const fresh = !rp.car?.isConnected || !rp.cursor?.isConnected || !rp.model;

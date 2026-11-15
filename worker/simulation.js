@@ -140,7 +140,7 @@ function renderMap(map, v, opts) {
     let r = [0], c = bk(0);
     const fl = () => { if (r.length > 1) paths += '<path class="ls-line-seg" d="M' + r.map(i => X(L.pts[i]) + ' ' + Y(L.pts[i])).join('L') + '" stroke="color-mix(in oklab,var(--mint) ' + (c * 20) + '%,var(--sim-slow))"/>'; };
     for (let i = 1; i <= m; i++) { const k = i % m; r.push(k); if (i === m || bk(k) !== c) { fl(); r = [k]; c = bk(k); } }
-    marks = L.marks.map(([i, k]) => '<circle class="ls-mk ls-mk-' + k + '" cx="' + X(L.pts[i]) + '" cy="' + Y(L.pts[i]) + '" r="' + (sw * 1.3).toFixed(1) + '" stroke-width="' + (sw * 0.35).toFixed(1) + '"/>').join('');
+    // braking / apex / full-throttle dots removed (owner 2026-11-15: too busy)
   } else {
     for (let i = 1; i < n; i++) { run.push(i); const nb = bucket(i); if (nb !== b) { flush(); run = [i]; b = nb; } }
     run.push(0); flush();
@@ -262,7 +262,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
  </div>
 </section>
 <section class="panel ls-panel ls-cmp-panel ls-cmp-only"><div class="ls-panel-head"><h2>${esc(UI[lang].cmpH)}</h2><button type="button" class="pill" data-ls="cmpCsv">${esc(UI[lang].csv)}</button></div><div class="output" data-ls="cmpTable"></div><p class="fine">${esc(UI[lang].cmpNote)}</p></section>
-<section class="panel ls-panel ls-tel"><div class="ls-panel-head"><h2>${esc(t.trace)}</h2><button type="button" class="pill" data-ls="telCsv">${esc(UI[lang].csv)}</button></div><div class="ls-chans" data-ls="chans" role="group" aria-label="${esc(UI[lang].chans)}"></div><div class="ls-scroll" data-ls="trace">${view.traceSvg}</div><p class="ls-key" data-ls="key">${view.keyHtml}</p><div data-ls="soc">${view.socHtml}</div></section>
+<section class="panel ls-panel ls-tel"><div class="ls-panel-head"><h2>${esc(t.trace)}</h2><span class="ls-export"><button type="button" class="pill" data-ls="telPng">${esc(UI[lang].png)}</button> <button type="button" class="pill" data-ls="telCsv">${esc(UI[lang].csv)}</button></span></div><div class="ls-chans" data-ls="chans" role="group" aria-label="${esc(UI[lang].chans)}"></div><div class="ls-scroll" data-ls="trace">${view.traceSvg}</div><p class="ls-key" data-ls="key">${view.keyHtml}</p><div data-ls="soc">${view.socHtml}</div></section>
 <section class="panel ls-panel ls-brakes"><h2>${esc(BT[lang].h)}</h2><div data-ls="brakes">${view.brakeHtml}</div></section>
 <section class="panel ls-panel ls-air"><h2>${esc(t.air)}</h2>
  <dl class="ls-facts ls-air-facts" data-ls="air">${view.airHtml}</dl>
@@ -297,9 +297,9 @@ ${racePanel(id, lang, query.race || null)}
 // (predicted when the track has not been raced in 2026) and the fitted fuel/tyre/pit factors.
 // Page texts added 2026-11-15: compare tab, telemetry channels and export, map rotation and compass
 const UI = {
-  ko: {cmp1: '비교 차 1', cmp2: '비교 차 2', cmpH: '랩 비교', csv: 'CSV 내보내기', chans: '보여 줄 텔레메트리', cmpNote: '갭은 선택한 차 기준입니다. 섹터는 실제 섹터 경계가 있는 트랙에서만 나옵니다.',
+  ko: {cmp1: '비교 차 1', cmp2: '비교 차 2', cmpH: '랩 비교', csv: 'CSV 내보내기', png: '이미지 저장 (PNG)', chans: '보여 줄 텔레메트리', cmpNote: '갭은 선택한 차 기준입니다. 섹터는 실제 섹터 경계가 있는 트랙에서만 나옵니다.',
     move: '{c} 순서 옮기기 (끌거나 ← →)', zoneNote: {drs: '바깥 띠: {y} DRS 존, D = 감지 지점 ({doc})', sm: '바깥 띠: {y} 스트레이트 모드 존, OT D/A = 오버테이크 감지·작동 지점 ({doc})'}, cols: ['차', '랩타임', '갭', '섹터 1', '섹터 2', '섹터 3', '최고 속도', '최저 속도'], rotL: '왼쪽으로 돌리기', rotR: '오른쪽으로 돌리기', reset: '처음 보기로 돌아가기 (나침반: 실제 북쪽)', noNorth: '이 트랙은 실제 북쪽 방향 자료가 없습니다', dist: '거리 (m)', cap: '규정 상한'},
-  en: {cmp1: 'Compare car 1', cmp2: 'Compare car 2', cmpH: 'Lap comparison', csv: 'Export CSV', chans: 'Telemetry to show', cmpNote: 'Gaps are to the selected car. Sectors show only on tracks with real sector lines.',
+  en: {cmp1: 'Compare car 1', cmp2: 'Compare car 2', cmpH: 'Lap comparison', csv: 'Export CSV', png: 'Save image (PNG)', chans: 'Telemetry to show', cmpNote: 'Gaps are to the selected car. Sectors show only on tracks with real sector lines.',
     move: 'Move {c} (drag, or ← →)', zoneNote: {drs: 'outer band: {y} DRS zones, D = detection point ({doc})', sm: 'outer band: {y} Straight Mode zones, OT D/A = overtake detection/activation ({doc})'}, cols: ['Car', 'Lap', 'Gap', 'Sector 1', 'Sector 2', 'Sector 3', 'Top speed', 'Lowest speed'], rotL: 'Rotate left', rotR: 'Rotate right', reset: 'Back to the first view (compass: true north)', noNorth: 'No true-north data for this track', dist: 'Distance (m)', cap: 'regulation cap'},
 };
 // The map opens turned so the track uses the width (owner 2026-11-15: Monza, Jeddah, Fuji were drawn tall; "the long straight parallel
@@ -410,7 +410,7 @@ function lineControls(lang, view) {
   const u = UI[lang];
   return `<div class="ls-line-bar">${['q', 'r'].map(m => `<button type="button" class="pill${m === 'q' ? ' active' : ''}" data-line-mode="${m}">${esc(t.modes[m])}</button>`).join('')}
  <label class="ls-driver" data-ls="driverWrap"${view.driverOpts ? '' : ' hidden'}><select data-ls="driver" aria-label="${esc(t.driver)}">${view.driverOpts}</select></label> <span class="ls-zoom-btns"><button type="button" class="pill ls-icon" data-rot="-15" aria-label="${esc(u.rotL)}" title="${esc(u.rotL)}">⟲</button><button type="button" class="pill ls-icon" data-rot="15" aria-label="${esc(u.rotR)}" title="${esc(u.rotR)}">⟳</button><button type="button" class="pill ls-icon ls-compass-btn" data-compass aria-label="${esc(u.reset)}" title="${esc(u.reset)}">${compassSvg(view.compassDeg)}</button><button type="button" class="pill ls-icon" data-zoom="in" aria-label="${esc(t.zin)}">+</button><button type="button" class="pill ls-icon" data-zoom="out" aria-label="${esc(t.zout)}">−</button><button type="button" class="pill" data-zoom="fit">${esc(t.all)}</button></span></div>
- <p class="fine ls-line-key"><span class="ls-mk-b"></span>${esc(t.key[0])} <span class="ls-mk-a"></span>${esc(t.key[1])} <span class="ls-mk-t"></span>${esc(t.key[2])} · <span data-ls="lineNote">${esc(view.lineNote)}</span></p>`;
+ <p class="fine ls-line-key"><span data-ls="lineNote">${esc(view.lineNote)}</span></p>`;
 }
 // Compound gap vs soft (% of lap) per season: the real low-fuel gap measured at that event (reproduced
 // exactly), else k(track) × C-steps between the compounds (fitted, leave-one-event-out tested)
@@ -908,11 +908,17 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
         const chip = g.closest('.ls-chan');
         g.addEventListener('click', e => e.preventDefault());
         g.addEventListener('keydown', e => { if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight' && e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return; e.preventDefault(); const back = e.key === 'ArrowLeft' || e.key === 'ArrowUp', sib = back ? chip.previousElementSibling : chip.nextElementSibling; if (!sib) return; if (back) sib.before(chip); else sib.after(chip); g.focus(); saveOrder(); });
-        g.addEventListener('pointerdown', e => {
-          e.preventDefault(); g.setPointerCapture(e.pointerId); chip.classList.add('is-drag');
-          const move = ev => { const over = document.elementFromPoint(ev.clientX, ev.clientY), other = over && over.closest && over.closest('.ls-chan'); if (!other || other === chip || other.parentElement !== box) return; const r = other.getBoundingClientRect(); if (ev.clientX < r.left + r.width / 2) other.before(chip); else other.after(chip); };
-          const up = () => { chip.classList.remove('is-drag'); g.removeEventListener('pointermove', move); g.removeEventListener('pointerup', up); g.removeEventListener('pointercancel', up); saveOrder(); };
-          g.addEventListener('pointermove', move); g.addEventListener('pointerup', up); g.addEventListener('pointercancel', up);
+        // drag the whole chip (owner 2026-11-15): a move of more than 6 px starts a drag, a plain click still toggles the channel
+        let dragged = false;
+        chip.addEventListener('click', e => { if (dragged) { e.preventDefault(); dragged = false; } });
+        chip.addEventListener('pointerdown', e => {
+          if (e.button || e.target.matches('input')) return; const x0 = e.clientX, y0 = e.clientY, fromGrip = e.target === g; let on = false; dragged = false;
+          if (fromGrip) e.preventDefault();
+          const start = () => { on = true; dragged = true; try { chip.setPointerCapture(e.pointerId); } catch (er) {} chip.classList.add('is-drag'); };
+          if (fromGrip) start();
+          const move = ev => { if (!on) { if (Math.hypot(ev.clientX - x0, ev.clientY - y0) < 6) return; start(); } ev.preventDefault(); const over = document.elementFromPoint(ev.clientX, ev.clientY), other = over && over.closest && over.closest('.ls-chan'); if (!other || other === chip || other.parentElement !== box) return; const r = other.getBoundingClientRect(); if (ev.clientX < r.left + r.width / 2) other.before(chip); else other.after(chip); };
+          const up = () => { chip.classList.remove('is-drag'); removeEventListener('pointermove', move); removeEventListener('pointerup', up); removeEventListener('pointercancel', up); if (on) saveOrder(); };
+          addEventListener('pointermove', move); addEventListener('pointerup', up); addEventListener('pointercancel', up);
         });
       });
     }
@@ -935,6 +941,24 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
     const rows = [[data.ui.dist].concat(cols.map(c => c.h))];
     for (let x = 0; x < lastTel.len; x += step) rows.push([Math.round(x * 10) / 10].concat(cols.map(c => { const a = c.s0.v, y = a[Math.min(a.length - 1, Math.round(x / c.L.ds))]; return Number.isFinite(y) ? +(+y).toFixed(3) : ''; })));
     download('kongboda-telemetry-' + data.id + '-' + lastTel.cars.map(slug).join('_vs_') + '.csv', rows);
+  });
+  // PNG export (owner 2026-11-15): the shown lanes in their current order, colours read from the page so light and dark both work
+  const PROPS = ['fill', 'stroke', 'stroke-width', 'stroke-dasharray', 'opacity', 'fill-opacity', 'stroke-opacity', 'font-size', 'font-weight', 'font-family', 'text-anchor', 'dominant-baseline', 'visibility', 'display'];
+  const inlineSvg = src => { const c = src.cloneNode(true), a = [src, ...src.querySelectorAll('*')], b = [c, ...c.querySelectorAll('*')];
+    a.forEach((el, i) => { const cs = getComputedStyle(el), st = PROPS.map(k => k + ':' + cs.getPropertyValue(k)).join(';'); b[i].setAttribute('style', st); b[i].removeAttribute('class'); }); return c; };
+  if (q('telPng')) q('telPng').addEventListener('click', () => {
+    const tr = q('trace'), lanes = [...tr.querySelectorAll('[data-lane]')].filter(d => !d.hidden); if (!lanes.length) return;
+    const root = getComputedStyle(document.documentElement), bg = root.getPropertyValue('--bg').trim() || '#fff', fg = root.getPropertyValue('--text').trim() || '#000', font = getComputedStyle(tr).fontFamily;
+    const W = 1000, head = 34; let y = 44, body = '';
+    for (const d of lanes) { const svg = d.querySelector('svg'); if (!svg) continue; const vb = svg.viewBox.baseVal, h = vb.height * W / vb.width, c = inlineSvg(svg);
+      c.setAttribute('x', 0); c.setAttribute('y', y + head); c.setAttribute('width', W); c.setAttribute('height', h);
+      body += '<text x="8" y="' + (y + 24) + '" font-size="16" font-weight="700" fill="' + fg + '">' + (d.querySelector('h3')?.textContent || '').replace(/[<&]/g, m => m === '<' ? '&lt;' : '&amp;') + '</text>' + new XMLSerializer().serializeToString(c); y += head + h + 8; }
+    const title = (q('trace').closest('section')?.querySelector('h2')?.textContent || '') + ' · ' + (lastTel ? lastTel.cars.join(' vs ') : '');
+    const all = '<svg xmlns="http://www.w3.org/2000/svg" width="' + W + '" height="' + y + '" viewBox="0 0 ' + W + ' ' + y + '" font-family="' + font.replace(/"/g, "'") + '"><rect width="100%" height="100%" fill="' + bg + '"/><text x="8" y="28" font-size="20" font-weight="700" fill="' + fg + '">' + title.replace(/[<&]/g, m => m === '<' ? '&lt;' : '&amp;') + '</text>' + body + '</svg>';
+    const img = new Image(), url = URL.createObjectURL(new Blob([all], {type: 'image/svg+xml;charset=utf-8'}));
+    img.onload = () => { const k = 2, cv = document.createElement('canvas'); cv.width = W * k; cv.height = y * k; const g = cv.getContext('2d'); g.scale(k, k); g.drawImage(img, 0, 0); URL.revokeObjectURL(url);
+      cv.toBlob(b => { if (!b) return; const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'kongboda-telemetry-' + data.id + '-' + (lastTel ? lastTel.cars.map(slug).join('_vs_') : 'lap') + '.png'; document.body.append(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000); }, 'image/png'); };
+    img.onerror = () => URL.revokeObjectURL(url); img.src = url;
   });
   // compare tab: a table of every car (lap, gap, sectors, speeds) with its own CSV
   let lastCmp = [];
@@ -1038,7 +1062,7 @@ export function lapsimScriptVersion() {
   return (h >>> 0).toString(36);
 }
 
-const CSS = `:root{--sim-slow:#ffa94d}:root[data-theme="light"]{--sim-slow:#245d9c}@media(prefers-color-scheme:light){:root:not([data-theme]){--sim-slow:#245d9c}}
+const CSS = `:root{--sim-slow:#ffa94d;--kb-zone:#00d2be;--kb-zone-mark:#c0c4c8}:root[data-theme="light"]{--sim-slow:#245d9c;--kb-zone:#f2b300;--kb-zone-mark:#8a0000}@media(prefers-color-scheme:light){:root:not([data-theme]){--sim-slow:#245d9c;--kb-zone:#f2b300;--kb-zone-mark:#8a0000}}
 .ls-hero h1{font-size:44px;max-width:20ch}.ls-controls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.ls-controls label{min-width:0}.ls-controls select{width:100%}.ls-controls .ls-check{display:flex;align-items:center;gap:8px;flex-wrap:wrap;align-self:end;min-height:44px}.ls-check input{width:18px;height:18px;margin:0}.ls-check input:disabled+span{color:var(--muted)}.ls-check small{color:var(--muted);font-size:13px}.ls-event{margin:8px 0 0}
 .ls-stage{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(280px,1fr);gap:40px;align-items:center}.ls-map-wrap{margin:0;display:grid;gap:12px}.ls-map{width:100%;height:auto;max-height:540px;color:var(--text)}
 .ls-start{fill:var(--text)}.ls-corner{fill:var(--muted);text-anchor:middle;font-weight:600}
@@ -1055,14 +1079,14 @@ const CSS = `:root{--sim-slow:#ffa94d}:root[data-theme="light"]{--sim-slow:#245d
 .ls-changes{list-style:none;margin:0;padding:0;display:grid;gap:10px}.ls-change label{display:flex;gap:12px;align-items:flex-start;color:var(--text);font-size:14px;min-width:0}.ls-change input{width:20px;height:20px;min-height:0;margin-top:2px;accent-color:var(--mint)}.ls-change small{display:block;color:var(--muted);font-size:12px;margin-top:2px}.ls-change.is-info label{color:var(--muted)}.ls-dot{width:20px;flex:0 0 20px;text-align:center}.ls-dot::before{content:'·'}
 .ls-table td,.ls-table th{white-space:nowrap}.ls-notes{margin:0;padding-left:20px;display:grid;gap:10px;line-height:1.7;color:var(--muted);max-width:80ch}.ls-panel h3{font-size:18px;margin-top:6px}
 
-.ls-zoombox{overflow:hidden;position:relative;touch-action:pan-y;border-radius:12px}.ls-zoombox.is-zoomed{touch-action:none;cursor:grab}.ls-line-bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px}.ls-zoom-btns{margin-left:auto;display:inline-flex;flex-wrap:wrap;gap:6px;max-width:100%}.ls-map .ls-mk{stroke:#fff;transform-box:fill-box;transform-origin:center;scale:var(--inv,1)}.ls-zoombox text{transform-box:fill-box;transform-origin:center;scale:var(--inv,1)}.ls-map .ls-band{fill:color-mix(in oklab,var(--muted) 18%,transparent);stroke:none}
+.ls-zoombox{overflow:hidden;position:relative;touch-action:pan-y;border-radius:12px}.ls-zoombox.is-zoomed{touch-action:none;cursor:grab}.ls-line-bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px}.ls-zoom-btns{margin-left:auto;display:inline-flex;flex-wrap:wrap;gap:6px;max-width:100%}.ls-map .ls-mk{stroke:#fff;transform-box:fill-box;transform-origin:center;scale:var(--inv,1)}.ls-zoombox text{transform-box:fill-box;transform-origin:center;scale:var(--inv,1)}.ls-map .ls-band{fill:#e6e8ea;stroke:none}:root[data-theme="light"] .ls-band{fill:#1f1f1f}@media(prefers-color-scheme:light){:root:not([data-theme]) .ls-band{fill:#1f1f1f}}
 .ls-mk-b{fill:#e5484d}.ls-mk-a{fill:#f5a524}.ls-mk-t{fill:#30a46c}.ls-line-key [class^=ls-mk]{display:inline-block;width:10px;height:10px;border-radius:50%;margin:0 4px 0 10px;vertical-align:middle}.ls-line-key [class^=ls-mk]:first-child{margin-left:0}.ls-line-key .ls-mk-b{background:#e5484d}.ls-line-key .ls-mk-a{background:#f5a524}.ls-line-key .ls-mk-t{background:#30a46c}
 .ls-evo .ls-controls{grid-template-columns:repeat(3,minmax(0,1fr));margin:12px 0 16px}.ls-check{display:flex;align-items:center;gap:8px;align-self:end;min-height:40px}.ls-check input{width:20px;height:20px;min-height:0;accent-color:var(--mint)}.ls-evo .ls-facts{margin-top:16px}
-.ls-line-2{stroke:var(--text);stroke-dasharray:2 3}.ls-zone{fill:none;stroke-linecap:round;opacity:.9}.ls-zone-drs{stroke:#3e8bff}.ls-zone-sm{stroke:#a3e635}.ls-zone-t{fill:var(--text);font-weight:700;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:var(--bg);stroke-width:3px}.ls-zone-m{stroke:#f5a524}.ls-zone-m-act{stroke:#a3e635}.ls-zone-mt{fill:#f5a524;font-weight:700;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:var(--bg);stroke-width:3px}.ls-key-2{background:var(--text)}.ls-key-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;vertical-align:middle}
+.ls-line-2{stroke:var(--text);stroke-dasharray:2 3}.ls-zone{fill:none;stroke-linecap:round;opacity:.9}.ls-zone-drs,.ls-zone-sm{stroke:var(--kb-zone)}.ls-zone-t{fill:var(--text);font-weight:700;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:var(--bg);stroke-width:3px}.ls-zone-m{stroke:var(--kb-zone-mark)}.ls-zone-m-act{stroke:var(--kb-zone)}.ls-zone-mt{fill:var(--kb-zone-mark);font-weight:700;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:var(--bg);stroke-width:3px}.ls-key-2{background:var(--text)}.ls-key-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;vertical-align:middle}
 main:not(.kb-cmp-view) .ls-cmp-only{display:none!important}
-.ls-panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.ls-panel-head h2{margin:0}.ls-panel-head .pill{min-height:44px}
-.ls-chans{display:flex;flex-wrap:wrap;gap:6px 8px;margin:12px 0 4px}.ls-chan{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1px solid var(--line);border-radius:999px;font-size:14px;color:var(--text);cursor:pointer;user-select:none}.ls-chan input{width:18px;height:18px;margin:0;accent-color:var(--mint)}.ls-chan:has(input:not(:checked)){color:var(--muted)}
-.ls-lane[hidden]{display:none}.ls-grip{border:0;background:none;color:var(--muted);font-size:16px;line-height:1;padding:6px 2px;min-width:24px;min-height:32px;cursor:grab;touch-action:none}.ls-chan.is-drag{border-color:var(--mint);opacity:.85}.ls-chan{padding-left:6px}.ls-cmp-table td:first-child{white-space:normal;min-width:10ch}
+.ls-export{display:inline-flex;gap:6px;flex-wrap:wrap}.ls-panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.ls-panel-head h2{margin:0}.ls-panel-head .pill{min-height:44px}
+.ls-chans{display:flex;flex-wrap:nowrap;gap:6px;margin:12px 0 4px;overflow-x:auto;scrollbar-width:thin;padding-bottom:2px}.ls-chan{display:inline-flex;flex:0 0 auto;min-width:0;align-items:center;gap:6px;min-height:40px;padding:0 12px;white-space:nowrap;touch-action:pan-x;border:1px solid var(--line);border-radius:999px;font-size:14px;color:var(--text);cursor:pointer;user-select:none}.ls-chan input{width:18px;height:18px;margin:0;accent-color:var(--mint)}.ls-chan:has(input:not(:checked)){color:var(--muted)}
+.ls-lane[hidden]{display:none}.ls-grip{border:0;background:none;color:var(--muted);font-size:16px;line-height:1;padding:6px 2px;min-width:24px;min-height:32px;cursor:grab;touch-action:none}.ls-chan.is-drag{border-color:var(--mint);opacity:.85;cursor:grabbing}.ls-chan{padding-left:6px}.ls-cmp-table td:first-child{white-space:normal;min-width:10ch}
 .ls-line-bar .pill{min-height:44px}.ls-line-bar .ls-icon{min-width:44px;padding:0 10px;justify-content:center;font-size:18px;line-height:1}.ls-compass-btn svg{display:block}.ls-needle{color:var(--text)}
 @media(max-width:900px){.ls-stage{grid-template-columns:1fr;gap:24px}.ls-hero h1{font-size:32px}.ls-controls{grid-template-columns:1fr 1fr}.ls-air-facts{grid-template-columns:repeat(2,minmax(0,1fr))}.ls-sliders{grid-template-columns:1fr}}
 @media(max-width:520px){.ls-controls{grid-template-columns:1fr}.ls-facts{grid-template-columns:1fr 1fr}.ls-slider{grid-template-columns:1fr 52px 36px}.ls-slider>span:first-child{grid-column:1/-1}}`;

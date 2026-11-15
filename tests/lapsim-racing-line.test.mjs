@@ -32,5 +32,5 @@ test('every stored line lies between its edges and TUM tracks stay close to the 
 test('simulation page draws the racing line on the track map', async () => {
   const html = await (await worker.fetch(new Request('https://example.com/simulation?track=monza'), {})).text();
   assert.match(html, /data-ls-zoom/);
-  assert.match(html, /class="ls-mk ls-mk-b"/);
+  assert.doesNotMatch(html, /class="ls-mk /);
 });
