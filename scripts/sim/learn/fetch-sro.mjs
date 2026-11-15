@@ -1,9 +1,9 @@
 // SRO official results (GT World Challenge Europe/America/Asia/Australia, British GT): every session table of every
-// meeting from 2022 on. Runs in GitHub Actions (network). Output: sro-results.json.gz (cells as shown, parsed in the fit).
+// meeting from 2012 on (owner 2026-11-15: every measured lap, e.g. the first Huracán GT3 at Spa). Runs in GitHub Actions (network). Output: sro-results.json.gz (cells as shown, parsed in the fit).
 import {writeFileSync} from 'node:fs';
 import {gzipSync} from 'node:zlib';
 const SITES = ['https://www.gt-world-challenge-europe.com', 'https://www.gt-world-challenge-america.com', 'https://www.gt-world-challenge-asia.com', 'https://www.gt-world-challenge-australia.com', 'https://www.britishgt.com'];
-const FROM = 2022, UA = {headers: {'user-agent': 'Mozilla/5.0 (kongboda-motorsports lap simulator)'}};
+const FROM = 2012, UA = {headers: {'user-agent': 'Mozilla/5.0 (kongboda-motorsports lap simulator)'}};
 const get = async u => { for (let i = 0; i < 3; i++) { try { const r = await fetch(u, {...UA, signal: AbortSignal.timeout(40000)}); if (r.ok) return await r.text(); if (r.status === 404) return ''; } catch {} await new Promise(s => setTimeout(s, 2000)); } return ''; };
 const clean = t => t.replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&uuml;/g, 'ü').replace(/&ouml;/g, 'ö').replace(/&#039;/g, "'").replace(/\s+/g, ' ').trim();
 const cells = tr => [...tr.matchAll(/<t[hd][^>]*>([\s\S]*?)<\/t[hd]>/g)].map(m => clean(m[1]));

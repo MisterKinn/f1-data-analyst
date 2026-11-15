@@ -11,11 +11,12 @@ import {gunzipSync} from 'node:zlib';
 import {lapsimKernel} from '../../../worker/lapsim/kernel.js';
 import {lapsimCalibration} from '../../../worker/lapsim/calibration-data.js';
 import {lapsimTracks, lapsimExtraTracks} from '../../../worker/lapsim/tracks-data.js';
+import {lapsimFeTracks} from '../../../worker/lapsim/fe-tracks-data.js';
 import {SERIES} from '../../../worker/lapsim/series.js';
 import {resolveTrack, registry} from './track-registry.mjs';
 import {modelOf} from './models.mjs';
 
-const K = lapsimKernel(), WEC = lapsimCalibration.series.wec, ALL = {...lapsimTracks, ...lapsimExtraTracks};
+const K = lapsimKernel(), WEC = lapsimCalibration.series.wec, ALL = {...lapsimTracks, ...lapsimExtraTracks, ...lapsimFeTracks};
 export const WIDTH = {S: 0.10, T: 0.05, TG: 0.015, M: 0.015, MB: 0.010, MY: 0.007, B: 0.010}, SIGMA = 0.005, HUBER = 2;
 const GT = /^(GTD|GTDPRO|LMGT3|GT|GT3)$/, body = s => bodyOf(s);
 // class of a row -> simulator car. LMP2 (one spec car at almost every track) is kept as a probe of the track terms with the LMDh car.
@@ -75,7 +76,8 @@ export function loadRows(files = SOURCES) {
     for (const l of lines) { const a = split(l), r = Object.fromEntries(cols.map((c, i) => [c, a[i]])); r.src = src;
       if (src === 't71' && (ACO.test(r.feed) || r.feed === 'imsa' || !bodyOf(r.feed))) continue; // official Al Kamel rows cover these; other GT series have their own BoP
       if (!['Q', 'P', 'R'].includes(r.type)) continue;
-      r.season = +r.season; r.best = +r.best; r.model = modelOf(r.vehicle, r.season, src === 't71' || src === 'sro' ? 'GT3' : r.cls); const group = groupOf(r); if (!group || !(r.best > 20)) continue;
+      // SRO tables: the GT3 classes name the car without 'GT3'
+      r.season = +r.season; r.best = +r.best; r.model = modelOf(src === 'sro' && !/GT4|GTC|CUP/i.test(r.cls) && !/GT3/i.test(r.vehicle) ? r.vehicle + ' GT3' : r.vehicle, r.season, src === 't71' || src === 'sro' ? 'GT3' : r.cls); const group = groupOf(r); if (!group || !(r.best > 20)) continue;
       const num = v => v === '' || v == null ? null : +v, w = {airC: num(r.airC), trackC: num(r.trackC), hum: num(r.hum), hpa: num(r.hpa)}; if (w.trackC != null && w.airC != null && w.trackC > w.airC + 35) w.trackC = null; // IMSA 2021 track temperatures are not usable
       const tr = layoutOf({name: r.venue || r.event, lengthKm: num(r.lenKm), season: r.season, lap: r.best, group, feed: r.feed, event: r.event}), b = group === 'gt3' ? bodyOf(r.series) : null;
       if (group === 'gt3' && !b) continue;
@@ -162,7 +164,7 @@ if (process.argv[1]?.endsWith('fit-endurance.mjs')) {
   const current = g => Object.entries(info).filter(([, o]) => o.group === g && o.bodies.aco?.last >= last - 1 && !o.bodies.aco.recordOnly).map(([m, o]) => [m, o.bodies.aco.last]);
   const classTerm = (g, z) => levelOf(g, 'aco') + Math.min(...current(g).map(([m, y]) => mTerm(m, 'aco', y, z)));
   const gt3 = Object.entries(info).filter(([, o]) => o.group === 'gt3').flatMap(([m, o]) => Object.entries(o.bodies).filter(([b]) => BODY_ORDER.includes(b)).map(([b, x]) => ({m, b, y: x.last, n: x.n, fitted: !x.recordOnly})));
-  const evoBases = new Set(gt3.filter(x => x.y >= last - 1 && / \+EVO/.test(x.m)).map(x => x.b + '|' + x.m.replace(/ \+EVO2?$/, ''))), shown = gt3.filter(x => x.y >= last - 2 || evoBases.has(x.b + '|' + x.m));
+  const evoBases = new Set(gt3.filter(x => x.y >= last - 1 && / \+EVO/.test(x.m)).map(x => x.b + '|' + x.m.replace(/ \+EVO2?$/, ''))), shown = gt3; // every model that raced is listed (owner 2026-11-15: every measured lap, older generations too)
   const f5 = v => +Math.exp(v).toFixed(5), ownLayouts = [...new Set(rows.filter(r => !r.sibling).map(r => r.layout))], tracks = {};
   for (const id of ownLayouts) { const R = rows.filter(r => r.layout === id), kinds = new Set(R.map(r => kind(r.group))), T = k => g0('T:' + id) + g0(`TG:${id}|${k}`), bl = res.byGroupLayout;
     tracks[id] = {events: new Set(R.map(r => r.eventKey)).size, cls: Object.fromEntries(['lmh', 'lmdh', 'gt3'].filter(g => kinds.has(kind(g))).map(g => ['wec-' + (g === 'gt3' ? 'lmgt3' : g), f5(classTerm(g, zOf(id, g)) + T(kind(g)))])),

@@ -34,7 +34,7 @@ const T = {
   ko: {
     title: '랩 시뮬레이터', h1: '2026–2028 F1 머신으로 한 바퀴를 계산합니다',
     lead: '실제 예선 랩으로 보정한 물리 모델이 지금의 트랙 형상, 예선 날씨, FIA가 공지한 서킷 변경 사항을 반영해 랩타임과 속도를 계산합니다.',
-    track: '트랙', series: '시리즈', car: '규정 · 클래스', evoNone: '이 차는 Evo 데이터가 없습니다', eventFor: '이 차의 대회: {n} ({a} – {b}) · 세션 날씨: {y} 시즌', compare: '비교', soonShort: '준비 중',
+    track: '트랙', series: '시리즈', car: '규정 · 클래스', spec: '대회별 스펙', evoNone: '이 차는 Evo 데이터가 없습니다', eventFor: '이 차의 대회: {n} ({a} – {b}) · 세션 날씨: {y} 시즌', compare: '비교', soonShort: '준비 중',
     seriesNames: {f1: 'F1', wec: 'WEC', imsa: 'IMSA GTP', fe: '포뮬러 E', gt3: 'GT3 (차종별)'}, none: '없음', conditions: '조건', real: '실제 예선 조건', manual: '직접 설정',
     lap: '계산된 랩타임', vsPole: '실제 폴', realLap: '실제 랩', wecBest: '실제 최고 랩', raceBest: '실제 레이스 최고 랩', errRange: '오차 범위(1σ)', conf: {medium: '신뢰도 보통', low: '신뢰도 낮음', 'very-low': '신뢰도 매우 낮음', 'not-fitted': '실측 보정 전'},
     soon: '준비 중: 기타 GT3(IMSA GTD·DTM·SP9), 포뮬러 E Gen4. 같은 보정 규칙을 쓰며 데이터 연결 후 추가됩니다.', sector: '섹터', vmax: '최고 속도', vmin: '최저 속도', energy: '배치 에너지', clip: '배치 상한 속도',
@@ -56,7 +56,7 @@ const T = {
     m5: '준정상상태 모델이라 변속, 타이어 온도 변화, 차 사이 간섭은 계산하지 않습니다. 2026년 이후 차량은 제동 회생과 함께, 타이어가 다 쓰지 못하는 엔진 출력으로 하는 회생을 계산하고, 직선 끝 풀스로틀 회생(슈퍼 클리핑)은 랩이 더 빨라질 때만 씁니다. 절대값보다 차이와 경향을 보는 데 쓰세요.',
     src: '자료', updated: '보정일',
     evo: '트랙 에볼루션', evoLead: '세션이 진행되며 고무가 쌓이고, 젖은 노면이 마르고, 타이어가 데워지면서 랩타임이 어떻게 바뀌는지 계산합니다. 기준은 위의 계산된 랩(예선 끝 노면)입니다.',
-    evoType: '세션', evoTypes: {practice: '연습', qualifying: '예선'}, evoTyre: '타이어', tyres: {f1: {soft: '소프트{S}', medium: '미디엄{M}', hard: '하드{H}', inter: '인터미디엇', wet: '풀 웻'}, hypercar: {soft: '소프트 (미쉐린)', medium: '미디엄 (미쉐린)', hard: '하드 (미쉐린)', wet: '웻 (미쉐린)'}, lmgt3: {medium: '미디엄 (굿이어)', hard: '하드 (굿이어)', wet: '웻 (굿이어)'}}, tyreQ: ' · 하이퍼폴 지정',
+    evoType: '세션', evoTypes: {practice: '연습', qualifying: '예선'}, evoTyre: '타이어', tyres: {f1: {soft: '소프트{S}', medium: '미디엄{M}', hard: '하드{H}', inter: '인터미디엇', wet: '풀 웻'}, hypercar: {soft: '소프트 (미쉐린)', medium: '미디엄 (미쉐린)', hard: '하드 (미쉐린)', wet: '웻 (미쉐린)'}, lmgt3: {medium: '미디엄 (굿이어)', hard: '하드 (굿이어)', wet: '웻 (굿이어)'}, pirelli: {medium: '드라이 (피렐리 P Zero)', wet: '웻 (피렐리 Cinturato)'}, michelinGt: {medium: '드라이 (미쉐린)', wet: '웻 (미쉐린)'}, hankook: {medium: '올웨더 (한국타이어 iON Race)'}, feMichelin: {medium: '올웨더 (미쉐린 Pilot Sport EV)'}, bridgestone: {medium: '드라이 (브리지스톤)', wet: '웻 (브리지스톤)'}}, tyreQ: ' · 하이퍼폴 지정',
     tyreEvent: '타이어: {y} 이 대회 공급 컴파운드', tyreSeason: '타이어: 이 서킷 대회 기록 없음, 시즌 전체 컴파운드',
     evoComp: '컴파운드 차이 (소프트 대비)', evoCompReal: '{y} 실측: 같은 드라이버 저연료 랩, 트랙 진화 제외', evoCompModel: 'C단계 모델 예측, 검증 오차 ±{e}%', evoCompNone: '실측 없음, 랩 그대로',
     evoEnd: '세션 시각', evoGain: '고무 효과 (끝까지)', evoTau: '포화 시간', evoWet: '시작 노면 젖음', evoDry: '건조 시간', evoWarm: '워밍업 랩',
@@ -66,7 +66,7 @@ const T = {
   en: {
     title: 'Lap simulator', h1: 'Simulate a lap in a 2026–2028 F1 car',
     lead: 'A physics model calibrated on real qualifying laps works out lap time and speed on today’s track layout, with qualifying weather and the circuit changes the FIA has announced.',
-    track: 'Track', series: 'Series', car: 'Rules · class', evoNone: 'No Evo data for this car', eventFor: 'Event for this car: {n} ({a} – {b}) · session weather: {y} season', compare: 'Compare', soonShort: 'coming soon',
+    track: 'Track', series: 'Series', car: 'Rules · class', spec: 'Series spec', evoNone: 'No Evo data for this car', eventFor: 'Event for this car: {n} ({a} – {b}) · session weather: {y} season', compare: 'Compare', soonShort: 'coming soon',
     seriesNames: {f1: 'F1', wec: 'WEC', imsa: 'IMSA GTP', fe: 'Formula E', gt3: 'GT3 (by car model)'}, none: 'None', conditions: 'Conditions', real: 'Real qualifying conditions', manual: 'Set my own',
     lap: 'Simulated lap time', vsPole: 'Real pole', realLap: 'Real lap', wecBest: 'Real best lap', raceBest: 'Real fastest race lap', errRange: 'Error range (1σ)', conf: {medium: 'medium confidence', low: 'low confidence', 'very-low': 'very low confidence', 'not-fitted': 'not fitted to real laps'},
     soon: 'Formula E: Gen2, Gen3 and Gen3 Evo are learned from Al Kamel laps; Gen4 is a prior from the 2026-27 regulations until its first laps.', sector: 'Sector', vmax: 'Top speed', vmin: 'Lowest speed', energy: 'Energy deployed', clip: 'Deploy cut-off',
@@ -88,7 +88,7 @@ const T = {
     m5: 'A quasi-steady-state model ignores gear shifts, tyre temperature and car-to-car effects. For cars from 2026 it counts recovery under braking and from engine power the tyres cannot use, and it harvests at full throttle at the end of straights (super-clipping) only when that makes the lap faster. Use it for differences and trends rather than absolute times.',
     src: 'Sources', updated: 'Calibrated',
     evo: 'Track evolution', evoLead: 'How lap time changes over a session as rubber goes down, a wet track dries and tyres warm up. The reference is the simulated lap above (track state at the end of qualifying).',
-    evoType: 'Session', evoTypes: {practice: 'Practice', qualifying: 'Qualifying'}, evoTyre: 'Tyre', tyres: {f1: {soft: 'Soft{S}', medium: 'Medium{M}', hard: 'Hard{H}', inter: 'Intermediate', wet: 'Full wet'}, hypercar: {soft: 'Soft (Michelin)', medium: 'Medium (Michelin)', hard: 'Hard (Michelin)', wet: 'Wet (Michelin)'}, lmgt3: {medium: 'Medium (Goodyear)', hard: 'Hard (Goodyear)', wet: 'Wet (Goodyear)'}}, tyreQ: ' · Hyperpole tyre',
+    evoType: 'Session', evoTypes: {practice: 'Practice', qualifying: 'Qualifying'}, evoTyre: 'Tyre', tyres: {f1: {soft: 'Soft{S}', medium: 'Medium{M}', hard: 'Hard{H}', inter: 'Intermediate', wet: 'Full wet'}, hypercar: {soft: 'Soft (Michelin)', medium: 'Medium (Michelin)', hard: 'Hard (Michelin)', wet: 'Wet (Michelin)'}, lmgt3: {medium: 'Medium (Goodyear)', hard: 'Hard (Goodyear)', wet: 'Wet (Goodyear)'}, pirelli: {medium: 'Dry (Pirelli P Zero)', wet: 'Wet (Pirelli Cinturato)'}, michelinGt: {medium: 'Dry (Michelin)', wet: 'Wet (Michelin)'}, hankook: {medium: 'All-weather (Hankook iON Race)'}, feMichelin: {medium: 'All-weather (Michelin Pilot Sport EV)'}, bridgestone: {medium: 'Dry (Bridgestone)', wet: 'Wet (Bridgestone)'}}, tyreQ: ' · Hyperpole tyre',
     tyreEvent: 'Tyres: compounds supplied at this event in {y}', tyreSeason: 'Tyres: no event here, whole-season range',
     evoComp: 'Compound gap (vs soft)', evoCompReal: 'measured {y}: same driver, low fuel, track evolution removed', evoCompModel: 'C-step model, test error ±{e}%', evoCompNone: 'not measured, lap unchanged',
     evoEnd: 'Session minute', evoGain: 'Rubber effect (full)', evoTau: 'Time to saturate', evoWet: 'Wetness at start', evoDry: 'Drying time', evoWarm: 'Warm-up laps',
@@ -172,13 +172,16 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
   const td = lapsimTracks[id], cars = carsFor(id, lang), conds = realConditions(id);
   // Evo kit: listed as a tick box beside its base car (only when the data has that Evo entry)
   const evoOf = evoPairs(cars, CAR_ORDER), evoKeys = new Set(Object.values(evoOf));
-  const askedCar = cars[query.car] ? query.car : '2026', carId = query.evo !== '0' && evoOf[askedCar] ? evoOf[askedCar] : askedCar; // a car with an Evo kit opens on its newest spec unless evo=0
+  // GT3 (owner 2026-11-15): car model first, then the series spec (BoP body: SRO GT3, IMSA GTD, WEC LMGT3, DTM), then the kit (newest by default)
+  const fam = gt3Families(cars, CAR_ORDER);
+  const askedCar = cars[query.car] ? query.car : '2026', ac = cars[askedCar], fl = ac.series === 'gt3' && fam[ac.base]?.[ac.cls];
+  const carId = fl ? (query.evo === '0' ? askedCar : fl.at(-1)) : query.evo !== '0' && evoOf[askedCar] ? evoOf[askedCar] : askedCar; // a car with an Evo kit opens on its newest spec unless evo=0
   const baseId = Object.keys(evoOf).find(k => evoOf[k] === carId) || carId;
   // event this car races at here (calendar data) with the season of its session weather; absent = nothing shown
   const events = Object.fromEntries(CAR_ORDER.filter(k => cars[k]).map(k => [k, carEvent(id, k, cars[k], conds)]).filter(([, e]) => e)
     .map(([k, e]) => [k, t.eventFor.replace('{n}', lang === 'en' ? e.nameEn : e.name).replace('{a}', e.start).replace('{b}', e.end).replace('{y}', e.weatherYear)]));
   const changes = latestChanges(id);
-  const data = {lang, t, id, track: td, cars, carOrder: CAR_ORDER, carId, evoOf, events, conds, raceRec: raceRecords(id), changes, energy: (liveEnergy && (query.track || 'monza') === id ? liveEnergy : energyLimit(id, 2026)),
+  const data = {lang, t, id, track: td, cars, carOrder: CAR_ORDER, carId, evoOf, fam, bodyLabel: BODY_LABEL, events, conds, raceRec: raceRecords(id), changes, energy: (liveEnergy && (query.track || 'monza') === id ? liveEnergy : energyLimit(id, 2026)),
     compounds: lapsimCompounds?.[id] || {}, wecTyres: lapsimWecTyres?.[id] || {}, line: lineData(id), lineText: LT[lang], qsplit: lapsimQsplit ? {off: lapsimQsplit.offsetPct, test: lapsimQsplit.test, real: lapsimQsplit.tracks?.[id] || null} : null, brakes: lapsimBrakes ? {ramp: lapsimBrakes.rampS ?? 0, k: lapsimBrakes.pedalKgPerG, g: lapsimBrakes.gScale, t: lapsimBrakes.timeScale, test: lapsimBrakes.test, real: lapsimBrakes.races?.[id] || null, text: BT[lang]} : null, compoundGap: compoundGap(id), compoundTest: lapsimCompoundGap?.test?.rmsPct ?? null,
     evo: Object.fromEntries(['f1', 'wec'].map(se => [se, Object.fromEntries(['practice', 'qualifying'].map(ty => [ty, evolutionCoeffs(se, id, ty)]))])),
     calibration: {generatedAt: lapsimCalibration?.generatedAt || null, seasons: Object.fromEntries(Object.entries(lapsimCalibration?.seasons || {}).map(([y, s]) => [y, s.tracks?.[id] || null]))}};
@@ -187,7 +190,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
   const options = ids.map(k => `<option value="${esc(k)}"${k === id ? ' selected' : ''}>${esc(trackLabel(k, lapsimTracks[k]))}</option>`).join('');
   // cascade: series → rules/class (the car models of that series); series without a model yet are listed as coming soon
   const seriesOf = k => cars[k].series || 'f1', curSeries = seriesOf(carId);
-  const carOpts = (sel, only, noEvo) => data.carOrder.filter(k => (!only || seriesOf(k) === only) && !(noEvo && evoKeys.has(k))).map(k => `<option value="${k}"${k === sel ? ' selected' : ''}>${esc(cars[k].label)}</option>`).join('');
+  const carOpts = (sel, only, noEvo) => only === 'gt3' && noEvo ? famOpts(fam, cars, cars[sel]?.base) : data.carOrder.filter(k => k !== 'wec-lmgt3' && (!only || seriesOf(k) === only) && !(noEvo && evoKeys.has(k))).map(k => `<option value="${k}"${k === sel ? ' selected' : ''}>${esc(cars[k].label)}</option>`).join('');
   const seriesOpts = SERIES_UI.map(se => { const live = data.carOrder.some(k => seriesOf(k) === se); return `<option value="${se}"${se === curSeries ? ' selected' : ''}${live ? '' : ' disabled'}>${esc(t.seriesNames[se] + (live ? '' : ' · ' + t.soonShort))}</option>`; }).join('');
   const cmpOpts = SERIES_UI.filter(se => data.carOrder.some(k => seriesOf(k) === se)).map(se => `<optgroup label="${esc(t.seriesNames[se])}">${carOpts('', se)}</optgroup>`).join('');
   const evoSlider = (key, label, min, max, step, unit) => `<label class="ls-slider"><span>${esc(label)}</span><input type="range" data-evo="${key}" min="${min}" max="${max}" step="${step}" value="${view.evo[key]}"><output data-evo-out="${key}">${view.evo[key]}</output><span class="ls-unit">${unit}</span></label>`;
@@ -203,7 +206,8 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
  <label>${esc(t.track)}<select name="track" data-no-translate onchange="this.form.submit()">${options}</select></label>
  <label>${esc(t.series)}<select data-ls="series">${seriesOpts}</select></label>
  <label>${esc(t.car)}<select name="car" data-ls="car">${carOpts(baseId, curSeries, true)}</select></label>
- <label class="ls-check"><input type="checkbox" name="evo" value="1" data-ls="evo"${evoOf[baseId] ? (carId !== baseId ? ' checked' : '') : ' disabled'}><span data-no-translate>Evo</span><small data-no-translate data-ls="evoHint">${esc(evoOf[baseId] ? '' : t.evoNone)}</small></label>
+ <label data-ls="specWrap"${fl ? '' : ' hidden'}>${esc(t.spec)}<select data-ls="spec">${fl ? specOpts(fam[cars[carId].base], cars[carId].cls) : ''}</select></label>
+ <label class="ls-check"><input type="checkbox" name="evo" value="1" data-ls="evo"${fl ? (fl.length > 1 ? (carId === fl.at(-1) ? ' checked' : '') : ' disabled') : evoOf[baseId] ? (carId !== baseId ? ' checked' : '') : ' disabled'}><span data-no-translate>Evo</span><small data-no-translate data-ls="evoHint">${esc(evoOf[baseId] ? '' : t.evoNone)}</small></label>
  <label>${esc(t.compare)}<select data-ls="compare"><option value="">${esc(t.none)}</option>${cmpOpts}</select></label>
  <label>${esc(t.conditions)}<select data-ls="mode"><option value="real">${esc(t.real)}</option><option value="manual">${esc(t.manual)}</option>${TRACK_LL[id] ? `<option value="forecast">${esc(FT[lang].opt)}</option>` : ''}</select></label>
  <noscript><button>${esc(t.track)}</button></noscript>
@@ -335,6 +339,17 @@ const FT = {
     noteFit: 'Météo-France ARPEGE/AROME forecast (served by Open-Meteo); Météo-France is also the official weather service of F1 and WEC. Track temperature = air + {a} °C + solar radiation × {k} °C per W/m², fitted on real session weather ({n} events), error ±{e} °C with each event left out.'},
 };
 const SERIES_UI = ['f1', 'wec', 'imsa', 'fe', 'gt3'];
+// GT3 car model -> series spec (BoP body) -> kits oldest to newest. Spec order: SRO GT3 first (owner 2026-11-15).
+const BODY_ORDER = ['gt3-sro', 'gt3-imsa', 'gt3-aco', 'gt3-dtm'], BODY_LABEL = {'gt3-sro': 'SRO GT3', 'gt3-imsa': 'IMSA GTD', 'gt3-aco': 'WEC LMGT3', 'gt3-dtm': 'DTM'};
+const kitOf = c => c.evo === 'evo2' ? 2 : c.evo ? 1 : 0;
+export function gt3Families(cars, order) {
+  const fam = {}; for (const k of order) { const c = cars[k]; if (c?.series === 'gt3' && c.base) ((fam[c.base] ||= {})[c.cls] ||= []).push(k); }
+  for (const f of Object.values(fam)) for (const l of Object.values(f)) l.sort((a, b) => kitOf(cars[a]) - kitOf(cars[b]));
+  return fam;
+}
+const specOf = f => BODY_ORDER.filter(b => f[b]);
+const specOpts = (f, sel) => specOf(f).map(b => `<option value="${b}"${b === sel ? ' selected' : ''}>${BODY_LABEL[b]}</option>`).join('');
+const famOpts = (fam, cars, sel) => Object.keys(fam).sort((a, b) => a.localeCompare(b, 'en')).map(base => `<option value="${fam[base][specOf(fam[base])[0]].at(-1)}"${base === sel ? ' selected' : ''}>${esc(base)}</option>`).join('');
 const RT = {
   ko: {h: '레이스 페이스 예측', lead: '연료가 줄고, 타이어가 닳고, 피트 스톱을 하면서 랩타임이 어떻게 바뀌는지 실제 레이스 랩으로 맞춘 값입니다.', strat: '전략', time: '레이스 시간', gap: '차이', laps: '랩', pole: '기준 폴', refTop: '기준 랩 (예선 상위 {n}명 평균)', basis: {pred: '2026 예측', real: '2026 실제'}, test: '이전 시즌만으로 예측한 레이스 페이스 오차', season: '시즌', now: '예측/최근', repro: '이미 열린 레이스 재현 오차 (전 시즌 최대)', chart: '최적 전략의 예상 랩타임', c: {S: '소프트', M: '미디엄', H: '하드'}},
   en: {h: 'Race pace prediction', lead: 'How lap time changes as fuel burns, tyres wear and cars stop, fitted to real race laps.', strat: 'Strategy', time: 'Race time', gap: 'Gap', laps: 'laps', pole: 'Pole used', refTop: 'Reference lap (mean of the best {n} in qualifying)', basis: {pred: '2026 prediction', real: '2026 real'}, test: 'Race-pace error predicted from earlier seasons only', season: 'Season', now: 'Prediction/latest', repro: 'Races already run, reproduction error (largest, all seasons)', chart: 'Expected lap times, best strategy', c: {S: 'Soft', M: 'Medium', H: 'Hard'}},
@@ -529,14 +544,17 @@ function computeView(K, data, state, R) {
   }
   const keyHtml = '<span class="ls-key-0"></span>' + sel.label + (cmp ? ' <span class="ls-key-1"></span>' + data.cars[state.compareId].label : '');
   // Track evolution: lap over the session from the simulated lap (= end-of-qualifying track state)
-  const se = sel.series === 'wec' ? 'wec' : 'f1', ev = Object.assign({type: 'qualifying', tyre: 'slick', useCurve: true}, state.evo || {});
+  const se = sel.series ? 'wec' : 'f1', ev = Object.assign({type: 'qualifying', tyre: 'slick', useCurve: true}, state.evo || {}); // closed-wheel and FE: the endurance evolution curves
   // tyres the selected car's series really has (no intermediate in WEC); F1 slick named by the race's Pirelli C-numbers
-  const ts = sel.series ? (sel.cls === 'lmgt3' ? 'lmgt3' : 'hypercar') : 'f1';
+  // supplier by series (owner 2026-11-15): WEC/ELMS/Asian LMS LMGT3 Goodyear, SRO GT World Challenge and DTM Pirelli, IMSA GTD Michelin,
+  // Formula E Gen2 Michelin, Gen3 and Gen3 Evo Hankook, Gen4 Bridgestone; Hypercar Michelin
+  const ts = !sel.series ? 'f1' : sel.cls === 'lmgt3' || sel.cls === 'gt3-aco' ? 'lmgt3' : sel.cls === 'gt3-sro' || sel.cls === 'gt3-dtm' ? 'pirelli' : sel.cls === 'gt3-imsa' ? 'michelinGt'
+    : sel.series === 'fe' ? (sel.cls === 'gen2' ? 'feMichelin' : sel.cls === 'gen4' ? 'bridgestone' : 'hankook') : 'hypercar';
   // WEC: only the slicks Michelin/Goodyear supplied at this event (season of the car, else the latest held here)
-  const wy = sel.series ? (data.wecTyres[sel.year] ? sel.year : Object.keys(data.wecTyres).pop()) : null, we = wy ? data.wecTyres[wy][ts] : null;
+  const wy = ts === 'hypercar' || ts === 'lmgt3' ? (data.wecTyres[sel.year] ? sel.year : Object.keys(data.wecTyres).pop()) : null, we = wy ? data.wecTyres[wy][ts] : null;
   const tyres = we ? Object.fromEntries(Object.entries(t.tyres[ts]).filter(([k]) => k === 'wet' || we.dry.includes(k)).map(([k, v]) => [k, v + (we.q === k ? t.tyreQ : '')]))
     : sel.series && ts === 'lmgt3' ? {medium: t.tyres.lmgt3.medium, wet: t.tyres.lmgt3.wet} : t.tyres[ts];
-  const tyreNote = sel.series ? (we ? t.tyreEvent.replace('{y}', wy) : t.tyreSeason) : '';
+  const tyreNote = ts === 'hypercar' || ts === 'lmgt3' ? (we ? t.tyreEvent.replace('{y}', wy) : t.tyreSeason) : '';
   if (!tyres[ev.tyre]) ev.tyre = Object.keys(tyres)[0];
   const cy = data.compounds[sel.year] ? sel.year : data.compounds[2026] ? 2026 : Object.keys(data.compounds).pop(), cs = data.compounds[cy], cn = {S: 2, M: 1, H: 0};
   const tyreHtml = Object.keys(tyres).map(k => '<option value="' + k + '"' + (k === ev.tyre ? ' selected' : '') + '>' + tyres[k].replace(/\{([SMH])\}/, (_, c) => cs ? ' ' + cs[cn[c]] + (String(cy) !== String(sel.year) ? ' (' + cy + ')' : '') : '') + '</option>').join('');
@@ -629,20 +647,33 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
     });
   };
   q('series').addEventListener('change', e => {
-    const se = e.target.value, ids = data.carOrder.filter(k => (data.cars[k].series || 'f1') === se && !evoKeys.includes(k));
-    q('car').innerHTML = ids.map(k => '<option value="' + k + '">' + data.cars[k].label + '</option>').join('');
+    const se = e.target.value, ids = se === 'gt3' ? Object.keys(data.fam).sort((a, b) => a.localeCompare(b, 'en')).map(b => { const f = data.fam[b]; return f[GT3B.find(x => f[x])].at(-1); })
+      : data.carOrder.filter(k => k !== 'wec-lmgt3' && (data.cars[k].series || 'f1') === se && !evoKeys.includes(k));
+    q('car').innerHTML = ids.map(k => '<option value="' + k + '">' + (se === 'gt3' ? data.cars[k].base : data.cars[k].label) + '</option>').join('');
     q('car').value = ids[0]; q('car').dispatchEvent(new Event('change'));
   });
   // base car + Evo tick box (enabled only when the data has that Evo entry); the event line follows the car
+  const GT3B = ['gt3-sro', 'gt3-imsa', 'gt3-aco', 'gt3-dtm'];
   const pickCar = ev0 => {
-    const b = q('car').value, e = data.evoOf[b], box = q('evo');
+    const c0 = data.cars[q('car').value], box = q('evo'), u0 = new URL(location.href);
+    q('specWrap').hidden = c0.series !== 'gt3';
+    if (c0.series === 'gt3') { // model -> series spec -> kit (newest kit when the model or spec changes)
+      const f = data.fam[c0.base], fresh = ev0 && (ev0.target === q('car') || ev0.target === q('spec'));
+      let b = q('spec').value; if (!f[b]) b = f[c0.cls] ? c0.cls : GT3B.find(x => f[x]);
+      if (!ev0 || ev0.target === q('car')) q('spec').innerHTML = GT3B.filter(x => f[x]).map(x => '<option value="' + x + '"' + (x === b ? ' selected' : '') + '>' + data.bodyLabel[x] + '</option>').join('');
+      const l = f[b]; box.disabled = l.length < 2; if (l.length < 2) box.checked = false; else if (fresh) box.checked = true;
+      q('evoHint').textContent = l.length < 2 ? data.t.evoNone : ''; state.carId = box.checked ? l.at(-1) : l[0];
+      const ev = data.events[state.carId]; q('event').hidden = !ev; q('event').textContent = ev || '';
+      u0.searchParams.set('car', state.carId); if (l.length > 1 && !box.checked) u0.searchParams.set('evo', '0'); else u0.searchParams.delete('evo'); history.replaceState(null, '', u0); update(); return;
+    }
+    const b = q('car').value, e = data.evoOf[b];
     box.disabled = !e; if (!e) box.checked = false; else if (ev0 && ev0.target === q('car')) box.checked = true; // a newly chosen car starts on its newest spec
     q('evoHint').textContent = e ? '' : data.t.evoNone;
     state.carId = e && box.checked ? e : b;
     const ev = data.events[state.carId]; q('event').hidden = !ev; q('event').textContent = ev || '';
     const u = new URL(location.href); u.searchParams.set('car', state.carId); if (e && !box.checked) u.searchParams.set('evo', '0'); else u.searchParams.delete('evo'); history.replaceState(null, '', u); update();
   };
-  q('car').addEventListener('change', pickCar); q('evo').addEventListener('change', pickCar);
+  q('car').addEventListener('change', pickCar); q('evo').addEventListener('change', pickCar); q('spec').addEventListener('change', pickCar);
   q('compare').addEventListener('change', e => { state.compareId = e.target.value; update(); });
   // Météo-France forecast (ARPEGE/AROME through Open-Meteo): pick an hour, its weather fills the sliders
   const fc = q('forecast'), FT = fc && fc.dataset.ft ? JSON.parse(fc.dataset.ft) : null;
