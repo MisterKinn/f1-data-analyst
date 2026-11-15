@@ -17,7 +17,7 @@ import {lapsimCompoundGap} from './lapsim/compound-gap-data.js';
 import {lapsimWecTyres} from './lapsim/wec-tyres-data.js';
 import {raceLaps, strategies} from './lapsim/race-pace.js';
 import {evolutionCoeffs, evolutionDelta, evolutionCurve} from './lapsim/evolution.js';
-import {lineTrack, blendLine, minCurvatureLine} from './lapsim/racing-line.js';
+import {lineTrack, blendLine, blendOff, minCurvatureLine} from './lapsim/racing-line.js';
 import {TRACK_LL} from './lapsim/track-coords.js';
 import {lapsimTrackTemp} from './lapsim/tracktemp-data.js';
 import {brakeZones} from './lapsim/brakes.js';
@@ -25,6 +25,7 @@ import {lapsimBrakes} from './lapsim/brake-data.js';
 import {lapsimQsplit} from './lapsim/qsplit-data.js';
 import {lapsimCarLines} from './lapsim/car-lines-data.js';
 import {lapsimPuDocs} from './lapsim/pu-docs-data.js';
+import {lapsimDriverLines} from './lapsim/driver-lines-data.js';
 import {trackLabel, trackOrder, evoPairs, carEvent} from './simulator-controls.js';
 
 const K = lapsimKernel();
@@ -190,7 +191,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
   const events = Object.fromEntries(CAR_ORDER.filter(k => cars[k]).map(k => [k, carEvent(id, k, cars[k], conds)]).filter(([, e]) => e)
     .map(([k, e]) => [k, t.eventFor.replace('{n}', lang === 'en' ? e.nameEn : e.name).replace('{a}', e.start).replace('{b}', e.end).replace('{y}', e.weatherYear)]));
   const changes = latestChanges(id);
-  const data = {pu: lapsimPuDocs?.events?.[id] || null, lang, t, id, track: td, cars, carOrder: CAR_ORDER, carId, evoOf, fam, bodyLabel: BODY_LABEL, events, conds, raceRec: raceRecords(id), changes, energy: (liveEnergy && (query.track || 'monza') === id ? liveEnergy : energyLimit(id, 2026)),
+  const data = {driverLines: lapsimDriverLines?.tracks?.[id] || null, pu: lapsimPuDocs?.events?.[id] || null, lang, t, id, track: td, cars, carOrder: CAR_ORDER, carId, evoOf, fam, bodyLabel: BODY_LABEL, events, conds, raceRec: raceRecords(id), changes, energy: (liveEnergy && (query.track || 'monza') === id ? liveEnergy : energyLimit(id, 2026)),
     compounds: lapsimCompounds?.[id] || {}, wecTyres: lapsimWecTyres?.[id] || {}, line: lineData(id), lineText: LT[lang], qsplit: lapsimQsplit ? {off: lapsimQsplit.offsetPct, test: lapsimQsplit.test, real: lapsimQsplit.tracks?.[id] || null} : null, brakes: lapsimBrakes ? {ramp: lapsimBrakes.rampS ?? 0, k: lapsimBrakes.pedalKgPerG, g: lapsimBrakes.gScale, t: lapsimBrakes.timeScale, test: lapsimBrakes.test, real: lapsimBrakes.races?.[id] || null, text: BT[lang]} : null, compoundGap: compoundGap(id), compoundTest: lapsimCompoundGap?.test?.rmsPct ?? null,
     evo: Object.fromEntries(['f1', 'wec'].map(se => [se, Object.fromEntries(['practice', 'qualifying'].map(ty => [ty, evolutionCoeffs(se, id, ty)]))])),
     calibration: {generatedAt: lapsimCalibration?.generatedAt || null, seasons: Object.fromEntries(Object.entries(lapsimCalibration?.seasons || {}).map(([y, s]) => [y, s.tracks?.[id] || null]))}};
@@ -268,11 +269,11 @@ ${racePanel(id, lang, query.race || null)}
 // Racing line texts (the line is drawn on the track map; see lineData and computeView)
 const LT = {
   ko: {h: '레이싱 라인', all: '전체', lead: '공개 F1 위치 데이터는 트랙마다 하나의 기준선에 맞춰져 있어 실제 주행 라인을 알 수 없습니다. 그래서 선택한 차로 랩 시뮬레이션을 돌려 트랙 폭 안에서 가장 빠른 라인을 찾습니다. 다운포스·그립·출력·무게가 다르면 라인도 달라지고, 레이스 라인은 연료 무게와 레이스 페이스(타이어·에너지 관리)를 넣어 따로 계산합니다.',
-    modes: {q: '예선 라인', r: '레이스 라인'}, zin: '확대', zout: '축소', lineNote: '{car} · {mode} · 최소 곡률 라인보다 {gain} s · 평균 {shift} m 이동', uses: '라인:', raceNote: ' · 연료 +{fuel} kg, 그립 ×{grip} ({basis})', basis: {'race-fit': '실제 레이스 중반 페이스에 맞춤', assumed: 'F1 비율 가정'}, noCar: '최소 곡률 라인 (차별 라인은 브라우저에서 계산)', blendNote: '{car} 전용 라인: 랩 시뮬레이션으로 고른 최단 거리·최소 곡률 라인 혼합 (최소 곡률 비중 평균 {e}%)', noRace: '이 차는 레이스 라인 보정이 없어 예선 라인과 같습니다',
+    modes: {q: '예선 라인', r: '레이스 라인'}, zin: '확대', zout: '축소', lineNote: '{car} · {mode} · 최소 곡률 라인보다 {gain} s · 평균 {shift} m 이동', uses: '라인:', raceNote: ' · 연료 +{fuel} kg, 그립 ×{grip} ({basis})', basis: {'race-fit': '실제 레이스 중반 페이스에 맞춤', assumed: 'F1 비율 가정'}, noCar: '최소 곡률 라인 (차별 라인은 브라우저에서 계산)', carLine: '차 기준 라인', driver: '드라이버 라인', driverNote: '{d} 라인 ({y} 예선 최고 랩의 속도 기록으로 추정, 실제 주행 위치 아님): 코너 최저 속도 오차, 전체 드라이버 라인 {a}% → 이 드라이버 {b}%', driverNoteEnd: '{d} 라인 ({s} 예선 최고 랩의 섹터 기록으로 추정, 실제 주행 위치 아님): 섹터 시간 오차, 전체 드라이버 라인 {a}% → 이 드라이버 {b}%', driverTest: ', 맞추는 데 쓰지 않은 다른 랩 {a}% → {b}%', blendNote: '{car} 전용 라인: 랩 시뮬레이션으로 고른 최단 거리·최소 곡률 라인 혼합 (최소 곡률 비중 평균 {e}%)', noRace: '이 차는 레이스 라인 보정이 없어 예선 라인과 같습니다',
     edges: {TUM: '트랙 폭: TUM 측정값', 'TUM-widths': '트랙 폭: TUM 측정값 (레이아웃 변경 구간 근사)', assumed: '트랙 폭: 12 m 가정'}, pole: '속도·브레이크·스로틀: {y} 퀄리 폴 랩 실측 ({d}, {t})', nopole: '실측 폴 랩 없음',
     check: 'TUM 최적 라인과의 차이: 평균 {m} m', key: ['브레이크 시작', '최저 속도', '풀 스로틀']},
   en: {h: 'Racing line', all: 'All', lead: 'Public F1 position data is snapped to one reference path per track, so the real driven line is unknown. The lap simulator runs the selected car to find the fastest line inside the track width: different downforce, grip, power and weight give a different line. The race line is worked out separately with fuel weight and race pace (tyres, energy management).',
-    modes: {q: 'Qualifying line', r: 'Race line'}, zin: 'Zoom in', zout: 'Zoom out', lineNote: '{car} · {mode} · {gain} s vs the least-curvature line · mean shift {shift} m', uses: 'line of', raceNote: ' · fuel +{fuel} kg, grip ×{grip} ({basis})', basis: {'race-fit': 'fitted to real mid-race pace', assumed: 'F1 ratio assumed'}, noCar: 'least-curvature line (the car\'s own line is computed in the browser)', blendNote: '{car} line: blend of the shortest and the least-curvature line chosen by the lap simulation (least-curvature share {e}% on average)', noRace: 'no race fit for this car, so the race line equals the qualifying line',
+    modes: {q: 'Qualifying line', r: 'Race line'}, zin: 'Zoom in', zout: 'Zoom out', lineNote: '{car} · {mode} · {gain} s vs the least-curvature line · mean shift {shift} m', uses: 'line of', raceNote: ' · fuel +{fuel} kg, grip ×{grip} ({basis})', basis: {'race-fit': 'fitted to real mid-race pace', assumed: 'F1 ratio assumed'}, noCar: 'least-curvature line (the car\'s own line is computed in the browser)', carLine: 'Car line', driver: 'Driver line', driverNote: '{d} line (estimated from the speed trace of the {y} best qualifying lap, not a measured position): corner minimum speed error, field line {a}% → this driver {b}%', driverNoteEnd: '{d} line (estimated from the sector times of the {s} best qualifying lap, not a measured position): sector time error, field line {a}% → this driver {b}%', driverTest: ', on another lap not used in the fit {a}% → {b}%', blendNote: '{car} line: blend of the shortest and the least-curvature line chosen by the lap simulation (least-curvature share {e}% on average)', noRace: 'no race fit for this car, so the race line equals the qualifying line',
     edges: {TUM: 'Track width: TUM measured', 'TUM-widths': 'Track width: TUM measured (approximate where the layout changed)', assumed: 'Track width: 12 m assumed'}, pole: 'Speed, brake, throttle: {y} qualifying pole lap, measured ({d}, {t})', nopole: 'No measured pole lap',
     check: 'Gap to the TUM optimal line: mean {m} m', key: ['Brake start', 'Lowest speed', 'Full throttle']},
 };
@@ -304,7 +305,7 @@ export function lineData(id) {
 function lineControls(lang, view) {
   const t = LT[lang];
   return `<div class="ls-line-bar"><button type="button" class="pill active" data-line-toggle aria-pressed="true">${esc(t.h)}</button>${['q', 'r'].map(m => `<button type="button" class="pill${m === 'q' ? ' active' : ''}" data-line-mode="${m}">${esc(t.modes[m])}</button>`).join('')}
- <span class="ls-zoom-btns"><button type="button" class="pill" data-zoom="in" aria-label="${esc(t.zin)}">+</button><button type="button" class="pill" data-zoom="out" aria-label="${esc(t.zout)}">−</button><button type="button" class="pill" data-zoom="fit">${esc(t.all)}</button></span></div>
+ <label class="ls-driver" data-ls="driverWrap"${view.driverOpts ? '' : ' hidden'}><select data-ls="driver" aria-label="${esc(t.driver)}">${view.driverOpts}</select></label> <span class="ls-zoom-btns"><button type="button" class="pill" data-zoom="in" aria-label="${esc(t.zin)}">+</button><button type="button" class="pill" data-zoom="out" aria-label="${esc(t.zout)}">−</button><button type="button" class="pill" data-zoom="fit">${esc(t.all)}</button></span></div>
  <p class="fine ls-line-key"><span class="ls-mk-b"></span>${esc(t.key[0])} <span class="ls-mk-a"></span>${esc(t.key[1])} <span class="ls-mk-t"></span>${esc(t.key[2])} · <span data-ls="lineNote">${esc(view.lineNote)}</span></p>`;
 }
 // Compound gap vs soft (% of lap) per season: the real low-fuel gap measured at that event (reproduced
@@ -496,17 +497,24 @@ function computeView(K, data, state, R) {
   const kindLabel = sel.learned ? t.learned : sel.kind === 'calibrated' ? t.calibrated : sel.kind === 'projected' ? t.projected : sel.kind === 'prior' ? t.prior : 'TUM';
   // racing line of the selected car on the map (F1 projections use the 2026 line), coloured by its own
   // simulated speed; markers: braking starts, lowest speed of that corner, back to full power
-  let line = null, lineNote = '';
+  let line = null, lineNote = '', driverOpts = '';
   const LD = data.line, LT0 = data.lineText;
   if (LD && state.showLine !== false) {
     // a precomputed line of this exact car (SPSA on measured edges) first; otherwise this car's own blend of the shortest and the
     // least-curvature line, found by the lap kernel (blendLine, browser only and cached; the server draws the least-curvature line)
     const mode = state.lineMode || 'q', cl = LD.cars[state.carId] ? LD.cars[state.carId][mode] : null, n = LD.base.length;
     let off = cl ? cl.off : LD.base, bl = null;
-    if (!cl && R.blendLine) {
+    // F1: a driver's own line, estimated from that driver's speed trace (scripts/sim/driver-lines.mjs), when one is picked
+    // every series has driver lines (owner 2026-11-15): F1 per season; endurance per class (LMH, LMDh, GT3), GT3 drivers of this car's make
+    const DLT = data.driverLines || {}, bucket = !sel.series ? null : sel.cls === 'lmh' ? 'lmh' : sel.cls === 'lmdh' || sel.cls === 'gtp' ? 'lmdh' : sel.series === 'fe' ? null : 'gt3';
+    let DLy = !sel.series ? DLT.f1 && DLT.f1[String(sel.year)] : bucket && DLT.end && DLT.end[bucket];
+    if (DLy && bucket === 'gt3' && sel.base) { const mk = String(sel.base).split(' ')[0].toLowerCase(), own = Object.entries(DLy.drivers).filter(([, r]) => String(r.manufacturer || '').toLowerCase().startsWith(mk)); if (own.length) DLy = {drivers: Object.fromEntries(own)}; }
+    const dl = DLy && state.driver ? DLy.drivers[state.driver] : null;
+    if (dl) off = R.blendOff(LD.base.map(x => x / 10), LD.sp.map(x => x / 10), dl.w).map(x => x * 10);
+    else if (!cl && R.blendLine) {
       // the line is searched once per car (weather moves it far less than the car)
       const bk = data.id + '|' + state.carId; computeView.blend = computeView.blend || {};
-      bl = computeView.blend[bk] = computeView.blend[bk] || R.blendLine(K, [LD.mid.map(p => p[0]), LD.mid.map(p => p[1])], LD.nrm, LD.base.map(x => x / 10), LD.sp.map(x => x / 10), sel.car, env, sel.grip || 1);
+      bl = computeView.blend[bk] = computeView.blend[bk] || R.blendLine(K, [LD.mid.map(p => p[0]), LD.mid.map(p => p[1])], LD.nrm, LD.base.map(x => x / 10), LD.sp.map(x => x / 10), sel.car, env, (sel.grip || 1) / Math.pow(sel.timeScale || 1, 2)); // a model's learned pace (time scale) counts as grip for its line
       off = bl.off.map(x => x * 10);
     }
     const P = LD.mid.map((m, i) => [m[0] + LD.nrm[i][0] * off[i] / 10, m[1] + LD.nrm[i][1] * off[i] / 10]);
@@ -523,7 +531,9 @@ function computeView(K, data, state, R) {
     }
     line = {pts: P, v, marks, left: LD.left, right: LD.right};
     const edge = LT0.edges[LD.edges] || '';
-    lineNote = cl ? LT0.lineNote.replace('{car}', sel.label).replace('{mode}', LT0.modes[mode]).replace('{gain}', (cl.gain >= 0 ? '+' : '−') + Math.abs(cl.gain).toFixed(3)).replace('{shift}', cl.shift)
+    const dname = (k, r) => (r.name || k) + (r.name && !sel.series ? ' (' + k + ')' : '') + (r.team ? ' · ' + r.team : r.manufacturer ? ' · ' + r.manufacturer : '');
+    driverOpts = DLy ? '<option value="">' + LT0.carLine + '</option>' + Object.entries(DLy.drivers).sort((a, b) => String(a[1].name || a[0]).localeCompare(String(b[1].name || b[0]))).map(([k, r]) => '<option value="' + k + '"' + (k === state.driver ? ' selected' : '') + '>' + dname(k, r) + '</option>').join('') : '';
+    lineNote = dl ? (sel.series ? LT0.driverNoteEnd.replace('{s}', String(dl.series || '').toUpperCase() + ' ' + (dl.season || '')) : LT0.driverNote.replace('{y}', sel.year)).replace('{d}', dl.name || state.driver).replace('{a}', dl.fit[0]).replace('{b}', dl.fit[1]) + (dl.test ? LT0.driverTest.replace('{a}', dl.test[0]).replace('{b}', dl.test[1]) : '') : cl ? LT0.lineNote.replace('{car}', sel.label).replace('{mode}', LT0.modes[mode]).replace('{gain}', (cl.gain >= 0 ? '+' : '−') + Math.abs(cl.gain).toFixed(3)).replace('{shift}', cl.shift)
       + (mode === 'r' ? LT0.raceNote.replace('{fuel}', cl.fuelKg).replace('{grip}', cl.grip).replace('{basis}', LT0.basis[cl.basis] || cl.basis) : '')
       : (bl ? LT0.blendNote.replace('{car}', sel.label).replace('{e}', Math.round(bl.e * 100)) + (mode === 'r' ? ' · ' + LT0.noRace : '') : LT0.noCar);
     lineNote += edge ? ' · ' + edge : '';
@@ -667,13 +677,13 @@ function computeView(K, data, state, R) {
   const evoSvg = '<svg class="ls-race" viewBox="0 0 ' + ew + ' ' + eh + '" role="img" aria-label="' + t.evoChart + '">' + qsBands + '<polyline fill="none" stroke="currentColor" stroke-width="2" points="' + curve.points.map(p => ex(p.minute).toFixed(1) + ',' + ey(p.lap).toFixed(1)).join(' ') + '"/>'
     + '<text x="2" y="16" font-size="11" fill="currentColor">' + fmt(hi) + '</text><text x="2" y="' + (eh - 28) + '" font-size="11" fill="currentColor">' + fmt(lo) + '</text>'
     + '<text x="44" y="' + (eh - 6) + '" font-size="11" fill="currentColor">0</text><text x="' + (ew - 12) + '" y="' + (eh - 6) + '" font-size="11" text-anchor="end" fill="currentColor">' + evo.end + ' ' + t.min + '</text></svg>';
-  return {tel, lineNote, lap: fmt(res.lapTime), poleHtml: poleHtml + raceHtml, factsHtml, airHtml, kindLabel, mapSvg, traceSvg, keyHtml, windHtml, weather: w, evo, evoFacts, evoSvg, qsHtml, socHtml, brakeHtml, tyreHtml};
+  return {driverOpts, tel, lineNote, lap: fmt(res.lapTime), poleHtml: poleHtml + raceHtml, factsHtml, airHtml, kindLabel, mapSvg, traceSvg, keyHtml, windHtml, weather: w, evo, evoFacts, evoSvg, qsHtml, socHtml, brakeHtml, tyreHtml};
 }
 
 // Browser controller
-function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, evolutionCurve, lineTrack, brakeZones, lapChannels, blendLine) {
+function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, evolutionCurve, lineTrack, brakeZones, lapChannels, blendLine, blendOff) {
   const el = document.getElementById('lapsim-data'); if (!el) return;
-  const R = {renderMap, renderTrace, evolutionDelta, evolutionCurve, lineTrack, brakeZones, lapChannels, blendLine};
+  const R = {renderMap, renderTrace, evolutionDelta, evolutionCurve, lineTrack, brakeZones, lapChannels, blendLine, blendOff};
   document.querySelectorAll('[data-line-mode]').forEach(b => b.addEventListener('click', () => {
     state.lineMode = b.dataset.lineMode; state.showLine = true; document.querySelectorAll('[data-line-mode]').forEach(o => o.classList.toggle('active', o === b));
     const tg = document.querySelector('[data-line-toggle]'); if (tg) { tg.classList.add('active'); tg.setAttribute('aria-pressed', 'true'); } update();
@@ -725,10 +735,12 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
       q('map').innerHTML = v.mapSvg; apply(); q('trace').innerHTML = v.traceSvg; q('soc').innerHTML = v.socHtml; q('brakes').innerHTML = v.brakeHtml; q('key').innerHTML = v.keyHtml; q('wind').innerHTML = v.windHtml;
       q('carLabel').textContent = data.cars[state.carId].label; q('carKind').textContent = v.kindLabel;
       if (q('lineNote')) q('lineNote').textContent = v.lineNote;
+      if (q('driver')) { if (q('driver').innerHTML !== v.driverOpts) q('driver').innerHTML = v.driverOpts; q('driverWrap').hidden = !v.driverOpts; }
       q('evoFacts').innerHTML = v.evoFacts; q('evoChart').innerHTML = v.evoSvg; q('qsplit').innerHTML = v.qsHtml; q('tyre').innerHTML = v.tyreHtml;
       document.querySelectorAll('[data-evo-out]').forEach(o => { const k = o.dataset.evoOut; o.textContent = v.evo[k]; const i = document.querySelector('input[data-evo="' + k + '"]'); if (i && document.activeElement !== i) i.value = v.evo[k]; });
     });
   };
+  if (q('driver')) q('driver').addEventListener('change', e => { state.driver = e.target.value; update(); });
   // one cursor across every telemetry lane, with the value of each channel at that distance (like a team data sheet)
   let lastTel = null;
   const tq = q('trace');
@@ -801,7 +813,7 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
 let scriptText = null;
 export function lapsimScript() {
   // powertrain() lives outside lapsimKernel() and simulateLap calls it: it must be in the browser script too
-  if (!scriptText) scriptText = '(()=>{const powertrain=' + powertrain.toString() + ';const K=(' + lapsimKernel.toString() + ')();const lapChannels=' + lapChannels.toString() + ';const blendLine=' + blendLine.toString() + ';const renderMap=' + renderMap.toString() + ';const renderTrace=' + renderTrace.toString() + ';const evolutionDelta=' + evolutionDelta.toString() + ';const evolutionCurve=' + evolutionCurve.toString() + ';const lineTrack=' + lineTrack.toString() + ';const brakeZones=' + brakeZones.toString() + ';const computeView=' + computeView.toString() + ';(' + lapsimClient.toString() + ')(K,computeView,renderMap,renderTrace,evolutionDelta,evolutionCurve,lineTrack,brakeZones,lapChannels,blendLine);})();';
+  if (!scriptText) scriptText = '(()=>{const powertrain=' + powertrain.toString() + ';const K=(' + lapsimKernel.toString() + ')();const lapChannels=' + lapChannels.toString() + ';const blendLine=' + blendLine.toString() + ';const blendOff=' + blendOff.toString() + ';const renderMap=' + renderMap.toString() + ';const renderTrace=' + renderTrace.toString() + ';const evolutionDelta=' + evolutionDelta.toString() + ';const evolutionCurve=' + evolutionCurve.toString() + ';const lineTrack=' + lineTrack.toString() + ';const brakeZones=' + brakeZones.toString() + ';const computeView=' + computeView.toString() + ';(' + lapsimClient.toString() + ')(K,computeView,renderMap,renderTrace,evolutionDelta,evolutionCurve,lineTrack,brakeZones,lapChannels,blendLine,blendOff);})();';
   return scriptText;
 }
 export function lapsimScriptVersion() {
@@ -819,7 +831,7 @@ const CSS = `:root{--sim-slow:#ffa94d}:root[data-theme="light"]{--sim-slow:#245d
 .ls-lap{font-size:clamp(56px,7vw,88px);line-height:1;font-weight:800;letter-spacing:-2px;color:var(--mint);font-variant-numeric:tabular-nums}.ls-pole{min-height:1.6em;font-size:14px;color:var(--text);margin-bottom:12px}
 .ls-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 18px;margin:0;padding-top:16px;border-top:1px solid var(--line)}.ls-facts dt{font-size:12px;color:var(--muted)}.ls-facts dd{margin:4px 0 0;font-size:17px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--text)}
 .ls-air-facts{grid-template-columns:repeat(4,minmax(0,1fr));border-top:0;padding-top:0}
-.ls-scroll{overflow-x:auto}.ls-trace{width:100%;height:auto;min-width:560px}.ls-grid{stroke:var(--line)}.ls-sector{stroke:var(--muted);stroke-dasharray:4 4;opacity:.6}.ls-cline{stroke:var(--muted);stroke-dasharray:2 3;opacity:.35}.ls-risk{fill:#e5484d;opacity:.12}.ls-alt{fill:#f5a524;opacity:.14}.ls-cap{stroke:var(--muted);stroke-dasharray:5 4;stroke-width:1.4}.ls-cursor{stroke:var(--text);stroke-width:1;opacity:.6}.ls-cursor-read{position:sticky;top:0;z-index:1;background:var(--bg,#111);padding:6px 0;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}.ls-cursor-read b{color:var(--text);font-weight:600;margin-right:10px}.ls-ctag{font-size:11px}.ls-ch-h{font-size:14px;margin:14px 0 2px;color:var(--muted)}.ls-axis{fill:var(--muted);font-size:13px}
+.ls-scroll{overflow-x:auto}.ls-trace{width:100%;height:auto;min-width:560px}.ls-grid{stroke:var(--line)}.ls-sector{stroke:var(--muted);stroke-dasharray:4 4;opacity:.6}.ls-cline{stroke:var(--muted);stroke-dasharray:2 3;opacity:.35}.ls-risk{fill:#e5484d;opacity:.12}.ls-alt{fill:#f5a524;opacity:.14}.ls-cap{stroke:var(--muted);stroke-dasharray:5 4;stroke-width:1.4}.ls-driver select{min-height:36px}.ls-cursor{stroke:var(--text);stroke-width:1;opacity:.6}.ls-cursor-read{position:sticky;top:0;z-index:1;background:var(--bg,#111);padding:6px 0;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}.ls-cursor-read b{color:var(--text);font-weight:600;margin-right:10px}.ls-ctag{font-size:11px}.ls-ch-h{font-size:14px;margin:14px 0 2px;color:var(--muted)}.ls-axis{fill:var(--muted);font-size:13px}
 .ls-line{fill:none;stroke-width:2.4;stroke-linejoin:round}.ls-line-0{stroke:var(--mint)}.ls-line-1{stroke:var(--sim-slow);stroke-dasharray:6 4}
 .ls-key{font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:center;flex-wrap:wrap}.ls-key span{display:inline-block;width:22px;height:3px;border-radius:2px}.ls-key-0{background:var(--mint)}.ls-sw{display:inline-block;width:14px;height:8px;border-radius:2px;margin-left:8px}.ls-soc{width:100%;height:auto}.ls-key-1{background:var(--sim-slow)}
 .ls-sliders{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 28px}.ls-slider{display:grid;grid-template-columns:minmax(110px,1fr) minmax(0,2fr) 52px 36px;align-items:center;gap:10px;min-width:0}.ls-slider input{min-height:32px;padding:0;accent-color:var(--mint);border:0;background:none}.ls-slider output{text-align:right;font-variant-numeric:tabular-nums;color:var(--text)}.ls-unit{font-size:12px;color:var(--muted)}
