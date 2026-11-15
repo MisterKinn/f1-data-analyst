@@ -1,0 +1,1485 @@
+{
+ "source": "FIA F1 event documents \"Power Unit Information\" (2026)",
+ "generatedAt": "2026-11-15T02:56:55.269Z",
+ "events": {
+  "interlagos": {
+   "event": "São Paulo Grand Prix",
+   "raceMJ": 8,
+   "raceOvertakeMJ": 8.5,
+   "qualiMJ": 6.5,
+   "practiceMJ": 8.5,
+   "outLapMJ": 9,
+   "round": 20,
+   "centrelineKm": 4.309,
+   "alt": [
+    {
+     "sector": "T6-T12",
+     "from": 2000,
+     "to": 3150,
+     "qOnly": false
+    }
+   ],
+   "bigCut": [
+    {
+     "sector": "T6-T10",
+     "from": 2000,
+     "to": 2700,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "T11-T12",
+     "from": 2900,
+     "to": 3150,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "[Exit T12]",
+     "from": 3200,
+     "to": 4300,
+     "qOnly": true,
+     "maxKW": 350
+    }
+   ],
+   "reset": [
+    {
+     "sector": "Exit T11",
+     "from": 2900,
+     "to": 3050,
+     "qOnly": false
+    },
+    {
+     "sector": "[Exit T14]",
+     "from": 3700,
+     "to": 4300,
+     "qOnly": true
+    }
+   ],
+   "speed": [
+    {
+     "sector": "T11",
+     "from": 2870,
+     "to": 2970,
+     "qOnly": false,
+     "kph": 240
+    }
+   ],
+   "overtake": {
+    "detectionM": 3250,
+    "activationM": 3411,
+    "tbc": false
+   },
+   "powerLimitedDistanceM": 2278,
+   "rampKWs": 100,
+   "document": {
+    "title": "Doc 28 - Power Unit Information V2",
+    "url": "https://www.fia.com/system/files/decision-document/2026_sao_paulo_grand_prix_-_power_unit_information_v2.pdf",
+    "published": "Published on 07.11.26 14:04 CET"
+   }
+  },
+  "melbourne": {
+   "event": "Australian Grand Prix",
+   "qualiMJ": 7,
+   "practiceMJ": 8.5,
+   "outLapMJ": 8.5,
+   "round": 1,
+   "centrelineKm": 5.278,
+   "alt": [],
+   "bigCut": [],
+   "reset": [],
+   "speed": [],
+   "overtake": null,
+   "powerLimitedDistanceM": 3518,
+   "rampKWs": 50,
+   "document": {
+    "title": "Doc 6 - Power Unit Information",
+    "url": "https://www.fia.com/system/files/decision-document/2026_australian_grand_prix_-_power_unit_information.pdf",
+    "published": "Published on 05.03.26 07:33 CET"
+   }
+  },
+  "shanghai": {
+   "event": "Chinese Grand Prix",
+   "raceMJ": 8.5,
+   "raceOvertakeMJ": 9,
+   "qualiMJ": 9,
+   "practiceMJ": 9,
+   "outLapMJ": 9,
+   "round": 2,
+   "centrelineKm": 5.451,
+   "alt": [],
+   "bigCut": [],
+   "reset": [],
+   "speed": [],
+   "overtake": null,
+   "powerLimitedDistanceM": 3125,
+   "rampKWs": 100,
+   "document": {
+    "title": "Doc 2 - Power Unit Information",
+    "url": "https://www.fia.com/system/files/decision-document/2026_chinese_grand_prix_-_power_unit_information.pdf",
+    "published": "Published on 12.03.26 01:41 CET"
+   }
+  },
+  "suzuka": {
+   "event": "Japanese Grand Prix",
+   "raceMJ": 8.5,
+   "raceOvertakeMJ": 9,
+   "qualiMJ": 8,
+   "practiceMJ": 9,
+   "outLapMJ": 9,
+   "round": 3,
+   "centrelineKm": 5.807,
+   "alt": [],
+   "bigCut": [],
+   "reset": [],
+   "speed": [],
+   "overtake": null,
+   "powerLimitedDistanceM": 3472,
+   "rampKWs": 100,
+   "document": {
+    "title": "Doc 4 - Power Unit Information",
+    "url": "https://www.fia.com/system/files/decision-document/2026_japanese_grand_prix_-_power_unit_information.pdf",
+    "published": "Published on 26.03.26 01:49 CET"
+   }
+  },
+  "miami": {
+   "event": "Miami Grand Prix",
+   "raceMJ": 8.5,
+   "raceOvertakeMJ": 9,
+   "qualiMJ": 8,
+   "practiceMJ": 9,
+   "outLapMJ": 9,
+   "round": 4,
+   "centrelineKm": 5.412,
+   "alt": [
+    {
+     "sector": "T1-T8",
+     "from": 370,
+     "to": 1550,
+     "qOnly": false
+    },
+    {
+     "sector": "T11-T16",
+     "from": 3100,
+     "to": 3520,
+     "qOnly": false
+    }
+   ],
+   "bigCut": [
+    {
+     "sector": "T4-T8",
+     "from": 1140,
+     "to": 1600,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "T11-T16",
+     "from": 3100,
+     "to": 3520,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "[T17-T19]",
+     "from": 4800,
+     "to": 5200,
+     "qOnly": true,
+     "maxKW": 350
+    }
+   ],
+   "reset": [
+    {
+     "sector": "[Exit T18]",
+     "from": 5000,
+     "to": 5500,
+     "qOnly": true
+    }
+   ],
+   "speed": [
+    {
+     "sector": "T1-T3",
+     "from": 370,
+     "to": 650,
+     "qOnly": false,
+     "kph": 240
+    },
+    {
+     "sector": "T5-T8",
+     "from": 1250,
+     "to": 1550,
+     "qOnly": false,
+     "kph": 240
+    }
+   ],
+   "overtake": {
+    "detectionM": 4908,
+    "activationM": 5057,
+    "tbc": false
+   },
+   "powerLimitedDistanceM": 3346,
+   "rampKWs": 100,
+   "document": {
+    "title": "Doc 7 - Power Unit Information",
+    "url": "https://www.fia.com/system/files/decision-document/2026_miami_grand_prix_-_power_unit_information.pdf",
+    "published": "Published on 01.05.26 00:32 CET"
+   }
+  },
+  "montreal": {
+   "event": "Canadian Grand Prix",
+   "raceMJ": 8,
+   "raceOvertakeMJ": 8.5,
+   "qualiMJ": 6,
+   "practiceMJ": 8.5,
+   "outLapMJ": 8.5,
+   "round": 5,
+   "centrelineKm": 4.361,
+   "alt": [
+    {
+     "sector": "T1-T6",
+     "from": 220,
+     "to": 1200,
+     "qOnly": false
+    }
+   ],
+   "bigCut": [
+    {
+     "sector": "T5-T6",
+     "from": 980,
+     "to": 1100,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "[T13-Exit T14]",
+     "from": 3850,
+     "to": 4050,
+     "qOnly": true,
+     "maxKW": 350
+    }
+   ],
+   "reset": [
+    {
+     "sector": "[Exit T14]",
+     "from": 4000,
+     "to": 4400,
+     "qOnly": true
+    }
+   ],
+   "speed": [],
+   "overtake": {
+    "detectionM": 3870,
+    "activationM": 3982,
+    "tbc": false
+   },
+   "powerLimitedDistanceM": 2682,
+   "rampKWs": 100,
+   "document": {
+    "title": "Doc 5 - Power Unit Information",
+    "url": "https://www.fia.com/system/files/decision-document/2026_canadian_grand_prix_-_power_unit_information.pdf",
+    "published": "Published on 21.05.26 16:10 CET"
+   }
+  },
+  "monte-carlo": {
+   "event": "Monaco Grand Prix",
+   "raceMJ": 8.5,
+   "raceOvertakeMJ": 9,
+   "qualiMJ": 9,
+   "practiceMJ": 9,
+   "outLapMJ": 9,
+   "round": 6,
+   "centrelineKm": 3.337,
+   "alt": [],
+   "bigCut": [
+    {
+     "sector": "[Exit T19]",
+     "from": 2980,
+     "to": 3200,
+     "qOnly": true,
+     "maxKW": 350
+    }
+   ],
+   "reset": [
+    {
+     "sector": "[Exit T19]",
+     "from": 3070,
+     "to": 3400,
+     "qOnly": true
+    }
+   ],
+   "speed": [],
+   "overtake": {
+    "detectionM": 2805,
+    "activationM": 2950,
+    "tbc": false
+   },
+   "powerLimitedDistanceM": 1388,
+   "rampKWs": 100,
+   "document": {
+    "title": "Doc 4 - Power Unit Information",
+    "url": "https://www.fia.com/system/files/decision-document/2026_monaco_grand_prix_-_power_unit_information.pdf",
+    "published": "Published on 03.06.26 15:04 CET"
+   }
+  },
+  "catalunya": {
+   "event": "Barcelona-Catalunya Grand Prix",
+   "raceMJ": 8.5,
+   "raceOvertakeMJ": 9,
+   "qualiMJ": 7,
+   "practiceMJ": 9,
+   "outLapMJ": 9,
+   "round": 7,
+   "centrelineKm": 4.657,
+   "alt": [
+    {
+     "sector": "T1-T5",
+     "from": 820,
+     "to": 2100,
+     "qOnly": false
+    },
+    {
+     "sector": "T7-T9",
+     "from": 2520,
+     "to": 2850,
+     "qOnly": false
+    },
+    {
+     "sector": "T10-T12",
+     "from": 3480,
+     "to": 3750,
+     "qOnly": false
+    }
+   ],
+   "bigCut": [
+    {
+     "sector": "T1-T2",
+     "from": 850,
+     "to": 930,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "T10-T12",
+     "from": 3500,
+     "to": 3750,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "T13-T14",
+     "from": 4000,
+     "to": 4150,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "[T12-Exit T14]",
+     "from": 3750,
+     "to": 4500,
+     "qOnly": true,
+     "maxKW": 350
+    }
+   ],
+   "reset": [
+    {
+     "sector": "Exit T3",
+     "from": 1150,
+     "to": 1400,
+     "qOnly": false
+    },
+    {
+     "sector": "Exit T9",
+     "from": 2850,
+     "to": 3050,
+     "qOnly": false
+    },
+    {
+     "sector": "Exit T14",
+     "from": 4300,
+     "to": 4700,
+     "qOnly": false
+    }
+   ],
+   "speed": [
+    {
+     "sector": "T2-T3",
+     "from": 1000,
+     "to": 1200,
+     "qOnly": false,
+     "kph": 260
+    },
+    {
+     "sector": "T9",
+     "from": 2800,
+     "to": 2950,
+     "qOnly": false,
+     "kph": 260
+    },
+    {
+     "sector": "T13",
+     "from": 3980,
+     "to": 4400,
+     "qOnly": false,
+     "kph": 270
+    }
+   ],
+   "overtake": {
+    "detectionM": 4047,
+    "activationM": 4271,
+    "tbc": false
+   },
+   "powerLimitedDistanceM": 2440,
+   "rampKWs": 100,
+   "document": {
+    "title": "Doc 31 - Power Unit Information V2",
+    "url": "https://www.fia.com/system/files/decision-document/2026_barcelona-catalunya_grand_prix_-_power_unit_information_v2.pdf",
+    "published": "Published on 13.06.26 11:12 CET"
+   }
+  },
+  "spielberg": {
+   "event": "Austrian Grand Prix",
+   "raceMJ": 8,
+   "raceOvertakeMJ": 8.5,
+   "qualiMJ": 6,
+   "practiceMJ": 8.5,
+   "outLapMJ": 8.5,
+   "round": 8,
+   "centrelineKm": 4.236,
+   "alt": [
+    {
+     "sector": "T4-T7",
+     "from": 2170,
+     "to": 2960,
+     "qOnly": false
+    },
+    {
+     "sector": "T9-T10",
+     "from": 3720,
+     "to": 3920,
+     "qOnly": false
+    }
+   ],
+   "bigCut": [
+    {
+     "sector": "T6-T7",
+     "from": 2700,
+     "to": 3000,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "T9-T10",
+     "from": 3750,
+     "to": 3900,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "[Exit T10]",
+     "from": 3950,
+     "to": 4150,
+     "qOnly": true,
+     "maxKW": 350
+    }
+   ],
+   "reset": [
+    {
+     "sector": "[Exit T10]",
+     "from": 4100,
+     "to": 4400,
+     "qOnly": true
+    }
+   ],
+   "speed": [],
+   "overtake": {
+    "detectionM": 3936,
+    "activationM": 4088,
+    "tbc": false
+   },
+   "powerLimitedDistanceM": 2923,
+   "rampKWs": 100,
+   "document": {
+    "title": "Doc 5 - Power Unit Information",
+    "url": "https://www.fia.com/system/files/decision-document/2026_austrian_grand_prix_-_power_unit_information.pdf",
+    "published": "Published on 25.06.26 11:56 CET"
+   }
+  },
+  "silverstone": {
+   "event": "British Grand Prix",
+   "raceMJ": 8,
+   "raceOvertakeMJ": 8.5,
+   "qualiMJ": 6.5,
+   "practiceMJ": 8.5,
+   "outLapMJ": 8.5,
+   "round": 9,
+   "centrelineKm": 5.891,
+   "alt": [
+    {
+     "sector": "T1-T4",
+     "from": 350,
+     "to": 1000,
+     "qOnly": false
+    },
+    {
+     "sector": "T15-T16",
+     "from": 4950,
+     "to": 5450,
+     "qOnly": false
+    }
+   ],
+   "bigCut": [
+    {
+     "sector": "T1-T4",
+     "from": 350,
+     "to": 1000,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "T6-T7",
+     "from": 1950,
+     "to": 2100,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "T15-T16",
+     "from": 4950,
+     "to": 5200,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "[Exit T17]",
+     "from": 5550,
+     "to": 5750,
+     "qOnly": true,
+     "maxKW": 350
+    }
+   ],
+   "reset": [
+    {
+     "sector": "Exit T1",
+     "from": 400,
+     "to": 550,
+     "qOnly": false
+    },
+    {
+     "sector": "Exit T9",
+     "from": 3000,
+     "to": 3300,
+     "qOnly": false
+    },
+    {
+     "sector": "[Exit T17-T18]",
+     "from": 5650,
+     "to": 5900,
+     "qOnly": true
+    }
+   ],
+   "speed": [
+    {
+     "sector": "T11-T14",
+     "from": 3700,
+     "to": 4150,
+     "qOnly": false,
+     "kph": 300
+    },
+    {
+     "sector": "T18",
+     "from": 5600,
+     "to": 5800,
+     "qOnly": false,
+     "kph": 230
+    }
+   ],
+   "overtake": {
+    "detectionM": 5560,
+    "activationM": 5631,
+    "tbc": true
+   },
+   "powerLimitedDistanceM": 3833,
+   "rampKWs": 50,
+   "document": {
+    "title": "Doc 7 - Power Unit Information",
+    "url": "https://www.fia.com/system/files/decision-document/2026_british_grand_prix_-_power_unit_information.pdf",
+    "published": "Published on 02.07.26 20:04 CET"
+   }
+  },
+  "spa-francorchamps": {
+   "event": "Belgian Grand Prix",
+   "raceMJ": 8.5,
+   "raceOvertakeMJ": 9,
+   "qualiMJ": 7,
+   "practiceMJ": 9,
+   "outLapMJ": 9,
+   "round": 10,
+   "centrelineKm": 7.004,
+   "alt": [
+    {
+     "sector": "T5-T14",
+     "from": 2400,
+     "to": 4900,
+     "qOnly": false
+    }
+   ],
+   "bigCut": [
+    {
+     "sector": "T5-T9",
+     "from": 2350,
+     "to": 3250,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "T10-T11",
+     "from": 3750,
+     "to": 4000,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "T12-T14",
+     "from": 4450,
+     "to": 4850,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "[Exit T19]",
+     "from": 6730,
+     "to": 6900,
+     "qOnly": true,
+     "maxKW": 350
+    }
+   ],
+   "reset": [
+    {
+     "sector": "Exit T3",
+     "from": 1150,
+     "to": 1400,
+     "qOnly": false
+    },
+    {
+     "sector": "Exit T7",
+     "from": 2650,
+     "to": 2750,
+     "qOnly": false
+    },
+    {
+     "sector": "Exit T10",
+     "from": 3800,
+     "to": 4000,
+     "qOnly": false
+    },
+    {
+     "sector": "Exit T17",
+     "from": 6150,
+     "to": 6350,
+     "qOnly": false
+    },
+    {
+     "sector": "[Exit T19]",
+     "from": 6800,
+     "to": 7000,
+     "qOnly": true
+    }
+   ],
+   "speed": [
+    {
+     "sector": "T6-Exit T7",
+     "from": 2500,
+     "to": 2680,
+     "qOnly": false,
+     "kph": 240
+    },
+    {
+     "sector": "T12-T13",
+     "from": 4450,
+     "to": 4650,
+     "qOnly": false,
+     "kph": 240
+    }
+   ],
+   "overtake": {
+    "detectionM": 6745,
+    "activationM": 6885,
+    "tbc": false
+   },
+   "powerLimitedDistanceM": 4594,
+   "rampKWs": 50,
+   "document": {
+    "title": "Doc 4 - Power Unit Information",
+    "url": "https://www.fia.com/system/files/decision-document/2026_belgian_grand_prix_-_power_unit_information.pdf",
+    "published": "Published on 16.07.26 13:17 CET"
+   }
+  },
+  "hungaroring": {
+   "event": "Hungarian Grand Prix",
+   "raceMJ": 8.5,
+   "raceOvertakeMJ": 9,
+   "qualiMJ": 9,
+   "practiceMJ": 9,
+   "outLapMJ": 9,
+   "round": 11,
+   "centrelineKm": 4.381,
+   "alt": [
+    {
+     "sector": "T4-T9",
+     "from": 1780,
+     "to": 2700,
+     "qOnly": false
+    },
+    {
+     "sector": "T12-T14",
+     "from": 3500,
+     "to": 4000,
+     "qOnly": false
+    }
+   ],
+   "bigCut": [
+    {
+     "sector": "T4-T5",
+     "from": 1780,
+     "to": 2000,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "T8-T9",
+     "from": 2570,
+     "to": 2700,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "T12-T14",
+     "from": 3500,
+     "to": 4000,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "[Exit T14]",
+     "from": 4000,
+     "to": 4200,
+     "qOnly": true,
+     "maxKW": 350
+    }
+   ],
+   "reset": [
+    {
+     "sector": "[Exit T14]",
+     "from": 4150,
+     "to": 4400,
+     "qOnly": true
+    }
+   ],
+   "speed": [
+    {
+     "sector": "T2-Exit T3",
+     "from": 1150,
+     "to": 1400,
+     "qOnly": false,
+     "kph": 240
+    }
+   ],
+   "overtake": {
+    "detectionM": 3974,
+    "activationM": 4121,
+    "tbc": false
+   },
+   "powerLimitedDistanceM": 1885,
+   "rampKWs": 100,
+   "document": {
+    "title": "Doc 3 - Power Unit Information",
+    "url": "https://www.fia.com/system/files/decision-document/2026_hungarian_grand_prix_-_power_unit_information.pdf",
+    "published": "Published on 22.07.26 19:37 CET"
+   }
+  },
+  "zandvoort": {
+   "event": "Dutch Grand Prix",
+   "raceMJ": 8.5,
+   "raceOvertakeMJ": 9,
+   "qualiMJ": 7.5,
+   "practiceMJ": 9,
+   "outLapMJ": 9,
+   "round": 12,
+   "centrelineKm": 4.259,
+   "alt": [
+    {
+     "sector": "T1-T3",
+     "from": 350,
+     "to": 800,
+     "qOnly": false
+    },
+    {
+     "sector": "T8-T10",
+     "from": 2000,
+     "to": 2450,
+     "qOnly": false
+    },
+    {
+     "sector": "T11-T13",
+     "from": 3100,
+     "to": 3400,
+     "qOnly": false
+    }
+   ],
+   "bigCut": [
+    {
+     "sector": "T2-T3",
+     "from": 670,
+     "to": 800,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "T8-T10",
+     "from": 2000,
+     "to": 2450,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "[Exit T13]",
+     "from": 3450,
+     "to": 3650,
+     "qOnly": true,
+     "maxKW": 350
+    }
+   ],
+   "reset": [
+    {
+     "sector": "[Exit T14]",
+     "from": 3700,
+     "to": 4200,
+     "qOnly": true
+    }
+   ],
+   "speed": [],
+   "overtake": {
+    "detectionM": 3431,
+    "activationM": 3648,
+    "tbc": false
+   },
+   "powerLimitedDistanceM": 2411,
+   "rampKWs": 100,
+   "document": {
+    "title": "DOC 3 - 2026 Dutch Grand Prix - Power Unit Information",
+    "url": "https://www.fia.com/system/files/documents/doc_3_-_2026_dutch_grand_prix_-_power_unit_information.pdf",
+    "published": "Published on 19.08.26 18:30 CET"
+   }
+  },
+  "monza": {
+   "event": "Italian Grand Prix",
+   "raceMJ": 7,
+   "raceOvertakeMJ": 7.5,
+   "qualiMJ": 5,
+   "practiceMJ": 7.5,
+   "outLapMJ": 9,
+   "round": 13,
+   "centrelineKm": 5.793,
+   "alt": [
+    {
+     "sector": "T4-T7",
+     "from": 2100,
+     "to": 2800,
+     "qOnly": false
+    }
+   ],
+   "bigCut": [
+    {
+     "sector": "T4-T7",
+     "from": 2100,
+     "to": 2800,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "[Exit T11]",
+     "from": 5050,
+     "to": 5350,
+     "qOnly": true,
+     "maxKW": 350
+    }
+   ],
+   "reset": [
+    {
+     "sector": "[Exit T11]",
+     "from": 5300,
+     "to": 5800,
+     "qOnly": true
+    }
+   ],
+   "speed": [],
+   "overtake": {
+    "detectionM": 5050,
+    "activationM": 5249,
+    "tbc": true
+   },
+   "powerLimitedDistanceM": 4218,
+   "rampKWs": 50,
+   "document": {
+    "title": "Doc 8 - Power Unit Information",
+    "url": "https://www.fia.com/system/files/decision-document/2026_italian_grand_prix_-_power_unit_information.pdf",
+    "published": "Published on 03.09.26 20:50 CET"
+   }
+  },
+  "madring": {
+   "event": "Spanish Grand Prix",
+   "raceMJ": 8.5,
+   "raceOvertakeMJ": 9,
+   "qualiMJ": 7.5,
+   "practiceMJ": 9,
+   "outLapMJ": 9,
+   "round": 14,
+   "centrelineKm": 5.416,
+   "alt": [
+    {
+     "sector": "T5-T22",
+     "from": 1500,
+     "to": 5100,
+     "qOnly": false
+    }
+   ],
+   "bigCut": [
+    {
+     "sector": "T7-T8",
+     "from": 1900,
+     "to": 1975,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "T10-T11",
+     "from": 2200,
+     "to": 2300,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "T15-T16",
+     "from": 3600,
+     "to": 3800,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "T18-T21",
+     "from": 4100,
+     "to": 4800,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "[Exit T22]",
+     "from": 5100,
+     "to": 5300,
+     "qOnly": true,
+     "maxKW": 350
+    }
+   ],
+   "reset": [
+    {
+     "sector": "T12",
+     "from": 2550,
+     "to": 2900,
+     "qOnly": false
+    },
+    {
+     "sector": "Exit T19",
+     "from": 4400,
+     "to": 4500,
+     "qOnly": false
+    },
+    {
+     "sector": "[Exit T22]",
+     "from": 5150,
+     "to": 5400,
+     "qOnly": true
+    }
+   ],
+   "speed": [
+    {
+     "sector": "T12",
+     "from": 2300,
+     "to": 2700,
+     "qOnly": false,
+     "kph": 260
+    },
+    {
+     "sector": "T14",
+     "from": 3300,
+     "to": 3500,
+     "qOnly": false,
+     "kph": 250
+    },
+    {
+     "sector": "T19",
+     "from": 4300,
+     "to": 4400,
+     "qOnly": false,
+     "kph": 240
+    }
+   ],
+   "overtake": null,
+   "powerLimitedDistanceM": 3206,
+   "rampKWs": 100,
+   "document": {
+    "title": "Doc 25 - Power Unit Information V2",
+    "url": "https://www.fia.com/system/files/decision-document/2026_spanish_grand_prix_-_power_unit_information_v2.pdf",
+    "published": "Published on 11.09.26 22:06 CET"
+   }
+  },
+  "baku": {
+   "event": "Azerbaijan Grand Prix",
+   "raceMJ": 8.5,
+   "raceOvertakeMJ": 9,
+   "qualiMJ": 8.5,
+   "practiceMJ": 9,
+   "outLapMJ": 9,
+   "round": 15,
+   "centrelineKm": 6.003,
+   "alt": [
+    {
+     "sector": "T1-T2",
+     "from": 300,
+     "to": 600,
+     "qOnly": false
+    },
+    {
+     "sector": "T3-T12",
+     "from": 1500,
+     "to": 2870,
+     "qOnly": false
+    },
+    {
+     "sector": "T15-T16",
+     "from": 3700,
+     "to": 4050,
+     "qOnly": false
+    }
+   ],
+   "bigCut": [
+    {
+     "sector": "T1-T2",
+     "from": 300,
+     "to": 600,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "T3-T12",
+     "from": 1500,
+     "to": 2870,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "T15-T16",
+     "from": 3700,
+     "to": 4050,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "[Exit T16]",
+     "from": 4050,
+     "to": 5300,
+     "qOnly": true,
+     "maxKW": 350
+    }
+   ],
+   "reset": [
+    {
+     "sector": "Exit T19",
+     "from": 4650,
+     "to": 5600,
+     "qOnly": false
+    },
+    {
+     "sector": "[Exit T20]",
+     "from": 5600,
+     "to": 6000,
+     "qOnly": true
+    }
+   ],
+   "speed": [],
+   "overtake": {
+    "detectionM": 4177,
+    "activationM": 4270,
+    "tbc": true
+   },
+   "powerLimitedDistanceM": 3796,
+   "rampKWs": 50,
+   "document": {
+    "title": "Doc 5 - Power Unit Information",
+    "url": "https://www.fia.com/system/files/decision-document/2026_azerbaijan_grand_prix_-_power_unit_information.pdf",
+    "published": "Published on 23.09.26 16:14 CET"
+   }
+  },
+  "kuala-lumpur": {
+   "event": "Bahrain Grand Prix",
+   "raceMJ": 8.5,
+   "raceOvertakeMJ": 9,
+   "qualiMJ": 7.5,
+   "practiceMJ": 9,
+   "outLapMJ": 9,
+   "round": 16,
+   "centrelineKm": 5.543,
+   "alt": [
+    {
+     "sector": "T4-T7",
+     "from": 1550,
+     "to": 2500,
+     "qOnly": false
+    },
+    {
+     "sector": "T9-T14",
+     "from": 3100,
+     "to": 4100,
+     "qOnly": false
+    }
+   ],
+   "bigCut": [
+    {
+     "sector": "T1-T2",
+     "from": 600,
+     "to": 750,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "T5-T7",
+     "from": 1900,
+     "to": 2500,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "T9-T11",
+     "from": 3100,
+     "to": 3400,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "T12-T13",
+     "from": 3750,
+     "to": 4000,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "[Exit T15]",
+     "from": 5050,
+     "to": 5300,
+     "qOnly": true,
+     "maxKW": 350
+    }
+   ],
+   "reset": [
+    {
+     "sector": "Exit T5",
+     "from": 1950,
+     "to": 2100,
+     "qOnly": false
+    },
+    {
+     "sector": "Exit T6",
+     "from": 2150,
+     "to": 2350,
+     "qOnly": false
+    },
+    {
+     "sector": "[Exit T15]",
+     "from": 5200,
+     "to": 5500,
+     "qOnly": true
+    }
+   ],
+   "speed": [
+    {
+     "sector": "T5-T6",
+     "from": 1750,
+     "to": 2200,
+     "qOnly": false,
+     "kph": 270
+    },
+    {
+     "sector": "T12-T13",
+     "from": 3700,
+     "to": 3900,
+     "qOnly": false,
+     "kph": 270
+    }
+   ],
+   "overtake": {
+    "detectionM": 5110,
+    "activationM": 5160,
+    "tbc": true
+   },
+   "powerLimitedDistanceM": 3365,
+   "rampKWs": 100,
+   "document": {
+    "title": "Doc 4 - Power Unit Information",
+    "url": "https://www.fia.com/system/files/decision-document/2026_bahrain_grand_prix_in_malaysia_-_power_unit_information.pdf",
+    "published": "Published on 01.10.26 06:16 CET"
+   }
+  },
+  "singapore": {
+   "event": "Singapore Grand Prix",
+   "raceMJ": 8.5,
+   "raceOvertakeMJ": 9,
+   "qualiMJ": 9,
+   "practiceMJ": 9,
+   "outLapMJ": 9,
+   "round": 17,
+   "centrelineKm": 4.927,
+   "alt": [
+    {
+     "sector": "T1-T5",
+     "from": 400,
+     "to": 900,
+     "qOnly": false
+    },
+    {
+     "sector": "T7-T9",
+     "from": 1750,
+     "to": 2150,
+     "qOnly": false
+    },
+    {
+     "sector": "T10-T13",
+     "from": 2600,
+     "to": 3000,
+     "qOnly": false
+    }
+   ],
+   "bigCut": [
+    {
+     "sector": "T1-T3",
+     "from": 400,
+     "to": 550,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "T7-T9",
+     "from": 1750,
+     "to": 2150,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "T10-T13",
+     "from": 2600,
+     "to": 2950,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "[Exit T17]",
+     "from": 4300,
+     "to": 4750,
+     "qOnly": true,
+     "maxKW": 350
+    }
+   ],
+   "reset": [
+    {
+     "sector": "[Exit T18]",
+     "from": 4700,
+     "to": 4900,
+     "qOnly": true
+    }
+   ],
+   "speed": [],
+   "overtake": {
+    "detectionM": 4350,
+    "activationM": 4430,
+    "tbc": false
+   },
+   "powerLimitedDistanceM": 2185,
+   "rampKWs": 100,
+   "document": {
+    "title": "Doc 3 - Power Unit Information",
+    "url": "https://www.fia.com/system/files/decision-document/2026_singapore_grand_prix_-_power_unit_information.pdf",
+    "published": "Published on 08.10.26 05:03 CET"
+   }
+  },
+  "austin": {
+   "event": "United States Grand Prix",
+   "raceMJ": 8.5,
+   "raceOvertakeMJ": 9,
+   "qualiMJ": 8.5,
+   "practiceMJ": 9,
+   "outLapMJ": 9,
+   "round": 18,
+   "centrelineKm": 5.513,
+   "alt": [
+    {
+     "sector": "T4-T8",
+     "from": 1300,
+     "to": 1850,
+     "qOnly": false
+    },
+    {
+     "sector": "T12-T20",
+     "from": 3700,
+     "to": 5250,
+     "qOnly": false
+    }
+   ],
+   "bigCut": [
+    {
+     "sector": "T4-T8",
+     "from": 1300,
+     "to": 1850,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "T12-T15",
+     "from": 3700,
+     "to": 4200,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "T16-T20",
+     "from": 4500,
+     "to": 5250,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "[Exit T20]",
+     "from": 5280,
+     "to": 5500,
+     "qOnly": true,
+     "maxKW": 350
+    }
+   ],
+   "reset": [
+    {
+     "sector": "Exit T16",
+     "from": 4500,
+     "to": 4750,
+     "qOnly": false
+    },
+    {
+     "sector": "[Exit T20]",
+     "from": 5350,
+     "to": 5500,
+     "qOnly": true
+    }
+   ],
+   "speed": [
+    {
+     "sector": "T16-T17",
+     "from": 4430,
+     "to": 4600,
+     "qOnly": false,
+     "kph": 250
+    }
+   ],
+   "overtake": {
+    "detectionM": 5326,
+    "activationM": 5420,
+    "tbc": false
+   },
+   "powerLimitedDistanceM": 2847,
+   "rampKWs": 100,
+   "document": {
+    "title": "Doc 8 - Power Unit Information",
+    "url": "https://www.fia.com/system/files/decision-document/2026_united_states_grand_prix_-_power_unit_information.pdf",
+    "published": "Published on 23.10.26 00:22 CET"
+   }
+  },
+  "mexico-city": {
+   "event": "Mexico City Grand Prix",
+   "raceMJ": 8.5,
+   "raceOvertakeMJ": 9,
+   "qualiMJ": 8.5,
+   "practiceMJ": 9,
+   "outLapMJ": 9,
+   "round": 19,
+   "centrelineKm": 4.304,
+   "alt": [
+    {
+     "sector": "T4-T10",
+     "from": 2000,
+     "to": 2900,
+     "qOnly": false
+    },
+    {
+     "sector": "T12-T16",
+     "from": 3600,
+     "to": 3950,
+     "qOnly": false
+    }
+   ],
+   "bigCut": [
+    {
+     "sector": "T5-T6",
+     "from": 2100,
+     "to": 2200,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "T7-T10",
+     "from": 2550,
+     "to": 2900,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "T12-T16",
+     "from": 3550,
+     "to": 3940,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "[Exit T16]",
+     "from": 3950,
+     "to": 4300,
+     "qOnly": true,
+     "maxKW": 350
+    }
+   ],
+   "reset": [
+    {
+     "sector": "[Exit T17]",
+     "from": 4050,
+     "to": 4300,
+     "qOnly": true
+    }
+   ],
+   "speed": [
+    {
+     "sector": "T8-T9",
+     "from": 2600,
+     "to": 2800,
+     "qOnly": false,
+     "kph": 250
+    }
+   ],
+   "overtake": {
+    "detectionM": 3871,
+    "activationM": 4051,
+    "tbc": false
+   },
+   "powerLimitedDistanceM": 2101,
+   "rampKWs": 100,
+   "document": {
+    "title": "Doc 6 - Power Unit Information",
+    "url": "https://www.fia.com/system/files/decision-document/2026_mexico_city_grand_prix_-_power_unit_information.pdf",
+    "published": "Published on 29.10.26 22:46 CET"
+   }
+  }
+ }
+}

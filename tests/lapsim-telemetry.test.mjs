@@ -6,7 +6,9 @@ import {lapsimAllTracks} from '../worker/lapsim/tracks.js';
 import {carsFor} from '../worker/lapsim/scenario.js';
 import {lapChannels} from '../worker/lapsim/channels.js';
 import {minCurvatureLine, blendLine} from '../worker/lapsim/racing-line.js';
-import {lapsimScript, lineData} from '../worker/simulation.js';
+import {lapsimScript, lineData, simulationPage} from '../worker/simulation.js';
+import {parsePuSectors} from '../worker/lapsim/pu-info.js';
+import {lapsimPuDocs} from '../worker/lapsim/pu-docs-data.js';
 
 const K = lapsimKernel(), env = K.conditionsFromWeather({});
 const lap = (id, key) => { const c = carsFor(id)[key], tr = K.trackFromData(lapsimAllTracks[id]); return {c, tr, r: K.simulateLap(tr, c.car, env)}; };
@@ -80,4 +82,30 @@ test('every track has a racing line, and the line depends on the car', () => {
   const L = lineData('monte-carlo'), ref = [L.mid.map(p => p[0]), L.mid.map(p => p[1])], cars = carsFor('monte-carlo');
   const w = ['2026', 'fe-gen3evo'].map(k => blendLine(K, ref, L.nrm, L.base.map(x => x / 10), L.sp.map(x => x / 10), cars[k].car, env, cars[k].grip || 1).w.join());
   assert.notEqual(w[0], w[1]);
+});
+
+test('hybrid cars get a battery (SoC) lane; cars without a battery model do not', () => {
+  assert.match(simulationPage({track: 'monza', car: '2026'}, 'en'), /class="ls-ch-h">Battery energy \(SoC/);
+  assert.match(simulationPage({track: 'le-mans', car: 'wec-lmh'}, 'en'), /class="ls-ch-h">Battery energy \(SoC/);
+  assert.doesNotMatch(simulationPage({track: 'monza', car: 'gt3-audi-r8-lms-gt3'}, 'en'), /class="ls-ch-h">Battery energy \(SoC/);
+});
+
+test('FIA Power Unit Information: sectors, limits and rounds are read and shown on the motor lane', () => {
+  const R = (y, ...c) => ({y, cells: c.map(([text, x]) => ({text, x}))});
+  const rows=[R(634.1,['ROUND No.',50.3],['R13',123.1]),R(592.3,['CENTRELINE',50.3],['5.793 km',123.1]),R(405.4,['7.0 MJ',67.7],['7.5 MJ',140.5],['5.0 MJ',213.4],['7.5 MJ',286.2],['9.0 MJ',359.1],['4218 m',430],['50 kW/s',500.9]),
+R(269.5,['IDENTIFICATION OF SECTORS WHERE EXCEPTIONS APPLY',158.5]),
+R(208.6,['Identification of',55.1],['Lap distance window',119.6],['Identification of',200.8],['Lap distance window',265.3],['Maximum PU power',339.7],['Identification of',419.3],['Lap distance window',483.8]),
+R(198.5,['Sectors',67.6],['[m]',147.1],['Sectors',213.2],['[m]',292.8],['reduction permitted',339.8],['Sectors',431.8],['[m]',511.3]),
+R(168.6,['T4-T7',214.7],['2100-2800',278.2],['350kW',357.6]),R(162.7,['T4-T7',69],['2100-2800',132.5],['[Exit T11]',425.8],['[5300-5800]',493.8]),R(156.8,['[Exit T11]',207.2],['[5050-5350]',275.3],['[350kW]',354.7]),
+R(116.3,['Article C5.12.7',128.4],['OVERTAKE',418.1]),R(79.1,['Speed threshold',199.4],['Detection Gap',348.2],['[sLap & Loop]',422.4],['[sLap & Loop]',495.2]),R(54.7,['5050 m (TBC)',418.4],['5249 m',502.6]),R(46.8,['-',77.9],['-',150.7],['-',223.6],['1.0 s',361.9])];
+  const p = parsePuSectors([{rows}]);
+  assert.equal(p.round, 13); assert.equal(p.powerLimitedDistanceM, 4218); assert.equal(p.rampKWs, 50);
+  assert.deepEqual(p.alt, [{sector: 'T4-T7', from: 2100, to: 2800, qOnly: false}]);
+  assert.equal(p.bigCut.length, 2); assert.ok(p.bigCut[1].qOnly && p.reset[0].qOnly);
+  assert.deepEqual(p.overtake, {detectionM: 5050, activationM: 5249, tbc: true});
+  // rounds 1–3 (before the Miami rule change) have no Alt 1 sectors; every 2026 event read has a round and limits
+  for (const [id, e] of Object.entries(lapsimPuDocs.events)) { assert.ok(e.round >= 1 && e.qualiMJ > 0 && e.powerLimitedDistanceM > 0, id); if (e.round <= 3) assert.equal(e.alt.length, 0, id); }
+  const spa = simulationPage({track: 'spa-francorchamps', car: '2026'}, 'en'), mel = simulationPage({track: 'melbourne', car: '2026'}, 'en');
+  assert.match(spa, /class="ls-ch-h">Motor power/); assert.match(spa, /class="ls-alt"/); assert.match(spa, /R10, rules from Miami on/);
+  assert.match(mel, /R1, rules before Miami/); assert.doesNotMatch(mel, /class="ls-alt"/);
 });

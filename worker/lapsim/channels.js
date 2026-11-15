@@ -81,8 +81,9 @@ export function lapChannels(track, car, env, res, {cls = 'f1', seed = '', surfac
   const clip = Math.min(res.energy?.cutoffKph ?? Infinity, res.energy?.clipFromKph ?? Infinity) / 3.6 - 0.3;
   const lim = res.limit || [], ersW = ers.pMax ?? ers.eMax ?? 0, eta = car.etaDrive ?? 0.95;
   const throttle = v.map((vi, i) => {
-    if (brakeBar[i] > 0) return 0; if (lim[i] === 2 || vi >= clip) return 1; // a speed drop with no brake need (2026 clipping, lift) keeps the pedal
-    const j = (i + 1) % n, q = 0.5 * rho * vi * vi, F = m * (v[j] * v[j] - vi * vi) / (2 * ds) + q * car.cdA + (car.cRoll ?? 0.012) * (m * G + q * car.clA);
+    if (brakeBar[i] > 0) return 0; if (lim[i] === 2 || lim[(i + 1) % n] === 2 || lim[(i - 1 + n) % n] === 2 || vi >= clip) return 1; // next to a power-limited point the foot is flat (the kernel's deploy toggles point to point) // a speed drop with no brake need (2026 clipping, lift) keeps the pedal
+    // acceleration over ±2 points: the kernel's deploy on/off from point to point is not a foot movement
+    const a2 = v[(i + 2) % n], b2 = v[(i - 2 + n) % n], q = 0.5 * rho * vi * vi, F = m * (a2 * a2 - b2 * b2) / (8 * ds) + q * car.cdA + (car.cRoll ?? 0.012) * (m * G + q * car.clA);
     return Math.max(0, Math.min(1, F * vi / ((powerW ? powerW[i] : car.pIce) * eta + ersW)));
   });
   const ped = humanPedals(brakeBar, throttle, risk, res.time, res.lapTime ?? res.time[n - 1], String(seed) + '|pedals');
