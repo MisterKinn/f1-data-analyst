@@ -16,6 +16,23 @@ const TRACK = {LOSAIL: 'lusail', IMOLA: 'imola', SPA: 'spa-francorchamps', LEMAN
 const MODEL = {Alpine: 'Alpine A424', Aston: 'Aston Martin Valkyrie', BMW: 'BMW M Hybrid V8', Cadillac: 'Cadillac V-Series.R', Ferrari: 'Ferrari 499P', Peugeot: 'Peugeot 9X8', Porsche: 'Porsche 963', Toyota: 'Toyota GR010 Hybrid', Lamborghini: 'Lamborghini SC63', Isotta: 'Isotta Fraschini Tipo6-C', Genesis: 'Genesis GMR-001'};
 const CLS = {'Alpine A424': 'lmdh', 'BMW M Hybrid V8': 'lmdh', 'Cadillac V-Series.R': 'lmdh', 'Porsche 963': 'lmdh', 'Lamborghini SC63': 'lmdh', 'Genesis GMR-001': 'lmdh', 'Aston Martin Valkyrie': 'lmh', 'Ferrari 499P': 'lmh', 'Peugeot 9X8': 'lmh', 'Toyota GR010 Hybrid': 'lmh', 'Isotta Fraschini Tipo6-C': 'lmh'};
 const EVENTS_2026 = ['IMOLA', 'SPA', 'LEMANS', 'SAOPAULO', 'COTA', 'FUJI', 'BARCELONA', 'MONZA'];
+// Evo jokers and re-homologations (owner 2026-11-16: updates enter the BoP learning, the 2026 table and the projection). A spec starts at
+// [year, first event]; the car's fixed performance level belongs to model + season + spec. Sources: Autosport "who is introducing updates
+// in 2026" (Dec 2025), The Race "who else can still upgrade" (2025), Sportscar365 "Ferrari reveals plans for major 499P overhaul in 2027",
+// Motorsport.com "Aston Martin begins testing updated Valkyrie for 2027", Autosport "Ferrari and Peugeot start testing updated hypercars
+// for WEC 2027". Porsche used two jokers since 2023 (dates not given) and left WEC after 2025: no break inside the data.
+const ORDER = {LOSAIL: 0, QATAR: 0, IMOLA: 1, SPA: 2, LEMANS: 3, SAOPAULO: 4, COTA: 5, FUJI: 6, BAHRAIN: 7, BARCELONA: 7, MONZA: 8};
+export const SPECS = {
+  'Toyota GR010 Hybrid': [[2026, 'IMOLA', 'Evo 2026 (aero joker, TR010)']],
+  'Cadillac V-Series.R': [[2025, 'LOSAIL', 'joker 2025 (electronics)'], [2026, 'IMOLA', 'Evo 2026 (aero)']],
+  'BMW M Hybrid V8': [[2025, 'LOSAIL', 'joker 2025'], [2026, 'IMOLA', 'Evo 2026 (nose and splitter)']],
+  'Alpine A424': [[2025, 'LOSAIL', 'joker 2025 (power unit)'], [2026, 'IMOLA', 'Evo 2026']],
+  'Ferrari 499P': [[2024, 'SAOPAULO', 'joker 2024 (brake cooling)'], [2027, 'LOSAIL', 'Evo 2027 (three jokers, aero)']],
+  'Peugeot 9X8': [[2024, 'IMOLA', '2024 car with rear wing (new homologation)'], [2025, 'LOSAIL', '2025 updates'], [2027, 'LOSAIL', 'Evo 2027 (planned)']],
+  'Aston Martin Valkyrie': [[2027, 'LOSAIL', 'Evo 2027 (first jokers)']],
+};
+const specOf = (m, y, ev) => { let s = 'base'; for (const [yy, e, name] of SPECS[m] || []) if (y > yy || (y === yy && (ORDER[ev] ?? 0) >= (ORDER[e] ?? 0))) s = name; return s; };
+const keyOf = (m, y, ev) => `${m} ${y} ${specOf(m, y, ev)}`;
 const LIMITS = {kgMin: 1030, kWMax: 520, kWMin: 470};
 const PRIOR_SD = {kg: 12, kW: 8, g: 2.5}; // spread of one event-to-event BoP change in 2024-2025 (checked below)
 
@@ -60,7 +77,7 @@ function fitClass(skip) {
   for (const e of Object.values(events)) {
     if (e.y > 2025 || e.ev === skip?.ev && e.y === skip?.y) continue;
     const b = bopOf(e.y, e.track); if (!b) continue; const rb = rel(b);
-    for (const [m, o] of Object.entries(e.models)) if (rb[m]) obs.push({key: `${m} ${e.y}`, ...o, ...rb[m]});
+    for (const [m, o] of Object.entries(e.models)) if (rb[m]) obs.push({key: keyOf(m, e.y, e.ev), ...o, ...rb[m]});
   }
   const groups = {}; for (const o of obs) (groups[o.key] ||= []).push(o);
   const dm = (list, f) => { const mu = mean(list.map(f)); return list.map(o => f(o) - mu); };
@@ -99,13 +116,13 @@ function solve3(A, y) { // Gaussian elimination
 }
 
 // ---- one event: MAP estimate of (kg, kW, gain) per model
-function estimate(e, prior, fit, fallbackSeason) {
+function estimate(e, prior, fit, look) {
   const {coef} = fit, models = Object.keys(e.models).filter(m => prior[m]);
   const kg0 = mean(models.map(m => prior[m].kg)), kW0 = mean(models.map(m => prior[m].kW)), g0 = mean(models.map(m => prior[m].g));
   const out = {};
   for (const m of models) {
     const o = e.models[m], p = prior[m];
-    const u = fit.u[`${m} ${fallbackSeason}`] ?? 0, w = fit.w[`${m} ${fallbackSeason}`] ?? 0, known = `${m} ${fallbackSeason}` in fit.u;
+    const {u, w, known, spec} = look(m);
     // unknowns x = [dkg%, dP%, gain pts] relative to the event mean; prior in the same units
     const xp = [100 * (p.kg / kg0 - 1), 100 * (p.kW / kW0 - 1), p.g - g0];
     const sp = [100 * PRIOR_SD.kg / kg0, 100 * PRIOR_SD.kW / kW0, PRIOR_SD.g].map(s => s * (known ? 1 : 1.5));
@@ -123,7 +140,7 @@ function estimate(e, prior, fit, fallbackSeason) {
     out[m] = {cls: CLS[m], kg: Math.round(kg), kW: Math.round(kW), above250: r1(g), MJ: Math.round(MJ),
       sd: {kg: Math.round(sd[0] * kg0 / 100), kW: Math.round(sd[1] * kW0 / 100), above250: r1(sd[2])},
       evidence: {pacePct: o.L == null ? null : +o.L.toFixed(2), speedPct: o.V == null ? null : +o.V.toFixed(2), longestGreenStint: o.stint, cars: o.cars},
-      learned: known, priorFrom: p.from};
+      learned: known, spec, priorFrom: p.from};
   }
   return out;
 }
@@ -143,7 +160,7 @@ for (let i = 1; i < order25.length; i++) {
   const fit = fitClass({y: 2025, ev});
   let prior = mix(priorFromBop(bopOf(2025, TRACK[order25[i - 1]]), 'previous event'), bopOf(2024, e.track) ? priorFromBop(bopOf(2024, e.track), 'same track 2024') : null);
   for (const m of Object.keys(e.models)) if (!prior[m] && truth[m]) prior[m] = classMean(prior);
-  const est = estimate(e, prior, fit, 2025);
+  const est = estimate(e, prior, fit, m => { const k = keyOf(m, 2025, ev); return {u: fit.u[k] ?? 0, w: fit.w[k] ?? 0, known: k in fit.u, spec: specOf(m, 2025, ev)}; });
   for (const [m, x] of Object.entries(est)) if (truth[m]) test.push({ev, m, ekg: x.kg - truth[m].kg, ekW: x.kW - truth[m].kW, eg: x.above250 - gainOf(truth[m]), eMJ: x.MJ - truth[m].MJ,
     pkg: Math.round(prior[m].kg) - truth[m].kg, pkW: Math.round(prior[m].kW) - truth[m].kW, pg: prior[m].g - gainOf(truth[m]), pMJ: Math.round(prior[m].MJ) - truth[m].MJ});
 }
@@ -154,6 +171,15 @@ const use = {kg: holdout.model.kg <= holdout.priorOnly.kg, kW: holdout.model.kW 
 
 // ---- 2026: fit on all of 2024-2025, chain the events
 const fit = fitClass(null);
+// Evo effect learned from 2024 → 2025: change of a model's level (pace vs field after BoP, %) with a new spec vs without one
+const lastKey = (m, y) => { const ks = Object.keys(fit.u).filter(k => k.startsWith(m + ' ' + y + ' ')); return ks.find(k => k.endsWith(' ' + specOf(m, y, 'BAHRAIN'))) || ks.at(-1); };
+const dU = Object.keys(SPECS).concat(['Porsche 963']).map(m => { const a = lastKey(m, 2024), b = Object.keys(fit.u).find(k => k.startsWith(m + ' 2025 ')); return a && b ? {m, d: fit.u[b] - fit.u[a], evo: specOf(m, 2025, 'LOSAIL') !== specOf(m, 2024, 'BAHRAIN')} : null; }).filter(Boolean);
+const evoD = dU.filter(x => x.evo).map(x => x.d), sameD = dU.filter(x => !x.evo).map(x => x.d);
+const EVO = {withEvo: evoD.length ? +mean(evoD).toFixed(3) : null, without: sameD.length ? +mean(sameD).toFixed(3) : null, n: [evoD.length, sameD.length], cases: dU.map(x => `${x.m} ${x.d >= 0 ? '+' : ''}${x.d.toFixed(2)}%${x.evo ? ' (new spec)' : ''}`)};
+// shrunk to half (few cases), never a slower car from an Evo
+EVO.shift = evoD.length && sameD.length ? +Math.min(0, 0.5 * (EVO.withEvo - EVO.without)).toFixed(3) : 0;
+const look26 = (m, y = 2026, ev = 'IMOLA') => { const k25 = lastKey(m, 2025), spec = specOf(m, y, ev), same = spec === specOf(m, 2025, 'BAHRAIN');
+  return {u: (fit.u[k25] ?? 0) + (same ? 0 : EVO.shift), w: fit.w[k25] ?? 0, known: !!k25 && same, spec}; };
 let last = priorFromBop(bopOf(2025, 'sakhir'), 'Bahrain 2025 (last published)');
 const out26 = [];
 for (const ev of EVENTS_2026) {
@@ -161,7 +187,7 @@ for (const ev of EVENTS_2026) {
   const same = bopOf(2025, e.track);
   let prior = same ? mix(last, priorFromBop(same, `${ev} 2025`)) : last;
   for (const m of Object.keys(e.models)) if (!prior[m]) prior[m] = classMean(prior);
-  const est = estimate(e, prior, fit, 2025);
+  const est = estimate(e, prior, fit, m => look26(m, 2026, ev));
   for (const [m, x] of Object.entries(est)) { // keep the prior where the hold-out test says learning did not help
     if (!use.kg) x.kg = Math.round(prior[m].kg); if (!use.kW) x.kW = Math.round(prior[m].kW); if (!use.above250) x.above250 = r1(prior[m].g); if (!use.MJ) x.MJ = Math.round(prior[m].MJ);
   }
@@ -169,9 +195,35 @@ for (const ev of EVENTS_2026) {
   last = Object.fromEntries(Object.entries(est).map(([m, x]) => [m, {kg: x.kg, kW: x.kW, g: x.above250, MJ: x.MJ, from: `${ev} 2026 estimate`}]));
 }
 
+// ---- "for fun" cars (owner 2026-11-16): Porsche 963 (WEC to 2025), Lamborghini SC63 (WEC 2024), Acura ARX-06 (IMSA only, level carried over
+// through the cars that race both series when scripts/sim/data/learn/imsa-gtp-pace.txt exists). Each gets, at every 2026 event, the BoP that
+// makes its learned level equal to the field (u + a·dkg% + b·dP% = 0, half by weight, half by power) from the event's class average.
+// Not part of any official table; their level is from their last season (the 2026 field's Evo kits are not in it).
+const FUN = {'Porsche 963': lastKey('Porsche 963', 2025), 'Lamborghini SC63': lastKey('Lamborghini SC63', 2024)};
+const funLevel = Object.fromEntries(Object.entries(FUN).filter(([, k]) => k).map(([m, k]) => [m, {u: fit.u[k], from: k.replace(m + ' ', '')}]));
+try { // Acura ARX-06: IMSA pace vs each shared car, added to that car's WEC level
+  const im = readFileSync(new URL('./data/learn/imsa-gtp-pace.txt', import.meta.url), 'utf8').split('\n').filter(l => l && !l.startsWith('#')).map(l => { const [y, ev, car, mf, q, r] = l.split(' '); return {y: +y, ev, mf, r: num(r)}; });
+  const IM = {Porsche: 'Porsche 963', Cadillac: 'Cadillac V-Series.R', BMW: 'BMW M Hybrid V8', Aston: 'Aston Martin Valkyrie'}, d = [];
+  for (const key of new Set(im.map(x => x.y + ' ' + x.ev))) { const rows = im.filter(x => x.y + ' ' + x.ev === key && x.r), m = med(rows.map(x => x.r)), best = mf => { const v = rows.filter(x => x.mf === mf).map(x => x.r); return v.length ? 100 * (Math.min(...v) / m - 1) : null; };
+    const ac = best('Acura'); if (ac == null) continue; const y = +key.split(' ')[0];
+    for (const [mf, model] of Object.entries(IM)) { const o = best(mf), k = lastKey(model, Math.min(y, 2025)) || lastKey(model, 2025); if (o != null && k) d.push(fit.u[k] + ac - o); } }
+  if (d.length >= 4) funLevel['Acura ARX-06'] = {u: med(d), from: `IMSA ${d.length} car-event pairs`, imsa: true};
+} catch (e) { /* no IMSA file yet */ }
+const fun26 = EVENTS_2026.map((ev, i) => { const base = out26[i].cars, ms = Object.values(base), kg0 = mean(ms.map(x => x.kg)), kW0 = mean(ms.map(x => x.kW)), g0 = mean(ms.map(x => x.above250)), MJ0 = mean(ms.map(x => x.MJ));
+  return {event: ev, cars: Object.fromEntries(Object.entries(funLevel).map(([m, L]) => { const dkg = -L.u / (2 * fit.coef.a), dP = -L.u / (2 * fit.coef.b);
+    return [m, {cls: 'lmdh', kg: Math.max(LIMITS.kgMin, Math.round(kg0 * (1 + dkg / 100))), kW: Math.min(LIMITS.kWMax, Math.max(LIMITS.kWMin, Math.round(kW0 * (1 + dP / 100)))), above250: r1(g0), MJ: Math.round(MJ0), levelPct: +L.u.toFixed(2), from: L.from}]; }))}; });
+// ---- 2027 season-opener projection (owner 2026-11-16): the last 2026 estimate, plus for each car with a new 2027 spec (Ferrari, Aston
+// Martin, Peugeot Evo) the BoP change that cancels the learned Evo gain (half by weight, half by power: L = u + a·dkg% + b·dP%)
+const proj = {};
+for (const [m, x] of Object.entries(last)) { const sp26 = specOf(m, 2026, 'MONZA'), sp27 = specOf(m, 2027, 'LOSAIL'), evo = sp27 !== sp26, d = evo ? EVO.shift : 0;
+  const dkg = d ? -d / (2 * fit.coef.a) : 0, dP = d ? -d / (2 * fit.coef.b) : 0;
+  proj[m] = {cls: CLS[m], kg: Math.max(LIMITS.kgMin, Math.round(x.kg * (1 + dkg / 100))), kW: Math.min(LIMITS.kWMax, Math.max(LIMITS.kWMin, Math.round(x.kW * (1 + dP / 100)))), above250: r1(x.g), MJ: Math.round(x.MJ), spec: sp27, evo}; }
+const projection2027 = {basis: 'Monza 2026 estimate', evoShiftPct: EVO.shift, note: 'Evo cars get the BoP change that cancels the learned Evo gain; others keep their last 2026 estimate', cars: proj};
 const result = {generated: new Date().toISOString().slice(0, 10), method: 'MAP inversion of class-wide BoP response learned from all Al Kamel laps 2024-2026 and the published 2024-2025 BoP', limits: LIMITS,
-  coefficients: Object.fromEntries(Object.entries(fit.coef).map(([k, v]) => [k, typeof v === 'number' ? +v.toFixed(4) : v])), holdout2025: holdout, learnedPartUsed: use, events: out26};
+  coefficients: Object.fromEntries(Object.entries(fit.coef).map(([k, v]) => [k, typeof v === 'number' ? +v.toFixed(4) : v])), holdout2025: holdout, learnedPartUsed: use, evo: EVO, specs: SPECS, events: out26, projection2027, fun: fun26};
 writeFileSync(new URL('../../worker/lapsim/bop-estimate-data.js', import.meta.url), `// WEC Hypercar 2026 BoP estimate (not official). Built by scripts/sim/bop-estimate.mjs; method and hold-out test in docs/lapsim-wec-bop.md\nexport const bopEstimate2026 = ${JSON.stringify(result)};\n`);
 if (process.argv.includes('--design')) writeFileSync('/tmp/bop-design.json', JSON.stringify({X: fit.X, Y: fit.Y}));
-console.log(JSON.stringify({coef: result.coefficients, holdout, use}, null, 1));
+console.log(JSON.stringify({coef: result.coefficients, holdout, use, evo: EVO}, null, 1));
+console.log('fun', JSON.stringify(fun26[0].cars));
+console.log('2027', Object.entries(proj).map(([m, x]) => `${m.split(' ')[0]} ${x.kg}/${x.kW}${x.evo ? ' EVO' : ''}`).join(' | '));
 for (const e of out26) console.log(e.event, Object.entries(e.cars).map(([m, x]) => `${m.split(' ')[0]} ${x.kg}/${x.kW}/${x.above250}/${x.MJ}`).join(' | '));

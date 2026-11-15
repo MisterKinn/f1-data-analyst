@@ -229,3 +229,12 @@ Source: https://www.imsa.com/wp-content/uploads/sites/32/2026/07/22/TB-IWSC-26-4
 - Porsche 963 (2025 homologation): kg=1062, power_v1_pct=97.3, power_v2_pct=99.0, MJ=906, energy_rate_MJ_s=22.65
 
 Missing IMSA: all 2025 GTP rounds; 2026 Long Beach, Laguna Seca, Detroit, Indianapolis, Petit Le Mans
+
+## Evo kits, 2027 projection and "for fun" cars (owner 2026-11-16)
+- Spec timeline per car (scripts/sim/bop-estimate.mjs `SPECS`, with sources): a car's fixed level is learned per model + season + spec.
+- Evo effect learned from 2024 → 2025 (new spec vs none), halved because of the small sample; 2026 Evo cars (Toyota, Cadillac, BMW, Alpine)
+  start from their 2025 level plus it with wider uncertainty.
+- 2027 season-opener projection from the Monza 2026 estimate: Ferrari, Aston Martin and Peugeot Evo get the BoP change that cancels the gain.
+- For fun: Porsche 963 (WEC 2025 level), Lamborghini SC63 (WEC 2024), Acura ARX-06 (IMSA pace vs the cars that race both series,
+  scripts/sim/learn/fetch-imsa-gtp.mjs) get, at each 2026 event, the BoP that matches the field. Not part of any official table.
+- The setup simulator scales each Hypercar by its estimated BoP (weight and power vs the event's class average) and shows its spec.
