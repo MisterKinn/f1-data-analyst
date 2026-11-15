@@ -10,9 +10,19 @@ import {carsFor, realConditions} from './scenario.js';
 import {brakeZones} from './brakes.js';
 import {energyLimit} from './energy-limits.js';
 import {calendarEvents} from '../race-calendar-data.js';
-import {PIRELLI_2026, PIRELLI_RANGE, SM_ZONES, BREMBO, F1_PRESS} from './setup-evidence.js';
+import {PIRELLI_2026, PIRELLI_RANGE, BREMBO, F1_PRESS} from './setup-evidence.js';
+import {optionTrack, puRampOf, slotOf} from './zones.js';
+import {lapsimF1Zones} from './f1-zones-data.js';
+import {bopEstimate2026} from './bop-estimate-data.js';
 
 const K = lapsimKernel();
+// 2026 BoP estimate (worker/lapsim/bop-estimate-data.js) per model at the WEC event on this track: weight and power relative to that
+// event's class average scale the class car (owner 2026-11-16: set-ups follow the learned BoP and each car's spec, Evo kits included)
+const BOP_NAME = {toyota: 'Toyota GR010 Hybrid', ferrari: 'Ferrari 499P', peugeot: 'Peugeot 9X8', aston: 'Aston Martin Valkyrie', cadillac: 'Cadillac V-Series.R', bmw: 'BMW M Hybrid V8', alpine: 'Alpine A424', genesis: 'Genesis GMR-001', porsche: 'Porsche 963', lamborghini: 'Lamborghini SC63', acura: 'Acura ARX-06'};
+function bopFor(trackId, key) { const name = BOP_NAME[key], D = bopEstimate2026; if (!name || !D) return null;
+  const e = [...(D.events || [])].reverse().find(x => x.track === trackId), f = e && (D.fun || []).find(x => x.event === e.event), car = e && (e.cars[name] || f?.cars?.[name]); if (!car) return null;
+  const all = Object.values(e.cars), kg0 = all.reduce((a, x) => a + x.kg, 0) / all.length, kW0 = all.reduce((a, x) => a + x.kW, 0) / all.length;
+  return {event: e.event, kg: car.kg, kW: car.kW, rKg: car.kg / kg0, rKW: car.kW / kW0, spec: car.spec || null, fun: !e.cars[name]}; }
 
 // Aero window = downforce range of the wing choice, and the drag that comes with it. Extra wing
 // downforce is less efficient than the whole car: the drag step uses a marginal lift/drag of 2.5
@@ -57,6 +67,7 @@ export const HYPERCARS = [
   {key: 'genesis', name: 'Genesis GMR-001', cls: 'lmdh', chassis: 'Oreca', hybrid: 'rear', series: 'WEC'},
   {key: 'porsche', name: 'Porsche 963', cls: 'lmdh', chassis: 'Multimatic', hybrid: 'rear', series: 'IMSA'},
   {key: 'acura', name: 'Acura ARX-06', cls: 'lmdh', chassis: 'Oreca', hybrid: 'rear', series: 'IMSA'},
+  {key: 'lamborghini', name: 'Lamborghini SC63', cls: 'lmdh', chassis: 'Ligier', hybrid: 'rear', series: 'WEC 2024'},
 ];
 
 // Tracks each class races on (calendar data) that the simulator has a line for
@@ -167,21 +178,29 @@ function wetShift(knobs, wet) {
 }
 
 // Full plan for one car on one track
-export function setupPlan(trackId, carId, {wet = false} = {}, tracks = lapsimAllTracks) {
+export function setupPlan(trackId, carId, {wet = false, sm = null, ot = true} = {}, tracks = lapsimAllTracks) {
   const kind = carId.startsWith('f1') ? 'f1' : 'hypercar', model = kind === 'f1' ? null : HYPERCARS.find(m => m.key === carId.split(':')[1]);
   const cls = kind === 'f1' ? null : (model?.cls || (carId.includes('lmdh') ? 'lmdh' : 'lmh'));
   const carKey = kind === 'f1' ? '2026' : 'wec-' + cls, c = carsFor(trackId)[carKey]; if (!c) return null;
   let car = c.car;
   if (model && model.hybrid === null) car = {...car, ers: {}, awdAboveKph: undefined, label: model.name}; // Valkyrie: no hybrid
+  const bop = model ? bopFor(trackId, model.key) : null;
+  if (bop) car = {...car, mass: car.mass * bop.rKg, pIce: car.pIce * bop.rKW};
   if (wet) car = {...car, muX: car.muX * WET.grip, muY: car.muY * WET.grip, muXTrac: (car.muXTrac ?? car.muX) * WET.grip};
   let track = withGrip(trackCache(trackId, tracks), c.grip);
-  // F1 2026: no straight-mode zone at this track (Monaco) = no low-drag mode anywhere
-  if (kind === 'f1' && SM_ZONES[trackId] === 0) track = {...track, aeroLow: null};
-  const {env, weather, source, energy} = envFor(trackId, kind, cls, wet);
+  // F1 2026 (owner 2026-11-16): the FIA Straight Mode zones (estimated where F1 does not race); wet = Low Grip Conditions = Alt zones with
+  // partial activation; qualifying ERS-K curve by round (Overtake used where it pays, chosen once at the middle wing level); C5.12 rule
+  const z26 = lapsimF1Zones?.tracks?.[trackId]?.[slotOf(lapsimF1Zones?.tracks?.[trackId], 2026)], smMode = kind === 'f1' ? (sm || (wet ? 'alt' : 'normal')) : null;
+  let {env, weather, source, energy} = envFor(trackId, kind, cls, wet), otUse = null;
+  if (kind === 'f1') { const d = {...tracks[trackId], id: trackId}; track = optionTrack(K, d, track, {year: 2026}, {sm: smMode, drs: true}); env = {...env, puRamp: puRampOf(d, trackId)};
+    if (ot) { const mid = withSetup(car, 0.5, aeroWindow(car, kind)), n = track.kappa.length, L = n * track.ds, zs = (z26?.zones || []).map(q => [q.from, q.to]);
+      const opts = [['none', null], ['all', true], ...zs.map(([a, b], k) => { const o = new Uint8Array(n), i0 = Math.round(a / track.ds), len = Math.round((((b - a) % L) + L) % L / track.ds); for (let j = 0; j <= len; j++) o[(i0 + j) % n] = 1; return ['SM ' + (k + 1), o]; })];
+      let best = Infinity; for (const [name, o] of opts) { const lap = K.simulateLap(o ? {...track, otOn: o} : track, mid, env).lapTime; if (lap < best) { best = lap; otUse = {name, o}; } }
+      if (otUse.o) track = {...track, otOn: otUse.o}; } }
   const w = aeroWindow(car, kind), aero = aeroSweep(track, car, env, w);
   const set = withSetup(car, aero.s, w), r = K.simulateLap(track, set, env), d = trackDemands(track, set, env, r);
   const low = aero.pts[0], high = aero.pts.at(-1);
-  const ev = kind === 'f1' ? {pirelli: PIRELLI_2026[trackId] || null, brembo: BREMBO[trackId] || null, sm: SM_ZONES[trackId] ?? null, press: F1_PRESS[trackId] || null} : {};
+  const ev = kind === 'f1' ? {pirelli: PIRELLI_2026[trackId] || null, brembo: BREMBO[trackId] || null, sm: z26 ? z26.zones.length : null, smEstimated: !!z26?.est, smMode, overtake: otUse ? otUse.name : 'off', press: F1_PRESS[trackId] || null} : {bop};
   return {trackId, carId, wet, source, kind, cls, model, vCapKph: car.vMax * 3.6, carLabel: car.label, kindLabel: c.kind, weather, energy, demands: d, aero: {...aero, low, high, lap: r.lapTime, vMax: r.vMaxKph}, window: w,
     knobs: wetShift(placeKnobs(kind, d, aero, SURFACE[trackId], ev), wet), surface: SURFACE[trackId] || null, evidence: ev};
 }

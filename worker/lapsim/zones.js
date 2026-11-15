@@ -39,7 +39,7 @@ function zoneList(d, c, m) {
   if (sl === '2025' ? m.drs === false : m.sm === 'off') return [];
   return m.sm === 'alt' && sl === '2026' ? z.zones.filter(q => q.low !== null).map(q => [q.low != null ? q.low : (q.from + 50) % L, q.to]) : z.zones.map(q => [q.from, q.to]);
 }
-function optionTrack(K, d, tr, c, m) {
+export function optionTrack(K, d, tr, c, m) {
   const zs = zoneList(d, c, m); if (!zs) return tr;
   let low = zs.length ? K.trackFromData({...d, aeroZones: zs}, {aero: 'fia'}).aeroLow : new Uint8Array(d.kappa.length);
   if (m.sm === 'alt' && c.year >= 2026) low = Float32Array.from(low, x => x * PARTIAL);
