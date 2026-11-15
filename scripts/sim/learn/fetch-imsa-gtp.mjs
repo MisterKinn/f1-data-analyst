@@ -12,7 +12,7 @@ const mean = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : null;
 const med = a => { a = [...a].sort((x, y) => x - y); return a.length ? a[a.length >> 1] : null; };
 const r3 = x => x == null ? '-' : String(Math.round(x * 1000) / 1000);
 const MFR = m => /acura/i.test(m) ? 'Acura' : /porsche/i.test(m) ? 'Porsche' : /cadillac/i.test(m) ? 'Cadillac' : /bmw/i.test(m) ? 'BMW' : /aston/i.test(m) ? 'Aston' : /lamborghini/i.test(m) ? 'Lamborghini' : /alpine/i.test(m) ? 'Alpine' : /genesis/i.test(m) ? 'Genesis' : String(m || '?').split(' ')[0];
-const read = async url => { const all = []; for (let off = 0; off < 100000; off += 5000) { const r = JSON.parse((await officialCall('motorsport_read_document', {url, offset: off, limit: 5000})).content[0].text); const rec = r.records || []; all.push(...rec); if (rec.length < 5000 || r.next_offset == null) break; } return all; };
+const read = async url => { const all = []; for (let off = 0; off < 100000; off += 5000) { const r = JSON.parse((await officialCall('motorsport_read_document', {url, offset: off, limit: 5000, category: 'GTP'})).content[0].text); const rec = r.records || []; all.push(...rec); if (rec.length < 5000 || r.next_offset == null) break; } return all; };
 
 const lines = ['# IMSA GTP pace per car and event, official Al Kamel IMSA results 2024-2026 (scripts/sim/learn/fetch-imsa-gtp.mjs). Green flying laps only.',
   '# year event car manufacturer qBest(s) raceF20(s, mean of the fastest 20 % race laps) topMed(km/h) maxGreenStint(laps)'];
@@ -21,9 +21,9 @@ for (const s of seasons.filter(x => /202[4-6]/.test(x.name))) {
   const year = s.name.match(/20\d\d/)[0]; let a; try { a = await officialArchive('imsa', s.id); } catch (e) { console.log(year, e.message); continue; }
   for (const ev of a.events) {
     let f; try { f = await officialArchive('imsa', s.id, ev.id); } catch (e) { console.log(year, ev.name, e.message); continue; }
-    // WeatherTech sessions only; per session the last Analysis CSV (a long race publishes hourly files, the last one is complete)
-    const files = f.files.filter(x => x.format === 'csv' && /analysis/i.test(x.title + ' ' + x.url) && /weathertech/i.test(x.folders.join(' ') + ' ' + x.url));
-    const bySession = new Map(); for (const x of files) { const k = x.folders.slice(0, -1).join('/') || x.folders.join('/'); const p = bySession.get(k); if (!p || (x.url).localeCompare(p.url, undefined, {numeric: true}) > 0) bySession.set(k, x); }
+    // WeatherTech sessions only ("TIME CARDS" CSV = every lap); per session the last file (a long race publishes hourly files, the last one is complete)
+    const files = f.files.filter(x => x.format === 'csv' && /time cards/i.test(x.title) && /weathertech/i.test(x.folders.join(' ')));
+    const bySession = new Map(); for (const x of files) { const k = x.folders.slice(0, 3).join('/'); const p = bySession.get(k); if (!p || (x.url).localeCompare(p.url, undefined, {numeric: true}) > 0) bySession.set(k, x); }
     const cars = {};
     for (const [k, x] of bySession) {
       const kind = /qualif/i.test(k + x.title) ? 'Q' : /race/i.test(k + x.title) ? 'R' : null; if (!kind) continue;
