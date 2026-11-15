@@ -32,6 +32,7 @@ import {lapsimTrackNorth} from './lapsim/track-north-data.js';
 import {lapsimTrackView} from './lapsim/track-view-data.js';
 import {lapsimF1Zones} from './lapsim/f1-zones-data.js';
 import {SURFACE_ERAS} from './lapsim/surface.js';
+import {ZONES_ON, DRS_ONLY} from './lapsim/zones.js';
 import {lapsimStartLines} from './lapsim/start-lines.js';
 
 const K = lapsimKernel();
@@ -241,7 +242,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
   const data = {startAlt: lapsimStartLines[id] || null, driverLines: lapsimDriverLines?.tracks?.[id] || null, pu: lapsimPuDocs?.events?.[id] || null, lang, t, id, track: td, cars, carOrder: CAR_ORDER, carId, evoOf, fam, bodyLabel: BODY_LABEL, events, conds, raceRec: raceRecords(id), changes, energy: (liveEnergy && (query.track || 'monza') === id ? liveEnergy : energyLimit(id, 2026)),
     compounds: lapsimCompounds?.[id] || {}, wecTyres: lapsimWecTyres?.[id] || {}, line: lineData(id), lineText: LT[lang], qsplit: lapsimQsplit ? {off: lapsimQsplit.offsetPct, test: lapsimQsplit.test, real: lapsimQsplit.tracks?.[id] || null} : null, brakes: lapsimBrakes ? {ramp: lapsimBrakes.rampS ?? 0, k: lapsimBrakes.pedalKgPerG, g: lapsimBrakes.gScale, t: lapsimBrakes.timeScale, test: lapsimBrakes.test, real: lapsimBrakes.races?.[id] || null, text: BT[lang]} : null, compoundGap: compoundGap(id), compoundTest: lapsimCompoundGap?.test?.rmsPct ?? null,
     evo: Object.fromEntries(['f1', 'wec'].map(se => [se, Object.fromEntries(['practice', 'qualifying'].map(ty => [ty, evolutionCoeffs(se, id, ty)]))])),
-    zones: lapsimF1Zones?.tracks?.[id] || null, surface: surfaceOf(id, td, changes), mapRot0: Number.isFinite(view0?.openDeg) ? view0.openDeg : landscapeRot(td.map, lapsimTrackNorth?.[id], VIEW[id], td.corners, td.length), cornersEstimated: !!td.cornersEstimated, north: lapsimTrackNorth?.[id] || null, ui: UI[lang],
+    zones: lapsimF1Zones?.tracks?.[id] || null, zonesOn: ZONES_ON ? (DRS_ONLY ? 'drs' : 'all') : '', surface: surfaceOf(id, td, changes), mapRot0: Number.isFinite(view0?.openDeg) ? view0.openDeg : landscapeRot(td.map, lapsimTrackNorth?.[id], VIEW[id], td.corners, td.length), cornersEstimated: !!td.cornersEstimated, north: lapsimTrackNorth?.[id] || null, ui: UI[lang],
     calibration: {generatedAt: lapsimCalibration?.generatedAt || null, seasons: Object.fromEntries(Object.entries(lapsimCalibration?.seasons || {}).map(([y, s]) => [y, s.tracks?.[id] || null]))}};
   // first render on the server with the same code the browser uses
   const view = computeView(K, data, {carId, compareId: '', mode: 'real', manual: null, active: {}, strength: 1, evo: null}, {renderMap, renderTrace, evolutionDelta, evolutionCurve, lineTrack, brakeZones, lapChannels});
@@ -556,6 +557,10 @@ function computeView(K, data, state, R) {
     corners: (d0.corners || []).map(c => Object.assign({}, c, {s: Math.round((c.s - offS + LS) % LS)})).sort((a, b) => a.s - b.s)}) : d0;
   if (!computeView.cache || computeView.cache.id !== data.id + ':' + kS) computeView.cache = {id: data.id + ':' + kS, base: K.trackFromData(d)};
   const base = computeView.cache.base;
+  // F1 low-drag zones of the car's season (worker/lapsim/zones.js; on when the F1 fit used them): DRS to 2025, Straight Mode from 2026
+  const zt = (tr, c) => { if (!data.zonesOn || c.series || !c.year || kS || (data.zonesOn === 'drs' && c.year >= 2026)) return tr; const sl = c.year >= 2026 ? '2026' : '2025', z = data.zones && data.zones[sl];
+    if (!z || !z.zones || !z.zones.length) return tr; const key = 'low' + sl; if (!computeView.cache[key]) computeView.cache[key] = K.trackFromData(Object.assign({}, d, {aeroZones: z.zones.map(q => [q.from, q.to])}), {aero: 'fia'}).aeroLow;
+    return Object.assign({}, tr, {aeroLow: computeView.cache[key]}); };
   // conditions: real (season of the selected car, else 2026) or manual
   const condKey = sel.series ? state.carId : String(sel.year);
   const yearKey = data.conds[condKey] ? condKey : (data.conds['2026'] ? '2026' : Object.keys(data.conds)[0]);
@@ -569,7 +574,7 @@ function computeView(K, data, state, R) {
   if (active.length) track = K.applyTrackChanges(base, active, d.corners || [], {strength: state.strength}).track;
   const withGrip = (tr, g) => { const n = tr.kappa.length, mu = new Float64Array(n); for (let i = 0; i < n; i++) mu[i] = g * tr.mu[i]; return {...tr, mu}; };
   // learned lap-time factor (GT3 car models, class cars on tracks learned from real laps): lap and sector times scale
-  const run = c => { const r = K.simulateLap(withGrip(track, c.grip || 1), c.car, env), f = c.timeScale; if (f && f !== 1) { r.lapTime *= f; for (let i = 0; i < r.time.length; i++) r.time[i] *= f; } return r; };
+  const run = c => { const r = K.simulateLap(withGrip(zt(track, c), c.grip || 1), c.car, env), f = c.timeScale; if (f && f !== 1) { r.lapTime *= f; for (let i = 0; i < r.time.length; i++) r.time[i] *= f; } return r; };
   const secOf = r => { const i1 = Math.round(d.sectors[0] / d.ds), i2 = Math.round(d.sectors[1] / d.ds); return [r.time[i1], r.time[i2] - r.time[i1], r.lapTime - r.time[i2]]; };
   // sector correction (raced tracks): real pole sectors minus the reference car's sectors in that weather
   const corrOf = c => {
@@ -582,7 +587,7 @@ function computeView(K, data, state, R) {
         const ref = data.cars[c.fix.ref], fw = {};
         for (const k of ['pressureHpa', 'airTempC', 'humidityPct', 'trackTempC', 'windSpeed', 'windFromDeg']) if (Number.isFinite(c.fix.weather && c.fix.weather[k])) fw[k] = c.fix.weather[k];
         const envR = K.conditionsFromWeather(Object.assign({pressureHpa: 1013.25, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0}, fw));
-        computeView.fixCache[keyL] = c.fix.lap - K.simulateLap(withGrip(base, ref.grip || 1), ref.car, envR).lapTime * (ref.timeScale || 1);
+        computeView.fixCache[keyL] = c.fix.lap - K.simulateLap(withGrip(zt(base, ref), ref.grip || 1), ref.car, envR).lapTime * (ref.timeScale || 1);
       }
       return computeView.fixCache[keyL];
     }
@@ -592,7 +597,7 @@ function computeView(K, data, state, R) {
       const ref = data.cars[c.fix.ref], fw = {};
       for (const k of ['pressureHpa', 'airTempC', 'humidityPct', 'trackTempC', 'windSpeed', 'windFromDeg']) if (Number.isFinite(c.fix.weather && c.fix.weather[k])) fw[k] = c.fix.weather[k];
       const envR = K.conditionsFromWeather(Object.assign({pressureHpa: 1013.25, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0}, fw, {rechargeMJ: data.energy && data.energy.mj != null ? data.energy.mj : undefined}));
-      const ss = secOf(K.simulateLap(withGrip(base, ref.grip || 1), ref.car, envR));
+      const ss = secOf(K.simulateLap(withGrip(zt(base, ref), ref.grip || 1), ref.car, envR));
       computeView.fixCache[key] = c.fix.real.map((x, i) => x - ss[i]);
     }
     return computeView.fixCache[key];
