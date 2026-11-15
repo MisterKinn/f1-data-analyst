@@ -18,6 +18,7 @@
  ],
  "tracks": {
   "yeongam": {
+    "cornerCount": 18,
    "group": "korea",
    "file": "extra-tracks.json",
    "candidate": "yeongam-korea",
@@ -34,6 +35,7 @@
    "direction": "cw"
   },
   "mugello": {
+    "cornerCount": 15,
    "group": "europe-africa-asia",
    "file": "extra-tracks.json",
    "candidate": "mugello-mugello",
@@ -87,6 +89,7 @@
    "factorFromProduction": "sakhir"
   },
   "kyalami": {
+    "cornerCount": 16,
    "group": "europe-africa-asia",
    "file": "extra-tracks.json",
    "candidate": "kyalami-grand-prix-circuit",
@@ -95,6 +98,7 @@
    "direction": "ccw"
   },
   "fuji": {
+    "cornerCount": 16,
    "group": "europe-africa-asia",
    "file": "extra-tracks.json",
    "candidate": "fuji-fuji-speedway",
@@ -112,6 +116,7 @@
    "shapeNote": "owner 2026-11-15: the OpenStreetMap loop skipped the Bus Stop chicane (GTP simulated 7-9 % too fast). Built from the curated track-atlas midline (OSM relation 5254136, checked against NAIP imagery) by scripts/sim/tracks/build-atlas-track.mjs."
   },
   "laguna-seca": {
+    "cornerCount": 11,
    "group": "imsa",
    "file": "extra-tracks.json",
    "candidate": "laguna-seca-laguna-seca-raceway",
@@ -120,6 +125,7 @@
    "direction": "ccw"
   },
   "watkins-glen": {
+    "cornerCount": 11,
    "group": "imsa",
    "file": "extra-tracks.json",
    "candidate": "watkins-glen-long-course-imsa",
@@ -128,6 +134,7 @@
    "direction": "cw"
   },
   "mosport": {
+    "cornerCount": 10,
    "group": "imsa",
    "file": "extra-tracks.json",
    "candidate": "mosport-grand-prix-track-imsa",
@@ -136,6 +143,7 @@
    "direction": "cw"
   },
   "road-america": {
+    "cornerCount": 14,
    "group": "imsa",
    "file": "extra-tracks.json",
    "candidate": "road-america-road-america-elkhart-lake",
@@ -152,6 +160,7 @@
    "direction": "cw"
   },
   "indianapolis": {
+    "cornerCount": 14,
    "group": "imsa",
    "file": "extra-tracks.json",
    "candidate": "indianapolis-indianapolis-road-course",
@@ -160,6 +169,7 @@
    "direction": "cw"
   },
   "road-atlanta": {
+    "cornerCount": 12,
    "group": "imsa",
    "file": "extra-tracks.json",
    "candidate": "road-atlanta-road-atlanta",
@@ -168,6 +178,7 @@
    "direction": "cw"
   },
   "mid-ohio": {
+    "cornerCount": 13,
    "group": "imsa",
    "file": "extra-tracks.json",
    "candidate": "mid-ohio-imsa-layout",
@@ -176,6 +187,7 @@
    "direction": "cw"
   },
   "lime-rock": {
+    "cornerCount": 7,
    "group": "imsa",
    "file": "extra-tracks.json",
    "candidate": "lime-rock-imsa-layout",
@@ -192,6 +204,7 @@
    "direction": "cw"
   },
   "portimao": {
+    "cornerCount": 15,
    "group": "owner-list-other",
    "file": "extra-tracks.json",
    "candidate": "portimao-algarve",
@@ -200,6 +213,7 @@
    "direction": "cw"
   },
   "hockenheim": {
+    "cornerCount": 17,
    "group": "owner-list-other",
    "file": "extra-tracks.json",
    "candidate": "hockenheim-hockenheim-grand-prix",
@@ -208,6 +222,7 @@
    "direction": "cw"
   },
   "bathurst": {
+    "cornerCount": 23,
    "group": "owner-list-other",
    "file": "extra-tracks.json",
    "candidate": "bathurst-mount-panorama-bathurst",
@@ -411,6 +426,7 @@
    "direction": "cw"
   },
   "sebring": {
+    "cornerCount": 17,
    "group": "owner-2026-11-15",
    "file": "extra-tracks-2026-11-15c.json",
    "candidate": "sebring-sebring",
@@ -492,6 +508,7 @@
    "candidate": "sochi"
   },
   "long-beach": {
+    "cornerCount": 11,
    "group": "owner-2026-11-15",
    "file": "extra-tracks-2026-11-15e.json",
    "candidate": "long-beach-long-beach",
