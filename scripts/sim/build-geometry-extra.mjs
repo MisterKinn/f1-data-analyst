@@ -54,7 +54,7 @@ export function buildTrack(id, spec, c) {
   for (let j = 0, k = Math.ceil(n / step); j < k; j++) { const i = Math.min(n0 - 1, Math.round(j * n0 / k)); map.x.push(Math.round(cx[i])); map.y.push(Math.round(cy[i])); }
   const turn = line.kappa.reduce((a, k) => a + k * line.ds, 0) * 180 / Math.PI;
   return {id, name: spec.name, circuit: spec.name, layout: spec.layout, year: null, ds: line.ds, length: Math.round(line.length),
-    officialLengthM: spec.officialLengthM ?? c.officialLengthM ?? null, sectors: [], corners: (spec.corners || []).map(([number, s]) => ({number, letter: '', s})),
+    officialLengthM: spec.officialLengthM ?? c.officialLengthM ?? null, sectors: [], corners: spec.corners ? spec.corners.map(([number, s]) => ({number, letter: '', s})) : atlasCorners(c, o, n0, line.length),
     kappa: Array.from(line.kappa, v => Math.round(v * 1e5)), grade: flat ? null : Array.from({length: n}, (_, j) => c.grade[Math.min(n0 - 1, Math.floor(j / n * n0))]), heading: null, map,
     quality: {centreLengthM: c.length, widthM: width, halfWidthM: +halfW.toFixed(1), totalTurnDeg: Math.round(turn), startVerified: o.startVerified, start: o.start, direction: o.direction, elevation: flat ? null : {minM: c.elevation?.minM, maxM: c.elevation?.maxM, maxGradePct: c.elevation?.maxGradePct},
       evidence: {lapLength: c.officialLengthM ? '1 fixed (official list)' : '4 stated on a diagram', planShape: spec.shapeEvidence || '2 measured (map centre line)',
@@ -67,7 +67,14 @@ export function buildTrack(id, spec, c) {
 // turn sense differs. Start: an OpenStreetMap start/finish feature on the lap, else the middle of the pit lane next to the lap
 // (scripts/sim/learn/fetch-osm-starts.mjs). Map x/y are east/north metres from c.centre, sampled every `step` lap points.
 const OSM = existsSync(D + 'learn/osm-starts.json') ? JSON.parse(readFileSync(D + 'learn/osm-starts.json', 'utf8')).tracks : {};
-export function orient(c, spec, ax, ay, osm = OSM[spec.id]) {
+export // official corner numbers stored with a curated atlas midline (marker = share of the source line): placed on the lap after the start and
+// direction were set by orient() (owner 2026-11-15: Daytona T1-T12, the Bus Stop is T8-T11)
+function atlasCorners(c, o, n0, len) {
+  if (!c.atlasCorners?.length) return [];
+  const pos = new Map(o.order.map((i, k) => [i, k]));
+  return c.atlasCorners.map(a => ({number: a.number, letter: '', name: a.name, s: Math.round((pos.get(Math.min(n0 - 1, Math.round(a.marker * n0))) ?? 0) / n0 * len)})).sort((a, b) => a.s - b.s);
+}
+function orient(c, spec, ax, ay, osm = OSM[spec.id]) {
   const n = ax.length, area = ax.reduce((a, x, i) => a + x * ay[(i + 1) % n] - ax[(i + 1) % n] * ay[i], 0), mapped = area > 0 ? 'ccw' : 'cw';
   const reversed = !!spec.direction && spec.direction !== mapped, idx = i => reversed ? (n - i) % n : i; // reversed lap keeps point 0
   let s0 = 0, start = 'first mapped point (not verified)', startVerified = false, pitOneway = null;
