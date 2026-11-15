@@ -6,18 +6,21 @@ import {readFileSync, writeFileSync} from 'node:fs';
 const D = 'scripts/sim/data/', spec = JSON.parse(readFileSync(D + 'track-extra.json', 'utf8')).tracks, files = {};
 const API = ['https://overpass-api.de/api/interpreter', 'https://overpass.private.coffee/api/interpreter', 'https://maps.mail.ru/osm/tools/overpass/api/interpreter', 'https://overpass.kumi.systems/api/interpreter'];
 async function overpass(q, n = 0) {
-  try { const r = await fetch(API[n % API.length], {method: 'POST', body: 'data=' + encodeURIComponent(q), signal: AbortSignal.timeout(70000), headers: {'content-type': 'application/x-www-form-urlencoded', 'user-agent': 'kongboda-lapsim (github.com/MisterKinn/f1-data-analyst)'}}); if (!r.ok) throw new Error(r.status); return await r.json(); }
+  try { const r = await fetch(API[n % API.length], {method: 'POST', body: 'data=' + encodeURIComponent(q), signal: AbortSignal.timeout(130000), headers: {'content-type': 'application/x-www-form-urlencoded', 'user-agent': 'kongboda-lapsim (github.com/MisterKinn/f1-data-analyst)'}}); if (!r.ok) throw new Error(r.status); return await r.json(); }
   catch (e) { if (n >= 3) throw new Error(`${API[n % API.length]}: ${e.message || e}`); await new Promise(f => setTimeout(f, 4000 * (n + 1))); return overpass(q, n + 1); }
 }
+const prev = (() => { try { return JSON.parse(readFileSync(D + 'learn/osm-starts.json', 'utf8')).tracks; } catch { return {}; } })();
 const out = {source: 'OpenStreetMap via Overpass API (© OpenStreetMap contributors, ODbL)', fetched: new Date().toISOString(), tracks: {}};
 for (const [id, s] of Object.entries(spec)) {
   if (s.driven) continue;
+  if (prev[id]?.elements?.length) { out.tracks[id] = prev[id]; continue; } // second pass: only tracks that timed out or found nothing
   const f = files[s.file] ??= JSON.parse(readFileSync(D + 'tracks/' + s.file, 'utf8')), c = (f.tracks || f.variants)[s.candidate];
   if (!c?.centre || !c.map) { out.tracks[id] = {error: 'no map centre'}; continue; }
   // map x/y are east/north metres from c.centre (the first mapped node); the circle covers the whole lap
   const r = Math.min(9000, Math.max(...c.map.x.map((x, i) => Math.hypot(x, c.map.y[i]))) + 300), [la, lo] = c.centre, A = `(around:${Math.round(r)},${la},${lo})`;
   // key lookups only (a name regex over the whole circle timed out on every mirror); pit and start/finish filtering is done here
-  const q = `[out:json][timeout:60];(way["highway"~"^(raceway|service)$"]${A};nwr["raceway"]${A};);out geom tags;`;
+  // second pass adds named pit/start features of any highway type (slower, so only for the tracks still missing)
+  const q = `[out:json][timeout:120];(way["highway"~"^(raceway|service)$"]${A};nwr["raceway"]${A};way["highway"]["name"~"pit|box|start|finish",i]${A};);out geom tags;`;
   try {
     const d = await overpass(q);
     const keep = e => /pit|finish|start|timing|grid/i.test([e.tags?.raceway, e.tags?.service, e.tags?.name].join(' '));
