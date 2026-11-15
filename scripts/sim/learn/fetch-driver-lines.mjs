@@ -1,7 +1,7 @@
 // Actions job (lapsim-learn.yml): racing line per driver in every series (owner 2026-11-15).
 // F1: scripts/sim/driver-lines.mjs (TracingInsights speed traces, 2026 and 2025). Formula E and SRO GT3 laps: driver-laps-extra.mjs. Endurance: driver-lines-endurance.mjs (Al Kamel
 // qualifying laps 2024-2026 of tobi/imsa_data + sector positions of tobi/track-atlas). Driver names of every source go through
-// drivers.mjs (one id per person; a failing group is logged; IMSA sectors from m:ss; Timing71 practice and qualifying); extra laps must fit their layout (class speed band). Each group is gated on unseen laps in driver-lines-data.mjs. Out (committed): scripts/sim/data/learn/driver-lines.json (derived table only).
+// drivers.mjs (one id per person; a failing group is logged; IMSA sectors from m:ss; Timing71 practice and qualifying; timing-line offset); extra laps must fit their layout (class speed band). Each group is gated on unseen laps in driver-lines-data.mjs. Out (committed): scripts/sim/data/learn/driver-lines.json (derived table only).
 import {execFileSync, spawn} from 'node:child_process';
 import {readdirSync, readFileSync, writeFileSync, mkdirSync, existsSync} from 'node:fs';
 import {cpus} from 'node:os';
