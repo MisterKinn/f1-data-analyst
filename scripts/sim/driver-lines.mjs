@@ -24,7 +24,7 @@ function get(year, p) {
   try { const t = execFileSync('curl', ['-sSf', '--max-time', '30', `https://raw.githubusercontent.com/TracingInsights/${year}/main/${p.split('/').map(encodeURIComponent).join('/')}`], {maxBuffer: 1 << 26}).toString(); mkdirSync(dirname(f), {recursive: true}); writeFileSync(f, t); return JSON.parse(t); } catch { return null; }
 }
 for (const year of years) {
-  const tree = execFileSync('git', ['-C', join(C, year), 'ls-tree', '-r', '--name-only', 'HEAD'], {maxBuffer: 1 << 28}).toString().split('\n');
+  const tree = execFileSync('git', ['-c', 'core.quotepath=off', '-C', join(C, year), 'ls-tree', '-r', '--name-only', 'HEAD'], {maxBuffer: 1 << 28}).toString().split('\n');
   const events = [...new Set(tree.filter(p => /\/Qualifying\/[A-Z]{3}\/laptimes\.json$/.test(p)).map(p => p.split('/')[0]))];
   events.filter((e, i) => i % pk === pi).forEach(event => {
     const id = tiTrack(event, +year), L = lineData(id), car = carsFor(id)[year];
@@ -38,7 +38,11 @@ for (const year of years) {
       const d = tel.rel_distance, s = tel.speed, at = n => Array.from({length: n}, (_, i) => { const f = (i + 0.5) / n; let j = 1; while (j < d.length - 1 && d[j] < f) j++; const a = d[j - 1], b = d[j]; return s[j - 1] + (s[j] - s[j - 1]) * ((f - a) / ((b - a) || 1)); });
       const R = n => shape(at(n)); R.abs = at; return R;
     };
-    const td = lapsimAllTracks[id], Lm = td.length || td.kappa.length * td.ds, cs = (td.corners || []).map(c => c.s / Lm);
+    const td = lapsimAllTracks[id], Lm = td.length || td.kappa.length * td.ds;
+    // official corners; a track without a corner list (Sakhir, Jeddah, Madring) uses the curvature peaks (radius under 300 m, 150 m apart)
+    let cs = (td.corners || []).map(c => c.s / Lm);
+    if (cs.length < 4) { const kp = td.kappa.map(k => Math.abs(k) / 1e5), n = kp.length, gap = Math.round(150 / td.ds); cs = [];
+      for (let i = 0; i < n; i++) if (kp[i] > 1 / 300 && kp.every((x, j) => Math.abs(j - i) > gap && n - Math.abs(j - i) > gap || x <= kp[i])) cs.push(i / n); }
     const mins = (v, f0) => cs.map(f => { let m = Infinity; const n = v.length; for (let i = Math.floor((f - 80 / Lm) * n); i <= Math.ceil((f + 80 / Lm) * n); i++) m = Math.min(m, v[((i % n) + n) % n]); return m; });
     // % RMS of the corner minimum speeds after one common scale (car pace is not the line); b: real corner minimum speeds
     const rmsV = (a, b) => { const k = b.reduce((q, x, i) => q + x / a[i], 0) / a.length; return 100 * Math.sqrt(a.reduce((q, x, i) => q + ((x * k - b[i]) / b[i]) ** 2, 0) / a.length); };
@@ -53,8 +57,8 @@ for (const year of years) {
     // 1) every driver's best clean lap (and the next one within 2 %, kept for the test)
     const drivers = tree.filter(p => p.startsWith(event + '/Qualifying/') && p.endsWith('/laptimes.json')).map(p => p.split('/')[2]), laps = {};
     for (const drv of drivers) {
-      const T = get(year, `${event}/Qualifying/${drv}/laptimes.json`); if (!T || T.wR?.some(r => r === true)) continue;
-      const ls = T.lap.map((lap, i) => ({lap, t: val(T.time[i]), ok: T.del?.[i] !== true && val(T.pin?.[i]) == null && val(T.pout?.[i]) == null})).filter(x => Number.isFinite(x.t) && x.ok).sort((x, y) => x.t - y.t);
+      const T = get(year, `${event}/Qualifying/${drv}/laptimes.json`); if (!T) continue; // wet laps are left out one by one (a shower in Q1 does not hide the dry Q3 lap)
+      const ls = T.lap.map((lap, i) => ({lap, t: val(T.time[i]), ok: T.del?.[i] !== true && T.wR?.[i] !== true && val(T.pin?.[i]) == null && val(T.pout?.[i]) == null})).filter(x => Number.isFinite(x.t) && x.ok).sort((x, y) => x.t - y.t);
       if (!ls.length) continue;
       const tel = l => { const f = get(year, `${event}/Qualifying/${drv}/${l.lap}_tel.json`), t = f?.tel || f; return t?.rel_distance?.length > 100 ? t : null; };
       const t1 = tel(ls[0]); if (!t1) continue;

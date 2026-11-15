@@ -119,7 +119,7 @@ test('a racing line per driver in every series (estimated), with one id per driv
   const f1 = Object.keys(lapsimDriverLines.tracks).find(k => lapsimDriverLines.tracks[k].f1?.['2026']), gt = Object.keys(lapsimDriverLines.tracks).find(k => lapsimDriverLines.tracks[k].end?.gt3);
   assert.match(simulationPage({track: f1, car: '2026'}, 'en'), /data-ls="driverWrap">/);
   assert.match(simulationPage({track: gt, car: 'wec-lmgt3'}, 'en'), /data-ls="driverWrap">/);
-  assert.match(simulationPage({track: 'fe-london', car: 'fe-gen3evo'}, 'en'), /data-ls="driverWrap" hidden/);
+  assert.match(simulationPage({track: 'fe-london', car: 'fe-gen4'}, 'en'), /data-ls="driverWrap" hidden/); // Gen4 has not raced
 });
 
 test('driver names: accents, case, order, initials and short names join; doubtful ones stay apart', async () => {

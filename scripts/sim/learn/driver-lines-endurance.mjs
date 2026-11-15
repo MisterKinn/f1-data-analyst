@@ -3,6 +3,11 @@
 // least-curvature / shortest share is fitted per timing sector (3 values) to the shares of the driver's best clean dry qualifying lap
 // (sector time / lap time after one common scale: car pace is not the line), tested on the driver's next clean lap within 2 %.
 // Car: the page's class car (LMH, LMDh by manufacturer; GT3 = the LMGT3 car). Names go through drivers.mjs (one id per person).
+// More laps (Formula E from Al Kamel, SRO GT3 from Timing71) come as JSON lines in LAPSIM_DL_EXTRA (comma separated files):
+// {series, season, venue, lenKm, bucket ('gt3' | 'fe-gen2' | 'fe-gen3' | 'fe-gen3evo'), driver, manufacturer, team, t, s: [s1, s2, s3]}.
+// Where track-atlas has no sector positions, the two sector cuts are estimated: the cut pair that makes the car's simulated sector
+// shares match the field's median shares (the field line then absorbs that estimate; a driver's line is the difference from it).
+// Names: one id per person before grouping (drivers.mjs), so two spellings of one driver are one driver.
 // Usage: node scripts/sim/learn/driver-lines-endurance.mjs <imsa_data checkout> <track-atlas tracks.jsonl> <out dir> [part i/k]
 import {readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync} from 'node:fs';
 import {join} from 'node:path';
@@ -14,6 +19,7 @@ import {lapsimAllTracks} from '../../../worker/lapsim/tracks.js';
 import {lineData} from '../../../worker/simulation.js';
 import {parseCsv, secs} from './build-endurance.mjs';
 import {resolveTrack} from './track-registry.mjs';
+import {buildRegistry} from './drivers.mjs';
 
 const [root, atlasFile, out, part = '0/1'] = process.argv.slice(2), [pi, pk] = part.split('/').map(Number), K = lapsimKernel();
 // sector boundaries (fractions of the lap) per simulator track
@@ -31,7 +37,8 @@ const files = [];
 const walk = d => { for (const f of readdirSync(d, {withFileTypes: true})) { const p = join(d, f.name); if (f.isDirectory()) walk(p); else if (/(qualif|hyperpole).*-laps\.csv$/i.test(f.name) && !/race/i.test(f.name)) files.push(p); } };
 walk(join(root, 'data'));
 const bucket = r => /HYPERCAR|GTP/i.test(r.CLASS) ? (SERIES.wec.classes.lmh.manufacturers.test(r.MANUFACTURER || '') ? 'lmh' : 'lmdh') : /GT3|GTD|^GT$|LMGT3/i.test(r.CLASS) ? 'gt3' : null;
-const CAR = {lmh: 'wec-lmh', lmdh: 'wec-lmdh', gt3: 'wec-lmgt3'};
+const CAR = {lmh: 'wec-lmh', lmdh: 'wec-lmdh', gt3: 'wec-lmgt3', 'fe-gen2': 'fe-gen2', 'fe-gen3': 'fe-gen3', 'fe-gen3evo': 'fe-gen3evo'};
+const laps = []; // every clean lap, grouped after the names are joined
 const groups = {}; // track|bucket -> {driver -> laps}
 for (const f of files) {
   const [, series, season, event] = f.match(/data\/([^/]+)\/(\d{4})\/\d+-([^/]+)\//) || [];
@@ -42,17 +49,38 @@ for (const f of files) {
     const b = bucket(r), t = secs(r.LAP_TIME), s = [r.S1_SECONDS, r.S2_SECONDS, r.S3_SECONDS].map(Number);
     if (!b || !r.DRIVER_NAME || !Number.isFinite(t) || s.some(x => !(x > 0)) || Math.abs(s[0] + s[1] + s[2] - t) > 0.05 || r.CROSSING_FINISH_LINE_IN_PIT || r.PIT_TIME || (r.FLAG_AT_FL && r.FLAG_AT_FL !== 'GF')) continue;
     const lenKm = Number(r.KPH) > 0 ? Number(r.KPH) * t / 3600 : null, id = resolveTrack({name: event.replace(/-/g, ' '), lengthKm: lenKm, season: +season}).sim;
-    if (!id || !atlas[id]) continue;
-    const g = (groups[id + '|' + b] ||= {}), d = (g[r.DRIVER_NAME.trim()] ||= []);
-    d.push({t, s, series, season: +season, manufacturer: r.MANUFACTURER || null, team: r.TEAM || null});
+    if (!id) continue;
+    laps.push({id, b, name: r.DRIVER_NAME.trim(), t, s, series, season: +season, manufacturer: r.MANUFACTURER || null, team: r.TEAM || null});
   }
 }
+for (const f of (process.env.LAPSIM_DL_EXTRA || '').split(',').filter(x => x && existsSync(x))) for (const line of readFileSync(f, 'utf8').split('\n')) {
+  if (!line) continue; let r; try { r = JSON.parse(line); } catch { continue; }
+  if (!r.driver || !(r.t > 0) || !Array.isArray(r.s) || r.s.length !== 3 || r.s.some(x => !(x > 0)) || Math.abs(r.s[0] + r.s[1] + r.s[2] - r.t) > 0.1) continue;
+  const id = resolveTrack({name: String(r.venue || '').replace(/-/g, ' '), lengthKm: r.lenKm || null, season: r.season}).sim; if (!id || !CAR[r.bucket]) continue;
+  laps.push({id, b: r.bucket, name: String(r.driver).trim(), t: r.t, s: r.s, series: r.series, season: r.season, manufacturer: r.manufacturer || null, team: r.team || null});
+}
+const reg = buildRegistry([...new Set(laps.map(l => l.name))].map(name => ({name})));
+for (const l of laps) { const pid = reg.ids.get(l.name) || l.name; ((groups[l.id + '|' + l.b] ||= {})[pid] ||= []).push(l); }
+console.log('laps', laps.length, 'groups', Object.keys(groups).length, 'people', Object.keys(reg.people).length);
 mkdirSync(out, {recursive: true});
 Object.keys(groups).sort().filter((k, i) => i % pk === pi).forEach(key => {
   const [id, b] = key.split('|'), of = join(out, `dle-${id}-${b}.json`); if (existsSync(of)) return;
   const L = lineData(id), c = carsFor(id)[CAR[b]]; if (!L || !c) return;
   const env = K.conditionsFromWeather(realConditions(id)[CAR[b]] || {}), ref = [L.mid.map(p => p[0]), L.mid.map(p => p[1])], mc = L.base.map(x => x / 10), sp = L.sp.map(x => x / 10);
-  const cuts = atlas[id].cuts, W = 10, grp = k => { const f = (k + 0.5) / W; return f < cuts[0] ? 0 : f < cuts[1] ? 1 : 2; };
+  // sector cuts: track-atlas, else estimated from the field's median sector shares with the car line (0.01 steps)
+  const shareOf = s => s.map(x => x / (s[0] + s[1] + s[2]));
+  // the car line's simulated time at a lap fraction, and the field's median sector shares
+  const best = Object.values(groups[key]).map(ls => ls.slice().sort((a, b2) => a.t - b2.t)[0]); if (best.length < 3) return;
+  const med = [0, 1, 2].map(i => { const v = best.map(l => shareOf(l.s)[i]).sort((x, y) => x - y); return v[v.length >> 1]; });
+  const cl0 = blendLine(K, ref, L.nrm, mc, sp, c.car, env, c.grip || 1), tr0 = lineTrack(K, ref[0].map((x, i) => x + L.nrm[i][0] * cl0.off[i]), ref[1].map((y, i) => y + L.nrm[i][1] * cl0.off[i]), 5); tr0.mu.fill(c.grip || 1);
+  const r0 = K.simulateLap(tr0, c.car, env), n0 = r0.time.length, at = f => r0.time[Math.min(n0 - 1, Math.round(f * n0))] / r0.lapTime;
+  const cutErr = ([a, b2]) => Math.sqrt(((at(a) - med[0]) ** 2 + (at(b2) - at(a) - med[1]) ** 2 + (1 - at(b2) - med[2]) ** 2) / 3);
+  let est = null, eBest = Infinity; for (let a = 0.15; a <= 0.6; a += 0.01) for (let b2 = a + 0.15; b2 <= 0.88; b2 += 0.01) { const e = cutErr([a, b2]); if (e < eBest) { eBest = e; est = [+a.toFixed(2), +b2.toFixed(2)]; } }
+  // track-atlas positions (measured) unless they put the field sector shares far off (start line or layout of this track differs)
+  let cuts = atlas[id]?.cuts, cutSrc = atlas[id]?.source || null;
+  // measured positions are kept when they put the sector shares within 1.5 % of the lap
+  if (!cuts || cutErr(cuts) > 0.015) { cuts = est; cutSrc = 'estimated from the field sector times' + (atlas[id] ? ' (track-atlas positions did not fit this layout)' : ''); }
+  const W = 10, grp = k => { const f = (k + 0.5) / W; return f < cuts[0] ? 0 : f < cuts[1] ? 1 : 2; };
   const run = w3 => { const w = Array.from({length: W}, (_, k) => w3[grp(k)]), off = blendOff(mc, sp, w), tr = lineTrack(K, ref[0].map((x, i) => x + L.nrm[i][0] * off[i]), ref[1].map((y, i) => y + L.nrm[i][1] * off[i]), 5); tr.mu.fill(c.grip || 1);
     const r = K.simulateLap(tr, c.car, env), n = r.time.length, at = f => r.time[Math.min(n - 1, Math.round(f * n))]; return [at(cuts[0]), at(cuts[1]) - at(cuts[0]), r.lapTime - at(cuts[1])]; };
   const err = (sim, s) => { const k = (s[0] + s[1] + s[2]) / (sim[0] + sim[1] + sim[2]); return 100 * Math.sqrt(sim.reduce((q, x, i) => q + ((x * k - s[i]) / s[i]) ** 2, 0) / 3); };
@@ -71,8 +99,8 @@ Object.keys(groups).sort().filter((k, i) => i % pk === pi).forEach(key => {
   for (const [name, L1, L2] of best1) {
     const before = err(simOf(F.w), L1.s); if (!(before < 25)) continue;
     const S = search(F.w, L1.s, [0.15, 0.075]);
-    res[name] = {w3: S.w, series: L1.series, season: L1.season, manufacturer: L1.manufacturer, team: L1.team, lap: L1.t, fit: [+before.toFixed(3), +S.best.toFixed(3)], test: L2 ? [+err(simOf(F.w), L2.s).toFixed(3), +err(simOf(S.w), L2.s).toFixed(3)] : null};
+    res[name] = {name: reg.people[name]?.name || name, aliases: reg.people[name]?.aliases || [name], w3: S.w, series: L1.series, season: L1.season, manufacturer: L1.manufacturer, team: L1.team, lap: L1.t, fit: [+before.toFixed(3), +S.best.toFixed(3)], test: L2 ? [+err(simOf(F.w), L2.s).toFixed(3), +err(simOf(S.w), L2.s).toFixed(3)] : null};
   }
-  writeFileSync(of, JSON.stringify({id, bucket: b, cuts, atlas: atlas[id].source, carW3: w0, fieldW3: F.w, field: [+err(simOf(w0), field).toFixed(3), +F.best.toFixed(3)], drivers: res}));
+  writeFileSync(of, JSON.stringify({id, bucket: b, cuts, atlas: cutSrc, names: Object.fromEntries(Object.keys(groups[key]).map(k => [k, reg.people[k]?.name || k])), carW3: w0, fieldW3: F.w, field: [+err(simOf(w0), field).toFixed(3), +F.best.toFixed(3)], drivers: res}));
   console.log(id, b, Object.keys(res).length, 'drivers');
 });

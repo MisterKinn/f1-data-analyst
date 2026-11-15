@@ -506,7 +506,7 @@ function computeView(K, data, state, R) {
     let off = cl ? cl.off : LD.base, bl = null;
     // F1: a driver's own line, estimated from that driver's speed trace (scripts/sim/driver-lines.mjs), when one is picked
     // every series has driver lines (owner 2026-11-15): F1 per season; endurance per class (LMH, LMDh, GT3), GT3 drivers of this car's make
-    const DLT = data.driverLines || {}, bucket = !sel.series ? null : sel.cls === 'lmh' ? 'lmh' : sel.cls === 'lmdh' || sel.cls === 'gtp' ? 'lmdh' : sel.series === 'fe' ? null : 'gt3';
+    const DLT = data.driverLines || {}, bucket = !sel.series ? null : sel.cls === 'lmh' ? 'lmh' : sel.cls === 'lmdh' || sel.cls === 'gtp' ? 'lmdh' : sel.series === 'fe' ? 'fe-' + sel.cls : 'gt3';
     let DLy = !sel.series ? DLT.f1 && DLT.f1[String(sel.year)] : bucket && DLT.end && DLT.end[bucket];
     if (DLy && bucket === 'gt3' && sel.base) { const mk = String(sel.base).split(' ')[0].toLowerCase(), own = Object.entries(DLy.drivers).filter(([, r]) => String(r.manufacturer || '').toLowerCase().startsWith(mk)); if (own.length) DLy = {drivers: Object.fromEntries(own)}; }
     const dl = DLy && state.driver ? DLy.drivers[state.driver] : null;

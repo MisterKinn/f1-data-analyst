@@ -1,0 +1,52 @@
+// Per-driver laps the endurance archive does not hold (owner 2026-11-15: driver lines in every series), as JSON lines for
+// driver-lines-endurance.mjs (LAPSIM_DL_EXTRA):
+//  - Formula E: Al Kamel "Analysis" CSV of every qualifying session (results.fiaformulae.com), seasons 2018-19 on (Gen2, Gen3, Gen3 Evo).
+//  - SRO GT3: Timing71 lap rows (GT World Challenge in every region, IGTC, British GT, ...) from the all-laps artifacts (.cache/t71-rows),
+//    when the row names its driver.
+// Network: run in GitHub Actions. Out: <out file> (raw laps stay out of git; the fit commits only derived lines).
+import {writeFileSync, readdirSync, readFileSync, statSync, existsSync} from 'node:fs';
+import {gunzipSync} from 'node:zlib';
+import {join} from 'node:path';
+import {officialArchive, officialSource, textOf} from '../../../worker/official.js';
+import {parseCsv, secs, sessionType} from './build-endurance.mjs';
+import {modelOf} from './models.mjs';
+
+const OUT = process.argv[2] || '.cache/learn/extra-laps.ndjson', lines = [], log = [];
+const num = x => { const v = Number(String(x ?? '').trim().replace(',', '.')); return Number.isFinite(v) ? v : null; };
+const feBucket = y => y <= 2022 ? 'fe-gen2' : y <= 2024 ? 'fe-gen3' : 'fe-gen3evo';
+// Formula E
+const list = async id => { for (let i = 0; ; i++) { try { return await officialArchive('formula-e', id); } catch (e) { if (i >= 2) { log.push(`${id}: ${e.message}`); return {catalogs: [], files: []}; } await new Promise(r => setTimeout(r, 2000)); } } };
+for (const s of (await list()).catalogs.filter(c => +(c.name.match(/Season (\d+)/) || [])[1] >= 5)) {
+  const year = +('20' + s.name.match(/-(\d\d)\s*$/)[1]);
+  for (const ev of (await list(s.id)).catalogs) for (const champ of (await list(ev.id)).catalogs.filter(c => /formula e world championship|formula e championship/i.test(c.name)))
+    for (const se of (await list(champ.id)).catalogs) {
+      if (sessionType(se.name.toLowerCase().replace(/ /g, '-')) !== 'Q') continue;
+      const lf = (await list(se.id)).files.find(f => /analysis/i.test(f.title) && (f.format === 'csv' || /\.csv$/i.test(f.url))); if (!lf) continue;
+      try {
+        for (const r of parseCsv(textOf(await officialSource(lf.url)))) {
+          const t = secs(r.LAP_TIME), sx = [r.S1_SECONDS ?? secs(r.S1), r.S2_SECONDS ?? secs(r.S2), r.S3_SECONDS ?? secs(r.S3)].map(num);
+          if (!r.DRIVER_NAME || !(t > 0) || r.CROSSING_FINISH_LINE_IN_PIT || (r.FLAG_AT_FL && r.FLAG_AT_FL !== 'GF')) continue;
+          lines.push({series: 'fe', season: year, venue: ev.name.replace(/^R\d+\s*/, ''), lenKm: num(r.KPH) ? num(r.KPH) * t / 3600 : null, bucket: feBucket(year), driver: r.DRIVER_NAME, manufacturer: r.MANUFACTURER || null, team: r.TEAM || null, t, s: sx});
+        }
+      } catch (e) { log.push(`${ev.name} ${se.name}: ${e.message}`); }
+    }
+  console.log(s.name, 'laps so far', lines.length);
+}
+// SRO GT3 from Timing71 lap rows
+const DIR = process.env.T71_ROWS || '.cache/t71-rows', HARD = ['no_time', 'pit_in', 'pit_out', 'not_green', 'deleted', 'wet_lap', 'wet_session', 'sector_sum', 'inaccurate', 'sim'];
+const files = d => existsSync(d) ? readdirSync(d).flatMap(f => { const p = join(d, f); return statSync(p).isDirectory() ? files(p) : /\.ndjson(\.gz)?$/.test(f) ? [p] : []; }) : [];
+let t71 = 0, noDriver = 0, keys = null;
+for (const f of files(DIR)) {
+  const text = f.endsWith('.gz') ? gunzipSync(readFileSync(f)).toString() : readFileSync(f, 'utf8');
+  for (const line of text.split('\n')) {
+    if (!line) continue; let r; try { r = JSON.parse(line); } catch { continue; }
+    if (r.source === 'alkamel' || r.series === 'wec' || !/GT3|GTD/i.test(modelOf(r.carModel, r.season, 'GT3')?.base || '')) continue;
+    keys ||= Object.keys(r);
+    const driver = r.driver ?? r.driverName ?? r.driver_name ?? null; if (!driver) { noDriver++; continue; }
+    if ((r.q || []).some(q => HARD.includes(q)) || !/q/i.test(String(r.sessionType || r.session || ''))) continue;
+    lines.push({series: r.series, season: r.season, venue: r.venue || r.track || r.circuit, lenKm: r.lenKm || null, bucket: 'gt3', driver, manufacturer: modelOf(r.carModel, r.season, 'GT3')?.base?.split(' ')[0] || null, team: r.team || null, t: r.time, s: [r.s1, r.s2, r.s3]}); t71++;
+  }
+}
+console.log('Timing71 GT3 qualifying laps with a driver', t71, '· rows without a driver', noDriver, '· row fields', JSON.stringify(keys));
+writeFileSync(OUT, lines.map(x => JSON.stringify(x)).join('\n') + '\n');
+console.log('extra laps', lines.length, 'errors', log.length, log.slice(0, 5));
