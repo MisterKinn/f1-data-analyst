@@ -1,0 +1,97 @@
+{
+ "note": "Read by eye from the FIA circuit-map pictures (legend and drawn marks), 2026-11-15. Positions as the legend states; \"N% from Ta to Tb\" where the legend names a light panel and the mark is placed by its drawn position.",
+ "events": [
+  {
+   "year": 2025,
+   "track": "melbourne",
+   "doc": "2025 Australian GP Doc 5 - Event Notes - Circuit Map",
+   "lines": [
+    "DRS Detection1 (40m after T6)",
+    "DRS Detection2 (90m before T13)",
+    "DRS Activation1 (33% from T8 to T9)",
+    "DRS Activation2 (100m after T10)",
+    "DRS Activation3 (30m after T14)",
+    "DRS Activation4 (30m after T2)"
+   ]
+  },
+  {
+   "year": 2025,
+   "track": "sakhir",
+   "doc": "2025 Bahrain GP Doc 6 - Event Notes - Circuit Map V4",
+   "lines": [
+    "DRS Detection1 (50m before T1)",
+    "DRS Detection2 (10m before T9)",
+    "DRS Detection3 (110m before T14)",
+    "DRS Activation1 (23m after T3)",
+    "DRS Activation2 (50m after T10)",
+    "DRS Activation3 (250m after T15)"
+   ]
+  },
+  {
+   "year": 2025,
+   "track": "shanghai",
+   "doc": "2025 Chinese GP Doc 8 - Event Notes - Circuit Map",
+   "lines": [
+    "DRS Detection1 (0m after T12)",
+    "DRS Activation1 (375m after T13)",
+    "DRS Detection2 (35m before T16)",
+    "DRS Activation2 (98m after T16)"
+   ]
+  },
+  {
+   "year": 2025,
+   "track": "suzuka",
+   "doc": "2025 Japanese GP Doc 5 - Event Notes - Circuit Map",
+   "lines": [
+    "DRS Detection1 (40m after T15)",
+    "DRS Activation1 (100m before control line)"
+   ]
+  },
+  {
+   "year": 2025,
+   "track": "monte-carlo",
+   "doc": "2025 Monaco GP Doc 7 - Race Director's Event Notes - Circuit Map",
+   "lines": [
+    "DRS Detection1 (80m after T16)",
+    "DRS Activation1 (18m after T19)"
+   ]
+  },
+  {
+   "year": 2025,
+   "track": "miami",
+   "doc": "2025 Miami GP Doc 5 - Event Notes - Circuit Map",
+   "lines": [
+    "DRS Detection1 (90m after T8)",
+    "DRS Detection2 (70m after T16)",
+    "DRS Detection3 (15m after T17)",
+    "DRS Activation1 (30m after T9)",
+    "DRS Activation2 (525m after T16)",
+    "DRS Activation3 (0m after T19)"
+   ]
+  },
+  {
+   "year": 2025,
+   "track": "jeddah",
+   "doc": "2025 Saudi Arabian GP Doc 4 - Event Notes - Circuit Map",
+   "lines": [
+    "DRS Detection1 (Exit T17)",
+    "DRS Detection2 (Entry T22)",
+    "DRS Detection3 (Exit T27)",
+    "DRS Activation1 (Exit T19)",
+    "DRS Activation2 (Entry T25)",
+    "DRS Activation3 (240m after T27)"
+   ]
+  },
+  {
+   "year": 2021,
+   "track": "sochi",
+   "doc": "2021 Russian GP Circuit Map",
+   "lines": [
+    "DRS Detection1 (72m after T18)",
+    "DRS Activation1 (95m before T1)",
+    "DRS Detection2 (72m before T10)",
+    "DRS Activation2 (70m after T10)"
+   ]
+  }
+ ]
+}
