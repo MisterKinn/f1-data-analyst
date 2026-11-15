@@ -26,7 +26,7 @@ jobs:
       - uses: actions/setup-node@v4
         with: {node-version: '22'}
       - run: npm ci --ignore-scripts
-      - run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils librsvg2-bin
       - name: Stored lap rows of the all-laps run (for fetch-rows.mjs)
         if: ${{ contains(github.event.head_commit.message, 'rows') || github.event_name == 'workflow_dispatch' }}
         env:
