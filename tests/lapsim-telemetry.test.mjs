@@ -111,13 +111,22 @@ R(116.3,['Article C5.12.7',128.4],['OVERTAKE',418.1]),R(79.1,['Speed threshold',
   assert.match(mel, /R1, rules before Miami/); assert.doesNotMatch(mel, /class="ls-alt"/);
 });
 
-test('F1: a line per driver (estimated from the speed trace); other series: a line per car', () => {
-  const S = lapsimDriverLines.summary;
-  assert.ok(S.drivers >= 100, 'drivers ' + S.drivers);
-  assert.ok(S.fit[1] < S.fit[0] && S.test[1] < S.test[0] && S.testBetter > S.testN / 2, JSON.stringify(S)); // better on laps the fit did not see
-  for (const [id, ys] of Object.entries(lapsimDriverLines.tracks)) for (const [y, t] of Object.entries(ys)) for (const [d, r] of Object.entries(t.drivers))
-    assert.ok(r.w.length >= 4 && r.w.every(x => x >= 0 && x <= 1), id + y + d);
-  const id = Object.keys(lapsimDriverLines.tracks).find(k => lapsimDriverLines.tracks[k]['2026']);
-  assert.match(simulationPage({track: id, car: '2026'}, 'en'), /data-ls="driverWrap">/);
-  assert.match(simulationPage({track: id, car: 'gt3-audi-r8-lms-gt3'}, 'en'), /data-ls="driverWrap" hidden/);
+test('a racing line per driver in every series (estimated), with one id per driver across series', () => {
+  const S = lapsimDriverLines.summary, groups = Object.keys(S);
+  assert.ok(groups.some(g => g.startsWith('F1')) && groups.some(g => g === 'GT3') && groups.some(g => g === 'LMH' || g === 'LMDH'), groups.join());
+  for (const g of groups) { const x = S[g]; assert.ok(x.fit[1] <= x.fit[0] && x.test[1] <= x.test[0] && x.testBetter >= x.testN / 2, g + ' ' + JSON.stringify(x)); } // better than the field line on unseen laps
+  for (const t of Object.values(lapsimDriverLines.tracks)) for (const grp of [...Object.values(t.f1 || {}), ...Object.values(t.end || {})]) for (const r of Object.values(grp.drivers)) assert.ok(r.w.length === 10 && r.w.every(x => x >= 0 && x <= 1) && r.name);
+  const f1 = Object.keys(lapsimDriverLines.tracks).find(k => lapsimDriverLines.tracks[k].f1?.['2026']), gt = Object.keys(lapsimDriverLines.tracks).find(k => lapsimDriverLines.tracks[k].end?.gt3);
+  assert.match(simulationPage({track: f1, car: '2026'}, 'en'), /data-ls="driverWrap">/);
+  assert.match(simulationPage({track: gt, car: 'wec-lmgt3'}, 'en'), /data-ls="driverWrap">/);
+  assert.match(simulationPage({track: 'fe-london', car: 'fe-gen3evo'}, 'en'), /data-ls="driverWrap" hidden/);
+});
+
+test('driver names: accents, case, order, initials and short names join; doubtful ones stay apart', async () => {
+  const {buildRegistry} = await import('../scripts/sim/learn/drivers.mjs');
+  const R = buildRegistry(['Kevin ESTRE', 'Kévin Estre', 'K. Estre', 'ZHOU Guanyu', 'Guanyu Zhou', 'Alex Lynn', 'Alexander Lynn', 'Max Verstappen', 'Jos Verstappen', 'Lucas DI GRASSI', 'Lucas di Grassi', 'M. Verstappen', 'J. Verstappen'].map(name => ({name})));
+  const id = n => R.ids.get(n);
+  assert.equal(id('Kevin ESTRE'), id('Kévin Estre')); assert.equal(id('K. Estre'), id('Kevin ESTRE'));
+  assert.equal(id('ZHOU Guanyu'), id('Guanyu Zhou')); assert.equal(id('Alex Lynn'), id('Alexander Lynn')); assert.equal(id('Lucas DI GRASSI'), id('Lucas di Grassi'));
+  assert.notEqual(id('Max Verstappen'), id('Jos Verstappen')); assert.equal(id('M. Verstappen'), id('Max Verstappen')); assert.equal(id('J. Verstappen'), id('Jos Verstappen'));
 });

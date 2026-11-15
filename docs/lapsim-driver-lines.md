@@ -1,14 +1,35 @@
-# Racing line per F1 driver
+# Racing line per driver (every series)
 
-Generated 2026-11-15T04:06:52.785Z by `scripts/sim/driver-lines.mjs` and `driver-lines-data.mjs`.
+Generated 2026-11-15T04:27:03.385Z by `scripts/sim/learn/fetch-driver-lines.mjs` (GitHub Actions) and `scripts/sim/driver-lines-data.mjs`.
 
-Public F1 positions are snapped to one reference path, so no driven line is measured. Each driver's line is estimated from the speed trace of the best clean dry qualifying lap (TracingInsights): the least-curvature / shortest-path share is fitted per window (10 windows) so the simulated corner minimum speeds (season car, session weather, one common scale) match the driver's. The test lap is the driver's next clean lap within 2 % of the best, not used in the fit. Laps whose error before the fit is 25 % or more (aborted, traffic) are dropped.
+No public source gives a measured driven line, so each driver's line is **estimated**:
 
-Error = RMS of the corner minimum speeds, %.
+- **F1**: from the speed trace of the driver's best clean dry qualifying lap (TracingInsights), judged on the minimum speed of every
+  official corner. 10 windows of least-curvature / shortest-path share.
+- **Endurance (LMH, LMDh, GT3; WEC, IMSA, ELMS, Asian LMS, qualifying 2024-2026)**: Al Kamel gives no speed trace, only the three
+  sector times, placed on the track with the sector positions of tobi/track-atlas. One share per timing sector.
 
-| Season | Tracks | Drivers | Fit lap, car line → driver line | Unseen lap, car line → driver line | Unseen lap better |
+Both first fit the **field line** (median of all drivers at that track and class: what the track, the timing lines and the car model
+explain), then each driver's difference from it. The test lap is the driver's next clean lap within 2 % of the best, not used in the fit;
+"before" = field line, "after" = driver line. Error: F1 RMS of corner minimum speeds, endurance RMS of sector times, %, after one
+common scale.
+
+| Group | Tracks | Drivers | Fit lap, field → driver | Unseen lap, field → driver | Unseen lap better |
 |---|---|---|---|---|---|
-| 2026 | 1 | 17 | 13.5 → 12.52 | 12.86 → 12.14 | 15 / 16 |
-| 2025 | 0 | 0 | null → null | null → null | 0 / 0 |
+| F1 2025 | 19 | 363 | 11.49 → 11.07 | 11.48 → 11.15 | 291 / 350 |
+| F1 2026 | 15 | 294 | 12.16 → 11.72 | 11.55 → 11.18 | 202 / 265 |
+| GT3 | 11 | 494 | 10.7 → 9.96 | 11.07 → 10.32 | 391 / 448 |
+| LMDH | 7 | 145 | 11.31 → 10.32 | 10.87 → 9.88 | 120 / 120 |
+| LMH | 7 | 105 | 11.4 → 10.37 | 11.01 → 10.01 | 96 / 96 |
 
-Reading: most of the remaining error is the car model (grip, aero, energy), not the line; the line explains a small part, and the unseen-lap check says whether that part is real or noise for each driver.
+## Driver names across series
+
+One id per person (`scripts/sim/learn/drivers.mjs`): accents, case, punctuation and word order are ignored ("Kevin ESTRE" = "Kévin Estre",
+"ZHOU Guanyu" = "Guanyu Zhou"); an initial or a short first name ("K. Estre", "Alex Lynn" / "Alexander Lynn") joins a full name only when
+exactly one known driver fits; F1 three-letter codes come with the full name from TracingInsights. 277 people;
+78 written in more than one way; 0 names left separate as ambiguous.
+
+Written more than one way (first 40): Alessandro PIER GUIDI = Alessandro Pier Guidi; Giammarco LEVORATO = Giammarco Levorato; Sébastien BUEMI = Sebastien Buemi; Sébastien BOURDAIS = Sebastien Bourdais; Francesco Castellacci = Francesco CASTELLACCI; Ferdinand Habsburg = Ferdinand HABSBURG; Alexander Riberas = Alex RIBERAS; François HERIAU = Francois Heriau; Zacharie ROBICHON = Zacharie Robichon; Custodio TOLEDO = Custodio Toledo; Riccardo PERA = Riccardo Pera; Benjamin Keating = Ben KEATING; Benjamin Tuck = Ben TUCK; Raffaele MARCIELLO = Raffaele Marciello; Frédéric MAKOWIECKI = Frederic Makowiecki; Claudio SCHIAVONI = Claudio Schiavoni; Clément MATEU = Clement Mateu; Takeshi KIMURA = Takeshi Kimura; Stefano GATTUSO = Stefano Gattuso; Charles MILESI = Charles Milesi; Sheldon VAN DER LINDE = Sheldon van der Linde; Antonio FUOCO = Antonio Fuoco; Antonio GIOVINAZZI = Antonio Giovinazzi; Nicklas NIELSEN = Nicklas Nielsen; Stoffel VANDOORNE = Stoffel Vandoorne; Charles-Henri SAMANI = Charles-Henri Samani; Michael WAINWRIGHT = Michael Wainwright; Michael BIRCH = Michael Birch; Clemens SCHMID = Clemens Schmid; Anthony McIntosh = Anthony MCINTOSH; Mathieu Jaminet = Mathieu JAMINET; Brendon HARTLEY = Brendon Hartley; Eduardo BARRICHELLO = Eduardo Barrichello; Augusto FARFUS = Augusto Farfus; Alessio ROVERA = Alessio Rovera; Giacomo PETROBELLI = Giacomo Petrobelli; Satoshi HOSHINO = Satoshi Hoshino; William Stevens = Will STEVENS; Darren LEUNG = Darren Leung; Thomas FLOHR = Thomas Flohr.
+
+Limits: the remaining error is mostly the car model, the track geometry and (endurance) the sector positions, not the line; the
+field line takes that part, and the unseen-lap check shows whether a driver's own difference is real or noise.
