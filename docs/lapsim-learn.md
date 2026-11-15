@@ -35,9 +35,10 @@ the first run. Sections 4 and 5 are results. Section 6 is the source list: add a
    `gt3-imsa-<model>` (IMSA GTD), `gt3-aco-<model>` (WEC LMGT3, ELMS, Asian LMS) and `gt3-dtm-<model>` (DTM, records only).
    SRO measured records (Brands Hatch, Silverstone, Spa, Monza, Nürburgring GP and 24h, Suzuka, Fuji, Shanghai, Jeddah, …) are
    reproduced exactly from the official SRO results sites.
-11. **WEC class cars keep WEC records.** `wec-lmh`, `wec-lmdh` and `wec-lmgt3` show the fastest WEC lap of that class on the track.
-   A lap of another series (IMSA GTP at Daytona, GTWC at Road Atlanta) fills the slot only where WEC never raced. WEC LMGT3 has
-   raced from 2024; WEC last raced at Monza in 2023 (LMGTE Am), so Monza shows that pole, and SRO GT3 at Monza shows the GTWC record.
+11. **Hypercar/GTP class cars show the fastest WEC or IMSA lap (owner 2026-11-15; replaces "WEC records first").** `wec-lmh`,
+   `wec-lmdh` and `wec-lmgt3` show the fastest lap of WEC and IMSA together on the track (`scripts/sim/learn/class-records.mjs` ->
+   `worker/lapsim/class-records-data.js`, read by `carsFor()` and `raceRecords()`). Sebring LMDh: IMSA 2023 1:45.836 instead of
+   WEC 2023 1:46.082. A lap of another series fills only an empty slot. The simulator has no IMSA tab; the WEC tab is "Hypercar/GTP".
 12. **A car with an Evo or Evo 2 kit opens on its newest kit** (Evo box ticked; `evo=0` in the URL for the base car).
 13. **GT3 page controls and tyres (owner 2026-11-15).** GT3: choose the car model first, then the series spec (SRO GT3, IMSA GTD,
    WEC LMGT3, DTM), then the kit. The WEC series lists only LMH and LMDh; LMGT3 is a GT3 model with the WEC LMGT3 spec.
@@ -310,6 +311,11 @@ Per track:
 | fe-cape-town | 1 | 5.64 | 4.41 |
 | fe-valencia | 1 | 7.4 | 1.9 |
 
+**Gen3 Evo on only (owner 2026-11-15).** The page and the tool show Formula E Gen3 Evo and the Gen4 prior. Gen3 (2023-24) laps stay in
+the fit as a hidden helper (`FE_FIT_ONLY` in `fe-cars.js`): they help learn the factor of layouts Gen3 Evo shares (without them the
+Gen3 Evo event-hidden error is 2.52 %, with them 1.82 %). Gen2 is not modelled, and layouts last raced before 2025 (Portland, Misano,
+Cape Town, Hyderabad, Rome, London 2023, Berlin 2023/2024, Diriyah) are no longer built. 15 Formula E tracks, 16 raced combinations.
+
 **Group and duel power (2026-11-15).** A qualifying lap is simulated at the power of its session (`feCarFor()` in
 `worker/lapsim/fe-cars.js`): Gen3 and Gen3 Evo groups 300 kW, duels and free practice 350 kW; Season 8 (2021-22, Gen2) groups 220 kW,
 duels 250 kW; Seasons 5-7 250 kW (fiaformulae.com, groups and duels format). Before, the group laps were fitted against the 350 kW car,
@@ -347,3 +353,30 @@ within 0.5 % of the official length unless a wider tolerance is written in the r
 Aragón, Lausitz, Autopolis and Snetterton have no real lap of a calibrated class yet, so they carry ⚠️ (`trackWarn()`).
 Laps already in the tables that now have geometry: Sebring (IMSA and WEC, 301 rows) and Aragón (ELMS 2023, 17 rows); the learning
 step (`fit-endurance.mjs`) must be rerun to use them.
+
+## 10. Istanbul Park and Sochi; more real laps from the historic F1 database (2026-11-15)
+
+- **Tracks** from F1 car positions (`build-geometry-f1-history.mjs`, TracingInsights): Istanbul Park 2021 qualifying (2020 was wet),
+  Sochi 2020 qualifying (2021 Q3 was wet). Fastest race laps from f1db (`f1-race-records.mjs`).
+- **More real laps** (`scripts/sim/learn/f1db-poles.mjs` -> `scripts/sim/data/tracks/f1db-poles.json`): the fastest single qualifying
+  lap of every race 2006-2019 from f1db (Q3 of 2006-2009 ran on race fuel; 2005 used aggregate times, so it is left out). A session
+  slower than the race's fastest lap is flagged wet and not used. Seasons TracingInsights does not cover get a pace ratio against the
+  2023 car from the f1db laps on production circuits of the same layout (held-out RMS 0.8-2.7 % per season, table in
+  docs/lapsim-tracks-extra.md). Rows added on the tracks built from F1 car positions only.
+- **Track factor**: on those tracks the factor learned from the real laps is used when its held-out error is lower than the
+  no-factor error. Istanbul 2.54 % (one lap, no factor) -> **0.95 %** held-out (7 seasons); Sochi -> **0.73 %** (7 seasons);
+  Nürburgring GP 2.58 -> 1.04 %.
+- **Other series checked** (Wikipedia circuit pages): Istanbul hosted GP2, GP3, WTCC, the Le Mans Series 1000 km (2005-06, LMP1),
+  FIA GT (2005); Sochi GP2/F2, GP3/F3, WTCR, TCR and Russian series. None is a calibrated simulator class (F1, LMH, LMDh, GT3), so
+  they are not used.
+
+## 11. Long Beach and Detroit (2026-11-15)
+
+Built from the OpenStreetMap circuit relations of the venues (`track-requests-2026-11-15e.json`, `fetch-osm-tracks-e.mjs`):
+Long Beach relation 18052024 "Long Beach Grand Prix Course" (one closed loop, 3,258 m, +2.9 %) and Detroit relation 17665938
+"Detroit Grand Prix" (downtown course since 2023; 2,685 m, +1.3 %, with the pit lane left out and the two ends at the Jefferson
+Avenue hairpin, 6 m apart, joined). Both follow road centre lines, so the shape is kept and scaled to the official length
+(`scaleToOfficial`). `assemble.mjs` fix: two open way ends near each other now join instead of swapping places.
+Check (unseen, no fitted value): Long Beach 10 real laps RMS 1.18 %; Detroit 8 real laps 3.67 %, so its track factor is learned
+(held-out 2.24 %). Registry layouts `long-beach-3167` and `detroit-2647` are now `long-beach` and `detroit` with geometry; their IMSA
+laps (161 and 64 rows) are waiting for the learning step. Class cars show the fastest WEC or IMSA lap there (`class-records.mjs`).

@@ -96,7 +96,14 @@ export function seasonOffsets(seasonPoles) {
 if (process.argv[1]?.endsWith('build-geometry-extra.mjs')) {
   const spec = read('track-extra.json'), files = {}, out = {}, text = readFileSync(OUT, 'utf8'), pass = spec.passRmsPct;
   const base = text.includes(MARK) ? text.slice(0, text.indexOf(MARK)) : text;
-  const offsets = seasonOffsets(existsSync(D + 'tracks/extra-tracks-f1.json') ? read('tracks/extra-tracks-f1.json').seasonPoles : null);
+  // season pace ratios: TracingInsights poles (2020-2021, with weather) and, for the seasons they do not cover, the f1db fastest
+  // qualifying laps on production circuits of the same layout (f1db-poles.mjs, 2006-2019, dry only, standard weather)
+  const F1DB = existsSync(D + 'tracks/f1db-poles.json') ? read('tracks/f1db-poles.json').poles : {}, tiPoles = existsSync(D + 'tracks/extra-tracks-f1.json') ? read('tracks/extra-tracks-f1.json').seasonPoles : {};
+  const dbPoles = Object.fromEntries(Object.entries(F1DB).filter(([y]) => !tiPoles?.[y]).map(([y, o]) => [y, Object.fromEntries(Object.entries(o).filter(([, p]) => !p.wet))]));
+  const offsets = seasonOffsets({...dbPoles, ...tiPoles});
+  // owner 2026-11-15: more real laps on the tracks built from F1 car positions (Istanbul, Sochi, ...): every dry f1db season with a ratio
+  const dbRows = id => spec.tracks[id]?.driven ? Object.entries(F1DB).filter(([y, o]) => o[id] && !o[id].wet && offsets[y] && !spec.laps.some(l => l.track === id && l.series === 'f1' && l.season === +y))
+    .map(([y, o]) => ({track: id, series: 'f1', season: +y, cls: 'F1', car: 'f1', borrowed: true, model: `${o[id].driver} (${o[id].team}), f1db fastest qualifying lap`, lap: o[id].lap})) : [];
   // Al Kamel rows (one per car type, scripts/sim/fetch-track-laps.mjs) replace the Timing71 class-best rows of the same track, series and season
   const ak = (existsSync(D + 'track-real-laps.json') ? read('track-real-laps.json').laps : []).filter(r => !r.weather?.rain && spec.tracks[r.track]);
   const akRows = ak.map(r => ({track: r.track, series: r.series, season: r.season, cls: r.cls, car: /^gtd/.test(r.type) ? 'lmgt3' : r.type, borrowed: r.series !== 'wec', model: `${r.manufacturer} #${r.car}`, lap: +r.lap.toFixed(3),
@@ -104,7 +111,7 @@ if (process.argv[1]?.endsWith('build-geometry-extra.mjs')) {
   const akHas = new Set(akRows.map(r => [r.track, r.series, r.season].join('|')));
   const lapsOf = id => { const own = akRows.filter(r => r.track === id), best = {}; // GTD Pro and GTD are one LMGT3 row: the faster one
     for (const r of own) { const k = [r.series, r.season, r.car].join('|'); if (!best[k] || r.lap < best[k].lap) best[k] = r; }
-    return [...spec.laps.filter(l => l.track === id && !akHas.has([id, l.series, l.season].join('|'))), ...Object.values(best)]; };
+    return [...spec.laps.filter(l => l.track === id && !akHas.has([id, l.series, l.season].join('|'))), ...Object.values(best), ...dbRows(id)]; };
   // Real lap per page car on this track (latest dry season). An LMH or LMDh that raced here in IMSA GTP counts for the LMH / LMDh car.
   const realLapsOf = id => { const out = {}, put = (key, r, source) => { if (!out[key] || r.season > out[key].year || r.season === out[key].year && r.lap < out[key].lap) out[key] = {lap: +r.lap.toFixed(3), year: r.season, event: r.event || r.series, car: r.car ?? null, manufacturer: r.manufacturer ?? r.model ?? null,
       weather: Object.fromEntries(Object.entries({airTempC: r.weather?.airTempC ?? r.airC, trackTempC: r.weather?.trackTempC ?? r.trackC, humidityPct: r.weather?.humidityPct, pressureHpa: r.weather?.pressureHpa}).filter(([, v]) => Number.isFinite(v))), source}; };
@@ -139,6 +146,8 @@ if (process.argv[1]?.endsWith('build-geometry-extra.mjs')) {
       else if (L.heldOut.rmsPct <= pass) Object.assign(chk, {status: 'pass', mode: 'learned', reason: null});
       else chk.reason = `held-out error ${L.heldOut.rmsPct} % with a learned track factor, above ${pass} %`;
     }
+    // a track from F1 car positions with enough real laps (f1db seasons): the learned factor wins when its held-out error is lower
+    if (s.driven && chk.mode === 'unseen' && L?.inBounds && L.heldOut.n >= 3 && L.heldOut.rmsPct < chk.rmsPct && L.heldOut.rmsPct <= pass) Object.assign(chk, {status: 'pass', mode: 'learned', reason: null});
     if (s.provisional) { chk.status = 'warn'; chk.reason = s.provisional; }
     e.fit = chk.status === 'pass'; if (!e.fit) e.warn = '⚠️ ' + chk.reason;
     if (chk.mode !== 'unseen') { e.trackFactor = chk.mode === 'learned' ? {grip: L.grip, source: `learned from ${L.heldOut.n} real laps on this track`} : {grip: chk.sibling.grip ?? null, source: `from ${chk.sibling.from}`}; e.quality.evidence.trackGrip = chk.mode === 'learned' ? '3 inferred (one factor fitted on real laps of this track)' : `4 borrowed (${chk.sibling.from})`; }

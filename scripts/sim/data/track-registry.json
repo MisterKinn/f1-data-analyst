@@ -1653,7 +1653,7 @@
    "default": true
   },
   {
-   "id": "detroit-2647",
+   "id": "detroit",
    "venue": "detroit",
    "lengthKm": 2.647,
    "seasons": [
@@ -1663,9 +1663,11 @@
     ]
    ],
    "sources": [
-    "alkamel:imsa"
+    "alkamel:imsa",
+    "simulator"
    ],
-   "default": true
+   "default": true,
+   "sim": "detroit"
   },
   {
    "id": "detroit-4023",
@@ -2120,7 +2122,7 @@
    ]
   },
   {
-   "id": "istanbul-5338",
+   "id": "istanbul",
    "venue": "istanbul",
    "lengthKm": 5.338,
    "seasons": [
@@ -2134,9 +2136,11 @@
     ]
    ],
    "sources": [
-    "f1db:istanbul-1"
+    "f1db:istanbul-1",
+    "simulator"
    ],
-   "default": true
+   "default": true,
+   "sim": "istanbul"
   },
   {
    "id": "jacarepagua-5031",
@@ -2385,7 +2389,7 @@
    "default": true
   },
   {
-   "id": "long-beach-3167",
+   "id": "long-beach",
    "venue": "long-beach",
    "lengthKm": 3.167,
    "seasons": [
@@ -2395,9 +2399,11 @@
     ]
    ],
    "sources": [
-    "alkamel:imsa"
+    "alkamel:imsa",
+    "simulator"
    ],
-   "default": true
+   "default": true,
+   "sim": "long-beach"
   },
   {
    "id": "long-beach-3251",
@@ -3846,7 +3852,7 @@
    ]
   },
   {
-   "id": "sochi-5848",
+   "id": "sochi",
    "venue": "sochi",
    "lengthKm": 5.848,
    "seasons": [
@@ -3856,9 +3862,11 @@
     ]
    ],
    "sources": [
-    "f1db:sirius-1"
+    "f1db:sirius-1",
+    "simulator"
    ],
-   "default": true
+   "default": true,
+   "sim": "sochi"
   },
   {
    "id": "spa-francorchamps-6940",
@@ -4512,126 +4520,6 @@
     "fia-fe-map"
    ],
    "sim": "jarama-2025"
-  },
-  {
-   "id": "fe-portland",
-   "venue": "fe-portland",
-   "lengthKm": 3.19,
-   "seasons": [
-    [
-     2023,
-     2024
-    ]
-   ],
-   "sources": [
-    "fia-fe-map"
-   ],
-   "sim": "fe-portland"
-  },
-  {
-   "id": "fe-berlin-2024",
-   "venue": "fe-berlin",
-   "lengthKm": 2.345,
-   "seasons": [
-    [
-     2024,
-     2024
-    ]
-   ],
-   "sources": [
-    "fia-fe-map"
-   ],
-   "sim": "fe-berlin-2024"
-  },
-  {
-   "id": "fe-misano",
-   "venue": "misano",
-   "lengthKm": 3.382,
-   "seasons": [
-    [
-     2024,
-     2024
-    ]
-   ],
-   "sources": [
-    "fia-fe-map"
-   ],
-   "sim": "fe-misano"
-  },
-  {
-   "id": "fe-diriyah",
-   "venue": "fe-diriyah",
-   "lengthKm": 2.495,
-   "seasons": [
-    [
-     2019,
-     2024
-    ]
-   ],
-   "sources": [
-    "fia-fe-map"
-   ],
-   "sim": "fe-diriyah"
-  },
-  {
-   "id": "fe-london-2023",
-   "venue": "fe-london",
-   "lengthKm": 2.086,
-   "seasons": [
-    [
-     2023,
-     2023
-    ]
-   ],
-   "sources": [
-    "fia-fe-map"
-   ],
-   "sim": "fe-london-2023"
-  },
-  {
-   "id": "fe-rome",
-   "venue": "fe-rome",
-   "lengthKm": 3.38,
-   "seasons": [
-    [
-     2021,
-     2023
-    ]
-   ],
-   "sources": [
-    "fia-fe-map"
-   ],
-   "sim": "fe-rome"
-  },
-  {
-   "id": "fe-berlin-2023",
-   "venue": "fe-berlin",
-   "lengthKm": 2.355,
-   "seasons": [
-    [
-     2020,
-     2023
-    ]
-   ],
-   "sources": [
-    "fia-fe-map"
-   ],
-   "sim": "fe-berlin-2023"
-  },
-  {
-   "id": "fe-cape-town",
-   "venue": "fe-cape-town",
-   "lengthKm": 2.921,
-   "seasons": [
-    [
-     2023,
-     2023
-    ]
-   ],
-   "sources": [
-    "fia-fe-map"
-   ],
-   "sim": "fe-cape-town"
   },
   {
    "id": "ricardo-tormo",

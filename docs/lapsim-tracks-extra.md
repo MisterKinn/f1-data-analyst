@@ -33,7 +33,7 @@ Owner instruction (2026-11-14): where a real lap of a car type exists, use it. T
 | yeongam | Korea International Circuit, Grand Prix 5.615 km | korea | 5498 (5615) | 0–1 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | yongin | Everland Speedway, full course 4.346 km | korea | 4251 (4346) | 92–146 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | mugello | Grand Prix 5.245 km | europe-africa-asia | 5184 (5245) | 246–289 m | 1 (0) | 1.74 | 1.74 | – | – | – | pass (unseen) |
-| nurburgring-gp | Grand Prix 5.148 km | f1-history | 5084 (5148) | car positions | 1 (0) | 2.9 | 2.9 | – | – | – | pass (unseen) |
+| nurburgring-gp | Grand Prix 5.148 km | f1-history | 5084 (5148) | car positions | 6 (0) | 2.58 | 2.42 | 1.0597 | 1.04 | – | pass (learned) |
 | nurburgring-sprint | Sprint 3.629 km (DTM, ADAC GT Masters) | europe-africa-asia | 3559 (3629) | 588–621 m | 2 (0) | 1.18 | 1.18 | 1.0363 | 0.13 | – | pass (unseen) |
 | nurburgring-24h | 24 Hours combined lap 25.378 km | europe-africa-asia | 25016 (25378) | 340–627 m | 3 (0) | 2.08 | -1.99 | 0.9352 | 0.89 | – | pass (unseen) |
 | brands-hatch | Grand Prix 3.916 km | europe-africa-asia | 3876 (3916) | flat assumed | 1 (0) | 0.25 | -0.25 | – | – | – | pass (unseen) |
@@ -54,7 +54,7 @@ Owner instruction (2026-11-14): where a real lap of a car type exists, use it. T
 | portimao | Algarve 4.653 km | owner-list-other | 4539 (4653) | 95–124 m | 6 (2) | 4.08 | 4 | 1.1126 | 0.86 | – | pass (learned) |
 | hockenheim | Grand Prix 4.574 km | owner-list-other | 4525 (4574) | 101–118 m | 3 (0) | 3.69 | 3.62 | 1.1237 | 0.97 | – | pass (learned) |
 | bathurst | Mount Panorama 6.213 km | owner-list-other | 6156 (6213) | 700–874 m | 2 (0) | 0.46 | 0.29 | 1.0102 | 0.72 | – | pass (unseen) |
-| paul-ricard-f1 | F1 layout with the Mistral chicane 5.842 km | f1-history | 5746 (5842) | car positions | 1 (0) | 0.15 | -0.15 | – | – | – | ⚠️ curvature too high in fast corners: the pole lap implies 7.6 g against the 7.0 g limit |
+| paul-ricard-f1 | F1 layout with the Mistral chicane 5.842 km | f1-history | 5746 (5842) | car positions | 3 (0) | 0.53 | -0.12 | 0.997 | 0.78 | – | ⚠️ curvature too high in fast corners: the pole lap implies 7.6 g against the 7.0 g limit |
 | rwanda | Provisional 5.302 km (owner diagram) | rwanda | 5196 (5302) | diagram labels | 0 (0) | – | – | – | – | – | ⚠️ provisional: hand-traced from a diagram that disagrees with the official October 2026 figures (about 6 km, 17 corners, anti-clockwise) |
 | paul-ricard-2021 | 1A-V2 5.791 km (FIA list 2024; ELMS timing states 5.771 km) | owner-2026-11-15 | 5668 (5791) | 414–441 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | dubai | Grand Prix circuit 5.390 km | owner-2026-11-15 | 5295 (5390) | 17–37 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
@@ -84,6 +84,10 @@ Owner instruction (2026-11-14): where a real lap of a car type exists, use it. T
 | autopolis | Full circuit 4.674 km | owner-2026-11-15 | 4542 (4674) | 771–822 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | snetterton | Snetterton 300 circuit 4.779 km | owner-2026-11-15 | 4722 (4779) | 40–47 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | lausitz | DTM circuit 3.478 km | owner-2026-11-15 | 3408 (3478) | 117–131 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| istanbul | Grand Prix 5.338 km | f1-history | 5263 (5338) | car positions | 7 (0) | 2.57 | 2.43 | 1.0659 | 0.95 | – | pass (learned) |
+| sochi | Grand Prix 5.848 km | f1-history | 5830 (5848) | car positions | 7 (0) | 1.48 | 1.34 | 1.0363 | 0.73 | – | pass (learned) |
+| long-beach | Street circuit 3.167 km | owner-2026-11-15 | 3115 (3168) | 1–5 m | 10 (0) | 1.18 | 0.22 | 1.0058 | 1.3 | – | pass (unseen) |
+| detroit | Downtown street circuit 2.650 km (2023 on) | owner-2026-11-15 | 2631 (2650) | 177–184 m | 8 (0) | 3.67 | -3.01 | 0.9258 | 2.24 | – | pass (learned) |
 
 Length is the driven or least-curvature line; it is shorter than the official centre-line distance. "Own class" rows are WEC cars on WEC laps; the other rows use a borrowed car (IMSA GTP = LMDh car, every other GT3 series = LMGT3 car, an older F1 season = the 2023 F1 car times the season ratio).
 
@@ -91,6 +95,20 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 
 | Season | Ratio | Circuits | Held-out RMS % (one circuit left out) | Per circuit |
 |---|---|---|---|---|
+| 2006 | 1.0169 | 5 | 1.99 | sakhir 1.0037, monte-carlo 1.0212, hungaroring 1.0452, monza 1.0169, suzuka 0.9983 |
+| 2007 | 1.022 | 3 | 2.25 | sakhir 1.0053, hungaroring 1.0425, monza 1.0186 |
+| 2008 | 1.0285 | 3 | 2.65 | sakhir 1.0034, monte-carlo 1.0431, hungaroring 1.0395 |
+| 2009 | 1.0321 | 5 | 1.86 | sakhir 1.0175, monte-carlo 1.0348, hungaroring 1.0564, monza 1.0386, suzuka 1.0139 |
+| 2010 | 1.0264 | 4 | 0.77 | monte-carlo 1.0253, hungaroring 1.0356, monza 1.0262, suzuka 1.0188 |
+| 2011 | 1.029 | 4 | 1.65 | monte-carlo 1.0215, hungaroring 1.0493, monza 1.0301, suzuka 1.0153 |
+| 2012 | 1.0357 | 6 | 1.95 | sakhir 1.0170, monte-carlo 1.0319, hungaroring 1.0642, monza 1.0518, suzuka 1.0194, austin 1.0308 |
+| 2013 | 1.032 | 6 | 1.41 | sakhir 1.0159, monte-carlo 1.0260, hungaroring 1.0437, monza 1.0486, suzuka 1.0203, austin 1.0381 |
+| 2014 | 1.0515 | 7 | 2.15 | sakhir 1.0254, monte-carlo 1.0553, spielberg 1.0670, hungaroring 1.0874, monza 1.0530, suzuka 1.0382, austin 1.0352 |
+| 2015 | 1.0499 | 7 | 2.05 | sakhir 1.0186, monte-carlo 1.0429, spielberg 1.0623, hungaroring 1.0783, monza 1.0440, suzuka 1.0390, mexico-city 1.0651 |
+| 2016 | 1.0227 | 9 | 2.2 | sakhir 0.9847, monte-carlo 1.0224, baku 1.0086, spielberg 1.0277, hungaroring 1.0512, monza 1.0158, suzuka 1.0173, austin 1.0237, mexico-city 1.0547 |
+| 2017 | 0.997 | 8 | 1.63 | sakhir 0.9768, monte-carlo 1.0024, baku 0.9897, spielberg 0.9970, hungaroring 1.0027, suzuka 0.9799, austin 1.0033, mexico-city 1.0250 |
+| 2018 | 0.9898 | 9 | 1.33 | sakhir 0.9678, baku 0.9986, monte-carlo 0.9834, spielberg 0.9796, hungaroring 1.0079, monza 0.9906, suzuka 0.9849, austin 0.9939, mexico-city 1.0018 |
+| 2019 | 0.9834 | 9 | 1.18 | sakhir 0.9668, baku 0.9887, monte-carlo 0.9744, spielberg 0.9777, hungaroring 0.9803, monza 0.9929, suzuka 0.9771, mexico-city 1.0018, austin 0.9917 |
 | 2020 | 0.9686 | 4 | 1.4 | spielberg 0.9673, hungaroring 0.9626, monza 0.9857, sakhir 0.9590 |
 | 2021 | 0.9864 | 9 | 1.05 | spielberg 0.9780, hungaroring 0.9710, monza 0.9954, sakhir 0.9781, monte-carlo 0.9792, baku 0.9943, austin 0.9973, mexico-city 0.9916, yas-marina-circuit 0.9927 |
 
@@ -100,6 +118,11 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 |---|---|---|---|---|---|---|---|---|
 | mugello | elms | 2024 | LMGT3 | Aston Martin Vantage AMR LMGT3 | lmgt3 2025 (borrowed) | 107.891 | 109.765 | 1.74 |
 | nurburgring-gp | f1 | 2020 | F1 | BOT (Mercedes), pole Q3 | f1 2023 × 0.9686 (borrowed) | 85.269 | 87.742 | 2.9 |
+| nurburgring-gp | f1 | 2006 | F1 | fernando-alonso (renault), f1db fastest qualifying lap | f1 2023 × 1.0169 (borrowed) | 89.819 | 91.531 | 1.91 |
+| nurburgring-gp | f1 | 2007 | F1 | felipe-massa (ferrari), f1db fastest qualifying lap | f1 2023 × 1.0220 (borrowed) | 90.912 | 91.99 | 1.19 |
+| nurburgring-gp | f1 | 2009 | F1 | mark-webber (red-bull), f1db fastest qualifying lap | f1 2023 × 1.0321 (borrowed) | 91.257 | 92.899 | 1.8 |
+| nurburgring-gp | f1 | 2011 | F1 | mark-webber (red-bull), f1db fastest qualifying lap | f1 2023 × 1.0290 (borrowed) | 90.079 | 92.62 | 2.82 |
+| nurburgring-gp | f1 | 2013 | F1 | lewis-hamilton (mercedes), f1db fastest qualifying lap | f1 2023 × 1.0320 (borrowed) | 89.398 | 92.89 | 3.91 |
 | nurburgring-sprint | x-adac-gt-masters | 2024 | Silver | Mercedes-AMG GT3 | lmgt3 2025 (borrowed) | 85.186 | 86.243 | 1.24 |
 | nurburgring-sprint | x-adac-gt-masters | 2025 | Silver | Ford Mustang GT3 | lmgt3 2025 (borrowed) | 85.294 | 86.243 | 1.11 |
 | nurburgring-24h | nur | 2023 | SP 9 | Mercedes-AMG GT3 | lmgt3 2025 (borrowed) | 496.609 | 482.857 | -2.77 |
@@ -212,6 +235,8 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 | bathurst | igtc | 2025 | PRO | Mercedes-AMG GT3 EVO | lmgt3 2025 (borrowed) | 121.276 | 122.064 | 0.65 |
 | bathurst | igtc | 2026 | PRO | Mercedes-AMG GT3 EVO | lmgt3 2026 (borrowed) | 121.563 | 121.471 | -0.08 |
 | paul-ricard-f1 | f1 | 2021 | F1 | VER (Red Bull Racing), pole Q3 | f1 2023 × 0.9864 (borrowed) | 89.99 | 89.851 | -0.15 |
+| paul-ricard-f1 | f1 | 2018 | F1 | lewis-hamilton (mercedes), f1db fastest qualifying lap | f1 2023 × 0.9898 (borrowed) | 90.029 | 89.363 | -0.74 |
+| paul-ricard-f1 | f1 | 2019 | F1 | lewis-hamilton (mercedes), f1db fastest qualifying lap | f1 2023 × 0.9834 (borrowed) | 88.319 | 88.785 | 0.53 |
 | sebring | imsa | 2023 | GTDPRO | Chevrolet #3 | lmgt3 2025 (borrowed) | 119.315 | 120.467 | 0.97 |
 | sebring | imsa | 2023 | GTP | Cadillac #31 | lmdh 2025 (borrowed) | 105.836 | 105.037 | -0.76 |
 | sebring | imsa | 2024 | GTDPRO | Lexus #14 | lmgt3 2025 (borrowed) | 118.714 | 120.179 | 1.23 |
@@ -224,11 +249,49 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 | sebring | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 107.363 | 105.331 | -1.89 |
 | sebring | wec | 2023 | HYPERCAR | Cadillac #2 | lmdh 2025 | 106.082 | 104.642 | -1.36 |
 | sebring | wec | 2023 | HYPERCAR | Ferrari #50 | lmh 2025 | 105.067 | 104.383 | -0.65 |
+| istanbul | f1 | 2021 | F1 | HAM (Mercedes), pole Q3 | f1 2023 × 0.9864 (borrowed) | 82.868 | 84.976 | 2.54 |
+| istanbul | f1 | 2006 | F1 | michael-schumacher (ferrari), f1db fastest qualifying lap | f1 2023 × 1.0169 (borrowed) | 85.85 | 87.485 | 1.9 |
+| istanbul | f1 | 2007 | F1 | fernando-alonso (mclaren), f1db fastest qualifying lap | f1 2023 × 1.0220 (borrowed) | 86.841 | 87.923 | 1.25 |
+| istanbul | f1 | 2008 | F1 | felipe-massa (ferrari), f1db fastest qualifying lap | f1 2023 × 1.0285 (borrowed) | 85.994 | 88.483 | 2.89 |
+| istanbul | f1 | 2009 | F1 | sebastian-vettel (red-bull), f1db fastest qualifying lap | f1 2023 × 1.0321 (borrowed) | 87.016 | 88.792 | 2.04 |
+| istanbul | f1 | 2010 | F1 | mark-webber (red-bull), f1db fastest qualifying lap | f1 2023 × 1.0264 (borrowed) | 86.295 | 88.302 | 2.33 |
+| istanbul | f1 | 2011 | F1 | sebastian-vettel (red-bull), f1db fastest qualifying lap | f1 2023 × 1.0290 (borrowed) | 85.049 | 88.526 | 4.09 |
+| sochi | f1 | 2020 | F1 | HAM (Mercedes), pole Q3 | f1 2023 × 0.9686 (borrowed) | 91.304 | 91.558 | 0.28 |
+| sochi | f1 | 2014 | F1 | lewis-hamilton (mercedes), f1db fastest qualifying lap | f1 2023 × 1.0515 (borrowed) | 98.338 | 99.304 | 0.98 |
+| sochi | f1 | 2015 | F1 | nico-rosberg (mercedes), f1db fastest qualifying lap | f1 2023 × 1.0499 (borrowed) | 97.113 | 99.153 | 2.1 |
+| sochi | f1 | 2016 | F1 | nico-rosberg (mercedes), f1db fastest qualifying lap | f1 2023 × 1.0227 (borrowed) | 95.337 | 96.584 | 1.31 |
+| sochi | f1 | 2017 | F1 | sebastian-vettel (ferrari), f1db fastest qualifying lap | f1 2023 × 0.9970 (borrowed) | 93.194 | 94.157 | 1.03 |
+| sochi | f1 | 2018 | F1 | valtteri-bottas (mercedes), f1db fastest qualifying lap | f1 2023 × 0.9898 (borrowed) | 91.387 | 93.477 | 2.29 |
+| sochi | f1 | 2019 | F1 | charles-leclerc (ferrari), f1db fastest qualifying lap | f1 2023 × 0.9834 (borrowed) | 91.628 | 92.872 | 1.36 |
+| long-beach | imsa | 2023 | GTD | Aston Martin #27 | lmgt3 2025 (borrowed) | 77.811 | 78.324 | 0.66 |
+| long-beach | imsa | 2023 | GTP | Acura #10 | lmdh 2025 (borrowed) | 69.909 | 71.271 | 1.95 |
+| long-beach | imsa | 2024 | GTD | Lexus #89 | lmgt3 2025 (borrowed) | 77.357 | 78.298 | 1.22 |
+| long-beach | imsa | 2024 | GTP | Cadillac #31 | lmdh 2025 (borrowed) | 71.388 | 71.257 | -0.18 |
+| long-beach | imsa | 2025 | GTD | Lexus #12 | lmgt3 2025 (borrowed) | 77.877 | 78.692 | 1.05 |
+| long-beach | imsa | 2025 | GTP | BMW #24 | lmdh 2025 (borrowed) | 71.539 | 71.707 | 0.23 |
+| long-beach | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 73.392 | 71.529 | -2.54 |
+| long-beach | imsa | 2026 | GTD | Lexus #89 | lmgt3 2026 (borrowed) | 78.411 | 77.874 | -0.69 |
+| long-beach | imsa | 2026 | GTP | Acura #93 | lmdh 2026 (borrowed) | 71.626 | 71.918 | 0.41 |
+| long-beach | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 71.997 | 72.026 | 0.04 |
+| detroit | imsa | 2024 | GTDPRO | Chevrolet #3 | lmgt3 2025 (borrowed) | 69.092 | 69.283 | 0.28 |
+| detroit | imsa | 2024 | GTP | Porsche #6 | lmdh 2025 (borrowed) | 65.39 | 63.717 | -2.56 |
+| detroit | imsa | 2025 | GTDPRO | Ford #64 | lmgt3 2025 (borrowed) | 70.922 | 68.907 | -2.84 |
+| detroit | imsa | 2025 | GTP | Acura #93 | lmdh 2025 (borrowed) | 65.762 | 63.29 | -3.76 |
+| detroit | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 67.907 | 63.135 | -7.03 |
+| detroit | imsa | 2026 | GTDPRO | Chevrolet #3 | lmgt3 2026 (borrowed) | 69.354 | 68.538 | -1.18 |
+| detroit | imsa | 2026 | GTP | Cadillac #31 | lmdh 2026 (borrowed) | 65.313 | 63.906 | -2.15 |
+| detroit | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 67.27 | 64.016 | -4.84 |
 
 ## Held-out rows with a learned or sibling track factor
 
 | Track | Series | Season | Class | Car model | Sim car | Real s | Sim s | Error % |
 |---|---|---|---|---|---|---|---|---|
+| nurburgring-gp | f1 | 2020 | F1 | BOT (Mercedes), pole Q3 | f1 2023 × 0.9686 (borrowed) | 85.269 | 85.724 | 0.53 |
+| nurburgring-gp | f1 | 2006 | F1 | fernando-alonso (renault), f1db fastest qualifying lap | f1 2023 × 1.0169 (borrowed) | 89.819 | 89.282 | -0.6 |
+| nurburgring-gp | f1 | 2007 | F1 | felipe-massa (ferrari), f1db fastest qualifying lap | f1 2023 × 1.0220 (borrowed) | 90.912 | 89.608 | -1.43 |
+| nurburgring-gp | f1 | 2009 | F1 | mark-webber (red-bull), f1db fastest qualifying lap | f1 2023 × 1.0321 (borrowed) | 91.257 | 90.598 | -0.72 |
+| nurburgring-gp | f1 | 2011 | F1 | mark-webber (red-bull), f1db fastest qualifying lap | f1 2023 × 1.0290 (borrowed) | 90.079 | 90.506 | 0.47 |
+| nurburgring-gp | f1 | 2013 | F1 | lewis-hamilton (mercedes), f1db fastest qualifying lap | f1 2023 × 1.0320 (borrowed) | 89.398 | 90.961 | 1.75 |
 | nurburgring-sprint | x-adac-gt-masters | 2024 | Silver | Mercedes-AMG GT3 | lmgt3 2025 (borrowed) | 85.186 | 85.297 | 0.13 |
 | nurburgring-sprint | x-adac-gt-masters | 2025 | Silver | Ford Mustang GT3 | lmgt3 2025 (borrowed) | 85.294 | 85.189 | -0.12 |
 | nurburgring-24h | nur | 2023 | SP 9 | Mercedes-AMG GT3 | lmgt3 2025 (borrowed) | 496.609 | 490.738 | -1.18 |
@@ -337,6 +400,9 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 | hockenheim | dtm | 2026 | Silver | Lamborghini Huracan GT3 EVO 2 | lmgt3 2026 (borrowed) | 97.456 | 96.876 | -0.59 |
 | bathurst | igtc | 2025 | PRO | Mercedes-AMG GT3 EVO | lmgt3 2025 (borrowed) | 121.276 | 122.163 | 0.73 |
 | bathurst | igtc | 2026 | PRO | Mercedes-AMG GT3 EVO | lmgt3 2026 (borrowed) | 121.563 | 120.709 | -0.7 |
+| paul-ricard-f1 | f1 | 2021 | F1 | VER (Red Bull Racing), pole Q3 | f1 2023 × 0.9864 (borrowed) | 89.99 | 89.938 | -0.06 |
+| paul-ricard-f1 | f1 | 2018 | F1 | lewis-hamilton (mercedes), f1db fastest qualifying lap | f1 2023 × 0.9898 (borrowed) | 90.029 | 89.2 | -0.92 |
+| paul-ricard-f1 | f1 | 2019 | F1 | lewis-hamilton (mercedes), f1db fastest qualifying lap | f1 2023 × 0.9834 (borrowed) | 88.319 | 89.191 | 0.99 |
 | sebring | imsa | 2023 | GTDPRO | Chevrolet #3 | lmgt3 2025 (borrowed) | 119.315 | 121.516 | 1.84 |
 | sebring | imsa | 2023 | GTP | Cadillac #31 | lmdh 2025 (borrowed) | 105.836 | 106.038 | 0.19 |
 | sebring | imsa | 2024 | GTDPRO | Lexus #14 | lmgt3 2025 (borrowed) | 118.714 | 121.249 | 2.14 |
@@ -349,6 +415,38 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 | sebring | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 107.363 | 106.25 | -1.04 |
 | sebring | wec | 2023 | HYPERCAR | Cadillac #2 | lmdh 2025 | 106.082 | 105.574 | -0.48 |
 | sebring | wec | 2023 | HYPERCAR | Ferrari #50 | lmh 2025 | 105.067 | 105.394 | 0.31 |
+| istanbul | f1 | 2021 | F1 | HAM (Mercedes), pole Q3 | f1 2023 × 0.9864 (borrowed) | 82.868 | 82.972 | 0.13 |
+| istanbul | f1 | 2006 | F1 | michael-schumacher (ferrari), f1db fastest qualifying lap | f1 2023 × 1.0169 (borrowed) | 85.85 | 85.332 | -0.6 |
+| istanbul | f1 | 2007 | F1 | fernando-alonso (mclaren), f1db fastest qualifying lap | f1 2023 × 1.0220 (borrowed) | 86.841 | 85.668 | -1.35 |
+| istanbul | f1 | 2008 | F1 | felipe-massa (ferrari), f1db fastest qualifying lap | f1 2023 × 1.0285 (borrowed) | 85.994 | 86.444 | 0.52 |
+| istanbul | f1 | 2009 | F1 | sebastian-vettel (red-bull), f1db fastest qualifying lap | f1 2023 × 1.0321 (borrowed) | 87.016 | 86.624 | -0.45 |
+| istanbul | f1 | 2010 | F1 | mark-webber (red-bull), f1db fastest qualifying lap | f1 2023 × 1.0264 (borrowed) | 86.295 | 86.19 | -0.12 |
+| istanbul | f1 | 2011 | F1 | sebastian-vettel (red-bull), f1db fastest qualifying lap | f1 2023 × 1.0290 (borrowed) | 85.049 | 86.658 | 1.89 |
+| sochi | f1 | 2020 | F1 | HAM (Mercedes), pole Q3 | f1 2023 × 0.9686 (borrowed) | 91.304 | 90.194 | -1.22 |
+| sochi | f1 | 2014 | F1 | lewis-hamilton (mercedes), f1db fastest qualifying lap | f1 2023 × 1.0515 (borrowed) | 98.338 | 97.94 | -0.4 |
+| sochi | f1 | 2015 | F1 | nico-rosberg (mercedes), f1db fastest qualifying lap | f1 2023 × 1.0499 (borrowed) | 97.113 | 97.969 | 0.88 |
+| sochi | f1 | 2016 | F1 | nico-rosberg (mercedes), f1db fastest qualifying lap | f1 2023 × 1.0227 (borrowed) | 95.337 | 95.306 | -0.03 |
+| sochi | f1 | 2017 | F1 | sebastian-vettel (ferrari), f1db fastest qualifying lap | f1 2023 × 0.9970 (borrowed) | 93.194 | 92.87 | -0.35 |
+| sochi | f1 | 2018 | F1 | valtteri-bottas (mercedes), f1db fastest qualifying lap | f1 2023 × 0.9898 (borrowed) | 91.387 | 92.391 | 1.1 |
+| sochi | f1 | 2019 | F1 | charles-leclerc (ferrari), f1db fastest qualifying lap | f1 2023 × 0.9834 (borrowed) | 91.628 | 91.653 | 0.03 |
+| long-beach | imsa | 2023 | GTD | Aston Martin #27 | lmgt3 2025 (borrowed) | 77.811 | 78.216 | 0.52 |
+| long-beach | imsa | 2023 | GTP | Acura #10 | lmdh 2025 (borrowed) | 69.909 | 71.25 | 1.92 |
+| long-beach | imsa | 2024 | GTD | Lexus #89 | lmgt3 2025 (borrowed) | 77.357 | 78.232 | 1.13 |
+| long-beach | imsa | 2024 | GTP | Cadillac #31 | lmdh 2025 (borrowed) | 71.388 | 71.054 | -0.47 |
+| long-beach | imsa | 2025 | GTD | Lexus #12 | lmgt3 2025 (borrowed) | 77.877 | 78.611 | 0.94 |
+| long-beach | imsa | 2025 | GTP | BMW #24 | lmdh 2025 (borrowed) | 71.539 | 71.538 | 0 |
+| long-beach | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 73.392 | 71.117 | -3.1 |
+| long-beach | imsa | 2026 | GTD | Lexus #89 | lmgt3 2026 (borrowed) | 78.411 | 77.68 | -0.93 |
+| long-beach | imsa | 2026 | GTP | Acura #93 | lmdh 2026 (borrowed) | 71.626 | 71.76 | 0.19 |
+| long-beach | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 71.997 | 71.834 | -0.23 |
+| detroit | imsa | 2024 | GTDPRO | Chevrolet #3 | lmgt3 2025 (borrowed) | 69.092 | 71.402 | 3.34 |
+| detroit | imsa | 2024 | GTP | Porsche #6 | lmdh 2025 (borrowed) | 65.39 | 65.956 | 0.87 |
+| detroit | imsa | 2025 | GTDPRO | Ford #64 | lmgt3 2025 (borrowed) | 70.922 | 70.697 | -0.32 |
+| detroit | imsa | 2025 | GTP | Acura #93 | lmdh 2025 (borrowed) | 65.762 | 65.354 | -0.62 |
+| detroit | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 67.907 | 64.842 | -4.51 |
+| detroit | imsa | 2026 | GTDPRO | Chevrolet #3 | lmgt3 2026 (borrowed) | 69.354 | 70.418 | 1.53 |
+| detroit | imsa | 2026 | GTP | Cadillac #31 | lmdh 2026 (borrowed) | 65.313 | 66.232 | 1.41 |
+| detroit | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 67.27 | 66.063 | -1.79 |
 
 ## Evidence layer per value
 
@@ -357,7 +455,7 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 | yeongam | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | yongin | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 4 assumed 12 m | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | mugello | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
-| nurburgring-gp | 1 fixed (official) and 2 measured (driven line) | 2 measured (F1 car positions, 8 qualifying laps, 2020) | 2 measured (mean of the fastest qualifying laps) | not used | 2 measured (F1 car positions) | 4 borrowed (mean factor of the class's fitted tracks) |
+| nurburgring-gp | 1 fixed (official) and 2 measured (driven line) | 2 measured (F1 car positions, 8 qualifying laps, 2020) | 2 measured (mean of the fastest qualifying laps) | not used | 2 measured (F1 car positions) | 3 inferred (one factor fitted on real laps of this track) |
 | nurburgring-sprint | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | nurburgring-24h | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 4 assumed 12 m | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | brands-hatch | 1 fixed (official list) | 2 measured (TUM racetrack database centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | none (flat assumed) | 4 borrowed (mean factor of the class's fitted tracks) |
@@ -408,6 +506,10 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 | autopolis | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | snetterton | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 4 assumed 12 m | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | lausitz | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| istanbul | 1 fixed (official) and 2 measured (driven line) | 2 measured (F1 car positions, 8 qualifying laps, 2021) | 2 measured (mean of the fastest qualifying laps) | not used | 2 measured (F1 car positions) | 3 inferred (one factor fitted on real laps of this track) |
+| sochi | 1 fixed (official) and 2 measured (driven line) | 2 measured (F1 car positions, 8 qualifying laps, 2020) | 2 measured (mean of the fastest qualifying laps) | not used | 2 measured (F1 car positions) | 3 inferred (one factor fitted on real laps of this track) |
+| long-beach | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| detroit | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 3 inferred (one factor fitted on real laps of this track) |
 
 ## Sources
 
@@ -465,6 +567,10 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 - **autopolis**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
 - **snetterton**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); Snetterton 300 Circuit, 4.779 km (MSV circuit; British GT since 2011); Terrarium elevation tiles (Mapzen/Tilezen open data)
 - **lausitz**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **istanbul**: TracingInsights/2021 on GitHub: Turkish Grand Prix, Qualifying (FastF1 car positions, lap times, corner positions)
+- **sochi**: TracingInsights/2020 on GitHub: Russian Grand Prix, Qualifying (FastF1 car positions, lap times, corner positions)
+- **long-beach**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **detroit**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
 
 ## Not checked, known limits
 

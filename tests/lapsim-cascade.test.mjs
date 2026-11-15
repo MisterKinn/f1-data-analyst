@@ -7,12 +7,13 @@ const opts = (h, ls) => [...(h.match(new RegExp(`data-ls="${ls}"[^>]*>([\\s\\S]*
 
 test('simulator cascade: series first, then the rules/classes of that series only', async () => {
   const f1 = await page('track=monza'), wec = await page('track=monza&car=wec-lmgt3');
-  assert.deepEqual(opts(f1, 'series').map(o => o.v), ['f1', 'wec', 'imsa', 'fe', 'gt3']);
+  assert.deepEqual(opts(f1, 'series').map(o => o.v), ['f1', 'wec', 'fe', 'gt3']); // owner 2026-11-15: no IMSA tab
+  assert.equal(opts(f1, 'series').find(o => o.v === 'wec').t, 'Hypercar/GTP');
   assert.ok(opts(f1, 'series').filter(o => o.off).every(o => /준비 중/.test(o.t)) && opts(f1, 'series').find(o => o.v === 'gt3').t === 'GT3 (차종별)' && !opts(f1, 'series').find(o => o.v === 'gt3').off); // GT3 is live: one car per model
   assert.ok(opts(f1, 'car').every(o => !o.v.startsWith('wec')));
   assert.deepEqual(opts(wec, 'car').map(o => o.v), ['wec-lmh', 'wec-lmdh']); // owner 2026-11-15: LMGT3 only under GT3 (model, then the WEC LMGT3 spec)
   assert.match(wec, /<option value="wec" selected/);
-  assert.match(f1, /<optgroup label="WEC">/, 'compare lists every series');
+  assert.match(f1, /<optgroup label="Hypercar\/GTP">/, 'compare lists every series');
 });
 
 test('GT3: car model first, then the series spec, and the tyre supplier of that series (owner 2026-11-15)', async () => {

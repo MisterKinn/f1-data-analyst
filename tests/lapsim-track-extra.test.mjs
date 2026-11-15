@@ -42,7 +42,7 @@ test('an extra track runs in the lap kernel', () => {
 
 test('a learned track factor removes the mean error and more grip is faster', async () => {
   const {learnFactor, simRows} = await import('../scripts/sim/build-geometry-extra.mjs');
-  const K = lapsimKernel(), e = extra.find(x => x.quality.check.n >= 3), track = K.trackFromData(e), laps = spec.laps.filter(l => l.track === e.id);
+  const K = lapsimKernel(), e = extra.find(x => x.quality.check.n >= 3 && !spec.tracks[x.id].driven), track = K.trackFromData(e), laps = spec.laps.filter(l => l.track === e.id);
   const g = learnFactor(track, laps, {}), mean = f => { const r = simRows(track, laps, {}, (b, cal) => f * Math.exp(Object.values(cal.tracks).reduce((a, x, _, arr) => a + Math.log(x.grip) / arr.length, 0))); return r.reduce((a, x) => a + x.errPct, 0) / r.length; };
   assert.ok(Math.abs(mean(g)) < 0.05, `mean error ${mean(g)} at factor ${g}`);
   assert.ok(mean(g * 1.05) < mean(g) && mean(g * 0.95) > mean(g));

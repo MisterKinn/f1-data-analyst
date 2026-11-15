@@ -1,0 +1,34 @@
+{
+ "note": "Long Beach and Detroit (owner 2026-11-15: must be built). Road names cannot describe these laps, so the lap is the OpenStreetMap circuit relation of each venue (a mapped route of the race course), checked as one closed loop and scaled to the official length (the relation follows road centre lines, so its length differs a little).",
+ "tracks": [
+  {
+   "id": "long-beach",
+   "status": "osm",
+   "seed": [
+    33.7637,
+    -118.1922
+   ],
+   "radius": 2500,
+   "fia": "^LONG BEACH$",
+   "relation": 18052024,
+   "tol": 0.03,
+   "scaleToOfficial": true,
+   "tolNote": "OpenStreetMap relation 18052024 'Long Beach Grand Prix Course' (48 ways): one closed loop of 3,258 m, 2.9 % longer than the official 3.167 km; it follows road centre lines (both Shoreline Drive carriageways, the fountain circle). Shape kept, scaled to the official length."
+  },
+  {
+   "id": "detroit",
+   "status": "osm",
+   "seed": [
+    42.3291,
+    -83.0437
+   ],
+   "radius": 2500,
+   "fia": "DETROIT GRAND PRIX",
+   "relation": 17665938,
+   "tol": 0.03,
+   "scaleToOfficial": true,
+   "tolNote": "OpenStreetMap relation 17665938 'Detroit Grand Prix' (downtown course used since 2023: Jefferson Avenue, Bates, Atwater, St. Antoine, Franklin, Rivard): one closed loop of 2,685 m once the pit lane is left out and the two ends at the Jefferson Avenue hairpin (6 m apart) are joined; 1.3 % longer than the official 2.650 km (road centre lines). Shape kept, scaled to the official length.",
+   "skipName": "Pit Lane"
+  }
+ ]
+}

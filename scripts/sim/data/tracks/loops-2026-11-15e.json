@@ -1,0 +1,82 @@
+{
+ "source": "OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); loops found by scripts/sim/tracks/assemble.mjs",
+ "rule": "accepted = within 0.5 % of the official lap length",
+ "tracks": {
+  "long-beach": {
+   "relationWays": 48,
+   "relationLoops": 1,
+   "gapClosedM": 12,
+   "snappedEnds": 0,
+   "ways": 2,
+   "edges": 2,
+   "junctions": 4,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 0,
+   "loopsFound": 1,
+   "loopLengthsM": [
+    {
+     "m": 3258,
+     "names": [
+      "East Seaside Way",
+      "Grand Prix of Long Beach Infield Section",
+      "Shoreline Drive",
+      "Grand Prix of Long Beach Hairpin"
+     ]
+    }
+   ],
+   "accepted": [
+    {
+     "id": "long-beach | LONG BEACH",
+     "officialM": 3168,
+     "source": "FIA list 2026-03-31",
+     "grade": "2",
+     "pole": "Left",
+     "widthM": 12.5,
+     "loopM": 3258,
+     "errorPct": 2.84,
+     "accepted": true,
+     "gapClosedM": 12,
+     "scaleToOfficial": true
+    }
+   ]
+  },
+  "detroit": {
+   "relationWays": 32,
+   "relationLoops": 1,
+   "gapClosedM": 12,
+   "snappedEnds": 0,
+   "ways": 0,
+   "edges": 0,
+   "junctions": 0,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 0,
+   "loopsFound": 1,
+   "loopLengthsM": [
+    {
+     "m": 2685,
+     "names": [
+      "West Jefferson Avenue",
+      "Griswold Street",
+      "East Jefferson Avenue",
+      "Bates Street"
+     ]
+    }
+   ],
+   "accepted": [
+    {
+     "id": "detroit | DETROIT GRAND PRIX STREET CIRCUIT",
+     "officialM": 2650,
+     "source": "FIA list 2026-03-31",
+     "grade": "2",
+     "pole": "Left",
+     "widthM": 12,
+     "loopM": 2685,
+     "errorPct": 1.32,
+     "accepted": true,
+     "gapClosedM": 12,
+     "scaleToOfficial": true
+    }
+   ]
+  }
+ }
+}

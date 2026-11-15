@@ -15,6 +15,9 @@ export const EVENTS = [
   {id: 'sakhir-outer', year: 2020, event: 'Sakhir Grand Prix', name: 'Sakhir', layout: 'Outer circuit 3.543 km', officialLengthM: 3543},
   {id: 'portimao', year: 2021, event: 'Portuguese Grand Prix', name: 'Portimão', layout: 'Algarve 4.653 km', officialLengthM: 4653},
   {id: 'paul-ricard-f1', year: 2021, event: 'French Grand Prix', name: 'Paul Ricard', layout: 'F1 layout with the Mistral chicane 5.842 km', officialLengthM: 5842},
+  // owner 2026-11-15: Istanbul Park (2021 is the dry qualifying; 2020 was wet) and Sochi (2020; 2021 Q3 was wet)
+  {id: 'istanbul', year: 2021, event: 'Turkish Grand Prix', name: 'Istanbul Park', layout: 'Grand Prix 5.338 km', officialLengthM: 5338},
+  {id: 'sochi', year: 2020, event: 'Russian Grand Prix', name: 'Sochi Autodrom', layout: 'Grand Prix 5.848 km', officialLengthM: 5848},
 ];
 const LATG_LIMIT = 7;
 const CACHE = resolve(process.env.LAPSIM_F1H_CACHE || '.cache/lapsim/f1-history'), LAPS = 8;
