@@ -29,6 +29,7 @@ import {lapsimDriverLines} from './lapsim/driver-lines-data.js';
 import {trackLabel, trackOrder, evoPairs, carEvent} from './simulator-controls.js';
 import {lapsimTrackNorth} from './lapsim/track-north-data.js';
 import {lapsimTrackView} from './lapsim/track-view-data.js';
+import {lapsimF1Zones} from './lapsim/f1-zones-data.js';
 
 const K = lapsimKernel();
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -143,12 +144,29 @@ function renderMap(map, v, opts) {
     for (let i = 1; i < n; i++) { run.push(i); const nb = bucket(i); if (nb !== b) { flush(); run = [i]; b = nb; } }
     run.push(0); flush();
   }
+  // F1 overtaking zones (owner 2026-11-15): a band just outside the track for each DRS / Straight Mode zone, with its number at the
+  // start; detection (D) and activation (A) points as small marks. Positions are lap distances (m) placed on the map by share of the lap.
+  let zones = '';
+  if (opts.zones && opts.zones.list && opts.zones.list.length) {
+    let area = 0; for (let i = 0; i < n; i++) { const j = (i + 1) % n; area += xs[i] * ys[j] - xs[j] * ys[i]; }
+    const out = area > 0 ? -1 : 1, off = sw * 2.3, idx = s0 => ((Math.round(s0 / opts.length * n) % n) + n) % n;
+    const at = (i, k) => { const p = (i - 1 + n) % n, q = (i + 1) % n, tx = xs[q] - xs[p], ty = ys[q] - ys[p], l = Math.hypot(tx, ty) || 1; return [xs[i] + out * -ty / l * off * k, ys[i] + out * tx / l * off * k]; };
+    const P = ([x, y]) => (x - minX + pad).toFixed(1) + ' ' + (maxY - y + pad).toFixed(1);
+    for (const z of opts.zones.list) {
+      const a = idx(z.from), b = idx(z.to), pts = []; for (let i = a, g = 0; g <= n; g++, i = (i + 1) % n) { pts.push(at(i, 1)); if (i === b) break; }
+      if (pts.length < 2) continue;
+      const lab = at(a, 2.2);
+      zones += '<path class="ls-zone ls-zone-' + opts.zones.kind + '" d="M' + pts.map(P).join('L') + '" stroke-width="' + (sw * 0.9).toFixed(1) + '"/><text class="ls-zone-t" x="' + P(lab).split(' ')[0] + '" y="' + P(lab).split(' ')[1] + '" font-size="' + (sw * 2.4).toFixed(1) + '">' + z.label + '</text>';
+    }
+    for (const m of opts.zones.marks || []) { const k = idx(m.s), a = P(at(k, -0.7)).split(' '), b = P(at(k, 1.3)).split(' '), r = P(at(k, 2.7)).split(' ');
+      zones += '<line class="ls-zone-m ls-zone-m-' + m.kind + '" x1="' + a[0] + '" y1="' + a[1] + '" x2="' + b[0] + '" y2="' + b[1] + '" stroke-width="' + (sw * 0.45).toFixed(1) + '"/><text class="ls-zone-mt ls-zone-mt-' + m.kind + '" x="' + r[0] + '" y="' + r[1] + '" font-size="' + (sw * 2).toFixed(1) + '">' + m.label + '</text>'; }
+  }
   let corners = '';
   for (const c of opts.corners || []) {
     const i = Math.min(n - 1, Math.round(c.s / opts.length * n));
     corners += '<text x="' + px(i) + '" y="' + py(i) + '" dy="' + (-sw * 2.2).toFixed(1) + '" class="ls-corner">' + c.number + (c.letter || '') + '</text>';
   }
-  return '<svg class="ls-map" viewBox="0 0 ' + vw.toFixed(0) + ' ' + vh.toFixed(0) + '" role="img" aria-label="' + opts.label + '">' + band + '<g fill="none" stroke-width="' + (L ? sw * 0.75 : sw) + '" stroke-linecap="round" stroke-linejoin="round">' + paths + '</g>' + marks + '<rect x="' + (px(0) - sw * 2) + '" y="' + (py(0) - sw * 2) + '" width="' + (sw * 4) + '" height="' + (sw * 4) + '" class="ls-start"/>' + corners + '<style>.ls-corner{font-size:' + (sw * 3.4).toFixed(1) + 'px}</style></svg>';
+  return '<svg class="ls-map" viewBox="0 0 ' + vw.toFixed(0) + ' ' + vh.toFixed(0) + '" role="img" aria-label="' + opts.label + '">' + band + '<g fill="none" stroke-width="' + (L ? sw * 0.75 : sw) + '" stroke-linecap="round" stroke-linejoin="round">' + paths + '</g>' + zones + marks + '<rect x="' + (px(0) - sw * 2) + '" y="' + (py(0) - sw * 2) + '" width="' + (sw * 4) + '" height="' + (sw * 4) + '" class="ls-start"/>' + corners + '<style>.ls-corner{font-size:' + (sw * 3.4).toFixed(1) + 'px}</style></svg>';
 }
 
 function renderTrace(ds, series, opts) {
@@ -201,7 +219,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
   const data = {driverLines: lapsimDriverLines?.tracks?.[id] || null, pu: lapsimPuDocs?.events?.[id] || null, lang, t, id, track: td, cars, carOrder: CAR_ORDER, carId, evoOf, fam, bodyLabel: BODY_LABEL, events, conds, raceRec: raceRecords(id), changes, energy: (liveEnergy && (query.track || 'monza') === id ? liveEnergy : energyLimit(id, 2026)),
     compounds: lapsimCompounds?.[id] || {}, wecTyres: lapsimWecTyres?.[id] || {}, line: lineData(id), lineText: LT[lang], qsplit: lapsimQsplit ? {off: lapsimQsplit.offsetPct, test: lapsimQsplit.test, real: lapsimQsplit.tracks?.[id] || null} : null, brakes: lapsimBrakes ? {ramp: lapsimBrakes.rampS ?? 0, k: lapsimBrakes.pedalKgPerG, g: lapsimBrakes.gScale, t: lapsimBrakes.timeScale, test: lapsimBrakes.test, real: lapsimBrakes.races?.[id] || null, text: BT[lang]} : null, compoundGap: compoundGap(id), compoundTest: lapsimCompoundGap?.test?.rmsPct ?? null,
     evo: Object.fromEntries(['f1', 'wec'].map(se => [se, Object.fromEntries(['practice', 'qualifying'].map(ty => [ty, evolutionCoeffs(se, id, ty)]))])),
-    mapRot0: Number.isFinite(view0?.openDeg) ? view0.openDeg : landscapeRot(td.map, lapsimTrackNorth?.[id], VIEW[id], td.corners, td.length), cornersEstimated: !!td.cornersEstimated, north: lapsimTrackNorth?.[id] || null, ui: UI[lang],
+    zones: lapsimF1Zones?.tracks?.[id] || null, mapRot0: Number.isFinite(view0?.openDeg) ? view0.openDeg : landscapeRot(td.map, lapsimTrackNorth?.[id], VIEW[id], td.corners, td.length), cornersEstimated: !!td.cornersEstimated, north: lapsimTrackNorth?.[id] || null, ui: UI[lang],
     calibration: {generatedAt: lapsimCalibration?.generatedAt || null, seasons: Object.fromEntries(Object.entries(lapsimCalibration?.seasons || {}).map(([y, s]) => [y, s.tracks?.[id] || null]))}};
   // first render on the server with the same code the browser uses
   const view = computeView(K, data, {carId, compareId: '', mode: 'real', manual: null, active: {}, strength: 1, evo: null}, {renderMap, renderTrace, evolutionDelta, evolutionCurve, lineTrack, brakeZones, lapChannels});
@@ -279,9 +297,9 @@ ${racePanel(id, lang, query.race || null)}
 // Page texts added 2026-11-15: compare tab, telemetry channels and export, map rotation and compass
 const UI = {
   ko: {cmp1: '비교 차 1', cmp2: '비교 차 2', cmpH: '랩 비교', csv: 'CSV 내보내기', chans: '보여 줄 텔레메트리', cmpNote: '갭은 선택한 차 기준입니다. 섹터는 실제 섹터 경계가 있는 트랙에서만 나옵니다.',
-    move: '{c} 순서 옮기기 (끌거나 ← →)', cols: ['차', '랩타임', '갭', '섹터 1', '섹터 2', '섹터 3', '최고 속도', '최저 속도'], rotL: '왼쪽으로 돌리기', rotR: '오른쪽으로 돌리기', reset: '처음 보기로 돌아가기 (나침반: 실제 북쪽)', noNorth: '이 트랙은 실제 북쪽 방향 자료가 없습니다', dist: '거리 (m)', cap: '규정 상한'},
+    move: '{c} 순서 옮기기 (끌거나 ← →)', zoneNote: {drs: '바깥 띠: {y} DRS 존, D = 감지 지점 ({doc})', sm: '바깥 띠: {y} 스트레이트 모드 존, OT D/A = 오버테이크 감지·작동 지점 ({doc})'}, cols: ['차', '랩타임', '갭', '섹터 1', '섹터 2', '섹터 3', '최고 속도', '최저 속도'], rotL: '왼쪽으로 돌리기', rotR: '오른쪽으로 돌리기', reset: '처음 보기로 돌아가기 (나침반: 실제 북쪽)', noNorth: '이 트랙은 실제 북쪽 방향 자료가 없습니다', dist: '거리 (m)', cap: '규정 상한'},
   en: {cmp1: 'Compare car 1', cmp2: 'Compare car 2', cmpH: 'Lap comparison', csv: 'Export CSV', chans: 'Telemetry to show', cmpNote: 'Gaps are to the selected car. Sectors show only on tracks with real sector lines.',
-    move: 'Move {c} (drag, or ← →)', cols: ['Car', 'Lap', 'Gap', 'Sector 1', 'Sector 2', 'Sector 3', 'Top speed', 'Lowest speed'], rotL: 'Rotate left', rotR: 'Rotate right', reset: 'Back to the first view (compass: true north)', noNorth: 'No true-north data for this track', dist: 'Distance (m)', cap: 'regulation cap'},
+    move: 'Move {c} (drag, or ← →)', zoneNote: {drs: 'outer band: {y} DRS zones, D = detection point ({doc})', sm: 'outer band: {y} Straight Mode zones, OT D/A = overtake detection/activation ({doc})'}, cols: ['Car', 'Lap', 'Gap', 'Sector 1', 'Sector 2', 'Sector 3', 'Top speed', 'Lowest speed'], rotL: 'Rotate left', rotR: 'Rotate right', reset: 'Back to the first view (compass: true north)', noNorth: 'No true-north data for this track', dist: 'Distance (m)', cap: 'regulation cap'},
 };
 // The map opens turned so the track uses the width (owner 2026-11-15: Monza, Jeddah, Fuji were drawn tall; "the long straight parallel
 // to the top or bottom of the page"): the longest straight is laid horizontal; of the two ways round, the one nearer true north up
@@ -626,7 +644,13 @@ function computeView(K, data, state, R) {
       : (bl ? LT0.blendNote.replace('{car}', sel.label).replace('{e}', Math.round(bl.e * 100)) + (mode === 'r' ? ' · ' + LT0.noRace : '') : LT0.noCar);
     lineNote += edge ? ' · ' + edge : '';
   }
-  const mapOpts = {corners: d.corners, length: d.length, label: t.map, line, rot: Number.isFinite(state.mapRot) ? state.mapRot : (data.mapRot0 || 0)};
+  // F1 zones (owner 2026-11-15): 2026–2028 cars show the 2026 Straight Mode zones and overtake detection/activation (2027 documents
+  // replace them once published); a 2025 car shows the 2025 DRS zones, or those of the last year F1 raced here; other cars none
+  const ZD = data.zones, zy = !sel.series && ZD ? (sel.year >= 2026 ? (ZD[String(sel.year)] || ZD['2026']) : sel.year === 2025 ? ZD['2025'] : null) : null;
+  const zoneOpts = zy ? {kind: zy.kind, list: zy.zones.map(z => ({from: z.from, to: z.to, label: (zy.kind === 'drs' ? 'DRS' : 'SM') + (zy.zones.length > 1 ? ' ' + z.n : '')})),
+    marks: (zy.marks || []).map(m => ({s: m.s, kind: m.kind, label: m.label}))} : null;
+  const zoneNote = zy ? ' · ' + (data.ui.zoneNote[zy.kind] || '').replace('{y}', zy.year).replace('{doc}', zy.doc || '') : '';
+  const mapOpts = {zones: zoneOpts, corners: d.corners, length: d.length, label: t.map, line, rot: Number.isFinite(state.mapRot) ? state.mapRot : (data.mapRot0 || 0)};
   // compass: the map frame turned by north.deg (counter-clockwise) is true east-north; the needle turns clockwise on screen
   const compassDeg = data.north && !data.north.mirror ? ((data.north.deg - mapOpts.rot) % 360 + 360) % 360 : null;
   const mapSvg = R.renderMap(d.map || {x: [], y: []}, res.v, mapOpts);
@@ -774,6 +798,7 @@ function computeView(K, data, state, R) {
   const evoSvg = '<svg class="ls-race" viewBox="0 0 ' + ew + ' ' + eh + '" role="img" aria-label="' + t.evoChart + '">' + qsBands + '<polyline fill="none" stroke="currentColor" stroke-width="2" points="' + curve.points.map(p => ex(p.minute).toFixed(1) + ',' + ey(p.lap).toFixed(1)).join(' ') + '"/>'
     + '<text x="2" y="16" font-size="11" fill="currentColor">' + fmt(hi) + '</text><text x="2" y="' + (eh - 28) + '" font-size="11" fill="currentColor">' + fmt(lo) + '</text>'
     + '<text x="44" y="' + (eh - 6) + '" font-size="11" fill="currentColor">0</text><text x="' + (ew - 12) + '" y="' + (eh - 6) + '" font-size="11" text-anchor="end" fill="currentColor">' + evo.end + ' ' + t.min + '</text></svg>';
+  lineNote += zoneNote;
   return {compassDeg, cmpRows, mapArgs: [d.map || {x: [], y: []}, res.v, mapOpts], driverOpts, tel, lineNote, lap: fmt(res.lapTime), poleHtml: poleHtml + raceHtml, factsHtml, airHtml, kindLabel, mapSvg, traceSvg, keyHtml, windHtml, weather: w, evo, evoFacts, evoSvg, qsHtml, socHtml, brakeHtml, tyreHtml};
 }
 
@@ -792,19 +817,26 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
   const box = document.querySelector('[data-ls-zoom]'), Z = {k: 1, x: 0, y: 0};
   const svgEl = () => box && box.querySelector('svg.ls-map');
   const vb0 = s => { if (!s.dataset.vb) s.dataset.vb = s.getAttribute('viewBox'); return s.dataset.vb.split(' ').map(Number); };
-  const apply = () => {
+  // smooth zoom and turn (owner 2026-11-15); none under reduced motion
+  const still = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
+  let tween = 0;
+  const apply = anim => {
     const s = svgEl(); if (!s) return; const [, , W, H] = vb0(s);
     Z.k = Math.min(8, Math.max(1, Z.k)); const w = W / Z.k, h = H / Z.k;
     Z.x = Math.min(W - w, Math.max(0, Z.x)); Z.y = Math.min(H - h, Math.max(0, Z.y));
-    s.setAttribute('viewBox', Z.x.toFixed(1) + ' ' + Z.y.toFixed(1) + ' ' + w.toFixed(1) + ' ' + h.toFixed(1));
-    box.classList.toggle('is-zoomed', Z.k > 1); reZoom();
+    const to = [Z.x, Z.y, w, h]; box.classList.toggle('is-zoomed', Z.k > 1); cancelAnimationFrame(tween);
+    const set = v => { s.setAttribute('viewBox', v.map(x => x.toFixed(1)).join(' ')); reZoom(W / v[2]); };
+    if (!anim || still()) { set(to); return; }
+    const from = (s.getAttribute('viewBox') || '').split(/\s+/).map(Number), t0 = performance.now(), D = 260;
+    const step = now => { const k = Math.min(1, (now - t0) / D), e = 1 - Math.pow(1 - k, 3); set(from.map((x, i) => x + (to[i] - x) * e)); if (k < 1) tween = requestAnimationFrame(step); };
+    tween = requestAnimationFrame(step);
   };
   // keep line width, markers and labels readable while zoomed (the map is redrawn on every change)
-  function reZoom() { if (!box) return; box.querySelectorAll('svg.ls-map>g').forEach(g => { g.style.strokeWidth = (Number(g.getAttribute('stroke-width')) / Math.pow(Z.k, 0.8)).toFixed(2); }); }
+  function reZoom(k) { if (!box) return; const kk = k || Z.k; box.querySelectorAll('svg.ls-map>g').forEach(g => { g.style.strokeWidth = (Number(g.getAttribute('stroke-width')) / Math.pow(kk, 0.8)).toFixed(2); }); }
   const unit = () => { const s = svgEl(); return s ? vb0(s)[2] / Z.k / Math.max(1, s.clientWidth) : 1; }; // map units per screen pixel
-  const zoomAt = (f, cx, cy) => { const u = unit(), mx = Z.x + cx * u, my = Z.y + cy * u; Z.k = Math.min(8, Z.k * f); if (Z.k <= 1) { Z.k = 1; Z.x = 0; Z.y = 0; apply(); return; } const u2 = unit(); Z.x = mx - cx * u2; Z.y = my - cy * u2; apply(); };
+  const zoomAt = (f, cx, cy, anim) => { const s = svgEl(), u = unit(), mx = Z.x + cx * u, my = Z.y + cy * u; Z.k = Math.min(8, Z.k * f); if (Z.k <= 1) { Z.k = 1; Z.x = 0; Z.y = 0; apply(anim); return; } const u2 = s ? vb0(s)[2] / Z.k / Math.max(1, s.clientWidth) : 1; Z.x = mx - cx * u2; Z.y = my - cy * u2; apply(anim); };
   if (box) {
-    document.querySelectorAll('[data-zoom]').forEach(b => b.addEventListener('click', () => { const s = svgEl(), w = (s ? s.clientWidth : box.clientWidth) / 2, h = (s ? s.clientHeight : box.clientHeight) / 2; if (b.dataset.zoom === 'fit') { Z.k = 1; Z.x = 0; Z.y = 0; apply(); } else zoomAt(b.dataset.zoom === 'in' ? 1.6 : 1 / 1.6, w, h); }));
+    document.querySelectorAll('[data-zoom]').forEach(b => b.addEventListener('click', () => { const s = svgEl(), w = (s ? s.clientWidth : box.clientWidth) / 2, h = (s ? s.clientHeight : box.clientHeight) / 2; if (b.dataset.zoom === 'fit') { Z.k = 1; Z.x = 0; Z.y = 0; apply(true); } else zoomAt(b.dataset.zoom === 'in' ? 1.6 : 1 / 1.6, w, h, true); }));
     box.addEventListener('wheel', e => { if (!e.ctrlKey && Z.k === 1) return; e.preventDefault(); const r = svgEl().getBoundingClientRect(); zoomAt(e.deltaY < 0 ? 1.25 : 0.8, e.clientX - r.left, e.clientY - r.top); }, {passive: false});
     const pts = new Map(); let pinch = 0;
     box.addEventListener('pointerdown', e => { if (Z.k === 1 && e.pointerType === 'mouse') return; pts.set(e.pointerId, [e.clientX, e.clientY]); box.setPointerCapture(e.pointerId); });
@@ -842,11 +874,17 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
   // map rotation (owner 2026-11-15): ⟲ ⟳ turn the map 15°; the compass needle shows true north; pressing it returns to the first view
   let lastView = null;
   const needle = deg => { const g = document.querySelector('[data-compass] svg g'); if (g && deg != null) g.setAttribute('transform', 'rotate(' + Math.round(deg) + ')'); };
+  const turnTo = (newRot, oldRot) => { const s = svgEl(), d = ((oldRot - newRot) % 360 + 540) % 360 - 180; state.mapRot = newRot;
+    if (!s || still() || !d) { redrawMap(); return; }
+    s.style.transition = 'transform .38s cubic-bezier(.2,.7,.2,1)'; s.style.transformOrigin = '50% 50%'; s.style.transform = 'rotate(' + d + 'deg)';
+    const g = document.querySelector('[data-compass] svg g'), n0 = g && /rotate\((-?[\d.]+)\)/.exec(g.getAttribute('transform') || ''); if (g && n0) { g.style.transformBox = 'view-box'; g.style.transform = 'rotate(' + n0[1] + 'deg)'; void g.getBoundingClientRect(); g.style.transition = 'transform .38s cubic-bezier(.2,.7,.2,1)'; g.style.transform = 'rotate(' + (Number(n0[1]) + d) + 'deg)'; }
+    setTimeout(() => { if (g) { g.style.transition = ''; g.style.transform = ''; } redrawMap(); }, 390); };
   const redrawMap = () => { if (!lastView) return; const [m, v, o] = lastView.mapArgs, rot = Number.isFinite(state.mapRot) ? state.mapRot : (data.mapRot0 || 0), opts = Object.assign({}, o, {rot});
     Z.k = 1; Z.x = 0; Z.y = 0; q('map').innerHTML = renderMap(m, v, opts); apply();
     if (data.north && !data.north.mirror) needle(((data.north.deg - rot) % 360 + 360) % 360); };
-  document.querySelectorAll('[data-rot]').forEach(b => b.addEventListener('click', () => { const r0 = Number.isFinite(state.mapRot) ? state.mapRot : (data.mapRot0 || 0); state.mapRot = r0 - Number(b.dataset.rot); redrawMap(); }));
-  const cb = document.querySelector('[data-compass]'); if (cb) { if (!data.north || data.north.mirror) cb.title = data.ui.noNorth + ' · ' + cb.title; cb.addEventListener('click', () => { state.mapRot = null; redrawMap(); }); }
+  const curRot = () => Number.isFinite(state.mapRot) ? state.mapRot : (data.mapRot0 || 0);
+  document.querySelectorAll('[data-rot]').forEach(b => b.addEventListener('click', () => { const r0 = curRot(); turnTo(r0 - Number(b.dataset.rot), r0); }));
+  const cb = document.querySelector('[data-compass]'); if (cb) { if (!data.north || data.north.mirror) cb.title = data.ui.noNorth + ' · ' + cb.title; cb.addEventListener('click', () => { const r0 = curRot(); turnTo(data.mapRot0 || 0, r0); state.mapRot = null; }); }
   // telemetry channels (owner 2026-11-15): tick the lanes to show; the choice is kept in this browser
   let hidden = {}; try { hidden = JSON.parse(localStorage.getItem('kb-ls-hide') || '{}') || {}; } catch (e) { hidden = {}; }
   // lane order (owner 2026-11-15): drag a chip by its grip, or focus the grip and press ← →; kept in this browser
@@ -1014,7 +1052,7 @@ const CSS = `:root{--sim-slow:#ffa94d}:root[data-theme="light"]{--sim-slow:#245d
 .ls-zoombox{overflow:hidden;position:relative;touch-action:pan-y;border-radius:12px}.ls-zoombox.is-zoomed{touch-action:none;cursor:grab}.ls-line-bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px}.ls-zoom-btns{margin-left:auto;display:inline-flex;flex-wrap:wrap;gap:6px;max-width:100%}.ls-map .ls-mk{stroke:#fff;transform-box:fill-box;transform-origin:center;scale:var(--inv,1)}.ls-zoombox text{transform-box:fill-box;transform-origin:center;scale:var(--inv,1)}.ls-map .ls-band{fill:color-mix(in oklab,var(--muted) 18%,transparent);stroke:none}
 .ls-mk-b{fill:#e5484d}.ls-mk-a{fill:#f5a524}.ls-mk-t{fill:#30a46c}.ls-line-key [class^=ls-mk]{display:inline-block;width:10px;height:10px;border-radius:50%;margin:0 4px 0 10px;vertical-align:middle}.ls-line-key [class^=ls-mk]:first-child{margin-left:0}.ls-line-key .ls-mk-b{background:#e5484d}.ls-line-key .ls-mk-a{background:#f5a524}.ls-line-key .ls-mk-t{background:#30a46c}
 .ls-evo .ls-controls{grid-template-columns:repeat(3,minmax(0,1fr));margin:12px 0 16px}.ls-check{display:flex;align-items:center;gap:8px;align-self:end;min-height:40px}.ls-check input{width:20px;height:20px;min-height:0;accent-color:var(--mint)}.ls-evo .ls-facts{margin-top:16px}
-.ls-line-2{stroke:var(--text);stroke-dasharray:2 3}.ls-key-2{background:var(--text)}.ls-key-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;vertical-align:middle}
+.ls-line-2{stroke:var(--text);stroke-dasharray:2 3}.ls-zone{fill:none;stroke-linecap:round;opacity:.9}.ls-zone-drs{stroke:#3e8bff}.ls-zone-sm{stroke:#a3e635}.ls-zone-t{fill:var(--text);font-weight:700;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:var(--bg);stroke-width:3px}.ls-zone-m{stroke:#f5a524}.ls-zone-m-act{stroke:#a3e635}.ls-zone-mt{fill:#f5a524;font-weight:700;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:var(--bg);stroke-width:3px}.ls-key-2{background:var(--text)}.ls-key-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;vertical-align:middle}
 main:not(.kb-cmp-view) .ls-cmp-only{display:none!important}
 .ls-panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.ls-panel-head h2{margin:0}.ls-panel-head .pill{min-height:44px}
 .ls-chans{display:flex;flex-wrap:wrap;gap:6px 8px;margin:12px 0 4px}.ls-chan{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1px solid var(--line);border-radius:999px;font-size:14px;color:var(--text);cursor:pointer;user-select:none}.ls-chan input{width:18px;height:18px;margin:0;accent-color:var(--mint)}.ls-chan:has(input:not(:checked)){color:var(--muted)}
