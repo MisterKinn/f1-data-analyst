@@ -243,11 +243,17 @@
   },
   "paul-ricard-2021": {
    "group": "owner-2026-11-15",
-   "file": "extra-tracks.json",
-   "candidate": "paul-ricard-paul-ricard-1av2",
+   "file": "extra-tracks-f1.json",
+   "candidate": "paul-ricard-f1",
    "name": "Paul Ricard (2021-24)",
    "layout": "1A-V2 5.791 km (FIA list 2024; ELMS timing states 5.771 km)",
-   "direction": "cw"
+   "driven": true,
+   "straighten": [
+    2630,
+    2930
+   ],
+   "shapeNote": "owner 2026-11-15: the OpenStreetMap 1A-V2 line had wrong branches (44 bends under 25 m radius, 2551 deg of turning; GT3 simulated 152.9 s against the real 114.9 s). Built from the F1 car-position lap (1C-V2) with the Mistral chicane (2630-2930 m) replaced by its straight.",
+   "officialLengthM": 5791
   },
   "dubai": {
    "group": "owner-2026-11-15",
