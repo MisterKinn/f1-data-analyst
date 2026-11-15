@@ -22,21 +22,26 @@
    "file": "extra-tracks.json",
    "candidate": "yeongam-korea",
    "name": "Yeongam",
-   "layout": "Korea International Circuit, Grand Prix 5.615 km"
+   "layout": "Korea International Circuit, Grand Prix 5.615 km",
+   "direction": "ccw"
   },
   "yongin": {
    "group": "korea",
    "file": "extra-tracks.json",
    "candidate": "yongin-everland-speedway-full-course",
    "name": "Yongin",
-   "layout": "Everland Speedway, full course 4.346 km"
+   "layout": "Everland Speedway, full course 4.346 km",
+   "direction": "cw"
   },
   "mugello": {
    "group": "europe-africa-asia",
    "file": "extra-tracks.json",
    "candidate": "mugello-mugello",
    "name": "Mugello",
-   "layout": "Grand Prix 5.245 km"
+   "layout": "Grand Prix 5.245 km",
+   "direction": "cw",
+   "widthM": 14,
+   "widthNote": "circuit's official figure 14 m (map data had 9.6 m); owner's other session 2026-11-15"
   },
   "nurburgring-gp": {
    "group": "f1-history",
@@ -52,14 +57,16 @@
    "file": "extra-tracks.json",
    "candidate": "nurburgring-nurburgring-sprint-strecke",
    "name": "Nürburgring",
-   "layout": "Sprint 3.629 km (DTM, ADAC GT Masters)"
+   "layout": "Sprint 3.629 km (DTM, ADAC GT Masters)",
+   "direction": "cw"
   },
   "nurburgring-24h": {
    "group": "europe-africa-asia",
    "file": "extra-tracks.json",
    "candidate": "nurburgring-24-hours-combined-lap",
    "name": "Nürburgring",
-   "layout": "24 Hours combined lap 25.378 km"
+   "layout": "24 Hours combined lap 25.378 km",
+   "direction": "cw"
   },
   "brands-hatch": {
    "group": "europe-africa-asia",
@@ -67,7 +74,8 @@
    "candidate": "brands-hatch",
    "name": "Brands Hatch",
    "layout": "Grand Prix 3.916 km",
-   "shapeEvidence": "2 measured (TUM racetrack database centre line)"
+   "shapeEvidence": "2 measured (TUM racetrack database centre line)",
+   "direction": "cw"
   },
   "sakhir-outer": {
    "group": "f1-history",
@@ -83,112 +91,128 @@
    "file": "extra-tracks.json",
    "candidate": "kyalami-grand-prix-circuit",
    "name": "Kyalami",
-   "layout": "Grand Prix 4.522 km"
+   "layout": "Grand Prix 4.522 km",
+   "direction": "ccw"
   },
   "fuji": {
    "group": "europe-africa-asia",
    "file": "extra-tracks.json",
    "candidate": "fuji-fuji-speedway",
    "name": "Fuji",
-   "layout": "Fuji Speedway 4.563 km"
+   "layout": "Fuji Speedway 4.563 km",
+   "direction": "cw"
   },
   "daytona": {
    "group": "imsa",
    "file": "extra-tracks.json",
    "candidate": "daytona-road-course-imsa",
    "name": "Daytona",
-   "layout": "Road course (IMSA) 5.729 km"
+   "layout": "Road course (IMSA) 5.729 km",
+   "direction": "ccw"
   },
   "laguna-seca": {
    "group": "imsa",
    "file": "extra-tracks.json",
    "candidate": "laguna-seca-laguna-seca-raceway",
    "name": "Laguna Seca",
-   "layout": "Raceway 3.602 km"
+   "layout": "Raceway 3.602 km",
+   "direction": "ccw"
   },
   "watkins-glen": {
    "group": "imsa",
    "file": "extra-tracks.json",
    "candidate": "watkins-glen-long-course-imsa",
    "name": "Watkins Glen",
-   "layout": "Long course (IMSA) 5.472 km"
+   "layout": "Long course (IMSA) 5.472 km",
+   "direction": "cw"
   },
   "mosport": {
    "group": "imsa",
    "file": "extra-tracks.json",
    "candidate": "mosport-grand-prix-track-imsa",
    "name": "Mosport",
-   "layout": "Grand Prix track (IMSA) 3.957 km"
+   "layout": "Grand Prix track (IMSA) 3.957 km",
+   "direction": "cw"
   },
   "road-america": {
    "group": "imsa",
    "file": "extra-tracks.json",
    "candidate": "road-america-road-america-elkhart-lake",
    "name": "Road America",
-   "layout": "Elkhart Lake 6.514 km"
+   "layout": "Elkhart Lake 6.514 km",
+   "direction": "cw"
   },
   "vir": {
    "group": "imsa",
    "file": "extra-tracks.json",
    "candidate": "vir-full-course-imsa",
    "name": "VIR",
-   "layout": "Full course (IMSA) 5.263 km"
+   "layout": "Full course (IMSA) 5.263 km",
+   "direction": "cw"
   },
   "indianapolis": {
    "group": "imsa",
    "file": "extra-tracks.json",
    "candidate": "indianapolis-indianapolis-road-course",
    "name": "Indianapolis",
-   "layout": "Road course 3.910 km"
+   "layout": "Road course 3.910 km",
+   "direction": "cw"
   },
   "road-atlanta": {
    "group": "imsa",
    "file": "extra-tracks.json",
    "candidate": "road-atlanta-road-atlanta",
    "name": "Road Atlanta",
-   "layout": "Road Atlanta 4.088 km"
+   "layout": "Road Atlanta 4.088 km",
+   "direction": "cw"
   },
   "mid-ohio": {
    "group": "imsa",
    "file": "extra-tracks.json",
    "candidate": "mid-ohio-imsa-layout",
    "name": "Mid-Ohio",
-   "layout": "IMSA layout 3.634 km"
+   "layout": "IMSA layout 3.634 km",
+   "direction": "cw"
   },
   "lime-rock": {
    "group": "imsa",
    "file": "extra-tracks.json",
    "candidate": "lime-rock-imsa-layout",
    "name": "Lime Rock",
-   "layout": "IMSA layout 2.414 km"
+   "layout": "IMSA layout 2.414 km",
+   "direction": "cw"
   },
   "le-mans": {
    "group": "owner-list-other",
    "file": "extra-tracks.json",
    "candidate": "le-mans-le-mans-24-heures",
    "name": "Le Mans",
-   "layout": "Circuit des 24 Heures 13.626 km"
+   "layout": "Circuit des 24 Heures 13.626 km",
+   "direction": "cw"
   },
   "portimao": {
    "group": "owner-list-other",
    "file": "extra-tracks.json",
    "candidate": "portimao-algarve",
    "name": "Portimão",
-   "layout": "Algarve 4.653 km"
+   "layout": "Algarve 4.653 km",
+   "direction": "cw"
   },
   "hockenheim": {
    "group": "owner-list-other",
    "file": "extra-tracks.json",
    "candidate": "hockenheim-hockenheim-grand-prix",
    "name": "Hockenheim",
-   "layout": "Grand Prix 4.574 km"
+   "layout": "Grand Prix 4.574 km",
+   "direction": "cw"
   },
   "bathurst": {
    "group": "owner-list-other",
    "file": "extra-tracks.json",
    "candidate": "bathurst-mount-panorama-bathurst",
    "name": "Bathurst",
-   "layout": "Mount Panorama 6.213 km"
+   "layout": "Mount Panorama 6.213 km",
+   "direction": "ccw"
   },
   "paul-ricard-f1": {
    "group": "f1-history",
@@ -221,143 +245,169 @@
   },
   "paul-ricard-2021": {
    "group": "owner-2026-11-15",
-   "file": "extra-tracks.json",
-   "candidate": "paul-ricard-paul-ricard-1av2",
+   "file": "extra-tracks-f1.json",
+   "candidate": "paul-ricard-f1",
    "name": "Paul Ricard (2021-24)",
-   "layout": "1A-V2 5.791 km (FIA list 2024; ELMS timing states 5.771 km)"
+   "layout": "1A-V2 5.791 km (FIA list 2024; ELMS timing states 5.771 km)",
+   "driven": true,
+   "straighten": [
+    2630,
+    2930
+   ],
+   "shapeNote": "owner 2026-11-15: the OpenStreetMap 1A-V2 line had wrong branches (44 bends under 25 m radius, 2551 deg of turning; GT3 simulated 152.9 s against the real 114.9 s). Built from the F1 car-position lap (1C-V2) with the Mistral chicane (2630-2930 m) replaced by its straight.",
+   "officialLengthM": 5791
   },
   "dubai": {
    "group": "owner-2026-11-15",
    "file": "extra-tracks-2026-11-15.json",
    "candidate": "dubai-dubai-grand-prix-circuit",
    "name": "Dubai Autodrome",
-   "layout": "Grand Prix circuit 5.390 km"
+   "layout": "Grand Prix circuit 5.390 km",
+   "direction": "cw"
   },
   "ricardo-tormo": {
    "group": "owner-2026-11-15",
    "file": "extra-tracks-2026-11-15.json",
    "candidate": "valencia-ricardo-tormo-valencia-ricardo-tormo",
    "name": "Valencia Ricardo Tormo",
-   "layout": "Ricardo Tormo 4.005 km"
+   "layout": "Ricardo Tormo 4.005 km",
+   "direction": "ccw"
   },
   "misano": {
    "group": "owner-2026-11-15",
    "file": "extra-tracks-2026-11-15.json",
    "candidate": "misano-misano-adriatico-long-track",
    "name": "Misano",
-   "layout": "Misano Adriatico long track 4.226 km"
+   "layout": "Misano Adriatico long track 4.226 km",
+   "direction": "cw"
   },
   "sonoma": {
    "group": "owner-2026-11-15",
    "file": "extra-tracks-2026-11-15.json",
    "candidate": "sonoma-sonoma-raceway",
    "name": "Sonoma",
-   "layout": "Sonoma Raceway 3.685 km"
+   "layout": "Sonoma Raceway 3.685 km",
+   "direction": "cw"
   },
   "sachsenring": {
    "group": "owner-2026-11-15",
    "file": "extra-tracks-2026-11-15.json",
    "candidate": "sachsenring-sachsenring",
    "name": "Sachsenring",
-   "layout": "Sachsenring 3.645 km"
+   "layout": "Sachsenring 3.645 km",
+   "direction": "ccw"
   },
   "oschersleben": {
    "group": "owner-2026-11-15",
    "file": "extra-tracks-2026-11-15.json",
    "candidate": "oschersleben-oschersleben-motorsport-arena",
    "name": "Oschersleben",
-   "layout": "Motorsport Arena 3.696 km"
+   "layout": "Motorsport Arena 3.696 km",
+   "direction": "cw"
   },
   "zolder": {
    "group": "owner-2026-11-15",
    "file": "extra-tracks-2026-11-15.json",
    "candidate": "zolder-zolder",
    "name": "Zolder",
-   "layout": "Circuit Zolder 4.000 km"
+   "layout": "Circuit Zolder 4.000 km",
+   "direction": "cw"
   },
   "donington": {
    "group": "owner-2026-11-15",
    "file": "extra-tracks-2026-11-15.json",
    "candidate": "donington-donington-park",
    "name": "Donington Park",
-   "layout": "Grand Prix circuit 4.003 km"
+   "layout": "Grand Prix circuit 4.003 km",
+   "direction": "cw"
   },
   "oulton-park": {
    "group": "owner-2026-11-15",
    "file": "extra-tracks-2026-11-15.json",
    "candidate": "oulton-park-oulton-park",
    "name": "Oulton Park",
-   "layout": "International circuit 4.332 km"
+   "layout": "International circuit 4.332 km",
+   "direction": "cw"
   },
   "motegi": {
    "group": "owner-2026-11-15",
    "file": "extra-tracks-2026-11-15.json",
    "candidate": "motegi-twin-ring-motegi-grand-prix",
    "name": "Motegi",
-   "layout": "Mobility Resort Motegi road course 4.801 km"
+   "layout": "Mobility Resort Motegi road course 4.801 km",
+   "direction": "cw"
   },
   "buriram": {
    "group": "owner-2026-11-15",
    "file": "extra-tracks-2026-11-15.json",
    "candidate": "buriram-buriram",
    "name": "Buriram",
-   "layout": "Chang International Circuit 4.554 km"
+   "layout": "Chang International Circuit 4.554 km",
+   "direction": "cw"
   },
   "okayama": {
    "group": "owner-2026-11-15",
    "file": "extra-tracks-2026-11-15.json",
    "candidate": "okayama-okayama",
    "name": "Okayama",
-   "layout": "Okayama International Circuit 3.703 km"
+   "layout": "Okayama International Circuit 3.703 km",
+   "direction": "cw"
   },
   "zhuhai": {
    "group": "owner-2026-11-15",
    "file": "extra-tracks-2026-11-15.json",
    "candidate": "zhuhai-zhuhai",
    "name": "Zhuhai",
-   "layout": "Zhuhai International Circuit 4.318 km"
+   "layout": "Zhuhai International Circuit 4.318 km",
+   "direction": "cw"
   },
   "vallelunga": {
    "group": "owner-2026-11-15",
    "file": "extra-tracks-2026-11-15.json",
    "candidate": "vallelunga-vallelunga-international",
    "name": "Vallelunga",
-   "layout": "International circuit 4.085 km"
+   "layout": "International circuit 4.085 km",
+   "direction": "cw"
   },
   "estoril": {
    "group": "owner-2026-11-15",
    "file": "extra-tracks-2026-11-15.json",
    "candidate": "estoril-estoril",
    "name": "Estoril",
-   "layout": "Circuito Estoril 4.182 km"
+   "layout": "Circuito Estoril 4.182 km",
+   "direction": "cw"
   },
   "jerez": {
    "group": "owner-2026-11-15",
    "file": "extra-tracks-2026-11-15.json",
    "candidate": "jerez-jerez",
    "name": "Jerez",
-   "layout": "Circuito de Jerez 4.428 km"
+   "layout": "Circuito de Jerez 4.428 km",
+   "direction": "cw"
   },
   "sydney": {
    "group": "owner-2026-11-15",
    "file": "extra-tracks-2026-11-15.json",
    "candidate": "sydney-sydney-motorsports-park-brabham",
    "name": "Sydney Motorsport Park",
-   "layout": "Brabham circuit 4.500 km"
+   "layout": "Brabham circuit 4.500 km",
+   "direction": "ccw"
   },
   "sydney-gardner": {
    "group": "owner-2026-11-15",
    "file": "extra-tracks-2026-11-15.json",
    "candidate": "sydney-sydney-motorsports-park-gardner",
    "name": "Sydney Motorsport Park (Gardner)",
-   "layout": "Gardner circuit 3.905 km"
+   "layout": "Gardner circuit 3.905 km",
+   "direction": "ccw"
   },
   "inje": {
    "group": "owner-2026-11-15",
    "file": "extra-tracks-2026-11-15.json",
    "candidate": "inje-inje",
    "name": "Inje Speedium",
-   "layout": "Full course 3.908 km"
+   "layout": "Full course 3.908 km",
+   "direction": "cw"
   },
   "sebring": {
    "group": "owner-2026-11-15",
@@ -365,56 +415,64 @@
    "candidate": "sebring-sebring",
    "name": "Sebring",
    "layout": "IMSA layout 6.019 km",
-   "layoutNote": "No piece of the map is missing; the OpenStreetMap lap is 2.2 % short everywhere (Club and School circuits too), so its shape is scaled to the official 6.019 km (track-requests-2026-11-15c.json)"
+   "layoutNote": "No piece of the map is missing; the OpenStreetMap lap is 2.2 % short everywhere (Club and School circuits too), so its shape is scaled to the official 6.019 km (track-requests-2026-11-15c.json)",
+   "direction": "cw"
   },
   "magny-cours": {
    "group": "owner-2026-11-15",
    "file": "extra-tracks-2026-11-15b.json",
    "candidate": "magny-cours-magny-cours",
    "name": "Magny-Cours",
-   "layout": "Grand Prix circuit 4.411 km"
+   "layout": "Grand Prix circuit 4.411 km",
+   "direction": "cw"
   },
   "mandalika": {
    "group": "owner-2026-11-15",
    "file": "extra-tracks-2026-11-15b.json",
    "candidate": "mandalika-mandalika",
    "name": "Mandalika",
-   "layout": "Pertamina Mandalika circuit 4.300 km"
+   "layout": "Pertamina Mandalika circuit 4.300 km",
+   "direction": "cw"
   },
   "phillip-island": {
    "group": "owner-2026-11-15",
    "file": "extra-tracks-2026-11-15b.json",
    "candidate": "phillip-island-phillip-island",
    "name": "Phillip Island",
-   "layout": "Grand Prix circuit 4.480 km"
+   "layout": "Grand Prix circuit 4.480 km",
+   "direction": "ccw"
   },
   "aragon": {
    "group": "owner-2026-11-15",
    "file": "extra-tracks-2026-11-15c.json",
    "candidate": "aragon-motorland-aragon",
    "name": "MotorLand Aragón",
-   "layout": "Motorland circuit 5.346 km"
+   "layout": "Motorland circuit 5.346 km",
+   "direction": "ccw"
   },
   "autopolis": {
    "group": "owner-2026-11-15",
    "file": "extra-tracks-2026-11-15c.json",
    "candidate": "autopolis-autopolis",
    "name": "Autopolis",
-   "layout": "Full circuit 4.674 km"
+   "layout": "Full circuit 4.674 km",
+   "direction": "cw"
   },
   "snetterton": {
    "group": "owner-2026-11-15",
    "file": "extra-tracks-2026-11-15c.json",
    "candidate": "snetterton-snetterton-300",
    "name": "Snetterton",
-   "layout": "Snetterton 300 circuit 4.779 km"
+   "layout": "Snetterton 300 circuit 4.779 km",
+   "direction": "cw"
   },
   "lausitz": {
    "group": "owner-2026-11-15",
    "file": "extra-tracks-2026-11-15d.json",
    "candidate": "lausitz-eurospeedway-lausitz-dtm",
    "name": "Lausitzring",
-   "layout": "DTM circuit 3.478 km"
+   "layout": "DTM circuit 3.478 km",
+   "direction": "ccw"
   },
   "istanbul": {
    "group": "f1-history",
@@ -437,14 +495,16 @@
    "file": "extra-tracks-2026-11-15e.json",
    "candidate": "long-beach-long-beach",
    "name": "Long Beach",
-   "layout": "Street circuit 3.167 km"
+   "layout": "Street circuit 3.167 km",
+   "direction": "cw"
   },
   "detroit": {
    "group": "owner-2026-11-15",
    "file": "extra-tracks-2026-11-15e.json",
    "candidate": "detroit-detroit-grand-prix-street-circuit",
    "name": "Detroit",
-   "layout": "Downtown street circuit 2.650 km (2023 on)"
+   "layout": "Downtown street circuit 2.650 km (2023 on)",
+   "direction": "ccw"
   }
  },
  "laps": [
@@ -1672,5 +1732,6 @@
    "humidityPct": 54.1,
    "pressureHpa": 1009
   }
- ]
+ ],
+ "directionNote": "direction: real race direction seen from above (cw/ccw; circuit sites, FIA/series track sheets, lapmeta). The builder reverses a map line that runs the other way. Start: on the pit straight from OpenStreetMap pit lanes or start/finish features (scripts/sim/learn/fetch-osm-starts.mjs)."
 }

@@ -30,6 +30,7 @@ import {trackLabel, trackOrder, evoPairs, carEvent} from './simulator-controls.j
 import {lapsimTrackNorth} from './lapsim/track-north-data.js';
 import {lapsimTrackView} from './lapsim/track-view-data.js';
 import {lapsimF1Zones} from './lapsim/f1-zones-data.js';
+import {lapsimStartLines} from './lapsim/start-lines.js';
 
 const K = lapsimKernel();
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -161,12 +162,12 @@ function renderMap(map, v, opts) {
     for (const m of opts.zones.marks || []) { const k = idx(m.s), a = P(at(k, -0.7)).split(' '), b = P(at(k, 1.3)).split(' '), r = P(at(k, 2.7)).split(' ');
       zones += '<line class="ls-zone-m ls-zone-m-' + m.kind + '" x1="' + a[0] + '" y1="' + a[1] + '" x2="' + b[0] + '" y2="' + b[1] + '" stroke-width="' + (sw * 0.45).toFixed(1) + '"/><text class="ls-zone-mt ls-zone-mt-' + m.kind + '" x="' + r[0] + '" y="' + r[1] + '" font-size="' + (sw * 2).toFixed(1) + '">' + m.label + '</text>'; }
   }
-  let corners = '';
+  let corners = '', i0 = Math.round((opts.start || 0) * n) % n;
   for (const c of opts.corners || []) {
     const i = Math.min(n - 1, Math.round(c.s / opts.length * n));
     corners += '<text x="' + px(i) + '" y="' + py(i) + '" dy="' + (-sw * 2.2).toFixed(1) + '" class="ls-corner">' + c.number + (c.letter || '') + '</text>';
   }
-  return '<svg class="ls-map" viewBox="0 0 ' + vw.toFixed(0) + ' ' + vh.toFixed(0) + '" role="img" aria-label="' + opts.label + '">' + band + '<g fill="none" stroke-width="' + (L ? sw * 0.75 : sw) + '" stroke-linecap="round" stroke-linejoin="round">' + paths + '</g>' + zones + marks + '<rect x="' + (px(0) - sw * 2) + '" y="' + (py(0) - sw * 2) + '" width="' + (sw * 4) + '" height="' + (sw * 4) + '" class="ls-start"/>' + corners + '<style>.ls-corner{font-size:' + (sw * 3.4).toFixed(1) + 'px}</style></svg>';
+  return '<svg class="ls-map" viewBox="0 0 ' + vw.toFixed(0) + ' ' + vh.toFixed(0) + '" role="img" aria-label="' + opts.label + '">' + band + '<g fill="none" stroke-width="' + (L ? sw * 0.75 : sw) + '" stroke-linecap="round" stroke-linejoin="round">' + paths + '</g>' + zones + marks + '<rect x="' + (px(i0) - sw * 2) + '" y="' + (py(i0) - sw * 2) + '" width="' + (sw * 4) + '" height="' + (sw * 4) + '" class="ls-start"/>' + corners + '<style>.ls-corner{font-size:' + (sw * 3.4).toFixed(1) + 'px}</style></svg>';
 }
 
 function renderTrace(ds, series, opts) {
@@ -216,7 +217,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
   const events = Object.fromEntries(CAR_ORDER.filter(k => cars[k]).map(k => [k, carEvent(id, k, cars[k], conds)]).filter(([, e]) => e)
     .map(([k, e]) => [k, t.eventFor.replace('{n}', lang === 'en' ? e.nameEn : e.name).replace('{a}', e.start).replace('{b}', e.end).replace('{y}', e.weatherYear)]));
   const changes = latestChanges(id);
-  const data = {driverLines: lapsimDriverLines?.tracks?.[id] || null, pu: lapsimPuDocs?.events?.[id] || null, lang, t, id, track: td, cars, carOrder: CAR_ORDER, carId, evoOf, fam, bodyLabel: BODY_LABEL, events, conds, raceRec: raceRecords(id), changes, energy: (liveEnergy && (query.track || 'monza') === id ? liveEnergy : energyLimit(id, 2026)),
+  const data = {startAlt: lapsimStartLines[id] || null, driverLines: lapsimDriverLines?.tracks?.[id] || null, pu: lapsimPuDocs?.events?.[id] || null, lang, t, id, track: td, cars, carOrder: CAR_ORDER, carId, evoOf, fam, bodyLabel: BODY_LABEL, events, conds, raceRec: raceRecords(id), changes, energy: (liveEnergy && (query.track || 'monza') === id ? liveEnergy : energyLimit(id, 2026)),
     compounds: lapsimCompounds?.[id] || {}, wecTyres: lapsimWecTyres?.[id] || {}, line: lineData(id), lineText: LT[lang], qsplit: lapsimQsplit ? {off: lapsimQsplit.offsetPct, test: lapsimQsplit.test, real: lapsimQsplit.tracks?.[id] || null} : null, brakes: lapsimBrakes ? {ramp: lapsimBrakes.rampS ?? 0, k: lapsimBrakes.pedalKgPerG, g: lapsimBrakes.gScale, t: lapsimBrakes.timeScale, test: lapsimBrakes.test, real: lapsimBrakes.races?.[id] || null, text: BT[lang]} : null, compoundGap: compoundGap(id), compoundTest: lapsimCompoundGap?.test?.rmsPct ?? null,
     evo: Object.fromEntries(['f1', 'wec'].map(se => [se, Object.fromEntries(['practice', 'qualifying'].map(ty => [ty, evolutionCoeffs(se, id, ty)]))])),
     zones: lapsimF1Zones?.tracks?.[id] || null, mapRot0: Number.isFinite(view0?.openDeg) ? view0.openDeg : landscapeRot(td.map, lapsimTrackNorth?.[id], VIEW[id], td.corners, td.length), cornersEstimated: !!td.cornersEstimated, north: lapsimTrackNorth?.[id] || null, ui: UI[lang],
@@ -515,10 +516,15 @@ function racePanel(id, lang, raceYear) {
 
 // One computation for a given UI state. Used on the server and (as source text) in the browser.
 function computeView(K, data, state, R) {
-  const t = data.t, d = data.track;
-  if (!computeView.cache || computeView.cache.id !== data.id) computeView.cache = {id: data.id, base: K.trackFromData(d)};
+  const t = data.t, sel = data.cars[state.carId], d0 = data.track;
+  // series start line (owner 2026-11-15): a non-F1 car on a track whose other series start elsewhere (Silverstone: National Pits Straight)
+  // runs the same lap from that line; F1 sectors do not apply there. Map, racing line and corner labels on the map stay as drawn.
+  const kS = sel.series && data.startAlt ? Math.round(data.startAlt.m / d0.ds) % d0.kappa.length : 0, offS = kS * d0.ds, LS = d0.kappa.length * d0.ds;
+  const rot = a => a ? a.slice(kS).concat(a.slice(0, kS)) : a;
+  const d = kS ? Object.assign({}, d0, {kappa: rot(d0.kappa), grade: rot(d0.grade), heading: rot(d0.heading), aeroZones: undefined, sectors: [],
+    corners: (d0.corners || []).map(c => Object.assign({}, c, {s: Math.round((c.s - offS + LS) % LS)})).sort((a, b) => a.s - b.s)}) : d0;
+  if (!computeView.cache || computeView.cache.id !== data.id + ':' + kS) computeView.cache = {id: data.id + ':' + kS, base: K.trackFromData(d)};
   const base = computeView.cache.base;
-  const sel = data.cars[state.carId];
   // conditions: real (season of the selected car, else 2026) or manual
   const condKey = sel.series ? state.carId : String(sel.year);
   const yearKey = data.conds[condKey] ? condKey : (data.conds['2026'] ? '2026' : Object.keys(data.conds)[0]);
@@ -650,10 +656,10 @@ function computeView(K, data, state, R) {
   const zoneOpts = zy ? {kind: zy.kind, list: zy.zones.map(z => ({from: z.from, to: z.to, label: (zy.kind === 'drs' ? 'DRS' : 'SM') + (zy.zones.length > 1 ? ' ' + z.n : '')})),
     marks: (zy.marks || []).map(m => ({s: m.s, kind: m.kind, label: m.label}))} : null;
   const zoneNote = zy ? ' · ' + (data.ui.zoneNote[zy.kind] || '').replace('{y}', zy.year).replace('{doc}', zy.doc || '') : '';
-  const mapOpts = {zones: zoneOpts, corners: d.corners, length: d.length, label: t.map, line, rot: Number.isFinite(state.mapRot) ? state.mapRot : (data.mapRot0 || 0)};
+  const mapOpts = {zones: zoneOpts, corners: d0.corners, length: d.length, label: t.map, line, start: kS / d0.kappa.length, rot: Number.isFinite(state.mapRot) ? state.mapRot : (data.mapRot0 || 0)};
   // compass: the map frame turned by north.deg (counter-clockwise) is true east-north; the needle turns clockwise on screen
   const compassDeg = data.north && !data.north.mirror ? ((data.north.deg - mapOpts.rot) % 360 + 360) % 360 : null;
-  const mapSvg = R.renderMap(d.map || {x: [], y: []}, res.v, mapOpts);
+  const mapSvg = R.renderMap(d.map || {x: [], y: []}, kS ? res.v.slice(res.v.length - kS).concat(res.v.slice(0, res.v.length - kS)) : res.v, mapOpts);
   // compass arrow pointing where the wind blows to (map north is up)
   const windHtml = env.windSpeed > 0.3 ? '<svg class="ls-compass" width="20" height="20" viewBox="-10 -10 20 20" aria-hidden="true"><path d="M0 -8L5 5L0 2L-5 5Z" transform="rotate(' + Math.round((env.windFromDeg + 180) % 360) + ')"/></svg><span>' + t.wind + ' <span data-no-translate>' + env.windSpeed.toFixed(1) + ' m/s</span></span>' : '';
   // stacked telemetry, laid out like a team data sheet: one distance axis, corners marked, the compared car overlaid, a time-delta
