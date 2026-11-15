@@ -40,7 +40,10 @@ const K = lapsimKernel(), ENV = K.conditionsFromWeather({pressureHpa: 1013.25, a
 // first bend tighter than 300 m radius (no Straight Mode through the Watkins Glen esses or the Daytona banking)
 const FLAT = (() => { try { return JSON.parse(readFileSync(new URL('./data/f1-flat-corners.json', import.meta.url), 'utf8')).tracks; } catch { return {}; } })();
 // a bend tighter than 300 m radius at s (curvature averaged over ±25 m)
-function bendAt(id, s) { const t = T[id], n = t.kappa.length, w = Math.max(1, Math.round(25 / t.ds)), i = Math.round(s / t.ds) % n; let m = 0; for (let j = -w; j <= w; j++) m += t.kappa[(i + j + n) % n] / 1e5; return Math.abs(m / (2 * w + 1)) > 1 / 300; }
+// bend radius that splits a run / ends an estimated zone (300 m learned; a track left with no zone retries at 200 m, owner 2026-11-16:
+// Ricardo Tormo's main straight curves at about 256 m). Tighter than that a track may have no zone at all, like Monaco 2026 (owner)
+let RB = 300;
+function bendAt(id, s) { const t = T[id], n = t.kappa.length, w = Math.max(1, Math.round(25 / t.ds)), i = Math.round(s / t.ds) % n; let m = 0; for (let j = -w; j <= w; j++) m += t.kappa[(i + j + n) % n] / 1e5; return Math.abs(m / (2 * w + 1)) > 1 / RB; }
 function zoneEnd(id, s0, est = false) {
   const t = T[id], ds = t.ds, n = t.kappa.length, L = n * ds, ahead = s => ((s - s0) % L + L) % L;
   const v = speed[id] ??= K.simulateLap(K.trackFromData(t), carsFor(id)['2025'].car, ENV).v;
@@ -53,7 +56,7 @@ function zoneEnd(id, s0, est = false) {
     if (lift) end = Math.round(((lift.s - 40) % L + L) % L); }
   if (est || !F) { const k = t.kappa.map(x => x / 1e5), w = Math.max(1, Math.round(25 / ds));
     for (let d = est ? ds : 120; d < ahead(end); d += ds) { const i = Math.round(((s0 + d) % L) / ds) % n; let m = 0; for (let j = -w; j <= w; j++) m += k[(i + j + n) % n];
-      if (Math.abs(m / (2 * w + 1)) > 1 / 300) { end = Math.round((s0 + Math.max(0, d - 20)) % L); break; } } } // a bend at the start leaves a zero-length zone, dropped by the 300 m minimum
+      if (Math.abs(m / (2 * w + 1)) > 1 / RB) { end = Math.round((s0 + Math.max(0, d - 20)) % L); break; } } } // a bend at the start leaves a zero-length zone, dropped by the 300 m minimum
   return end;
 }
 // documented zones never overlap: a zone that runs into the next one ends 50 m before it starts (Spa 2026 zones 4 and 5)
@@ -89,7 +92,7 @@ for (const e of raw.events) {
   } else {
     const zones = [], marks = [];
     for (const m of text.matchAll(new RegExp(String.raw`DRS\s*Activation\s*(?:point\s*)?(\d)\D{0,6}?(?:` + POS + String.raw`|(?:T|Turn\s?)\d+[A-Z]?\b)`, 'gi'))) { const s = at(id, m[0].slice(Math.max(0, m[0].search(/\(|\d+\s?m\b|Entry|Apex|Mid|Exit|T\d|Turn/i, 4)))); if (s != null && !zones.some(z => z.n === Number(m[1]))) zones.push({n: Number(m[1]), from: Math.round(s), to: Math.round(zoneEnd(id, s))}); }
-    for (const m of text.matchAll(new RegExp(String.raw`DRS\s*Detection\s*(?:point\s*)?(\d)\D{0,6}?(?:` + POS + String.raw`|(?:T|Turn\s?)\d+[A-Z]?\b)`, 'gi'))) { const s = at(id, m[0].slice(Math.max(0, m[0].search(/\(|\d+\s?m\b|Entry|Apex|Mid|Exit|T\d|Turn/i, 4)))); if (s != null && !marks.some(k => k.label === 'D' + m[1])) marks.push({s: Math.round(s), kind: 'det', label: 'D' + m[1]}); }
+    for (const m of text.matchAll(new RegExp(String.raw`DRS\s*Detection\s*(?:point\s*)?(\d?)\D{0,6}?(?:` + POS + String.raw`|(?:T|Turn\s?)\d+[A-Z]?\b)`, 'gi'))) { const s = at(id, m[0].slice(Math.max(0, m[0].search(/\(|\d+\s?m\b|Entry|Apex|Mid|Exit|T\d|Turn/i, 4)))); if (s != null && !marks.some(k => k.label === 'D' + (m[1] || '1'))) marks.push({s: Math.round(s), kind: 'det', label: 'D' + (m[1] || '1')}); } // no number (Hungaroring 2025): one detection, D1
     noOverlap(id, zones);
     // the 2025 slot holds 2025, else the newest earlier year (a circuit F1 left before 2025)
     if (zones.length && (!out[id]?.['2025'] || out[id]['2025'].year < e.year)) (out[id] ||= {})['2025'] = {kind: 'drs', year: e.year, zones: zones.sort((a, b) => a.n - b.n), marks, doc: doc?.title || '', url: doc?.url || ''};
@@ -106,7 +109,7 @@ function runsOf(id) {
   const t = T[id], ds = t.ds, r = K.simulateLap(K.trackFromData(t), carsFor(id)['2025'].car, ENV), n = r.v.length, L = n * ds;
   speed[id] ??= r.v;
   // a run is full throttle on a straight: bends tighter than 300 m radius split it (no zone through the Watkins Glen esses)
-  const kk = t.kappa.map(x => x / 1e5), w = Math.max(1, Math.round(25 / ds)), bend = i => { let m = 0; for (let j = -w; j <= w; j++) m += kk[(i + j + n) % n]; return Math.abs(m / (2 * w + 1)) > 1 / 300; };
+  const kk = t.kappa.map(x => x / 1e5), w = Math.max(1, Math.round(25 / ds)), bend = i => { let m = 0; for (let j = -w; j <= w; j++) m += kk[(i + j + n) % n]; return Math.abs(m / (2 * w + 1)) > 1 / RB; };
   const fast = Array.from({length: n}, (_, i) => (r.limit[i] === 1 || r.limit[i] === 2) && !bend(i)), out = [], s0 = fast.findIndex(f => !f);
   if (s0 < 0) return [];
   for (let k = 0; k < n;) { const i = (s0 + k) % n; if (!fast[i]) { k++; continue; } let len = 0; while (len < n && fast[(s0 + k + len) % n]) len++; out.push({from: i * ds, len: len * ds}); k += len; }
@@ -116,18 +119,26 @@ function runsOf(id) {
 const EST = 'estimated: where a race director would put them (rule learned from the FIA zones of the F1 circuits)';
 for (const id of Object.keys(T)) {
   if (id.startsWith('fe-') || (out[id]?.['2025'] && out[id]?.['2026'])) continue; // a documented slot is never replaced
-  let R; try { R = runsOf(id); } catch { continue; }
-  if (!R.length) continue;
-  const L = R[0].L, inRun = (s, q) => ((s - q.from) % L + L) % L < q.len, byLen = [...R].sort((a, b) => b.len - a.len), st = R.find(q => inRun(0, q) || inRun(L - 1, q));
-  // an estimated zone starts clear of the bend before it
-  const zoneOf = (q, off, n) => { let from = Math.round((q.from + Math.min(off, Math.max(0, q.len - 300))) % L); for (let k = 0; k < 40 && bendAt(id, from); k++) from = Math.round((from + T[id].ds) % L); return {n, from, to: Math.round(zoneEnd(id, from, true))}; };
-  const order = P => [...new Set(P)].sort((a, b) => a.from - b.from);
-  if (!out[id]?.['2025']) { let P = byLen.filter((q, i) => i === 0 || q.len >= 500); if (st && !P.includes(st)) P = [st, ...P]; P = order(P.slice(0, 3));
-    const zones = P.map(q => zoneOf(q, 145, 0)).filter(z => ((z.to - z.from) % L + L) % L >= 300).map((z, i) => ({...z, n: i + 1}));
-    (out[id] ||= {})['2025'] = {kind: 'drs', year: 2025, est: true, zones, marks: zones.map(z => ({s: Math.round(((z.from - 340) % L + L) % L), kind: 'det', label: 'D' + z.n})), doc: EST, url: ''}; }
-  if (!out[id]?.['2026']) { const P = order(byLen.filter((q, i) => i === 0 || q.len >= 300).slice(0, 4)), zones = P.map(q => zoneOf(q, 45, 0)).filter(z => ((z.to - z.from) % L + L) % L >= 300).map((z, i) => ({...z, n: i + 1})), marks = [];
-    if (st) { const a = Math.round((st.from + 140) % L); marks.push({s: Math.round(((a - 120) % L + L) % L), kind: 'det', label: 'OT D'}, {s: a, kind: 'act', label: 'OT A'}); }
-    (out[id] ||= {})['2026'] = {kind: 'sm', year: 2026, est: true, zones, marks, doc: EST, url: ''}; }
+  const need = ['2025', '2026'].filter(y => !out[id]?.[y]), got = {};
+  for (const rb of [300, 200]) { RB = rb; let R; try { R = runsOf(id); } catch { break; }
+    if (!R.length) continue;
+    const L = R[0].L, inRun = (s, q) => ((s - q.from) % L + L) % L < q.len, byLen = [...R].sort((a, b) => b.len - a.len);
+    // the start-line straight; where the line sits in a bend or under braking (Inje, Las Vegas, Daytona …): the run nearest the line
+    const gap = q => Math.min(((q.from - 0) % L + L) % L, ((0 - (q.from + q.len)) % L + L) % L), st = R.find(q => inRun(0, q) || inRun(L - 1, q)) || [...R].sort((a, b) => gap(a) - gap(b))[0];
+    const stIn = R.some(q => inRun(0, q) || inRun(L - 1, q));
+    // an estimated zone starts clear of the bend before it
+    const zoneOf = (q, off, n) => { let from = Math.round((q.from + Math.min(off, Math.max(0, q.len - 300))) % L); for (let k = 0; k < 40 && bendAt(id, from); k++) from = Math.round((from + T[id].ds) % L); return {n, from, to: Math.round(zoneEnd(id, from, true))}; };
+    const order = P => [...new Set(P)].sort((a, b) => a.from - b.from);
+    if (need.includes('2025') && !got['2025']?.zones.length) { let P = byLen.filter((q, i) => i === 0 || q.len >= 500); if (st && !P.includes(st)) P = [st, ...P]; P = order(P.slice(0, 3));
+      const zones = P.map(q => zoneOf(q, 145, 0)).filter(z => ((z.to - z.from) % L + L) % L >= 300).map((z, i) => ({...z, n: i + 1}));
+      got['2025'] = {kind: 'drs', year: 2025, est: true, ...(RB !== 300 ? {bendR: RB} : {}), zones, marks: zones.map(z => ({s: Math.round(((z.from - 340) % L + L) % L), kind: 'det', label: 'D' + z.n})), doc: EST, url: ''}; }
+    if (need.includes('2026') && !got['2026']?.zones.length) { const P = order(byLen.filter((q, i) => i === 0 || q.len >= 300).slice(0, 4)), zones = P.map(q => zoneOf(q, 45, 0)).filter(z => ((z.to - z.from) % L + L) % L >= 300).map((z, i) => ({...z, n: i + 1})), marks = [];
+      // overtake: activation 140 m into the start-line straight (or 45 m into the run nearest the line), detection 120 m before it
+      if (st) { const a = Math.round((stIn ? st.from + 140 : st.from + 45) % L); marks.push({s: Math.round(((a - 120) % L + L) % L), kind: 'det', label: 'OT D'}, {s: a, kind: 'act', label: 'OT A'}); }
+      got['2026'] = {kind: 'sm', year: 2026, est: true, ...(RB !== 300 ? {bendR: RB} : {}), zones, marks, doc: EST, url: ''}; }
+    if (need.every(y => got[y]?.zones.length)) break; }
+  RB = 300;
+  for (const y of need) if (got[y]) (out[id] ||= {})[y] = got[y];
 }
 // real qualifying of each slot (owner 2026-11-16: Brazil 2026 qualifying ran in Low Grip Conditions with Overtake disabled; Las Vegas 2025
 // qualifying without DRS): the state at the green flag, from race control (scripts/sim/learn/fetch-aero-state.mjs)
