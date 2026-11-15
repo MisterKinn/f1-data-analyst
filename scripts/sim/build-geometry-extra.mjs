@@ -54,7 +54,7 @@ export function buildTrack(id, spec, c) {
   for (let j = 0, k = Math.ceil(n / step); j < k; j++) { const i = Math.min(n0 - 1, Math.round(j * n0 / k)); map.x.push(Math.round(cx[i])); map.y.push(Math.round(cy[i])); }
   const turn = line.kappa.reduce((a, k) => a + k * line.ds, 0) * 180 / Math.PI;
   return {id, name: spec.name, circuit: spec.name, layout: spec.layout, year: null, ds: line.ds, length: Math.round(line.length),
-    officialLengthM: spec.officialLengthM ?? c.officialLengthM ?? null, sectors: [], corners: [],
+    officialLengthM: spec.officialLengthM ?? c.officialLengthM ?? null, sectors: [], corners: (spec.corners || []).map(([number, s]) => ({number, letter: '', s})),
     kappa: Array.from(line.kappa, v => Math.round(v * 1e5)), grade: flat ? null : Array.from({length: n}, (_, j) => c.grade[Math.min(n0 - 1, Math.floor(j / n * n0))]), heading: null, map,
     quality: {centreLengthM: c.length, widthM: width, halfWidthM: +halfW.toFixed(1), totalTurnDeg: Math.round(turn), startVerified: o.startVerified, start: o.start, direction: o.direction, elevation: flat ? null : {minM: c.elevation?.minM, maxM: c.elevation?.maxM, maxGradePct: c.elevation?.maxGradePct},
       evidence: {lapLength: c.officialLengthM ? '1 fixed (official list)' : '4 stated on a diagram', planShape: spec.shapeEvidence || '2 measured (map centre line)',
