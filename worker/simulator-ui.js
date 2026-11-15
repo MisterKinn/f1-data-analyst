@@ -210,7 +210,7 @@ export function simulatorUiClient(CORNER_NAMES) {
   const hero = $('main .ls-hero'); if (!hero || $('.kb-sim-tabs')) return;
   const bar = el('div', 'kb-sim-tabs'); bar.setAttribute('role', 'tablist'); bar.setAttribute('aria-label', t('시뮬레이터 종류', 'Simulator type')); bar.setAttribute('data-no-translate', '');
   const mk = (id, label, soon) => { const b = el('button', '', label); b.type = 'button'; b.id = 'kb-tab-' + id; b.setAttribute('role', 'tab'); if (soon) b.append(el('span', 'kb-soon', t('준비 중', 'Soon'))); return b; };
-  const lapTab = mk('lap', t('랩타임 시뮬레이션', 'Lap-time simulation')), setupTab = mk('setup', t('셋업 시뮬레이션', 'Setup simulation'), true);
+  const lapTab = mk('lap', t('랩타임 시뮬레이션', 'Lap-time simulation')), setupTab = mk('setup', t('셋업 시뮬레이션', 'Setup simulation'));
   bar.append(lapTab, setupTab); hero.after(bar);
   const panel = el('section', 'panel kb-setup-panel'); panel.id = 'kb-setup'; panel.setAttribute('role', 'tabpanel'); panel.setAttribute('aria-labelledby', 'kb-tab-setup'); panel.setAttribute('data-no-translate', ''); panel.hidden = true;
   panel.append(el('h2', '', t('셋업 시뮬레이션은 준비 중입니다', 'Setup simulation is coming')), el('p', '', t('세션 기록과 FIA 문서로 팀별 셋업을 추정합니다. 이런 것을 보여 줄 예정입니다.', 'It will estimate each team’s setup from session records and FIA documents, for example:')));
@@ -218,10 +218,12 @@ export function simulatorUiClient(CORNER_NAMES) {
   const act = el('div', 'kb-empty-actions'); const back = el('button', 'button', t('랩타임 시뮬레이션 해 보기', 'Try lap-time simulation')); back.type = 'button'; back.addEventListener('click', () => show('lap', true)); act.append(back);
   panel.append(ul, act); bar.after(panel);
   const main = $('main');
-  function show(which, focus) { const setup = which === 'setup'; lapTab.setAttribute('aria-selected', String(!setup)); setupTab.setAttribute('aria-selected', String(setup)); lapTab.tabIndex = setup ? -1 : 0; setupTab.tabIndex = setup ? 0 : -1; panel.hidden = !setup; main.classList.toggle('kb-setup-view', setup); if (focus) (setup ? setupTab : lapTab).focus(); try { history.replaceState(null, '', setup ? '#setup' : location.pathname + location.search); } catch (e) {} }
-  lapTab.addEventListener('click', () => show('lap')); setupTab.addEventListener('click', () => show('setup'));
+  function show(which, focus) { if (which === 'setup') { toSetup(); return; } const setup = false; lapTab.setAttribute('aria-selected', String(!setup)); setupTab.setAttribute('aria-selected', String(setup)); lapTab.tabIndex = setup ? -1 : 0; setupTab.tabIndex = setup ? 0 : -1; panel.hidden = !setup; main.classList.toggle('kb-setup-view', setup); if (focus) (setup ? setupTab : lapTab).focus(); try { history.replaceState(null, '', setup ? '#setup' : location.pathname + location.search); } catch (e) {} }
+  // the setup simulator has its own page (/setup); the tab opens it for the same track
+  const toSetup = () => { const tr = new URLSearchParams(location.search).get('track'); location.href = '/setup' + (tr ? '?track=' + encodeURIComponent(tr) : ''); };
+  lapTab.addEventListener('click', () => show('lap')); setupTab.addEventListener('click', toSetup);
   bar.addEventListener('keydown', e => { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); show(lapTab.getAttribute('aria-selected') === 'true' ? 'setup' : 'lap', true); } });
-  show(location.hash === '#setup' ? 'setup' : 'lap');
+  if (location.hash === '#setup') { toSetup(); return; } show('lap');
  }
 
  const start = () => {
