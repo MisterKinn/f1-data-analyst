@@ -39,7 +39,9 @@
    "candidate": "mugello-mugello",
    "name": "Mugello",
    "layout": "Grand Prix 5.245 km",
-   "direction": "cw"
+   "direction": "cw",
+   "widthM": 14,
+   "widthNote": "circuit's official figure 14 m (map data had 9.6 m); owner's other session 2026-11-15"
   },
   "nurburgring-gp": {
    "group": "f1-history",

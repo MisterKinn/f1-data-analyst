@@ -46,7 +46,7 @@ export function buildTrack(id, spec, c) {
   // owner 2026-11-15: real direction and start line (map ways run either way and start at any node)
   const o = orient(c, spec, ax, ay, OSM[id]), cx = o.order.map(i => ax[i]), cy = o.order.map(i => ay[i]);
   if (c.grade) c = {...c, grade: o.order.map(i => o.reversed ? -c.grade[i] : c.grade[i])};
-  const width = c.widthM || spec.widthM || null, halfW = Math.max(1, (width || 12) / 2 - 1.2);
+  const width = spec.widthM || c.widthM || null, halfW = Math.max(1, (width || 12) / 2 - 1.2);
   const rl = minCurvatureLine(cx, cy, new Array(n0).fill(halfW)), line = lineTrack(K, rl.x, rl.y, 5), n = line.kappa.length;
   const flat = !c.grade || c.grade.every(g => g === 0), step = Math.max(1, Math.floor(n / 360)), map = {x: [], y: []};
   for (let i = 0; i < n; i += step) { map.x.push(Math.round(line.x[i])); map.y.push(Math.round(line.y[i])); }
@@ -56,7 +56,7 @@ export function buildTrack(id, spec, c) {
     kappa: Array.from(line.kappa, v => Math.round(v * 1e5)), grade: flat ? null : Array.from({length: n}, (_, j) => c.grade[Math.min(n0 - 1, Math.floor(j / n * n0))]), heading: null, map,
     quality: {centreLengthM: c.length, widthM: width, halfWidthM: +halfW.toFixed(1), totalTurnDeg: Math.round(turn), startVerified: o.startVerified, start: o.start, direction: o.direction, elevation: flat ? null : {minM: c.elevation?.minM, maxM: c.elevation?.maxM, maxGradePct: c.elevation?.maxGradePct},
       evidence: {lapLength: c.officialLengthM ? '1 fixed (official list)' : '4 stated on a diagram', planShape: spec.shapeEvidence || '2 measured (map centre line)',
-        drivenLine: '3 inferred (least-curvature line inside the width)', width: width ? (c.widthM ? '1 fixed (FIA list)' : '4 stated or assumed') : '4 assumed 12 m',
+        drivenLine: '3 inferred (least-curvature line inside the width)', width: width ? (spec.widthM ? '1 fixed (circuit figure, declared)' : c.widthM ? '1 fixed (FIA list)' : '4 stated or assumed') : '4 assumed 12 m',
         height: flat ? 'none (flat assumed)' : (spec.heightEvidence || '2 measured, coarse (about 30 m ground grid)'), trackGrip: '4 borrowed (mean factor of the class\'s fitted tracks)'}},
     sources: [...(c.sources || []), ...(spec.sources || [])]};
 }

@@ -32,7 +32,7 @@ Owner instruction (2026-11-14): where a real lap of a car type exists, use it. T
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | yeongam | Korea International Circuit, Grand Prix 5.615 km | korea | 5499 (5615) | 0–1 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | yongin | Everland Speedway, full course 4.346 km | korea | 4252 (4346) | 92–146 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
-| mugello | Grand Prix 5.245 km | europe-africa-asia | 5184 (5245) | 246–289 m | 1 (0) | 1.09 | 1.09 | – | – | – | pass (unseen) |
+| mugello | Grand Prix 5.245 km | europe-africa-asia | 5149 (5245) | 246–289 m | 1 (0) | 1.56 | -1.56 | – | – | – | pass (unseen) |
 | nurburgring-gp | Grand Prix 5.148 km | f1-history | 5084 (5148) | car positions | 6 (0) | 2.58 | 2.42 | 1.0597 | 1.04 | – | pass (learned) |
 | nurburgring-sprint | Sprint 3.629 km (DTM, ADAC GT Masters) | europe-africa-asia | 3559 (3629) | 588–621 m | 2 (0) | 0.72 | 0.72 | 1.0209 | 0.13 | – | pass (unseen) |
 | nurburgring-24h | 24 Hours combined lap 25.378 km | europe-africa-asia | 25018 (25378) | 340–627 m | 3 (0) | 2.12 | -2.04 | 0.9336 | 0.89 | – | pass (unseen) |
@@ -116,7 +116,7 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 
 | Track | Series | Season | Class | Car model | Sim car | Real s | Sim s | Error % |
 |---|---|---|---|---|---|---|---|---|
-| mugello | elms | 2024 | LMGT3 | Aston Martin Vantage AMR LMGT3 | lmgt3 2025 (borrowed) | 107.891 | 109.071 | 1.09 |
+| mugello | elms | 2024 | LMGT3 | Aston Martin Vantage AMR LMGT3 | lmgt3 2025 (borrowed) | 107.891 | 106.207 | -1.56 |
 | nurburgring-gp | f1 | 2020 | F1 | BOT (Mercedes), pole Q3 | f1 2023 × 0.9686 (borrowed) | 85.269 | 87.742 | 2.9 |
 | nurburgring-gp | f1 | 2006 | F1 | fernando-alonso (renault), f1db fastest qualifying lap | f1 2023 × 1.0169 (borrowed) | 89.819 | 91.531 | 1.91 |
 | nurburgring-gp | f1 | 2007 | F1 | felipe-massa (ferrari), f1db fastest qualifying lap | f1 2023 × 1.0220 (borrowed) | 90.912 | 91.99 | 1.19 |
@@ -454,7 +454,7 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 |---|---|---|---|---|---|---|
 | yeongam | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | yongin | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 4 assumed 12 m | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
-| mugello | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| mugello | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (circuit figure, declared) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | nurburgring-gp | 1 fixed (official) and 2 measured (driven line) | 2 measured (F1 car positions, 8 qualifying laps, 2020) | 2 measured (mean of the fastest qualifying laps) | not used | 2 measured (F1 car positions) | 3 inferred (one factor fitted on real laps of this track) |
 | nurburgring-sprint | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | nurburgring-24h | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 4 assumed 12 m | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
@@ -477,7 +477,7 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 | hockenheim | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 3 inferred (one factor fitted on real laps of this track) |
 | bathurst | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | paul-ricard-f1 | 1 fixed (official) and 2 measured (driven line) | 2 measured (F1 car positions, 8 qualifying laps, 2021) | 2 measured (mean of the fastest qualifying laps) | not used | 2 measured (F1 car positions) | 4 borrowed (mean factor of the class's fitted tracks) |
-| rwanda | 4 stated on a diagram | 4 hand-traced from an oblique diagram of unknown origin | 3 inferred (least-curvature line inside the width) | 4 stated or assumed | 4 seven labels on the diagram, linear between | 4 borrowed (mean factor of the class's fitted tracks) |
+| rwanda | 4 stated on a diagram | 4 hand-traced from an oblique diagram of unknown origin | 3 inferred (least-curvature line inside the width) | 1 fixed (circuit figure, declared) | 4 seven labels on the diagram, linear between | 4 borrowed (mean factor of the class's fitted tracks) |
 | paul-ricard-2021 | 1 fixed (official) and 2 measured (driven line) | 2 measured (F1 car positions, 8 qualifying laps, 2021) | 2 measured (mean of the fastest qualifying laps) | not used | 2 measured (F1 car positions) | 4 borrowed (mean factor of the class's fitted tracks) |
 | dubai | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | ricardo-tormo | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
