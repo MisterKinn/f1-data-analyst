@@ -77,6 +77,10 @@ Owner instruction (2026-11-14): where a real lap of a car type exists, use it. T
 | sydney | Brabham circuit 4.500 km | owner-2026-11-15 | 4405 (4500) | 51–78 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | sydney-gardner | Gardner circuit 3.905 km | owner-2026-11-15 | 3835 (3905) | 51–75 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | inje | Full course 3.908 km | owner-2026-11-15 | 3840 (3908) | 290–364 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| sebring | IMSA layout 6.019 km | owner-2026-11-15 | 5817 (6019) | 18–20 m | 12 (2) | 2.69 | -2.18 | 0.9335 | 1.55 | – | ⚠️ OpenStreetMap lap is 2.2 % shorter than the official 6.019 km (a short piece of the map is missing) |
+| magny-cours | Grand Prix circuit 4.411 km | owner-2026-11-15 | 4399 (4411) | 208–236 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| mandalika | Pertamina Mandalika circuit 4.300 km | owner-2026-11-15 | 4229 (4300) | 7–16 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| phillip-island | Grand Prix circuit 4.480 km | owner-2026-11-15 | 4398 (4480) | 31–55 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 
 Length is the driven or least-curvature line; it is shorter than the official centre-line distance. "Own class" rows are WEC cars on WEC laps; the other rows use a borrowed car (IMSA GTP = LMDh car, every other GT3 series = LMGT3 car, an older F1 season = the 2023 F1 car times the season ratio).
 
@@ -205,6 +209,18 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 | bathurst | igtc | 2025 | PRO | Mercedes-AMG GT3 EVO | lmgt3 2025 (borrowed) | 121.276 | 122.064 | 0.65 |
 | bathurst | igtc | 2026 | PRO | Mercedes-AMG GT3 EVO | lmgt3 2026 (borrowed) | 121.563 | 121.471 | -0.08 |
 | paul-ricard-f1 | f1 | 2021 | F1 | VER (Red Bull Racing), pole Q3 | f1 2023 × 0.9864 (borrowed) | 89.99 | 89.851 | -0.15 |
+| sebring | imsa | 2023 | GTDPRO | Chevrolet #3 | lmgt3 2025 (borrowed) | 119.315 | 118.772 | -0.46 |
+| sebring | imsa | 2023 | GTP | Cadillac #31 | lmdh 2025 (borrowed) | 105.836 | 103.679 | -2.04 |
+| sebring | imsa | 2024 | GTDPRO | Lexus #14 | lmgt3 2025 (borrowed) | 118.714 | 118.493 | -0.19 |
+| sebring | imsa | 2024 | GTP | Acura #10 | lmdh 2025 (borrowed) | 108.038 | 103.54 | -4.16 |
+| sebring | imsa | 2025 | GTD | Ferrari #21 | lmgt3 2025 (borrowed) | 119.131 | 118.715 | -0.35 |
+| sebring | imsa | 2025 | GTP | BMW #24 | lmdh 2025 (borrowed) | 107.091 | 103.683 | -3.18 |
+| sebring | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 109.4 | 103.427 | -5.46 |
+| sebring | imsa | 2026 | GTDPRO | Lexus #14 | lmgt3 2026 (borrowed) | 118.48 | 117.825 | -0.55 |
+| sebring | imsa | 2026 | GTP | Cadillac #31 | lmdh 2026 (borrowed) | 106.153 | 103.935 | -2.09 |
+| sebring | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 107.363 | 103.993 | -3.14 |
+| sebring | wec | 2023 | HYPERCAR | Cadillac #2 | lmdh 2025 | 106.082 | 103.29 | -2.63 |
+| sebring | wec | 2023 | HYPERCAR | Ferrari #50 | lmh 2025 | 105.067 | 103.039 | -1.93 |
 
 ## Held-out rows with a learned or sibling track factor
 
@@ -318,6 +334,18 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 | hockenheim | dtm | 2026 | Silver | Lamborghini Huracan GT3 EVO 2 | lmgt3 2026 (borrowed) | 97.456 | 96.876 | -0.59 |
 | bathurst | igtc | 2025 | PRO | Mercedes-AMG GT3 EVO | lmgt3 2025 (borrowed) | 121.276 | 122.163 | 0.73 |
 | bathurst | igtc | 2026 | PRO | Mercedes-AMG GT3 EVO | lmgt3 2026 (borrowed) | 121.563 | 120.709 | -0.7 |
+| sebring | imsa | 2023 | GTDPRO | Chevrolet #3 | lmgt3 2025 (borrowed) | 119.315 | 121.144 | 1.53 |
+| sebring | imsa | 2023 | GTP | Cadillac #31 | lmdh 2025 (borrowed) | 105.836 | 106.205 | 0.35 |
+| sebring | imsa | 2024 | GTDPRO | Lexus #14 | lmgt3 2025 (borrowed) | 118.714 | 120.87 | 1.82 |
+| sebring | imsa | 2024 | GTP | Acura #10 | lmdh 2025 (borrowed) | 108.038 | 105.824 | -2.05 |
+| sebring | imsa | 2025 | GTD | Ferrari #21 | lmgt3 2025 (borrowed) | 119.131 | 121.095 | 1.65 |
+| sebring | imsa | 2025 | GTP | BMW #24 | lmdh 2025 (borrowed) | 107.091 | 106.087 | -0.94 |
+| sebring | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 109.4 | 105.585 | -3.49 |
+| sebring | imsa | 2026 | GTDPRO | Lexus #14 | lmgt3 2026 (borrowed) | 118.48 | 120.11 | 1.38 |
+| sebring | imsa | 2026 | GTP | Cadillac #31 | lmdh 2026 (borrowed) | 106.153 | 106.532 | 0.36 |
+| sebring | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 107.363 | 106.488 | -0.82 |
+| sebring | wec | 2023 | HYPERCAR | Cadillac #2 | lmdh 2025 | 106.082 | 105.721 | -0.34 |
+| sebring | wec | 2023 | HYPERCAR | Ferrari #50 | lmh 2025 | 105.067 | 105.535 | 0.45 |
 
 ## Evidence layer per value
 
@@ -370,6 +398,10 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 | sydney | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | sydney-gardner | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | inje | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| sebring | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| magny-cours | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| mandalika | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| phillip-island | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 
 ## Sources
 
@@ -420,6 +452,10 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 - **sydney**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
 - **sydney-gardner**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
 - **inje**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **sebring**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **magny-cours**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **mandalika**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **phillip-island**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
 
 ## Not checked, known limits
 

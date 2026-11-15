@@ -504,10 +504,10 @@
    "name": "Sebring International Raceway",
    "country": "USA",
    "aliases": [
+    "february imsa sanctioned test",
     "sebring",
-    "sebring international raceway",
     "sebring february test",
-    "february imsa sanctioned test"
+    "sebring international raceway"
    ]
   },
   "long-beach": {
@@ -650,8 +650,9 @@
    "name": "Magny-Cours",
    "country": "FRA",
    "aliases": [
-    "magny cours",
     "circuit de nevers magny cours",
+    "magny cours",
+    "magny-cours",
     "nevers"
    ]
   },
@@ -1075,6 +1076,20 @@
     "eastern creek",
     "sydney",
     "sydney motorsport park"
+   ]
+  },
+  "mandalika": {
+   "name": "Mandalika",
+   "country": null,
+   "aliases": [
+    "mandalika"
+   ]
+  },
+  "phillip-island": {
+   "name": "Phillip Island",
+   "country": null,
+   "aliases": [
+    "phillip island"
    ]
   }
  },
@@ -2479,7 +2494,7 @@
    ]
   },
   {
-   "id": "magny-cours-4411",
+   "id": "magny-cours",
    "venue": "magny-cours",
    "lengthKm": 4.411,
    "seasons": [
@@ -2489,9 +2504,11 @@
     ]
    ],
    "sources": [
-    "f1db:magny-cours-3"
+    "f1db:magny-cours-3",
+    "simulator"
    ],
-   "default": true
+   "default": true,
+   "sim": "magny-cours"
   },
   {
    "id": "melbourne",
@@ -3544,7 +3561,7 @@
    ]
   },
   {
-   "id": "sebring-6019",
+   "id": "sebring",
    "venue": "sebring",
    "lengthKm": 6.019,
    "seasons": [
@@ -3555,9 +3572,11 @@
    ],
    "sources": [
     "alkamel:imsa",
-    "alkamel:wec"
+    "alkamel:wec",
+    "simulator"
    ],
-   "default": true
+   "default": true,
+   "sim": "sebring"
   },
   {
    "id": "sebring-8360",
@@ -4770,6 +4789,26 @@
     "simulator"
    ],
    "sim": "inje"
+  },
+  {
+   "id": "mandalika",
+   "venue": "mandalika",
+   "lengthKm": 4.3,
+   "seasons": [],
+   "sources": [
+    "simulator"
+   ],
+   "sim": "mandalika"
+  },
+  {
+   "id": "phillip-island",
+   "venue": "phillip-island",
+   "lengthKm": 4.48,
+   "seasons": [],
+   "sources": [
+    "simulator"
+   ],
+   "sim": "phillip-island"
   }
  ]
 }

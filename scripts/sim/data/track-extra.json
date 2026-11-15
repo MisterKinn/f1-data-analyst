@@ -365,6 +365,35 @@
    "candidate": "inje-inje",
    "name": "Inje Speedium",
    "layout": "Full course 3.908 km"
+  },
+  "sebring": {
+   "group": "owner-2026-11-15",
+   "file": "extra-tracks-2026-11-15b.json",
+   "candidate": "sebring-sebring",
+   "name": "Sebring",
+   "layout": "IMSA layout 6.019 km",
+   "provisional": "OpenStreetMap lap is 2.2 % shorter than the official 6.019 km (a short piece of the map is missing)"
+  },
+  "magny-cours": {
+   "group": "owner-2026-11-15",
+   "file": "extra-tracks-2026-11-15b.json",
+   "candidate": "magny-cours-magny-cours",
+   "name": "Magny-Cours",
+   "layout": "Grand Prix circuit 4.411 km"
+  },
+  "mandalika": {
+   "group": "owner-2026-11-15",
+   "file": "extra-tracks-2026-11-15b.json",
+   "candidate": "mandalika-mandalika",
+   "name": "Mandalika",
+   "layout": "Pertamina Mandalika circuit 4.300 km"
+  },
+  "phillip-island": {
+   "group": "owner-2026-11-15",
+   "file": "extra-tracks-2026-11-15b.json",
+   "candidate": "phillip-island-phillip-island",
+   "name": "Phillip Island",
+   "layout": "Grand Prix circuit 4.480 km"
   }
  },
  "laps": [
