@@ -56,7 +56,7 @@ export function lineTrack(K, px, py, ds = 10) {
 // optimum, so each car gets its own line. ref: [x[], y[]], nrm: unit normals, mc/sp: offsets (m). Self-contained (sent to the browser).
 export function blendLine(K, ref, nrm, mc, sp, car, env, grip = 1) {
   const n = mc.length, W = Math.max(4, Math.min(10, Math.round(n / 40))), ds = 5; // 5 m: curvature over ±10 m chords; at 10–20 m the chord hides hairpins and every blend looks too fast
-  const offOf = w => mc.map((m, i) => { const f = i / n * W - 0.5, a = Math.floor(f), t = f - a, e = w[(a + W) % W] * (1 - t) + w[(a + 1) % W] * t; return e * m + (1 - e) * sp[i]; });
+  const offOf = w => blendOff(mc, sp, w);
   const lapOf = w => { const off = offOf(w), tr = lineTrack(K, ref[0].map((x, i) => x + nrm[i][0] * off[i]), ref[1].map((y, i) => y + nrm[i][1] * off[i]), ds); tr.mu.fill(grip); return K.simulateLap(tr, car, env).lapTime; };
   const one = e => lapOf(new Array(W).fill(e)), g = 0.618;
   let a = 0, b = 1, c = b - g * (b - a), d = a + g * (b - a), fc = one(c), fd = one(d);
@@ -68,4 +68,11 @@ export function blendLine(K, ref, nrm, mc, sp, car, env, grip = 1) {
     const l = lapOf(t); if (l < lap - 1e-3) { lap = l; w[k] = t[k]; }
   }
   return {e: +(w.reduce((s, x) => s + x, 0) / W).toFixed(2), w: w.map(x => +x.toFixed(2)), off: offOf(w), lap};
+}
+
+// Offsets (m) of a blend with one least-curvature share per window (w), interpolated between window centres around the lap.
+// Shared by blendLine, the per-driver lines (scripts/sim/driver-lines.mjs) and the page. Self-contained.
+export function blendOff(mc, sp, w) {
+  const n = mc.length, W = w.length;
+  return mc.map((m, i) => { const f = i / n * W - 0.5, a = Math.floor(f), t = f - a, e = w[(a + W) % W] * (1 - t) + w[(a + 1) % W] * t; return e * m + (1 - e) * sp[i]; });
 }

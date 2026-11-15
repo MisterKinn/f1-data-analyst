@@ -9,6 +9,7 @@ import {minCurvatureLine, blendLine} from '../worker/lapsim/racing-line.js';
 import {lapsimScript, lineData, simulationPage} from '../worker/simulation.js';
 import {parsePuSectors} from '../worker/lapsim/pu-info.js';
 import {lapsimPuDocs} from '../worker/lapsim/pu-docs-data.js';
+import {lapsimDriverLines} from '../worker/lapsim/driver-lines-data.js';
 
 const K = lapsimKernel(), env = K.conditionsFromWeather({});
 const lap = (id, key) => { const c = carsFor(id)[key], tr = K.trackFromData(lapsimAllTracks[id]); return {c, tr, r: K.simulateLap(tr, c.car, env)}; };
@@ -108,4 +109,15 @@ R(116.3,['Article C5.12.7',128.4],['OVERTAKE',418.1]),R(79.1,['Speed threshold',
   const spa = simulationPage({track: 'spa-francorchamps', car: '2026'}, 'en'), mel = simulationPage({track: 'melbourne', car: '2026'}, 'en');
   assert.match(spa, /class="ls-ch-h">Motor power/); assert.match(spa, /class="ls-alt"/); assert.match(spa, /R10, rules from Miami on/);
   assert.match(mel, /R1, rules before Miami/); assert.doesNotMatch(mel, /class="ls-alt"/);
+});
+
+test('F1: a line per driver (estimated from the speed trace); other series: a line per car', () => {
+  const S = lapsimDriverLines.summary;
+  assert.ok(S.drivers >= 100, 'drivers ' + S.drivers);
+  assert.ok(S.fit[1] < S.fit[0] && S.test[1] < S.test[0] && S.testBetter > S.testN / 2, JSON.stringify(S)); // better on laps the fit did not see
+  for (const [id, ys] of Object.entries(lapsimDriverLines.tracks)) for (const [y, t] of Object.entries(ys)) for (const [d, r] of Object.entries(t.drivers))
+    assert.ok(r.w.length >= 4 && r.w.every(x => x >= 0 && x <= 1), id + y + d);
+  const id = Object.keys(lapsimDriverLines.tracks).find(k => lapsimDriverLines.tracks[k]['2026']);
+  assert.match(simulationPage({track: id, car: '2026'}, 'en'), /data-ls="driverWrap">/);
+  assert.match(simulationPage({track: id, car: 'gt3-audi-r8-lms-gt3'}, 'en'), /data-ls="driverWrap" hidden/);
 });

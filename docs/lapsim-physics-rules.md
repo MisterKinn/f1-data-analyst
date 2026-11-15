@@ -436,7 +436,9 @@ two sections after this one.
    aligned left and right across every chart, official corner numbers (T1, T2, ...) on every lane, the compared car overlaid, and one
    cursor across all lanes that reads every channel at that point.
 7. **Racing line.** Every car on every track has a line, and it depends on the car (grip, power, aero). The least-curvature method is
-   the base and stays tested.
+   the base and stays tested. F1: when a line is learned or estimated, do it **per driver** (owner 2026-11-15); public positions are
+   snapped, so the driver's line is estimated from that driver's speed trace and labelled so (`scripts/sim/driver-lines.mjs`,
+   `docs/lapsim-driver-lines.md`). Other series: **per car** (each car model, its learned pace included).
 8. **Map.** The track map stays sharp at any zoom (vector, viewBox zoom; never a scaled bitmap).
 9. **Estimates.** Every estimated value is checked with the Wolfram tools and written in this file with its basis.
 
