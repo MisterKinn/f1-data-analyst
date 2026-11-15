@@ -28,6 +28,7 @@ for (const e of Object.values(out.sessions)) {
   const changes = kind => e.events.filter(x => x.kind === kind && x.t > e.start && x.t < e.end).length;
   e.grip = {start: at('grip', e.start) || 'normal', end: at('grip', e.end) || 'normal', changes: changes('grip')};
   e.ot = e.year >= 2026 ? {start: at('ot', e.start) || 'on', end: at('ot', e.end) || 'on'} : undefined;
+  e.drs = e.year < 2026 ? {start: at('drs', e.start) || 'on', end: at('drs', e.end) || 'on'} : undefined;
 }
 await writeFile('scripts/sim/data/learn/f1-aero-state.json', JSON.stringify(out, null, 1) + '\n');
 console.log(Object.entries(out.sessions).filter(([, e]) => e.grip.start === 'low' || e.grip.end === 'low').map(([k, e]) => `${k} ${e.year} ${e.track} ${e.session}: grip ${e.grip.start}->${e.grip.end}`).join('\n'));

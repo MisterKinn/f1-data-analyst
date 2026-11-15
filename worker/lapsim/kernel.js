@@ -151,7 +151,7 @@ export function lapsimKernel() {
     const windSpeed = env.windSpeed ?? 0, windFrom = env.windFromDeg ?? 0;
     const t = makeTyre(car);
     const mg = t.m * G;
-    const mu = track.mu, vScale = track.vScale, aeroLow = track.aeroLow, grade = track.grade, heading = track.heading, otOn = !!track.otOn;
+    const mu = track.mu, vScale = track.vScale, aeroLow = track.aeroLow, grade = track.grade, heading = track.heading, otOn = track.otOn; // true (whole lap) or a per-point array: where the driver uses Overtake
     const etaD = car.etaDrive ?? 0.96, etaK = car.etaErs ?? 0.95;
     const pIce = car.pIce * iceFactor, pAt = powertrain(car, iceFactor); // pAt(v): engine power at road speed v (torque curve and gears; flat pIce without them)
     const ers = car.ers || {pMax: 0};
@@ -261,7 +261,7 @@ export function lapsimKernel() {
           const vi = Math.max(v[i], 1);
           const low = lowAt(i);
           const va = vAir(vi, i), L = aeroFactor * clAt(i, low) * va * va, N = normalAt(vi, i, L);
-          const pErs = vi < vCut && (!track || soc > 0) ? erskLimitW(ers.rule, vi, ers.pMax || 0, otOn) : 0;
+          const pErs = vi < vCut && (!track || soc > 0) ? erskLimitW(ers.rule, vi, ers.pMax || 0, otOn === true || !!(otOn && otOn[i])) : 0;
           const pI = pAt(vi), fPow = (pI * etaD + pErs * etaK * etaD) / vi;
           const nRear = t.rearStatic * (kv ? N - L : mg * cosG[i]) + t.rearAero * L;
           const muX = muAt(i) * (t.muXTrac / t.muY0) * pureCap(i, N) / N;

@@ -45,7 +45,7 @@ const T = {
     title: '랩 시뮬레이터', h1: '2026–2028 F1 머신으로 한 바퀴를 계산합니다',
     lead: '실제 예선 랩으로 보정한 물리 모델이 지금의 트랙 형상, 예선 날씨, FIA가 공지한 서킷 변경 사항을 반영해 랩타임과 속도를 계산합니다.',
     track: '트랙', series: '시리즈', car: '규정 · 클래스', spec: '대회별 스펙', evoNone: '이 차는 Evo 데이터가 없습니다', eventFor: '이 차의 대회: {n} ({a} – {b}) · 세션 날씨: {y} 시즌', compare: '비교', soonShort: '준비 중',
-    seriesNames: {f1: 'F1', wec: 'Hypercar/GTP', fe: '포뮬러 E', gt3: 'GT3 (차종별)'}, none: '없음', conditions: '조건', sm: 'SM 존', smOpt: {normal: '기본', alt: 'Alt (로우그립)', off: '끔'}, ot: '오버테이크', drs: 'DRS', onOff: ['켬', '끔'], real: '실제 예선 조건', manual: '직접 설정',
+    seriesNames: {f1: 'F1', wec: 'Hypercar/GTP', fe: '포뮬러 E', gt3: 'GT3 (차종별)'}, none: '없음', realAero: '실제 {y} 예선: {s}', realAeroParts: {low: '로우그립 컨디션 (Alt SM 존, 부분 작동)', otOff: '오버테이크 꺼짐', drsOff: 'DRS 꺼짐'}, conditions: '조건', sm: 'SM 존', smOpt: {normal: '기본', alt: 'Alt (로우그립)', off: '끔'}, ot: '오버테이크', drs: 'DRS', onOff: ['켬', '끔'], real: '실제 예선 조건', manual: '직접 설정',
     lap: '계산된 랩타임', vsPole: '실제 폴', realLap: '실제 랩', wecBest: '실제 최고 랩', raceBest: '실제 레이스 최고 랩', errRange: '오차 범위(1σ)', conf: {medium: '신뢰도 보통', low: '신뢰도 낮음', 'very-low': '신뢰도 매우 낮음', 'not-fitted': '실측 보정 전'},
     soon: '준비 중: 기타 GT3(IMSA GTD·DTM·SP9), 포뮬러 E Gen4. 같은 보정 규칙을 쓰며 데이터 연결 후 추가됩니다.', sector: '섹터', vmax: '최고 속도', vmin: '최저 속도', energy: '배치 에너지', clip: '배치 상한 속도',
     map: '속도로 칠한 주행 라인', slow: '느림', fast: '빠름', trace: '거리별 텔레메트리', tel: {motor: '모터 출력 (kW, + 배치 / − 회생, 점선 = 규정 상한)', puEarly: 'FIA 파워유닛 정보 (R{r}, 마이애미 전 규정): 어디서나 기본 곡선(최대 350 kW).', puLate: 'FIA 파워유닛 정보 (R{r}, 마이애미부터 바뀐 규정): 레이스·스프린트는 주요 가속 구간에서 350 kW, 음영 구간에서는 대체 곡선(Alt 1, 약 250 kW). 이 랩은 예선 랩이라 기본 곡선을 씁니다.', puDoc: '회생 한도 예선 {q} MJ · 레이스 {race} MJ, 출력 제한 거리 {d} m, 출력 감소율 {rate} kW/s, Alt 1 구간: {alt}.', puSpeed: '높은 속도 기준 구간: {s}.', soc: '배터리 에너지 (SoC, MJ: 배치·회생 모델)', short: {motor: '모터', soc: 'SoC', speed: '속도', delta: '시간 차', throttle: '스로틀', brake: '브레이크', gear: '기어', rpm: 'rpm', steer: '조향'}, hover: '그래프 위에 마우스를 올리거나 터치하면 그 지점의 값이 모든 채널에 표시됩니다.', delta: '시간 차 (s, + = {car} 쪽이 뒤짐)', throttle: '스로틀 (%)', risk: '드라이버의 페달·핸들 떨림은 사람처럼 만든 모델입니다: 브레이크는 순간적으로 밟아 살짝 넘쳤다가 미세하게 조절하고, 잠김 직전에 잠깐 풀었다 다시 밟고, 코너 안쪽까지 끌며 놓습니다. 스로틀은 천천히 열고 빠르게 닫으며, 트랙션 한계에서 흔들리고 가끔 잠깐 뗍니다. 속도 그래프의 붉은 띠는 그립을 잃기 쉬운 구간(크레스트에서 줄어드는 하중, 내리막 제동, 뒷바람에 줄어드는 다운포스, 최근 FIA 공지의 새 포장·범프 보수 구간, 타이어 온도 창 밖의 노면 온도, 비)이며, 이곳에서 떨림이 커집니다.', speed: '속도 (km/h)', brake: '브레이크 압력 (앞 라인, bar)', gear: '기어', rpm: '엔진 회전수 (rpm)', steer: '스티어링 휠 각도 (°, + = 왼쪽)', note: '브레이크 압력은 감속도·브레이크 밸런스·패드 마찰계수·디스크와 캘리퍼 크기(클래스별 추정값)로, 기어와 회전수는 엔진 곡선과 기어비에서 출력이 가장 큰 기어로, 스티어링은 라인 곡률·휠베이스·조향비·언더스티어 경사로 계산합니다. 한계 근처의 작은 수정 조향은 고정 시드로 만든 모델 값입니다. 모두 실측 텔레메트리가 아닌 시뮬레이션입니다.', shifts: '변속 {n}회'}, km: '거리 (km)',
@@ -77,7 +77,7 @@ const T = {
     title: 'Lap simulator', h1: 'Simulate a lap in a 2026–2028 F1 car',
     lead: 'A physics model calibrated on real qualifying laps works out lap time and speed on today’s track layout, with qualifying weather and the circuit changes the FIA has announced.',
     track: 'Track', series: 'Series', car: 'Rules · class', spec: 'Series spec', evoNone: 'No Evo data for this car', eventFor: 'Event for this car: {n} ({a} – {b}) · session weather: {y} season', compare: 'Compare', soonShort: 'coming soon',
-    seriesNames: {f1: 'F1', wec: 'Hypercar/GTP', fe: 'Formula E', gt3: 'GT3 (by car model)'}, none: 'None', conditions: 'Conditions', sm: 'SM zones', smOpt: {normal: 'Normal', alt: 'Alt (low grip)', off: 'Off'}, ot: 'Overtake', drs: 'DRS', onOff: ['On', 'Off'], real: 'Real qualifying conditions', manual: 'Set my own',
+    seriesNames: {f1: 'F1', wec: 'Hypercar/GTP', fe: 'Formula E', gt3: 'GT3 (by car model)'}, none: 'None', realAero: 'Real {y} qualifying: {s}', realAeroParts: {low: 'Low Grip Conditions (Alt SM zones, partial activation)', otOff: 'Overtake disabled', drsOff: 'DRS disabled'}, conditions: 'Conditions', sm: 'SM zones', smOpt: {normal: 'Normal', alt: 'Alt (low grip)', off: 'Off'}, ot: 'Overtake', drs: 'DRS', onOff: ['On', 'Off'], real: 'Real qualifying conditions', manual: 'Set my own',
     lap: 'Simulated lap time', vsPole: 'Real pole', realLap: 'Real lap', wecBest: 'Real best lap', raceBest: 'Real fastest race lap', errRange: 'Error range (1σ)', conf: {medium: 'medium confidence', low: 'low confidence', 'very-low': 'very low confidence', 'not-fitted': 'not fitted to real laps'},
     soon: 'Formula E: Gen2, Gen3 and Gen3 Evo are learned from Al Kamel laps; Gen4 is a prior from the 2026-27 regulations until its first laps.', sector: 'Sector', vmax: 'Top speed', vmin: 'Lowest speed', energy: 'Energy deployed', clip: 'Deploy cut-off',
     map: 'Racing line coloured by speed', slow: 'Slow', fast: 'Fast', trace: 'Telemetry over distance', tel: {motor: 'Motor power (kW, + deploy / − recovery, dashed = regulation cap)', puEarly: 'FIA Power Unit Information (R{r}, rules before Miami): the base curve everywhere (up to 350 kW).', puLate: 'FIA Power Unit Information (R{r}, rules from Miami on): in Sprint and Race 350 kW in the key acceleration zones and the alternative curve (Alt 1, about 250 kW) in the shaded sectors. This is a qualifying lap, so it uses the base curve.', puDoc: 'Recharge limit qualifying {q} MJ · race {race} MJ, power-limited distance {d} m, power reduction rate {rate} kW/s, Alt 1 sectors: {alt}.', puSpeed: 'Sectors with a higher speed threshold: {s}.', soc: 'Battery energy (SoC, MJ: deploy and recovery model)', short: {motor: 'Motor', soc: 'SoC', speed: 'Speed', delta: 'Delta', throttle: 'Throttle', brake: 'Brake', gear: 'Gear', rpm: 'rpm', steer: 'Steer'}, hover: 'Hover or touch a chart to read every channel at that point.', delta: 'Time delta (s, + = {car} behind)', throttle: 'Throttle (%)', risk: 'The pedal and steering wobble is a model of a human driver: the brake is stabbed, overshoots a little and is then modulated, eased for a moment where a wheel would lock and trailed off into the corner; the throttle is squeezed on and snapped off, shakes at the traction limit and is sometimes lifted for a moment. Red bands on the speed chart are where grip is easy to lose (load lost over a crest, braking downhill, downforce lost to a tailwind, fresh asphalt or patched bumps in the latest FIA notes, a track outside the tyre temperature window, rain); the corrections grow there.', speed: 'Speed (km/h)', brake: 'Brake pressure (front line, bar)', gear: 'Gear', rpm: 'Engine speed (rpm)', steer: 'Steering wheel angle (°, + = left)', note: 'Brake pressure comes from the deceleration, brake balance, pad friction and disc and caliper size (estimates per class); gear and rpm from the engine curve and the gear ratios (the gear with the most power); steering from the line curvature, wheelbase, steering ratio and understeer gradient. The small corrections near the grip limit are a model with a fixed seed. All channels are simulated, not measured.', shifts: '{n} gear changes'}, km: 'Distance (km)',
@@ -157,7 +157,7 @@ function renderMap(map, v, opts) {
   // F1 overtaking zones (owner 2026-11-15): a band just outside the track for each DRS / Straight Mode zone, with its number at the
   // start; detection (D) and activation (A) points as small marks. Positions are lap distances (m) placed on the map by share of the lap.
   let zones = '';
-  if (opts.zones && opts.zones.list && opts.zones.list.length) {
+  if (opts.zones && ((opts.zones.list || []).length || (opts.zones.marks || []).length)) {
     let area = 0; for (let i = 0; i < n; i++) { const j = (i + 1) % n; area += xs[i] * ys[j] - xs[j] * ys[i]; }
     const out = area > 0 ? -1 : 1, off = sw * 2.3, idx = s0 => ((Math.round(s0 / opts.length * n) % n) + n) % n;
     const at = (i, k) => { const p = (i - 1 + n) % n, q = (i + 1) % n, tx = xs[q] - xs[p], ty = ys[q] - ys[p], l = Math.hypot(tx, ty) || 1; return [xs[i] + out * -ty / l * off * k, ys[i] + out * tx / l * off * k]; };
@@ -581,13 +581,30 @@ function computeView(K, data, state, R) {
   const optOf = c => c.year >= 2026 ? {sm: state.sm || 'normal', ot: state.ot !== false, drs: true} : {sm: 'normal', ot: false, drs: state.drs !== false};
   const ot = (tr, c, m) => c.year >= 2026 && m.ot ? Object.assign({}, tr, {otOn: true}) : tr;
   const optTrack = (tr, c, m) => { const zs = zl(c, m); return ot(zs ? lowOf(tr, c, zs, m.sm === 'alt' && c.year >= 2026 ? PARTIAL : 1) : tr, c, m); };
-  const optScale = (tr, c, sim) => {
+  const optScale = (tr, c, sim, tag) => {
     const W = computeView.cache.sc || (computeView.cache.sc = new WeakMap()), per = W.get(c.car) || (W.set(c.car, {}), W.get(c.car));
-    const key = (c.grip || 1) + ':' + JSON.stringify(env) + ':' + (tr === base ? 'b' : 't') + ':' + (data.changes?.changes || []).map((x, i) => state.active[i] ? 1 : 0).join('') + state.strength;
-    if (!(key in per)) per[key] = sim(zt(tr, c)).lapTime / simOpt(tr, c, c.year >= 2026 ? {sm: 'normal', ot: true} : {drs: true}, sim).lapTime; return per[key]; };
+    const key = (c.grip || 1) + ':' + (tag || JSON.stringify(env)) + ':' + (tr === base ? 'b' : 't') + ':' + (data.changes?.changes || []).map((x, i) => state.active[i] ? 1 : 0).join('') + state.strength;
+    if (!(key in per)) per[key] = sim(zt(tr, c)).lapTime / simOpt(tr, c, c.year >= 2026 ? {sm: 'normal', ot: true} : {drs: true}, sim, tag).lapTime; return per[key]; };
   const f1Opt = c => !c.series && c.year && !kS;
+  // the options the real qualifying of this car's season ran with (race control, f1-zones-data.js real), else none
+  const realOpt = c => { if (!f1Opt(c) || !data.zones) return null; const z = data.zones[c.year >= 2026 ? '2026' : '2025'], q = z && z.real; if (!q || z.year !== c.year) return null;
+    const m = c.year >= 2026 ? {sm: q.grip === 'low' ? 'alt' : 'normal', ot: q.ot !== 'off', drs: true} : {sm: 'normal', ot: false, drs: q.drs !== 'off'};
+    return (c.year >= 2026 ? m.sm === 'normal' && m.ot : m.drs) ? null : m; };
+  // the reference lap of a correction: in the real session's zone set, scaled like the options
+  const refSim = (tr, ref, envR) => { const sim = x => K.simulateLap(withGrip(x, ref.grip || 1), ref.car, envR), m = realOpt(ref); if (!m) return sim(zt(tr, ref));
+    const r = simOpt(tr, ref, m, sim, JSON.stringify(envR)), f = optScale(tr, ref, sim, JSON.stringify(envR)); r.lapTime *= f; for (let i = 0; i < r.time.length; i++) r.time[i] *= f; return r; };
   // Overtake is the driver's choice: on a lap where the greedy deployment of the extra power costs energy later, the driver leaves it off
-  const simOpt = (tr, c, m, sim) => { const r = sim(optTrack(tr, c, m)); if (!(m.ot && c.year >= 2026)) return r; const r0 = sim(optTrack(tr, c, Object.assign({}, m, {ot: false}))); return r0.lapTime < r.lapTime ? r0 : r; };
+  // Overtake is the driver's choice of where to use it: the whole lap, one straight (each run of the low-drag zones), or not at all, whichever is
+  // fastest (the qualifying energy is the same, so on energy-limited laps the extra power only pays on the straight where it is used best)
+  const simOpt = (tr, c, m, sim, tag) => { const t0 = optTrack(tr, c, Object.assign({}, m, {ot: false})); if (!(m.ot && c.year >= 2026)) return sim(t0);
+    const zs = zl(c, {sm: 'normal', drs: true}) || [], n = d.kappa.length, L = n * d.ds;
+    const use = k => k === 'none' ? t0 : Object.assign({}, t0, {otOn: k === 'all' ? true : (() => { const [a, b] = zs[k], o = new Uint8Array(n), i0 = Math.round(a / d.ds), len = Math.round((((b - a) % L) + L) % L / d.ds); for (let q = 0; q <= len; q++) o[(i0 + q) % n] = 1; return o; })()});
+    // the choice is cached (same car, conditions, track state and options), so later updates run one lap
+    const W = computeView.cache.ot || (computeView.cache.ot = new WeakMap()), per = W.get(c.car) || (W.set(c.car, {}), W.get(c.car));
+    const key = (tag || JSON.stringify(env)) + ':' + (tr === base ? 'b' : 't') + ':' + JSON.stringify(m) + ':' + (c.grip || 1) + ':' + (data.changes?.changes || []).map((x, i) => state.active[i] ? 1 : 0).join('') + state.strength;
+    if (per[key] != null) return sim(use(per[key]));
+    let best = null, bk = null; for (const k of ['none', 'all', ...zs.map((_, i) => i)]) { const r = sim(use(k)); if (!best || r.lapTime < best.lapTime) { best = r; bk = k; } }
+    per[key] = bk; return best; };
   // conditions: real (season of the selected car, else 2026) or manual
   const condKey = sel.series ? state.carId : String(sel.year);
   const yearKey = data.conds[condKey] ? condKey : (data.conds['2026'] ? '2026' : Object.keys(data.conds)[0]);
@@ -601,7 +618,7 @@ function computeView(K, data, state, R) {
   if (active.length) track = K.applyTrackChanges(base, active, d.corners || [], {strength: state.strength}).track;
   const withGrip = (tr, g) => { const n = tr.kappa.length, mu = new Float64Array(n); for (let i = 0; i < n; i++) mu[i] = g * tr.mu[i]; return {...tr, mu}; };
   // learned lap-time factor (GT3 car models, class cars on tracks learned from real laps): lap and sector times scale
-  const run = c => { const sim = tr => K.simulateLap(withGrip(tr, c.grip || 1), c.car, env), r = f1Opt(c) ? simOpt(track, c, optOf(c), sim) : sim(zt(track, c)), f = (c.timeScale || 1) * (f1Opt(c) ? optScale(track, c, sim) : 1); if (f !== 1) { r.lapTime *= f; for (let i = 0; i < r.time.length; i++) r.time[i] *= f; } return r; };
+  const run = c => { const sim = tr => { const r = K.simulateLap(withGrip(tr, c.grip || 1), c.car, env); r.trk = tr; return r; }, r = f1Opt(c) ? simOpt(track, c, optOf(c), sim) : sim(zt(track, c)), f = (c.timeScale || 1) * (f1Opt(c) ? optScale(track, c, sim) : 1); if (f !== 1) { r.lapTime *= f; for (let i = 0; i < r.time.length; i++) r.time[i] *= f; } return r; };
   const secOf = r => { const i1 = Math.round(d.sectors[0] / d.ds), i2 = Math.round(d.sectors[1] / d.ds); return [r.time[i1], r.time[i2] - r.time[i1], r.lapTime - r.time[i2]]; };
   // sector correction (raced tracks): real pole sectors minus the reference car's sectors in that weather
   const corrOf = c => {
@@ -614,7 +631,7 @@ function computeView(K, data, state, R) {
         const ref = data.cars[c.fix.ref], fw = {};
         for (const k of ['pressureHpa', 'airTempC', 'humidityPct', 'trackTempC', 'windSpeed', 'windFromDeg']) if (Number.isFinite(c.fix.weather && c.fix.weather[k])) fw[k] = c.fix.weather[k];
         const envR = K.conditionsFromWeather(Object.assign({pressureHpa: 1013.25, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0}, fw));
-        computeView.fixCache[keyL] = c.fix.lap - K.simulateLap(withGrip(zt(base, ref), ref.grip || 1), ref.car, envR).lapTime * (ref.timeScale || 1);
+        computeView.fixCache[keyL] = c.fix.lap - refSim(base, ref, envR).lapTime * (ref.timeScale || 1);
       }
       return computeView.fixCache[keyL];
     }
@@ -624,7 +641,7 @@ function computeView(K, data, state, R) {
       const ref = data.cars[c.fix.ref], fw = {};
       for (const k of ['pressureHpa', 'airTempC', 'humidityPct', 'trackTempC', 'windSpeed', 'windFromDeg']) if (Number.isFinite(c.fix.weather && c.fix.weather[k])) fw[k] = c.fix.weather[k];
       const envR = K.conditionsFromWeather(Object.assign({pressureHpa: 1013.25, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0}, fw, {rechargeMJ: data.energy && data.energy.mj != null ? data.energy.mj : undefined}));
-      const ss = secOf(K.simulateLap(withGrip(zt(base, ref), ref.grip || 1), ref.car, envR));
+      const ss = secOf(refSim(base, ref, envR));
       computeView.fixCache[key] = c.fix.real.map((x, i) => x - ss[i]);
     }
     return computeView.fixCache[key];
@@ -723,9 +740,13 @@ function computeView(K, data, state, R) {
   // F1 zones (owner 2026-11-15): 2026–2028 cars show the 2026 Straight Mode zones and overtake detection/activation (2027 documents
   // replace them once published); a 2025 car shows the 2025 DRS zones, or those of the last year F1 raced here; other cars none
   const ZD = data.zones, zy = !sel.series && ZD ? (sel.year >= 2026 ? (ZD[String(sel.year)] || ZD['2026']) : sel.year === 2025 ? ZD['2025'] : null) : null;
-  const zoneOpts = zy ? {kind: zy.kind, list: zy.zones.map(z => ({from: z.from, to: z.to, label: (zy.kind === 'drs' ? 'DRS' : 'SM') + (zy.zones.length > 1 ? ' ' + z.n : '')})),
-    marks: (zy.marks || []).map(m => ({s: m.s, kind: m.kind, label: m.label}))} : null;
-  const zoneNote = zy ? ' · ' + (data.ui.zoneNote[zy.kind] || '').replace('{y}', zy.year).replace('{doc}', zy.doc || '') : '';
+  // the chosen options (owner 2026-11-16): Alt draws the low-grip zones (n/a ones left out), Off or DRS off draws none, Overtake off hides OT marks
+  const om = zy ? optOf(sel) : null, LZ = d0.kappa.length * d0.ds;
+  const zlist = !zy ? [] : (zy.kind === 'drs' ? !om.drs : om.sm === 'off') ? [] : om.sm === 'alt' && zy.kind !== 'drs' ? zy.zones.filter(z => z.low !== null).map(z => Object.assign({}, z, {from: z.low != null ? z.low : (z.from + 50) % LZ})) : zy.zones;
+  const zoneOpts = zy ? {kind: zy.kind, list: zlist.map(z => ({from: z.from, to: z.to, label: (zy.kind === 'drs' ? 'DRS' : 'SM') + (zy.zones.length > 1 ? ' ' + z.n : '')})),
+    marks: (zy.marks || []).filter(m => zy.kind === 'drs' || om.ot).map(m => ({s: m.s, kind: m.kind, label: m.label}))} : null;
+  const rq = zy && zy.real, rqp = rq ? [rq.grip === 'low' ? t.realAeroParts.low : '', rq.ot === 'off' ? t.realAeroParts.otOff : '', rq.drs === 'off' ? t.realAeroParts.drsOff : ''].filter(Boolean) : [];
+  const zoneNote = zy ? ' · ' + (data.ui.zoneNote[zy.kind] || '').replace('{y}', zy.year).replace('{doc}', zy.doc || '') + (rqp.length ? ' · ' + t.realAero.replace('{y}', zy.year).replace('{s}', rqp.join(', ')) : '') : '';
   const mapOpts = {zones: zoneOpts, corners: d0.corners, length: d.length, label: t.map, line, start: kS / d0.kappa.length, rot: Number.isFinite(state.mapRot) ? state.mapRot : (data.mapRot0 || 0)};
   // compass: the map frame turned by north.deg (counter-clockwise) is true east-north; the needle turns clockwise on screen
   const compassDeg = data.north && !data.north.mirror ? ((data.north.deg - mapOpts.rot) % 360 + 360) % 360 : null;
@@ -743,7 +764,7 @@ function computeView(K, data, state, R) {
     if (!w0) { if (c.type === 'resurfacing') surface.fill(0.15); continue; }
     for (let x = w0[0]; x <= w1[1]; x += d.ds) surface[(Math.round(x / d.ds) % nP + nP) % nP] = 0.25;
   }
-  const chOf = (c, r, key) => R.lapChannels(track, c.car, env, r, {cls: clsOf(c), seed: data.id + '|' + key, surface, wet: state.mode !== 'manual' && !!(data.conds[condKey] && data.conds[condKey].rain)});
+  const chOf = (c, r, key) => R.lapChannels(r && r.trk || track, c.car, env, r, {cls: clsOf(c), seed: data.id + '|' + key, surface, wet: state.mode !== 'manual' && !!(data.conds[condKey] && data.conds[condKey].rain)});
   const ch = [chOf(sel, raw, state.carId)].concat(cmpRaws.map((r, j) => chOf(data.cars[cmpIds[j]], r, cmpIds[j])));
   const tag = arr => arr.map((v, j) => v ? {v, cls: 'ls-line-' + j} : null).filter(Boolean); // keeps each car's colour when one has no channel
   const TL = t.tel, cOpt = (unit, step, h, lo, more) => Object.assign({sectors: d.sectors || [], corners: d.corners || [], label: unit, km: t.km, unit, step, h, lo}, more);
@@ -938,6 +959,10 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
     if (pending) return; pending = true;
     requestAnimationFrame(() => {
       pending = false;
+      // options start at the real qualifying's state when this car's season raced here (Brazil 2026: Alt, OT off), else the defaults
+      if (state.optCar !== state.carId) { state.optCar = state.carId; const c = data.cars[state.carId], z = !c.series && c.year && data.zones ? data.zones[c.year >= 2026 ? '2026' : '2025'] : null, rq = z && z.real && z.year === c.year && c.fix ? z.real : {};
+        state.sm = rq.grip === 'low' ? 'alt' : 'normal'; state.ot = rq.ot !== 'off'; state.drs = rq.drs !== 'off';
+        if (q('sm')) { q('sm').value = state.sm; q('ot').value = state.ot ? '1' : '0'; q('drs').value = state.drs ? '1' : '0'; } }
       const v = computeView(K, data, state, R); lastTel = v.tel; lastView = v;
       q('lap').textContent = v.lap; q('pole').innerHTML = v.poleHtml; q('facts').innerHTML = v.factsHtml; q('air').innerHTML = v.airHtml;
       q('map').innerHTML = v.mapSvg; apply(); needle(v.compassDeg); q('trace').innerHTML = v.traceSvg; q('soc').innerHTML = v.socHtml; q('brakes').innerHTML = v.brakeHtml; q('key').innerHTML = v.keyHtml; q('wind').innerHTML = v.windHtml;

@@ -15,7 +15,7 @@ const js = lapsimScript(), body = js.slice('(()=>{'.length, js.lastIndexOf(';(')
 const M = new Function(body + ';return {K,computeView,R:{renderMap,renderTrace,evolutionDelta,evolutionCurve,lineTrack,brakeZones,lapChannels,blendLine,blendOff}};')();
 const lapOf = (track, car, o) => { const data = JSON.parse(simulationPage({track, car}, 'en').match(/id="lapsim-data">([\s\S]*?)<\/script>/)[1]);
   const st = {carId: data.carId, compareId: '', compareIds: [], mode: 'real', manual: {}, active: {}, strength: 1, sm: 'normal', ot: true, drs: true, evo: {type: 'qualifying', tyre: '', useCurve: true, over: {}}, ...o};
-  const [m, s] = M.computeView(M.K, data, st, M.R).lap.split(':'); return 60 * m + Number(s); };
+  const v = M.computeView(M.K, data, st, M.R), [m, s] = v.lap.split(':'); return o.view ? v : 60 * m + Number(s); };
 
 // options (owner 2026-11-16): SM Normal / Alt / Off and Overtake for 2026, DRS for 2025; defaults give the fitted lap
 test('SM, Overtake and DRS options change the predicted lap in the right direction', () => {
@@ -24,4 +24,13 @@ test('SM, Overtake and DRS options change the predicted lap in the right directi
   assert.ok(noOt >= n, 'Overtake never slows the lap');
   assert.equal(lapOf('interlagos', '2026', {drs: false}), n, 'DRS is not a 2026 option');
   const d = lapOf('monza', '2025', {}); assert.ok(lapOf('monza', '2025', {drs: false}) > d); assert.equal(lapOf('monza', '2025', {sm: 'off'}), d);
+});
+
+// owner 2026-11-16: brake and SoC follow the options; the map draws the chosen zone set (Alt shorter, n/a zones left out, Off none)
+test('telemetry and map follow the zone options', () => {
+  const n = lapOf('melbourne', '2026', {view: 1}), alt = lapOf('melbourne', '2026', {view: 1, sm: 'alt'}), off = lapOf('melbourne', '2026', {view: 1, sm: 'off'});
+  assert.notEqual(n.socHtml, off.socHtml); assert.notEqual(n.brakeHtml, off.brakeHtml); assert.notEqual(n.traceSvg, alt.traceSvg);
+  const bands = v => (v.mapSvg.match(/class="ls-zone ls-zone-sm"/g) || []).length;
+  assert.equal(bands(n), 5); assert.equal(bands(alt), 3); assert.equal(bands(off), 0);
+  assert.ok((off.mapSvg.match(/OT [AD]</g) || []).length === 2, 'Overtake marks stay while Overtake is on');
 });
