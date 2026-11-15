@@ -21,3 +21,10 @@ test('a loop that drives a one-way raceway backwards is counted against it', () 
   const half = {tags: {oneway: 'yes'}, geometry: ring.slice(0, 3).map(([lat, lon]) => ({lat, lon}))}, back = {tags: {oneway: 'yes'}, geometry: ring.slice(2).reverse().map(([lat, lon]) => ({lat, lon}))};
   assert.ok(Math.abs(againstOneway(ring, [half, back]) - 0.5) < 1e-9); // half the one-way length against the other half
 });
+
+test('Hypercar/GTP class cars show the fastest lap of WEC and IMSA together (owner 2026-11-15, Sebring)', async () => {
+  const {carsFor} = await import('../worker/lapsim/scenario.js'), {lapsimClassRecords} = await import('../worker/lapsim/class-records-data.js');
+  const c = carsFor('sebring'), r = lapsimClassRecords.tracks.sebring.real;
+  for (const k of ['wec-lmh', 'wec-lmdh']) assert.equal(c[k].fix.lap, r[k].lap, k);
+  assert.equal(r['wec-lmdh'].series, 'imsa'); // IMSA GTP 2023 is faster than the WEC 2023 LMDh lap
+});

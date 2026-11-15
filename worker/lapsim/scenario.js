@@ -10,6 +10,7 @@ export const SERIES_CARS = {'imsa-gtp': ['imsa', 'gtp', 'wec-lmdh'], 'imsa-gtdpr
 import {lapsimCalibration} from './calibration-data.js';
 import {lapsimExtraTracks} from './tracks-data.js';
 import {lapsimLearned} from './learned-data.js';
+import {lapsimClassRecords} from './class-records-data.js';
 import {lapsimFe} from './fe-data.js';
 import {FE_GENS} from './fe-cars.js';
 import {withPowertrain} from './powertrains.js';
@@ -83,9 +84,10 @@ export function carsFor(id) {
   // A car that raced here reproduces its real lap exactly (owner rule 2026-11-14, as F1 does): GT3 car models their own lap, class
   // cars the class-best of their latest season here (Al Kamel, every series), where nothing above already gives a correction.
   // The fastest real lap of that car on this track wins over a slower stored one (a newer season's pole is not always the fastest).
-  // A WEC class car keeps its WEC record unless a faster WEC lap exists; a lap of another series fills only an empty slot.
-  const fixLap = f => f ? f.lap ?? f.real?.reduce((a, b) => a + b, 0) : Infinity;
-  for (const [k, r] of Object.entries({...(L?.classReal || {}), ...(L?.real || {})})) if (out[k] && (r.lap < fixLap(out[k].fix) - 5e-4 && (r.series === 'wec' || !out[k].fix || k.startsWith('gt3-')) || !out[k].fix))
+  // Hypercar/GTP and LMGT3 class cars show the fastest lap of WEC and IMSA together (owner 2026-11-15, class-records.mjs); a lap of
+  // another series fills only an empty slot.
+  const fixLap = f => f ? f.lap ?? f.real?.reduce((a, b) => a + b, 0) : Infinity, CR = lapsimClassRecords?.tracks?.[id];
+  for (const [k, r] of Object.entries({...(L?.classReal || {}), ...(CR?.real || {}), ...(L?.real || {})})) if (out[k] && (r.lap < fixLap(out[k].fix) - 5e-4 && (r.series === 'wec' || r.series === 'imsa' || !out[k].fix || k.startsWith('gt3-')) || !out[k].fix))
     out[k].fix = {lap: r.lap, weather: r.weather || {}, ref: k, session: `${r.series.toUpperCase()} ${r.year} ${r.event}${r.type === 'Q' ? '' : r.type === 'R' ? ' (race)' : ' (practice/test)'}`, year: r.year, model: r.model, entry: r.entry, type: r.type};
   // Extra circuit: a car that has a real qualifying lap here reproduces it (lap-level correction, as for the series cars)
   for (const [k, r] of Object.entries(lapsimExtraTracks[id]?.realLaps || {})) if (out[k] && !out[k].fix) out[k].fix = {lap: r.lap, weather: r.weather || {}, ref: k, session: r.event};
@@ -149,7 +151,7 @@ export function realConditions(id) {
 export function raceRecords(id) {
   const out = {}, f = lapsimRaceRecords?.f1?.[id] || {};
   for (const y of ['2025', '2026']) if (f[y]) out[y] = {lap: f[y].lap, year: +y, who: `${f[y].driver} (${f[y].team})`, event: f[y].race, lapNumber: f[y].lapNumber, source: 'f1db'};
-  for (const [k, r] of Object.entries(lapsimLearned?.tracks?.[id]?.raceReal || {})) out[k] = {lap: r.lap, year: r.year, who: `#${r.entry} ${r.model}`, event: `${r.series.toUpperCase()} ${r.year} ${r.event}`, source: 'Al Kamel'};
+  for (const [k, r] of Object.entries({...(lapsimLearned?.tracks?.[id]?.raceReal || {}), ...(lapsimClassRecords?.tracks?.[id]?.race || {})})) out[k] = {lap: r.lap, year: r.year, who: `#${r.entry} ${r.model}`, event: `${r.series.toUpperCase()} ${r.year} ${r.event}`, source: 'Al Kamel'};
   for (const [k, r] of Object.entries(lapsimFe?.tracks?.[id]?.raceReal || {})) out[k] = {lap: r.lap, year: r.year, who: `#${r.entry} ${r.model}`, event: `FE ${r.year} ${r.event}`, source: 'Al Kamel'};
   return out;
 }

@@ -35,9 +35,10 @@ the first run. Sections 4 and 5 are results. Section 6 is the source list: add a
    `gt3-imsa-<model>` (IMSA GTD), `gt3-aco-<model>` (WEC LMGT3, ELMS, Asian LMS) and `gt3-dtm-<model>` (DTM, records only).
    SRO measured records (Brands Hatch, Silverstone, Spa, Monza, Nürburgring GP and 24h, Suzuka, Fuji, Shanghai, Jeddah, …) are
    reproduced exactly from the official SRO results sites.
-11. **WEC class cars keep WEC records.** `wec-lmh`, `wec-lmdh` and `wec-lmgt3` show the fastest WEC lap of that class on the track.
-   A lap of another series (IMSA GTP at Daytona, GTWC at Road Atlanta) fills the slot only where WEC never raced. WEC LMGT3 has
-   raced from 2024; WEC last raced at Monza in 2023 (LMGTE Am), so Monza shows that pole, and SRO GT3 at Monza shows the GTWC record.
+11. **Hypercar/GTP class cars show the fastest WEC or IMSA lap (owner 2026-11-15; replaces "WEC records first").** `wec-lmh`,
+   `wec-lmdh` and `wec-lmgt3` show the fastest lap of WEC and IMSA together on the track (`scripts/sim/learn/class-records.mjs` ->
+   `worker/lapsim/class-records-data.js`, read by `carsFor()` and `raceRecords()`). Sebring LMDh: IMSA 2023 1:45.836 instead of
+   WEC 2023 1:46.082. A lap of another series fills only an empty slot. The simulator has no IMSA tab; the WEC tab is "Hypercar/GTP".
 12. **A car with an Evo or Evo 2 kit opens on its newest kit** (Evo box ticked; `evo=0` in the URL for the base car).
 13. **GT3 page controls and tyres (owner 2026-11-15).** GT3: choose the car model first, then the series spec (SRO GT3, IMSA GTD,
    WEC LMGT3, DTM), then the kit. The WEC series lists only LMH and LMDh; LMGT3 is a GT3 model with the WEC LMGT3 spec.
