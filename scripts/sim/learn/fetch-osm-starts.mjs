@@ -17,7 +17,7 @@ for (const [id, s] of Object.entries(spec)) {
   const f = files[s.file] ??= JSON.parse(readFileSync(D + 'tracks/' + s.file, 'utf8')), c = (f.tracks || f.variants)[s.candidate];
   if (!c?.centre || !c.map) { out.tracks[id] = {error: 'no map centre'}; continue; }
   // map x/y are east/north metres from c.centre (the first mapped node); the circle covers the whole lap
-  const r = Math.min(9000, Math.max(...c.map.x.map((x, i) => Math.hypot(x, c.map.y[i]))) + 300), [la, lo] = c.centre, A = `(around:${Math.round(r)},${la},${lo})`;
+  const r = Math.min(4000, Math.max(...c.map.x.map((x, i) => Math.hypot(x, c.map.y[i]))) + 300), [la, lo] = c.centre, A = `(around:${Math.round(r)},${la},${lo})`;
   // key lookups only (a name regex over the whole circle timed out on every mirror); pit and start/finish filtering is done here
   // second pass adds named pit/start features of any highway type (slower, so only for the tracks still missing)
   const q = `[out:json][timeout:120];(way["highway"~"^(raceway|service)$"]${A};nwr["raceway"]${A};way["highway"]["name"~"pit|box|start|finish",i]${A};);out geom tags;`;
