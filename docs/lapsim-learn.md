@@ -102,6 +102,18 @@ This layer does not change the physics model or `calibration-data.js`. BoP is no
 
 ## 4. Result per class (RMS error, %)
 
+### Refit 2026-11-15 evening (model terms of section 12, fixed track geometry #204/#206/#209)
+
+Event hidden, class-best, RMS %. Before = main after #206 (same fixed geometry, old model).
+
+| Class | Events | Before | **After** | Layout hidden | In-sample |
+|---|---|---|---|---|---|
+| LMH | 41 | 0.95 | **0.82** | 2.43 | 0.56 |
+| LMDh | 59 | 1.01 | **0.73** | 2.35 | 0.46 |
+| GT3 | 278 | 1.14 | **0.96** | 2.57 | 0.61 |
+
+Still worse than before by more than 0.1 point: gt3 at lime-rock 0.62 → 0.89, lmdh at mosport 0.29 → 0.95, lmh at indianapolis 0.26 → 0.46, gt3 at paul-ricard-2021 1.12 → 1.74, gt3 at hungaroring 0.56 → 0.77, gt3 at motegi 1.24 → 1.4, gt3 at phillip-island 1.83 → 1.99; Jeddah GT3 (one event) 1.14. To be fixed after the track-shape check (section 12).
+
 ### Refit 2026-11-15 (Long Beach and Detroit learned; class records in the learning step)
 
 2611 model rows, 323 events, 56 layouts. Event hidden, class-best, RMS %.
@@ -498,3 +510,24 @@ Check (unseen, no fitted value): Long Beach 10 real laps RMS 1.18 %; Detroit 8 r
 (held-out 2.24 %). Registry layouts `long-beach-3167` and `detroit-2647` are now `long-beach` and `detroit` with geometry; their IMSA
 laps (161 and 64 rows) are learned by the refit of 2026-11-15 (sections 4 and 5). Class cars show the fastest WEC or IMSA lap there,
 built in the learning step (`classReal`, rule 11); the stopgap `class-records.mjs` / `class-records-data.js` is removed.
+
+## 12. Model terms added 2026-11-15 (`fit-endurance.mjs`)
+
+Each term was kept only if the event-hidden class error went down with it on the fixed geometry (one term removed at a time):
+
+| Term | What it does | GT3 / LMDh / LMH without it |
+|---|---|---|
+| Surface eras (`SURFACE`) | A full resurfacing starts a new track term from its first season on the new asphalt: Laguna Seca 2024 (repaved June 2023), Road America 2023 (winter 2022-23), Shanghai 2024 (re-laid before F1's 2024 return). Only dates the circuits announced. | 1.05 / 1.00 / 0.98 |
+| `AGE` | Years on the new asphalt (cap 3): new asphalt is fastest, then slows | 0.97 / 0.79 / 0.88 |
+| F1 grip prior (`F`, `F2`) | log of the F1 calibration grip of the same map (and its square): how far the map geometry is off, measured independently by F1 poles (Jeddah needs 1.21) | 1.01 / 0.77 / 0.87 |
+| Hot track (`HOT`) | Grip above 45 °C track temperature: the simulator loses too much | 0.98 / 0.82 / 0.92 |
+| Daytona density (`TR`) | Banking is not in the geometry, so the lap depends more on air density (power) than the simulator gives; Daytona only | 0.97 / 0.82 / 0.88 |
+| Series and season levels (`SS`, `SY`) | The series × season level is shrunk towards a series level plus a class-wide season level, so thin series-seasons lean on what is shared | 1.00 / 0.78 / 0.87 |
+| Speed-slope clamp | The model × track-speed slope uses z inside ±0.8, so street circuits and Daytona do not set it | 0.98 / 0.76 / 0.84 |
+
+With all terms: 0.97 / 0.77 / 0.87 in that test (the refit above, with the wet rules below, gives 0.96 / 0.73 / 0.82).
+
+Data rules changed the same day:
+- Wet or disrupted sessions (rule 3.3.1) are searched again until no new one is found (at most 3 passes), and another class of an event with a wet class is dropped from 2 % slow (WEC 2025 COTA GT3 was 3.9 % slow, its Hypercar classes 7.6-8.7 %).
+- A layout found from the lap time alone must fit the simulated lap within 8 % (was 12 %, needed only while the Paul Ricard map was broken), and such SRO laps are not records unless `sroSure` (Sydney Brabham, GTWC 2019 no-chicane laps, Baku 2013 were shown as real laps).
+- Not kept: a learned track-temperature slope, an air-density slope on every track (GT3 1.07), a level per GTWC region (GT3 1.11), a class × track term for LMH vs LMDh, Monza and Sonoma surface eras (no gain).
