@@ -32,7 +32,7 @@ import {lapsimTrackNorth} from './lapsim/track-north-data.js';
 import {lapsimTrackView} from './lapsim/track-view-data.js';
 import {lapsimF1Zones} from './lapsim/f1-zones-data.js';
 import {SURFACE_ERAS} from './lapsim/surface.js';
-import {ZONES_ON, DRS_ONLY} from './lapsim/zones.js';
+import {ZONES_ON, DRS_ONLY, PU_QUALI} from './lapsim/zones.js';
 import {lapsimStartLines} from './lapsim/start-lines.js';
 
 const K = lapsimKernel();
@@ -250,7 +250,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
   const data = {startAlt: lapsimStartLines[id] || null, driverLines: lapsimDriverLines?.tracks?.[id] || null, pu: lapsimPuDocs?.events?.[id] || null, lang, t, id, track: td, cars, carOrder: CAR_ORDER_P, carId, evoOf, fam, bodyLabel: BODY_LABEL, events, conds, raceRec: raceRecords(id), changes, energy: (liveEnergy && (query.track || 'monza') === id ? liveEnergy : energyLimit(id, 2026)),
     compounds: lapsimCompounds?.[id] || {}, wecTyres: lapsimWecTyres?.[id] || {}, line: lineData(id), lineText: LT[lang], qsplit: lapsimQsplit ? {off: lapsimQsplit.offsetPct, test: lapsimQsplit.test, real: lapsimQsplit.tracks?.[id] || null} : null, brakes: lapsimBrakes ? {ramp: lapsimBrakes.rampS ?? 0, k: lapsimBrakes.pedalKgPerG, g: lapsimBrakes.gScale, t: lapsimBrakes.timeScale, test: lapsimBrakes.test, real: lapsimBrakes.races?.[id] || null, text: BT[lang]} : null, compoundGap: compoundGap(id), compoundTest: lapsimCompoundGap?.test?.rmsPct ?? null,
     evo: Object.fromEntries(['f1', 'wec'].map(se => [se, Object.fromEntries(['practice', 'qualifying'].map(ty => [ty, evolutionCoeffs(se, id, ty)]))])),
-    zones: lapsimF1Zones?.tracks?.[id] || null, zonesOn: ZONES_ON ? (DRS_ONLY ? 'drs' : 'all') : '', surface: surfaceOf(id, td, changes), mapRot0: Number.isFinite(view0?.openDeg) ? view0.openDeg : landscapeRot(td.map, lapsimTrackNorth?.[id], VIEW[id], td.corners, td.length), cornersEstimated: !!td.cornersEstimated, north: lapsimTrackNorth?.[id] || null, ui: UI[lang],
+    zones: lapsimF1Zones?.tracks?.[id] || null, zonesOn: ZONES_ON ? (DRS_ONLY ? 'drs' : 'all') : '', puQuali: PU_QUALI, otChoice: lapsimCalibration?.otChoice?.[id] ?? null, surface: surfaceOf(id, td, changes), mapRot0: Number.isFinite(view0?.openDeg) ? view0.openDeg : landscapeRot(td.map, lapsimTrackNorth?.[id], VIEW[id], td.corners, td.length), cornersEstimated: !!td.cornersEstimated, north: lapsimTrackNorth?.[id] || null, ui: UI[lang],
     calibration: {generatedAt: lapsimCalibration?.generatedAt || null, seasons: Object.fromEntries(Object.entries(lapsimCalibration?.seasons || {}).map(([y, s]) => [y, s.tracks?.[id] || null]))}};
   // first render on the server with the same code the browser uses
   const view = computeView(K, data, {carId, compareId: '', mode: 'real', manual: null, active: {}, strength: 1, evo: null}, {renderMap, renderTrace, evolutionDelta, evolutionCurve, lineTrack, brakeZones, lapChannels});
@@ -578,7 +578,9 @@ function computeView(K, data, state, R) {
     if (sl === '2025' ? !m.drs : m.sm === 'off') return [];
     return m.sm === 'alt' && sl === '2026' ? z.zones.filter(q => q.low !== null).map(q => [q.low != null ? q.low : (q.from + 50) % L, q.to]) : z.zones.map(q => [q.from, q.to]); };
   // fit setup: FIA zones when the F1 fit used them (zonesOn), else the kernel's own straights; no Overtake (the real laps it was fit on)
-  const zt = (tr, c) => { if (c.series || !c.year || kS || !data.zonesOn || (data.zonesOn === 'drs' && c.year >= 2026)) return tr; const zs = zl(c, {sm: 'normal', drs: true}); return zs ? lowOf(tr, c, zs) : tr; };
+  const zt0 = (tr, c) => { if (c.series || !c.year || kS || !data.zonesOn || (data.zonesOn === 'drs' && c.year >= 2026)) return tr; const zs = zl(c, {sm: 'normal', drs: true}); return zs ? lowOf(tr, c, zs) : tr; };
+  const zt = (tr, c) => { const t = zt0(tr, c), k = data.puQuali && !c.series && c.year && !kS && otWhole(c) ? data.otChoice : null; if (k == null || k === 'none') return t;
+    if (k === 'all') return Object.assign({}, t, {otOn: true}); const zs = zl(c, {sm: 'normal', drs: true}) || [], z = zs[k]; if (!z) return t; const n = d.kappa.length, L = n * d.ds, o = new Uint8Array(n), i0 = Math.round(z[0] / d.ds), len = Math.round((((z[1] - z[0]) % L) + L) % L / d.ds); for (let q = 0; q <= len; q++) o[(i0 + q) % n] = 1; return Object.assign({}, t, {otOn: o}); };
   // Low Grip zones allow only partial activation (front wing in Straight Mode, rear flap in Corner Mode; B7.1.2 b). The front wing's share
   // of the low-drag change is not published: 0.3 is an estimate (the rear flap carries most of the drag drop)
   const PARTIAL = 0.3;
@@ -605,6 +607,8 @@ function computeView(K, data, state, R) {
   // Overtake is the driver's choice: on a lap where the greedy deployment of the extra power costs energy later, the driver leaves it off
   // Overtake is the driver's choice of where to use it: the whole lap, one straight (each run of the low-drag zones), or not at all, whichever is
   // fastest (the qualifying energy is the same, so on energy-limited laps the extra power only pays on the straight where it is used best)
+  // 2026 qualifying curve (FIA PU documents): round 4 on and 2027+, whole lap on Base – Overtake; rounds 1–3 Base – Standard, Overtake where it pays
+  const otWhole = c => c.year >= 2026 && !(c.year === 2026 && data.pu && data.pu.round <= 3);
   const simOpt = (tr, c, m, sim, tag) => { const t0 = optTrack(tr, c, Object.assign({}, m, {ot: false})); if (!(m.ot && c.year >= 2026)) return sim(t0);
     const zs = zl(c, {sm: 'normal', drs: true}) || [], n = d.kappa.length, L = n * d.ds;
     const use = k => k === 'none' ? t0 : Object.assign({}, t0, {otOn: k === 'all' ? true : (() => { const [a, b] = zs[k], o = new Uint8Array(n), i0 = Math.round(a / d.ds), len = Math.round((((b - a) % L) + L) % L / d.ds); for (let q = 0; q <= len; q++) o[(i0 + q) % n] = 1; return o; })()});
