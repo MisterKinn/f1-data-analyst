@@ -17,7 +17,7 @@ test('switched off: home shows only this week in motorsport, menu Home, Simulato
   assert.doesNotMatch(main,/id="championships"|connect-section|id="ci"/);
   assert.match(main,/라이트팬과 코어팬 사이의 그 계단을/);assert.match(main,/꽁보다, 무슨 뜻인가요/);
   const nav=home.html.match(/<nav id="navigation"[\s\S]*?<\/nav>/)[0];
-  assert.deepEqual([...nav.matchAll(/href="([^"]+)"/g)].map(m=>m[1]),['/','/simulation','/championships/f1','/championships/wec','/ai']);
+  assert.deepEqual([...nav.matchAll(/href="([^"]+)"/g)].map(m=>m[1]),['/','/simulation','/setup','/championships/f1','/championships/wec','/ai']);
   assert.ok(main.indexOf('class="sim-entry"')>main.indexOf('라이트팬과 코어팬')&&main.indexOf('class="sim-entry"')<main.indexOf('data-race-calendar="week"'));
   assert.equal((await page('/about')).status,301);
   assert.equal((await page('/guide')).status,404);

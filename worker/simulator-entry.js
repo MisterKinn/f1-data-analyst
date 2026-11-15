@@ -24,9 +24,9 @@ export function simulatorEntry(lang = 'ko') {
  <article class="sim-entry-card"><p class="sim-entry-kind">${t('랩타임 시뮬레이션', 'Lap-time simulation')}</p><h3>${t('조건이 바뀌면 랩타임은 얼마나 달라질까?', 'How much does lap time change when conditions change?')}</h3>
   <ul class="sim-entry-qs">${chips}</ul>
   <a class="button" href="/simulation">${t('랩타임 시뮬레이터 열기', 'Open the lap simulator')}</a></article>
- <article class="sim-entry-card is-soon"><p class="sim-entry-kind">${t('셋업 시뮬레이션', 'Setup simulation')} <span class="sim-entry-badge">${t('준비 중', 'Coming soon')}</span></p><h3>${t('이번 주말 팀들은 어떤 셋업으로 나올까?', 'Which setup will each team bring this weekend?')}</h3>
-  <p>${t('세션 기록과 FIA 문서로 팀별 다운포스 수준, 차고, 타이어 운용을 추정합니다.', 'Estimates each team’s downforce level, ride height and tyre use from session records and FIA documents.')}</p>
-  <a class="button secondary" href="/simulation#setup">${t('셋업 시뮬레이션 미리 보기', 'Preview setup simulation')}</a></article>
+ <article class="sim-entry-card"><p class="sim-entry-kind">${t('셋업 시뮬레이터', 'Setup simulator')}</p><h3>${t('이 서킷에선 윙을 얼마나 세울까?', 'How much wing for this circuit?')}</h3>
+  <p>${t('F1과 하이퍼카(LMH·LMDh)의 서킷별 셋업 방향을 물리 시뮬레이션, 규정, 피렐리 처방으로 보여 줍니다.', 'Set-up direction per circuit for F1 and Hypercar (LMH/LMDh) from the physics simulation, the rules and Pirelli prescriptions.')}</p>
+  <a class="button secondary" href="/setup">${t('셋업 시뮬레이터 열기', 'Open the setup simulator')}</a></article>
 </div></section>`;
 }
 

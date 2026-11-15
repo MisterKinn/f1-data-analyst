@@ -21,6 +21,10 @@ const PAGES = {
     ko: ['랩 시뮬레이터', '물리 모델로 F1 머신의 한 바퀴를 계산합니다. 트랙별 속도, 섹터 시간과 무게·출력·그립이 랩타임에 주는 영향을 확인하세요.'],
     en: ['Lap simulator', 'A physics model simulates one F1 lap. See speed, sector times and how weight, power and grip change the lap time on each track.'],
   },
+  '/setup': {
+    ko: ['셋업 시뮬레이터', 'F1과 하이퍼카(LMH·LMDh)의 서킷별 셋업 방향을 물리 시뮬레이션, 규정, 피렐리 처방과 기술 보도로 보여 줍니다.'],
+    en: ['Setup simulator', 'Set-up direction per circuit for F1 and Hypercar (LMH/LMDh) from the physics simulation, the rules, Pirelli prescriptions and technical reporting.'],
+  },
   '/account': {
     ko: ['계정', '꽁보다 계정에 로그인하고 연결 정보를 확인하세요.'],
     en: ['Account', 'Sign in to your Kongboda account and review your connections.'],
@@ -44,7 +48,7 @@ const SERIES = {
 };
 
 export const publicSitePaths = Object.freeze([
-  '/', '/about', '/guide', '/resources', '/simulation',
+  '/', '/about', '/guide', '/resources', '/simulation', '/setup',
   ...Object.keys(SERIES).map(slug => `/championships/${slug}`),
 ]);
 
