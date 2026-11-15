@@ -1,0 +1,9 @@
+{
+ "note": "Long Beach and Detroit (owner 2026-11-15: must be built). Road names cannot describe these laps, so the lap is the OpenStreetMap circuit relation of each venue (a mapped route of the race course), checked as one closed loop and scaled to the official length (the relation follows road centre lines, so its length differs a little).",
+ "tracks": [
+  {"id": "long-beach", "status": "osm", "seed": [33.7637, -118.1922], "radius": 2500, "fia": "^LONG BEACH$", "relation": 18052024, "tol": 0.03, "scaleToOfficial": true,
+   "tolNote": "OpenStreetMap relation 18052024 'Long Beach Grand Prix Course' (48 ways): one closed loop of 3,258 m, 2.9 % longer than the official 3.167 km; it follows road centre lines (both Shoreline Drive carriageways, the fountain circle). Shape kept, scaled to the official length."},
+  {"id": "detroit", "status": "osm", "seed": [42.3291, -83.0437], "radius": 2500, "fia": "DETROIT GRAND PRIX", "relation": 17665938, "tol": 0.03, "scaleToOfficial": true,
+   "tolNote": "OpenStreetMap relation 17665938 'Detroit Grand Prix circuit' (downtown course used since 2023), scaled to the official 2.650 km."}
+ ]
+}
