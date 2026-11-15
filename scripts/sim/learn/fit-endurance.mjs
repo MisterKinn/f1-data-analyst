@@ -199,14 +199,16 @@ if (process.argv[1]?.endsWith('fit-endurance.mjs')) {
       errPct: Object.fromEntries(['lmh', 'lmdh', 'gt3'].map(g => [g, bl[g + ' @ ' + id]?.eventOutClass ?? null]).filter(([, v]) => v != null)),
       models: kinds.has('gt') ? Object.fromEntries(shown.filter(x => x.fitted).map(x => [slug(x.m, x.b), f5(levelOf('gt3', x.b) + mTerm(x.m, x.b, x.y, zOf(id, 'gt3')) + T('gt'))])) : {}}; }
   // Real laps to REPRODUCE (owner rule 2026-11-14): the fastest real lap of each car (model + body) and each class on every layout
-  // with geometry, any season and dry session. WEC class cars take the fastest WEC lap first (owner 2026-11-15: Barcelona, Monza),
-  // then the same class in other series (IMSA GTP at Daytona; ACO-body GT3 for LMGT3, then any GT3).
+  // with geometry, any season and dry session. WEC class cars take the fastest WEC or IMSA lap (owner 2026-11-15), then the same
+  // class in other series (ACO-body GT3 for LMGT3, then any GT3).
   const realOf = r => ({lap: r.real, year: r.season, series: r.series, event: r.event, session: r.session, type: r.type, entry: r.entry, model: r.model, body: r.body || undefined,
     weather: Object.fromEntries(Object.entries({airTempC: r.w.airC, trackTempC: r.w.trackC, humidityPct: r.w.hum, pressureHpa: r.w.hpa}).filter(([, v]) => Number.isFinite(v)).map(([k, v]) => [k, +v.toFixed(2)]))});
   const rec = loaded.records, get = (...ks) => ks.map(k => rec.get(k)).find(Boolean), pack = o => Object.fromEntries(Object.entries(o).filter(([, v]) => v).map(([k, v]) => [k, realOf(v)]));
   const recLayouts = new Set([...rec.keys()].map(k => k.split('|')[0]).filter(id => registry().layouts.find(l => l.id === id)?.sim));
   for (const id of new Set([...ownLayouts, ...recLayouts])) { const t = tracks[id] ||= {events: 0, cls: {}, errPct: {}, models: {}};
-    const cls = sfx => ({'wec-lmh': get(`${id}|c|lmh|s:wec${sfx}`, `${id}|c|lmh${sfx}`), 'wec-lmdh': get(`${id}|c|lmdh|s:wec${sfx}`, `${id}|c|lmdh${sfx}`), 'wec-lmgt3': get(`${id}|c|gt3|s:wec${sfx}`, `${id}|c|gt3|aco${sfx}`, `${id}|c|gt3${sfx}`)}); // WEC class cars: a WEC record first
+    // WEC class cars: the faster of the WEC and IMSA records (owner 2026-11-15, rule 12); another series fills only an empty slot
+    const best = (g, sfx) => [rec.get(`${id}|c|${g}|s:wec${sfx}`), rec.get(`${id}|c|${g}|s:imsa${sfx}`)].filter(Boolean).sort((a, b) => a.real - b.real)[0];
+    const cls = sfx => ({'wec-lmh': best('lmh', sfx) || get(`${id}|c|lmh${sfx}`), 'wec-lmdh': best('lmdh', sfx) || get(`${id}|c|lmdh${sfx}`), 'wec-lmgt3': best('gt3', sfx) || get(`${id}|c|gt3|aco${sfx}`, `${id}|c|gt3${sfx}`)});
     t.real = pack(Object.fromEntries(shown.map(x => [slug(x.m, x.b), get(`${id}|m|${x.m}|${x.b}`)]))); t.classReal = pack(cls(''));
     t.raceReal = pack({...Object.fromEntries(shown.map(x => [slug(x.m, x.b), get(`${id}|m|${x.m}|${x.b}|race`)])), ...cls('|race')}); }
   const learned = {generated: res.generated, source: 'Al Kamel published timing 2021-2026 (IMSA, WEC, ELMS, Asian Le Mans Series) and Timing71 (SRO GT World Challenge, IGTC, DTM, Nürburgring, Macau): every car model. scripts/sim/learn/fit-endurance.mjs, docs/lapsim-learn.md',
