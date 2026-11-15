@@ -104,11 +104,12 @@
   },
   "daytona": {
    "group": "imsa",
-   "file": "extra-tracks.json",
-   "candidate": "daytona-road-course-imsa",
+   "file": "extra-tracks-atlas.json",
+   "candidate": "daytona-road-course-atlas",
    "name": "Daytona",
    "layout": "Road course (IMSA) 5.729 km",
-   "direction": "ccw"
+   "direction": "ccw",
+   "shapeNote": "owner 2026-11-15: the OpenStreetMap loop skipped the Bus Stop chicane (GTP simulated 7-9 % too fast). Built from the curated track-atlas midline (OSM relation 5254136, checked against NAIP imagery) by scripts/sim/tracks/build-atlas-track.mjs."
   },
   "laguna-seca": {
    "group": "imsa",
