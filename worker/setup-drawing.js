@@ -1,28 +1,20 @@
 // Setup simulator drawings: a generic (unbranded) 2026 F1 car and a generic Le Mans Hypercar seen from the
 // side, front and rear, with leader lines from each set-up item to a label carrying its value.
-// Shapes are simple original outlines, not any team's car.
+// Hypercar shapes are simple original outlines. F1 uses the owner's cut-out drawings of the 2026 and 2025 cars
+// (/assets/f1-2026|2025/<view>.webp, owner 2026-11-15) in place of the earlier hand-drawn outline.
 
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
 
 const SHAPES = {
   f1: {
-    side: `<line x1="10" y1="215" x2="630" y2="215" class="g"/>
-<path class="b" d="M20 186 L120 176 L200 164 L255 146 L300 138 L322 108 L352 104 L372 130 L470 134 L540 140 L558 160 L558 188 L470 198 L200 198 L120 194 Z"/>
-<path class="d" d="M300 138 Q330 112 372 130" fill="none"/><path class="d" d="M120 200 L540 200"/>
-<rect class="w" x="8" y="188" width="100" height="8" rx="2"/><rect class="w" x="10" y="176" width="6" height="22"/>
-<rect class="w" x="540" y="62" width="62" height="10" rx="3"/><rect class="w" x="546" y="78" width="56" height="7" rx="3"/><rect class="w" x="600" y="54" width="6" height="62"/><line class="d" x1="572" y1="90" x2="548" y2="148"/>
-<polyline class="s" points="170,170 186,160 192,166 198,156 204,162 210,152 226,146"/>
-<circle class="t" cx="150" cy="175" r="40"/><circle class="h" cx="150" cy="175" r="16"/><circle class="t" cx="500" cy="170" r="45"/><circle class="h" cx="500" cy="170" r="18"/>`,
-    front: `<line x1="10" y1="215" x2="350" y2="215" class="g"/>
-<rect class="t" x="34" y="122" width="56" height="93" rx="10" transform="rotate(-3 62 215)"/><rect class="t" x="270" y="122" width="56" height="93" rx="10" transform="rotate(3 298 215)"/>
-<path class="b" d="M150 196 L156 112 Q180 88 204 112 L210 196 Z"/><path class="d" d="M156 112 Q180 70 204 112" fill="none"/>
-<line class="d" x1="90" y1="150" x2="156" y2="130"/><line class="d" x1="270" y1="150" x2="204" y2="130"/><line class="s" x1="118" y1="136" x2="242" y2="136"/><circle class="h" cx="118" cy="136" r="5"/><circle class="h" cx="242" cy="136" r="5"/>
-<rect class="w" x="26" y="198" width="308" height="9" rx="3"/><rect class="w" x="26" y="186" width="6" height="22"/><rect class="w" x="328" y="186" width="6" height="22"/>`,
-    rear: `<line x1="10" y1="215" x2="350" y2="215" class="g"/>
-<rect class="t" x="28" y="112" width="68" height="103" rx="10"/><rect class="t" x="264" y="112" width="68" height="103" rx="10"/>
-<path class="b" d="M140 196 L150 110 Q180 92 210 110 L220 196 Z"/><rect class="w" x="108" y="62" width="144" height="14" rx="4"/><rect class="w" x="114" y="80" width="132" height="9" rx="4"/>
-<rect class="w" x="102" y="54" width="7" height="58"/><rect class="w" x="251" y="54" width="7" height="58"/><line class="d" x1="180" y1="90" x2="180" y2="112"/>
-<path class="w" d="M112 212 L248 212 L232 192 L128 192 Z"/><circle class="s" cx="180" cy="168" r="13"/><line class="d" x1="96" y1="168" x2="167" y2="168"/><line class="d" x1="193" y1="168" x2="264" y2="168"/>`,
+    side: `<line x1="10" y1="215" x2="630" y2="215" class="g"/><image href="/assets/f1-2026/side.webp" x="10" y="74" width="620" height="141" preserveAspectRatio="xMidYMax meet"/>`,
+    front: `<line x1="10" y1="215" x2="350" y2="215" class="g"/><image href="/assets/f1-2026/front.webp" x="48" y="50" width="265" height="165" preserveAspectRatio="xMidYMax meet"/>`,
+    rear: `<line x1="10" y1="215" x2="350" y2="215" class="g"/><image href="/assets/f1-2026/rear.webp" x="48" y="50" width="265" height="165" preserveAspectRatio="xMidYMax meet"/>`,
+  },
+  'f1-2025': {
+    side: `<line x1="10" y1="215" x2="630" y2="215" class="g"/><image href="/assets/f1-2025/side.webp" x="10" y="80" width="620" height="135" preserveAspectRatio="xMidYMax meet"/>`,
+    front: `<line x1="10" y1="215" x2="350" y2="215" class="g"/><image href="/assets/f1-2025/front.webp" x="34" y="50" width="292" height="165" preserveAspectRatio="xMidYMax meet"/>`,
+    rear: `<line x1="10" y1="215" x2="350" y2="215" class="g"/><image href="/assets/f1-2025/rear.webp" x="35" y="50" width="290" height="165" preserveAspectRatio="xMidYMax meet"/>`,
   },
   hypercar: {
     side: `<line x1="10" y1="215" x2="630" y2="215" class="g"/>
@@ -46,11 +38,12 @@ const SHAPES = {
 // [view, knob, label box x,y, anchor x,y, label override key]
 const CALLOUTS = {
   f1: [
-    ['side', 'aero', 8, 8, 60, 190, 'frontWing'], ['side', 'springs', 150, 8, 200, 152], ['side', 'dampers', 292, 8, 214, 158], ['side', 'aero', 470, 8, 570, 66, 'rearWing'],
-    ['side', 'brakeCooling', 40, 236, 150, 175], ['side', 'rideHeight', 250, 236, 330, 207], ['side', 'diff', 460, 236, 500, 170],
-    ['front', 'camber', 8, 8, 62, 140, 'tyreF'], ['front', 'rollBalance', 200, 8, 180, 136], ['front', 'aero', 120, 236, 180, 203, 'frontWing'],
-    ['rear', 'aero', 8, 8, 120, 68, 'rearWing'], ['rear', 'camber', 222, 8, 298, 140, 'tyreR'], ['rear', 'diff', 8, 236, 180, 168], ['rear', 'rideHeight', 222, 236, 180, 202, 'diffuser'],
+    ['side', 'aero', 8, 8, 34, 190, 'frontWing'], ['side', 'springs', 150, 8, 171, 143], ['side', 'dampers', 292, 8, 215, 136], ['side', 'aero', 470, 8, 598, 106, 'rearWing'],
+    ['side', 'brakeCooling', 40, 236, 140, 164], ['side', 'rideHeight', 250, 236, 326, 206], ['side', 'diff', 460, 236, 540, 171],
+    ['front', 'camber', 8, 8, 71, 150, 'tyreF'], ['front', 'rollBalance', 200, 8, 180, 128], ['front', 'aero', 120, 236, 180, 190, 'frontWing'],
+    ['rear', 'aero', 8, 8, 120, 70, 'rearWing'], ['rear', 'camber', 222, 8, 289, 150, 'tyreR'], ['rear', 'diff', 8, 236, 180, 152], ['rear', 'rideHeight', 222, 236, 180, 186, 'diffuser'],
   ],
+  'f1-2025': [],
   hypercar: [
     ['side', 'rideHeight', 8, 8, 40, 196, 'splitter'], ['side', 'springs', 150, 8, 200, 142], ['side', 'dampers', 292, 8, 214, 150], ['side', 'aero', 470, 8, 574, 74, 'rearWing'],
     ['side', 'brakeCooling', 40, 236, 150, 178], ['side', 'rideHeight', 250, 236, 330, 208], ['side', 'diff', 460, 236, 500, 176],
@@ -73,8 +66,8 @@ export const drawingCss = `.su-views{display:grid;grid-template-columns:2fr 1fr 
 // value: function (knobKey, labelKey) -> short string
 export function carViews(kind, value, L) {
   const fig = view => {
-    const w = view === 'side' ? 640 : 360, items = CALLOUTS[kind].filter(c => c[0] === view);
-    const marks = items.map(([, k, bx, by, ax, ay, lk]) => {
+    const w = view === 'side' ? 640 : 360, items = (CALLOUTS[kind] || []).filter(c => c[0] === view);
+    const marks = (items || []).map(([, k, bx, by, ax, ay, lk]) => {
       const bw = 120, bh = 40, cx = Math.min(Math.max(ax, bx), bx + bw), cy = by < 100 ? by + bh : by;
       const v = value(k, lk); if (v == null) return '';
       return `<line class="cl" x1="${cx}" y1="${cy}" x2="${ax}" y2="${ay}"/><circle class="cd" cx="${ax}" cy="${ay}" r="4"/>
