@@ -7,14 +7,14 @@ import {lapsimAllTracks as T} from '../../worker/lapsim/tracks.js';
 import {lapsimTrackView} from '../../worker/lapsim/track-view-data.js';
 
 const raw = JSON.parse(readFileSync(new URL('./data/learn/f1-zones-raw.json', import.meta.url), 'utf8'));
-const POS = String.raw`(?:(\d+)\s?m\s+(before|after)\s+(?:T|Turn\s?)(\d+)|(Entry|Mid|Exit|Start of|End of)[- ]?(?:T|Turn\s?)(\d+))`;
+const POS = String.raw`(?:(\d+)\s?m\s+(before|after)\s+(?:(?:T|Turn\s?)(\d+)|(?:the\s)?(finish|control|start) line)|(Entry|Mid|Exit|Start of|End of)[- ]?(?:T|Turn\s?)(\d+))`;
 const posRe = new RegExp(POS, 'i');
 const cornersOf = id => (T[id].corners?.length ? T[id].corners : lapsimTrackView[id]?.corners) || [];
 function at(id, txt) {
   const m = posRe.exec(txt || ''); if (!m) return null;
-  const C = cornersOf(id), L = T[id].length, turn = Number(m[3] || m[5]);
-  const c = C.find(k => k.number === turn && !k.letter) || C.find(k => k.number === turn); if (!c) return null;
-  const d = m[1] ? Number(m[1]) * (m[2].toLowerCase() === 'before' ? -1 : 1) : /entry|start/i.test(m[4]) ? -40 : /exit|end/i.test(m[4]) ? 40 : 0;
+  const C = cornersOf(id), L = T[id].length, turn = Number(m[3] || m[6]);
+  const c = m[4] ? {s: 0} : C.find(k => k.number === turn && !k.letter) || C.find(k => k.number === turn); if (!c) return null; // the lap starts at the line
+  const d = m[1] ? Number(m[1]) * (m[2].toLowerCase() === 'before' ? -1 : 1) : /entry|start/i.test(m[5]) ? -40 : /exit|end/i.test(m[5]) ? 40 : 0;
   return ((c.s + d) % L + L) % L;
 }
 // end of a zone: braking for the next numbered turn after the start (at least 150 m on)
@@ -28,10 +28,11 @@ for (const e of raw.events) {
   const text = e.docs.flatMap(d => d.lines.map(l => l.text)).join('\n'), doc = e.docs.find(d => d.lines.length) || e.docs[0];
   if (e.year >= 2026) {
     const zones = [], marks = [];
-    for (const m of text.matchAll(new RegExp(POS + String.raw`\s*-\s*ZONE\s*A(\d+)`, 'gi'))) { const s = at(id, m[0]); if (s != null && !zones.some(z => z.n === Number(m[6]))) zones.push({n: Number(m[6]), from: Math.round(s), to: Math.round(zoneEnd(id, s))}); }
-    const det = new RegExp('DETECTION\\s*-\\s*' + POS, 'i').exec(text), act = new RegExp('ACTIVATION\\s*-\\s*' + POS, 'i').exec(text);
-    if (det) { const s = at(id, det[0].replace(/^DETECTION\s*-\s*/i, '')); if (s != null) marks.push({s: Math.round(s), kind: 'det', label: 'OT D'}); }
-    if (act) { const s = at(id, act[0].replace(/^ACTIVATION\s*-\s*/i, '')); if (s != null) marks.push({s: Math.round(s), kind: 'act', label: 'OT A'}); }
+    for (const ln of text.split('\n')) { const m = /-\s*-?\s*ZONE\s*A(\d+)/i.exec(ln); if (!m) continue; const before = [...ln.slice(0, m.index).matchAll(new RegExp(POS, 'gi'))].pop(); if (!before) continue;
+      const s = at(id, before[0]), n = Number(m[1]); if (s != null && !zones.some(z => z.n === n)) zones.push({n, from: Math.round(s), to: Math.round(zoneEnd(id, s))}); }
+    // overtake lines: "DETECTION - Entry T11", "ACTIVATION - T11" (a bare turn = the turn itself)
+    const ot = (word, kind, label) => { const m = new RegExp(word + String.raw`\s*-\s*(` + POS + String.raw`|T(\d+))`, 'i').exec(text); if (!m) return; const s = m[8] ? at(id, '0m after T' + m[8]) : at(id, m[1]); if (s != null) marks.push({s: Math.round(s), kind, label}); };
+    ot('DETECTION', 'det', 'OT D'); ot('ACTIVATION', 'act', 'OT A');
     if (zones.length) (out[id] ||= {})[String(e.year)] = {kind: 'sm', year: e.year, zones: zones.sort((a, b) => a.n - b.n), marks, doc: doc?.title || '', url: doc?.url || ''};
   } else {
     const zones = [], marks = [];

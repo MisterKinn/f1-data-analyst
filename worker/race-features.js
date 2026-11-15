@@ -249,7 +249,8 @@ export function raceFeaturesClient(dictionary,translateText,weekBounds,sessionSt
  const select=document.querySelector('#language');
  if(select){select.value=lang;select.addEventListener('change',()=>{document.cookie='kongboda_lang='+select.value+'; Path=/; Max-Age=31536000; SameSite=Lax'+(location.protocol==='https:'?'; Secure':'');location.reload();});}
  // Translate only explicitly selected UI messages. API records and user content are never walked or rewritten.
- const root=document.querySelector('[data-race-calendar]');if(!root)return;
+ // every calendar on the page (home: this week, and the series picked at the bottom; owner 2026-11-15)
+ for(const root of document.querySelectorAll('[data-race-calendar]'))(function(root){
  const zone=Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC',locale=lang==='en'?'en-GB':'ko-KR';
  const status=root.querySelector('[data-race-status]'),cards=root.querySelector('[data-race-cards]');
  const node=(tag,text,cls)=>{const el=document.createElement(tag);if(text!==undefined)el.textContent=text;if(cls)el.className=cls;return el;};
@@ -479,5 +480,7 @@ export function raceFeaturesClient(dictionary,translateText,weekBounds,sessionSt
  retry.addEventListener('click',()=>{retry.remove();status.textContent=t('일정 불러오는 중…','Loading schedule…');loadCalendar();},{once:true});
  status.append(document.createTextNode(' '),retry);
  });}loadCalendar();
+
+ })(root);
 }
 

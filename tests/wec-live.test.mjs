@@ -25,7 +25,7 @@ test('WEC discovery uses existing authenticated collector and status is a separa
 test('MCP requires existing visitor authentication for WEC discovery',async()=>{
  const req=new Request('https://test/mcp',{method:'POST',body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'wec_live_discover',arguments:{event:'Monza'}}})});
  const blocked=await worker.fetch(req,{});assert.equal(blocked.status,200);const challenge=await blocked.json();assert.equal(challenge.result.isError,true);assert.ok(challenge.result._meta['mcp/www_authenticate']);
- const html=await (await worker.fetch(new Request('https://test/championships/wec'),{})).text();
+ const html=await (await worker.fetch(new Request('https://test/?series=wec'),{})).text();
  assert.doesNotMatch(html,/세션·타이밍 링크 찾기/);assert.match(html,/챔피언십 포인트/);
 });
 test('WEC discovery is routed through MCP and rejects unexpected parameters',async()=>{

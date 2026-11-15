@@ -23,7 +23,7 @@ test('English pages preserve URLs and expose the English mark; home calendar fol
  assert.match(html,/<html lang="en">/);assert.match(html,/brand-mark-en.svg/);
  assert.ok(html.indexOf('<section class="race-section" data-race-calendar="week"')>html.indexOf('class="hero"'));
  assert.ok(html.indexOf('<section class="race-section" data-race-calendar="week"')>html.indexOf('id="championships"'));
- const champ=await websiteRoute(new Request('https://test/championships/f1')).text();
+ const champ=await websiteRoute(new Request('https://test/?series=f1')).text();
  assert.ok(champ.indexOf('<section class="race-section" data-race-calendar="f1"')<champ.indexOf('data-championship="f1"'));
  assert.equal(translateHtml('<a href="/guide">이용 방법</a>','en'),'<a href="/guide">How to use</a>');
  for(const path of ['/assets/website.js','/assets/race-features.js'])new Function(await websiteRoute(new Request('https://test'+path)).text());

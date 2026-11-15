@@ -38,14 +38,14 @@ test('WEC totals deduplicate analysis rows, count visits once and withhold incom
  const totals=wecPitTotals(records,[{number:'007',laps:4},{number:'7',laps:2},{number:'8',laps:3}]);
  assert.deepEqual(totals.get('007'),{pit_stops:1,pit_time_seconds:87.059});assert.deepEqual(totals.get('7'),{pit_stops:1,pit_time_seconds:null});assert.equal(totals.has('8'),false);
 });
-test('race panels sit between calendar and championship points on F1 and WEC only; scripts parse in both languages',async()=>{
+test('race panels sit between calendar and championship points on F1 and WEC only (home series section, owner 2026-11-15); scripts parse in both languages',async()=>{
  for(const series of ['f1','wec'])for(const lang of ['en','ko']){
-  const html=await websiteRoute(new Request('https://test/championships/'+series,{headers:{cookie:'kongboda_lang='+lang}})).text();
+  const html=await websiteRoute(new Request('https://test/?series='+series,{headers:{cookie:'kongboda_lang='+lang}})).text();
   assert.ok(html.indexOf('data-race-results="'+series+'"')>html.indexOf('data-race-calendar="'+series+'"'));
   assert.ok(html.indexOf('data-race-results="'+series+'"')<html.indexOf('data-championship="'+series+'"'));
   if(lang==='en')assert.match(html,/Session results/);
  }
- assert.doesNotMatch(await websiteRoute(new Request('https://test/championships/formula-e')).text(),/data-race-results=/);
+ assert.doesNotMatch(await websiteRoute(new Request('https://test/?series=formula-e')).text(),/data-race-results=/);
  new Function(await websiteRoute(new Request('https://test/assets/website.js')).text());
 });
 test('race results rejects foreign sources, invalid seasons, arbitrary classes and methods before fetching',async()=>{
