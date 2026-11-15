@@ -43,7 +43,7 @@ const prodGrip = (simId, group, season) => { const s = WEC[CAR[group]]; return [
 // Source tables (scripts/sim/data/learn): the Al Kamel CSV archive (IMSA, WEC, ELMS, Asian LMS), the Al Kamel WEC lap rows of the
 // all-laps run (WEC events the archive lacks), and Timing71 GT3 rows (SRO GT World Challenge in every region, IGTC, DTM, Nürburgring,
 // Macau). Official Al Kamel rows win: Timing71 rows of IMSA, WEC, ELMS and Asian LMS are not used.
-export const SOURCES = ['endurance-cars.csv.gz', 'wec-alkamel-cars.csv.gz', 't71-gt3-cars.csv.gz', 'sro-gt3-cars.csv.gz'].map(f => 'scripts/sim/data/learn/' + f);
+export const SOURCES = ['endurance-cars.csv.gz', 'wec-alkamel-cars.csv.gz', 't71-gt3-cars.csv.gz', 'sro-gt3-cars.csv.gz', 'sro-pdf-cars.csv.gz'].map(f => 'scripts/sim/data/learn/' + f);
 // GT3 BoP body: who sets the BoP and how power is controlled (physics rules 4.2). SRO GT3 has no torque sensor.
 const ACO = /^(wec|elms|alms)$/, SRO = /^(gtwc|igtc|nur|macau|britishgt)$|gtworldch|gt-world-challenge|24-hours-of-spa|intercontinental|suzuka-1000km|bathurst-12/;
 export const bodyOf = s => s === 'imsa' ? 'imsa' : ACO.test(s) ? 'aco' : s === 'dtm' ? 'dtm' : SRO.test(s) ? 'sro' : null;
@@ -56,6 +56,8 @@ export function layoutOf({name, lengthKm, season, lap, group, feed, event}) {
   const v = resolveTrack({name}); if (!v.venue) return v;
   // Nürburgring: a Nordschleife lap is the 24 Hours layout only in a 24 Hours event; NLS races use a shorter layout we do not have
   if (v.venue === 'nurburgring' && lap > 400 && !/24/.test(event || '')) return {venue: v.venue, layout: null, sim: null, how: 'NLS layout (no geometry)'};
+  // the event name states the short layout (DTM "Nürburgring short NGK" = the 3.629 km sprint layout)
+  if (v.venue === 'nurburgring' && /short|sprint|kurz/i.test(event || name || '')) { const l = registry().layouts.find(x => x.sim === 'nurburgring-sprint'); if (l) return {venue: v.venue, layout: l.id, sim: l.sim, near: null, how: 'named short layout'}; }
   const [lo, hi] = BAND[group] || BAND.gt3, kph = l => l.lengthKm / (lap / 3600);
   let L = registry().layouts.filter(l => l.venue === v.venue && kph(l) >= lo && kph(l) <= hi);
   if (!L.length) return {venue: v.venue, layout: null, sim: null, how: `no layout of ${v.venue} fits the lap time`};
@@ -63,6 +65,8 @@ export function layoutOf({name, lengthKm, season, lap, group, feed, event}) {
   const l = L.find(x => x.sim) && L.length > 1 ? L.filter(x => x.sim).sort((a, b) => Math.abs(kph(a) - 170) - Math.abs(kph(b) - 170))[0] : L.find(x => x.default) || L[0];
   return {venue: v.venue, layout: l.id, sim: l.sim || null, near: l.near || null, how: 'lap-time band'};
 }
+const PDF_VENUE = [[/spa/, 'Spa-Francorchamps'], [/nuerburg|nurburg/, 'Nürburgring'], [/suzuka/, 'Suzuka'], [/kyalami/, 'Kyalami'], [/indianapolis/i, 'Indianapolis'],
+  [/laguna/, 'Laguna Seca'], [/gulf|abu-dhabi|yas/, 'Yas Marina'], [/bathurst|panorama/, 'Bathurst']];
 export function loadRows(files = SOURCES) {
   const best = new Map(), skipped = {}, skip = why => { skipped[why] = (skipped[why] || 0) + 1; };
   const split = l => { const o = []; let f = '', q = false; for (const c of l) { if (c === '"') q = !q; else if (c === ',' && !q) { o.push(f); f = ''; } else f += c; } o.push(f); return o; };
@@ -71,9 +75,10 @@ export function loadRows(files = SOURCES) {
   const records = new Map(), keep = (k, o) => { const p = records.get(k); if (!p || o.real < p.real) records.set(k, o); };
   const archive = new Set(), pending = [];
   for (const file of [].concat(files)) {
-    const src = /t71/.test(file) ? 't71' : /alkamel/.test(file) ? 'alkamel' : /sro-/.test(file) ? 'sro' : 'archive';
+    const src = /t71/.test(file) ? 't71' : /alkamel/.test(file) ? 'alkamel' : /sro-/.test(file) ? 'sro' : 'archive'; // sro-pdf (IGTC) is SRO too
     const [head, ...lines] = (file.endsWith('.gz') ? gunzipSync(readFileSync(file)).toString() : readFileSync(file, 'utf8')).trim().split('\n'), cols = head.split(',');
     for (const l of lines) { const a = split(l), r = Object.fromEntries(cols.map((c, i) => [c, a[i]])); r.src = src;
+      if (/sro-pdf/.test(file)) r.venue = PDF_VENUE.find(([re]) => re.test(r.venue))?.[1] || r.venue.replace(/-/g, ' '); // IGTC PDF meetings are named by slug
       if (src === 't71' && (ACO.test(r.feed) || r.feed === 'imsa' || !bodyOf(r.feed))) continue; // official Al Kamel rows cover these; other GT series have their own BoP
       if (!['Q', 'P', 'R'].includes(r.type)) continue;
       // SRO tables: the GT3 classes name the car without 'GT3'
@@ -98,7 +103,9 @@ export function loadRows(files = SOURCES) {
     if (r.src === 'alkamel' && archive.has(r.season + '|' + tr.venue)) continue; // the archive already holds this WEC event (same season and venue)
     const dry = !(+r.rainShare > 0.02), o = {series: r.series, season: r.season, event: r.event, layout: tr.layout, group, model: r.model.key, body: b, entry: r.entry, real: r.best, type: r.type, session: r.session, w};
     if (dry && tr.sim) for (const k of [`${tr.layout}|m|${o.model}|${b}`, `${tr.layout}|c|${group}`, `${tr.layout}|c|${group}|${b}`, `${tr.layout}|c|${group}|s:${r.series}`]) { keep(k, o); if (r.type === 'R') keep(k + '|race', o); }
-    // DTM: records only (its rows disagree across seasons). SRO official tables (no weather): fitted only for a layout and season that no
+    // DTM: records only. Tried 2026-11-15 with named layouts (short NGK = sprint): Timing71 DTM rows carry no weather or rain flag, and
+    // single wet sessions gave 7-11 % errors (GT3 event-hidden 1.12 -> 1.40 %), so they stay out of the fit.
+    // SRO official tables (no weather): fitted only for a layout and season that no
     // Timing71 or Al Kamel row covers, on layouts those sources barely have (owner 2026-11-15: Misano had one event, so its error could not use a track term)
     if (r.type !== 'Q' || b === 'dtm' || r.src === 'sro' && (thick.has(tr.layout) || covered.has(tr.layout + '|' + r.season) || !sroSure(tr, r.season))) continue;
     const why = !dry ? 'wet qualifying' : !tr.layout ? 'layout not resolved: ' + (tr.how || '').slice(0, 40) : !(tr.sim || tr.near) ? 'no simulator geometry: ' + tr.layout : null; // a ⚠️ track is learned too: its layout term absorbs the geometry error and the held-out error decides the mark

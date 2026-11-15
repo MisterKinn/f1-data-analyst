@@ -230,6 +230,7 @@ Rows that could not be used, by reason: no simulator geometry: sebring-6019: 301
 | wec-data | https://github.com/Hanspeter007/wec-data | Schemas and 2026 examples of classifications, entry lists, line-ups | Read: schema only, no lap data |
 | 51GT3 | https://51gt3.com/en/track | GT3 tracks and lap records | Not reachable from the shell; probe in Actions |
 | SRO official results | https://www.gt-world-challenge-europe.com/results · https://www.gt-world-challenge-america.com/results · https://www.gt-world-challenge-asia.com/results · https://www.britishgt.com/results · https://www.intercontinentalgtchallenge.com/results | Every session table (position, car, best lap) of every meeting | Learned 2013–2026 (`fetch-sro.mjs` in Actions → `build-sro.mjs` → `sro-gt3-cars.csv.gz`, 54,134 rows): records only. IGTC gives PDFs (not read yet); GTWC Australia pages have no session tables |
+| SRO PDF results | https://www.intercontinentalgtchallenge.com/results · https://www.gt-world-challenge-australia.com/results | Classification PDFs (IGTC 2019-2026: Spa 24h, Nürburgring 24h, Suzuka, Kyalami, Indianapolis 8h, Gulf 12h; GTWC Australia 2023-2026) | `fetch-sro-pdf.mjs` in Actions (pdftotext) → `sro-pdf-cars.csv.gz`, 6,394 rows (car, entry number, best lap; no names). Records everywhere; fitted only on thin layouts (Phillip Island learned: 3 events, 1.9 %) |
 | Timing71 core | https://github.com/timing71/livetiming-core | How Timing71 services record sessions (format of the replay archive) | Read |
 | Timing71 replay archive | https://archive.timing71.org/ | 15,808 replays, all series | Rows built on 2026-11-11 (Actions run 42927630531, artifacts until 2026-12-11); 46 % had no track id: re-map them with `resolveTrack()` |
 | TracingInsights | https://github.com/TracingInsights | F1 laps and telemetry 2018–2026 | Used by the F1 pipeline and the F1-history tracks |
@@ -244,7 +245,10 @@ Rows that could not be used, by reason: no simulator geometry: sebring-6019: 301
 - GT3 ELMS and Asian LMS (2026-11-15): back to 1.05 % and 0.70 % event-hidden once SRO laps were limited to certain layouts.
 - SRO official laps (no weather) are fitted only on thin layouts (fewer than 3 timed GT3 seasons), only for seasons no timed source
   covers, only when the layout is certain (not chosen by lap time among several built layouts; inside the layout's known seasons).
-  Misano: 1 → 10 events, error 3.8 % → 0.9 %. GT3 overall 1.12 % (252 events).
+  Misano: 1 → 10 events, error 3.8 % → 0.9 %. GT3 overall 1.16 % (262 events, with the IGTC and GTWC Australia PDFs).
+- DTM stays records only: with named layouts (short NGK = sprint) its Timing71 rows still carry no weather or rain flag, and single wet
+  sessions gave 7-11 % errors (GT3 1.12 → 1.40 %).
+- Not read: NLS (no geometry for its layout), Macau (street circuit not built), IGTC Bathurst PDFs (another format).
 - SRO official tables carry no weather, so they are records only (shown with the event weather unknown).
 - F1 per-team cars: unchanged in this step (F1 is shown per regulation and its production calibration was not touched).
 - Practice and race laps are in the car table (type P and R) but only qualifying is fitted: a fuel and tyre-age term must be declared first.
