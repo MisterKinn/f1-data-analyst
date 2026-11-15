@@ -439,7 +439,8 @@ two sections after this one.
    the base and stays tested. F1: when a line is learned or estimated, do it **per driver** (owner 2026-11-15); public positions are
    snapped, so the driver's line is estimated from that driver's speed trace and labelled so (`scripts/sim/driver-lines.mjs`,
    `docs/lapsim-driver-lines.md`). Every other series is **per driver** too (owner 2026-11-15), from the data that exists (endurance:
-   Al Kamel sector times placed with tobi/track-atlas sector positions); the car's own line (each car model, its learned pace
+   Al Kamel sector times; Formula E and SRO GT3 too; sector positions from tobi/track-atlas when they fit the layout, else estimated
+   from the field's sector times and labelled so); the car's own line (each car model, its learned pace
    included) stays the default. Fit the field line first, then the driver's difference, and test on a lap the fit did not see.
    **Driver names differ between series and sources**: always map them to one person with `scripts/sim/learn/drivers.mjs`
    (accents, case, word order, initials, short first names; an uncertain match stays separate and is reported).

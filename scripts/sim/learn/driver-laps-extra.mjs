@@ -10,6 +10,7 @@ import {join} from 'node:path';
 import {officialArchive, officialSource, textOf} from '../../../worker/official.js';
 import {parseCsv, secs, sessionType} from './build-endurance.mjs';
 import {modelOf} from './models.mjs';
+import {resolveTrack} from './track-registry.mjs';
 
 const OUT = process.argv[2] || '.cache/learn/extra-laps.ndjson', lines = [], log = [];
 const num = x => { const v = Number(String(x ?? '').trim().replace(',', '.')); return Number.isFinite(v) ? v : null; };
@@ -35,7 +36,7 @@ for (const s of (await list()).catalogs.filter(c => +(c.name.match(/Season (\d+)
 // SRO GT3 from Timing71 lap rows
 const DIR = process.env.T71_ROWS || '.cache/t71-rows', HARD = ['no_time', 'pit_in', 'pit_out', 'not_green', 'deleted', 'wet_lap', 'wet_session', 'sector_sum', 'inaccurate', 'sim'];
 const files = d => existsSync(d) ? readdirSync(d).flatMap(f => { const p = join(d, f); return statSync(p).isDirectory() ? files(p) : /\.ndjson(\.gz)?$/.test(f) ? [p] : []; }) : [];
-let t71 = 0, noDriver = 0, keys = null;
+let t71 = 0, noDriver = 0, keys = null; const drop = {};
 for (const f of files(DIR)) {
   const text = f.endsWith('.gz') ? gunzipSync(readFileSync(f)).toString() : readFileSync(f, 'utf8');
   for (const line of text.split('\n')) {
@@ -44,9 +45,12 @@ for (const f of files(DIR)) {
     keys ||= Object.keys(r);
     const driver = r.driver ?? r.driverName ?? r.driver_name ?? null; if (!driver) { noDriver++; continue; }
     if ((r.q || []).some(q => HARD.includes(q)) || !/q/i.test(String(r.sessionType || r.session || ''))) continue;
-    lines.push({series: r.series, season: r.season, venue: r.venue || r.track || r.circuit, lenKm: r.lenKm || null, bucket: 'gt3', driver, manufacturer: modelOf(r.carModel, r.season, 'GT3')?.base?.split(' ')[0] || null, team: r.team || null, t: r.time, s: [r.s1, r.s2, r.s3]}); t71++;
+    const why = [r.s1, r.s2, r.s3].some(x => !(x > 0)) ? 'no sectors' : Math.abs(r.s1 + r.s2 + r.s3 - r.time) > 0.1 ? 'sectors do not add up' : !resolveTrack({name: [r.track, r.layout].filter(Boolean).join(' '), season: r.season}).sim ? 'track ' + r.track + ' / ' + r.layout : null;
+    if (why) { drop[why] = (drop[why] || 0) + 1; continue; }
+    lines.push({series: r.series, season: r.season, venue: [r.track, r.layout].filter(Boolean).join(' '), lenKm: r.lenKm || null, bucket: 'gt3', driver, manufacturer: modelOf(r.carModel, r.season, 'GT3')?.base?.split(' ')[0] || null, team: r.team || null, t: r.time, s: [r.s1, r.s2, r.s3]}); t71++;
   }
 }
+console.log('Timing71 dropped', JSON.stringify(Object.entries(drop).sort((a, b) => b[1] - a[1]).slice(0, 25)));
 console.log('Timing71 GT3 qualifying laps with a driver', t71, '· rows without a driver', noDriver, '· row fields', JSON.stringify(keys));
 writeFileSync(OUT, lines.map(x => JSON.stringify(x)).join('\n') + '\n');
 console.log('extra laps', lines.length, 'errors', log.length, log.slice(0, 5));
