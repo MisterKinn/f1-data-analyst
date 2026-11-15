@@ -62,6 +62,8 @@ export function layoutOf({name, lengthKm, season, lap, group, feed, event}) {
   let L = registry().layouts.filter(l => l.venue === v.venue && kph(l) >= lo && kph(l) <= hi);
   if (!L.length) return {venue: v.venue, layout: null, sim: null, how: `no layout of ${v.venue} fits the lap time`};
   const inS = L.filter(l => l.seasons?.some(([a, b]) => season >= a && season <= b)); if (inS.length) L = inS;
+  // a sports-car lap with no length: prefer layouts sports-car timing has stated over F1-only layouts (Paul Ricard GT laps fell on the F1 line)
+  const sc = L.filter(l => (l.sources || []).some(x => !x.startsWith('f1db'))); if (sc.length) L = sc;
   const l = L.find(x => x.sim) && L.length > 1 ? L.filter(x => x.sim).sort((a, b) => Math.abs(kph(a) - 170) - Math.abs(kph(b) - 170))[0] : L.find(x => x.default) || L[0];
   return {venue: v.venue, layout: l.id, sim: l.sim || null, near: l.near || null, how: 'lap-time band'};
 }
