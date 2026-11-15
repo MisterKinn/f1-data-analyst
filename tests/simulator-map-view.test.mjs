@@ -28,3 +28,10 @@ test('DRS zones and Straight Mode zones never mix (owner 2026-11-15)', async () 
     for (const k of z.marks || []) assert.match(k.label, sm ? /^OT [DA]$/ : /^D\d$/, `${id} ${slot} mark ${k.label}`);
   }
 });
+
+test('the 2026 Bahrain GP ran at Sepang, so Sakhir has no 2026 zones', async () => {
+  const m = await import('../worker/lapsim/f1-zones-data.js');
+  const {tracks} = Object.values(m).find(v => v && v.tracks);
+  assert.equal(tracks.sakhir['2026'], undefined);
+  assert.equal(tracks.sakhir['2025'].kind, 'drs');
+});
