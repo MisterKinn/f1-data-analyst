@@ -12,6 +12,7 @@ import {lapsimExtraTracks} from './tracks-data.js';
 import {lapsimLearned} from './learned-data.js';
 import {lapsimFe} from './fe-data.js';
 import {FE_GENS} from './fe-cars.js';
+import {withPowertrain} from './powertrains.js';
 import {lapsimRaceRecords} from './race-records-data.js';
 import {lapsimTrackChanges} from './track-changes-data.js';
 import {lapsimChangeEffects} from './change-effects-data.js';
@@ -88,7 +89,7 @@ export function carsFor(id) {
     out[k].fix = {lap: r.lap, weather: r.weather || {}, ref: k, session: `${r.series.toUpperCase()} ${r.year} ${r.event}${r.type === 'Q' ? '' : r.type === 'R' ? ' (race)' : ' (practice/test)'}`, year: r.year, model: r.model, entry: r.entry, type: r.type};
   // Extra circuit: a car that has a real qualifying lap here reproduces it (lap-level correction, as for the series cars)
   for (const [k, r] of Object.entries(lapsimExtraTracks[id]?.realLaps || {})) if (out[k] && !out[k].fix) out[k].fix = {lap: r.lap, weather: r.weather || {}, ref: k, session: r.event};
-  for (const c of Object.values(out)) c.unc = uncertainty(c, id);
+  for (const c of Object.values(out)) { c.car = withPowertrain(c.car, c); c.unc = uncertainty(c, id); } // engine curve and gears (powertrains.js)
   return out;
 }
 
