@@ -2,7 +2,7 @@
 // angle. Self-contained (the /simulation page sends its source to the browser). Per-class values are engineering estimates; their
 // basis and the Wolfram checks are in docs/lapsim-physics-rules.md, "Telemetry channels".
 // track: kernel track (ds, kappa, mu), res: simulateLap result (v, time, limit), cls: 'f1' | 'hyper' | 'gt3' | 'fe', seed: any string.
-export function lapChannels(track, car, env, res, {cls = 'f1', seed = ''} = {}) {
+export function lapChannels(track, car, env, res, {cls = 'f1', seed = '', surface = null, wet = false} = {}) {
   const G = 9.81, v = res.v, n = v.length, ds = track.ds, rho = env.rho ?? 1.2, m = car.mass, Rt = car.tyreRadius ?? 0.34;
   // bal: front share of the brake force; mu: pad friction; rf, rr: effective disc radius (m); af, ar: piston area on one side of the
   // caliper (mm²; the two pads each press with p·A); ratio: steering ratio; kus: understeer gradient (deg/g at the road wheels)
@@ -28,18 +28,18 @@ export function lapChannels(track, car, env, res, {cls = 'f1', seed = ''} = {}) 
   // gear and rpm: the gear with the most engine power at this speed (same rule as kernel powertrain()); a gear within 1 % of the
   // best is kept, so the trace does not hunt on the flat top of the curve
   const e = car.engine, g = car.gears;
-  let gear = null, rpm = null, shifts = [];
+  let gear = null, rpm = null, shifts = [], powerW = null;
   if (e?.rpm?.length && g?.length) {
-    const r = e.rpm, P = e.kW || (e.Nm ? e.Nm.map((T, k) => T * r[k]) : e.frac), top = e.rpmMax ?? r.at(-1), k = (car.finalDrive ?? 1) * 60 / (2 * Math.PI * Rt);
+    const r = e.rpm, P = e.kW ? e.kW.map(x => x * 1e3) : e.Nm ? e.Nm.map((T, k) => T * r[k] * 2 * Math.PI / 60) : e.frac.map(f => f * car.pIce), top = e.rpmMax ?? r.at(-1), k = (car.finalDrive ?? 1) * 60 / (2 * Math.PI * Rt);
     const at = x => { if (x <= r[0]) return P[0] * x / r[0]; for (let a = 1; a < r.length; a++) if (x <= r[a]) return P[a - 1] + (P[a] - P[a - 1]) * (x - r[a - 1]) / (r[a] - r[a - 1]); return P.at(-1); };
-    gear = new Array(n); rpm = new Array(n);
+    gear = new Array(n); rpm = new Array(n); powerW = new Array(n);
     let cur = 0;
     for (let i = 0; i < n; i++) {
       let best = 0, bp = -1;
       for (let a = 0; a < g.length; a++) { const x = v[i] * g[a] * k; if (x > top * 1.0001) continue; const p = at(x); if (p > bp * 1.01) { bp = p; best = a; } }
       const xc = v[i] * g[cur] * k;
       if (i === 0 || xc > top * 1.0001 || at(xc) < bp * 0.99) cur = best;
-      gear[i] = cur + 1; rpm[i] = Math.round(Math.min(top, v[i] * g[cur] * k));
+      gear[i] = cur + 1; rpm[i] = Math.round(Math.min(top, v[i] * g[cur] * k)); powerW[i] = Math.min(car.pIce, at(v[i] * g[cur] * k));
       if (i && gear[i] !== gear[i - 1]) shifts.push({i, from: gear[i - 1], to: gear[i]});
     }
   }
@@ -57,10 +57,84 @@ export function lapChannels(track, car, env, res, {cls = 'f1', seed = ''} = {}) 
   }
   // grip use scaled so the 98th percentile of the lap is the limit (the point-mass capacity above ignores tyre load sensitivity)
   const ref = use.slice().sort((a, b) => a - b)[Math.floor(n * 0.98)] || 1;
+  // where grip is easy to lose (owner 2026-11-15), 0–1 per point: weight lost over a crest (v² × vertical curvature from the track
+  // grade), braking downhill, downforce lost to a tailwind, lower surface grip (FIA changes switched on), fresh asphalt or patched
+  // bumps named in the latest FIA notes (surface), a track away from the tyre's temperature window, rain. The driver's corrections
+  // grow with it (steering, brake ripple and lock-up relief, throttle ripple and lifts).
+  const gr = track.grade, hd = track.heading, ws = env.windSpeed || 0, wTo = ((env.windFromDeg || 0) + 180) * Math.PI / 180;
+  const risk = new Array(n);
+  for (let i = 0; i < n; i++) {
+    let kv = 0; if (gr) { for (let o = -4; o <= 4; o++) kv += (gr[(i + o + 1 + n) % n] - gr[(i + o - 1 + n) % n]) / (2 * ds); kv /= 9; }
+    const crest = Math.max(0, -v[i] * v[i] * kv / G), down = gr && v[(i + 1) % n] < v[i] ? Math.max(0, -Math.sin(gr[i])) * 5 : 0;
+    const tail = hd && ws ? ws * Math.sin(wTo) * Math.cos(hd[i]) + ws * Math.cos(wTo) * Math.sin(hd[i]) : 0;
+    const aero = 0.5 * rho * car.clA * v[i] * v[i] / (m * G + 0.5 * rho * car.clA * v[i] * v[i]), tailLoss = aero * (1 - (Math.max(0, v[i] - tail) / Math.max(v[i], 1)) ** 2);
+    risk[i] = Math.min(1, 0.6 * crest + 0.3 * down + 3 * tailLoss + 2 * Math.max(0, 1 - (track.mu ? track.mu[i] : 1)) + (surface ? surface[i] || 0 : 0) + 3 * Math.max(0, 1 - (env.grip ?? 1)) + (wet ? 0.5 : 0));
+  }
   const steerDeg = mean.map((d, i) => {
-    const u = Math.min(1, use[i] / ref), amp = 1.2 * u * u * u * (1 + 25 / Math.max(v[i], 10)); // deg at the wheel: grows near the limit and at low speed
+    const u = Math.min(1, use[i] / ref), amp = 1.2 * u * u * u * (1 + 25 / Math.max(v[i], 10)) * (1 + 1.5 * risk[i]); // deg at the wheel: grows near the limit, at low speed and where grip is easy to lose
     const t = res.time[i], wob = waves.reduce((s, w) => s + w.w * Math.sin(2 * Math.PI * w.f * t + w.ph), 0);
     return +(d + amp * wob).toFixed(1);
   });
-  return {brakeBar, gear, rpm, shifts, steerDeg, steerMeanDeg: mean.map(d => +d.toFixed(1))};
+  // throttle (0–1) the lap needs: full where power-limited, none under braking, else the share of the available power (engine in
+  // its gear plus the hybrid) that the acceleration, drag and rolling resistance take
+  // above the deploy cut-off or clipping speed the battery, not the foot, limits the car: the driver stays flat out
+  const clip = Math.min(res.energy?.cutoffKph ?? Infinity, res.energy?.clipFromKph ?? Infinity) / 3.6 - 0.3;
+  const lim = res.limit || [], ersW = ers.pMax ?? ers.eMax ?? 0, eta = car.etaDrive ?? 0.95;
+  const throttle = v.map((vi, i) => {
+    if (brakeBar[i] > 0) return 0; if (lim[i] === 2 || vi >= clip) return 1; // a speed drop with no brake need (2026 clipping, lift) keeps the pedal
+    const j = (i + 1) % n, q = 0.5 * rho * vi * vi, F = m * (v[j] * v[j] - vi * vi) / (2 * ds) + q * car.cdA + (car.cRoll ?? 0.012) * (m * G + q * car.clA);
+    return Math.max(0, Math.min(1, F * vi / ((powerW ? powerW[i] : car.pIce) * eta + ersW)));
+  });
+  const ped = humanPedals(brakeBar, throttle, risk, res.time, res.lapTime ?? res.time[n - 1], String(seed) + '|pedals');
+  return {brakeBar, gear, rpm, shifts, steerDeg, steerMeanDeg: mean.map(d => +d.toFixed(1)), throttle, risk: risk.map(x => +x.toFixed(2)), ...ped};
+
+  // A human foot on the pedals (owner 2026-11-15: "the trace is too honest"), on a grid twice as fine as the lap (half a point
+  // apart, so a 0.1 s stab still has a few samples at 300 km/h). Physics gives the pressure and throttle the lap needs; the driver:
+  // brake: stabs it (90 % in 0.08 s), overshoots the peak by 4–10 % for about 0.1 s, then holds it with a 4–7 Hz ripple of 1.5–3 %
+  //   and a slower 1–2 Hz wander, sometimes eases off 10–18 % for a moment (lock-up relief), and releases with a trail-brake tail
+  //   (time constant 0.10–0.18 s) into the corner. Each zone keeps the brake impulse of the physics (same deceleration on average).
+  // throttle: squeezed on (time constant 0.10 s), snapped off (0.025 s), with a 2.5–4 Hz traction ripple while it is part-open and
+  //   sometimes a short lift on the way up; off whenever the brake is on.
+  // Seeded per track and car, so the page is stable. Values checked with Wolfram (docs/lapsim-physics-rules.md).
+  function humanPedals(pb, th, rk, time, lapT, sd) {
+    let hh = 2166136261; for (const c of sd) { hh ^= c.charCodeAt(0); hh = Math.imul(hh, 16777619); }
+    const r = () => { hh = Math.imul(hh ^ (hh >>> 15), 2246822507) ^ Math.imul(hh ^ (hh >>> 13), 3266489909); return ((hh ^= hh >>> 16) >>> 0) / 4294967296; };
+    const N = 2 * n, tAt = k => { const i = k >> 1; return k & 1 ? (time[i] + (i + 1 < n ? time[i + 1] : lapT)) / 2 : time[i]; };
+    const up = (a, k) => { const i = k >> 1; return k & 1 ? (a[i] + a[(i + 1) % n]) / 2 : a[i]; };
+    const t = Array.from({length: N}, (_, k) => tAt(k)), R = Array.from({length: N}, (_, k) => up(rk, k)), base = Array.from({length: N}, (_, k) => up(pb, k)), brake = new Array(N).fill(0);
+    const fmax = k => 0.4 / Math.max(1e-3, (t[(k + 1) % N] - t[k] + lapT) % lapT); // stay below the sample rate (no aliasing in slow corners)
+    for (let k = 0; k < N; k++) {
+      if (!(base[k] > 0.5) || base[(k - 1 + N) % N] > 0.5) continue;
+      let e = k; while (e + 1 < N && base[e + 1] > 0.5) e++;
+      const t0 = t[k], P = Math.max(...base.slice(k, e + 1)), os = 0.04 + 0.06 * r(), f1 = 4 + 3 * r(), f2 = 1 + r(), a1 = 0.015 + 0.015 * r(), ph1 = 6.28 * r(), ph2 = 6.28 * r();
+      // the riskiest point of the zone (crest, tailwind, bumps, ...) is where a lock-up is most likely: the relief goes there
+      let kr = k; for (let q = k; q <= e; q++) if (R[q] > R[kr]) kr = q;
+      const rz = R[kr], dipAt = r() < 0.25 + 0.6 * rz ? (rz > 0.15 ? t[kr] : t0 + (0.35 + 0.25 * r()) * (t[e] - t0)) : -1, dip = (0.1 + 0.08 * r()) * (1 + rz), tauOff = 0.1 + 0.08 * r();
+      let sumB = 0, sumH = 0;
+      for (let q = k; q <= e; q++) {
+        const x = t[q] - t0, rise = 1 - Math.exp(-x / 0.035), hold = Math.min(1, x / 0.15), g = x / 0.09 * Math.exp(1 - x / 0.09);
+        const rip = P * hold * (1 + 2 * R[q]) * (a1 * Math.sin(2 * Math.PI * Math.min(f1, fmax(q)) * x + ph1) + 0.012 * Math.sin(2 * Math.PI * f2 * x + ph2));
+        const d = dipAt > 0 ? dip * base[q] * Math.exp(-(((t[q] - dipAt) / 0.04) ** 2)) : 0;
+        brake[q] = Math.max(0, base[q] * rise + os * P * g + rip - d); sumB += base[q]; sumH += brake[q];
+      }
+      for (let q = k; q <= e; q++) brake[q] *= sumB / Math.max(1e-9, sumH); // same impulse as the physics
+      const pEnd = Math.max(0.06 * P, brake[e]);
+      for (let q = e + 1; q < N && t[q] - t[e] < 0.5 && !(base[q] > 0.5); q++) { const y = pEnd * Math.exp(-(t[q] - t[e]) / tauOff); if (y < 0.5) break; brake[q] = y; }
+      k = e;
+    }
+    const thr = new Array(N), fT = 2.5 + 1.5 * r(), phT = 6.28 * r();
+    let y = up(th, N - 1), lift = -1;
+    for (let k = 0; k < N; k++) {
+      const want = up(th, k), dt = Math.max(1e-3, (t[k] - t[(k - 1 + N) % N] + lapT) % lapT);
+      if (want > y && y < 0.05 && want > 0.2) { // start of a pick-up: maybe a short lift on the way up, likelier where grip is easy to lose
+        let rm = 0; for (let q = k; q < Math.min(N, k + 24); q++) rm = Math.max(rm, R[q]);
+        lift = r() < 0.2 + 0.6 * rm ? t[k] + 0.15 + 0.2 * r() : -1;
+      }
+      y += (want - y) * (1 - Math.exp(-dt / (want > y ? 0.1 : 0.025)));
+      let o = y + (y > 0.05 && y < 0.97 ? 0.04 * (1 + 2 * R[k]) * Math.sin(2 * Math.PI * Math.min(fT, fmax(k)) * t[k] + phT) * Math.min(y, 1 - y) * 4 : 0);
+      if (lift > 0 && Math.abs(t[k] - lift) < 0.06) o *= 0.85;
+      thr[k] = brake[k] > 2 ? 0 : Math.max(0, Math.min(1, o));
+    }
+    return {brakeHuman: brake.map(x => +x.toFixed(1)), throttleHuman: thr.map(x => +(x * 100).toFixed(1))};
+  }
 }
