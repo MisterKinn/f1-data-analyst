@@ -24,3 +24,11 @@ test('SetupSim lists F1 2025 as UI only: its car views and a coming-soon note, n
   assert.doesNotMatch(h, /name="(car|track)"/); assert.match(h, /준비 중/);
   assert.match(setupPage({}, 'en'), /<option value="f1-2025">F1 2025<\/option><option value="f1" selected>/);
 });
+
+test('SetupSim draws the Hypercar callouts on the real Hypercar drawing (owner 2026-11-15)', async () => {
+  const {hypercarViews} = await import('../worker/f1-car-views.js');
+  const h = setupPage({series: 'hypercar'}, 'ko');
+  for (const v of ['front', 'side', 'rear']) assert.match(h, new RegExp(`<image href="/assets/hypercar/${v}\\.webp"`));
+  for (const v of ['front', 'side', 'rear', 'top']) assert.equal(Buffer.from(hypercarViews[v], 'base64').subarray(8, 12).toString(), 'WEBP');
+  assert.doesNotMatch(h, /class="b" d="M18 196/);
+});
