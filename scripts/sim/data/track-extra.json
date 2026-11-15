@@ -431,6 +431,20 @@
    "name": "Sochi Autodrom",
    "layout": "Grand Prix 5.848 km",
    "candidate": "sochi"
+  },
+  "long-beach": {
+   "group": "owner-2026-11-15",
+   "file": "extra-tracks-2026-11-15e.json",
+   "candidate": "long-beach-long-beach",
+   "name": "Long Beach",
+   "layout": "Street circuit 3.167 km"
+  },
+  "detroit": {
+   "group": "owner-2026-11-15",
+   "file": "extra-tracks-2026-11-15e.json",
+   "candidate": "detroit-detroit-grand-prix-street-circuit",
+   "name": "Detroit",
+   "layout": "Downtown street circuit 2.650 km (2023 on)"
   }
  },
  "laps": [

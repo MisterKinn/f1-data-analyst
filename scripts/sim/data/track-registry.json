@@ -1653,7 +1653,7 @@
    "default": true
   },
   {
-   "id": "detroit-2647",
+   "id": "detroit",
    "venue": "detroit",
    "lengthKm": 2.647,
    "seasons": [
@@ -1663,9 +1663,11 @@
     ]
    ],
    "sources": [
-    "alkamel:imsa"
+    "alkamel:imsa",
+    "simulator"
    ],
-   "default": true
+   "default": true,
+   "sim": "detroit"
   },
   {
    "id": "detroit-4023",
@@ -2387,7 +2389,7 @@
    "default": true
   },
   {
-   "id": "long-beach-3167",
+   "id": "long-beach",
    "venue": "long-beach",
    "lengthKm": 3.167,
    "seasons": [
@@ -2397,9 +2399,11 @@
     ]
    ],
    "sources": [
-    "alkamel:imsa"
+    "alkamel:imsa",
+    "simulator"
    ],
-   "default": true
+   "default": true,
+   "sim": "long-beach"
   },
   {
    "id": "long-beach-3251",

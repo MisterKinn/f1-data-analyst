@@ -369,3 +369,14 @@ step (`fit-endurance.mjs`) must be rerun to use them.
 - **Other series checked** (Wikipedia circuit pages): Istanbul hosted GP2, GP3, WTCC, the Le Mans Series 1000 km (2005-06, LMP1),
   FIA GT (2005); Sochi GP2/F2, GP3/F3, WTCR, TCR and Russian series. None is a calibrated simulator class (F1, LMH, LMDh, GT3), so
   they are not used.
+
+## 11. Long Beach and Detroit (2026-11-15)
+
+Built from the OpenStreetMap circuit relations of the venues (`track-requests-2026-11-15e.json`, `fetch-osm-tracks-e.mjs`):
+Long Beach relation 18052024 "Long Beach Grand Prix Course" (one closed loop, 3,258 m, +2.9 %) and Detroit relation 17665938
+"Detroit Grand Prix" (downtown course since 2023; 2,685 m, +1.3 %, with the pit lane left out and the two ends at the Jefferson
+Avenue hairpin, 6 m apart, joined). Both follow road centre lines, so the shape is kept and scaled to the official length
+(`scaleToOfficial`). `assemble.mjs` fix: two open way ends near each other now join instead of swapping places.
+Check (unseen, no fitted value): Long Beach 10 real laps RMS 1.18 %; Detroit 8 real laps 3.67 %, so its track factor is learned
+(held-out 2.24 %). Registry layouts `long-beach-3167` and `detroit-2647` are now `long-beach` and `detroit` with geometry; their IMSA
+laps (161 and 64 rows) are waiting for the learning step. Class cars show the fastest WEC or IMSA lap there (`class-records.mjs`).
