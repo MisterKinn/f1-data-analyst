@@ -1,0 +1,2 @@
+# IMSA GTP pace per car and event, official Al Kamel IMSA results 2024-2026 (scripts/sim/learn/fetch-imsa-gtp.mjs). Green flying laps only.
+# year event car manufacturer qBest(s) raceF20(s, mean of the fastest 20 % race laps) topMed(km/h) maxGreenStint(laps)
