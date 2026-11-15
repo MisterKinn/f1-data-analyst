@@ -20,6 +20,7 @@ export const ENERGY_LIMITS = {
 };
 
 import {lapsimEnergyDocs} from './energy-docs-data.js';
+import {lapsimPuEst} from './pu-est-data.js';
 
 // Qualifying recharge limit (MJ) for `year` cars on track `id`, with where it comes from:
 // official — the event's FIA "Power Unit Information" document (published in race week);
@@ -33,6 +34,8 @@ export function energyLimit(id, year, docs = lapsimEnergyDocs) {
   if (!years.length) return null;
   const y = Math.max(...years), e = ENERGY_LIMITS[y];
   if (e.quali[id] != null) return {mj: e.quali[id], status: y === year ? 'provisional' : 'estimated', source: e.sources.at(-1)};
+  // circuits without an FIA document: the estimated Power Unit Information (scripts/sim/pu-estimate.mjs, owner 2026-11-16)
+  const est = lapsimPuEst?.tracks?.[id]; if (Number.isFinite(est?.qualiMJ)) return {mj: est.qualiMJ, status: 'estimated', source: est.document};
   return {mj: e.defaultQuali, status: 'estimated', source: null};
 }
 export const rechargeLimitMJ = (id, year) => energyLimit(id, year)?.mj ?? null;

@@ -56,3 +56,14 @@ test('C5.12 power-reduction rule removes sudden ERS-K cuts', async () => {
       if (!big && r.limit[i] !== 3 && r.limit[i] !== 0 && r.v[i] * 3.6 > 210 && P(i - 1) > 100e3) assert.ok(P(i - 1) - P(i) <= 160e3, `${id} cut of ${Math.round((P(i - 1) - P(i)) / 1e3)} kW at ${Math.round(s)} m`); }
     assert.ok(Math.abs(r.energy.deployJ - r0.energy.deployJ) < 0.5e6, id + ' energy'); }
 });
+
+// owner 2026-11-16: every circuit without an FIA Power Unit Information has an estimated one (round-4 rules), and the page shows the
+// motor DC power map with the curve the lap uses
+test('estimated PU documents and the motor DC power map', async () => {
+  const {lapsimPuEst} = await import('../worker/lapsim/pu-est-data.js'), {lapsimPuDocs} = await import('../worker/lapsim/pu-docs-data.js');
+  for (const id of ['inje', 'las-vegas', 'le-mans', 'daytona']) { const e = lapsimPuEst.tracks[id]; assert.ok(e && e.est && !lapsimPuDocs.events[id], id);
+    assert.ok(e.qualiMJ >= 5 && e.qualiMJ <= 9 && [7, 8, 8.5].includes(e.raceMJ) && e.rampKWs === (e.powerLimitedDistanceM > 3500 ? 50 : 100), id); }
+  const map = track => lapOf(track, '2026', {view: 1}).traceSvg;
+  assert.match(map('interlagos'), /ls-pu-map[\s\S]*Base – Overtake · this lap[\s\S]*Alt 1/);
+  assert.match(map('suzuka'), /Base – Standard · this lap/);
+});

@@ -5,6 +5,7 @@
 import {lapsimF1Zones} from './f1-zones-data.js';
 import {lapsimCalibration} from './calibration-data.js';
 import {lapsimPuDocs} from './pu-docs-data.js';
+import {lapsimPuEst} from './pu-est-data.js';
 
 export const ZONES_ON = ['fia', 'fia2025'].includes(lapsimCalibration?.aero), DRS_ONLY = lapsimCalibration?.aero === 'fia2025';
 const cache = new Map();
@@ -56,6 +57,6 @@ export function simulateWithOptions(K, d, tr, c, m, sim, simFit = sim) {
 }
 
 // C5.12 power-reduction rule of the event's PU document (scaled to the simulator track), else the round-4 default 100 kW/s
-export function puRampOf(d, id) { const p = lapsimPuDocs?.events?.[id], k = p?.centrelineKm ? d.kappa.length * d.ds / (p.centrelineKm * 1000) : 1, sc = z => ({...z, from: z.from * k, to: z.to * k});
+export function puRampOf(d, id) { const p = lapsimPuDocs?.events?.[id] || lapsimPuEst?.tracks?.[id], k = p?.centrelineKm ? d.kappa.length * d.ds / (p.centrelineKm * 1000) : 1, sc = z => ({...z, from: z.from * k, to: z.to * k});
   return {rateKWs: p?.rampKWs || 100, bigCut: (p?.bigCut || []).map(sc), speed: (p?.speed || []).map(sc)}; }
 export const PU_RAMP = !!lapsimCalibration?.puRamp;
