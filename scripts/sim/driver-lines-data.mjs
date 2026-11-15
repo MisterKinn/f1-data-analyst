@@ -59,6 +59,11 @@ ${multi.length} written in more than one way; ${amb.length} names left separate 
 
 Written more than one way (first 40): ${multi.slice(0, 40).map(p => p.aliases.join(' = ')).join('; ')}.
 
+Not possible with the data we have: **SRO GT3** (GT World Challenge, IGTC, British GT) per driver. The SRO result tables give one best
+lap per car without sectors, and the Timing71 lap rows name the driver in only 54 of 775,064 GT3 rows (the rest carry a seat number).
+SRO GT3 cars keep the car line; their drivers appear only where they also raced WEC, IMSA, ELMS or Asian LMS. Formula E driver lines
+were fitted but did not beat the field line on unseen laps, so the page keeps the car line for Formula E (table above).
+
 Limits: the remaining error is mostly the car model, the track geometry and (endurance) the sector positions, not the line; the
 field line takes that part, and the unseen-lap check shows whether a driver's own difference is real or noise.
 `);
