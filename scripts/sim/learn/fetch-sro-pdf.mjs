@@ -1,6 +1,6 @@
 // SRO results published only as PDF (owner 2026-11-15: every measured lap): Intercontinental GT Challenge (Bathurst 12h, Spa 24h,
 // Nürburgring 24h, Suzuka 1000 km, Indianapolis 8h, Kyalami 9h ...) and GT World Challenge Australia, every season from 2013.
-// Runs in GitHub Actions (network, poppler). Each classification PDF -> pdftotext -layout -> one row per car: number, car text, best
+// Runs in GitHub Actions (network, poppler). Rerun 2026-11-15 for the Australian time format. Each classification PDF -> pdftotext -layout -> one row per car: number, car text, best
 // lap (the fastest m:ss.sss on its line). Only derived rows are written (no PDF, no driver names):
 // scripts/sim/data/learn/sro-pdf-cars.csv.gz in the shape of build-sro.mjs.
 import {writeFileSync, mkdtempSync} from 'node:fs';
@@ -15,7 +15,8 @@ const get = async (u, bin) => { for (let i = 0; i < 3; i++) { try { const r = aw
 const clean = t => t.replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&uuml;/g, 'ü').replace(/&#039;/g, "'").replace(/\s+/g, ' ').trim();
 const links = (t, re) => [...new Set([...t.matchAll(/href="([^"]+)"/g)].map(m => m[1].replace(/^https?:\/\/[^/]+/, '')).filter(h => re.test(h)))];
 const MAKE = /\b(Audi|BMW|Mercedes|Porsche|Ferrari|Lamborghini|McLaren|Aston Martin|Bentley|Nissan|Honda|Acura|Lexus|Chevrolet|Corvette|Ford|Toyota|Callaway|Jaguar|Emil Frey|Maserati|Ginetta|KTM|Glickenhaus)\b/i;
-const lapS = t => { const m = /^(\d{1,2}):(\d{2}\.\d{3})$/.exec(t); return m ? +m[1] * 60 + +m[2] : null; };
+// GTWC Australia (Natsoft) prints 1:25.5383* (four decimals, a mark for the fastest or a record lap)
+const lapS = t => { const m = /^(\d{1,2}):(\d{2}\.\d{3,4})[*Rr]?$/.exec(t); return m ? +(+m[1] * 60 + +m[2]).toFixed(3) : null; };
 const typeOf = f => /race|final(?! ?qual)|classification(?!.*(qual|practice|test|warm|pre))/i.test(f) && !/qual|practice|test|warm/i.test(f) ? 'R' : /qual|pole|q\d/i.test(f) && !/pre ?qual/i.test(f) ? 'Q' : /practice|test|warm|pre ?qual|fp\d/i.test(f) ? 'P' : null;
 const out = [];
 for (const site of SITES) {
@@ -34,7 +35,7 @@ for (const site of SITES) {
         for (const line of txt.split('\n')) { const cells = line.trim().split(/\s{2,}/); const car = cells.find(c => MAKE.test(c)); if (!car) continue;
           const laps = cells.flatMap(c => c.split(/\s+/)).map(lapS).filter(x => x && x > 40 && x < 600); if (!laps.length) continue;
           const entry = cells.slice(0, 3).find(c => /^\d{1,3}$/.test(c) && cells.indexOf(c) > 0) || cells.find(c => /^#?\d{1,3}$/.test(c)) || '';
-          const o = {series: site.includes('australia') ? 'gtwc' : 'igtc', season: year, event: `${site.includes('australia') ? 'gt-world-challenge-australia' : 'igtc'} | ${venue}`, session: name.replace(/\.pdf$/i, ''), type, cls: /GT4/i.test(line) ? 'GT4' : '', entry: entry.replace('#', ''), vehicle: car.slice(car.search(MAKE)).slice(0, 60), team: '', best: Math.min(...laps).toFixed(3), laps: ''};
+          const o = {series: site.includes('australia') ? 'gtwc' : 'igtc', season: year, event: `${site.includes('australia') ? 'gt-world-challenge-australia' : 'igtc'} | ${venue}`, session: name.replace(/\.pdf$/i, ''), type, cls: /GT4/i.test(line) ? 'GT4' : '', entry: entry.replace('#', ''), vehicle: car.slice(car.search(MAKE)).slice(0, 60).replace(/\bEVO\s*(ll|11|II)\b/i, 'EVO II').replace(/\s+\d{3,5}$/, ''), team: '', best: Math.min(...laps).toFixed(3), laps: ''};
           out.push(csvLine([...COLS.map(c => o[c] ?? ''), venue, site.includes('australia') ? 'gt-world-challenge-australia' : 'intercontinentalgtchallenge'])); n++; }
         console.log(site.slice(12, 40), year, venue, type, name.slice(0, 60), n);
       }
