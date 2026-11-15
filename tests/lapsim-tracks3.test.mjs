@@ -22,8 +22,8 @@ test('a loop that drives a one-way raceway backwards is counted against it', () 
 });
 
 test('Hypercar/GTP class cars show the fastest lap of WEC and IMSA together (owner 2026-11-15, Sebring)', async () => {
-  const {carsFor} = await import('../worker/lapsim/scenario.js'), {lapsimClassRecords} = await import('../worker/lapsim/class-records-data.js');
-  const c = carsFor('sebring'), r = lapsimClassRecords.tracks.sebring.real;
+  const {carsFor} = await import('../worker/lapsim/scenario.js'), {lapsimLearned} = await import('../worker/lapsim/learned-data.js');
+  const c = carsFor('sebring'), r = lapsimLearned.tracks.sebring.classReal;
   for (const k of ['wec-lmh', 'wec-lmdh']) assert.equal(c[k].fix.lap, r[k].lap, k);
   assert.equal(r['wec-lmdh'].series, 'imsa'); // IMSA GTP 2023 is faster than the WEC 2023 LMDh lap
 });

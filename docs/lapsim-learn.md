@@ -36,8 +36,9 @@ the first run. Sections 4 and 5 are results. Section 6 is the source list: add a
    SRO measured records (Brands Hatch, Silverstone, Spa, Monza, Nürburgring GP and 24h, Suzuka, Fuji, Shanghai, Jeddah, …) are
    reproduced exactly from the official SRO results sites.
 11. **Hypercar/GTP class cars show the fastest WEC or IMSA lap (owner 2026-11-15; replaces "WEC records first").** `wec-lmh`,
-   `wec-lmdh` and `wec-lmgt3` show the fastest lap of WEC and IMSA together on the track (`scripts/sim/learn/class-records.mjs` ->
-   `worker/lapsim/class-records-data.js`, read by `carsFor()` and `raceRecords()`). Sebring LMDh: IMSA 2023 1:45.836 instead of
+   `wec-lmdh` and `wec-lmgt3` show the fastest lap of WEC and IMSA together on the track. The learning step builds them
+   (`fit-endurance.mjs`: `classReal` and `raceReal` take the faster of the `|s:wec` and `|s:imsa` records) and `carsFor()` and
+   `raceRecords()` read them from `learned-data.js`. Sebring LMDh: IMSA 2023 1:45.836 instead of
    WEC 2023 1:46.082. A lap of another series fills only an empty slot. The simulator has no IMSA tab; the WEC tab is "Hypercar/GTP".
 12. **A car with an Evo or Evo 2 kit opens on its newest kit** (Evo box ticked; `evo=0` in the URL for the base car).
 13. **GT3 page controls and tyres (owner 2026-11-15).** GT3: choose the car model first, then the series spec (SRO GT3, IMSA GTD,
@@ -101,6 +102,20 @@ This layer does not change the physics model or `calibration-data.js`. BoP is no
 
 ## 4. Result per class (RMS error, %)
 
+### Refit 2026-11-15 (Long Beach and Detroit learned; class records in the learning step)
+
+2611 model rows, 323 events, 56 layouts. Event hidden, class-best, RMS %.
+
+| Class | Events before → after | Before (main, 2026-11-15) | **After** | Layout hidden | In-sample |
+|---|---|---|---|---|---|
+| LMH | 37 → 41 | 0.87 | **0.94** | 3.12 | 0.61 |
+| LMDh | 52 → 59 | 1.02 | **1** | 3.3 | 0.64 |
+| GT3 | 272 → 282 | 1.14 | **1.15** | 3.65 | 0.71 |
+
+LMH rose from 0.87 to 0.94, most likely because the new IMSA street events (Aston Martin Valkyrie only at Long Beach and Detroit) move the shared IMSA LMH terms, so Daytona LMH (0.55 → 1.11), Laguna Seca LMH (1.53 → 1.95) and Road America LMH (0.75 → 0.93) got worse. Other tracks that rose by more than 0.1: Laguna Seca GT3 2.11 → 2.37, Mugello GT3 1.74 → 1.88, Jeddah GT3 3.97 → 4.13 (one event, still ⚠️), Mosport LMDh 0.13 → 0.32. The lap-level fix still reproduces every real lap exactly.
+
+Older result (2026-11-14) below.
+
 1311 model rows, 152 events, 33 layouts, 44 car models. Generated 2026-11-14.
 
 | Class | Events | Before, class-best | **Event hidden, class-best** | Before, per model | **Event hidden, per model** | Car model hidden | Layout hidden (track-unseen) | In-sample |
@@ -139,6 +154,108 @@ no lap of any endurance series stays at the old level (layout hidden: about 3 %)
 calibration and does not use this layer. LMP2 is not shown on the page.
 
 ## 5. Result per class and track (class-best, RMS %, event hidden)
+
+### Refit 2026-11-15 (every layout, event hidden, class-best, RMS %)
+
+| Track (layout) | Class | Events | Before | After |
+|---|---|---|---|---|
+| austin | GT3 | 3 | 1.15 | 1.18 |
+| austin | LMDh | 1 | 1.27 | 1.24 |
+| austin | LMH | 1 | 1.15 | 1.14 |
+| bathurst | GT3 | 10 | 1.65 | 1.63 |
+| brands-hatch | GT3 | 19 | 0.98 | 0.96 |
+| buriram | GT3 | 6 | 1.59 | 1.56 |
+| catalunya | GT3 | 5 | 0.58 | 0.59 |
+| catalunya-4655 | GT3 | 5 | 1.3 | 1.3 |
+| catalunya-4675 | GT3 | 2 | 0.42 | 0.43 |
+| daytona | GT3 | 6 | 0.85 | 0.64 |
+| daytona | LMDh | 4 | 1.21 | 1.22 |
+| daytona | LMH | 1 | 0.55 | 1.11 |
+| detroit | GT3 | 3 | not learned | 1.93 |
+| detroit | LMDh | 3 | not learned | 1.06 |
+| detroit | LMH | 2 | not learned | 1.57 |
+| donington | GT3 | 13 | 1.42 | 1.43 |
+| dubai | GT3 | 5 | 0.68 | 0.67 |
+| fe-valencia | GT3 | 4 | 0.69 | 0.69 |
+| fuji | GT3 | 5 | 1 | 0.99 |
+| fuji | LMDh | 3 | 0.32 | 0.32 |
+| fuji | LMH | 3 | 0.46 | 0.46 |
+| hungaroring | GT3 | 4 | 0.56 | 0.55 |
+| imola | GT3 | 6 | 0.83 | 0.86 |
+| imola | LMDh | 3 | 0.62 | 0.6 |
+| imola | LMH | 3 | 1.21 | 1.2 |
+| indianapolis | GT3 | 5 | 1.03 | 0.9 |
+| indianapolis | LMDh | 4 | 0.53 | 0.37 |
+| indianapolis | LMH | 2 | 0.56 | 0.26 |
+| interlagos | GT3 | 3 | 0.44 | 0.41 |
+| interlagos | LMDh | 3 | 0.3 | 0.29 |
+| interlagos | LMH | 2 | 0.66 | 0.65 |
+| jeddah | GT3 | 1 | 3.97 | 4.13 |
+| kuala-lumpur | GT3 | 2 | 0.59 | 0.59 |
+| laguna-seca | GT3 | 6 | 2.11 | 2.37 |
+| laguna-seca | LMDh | 4 | 2.19 | 2.22 |
+| laguna-seca | LMH | 2 | 1.53 | 1.95 |
+| le-mans | GT3 | 3 | 0.59 | 0.55 |
+| le-mans | LMDh | 4 | 0.31 | 0.3 |
+| le-mans | LMH | 4 | 0.33 | 0.33 |
+| lime-rock | GT3 | 3 | 0.71 | 0.62 |
+| long-beach | GT3 | 6 | not learned | 0.84 |
+| long-beach | LMDh | 4 | not learned | 1.06 |
+| long-beach | LMH | 2 | not learned | 0.75 |
+| lusail | GT3 | 2 | 0.76 | 0.72 |
+| lusail | LMDh | 2 | 0.86 | 0.87 |
+| lusail | LMH | 2 | 0.98 | 0.99 |
+| magny-cours | GT3 | 1 | 1.35 | 1.31 |
+| mandalika | GT3 | 2 | 0.22 | 0.27 |
+| mid-ohio | GT3 | 2 | 1.52 | 1.6 |
+| misano | GT3 | 11 | 0.86 | 0.81 |
+| monza | GT3 | 11 | 1.08 | 1.03 |
+| monza | LMDh | 1 | 1 | 0.98 |
+| monza | LMH | 1 | 0.83 | 0.81 |
+| mosport | GT3 | 5 | 0.69 | 0.68 |
+| mosport | LMDh | 1 | 0.13 | 0.32 |
+| motegi | GT3 | 1 | 1.4 | 1.27 |
+| mugello | GT3 | 1 | 1.74 | 1.88 |
+| nurburgring-24h | GT3 | 6 | 1.31 | 1.34 |
+| nurburgring-gp | GT3 | 2 | 0.58 | 0.56 |
+| oulton-park | GT3 | 12 | 0.64 | 0.65 |
+| paul-ricard-2021 | GT3 | 1 | 0.67 | 0.49 |
+| paul-ricard-5821 | GT3 | 2 | 0.66 | 0.73 |
+| phillip-island | GT3 | 3 | 1.81 | 1.82 |
+| portimao | GT3 | 2 | 0.66 | 0.64 |
+| portimao | LMDh | 1 | 2.11 | 2.05 |
+| portimao | LMH | 1 | 0.64 | 0.63 |
+| road-america | GT3 | 6 | 1.17 | 1.13 |
+| road-america | LMDh | 4 | 0.61 | 0.48 |
+| road-america | LMH | 2 | 0.75 | 0.93 |
+| road-atlanta | GT3 | 6 | 0.99 | 1.03 |
+| road-atlanta | LMDh | 3 | 0.15 | 0.06 |
+| road-atlanta | LMH | 2 | 0.4 | 0.5 |
+| sakhir | GT3 | 2 | 0.54 | 0.55 |
+| sakhir | LMDh | 2 | 0.83 | 0.82 |
+| sakhir | LMH | 2 | 0.89 | 0.9 |
+| sebring | GT3 | 6 | 0.75 | 0.68 |
+| sebring | LMDh | 5 | 1.2 | 1.1 |
+| sebring | LMH | 3 | 1.15 | 1.01 |
+| shanghai | GT3 | 4 | 2.83 | 2.91 |
+| silverstone | GT3 | 12 | 1.06 | 1.07 |
+| snetterton | GT3 | 10 | 0.56 | 0.56 |
+| sonoma | GT3 | 5 | 1.27 | 1.3 |
+| spa-francorchamps | GT3 | 7 | 1.48 | 1.42 |
+| spa-francorchamps | LMDh | 4 | 0.93 | 0.92 |
+| spa-francorchamps | LMH | 4 | 0.83 | 0.82 |
+| suzuka | GT3 | 7 | 0.72 | 0.68 |
+| vir | GT3 | 7 | 1.12 | 1.07 |
+| watkins-glen | GT3 | 7 | 0.91 | 0.92 |
+| watkins-glen | LMDh | 3 | 1.01 | 1.01 |
+| watkins-glen | LMH | 2 | 0.94 | 0.71 |
+| yas-marina-circuit | GT3 | 5 | 0.75 | 0.75 |
+| zandvoort | GT3 | 4 | 1.21 | 1.17 |
+| zolder | GT3 | 5 | 0.54 | 0.55 |
+
+Long Beach and Detroit before: not learned (unseen check in section 11: 1.18 % and 3.67 %). Sebring GT3 0.75 → 0.68, LMDh 1.2 → 1.1, LMH 1.15 → 1.01. Aragón has ELMS LMP2 rows only (0.35 → 0.48; LMP2 is not shown). The only layout still listed as "no simulator geometry" is belle-isle-3782 (10 rows).
+
+Older result (2026-11-14) below.
 
 | Track (layout) | Class | Events | Models rows | Before | After |
 |---|---|---|---|---|---|
@@ -379,4 +496,5 @@ Avenue hairpin, 6 m apart, joined). Both follow road centre lines, so the shape 
 (`scaleToOfficial`). `assemble.mjs` fix: two open way ends near each other now join instead of swapping places.
 Check (unseen, no fitted value): Long Beach 10 real laps RMS 1.18 %; Detroit 8 real laps 3.67 %, so its track factor is learned
 (held-out 2.24 %). Registry layouts `long-beach-3167` and `detroit-2647` are now `long-beach` and `detroit` with geometry; their IMSA
-laps (161 and 64 rows) are waiting for the learning step. Class cars show the fastest WEC or IMSA lap there (`class-records.mjs`).
+laps (161 and 64 rows) are learned by the refit of 2026-11-15 (sections 4 and 5). Class cars show the fastest WEC or IMSA lap there,
+built in the learning step (`classReal`, rule 11); the stopgap `class-records.mjs` / `class-records-data.js` is removed.
