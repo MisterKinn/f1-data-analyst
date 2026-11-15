@@ -70,7 +70,12 @@ for (const e of raw.events) {
   if (e.year >= 2026) {
     const zones = [], marks = [];
     for (const ln of text.split('\n')) { const m = /-\s*-?\s*ZONE\s*A(\d+)/i.exec(ln); if (!m) continue; const head = ln.slice(0, m.index), before = [...head.matchAll(new RegExp(POS, 'gi'))].pop(); if (!before || /n\/a/i.test(head.slice(before.index + before[0].length))) continue;
-      const s = at(id, before[0]), n = Number(m[1]); if (s != null && !zones.some(z => z.n === n)) zones.push({n, from: Math.round(s), to: Math.round(zoneEnd(id, s))}); }
+      const s = at(id, before[0]), n = Number(m[1]); if (s == null || zones.some(z => z.n === n)) continue;
+      const z = {n, from: Math.round(s), to: Math.round(zoneEnd(id, s))};
+      // owner 2026-11-16: the column after "ZONE An" is the low-grip activation (Alt set, Low Grip Conditions B1.5.11); n/a = zone off
+      const tail = ln.slice(ln.toUpperCase().lastIndexOf('ZONE A' + n) + 6 + String(n).length), lp = new RegExp(POS, 'i').exec(tail);
+      if (/n\/a/i.test(tail) && !lp) z.low = null; else if (lp) { const q = at(id, lp[0]); if (q != null) z.low = Math.round(q); }
+      zones.push(z); }
     // overtake lines: "DETECTION - Entry T11", "ACTIVATION - T11" (a bare turn = the turn itself)
     const ot = (word, kind, label) => { const m = new RegExp(word + String.raw`\s*-\s*(` + POS + String.raw`|T(\d+[A-Z]?)\b)`, 'i').exec(text); if (!m) return; const s = m[2] ? at(id, '0m after T' + m[2]) : at(id, m[1]); if (s != null) marks.push({s: Math.round(s), kind, label}); };
     ot('DETECTION', 'det', 'OT D'); ot('ACTIVATION', 'act', 'OT A');

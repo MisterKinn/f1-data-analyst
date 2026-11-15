@@ -45,7 +45,7 @@ const T = {
     title: '랩 시뮬레이터', h1: '2026–2028 F1 머신으로 한 바퀴를 계산합니다',
     lead: '실제 예선 랩으로 보정한 물리 모델이 지금의 트랙 형상, 예선 날씨, FIA가 공지한 서킷 변경 사항을 반영해 랩타임과 속도를 계산합니다.',
     track: '트랙', series: '시리즈', car: '규정 · 클래스', spec: '대회별 스펙', evoNone: '이 차는 Evo 데이터가 없습니다', eventFor: '이 차의 대회: {n} ({a} – {b}) · 세션 날씨: {y} 시즌', compare: '비교', soonShort: '준비 중',
-    seriesNames: {f1: 'F1', wec: 'Hypercar/GTP', fe: '포뮬러 E', gt3: 'GT3 (차종별)'}, none: '없음', conditions: '조건', real: '실제 예선 조건', manual: '직접 설정',
+    seriesNames: {f1: 'F1', wec: 'Hypercar/GTP', fe: '포뮬러 E', gt3: 'GT3 (차종별)'}, none: '없음', conditions: '조건', sm: 'SM 존', smOpt: {normal: '기본', alt: 'Alt (로우그립)', off: '끔'}, ot: '오버테이크', drs: 'DRS', onOff: ['켬', '끔'], real: '실제 예선 조건', manual: '직접 설정',
     lap: '계산된 랩타임', vsPole: '실제 폴', realLap: '실제 랩', wecBest: '실제 최고 랩', raceBest: '실제 레이스 최고 랩', errRange: '오차 범위(1σ)', conf: {medium: '신뢰도 보통', low: '신뢰도 낮음', 'very-low': '신뢰도 매우 낮음', 'not-fitted': '실측 보정 전'},
     soon: '준비 중: 기타 GT3(IMSA GTD·DTM·SP9), 포뮬러 E Gen4. 같은 보정 규칙을 쓰며 데이터 연결 후 추가됩니다.', sector: '섹터', vmax: '최고 속도', vmin: '최저 속도', energy: '배치 에너지', clip: '배치 상한 속도',
     map: '속도로 칠한 주행 라인', slow: '느림', fast: '빠름', trace: '거리별 텔레메트리', tel: {motor: '모터 출력 (kW, + 배치 / − 회생, 점선 = 규정 상한)', puEarly: 'FIA 파워유닛 정보 (R{r}, 마이애미 전 규정): 어디서나 기본 곡선(최대 350 kW).', puLate: 'FIA 파워유닛 정보 (R{r}, 마이애미부터 바뀐 규정): 레이스·스프린트는 주요 가속 구간에서 350 kW, 음영 구간에서는 대체 곡선(Alt 1, 약 250 kW). 이 랩은 예선 랩이라 기본 곡선을 씁니다.', puDoc: '회생 한도 예선 {q} MJ · 레이스 {race} MJ, 출력 제한 거리 {d} m, 출력 감소율 {rate} kW/s, Alt 1 구간: {alt}.', puSpeed: '높은 속도 기준 구간: {s}.', soc: '배터리 에너지 (SoC, MJ: 배치·회생 모델)', short: {motor: '모터', soc: 'SoC', speed: '속도', delta: '시간 차', throttle: '스로틀', brake: '브레이크', gear: '기어', rpm: 'rpm', steer: '조향'}, hover: '그래프 위에 마우스를 올리거나 터치하면 그 지점의 값이 모든 채널에 표시됩니다.', delta: '시간 차 (s, + = {car} 쪽이 뒤짐)', throttle: '스로틀 (%)', risk: '드라이버의 페달·핸들 떨림은 사람처럼 만든 모델입니다: 브레이크는 순간적으로 밟아 살짝 넘쳤다가 미세하게 조절하고, 잠김 직전에 잠깐 풀었다 다시 밟고, 코너 안쪽까지 끌며 놓습니다. 스로틀은 천천히 열고 빠르게 닫으며, 트랙션 한계에서 흔들리고 가끔 잠깐 뗍니다. 속도 그래프의 붉은 띠는 그립을 잃기 쉬운 구간(크레스트에서 줄어드는 하중, 내리막 제동, 뒷바람에 줄어드는 다운포스, 최근 FIA 공지의 새 포장·범프 보수 구간, 타이어 온도 창 밖의 노면 온도, 비)이며, 이곳에서 떨림이 커집니다.', speed: '속도 (km/h)', brake: '브레이크 압력 (앞 라인, bar)', gear: '기어', rpm: '엔진 회전수 (rpm)', steer: '스티어링 휠 각도 (°, + = 왼쪽)', note: '브레이크 압력은 감속도·브레이크 밸런스·패드 마찰계수·디스크와 캘리퍼 크기(클래스별 추정값)로, 기어와 회전수는 엔진 곡선과 기어비에서 출력이 가장 큰 기어로, 스티어링은 라인 곡률·휠베이스·조향비·언더스티어 경사로 계산합니다. 한계 근처의 작은 수정 조향은 고정 시드로 만든 모델 값입니다. 모두 실측 텔레메트리가 아닌 시뮬레이션입니다.', shifts: '변속 {n}회'}, km: '거리 (km)',
@@ -77,7 +77,7 @@ const T = {
     title: 'Lap simulator', h1: 'Simulate a lap in a 2026–2028 F1 car',
     lead: 'A physics model calibrated on real qualifying laps works out lap time and speed on today’s track layout, with qualifying weather and the circuit changes the FIA has announced.',
     track: 'Track', series: 'Series', car: 'Rules · class', spec: 'Series spec', evoNone: 'No Evo data for this car', eventFor: 'Event for this car: {n} ({a} – {b}) · session weather: {y} season', compare: 'Compare', soonShort: 'coming soon',
-    seriesNames: {f1: 'F1', wec: 'Hypercar/GTP', fe: 'Formula E', gt3: 'GT3 (by car model)'}, none: 'None', conditions: 'Conditions', real: 'Real qualifying conditions', manual: 'Set my own',
+    seriesNames: {f1: 'F1', wec: 'Hypercar/GTP', fe: 'Formula E', gt3: 'GT3 (by car model)'}, none: 'None', conditions: 'Conditions', sm: 'SM zones', smOpt: {normal: 'Normal', alt: 'Alt (low grip)', off: 'Off'}, ot: 'Overtake', drs: 'DRS', onOff: ['On', 'Off'], real: 'Real qualifying conditions', manual: 'Set my own',
     lap: 'Simulated lap time', vsPole: 'Real pole', realLap: 'Real lap', wecBest: 'Real best lap', raceBest: 'Real fastest race lap', errRange: 'Error range (1σ)', conf: {medium: 'medium confidence', low: 'low confidence', 'very-low': 'very low confidence', 'not-fitted': 'not fitted to real laps'},
     soon: 'Formula E: Gen2, Gen3 and Gen3 Evo are learned from Al Kamel laps; Gen4 is a prior from the 2026-27 regulations until its first laps.', sector: 'Sector', vmax: 'Top speed', vmin: 'Lowest speed', energy: 'Energy deployed', clip: 'Deploy cut-off',
     map: 'Racing line coloured by speed', slow: 'Slow', fast: 'Fast', trace: 'Telemetry over distance', tel: {motor: 'Motor power (kW, + deploy / − recovery, dashed = regulation cap)', puEarly: 'FIA Power Unit Information (R{r}, rules before Miami): the base curve everywhere (up to 350 kW).', puLate: 'FIA Power Unit Information (R{r}, rules from Miami on): in Sprint and Race 350 kW in the key acceleration zones and the alternative curve (Alt 1, about 250 kW) in the shaded sectors. This is a qualifying lap, so it uses the base curve.', puDoc: 'Recharge limit qualifying {q} MJ · race {race} MJ, power-limited distance {d} m, power reduction rate {rate} kW/s, Alt 1 sectors: {alt}.', puSpeed: 'Sectors with a higher speed threshold: {s}.', soc: 'Battery energy (SoC, MJ: deploy and recovery model)', short: {motor: 'Motor', soc: 'SoC', speed: 'Speed', delta: 'Delta', throttle: 'Throttle', brake: 'Brake', gear: 'Gear', rpm: 'rpm', steer: 'Steer'}, hover: 'Hover or touch a chart to read every channel at that point.', delta: 'Time delta (s, + = {car} behind)', throttle: 'Throttle (%)', risk: 'The pedal and steering wobble is a model of a human driver: the brake is stabbed, overshoots a little and is then modulated, eased for a moment where a wheel would lock and trailed off into the corner; the throttle is squeezed on and snapped off, shakes at the traction limit and is sometimes lifted for a moment. Red bands on the speed chart are where grip is easy to lose (load lost over a crest, braking downhill, downforce lost to a tailwind, fresh asphalt or patched bumps in the latest FIA notes, a track outside the tyre temperature window, rain); the corrections grow there.', speed: 'Speed (km/h)', brake: 'Brake pressure (front line, bar)', gear: 'Gear', rpm: 'Engine speed (rpm)', steer: 'Steering wheel angle (°, + = left)', note: 'Brake pressure comes from the deceleration, brake balance, pad friction and disc and caliper size (estimates per class); gear and rpm from the engine curve and the gear ratios (the gear with the most power); steering from the line curvature, wheelbase, steering ratio and understeer gradient. The small corrections near the grip limit are a model with a fixed seed. All channels are simulated, not measured.', shifts: '{n} gear changes'}, km: 'Distance (km)',
@@ -142,6 +142,7 @@ function renderMap(map, v, opts) {
       for (let i = a; i <= b; i++) { lt.push(L.left[i % k]); rt.push(L.right[i % k]); }
       band += '<polygon class="ls-surf" points="' + lt.concat(rt.reverse()).map(p => X(p) + ',' + Y(p)).join(' ') + '"/>'; }
     for (const [side, a, b] of L.kerbs || []) { const E = side === 'L' ? L.left : L.right, k = E.length, pts = []; for (let i = a; i <= b; i++) pts.push(E[((i % k) + k) % k]);
+      // owner 2026-11-16: kerbs at their real size (map units are metres, about 1.5 m wide), so they scale with the track when zoomed out
       const d = 'M' + pts.map(p => X(p) + ' ' + Y(p)).join('L'); band += '<path class="ls-kerb-w" d="' + d + '"/><path class="ls-kerb" d="' + d + '"/>'; }
     let lo2 = Infinity, hi2 = -Infinity; for (const x of L.v) { lo2 = Math.min(lo2, x); hi2 = Math.max(hi2, x); }
     const bk = i => Math.min(5, Math.floor((L.v[i] - lo2) / (hi2 - lo2 + 1e-9) * 6));
@@ -270,6 +271,9 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
  <label class="ls-cmp-only">${esc(UI[lang].cmp1)}<select data-ls="compare"><option value="">${esc(t.none)}</option>${cmpOpts}</select></label>
  <label class="ls-cmp-only">${esc(UI[lang].cmp2)}<select data-ls="compare2"><option value="">${esc(t.none)}</option>${cmpOpts}</select></label>
  <label>${esc(t.conditions)}<select data-ls="mode"><option value="real">${esc(t.real)}</option><option value="manual">${esc(t.manual)}</option>${TRACK_LL[id] ? `<option value="forecast">${esc(FT[lang].opt)}</option>` : ''}</select></label>
+ <label data-ls="smWrap" hidden>${esc(t.sm)}<select data-ls="sm">${['normal', 'alt', 'off'].map(k => `<option value="${k}">${esc(t.smOpt[k])}</option>`).join('')}</select></label>
+ <label data-ls="otWrap" hidden>${esc(t.ot)}<select data-ls="ot"><option value="1">${esc(t.onOff[0])}</option><option value="0">${esc(t.onOff[1])}</option></select></label>
+ <label data-ls="drsWrap" hidden>${esc(t.drs)}<select data-ls="drs"><option value="1">${esc(t.onOff[0])}</option><option value="0">${esc(t.onOff[1])}</option></select></label>
  <noscript><button>${esc(t.track)}</button></noscript>
 </form>
 <p class="fine ls-event" data-no-translate data-ls="event"${events[carId] ? '' : ' hidden'}>${esc(events[carId] || '')}</p>
@@ -558,9 +562,32 @@ function computeView(K, data, state, R) {
   if (!computeView.cache || computeView.cache.id !== data.id + ':' + kS) computeView.cache = {id: data.id + ':' + kS, base: K.trackFromData(d)};
   const base = computeView.cache.base;
   // F1 low-drag zones of the car's season (worker/lapsim/zones.js; on when the F1 fit used them): DRS to 2025, Straight Mode from 2026
-  const zt = (tr, c) => { if (!data.zonesOn || c.series || !c.year || kS || (data.zonesOn === 'drs' && c.year >= 2026)) return tr; const sl = c.year >= 2026 ? '2026' : '2025', z = data.zones && data.zones[sl];
-    if (!z || !z.zones || !z.zones.length) return tr; const key = 'low' + sl; if (!computeView.cache[key]) computeView.cache[key] = K.trackFromData(Object.assign({}, d, {aeroZones: z.zones.map(q => [q.from, q.to])}), {aero: 'fia'}).aeroLow;
+  // F1 low-drag zones of the car's season (worker/lapsim/zones.js; on when the F1 fit used them): DRS to 2025, Straight Mode from 2026.
+  // Options (owner 2026-11-16): SM Normal / Alt (low-grip activation of the FIA map; n/a = zone off; no column = 50 m later) / Off,
+  // Overtake on (C5.2.8 ii power curve) / off, DRS on / off. Defaults Normal, OT on, DRS on.
+  const zl = (c, m) => { const sl = c.year >= 2026 ? '2026' : '2025', z = data.zones && data.zones[sl], L = d.kappa.length * d.ds; if (!z || !z.zones) return null;
+    if (sl === '2025' ? !m.drs : m.sm === 'off') return [];
+    return m.sm === 'alt' && sl === '2026' ? z.zones.filter(q => q.low !== null).map(q => [q.low != null ? q.low : (q.from + 50) % L, q.to]) : z.zones.map(q => [q.from, q.to]); };
+  // fit setup: FIA zones when the F1 fit used them (zonesOn), else the kernel's own straights; no Overtake (the real laps it was fit on)
+  const zt = (tr, c) => { if (c.series || !c.year || kS || !data.zonesOn || (data.zonesOn === 'drs' && c.year >= 2026)) return tr; const zs = zl(c, {sm: 'normal', drs: true}); return zs ? lowOf(tr, c, zs) : tr; };
+  // Low Grip zones allow only partial activation (front wing in Straight Mode, rear flap in Corner Mode; B7.1.2 b). The front wing's share
+  // of the low-drag change is not published: 0.3 is an estimate (the rear flap carries most of the drag drop)
+  const PARTIAL = 0.3;
+  const lowOf = (tr, c, zs, frac) => { const key = 'low:' + c.year + ':' + (frac || 1) + ':' + JSON.stringify(zs);
+    if (!computeView.cache[key]) { const a = zs.length ? K.trackFromData(Object.assign({}, d, {aeroZones: zs}), {aero: 'fia'}).aeroLow : new Uint8Array(d.kappa.length);
+      computeView.cache[key] = frac && frac !== 1 ? Float32Array.from(a, x => x * frac) : a; }
     return Object.assign({}, tr, {aeroLow: computeView.cache[key]}); };
+  // options: always the FIA zones of the chosen set (Overtake: C5.2.8 ii power curve); the lap is scaled so the default options give the fitted lap
+  const optOf = c => c.year >= 2026 ? {sm: state.sm || 'normal', ot: state.ot !== false, drs: true} : {sm: 'normal', ot: false, drs: state.drs !== false};
+  const ot = (tr, c, m) => c.year >= 2026 && m.ot ? Object.assign({}, tr, {otOn: true}) : tr;
+  const optTrack = (tr, c, m) => { const zs = zl(c, m); return ot(zs ? lowOf(tr, c, zs, m.sm === 'alt' && c.year >= 2026 ? PARTIAL : 1) : tr, c, m); };
+  const optScale = (tr, c, sim) => {
+    const W = computeView.cache.sc || (computeView.cache.sc = new WeakMap()), per = W.get(c.car) || (W.set(c.car, {}), W.get(c.car));
+    const key = (c.grip || 1) + ':' + JSON.stringify(env) + ':' + (tr === base ? 'b' : 't') + ':' + (data.changes?.changes || []).map((x, i) => state.active[i] ? 1 : 0).join('') + state.strength;
+    if (!(key in per)) per[key] = sim(zt(tr, c)).lapTime / simOpt(tr, c, c.year >= 2026 ? {sm: 'normal', ot: true} : {drs: true}, sim).lapTime; return per[key]; };
+  const f1Opt = c => !c.series && c.year && !kS;
+  // Overtake is the driver's choice: on a lap where the greedy deployment of the extra power costs energy later, the driver leaves it off
+  const simOpt = (tr, c, m, sim) => { const r = sim(optTrack(tr, c, m)); if (!(m.ot && c.year >= 2026)) return r; const r0 = sim(optTrack(tr, c, Object.assign({}, m, {ot: false}))); return r0.lapTime < r.lapTime ? r0 : r; };
   // conditions: real (season of the selected car, else 2026) or manual
   const condKey = sel.series ? state.carId : String(sel.year);
   const yearKey = data.conds[condKey] ? condKey : (data.conds['2026'] ? '2026' : Object.keys(data.conds)[0]);
@@ -574,7 +601,7 @@ function computeView(K, data, state, R) {
   if (active.length) track = K.applyTrackChanges(base, active, d.corners || [], {strength: state.strength}).track;
   const withGrip = (tr, g) => { const n = tr.kappa.length, mu = new Float64Array(n); for (let i = 0; i < n; i++) mu[i] = g * tr.mu[i]; return {...tr, mu}; };
   // learned lap-time factor (GT3 car models, class cars on tracks learned from real laps): lap and sector times scale
-  const run = c => { const r = K.simulateLap(withGrip(zt(track, c), c.grip || 1), c.car, env), f = c.timeScale; if (f && f !== 1) { r.lapTime *= f; for (let i = 0; i < r.time.length; i++) r.time[i] *= f; } return r; };
+  const run = c => { const sim = tr => K.simulateLap(withGrip(tr, c.grip || 1), c.car, env), r = f1Opt(c) ? simOpt(track, c, optOf(c), sim) : sim(zt(track, c)), f = (c.timeScale || 1) * (f1Opt(c) ? optScale(track, c, sim) : 1); if (f !== 1) { r.lapTime *= f; for (let i = 0; i < r.time.length; i++) r.time[i] *= f; } return r; };
   const secOf = r => { const i1 = Math.round(d.sectors[0] / d.ds), i2 = Math.round(d.sectors[1] / d.ds); return [r.time[i1], r.time[i2] - r.time[i1], r.lapTime - r.time[i2]]; };
   // sector correction (raced tracks): real pole sectors minus the reference car's sectors in that weather
   const corrOf = c => {
@@ -903,7 +930,7 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
   const data = JSON.parse(el.textContent);
   const q = s => document.querySelector('[data-ls="' + s + '"]'), evoKeys = Object.values(data.evoOf);
   const yearKey = data.conds['2026'] ? '2026' : Object.keys(data.conds)[0];
-  const state = {carId: data.carId, compareId: '', mode: 'real', manual: Object.assign({pressureHpa: 1013, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0}, data.conds[yearKey] || {}), active: {}, strength: 1, evo: {type: 'qualifying', tyre: '', useCurve: true, over: {}}};
+  const state = {carId: data.carId, compareId: '', mode: 'real', manual: Object.assign({pressureHpa: 1013, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0}, data.conds[yearKey] || {}), active: {}, strength: 1, sm: 'normal', ot: true, drs: true, evo: {type: 'qualifying', tyre: '', useCurve: true, over: {}}};
   const sliders = document.querySelectorAll('[data-cond]');
   const syncSliders = () => sliders.forEach(s => { const k = s.dataset.cond, v = state.manual[k]; if (Number.isFinite(v)) s.value = v; const o = document.querySelector('[data-out="' + k + '"]'); if (o) o.textContent = Number(s.value).toFixed(s.step < 1 ? 1 : 0); });
   let pending = false;
@@ -914,6 +941,7 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
       const v = computeView(K, data, state, R); lastTel = v.tel; lastView = v;
       q('lap').textContent = v.lap; q('pole').innerHTML = v.poleHtml; q('facts').innerHTML = v.factsHtml; q('air').innerHTML = v.airHtml;
       q('map').innerHTML = v.mapSvg; apply(); needle(v.compassDeg); q('trace').innerHTML = v.traceSvg; q('soc').innerHTML = v.socHtml; q('brakes').innerHTML = v.brakeHtml; q('key').innerHTML = v.keyHtml; q('wind').innerHTML = v.windHtml;
+      { const c = data.cars[state.carId], f1 = !c.series && c.year; if (q('smWrap')) { q('smWrap').hidden = !(f1 && c.year >= 2026); q('otWrap').hidden = !(f1 && c.year >= 2026); q('drsWrap').hidden = !(f1 && c.year < 2026); } }
       q('carLabel').textContent = data.cars[state.carId].label; q('carKind').textContent = v.kindLabel;
       if (q('lineNote')) q('lineNote').textContent = v.lineNote;
       if (q('driver')) { if (q('driver').innerHTML !== v.driverOpts) q('driver').innerHTML = v.driverOpts; q('driverWrap').hidden = !v.driverOpts; }
@@ -1064,6 +1092,7 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
     const ev = data.events[state.carId]; q('event').hidden = !ev; q('event').textContent = ev || '';
     const u = new URL(location.href); u.searchParams.set('car', state.carId); if (e && !box.checked) u.searchParams.set('evo', '0'); else u.searchParams.delete('evo'); history.replaceState(null, '', u); update();
   };
+  ['sm', 'ot', 'drs'].forEach(k => { if (q(k)) q(k).addEventListener('change', e => { state[k] = k === 'sm' ? e.target.value : e.target.value === '1'; update(); }); });
   q('car').addEventListener('change', pickCar); q('evo').addEventListener('change', pickCar); q('spec').addEventListener('change', pickCar);
   q('compare').addEventListener('change', () => { state.compareIds = cmpSel(); update(); });
   if (q('compare2')) q('compare2').addEventListener('change', () => { state.compareIds = cmpSel(); update(); });
@@ -1125,7 +1154,7 @@ const CSS = `:root{--sim-slow:#ffa94d;--kb-zone:#c4c9ce;--kb-zone-mark:#00d2be}:
 .ls-changes{list-style:none;margin:0;padding:0;display:grid;gap:10px}.ls-change label{display:flex;gap:12px;align-items:flex-start;color:var(--text);font-size:14px;min-width:0}.ls-change input{width:20px;height:20px;min-height:0;margin-top:2px;accent-color:var(--mint)}.ls-change small{display:block;color:var(--muted);font-size:12px;margin-top:2px}.ls-change.is-info label{color:var(--muted)}.ls-dot{width:20px;flex:0 0 20px;text-align:center}.ls-dot::before{content:'·'}
 .ls-table td,.ls-table th{white-space:nowrap}.ls-notes{margin:0;padding-left:20px;display:grid;gap:10px;line-height:1.7;color:var(--muted);max-width:80ch}.ls-panel h3{font-size:18px;margin-top:6px}
 
-.ls-surf{fill:color-mix(in oklab,var(--mint) 35%,transparent);stroke:none}.ls-kerb-w{fill:none;stroke:#fff;stroke-width:2.2;vector-effect:non-scaling-stroke}.ls-kerb{fill:none;stroke:#e5484d;stroke-dasharray:3 3;stroke-width:2.2;vector-effect:non-scaling-stroke}.ls-zoombox{overflow:hidden;position:relative;touch-action:pan-y;border-radius:12px}.ls-zoombox.is-zoomed{touch-action:none;cursor:grab}.ls-line-bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px}.ls-zoom-btns{margin-left:auto;display:inline-flex;flex-wrap:wrap;gap:6px;max-width:100%}.ls-map .ls-mk{stroke:#fff;transform-box:fill-box;transform-origin:center;scale:var(--inv,1)}.ls-zoombox text{transform-box:fill-box;transform-origin:center;scale:var(--inv,1)}.ls-map .ls-band{fill:#e6e8ea;stroke:none}:root[data-theme="light"] .ls-band{fill:#1f1f1f}@media(prefers-color-scheme:light){:root:not([data-theme]) .ls-band{fill:#1f1f1f}}
+.ls-surf{fill:color-mix(in oklab,var(--mint) 35%,transparent);stroke:none}.ls-kerb-w{fill:none;stroke:#fff;stroke-width:1.5}.ls-kerb{fill:none;stroke:#e5484d;stroke-dasharray:2.5 2.5;stroke-width:1.5}.ls-zoombox{overflow:hidden;position:relative;touch-action:pan-y;border-radius:12px}.ls-zoombox.is-zoomed{touch-action:none;cursor:grab}.ls-line-bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px}.ls-zoom-btns{margin-left:auto;display:inline-flex;flex-wrap:wrap;gap:6px;max-width:100%}.ls-map .ls-mk{stroke:#fff;transform-box:fill-box;transform-origin:center;scale:var(--inv,1)}.ls-zoombox text{transform-box:fill-box;transform-origin:center;scale:var(--inv,1)}.ls-map .ls-band{fill:#e6e8ea;stroke:none}:root[data-theme="light"] .ls-band{fill:#1f1f1f}@media(prefers-color-scheme:light){:root:not([data-theme]) .ls-band{fill:#1f1f1f}}
 .ls-mk-b{fill:#e5484d}.ls-mk-a{fill:#f5a524}.ls-mk-t{fill:#30a46c}.ls-line-key [class^=ls-mk]{display:inline-block;width:10px;height:10px;border-radius:50%;margin:0 4px 0 10px;vertical-align:middle}.ls-line-key [class^=ls-mk]:first-child{margin-left:0}.ls-line-key .ls-mk-b{background:#e5484d}.ls-line-key .ls-mk-a{background:#f5a524}.ls-line-key .ls-mk-t{background:#30a46c}
 .ls-evo .ls-controls{grid-template-columns:repeat(3,minmax(0,1fr));margin:12px 0 16px}.ls-check{display:flex;align-items:center;gap:8px;align-self:end;min-height:40px}.ls-check input{width:20px;height:20px;min-height:0;accent-color:var(--mint)}.ls-evo .ls-facts{margin-top:16px}
 .ls-line-2{stroke:var(--text);stroke-dasharray:2 3}.ls-zone{fill:none;stroke-linecap:round;opacity:.9}.ls-zone-drs,.ls-zone-sm{stroke:var(--kb-zone)}.ls-zone-t{fill:var(--text);font-weight:700;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:var(--bg);stroke-width:3px}.ls-zone-m{stroke:var(--kb-zone-mark)}.ls-zone-m-act{stroke:var(--kb-zone)}.ls-zone-mt{fill:var(--kb-zone-mark);font-weight:700;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:var(--bg);stroke-width:3px}.ls-key-2{background:var(--text)}.ls-key-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;vertical-align:middle}

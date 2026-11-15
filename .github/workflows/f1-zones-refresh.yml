@@ -1,0 +1,44 @@
+name: F1 zones refresh
+
+# Owner 2026-11-16: the Straight Mode / DRS zones of the remaining races (and 2027) update themselves when the FIA publishes the
+# Race Director's circuit map, and each session's grip state (Low Grip Conditions -> Alt zones, Overtake/DRS disabled) is learned
+# from race control. Reads the FIA circuit maps and OpenF1 race control, rebuilds worker/lapsim/f1-zones-data.js and pushes a
+# lapsim-learn/zones-refresh-* branch when anything changed; the owner opens and merges the PR (link in the run summary).
+on:
+  schedule:
+    - cron: '41 */3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: f1-zones-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    if: github.event_name != 'schedule' || github.repository == 'MisterKinn/f1-data-analyst'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - run: npm ci --ignore-scripts
+      - name: FIA circuit maps (zone text)
+        run: node scripts/sim/learn/fetch-f1-zones.mjs
+      - name: Session grip / Overtake / DRS state (OpenF1 race control)
+        run: node scripts/sim/learn/fetch-aero-state.mjs || echo "::warning::OpenF1 race control not reachable"
+      - name: Rebuild zones
+        run: node scripts/sim/f1-zones.mjs
+      - name: Push a refresh branch when the zones changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add scripts/sim/data/learn worker/lapsim/f1-zones-data.js
+          if git diff --cached --quiet -- worker/lapsim/f1-zones-data.js scripts/sim/data/learn/f1-aero-state.json; then echo "No zone or grip-state change"; exit 0; fi
+          B="lapsim-learn/zones-refresh-$(date -u +%Y%m%d-%H%M)"
+          git commit -m "F1 zones and session grip state from the FIA circuit maps and race control"
+          git push origin HEAD:"refs/heads/$B"
+          echo "Open and merge: https://github.com/${{ github.repository }}/compare/main...$B?expand=1" >> "$GITHUB_STEP_SUMMARY"
