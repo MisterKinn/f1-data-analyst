@@ -17,3 +17,14 @@ test('true north is known for every F1 and OpenStreetMap track; checked fits are
 test('every track gets corner numbers (official or estimated from the curvature)', () => {
   for (const [id, t] of Object.entries(T)) if (t.kappa?.length && id !== 'rwanda') assert.ok((t.corners?.length || autoCorners(t).length) > 3, id);
 });
+
+test('DRS zones and Straight Mode zones never mix (owner 2026-11-15)', async () => {
+  const m = await import('../worker/lapsim/f1-zones-data.js');
+  const {tracks} = Object.values(m).find(v => v && v.tracks);
+  for (const [id, years] of Object.entries(tracks)) for (const [slot, z] of Object.entries(years)) {
+    const sm = Number(slot) >= 2026;
+    assert.equal(z.kind, sm ? 'sm' : 'drs', `${id} ${slot}`);
+    assert.ok(sm ? z.year >= 2026 : z.year < 2026, `${id} ${slot} source year ${z.year}`);
+    for (const k of z.marks || []) assert.match(k.label, sm ? /^OT [DA]$/ : /^D\d$/, `${id} ${slot} mark ${k.label}`);
+  }
+});
