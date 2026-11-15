@@ -15,11 +15,14 @@ export function lapChannels(track, car, env, res, {cls = 'f1', seed = '', surfac
   const ers = car.ers || {}, axle = ers.axle || (ers.rule === 'f1-2026' || ers.pMax || car.regen ? 'rear' : null);
   const regenW = ers.regenMax ?? ers.eMax ?? car.regen?.maxW ?? 0, regenShare = ers.regenShare ?? car.regen?.share ?? 0.6;
   const perBar = 2 * 2 * C.mu * C.rf * C.af * 1e-6 * 1e5 / Rt; // front axle brake force (N) per bar: 2 wheels × 2 pads × mu × r × A / R
+  // drag and downforce of this lap's own low-drag layout (Straight Mode / DRS zones and options, owner 2026-11-16): aeroLow share 0..1
+  const lowI = i => track && track.aeroLow ? Math.min(1, Math.max(0, Number(track.aeroLow[i]) || 0)) : 0;
+  const cdI = i => car.cdA + lowI(i) * ((car.cdALow ?? car.cdA) - car.cdA), clI = i => car.clA + lowI(i) * ((car.clALow ?? car.clA) - car.clA);
   const brakeBar = new Array(n).fill(0);
   for (let i = 0; i < n; i++) {
     const j = (i + 1) % n; if (!(v[j] < v[i])) continue;
     const vm = (v[i] + v[j]) / 2, dec = (v[i] * v[i] - v[j] * v[j]) / (2 * ds), q = 0.5 * rho * vm * vm;
-    const need = Math.max(0, m * dec - q * car.cdA - (car.cRoll ?? 0.012) * (m * G + q * car.clA)); // drag and rolling resistance brake too
+    const need = Math.max(0, m * dec - q * cdI(i) - (car.cRoll ?? 0.012) * (m * G + q * clI(i))); // drag and rolling resistance brake too
     const regen = axle ? Math.min(regenW / Math.max(vm, 1), regenShare * need) : 0;
     let front = C.bal * need - (axle === 'front' ? regen : 0), rear = (1 - C.bal) * need - (axle === 'rear' ? regen : 0);
     if (!C.ar && rear > 0) { front += rear; rear = 0; } // no rear friction brakes: the brake-by-wire moves the rest forward
@@ -83,7 +86,7 @@ export function lapChannels(track, car, env, res, {cls = 'f1', seed = '', surfac
   const throttle = v.map((vi, i) => {
     if (brakeBar[i] > 0) return 0; if (lim[i] === 2 || lim[(i + 1) % n] === 2 || lim[(i - 1 + n) % n] === 2 || vi >= clip) return 1; // next to a power-limited point the foot is flat (the kernel's deploy toggles point to point) // a speed drop with no brake need (2026 clipping, lift) keeps the pedal
     // acceleration over ±2 points: the kernel's deploy on/off from point to point is not a foot movement
-    const a2 = v[(i + 2) % n], b2 = v[(i - 2 + n) % n], q = 0.5 * rho * vi * vi, F = m * (a2 * a2 - b2 * b2) / (8 * ds) + q * car.cdA + (car.cRoll ?? 0.012) * (m * G + q * car.clA);
+    const a2 = v[(i + 2) % n], b2 = v[(i - 2 + n) % n], q = 0.5 * rho * vi * vi, F = m * (a2 * a2 - b2 * b2) / (8 * ds) + q * cdI(i) + (car.cRoll ?? 0.012) * (m * G + q * clI(i));
     return Math.max(0, Math.min(1, F * vi / ((powerW ? powerW[i] : car.pIce) * eta + ersW)));
   });
   const ped = humanPedals(brakeBar, throttle, risk, res.time, res.lapTime ?? res.time[n - 1], String(seed) + '|pedals');
