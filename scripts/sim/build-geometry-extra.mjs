@@ -29,8 +29,11 @@ export function buildTrack(id, spec, c) {
         evidence: {lapLength: '1 fixed (official) and 2 measured (driven line)', planShape: `2 measured (F1 car positions, ${c.lapsUsed} qualifying laps, ${c.year})`, drivenLine: '2 measured (mean of the fastest qualifying laps)', width: 'not used', height: '2 measured (F1 car positions)', trackGrip: '4 borrowed (mean factor of the class\'s fitted tracks)'}},
       sources: [...(c.sources || []), ...(spec.sources || [])]};
   }
-  const t0 = K.trackFromData(c), n0 = t0.kappa.length, cx = new Array(n0), cy = new Array(n0);
-  for (let i = 0, h = 0, x = 0, y = 0; i < n0; i++) { cx[i] = x; cy[i] = y; h += t0.kappa[i] * c.ds; x += Math.cos(h) * c.ds; y += Math.sin(h) * c.ds; }
+  const t0 = K.trackFromData(c), n0 = t0.kappa.length, ax = new Array(n0), ay = new Array(n0);
+  for (let i = 0, h = 0, x = 0, y = 0; i < n0; i++) { ax[i] = x; ay[i] = y; h += t0.kappa[i] * c.ds; x += Math.cos(h) * c.ds; y += Math.sin(h) * c.ds; }
+  // owner 2026-11-15: real direction and start line (map ways run either way and start at any node)
+  const o = orient(c, spec, ax, ay, OSM[id]), cx = o.order.map(i => ax[i]), cy = o.order.map(i => ay[i]);
+  if (c.grade) c = {...c, grade: o.order.map(i => o.reversed ? -c.grade[i] : c.grade[i])};
   const width = c.widthM || spec.widthM || null, halfW = Math.max(1, (width || 12) / 2 - 1.2);
   const rl = minCurvatureLine(cx, cy, new Array(n0).fill(halfW)), line = lineTrack(K, rl.x, rl.y, 5), n = line.kappa.length;
   const flat = !c.grade || c.grade.every(g => g === 0), step = Math.max(1, Math.floor(n / 360)), map = {x: [], y: []};
@@ -39,11 +42,40 @@ export function buildTrack(id, spec, c) {
   return {id, name: spec.name, circuit: spec.name, layout: spec.layout, year: null, ds: line.ds, length: Math.round(line.length),
     officialLengthM: spec.officialLengthM ?? c.officialLengthM ?? null, sectors: [], corners: [],
     kappa: Array.from(line.kappa, v => Math.round(v * 1e5)), grade: flat ? null : Array.from({length: n}, (_, j) => c.grade[Math.min(n0 - 1, Math.floor(j / n * n0))]), heading: null, map,
-    quality: {centreLengthM: c.length, widthM: width, halfWidthM: +halfW.toFixed(1), totalTurnDeg: Math.round(turn), startVerified: false, elevation: flat ? null : {minM: c.elevation?.minM, maxM: c.elevation?.maxM, maxGradePct: c.elevation?.maxGradePct},
+    quality: {centreLengthM: c.length, widthM: width, halfWidthM: +halfW.toFixed(1), totalTurnDeg: Math.round(turn), startVerified: o.startVerified, start: o.start, direction: o.direction, elevation: flat ? null : {minM: c.elevation?.minM, maxM: c.elevation?.maxM, maxGradePct: c.elevation?.maxGradePct},
       evidence: {lapLength: c.officialLengthM ? '1 fixed (official list)' : '4 stated on a diagram', planShape: spec.shapeEvidence || '2 measured (map centre line)',
         drivenLine: '3 inferred (least-curvature line inside the width)', width: width ? (c.widthM ? '1 fixed (FIA list)' : '4 stated or assumed') : '4 assumed 12 m',
         height: flat ? 'none (flat assumed)' : (spec.heightEvidence || '2 measured, coarse (about 30 m ground grid)'), trackGrip: '4 borrowed (mean factor of the class\'s fitted tracks)'}},
     sources: [...(c.sources || []), ...(spec.sources || [])]};
+}
+
+// Direction and start of a map lap. Direction: spec.direction (real race direction, cw/ccw); the map line is reversed when its
+// turn sense differs. Start: an OpenStreetMap start/finish feature on the lap, else the middle of the pit lane next to the lap
+// (scripts/sim/learn/fetch-osm-starts.mjs). Map x/y are east/north metres from c.centre, sampled every `step` lap points.
+const OSM = existsSync(D + 'learn/osm-starts.json') ? JSON.parse(readFileSync(D + 'learn/osm-starts.json', 'utf8')).tracks : {};
+export function orient(c, spec, ax, ay, osm = OSM[spec.id]) {
+  const n = ax.length, area = ax.reduce((a, x, i) => a + x * ay[(i + 1) % n] - ax[(i + 1) % n] * ay[i], 0), mapped = area > 0 ? 'ccw' : 'cw';
+  const reversed = !!spec.direction && spec.direction !== mapped, idx = i => reversed ? (n - i) % n : i; // reversed lap keeps point 0
+  let s0 = 0, start = 'first mapped point (not verified)', startVerified = false, pitOneway = null;
+  if (osm?.elements?.length && c.map && c.centre) {
+    const step = Math.max(1, Math.floor(n / 360)), R = 6371008.8, r = Math.PI / 180, [la, lo] = c.centre;
+    const en = ([a, b]) => [(b - lo) * r * R * Math.cos(la * r), (a - la) * r * R];
+    const near = p => { let best = Infinity, k = -1; c.map.x.forEach((x, j) => { const d = Math.hypot(x - p[0], c.map.y[j] - p[1]); if (d < best) { best = d; k = j; } }); return {d: best, i: Math.min(n - 1, k * step)}; };
+    const tg = e => e.tags || {}, pitRe = /pit/i, finRe = /finish|start|ziel|arriv|traguardo|ゴール|timing/i;
+    const fin = osm.elements.filter(e => !pitRe.test(tg(e).name || '') && (finRe.test(tg(e).raceway || '') || finRe.test(tg(e).name || '')))
+      .map(e => { const ps = e.geom.map(en), m = ps.reduce((a, p) => [a[0] + p[0] / ps.length, a[1] + p[1] / ps.length], [0, 0]); return {e, ...near(m)}; }).filter(h => h.d < 40).sort((a, b) => a.d - b.d);
+    const pits = osm.elements.filter(e => e.type === 'way' && e.geom.length > 1 && (pitRe.test(tg(e).raceway || '') || pitRe.test(tg(e).service || '') || pitRe.test(tg(e).name || '')))
+      .map(e => { const ps = e.geom.map(en), seg = ps.slice(1).map((p, j) => Math.hypot(p[0] - ps[j][0], p[1] - ps[j][1])), L = seg.reduce((a, b) => a + b, 0);
+        let acc = 0, j = 0; while (j < seg.length - 1 && acc + seg[j] < L / 2) acc += seg[j++]; const m = ps[j + 1]; return {e, ps, L, ...near(m)}; })
+      .filter(h => h.d < 150 && h.L > 150 && h.L < 2500).sort((a, b) => b.L - a.L);
+    if (fin.length) { s0 = fin[0].i; start = `OpenStreetMap ${fin[0].e.type} ${fin[0].e.id} (${tg(fin[0].e).name || tg(fin[0].e).raceway}), ${Math.round(fin[0].d)} m off the lap`; startVerified = true; }
+    else if (pits.length) { s0 = pits[0].i; start = `middle of the pit lane (OpenStreetMap way ${pits[0].e.id}, ${Math.round(pits[0].L)} m), ${Math.round(pits[0].d)} m off the lap; line position along the straight ±150 m`; startVerified = 'pit straight'; }
+    const p = pits.find(h => tg(h.e).oneway === 'yes'); // a one-way pit lane is drawn in the race direction
+    if (p) { const a = p.ps[0], b = p.ps[p.ps.length - 1], j0 = Math.floor(near(a).i / step), j1 = Math.floor(near(b).i / step), m = c.map.x.length, fwd = ((j1 - j0) % m + m) % m < m / 2;
+      pitOneway = (fwd ? mapped : mapped === 'cw' ? 'ccw' : 'cw'); }
+  }
+  const k0 = reversed ? (n - s0) % n : s0, order = Array.from({length: n}, (_, i) => idx((i + k0) % n));
+  return {order, reversed, startVerified, start, direction: {real: spec.direction || null, mapped, reversed, pitLaneOneway: pitOneway, agrees: pitOneway && spec.direction ? pitOneway === spec.direction : null}};
 }
 
 // Real laps of known classes against the simulated lap. Car = production calibration of that class, nearest fitted season.
