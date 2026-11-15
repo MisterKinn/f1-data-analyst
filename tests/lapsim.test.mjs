@@ -312,3 +312,11 @@ test('powertrain and drag (bug report 2026-11-15): torque curve and gears are us
   const g = simulate({track: 'monza', car: 'gt3-ferrari-296-gt3', torque_curve: [[2500, 500], [6000, 700], [8000, 540]], gear_ratios: [3.1, 2.3, 1.85, 1.5, 1.25, 1.08], final_drive: 3, tyre_radius_m: 0.34});
   assert.equal(g.status, 'ok'); assert.ok(g.result.top_speed_kph < 300);
 });
+
+test('2026 F1 energy plan: more grip is never slower (bug 2026-11-15, Daytona)', async () => {
+  const {lapsimKernel} = await import('../worker/lapsim/kernel.js'), {carsFor} = await import('../worker/lapsim/scenario.js'), {lapsimAllTracks: T} = await import('../worker/lapsim/tracks.js');
+  const K = lapsimKernel(), env = K.conditionsFromWeather({pressureHpa: 1013, airTempC: 25, humidityPct: 50, trackTempC: 35, rechargeMJ: 7});
+  for (const id of ['daytona', 'monza', 'le-mans']) { const tr = K.trackFromData(T[id]), c = carsFor(id)['2026'].car;
+    const laps = [1, 1.05, 1.1].map(f => K.simulateLap(tr, {...c, muX: c.muX * f, muY: c.muY * f, muXTrac: (c.muXTrac ?? c.muX) * f}, env).lapTime);
+    assert.ok(laps[0] >= laps[1] - 1e-3 && laps[1] >= laps[2] - 1e-3, `${id}: ${laps.map(x => x.toFixed(3))}`); }
+});

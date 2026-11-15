@@ -399,7 +399,10 @@ drag. Fixed for every car:
   `drag_cda`, `downforce_cla`. The real-lap correction of the unchanged car is kept, so a change shows as a difference from the real lap.
 - Drag bug: the sensitivity table compared the changed bare simulation with the corrected (real) lap; it now compares bare with
   bare. Test: `tests/lapsim.test.mjs` (sign of every sensitivity, more drag is slower).
-- Known limit: the 2026 F1 car on Daytona (a track F1 never ran) gives a wrong grip sign through the energy-management heuristic.
+- 2026 F1 energy plan (fixed 2026-11-15): the super-clip plan was rejected when its deploy beat the budget by about 1 kJ (the
+  forward pass caps deploy by its own state of charge; the lap account differs from it by that much), so more grip fell back to a
+  slower plan at Daytona. The check now allows 1.5 kJ (the battery test still holds: never below −1 kJ), several deploy cut-offs are tried, and the earlier plan stays a
+  candidate: no F1 track got slower (largest change −0.44 %, RMS 0.10 % against the 0.9 % holdout error). Test in tests/lapsim.test.mjs.
 
 ## Telemetry channels and the racing line for every car (2026-11-15)
 

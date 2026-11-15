@@ -339,15 +339,19 @@ export function lapsimKernel() {
       // the straights (above vH) and spend the energy lower down, when that is faster
       const limit = env.rechargeMax ?? ers.rechargeMax ?? 8.5e6, soc = ers.socWindow ?? 4e6;
       if (throttleHarvest && acc.eRegen < limit - 1e4) {
-        const tA = acc.time, cutB = fitCut(Infinity, soc + limit);
-        let lo = 5, hi = vMaxCar + 1;
-        for (let it = 0; it < 20; it++) {
-          const mid = 0.5 * (lo + hi), a = account(forward(cutB, mid));
-          if (a.eDeploy > budget(a.eRegen)) hi = mid; else lo = mid;
-        }
-        const vB = lo, vb = forward(cutB, vB), b = account(vb);
-        if (b.eDeploy <= budget(b.eRegen) + 1e3 && b.time < tA) { vCut = cutB; vH = vB; acc = b; v = vb; }
-        else { v = forward(vCut); acc = account(v); }
+        // super-clipping plan: deploy below a cut-off, harvest at full throttle above vH. The earlier single try (cut-off for a full
+        // recharge, then vH) missed the energy limit by a few kJ when grip rose and fell back to the slower plan (Daytona, bug
+        // 2026-11-15: more grip, slower lap). Now a few cut-offs below it are tried too and the fastest legal plan is kept.
+        const cutB = fitCut(Infinity, soc + limit);
+        const vTopA = Math.max(...v); // cut-offs from the top speed down (the full-recharge cut-off is often above it: no cut-off at all)
+        for (const cut of [cutB, ...[1, 0.98, 0.96, 0.94, 0.92, 0.9, 0.87, 0.84].map(f => Math.min(cutB, vTopA) * f)]) {
+          for (const tol of [0, 1.5e3]) { let lo = 5, hi = vMaxCar + 1; // strict search (the earlier plan) and the tolerant one; the faster legal plan wins
+          for (let it = 0; it < 20; it++) { const mid = 0.5 * (lo + hi), a = account(forward(cut, mid)); if (a.eDeploy > budget(a.eRegen) + tol) hi = mid; else lo = mid; }
+          const b = account(forward(cut, lo));
+          // tolerance 1.5 kJ: the forward pass caps deploy by its own state of charge, and the lap account differs from it by
+          // about 1 kJ (the old 1 kJ tolerance rejected legal plans)
+          if (b.eDeploy <= budget(b.eRegen) + 1.5e3 && b.time < acc.time) { vCut = cut; vH = lo; acc = b; } } }
+        v = forward(vCut, vH); acc = account(v); // forward() reuses its buffers: run the chosen plan last
       }
     }
 

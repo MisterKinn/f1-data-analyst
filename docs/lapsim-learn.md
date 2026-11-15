@@ -241,7 +241,10 @@ Rows that could not be used, by reason: no simulator geometry: sebring-6019: 301
 
 - Formula E: cars table is being fetched; no Formula E track geometry except Monaco; Gen3 Evo fit and the Gen4 model on the page are not done.
 - Timing71 rows: GTWC, IGTC, Nürburgring 24h and DTM are in (DTM as records only: its layouts disagree across seasons). NLS, Macau, Misano, Sonoma and Barber are not resolved yet.
-- GT3 ELMS and Asian LMS error rose with the new sources (section 4): try a series term inside the ACO body.
+- GT3 ELMS and Asian LMS (2026-11-15): back to 1.05 % and 0.70 % event-hidden once SRO laps were limited to certain layouts.
+- SRO official laps (no weather) are fitted only on thin layouts (fewer than 3 timed GT3 seasons), only for seasons no timed source
+  covers, only when the layout is certain (not chosen by lap time among several built layouts; inside the layout's known seasons).
+  Misano: 1 → 10 events, error 3.8 % → 0.9 %. GT3 overall 1.12 % (252 events).
 - SRO official tables carry no weather, so they are records only (shown with the event weather unknown).
 - F1 per-team cars: unchanged in this step (F1 is shown per regulation and its production calibration was not touched).
 - Practice and race laps are in the car table (type P and R) but only qualifying is fitted: a fuel and tyre-age term must be declared first.

@@ -83,13 +83,24 @@ export function loadRows(files = SOURCES) {
       if (group === 'gt3' && !b) continue;
       if (src === 'archive' && r.series === 'wec' && tr.venue) archive.add(r.season + '|' + tr.venue);
       pending.push({r, group, tr, w, b, num}); } }
+  // an SRO row is fitted only when its layout is certain: not found by lap time among several built layouts (Paul Ricard GT laps fell on
+  // the F1 layout), and
+  // inside the seasons the layout is known to have been used (Baku 2013 was another street circuit than the F1 one)
+  const REGL = new Map(JSON.parse(readFileSync('scripts/sim/data/track-registry.json', 'utf8')).layouts.map(l => [l.id, l]));
+  const simsOf = v => [...REGL.values()].filter(l => l.venue === v && l.sim && !l.sim.startsWith('fe-')).length; // Formula E street layouts are no GT3 candidate
+  const sroSure = (tr, y) => { if (tr.how === 'lap-time band' && simsOf(tr.venue) !== 1) return false; const sz = REGL.get(tr.layout)?.seasons || []; return !sz.length || sz.some(([a, b]) => y >= a - 1 && y <= b + 1); };
+  // SRO rows fill only thin layouts: a layout with fewer than 3 GT3 seasons from the timed sources, and only its other seasons
+  const covered = new Set(pending.filter(p => p.r.src !== 'sro' && p.r.type === 'Q' && p.group === 'gt3').map(p => p.tr.layout + '|' + p.r.season));
+  const thick = new Set(Object.entries([...covered].reduce((o, k) => { const l = k.split('|')[0]; o[l] = (o[l] || 0) + 1; return o; }, {})).filter(([, n]) => n >= 3).map(([l]) => l));
   for (const {r, group, tr, w, b, num} of pending) {
     // a layout found from the lap time alone must also fit the class car: within 12 % of its simulated lap there (no track factor)
     if (tr.how === 'lap-time band' && tr.sim && Math.abs(r.best / simLap(tr.sim, group, r.season, w) - 1) > 0.12) { skip('lap does not fit the layout found by lap time'); continue; }
     if (r.src === 'alkamel' && archive.has(r.season + '|' + tr.venue)) continue; // the archive already holds this WEC event (same season and venue)
     const dry = !(+r.rainShare > 0.02), o = {series: r.series, season: r.season, event: r.event, layout: tr.layout, group, model: r.model.key, body: b, entry: r.entry, real: r.best, type: r.type, session: r.session, w};
     if (dry && tr.sim) for (const k of [`${tr.layout}|m|${o.model}|${b}`, `${tr.layout}|c|${group}`, `${tr.layout}|c|${group}|${b}`, `${tr.layout}|c|${group}|s:${r.series}`]) { keep(k, o); if (r.type === 'R') keep(k + '|race', o); }
-    if (r.type !== 'Q' || b === 'dtm' || r.src === 'sro') continue; // SRO official tables: records only (no weather; Timing71 already fits these events) // DTM: records only (its rows disagree across seasons; not fitted yet)
+    // DTM: records only (its rows disagree across seasons). SRO official tables (no weather): fitted only for a layout and season that no
+    // Timing71 or Al Kamel row covers, on layouts those sources barely have (owner 2026-11-15: Misano had one event, so its error could not use a track term)
+    if (r.type !== 'Q' || b === 'dtm' || r.src === 'sro' && (thick.has(tr.layout) || covered.has(tr.layout + '|' + r.season) || !sroSure(tr, r.season))) continue;
     const why = !dry ? 'wet qualifying' : !tr.layout ? 'layout not resolved: ' + (tr.how || '').slice(0, 40) : !(tr.sim || tr.near) ? 'no simulator geometry: ' + tr.layout : null; // a ⚠️ track is learned too: its layout term absorbs the geometry error and the held-out error decides the mark
     if (why) { skip(why); continue; }
     const k = [r.series, r.season, r.event, group, r.model.key].join('|'), p = best.get(k);
