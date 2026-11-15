@@ -6,7 +6,9 @@
 import {existsSync, readFileSync, writeFileSync} from 'node:fs';
 import {roadLap} from './road-lap.mjs';
 const FIA = existsSync('.cache/lapsim/osm/fia-circuits.json') ? JSON.parse(readFileSync('.cache/lapsim/osm/fia-circuits.json', 'utf8')).rows : [];
-const DIR = '.cache/lapsim/osm', REQ = JSON.parse(readFileSync(process.env.TRACK_REQUESTS || 'scripts/sim/data/track-requests.json', 'utf8')).tracks;
+const DIR = '.cache/lapsim/osm';
+// read only when run as a script: importing loops() must not need a request file (probe-sebring.mjs crashed on it in Actions)
+const requests = () => JSON.parse(readFileSync(process.env.TRACK_REQUESTS || 'scripts/sim/data/track-requests.json', 'utf8')).tracks;
 const hav = (a, b) => { const R = 6371008.8, r = Math.PI / 180, x = (b[1] - a[1]) * r * Math.cos((a[0] + b[0]) / 2 * r), y = (b[0] - a[0]) * r; return R * Math.hypot(x, y); };
 const key = p => p[0].toFixed(7) + ',' + p[1].toFixed(7);
 const SKIP = /kart|motocross|rallycross|off_road|bmx|drag|rc_car|speedway_dirt/i, SKIPNAME = /pit ?lane|pitlane|boxengasse|피트|ピット|kart|drag|rally|drift|ドリフト|カート|motocross|skid|glisse|driving center/i;
@@ -73,7 +75,7 @@ export function loops(elements, {maxM = 30000, minM = 1500, cap = 200000, snapM 
 
 if (process.argv[1]?.endsWith('assemble.mjs')) {
   const out = {source: 'OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); loops found by scripts/sim/tracks/assemble.mjs', rule: 'accepted = within 0.5 % of the official lap length', tracks: {}}, lines = {};
-  for (const t of REQ.filter(t => t.status === 'osm')) {
+  for (const t of requests().filter(t => t.status === 'osm')) {
     const f = `${DIR}/${t.id}.json`; if (!existsSync(f)) { out.tracks[t.id] = {error: 'no map data'}; continue; }
     const file = JSON.parse(readFileSync(f, 'utf8')), raw = file.elements, clone = a => JSON.parse(JSON.stringify(a));
     // permanent raceway ways and the ways of a route relation are searched separately (the same way can be in both)
