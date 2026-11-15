@@ -59,7 +59,7 @@ for (const f of (process.env.LAPSIM_DL_EXTRA || '').split(',').filter(x => x && 
   const id = r.trackId || resolveTrack({name: String(r.venue || '').replace(/-/g, ' '), lengthKm: r.lenKm || null, season: r.season}).sim; if (!id || !CAR[r.bucket]) continue;
   // a lap is learned only on its own layout: no Formula E layout for a GT3 lap, and the mean speed on this layout must be in the class band
   const len = lapsimAllTracks[id]?.length, vKph = len ? len / 1000 / (r.t / 3600) : 0, band = r.bucket === 'gt3' ? [125, 215] : r.bucket.startsWith('fe-') ? [80, 170] : [140, 265];
-  if ((r.bucket === 'gt3') === id.startsWith('fe-') || vKph < band[0] || vKph > band[1]) continue;
+  if ((r.bucket === 'gt3' && id.startsWith('fe-')) || vKph < band[0] || vKph > band[1]) continue;
   laps.push({id, b: r.bucket, name: String(r.driver).trim(), t: r.t, s: r.s, series: r.series, season: r.season, manufacturer: r.manufacturer || null, team: r.team || null});
 }
 const reg = buildRegistry([...new Set(laps.map(l => l.name))].map(name => ({name})));
