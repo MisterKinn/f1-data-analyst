@@ -122,7 +122,7 @@ test('Formula E: every raced layout and rule set shows its fastest real lap (pag
   for (const [id, t] of Object.entries(lapsimFe.tracks)) for (const [k, r] of Object.entries(t.real)) { n++;
     assert.equal(/data-ls="lap"[^>]*>([^<]+)/.exec(simulationPage({track: id, car: k}, 'en'))?.[1], fmt(r.lap), `${id} ${k}`);
     assert.ok(Math.abs(feTool({track: id, car: k}).result.lap_seconds - r.lap) < 5e-4, `tool ${id} ${k}`); }
-  assert.ok(n >= 30, 'raced FE combinations: ' + n);
+  assert.ok(n >= 15, 'raced FE combinations: ' + n); // owner 2026-11-15: Gen3 Evo on only
   for (const [k, h] of Object.entries(lapsimFe.heldOutPct)) assert.ok(h.event < h.before, `${k}: event hidden ${h.event} % not below the bare car ${h.before} %`);
   assert.ok(simulationPage({track: 'fe-london', car: 'fe-gen4'}, 'en').includes('Gen4'));
 });

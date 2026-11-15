@@ -11,7 +11,7 @@ import {existsSync, readFileSync, writeFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
 import {lapsimKernel} from '../../../worker/lapsim/kernel.js';
 import {lapsimTracks, lapsimExtraTracks} from '../../../worker/lapsim/tracks-data.js';
-import {feKeyOf, feCarFor} from '../../../worker/lapsim/fe-cars.js';
+import {FE_GENS, feKeyOf, feCarFor} from '../../../worker/lapsim/fe-cars.js';
 import {buildTrack} from '../build-geometry-extra.mjs';
 import {parseCsv} from './build-endurance.mjs';
 import {lineOf, lengthOf, metres} from './fe-lines.mjs';
@@ -46,6 +46,7 @@ for (const l of layouts) { const ys = [...l.years].sort(), same = layouts.filter
 // 2. Track geometry (least-curvature line inside an 11 m street track, flat)
 const tracks = {}, geomLog = [];
 for (const l of layouts) {
+  if (l.last < 2025) { geomLog.push({id: l.id, from: 'not raced by Gen3 Evo (owner 2026-11-15: Formula E from Gen3 Evo on)'}); continue; }
   if (lapsimAllTracks[l.id]) { l.sim = l.id; geomLog.push({id: l.id, from: 'existing simulator track'}); continue; }
   if (!l.pick) { geomLog.push({id: l.id, from: 'no usable lap line on the maps'}); continue; }
   const {m, g} = l.pick, c = {ds: g.ds, length: Math.round(g.kappa.length * g.ds), officialLengthM: l.lengthM, widthM: 11, kappa: Array.from(g.kappa, k => Math.round(k * 1e5)), grade: null, sectors: [], corners: []};
@@ -65,12 +66,12 @@ const rows = [...base, ...duels].map(r => ({...r, season: +r.season, best: +r.be
 const skipped = {};
 for (const r of rows) { const l = layouts.find(l => l.venue === r.venue && Math.abs(r.lenM / l.lengthM - 1) < SAME); r.layout = l?.sim; r.key = feKeyOf(r.season);
   if (!r.layout) skipped[`${r.venue} ${r.lenM}`] = (skipped[`${r.venue} ${r.lenM}`] || 0) + 1; }
-const used = rows.filter(r => r.layout && !(+r.rainShare > 0.02) && r.best < 1.3 * r.lenM / 1000 * 30); // dry; slower than 120 km/h average is not a lap
+const used = rows.filter(r => r.layout && r.key && !(+r.rainShare > 0.02) && r.best < 1.3 * r.lenM / 1000 * 30); // r.key null: a rule set before Gen3 Evo (not modelled) // dry; slower than 120 km/h average is not a lap
 
 // 4. Records: fastest lap per layout and rule set (any session), fastest race lap
 const rec = (r, type) => ({lap: r.best, weather: {airTempC: +r.airC || undefined, trackTempC: +r.trackC || undefined, humidityPct: +r.hum || undefined, pressureHpa: +r.hpa || undefined}, year: r.season, event: r.event, session: r.session.replace(/^\d+_/, ''), type, kW: feCarFor(r.key, r.season, r.session, r.type).pIce / 1e3, entry: r.entry, model: r.vehicle.replace(/\s+/g, ' ').trim(), team: r.team});
 const real = {}, raceReal = {};
-for (const r of used) { const a = (real[r.layout] ||= {}), b = (raceReal[r.layout] ||= {});
+for (const r of used.filter(r => FE_GENS[r.key])) { const a = (real[r.layout] ||= {}), b = (raceReal[r.layout] ||= {}); // records: shown rule sets only
   if (!a[r.key] || r.best < a[r.key].lap) a[r.key] = rec(r, r.type);
   if (r.type === 'R' && (!b[r.key] || r.best < b[r.key].lap)) b[r.key] = rec(r, 'R'); }
 

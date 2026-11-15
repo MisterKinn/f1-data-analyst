@@ -311,6 +311,11 @@ Per track:
 | fe-cape-town | 1 | 5.64 | 4.41 |
 | fe-valencia | 1 | 7.4 | 1.9 |
 
+**Gen3 Evo on only (owner 2026-11-15).** The page and the tool show Formula E Gen3 Evo and the Gen4 prior. Gen3 (2023-24) laps stay in
+the fit as a hidden helper (`FE_FIT_ONLY` in `fe-cars.js`): they help learn the factor of layouts Gen3 Evo shares (without them the
+Gen3 Evo event-hidden error is 2.52 %, with them 1.82 %). Gen2 is not modelled, and layouts last raced before 2025 (Portland, Misano,
+Cape Town, Hyderabad, Rome, London 2023, Berlin 2023/2024, Diriyah) are no longer built. 15 Formula E tracks, 16 raced combinations.
+
 **Group and duel power (2026-11-15).** A qualifying lap is simulated at the power of its session (`feCarFor()` in
 `worker/lapsim/fe-cars.js`): Gen3 and Gen3 Evo groups 300 kW, duels and free practice 350 kW; Season 8 (2021-22, Gen2) groups 220 kW,
 duels 250 kW; Seasons 5-7 250 kW (fiaformulae.com, groups and duels format). Before, the group laps were fitted against the 350 kW car,
