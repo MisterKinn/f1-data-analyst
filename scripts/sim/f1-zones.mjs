@@ -5,6 +5,8 @@
 import {readFileSync, writeFileSync} from 'node:fs';
 import {lapsimAllTracks as T} from '../../worker/lapsim/tracks.js';
 import {lapsimTrackView} from '../../worker/lapsim/track-view-data.js';
+import {lapsimKernel} from '../../worker/lapsim/kernel.js';
+import {carsFor} from '../../worker/lapsim/scenario.js';
 
 const raw = JSON.parse(readFileSync(new URL('./data/learn/f1-zones-raw.json', import.meta.url), 'utf8'));
 // earlier years for circuits whose map of the wanted year is an image (fetch-f1-zones-extra.mjs); the 2025 slot keeps the newest year found
@@ -28,10 +30,16 @@ function at(id, txt) {
   const d = dm ? Number(dm[1]) * (dm[2].toLowerCase() === 'before' ? -1 : 1) + (/(T\d+[A-Z]?)[- ](entry|exit)/i.test(p) ? edge : 0) : edge;
   return ((base + d) % L + L) % L;
 }
-// end of a zone: braking for the next numbered turn after the start (at least 150 m on)
+// end of a zone: where the simulated 2025 F1 car starts braking after the start (at least 100 m on). Until 2026-11-15 this was
+// the next numbered turn, which cut zones at flat kinks (Montreal T12, Interlagos T15: zones of 95-100 m).
+const K = lapsimKernel(), ENV = K.conditionsFromWeather({pressureHpa: 1013.25, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0}), speed = {};
 function zoneEnd(id, s0) {
-  const C = cornersOf(id), L = T[id].length, ahead = C.map(c => ({c, d: ((c.s - s0) % L + L) % L})).filter(x => x.d > 150).sort((a, b) => a.d - b.d)[0];
-  return ahead ? ((ahead.c.s - 60) % L + L) % L : (s0 + 400) % L;
+  const t = T[id], ds = t.ds, n = t.kappa.length, L = n * ds;
+  const v = speed[id] ??= K.simulateLap(K.trackFromData(t), carsFor(id)['2025'].car, ENV).v;
+  // braking: a deceleration above 8 m/s2 held over 10 m (v dv/ds), the first one after 100 m
+  for (let k = Math.round(100 / ds); k < n; k++) { const i = (Math.round(s0 / ds) + k) % n, j = (i + Math.round(10 / ds)) % n;
+    if ((v[j] * v[j] - v[i] * v[i]) / (2 * 10) < -8) return Math.round((i * ds) % L); }
+  return (s0 + 400) % L;
 }
 const out = {};
 for (const e of raw.events) {
