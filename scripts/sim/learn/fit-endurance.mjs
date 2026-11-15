@@ -17,7 +17,16 @@ import {resolveTrack, registry} from './track-registry.mjs';
 import {modelOf} from './models.mjs';
 
 const K = lapsimKernel(), WEC = lapsimCalibration.series.wec, ALL = {...lapsimTracks, ...lapsimExtraTracks, ...lapsimFeTracks};
-export const WIDTH = {S: 0.10, T: 0.05, TG: 0.015, M: 0.015, MB: 0.010, MY: 0.007, B: 0.010}, SIGMA = 0.005, HUBER = 2;
+export const WIDTH = {S: 0.02, SS: 0.10, SY: 0.05, T: 0.05, TG: 0.015, M: 0.015, MB: 0.010, MY: 0.007, B: 0.010, F: 1, F2: 0.05, AGE: 0.01, HOT: 0.02, TR: 0.01}, SIGMA = 0.005, HUBER = 2;
+// Surface eras (docs/lapsim-learn.md section 12): a full resurfacing starts a new track term; the year is the first season on the
+// new asphalt, from the circuits' own announcements. AGE = years on that asphalt (new asphalt is fastest, then slows; cap 3).
+export const SURFACE = {'laguna-seca': 2024, 'road-america': 2023, shanghai: 2024};
+const era = (l, y) => SURFACE[l] && y >= SURFACE[l] ? l + '@' + SURFACE[l] : l, age = (l, y) => SURFACE[l] && y >= SURFACE[l] ? Math.min(3, y - SURFACE[l]) : 0;
+// F1 track factor (log grip of the F1 calibration, latest season): an independent measure of how far the map geometry is off.
+const F1G = {}; for (const y of Object.keys(lapsimCalibration.seasons).sort()) for (const [k, v] of Object.entries(lapsimCalibration.seasons[y].tracks || {})) if (v.grip != null) F1G[k] = Math.log(v.grip);
+// Banked tracks: the banking is not in the geometry, so the lap depends more on air density (power) than the simulator gives.
+const BANKED = new Set(['daytona']), drho = w => Number.isFinite(w.hpa) && Number.isFinite(w.airC) ? Math.log(w.hpa / (w.airC + 273.15) / (1013.25 / 298.15)) : 0;
+const zc = z => Math.max(-0.8, Math.min(0.8, z)); // speed slope inside the usual range: street circuits and Daytona do not set it
 const GT = /^(GTD|GTDPRO|LMGT3|GT|GT3)$/, body = s => bodyOf(s);
 // class of a row -> simulator car. LMP2 (one spec car at almost every track) is kept as a probe of the track terms with the LMDh car.
 export function groupOf(r) {
@@ -108,11 +117,12 @@ export function loadRows(files = SOURCES) {
   const covered = new Set(pending.filter(p => p.r.src !== 'sro' && p.r.type === 'Q' && p.group === 'gt3').map(p => p.tr.layout + '|' + p.r.season));
   const thick = new Set(Object.entries([...covered].reduce((o, k) => { const l = k.split('|')[0]; o[l] = (o[l] || 0) + 1; return o; }, {})).filter(([, n]) => n >= 3).map(([l]) => l));
   for (const {r, group, tr, w, b, num} of pending) {
-    // a layout found from the lap time alone must also fit the class car: within 12 % of its simulated lap there (no track factor)
-    if (tr.how === 'lap-time band' && tr.sim && Math.abs(r.best / simLap(tr.sim, group, r.season, w) - 1) > 0.12) { skip('lap does not fit the layout found by lap time'); continue; }
+    // a layout found from the lap time alone must also fit the class car: within 8 % of its simulated lap there (no track factor;
+    // 12 % was only needed while the Paul Ricard map was broken)
+    if (tr.how === 'lap-time band' && tr.sim && Math.abs(r.best / simLap(tr.sim, group, r.season, w) - 1) > 0.08) { skip('lap does not fit the layout found by lap time'); continue; }
     if (r.src === 'alkamel' && archive.has(r.season + '|' + tr.venue)) continue; // the archive already holds this WEC event (same season and venue)
     const dry = !(+r.rainShare > 0.02), o = {series: r.series, season: r.season, event: r.event, layout: tr.layout, group, model: r.model.key, body: b, entry: r.entry, real: r.best, type: r.type, session: r.session, w};
-    if (dry && tr.sim) for (const k of [`${tr.layout}|m|${o.model}|${b}`, `${tr.layout}|c|${group}`, `${tr.layout}|c|${group}|${b}`, `${tr.layout}|c|${group}|s:${r.series}`]) { keep(k, o); if (r.type === 'R') keep(k + '|race', o); }
+    if (dry && tr.sim && (r.src !== 'sro' || sroSure(tr, r.season))) for (const k of [`${tr.layout}|m|${o.model}|${b}`, `${tr.layout}|c|${group}`, `${tr.layout}|c|${group}|${b}`, `${tr.layout}|c|${group}|s:${r.series}`]) { keep(k, o); if (r.type === 'R') keep(k + '|race', o); }
     // DTM: records only. Tried 2026-11-15 with named layouts (short NGK = sprint): Timing71 DTM rows carry no weather or rain flag, and
     // single wet sessions gave 7-11 % errors (GT3 event-hidden 1.12 -> 1.40 %), so they stay out of the fit.
     // SRO official tables (no weather): fitted only for a layout and season that no
@@ -133,7 +143,12 @@ export function loadRows(files = SOURCES) {
   return {rows, skipped, zStat, records};
 }
 const kind = g => g === 'gt3' ? 'gt' : 'proto';
-const terms = r => [['S', r.group + '|' + r.series + '|' + r.season, 1], ['T', r.layout, 1], ['TG', r.layout + '|' + kind(r.group), 1], ['M', r.model, 1], ['MB', r.model + '|' + body(r.series), 1], ['MY', r.model + '|' + body(r.series) + '|' + r.season, 1], ['B', r.model, r.z]];
+const terms = r => { const f = F1G[r.sim] ?? 0, e = era(r.layout, r.season), t = [['S', r.group + '|' + r.series + '|' + r.season, 1], ['SS', r.group + '|' + r.series, 1], ['SY', r.group + '|' + r.season, 1],
+  ['T', e, 1], ['TG', e + '|' + kind(r.group), 1], ['M', r.model, 1], ['MB', r.model + '|' + body(r.series), 1], ['MY', r.model + '|' + body(r.series) + '|' + r.season, 1], ['B', r.model, zc(r.z)],
+  ['F', kind(r.group), f], ['F2', 'all', 10 * f * f], ['AGE', 'all', age(r.layout, r.season)]];
+  if (Number.isFinite(r.w?.trackC)) t.push(['HOT', 'all', Math.max(0, r.w.trackC - 45) / 10]); // grip above 45 °C track temperature: the simulator loses too much
+  if (BANKED.has(r.layout)) t.push(['TR', r.layout, 10 * drho(r.w || {})]);
+  return t; };
 // Ridge least squares with Huber weights (a wet-suspect or disrupted session is down-weighted, never deleted: rule 4.3 no. 7).
 export function fit(rows, widths = WIDTH) {
   const idx = new Map(), id = (t, k) => { const key = t + ':' + k; if (!idx.has(key)) idx.set(key, {i: idx.size, t}); return idx.get(key).i; }, X = rows.map(r => terms(r).map(([t, k, v]) => [id(t, k), v])), P = idx.size;
@@ -162,10 +177,14 @@ function table(rows, preds, by) { // preds: {name: [per row]}
 if (process.argv[1]?.endsWith('fit-endurance.mjs')) {
   const loaded = loadRows(process.argv.length > 3 ? process.argv.slice(2, -1) : SOURCES), skipped = loaded.skipped, OUT = process.argv.length > 3 ? process.argv.at(-1) : 'scripts/sim/data/learn/endurance-fit.json'; let rows = loaded.rows;
   // Wet or disrupted qualifying that the rain column missed (rule 3.3.1): the whole class of an event is more than 4 % slower than
-  // the fit predicts from every OTHER event. One pass, slow side only. The sessions are listed, not fitted and not scored.
-  const slow = []; { const g = new Map(); for (const ev of new Set(rows.map(r => r.eventKey))) { const f = fit(rows.filter(r => r.eventKey !== ev)); for (const r of rows.filter(r => r.eventKey === ev)) { const k = ev + '|' + r.group; (g.get(k) || g.set(k, []).get(k)).push(Math.log(r.real / f.predict(r))); } }
-    for (const [k, e] of g) { const m = e.reduce((a, x) => a + x, 0) / e.length; if (m > 0.04) slow.push({session: k, cars: e.length, slowerPct: +(m * 100).toFixed(1)}); }
-    const bad = new Set(slow.map(s => s.session)); rows = rows.filter(r => !bad.has(r.eventKey + '|' + r.group)); skipped['slow session (wet or disrupted), listed'] = loaded.rows.length - rows.length; }
+  // the fit predicts from every OTHER event. Slow side only. The sessions are listed, not fitted and not scored.
+  // Repeated until no new session is found (at most 3 passes): a wet session left in the data pulls the prediction of the others.
+  const slow = []; for (let pass = 0; pass < 3; pass++) { const g = new Map(), found = slow.length; for (const ev of new Set(rows.map(r => r.eventKey))) { const f = fit(rows.filter(r => r.eventKey !== ev)); for (const r of rows.filter(r => r.eventKey === ev)) { const k = ev + '|' + r.group; (g.get(k) || g.set(k, []).get(k)).push(Math.log(r.real / f.predict(r))); } }
+    const mean = new Map([...g].map(([k, e]) => [k, e.reduce((a, x) => a + x, 0) / e.length])), wetEv = new Set([...mean].filter(([, m]) => m > 0.04).map(([k]) => k.split('|').slice(0, -1).join('|')));
+    // another class of an event with a wet class is dropped from 2 % slow (same weekend weather, e.g. WEC 2025 COTA GT3 at 3.9 %)
+    for (const [k, m] of mean) if (m > 0.04 || m > 0.02 && wetEv.has(k.split('|').slice(0, -1).join('|'))) slow.push({session: k, cars: g.get(k).length, slowerPct: +(m * 100).toFixed(1)});
+    const bad = new Set(slow.map(s => s.session)); rows = rows.filter(r => !bad.has(r.eventKey + '|' + r.group)); if (slow.length === found) break; }
+  skipped['slow session (wet or disrupted), listed'] = loaded.rows.length - rows.length;
   const full = fit(rows);
   const groups = k => [...new Set(rows.map(r => r[k]))], hold = (key, drop = () => false) => { const p = new Array(rows.length); for (const g of groups(key)) { const f = fit(rows.filter(r => r[key] !== g)); rows.forEach((r, i) => { if (r[key] === g) p[i] = f.predict(r); }); } return p; };
   const preds = {before: rows.map(r => r.prod), raw: rows.map(r => r.sim0), inSample: rows.map(full.predict), eventOut: hold('eventKey'), layoutOut: hold('layout'), modelOut: hold('model')};
@@ -186,15 +205,15 @@ if (process.argv[1]?.endsWith('fit-endurance.mjs')) {
   const slug = (k, b) => (b === 'sro' ? 'gt3-' : `gt3-${b}-`) + k.toLowerCase().replace(/\+evo2?/, m => m.slice(1)).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   const info = {}; for (const r of rows) { const o = info[r.model] ||= {group: r.group, bodies: {}}; const b = o.bodies[body(r.series)] ||= {last: 0, n: 0}; b.last = Math.max(b.last, r.season); b.n++; }
   for (const [k, r] of loaded.records) if (r.group === 'gt3' && !k.endsWith('|race')) { const o = info[r.model] ||= {group: 'gt3', bodies: {}}; const b = o.bodies[r.body] ||= {last: 0, n: 0, recordOnly: true}; b.last = Math.max(b.last, r.season); }
-  const mTerm = (m, b, y, z) => g0('M:' + m) + g0(`MB:${m}|${b}`) + g0(`MY:${m}|${b}|${y}`) + g0('B:' + m) * z;
+  const mTerm = (m, b, y, z) => g0('M:' + m) + g0(`MB:${m}|${b}`) + g0(`MY:${m}|${b}|${y}`) + g0('B:' + m) * zc(z);
   // level of a body: mean season level of its series in the latest season it raced (row-weighted)
-  const levelOf = (g, b) => { const S = rows.filter(r => r.group === g && body(r.series) === b), y = Math.max(...S.map(r => r.season)); const ks = S.filter(r => r.season === y).map(r => `S:${g}|${r.series}|${y}`); return ks.length ? ks.reduce((a, k) => a + g0(k), 0) / ks.length : g0(`S:${g}|wec|${last}`); };
+  const levelOf = (g, b) => { const S = rows.filter(r => r.group === g && body(r.series) === b), y = Math.max(...S.map(r => r.season)); const lv = (s, yy) => g0(`S:${g}|${s}|${yy}`) + g0(`SS:${g}|${s}`) + g0(`SY:${g}|${yy}`), ks = S.filter(r => r.season === y).map(r => r.series); return ks.length ? ks.reduce((a, s) => a + lv(s, y), 0) / ks.length : lv('wec', last); };
   const current = g => Object.entries(info).filter(([, o]) => o.group === g && o.bodies.aco?.last >= last - 1 && !o.bodies.aco.recordOnly).map(([m, o]) => [m, o.bodies.aco.last]);
   const classTerm = (g, z) => levelOf(g, 'aco') + Math.min(...current(g).map(([m, y]) => mTerm(m, 'aco', y, z)));
   const gt3 = Object.entries(info).filter(([, o]) => o.group === 'gt3').flatMap(([m, o]) => Object.entries(o.bodies).filter(([b]) => BODY_ORDER.includes(b)).map(([b, x]) => ({m, b, y: x.last, n: x.n, fitted: !x.recordOnly})));
   const evoBases = new Set(gt3.filter(x => x.y >= last - 1 && / \+EVO/.test(x.m)).map(x => x.b + '|' + x.m.replace(/ \+EVO2?$/, ''))), shown = gt3; // every model that raced is listed (owner 2026-11-15: every measured lap, older generations too)
   const f5 = v => +Math.exp(v).toFixed(5), ownLayouts = [...new Set(rows.filter(r => !r.sibling).map(r => r.layout))], tracks = {};
-  for (const id of ownLayouts) { const R = rows.filter(r => r.layout === id), kinds = new Set(R.map(r => kind(r.group))), T = k => g0('T:' + id) + g0(`TG:${id}|${k}`), bl = res.byGroupLayout;
+  for (const id of ownLayouts) { const R = rows.filter(r => r.layout === id), kinds = new Set(R.map(r => kind(r.group))), e = era(id, 9999), f = F1G[R[0].sim] ?? 0, T = k => g0('T:' + e) + g0(`TG:${e}|${k}`) + g0('F:' + k) * f + g0('F2:all') * 10 * f * f + g0('AGE:all') * age(id, last), bl = res.byGroupLayout; // current surface, standard weather
     tracks[id] = {events: new Set(R.map(r => r.eventKey)).size, cls: Object.fromEntries(['lmh', 'lmdh', 'gt3'].filter(g => kinds.has(kind(g))).map(g => ['wec-' + (g === 'gt3' ? 'lmgt3' : g), f5(classTerm(g, zOf(id, g)) + T(kind(g)))])),
       errPct: Object.fromEntries(['lmh', 'lmdh', 'gt3'].map(g => [g, bl[g + ' @ ' + id]?.eventOutClass ?? null]).filter(([, v]) => v != null)),
       models: kinds.has('gt') ? Object.fromEntries(shown.filter(x => x.fitted).map(x => [slug(x.m, x.b), f5(levelOf('gt3', x.b) + mTerm(x.m, x.b, x.y, zOf(id, 'gt3')) + T('gt'))])) : {}}; }
