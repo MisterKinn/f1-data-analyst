@@ -36,14 +36,16 @@ for (const s of (await list()).catalogs.filter(c => +(c.name.match(/Season (\d+)
 // SRO GT3 from Timing71 lap rows
 const DIR = process.env.T71_ROWS || '.cache/t71-rows', HARD = ['no_time', 'pit_in', 'pit_out', 'not_green', 'deleted', 'wet_lap', 'wet_session', 'sector_sum', 'inaccurate', 'sim'];
 const files = d => existsSync(d) ? readdirSync(d).flatMap(f => { const p = join(d, f); return statSync(p).isDirectory() ? files(p) : /\.ndjson(\.gz)?$/.test(f) ? [p] : []; }) : [];
-let t71 = 0, noDriver = 0, keys = null; const drop = {};
+let t71 = 0, noDriver = 0, keys = null; const drop = {}, sampleDrivers = new Set();
 for (const f of files(DIR)) {
   const text = f.endsWith('.gz') ? gunzipSync(readFileSync(f)).toString() : readFileSync(f, 'utf8');
   for (const line of text.split('\n')) {
     if (!line) continue; let r; try { r = JSON.parse(line); } catch { continue; }
     if (r.source === 'alkamel' || r.series === 'wec' || !/GT3|GTD/i.test(modelOf(r.carModel, r.season, 'GT3')?.base || '')) continue;
     keys ||= Object.keys(r);
-    const driver = r.driver ?? r.driverName ?? r.driver_name ?? null; if (!driver) { noDriver++; continue; }
+    const d0 = r.driver ?? r.driverName ?? r.driver_name ?? null, driver = d0 && typeof d0 === 'object' ? d0.name ?? d0.fullName ?? ([d0.firstName, d0.lastName].filter(Boolean).join(' ') || null) : d0 != null ? String(d0) : null;
+    if (sampleDrivers.size < 12 && d0 != null) sampleDrivers.add(JSON.stringify(d0).slice(0, 80));
+    if (!driver || /^\d+$/.test(driver)) { noDriver++; continue; } // a number is a car or seat number, not a person
     if ((r.q || []).some(q => HARD.includes(q)) || !/q/i.test(String(r.sessionType || r.session || ''))) continue;
     let tid = null;
     const why = [r.s1, r.s2, r.s3].some(x => !(x > 0)) ? 'no sectors' : Math.abs(r.s1 + r.s2 + r.s3 - r.time) > 0.1 ? 'sectors do not add up' : !(tid = resolveTrack({name: [r.track, r.layout].filter(Boolean).join(' ').replace(/-/g, ' '), season: r.season}).sim) ? 'track ' + r.track + ' / ' + r.layout : null;
@@ -51,6 +53,7 @@ for (const f of files(DIR)) {
     lines.push({trackId: tid, series: r.series, season: r.season, venue: [r.track, r.layout].filter(Boolean).join(' '), lenKm: r.lenKm || null, bucket: 'gt3', driver, manufacturer: modelOf(r.carModel, r.season, 'GT3')?.base?.split(' ')[0] || null, team: r.team || null, t: r.time, s: [r.s1, r.s2, r.s3]}); t71++;
   }
 }
+console.log('Timing71 driver field samples', JSON.stringify([...sampleDrivers]));
 console.log('Timing71 dropped', JSON.stringify(Object.entries(drop).sort((a, b) => b[1] - a[1]).slice(0, 25)));
 console.log('Timing71 GT3 qualifying laps with a driver', t71, '· rows without a driver', noDriver, '· row fields', JSON.stringify(keys));
 writeFileSync(OUT, lines.map(x => JSON.stringify(x)).join('\n') + '\n');

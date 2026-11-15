@@ -46,7 +46,7 @@ for (const f of files) {
   let rows; try { rows = parseCsv(readFileSync(f, 'utf8')); } catch { continue; }
   if (rows.some(r => /RAIN|WET/i.test(r.TRACK_STATUS || ''))) continue;
   for (const r of rows) {
-    const b = bucket(r), t = secs(r.LAP_TIME), s = [r.S1_SECONDS, r.S2_SECONDS, r.S3_SECONDS].map(Number);
+    const b = bucket(r), t = secs(r.LAP_TIME), s = [1, 2, 3].map(k => r['S' + k + '_SECONDS'] ? Number(r['S' + k + '_SECONDS']) : secs(r['S' + k])); // IMSA files have only S1-S3 as m:ss
     if (!b || !r.DRIVER_NAME || !Number.isFinite(t) || s.some(x => !(x > 0)) || Math.abs(s[0] + s[1] + s[2] - t) > 0.05 || r.CROSSING_FINISH_LINE_IN_PIT || r.PIT_TIME || (r.FLAG_AT_FL && r.FLAG_AT_FL !== 'GF')) continue;
     const lenKm = Number(r.KPH) > 0 ? Number(r.KPH) * t / 3600 : null, id = resolveTrack({name: event.replace(/-/g, ' '), lengthKm: lenKm, season: +season}).sim;
     if (!id) continue;
