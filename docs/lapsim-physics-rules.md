@@ -411,7 +411,15 @@ two sections after this one.
 
 1. **Channels.** Show speed, throttle (%), brake pressure (bar, not on/off), gear, engine rpm and steering wheel angle; add a time-delta
    lane when a second car is compared, and a battery energy (SoC) lane for hybrid cars (F1 2026 rules, LMH, LMDh; the same deploy
-   and recovery model as the battery panel. F1 before 2026 and Formula E have no battery model yet, so no lane). Brake pressure comes from the deceleration, brake balance, pad mu, disc and caliper size per
+   and recovery model as the battery panel. F1 before 2026 and Formula E have no battery model yet, so no lane).
+   Motor power lane (kW, deploy +, recovery −) with the regulation cap of the car dashed. F1 2026 follows each circuit's FIA "Power
+   Unit Information" document completely, as data (`scripts/sim/learn/fetch-pu-docs.mjs` → `worker/lapsim/pu-docs-data.js`): recharge
+   per lap by session, power-limited distance, power reduction rate, the exception sectors (Alt 1 curve, >150 kW cut, reset, higher
+   speed threshold) and the overtake lines. Mind the rule change: rounds 1–3 (Melbourne, Shanghai, Suzuka) ran the original rules;
+   from Miami (round 4) MGU-K is 350 kW in key acceleration zones and the Alt 1 curve (about 250 kW) applies elsewhere in Sprint and
+   Race, and the qualifying recharge baseline fell from 8 to 7 MJ. Other cars follow their own regulations (F1 before 2026: 120 kW;
+   Hypercar: the BoP motor power above its deploy speed). Changing how the kernel deploys is the energy session's work: the lane shows
+   the kernel's flow, and the document's limits are drawn and listed next to it. Brake pressure comes from the deceleration, brake balance, pad mu, disc and caliper size per
    car class; gear and rpm from the engine curve and gear ratios (the best gear, shift points); steering from the path curvature,
    wheelbase, steering ratio per class and an understeer gradient.
 2. **Look like a human drove it.** A trace must not be "too honest". The brake is stabbed, overshoots a little, is modulated, eased
