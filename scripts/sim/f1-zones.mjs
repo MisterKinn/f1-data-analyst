@@ -36,6 +36,8 @@ function zoneEnd(id, s0) {
 const out = {};
 for (const e of raw.events) {
   const id = e.year >= 2026 && /^Spanish/i.test(e.event) ? 'madring' : e.track; if (!T[id]) continue; // 2026: the Spanish GP moved to Madring
+  // a race held away from its home circuit (2026 "Bahrain Grand Prix in Malaysia" ran at Sepang): its map is not this circuit's, so skip it
+  if ((e.docs || []).some(d => /_grand_prix_in_[a-z]+_-/.test(d.url || ''))) continue;
   const text = e.docs.flatMap(d => d.lines.map(l => l.text)).join('\n'), doc = e.docs.find(d => d.lines.length) || e.docs[0];
   if (e.year >= 2026) {
     const zones = [], marks = [];
