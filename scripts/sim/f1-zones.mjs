@@ -3,6 +3,7 @@
 // detection/activation; 2025 DRS zones, or the DRS zones of the last year F1 raced a circuit. A zone runs from its activation point to
 // the braking point of the next numbered turn (the documents give only the start). Positions use the track's official turn numbers.
 import {readFileSync, writeFileSync} from 'node:fs';
+import {movedVenue} from './zones-venue.mjs';
 import {lapsimAllTracks as T} from '../../worker/lapsim/tracks.js';
 import {lapsimTrackView} from '../../worker/lapsim/track-view-data.js';
 
@@ -35,7 +36,10 @@ function zoneEnd(id, s0) {
 }
 const out = {};
 for (const e of raw.events) {
-  const id = e.year >= 2026 && /^Spanish/i.test(e.event) ? 'madring' : e.track; if (!T[id]) continue; // 2026: the Spanish GP moved to Madring
+  // venue, not Grand Prix name (owner 2026-11-15): "2026 Bahrain Grand Prix in Malaysia" ran at Sepang and must not land on Sakhir;
+  // the 2026 Spanish GP ran at Madring. A document for a moved event goes to its real circuit, or is dropped if that circuit is missing.
+  const moved = movedVenue(e); if (moved === null) { console.log(`skip ${e.year} ${e.track}: held at another venue (${(e.docs[0]?.url || '').split('/').pop()})`); continue; }
+  const id = moved || e.track; if (!T[id]) continue;
   const text = e.docs.flatMap(d => d.lines.map(l => l.text)).join('\n'), doc = e.docs.find(d => d.lines.length) || e.docs[0];
   if (e.year >= 2026) {
     const zones = [], marks = [];
