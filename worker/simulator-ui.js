@@ -87,6 +87,11 @@ export function simulatorUiClient(CORNER_NAMES) {
   const boxes = (x, y, w, h) => ({ x0: x - w / 2, x1: x + w / 2, y0: y - h / 2, y1: y + h / 2 });
   if (geo.pts[0]) { const a = geo.pts[0], r = geo.sw * 2; placed.push({ x0: a[0] - r, x1: a[0] + r, y0: a[1] - r, y1: a[1] + r }); } // keep labels off the finish flag
   const hits = b => placed.some(p => !(b.x1 < p.x0 || b.x0 > p.x1 || b.y1 < p.y0 || b.y0 > p.y1));
+  // keep corner labels off the DRS / Straight Mode bands, their labels and the OT marks (owner 2026-11-15: '19' printed over 'DRS 3')
+  safe(() => {
+   for (const t of svg.querySelectorAll('.ls-zone-t,.ls-zone-mt')) { const r = t.getBBox(), m = geo.sw * 0.4; placed.push({ x0: r.x - m, x1: r.x + r.width + m, y0: r.y - m, y1: r.y + r.height + m }); }
+   for (const z of svg.querySelectorAll('path.ls-zone,line.ls-zone-m')) { const L = z.getTotalLength(), r = geo.sw * 0.9; for (let d = 0; d <= L; d += geo.sw * 1.5) { const pt = z.getPointAtLength(d); placed.push({ x0: pt.x - r, x1: pt.x + r, y0: pt.y - r, y1: pt.y + r }); } }
+  });
   const inside = (x, y) => { let c = false; const P = geo.pts; for (let i = 0, j = P.length - 1; i < P.length; j = i++) if ((P[i][1] > y) !== (P[j][1] > y) && x < (P[j][0] - P[i][0]) * (y - P[i][1]) / (P[j][1] - P[i][1]) + P[i][0]) c = !c; return c; };
   const grow = () => { const labelsBoxes = placed.slice(1); if (!labelsBoxes.length) return; const x0 = Math.min(vx, ...labelsBoxes.map(b => b.x0)), y0 = Math.min(vy, ...labelsBoxes.map(b => b.y0)), x1 = Math.max(vx + vw, ...labelsBoxes.map(b => b.x1)), y1 = Math.max(vy + vh, ...labelsBoxes.map(b => b.y1)); svg.setAttribute('viewBox', [x0, y0, x1 - x0, y1 - y0].map(v => v.toFixed(1)).join(' ')); };
   // names that sit between two turns (owner 2026-11-15: Silverstone Maggotts between 10 and 11, Becketts between 12 and 13)
@@ -147,7 +152,7 @@ export function simulatorUiClient(CORNER_NAMES) {
   svg.dataset.kbMap = '1'; const geo = mapGeometry(svg); if (!geo) return;
   safe(() => finishLine(svg, geo));
   // label layout depends only on track shape and labels, not on the colours a slider changes: cache it
-  const labels = [...svg.querySelectorAll('text.ls-corner')], key = svg.getAttribute('viewBox') + '|' + labels.map(l => l.getAttribute('x') + ',' + l.getAttribute('y') + ',' + l.textContent).join(';') + '|' + (en ? 'en' : 'ko');
+  const labels = [...svg.querySelectorAll('text.ls-corner')], key = svg.getAttribute('viewBox') + '|' + [...svg.querySelectorAll('.ls-zone-t,.ls-zone-mt')].map(z => z.textContent + z.getAttribute('x')).join(';') + '|' + labels.map(l => l.getAttribute('x') + ',' + l.getAttribute('y') + ',' + l.textContent).join(';') + '|' + (en ? 'en' : 'ko');
   const hit = layoutCache.get(key);
   if (hit) { safe(() => { svg.setAttribute('viewBox', hit.viewBox); labels.forEach((l, i) => { l.outerHTML = hit.labels[i]; }); const first = svg.querySelector('text.ls-corner'); for (const ln of hit.leaders) { const tmp = document.createElementNS(ns, 'g'); tmp.innerHTML = ln; first ? svg.insertBefore(tmp.firstChild, first) : svg.append(tmp.firstChild); } }); return; }
   safe(() => placeCorners(svg, geo));

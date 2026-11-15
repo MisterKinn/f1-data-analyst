@@ -153,21 +153,27 @@ function renderMap(map, v, opts) {
     const out = area > 0 ? -1 : 1, off = sw * 2.3, idx = s0 => ((Math.round(s0 / opts.length * n) % n) + n) % n;
     const at = (i, k) => { const p = (i - 1 + n) % n, q = (i + 1) % n, tx = xs[q] - xs[p], ty = ys[q] - ys[p], l = Math.hypot(tx, ty) || 1; return [xs[i] + out * -ty / l * off * k, ys[i] + out * tx / l * off * k]; };
     const P = ([x, y]) => (x - minX + pad).toFixed(1) + ' ' + (maxY - y + pad).toFixed(1);
+    const zBoxes = [];
     for (const z of opts.zones.list) {
       const a = idx(z.from), b = idx(z.to), pts = []; for (let i = a, g = 0; g <= n; g++, i = (i + 1) % n) { pts.push(at(i, 1)); if (i === b) break; }
       if (pts.length < 2) continue;
-      const lab = at(a, 2.2);
+      // zone and OT labels never overlap each other: step further out until the box is free
+      let k = 2.2, lab = at(a, k), fz = sw * 2.4, bx = () => { const [x, y] = P(lab).split(' ').map(Number), hw = z.label.length * fz * 0.32; return [x - hw, y - fz * 0.6, x + hw, y + fz * 0.6]; };
+      while (k < 8 && zBoxes.some(o => !(bx()[2] < o[0] || bx()[0] > o[2] || bx()[3] < o[1] || bx()[1] > o[3]))) { k += 1.4; lab = at(a, k); }
+      zBoxes.push(bx());
       zones += '<path class="ls-zone ls-zone-' + opts.zones.kind + '" d="M' + pts.map(P).join('L') + '" stroke-width="' + (sw * 0.9).toFixed(1) + '"/><text class="ls-zone-t" x="' + P(lab).split(' ')[0] + '" y="' + P(lab).split(' ')[1] + '" font-size="' + (sw * 2.4).toFixed(1) + '">' + z.label + '</text>';
     }
-    for (const m of opts.zones.marks || []) { const k = idx(m.s), a = P(at(k, -0.7)).split(' '), b = P(at(k, 1.3)).split(' '), r = P(at(k, 2.7)).split(' ');
-      zones += '<line class="ls-zone-m ls-zone-m-' + m.kind + '" x1="' + a[0] + '" y1="' + a[1] + '" x2="' + b[0] + '" y2="' + b[1] + '" stroke-width="' + (sw * 0.45).toFixed(1) + '"/><text class="ls-zone-mt ls-zone-mt-' + m.kind + '" x="' + r[0] + '" y="' + r[1] + '" font-size="' + (sw * 2).toFixed(1) + '">' + m.label + '</text>'; }
+    for (const m of opts.zones.marks || []) { const k = idx(m.s), a = P(at(k, -0.7)).split(' '), b = P(at(k, 1.3)).split(' '), fm = sw * 2, hw = m.label.length * fm * 0.32; let o = 2.7, r = P(at(k, o)).split(' ').map(Number);
+      const box = () => [r[0] - hw, r[1] - fm * 0.6, r[0] + hw, r[1] + fm * 0.6], busy = () => zBoxes.some(q => !(box()[2] < q[0] || box()[0] > q[2] || box()[3] < q[1] || box()[1] > q[3]));
+      while (o < 9 && busy()) { o += 1.3; r = P(at(k, o)).split(' ').map(Number); } zBoxes.push(box());
+      zones += '<line class="ls-zone-m ls-zone-m-' + m.kind + '" x1="' + a[0] + '" y1="' + a[1] + '" x2="' + b[0] + '" y2="' + b[1] + '" stroke-width="' + (sw * 0.2).toFixed(1) + '"/><text class="ls-zone-mt ls-zone-mt-' + m.kind + '" x="' + r[0] + '" y="' + r[1] + '" font-size="' + (sw * 2).toFixed(1) + '">' + m.label + '</text>'; }
   }
   let corners = '', i0 = Math.round((opts.start || 0) * n) % n;
   for (const c of opts.corners || []) {
     const i = Math.min(n - 1, Math.round(c.s / opts.length * n));
     corners += '<text x="' + px(i) + '" y="' + py(i) + '" dy="' + (-sw * 2.2).toFixed(1) + '" class="ls-corner">' + c.number + (c.letter || '') + '</text>';
   }
-  return '<svg class="ls-map" viewBox="0 0 ' + vw.toFixed(0) + ' ' + vh.toFixed(0) + '" role="img" aria-label="' + opts.label + '">' + band + '<g fill="none" stroke-width="' + (L ? sw * 0.75 : sw) + '" stroke-linecap="round" stroke-linejoin="round">' + paths + '</g>' + zones + marks + '<rect x="' + (px(i0) - sw * 2) + '" y="' + (py(i0) - sw * 2) + '" width="' + (sw * 4) + '" height="' + (sw * 4) + '" class="ls-start"/>' + corners + '<style>.ls-corner{font-size:' + (sw * 3.4).toFixed(1) + 'px}</style></svg>';
+  return '<svg class="ls-map" viewBox="0 0 ' + vw.toFixed(0) + ' ' + vh.toFixed(0) + '" role="img" aria-label="' + opts.label + '">' + band + '<g fill="none" stroke-width="' + (L ? sw * 0.45 : sw) + '" stroke-linecap="round" stroke-linejoin="round">' + paths + '</g>' + zones + marks + '<rect x="' + (px(i0) - sw * 2) + '" y="' + (py(i0) - sw * 2) + '" width="' + (sw * 4) + '" height="' + (sw * 4) + '" class="ls-start"/>' + corners + '<style>.ls-corner{font-size:' + (sw * 3.4).toFixed(1) + 'px}</style></svg>';
 }
 
 function renderTrace(ds, series, opts) {
