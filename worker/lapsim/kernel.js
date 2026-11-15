@@ -77,7 +77,7 @@ export function lapsimKernel() {
       grip: gripFromTrackTemp(w.trackTempC, opts.grip),
       iceFactor: icePowerFactor(rho, opts.ice),
       // per-event ERS recharge limit (2026+ rules), MJ per lap
-      rechargeMax: Number.isFinite(w.rechargeMJ) ? w.rechargeMJ * 1e6 : undefined,
+      rechargeMax: Number.isFinite(w.rechargeMJ) ? w.rechargeMJ * 1e6 : undefined, puRamp: w.puRamp || undefined, // C5.12 shape (rampCaps)
       clipMax: Number.isFinite(w.clipKW) ? w.clipKW * 1e3 : undefined,
       inputs: { pressureHpa, tempC, humidityPct: w.humidityPct ?? 50, trackTempC: w.trackTempC ?? null },
     };
@@ -143,7 +143,32 @@ export function lapsimKernel() {
   // Same tyre law for the friction available in x on all four (or two driven) tyres, no transfer
   function tyreSum(t, mu0, N, nTyres = 4) { return nTyres * (N <= 0 ? 0 : mu0 * t.fz0 * Math.pow(N / nTyres / t.fz0, t.q)); }
 
+  // C5.12.4–7 (2026+, owner 2026-11-16): when the battery runs out on a straight the power demand may drop by at most 150 kW at once (more in
+  // the FIA's listed sectors), held 1 s, then by at most 100 kW/s (50 kW/s where the power-limited distance exceeds 3500 m) while the
+  // ERS-K gives more than 100 kW, above 210 km/h (or the sector's threshold). The lap is run once, every sudden cut is replaced by that
+  // shape starting early enough to use the same energy, and the lap is run again with that ERS-K ceiling.
+  function rampCaps(track, res, pr) {
+    const n = track.kappa.length, ds = track.ds, v = res.v, T = res.time, dep = res.flow && res.flow.dep; if (!dep || !T) return null;
+    const P = dep.map((e, i) => { const j = (i + 1) % n, dt = ds / Math.max(0.5 * (v[i] + v[j]), 1); return e / dt; });
+    const inS = (list, s) => (list || []).find(z => z.to >= z.from ? s >= z.from && s <= z.to : s >= z.from || s <= z.to);
+    const R = (pr.rateKWs || 100) * 1e3, cap = new Float32Array(n).fill(Infinity), lap = res.lapTime; let any = false;
+    for (let j = 1; j < n; j++) { const P0 = P[j - 1], s = j * ds, big = inS(pr.bigCut, s), sp = inS(pr.speed, s), vMin = (sp ? sp.kph : 210) / 3.6;
+      const S = big ? (big.maxKW || 350) * 1e3 : 150e3; if (!(P0 > 100e3 && P[j] < P0 - 1e3 && v[j] >= vMin && res.limit[j] !== 3 && res.limit[j] !== 0)) continue;
+      if (P0 - S <= 100e3) continue; // the allowed step already reaches 100 kW: it may drop at once
+      // greedy energy from the start of the shape to the cut equals the energy of the shape: hold P0 − S for 1 s, then ramp to 100 kW
+      const P1 = P0 - S, D = 1 + (P1 - 100e3) / R, E = P1 * 1 + 0.5 * (P1 + 100e3) * (P1 - 100e3) / R, tj = T[j], ts = tj - E / P0;
+      let i0 = j; while (i0 > 0 && T[i0 - 1] > ts && P[i0 - 1] > 100e3) i0--;
+      for (let k = i0, g = 0; g < n && res.limit[k % n] !== 3; g++, k++) { const t = (T[k % n] + (k >= n ? lap : 0)) - T[i0], c = t < 1 ? P1 : P1 - R * (t - 1); if (t > D) break; cap[k % n] = Math.min(cap[k % n], Math.max(100e3, c)); }
+      any = true; }
+    return any ? cap : null;
+  }
   function simulateLap(track, car, env = {}, opts = {}) {
+    if (env.puRamp && car.ers && car.ers.rule === 'f1-2026' && !opts.noRamp) {
+      const o = Object.assign({}, opts, {noRamp: true}); let r = simulateLap(track, car, env, o), cap = track.ersCap ? Float32Array.from(track.ersCap) : null, k = 0;
+      // the new ceiling moves the speeds, which can make new cuts: repeat until none is left (at most 5 rounds)
+      for (; k < 5; k++) { const c = rampCaps(track, r, env.puRamp); if (!c) break; cap = cap ? cap.map((x, i) => Math.min(x, c[i])) : c; r = simulateLap(Object.assign({}, track, {ersCap: cap}), car, env, o); }
+      r.puRamp = {rateKWs: env.puRamp.rateKWs || 100, rounds: k}; return r;
+    }
     const n = track.kappa.length, ds = track.ds;
     const rho = env.rho ?? RHO_REF;
     const grip = env.grip ?? 1;
@@ -151,7 +176,7 @@ export function lapsimKernel() {
     const windSpeed = env.windSpeed ?? 0, windFrom = env.windFromDeg ?? 0;
     const t = makeTyre(car);
     const mg = t.m * G;
-    const mu = track.mu, vScale = track.vScale, aeroLow = track.aeroLow, grade = track.grade, heading = track.heading, otOn = track.otOn; // true (whole lap) or a per-point array: where the driver uses Overtake
+    const mu = track.mu, vScale = track.vScale, aeroLow = track.aeroLow, grade = track.grade, heading = track.heading, otOn = track.otOn, ersCap = track.ersCap || null; // true (whole lap) or a per-point array: where the driver uses Overtake
     const etaD = car.etaDrive ?? 0.96, etaK = car.etaErs ?? 0.95;
     const pIce = car.pIce * iceFactor, pAt = powertrain(car, iceFactor); // pAt(v): engine power at road speed v (torque curve and gears; flat pIce without them)
     const ers = car.ers || {pMax: 0};
@@ -261,7 +286,7 @@ export function lapsimKernel() {
           const vi = Math.max(v[i], 1);
           const low = lowAt(i);
           const va = vAir(vi, i), L = aeroFactor * clAt(i, low) * va * va, N = normalAt(vi, i, L);
-          const pErs = vi < vCut && (!track || soc > 0) ? erskLimitW(ers.rule, vi, ers.pMax || 0, otOn === true || !!(otOn && otOn[i])) : 0;
+          const pErs = vi < vCut && (!track || soc > 0) ? Math.min(erskLimitW(ers.rule, vi, ers.pMax || 0, otOn === true || !!(otOn && otOn[i])), ersCap ? ersCap[i] : Infinity) : 0;
           const pI = pAt(vi), fPow = (pI * etaD + pErs * etaK * etaD) / vi;
           const nRear = t.rearStatic * (kv ? N - L : mg * cosG[i]) + t.rearAero * L;
           const muX = muAt(i) * (t.muXTrac / t.muY0) * pureCap(i, N) / N;

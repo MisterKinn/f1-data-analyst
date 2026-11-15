@@ -45,12 +45,17 @@ function optionTrack(K, d, tr, c, m) {
   return {...tr, aeroLow: low};
 }
 // lap with the options, scaled so the default options (Normal, Overtake on / DRS on) give the fitted lap; null for cars without options
-export function simulateWithOptions(K, d, tr, c, m, sim) {
+export function simulateWithOptions(K, d, tr, c, m, sim, simFit = sim) {
   if (c?.series || !c?.year) return null;
   const run = mm => { const t0 = optionTrack(K, d, tr, c, {...mm, ot: false}); const r0 = sim(t0); if (!(mm.ot && c.year >= 2026)) return r0;
     const n = d.kappa.length, L = n * d.ds; let best = r0; const consider = o => { const r = sim({...t0, otOn: o}); if (r.lapTime < best.lapTime) best = r; };
     consider(true); for (const [a, b] of zoneList(d, c, {sm: 'normal'}) || []) { const o = new Uint8Array(n), i0 = Math.round(a / d.ds), len = Math.round((((b - a) % L) + L) % L / d.ds); for (let k = 0; k <= len; k++) o[(i0 + k) % n] = 1; consider(o); }
     return best; };
-  const def = c.year >= 2026 ? {sm: 'normal', ot: true} : {drs: true}, f = sim(withZones(K, d, tr, c)).lapTime / run(def).lapTime, r = run(m);
+  const def = c.year >= 2026 ? {sm: 'normal', ot: true} : {drs: true}, f = simFit(withZones(K, d, tr, c)).lapTime / run(def).lapTime, r = run(m);
   r.lapTime *= f; if (r.time) for (let i = 0; i < r.time.length; i++) r.time[i] *= f; return r;
 }
+
+// C5.12 power-reduction rule of the event's PU document (scaled to the simulator track), else the round-4 default 100 kW/s
+export function puRampOf(d, id) { const p = lapsimPuDocs?.events?.[id], k = p?.centrelineKm ? d.kappa.length * d.ds / (p.centrelineKm * 1000) : 1, sc = z => ({...z, from: z.from * k, to: z.to * k});
+  return {rateKWs: p?.rampKWs || 100, bigCut: (p?.bigCut || []).map(sc), speed: (p?.speed || []).map(sc)}; }
+export const PU_RAMP = !!lapsimCalibration?.puRamp;

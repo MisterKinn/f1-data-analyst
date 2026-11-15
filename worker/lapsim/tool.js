@@ -1,6 +1,6 @@
 // lapsim_simulate: the lap simulator as a connector tool. Same engine, tracks and calibration as
 // the /simulation page (worker/lapsim/scenario.js), so the page and the tool agree.
-import {withZones, simulateWithOptions, slotOf} from './zones.js';
+import {withZones, simulateWithOptions, slotOf, puRampOf, PU_RAMP} from './zones.js';
 import {lapsimF1Zones} from './f1-zones-data.js';
 import {lapsimKernel} from './kernel.js';
 import {lapsimAllTracks as lapsimTracks} from './tracks.js';
@@ -145,8 +145,10 @@ export function simulate(args = {}) {
   // zone options (owner 2026-11-16); none given = the fitted lap, as before
   const opt = ['straight_mode', 'overtake', 'drs'].some(k => args[k] !== undefined) ? {sm: args.straight_mode || 'normal', ot: args.overtake !== false, drs: args.drs !== false} : null;
   const run = c => {
-    const sim = tr => K.simulateLap(withGrip(tr, c.grip || 1), c.car, env), o = opt && simulateWithOptions(K, d, track, c, opt, sim);
-    const r = scaled(o || sim(withZones(K, d, track, c)), c.timeScale), k = corrOf(c), sec = secOf(r);
+    // options run with the C5.12 rule; the fit's own setup (scale) without it until the fit includes it (same as the page)
+    const envP = {...env, puRamp: puRampOf(d, id)}, sim = tr => K.simulateLap(withGrip(tr, c.grip || 1), c.car, envP), simFit = tr => K.simulateLap(withGrip(tr, c.grip || 1), c.car, PU_RAMP ? envP : env);
+    const o = opt && simulateWithOptions(K, d, track, c, opt, sim, simFit);
+    const r = scaled(o || simFit(withZones(K, d, track, c)), c.timeScale), k = corrOf(c), sec = secOf(r);
     return k && sec ? {...r, lapTime: r.lapTime + k[0] + k[1] + k[2], sectors: sec.map((x, i) => x + k[i]), sectorCorrection: k} : k ? {...r, lapTime: r.lapTime + k.reduce((a, b) => a + b, 0), sectorCorrection: k} : r;
   };
   const res = run(sel);
