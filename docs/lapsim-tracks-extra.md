@@ -46,7 +46,7 @@ Owner instruction (2026-11-14): where a real lap of a car type exists, use it. T
 | mosport | Grand Prix track (IMSA) 3.957 km | imsa | 3891 (3957) | 289–340 m | 5 (0) | 1.74 | -0.59 | 0.9833 | 2.05 | – | pass (unseen) |
 | road-america | Elkhart Lake 6.514 km | imsa | 6434 (6514) | 270–324 m | 10 (0) | 2.78 | 2.49 | 1.0785 | 1.58 | – | pass (unseen) |
 | vir | Full course (IMSA) 5.263 km | imsa | 5199 (5263) | 113–151 m | 5 (0) | 2.04 | -1.92 | 0.9392 | 0.91 | – | pass (unseen) |
-| indianapolis | Road course 3.910 km | imsa | 3844 (3910) | 221–224 m | 10 (0) | 3.58 | 3.47 | 1.1027 | 1.15 | – | pass (learned) |
+| indianapolis | Road course 3.910 km | imsa | 3845 (3910) | 221–224 m | 10 (0) | 3.43 | 3.31 | 1.0974 | 1.17 | – | pass (learned) |
 | road-atlanta | Road Atlanta 4.088 km | imsa | 4048 (4088) | 275–308 m | 11 (0) | 2.95 | -0.7 | 0.9779 | 3.15 | – | pass (unseen) |
 | mid-ohio | IMSA layout 3.634 km | imsa | 3566 (3634) | 398–437 m | 3 (0) | 3.82 | 3.75 | 1.1042 | 1.06 | – | pass (learned) |
 | lime-rock | IMSA layout 2.414 km | imsa | 2370 (2414) | 164–180 m | 1 (0) | 2.36 | 2.36 | – | – | – | pass (unseen) |
@@ -77,7 +77,7 @@ Owner instruction (2026-11-14): where a real lap of a car type exists, use it. T
 | sydney-gardner | Gardner circuit 3.905 km | owner-2026-11-15 | 3835 (3905) | 51–75 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | inje | Full course 3.908 km | owner-2026-11-15 | 3840 (3908) | 290–364 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | sebring | IMSA layout 6.019 km | owner-2026-11-15 | 5949 (6019) | 18–20 m | 12 (2) | 2.12 | -1.3 | 0.9606 | 1.73 | – | pass (unseen) |
-| magny-cours | Grand Prix circuit 4.411 km | owner-2026-11-15 | 4399 (4411) | 208–236 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| magny-cours | Grand Prix circuit 4.411 km | owner-2026-11-15 | 4398 (4411) | 208–236 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | mandalika | Pertamina Mandalika circuit 4.300 km | owner-2026-11-15 | 4228 (4300) | 7–16 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | phillip-island | Grand Prix circuit 4.480 km | owner-2026-11-15 | 4398 (4480) | 31–55 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | aragon | Motorland circuit 5.346 km | owner-2026-11-15 | 5265 (5346) | 357–408 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
@@ -87,7 +87,7 @@ Owner instruction (2026-11-14): where a real lap of a car type exists, use it. T
 | istanbul | Grand Prix 5.338 km | f1-history | 5263 (5338) | car positions | 7 (0) | 2.57 | 2.43 | 1.0659 | 0.95 | – | pass (learned) |
 | sochi | Grand Prix 5.848 km | f1-history | 5830 (5848) | car positions | 7 (0) | 1.48 | 1.34 | 1.0363 | 0.73 | – | pass (learned) |
 | long-beach | Street circuit 3.167 km | owner-2026-11-15 | 3115 (3168) | 1–5 m | 10 (0) | 1.18 | 0.22 | 1.0058 | 1.3 | – | pass (unseen) |
-| detroit | Downtown street circuit 2.650 km (2023 on) | owner-2026-11-15 | 2631 (2650) | 177–184 m | 8 (0) | 3.67 | -3.01 | 0.9258 | 2.24 | – | pass (learned) |
+| detroit | Downtown street circuit 2.650 km (2023 on) | owner-2026-11-15 | 2631 (2650) | 177–184 m | 8 (0) | 3.69 | -3.03 | 0.9252 | 2.25 | – | pass (learned) |
 
 Length is the driven or least-curvature line; it is shorter than the official centre-line distance. "Own class" rows are WEC cars on WEC laps; the other rows use a borrowed car (IMSA GTP = LMDh car, every other GT3 series = LMGT3 car, an older F1 season = the 2023 F1 car times the season ratio).
 
@@ -186,16 +186,16 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 | vir | imsa | 2024 | GTDPRO | BMW #1 | lmgt3 2025 (borrowed) | 103.206 | 102.614 | -0.57 |
 | vir | imsa | 2025 | GTDPRO | Ferrari #81 | lmgt3 2025 (borrowed) | 104.433 | 102.463 | -1.89 |
 | vir | imsa | 2026 | GTDPRO | Lamborghini #9 | lmgt3 2026 (borrowed) | 104.773 | 102.144 | -2.51 |
-| indianapolis | igtc | 2025 | Pro | BMW M4 GT3 EVO | lmgt3 2025 (borrowed) | 82.271 | 86.296 | 4.89 |
-| indianapolis | imsa | 2024 | GTP | CADILLAC V-SERIES.R | lmdh 2025 (borrowed) | 74.592 | 76.887 | 3.08 |
-| indianapolis | imsa | 2024 | GTDPRO | PORSCHE 911 GT3 R (992) | lmgt3 2025 (borrowed) | 83.15 | 86.314 | 3.81 |
-| indianapolis | imsa | 2023 | GTD | BMW #1 | lmgt3 2025 (borrowed) | 83.075 | 86.228 | 3.8 |
-| indianapolis | imsa | 2023 | GTP | Porsche #7 | lmdh 2025 (borrowed) | 73.672 | 76.7 | 4.11 |
-| indianapolis | imsa | 2025 | GTD | Aston Martin #27 | lmgt3 2025 (borrowed) | 83.088 | 86.24 | 3.79 |
-| indianapolis | imsa | 2025 | GTP | Acura #60 | lmdh 2025 (borrowed) | 74.569 | 76.84 | 3.05 |
-| indianapolis | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 75.434 | 76.588 | 1.53 |
-| indianapolis | imsa | 2026 | GTP | Acura #60 | lmdh 2026 (borrowed) | 74.674 | 77.6 | 3.92 |
-| indianapolis | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 75.578 | 77.628 | 2.71 |
+| indianapolis | igtc | 2025 | Pro | BMW M4 GT3 EVO | lmgt3 2025 (borrowed) | 82.271 | 86.201 | 4.78 |
+| indianapolis | imsa | 2024 | GTP | CADILLAC V-SERIES.R | lmdh 2025 (borrowed) | 74.592 | 76.752 | 2.9 |
+| indianapolis | imsa | 2024 | GTDPRO | PORSCHE 911 GT3 R (992) | lmgt3 2025 (borrowed) | 83.15 | 86.221 | 3.69 |
+| indianapolis | imsa | 2023 | GTD | BMW #1 | lmgt3 2025 (borrowed) | 83.075 | 86.133 | 3.68 |
+| indianapolis | imsa | 2023 | GTP | Porsche #7 | lmdh 2025 (borrowed) | 73.672 | 76.56 | 3.92 |
+| indianapolis | imsa | 2025 | GTD | Aston Martin #27 | lmgt3 2025 (borrowed) | 83.088 | 86.146 | 3.68 |
+| indianapolis | imsa | 2025 | GTP | Acura #60 | lmdh 2025 (borrowed) | 74.569 | 76.705 | 2.86 |
+| indianapolis | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 75.434 | 76.451 | 1.35 |
+| indianapolis | imsa | 2026 | GTP | Acura #60 | lmdh 2026 (borrowed) | 74.674 | 77.475 | 3.75 |
+| indianapolis | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 75.578 | 77.495 | 2.54 |
 | road-atlanta | gtwc | 2026 | Pro | MERCEDES-AMG GT3 EVO | lmgt3 2026 (borrowed) | 80.501 | 79.646 | -1.06 |
 | road-atlanta | imsa | 2023 | GTD | Aston Martin #27 | lmgt3 2025 (borrowed) | 83.116 | 80.096 | -3.63 |
 | road-atlanta | imsa | 2023 | GTP | Acura #10 | lmdh 2025 (borrowed) | 75.402 | 69.443 | -7.9 |
@@ -273,14 +273,14 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 | long-beach | imsa | 2026 | GTD | Lexus #89 | lmgt3 2026 (borrowed) | 78.411 | 77.874 | -0.69 |
 | long-beach | imsa | 2026 | GTP | Acura #93 | lmdh 2026 (borrowed) | 71.626 | 71.918 | 0.41 |
 | long-beach | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 71.997 | 72.026 | 0.04 |
-| detroit | imsa | 2024 | GTDPRO | Chevrolet #3 | lmgt3 2025 (borrowed) | 69.092 | 69.283 | 0.28 |
-| detroit | imsa | 2024 | GTP | Porsche #6 | lmdh 2025 (borrowed) | 65.39 | 63.717 | -2.56 |
-| detroit | imsa | 2025 | GTDPRO | Ford #64 | lmgt3 2025 (borrowed) | 70.922 | 68.907 | -2.84 |
-| detroit | imsa | 2025 | GTP | Acura #93 | lmdh 2025 (borrowed) | 65.762 | 63.29 | -3.76 |
-| detroit | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 67.907 | 63.135 | -7.03 |
-| detroit | imsa | 2026 | GTDPRO | Chevrolet #3 | lmgt3 2026 (borrowed) | 69.354 | 68.538 | -1.18 |
-| detroit | imsa | 2026 | GTP | Cadillac #31 | lmdh 2026 (borrowed) | 65.313 | 63.906 | -2.15 |
-| detroit | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 67.27 | 64.016 | -4.84 |
+| detroit | imsa | 2024 | GTDPRO | Chevrolet #3 | lmgt3 2025 (borrowed) | 69.092 | 69.278 | 0.27 |
+| detroit | imsa | 2024 | GTP | Porsche #6 | lmdh 2025 (borrowed) | 65.39 | 63.699 | -2.59 |
+| detroit | imsa | 2025 | GTDPRO | Ford #64 | lmgt3 2025 (borrowed) | 70.922 | 68.903 | -2.85 |
+| detroit | imsa | 2025 | GTP | Acura #93 | lmdh 2025 (borrowed) | 65.762 | 63.273 | -3.79 |
+| detroit | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 67.907 | 63.118 | -7.05 |
+| detroit | imsa | 2026 | GTDPRO | Chevrolet #3 | lmgt3 2026 (borrowed) | 69.354 | 68.534 | -1.18 |
+| detroit | imsa | 2026 | GTP | Cadillac #31 | lmdh 2026 (borrowed) | 65.313 | 63.888 | -2.18 |
+| detroit | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 67.27 | 63.998 | -4.86 |
 
 ## Held-out rows with a learned or sibling track factor
 
@@ -353,16 +353,16 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 | vir | imsa | 2024 | GTDPRO | BMW #1 | lmgt3 2025 (borrowed) | 103.206 | 104.992 | 1.73 |
 | vir | imsa | 2025 | GTDPRO | Ferrari #81 | lmgt3 2025 (borrowed) | 104.433 | 104.473 | 0.04 |
 | vir | imsa | 2026 | GTDPRO | Lamborghini #9 | lmgt3 2026 (borrowed) | 104.773 | 103.958 | -0.78 |
-| indianapolis | igtc | 2025 | Pro | BMW M4 GT3 EVO | lmgt3 2025 (borrowed) | 82.271 | 83.864 | 1.94 |
-| indianapolis | imsa | 2024 | GTP | CADILLAC V-SERIES.R | lmdh 2025 (borrowed) | 74.592 | 74.114 | -0.64 |
-| indianapolis | imsa | 2024 | GTDPRO | PORSCHE 911 GT3 R (992) | lmgt3 2025 (borrowed) | 83.15 | 83.79 | 0.77 |
-| indianapolis | imsa | 2023 | GTD | BMW #1 | lmgt3 2025 (borrowed) | 83.075 | 83.713 | 0.77 |
-| indianapolis | imsa | 2023 | GTP | Porsche #7 | lmdh 2025 (borrowed) | 73.672 | 74.067 | 0.54 |
-| indianapolis | imsa | 2025 | GTD | Aston Martin #27 | lmgt3 2025 (borrowed) | 83.088 | 83.723 | 0.76 |
-| indianapolis | imsa | 2025 | GTP | Acura #60 | lmdh 2025 (borrowed) | 74.569 | 74.078 | -0.66 |
-| indianapolis | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 75.434 | 73.79 | -2.18 |
-| indianapolis | imsa | 2026 | GTP | Acura #60 | lmdh 2026 (borrowed) | 74.674 | 74.648 | -0.04 |
-| indianapolis | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 75.578 | 74.585 | -1.31 |
+| indianapolis | igtc | 2025 | Pro | BMW M4 GT3 EVO | lmgt3 2025 (borrowed) | 82.271 | 83.89 | 1.97 |
+| indianapolis | imsa | 2024 | GTP | CADILLAC V-SERIES.R | lmdh 2025 (borrowed) | 74.592 | 74.095 | -0.67 |
+| indianapolis | imsa | 2024 | GTDPRO | PORSCHE 911 GT3 R (992) | lmgt3 2025 (borrowed) | 83.15 | 83.819 | 0.8 |
+| indianapolis | imsa | 2023 | GTD | BMW #1 | lmgt3 2025 (borrowed) | 83.075 | 83.739 | 0.8 |
+| indianapolis | imsa | 2023 | GTP | Porsche #7 | lmdh 2025 (borrowed) | 73.672 | 74.042 | 0.5 |
+| indianapolis | imsa | 2025 | GTD | Aston Martin #27 | lmgt3 2025 (borrowed) | 83.088 | 83.748 | 0.79 |
+| indianapolis | imsa | 2025 | GTP | Acura #60 | lmdh 2025 (borrowed) | 74.569 | 74.059 | -0.68 |
+| indianapolis | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 75.434 | 73.769 | -2.21 |
+| indianapolis | imsa | 2026 | GTP | Acura #60 | lmdh 2026 (borrowed) | 74.674 | 74.651 | -0.03 |
+| indianapolis | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 75.578 | 74.577 | -1.32 |
 | road-atlanta | gtwc | 2026 | Pro | MERCEDES-AMG GT3 EVO | lmgt3 2026 (borrowed) | 80.501 | 80.133 | -0.46 |
 | road-atlanta | imsa | 2023 | GTD | Aston Martin #27 | lmgt3 2025 (borrowed) | 83.116 | 80.4 | -3.27 |
 | road-atlanta | imsa | 2023 | GTP | Acura #10 | lmdh 2025 (borrowed) | 75.402 | 69.428 | -7.92 |
@@ -439,14 +439,14 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 | long-beach | imsa | 2026 | GTD | Lexus #89 | lmgt3 2026 (borrowed) | 78.411 | 77.68 | -0.93 |
 | long-beach | imsa | 2026 | GTP | Acura #93 | lmdh 2026 (borrowed) | 71.626 | 71.76 | 0.19 |
 | long-beach | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 71.997 | 71.834 | -0.23 |
-| detroit | imsa | 2024 | GTDPRO | Chevrolet #3 | lmgt3 2025 (borrowed) | 69.092 | 71.402 | 3.34 |
-| detroit | imsa | 2024 | GTP | Porsche #6 | lmdh 2025 (borrowed) | 65.39 | 65.956 | 0.87 |
-| detroit | imsa | 2025 | GTDPRO | Ford #64 | lmgt3 2025 (borrowed) | 70.922 | 70.697 | -0.32 |
-| detroit | imsa | 2025 | GTP | Acura #93 | lmdh 2025 (borrowed) | 65.762 | 65.354 | -0.62 |
-| detroit | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 67.907 | 64.842 | -4.51 |
-| detroit | imsa | 2026 | GTDPRO | Chevrolet #3 | lmgt3 2026 (borrowed) | 69.354 | 70.418 | 1.53 |
-| detroit | imsa | 2026 | GTP | Cadillac #31 | lmdh 2026 (borrowed) | 65.313 | 66.232 | 1.41 |
-| detroit | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 67.27 | 66.063 | -1.79 |
+| detroit | imsa | 2024 | GTDPRO | Chevrolet #3 | lmgt3 2025 (borrowed) | 69.092 | 71.41 | 3.36 |
+| detroit | imsa | 2024 | GTP | Porsche #6 | lmdh 2025 (borrowed) | 65.39 | 65.951 | 0.86 |
+| detroit | imsa | 2025 | GTDPRO | Ford #64 | lmgt3 2025 (borrowed) | 70.922 | 70.706 | -0.3 |
+| detroit | imsa | 2025 | GTP | Acura #93 | lmdh 2025 (borrowed) | 65.762 | 65.346 | -0.63 |
+| detroit | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 67.907 | 64.838 | -4.52 |
+| detroit | imsa | 2026 | GTDPRO | Chevrolet #3 | lmgt3 2026 (borrowed) | 69.354 | 70.427 | 1.55 |
+| detroit | imsa | 2026 | GTP | Cadillac #31 | lmdh 2026 (borrowed) | 65.313 | 66.229 | 1.4 |
+| detroit | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 67.27 | 66.059 | -1.8 |
 
 ## Evidence layer per value
 
