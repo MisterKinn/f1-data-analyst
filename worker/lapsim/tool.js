@@ -1,6 +1,7 @@
 // lapsim_simulate: the lap simulator as a connector tool. Same engine, tracks and calibration as
 // the /simulation page (worker/lapsim/scenario.js), so the page and the tool agree.
-import {withZones} from './zones.js';
+import {withZones, simulateWithOptions, slotOf} from './zones.js';
+import {lapsimF1Zones} from './f1-zones-data.js';
 import {lapsimKernel} from './kernel.js';
 import {lapsimAllTracks as lapsimTracks} from './tracks.js';
 import {lapsimCalibration} from './calibration-data.js';
@@ -49,6 +50,9 @@ export const LAPSIM_TOOLS = [{name: 'lapsim_simulate',
     engine_power_kw: num(50, 1500, 'Engine power cap (kW) replacing the car\'s regulation or BoP value.'),
     drag_cda: num(0.2, 3, 'Drag area CdA (m²) replacing the car\'s value (low-drag mode scales with it).'),
     downforce_cla: num(0, 8, 'Downforce area ClA (m²) replacing the car\'s value (low-drag mode scales with it).'),
+    straight_mode: {type: 'string', enum: ['normal', 'alt', 'off'], description: 'F1 2026+: Straight Mode zone set. normal (default) = the FIA activation zones; alt = the Low Grip activation zones of the FIA map (Low Grip Conditions: partial activation only, some zones off); off = no Straight Mode.'},
+    overtake: {type: 'boolean', description: 'F1 2026+: Overtake available (default true; C5.2.8 ii power curve, used where it gains time).'},
+    drs: {type: 'boolean', description: 'F1 2025: DRS enabled (default true).'},
   }, additionalProperties: false}, annotations: ro}];
 
 export const LAPSIM_INSTRUCTIONS = ' LAP SIMULATOR: for what-if questions about lap time (F1 car generation 2019/2025/2026/2027/2028 or WEC Hypercar/LMGT3, air density or altitude, temperature, humidity, wind, FIA resurfacing or kerb changes, track evolution over a session: rubber, drying, tyre warm-up), call lapsim_simulate. Report its numbers as provisional model estimates with the error range, confidence label and assumptions it returns, keep real and simulated times apart, and never present them as a prediction of a real session result. Show the conditions used (with their sources) and link the /simulation page it returns.';
@@ -138,8 +142,11 @@ export function simulate(args = {}) {
     const ss = secOf(K.simulateLap(withGrip(withZones(K, d, base, ref), ref.grip || 1), ref.car, K.conditionsFromWeather({pressureHpa: 1013.25, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0, ...fw, rechargeMJ: rechargeMJ ?? undefined})));
     return c.fix.real.map((x, i) => x - ss[i]);
   };
+  // zone options (owner 2026-11-16); none given = the fitted lap, as before
+  const opt = ['straight_mode', 'overtake', 'drs'].some(k => args[k] !== undefined) ? {sm: args.straight_mode || 'normal', ot: args.overtake !== false, drs: args.drs !== false} : null;
   const run = c => {
-    const r = scaled(K.simulateLap(withGrip(withZones(K, d, track, c), c.grip || 1), c.car, env), c.timeScale), k = corrOf(c), sec = secOf(r);
+    const sim = tr => K.simulateLap(withGrip(tr, c.grip || 1), c.car, env), o = opt && simulateWithOptions(K, d, track, c, opt, sim);
+    const r = scaled(o || sim(withZones(K, d, track, c)), c.timeScale), k = corrOf(c), sec = secOf(r);
     return k && sec ? {...r, lapTime: r.lapTime + k[0] + k[1] + k[2], sectors: sec.map((x, i) => x + k[i]), sectorCorrection: k} : k ? {...r, lapTime: r.lapTime + k.reduce((a, b) => a + b, 0), sectorCorrection: k} : r;
   };
   const res = run(sel);
@@ -158,6 +165,9 @@ export function simulate(args = {}) {
       air_density_kg_m3: r3(env.rho), density_vs_sea_level_pct: Math.round((env.rho / 1.225 - 1) * 1000) / 10,
       engine_power_factor: r3(env.iceFactor), tyre_grip_factor: r3(env.grip), wind_applied: !!base.heading && windSpeed > 0,
       main_straight_tailwind_ms: base.heading ? r3(K.tailwind(base.heading[2], windSpeed, windFromDeg)) : null},
+    ...(!sel.series && sel.year ? {zones: (() => { const z = lapsimF1Zones?.tracks?.[id]?.[slotOf(lapsimF1Zones?.tracks?.[id], sel.year)]; return {kind: z?.kind || null, estimated: !!z?.est, count: z?.zones?.length ?? 0, document: z?.doc || null,
+      options: opt ? (sel.year >= 2026 ? {straight_mode: opt.sm, overtake: opt.ot} : {drs: opt.drs}) : 'default (Normal zones, Overtake on / DRS on)',
+      ...(z?.real ? {real_qualifying: z.real} : {})}; })()} : {}),
     result: {...summary(res, d, sel.car), ...(res.sectorCorrection ? {sector_correction_s: res.sectorCorrection.map(r3), sector_correction_note: 'real pole sectors minus the simulated ones in the real pole weather (track-specific model bias)'} : {})},
     uncertainty: {error_range_s: sel.unc?.pct ? r3(res.lapTime * sel.unc.pct / 100) : null, error_range_pct: sel.unc?.pct ?? null, confidence: sel.unc?.confidence,
       basis: sel.unc?.basis === 'fit' ? 'one-sigma lap-time error of the fit over the tracks this car was fitted on' : 'one-sigma error from the holdout test (tracks left out of the fit, predicted)', holdout_error_pct: sel.unc?.holdoutPct ?? null,

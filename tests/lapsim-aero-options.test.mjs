@@ -34,3 +34,12 @@ test('telemetry and map follow the zone options', () => {
   assert.equal(bands(n), 5); assert.equal(bands(alt), 3); assert.equal(bands(off), 0);
   assert.ok((off.mapSvg.match(/OT [AD]</g) || []).length === 2, 'Overtake marks stay while Overtake is on');
 });
+
+// the connector's lap tool has the same options and gives the same laps as the page (owner 2026-11-16)
+test('lapsim_simulate zone options match the page', async () => {
+  const {simulate} = await import('../worker/lapsim/tool.js'), lap = o => { const [m, s] = simulate({track: 'interlagos', car: '2026', ...o}).result.lap_time.split(':'); return 60 * m + Number(s); };
+  assert.equal(lap({}), lapOf('interlagos', '2026', {}));
+  assert.equal(lap({straight_mode: 'alt'}), lapOf('interlagos', '2026', {sm: 'alt'}));
+  assert.equal(lap({overtake: false}), lapOf('interlagos', '2026', {ot: false}));
+  assert.deepEqual(simulate({track: 'interlagos', car: '2026'}).zones.real_qualifying, {grip: 'low', ot: 'off'});
+});

@@ -60,7 +60,7 @@ const T = {
     model: '이 계산의 범위', pending: '데이터 준비 중', pendingLead: '트랙과 보정 데이터를 만드는 중입니다. 잠시 후 다시 확인해 주세요.',
     calibrated: '실측 보정', learned: '실제 랩으로 학습', prior: '규정값 기반', projected: '예측',
     m1: '트랙 형상은 OpenF1의 예선 차량 위치(여러 드라이버의 베스트 랩)로 만든 실제 주행 라인입니다. 코너 번호는 공식 위치, 방위는 실제 지도와 맞췄습니다.',
-    m2: '2019 기준 머신은 TUM(뮌헨공대)이 공개한 범용 F1 모델이고, 2025·2026 머신은 실제 폴 랩에 맞춰 보정했습니다.',
+    m2: '2025·2026 머신은 실제 폴 랩에 맞춰 보정했습니다 (계산 방법은 TUM(뮌헨공대)이 공개한 랩 시뮬레이션 방식).',
     m3: '2026년 규정: MGU-K 350kW(290km/h 이상에서 감소, 345km/h에서 0), 배터리 사용 폭 4MJ, 랩당 회생 최대 8.5MJ (Section C 5.2, Issue 21). 퀄리파잉 회생 한도는 FIA가 서킷별로 정한 값(5–9MJ, 언론 보도 기준)을 씁니다.',
     m4: '노면 온도에 따른 그립, 고도에 따른 엔진 출력 감소, FIA 변경 사항의 효과는 가정값입니다. 측정값처럼 읽지 마세요.',
     m5: '준정상상태 모델이라 변속, 타이어 온도 변화, 차 사이 간섭은 계산하지 않습니다. 2026년 이후 차량은 제동 회생과 함께, 타이어가 다 쓰지 못하는 엔진 출력으로 하는 회생을 계산하고, 직선 끝 풀스로틀 회생(슈퍼 클리핑)은 랩이 더 빨라질 때만 씁니다. 절대값보다 차이와 경향을 보는 데 쓰세요.',
@@ -92,7 +92,7 @@ const T = {
     model: 'What this calculation covers', pending: 'Data in preparation', pendingLead: 'Track and calibration data are being built. Please check back shortly.',
     calibrated: 'Fitted to real laps', learned: 'Learned from real laps', prior: 'From the regulations', projected: 'Projection',
     m1: 'Track shapes are the real driving line built from OpenF1 car positions in qualifying (several drivers’ best laps). Corners use official positions; headings are aligned to real maps.',
-    m2: 'The 2019 base car is TUM’s published generic F1 model; the 2025 and 2026 cars are fitted to real pole laps.',
+    m2: 'The 2025 and 2026 cars are fitted to real pole laps (the method follows TUM’s published lap simulation).',
     m3: '2026 rules: MGU-K 350 kW (reduced above 290 km/h, zero at 345 km/h), 4 MJ battery window, up to 8.5 MJ recharge per lap (Section C 5.2, Issue 21). Qualifying uses the per-circuit recharge limit the FIA sets (5–9 MJ, from press reports).',
     m4: 'Grip versus track temperature, engine power loss with altitude and the effect of FIA changes are assumptions, not measurements.',
     m5: 'A quasi-steady-state model ignores gear shifts, tyre temperature and car-to-car effects. For cars from 2026 it counts recovery under braking and from engine power the tyres cannot use, and it harvests at full throttle at the end of straights (super-clipping) only when that makes the lap faster. Use it for differences and trends rather than absolute times.',
@@ -114,7 +114,8 @@ function carsFor(id, lang) {
   const t = T[lang], label = {base2019: lang === 'en' ? '2019 base (TUM)' : '2019 기준 (TUM)', 2027: `2027 (${t.projected})`, 2028: `2028 (${t.projected})`};
   const wec = c => `WEC ${SERIES.wec.classes[c.cls].label[lang]} ${c.year}`;
   // provisional series cars (IMSA, GT3 series) are tool-only until their pages exist
-  return Object.fromEntries(Object.entries(scenarioCars(id)).filter(([, c]) => c.kind !== 'proxy').map(([k, c]) => [k, {...c, label: c.label || (c.series === 'wec' ? wec(c) : label[k] || k)}]));
+  // owner 2026-11-16: the 2019 TUM base car is off the page (the connector's tool keeps it)
+  return Object.fromEntries(Object.entries(scenarioCars(id)).filter(([k, c]) => c.kind !== 'proxy' && k !== 'base2019').map(([k, c]) => [k, {...c, label: c.label || (c.series === 'wec' ? wec(c) : label[k] || k)}]));
 }
 
 // --- Rendering (shared with the browser; must only use its arguments) ---
@@ -159,12 +160,16 @@ function renderMap(map, v, opts) {
   let zones = '';
   if (opts.zones && ((opts.zones.list || []).length || (opts.zones.marks || []).length)) {
     let area = 0; for (let i = 0; i < n; i++) { const j = (i + 1) % n; area += xs[i] * ys[j] - xs[j] * ys[i]; }
-    const out = area > 0 ? -1 : 1, off = sw * 2.3, idx = s0 => ((Math.round(s0 / opts.length * n) % n) + n) % n;
-    const at = (i, k) => { const p = (i - 1 + n) % n, q = (i + 1) % n, tx = xs[q] - xs[p], ty = ys[q] - ys[p], l = Math.hypot(tx, ty) || 1; return [xs[i] + out * -ty / l * off * k, ys[i] + out * tx / l * off * k]; };
+    // owner 2026-11-16: bands follow the track outline (centre and edges of the drawn track band), not the wobbly driven line
+    const E = L && L.left && L.right && L.left.length === L.right.length ? L : null, m2 = E ? E.left.length : n;
+    const cx = E ? E.left.map((p, i) => (p[0] + E.right[i][0]) / 2) : xs, cy = E ? E.left.map((p, i) => (p[1] + E.right[i][1]) / 2) : ys, hw = E ? E.left.map((p, i) => Math.hypot(p[0] - E.right[i][0], p[1] - E.right[i][1]) / 2) : null;
+    let area2 = 0; if (E) for (let i = 0; i < m2; i++) { const j = (i + 1) % m2; area2 += cx[i] * cy[j] - cx[j] * cy[i]; }
+    const out = (E ? area2 : area) > 0 ? -1 : 1, off = sw * 2.3, idx = s0 => ((Math.round(s0 / opts.length * m2) % m2) + m2) % m2, nn = m2;
+    const at = (i, k) => { const p = (i - 2 + nn) % nn, q = (i + 2) % nn, tx = cx[q] - cx[p], ty = cy[q] - cy[p], l = Math.hypot(tx, ty) || 1, o = (hw ? hw[i] : 0) + off * k; return [cx[i] + out * -ty / l * o, cy[i] + out * tx / l * o]; };
     const P = ([x, y]) => (x - minX + pad).toFixed(1) + ' ' + (maxY - y + pad).toFixed(1);
     const zBoxes = [];
     for (const z of opts.zones.list) {
-      const a = idx(z.from), b = idx(z.to), pts = []; for (let i = a, g = 0; g <= n; g++, i = (i + 1) % n) { pts.push(at(i, 1)); if (i === b) break; }
+      const a = idx(z.from), b = idx(z.to), pts = []; for (let i = a, g = 0; g <= nn; g++, i = (i + 1) % nn) { pts.push(at(i, 1)); if (i === b) break; }
       if (pts.length < 2) continue;
       // zone and OT labels never overlap each other: step further out until the box is free
       let k = 2.2, lab = at(a, k), fz = sw * 2.4, bx = () => { const [x, y] = P(lab).split(' ').map(Number), hw = z.label.length * fz * 0.32; return [x - hw, y - fz * 0.6, x + hw, y + fz * 0.6]; };
@@ -172,7 +177,9 @@ function renderMap(map, v, opts) {
       zBoxes.push(bx());
       zones += '<path class="ls-zone ls-zone-' + opts.zones.kind + '" d="M' + pts.map(P).join('L') + '" stroke-width="' + (sw * 0.4).toFixed(1) + '"/><text class="ls-zone-t" x="' + P(lab).split(' ')[0] + '" y="' + P(lab).split(' ')[1] + '" font-size="' + (sw * 2.4).toFixed(1) + '">' + z.label + '</text>';
     }
-    for (const m of opts.zones.marks || []) { const k = idx(m.s), a = P(at(k, -0.565)).split(' '), b = P(at(k, 0.565)).split(' '), fm = sw * 2, hw = m.label.length * fm * 0.32; let o = 2.7, r = P(at(k, o)).split(' ').map(Number);
+    // a mark crosses the whole track (both edges plus a little), from the centre line
+    const across = (i, dd) => { const p = (i - 2 + nn) % nn, q = (i + 2) % nn, tx = cx[q] - cx[p], ty = cy[q] - cy[p], l = Math.hypot(tx, ty) || 1; return [cx[i] + out * -ty / l * dd, cy[i] + out * tx / l * dd]; }, half = i => (hw ? hw[i] : 0) + off * 0.565;
+    for (const m of opts.zones.marks || []) { const k = idx(m.s), a = P(across(k, -half(k))).split(' '), b = P(across(k, half(k))).split(' '), fm = sw * 2, hw = m.label.length * fm * 0.32; let o = 2.7, r = P(at(k, o)).split(' ').map(Number);
       const box = () => [r[0] - hw, r[1] - fm * 0.6, r[0] + hw, r[1] + fm * 0.6], busy = () => zBoxes.some(q => !(box()[2] < q[0] || box()[0] > q[2] || box()[3] < q[1] || box()[1] > q[3]));
       while (o < 9 && busy()) { o += 1.3; r = P(at(k, o)).split(' ').map(Number); } zBoxes.push(box());
       zones += '<line class="ls-zone-m ls-zone-m-' + m.kind + '" x1="' + a[0] + '" y1="' + a[1] + '" x2="' + b[0] + '" y2="' + b[1] + '" stroke-width="' + (sw * 0.2).toFixed(1) + '"/><text class="ls-zone-mt ls-zone-mt-' + m.kind + '" x="' + r[0] + '" y="' + r[1] + '" font-size="' + (sw * 2).toFixed(1) + '">' + m.label + '</text>'; }
@@ -228,19 +235,19 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
   // corner numbers on every map (owner 2026-11-15): the track's own official numbers, else MultiViewer's official numbers placed on
   // this map, else numbers found from the curvature (marked as estimated)
   const td0 = lapsimTracks[id], view0 = lapsimTrackView?.[id], ownC = td0.corners?.length ? td0.corners : view0?.corners?.length ? view0.corners : null;
-  const td = ownC === td0.corners ? td0 : {...td0, corners: ownC || autoCorners(td0), cornersEstimated: !ownC}, cars = carsFor(id, lang), conds = realConditions(id);
+  const td = ownC === td0.corners ? td0 : {...td0, corners: ownC || autoCorners(td0), cornersEstimated: !ownC}, cars = carsFor(id, lang), conds = realConditions(id), CAR_ORDER_P = CAR_ORDER.filter(k => cars[k]);
   // Evo kit: listed as a tick box beside its base car (only when the data has that Evo entry)
-  const evoOf = evoPairs(cars, CAR_ORDER), evoKeys = new Set(Object.values(evoOf));
+  const evoOf = evoPairs(cars, CAR_ORDER_P), evoKeys = new Set(Object.values(evoOf));
   // GT3 (owner 2026-11-15): car model first, then the series spec (BoP body: SRO GT3, IMSA GTD, WEC LMGT3, DTM), then the kit (newest by default)
-  const fam = gt3Families(cars, CAR_ORDER);
+  const fam = gt3Families(cars, CAR_ORDER_P);
   const askedCar = cars[query.car] ? query.car : '2026', ac = cars[askedCar], fl = ac.series === 'gt3' && fam[ac.base]?.[ac.cls];
   const carId = fl ? (query.evo === '0' ? askedCar : fl.at(-1)) : query.evo !== '0' && evoOf[askedCar] ? evoOf[askedCar] : askedCar; // a car with an Evo kit opens on its newest spec unless evo=0
   const baseId = Object.keys(evoOf).find(k => evoOf[k] === carId) || carId;
   // event this car races at here (calendar data) with the season of its session weather; absent = nothing shown
-  const events = Object.fromEntries(CAR_ORDER.filter(k => cars[k]).map(k => [k, carEvent(id, k, cars[k], conds)]).filter(([, e]) => e)
+  const events = Object.fromEntries(CAR_ORDER_P.filter(k => cars[k]).map(k => [k, carEvent(id, k, cars[k], conds)]).filter(([, e]) => e)
     .map(([k, e]) => [k, t.eventFor.replace('{n}', lang === 'en' ? e.nameEn : e.name).replace('{a}', e.start).replace('{b}', e.end).replace('{y}', e.weatherYear)]));
   const changes = latestChanges(id);
-  const data = {startAlt: lapsimStartLines[id] || null, driverLines: lapsimDriverLines?.tracks?.[id] || null, pu: lapsimPuDocs?.events?.[id] || null, lang, t, id, track: td, cars, carOrder: CAR_ORDER, carId, evoOf, fam, bodyLabel: BODY_LABEL, events, conds, raceRec: raceRecords(id), changes, energy: (liveEnergy && (query.track || 'monza') === id ? liveEnergy : energyLimit(id, 2026)),
+  const data = {startAlt: lapsimStartLines[id] || null, driverLines: lapsimDriverLines?.tracks?.[id] || null, pu: lapsimPuDocs?.events?.[id] || null, lang, t, id, track: td, cars, carOrder: CAR_ORDER_P, carId, evoOf, fam, bodyLabel: BODY_LABEL, events, conds, raceRec: raceRecords(id), changes, energy: (liveEnergy && (query.track || 'monza') === id ? liveEnergy : energyLimit(id, 2026)),
     compounds: lapsimCompounds?.[id] || {}, wecTyres: lapsimWecTyres?.[id] || {}, line: lineData(id), lineText: LT[lang], qsplit: lapsimQsplit ? {off: lapsimQsplit.offsetPct, test: lapsimQsplit.test, real: lapsimQsplit.tracks?.[id] || null} : null, brakes: lapsimBrakes ? {ramp: lapsimBrakes.rampS ?? 0, k: lapsimBrakes.pedalKgPerG, g: lapsimBrakes.gScale, t: lapsimBrakes.timeScale, test: lapsimBrakes.test, real: lapsimBrakes.races?.[id] || null, text: BT[lang]} : null, compoundGap: compoundGap(id), compoundTest: lapsimCompoundGap?.test?.rmsPct ?? null,
     evo: Object.fromEntries(['f1', 'wec'].map(se => [se, Object.fromEntries(['practice', 'qualifying'].map(ty => [ty, evolutionCoeffs(se, id, ty)]))])),
     zones: lapsimF1Zones?.tracks?.[id] || null, zonesOn: ZONES_ON ? (DRS_ONLY ? 'drs' : 'all') : '', surface: surfaceOf(id, td, changes), mapRot0: Number.isFinite(view0?.openDeg) ? view0.openDeg : landscapeRot(td.map, lapsimTrackNorth?.[id], VIEW[id], td.corners, td.length), cornersEstimated: !!td.cornersEstimated, north: lapsimTrackNorth?.[id] || null, ui: UI[lang],
@@ -565,7 +572,9 @@ function computeView(K, data, state, R) {
   // F1 low-drag zones of the car's season (worker/lapsim/zones.js; on when the F1 fit used them): DRS to 2025, Straight Mode from 2026.
   // Options (owner 2026-11-16): SM Normal / Alt (low-grip activation of the FIA map; n/a = zone off; no column = 50 m later) / Off,
   // Overtake on (C5.2.8 ii power curve) / off, DRS on / off. Defaults Normal, OT on, DRS on.
-  const zl = (c, m) => { const sl = c.year >= 2026 ? '2026' : '2025', z = data.zones && data.zones[sl], L = d.kappa.length * d.ds; if (!z || !z.zones) return null;
+  // newest zone set of the car's year or earlier (2027/2028 FIA notes apply to that year only, owner 2026-11-16)
+  const slotOf = y => y < 2026 ? '2025' : String(Math.max(2026, ...Object.keys(data.zones || {}).map(Number).filter(k => k >= 2026 && k <= y)));
+  const zl = (c, m) => { const sl = slotOf(c.year), z = data.zones && data.zones[sl], L = d.kappa.length * d.ds; if (!z || !z.zones) return null;
     if (sl === '2025' ? !m.drs : m.sm === 'off') return [];
     return m.sm === 'alt' && sl === '2026' ? z.zones.filter(q => q.low !== null).map(q => [q.low != null ? q.low : (q.from + 50) % L, q.to]) : z.zones.map(q => [q.from, q.to]); };
   // fit setup: FIA zones when the F1 fit used them (zonesOn), else the kernel's own straights; no Overtake (the real laps it was fit on)
@@ -587,7 +596,7 @@ function computeView(K, data, state, R) {
     if (!(key in per)) per[key] = sim(zt(tr, c)).lapTime / simOpt(tr, c, c.year >= 2026 ? {sm: 'normal', ot: true} : {drs: true}, sim, tag).lapTime; return per[key]; };
   const f1Opt = c => !c.series && c.year && !kS;
   // the options the real qualifying of this car's season ran with (race control, f1-zones-data.js real), else none
-  const realOpt = c => { if (!f1Opt(c) || !data.zones) return null; const z = data.zones[c.year >= 2026 ? '2026' : '2025'], q = z && z.real; if (!q || z.year !== c.year) return null;
+  const realOpt = c => { if (!f1Opt(c) || !data.zones) return null; const z = data.zones[slotOf(c.year)], q = z && z.real; if (!q || z.year !== c.year) return null;
     const m = c.year >= 2026 ? {sm: q.grip === 'low' ? 'alt' : 'normal', ot: q.ot !== 'off', drs: true} : {sm: 'normal', ot: false, drs: q.drs !== 'off'};
     return (c.year >= 2026 ? m.sm === 'normal' && m.ot : m.drs) ? null : m; };
   // the reference lap of a correction: in the real session's zone set, scaled like the options
@@ -739,7 +748,7 @@ function computeView(K, data, state, R) {
   }
   // F1 zones (owner 2026-11-15): 2026–2028 cars show the 2026 Straight Mode zones and overtake detection/activation (2027 documents
   // replace them once published); a 2025 car shows the 2025 DRS zones, or those of the last year F1 raced here; other cars none
-  const ZD = data.zones, zy = !sel.series && ZD ? (sel.year >= 2026 ? (ZD[String(sel.year)] || ZD['2026']) : sel.year === 2025 ? ZD['2025'] : null) : null;
+  const ZD = data.zones, zy = !sel.series && ZD ? (sel.year >= 2025 ? ZD[slotOf(sel.year)] : null) : null;
   // the chosen options (owner 2026-11-16): Alt draws the low-grip zones (n/a ones left out), Off or DRS off draws none, Overtake off hides OT marks
   const om = zy ? optOf(sel) : null, LZ = d0.kappa.length * d0.ds;
   const zlist = !zy ? [] : (zy.kind === 'drs' ? !om.drs : om.sm === 'off') ? [] : om.sm === 'alt' && zy.kind !== 'drs' ? zy.zones.filter(z => z.low !== null).map(z => Object.assign({}, z, {from: z.low != null ? z.low : (z.from + 50) % LZ})) : zy.zones;
@@ -960,7 +969,7 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
     requestAnimationFrame(() => {
       pending = false;
       // options start at the real qualifying's state when this car's season raced here (Brazil 2026: Alt, OT off), else the defaults
-      if (state.optCar !== state.carId) { state.optCar = state.carId; const c = data.cars[state.carId], z = !c.series && c.year && data.zones ? data.zones[c.year >= 2026 ? '2026' : '2025'] : null, rq = z && z.real && z.year === c.year && c.fix ? z.real : {};
+      if (state.optCar !== state.carId) { state.optCar = state.carId; const c = data.cars[state.carId], z = !c.series && c.year && data.zones ? data.zones[c.year < 2026 ? '2025' : String(Math.max(2026, ...Object.keys(data.zones).map(Number).filter(k => k >= 2026 && k <= c.year)))] : null, rq = z && z.real && z.year === c.year && c.fix ? z.real : {};
         state.sm = rq.grip === 'low' ? 'alt' : 'normal'; state.ot = rq.ot !== 'off'; state.drs = rq.drs !== 'off';
         if (q('sm')) { q('sm').value = state.sm; q('ot').value = state.ot ? '1' : '0'; q('drs').value = state.drs ? '1' : '0'; } }
       const v = computeView(K, data, state, R); lastTel = v.tel; lastView = v;

@@ -35,3 +35,11 @@ test('every track has complete overtake / DRS marks', async () => {
     for (const y of ['2025', '2026']) { const s = Z.tracks[id]?.[y]; assert.ok(s, id + ' ' + y); const k = s.marks.map(m => m.kind);
       assert.ok(y === '2026' ? k.includes('det') && k.includes('act') : !s.zones.length || k.includes('det'), id + ' ' + y + ' marks ' + k); } }
 });
+
+// owner 2026-11-16: zones learned from 2027/2028 FIA notes apply to that year only; 2026 keeps its own; a year without notes uses the newest earlier set
+test('zone slot of each F1 year', async () => {
+  const {slotOf} = await import('../worker/lapsim/zones.js');
+  const Z = {'2025': {}, '2026': {}, '2027': {}};
+  assert.equal(slotOf(Z, 2024), '2025'); assert.equal(slotOf(Z, 2025), '2025'); assert.equal(slotOf(Z, 2026), '2026');
+  assert.equal(slotOf(Z, 2027), '2027'); assert.equal(slotOf(Z, 2028), '2027'); assert.equal(slotOf({'2026': {}}, 2028), '2026');
+});
