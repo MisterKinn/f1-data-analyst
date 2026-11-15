@@ -1,0 +1,2821 @@
+{
+ "source": "FIA F1 event documents (fia.com); zone lines only",
+ "events": [
+  {
+   "year": 2024,
+   "event": "Australian Grand Prix",
+   "track": "melbourne",
+   "docs": [
+    {
+     "title": "Event Notes - Circuit Map, Pit Lane and Red Zone",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2024%20Australian%20Grand%20Prix%20-%20Event%20Notes%20-%20Circuit%20Map,%20Pit%20Lane%20and%20Red%20Zone.pdf",
+     "published": "Published on 21.03.24 05:16 CET",
+     "lines": [
+      {
+       "page": 1,
+       "y": 596.8,
+       "text": "Title Event Notes - Circuit Map, Pit Lane and Red Zone",
+       "cells": [
+        {
+         "text": "Title",
+         "x": 46
+        },
+        {
+         "text": "Event Notes - Circuit Map, Pit Lane and Red Zone",
+         "x": 118.6
+        }
+       ]
+      },
+      {
+       "page": 1,
+       "y": 574.3,
+       "text": "Description Circuit Map, Pit Lane and Red Zone",
+       "cells": [
+        {
+         "text": "Description",
+         "x": 46
+        },
+        {
+         "text": "Circuit Map, Pit Lane and Red Zone",
+         "x": 118.6
+        }
+       ]
+      },
+      {
+       "page": 1,
+       "y": 551.8,
+       "text": "Enclosed AUS DOC 4 - Circuit Map Pit Lane and Red Zone.pdf",
+       "cells": [
+        {
+         "text": "Enclosed",
+         "x": 46
+        },
+        {
+         "text": "AUS DOC 4 - Circuit Map Pit Lane and Red Zone.pdf",
+         "x": 118.6
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Race Director's Event Notes",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2024%20Australian%20Grand%20Prix%20-%20Race%20Director%27s%20Event%20Notes.pdf",
+     "published": "Published on 21.03.24 02:46 CET",
+     "lines": [
+      {
+       "page": 3,
+       "y": 756.4,
+       "text": "monitors) and the driver must allow the following driver to overtake at the first available opportunity.",
+       "cells": [
+        {
+         "text": "monitors) and the driver must allow the following driver to overtake at the first available opportunity.",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 4,
+       "y": 438.4,
+       "text": "13) DRS",
+       "cells": [
+        {
+         "text": "13)",
+         "x": 42.6
+        },
+        {
+         "text": "DRS",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 4,
+       "y": 422.8,
+       "text": "DRS Detection will be automatically disabled in each individual zone if any of the light panels in that",
+       "cells": [
+        {
+         "text": "DRS Detection will be automatically disabled in each individual zone if any of the light panels in that",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 4,
+       "y": 410.1,
+       "text": "zone are displaying yellow. The zones and corresponding light panels are as follows:",
+       "cells": [
+        {
+         "text": "zone are displaying yellow. The zones and corresponding light panels are as follows:",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 4,
+       "y": 394.5,
+       "text": "a) DRS Activation 1: Panels 11, 12, 13, 14",
+       "cells": [
+        {
+         "text": "a)",
+         "x": 70.9
+        },
+        {
+         "text": "DRS Activation 1: Panels 11, 12, 13, 14",
+         "x": 99.3
+        }
+       ]
+      },
+      {
+       "page": 4,
+       "y": 378.8,
+       "text": "b) DRS Activation 2: Panels 15, 16, 17",
+       "cells": [
+        {
+         "text": "b)",
+         "x": 70.9
+        },
+        {
+         "text": "DRS Activation 2: Panels 15, 16, 17",
+         "x": 99.3
+        }
+       ]
+      },
+      {
+       "page": 4,
+       "y": 363.2,
+       "text": "c) DRS Activation 3: Panels 20, 1, 2",
+       "cells": [
+        {
+         "text": "c)",
+         "x": 70.9
+        },
+        {
+         "text": "DRS Activation 3: Panels 20, 1, 2",
+         "x": 99.3
+        }
+       ]
+      },
+      {
+       "page": 4,
+       "y": 347.6,
+       "text": "d) DRS Activation 4: Panels 3, 4, 5",
+       "cells": [
+        {
+         "text": "d)",
+         "x": 70.9
+        },
+        {
+         "text": "DRS Activation 4: Panels 3, 4, 5",
+         "x": 99.3
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "year": 2023,
+   "event": "Australian Grand Prix",
+   "track": "melbourne",
+   "docs": [
+    {
+     "title": "Event Notes - Circuit Map and Red Zone",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2023%20Australian%20Grand%20Prix%20-%20Event%20Notes%20-%20Circuit%20Map%20and%20Red%20Zone.pdf",
+     "published": "Published on 30.03.23 01:46 CET",
+     "lines": [
+      {
+       "page": 1,
+       "y": 568.8,
+       "text": "Title Event Notes - Circuit Map and Red Zone",
+       "cells": [
+        {
+         "text": "Title",
+         "x": 46
+        },
+        {
+         "text": "Event Notes - Circuit Map and Red Zone",
+         "x": 118.6
+        }
+       ]
+      },
+      {
+       "page": 1,
+       "y": 546.3,
+       "text": "Description Circuit Map and Red Zone",
+       "cells": [
+        {
+         "text": "Description",
+         "x": 46
+        },
+        {
+         "text": "Circuit Map and Red Zone",
+         "x": 118.6
+        }
+       ]
+      },
+      {
+       "page": 1,
+       "y": 523.7,
+       "text": "Enclosed AUS DOC 3 - Circuit Map and Red Zone.pdf",
+       "cells": [
+        {
+         "text": "Enclosed",
+         "x": 46
+        },
+        {
+         "text": "AUS DOC 3 - Circuit Map and Red Zone.pdf",
+         "x": 118.6
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Race Director's Event Notes V2",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2023%20Australian%20Grand%20Prix%20-%20Race%20Director%27s%20Event%20Notes%20V2.pdf",
+     "published": "Published on 01.04.23 00:41 CET",
+     "lines": [
+      {
+       "page": 3,
+       "y": 440.5,
+       "text": "the following driver to overtake at the first available opportunity.",
+       "cells": [
+        {
+         "text": "the following driver to overtake at the first available opportunity.",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 341.2,
+       "text": "19) DRS",
+       "cells": [
+        {
+         "text": "19)",
+         "x": 42.6
+        },
+        {
+         "text": "DRS",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 323.7,
+       "text": "DRS Detection will be automatically disabled in each individual zone if any of the light panels in that",
+       "cells": [
+        {
+         "text": "DRS Detection will be automatically disabled in each individual zone if any of the light panels in that",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 309.1,
+       "text": "particular zone are displaying yellow. The zones and corresponding light panels are as follows:",
+       "cells": [
+        {
+         "text": "particular zone are displaying yellow. The zones and corresponding light panels are as follows:",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 291.5,
+       "text": "a) DRS Activation 1: Panels 11, 12, 13, 14",
+       "cells": [
+        {
+         "text": "a)",
+         "x": 70.9
+        },
+        {
+         "text": "DRS Activation 1: Panels 11, 12, 13, 14",
+         "x": 99.3
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 274,
+       "text": "b) DRS Activation 2: Panels 15, 16, 17",
+       "cells": [
+        {
+         "text": "b)",
+         "x": 70.9
+        },
+        {
+         "text": "DRS Activation 2: Panels 15, 16, 17",
+         "x": 99.3
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 256.5,
+       "text": "c) DRS Activation 3: Panels 20, 1, 2",
+       "cells": [
+        {
+         "text": "c)",
+         "x": 70.9
+        },
+        {
+         "text": "DRS Activation 3: Panels 20, 1, 2",
+         "x": 99.3
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 238.9,
+       "text": "d) DRS Activation 4: Panels 3, 4, 5",
+       "cells": [
+        {
+         "text": "d)",
+         "x": 70.9
+        },
+        {
+         "text": "DRS Activation 4: Panels 3, 4, 5",
+         "x": 99.3
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "year": 2024,
+   "event": "Bahrain Grand Prix",
+   "track": "sakhir",
+   "docs": [
+    {
+     "title": "Event Notes - Circuit Map and Red Zone",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2024%20Bahrain%20Grand%20Prix%20-%20Event%20Notes%20-%20Circuit%20Map%20and%20Red%20Zone.pdf",
+     "published": "Published on 28.02.24 12:45 CET",
+     "lines": [
+      {
+       "page": 1,
+       "y": 584.3,
+       "text": "Title Event Notes - Circuit Map and Red Zone",
+       "cells": [
+        {
+         "text": "Title",
+         "x": 46
+        },
+        {
+         "text": "Event Notes - Circuit Map and Red Zone",
+         "x": 118.6
+        }
+       ]
+      },
+      {
+       "page": 1,
+       "y": 561.8,
+       "text": "Description Circuit Map and Red Zone",
+       "cells": [
+        {
+         "text": "Description",
+         "x": 46
+        },
+        {
+         "text": "Circuit Map and Red Zone",
+         "x": 118.6
+        }
+       ]
+      },
+      {
+       "page": 1,
+       "y": 539.3,
+       "text": "Enclosed BHR DOC 3 - Circuit Map and Red Zone.pdf",
+       "cells": [
+        {
+         "text": "Enclosed",
+         "x": 46
+        },
+        {
+         "text": "BHR DOC 3 - Circuit Map and Red Zone.pdf",
+         "x": 118.6
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Race Director's Event Notes V2",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2024%20Bahrain%20Grand%20Prix%20-%20Race%20Director%27s%20Event%20Notes%20V2.pdf",
+     "published": "Published on 01.03.24 08:55 CET",
+     "lines": [
+      {
+       "page": 3,
+       "y": 561.3,
+       "text": "monitors) and the driver must allow the following driver to overtake at the first available opportunity.",
+       "cells": [
+        {
+         "text": "monitors) and the driver must allow the following driver to overtake at the first available opportunity.",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 4,
+       "y": 112.1,
+       "text": "13) DRS",
+       "cells": [
+        {
+         "text": "13)",
+         "x": 42.6
+        },
+        {
+         "text": "DRS",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 4,
+       "y": 96.5,
+       "text": "DRS Detection will be automatically disabled in each individual zone if any of the light panels in that",
+       "cells": [
+        {
+         "text": "DRS Detection will be automatically disabled in each individual zone if any of the light panels in that",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 4,
+       "y": 83.8,
+       "text": "zone are displaying yellow. The zones and corresponding light panels are as follows:",
+       "cells": [
+        {
+         "text": "zone are displaying yellow. The zones and corresponding light panels are as follows:",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 4,
+       "y": 68.2,
+       "text": "a) DRS Activation 1: Panels 3, 4",
+       "cells": [
+        {
+         "text": "a)",
+         "x": 70.9
+        },
+        {
+         "text": "DRS Activation 1: Panels 3, 4",
+         "x": 99.3
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 781.7,
+       "text": "b) DRS Activation 2: Panels 11, 12",
+       "cells": [
+        {
+         "text": "b)",
+         "x": 70.9
+        },
+        {
+         "text": "DRS Activation 2: Panels 11, 12",
+         "x": 99.3
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 766.1,
+       "text": "c) DRS Activation 3: Panels 18, 1, 2",
+       "cells": [
+        {
+         "text": "c)",
+         "x": 70.9
+        },
+        {
+         "text": "DRS Activation 3: Panels 18, 1, 2",
+         "x": 99.3
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "year": 2023,
+   "event": "Bahrain Grand Prix",
+   "track": "sakhir",
+   "docs": [
+    {
+     "title": "Event Notes - Circuit Map",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2023%20Bahrain%20Grand%20Prix%20-%20Event%20Notes%20-%20Circuit%20Map.pdf",
+     "published": "Published on 01.03.23 09:45 CET",
+     "lines": []
+    },
+    {
+     "title": "Race Director's Event Notes V2",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2023%20Bahrain%20Grand%20Prix%20-%20Race%20Director%27s%20Event%20Notes%20V2.pdf",
+     "published": "Published on 03.03.23 19:51 CET",
+     "lines": [
+      {
+       "page": 3,
+       "y": 438.2,
+       "text": "the following driver to overtake at the first available opportunity.",
+       "cells": [
+        {
+         "text": "the following driver to overtake at the first available opportunity.",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 4,
+       "y": 107.5,
+       "text": "15) DRS",
+       "cells": [
+        {
+         "text": "15)",
+         "x": 42.6
+        },
+        {
+         "text": "DRS",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 4,
+       "y": 89.9,
+       "text": "DRS Detection will be automatically disabled in each individual zone if any of the light panels in that",
+       "cells": [
+        {
+         "text": "DRS Detection will be automatically disabled in each individual zone if any of the light panels in that",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 4,
+       "y": 75.4,
+       "text": "particular zone are displaying yellow. The zones and corresponding light panels are as follows:",
+       "cells": [
+        {
+         "text": "particular zone are displaying yellow. The zones and corresponding light panels are as follows:",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 781.7,
+       "text": "a) DRS Activation 1: Panels 3, 4",
+       "cells": [
+        {
+         "text": "a)",
+         "x": 70.9
+        },
+        {
+         "text": "DRS Activation 1: Panels 3, 4",
+         "x": 99.3
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 764.2,
+       "text": "b) DRS Activation 2: Panels 11, 12",
+       "cells": [
+        {
+         "text": "b)",
+         "x": 70.9
+        },
+        {
+         "text": "DRS Activation 2: Panels 11, 12",
+         "x": 99.3
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 746.6,
+       "text": "c) DRS Activation 3: Panels 18, 1, 2",
+       "cells": [
+        {
+         "text": "c)",
+         "x": 70.9
+        },
+        {
+         "text": "DRS Activation 3: Panels 18, 1, 2",
+         "x": 99.3
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "year": 2024,
+   "event": "Chinese Grand Prix",
+   "track": "shanghai",
+   "docs": [
+    {
+     "title": "Event Notes - Circuit Map, Pit Lane Drawing and Red Zone",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2024%20Chinese%20Grand%20Prix%20-%20Event%20Notes%20-%20Circuit%20Map,%20Pit%20Lane%20Drawing%20and%20Red%20Zone.pdf",
+     "published": "Published on 18.04.24 12:19 CET",
+     "lines": [
+      {
+       "page": 1,
+       "y": 584.3,
+       "text": "Title Event Notes - Circuit Map, Pit Lane Drawing and Red Zone",
+       "cells": [
+        {
+         "text": "Title",
+         "x": 46
+        },
+        {
+         "text": "Event Notes - Circuit Map, Pit Lane Drawing and Red Zone",
+         "x": 118.6
+        }
+       ]
+      },
+      {
+       "page": 1,
+       "y": 561.8,
+       "text": "Description Event Notes - Circuit Map, Pit Lane Drawing and Red Zone",
+       "cells": [
+        {
+         "text": "Description",
+         "x": 46
+        },
+        {
+         "text": "Event Notes - Circuit Map, Pit Lane Drawing and Red Zone",
+         "x": 118.6
+        }
+       ]
+      },
+      {
+       "page": 1,
+       "y": 539.3,
+       "text": "Enclosed Event Notes - Circuit Map Pit lane and RedZone.pdf",
+       "cells": [
+        {
+         "text": "Enclosed",
+         "x": 46
+        },
+        {
+         "text": "Event Notes - Circuit Map Pit lane and RedZone.pdf",
+         "x": 118.6
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Race Director's Event Notes V3",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2024%20Chinese%20Grand%20Prix%20-%20Race%20Director%27s%20Event%20Notes%20V3.pdf",
+     "published": "Published on 20.04.24 02:43 CET",
+     "lines": [
+      {
+       "page": 3,
+       "y": 743,
+       "text": "monitors) and the driver must allow the following driver to overtake at the first available opportunity.",
+       "cells": [
+        {
+         "text": "monitors) and the driver must allow the following driver to overtake at the first available opportunity.",
+         "x": 71.8
+        }
+       ]
+      },
+      {
+       "page": 4,
+       "y": 318.5,
+       "text": "12) DRS",
+       "cells": [
+        {
+         "text": "12)",
+         "x": 43.4
+        },
+        {
+         "text": "DRS",
+         "x": 71.8
+        }
+       ]
+      },
+      {
+       "page": 4,
+       "y": 302.9,
+       "text": "DRS Detection will be automatically disabled in each individual zone if any of the light panels in that",
+       "cells": [
+        {
+         "text": "DRS Detection will be automatically disabled in each individual zone if any of the light panels in that",
+         "x": 71.8
+        }
+       ]
+      },
+      {
+       "page": 4,
+       "y": 290.1,
+       "text": "zone are displaying yellow. The zones and corresponding light panels are as follows:",
+       "cells": [
+        {
+         "text": "zone are displaying yellow. The zones and corresponding light panels are as follows:",
+         "x": 71.8
+        }
+       ]
+      },
+      {
+       "page": 4,
+       "y": 274.3,
+       "text": "a) DRS Activation 1: Panels 16, 17",
+       "cells": [
+        {
+         "text": "a)",
+         "x": 71.8
+        },
+        {
+         "text": "DRS Activation 1: Panels 16, 17",
+         "x": 100.1
+        }
+       ]
+      },
+      {
+       "page": 4,
+       "y": 258.7,
+       "text": "b) DRS Activation 2: Panels 19, 20, 1",
+       "cells": [
+        {
+         "text": "b)",
+         "x": 71.8
+        },
+        {
+         "text": "DRS Activation 2: Panels 19, 20, 1",
+         "x": 100.1
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "year": 2024,
+   "event": "Japanese Grand Prix",
+   "track": "suzuka",
+   "docs": [
+    {
+     "title": "Event Notes - Circuit Map",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2024%20Japanese%20Grand%20Prix%20-%20Event%20Notes%20-%20Circuit%20Map.pdf",
+     "published": "Published on 04.04.24 10:22 CET",
+     "lines": []
+    },
+    {
+     "title": "Race Director´s Event Notes",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2024%20Japanese%20Grand%20Prix%20-%20Race%20Director%C2%B4s%20Event%20Notes.pdf",
+     "published": "Published on 04.04.24 06:00 CET",
+     "lines": [
+      {
+       "page": 3,
+       "y": 755.7,
+       "text": "monitors) and the driver must allow the following driver to overtake at the first available opportunity.",
+       "cells": [
+        {
+         "text": "monitors) and the driver must allow the following driver to overtake at the first available opportunity.",
+         "x": 71.8
+        }
+       ]
+      },
+      {
+       "page": 4,
+       "y": 547.9,
+       "text": "12) DRS",
+       "cells": [
+        {
+         "text": "12)",
+         "x": 43.4
+        },
+        {
+         "text": "DRS",
+         "x": 71.8
+        }
+       ]
+      },
+      {
+       "page": 4,
+       "y": 532.3,
+       "text": "DRS Detection will be automatically disabled in each individual zone if any of the light panels in that",
+       "cells": [
+        {
+         "text": "DRS Detection will be automatically disabled in each individual zone if any of the light panels in that",
+         "x": 71.8
+        }
+       ]
+      },
+      {
+       "page": 4,
+       "y": 519.6,
+       "text": "zone are displaying yellow. The zones and corresponding light panels are as follows:",
+       "cells": [
+        {
+         "text": "zone are displaying yellow. The zones and corresponding light panels are as follows:",
+         "x": 71.8
+        }
+       ]
+      },
+      {
+       "page": 4,
+       "y": 504,
+       "text": "a) DRS Activation 1: Panels 22, 1, 2",
+       "cells": [
+        {
+         "text": "a)",
+         "x": 71.8
+        },
+        {
+         "text": "DRS Activation 1: Panels 22, 1, 2",
+         "x": 100.1
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "year": 2023,
+   "event": "Japanese Grand Prix",
+   "track": "suzuka",
+   "docs": [
+    {
+     "title": "Event Notes - Circuit Map, Pit Lane Drawing and Red Zone",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2023%20Japanese%20Grand%20Prix%20-%20Event%20Notes%20-%20Circuit%20Map,%20Pit%20Lane%20Drawing%20and%20Red%20Zone.pdf",
+     "published": "Published on 21.09.23 05:16 CET",
+     "lines": [
+      {
+       "page": 1,
+       "y": 568.8,
+       "text": "Title Event Notes - Circuit Map, Pit Lane Drawing and Red Zone",
+       "cells": [
+        {
+         "text": "Title",
+         "x": 46
+        },
+        {
+         "text": "Event Notes - Circuit Map, Pit Lane Drawing and Red Zone",
+         "x": 118.6
+        }
+       ]
+      },
+      {
+       "page": 1,
+       "y": 546.3,
+       "text": "Description Circuit Map, Pit Lane Drawing and Red Zone",
+       "cells": [
+        {
+         "text": "Description",
+         "x": 46
+        },
+        {
+         "text": "Circuit Map, Pit Lane Drawing and Red Zone",
+         "x": 118.6
+        }
+       ]
+      },
+      {
+       "page": 1,
+       "y": 523.7,
+       "text": "Enclosed JPN DOC 2 - Circuit Map Pit Lane and Red Zone.pdf",
+       "cells": [
+        {
+         "text": "Enclosed",
+         "x": 46
+        },
+        {
+         "text": "JPN DOC 2 - Circuit Map Pit Lane and Red Zone.pdf",
+         "x": 118.6
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Race Director's Event Notes",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2023%20Japanese%20Grand%20Prix%20-%20Race%20Director%27s%20Event%20Notes.pdf",
+     "published": "Published on 21.09.23 09:07 CET",
+     "lines": [
+      {
+       "page": 3,
+       "y": 372.6,
+       "text": "driver must allow the following driver to overtake at the first available opportunity.",
+       "cells": [
+        {
+         "text": "driver must allow the following driver to overtake at the first available opportunity.",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 4,
+       "y": 207.8,
+       "text": "15) DRS",
+       "cells": [
+        {
+         "text": "15)",
+         "x": 42.5
+        },
+        {
+         "text": "DRS",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 4,
+       "y": 192.2,
+       "text": "DRS Detection will be automatically disabled in each individual zone if any of the light panels in that",
+       "cells": [
+        {
+         "text": "DRS Detection will be automatically disabled in each individual zone if any of the light panels in that",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 4,
+       "y": 179.6,
+       "text": "zone are displaying yellow. The zones and corresponding light panels are as follows:",
+       "cells": [
+        {
+         "text": "zone are displaying yellow. The zones and corresponding light panels are as follows:",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 4,
+       "y": 163.9,
+       "text": "a) DRS Activation 1: Panels 22, 1, 2",
+       "cells": [
+        {
+         "text": "a)",
+         "x": 70.9
+        },
+        {
+         "text": "DRS Activation 1: Panels 22, 1, 2",
+         "x": 99.2
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "year": 2024,
+   "event": "Miami Grand Prix",
+   "track": "miami",
+   "docs": [
+    {
+     "title": "Event Notes - Circuit Map, Pit Lane Drawing and Red Zone",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2024%20Miami%20Grand%20Prix%20-%20Event%20Notes%20-%20Circuit%20Map,%20Pit%20Lane%20Drawing%20and%20Red%20Zone.pdf",
+     "published": "Published on 02.05.24 20:30 CET",
+     "lines": [
+      {
+       "page": 1,
+       "y": 584.3,
+       "text": "Title Event Notes - Circuit Map, Pit Lane Drawing and Red Zone",
+       "cells": [
+        {
+         "text": "Title",
+         "x": 46
+        },
+        {
+         "text": "Event Notes - Circuit Map, Pit Lane Drawing and Red Zone",
+         "x": 118.6
+        }
+       ]
+      },
+      {
+       "page": 1,
+       "y": 561.8,
+       "text": "Description Event Notes - Circuit Map, Pit Lane Drawing and Red Zone",
+       "cells": [
+        {
+         "text": "Description",
+         "x": 46
+        },
+        {
+         "text": "Event Notes - Circuit Map, Pit Lane Drawing and Red Zone",
+         "x": 118.6
+        }
+       ]
+      },
+      {
+       "page": 1,
+       "y": 539.3,
+       "text": "Enclosed Circuit Map Pit Lane and Red Zone .pdf",
+       "cells": [
+        {
+         "text": "Enclosed",
+         "x": 46
+        },
+        {
+         "text": "Circuit Map Pit Lane and Red Zone .pdf",
+         "x": 118.6
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Race Director's Event Notes V2",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2024%20Miami%20Grand%20Prix%20-%20Race%20Director%27s%20Event%20Notes%20V2.pdf",
+     "published": "Published on 04.05.24 16:46 CET",
+     "lines": [
+      {
+       "page": 3,
+       "y": 743,
+       "text": "monitors) and the driver must allow the following driver to overtake at the first available opportunity.",
+       "cells": [
+        {
+         "text": "monitors) and the driver must allow the following driver to overtake at the first available opportunity.",
+         "x": 71.8
+        }
+       ]
+      },
+      {
+       "page": 3,
+       "y": 113.3,
+       "text": "Cars in either the fast lane or working lane may not overtake other cars in the fast lane except in",
+       "cells": [
+        {
+         "text": "Cars in either the fast lane or working lane may not overtake other cars in the fast lane except in",
+         "x": 71.8
+        }
+       ]
+      },
+      {
+       "page": 4,
+       "y": 440.9,
+       "text": "14) DRS",
+       "cells": [
+        {
+         "text": "14)",
+         "x": 43.4
+        },
+        {
+         "text": "DRS",
+         "x": 71.8
+        }
+       ]
+      },
+      {
+       "page": 4,
+       "y": 425.3,
+       "text": "DRS Detection will be automatically disabled in each individual zone if any of the light panels in that",
+       "cells": [
+        {
+         "text": "DRS Detection will be automatically disabled in each individual zone if any of the light panels in that",
+         "x": 71.8
+        }
+       ]
+      },
+      {
+       "page": 4,
+       "y": 412.5,
+       "text": "zone are displaying yellow. The zones and corresponding light panels are as follows:",
+       "cells": [
+        {
+         "text": "zone are displaying yellow. The zones and corresponding light panels are as follows:",
+         "x": 71.8
+        }
+       ]
+      },
+      {
+       "page": 4,
+       "y": 396.7,
+       "text": "a) DRS Activation 1: Panels 10, 11, 12",
+       "cells": [
+        {
+         "text": "a)",
+         "x": 71.8
+        },
+        {
+         "text": "DRS Activation 1: Panels 10, 11, 12",
+         "x": 100.1
+        }
+       ]
+      },
+      {
+       "page": 4,
+       "y": 381.1,
+       "text": "b) DRS Activation 2: Panels 16, 17, 18",
+       "cells": [
+        {
+         "text": "b)",
+         "x": 71.8
+        },
+        {
+         "text": "DRS Activation 2: Panels 16, 17, 18",
+         "x": 100.1
+        }
+       ]
+      },
+      {
+       "page": 4,
+       "y": 365.5,
+       "text": "c) DRS Activation 3: Panels 20, 1, 2",
+       "cells": [
+        {
+         "text": "c)",
+         "x": 71.8
+        },
+        {
+         "text": "DRS Activation 3: Panels 20, 1, 2",
+         "x": 100.1
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "year": 2023,
+   "event": "Miami Grand Prix",
+   "track": "miami",
+   "docs": [
+    {
+     "title": "Event Notes - Circuit Map and Red Zone",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2023%20Miami%20Grand%20Prix%20-%20Event%20Notes%20-%20Circuit%20Map%20and%20Red%20Zone.pdf",
+     "published": "Published on 04.05.23 17:18 CET",
+     "lines": [
+      {
+       "page": 1,
+       "y": 568.8,
+       "text": "Title Event Notes - Circuit Map and Red Zone",
+       "cells": [
+        {
+         "text": "Title",
+         "x": 46
+        },
+        {
+         "text": "Event Notes - Circuit Map and Red Zone",
+         "x": 118.6
+        }
+       ]
+      },
+      {
+       "page": 1,
+       "y": 546.3,
+       "text": "Description Circuit Map and Red Zone",
+       "cells": [
+        {
+         "text": "Description",
+         "x": 46
+        },
+        {
+         "text": "Circuit Map and Red Zone",
+         "x": 118.6
+        }
+       ]
+      },
+      {
+       "page": 1,
+       "y": 523.7,
+       "text": "Enclosed MIA DOC 2 - Circuit Map and Red Zone.pdf",
+       "cells": [
+        {
+         "text": "Enclosed",
+         "x": 46
+        },
+        {
+         "text": "MIA DOC 2 - Circuit Map and Red Zone.pdf",
+         "x": 118.6
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Race Director's Event Notes V2",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2023%20Miami%20Grand%20Prix%20-%20Race%20Director%27s%20Event%20Notes%20V2.pdf",
+     "published": "Published on 06.05.23 14:51 CET",
+     "lines": [
+      {
+       "page": 3,
+       "y": 440.5,
+       "text": "the following driver to overtake at the first available opportunity.",
+       "cells": [
+        {
+         "text": "the following driver to overtake at the first available opportunity.",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 392.5,
+       "text": "17) DRS",
+       "cells": [
+        {
+         "text": "17)",
+         "x": 42.6
+        },
+        {
+         "text": "DRS",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 374.9,
+       "text": "DRS Detection will be automatically disabled in each individual zone if any of the light panels in that",
+       "cells": [
+        {
+         "text": "DRS Detection will be automatically disabled in each individual zone if any of the light panels in that",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 360.4,
+       "text": "particular zone are displaying yellow. The zones and corresponding light panels are as follows:",
+       "cells": [
+        {
+         "text": "particular zone are displaying yellow. The zones and corresponding light panels are as follows:",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 342.9,
+       "text": "a) DRS Activation 1: Panels 10, 11, 12",
+       "cells": [
+        {
+         "text": "a)",
+         "x": 70.9
+        },
+        {
+         "text": "DRS Activation 1: Panels 10, 11, 12",
+         "x": 99.3
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 325.4,
+       "text": "b) DRS Activation 2: Panels 16, 17, 18",
+       "cells": [
+        {
+         "text": "b)",
+         "x": 70.9
+        },
+        {
+         "text": "DRS Activation 2: Panels 16, 17, 18",
+         "x": 99.3
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 307.7,
+       "text": "c) DRS Activation 3: Panels 20, 1, 2",
+       "cells": [
+        {
+         "text": "c)",
+         "x": 70.9
+        },
+        {
+         "text": "DRS Activation 3: Panels 20, 1, 2",
+         "x": 99.3
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "year": 2024,
+   "event": "Monaco Grand Prix",
+   "track": "monte-carlo",
+   "docs": [
+    {
+     "title": "Event Notes - Circuit Map, Pit Lane Drawing and Red Zone",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2024%20Monaco%20Grand%20Prix%20-%20Event%20Notes%20-%20Circuit%20Map,%20Pit%20Lane%20Drawing%20and%20Red%20Zone.pdf",
+     "published": "Published on 23.05.24 15:19 CET",
+     "lines": [
+      {
+       "page": 1,
+       "y": 584.3,
+       "text": "Title Event Notes - Circuit Map, Pit Lane Drawing and Red Zone",
+       "cells": [
+        {
+         "text": "Title",
+         "x": 46
+        },
+        {
+         "text": "Event Notes - Circuit Map, Pit Lane Drawing and Red Zone",
+         "x": 118.6
+        }
+       ]
+      },
+      {
+       "page": 1,
+       "y": 561.8,
+       "text": "Description Event Notes - Circuit Map, Pit Lane Drawing and Red Zone",
+       "cells": [
+        {
+         "text": "Description",
+         "x": 46
+        },
+        {
+         "text": "Event Notes - Circuit Map, Pit Lane Drawing and Red Zone",
+         "x": 118.6
+        }
+       ]
+      },
+      {
+       "page": 1,
+       "y": 539.3,
+       "text": "Enclosed Circuit Map Pit Lane and Red Zone.pdf",
+       "cells": [
+        {
+         "text": "Enclosed",
+         "x": 46
+        },
+        {
+         "text": "Circuit Map Pit Lane and Red Zone.pdf",
+         "x": 118.6
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Race Director's Event Notes V2",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2024%20Monaco%20Grand%20Prix%20-%20Race%20Director%27s%20Event%20Notes%20V2.pdf",
+     "published": "Published on 24.05.24 14:57 CET",
+     "lines": [
+      {
+       "page": 3,
+       "y": 755.7,
+       "text": "monitors) and the driver must allow the following driver to overtake at the first available opportunity.",
+       "cells": [
+        {
+         "text": "monitors) and the driver must allow the following driver to overtake at the first available opportunity.",
+         "x": 71.8
+        }
+       ]
+      },
+      {
+       "page": 4,
+       "y": 133.4,
+       "text": "Cars in either the fast lane or working lane may not overtake other cars in the fast lane except in",
+       "cells": [
+        {
+         "text": "Cars in either the fast lane or working lane may not overtake other cars in the fast lane except in",
+         "x": 71.8
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 604.5,
+       "text": "17) DRS",
+       "cells": [
+        {
+         "text": "17)",
+         "x": 43.4
+        },
+        {
+         "text": "DRS",
+         "x": 71.8
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 588.9,
+       "text": "DRS Detection will be automatically disabled in each individual zone if any of the light panels in that",
+       "cells": [
+        {
+         "text": "DRS Detection will be automatically disabled in each individual zone if any of the light panels in that",
+         "x": 71.8
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 576.2,
+       "text": "zone are displaying yellow. The zones and corresponding light panels are as follows:",
+       "cells": [
+        {
+         "text": "zone are displaying yellow. The zones and corresponding light panels are as follows:",
+         "x": 71.8
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 560.6,
+       "text": "a) DRS Activation 1: Panels 18, 19, 1, 2",
+       "cells": [
+        {
+         "text": "a)",
+         "x": 71.8
+        },
+        {
+         "text": "DRS Activation 1: Panels 18, 19, 1, 2",
+         "x": 100.1
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "year": 2023,
+   "event": "Monaco Grand Prix",
+   "track": "monte-carlo",
+   "docs": [
+    {
+     "title": "Event Notes - Circuit Map, Pit Lane, Red Zone and Pirelli Preview",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2023%20Monaco%20Grand%20Prix%20-%20Event%20Notes%20-%20Circuit%20Map,%20Pit%20Lane,%20Red%20Zone%20and%20Pirelli%20Preview.pdf",
+     "published": "Published on 24.05.23 16:17 CET",
+     "lines": [
+      {
+       "page": 1,
+       "y": 568.8,
+       "text": "Title Event Notes - Circuit Map, Pit Lane, Red Zone and Pirelli Preview",
+       "cells": [
+        {
+         "text": "Title",
+         "x": 46
+        },
+        {
+         "text": "Event Notes - Circuit Map, Pit Lane, Red Zone and Pirelli Preview",
+         "x": 118.6
+        }
+       ]
+      },
+      {
+       "page": 1,
+       "y": 546.3,
+       "text": "Description Event Notes - Circuit Map, Pit Lane, Red Zone and Pirelli Preview",
+       "cells": [
+        {
+         "text": "Description",
+         "x": 46
+        },
+        {
+         "text": "Event Notes - Circuit Map, Pit Lane, Red Zone and Pirelli Preview",
+         "x": 118.6
+        }
+       ]
+      },
+      {
+       "page": 1,
+       "y": 523.7,
+       "text": "Enclosed MCO DOC 3 - Circuit Map Pit Lane Red Zone and Pirelli Preview.pdf",
+       "cells": [
+        {
+         "text": "Enclosed",
+         "x": 46
+        },
+        {
+         "text": "MCO DOC 3 - Circuit Map Pit Lane Red Zone and Pirelli Preview.pdf",
+         "x": 118.6
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Race Director's Event Notes V3",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2023%20Monaco%20Grand%20Prix%20-%20Race%20Director%27s%20Event%20Notes%20V3.pdf",
+     "published": "Published on 26.05.23 14:55 CET",
+     "lines": [
+      {
+       "page": 3,
+       "y": 364.7,
+       "text": "the following driver to overtake at the first available opportunity.",
+       "cells": [
+        {
+         "text": "the following driver to overtake at the first available opportunity.",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 452.2,
+       "text": "19) DRS",
+       "cells": [
+        {
+         "text": "19)",
+         "x": 42.6
+        },
+        {
+         "text": "DRS",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 434.6,
+       "text": "DRS Detection will be automatically disabled in each individual zone if any of the light panels in that",
+       "cells": [
+        {
+         "text": "DRS Detection will be automatically disabled in each individual zone if any of the light panels in that",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 420.1,
+       "text": "particular zone are displaying yellow. The zones and corresponding light panels are as follows:",
+       "cells": [
+        {
+         "text": "particular zone are displaying yellow. The zones and corresponding light panels are as follows:",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 402.5,
+       "text": "a) DRS Activation 1: Panels 18, 19, 1, 2",
+       "cells": [
+        {
+         "text": "a)",
+         "x": 70.9
+        },
+        {
+         "text": "DRS Activation 1: Panels 18, 19, 1, 2",
+         "x": 99.3
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "year": 2024,
+   "event": "Saudi Arabian Grand Prix",
+   "track": "jeddah",
+   "docs": [
+    {
+     "title": "Event Notes - Circuit Map, Pit Lane and Red Zone",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2024%20Saudi%20Arabian%20Grand%20Prix%20-%20Event%20Notes%20-%20Circuit%20Map,%20Pit%20Lane%20and%20Red%20Zone.pdf",
+     "published": "Published on 06.03.24 14:30 CET",
+     "lines": [
+      {
+       "page": 1,
+       "y": 584.3,
+       "text": "Title Event Notes - Circuit Map, Pit Lane and Red Zone",
+       "cells": [
+        {
+         "text": "Title",
+         "x": 46
+        },
+        {
+         "text": "Event Notes - Circuit Map, Pit Lane and Red Zone",
+         "x": 118.6
+        }
+       ]
+      },
+      {
+       "page": 1,
+       "y": 561.8,
+       "text": "Description Circuit Map, Pit Lane and Red Zone",
+       "cells": [
+        {
+         "text": "Description",
+         "x": 46
+        },
+        {
+         "text": "Circuit Map, Pit Lane and Red Zone",
+         "x": 118.6
+        }
+       ]
+      },
+      {
+       "page": 1,
+       "y": 539.3,
+       "text": "Enclosed SAU DOC 3 - Circuit Map Pit Lane and Red Zone.pdf",
+       "cells": [
+        {
+         "text": "Enclosed",
+         "x": 46
+        },
+        {
+         "text": "SAU DOC 3 - Circuit Map Pit Lane and Red Zone.pdf",
+         "x": 118.6
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Race Director's Event Notes",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2024%20Saudi%20Arabian%20Grand%20Prix%20-%20Race%20Director%27s%20Event%20Notes.pdf",
+     "published": "Published on 06.03.24 14:30 CET",
+     "lines": [
+      {
+       "page": 3,
+       "y": 756.4,
+       "text": "monitors) and the driver must allow the following driver to overtake at the first available opportunity.",
+       "cells": [
+        {
+         "text": "monitors) and the driver must allow the following driver to overtake at the first available opportunity.",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 636.6,
+       "text": "12) DRS",
+       "cells": [
+        {
+         "text": "12)",
+         "x": 42.6
+        },
+        {
+         "text": "DRS",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 620.9,
+       "text": "DRS Detection will be automatically disabled in each individual zone if any of the light panels in that",
+       "cells": [
+        {
+         "text": "DRS Detection will be automatically disabled in each individual zone if any of the light panels in that",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 608.3,
+       "text": "zone are displaying yellow. The zones and corresponding light panels are as follows:",
+       "cells": [
+        {
+         "text": "zone are displaying yellow. The zones and corresponding light panels are as follows:",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 592.7,
+       "text": "a) DRS Activation 1: Panels 13, 14, 15",
+       "cells": [
+        {
+         "text": "a)",
+         "x": 70.9
+        },
+        {
+         "text": "DRS Activation 1: Panels 13, 14, 15",
+         "x": 99.3
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 576.9,
+       "text": "b) DRS Activation 2: Panels 17, 18, 19, 20",
+       "cells": [
+        {
+         "text": "b)",
+         "x": 70.9
+        },
+        {
+         "text": "DRS Activation 2: Panels 17, 18, 19, 20",
+         "x": 99.3
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 561.3,
+       "text": "c) DRS Activation 3: Panels 21, 22, 1, 2",
+       "cells": [
+        {
+         "text": "c)",
+         "x": 70.9
+        },
+        {
+         "text": "DRS Activation 3: Panels 21, 22, 1, 2",
+         "x": 99.3
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "year": 2023,
+   "event": "Saudi Arabian Grand Prix",
+   "track": "jeddah",
+   "docs": [
+    {
+     "title": "Event Notes - Circuit Map V4",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2023%20Saudi%20Arabian%20Grand%20Prix%20-%20Event%20Notes%20-%20Circuit%20Map%20V4.pdf",
+     "published": "Published on 17.03.23 15:12 CET",
+     "lines": []
+    },
+    {
+     "title": "Race Director's Event Notes V3",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2023%20Saudi%20Arabian%20Grand%20Prix%20-%20Race%20Director%27s%20Event%20Notes%20V3.pdf",
+     "published": "Published on 18.03.23 12:10 CET",
+     "lines": [
+      {
+       "page": 3,
+       "y": 440.5,
+       "text": "the following driver to overtake at the first available opportunity.",
+       "cells": [
+        {
+         "text": "the following driver to overtake at the first available opportunity.",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 255.3,
+       "text": "17) DRS",
+       "cells": [
+        {
+         "text": "17)",
+         "x": 42.6
+        },
+        {
+         "text": "DRS",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 237.8,
+       "text": "DRS Detection will be automatically disabled in each individual zone if any of the light panels in that",
+       "cells": [
+        {
+         "text": "DRS Detection will be automatically disabled in each individual zone if any of the light panels in that",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 223.3,
+       "text": "particular zone are displaying yellow. The zones and corresponding light panels are as follows:",
+       "cells": [
+        {
+         "text": "particular zone are displaying yellow. The zones and corresponding light panels are as follows:",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 205.7,
+       "text": "a) DRS Activation 1: Panels 13, 14, 15",
+       "cells": [
+        {
+         "text": "a)",
+         "x": 70.9
+        },
+        {
+         "text": "DRS Activation 1: Panels 13, 14, 15",
+         "x": 99.3
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 188.1,
+       "text": "b) DRS Activation 2: Panels 17, 18, 19, 20",
+       "cells": [
+        {
+         "text": "b)",
+         "x": 70.9
+        },
+        {
+         "text": "DRS Activation 2: Panels 17, 18, 19, 20",
+         "x": 99.3
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 170.5,
+       "text": "c) DRS Activation 3: Panels 21, 22, 1, 2",
+       "cells": [
+        {
+         "text": "c)",
+         "x": 70.9
+        },
+        {
+         "text": "DRS Activation 3: Panels 21, 22, 1, 2",
+         "x": 99.3
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "year": 2020,
+   "event": "Russian Grand Prix",
+   "track": "sochi",
+   "docs": [
+    {
+     "title": "Circuit Map",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2020%20Russian%20Grand%20Prix%20-%20Circuit%20Map.pdf",
+     "published": "Published on 23.09.20 08:32 CET",
+     "lines": []
+    },
+    {
+     "title": "Race Directors' Event Notes Version 3",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2020%20Russian%20Grand%20Prix%20-%20Race%20Directors%27%20Event%20Notes%20Version%203.pdf",
+     "published": "Published on 26.09.20 10:50 CET",
+     "lines": [
+      {
+       "page": 2,
+       "y": 338.9,
+       "text": "3) Red zones for photographers in the pit lane during practice sessions",
+       "cells": [
+        {
+         "text": "3)",
+         "x": 42.6
+        },
+        {
+         "text": "Red zones for photographers in the pit lane during practice sessions",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 3,
+       "y": 627.2,
+       "text": "Drivers should not overtake any car in a single waved yellow marshalling sector unless it is clear that",
+       "cells": [
+        {
+         "text": "Drivers should not overtake any car in a single waved yellow marshalling sector unless it is clear that",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 3,
+       "y": 122.7,
+       "text": "timing monitors) and the driver must allow the following driver to overtake at the first available",
+       "cells": [
+        {
+         "text": "timing monitors) and the driver must allow the following driver to overtake at the first available",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 465.4,
+       "text": "21) DRS",
+       "cells": [
+        {
+         "text": "21)",
+         "x": 42.6
+        },
+        {
+         "text": "DRS",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 447.9,
+       "text": "21.1 DRS Detection will be automatically disabled in each individual zone if any of the light panels in that",
+       "cells": [
+        {
+         "text": "21.1",
+         "x": 42.6
+        },
+        {
+         "text": "DRS Detection will be automatically disabled in each individual zone if any of the light panels in that",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 433.3,
+       "text": "particular zone are displaying yellow. The zone and corresponding light panels are as follows:",
+       "cells": [
+        {
+         "text": "particular zone are displaying yellow. The zone and corresponding light panels are as follows:",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 415.8,
+       "text": "a) Zone 1: Panels 1, 2, 3, 4",
+       "cells": [
+        {
+         "text": "a)",
+         "x": 70.9
+        },
+        {
+         "text": "Zone 1: Panels 1, 2, 3, 4",
+         "x": 99.3
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 401.2,
+       "text": "b) Zone 2: Panels 12, 13, 14, 15",
+       "cells": [
+        {
+         "text": "b)",
+         "x": 70.9
+        },
+        {
+         "text": "Zone 2: Panels 12, 13, 14, 15",
+         "x": 99.3
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "year": 2019,
+   "event": "Russian Grand Prix",
+   "track": "sochi",
+   "docs": [
+    {
+     "title": "Circuit Map",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2019%20Russian%20Grand%20Prix%20-%20Circuit%20Map.pdf",
+     "published": "Published on 25.09.19 11:23 CET",
+     "lines": []
+    },
+    {
+     "title": "Race Directors' Event Notes Version 3",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2019%20Russian%20Grand%20Prix%20-%20Race%20Directors%27%20Event%20Notes%20Version%203.pdf",
+     "published": "Published on 28.09.19 07:57 CET",
+     "lines": [
+      {
+       "page": 3,
+       "y": 781.6,
+       "text": "6) Red zones for photographers in the pit lane during practice sessions",
+       "cells": [
+        {
+         "text": "6)",
+         "x": 42.6
+        },
+        {
+         "text": "Red zones for photographers in the pit lane during practice sessions",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 3,
+       "y": 233.6,
+       "text": "Drivers should not overtake any car in a single waved yellow marshalling sector unless it is clear that a car is",
+       "cells": [
+        {
+         "text": "Drivers should not overtake any car in a single waved yellow marshalling sector unless it is clear that a car is",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 344.1,
+       "text": "following driver to overtake at the first available opportunity.",
+       "cells": [
+        {
+         "text": "following driver to overtake at the first available opportunity.",
+         "x": 70.9
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "year": 2020,
+   "event": "Turkish Grand Prix",
+   "track": "istanbul",
+   "docs": [
+    {
+     "title": "Circuit Map",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2020%20Turkish%20Grand%20Prix%20-%20Circuit%20Map.pdf",
+     "published": "Published on 11.11.20 10:00 CET",
+     "lines": []
+    },
+    {
+     "title": "Race Directors' Event Notes Version 3",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2020%20Turkish%20Grand%20Prix%20-%20Race%20Directors%27%20Event%20Notes%20Version%203.pdf",
+     "published": "Published on 14.11.20 07:52 CET",
+     "lines": [
+      {
+       "page": 2,
+       "y": 338.9,
+       "text": "3) Red zones for photographers in the pit lane during practice sessions",
+       "cells": [
+        {
+         "text": "3)",
+         "x": 42.6
+        },
+        {
+         "text": "Red zones for photographers in the pit lane during practice sessions",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 3,
+       "y": 627.2,
+       "text": "Drivers should not overtake any car in a single waved yellow marshalling sector unless it is clear that",
+       "cells": [
+        {
+         "text": "Drivers should not overtake any car in a single waved yellow marshalling sector unless it is clear that",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 3,
+       "y": 137.7,
+       "text": "timing monitors) and the driver must allow the following driver to overtake at the first available",
+       "cells": [
+        {
+         "text": "timing monitors) and the driver must allow the following driver to overtake at the first available",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 691.4,
+       "text": "19) DRS",
+       "cells": [
+        {
+         "text": "19)",
+         "x": 42.6
+        },
+        {
+         "text": "DRS",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 673.9,
+       "text": "19.1 DRS Detection will be automatically disabled in each individual zone if any of the light panels in that",
+       "cells": [
+        {
+         "text": "19.1",
+         "x": 42.6
+        },
+        {
+         "text": "DRS Detection will be automatically disabled in each individual zone if any of the light panels in that",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 659.3,
+       "text": "particular zone are displaying yellow. The zone and corresponding light panels are as follows:",
+       "cells": [
+        {
+         "text": "particular zone are displaying yellow. The zone and corresponding light panels are as follows:",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 641.7,
+       "text": "a) Zone 1: Panels 15, 16, 17, 18",
+       "cells": [
+        {
+         "text": "a)",
+         "x": 70.9
+        },
+        {
+         "text": "Zone 1: Panels 15, 16, 17, 18",
+         "x": 99.3
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 627.2,
+       "text": "b) Zone 2: Panels 20, 1, 2",
+       "cells": [
+        {
+         "text": "b)",
+         "x": 70.9
+        },
+        {
+         "text": "Zone 2: Panels 20, 1, 2",
+         "x": 99.3
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "year": 2020,
+   "event": "Portuguese Grand Prix",
+   "track": "portimao",
+   "docs": [
+    {
+     "title": "Circuit Map",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2020%20Portuguese%20Grand%20Prix%20-%20Circuit%20Map_0.pdf",
+     "published": "Published on 22.10.20 12:23 CET",
+     "lines": []
+    },
+    {
+     "title": "Race Directors' Event Notes Version 3",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2020%20Portuguese%20Grand%20Prix%20-%20Race%20Directors%27%20Event%20Notes%20Version%203.pdf",
+     "published": "Published on 24.10.20 09:04 CET",
+     "lines": [
+      {
+       "page": 2,
+       "y": 338.9,
+       "text": "3) Red zones for photographers in the pit lane during practice sessions",
+       "cells": [
+        {
+         "text": "3)",
+         "x": 42.6
+        },
+        {
+         "text": "Red zones for photographers in the pit lane during practice sessions",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 3,
+       "y": 627.2,
+       "text": "Drivers should not overtake any car in a single waved yellow marshalling sector unless it is clear that",
+       "cells": [
+        {
+         "text": "Drivers should not overtake any car in a single waved yellow marshalling sector unless it is clear that",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 3,
+       "y": 137.7,
+       "text": "timing monitors) and the driver must allow the following driver to overtake at the first available",
+       "cells": [
+        {
+         "text": "timing monitors) and the driver must allow the following driver to overtake at the first available",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 486,
+       "text": "20) DRS",
+       "cells": [
+        {
+         "text": "20)",
+         "x": 42.6
+        },
+        {
+         "text": "DRS",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 468.4,
+       "text": "20.1 DRS Detection will be automatically disabled in each individual zone if any of the light panels in that",
+       "cells": [
+        {
+         "text": "20.1",
+         "x": 42.6
+        },
+        {
+         "text": "DRS Detection will be automatically disabled in each individual zone if any of the light panels in that",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 453.9,
+       "text": "particular zone are displaying yellow. The zone and corresponding light panels are as follows:",
+       "cells": [
+        {
+         "text": "particular zone are displaying yellow. The zone and corresponding light panels are as follows:",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 436.3,
+       "text": "a) Zone 1: Panels 19, 1, 2",
+       "cells": [
+        {
+         "text": "a)",
+         "x": 70.9
+        },
+        {
+         "text": "Zone 1: Panels 19, 1, 2",
+         "x": 99.3
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "year": 2021,
+   "event": "French Grand Prix",
+   "track": "paul-ricard-f1",
+   "docs": [
+    {
+     "title": "Circuit Map",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2021%20French%20Grand%20Prix%20-%20Circuit%20Map.pdf",
+     "published": "Published on 16.06.21 14:07 CET",
+     "lines": [
+      {
+       "page": 2,
+       "y": 522.6,
+       "text": "DRS DETECTION 1",
+       "cells": [
+        {
+         "text": "DRS DETECTION 1",
+         "x": 66
+        }
+       ]
+      },
+      {
+       "page": 2,
+       "y": 496.5,
+       "text": "DRS ACTIVATION 1",
+       "cells": [
+        {
+         "text": "DRS ACTIVATION 1",
+         "x": 119.1
+        }
+       ]
+      },
+      {
+       "page": 2,
+       "y": 335.8,
+       "text": "DRS DETECTION 2",
+       "cells": [
+        {
+         "text": "DRS DETECTION 2",
+         "x": 389.2
+        }
+       ]
+      },
+      {
+       "page": 2,
+       "y": 254.1,
+       "text": "DRS ACTIVATION 2",
+       "cells": [
+        {
+         "text": "DRS ACTIVATION 2",
+         "x": 329.4
+        }
+       ]
+      },
+      {
+       "page": 2,
+       "y": 167.4,
+       "text": "DRS Detection1 (75m Before Turn 7)",
+       "cells": [
+        {
+         "text": "DRS Detection1",
+         "x": 32.6
+        },
+        {
+         "text": "(75m Before Turn 7)",
+         "x": 149.2
+        }
+       ]
+      },
+      {
+       "page": 2,
+       "y": 153.4,
+       "text": "DRS Detection2 (On Turn 14)",
+       "cells": [
+        {
+         "text": "DRS Detection2",
+         "x": 32.6
+        },
+        {
+         "text": "(On Turn 14)",
+         "x": 149.2
+        }
+       ]
+      },
+      {
+       "page": 2,
+       "y": 139.3,
+       "text": "DRS Activation1 (170m After Turn 7)",
+       "cells": [
+        {
+         "text": "DRS Activation1",
+         "x": 32.6
+        },
+        {
+         "text": "(170m After Turn 7)",
+         "x": 149.2
+        }
+       ]
+      },
+      {
+       "page": 2,
+       "y": 125.2,
+       "text": "DRS Activation2 (115m After Turn 15)",
+       "cells": [
+        {
+         "text": "DRS Activation2",
+         "x": 32.6
+        },
+        {
+         "text": "(115m After Turn 15)",
+         "x": 149.2
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "title": "Race Directors' Event Notes Version 2",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2021%20French%20Grand%20Prix%20-%20Race%20Directors%27%20Event%20Notes%20Version%202.pdf",
+     "published": "Published on 17.06.21 20:05 CET",
+     "lines": [
+      {
+       "page": 2,
+       "y": 338.9,
+       "text": "3) Red zones for photographers in the pit lane during practice sessions",
+       "cells": [
+        {
+         "text": "3)",
+         "x": 42.6
+        },
+        {
+         "text": "Red zones for photographers in the pit lane during practice sessions",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 3,
+       "y": 627.2,
+       "text": "Drivers should not overtake any car in a single waved yellow marshalling sector unless it is clear that",
+       "cells": [
+        {
+         "text": "Drivers should not overtake any car in a single waved yellow marshalling sector unless it is clear that",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 3,
+       "y": 137.7,
+       "text": "timing monitors) and the driver must allow the following driver to overtake at the first available",
+       "cells": [
+        {
+         "text": "timing monitors) and the driver must allow the following driver to overtake at the first available",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 452.2,
+       "text": "21) DRS",
+       "cells": [
+        {
+         "text": "21)",
+         "x": 42.6
+        },
+        {
+         "text": "DRS",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 434.6,
+       "text": "21.1 DRS Detection will be automatically disabled in each individual zone if any of the light panels in that",
+       "cells": [
+        {
+         "text": "21.1",
+         "x": 42.6
+        },
+        {
+         "text": "DRS Detection will be automatically disabled in each individual zone if any of the light panels in that",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 420.1,
+       "text": "particular zone are displaying yellow. The zone and corresponding light panels are as follows:",
+       "cells": [
+        {
+         "text": "particular zone are displaying yellow. The zone and corresponding light panels are as follows:",
+         "x": 70.9
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 402.6,
+       "text": "a) Zone 1: Panels 7, 8, 9",
+       "cells": [
+        {
+         "text": "a)",
+         "x": 70.9
+        },
+        {
+         "text": "Zone 1: Panels 7, 8, 9",
+         "x": 99.3
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 388,
+       "text": "b) Zone 2: Panels 18, 19, 1, 2",
+       "cells": [
+        {
+         "text": "b)",
+         "x": 70.9
+        },
+        {
+         "text": "Zone 2: Panels 18, 19, 1, 2",
+         "x": 99.3
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "year": 2019,
+   "event": "French Grand Prix",
+   "track": "paul-ricard-f1",
+   "docs": [
+    {
+     "title": "Circuit Map",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2019%20French%20Grand%20Prix%20-%20Circuit%20Map.pdf",
+     "published": "Published on 19.06.19 16:48 CET",
+     "lines": []
+    },
+    {
+     "title": "Race Directors' Event Notes Version 3",
+     "url": "https://www.fia.com/sites/default/files/decision-document/2019%20French%20Grand%20Prix%20-%20Race%20Directors%27%20Event%20Notes%20Version%203.pdf",
+     "published": "Published on 23.06.19 13:06 CET",
+     "lines": [
+      {
+       "page": 3,
+       "y": 741.4,
+       "text": "6) Red zones for photographers in the pit lane during practice sessions",
+       "cells": [
+        {
+         "text": "6)",
+         "x": 48.5
+        },
+        {
+         "text": "Red zones for photographers in the pit lane during practice sessions",
+         "x": 76.8
+        }
+       ]
+      },
+      {
+       "page": 5,
+       "y": 781.6,
+       "text": "Drivers should not overtake any car in a single waved yellow marshalling sector unless it is clear that a car",
+       "cells": [
+        {
+         "text": "Drivers should not overtake any car in a single waved yellow marshalling sector unless it is clear that a car",
+         "x": 76.8
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "year": 2026,
+   "event": "Monaco Grand Prix",
+   "track": "monte-carlo",
+   "docs": [
+    {
+     "title": "Doc 7 - Competition Notes - Circuit Map, Pit Lane Drawing, Emergency Exits Map and Red Zone",
+     "url": "https://www.fia.com/system/files/decision-document/2026_monaco_grand_prix_-_competition_notes_-_circuit_map_pit_lane_drawing_emergency_exits_map_and_red_zone.pdf",
+     "published": "Published on 04.06.26 16:33 CET",
+     "lines": [
+      {
+       "page": 1,
+       "y": 584.3,
+       "text": "Title Circuit Map, Pit Lane Drawing, Emergency Exits Map and Red Zone",
+       "cells": [
+        {
+         "text": "Title",
+         "x": 46
+        },
+        {
+         "text": "Circuit Map, Pit Lane Drawing, Emergency Exits Map and Red Zone",
+         "x": 118.6
+        }
+       ]
+      },
+      {
+       "page": 1,
+       "y": 561.8,
+       "text": "Description Circuit Map, Pit Lane Drawing, Emergency Exits Map and Red Zone",
+       "cells": [
+        {
+         "text": "Description",
+         "x": 46
+        },
+        {
+         "text": "Circuit Map, Pit Lane Drawing, Emergency Exits Map and Red Zone",
+         "x": 118.6
+        }
+       ]
+      },
+      {
+       "page": 2,
+       "y": 209.8,
+       "text": "SM A [ZONE No.]",
+       "cells": [
+        {
+         "text": "SM A [ZONE No.]",
+         "x": 480.5
+        }
+       ]
+      },
+      {
+       "page": 2,
+       "y": 201,
+       "text": "OT D STRAIGHT MODE",
+       "cells": [
+        {
+         "text": "OT D",
+         "x": 185.4
+        },
+        {
+         "text": "STRAIGHT MODE",
+         "x": 479.9
+        }
+       ]
+      },
+      {
+       "page": 2,
+       "y": 194.1,
+       "text": "NORMAL GRIP ACTIVATION",
+       "cells": [
+        {
+         "text": "NORMAL GRIP ACTIVATION",
+         "x": 461.6
+        }
+       ]
+      },
+      {
+       "page": 2,
+       "y": 184.9,
+       "text": "17 SM A [ZONE No.]",
+       "cells": [
+        {
+         "text": "17",
+         "x": 216.8
+        },
+        {
+         "text": "SM A [ZONE No.]",
+         "x": 480.5
+        }
+       ]
+      },
+      {
+       "page": 2,
+       "y": 175,
+       "text": "STRAIGHT MODE",
+       "cells": [
+        {
+         "text": "STRAIGHT MODE",
+         "x": 480.7
+        }
+       ]
+      },
+      {
+       "page": 2,
+       "y": 167.4,
+       "text": "LOW GRIP ACTIVATION",
+       "cells": [
+        {
+         "text": "LOW GRIP ACTIVATION",
+         "x": 469.3
+        }
+       ]
+      },
+      {
+       "page": 2,
+       "y": 149.1,
+       "text": "OT D",
+       "cells": [
+        {
+         "text": "OT D",
+         "x": 501.1
+        }
+       ]
+      },
+      {
+       "page": 2,
+       "y": 144.5,
+       "text": "M19B OT A",
+       "cells": [
+        {
+         "text": "M19B",
+         "x": 154.4
+        },
+        {
+         "text": "OT A",
+         "x": 203
+        }
+       ]
+      },
+      {
+       "page": 2,
+       "y": 141.6,
+       "text": "OVERTAKE DETECTION",
+       "cells": [
+        {
+         "text": "OVERTAKE DETECTION",
+         "x": 469
+        }
+       ]
+      },
+      {
+       "page": 2,
+       "y": 129.9,
+       "text": "OT A",
+       "cells": [
+        {
+         "text": "OT A",
+         "x": 501
+        }
+       ]
+      },
+      {
+       "page": 2,
+       "y": 122.4,
+       "text": "OVERTAKE ACTIVATION",
+       "cells": [
+        {
+         "text": "OVERTAKE ACTIVATION",
+         "x": 466.6
+        }
+       ]
+      },
+      {
+       "page": 2,
+       "y": 88.5,
+       "text": "CIRCUIT DATA OVERTAKE STRAIGHT MODE",
+       "cells": [
+        {
+         "text": "CIRCUIT DATA",
+         "x": 97.1
+        },
+        {
+         "text": "OVERTAKE",
+         "x": 273.4
+        },
+        {
+         "text": "STRAIGHT MODE",
+         "x": 429.7
+        }
+       ]
+      },
+      {
+       "page": 2,
+       "y": 78.1,
+       "text": "SECTOR 1 - 1.051km INTERMEDIATE 1 [S1] - 60m before T5 DETECTION - 80m after T16 N/A",
+       "cells": [
+        {
+         "text": "SECTOR 1",
+         "x": 22
+        },
+        {
+         "text": "- 1.051km",
+         "x": 56.5
+        },
+        {
+         "text": "INTERMEDIATE 1 [S1]",
+         "x": 97.6
+        },
+        {
+         "text": "- 60m before T5",
+         "x": 171.1
+        },
+        {
+         "text": "DETECTION",
+         "x": 246.4
+        },
+        {
+         "text": "- 80m after T16",
+         "x": 292.6
+        },
+        {
+         "text": "N/A",
+         "x": 460.8
+        }
+       ]
+      },
+      {
+       "page": 2,
+       "y": 71,
+       "text": "SECTOR 2 - 1.419km INTERMEDIATE 2 [S2] - 70m before T13 ACTIVATION - 40m after T18",
+       "cells": [
+        {
+         "text": "SECTOR 2",
+         "x": 22
+        },
+        {
+         "text": "- 1.419km",
+         "x": 56.5
+        },
+        {
+         "text": "INTERMEDIATE 2 [S2]",
+         "x": 97.6
+        },
+        {
+         "text": "- 70m before T13",
+         "x": 171.1
+        },
+        {
+         "text": "ACTIVATION",
+         "x": 246.8
+        },
+        {
+         "text": "- 40m after T18",
+         "x": 292.7
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "log": [
+  "2018 German Grand Prix: Requested season is not published in the FIA archive index."
+ ]
+}

@@ -13,7 +13,7 @@ test('visitors who are not signed in always follow the device setting',async()=>
 });
 
 test('a signed-in account mode is applied on every page before paint',async()=>{
- for(const path of ['/','/guide','/championships/f1','/account']){
+ for(const path of ['/','/guide','/simulation','/account']){
   const html=await websiteRoute(new Request('https://kongboda-motorsports.vercel.app'+path),account('light')).text();
   assert.equal(boot(html),'"light"',path);
  }

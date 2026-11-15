@@ -7,14 +7,16 @@ import {lapsimAllTracks as T} from '../../worker/lapsim/tracks.js';
 import {lapsimTrackView} from '../../worker/lapsim/track-view-data.js';
 
 const raw = JSON.parse(readFileSync(new URL('./data/learn/f1-zones-raw.json', import.meta.url), 'utf8'));
-const POS = String.raw`(?:(\d+)\s?m\s+(before|after)\s+(?:T|Turn\s?)(\d+)|(Entry|Mid|Exit|Start of|End of)[- ]?(?:T|Turn\s?)(\d+))`;
+// earlier years for circuits whose map of the wanted year is an image (fetch-f1-zones-extra.mjs); the 2025 slot keeps the newest year found
+try { raw.events.push(...JSON.parse(readFileSync(new URL('./data/learn/f1-zones-raw-extra.json', import.meta.url), 'utf8')).events); } catch (e) { /* optional */ }
+const POS = String.raw`(?:(\d+)\s?m\s+(before|after)\s+(?:(?:T|Turn\s?)(\d+)|(?:the\s)?(finish|control|start) line)|(Entry|Mid|Exit|Start of|End of)[- ]?(?:T|Turn\s?)(\d+))`;
 const posRe = new RegExp(POS, 'i');
 const cornersOf = id => (T[id].corners?.length ? T[id].corners : lapsimTrackView[id]?.corners) || [];
 function at(id, txt) {
   const m = posRe.exec(txt || ''); if (!m) return null;
-  const C = cornersOf(id), L = T[id].length, turn = Number(m[3] || m[5]);
-  const c = C.find(k => k.number === turn && !k.letter) || C.find(k => k.number === turn); if (!c) return null;
-  const d = m[1] ? Number(m[1]) * (m[2].toLowerCase() === 'before' ? -1 : 1) : /entry|start/i.test(m[4]) ? -40 : /exit|end/i.test(m[4]) ? 40 : 0;
+  const C = cornersOf(id), L = T[id].length, turn = Number(m[3] || m[6]);
+  const c = m[4] ? {s: 0} : C.find(k => k.number === turn && !k.letter) || C.find(k => k.number === turn); if (!c) return null; // the lap starts at the line
+  const d = m[1] ? Number(m[1]) * (m[2].toLowerCase() === 'before' ? -1 : 1) : /entry|start/i.test(m[5]) ? -40 : /exit|end/i.test(m[5]) ? 40 : 0;
   return ((c.s + d) % L + L) % L;
 }
 // end of a zone: braking for the next numbered turn after the start (at least 150 m on)
@@ -28,11 +30,12 @@ for (const e of raw.events) {
   const text = e.docs.flatMap(d => d.lines.map(l => l.text)).join('\n'), doc = e.docs.find(d => d.lines.length) || e.docs[0];
   if (e.year >= 2026) {
     const zones = [], marks = [];
-    for (const m of text.matchAll(new RegExp(POS + String.raw`\s*-\s*ZONE\s*A(\d+)`, 'gi'))) { const s = at(id, m[0]); if (s != null && !zones.some(z => z.n === Number(m[6]))) zones.push({n: Number(m[6]), from: Math.round(s), to: Math.round(zoneEnd(id, s))}); }
-    const det = new RegExp('DETECTION\\s*-\\s*' + POS, 'i').exec(text), act = new RegExp('ACTIVATION\\s*-\\s*' + POS, 'i').exec(text);
-    if (det) { const s = at(id, det[0].replace(/^DETECTION\s*-\s*/i, '')); if (s != null) marks.push({s: Math.round(s), kind: 'det', label: 'OT D'}); }
-    if (act) { const s = at(id, act[0].replace(/^ACTIVATION\s*-\s*/i, '')); if (s != null) marks.push({s: Math.round(s), kind: 'act', label: 'OT A'}); }
-    if (zones.length) (out[id] ||= {})[String(e.year)] = {kind: 'sm', year: e.year, zones: zones.sort((a, b) => a.n - b.n), marks, doc: doc?.title || '', url: doc?.url || ''};
+    for (const ln of text.split('\n')) { const m = /-\s*-?\s*ZONE\s*A(\d+)/i.exec(ln); if (!m) continue; const before = [...ln.slice(0, m.index).matchAll(new RegExp(POS, 'gi'))].pop(); if (!before) continue;
+      const s = at(id, before[0]), n = Number(m[1]); if (s != null && !zones.some(z => z.n === n)) zones.push({n, from: Math.round(s), to: Math.round(zoneEnd(id, s))}); }
+    // overtake lines: "DETECTION - Entry T11", "ACTIVATION - T11" (a bare turn = the turn itself)
+    const ot = (word, kind, label) => { const m = new RegExp(word + String.raw`\s*-\s*(` + POS + String.raw`|T(\d+))`, 'i').exec(text); if (!m) return; const s = m[8] ? at(id, '0m after T' + m[8]) : at(id, m[1]); if (s != null) marks.push({s: Math.round(s), kind, label}); };
+    ot('DETECTION', 'det', 'OT D'); ot('ACTIVATION', 'act', 'OT A');
+    if (zones.length || marks.length) (out[id] ||= {})[String(e.year)] = {kind: 'sm', year: e.year, zones: zones.sort((a, b) => a.n - b.n), marks, doc: doc?.title || '', url: doc?.url || ''};
   } else {
     const zones = [], marks = [];
     for (const m of text.matchAll(new RegExp(String.raw`DRS\s*Activation\s*(?:point\s*)?(\d)\D{0,6}?` + POS, 'gi'))) { const s = at(id, m[0].slice(m[0].search(posRe))); if (s != null && !zones.some(z => z.n === Number(m[1]))) zones.push({n: Number(m[1]), from: Math.round(s), to: Math.round(zoneEnd(id, s))}); }
@@ -41,7 +44,7 @@ for (const e of raw.events) {
     if (zones.length && (!out[id]?.['2025'] || out[id]['2025'].year < e.year)) (out[id] ||= {})['2025'] = {kind: 'drs', year: e.year, zones: zones.sort((a, b) => a.n - b.n), marks, doc: doc?.title || '', url: doc?.url || ''};
   }
 }
-const missing = [...new Set(raw.events.map(e => e.year + ' ' + e.track))].filter(k => { const [y, id] = k.split(' '); return !out[id]?.[y >= 2026 ? '2026' : '2025']; });
+const missing = [...new Set(raw.events.map(e => (e.year >= 2026 ? '2026' : '2025') + ' ' + e.track))].filter(k => { const [y, id] = k.split(' '); return !out[id]?.[y]; }); // no text table in any FIA map or note read
 writeFileSync(new URL('../../worker/lapsim/f1-zones-data.js', import.meta.url), `// Generated by scripts/sim/f1-zones.mjs from FIA F1 event documents (circuit maps, Race Director notes). Do not edit by hand.
 // Owner rules 2026-11-15 (AGENTS.md rule 17). Lap distances in metres on the simulator track; zone ends are the next turn's braking point.
 export const lapsimF1Zones = ${JSON.stringify({generatedAt: new Date().toISOString().slice(0, 10), tracks: out, missing})};

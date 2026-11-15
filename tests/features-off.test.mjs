@@ -8,7 +8,7 @@ import {FEATURES} from '../worker/features.js';
 const page=async path=>{const r=await worker.fetch(new Request('https://kongboda.test'+path,{headers:{'accept-language':'ko'}}),{});return {status:r.status,html:await r.text()};};
 const rpc=(method,params)=>new Request('https://kongboda.test/mcp',{method:'POST',headers:{'content-type':'application/json',accept:'application/json, text/event-stream','oai-authenticated-user-id':'u1','oai-authenticated-user-email':'a@example.invalid'},body:JSON.stringify({jsonrpc:'2.0',id:1,method,params})});
 
-test('switched off: home shows only this week in motorsport, menu Home, Simulator, F1, WEC and Kongboda AI; simulator entry under the intro; the intro and the name moved to the home; /about redirects home',async()=>{
+test('switched off: home shows only this week in motorsport, menu Home, LapSim, SetupSim, BoPSim and Kongboda Intelligence (F1/WEC pages moved to the home series section, owner 2026-11-15); simulator entry under the intro; the intro and the name moved to the home; /about redirects home',async()=>{
  const saved={...FEATURES};Object.assign(FEATURES,{liveTiming:false,fullSite:false});
  try{
   const home=await page('/');
@@ -17,7 +17,7 @@ test('switched off: home shows only this week in motorsport, menu Home, Simulato
   assert.doesNotMatch(main,/id="championships"|connect-section|id="ci"/);
   assert.match(main,/라이트팬과 코어팬 사이의 그 계단을/);assert.match(main,/꽁보다, 무슨 뜻인가요/);
   const nav=home.html.match(/<nav id="navigation"[\s\S]*?<\/nav>/)[0];
-  assert.deepEqual([...nav.matchAll(/href="([^"]+)"/g)].map(m=>m[1]),['/','/simulation','/setup','/bop','/championships/f1','/championships/wec','/ai']);
+  assert.deepEqual([...nav.matchAll(/href="([^"]+)"/g)].map(m=>m[1]),['/','/simulation','/setup','/bop','/ai']);
   assert.ok(main.indexOf('class="sim-entry"')>main.indexOf('라이트팬과 코어팬')&&main.indexOf('class="sim-entry"')<main.indexOf('data-race-calendar="week"'));
   assert.equal((await page('/about')).status,301);
   assert.equal((await page('/guide')).status,404);
