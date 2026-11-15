@@ -31,29 +31,29 @@ Owner instruction (2026-11-14): where a real lap of a car type exists, use it. T
 | Track | Layout | Group | Length m (official) | Height | Rows (own class) | Unseen RMS % | Unseen bias % | Learned factor | Held-out RMS % | Sibling factor: RMS % | State |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | yeongam | Korea International Circuit, Grand Prix 5.615 km | korea | 5499 (5615) | 0–1 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
-| yongin | Everland Speedway, full course 4.346 km | korea | 4251 (4346) | 92–146 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
-| mugello | Grand Prix 5.245 km | europe-africa-asia | 5184 (5245) | 246–289 m | 1 (0) | 1.07 | 1.07 | – | – | – | pass (unseen) |
+| yongin | Everland Speedway, full course 4.346 km | korea | 4252 (4346) | 92–146 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| mugello | Grand Prix 5.245 km | europe-africa-asia | 5184 (5245) | 246–289 m | 1 (0) | 1.09 | 1.09 | – | – | – | pass (unseen) |
 | nurburgring-gp | Grand Prix 5.148 km | f1-history | 5084 (5148) | car positions | 6 (0) | 2.58 | 2.42 | 1.0597 | 1.04 | – | pass (learned) |
-| nurburgring-sprint | Sprint 3.629 km (DTM, ADAC GT Masters) | europe-africa-asia | 3559 (3629) | 588–621 m | 2 (0) | 0.64 | 0.64 | 1.0186 | 0.13 | – | pass (unseen) |
-| nurburgring-24h | 24 Hours combined lap 25.378 km | europe-africa-asia | 25016 (25378) | 340–627 m | 3 (0) | 2.08 | -1.99 | 0.9352 | 0.89 | – | pass (unseen) |
+| nurburgring-sprint | Sprint 3.629 km (DTM, ADAC GT Masters) | europe-africa-asia | 3559 (3629) | 588–621 m | 2 (0) | 0.72 | 0.72 | 1.0209 | 0.13 | – | pass (unseen) |
+| nurburgring-24h | 24 Hours combined lap 25.378 km | europe-africa-asia | 25018 (25378) | 340–627 m | 3 (0) | 2.12 | -2.04 | 0.9336 | 0.89 | – | pass (unseen) |
 | brands-hatch | Grand Prix 3.916 km | europe-africa-asia | 3876 (3916) | flat assumed | 1 (0) | 0.25 | -0.25 | – | – | – | pass (unseen) |
 | sakhir-outer | Outer circuit 3.543 km | f1-history | 3499 (3543) | car positions | 1 (0) | 0.55 | 0.55 | – | – | – | pass (unseen) |
-| kyalami | Grand Prix 4.522 km | europe-africa-asia | 4457 (4522) | 1458–1501 m | 2 (0) | 3.02 | -2.99 | 0.9187 | 0.96 | – | pass (learned) |
-| fuji | Fuji Speedway 4.563 km | europe-africa-asia | 4459 (4563) | 544–594 m | 8 (8) | 1.23 | -1.05 | 0.9714 | 0.83 | – | pass (unseen) |
-| daytona | Road course (IMSA) 5.729 km | imsa | 5677 (5729) | 8–14 m | 7 (0) | 7.44 | -7.28 | 0.75 (out of bounds) | 1.25 | – | ⚠️ learned track factor 0.75 is outside 0.88–1.21: the track, not the grip, is wrong |
-| laguna-seca | Raceway 3.602 km | imsa | 3550 (3602) | 229–282 m | 10 (0) | 2.69 | 1.99 | 1.0535 | 2.07 | – | pass (unseen) |
-| watkins-glen | Long course (IMSA) 5.472 km | imsa | 5401 (5472) | 454–496 m | 9 (0) | 2.09 | 1.48 | 1.0397 | 1.68 | – | pass (unseen) |
-| mosport | Grand Prix track (IMSA) 3.957 km | imsa | 3891 (3957) | 289–340 m | 5 (0) | 1.72 | -0.57 | 0.9838 | 2.04 | – | pass (unseen) |
-| road-america | Elkhart Lake 6.514 km | imsa | 6434 (6514) | 270–324 m | 10 (0) | 2.8 | 2.52 | 1.0792 | 1.58 | – | pass (unseen) |
-| vir | Full course (IMSA) 5.263 km | imsa | 5198 (5263) | 113–151 m | 5 (0) | 2.17 | -2.06 | 0.9348 | 0.91 | – | pass (unseen) |
+| kyalami | Grand Prix 4.522 km | europe-africa-asia | 4457 (4522) | 1458–1501 m | 2 (0) | 3.01 | -2.98 | 0.9188 | 0.96 | – | pass (learned) |
+| fuji | Fuji Speedway 4.563 km | europe-africa-asia | 4460 (4563) | 544–594 m | 8 (8) | 1.23 | -1.04 | 0.9714 | 0.84 | – | pass (unseen) |
+| daytona | Road course (IMSA) 5.729 km | imsa | 5679 (5729) | 8–14 m | 7 (0) | 7.51 | -7.35 | 0.75 (out of bounds) | 1.23 | – | ⚠️ learned track factor 0.75 is outside 0.88–1.21: the track, not the grip, is wrong |
+| laguna-seca | Raceway 3.602 km | imsa | 3548 (3602) | 229–282 m | 10 (0) | 2.72 | 2.03 | 1.055 | 2.05 | – | pass (unseen) |
+| watkins-glen | Long course (IMSA) 5.472 km | imsa | 5401 (5472) | 454–496 m | 9 (0) | 2.05 | 1.4 | 1.0374 | 1.71 | – | pass (unseen) |
+| mosport | Grand Prix track (IMSA) 3.957 km | imsa | 3891 (3957) | 289–340 m | 5 (0) | 1.74 | -0.59 | 0.9833 | 2.05 | – | pass (unseen) |
+| road-america | Elkhart Lake 6.514 km | imsa | 6434 (6514) | 270–324 m | 10 (0) | 2.78 | 2.49 | 1.0785 | 1.58 | – | pass (unseen) |
+| vir | Full course (IMSA) 5.263 km | imsa | 5199 (5263) | 113–151 m | 5 (0) | 2.04 | -1.92 | 0.9392 | 0.91 | – | pass (unseen) |
 | indianapolis | Road course 3.910 km | imsa | 3844 (3910) | 221–224 m | 10 (0) | 3.58 | 3.47 | 1.1027 | 1.15 | – | pass (learned) |
-| road-atlanta | Road Atlanta 4.088 km | imsa | 4047 (4088) | 275–308 m | 11 (0) | 2.94 | -0.62 | 0.9805 | 3.16 | – | pass (unseen) |
-| mid-ohio | IMSA layout 3.634 km | imsa | 3566 (3634) | 398–437 m | 3 (0) | 3.8 | 3.73 | 1.1035 | 1.06 | – | pass (learned) |
-| lime-rock | IMSA layout 2.414 km | imsa | 2370 (2414) | 164–180 m | 1 (0) | 2.41 | 2.41 | – | – | – | pass (unseen) |
-| le-mans | Circuit des 24 Heures 13.626 km | owner-list-other | 13556 (13626) | 46–82 m | 12 (11) | 2.74 | 2.67 | 1.1122 | 0.88 | – | pass (unseen) |
-| portimao | Algarve 4.653 km | owner-list-other | 4540 (4653) | 95–124 m | 6 (2) | 3.39 | 3.3 | 1.088 | 0.89 | – | pass (learned) |
-| hockenheim | Grand Prix 4.574 km | owner-list-other | 4525 (4574) | 101–118 m | 3 (0) | 3.12 | 3.04 | 1.1 | 0.98 | – | pass (learned) |
-| bathurst | Mount Panorama 6.213 km | owner-list-other | 6156 (6213) | 700–874 m | 2 (0) | 0.46 | 0.29 | 1.0102 | 0.72 | – | pass (unseen) |
+| road-atlanta | Road Atlanta 4.088 km | imsa | 4048 (4088) | 275–308 m | 11 (0) | 2.95 | -0.7 | 0.9779 | 3.15 | – | pass (unseen) |
+| mid-ohio | IMSA layout 3.634 km | imsa | 3566 (3634) | 398–437 m | 3 (0) | 3.82 | 3.75 | 1.1042 | 1.06 | – | pass (learned) |
+| lime-rock | IMSA layout 2.414 km | imsa | 2370 (2414) | 164–180 m | 1 (0) | 2.36 | 2.36 | – | – | – | pass (unseen) |
+| le-mans | Circuit des 24 Heures 13.626 km | owner-list-other | 13556 (13626) | 46–82 m | 12 (11) | 2.77 | 2.69 | 1.1134 | 0.88 | – | pass (unseen) |
+| portimao | Algarve 4.653 km | owner-list-other | 4539 (4653) | 95–124 m | 6 (2) | 3.41 | 3.32 | 1.0881 | 0.88 | – | pass (learned) |
+| hockenheim | Grand Prix 4.574 km | owner-list-other | 4525 (4574) | 101–118 m | 3 (0) | 3.14 | 3.07 | 1.1008 | 0.97 | – | pass (learned) |
+| bathurst | Mount Panorama 6.213 km | owner-list-other | 6157 (6213) | 700–874 m | 2 (0) | 0.47 | 0.3 | 1.0105 | 0.73 | – | pass (unseen) |
 | paul-ricard-f1 | F1 layout with the Mistral chicane 5.842 km | f1-history | 5746 (5842) | car positions | 3 (0) | 0.53 | -0.12 | 0.997 | 0.78 | – | ⚠️ curvature too high in fast corners: the pole lap implies 7.6 g against the 7.0 g limit |
 | rwanda | Provisional 5.302 km (owner diagram) | rwanda | 5196 (5302) | diagram labels | 0 (0) | – | – | – | – | – | ⚠️ provisional: hand-traced from a diagram that disagrees with the official October 2026 figures (about 6 km, 17 corners, anti-clockwise) |
 | paul-ricard-2021 | 1A-V2 5.791 km (FIA list 2024; ELMS timing states 5.771 km) | owner-2026-11-15 | 5716 (5791) | car positions | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
@@ -63,7 +63,7 @@ Owner instruction (2026-11-14): where a real lap of a car type exists, use it. T
 | sonoma | Sonoma Raceway 3.685 km | owner-2026-11-15 | 3616 (3685) | 5–51 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | sachsenring | Sachsenring 3.645 km | owner-2026-11-15 | 3578 (3645) | 305–335 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | oschersleben | Motorsport Arena 3.696 km | owner-2026-11-15 | 3615 (3696) | 81–90 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
-| zolder | Circuit Zolder 4.000 km | owner-2026-11-15 | 3956 (4000) | 29–44 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| zolder | Circuit Zolder 4.000 km | owner-2026-11-15 | 3957 (4000) | 29–44 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | donington | Grand Prix circuit 4.003 km | owner-2026-11-15 | 3950 (4003) | 64–98 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | oulton-park | International circuit 4.332 km | owner-2026-11-15 | 4279 (4332) | 54–70 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | motegi | Mobility Resort Motegi road course 4.801 km | owner-2026-11-15 | 4736 (4801) | 149–178 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
@@ -73,14 +73,14 @@ Owner instruction (2026-11-14): where a real lap of a car type exists, use it. T
 | vallelunga | International circuit 4.085 km | owner-2026-11-15 | 4009 (4085) | 178–199 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | estoril | Circuito Estoril 4.182 km | owner-2026-11-15 | 4114 (4182) | 118–141 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | jerez | Circuito de Jerez 4.428 km | owner-2026-11-15 | 4358 (4428) | 34–53 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
-| sydney | Brabham circuit 4.500 km | owner-2026-11-15 | 4405 (4500) | 51–78 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| sydney | Brabham circuit 4.500 km | owner-2026-11-15 | 4406 (4500) | 51–78 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | sydney-gardner | Gardner circuit 3.905 km | owner-2026-11-15 | 3835 (3905) | 51–75 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | inje | Full course 3.908 km | owner-2026-11-15 | 3840 (3908) | 290–364 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
-| sebring | IMSA layout 6.019 km | owner-2026-11-15 | 5949 (6019) | 18–20 m | 12 (2) | 2.12 | -1.3 | 0.9604 | 1.72 | – | pass (unseen) |
+| sebring | IMSA layout 6.019 km | owner-2026-11-15 | 5949 (6019) | 18–20 m | 12 (2) | 2.12 | -1.3 | 0.9606 | 1.73 | – | pass (unseen) |
 | magny-cours | Grand Prix circuit 4.411 km | owner-2026-11-15 | 4399 (4411) | 208–236 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
-| mandalika | Pertamina Mandalika circuit 4.300 km | owner-2026-11-15 | 4229 (4300) | 7–16 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
-| phillip-island | Grand Prix circuit 4.480 km | owner-2026-11-15 | 4397 (4480) | 31–55 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
-| aragon | Motorland circuit 5.346 km | owner-2026-11-15 | 5266 (5346) | 357–408 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| mandalika | Pertamina Mandalika circuit 4.300 km | owner-2026-11-15 | 4228 (4300) | 7–16 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| phillip-island | Grand Prix circuit 4.480 km | owner-2026-11-15 | 4398 (4480) | 31–55 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| aragon | Motorland circuit 5.346 km | owner-2026-11-15 | 5265 (5346) | 357–408 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | autopolis | Full circuit 4.674 km | owner-2026-11-15 | 4544 (4674) | 771–822 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | snetterton | Snetterton 300 circuit 4.779 km | owner-2026-11-15 | 4722 (4779) | 40–47 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | lausitz | DTM circuit 3.478 km | owner-2026-11-15 | 3409 (3478) | 117–131 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
@@ -116,76 +116,76 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 
 | Track | Series | Season | Class | Car model | Sim car | Real s | Sim s | Error % |
 |---|---|---|---|---|---|---|---|---|
-| mugello | elms | 2024 | LMGT3 | Aston Martin Vantage AMR LMGT3 | lmgt3 2025 (borrowed) | 107.891 | 109.041 | 1.07 |
+| mugello | elms | 2024 | LMGT3 | Aston Martin Vantage AMR LMGT3 | lmgt3 2025 (borrowed) | 107.891 | 109.071 | 1.09 |
 | nurburgring-gp | f1 | 2020 | F1 | BOT (Mercedes), pole Q3 | f1 2023 × 0.9686 (borrowed) | 85.269 | 87.742 | 2.9 |
 | nurburgring-gp | f1 | 2006 | F1 | fernando-alonso (renault), f1db fastest qualifying lap | f1 2023 × 1.0169 (borrowed) | 89.819 | 91.531 | 1.91 |
 | nurburgring-gp | f1 | 2007 | F1 | felipe-massa (ferrari), f1db fastest qualifying lap | f1 2023 × 1.0220 (borrowed) | 90.912 | 91.99 | 1.19 |
 | nurburgring-gp | f1 | 2009 | F1 | mark-webber (red-bull), f1db fastest qualifying lap | f1 2023 × 1.0321 (borrowed) | 91.257 | 92.899 | 1.8 |
 | nurburgring-gp | f1 | 2011 | F1 | mark-webber (red-bull), f1db fastest qualifying lap | f1 2023 × 1.0290 (borrowed) | 90.079 | 92.62 | 2.82 |
 | nurburgring-gp | f1 | 2013 | F1 | lewis-hamilton (mercedes), f1db fastest qualifying lap | f1 2023 × 1.0320 (borrowed) | 89.398 | 92.89 | 3.91 |
-| nurburgring-sprint | x-adac-gt-masters | 2024 | Silver | Mercedes-AMG GT3 | lmgt3 2025 (borrowed) | 85.186 | 85.783 | 0.7 |
-| nurburgring-sprint | x-adac-gt-masters | 2025 | Silver | Ford Mustang GT3 | lmgt3 2025 (borrowed) | 85.294 | 85.783 | 0.57 |
-| nurburgring-24h | nur | 2023 | SP 9 | Mercedes-AMG GT3 | lmgt3 2025 (borrowed) | 496.609 | 482.857 | -2.77 |
-| nurburgring-24h | nur | 2024 | SP 9 | Porsche 911 GT3 R (992) | lmgt3 2025 (borrowed) | 489.591 | 482.857 | -1.38 |
-| nurburgring-24h | nur | 2025 | SP 9 | Porsche 911 GT3 R (992) | lmgt3 2025 (borrowed) | 491.855 | 482.857 | -1.83 |
+| nurburgring-sprint | x-adac-gt-masters | 2024 | Silver | Mercedes-AMG GT3 | lmgt3 2025 (borrowed) | 85.186 | 85.848 | 0.78 |
+| nurburgring-sprint | x-adac-gt-masters | 2025 | Silver | Ford Mustang GT3 | lmgt3 2025 (borrowed) | 85.294 | 85.848 | 0.65 |
+| nurburgring-24h | nur | 2023 | SP 9 | Mercedes-AMG GT3 | lmgt3 2025 (borrowed) | 496.609 | 482.59 | -2.82 |
+| nurburgring-24h | nur | 2024 | SP 9 | Porsche 911 GT3 R (992) | lmgt3 2025 (borrowed) | 489.591 | 482.59 | -1.43 |
+| nurburgring-24h | nur | 2025 | SP 9 | Porsche 911 GT3 R (992) | lmgt3 2025 (borrowed) | 491.855 | 482.59 | -1.88 |
 | brands-hatch | x-miata-trophy | 2026 | Pro | BMW M4 GT3 EVO | lmgt3 2026 (borrowed) | 83.26 | 83.049 | -0.25 |
 | sakhir-outer | f1 | 2020 | F1 | BOT (Mercedes), pole Q3 | f1 2023 × 0.9686 (borrowed) | 53.377 | 53.669 | 0.55 |
-| kyalami | igtc | 2019 (older) | Pro | ? | lmgt3 2025 (borrowed) | 102.378 | 98.867 | -3.43 |
-| kyalami | igtc | 2020 (older) | Overall | ? | lmgt3 2025 (borrowed) | 101.979 | 99.383 | -2.55 |
-| fuji | wec | 2023 | HYPERCAR | Porsche #6 | lmdh 2025 | 88.687 | 88.003 | -0.77 |
-| fuji | wec | 2023 | HYPERCAR | Toyota #7 | lmh 2025 | 87.794 | 87.769 | -0.03 |
-| fuji | wec | 2024 | HYPERCAR | Cadillac #2 | lmdh 2025 | 88.901 | 88.079 | -0.92 |
-| fuji | wec | 2024 | LMGT3 | Ferrari #55 | lmgt3 2025 | 100.893 | 98.575 | -2.3 |
-| fuji | wec | 2024 | HYPERCAR | Toyota #8 | lmh 2025 | 88.942 | 87.846 | -1.23 |
-| fuji | wec | 2025 | HYPERCAR | Cadillac #12 | lmdh 2025 | 88.236 | 87.852 | -0.43 |
-| fuji | wec | 2025 | LMGT3 | Aston Martin #10 | lmgt3 2025 | 99.981 | 98.482 | -1.5 |
-| fuji | wec | 2025 | HYPERCAR | Aston Martin #009 | lmh 2025 | 88.705 | 87.62 | -1.22 |
-| daytona | imsa | 2024 | GTP | CADILLAC V-SERIES.R | lmdh 2025 (borrowed) | 92.656 | 86.766 | -6.36 |
-| daytona | imsa | 2024 | GTDPRO | PORSCHE 911 GT3 R (992) | lmgt3 2025 (borrowed) | 104.382 | 98.657 | -5.48 |
-| daytona | imsa | 2025 | GTDPRO | Ford #64 | lmgt3 2025 (borrowed) | 105.523 | 99.026 | -6.16 |
-| daytona | imsa | 2025 | GTP | BMW #24 | lmdh 2025 (borrowed) | 93.895 | 87.086 | -7.25 |
-| daytona | imsa | 2026 | GTDPRO | Chevrolet #3 | lmgt3 2026 (borrowed) | 105.106 | 98.177 | -6.59 |
-| daytona | imsa | 2026 | GTP | Cadillac #31 | lmdh 2026 (borrowed) | 93.939 | 85.524 | -8.96 |
-| daytona | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 95.382 | 85.687 | -10.16 |
-| laguna-seca | imsa | 2023 | GTDPRO | Porsche #9 | lmgt3 2025 (borrowed) | 84.529 | 83.865 | -0.79 |
-| laguna-seca | imsa | 2023 | GTP | Porsche #7 | lmdh 2025 (borrowed) | 74.774 | 74.316 | -0.61 |
-| laguna-seca | imsa | 2024 | GTDPRO | Chevrolet #4 | lmgt3 2025 (borrowed) | 79.727 | 83.922 | 5.26 |
-| laguna-seca | imsa | 2024 | GTP | Cadillac #01 | lmdh 2025 (borrowed) | 72.445 | 74.387 | 2.68 |
-| laguna-seca | imsa | 2025 | GTDPRO | Ferrari #81 | lmgt3 2025 (borrowed) | 80.608 | 84.039 | 4.26 |
-| laguna-seca | imsa | 2025 | GTP | BMW #24 | lmdh 2025 (borrowed) | 72.854 | 74.506 | 2.27 |
-| laguna-seca | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 73.718 | 74.319 | 0.81 |
-| laguna-seca | imsa | 2026 | GTDPRO | Lexus #14 | lmgt3 2026 (borrowed) | 81.228 | 83.16 | 2.38 |
-| laguna-seca | imsa | 2026 | GTP | Cadillac #40 | lmdh 2026 (borrowed) | 73.221 | 74.898 | 2.29 |
-| laguna-seca | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 73.939 | 74.941 | 1.35 |
-| watkins-glen | imsa | 2023 | GTD | Lamborghini #78 | lmgt3 2025 (borrowed) | 104.43 | 107.198 | 2.65 |
-| watkins-glen | imsa | 2024 | GTDPRO | Ferrari #62 | lmgt3 2025 (borrowed) | 104.203 | 107.225 | 2.9 |
-| watkins-glen | imsa | 2024 | GTP | Acura #40 | lmdh 2025 (borrowed) | 92.209 | 92.17 | -0.04 |
-| watkins-glen | imsa | 2025 | GTDPRO | Lamborghini #9 | lmgt3 2025 (borrowed) | 104.595 | 107.403 | 2.68 |
-| watkins-glen | imsa | 2025 | GTP | Acura #93 | lmdh 2025 (borrowed) | 91.558 | 92.249 | 0.75 |
-| watkins-glen | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 93.36 | 91.961 | -1.5 |
-| watkins-glen | imsa | 2026 | GTDPRO | Lexus #14 | lmgt3 2026 (borrowed) | 103.701 | 106.628 | 2.82 |
-| watkins-glen | imsa | 2026 | GTP | Cadillac #31 | lmdh 2026 (borrowed) | 91.284 | 93.363 | 2.28 |
-| watkins-glen | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 92.626 | 93.334 | 0.76 |
-| mosport | imsa | 2023 | GTDPRO | Lexus #14 | lmgt3 2025 (borrowed) | 75.029 | 74.931 | -0.13 |
-| mosport | imsa | 2023 | GTP | Acura #60 | lmdh 2025 (borrowed) | 65.653 | 63.182 | -3.76 |
-| mosport | imsa | 2024 | GTDPRO | Chevrolet #3 | lmgt3 2025 (borrowed) | 74.373 | 74.893 | 0.7 |
-| mosport | imsa | 2025 | GTDPRO | BMW #1 | lmgt3 2025 (borrowed) | 75.046 | 74.961 | -0.11 |
-| mosport | imsa | 2026 | GTDPRO | BMW #1 | lmgt3 2026 (borrowed) | 74.382 | 74.734 | 0.47 |
-| road-america | imsa | 2023 | GTDPRO | Aston Martin #23 | lmgt3 2025 (borrowed) | 122.918 | 127.974 | 4.11 |
-| road-america | imsa | 2023 | GTP | Cadillac #31 | lmdh 2025 (borrowed) | 107.73 | 110.539 | 2.61 |
-| road-america | imsa | 2024 | GTDPRO | Chevrolet #4 | lmgt3 2025 (borrowed) | 122.198 | 127.984 | 4.74 |
-| road-america | imsa | 2024 | GTP | Acura #10 | lmdh 2025 (borrowed) | 108.601 | 110.703 | 1.94 |
-| road-america | imsa | 2025 | GTD | Mercedes-AMG #57 | lmgt3 2025 (borrowed) | 123.745 | 127.955 | 3.4 |
-| road-america | imsa | 2025 | GTP | Acura #93 | lmdh 2025 (borrowed) | 108.628 | 110.512 | 1.73 |
-| road-america | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 109.309 | 110.165 | 0.78 |
-| road-america | imsa | 2026 | GTDPRO | Porsche #77 | lmgt3 2026 (borrowed) | 124.042 | 127.498 | 2.79 |
-| road-america | imsa | 2026 | GTP | Acura #93 | lmdh 2026 (borrowed) | 109.233 | 111.6 | 2.17 |
-| road-america | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 110.525 | 111.576 | 0.95 |
-| vir | gtwc | 2025 | Pro | PORSCHE 992 GT3 R | lmgt3 2025 (borrowed) | 105.004 | 102.32 | -2.56 |
-| vir | imsa | 2023 | GTDPRO | Lexus #14 | lmgt3 2025 (borrowed) | 104.78 | 102.337 | -2.33 |
-| vir | imsa | 2024 | GTDPRO | BMW #1 | lmgt3 2025 (borrowed) | 103.206 | 102.469 | -0.71 |
-| vir | imsa | 2025 | GTDPRO | Ferrari #81 | lmgt3 2025 (borrowed) | 104.433 | 102.317 | -2.03 |
-| vir | imsa | 2026 | GTDPRO | Lamborghini #9 | lmgt3 2026 (borrowed) | 104.773 | 101.997 | -2.65 |
+| kyalami | igtc | 2019 (older) | Pro | ? | lmgt3 2025 (borrowed) | 102.378 | 98.872 | -3.42 |
+| kyalami | igtc | 2020 (older) | Overall | ? | lmgt3 2025 (borrowed) | 101.979 | 99.389 | -2.54 |
+| fuji | wec | 2023 | HYPERCAR | Porsche #6 | lmdh 2025 | 88.687 | 88.011 | -0.76 |
+| fuji | wec | 2023 | HYPERCAR | Toyota #7 | lmh 2025 | 87.794 | 87.793 | 0 |
+| fuji | wec | 2024 | HYPERCAR | Cadillac #2 | lmdh 2025 | 88.901 | 88.086 | -0.92 |
+| fuji | wec | 2024 | LMGT3 | Ferrari #55 | lmgt3 2025 | 100.893 | 98.566 | -2.31 |
+| fuji | wec | 2024 | HYPERCAR | Toyota #8 | lmh 2025 | 88.942 | 87.869 | -1.21 |
+| fuji | wec | 2025 | HYPERCAR | Cadillac #12 | lmdh 2025 | 88.236 | 87.862 | -0.42 |
+| fuji | wec | 2025 | LMGT3 | Aston Martin #10 | lmgt3 2025 | 99.981 | 98.474 | -1.51 |
+| fuji | wec | 2025 | HYPERCAR | Aston Martin #009 | lmh 2025 | 88.705 | 87.641 | -1.2 |
+| daytona | imsa | 2024 | GTP | CADILLAC V-SERIES.R | lmdh 2025 (borrowed) | 92.656 | 86.743 | -6.38 |
+| daytona | imsa | 2024 | GTDPRO | PORSCHE 911 GT3 R (992) | lmgt3 2025 (borrowed) | 104.382 | 98.532 | -5.6 |
+| daytona | imsa | 2025 | GTDPRO | Ford #64 | lmgt3 2025 (borrowed) | 105.523 | 98.904 | -6.27 |
+| daytona | imsa | 2025 | GTP | BMW #24 | lmdh 2025 (borrowed) | 93.895 | 87.065 | -7.27 |
+| daytona | imsa | 2026 | GTDPRO | Chevrolet #3 | lmgt3 2026 (borrowed) | 105.106 | 98.054 | -6.71 |
+| daytona | imsa | 2026 | GTP | Cadillac #31 | lmdh 2026 (borrowed) | 93.939 | 85.473 | -9.01 |
+| daytona | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 95.382 | 85.638 | -10.22 |
+| laguna-seca | imsa | 2023 | GTDPRO | Porsche #9 | lmgt3 2025 (borrowed) | 84.529 | 83.872 | -0.78 |
+| laguna-seca | imsa | 2023 | GTP | Porsche #7 | lmdh 2025 (borrowed) | 74.774 | 74.364 | -0.55 |
+| laguna-seca | imsa | 2024 | GTDPRO | Chevrolet #4 | lmgt3 2025 (borrowed) | 79.727 | 83.929 | 5.27 |
+| laguna-seca | imsa | 2024 | GTP | Cadillac #01 | lmdh 2025 (borrowed) | 72.445 | 74.434 | 2.75 |
+| laguna-seca | imsa | 2025 | GTDPRO | Ferrari #81 | lmgt3 2025 (borrowed) | 80.608 | 84.045 | 4.26 |
+| laguna-seca | imsa | 2025 | GTP | BMW #24 | lmdh 2025 (borrowed) | 72.854 | 74.552 | 2.33 |
+| laguna-seca | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 73.718 | 74.366 | 0.88 |
+| laguna-seca | imsa | 2026 | GTDPRO | Lexus #14 | lmgt3 2026 (borrowed) | 81.228 | 83.168 | 2.39 |
+| laguna-seca | imsa | 2026 | GTP | Cadillac #40 | lmdh 2026 (borrowed) | 73.221 | 74.936 | 2.34 |
+| laguna-seca | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 73.939 | 74.98 | 1.41 |
+| watkins-glen | imsa | 2023 | GTD | Lamborghini #78 | lmgt3 2025 (borrowed) | 104.43 | 107.145 | 2.6 |
+| watkins-glen | imsa | 2024 | GTDPRO | Ferrari #62 | lmgt3 2025 (borrowed) | 104.203 | 107.172 | 2.85 |
+| watkins-glen | imsa | 2024 | GTP | Acura #40 | lmdh 2025 (borrowed) | 92.209 | 92.081 | -0.14 |
+| watkins-glen | imsa | 2025 | GTDPRO | Lamborghini #9 | lmgt3 2025 (borrowed) | 104.595 | 107.349 | 2.63 |
+| watkins-glen | imsa | 2025 | GTP | Acura #93 | lmdh 2025 (borrowed) | 91.558 | 92.158 | 0.66 |
+| watkins-glen | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 93.36 | 91.872 | -1.59 |
+| watkins-glen | imsa | 2026 | GTDPRO | Lexus #14 | lmgt3 2026 (borrowed) | 103.701 | 106.577 | 2.77 |
+| watkins-glen | imsa | 2026 | GTP | Cadillac #31 | lmdh 2026 (borrowed) | 91.284 | 93.276 | 2.18 |
+| watkins-glen | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 92.626 | 93.255 | 0.68 |
+| mosport | imsa | 2023 | GTDPRO | Lexus #14 | lmgt3 2025 (borrowed) | 75.029 | 74.918 | -0.15 |
+| mosport | imsa | 2023 | GTP | Acura #60 | lmdh 2025 (borrowed) | 65.653 | 63.162 | -3.79 |
+| mosport | imsa | 2024 | GTDPRO | Chevrolet #3 | lmgt3 2025 (borrowed) | 74.373 | 74.88 | 0.68 |
+| mosport | imsa | 2025 | GTDPRO | BMW #1 | lmgt3 2025 (borrowed) | 75.046 | 74.947 | -0.13 |
+| mosport | imsa | 2026 | GTDPRO | BMW #1 | lmgt3 2026 (borrowed) | 74.382 | 74.718 | 0.45 |
+| road-america | imsa | 2023 | GTDPRO | Aston Martin #23 | lmgt3 2025 (borrowed) | 122.918 | 127.95 | 4.09 |
+| road-america | imsa | 2023 | GTP | Cadillac #31 | lmdh 2025 (borrowed) | 107.73 | 110.5 | 2.57 |
+| road-america | imsa | 2024 | GTDPRO | Chevrolet #4 | lmgt3 2025 (borrowed) | 122.198 | 127.96 | 4.72 |
+| road-america | imsa | 2024 | GTP | Acura #10 | lmdh 2025 (borrowed) | 108.601 | 110.666 | 1.9 |
+| road-america | imsa | 2025 | GTD | Mercedes-AMG #57 | lmgt3 2025 (borrowed) | 123.745 | 127.931 | 3.38 |
+| road-america | imsa | 2025 | GTP | Acura #93 | lmdh 2025 (borrowed) | 108.628 | 110.473 | 1.7 |
+| road-america | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 109.309 | 110.13 | 0.75 |
+| road-america | imsa | 2026 | GTDPRO | Porsche #77 | lmgt3 2026 (borrowed) | 124.042 | 127.475 | 2.77 |
+| road-america | imsa | 2026 | GTP | Acura #93 | lmdh 2026 (borrowed) | 109.233 | 111.562 | 2.13 |
+| road-america | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 110.525 | 111.542 | 0.92 |
+| vir | gtwc | 2025 | Pro | PORSCHE 992 GT3 R | lmgt3 2025 (borrowed) | 105.004 | 102.465 | -2.42 |
+| vir | imsa | 2023 | GTDPRO | Lexus #14 | lmgt3 2025 (borrowed) | 104.78 | 102.483 | -2.19 |
+| vir | imsa | 2024 | GTDPRO | BMW #1 | lmgt3 2025 (borrowed) | 103.206 | 102.614 | -0.57 |
+| vir | imsa | 2025 | GTDPRO | Ferrari #81 | lmgt3 2025 (borrowed) | 104.433 | 102.463 | -1.89 |
+| vir | imsa | 2026 | GTDPRO | Lamborghini #9 | lmgt3 2026 (borrowed) | 104.773 | 102.144 | -2.51 |
 | indianapolis | igtc | 2025 | Pro | BMW M4 GT3 EVO | lmgt3 2025 (borrowed) | 82.271 | 86.296 | 4.89 |
 | indianapolis | imsa | 2024 | GTP | CADILLAC V-SERIES.R | lmdh 2025 (borrowed) | 74.592 | 76.887 | 3.08 |
 | indianapolis | imsa | 2024 | GTDPRO | PORSCHE 911 GT3 R (992) | lmgt3 2025 (borrowed) | 83.15 | 86.314 | 3.81 |
@@ -196,59 +196,59 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 | indianapolis | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 75.434 | 76.588 | 1.53 |
 | indianapolis | imsa | 2026 | GTP | Acura #60 | lmdh 2026 (borrowed) | 74.674 | 77.6 | 3.92 |
 | indianapolis | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 75.578 | 77.628 | 2.71 |
-| road-atlanta | gtwc | 2026 | Pro | MERCEDES-AMG GT3 EVO | lmgt3 2026 (borrowed) | 80.501 | 79.713 | -0.98 |
-| road-atlanta | imsa | 2023 | GTD | Aston Martin #27 | lmgt3 2025 (borrowed) | 83.116 | 80.162 | -3.55 |
-| road-atlanta | imsa | 2023 | GTP | Acura #10 | lmdh 2025 (borrowed) | 75.402 | 69.502 | -7.82 |
-| road-atlanta | imsa | 2024 | GTDPRO | Porsche #77 | lmgt3 2025 (borrowed) | 77.881 | 80.158 | 2.92 |
-| road-atlanta | imsa | 2024 | GTP | Cadillac #31 | lmdh 2025 (borrowed) | 69.639 | 69.555 | -0.12 |
-| road-atlanta | imsa | 2025 | GTD | Ferrari #47 | lmgt3 2025 (borrowed) | 78.316 | 80.198 | 2.4 |
-| road-atlanta | imsa | 2025 | GTP | Acura #60 | lmdh 2025 (borrowed) | 69.628 | 69.519 | -0.16 |
-| road-atlanta | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 70.254 | 69.344 | -1.3 |
-| road-atlanta | imsa | 2026 | GTDPRO | BMW #1 | lmgt3 2026 (borrowed) | 78.194 | 79.69 | 1.91 |
-| road-atlanta | imsa | 2026 | GTP | Acura #60 | lmdh 2026 (borrowed) | 69.703 | 69.985 | 0.4 |
-| road-atlanta | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 70.363 | 70.017 | -0.49 |
-| mid-ohio | imsa | 2018 (older) | GTD | ? | lmgt3 2025 (borrowed) | 79.317 | 82.996 | 4.64 |
-| mid-ohio | imsa | 2020 (older) | GTD | ? | lmgt3 2025 (borrowed) | 80.974 | 83.282 | 2.85 |
-| mid-ohio | imsa | 2021 (older) | GTD | ? | lmgt3 2025 (borrowed) | 80.083 | 83.055 | 3.71 |
-| lime-rock | imsa | 2023 | GTDPRO | Aston Martin #23 | lmgt3 2025 (borrowed) | 50.593 | 51.812 | 2.41 |
-| le-mans | x-le-mans-cup | 2023 | GT3 | BMW M4 GT3 | lmgt3 2025 (borrowed) | 236.181 | 241.849 | 2.4 |
-| le-mans | wec | 2023 | HYPERCAR | Porsche #75 | lmdh 2025 | 204.531 | 208.629 | 2 |
-| le-mans | wec | 2023 | HYPERCAR | Ferrari #50 | lmh 2025 | 202.982 | 208.045 | 2.49 |
-| le-mans | wec | 2024 | HYPERCAR | BMW #15 | lmdh 2025 | 204.465 | 208.702 | 2.07 |
-| le-mans | wec | 2024 | LMGT3 | Ford #77 | lmgt3 2025 | 235.263 | 242.139 | 2.92 |
-| le-mans | wec | 2024 | HYPERCAR | Ferrari #50 | lmh 2025 | 204.731 | 208.108 | 1.65 |
-| le-mans | wec | 2025 | HYPERCAR | Cadillac #311 | lmdh 2025 | 202.742 | 208.805 | 2.99 |
-| le-mans | wec | 2025 | LMGT3 | Aston Martin #27 | lmgt3 2025 | 232.789 | 241.84 | 3.89 |
-| le-mans | wec | 2025 | HYPERCAR | Ferrari #51 | lmh 2025 | 203.163 | 208.219 | 2.49 |
-| le-mans | wec | 2026 | HYPERCAR | Cadillac #38 | lmdh 2026 | 202.559 | 208.271 | 2.82 |
-| le-mans | wec | 2026 | LMGT3 | Aston Martin #27 | lmgt3 2026 | 232.41 | 241.287 | 3.82 |
-| le-mans | wec | 2026 | HYPERCAR | Ferrari #51 | lmh 2026 | 203.406 | 208.395 | 2.45 |
-| portimao | elms | 2025 | LMGT3 | Corvette Z06 LMGT3.R | lmgt3 2025 (borrowed) | 103.446 | 106.877 | 3.32 |
-| portimao | elms | 2026 | LMGT3 | ? | lmgt3 2026 (borrowed) | 103.151 | 106.274 | 3.03 |
-| portimao | x-gtworldcheu-pwrd-by-aws-endurance-cup | 2026 | Pro | Porsche 911 GT3 R EVO | lmgt3 2026 (borrowed) | 102.445 | 106.022 | 3.49 |
-| portimao | x-le-mans-cup | 2024 | GT3 | Aston Martin Vantage GT3 EVO | lmgt3 2025 (borrowed) | 104.325 | 106.93 | 2.5 |
-| portimao | wec | 2023 | HYPERCAR | Porsche #6 | lmdh 2025 | 92.404 | 94.843 | 2.64 |
-| portimao | wec | 2023 | HYPERCAR | Toyota #8 | lmh 2025 | 90.171 | 94.535 | 4.84 |
-| hockenheim | dtm | 2024 | null | Lamborghini Huracan GT3 EVO 2 | lmgt3 2025 (borrowed) | 96.708 | 100.577 | 4 |
-| hockenheim | dtm | 2025 | PAM | Porsche 911 GT3 R 992 | lmgt3 2025 (borrowed) | 98.088 | 100.577 | 2.54 |
-| hockenheim | dtm | 2026 | Silver | Lamborghini Huracan GT3 EVO 2 | lmgt3 2026 (borrowed) | 97.456 | 99.985 | 2.59 |
-| bathurst | igtc | 2025 | PRO | Mercedes-AMG GT3 EVO | lmgt3 2025 (borrowed) | 121.276 | 122.064 | 0.65 |
-| bathurst | igtc | 2026 | PRO | Mercedes-AMG GT3 EVO | lmgt3 2026 (borrowed) | 121.563 | 121.471 | -0.08 |
+| road-atlanta | gtwc | 2026 | Pro | MERCEDES-AMG GT3 EVO | lmgt3 2026 (borrowed) | 80.501 | 79.646 | -1.06 |
+| road-atlanta | imsa | 2023 | GTD | Aston Martin #27 | lmgt3 2025 (borrowed) | 83.116 | 80.096 | -3.63 |
+| road-atlanta | imsa | 2023 | GTP | Acura #10 | lmdh 2025 (borrowed) | 75.402 | 69.443 | -7.9 |
+| road-atlanta | imsa | 2024 | GTDPRO | Porsche #77 | lmgt3 2025 (borrowed) | 77.881 | 80.092 | 2.84 |
+| road-atlanta | imsa | 2024 | GTP | Cadillac #31 | lmdh 2025 (borrowed) | 69.639 | 69.497 | -0.2 |
+| road-atlanta | imsa | 2025 | GTD | Ferrari #47 | lmgt3 2025 (borrowed) | 78.316 | 80.131 | 2.32 |
+| road-atlanta | imsa | 2025 | GTP | Acura #60 | lmdh 2025 (borrowed) | 69.628 | 69.459 | -0.24 |
+| road-atlanta | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 70.254 | 69.284 | -1.38 |
+| road-atlanta | imsa | 2026 | GTDPRO | BMW #1 | lmgt3 2026 (borrowed) | 78.194 | 79.623 | 1.83 |
+| road-atlanta | imsa | 2026 | GTP | Acura #60 | lmdh 2026 (borrowed) | 69.703 | 69.929 | 0.32 |
+| road-atlanta | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 70.363 | 69.961 | -0.57 |
+| mid-ohio | imsa | 2018 (older) | GTD | ? | lmgt3 2025 (borrowed) | 79.317 | 83.01 | 4.66 |
+| mid-ohio | imsa | 2020 (older) | GTD | ? | lmgt3 2025 (borrowed) | 80.974 | 83.296 | 2.87 |
+| mid-ohio | imsa | 2021 (older) | GTD | ? | lmgt3 2025 (borrowed) | 80.083 | 83.069 | 3.73 |
+| lime-rock | imsa | 2023 | GTDPRO | Aston Martin #23 | lmgt3 2025 (borrowed) | 50.593 | 51.784 | 2.36 |
+| le-mans | x-le-mans-cup | 2023 | GT3 | BMW M4 GT3 | lmgt3 2025 (borrowed) | 236.181 | 241.907 | 2.42 |
+| le-mans | wec | 2023 | HYPERCAR | Porsche #75 | lmdh 2025 | 204.531 | 208.682 | 2.03 |
+| le-mans | wec | 2023 | HYPERCAR | Ferrari #50 | lmh 2025 | 202.982 | 208.096 | 2.52 |
+| le-mans | wec | 2024 | HYPERCAR | BMW #15 | lmdh 2025 | 204.465 | 208.755 | 2.1 |
+| le-mans | wec | 2024 | LMGT3 | Ford #77 | lmgt3 2025 | 235.263 | 242.198 | 2.95 |
+| le-mans | wec | 2024 | HYPERCAR | Ferrari #50 | lmh 2025 | 204.731 | 208.162 | 1.68 |
+| le-mans | wec | 2025 | HYPERCAR | Cadillac #311 | lmdh 2025 | 202.742 | 208.858 | 3.02 |
+| le-mans | wec | 2025 | LMGT3 | Aston Martin #27 | lmgt3 2025 | 232.789 | 241.899 | 3.91 |
+| le-mans | wec | 2025 | HYPERCAR | Ferrari #51 | lmh 2025 | 203.163 | 208.277 | 2.52 |
+| le-mans | wec | 2026 | HYPERCAR | Cadillac #38 | lmdh 2026 | 202.559 | 208.313 | 2.84 |
+| le-mans | wec | 2026 | LMGT3 | Aston Martin #27 | lmgt3 2026 | 232.41 | 241.336 | 3.84 |
+| le-mans | wec | 2026 | HYPERCAR | Ferrari #51 | lmh 2026 | 203.406 | 208.445 | 2.48 |
+| portimao | elms | 2025 | LMGT3 | Corvette Z06 LMGT3.R | lmgt3 2025 (borrowed) | 103.446 | 106.89 | 3.33 |
+| portimao | elms | 2026 | LMGT3 | ? | lmgt3 2026 (borrowed) | 103.151 | 106.282 | 3.04 |
+| portimao | x-gtworldcheu-pwrd-by-aws-endurance-cup | 2026 | Pro | Porsche 911 GT3 R EVO | lmgt3 2026 (borrowed) | 102.445 | 106.03 | 3.5 |
+| portimao | x-le-mans-cup | 2024 | GT3 | Aston Martin Vantage GT3 EVO | lmgt3 2025 (borrowed) | 104.325 | 106.944 | 2.51 |
+| portimao | wec | 2023 | HYPERCAR | Porsche #6 | lmdh 2025 | 92.404 | 94.877 | 2.68 |
+| portimao | wec | 2023 | HYPERCAR | Toyota #8 | lmh 2025 | 90.171 | 94.571 | 4.88 |
+| hockenheim | dtm | 2024 | null | Lamborghini Huracan GT3 EVO 2 | lmgt3 2025 (borrowed) | 96.708 | 100.597 | 4.02 |
+| hockenheim | dtm | 2025 | PAM | Porsche 911 GT3 R 992 | lmgt3 2025 (borrowed) | 98.088 | 100.597 | 2.56 |
+| hockenheim | dtm | 2026 | Silver | Lamborghini Huracan GT3 EVO 2 | lmgt3 2026 (borrowed) | 97.456 | 100.006 | 2.62 |
+| bathurst | igtc | 2025 | PRO | Mercedes-AMG GT3 EVO | lmgt3 2025 (borrowed) | 121.276 | 122.078 | 0.66 |
+| bathurst | igtc | 2026 | PRO | Mercedes-AMG GT3 EVO | lmgt3 2026 (borrowed) | 121.563 | 121.482 | -0.07 |
 | paul-ricard-f1 | f1 | 2021 | F1 | VER (Red Bull Racing), pole Q3 | f1 2023 × 0.9864 (borrowed) | 89.99 | 89.851 | -0.15 |
 | paul-ricard-f1 | f1 | 2018 | F1 | lewis-hamilton (mercedes), f1db fastest qualifying lap | f1 2023 × 0.9898 (borrowed) | 90.029 | 89.363 | -0.74 |
 | paul-ricard-f1 | f1 | 2019 | F1 | lewis-hamilton (mercedes), f1db fastest qualifying lap | f1 2023 × 0.9834 (borrowed) | 88.319 | 88.785 | 0.53 |
-| sebring | imsa | 2023 | GTDPRO | Chevrolet #3 | lmgt3 2025 (borrowed) | 119.315 | 120.023 | 0.59 |
-| sebring | imsa | 2023 | GTP | Cadillac #31 | lmdh 2025 (borrowed) | 105.836 | 104.553 | -1.21 |
-| sebring | imsa | 2024 | GTDPRO | Lexus #14 | lmgt3 2025 (borrowed) | 118.714 | 119.733 | 0.86 |
-| sebring | imsa | 2024 | GTP | Acura #10 | lmdh 2025 (borrowed) | 108.038 | 104.409 | -3.36 |
-| sebring | imsa | 2025 | GTD | Ferrari #21 | lmgt3 2025 (borrowed) | 119.131 | 119.965 | 0.7 |
-| sebring | imsa | 2025 | GTP | BMW #24 | lmdh 2025 (borrowed) | 107.091 | 104.555 | -2.37 |
-| sebring | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 109.4 | 104.254 | -4.7 |
-| sebring | imsa | 2026 | GTDPRO | Lexus #14 | lmgt3 2026 (borrowed) | 118.48 | 119.036 | 0.47 |
-| sebring | imsa | 2026 | GTP | Cadillac #31 | lmdh 2026 (borrowed) | 106.153 | 104.817 | -1.26 |
-| sebring | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 107.363 | 104.854 | -2.34 |
-| sebring | wec | 2023 | HYPERCAR | Cadillac #2 | lmdh 2025 | 106.082 | 104.16 | -1.81 |
-| sebring | wec | 2023 | HYPERCAR | Ferrari #50 | lmh 2025 | 105.067 | 103.857 | -1.15 |
+| sebring | imsa | 2023 | GTDPRO | Chevrolet #3 | lmgt3 2025 (borrowed) | 119.315 | 120.04 | 0.61 |
+| sebring | imsa | 2023 | GTP | Cadillac #31 | lmdh 2025 (borrowed) | 105.836 | 104.542 | -1.22 |
+| sebring | imsa | 2024 | GTDPRO | Lexus #14 | lmgt3 2025 (borrowed) | 118.714 | 119.751 | 0.87 |
+| sebring | imsa | 2024 | GTP | Acura #10 | lmdh 2025 (borrowed) | 108.038 | 104.406 | -3.36 |
+| sebring | imsa | 2025 | GTD | Ferrari #21 | lmgt3 2025 (borrowed) | 119.131 | 119.982 | 0.71 |
+| sebring | imsa | 2025 | GTP | BMW #24 | lmdh 2025 (borrowed) | 107.091 | 104.548 | -2.37 |
+| sebring | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 109.4 | 104.265 | -4.69 |
+| sebring | imsa | 2026 | GTDPRO | Lexus #14 | lmgt3 2026 (borrowed) | 118.48 | 119.045 | 0.48 |
+| sebring | imsa | 2026 | GTP | Cadillac #31 | lmdh 2026 (borrowed) | 106.153 | 104.82 | -1.26 |
+| sebring | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 107.363 | 104.866 | -2.33 |
+| sebring | wec | 2023 | HYPERCAR | Cadillac #2 | lmdh 2025 | 106.082 | 104.146 | -1.83 |
+| sebring | wec | 2023 | HYPERCAR | Ferrari #50 | lmh 2025 | 105.067 | 103.845 | -1.16 |
 | istanbul | f1 | 2021 | F1 | HAM (Mercedes), pole Q3 | f1 2023 × 0.9864 (borrowed) | 82.868 | 84.976 | 2.54 |
 | istanbul | f1 | 2006 | F1 | michael-schumacher (ferrari), f1db fastest qualifying lap | f1 2023 × 1.0169 (borrowed) | 85.85 | 87.485 | 1.9 |
 | istanbul | f1 | 2007 | F1 | fernando-alonso (mclaren), f1db fastest qualifying lap | f1 2023 × 1.0220 (borrowed) | 86.841 | 87.923 | 1.25 |
@@ -292,67 +292,67 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 | nurburgring-gp | f1 | 2009 | F1 | mark-webber (red-bull), f1db fastest qualifying lap | f1 2023 × 1.0321 (borrowed) | 91.257 | 90.598 | -0.72 |
 | nurburgring-gp | f1 | 2011 | F1 | mark-webber (red-bull), f1db fastest qualifying lap | f1 2023 × 1.0290 (borrowed) | 90.079 | 90.506 | 0.47 |
 | nurburgring-gp | f1 | 2013 | F1 | lewis-hamilton (mercedes), f1db fastest qualifying lap | f1 2023 × 1.0320 (borrowed) | 89.398 | 90.961 | 1.75 |
-| nurburgring-sprint | x-adac-gt-masters | 2024 | Silver | Mercedes-AMG GT3 | lmgt3 2025 (borrowed) | 85.186 | 85.298 | 0.13 |
+| nurburgring-sprint | x-adac-gt-masters | 2024 | Silver | Mercedes-AMG GT3 | lmgt3 2025 (borrowed) | 85.186 | 85.297 | 0.13 |
 | nurburgring-sprint | x-adac-gt-masters | 2025 | Silver | Ford Mustang GT3 | lmgt3 2025 (borrowed) | 85.294 | 85.191 | -0.12 |
-| nurburgring-24h | nur | 2023 | SP 9 | Mercedes-AMG GT3 | lmgt3 2025 (borrowed) | 496.609 | 490.738 | -1.18 |
-| nurburgring-24h | nur | 2024 | SP 9 | Porsche 911 GT3 R (992) | lmgt3 2025 (borrowed) | 489.591 | 494.24 | 0.95 |
-| nurburgring-24h | nur | 2025 | SP 9 | Porsche 911 GT3 R (992) | lmgt3 2025 (borrowed) | 491.855 | 493.086 | 0.25 |
-| kyalami | igtc | 2019 (older) | Pro | ? | lmgt3 2025 (borrowed) | 102.378 | 101.417 | -0.94 |
-| kyalami | igtc | 2020 (older) | Overall | ? | lmgt3 2025 (borrowed) | 101.979 | 102.966 | 0.97 |
-| fuji | wec | 2023 | HYPERCAR | Porsche #6 | lmdh 2025 | 88.687 | 89.034 | 0.39 |
-| fuji | wec | 2023 | HYPERCAR | Toyota #7 | lmh 2025 | 87.794 | 88.912 | 1.27 |
-| fuji | wec | 2024 | HYPERCAR | Cadillac #2 | lmdh 2025 | 88.901 | 89.091 | 0.21 |
-| fuji | wec | 2024 | LMGT3 | Ferrari #55 | lmgt3 2025 | 100.893 | 99.274 | -1.6 |
-| fuji | wec | 2024 | HYPERCAR | Toyota #8 | lmh 2025 | 88.942 | 88.824 | -0.13 |
-| fuji | wec | 2025 | HYPERCAR | Cadillac #12 | lmdh 2025 | 88.236 | 88.923 | 0.78 |
-| fuji | wec | 2025 | LMGT3 | Aston Martin #10 | lmgt3 2025 | 99.981 | 99.27 | -0.71 |
-| fuji | wec | 2025 | HYPERCAR | Aston Martin #009 | lmh 2025 | 88.705 | 88.587 | -0.13 |
-| daytona | imsa | 2024 | GTP | CADILLAC V-SERIES.R | lmdh 2025 (borrowed) | 92.656 | 93.507 | 0.92 |
-| daytona | imsa | 2024 | GTDPRO | PORSCHE 911 GT3 R (992) | lmgt3 2025 (borrowed) | 104.382 | 105.59 | 1.16 |
-| daytona | imsa | 2025 | GTDPRO | Ford #64 | lmgt3 2025 (borrowed) | 105.523 | 106.09 | 0.54 |
-| daytona | imsa | 2025 | GTP | BMW #24 | lmdh 2025 (borrowed) | 93.895 | 93.908 | 0.01 |
-| daytona | imsa | 2026 | GTDPRO | Chevrolet #3 | lmgt3 2026 (borrowed) | 105.106 | 104.869 | -0.23 |
-| daytona | imsa | 2026 | GTP | Cadillac #31 | lmdh 2026 (borrowed) | 93.939 | 92.895 | -1.11 |
-| daytona | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 95.382 | 92.821 | -2.69 |
-| laguna-seca | imsa | 2023 | GTDPRO | Porsche #9 | lmgt3 2025 (borrowed) | 84.529 | 82.267 | -2.68 |
-| laguna-seca | imsa | 2023 | GTP | Porsche #7 | lmdh 2025 (borrowed) | 74.774 | 72.499 | -3.04 |
-| laguna-seca | imsa | 2024 | GTDPRO | Chevrolet #4 | lmgt3 2025 (borrowed) | 79.727 | 82.785 | 3.84 |
-| laguna-seca | imsa | 2024 | GTP | Cadillac #01 | lmdh 2025 (borrowed) | 72.445 | 72.853 | 0.56 |
-| laguna-seca | imsa | 2025 | GTDPRO | Ferrari #81 | lmgt3 2025 (borrowed) | 80.608 | 82.82 | 2.74 |
-| laguna-seca | imsa | 2025 | GTP | BMW #24 | lmdh 2025 (borrowed) | 72.854 | 72.926 | 0.1 |
-| laguna-seca | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 73.718 | 72.62 | -1.49 |
-| laguna-seca | imsa | 2026 | GTDPRO | Lexus #14 | lmgt3 2026 (borrowed) | 81.228 | 81.826 | 0.74 |
-| laguna-seca | imsa | 2026 | GTP | Cadillac #40 | lmdh 2026 (borrowed) | 73.221 | 73.294 | 0.1 |
-| laguna-seca | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 73.939 | 73.246 | -0.94 |
-| watkins-glen | imsa | 2023 | GTD | Lamborghini #78 | lmgt3 2025 (borrowed) | 104.43 | 105.863 | 1.37 |
-| watkins-glen | imsa | 2024 | GTDPRO | Ferrari #62 | lmgt3 2025 (borrowed) | 104.203 | 105.917 | 1.64 |
-| watkins-glen | imsa | 2024 | GTP | Acura #40 | lmdh 2025 (borrowed) | 92.209 | 90.607 | -1.74 |
-| watkins-glen | imsa | 2025 | GTDPRO | Lamborghini #9 | lmgt3 2025 (borrowed) | 104.595 | 106.065 | 1.41 |
-| watkins-glen | imsa | 2025 | GTP | Acura #93 | lmdh 2025 (borrowed) | 91.558 | 90.775 | -0.86 |
-| watkins-glen | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 93.36 | 90.232 | -3.35 |
-| watkins-glen | imsa | 2026 | GTDPRO | Lexus #14 | lmgt3 2026 (borrowed) | 103.701 | 105.334 | 1.57 |
-| watkins-glen | imsa | 2026 | GTP | Cadillac #31 | lmdh 2026 (borrowed) | 91.284 | 92.01 | 0.8 |
+| nurburgring-24h | nur | 2023 | SP 9 | Mercedes-AMG GT3 | lmgt3 2025 (borrowed) | 496.609 | 490.737 | -1.18 |
+| nurburgring-24h | nur | 2024 | SP 9 | Porsche 911 GT3 R (992) | lmgt3 2025 (borrowed) | 489.591 | 494.234 | 0.95 |
+| nurburgring-24h | nur | 2025 | SP 9 | Porsche 911 GT3 R (992) | lmgt3 2025 (borrowed) | 491.855 | 493.09 | 0.25 |
+| kyalami | igtc | 2019 (older) | Pro | ? | lmgt3 2025 (borrowed) | 102.378 | 101.416 | -0.94 |
+| kyalami | igtc | 2020 (older) | Overall | ? | lmgt3 2025 (borrowed) | 101.979 | 102.97 | 0.97 |
+| fuji | wec | 2023 | HYPERCAR | Porsche #6 | lmdh 2025 | 88.687 | 89.04 | 0.4 |
+| fuji | wec | 2023 | HYPERCAR | Toyota #7 | lmh 2025 | 87.794 | 88.922 | 1.28 |
+| fuji | wec | 2024 | HYPERCAR | Cadillac #2 | lmdh 2025 | 88.901 | 89.097 | 0.22 |
+| fuji | wec | 2024 | LMGT3 | Ferrari #55 | lmgt3 2025 | 100.893 | 99.255 | -1.62 |
+| fuji | wec | 2024 | HYPERCAR | Toyota #8 | lmh 2025 | 88.942 | 88.833 | -0.12 |
+| fuji | wec | 2025 | HYPERCAR | Cadillac #12 | lmdh 2025 | 88.236 | 88.927 | 0.78 |
+| fuji | wec | 2025 | LMGT3 | Aston Martin #10 | lmgt3 2025 | 99.981 | 99.252 | -0.73 |
+| fuji | wec | 2025 | HYPERCAR | Aston Martin #009 | lmh 2025 | 88.705 | 88.599 | -0.12 |
+| daytona | imsa | 2024 | GTP | CADILLAC V-SERIES.R | lmdh 2025 (borrowed) | 92.656 | 93.432 | 0.84 |
+| daytona | imsa | 2024 | GTDPRO | PORSCHE 911 GT3 R (992) | lmgt3 2025 (borrowed) | 104.382 | 105.393 | 0.97 |
+| daytona | imsa | 2025 | GTDPRO | Ford #64 | lmgt3 2025 (borrowed) | 105.523 | 105.892 | 0.35 |
+| daytona | imsa | 2025 | GTP | BMW #24 | lmdh 2025 (borrowed) | 93.895 | 93.833 | -0.07 |
+| daytona | imsa | 2026 | GTDPRO | Chevrolet #3 | lmgt3 2026 (borrowed) | 105.106 | 104.674 | -0.41 |
+| daytona | imsa | 2026 | GTP | Cadillac #31 | lmdh 2026 (borrowed) | 93.939 | 92.773 | -1.24 |
+| daytona | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 95.382 | 92.844 | -2.66 |
+| laguna-seca | imsa | 2023 | GTDPRO | Porsche #9 | lmgt3 2025 (borrowed) | 84.529 | 82.242 | -2.71 |
+| laguna-seca | imsa | 2023 | GTP | Porsche #7 | lmdh 2025 (borrowed) | 74.774 | 72.517 | -3.02 |
+| laguna-seca | imsa | 2024 | GTDPRO | Chevrolet #4 | lmgt3 2025 (borrowed) | 79.727 | 82.761 | 3.81 |
+| laguna-seca | imsa | 2024 | GTP | Cadillac #01 | lmdh 2025 (borrowed) | 72.445 | 72.871 | 0.59 |
+| laguna-seca | imsa | 2025 | GTDPRO | Ferrari #81 | lmgt3 2025 (borrowed) | 80.608 | 82.794 | 2.71 |
+| laguna-seca | imsa | 2025 | GTP | BMW #24 | lmdh 2025 (borrowed) | 72.854 | 72.944 | 0.12 |
+| laguna-seca | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 73.718 | 72.64 | -1.46 |
+| laguna-seca | imsa | 2026 | GTDPRO | Lexus #14 | lmgt3 2026 (borrowed) | 81.228 | 81.808 | 0.71 |
+| laguna-seca | imsa | 2026 | GTP | Cadillac #40 | lmdh 2026 (borrowed) | 73.221 | 73.303 | 0.11 |
+| laguna-seca | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 73.939 | 73.255 | -0.93 |
+| watkins-glen | imsa | 2023 | GTD | Lamborghini #78 | lmgt3 2025 (borrowed) | 104.43 | 105.898 | 1.41 |
+| watkins-glen | imsa | 2024 | GTDPRO | Ferrari #62 | lmgt3 2025 (borrowed) | 104.203 | 105.954 | 1.68 |
+| watkins-glen | imsa | 2024 | GTP | Acura #40 | lmdh 2025 (borrowed) | 92.209 | 90.577 | -1.77 |
+| watkins-glen | imsa | 2025 | GTDPRO | Lamborghini #9 | lmgt3 2025 (borrowed) | 104.595 | 106.098 | 1.44 |
+| watkins-glen | imsa | 2025 | GTP | Acura #93 | lmdh 2025 (borrowed) | 91.558 | 90.742 | -0.89 |
+| watkins-glen | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 93.36 | 90.183 | -3.4 |
+| watkins-glen | imsa | 2026 | GTDPRO | Lexus #14 | lmgt3 2026 (borrowed) | 103.701 | 105.36 | 1.6 |
+| watkins-glen | imsa | 2026 | GTP | Cadillac #31 | lmdh 2026 (borrowed) | 91.284 | 92.007 | 0.79 |
 | watkins-glen | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 92.626 | 91.809 | -0.88 |
-| mosport | imsa | 2023 | GTDPRO | Lexus #14 | lmgt3 2025 (borrowed) | 75.029 | 75.418 | 0.52 |
-| mosport | imsa | 2023 | GTP | Acura #60 | lmdh 2025 (borrowed) | 65.653 | 63.004 | -4.03 |
-| mosport | imsa | 2024 | GTDPRO | Chevrolet #3 | lmgt3 2025 (borrowed) | 74.373 | 75.528 | 1.55 |
-| mosport | imsa | 2025 | GTDPRO | BMW #1 | lmgt3 2025 (borrowed) | 75.046 | 75.45 | 0.54 |
-| mosport | imsa | 2026 | GTDPRO | BMW #1 | lmgt3 2026 (borrowed) | 74.382 | 75.319 | 1.26 |
-| road-america | imsa | 2023 | GTDPRO | Aston Martin #23 | lmgt3 2025 (borrowed) | 122.918 | 125.457 | 2.07 |
-| road-america | imsa | 2023 | GTP | Cadillac #31 | lmdh 2025 (borrowed) | 107.73 | 107.615 | -0.11 |
-| road-america | imsa | 2024 | GTDPRO | Chevrolet #4 | lmgt3 2025 (borrowed) | 122.198 | 125.542 | 2.74 |
-| road-america | imsa | 2024 | GTP | Acura #10 | lmdh 2025 (borrowed) | 108.601 | 107.673 | -0.85 |
-| road-america | imsa | 2025 | GTD | Mercedes-AMG #57 | lmgt3 2025 (borrowed) | 123.745 | 125.356 | 1.3 |
-| road-america | imsa | 2025 | GTP | Acura #93 | lmdh 2025 (borrowed) | 108.628 | 107.48 | -1.06 |
-| road-america | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 109.309 | 107.058 | -2.06 |
-| road-america | imsa | 2026 | GTDPRO | Porsche #77 | lmgt3 2026 (borrowed) | 124.042 | 124.857 | 0.66 |
-| road-america | imsa | 2026 | GTP | Acura #93 | lmdh 2026 (borrowed) | 109.233 | 108.419 | -0.74 |
-| road-america | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 110.525 | 108.235 | -2.07 |
-| vir | gtwc | 2025 | Pro | PORSCHE 992 GT3 R | lmgt3 2025 (borrowed) | 105.004 | 104.338 | -0.63 |
+| mosport | imsa | 2023 | GTDPRO | Lexus #14 | lmgt3 2025 (borrowed) | 75.029 | 75.42 | 0.52 |
+| mosport | imsa | 2023 | GTP | Acura #60 | lmdh 2025 (borrowed) | 65.653 | 63.002 | -4.04 |
+| mosport | imsa | 2024 | GTDPRO | Chevrolet #3 | lmgt3 2025 (borrowed) | 74.373 | 75.53 | 1.56 |
+| mosport | imsa | 2025 | GTDPRO | BMW #1 | lmgt3 2025 (borrowed) | 75.046 | 75.448 | 0.54 |
+| mosport | imsa | 2026 | GTDPRO | BMW #1 | lmgt3 2026 (borrowed) | 74.382 | 75.324 | 1.27 |
+| road-america | imsa | 2023 | GTDPRO | Aston Martin #23 | lmgt3 2025 (borrowed) | 122.918 | 125.471 | 2.08 |
+| road-america | imsa | 2023 | GTP | Cadillac #31 | lmdh 2025 (borrowed) | 107.73 | 107.602 | -0.12 |
+| road-america | imsa | 2024 | GTDPRO | Chevrolet #4 | lmgt3 2025 (borrowed) | 122.198 | 125.553 | 2.75 |
+| road-america | imsa | 2024 | GTP | Acura #10 | lmdh 2025 (borrowed) | 108.601 | 107.66 | -0.87 |
+| road-america | imsa | 2025 | GTD | Mercedes-AMG #57 | lmgt3 2025 (borrowed) | 123.745 | 125.368 | 1.31 |
+| road-america | imsa | 2025 | GTP | Acura #93 | lmdh 2025 (borrowed) | 108.628 | 107.466 | -1.07 |
+| road-america | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 109.309 | 107.053 | -2.06 |
+| road-america | imsa | 2026 | GTDPRO | Porsche #77 | lmgt3 2026 (borrowed) | 124.042 | 124.872 | 0.67 |
+| road-america | imsa | 2026 | GTP | Acura #93 | lmdh 2026 (borrowed) | 109.233 | 108.416 | -0.75 |
+| road-america | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 110.525 | 108.237 | -2.07 |
+| vir | gtwc | 2025 | Pro | PORSCHE 992 GT3 R | lmgt3 2025 (borrowed) | 105.004 | 104.337 | -0.64 |
 | vir | imsa | 2023 | GTDPRO | Lexus #14 | lmgt3 2025 (borrowed) | 104.78 | 104.417 | -0.35 |
-| vir | imsa | 2024 | GTDPRO | BMW #1 | lmgt3 2025 (borrowed) | 103.206 | 104.994 | 1.73 |
-| vir | imsa | 2025 | GTDPRO | Ferrari #81 | lmgt3 2025 (borrowed) | 104.433 | 104.476 | 0.04 |
-| vir | imsa | 2026 | GTDPRO | Lamborghini #9 | lmgt3 2026 (borrowed) | 104.773 | 103.955 | -0.78 |
+| vir | imsa | 2024 | GTDPRO | BMW #1 | lmgt3 2025 (borrowed) | 103.206 | 104.992 | 1.73 |
+| vir | imsa | 2025 | GTDPRO | Ferrari #81 | lmgt3 2025 (borrowed) | 104.433 | 104.473 | 0.04 |
+| vir | imsa | 2026 | GTDPRO | Lamborghini #9 | lmgt3 2026 (borrowed) | 104.773 | 103.958 | -0.78 |
 | indianapolis | igtc | 2025 | Pro | BMW M4 GT3 EVO | lmgt3 2025 (borrowed) | 82.271 | 83.864 | 1.94 |
 | indianapolis | imsa | 2024 | GTP | CADILLAC V-SERIES.R | lmdh 2025 (borrowed) | 74.592 | 74.114 | -0.64 |
 | indianapolis | imsa | 2024 | GTDPRO | PORSCHE 911 GT3 R (992) | lmgt3 2025 (borrowed) | 83.15 | 83.79 | 0.77 |
@@ -363,58 +363,58 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 | indianapolis | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 75.434 | 73.79 | -2.18 |
 | indianapolis | imsa | 2026 | GTP | Acura #60 | lmdh 2026 (borrowed) | 74.674 | 74.648 | -0.04 |
 | indianapolis | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 75.578 | 74.585 | -1.31 |
-| road-atlanta | gtwc | 2026 | Pro | MERCEDES-AMG GT3 EVO | lmgt3 2026 (borrowed) | 80.501 | 80.136 | -0.45 |
-| road-atlanta | imsa | 2023 | GTD | Aston Martin #27 | lmgt3 2025 (borrowed) | 83.116 | 80.407 | -3.26 |
-| road-atlanta | imsa | 2023 | GTP | Acura #10 | lmdh 2025 (borrowed) | 75.402 | 69.426 | -7.93 |
-| road-atlanta | imsa | 2024 | GTDPRO | Porsche #77 | lmgt3 2025 (borrowed) | 77.881 | 80.896 | 3.87 |
-| road-atlanta | imsa | 2024 | GTP | Cadillac #31 | lmdh 2025 (borrowed) | 69.639 | 70.045 | 0.58 |
-| road-atlanta | imsa | 2025 | GTD | Ferrari #47 | lmgt3 2025 (borrowed) | 78.316 | 80.895 | 3.29 |
-| road-atlanta | imsa | 2025 | GTP | Acura #60 | lmdh 2025 (borrowed) | 69.628 | 70.003 | 0.54 |
-| road-atlanta | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 70.254 | 69.739 | -0.73 |
-| road-atlanta | imsa | 2026 | GTDPRO | BMW #1 | lmgt3 2026 (borrowed) | 78.194 | 80.328 | 2.73 |
-| road-atlanta | imsa | 2026 | GTP | Acura #60 | lmdh 2026 (borrowed) | 69.703 | 70.542 | 1.2 |
-| road-atlanta | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 70.363 | 70.504 | 0.2 |
-| mid-ohio | imsa | 2018 (older) | GTD | ? | lmgt3 2025 (borrowed) | 79.317 | 80.367 | 1.32 |
-| mid-ohio | imsa | 2020 (older) | GTD | ? | lmgt3 2025 (borrowed) | 80.974 | 79.938 | -1.28 |
-| mid-ohio | imsa | 2021 (older) | GTD | ? | lmgt3 2025 (borrowed) | 80.083 | 80.06 | -0.03 |
-| le-mans | x-le-mans-cup | 2023 | GT3 | BMW M4 GT3 | lmgt3 2025 (borrowed) | 236.181 | 236.409 | 0.1 |
-| le-mans | wec | 2023 | HYPERCAR | Porsche #75 | lmdh 2025 | 204.531 | 202.729 | -0.88 |
-| le-mans | wec | 2023 | HYPERCAR | Ferrari #50 | lmh 2025 | 202.982 | 202.262 | -0.35 |
-| le-mans | wec | 2024 | HYPERCAR | BMW #15 | lmdh 2025 | 204.465 | 202.883 | -0.77 |
-| le-mans | wec | 2024 | LMGT3 | Ford #77 | lmgt3 2025 | 235.263 | 236.809 | 0.66 |
-| le-mans | wec | 2024 | HYPERCAR | Ferrari #50 | lmh 2025 | 204.731 | 202.25 | -1.21 |
-| le-mans | wec | 2025 | HYPERCAR | Cadillac #311 | lmdh 2025 | 202.742 | 203.063 | 0.16 |
+| road-atlanta | gtwc | 2026 | Pro | MERCEDES-AMG GT3 EVO | lmgt3 2026 (borrowed) | 80.501 | 80.133 | -0.46 |
+| road-atlanta | imsa | 2023 | GTD | Aston Martin #27 | lmgt3 2025 (borrowed) | 83.116 | 80.4 | -3.27 |
+| road-atlanta | imsa | 2023 | GTP | Acura #10 | lmdh 2025 (borrowed) | 75.402 | 69.428 | -7.92 |
+| road-atlanta | imsa | 2024 | GTDPRO | Porsche #77 | lmgt3 2025 (borrowed) | 77.881 | 80.89 | 3.86 |
+| road-atlanta | imsa | 2024 | GTP | Cadillac #31 | lmdh 2025 (borrowed) | 69.639 | 70.046 | 0.58 |
+| road-atlanta | imsa | 2025 | GTD | Ferrari #47 | lmgt3 2025 (borrowed) | 78.316 | 80.888 | 3.28 |
+| road-atlanta | imsa | 2025 | GTP | Acura #60 | lmdh 2025 (borrowed) | 69.628 | 70.004 | 0.54 |
+| road-atlanta | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 70.254 | 69.74 | -0.73 |
+| road-atlanta | imsa | 2026 | GTDPRO | BMW #1 | lmgt3 2026 (borrowed) | 78.194 | 80.324 | 2.72 |
+| road-atlanta | imsa | 2026 | GTP | Acura #60 | lmdh 2026 (borrowed) | 69.703 | 70.552 | 1.22 |
+| road-atlanta | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 70.363 | 70.509 | 0.21 |
+| mid-ohio | imsa | 2018 (older) | GTD | ? | lmgt3 2025 (borrowed) | 79.317 | 80.366 | 1.32 |
+| mid-ohio | imsa | 2020 (older) | GTD | ? | lmgt3 2025 (borrowed) | 80.974 | 79.937 | -1.28 |
+| mid-ohio | imsa | 2021 (older) | GTD | ? | lmgt3 2025 (borrowed) | 80.083 | 80.061 | -0.03 |
+| le-mans | x-le-mans-cup | 2023 | GT3 | BMW M4 GT3 | lmgt3 2025 (borrowed) | 236.181 | 236.412 | 0.1 |
+| le-mans | wec | 2023 | HYPERCAR | Porsche #75 | lmdh 2025 | 204.531 | 202.726 | -0.88 |
+| le-mans | wec | 2023 | HYPERCAR | Ferrari #50 | lmh 2025 | 202.982 | 202.261 | -0.36 |
+| le-mans | wec | 2024 | HYPERCAR | BMW #15 | lmdh 2025 | 204.465 | 202.884 | -0.77 |
+| le-mans | wec | 2024 | LMGT3 | Ford #77 | lmgt3 2025 | 235.263 | 236.81 | 0.66 |
+| le-mans | wec | 2024 | HYPERCAR | Ferrari #50 | lmh 2025 | 204.731 | 202.243 | -1.22 |
+| le-mans | wec | 2025 | HYPERCAR | Cadillac #311 | lmdh 2025 | 202.742 | 203.064 | 0.16 |
 | le-mans | wec | 2025 | LMGT3 | Aston Martin #27 | lmgt3 2025 | 232.789 | 236.622 | 1.65 |
-| le-mans | wec | 2025 | HYPERCAR | Ferrari #51 | lmh 2025 | 203.163 | 202.411 | -0.37 |
-| le-mans | wec | 2026 | HYPERCAR | Cadillac #38 | lmdh 2026 | 202.559 | 202.267 | -0.14 |
-| le-mans | wec | 2026 | LMGT3 | Aston Martin #27 | lmgt3 2026 | 232.41 | 236.228 | 1.64 |
-| le-mans | wec | 2026 | HYPERCAR | Ferrari #51 | lmh 2026 | 203.406 | 202.331 | -0.53 |
-| portimao | elms | 2025 | LMGT3 | Corvette Z06 LMGT3.R | lmgt3 2025 (borrowed) | 103.446 | 103.525 | 0.08 |
-| portimao | elms | 2026 | LMGT3 | ? | lmgt3 2026 (borrowed) | 103.151 | 102.909 | -0.23 |
-| portimao | x-gtworldcheu-pwrd-by-aws-endurance-cup | 2026 | Pro | Porsche 911 GT3 R EVO | lmgt3 2026 (borrowed) | 102.445 | 102.769 | 0.32 |
-| portimao | x-le-mans-cup | 2024 | GT3 | Aston Martin Vantage GT3 EVO | lmgt3 2025 (borrowed) | 104.325 | 103.403 | -0.88 |
-| portimao | wec | 2023 | HYPERCAR | Porsche #6 | lmdh 2025 | 92.404 | 91.519 | -0.96 |
-| portimao | wec | 2023 | HYPERCAR | Toyota #8 | lmh 2025 | 90.171 | 91.697 | 1.69 |
-| hockenheim | dtm | 2024 | null | Lamborghini Huracan GT3 EVO 2 | lmgt3 2025 (borrowed) | 96.708 | 98.049 | 1.39 |
+| le-mans | wec | 2025 | HYPERCAR | Ferrari #51 | lmh 2025 | 203.163 | 202.412 | -0.37 |
+| le-mans | wec | 2026 | HYPERCAR | Cadillac #38 | lmdh 2026 | 202.559 | 202.258 | -0.15 |
+| le-mans | wec | 2026 | LMGT3 | Aston Martin #27 | lmgt3 2026 | 232.41 | 236.242 | 1.65 |
+| le-mans | wec | 2026 | HYPERCAR | Ferrari #51 | lmh 2026 | 203.406 | 202.326 | -0.53 |
+| portimao | elms | 2025 | LMGT3 | Corvette Z06 LMGT3.R | lmgt3 2025 (borrowed) | 103.446 | 103.535 | 0.09 |
+| portimao | elms | 2026 | LMGT3 | ? | lmgt3 2026 (borrowed) | 103.151 | 102.92 | -0.22 |
+| portimao | x-gtworldcheu-pwrd-by-aws-endurance-cup | 2026 | Pro | Porsche 911 GT3 R EVO | lmgt3 2026 (borrowed) | 102.445 | 102.774 | 0.32 |
+| portimao | x-le-mans-cup | 2024 | GT3 | Aston Martin Vantage GT3 EVO | lmgt3 2025 (borrowed) | 104.325 | 103.414 | -0.87 |
+| portimao | wec | 2023 | HYPERCAR | Porsche #6 | lmdh 2025 | 92.404 | 91.502 | -0.98 |
+| portimao | wec | 2023 | HYPERCAR | Toyota #8 | lmh 2025 | 90.171 | 91.678 | 1.67 |
+| hockenheim | dtm | 2024 | null | Lamborghini Huracan GT3 EVO 2 | lmgt3 2025 (borrowed) | 96.708 | 98.047 | 1.38 |
 | hockenheim | dtm | 2025 | PAM | Porsche 911 GT3 R 992 | lmgt3 2025 (borrowed) | 98.088 | 97.351 | -0.75 |
-| hockenheim | dtm | 2026 | Silver | Lamborghini Huracan GT3 EVO 2 | lmgt3 2026 (borrowed) | 97.456 | 96.858 | -0.61 |
-| bathurst | igtc | 2025 | PRO | Mercedes-AMG GT3 EVO | lmgt3 2025 (borrowed) | 121.276 | 122.163 | 0.73 |
-| bathurst | igtc | 2026 | PRO | Mercedes-AMG GT3 EVO | lmgt3 2026 (borrowed) | 121.563 | 120.709 | -0.7 |
+| hockenheim | dtm | 2026 | Silver | Lamborghini Huracan GT3 EVO 2 | lmgt3 2026 (borrowed) | 97.456 | 96.857 | -0.61 |
+| bathurst | igtc | 2025 | PRO | Mercedes-AMG GT3 EVO | lmgt3 2025 (borrowed) | 121.276 | 122.168 | 0.74 |
+| bathurst | igtc | 2026 | PRO | Mercedes-AMG GT3 EVO | lmgt3 2026 (borrowed) | 121.563 | 120.706 | -0.71 |
 | paul-ricard-f1 | f1 | 2021 | F1 | VER (Red Bull Racing), pole Q3 | f1 2023 × 0.9864 (borrowed) | 89.99 | 89.938 | -0.06 |
 | paul-ricard-f1 | f1 | 2018 | F1 | lewis-hamilton (mercedes), f1db fastest qualifying lap | f1 2023 × 0.9898 (borrowed) | 90.029 | 89.2 | -0.92 |
 | paul-ricard-f1 | f1 | 2019 | F1 | lewis-hamilton (mercedes), f1db fastest qualifying lap | f1 2023 × 0.9834 (borrowed) | 88.319 | 89.191 | 0.99 |
-| sebring | imsa | 2023 | GTDPRO | Chevrolet #3 | lmgt3 2025 (borrowed) | 119.315 | 121.53 | 1.86 |
-| sebring | imsa | 2023 | GTP | Cadillac #31 | lmdh 2025 (borrowed) | 105.836 | 106.035 | 0.19 |
-| sebring | imsa | 2024 | GTDPRO | Lexus #14 | lmgt3 2025 (borrowed) | 118.714 | 121.254 | 2.14 |
-| sebring | imsa | 2024 | GTP | Acura #10 | lmdh 2025 (borrowed) | 108.038 | 105.663 | -2.2 |
-| sebring | imsa | 2025 | GTD | Ferrari #21 | lmgt3 2025 (borrowed) | 119.131 | 121.478 | 1.97 |
-| sebring | imsa | 2025 | GTP | BMW #24 | lmdh 2025 (borrowed) | 107.091 | 105.916 | -1.1 |
-| sebring | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 109.4 | 105.394 | -3.66 |
-| sebring | imsa | 2026 | GTDPRO | Lexus #14 | lmgt3 2026 (borrowed) | 118.48 | 120.487 | 1.69 |
-| sebring | imsa | 2026 | GTP | Cadillac #31 | lmdh 2026 (borrowed) | 106.153 | 106.356 | 0.19 |
-| sebring | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 107.363 | 106.298 | -0.99 |
-| sebring | wec | 2023 | HYPERCAR | Cadillac #2 | lmdh 2025 | 106.082 | 105.557 | -0.5 |
-| sebring | wec | 2023 | HYPERCAR | Ferrari #50 | lmh 2025 | 105.067 | 105.348 | 0.27 |
+| sebring | imsa | 2023 | GTDPRO | Chevrolet #3 | lmgt3 2025 (borrowed) | 119.315 | 121.537 | 1.86 |
+| sebring | imsa | 2023 | GTP | Cadillac #31 | lmdh 2025 (borrowed) | 105.836 | 106.029 | 0.18 |
+| sebring | imsa | 2024 | GTDPRO | Lexus #14 | lmgt3 2025 (borrowed) | 118.714 | 121.264 | 2.15 |
+| sebring | imsa | 2024 | GTP | Acura #10 | lmdh 2025 (borrowed) | 108.038 | 105.664 | -2.2 |
+| sebring | imsa | 2025 | GTD | Ferrari #21 | lmgt3 2025 (borrowed) | 119.131 | 121.488 | 1.98 |
+| sebring | imsa | 2025 | GTP | BMW #24 | lmdh 2025 (borrowed) | 107.091 | 105.914 | -1.1 |
+| sebring | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 109.4 | 105.378 | -3.68 |
+| sebring | imsa | 2026 | GTDPRO | Lexus #14 | lmgt3 2026 (borrowed) | 118.48 | 120.497 | 1.7 |
+| sebring | imsa | 2026 | GTP | Cadillac #31 | lmdh 2026 (borrowed) | 106.153 | 106.35 | 0.19 |
+| sebring | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 107.363 | 106.297 | -0.99 |
+| sebring | wec | 2023 | HYPERCAR | Cadillac #2 | lmdh 2025 | 106.082 | 105.552 | -0.5 |
+| sebring | wec | 2023 | HYPERCAR | Ferrari #50 | lmh 2025 | 105.067 | 105.328 | 0.25 |
 | istanbul | f1 | 2021 | F1 | HAM (Mercedes), pole Q3 | f1 2023 × 0.9864 (borrowed) | 82.868 | 82.972 | 0.13 |
 | istanbul | f1 | 2006 | F1 | michael-schumacher (ferrari), f1db fastest qualifying lap | f1 2023 × 1.0169 (borrowed) | 85.85 | 85.332 | -0.6 |
 | istanbul | f1 | 2007 | F1 | fernando-alonso (mclaren), f1db fastest qualifying lap | f1 2023 × 1.0220 (borrowed) | 86.841 | 85.668 | -1.35 |

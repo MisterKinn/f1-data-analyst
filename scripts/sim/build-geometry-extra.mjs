@@ -73,7 +73,7 @@ export function orient(c, spec, ax, ay, osm = OSM[spec.id]) {
     const step = Math.max(1, Math.floor(n / 360)), R = 6371008.8, r = Math.PI / 180, [la, lo] = c.centre;
     const en = ([a, b]) => [(b - lo) * r * R * Math.cos(la * r), (a - la) * r * R];
     const near = p => { let best = Infinity, k = -1; c.map.x.forEach((x, j) => { const d = Math.hypot(x - p[0], c.map.y[j] - p[1]); if (d < best) { best = d; k = j; } }); return {d: best, i: Math.min(n - 1, k * step)}; };
-    const tg = e => e.tags || {}, pitRe = /pit/i, finRe = /finish|start|ziel|arriv|traguardo|ゴール|timing/i;
+    const tg = e => e.tags || {}, pitRe = /\bpit|boxengasse/i, finRe = /finish|start|ziel|arriv|traguardo|ゴール|timing/i;
     const fin = osm.elements.filter(e => !pitRe.test(tg(e).name || '') && (finRe.test(tg(e).raceway || '') || finRe.test(tg(e).name || '')))
       .map(e => { const ps = e.geom.map(en), m = ps.reduce((a, p) => [a[0] + p[0] / ps.length, a[1] + p[1] / ps.length], [0, 0]); return {e, ...near(m)}; }).filter(h => h.d < 40).sort((a, b) => a.d - b.d);
     const pits = osm.elements.filter(e => e.type === 'way' && e.geom.length > 1 && (pitRe.test(tg(e).raceway || '') || pitRe.test(tg(e).service || '') || pitRe.test(tg(e).name || '')))
