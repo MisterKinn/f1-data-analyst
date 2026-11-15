@@ -20,6 +20,12 @@ const L = {
   lusail: ['QA', 'QAT', 'Lusail'], kyalami: ['ZA', 'RSA', 'Kyalami'], rwanda: ['RW', 'RWA', 'Rwanda', true], singapore: ['SG', 'SGP', 'Singapore'],
   'yas-marina-circuit': ['AE', 'UAE', 'Yas Marina'], austin: ['US', 'USA', 'COTA'], indianapolis: ['US', 'USA', 'Indianapolis'], 'las-vegas': ['US', 'USA', 'Las Vegas'],
   sebring: ['US', 'USA', 'Sebring'], 'road-atlanta': ['US', 'USA', 'Road Atlanta'], miami: ['US', 'USA', 'Miami'], daytona: ['US', 'USA', 'Daytona'],
+  // owner 2026-11-15: every missing track (OpenStreetMap lap checked against the FIA length)
+  dubai: ['AE', 'UAE', 'Dubai Autodrome'], 'ricardo-tormo': ['ES', 'ESP', 'Valencia Ricardo Tormo'], misano: ['IT', 'ITA', 'Misano'], sonoma: ['US', 'USA', 'Sonoma'], sachsenring: ['DE', 'GER', 'Sachsenring'],
+  oschersleben: ['DE', 'GER', 'Oschersleben'], zolder: ['BE', 'BEL', 'Zolder'], donington: ['GB', 'GBR', 'Donington Park'], 'oulton-park': ['GB', 'GBR', 'Oulton Park'], motegi: ['JP', 'JPN', 'Motegi'],
+  buriram: ['TH', 'THA', 'Buriram'], okayama: ['JP', 'JPN', 'Okayama'], zhuhai: ['CN', 'CHN', 'Zhuhai'], vallelunga: ['IT', 'ITA', 'Vallelunga'], estoril: ['PT', 'POR', 'Estoril'], jerez: ['ES', 'ESP', 'Jerez'],
+  sydney: ['AU', 'AUS', 'Sydney Motorsport Park'], 'sydney-gardner': ['AU', 'AUS', 'Sydney Motorsport Park (Gardner)'], 'paul-ricard-2021': ['FR', 'FRA', 'Paul Ricard (2021-24)'],
+  aragon: ['ES', 'ESP', 'Aragón'], lausitz: ['DE', 'GER', 'Lausitzring'], autopolis: ['JP', 'JPN', 'Autopolis'], mandalika: ['ID', 'IDN', 'Mandalika'], 'magny-cours': ['FR', 'FRA', 'Magny-Cours'], 'phillip-island': ['AU', 'AUS', 'Phillip Island'],
   // Formula E street circuits (official FIA circuit maps); an older layout carries its seasons
   'fe-london': ['GB', 'GBR', 'London ExCeL'], 'fe-london-2023': ['GB', 'GBR', 'London ExCeL (2023)'], 'fe-shanghai': ['CN', 'CHN', 'Shanghai (FE)'], 'fe-berlin-2024': ['DE', 'GER', 'Berlin Tempelhof (2024)'],
   'fe-berlin-2023': ['DE', 'GER', 'Berlin Tempelhof (2023)'], 'jarama-2025': ['ES', 'ESP', 'Jarama (2025)'], 'fe-valencia': ['ES', 'ESP', 'Valencia (FE)'], 'fe-jeddah': ['SA', 'KSA', 'Jeddah Corniche (FE)'],

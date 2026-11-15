@@ -592,7 +592,9 @@
    "name": "Misano",
    "country": "ITA",
    "aliases": [
+    "marco simoncelli",
     "misano",
+    "misano world circuit",
     "misano world circuit marco simoncelli"
    ]
   },
@@ -600,9 +602,9 @@
    "name": "Zolder",
    "country": "BEL",
    "aliases": [
-    "zolder",
     "circuit zolder",
-    "heusden zolder"
+    "heusden zolder",
+    "zolder"
    ]
   },
   "norisring": {
@@ -616,6 +618,7 @@
    "name": "Oschersleben",
    "country": "GER",
    "aliases": [
+    "motorsport arena oschersleben",
     "oschersleben"
    ]
   },
@@ -656,8 +659,9 @@
    "name": "Valencia",
    "country": "ESP",
    "aliases": [
-    "valencia",
+    "cheste",
     "ricardo tormo",
+    "valencia",
     "valencia street circuit"
    ]
   },
@@ -665,8 +669,8 @@
    "name": "Estoril",
    "country": "POR",
    "aliases": [
-    "estoril",
-    "autodromo do estoril"
+    "autodromo do estoril",
+    "estoril"
    ]
   },
   "jerez": {
@@ -684,8 +688,9 @@
    "country": "THA",
    "aliases": [
     "buriram",
-    "chang international circuit",
-    "chang international"
+    "chang",
+    "chang international",
+    "chang international circuit"
    ]
   },
   "donington": {
@@ -701,8 +706,9 @@
    "name": "Vallelunga",
    "country": "ITA",
    "aliases": [
-    "vallelunga",
-    "autodromo vallelunga piero taruffi"
+    "autodromo vallelunga piero taruffi",
+    "piero taruffi",
+    "vallelunga"
    ]
   },
   "barber": {
@@ -717,9 +723,9 @@
    "name": "Sonoma Raceway",
    "country": "USA",
    "aliases": [
+    "sears point",
     "sonoma",
-    "sonoma raceway",
-    "sears point"
+    "sonoma raceway"
    ]
   },
   "adelaide": {
@@ -1027,6 +1033,49 @@
    "aliases": [
     "cape town"
    ]
+  },
+  "oulton-park": {
+   "name": "Oulton Park",
+   "country": null,
+   "aliases": [
+    "oulton",
+    "oulton park"
+   ]
+  },
+  "motegi": {
+   "name": "Motegi",
+   "country": null,
+   "aliases": [
+    "mobility resort motegi",
+    "motegi",
+    "twin ring motegi"
+   ]
+  },
+  "okayama": {
+   "name": "Okayama",
+   "country": null,
+   "aliases": [
+    "aida",
+    "okayama",
+    "okayama international circuit"
+   ]
+  },
+  "zhuhai": {
+   "name": "Zhuhai",
+   "country": null,
+   "aliases": [
+    "zhuhai",
+    "zhuhai international circuit"
+   ]
+  },
+  "sydney": {
+   "name": "Sydney Motorsport Park",
+   "country": null,
+   "aliases": [
+    "eastern creek",
+    "sydney",
+    "sydney motorsport park"
+   ]
   }
  },
  "layouts": [
@@ -1035,7 +1084,10 @@
    "venue": "adelaide",
    "lengthKm": 3.78,
    "seasons": [
-    [1985, 1995]
+    [
+     1985,
+     1995
+    ]
    ],
    "sources": [
     "f1db:adelaide-1"
@@ -1047,7 +1099,10 @@
    "venue": "aida",
    "lengthKm": 3.703,
    "seasons": [
-    [1994, 1995]
+    [
+     1994,
+     1995
+    ]
    ],
    "sources": [
     "f1db:aida-1"
@@ -1059,7 +1114,10 @@
    "venue": "ain-diab",
    "lengthKm": 7.618,
    "seasons": [
-    [1958, 1958]
+    [
+     1958,
+     1958
+    ]
    ],
    "sources": [
     "f1db:ain-diab-1"
@@ -1071,10 +1129,22 @@
    "venue": "aintree",
    "lengthKm": 4.828,
    "seasons": [
-    [1955, 1955],
-    [1957, 1957],
-    [1959, 1959],
-    [1961, 1962]
+    [
+     1955,
+     1955
+    ],
+    [
+     1957,
+     1957
+    ],
+    [
+     1959,
+     1959
+    ],
+    [
+     1961,
+     1962
+    ]
    ],
    "sources": [
     "f1db:aintree-1"
@@ -1086,7 +1156,10 @@
    "venue": "anderstorp",
    "lengthKm": 4.031,
    "seasons": [
-    [1973, 1978]
+    [
+     1973,
+     1978
+    ]
    ],
    "sources": [
     "f1db:anderstorp-1"
@@ -1098,7 +1171,10 @@
    "venue": "aragon",
    "lengthKm": 5.344,
    "seasons": [
-    [2023, 2023]
+    [
+     2023,
+     2023
+    ]
    ],
    "sources": [
     "alkamel:elms"
@@ -1110,7 +1186,10 @@
    "venue": "austin",
    "lengthKm": 5.473,
    "seasons": [
-    [2024, 2024]
+    [
+     2024,
+     2024
+    ]
    ],
    "sources": [
     "alkamel:wec"
@@ -1122,8 +1201,14 @@
    "venue": "austin",
    "lengthKm": 5.513,
    "seasons": [
-    [2012, 2019],
-    [2021, 2026]
+    [
+     2012,
+     2019
+    ],
+    [
+     2021,
+     2026
+    ]
    ],
    "sources": [
     "f1db:austin-1",
@@ -1137,7 +1222,10 @@
    "venue": "avus",
    "lengthKm": 8.3,
    "seasons": [
-    [1959, 1959]
+    [
+     1959,
+     1959
+    ]
    ],
    "sources": [
     "f1db:avus-1"
@@ -1149,8 +1237,14 @@
    "venue": "baku",
    "lengthKm": 6.003,
    "seasons": [
-    [2016, 2019],
-    [2021, 2026]
+    [
+     2016,
+     2019
+    ],
+    [
+     2021,
+     2026
+    ]
    ],
    "sources": [
     "f1db:baku-1"
@@ -1174,7 +1268,10 @@
    "venue": "belle-isle",
    "lengthKm": 3.782,
    "seasons": [
-    [2022, 2022]
+    [
+     2022,
+     2022
+    ]
    ],
    "sources": [
     "alkamel:imsa"
@@ -1196,10 +1293,22 @@
    "venue": "brands-hatch",
    "lengthKm": 4.207,
    "seasons": [
-    [1976, 1976],
-    [1978, 1978],
-    [1980, 1980],
-    [1982, 1986]
+    [
+     1976,
+     1976
+    ],
+    [
+     1978,
+     1978
+    ],
+    [
+     1980,
+     1980
+    ],
+    [
+     1982,
+     1986
+    ]
    ],
    "sources": [
     "f1db:brands-hatch-2"
@@ -1211,12 +1320,30 @@
    "venue": "brands-hatch",
    "lengthKm": 4.265,
    "seasons": [
-    [1964, 1964],
-    [1966, 1966],
-    [1968, 1968],
-    [1970, 1970],
-    [1972, 1972],
-    [1974, 1974]
+    [
+     1964,
+     1964
+    ],
+    [
+     1966,
+     1966
+    ],
+    [
+     1968,
+     1968
+    ],
+    [
+     1970,
+     1970
+    ],
+    [
+     1972,
+     1972
+    ],
+    [
+     1974,
+     1974
+    ]
    ],
    "sources": [
     "f1db:brands-hatch-1"
@@ -1227,7 +1354,10 @@
    "venue": "bremgarten",
    "lengthKm": 7.28,
    "seasons": [
-    [1950, 1954]
+    [
+     1950,
+     1954
+    ]
    ],
    "sources": [
     "f1db:bremgarten-1"
@@ -1239,7 +1369,10 @@
    "venue": "buddh",
    "lengthKm": 5.125,
    "seasons": [
-    [2011, 2013]
+    [
+     2011,
+     2013
+    ]
    ],
    "sources": [
     "f1db:buddh-1"
@@ -1251,7 +1384,10 @@
    "venue": "buenos-aires",
    "lengthKm": 3.353,
    "seasons": [
-    [1972, 1973]
+    [
+     1972,
+     1973
+    ]
    ],
    "sources": [
     "f1db:buenos-aires-2"
@@ -1262,8 +1398,14 @@
    "venue": "buenos-aires",
    "lengthKm": 3.912,
    "seasons": [
-    [1953, 1958],
-    [1960, 1960]
+    [
+     1953,
+     1958
+    ],
+    [
+     1960,
+     1960
+    ]
    ],
    "sources": [
     "f1db:buenos-aires-1"
@@ -1274,7 +1416,10 @@
    "venue": "buenos-aires",
    "lengthKm": 4.259,
    "seasons": [
-    [1995, 1998]
+    [
+     1995,
+     1998
+    ]
    ],
    "sources": [
     "f1db:buenos-aires-4"
@@ -1286,8 +1431,14 @@
    "venue": "buenos-aires",
    "lengthKm": 5.968,
    "seasons": [
-    [1974, 1975],
-    [1977, 1981]
+    [
+     1974,
+     1975
+    ],
+    [
+     1977,
+     1981
+    ]
    ],
    "sources": [
     "f1db:buenos-aires-3"
@@ -1298,7 +1449,10 @@
    "venue": "bugatti",
    "lengthKm": 4.185,
    "seasons": [
-    [1967, 1967]
+    [
+     1967,
+     1967
+    ]
    ],
    "sources": [
     "f1db:bugatti-1"
@@ -1310,7 +1464,10 @@
    "venue": "caesars-palace",
    "lengthKm": 3.65,
    "seasons": [
-    [1981, 1982]
+    [
+     1981,
+     1982
+    ]
    ],
    "sources": [
     "f1db:caesars-palace-1"
@@ -1322,7 +1479,10 @@
    "venue": "catalunya",
    "lengthKm": 4.627,
    "seasons": [
-    [2004, 2006]
+    [
+     2004,
+     2006
+    ]
    ],
    "sources": [
     "f1db:catalunya-3"
@@ -1334,7 +1494,10 @@
    "venue": "catalunya",
    "lengthKm": 4.655,
    "seasons": [
-    [2007, 2020]
+    [
+     2007,
+     2020
+    ]
    ],
    "sources": [
     "f1db:catalunya-4"
@@ -1346,7 +1509,10 @@
    "venue": "catalunya",
    "lengthKm": 4.657,
    "seasons": [
-    [2023, 2026]
+    [
+     2023,
+     2026
+    ]
    ],
    "sources": [
     "f1db:catalunya-6",
@@ -1360,7 +1526,10 @@
    "venue": "catalunya",
    "lengthKm": 4.675,
    "seasons": [
-    [2021, 2022]
+    [
+     2021,
+     2022
+    ]
    ],
    "sources": [
     "f1db:catalunya-5",
@@ -1373,7 +1542,10 @@
    "venue": "catalunya",
    "lengthKm": 4.73,
    "seasons": [
-    [1995, 2003]
+    [
+     1995,
+     2003
+    ]
    ],
    "sources": [
     "f1db:catalunya-2"
@@ -1385,7 +1557,10 @@
    "venue": "catalunya",
    "lengthKm": 4.747,
    "seasons": [
-    [1991, 1994]
+    [
+     1991,
+     1994
+    ]
    ],
    "sources": [
     "f1db:catalunya-1"
@@ -1397,9 +1572,18 @@
    "venue": "clermont-ferrand",
    "lengthKm": 8.055,
    "seasons": [
-    [1965, 1965],
-    [1969, 1970],
-    [1972, 1972]
+    [
+     1965,
+     1965
+    ],
+    [
+     1969,
+     1970
+    ],
+    [
+     1972,
+     1972
+    ]
    ],
    "sources": [
     "f1db:clermont-ferrand-1"
@@ -1411,7 +1595,10 @@
    "venue": "dallas",
    "lengthKm": 3.901,
    "seasons": [
-    [1984, 1984]
+    [
+     1984,
+     1984
+    ]
    ],
    "sources": [
     "f1db:dallas-1"
@@ -1423,7 +1610,10 @@
    "venue": "daytona",
    "lengthKm": 5.729,
    "seasons": [
-    [2021, 2026]
+    [
+     2021,
+     2026
+    ]
    ],
    "sources": [
     "alkamel:imsa"
@@ -1436,7 +1626,10 @@
    "venue": "detroit",
    "lengthKm": 2.647,
    "seasons": [
-    [2024, 2026]
+    [
+     2024,
+     2026
+    ]
    ],
    "sources": [
     "alkamel:imsa"
@@ -1448,7 +1641,10 @@
    "venue": "detroit",
    "lengthKm": 4.023,
    "seasons": [
-    [1983, 1988]
+    [
+     1983,
+     1988
+    ]
    ],
    "sources": [
     "f1db:detroit-2"
@@ -1459,7 +1655,10 @@
    "venue": "detroit",
    "lengthKm": 4.168,
    "seasons": [
-    [1982, 1982]
+    [
+     1982,
+     1982
+    ]
    ],
    "sources": [
     "f1db:detroit-1"
@@ -1470,7 +1669,10 @@
    "venue": "dijon",
    "lengthKm": 3.289,
    "seasons": [
-    [1974, 1974]
+    [
+     1974,
+     1974
+    ]
    ],
    "sources": [
     "f1db:dijon-1"
@@ -1481,10 +1683,22 @@
    "venue": "dijon",
    "lengthKm": 3.801,
    "seasons": [
-    [1977, 1977],
-    [1979, 1979],
-    [1981, 1982],
-    [1984, 1984]
+    [
+     1977,
+     1977
+    ],
+    [
+     1979,
+     1979
+    ],
+    [
+     1981,
+     1982
+    ],
+    [
+     1984,
+     1984
+    ]
    ],
    "sources": [
     "f1db:dijon-2"
@@ -1496,7 +1710,10 @@
    "venue": "donington",
    "lengthKm": 4.023,
    "seasons": [
-    [1993, 1993]
+    [
+     1993,
+     1993
+    ]
    ],
    "sources": [
     "f1db:donington-1"
@@ -1504,24 +1721,35 @@
    "default": true
   },
   {
-   "id": "dubai-5390",
+   "id": "dubai",
    "venue": "dubai",
    "lengthKm": 5.39,
    "seasons": [
-    [2022, 2026]
+    [
+     2022,
+     2026
+    ]
    ],
    "sources": [
-    "alkamel:alms"
+    "alkamel:alms",
+    "simulator"
    ],
-   "default": true
+   "default": true,
+   "sim": "dubai"
   },
   {
    "id": "east-london-3920",
    "venue": "east-london",
    "lengthKm": 3.92,
    "seasons": [
-    [1962, 1963],
-    [1965, 1965]
+    [
+     1962,
+     1963
+    ],
+    [
+     1965,
+     1965
+    ]
    ],
    "sources": [
     "f1db:east-london-1"
@@ -1533,7 +1761,10 @@
    "venue": "estoril",
    "lengthKm": 4.349,
    "seasons": [
-    [1984, 1993]
+    [
+     1984,
+     1993
+    ]
    ],
    "sources": [
     "f1db:estoril-1"
@@ -1544,7 +1775,10 @@
    "venue": "estoril",
    "lengthKm": 4.36,
    "seasons": [
-    [1994, 1996]
+    [
+     1994,
+     1996
+    ]
    ],
    "sources": [
     "f1db:estoril-2"
@@ -1556,7 +1790,10 @@
    "venue": "fuji",
    "lengthKm": 4.359,
    "seasons": [
-    [1976, 1977]
+    [
+     1976,
+     1977
+    ]
    ],
    "sources": [
     "f1db:fuji-1"
@@ -1567,8 +1804,14 @@
    "venue": "fuji",
    "lengthKm": 4.563,
    "seasons": [
-    [2007, 2008],
-    [2022, 2025]
+    [
+     2007,
+     2008
+    ],
+    [
+     2022,
+     2025
+    ]
    ],
    "sources": [
     "f1db:fuji-2",
@@ -1582,13 +1825,34 @@
    "venue": "hockenheim",
    "lengthKm": 4.574,
    "seasons": [
-    [2002, 2006],
-    [2008, 2008],
-    [2010, 2010],
-    [2012, 2012],
-    [2014, 2014],
-    [2016, 2016],
-    [2018, 2019]
+    [
+     2002,
+     2006
+    ],
+    [
+     2008,
+     2008
+    ],
+    [
+     2010,
+     2010
+    ],
+    [
+     2012,
+     2012
+    ],
+    [
+     2014,
+     2014
+    ],
+    [
+     2016,
+     2016
+    ],
+    [
+     2018,
+     2019
+    ]
    ],
    "sources": [
     "f1db:hockenheimring-4"
@@ -1601,8 +1865,14 @@
    "venue": "hockenheim",
    "lengthKm": 6.79,
    "seasons": [
-    [1970, 1970],
-    [1977, 1981]
+    [
+     1970,
+     1970
+    ],
+    [
+     1977,
+     1981
+    ]
    ],
    "sources": [
     "f1db:hockenheimring-1"
@@ -1613,8 +1883,14 @@
    "venue": "hockenheim",
    "lengthKm": 6.802,
    "seasons": [
-    [1982, 1984],
-    [1986, 1991]
+    [
+     1982,
+     1984
+    ],
+    [
+     1986,
+     1991
+    ]
    ],
    "sources": [
     "f1db:hockenheimring-2"
@@ -1625,7 +1901,10 @@
    "venue": "hockenheim",
    "lengthKm": 6.815,
    "seasons": [
-    [1992, 2001]
+    [
+     1992,
+     2001
+    ]
    ],
    "sources": [
     "f1db:hockenheimring-3"
@@ -1636,7 +1915,10 @@
    "venue": "hungaroring",
    "lengthKm": 3.975,
    "seasons": [
-    [1989, 2002]
+    [
+     1989,
+     2002
+    ]
    ],
    "sources": [
     "f1db:hungaroring-2"
@@ -1647,7 +1929,10 @@
    "venue": "hungaroring",
    "lengthKm": 4.014,
    "seasons": [
-    [1986, 1988]
+    [
+     1986,
+     1988
+    ]
    ],
    "sources": [
     "f1db:hungaroring-1"
@@ -1658,7 +1943,10 @@
    "venue": "hungaroring",
    "lengthKm": 4.381,
    "seasons": [
-    [2003, 2026]
+    [
+     2003,
+     2026
+    ]
    ],
    "sources": [
     "f1db:hungaroring-3"
@@ -1671,8 +1959,14 @@
    "venue": "imola",
    "lengthKm": 4.909,
    "seasons": [
-    [2020, 2022],
-    [2024, 2026]
+    [
+     2020,
+     2022
+    ],
+    [
+     2024,
+     2026
+    ]
    ],
    "sources": [
     "f1db:imola-3",
@@ -1687,7 +1981,10 @@
    "venue": "imola",
    "lengthKm": 4.959,
    "seasons": [
-    [1995, 2006]
+    [
+     1995,
+     2006
+    ]
    ],
    "sources": [
     "f1db:imola-2"
@@ -1699,7 +1996,10 @@
    "venue": "imola",
    "lengthKm": 5.04,
    "seasons": [
-    [1980, 1994]
+    [
+     1980,
+     1994
+    ]
    ],
    "sources": [
     "f1db:imola-1"
@@ -1710,7 +2010,10 @@
    "venue": "indianapolis",
    "lengthKm": 3.925,
    "seasons": [
-    [2023, 2026]
+    [
+     2023,
+     2026
+    ]
    ],
    "sources": [
     "alkamel:imsa"
@@ -1723,7 +2026,10 @@
    "venue": "indianapolis",
    "lengthKm": 4.023,
    "seasons": [
-    [1950, 1960]
+    [
+     1950,
+     1960
+    ]
    ],
    "sources": [
     "f1db:indianapolis-1"
@@ -1734,7 +2040,10 @@
    "venue": "indianapolis",
    "lengthKm": 4.192,
    "seasons": [
-    [2000, 2007]
+    [
+     2000,
+     2007
+    ]
    ],
    "sources": [
     "f1db:indianapolis-2"
@@ -1745,8 +2054,14 @@
    "venue": "interlagos",
    "lengthKm": 4.309,
    "seasons": [
-    [1990, 2019],
-    [2021, 2026]
+    [
+     1990,
+     2019
+    ],
+    [
+     2021,
+     2026
+    ]
    ],
    "sources": [
     "f1db:interlagos-2",
@@ -1760,8 +2075,14 @@
    "venue": "interlagos",
    "lengthKm": 7.873,
    "seasons": [
-    [1973, 1977],
-    [1979, 1980]
+    [
+     1973,
+     1977
+    ],
+    [
+     1979,
+     1980
+    ]
    ],
    "sources": [
     "f1db:interlagos-1"
@@ -1772,8 +2093,14 @@
    "venue": "istanbul",
    "lengthKm": 5.338,
    "seasons": [
-    [2005, 2011],
-    [2020, 2021]
+    [
+     2005,
+     2011
+    ],
+    [
+     2020,
+     2021
+    ]
    ],
    "sources": [
     "f1db:istanbul-1"
@@ -1785,8 +2112,14 @@
    "venue": "jacarepagua",
    "lengthKm": 5.031,
    "seasons": [
-    [1978, 1978],
-    [1981, 1989]
+    [
+     1978,
+     1978
+    ],
+    [
+     1981,
+     1989
+    ]
    ],
    "sources": [
     "f1db:jacarepagua-1"
@@ -1798,7 +2131,10 @@
    "venue": "jarama",
    "lengthKm": 3.314,
    "seasons": [
-    [1981, 1981]
+    [
+     1981,
+     1981
+    ]
    ],
    "sources": [
     "f1db:jarama-2"
@@ -1810,11 +2146,26 @@
    "venue": "jarama",
    "lengthKm": 3.404,
    "seasons": [
-    [1968, 1968],
-    [1970, 1970],
-    [1972, 1972],
-    [1974, 1974],
-    [1976, 1979]
+    [
+     1968,
+     1968
+    ],
+    [
+     1970,
+     1970
+    ],
+    [
+     1972,
+     1972
+    ],
+    [
+     1974,
+     1974
+    ],
+    [
+     1976,
+     1979
+    ]
    ],
    "sources": [
     "f1db:jarama-1"
@@ -1825,7 +2176,10 @@
    "venue": "jeddah",
    "lengthKm": 6.174,
    "seasons": [
-    [2021, 2025]
+    [
+     2021,
+     2025
+    ]
    ],
    "sources": [
     "f1db:jeddah-1"
@@ -1838,32 +2192,49 @@
    "venue": "jerez",
    "lengthKm": 4.218,
    "seasons": [
-    [1986, 1990]
+    [
+     1986,
+     1990
+    ]
    ],
    "sources": [
     "f1db:jerez-1"
    ]
   },
   {
-   "id": "jerez-4428",
+   "id": "jerez",
    "venue": "jerez",
    "lengthKm": 4.428,
    "seasons": [
-    [1994, 1994],
-    [1997, 1997]
+    [
+     1994,
+     1994
+    ],
+    [
+     1997,
+     1997
+    ]
    ],
    "sources": [
-    "f1db:jerez-2"
+    "f1db:jerez-2",
+    "simulator"
    ],
-   "default": true
+   "default": true,
+   "sim": "jerez"
   },
   {
    "id": "kuala-lumpur",
    "venue": "kuala-lumpur",
    "lengthKm": 5.543,
    "seasons": [
-    [1999, 2017],
-    [2024, 2026]
+    [
+     1999,
+     2017
+    ],
+    [
+     2024,
+     2026
+    ]
    ],
    "sources": [
     "f1db:sepang-1",
@@ -1877,8 +2248,14 @@
    "venue": "kyalami",
    "lengthKm": 4.094,
    "seasons": [
-    [1967, 1980],
-    [1982, 1985]
+    [
+     1967,
+     1980
+    ],
+    [
+     1982,
+     1985
+    ]
    ],
    "sources": [
     "f1db:kyalami-1"
@@ -1889,7 +2266,10 @@
    "venue": "kyalami",
    "lengthKm": 4.261,
    "seasons": [
-    [1992, 1993]
+    [
+     1992,
+     1993
+    ]
    ],
    "sources": [
     "f1db:kyalami-2"
@@ -1911,7 +2291,10 @@
    "venue": "laguna-seca",
    "lengthKm": 3.602,
    "seasons": [
-    [2021, 2026]
+    [
+     2021,
+     2026
+    ]
    ],
    "sources": [
     "alkamel:imsa"
@@ -1924,7 +2307,10 @@
    "venue": "las-vegas",
    "lengthKm": 6.201,
    "seasons": [
-    [2023, 2026]
+    [
+     2023,
+     2026
+    ]
    ],
    "sources": [
     "f1db:las-vegas-1"
@@ -1937,7 +2323,10 @@
    "venue": "le-mans",
    "lengthKm": 13.626,
    "seasons": [
-    [2021, 2026]
+    [
+     2021,
+     2026
+    ]
    ],
    "sources": [
     "alkamel:wec"
@@ -1950,7 +2339,10 @@
    "venue": "lime-rock",
    "lengthKm": 2.372,
    "seasons": [
-    [2021, 2023]
+    [
+     2021,
+     2023
+    ]
    ],
    "sources": [
     "alkamel:imsa"
@@ -1966,7 +2358,10 @@
    "venue": "long-beach",
    "lengthKm": 3.167,
    "seasons": [
-    [2021, 2026]
+    [
+     2021,
+     2026
+    ]
    ],
    "sources": [
     "alkamel:imsa"
@@ -1978,7 +2373,10 @@
    "venue": "long-beach",
    "lengthKm": 3.251,
    "seasons": [
-    [1976, 1981]
+    [
+     1976,
+     1981
+    ]
    ],
    "sources": [
     "f1db:long-beach-1"
@@ -1989,7 +2387,10 @@
    "venue": "long-beach",
    "lengthKm": 3.275,
    "seasons": [
-    [1983, 1983]
+    [
+     1983,
+     1983
+    ]
    ],
    "sources": [
     "f1db:long-beach-3"
@@ -2000,7 +2401,10 @@
    "venue": "long-beach",
    "lengthKm": 3.428,
    "seasons": [
-    [1982, 1982]
+    [
+     1982,
+     1982
+    ]
    ],
    "sources": [
     "f1db:long-beach-2"
@@ -2011,8 +2415,14 @@
    "venue": "lusail",
    "lengthKm": 5.419,
    "seasons": [
-    [2021, 2021],
-    [2023, 2026]
+    [
+     2021,
+     2021
+    ],
+    [
+     2023,
+     2026
+    ]
    ],
    "sources": [
     "f1db:lusail-1",
@@ -2029,7 +2439,10 @@
    "venue": "madring",
    "lengthKm": 5.416,
    "seasons": [
-    [2026, 2026]
+    [
+     2026,
+     2026
+    ]
    ],
    "sources": [
     "f1db:madring-1"
@@ -2042,7 +2455,10 @@
    "venue": "magny-cours",
    "lengthKm": 4.25,
    "seasons": [
-    [1992, 2002]
+    [
+     1992,
+     2002
+    ]
    ],
    "sources": [
     "f1db:magny-cours-2"
@@ -2053,7 +2469,10 @@
    "venue": "magny-cours",
    "lengthKm": 4.271,
    "seasons": [
-    [1991, 1991]
+    [
+     1991,
+     1991
+    ]
    ],
    "sources": [
     "f1db:magny-cours-1"
@@ -2064,7 +2483,10 @@
    "venue": "magny-cours",
    "lengthKm": 4.411,
    "seasons": [
-    [2003, 2008]
+    [
+     2003,
+     2008
+    ]
    ],
    "sources": [
     "f1db:magny-cours-3"
@@ -2076,7 +2498,10 @@
    "venue": "melbourne",
    "lengthKm": 5.278,
    "seasons": [
-    [2022, 2026]
+    [
+     2022,
+     2026
+    ]
    ],
    "sources": [
     "f1db:melbourne-2"
@@ -2089,7 +2514,10 @@
    "venue": "melbourne",
    "lengthKm": 5.303,
    "seasons": [
-    [1996, 2019]
+    [
+     1996,
+     2019
+    ]
    ],
    "sources": [
     "f1db:melbourne-1"
@@ -2101,8 +2529,14 @@
    "venue": "mexico-city",
    "lengthKm": 4.304,
    "seasons": [
-    [2015, 2019],
-    [2021, 2026]
+    [
+     2015,
+     2019
+    ],
+    [
+     2021,
+     2026
+    ]
    ],
    "sources": [
     "f1db:mexico-city-3"
@@ -2115,7 +2549,10 @@
    "venue": "mexico-city",
    "lengthKm": 4.421,
    "seasons": [
-    [1986, 1992]
+    [
+     1986,
+     1992
+    ]
    ],
    "sources": [
     "f1db:mexico-city-2"
@@ -2126,7 +2563,10 @@
    "venue": "mexico-city",
    "lengthKm": 5,
    "seasons": [
-    [1963, 1970]
+    [
+     1963,
+     1970
+    ]
    ],
    "sources": [
     "f1db:mexico-city-1"
@@ -2137,7 +2577,10 @@
    "venue": "miami",
    "lengthKm": 5.412,
    "seasons": [
-    [2022, 2026]
+    [
+     2022,
+     2026
+    ]
    ],
    "sources": [
     "f1db:miami-1"
@@ -2150,7 +2593,10 @@
    "venue": "mid-ohio",
    "lengthKm": 3.634,
    "seasons": [
-    [2021, 2022]
+    [
+     2021,
+     2022
+    ]
    ],
    "sources": [
     "alkamel:imsa"
@@ -2163,7 +2609,10 @@
    "venue": "monsanto",
    "lengthKm": 5.44,
    "seasons": [
-    [1959, 1959]
+    [
+     1959,
+     1959
+    ]
    ],
    "sources": [
     "f1db:monsanto-1"
@@ -2175,8 +2624,14 @@
    "venue": "mont-tremblant",
    "lengthKm": 4.265,
    "seasons": [
-    [1968, 1968],
-    [1970, 1970]
+    [
+     1968,
+     1968
+    ],
+    [
+     1970,
+     1970
+    ]
    ],
    "sources": [
     "f1db:mont-tremblant-1"
@@ -2188,7 +2643,10 @@
    "venue": "monte-carlo",
    "lengthKm": 3.145,
    "seasons": [
-    [1955, 1972]
+    [
+     1955,
+     1972
+    ]
    ],
    "sources": [
     "f1db:monaco-2"
@@ -2199,7 +2657,10 @@
    "venue": "monte-carlo",
    "lengthKm": 3.18,
    "seasons": [
-    [1950, 1950]
+    [
+     1950,
+     1950
+    ]
    ],
    "sources": [
     "f1db:monaco-1"
@@ -2210,7 +2671,10 @@
    "venue": "monte-carlo",
    "lengthKm": 3.278,
    "seasons": [
-    [1973, 1975]
+    [
+     1973,
+     1975
+    ]
    ],
    "sources": [
     "f1db:monaco-3"
@@ -2222,7 +2686,10 @@
    "venue": "monte-carlo",
    "lengthKm": 3.312,
    "seasons": [
-    [1976, 1985]
+    [
+     1976,
+     1985
+    ]
    ],
    "sources": [
     "f1db:monaco-4"
@@ -2234,7 +2701,10 @@
    "venue": "monte-carlo",
    "lengthKm": 3.328,
    "seasons": [
-    [1986, 2002]
+    [
+     1986,
+     2002
+    ]
    ],
    "sources": [
     "f1db:monaco-5"
@@ -2246,8 +2716,14 @@
    "venue": "monte-carlo",
    "lengthKm": 3.337,
    "seasons": [
-    [2003, 2019],
-    [2021, 2026]
+    [
+     2003,
+     2019
+    ],
+    [
+     2021,
+     2026
+    ]
    ],
    "sources": [
     "f1db:monaco-6"
@@ -2260,10 +2736,22 @@
    "venue": "montjuic",
    "lengthKm": 3.791,
    "seasons": [
-    [1969, 1969],
-    [1971, 1971],
-    [1973, 1973],
-    [1975, 1975]
+    [
+     1969,
+     1969
+    ],
+    [
+     1971,
+     1971
+    ],
+    [
+     1973,
+     1973
+    ],
+    [
+     1975,
+     1975
+    ]
    ],
    "sources": [
     "f1db:montjuic-1"
@@ -2275,9 +2763,18 @@
    "venue": "montreal",
    "lengthKm": 4.361,
    "seasons": [
-    [2002, 2008],
-    [2010, 2019],
-    [2022, 2026]
+    [
+     2002,
+     2008
+    ],
+    [
+     2010,
+     2019
+    ],
+    [
+     2022,
+     2026
+    ]
    ],
    "sources": [
     "f1db:montreal-6"
@@ -2290,7 +2787,10 @@
    "venue": "montreal",
    "lengthKm": 4.39,
    "seasons": [
-    [1988, 1993]
+    [
+     1988,
+     1993
+    ]
    ],
    "sources": [
     "f1db:montreal-3"
@@ -2302,7 +2802,10 @@
    "venue": "montreal",
    "lengthKm": 4.41,
    "seasons": [
-    [1978, 1986]
+    [
+     1978,
+     1986
+    ]
    ],
    "sources": [
     "f1db:montreal-1",
@@ -2315,7 +2818,10 @@
    "venue": "montreal",
    "lengthKm": 4.421,
    "seasons": [
-    [1996, 2001]
+    [
+     1996,
+     2001
+    ]
    ],
    "sources": [
     "f1db:montreal-5"
@@ -2327,7 +2833,10 @@
    "venue": "montreal",
    "lengthKm": 4.45,
    "seasons": [
-    [1994, 1995]
+    [
+     1994,
+     1995
+    ]
    ],
    "sources": [
     "f1db:montreal-4"
@@ -2338,8 +2847,14 @@
    "venue": "monza",
    "lengthKm": 5.75,
    "seasons": [
-    [1957, 1959],
-    [1962, 1971]
+    [
+     1957,
+     1959
+    ],
+    [
+     1962,
+     1971
+    ]
    ],
    "sources": [
     "f1db:monza-3"
@@ -2351,7 +2866,10 @@
    "venue": "monza",
    "lengthKm": 5.775,
    "seasons": [
-    [1972, 1973]
+    [
+     1972,
+     1973
+    ]
    ],
    "sources": [
     "f1db:monza-4"
@@ -2363,7 +2881,10 @@
    "venue": "monza",
    "lengthKm": 5.78,
    "seasons": [
-    [1974, 1975]
+    [
+     1974,
+     1975
+    ]
    ],
    "sources": [
     "f1db:monza-5"
@@ -2375,7 +2896,10 @@
    "venue": "monza",
    "lengthKm": 5.793,
    "seasons": [
-    [2000, 2026]
+    [
+     2000,
+     2026
+    ]
    ],
    "sources": [
     "f1db:monza-7",
@@ -2390,8 +2914,14 @@
    "venue": "monza",
    "lengthKm": 5.8,
    "seasons": [
-    [1976, 1979],
-    [1981, 1999]
+    [
+     1976,
+     1979
+    ],
+    [
+     1981,
+     1999
+    ]
    ],
    "sources": [
     "f1db:monza-6"
@@ -2403,7 +2933,10 @@
    "venue": "monza",
    "lengthKm": 6.3,
    "seasons": [
-    [1950, 1954]
+    [
+     1950,
+     1954
+    ]
    ],
    "sources": [
     "f1db:monza-1"
@@ -2414,8 +2947,14 @@
    "venue": "monza",
    "lengthKm": 10,
    "seasons": [
-    [1955, 1956],
-    [1960, 1961]
+    [
+     1955,
+     1956
+    ],
+    [
+     1960,
+     1961
+    ]
    ],
    "sources": [
     "f1db:monza-2"
@@ -2426,11 +2965,26 @@
    "venue": "mosport",
    "lengthKm": 3.957,
    "seasons": [
-    [1967, 1967],
-    [1969, 1969],
-    [1971, 1974],
-    [1976, 1977],
-    [2022, 2026]
+    [
+     1967,
+     1967
+    ],
+    [
+     1969,
+     1969
+    ],
+    [
+     1971,
+     1974
+    ],
+    [
+     1976,
+     1977
+    ],
+    [
+     2022,
+     2026
+    ]
    ],
    "sources": [
     "f1db:mosport-1",
@@ -2444,8 +2998,14 @@
    "venue": "mugello",
    "lengthKm": 5.245,
    "seasons": [
-    [2020, 2020],
-    [2024, 2024]
+    [
+     2020,
+     2020
+    ],
+    [
+     2024,
+     2024
+    ]
    ],
    "sources": [
     "f1db:mugello-1",
@@ -2459,8 +3019,14 @@
    "venue": "nivelles",
    "lengthKm": 3.724,
    "seasons": [
-    [1972, 1972],
-    [1974, 1974]
+    [
+     1972,
+     1972
+    ],
+    [
+     1974,
+     1974
+    ]
    ],
    "sources": [
     "f1db:nivelles-1"
@@ -2482,7 +3048,10 @@
    "venue": "nurburgring",
    "lengthKm": 4.542,
    "seasons": [
-    [1984, 1985]
+    [
+     1984,
+     1985
+    ]
    ],
    "sources": [
     "f1db:nurburgring-2"
@@ -2493,7 +3062,10 @@
    "venue": "nurburgring",
    "lengthKm": 4.556,
    "seasons": [
-    [1995, 2001]
+    [
+     1995,
+     2001
+    ]
    ],
    "sources": [
     "f1db:nurburgring-3"
@@ -2504,11 +3076,26 @@
    "venue": "nurburgring",
    "lengthKm": 5.148,
    "seasons": [
-    [2002, 2007],
-    [2009, 2009],
-    [2011, 2011],
-    [2013, 2013],
-    [2020, 2020]
+    [
+     2002,
+     2007
+    ],
+    [
+     2009,
+     2009
+    ],
+    [
+     2011,
+     2011
+    ],
+    [
+     2013,
+     2013
+    ],
+    [
+     2020,
+     2020
+    ]
    ],
    "sources": [
     "f1db:nurburgring-4"
@@ -2521,10 +3108,22 @@
    "venue": "nurburgring",
    "lengthKm": 22.81,
    "seasons": [
-    [1951, 1954],
-    [1956, 1958],
-    [1961, 1969],
-    [1971, 1976]
+    [
+     1951,
+     1954
+    ],
+    [
+     1956,
+     1958
+    ],
+    [
+     1961,
+     1969
+    ],
+    [
+     1971,
+     1976
+    ]
    ],
    "sources": [
     "f1db:nurburgring-1"
@@ -2545,7 +3144,10 @@
    "venue": "paul-ricard",
    "lengthKm": 3.813,
    "seasons": [
-    [1986, 1990]
+    [
+     1986,
+     1990
+    ]
    ],
    "sources": [
     "f1db:paul-ricard-2"
@@ -2556,51 +3158,88 @@
    "venue": "paul-ricard",
    "lengthKm": 5.771,
    "seasons": [
-    [2021, 2024]
+    [
+     2021,
+     2024
+    ]
    ],
    "sources": [
     "alkamel:elms"
    ],
-   "near": "paul-ricard-f1"
+   "near": "paul-ricard-2021"
   },
   {
-   "id": "paul-ricard-5809",
+   "id": "paul-ricard-2021",
    "venue": "paul-ricard",
    "lengthKm": 5.809,
    "seasons": [
-    [1971, 1971],
-    [1973, 1973],
-    [1975, 1976],
-    [1978, 1978],
-    [1980, 1980],
-    [1982, 1983],
-    [1985, 1985]
+    [
+     1971,
+     1971
+    ],
+    [
+     1973,
+     1973
+    ],
+    [
+     1975,
+     1976
+    ],
+    [
+     1978,
+     1978
+    ],
+    [
+     1980,
+     1980
+    ],
+    [
+     1982,
+     1983
+    ],
+    [
+     1985,
+     1985
+    ]
    ],
    "sources": [
-    "f1db:paul-ricard-1"
+    "f1db:paul-ricard-1",
+    "simulator"
    ],
-   "near": "paul-ricard-f1"
+   "near": "paul-ricard",
+   "sim": "paul-ricard-2021"
   },
   {
-   "id": "paul-ricard-5821",
+   "id": "paul-ricard",
    "venue": "paul-ricard",
    "lengthKm": 5.821,
    "seasons": [
-    [2025, 2026]
+    [
+     2025,
+     2026
+    ]
    ],
    "sources": [
-    "alkamel:elms"
+    "alkamel:elms",
+    "simulator"
    ],
    "default": true,
-   "near": "paul-ricard-f1"
+   "near": "paul-ricard-2021",
+   "sim": "paul-ricard"
   },
   {
    "id": "paul-ricard-f1",
    "venue": "paul-ricard",
    "lengthKm": 5.842,
    "seasons": [
-    [2018, 2019],
-    [2021, 2022]
+    [
+     2018,
+     2019
+    ],
+    [
+     2021,
+     2022
+    ]
    ],
    "sources": [
     "f1db:paul-ricard-3"
@@ -2612,8 +3251,14 @@
    "venue": "pedralbes",
    "lengthKm": 6.316,
    "seasons": [
-    [1951, 1951],
-    [1954, 1954]
+    [
+     1951,
+     1951
+    ],
+    [
+     1954,
+     1954
+    ]
    ],
    "sources": [
     "f1db:pedralbes-1"
@@ -2625,7 +3270,10 @@
    "venue": "pescara",
    "lengthKm": 25.579,
    "seasons": [
-    [1957, 1957]
+    [
+     1957,
+     1957
+    ]
    ],
    "sources": [
     "f1db:pescara-1"
@@ -2637,7 +3285,10 @@
    "venue": "phoenix",
    "lengthKm": 3.721,
    "seasons": [
-    [1991, 1991]
+    [
+     1991,
+     1991
+    ]
    ],
    "sources": [
     "f1db:phoenix-2"
@@ -2649,7 +3300,10 @@
    "venue": "phoenix",
    "lengthKm": 3.8,
    "seasons": [
-    [1989, 1990]
+    [
+     1989,
+     1990
+    ]
    ],
    "sources": [
     "f1db:phoenix-1"
@@ -2660,7 +3314,10 @@
    "venue": "portimao",
    "lengthKm": 4.653,
    "seasons": [
-    [2020, 2025]
+    [
+     2020,
+     2025
+    ]
    ],
    "sources": [
     "f1db:portimao-1",
@@ -2675,8 +3332,14 @@
    "venue": "porto",
    "lengthKm": 7.406,
    "seasons": [
-    [1958, 1958],
-    [1960, 1960]
+    [
+     1958,
+     1958
+    ],
+    [
+     1960,
+     1960
+    ]
    ],
    "sources": [
     "f1db:porto-1"
@@ -2688,7 +3351,10 @@
    "venue": "reims",
    "lengthKm": 7.815,
    "seasons": [
-    [1950, 1951]
+    [
+     1950,
+     1951
+    ]
    ],
    "sources": [
     "f1db:reims-1"
@@ -2699,11 +3365,26 @@
    "venue": "reims",
    "lengthKm": 8.302,
    "seasons": [
-    [1953, 1954],
-    [1956, 1956],
-    [1958, 1961],
-    [1963, 1963],
-    [1966, 1966]
+    [
+     1953,
+     1954
+    ],
+    [
+     1956,
+     1956
+    ],
+    [
+     1958,
+     1961
+    ],
+    [
+     1963,
+     1963
+    ],
+    [
+     1966,
+     1966
+    ]
    ],
    "sources": [
     "f1db:reims-2"
@@ -2715,7 +3396,10 @@
    "venue": "riverside",
    "lengthKm": 5.271,
    "seasons": [
-    [1960, 1960]
+    [
+     1960,
+     1960
+    ]
    ],
    "sources": [
     "f1db:riverside-1"
@@ -2727,7 +3411,10 @@
    "venue": "road-america",
    "lengthKm": 6.515,
    "seasons": [
-    [2021, 2026]
+    [
+     2021,
+     2026
+    ]
    ],
    "sources": [
     "alkamel:imsa"
@@ -2743,7 +3430,10 @@
    "venue": "road-atlanta",
    "lengthKm": 4.088,
    "seasons": [
-    [2021, 2026]
+    [
+     2021,
+     2026
+    ]
    ],
    "sources": [
     "alkamel:imsa"
@@ -2756,7 +3446,10 @@
    "venue": "rouen",
    "lengthKm": 5.1,
    "seasons": [
-    [1952, 1952]
+    [
+     1952,
+     1952
+    ]
    ],
    "sources": [
     "f1db:rouen-1"
@@ -2767,10 +3460,22 @@
    "venue": "rouen",
    "lengthKm": 6.542,
    "seasons": [
-    [1957, 1957],
-    [1962, 1962],
-    [1964, 1964],
-    [1968, 1968]
+    [
+     1957,
+     1957
+    ],
+    [
+     1962,
+     1962
+    ],
+    [
+     1964,
+     1964
+    ],
+    [
+     1968,
+     1968
+    ]
    ],
    "sources": [
     "f1db:rouen-2"
@@ -2793,7 +3498,10 @@
    "venue": "sakhir",
    "lengthKm": 3.543,
    "seasons": [
-    [2020, 2020]
+    [
+     2020,
+     2020
+    ]
    ],
    "sources": [
     "f1db:bahrain-3"
@@ -2805,8 +3513,14 @@
    "venue": "sakhir",
    "lengthKm": 5.412,
    "seasons": [
-    [2004, 2009],
-    [2012, 2025]
+    [
+     2004,
+     2009
+    ],
+    [
+     2012,
+     2025
+    ]
    ],
    "sources": [
     "f1db:bahrain-1",
@@ -2820,7 +3534,10 @@
    "venue": "sakhir",
    "lengthKm": 6.299,
    "seasons": [
-    [2010, 2010]
+    [
+     2010,
+     2010
+    ]
    ],
    "sources": [
     "f1db:bahrain-2"
@@ -2831,7 +3548,10 @@
    "venue": "sebring",
    "lengthKm": 6.019,
    "seasons": [
-    [2021, 2026]
+    [
+     2021,
+     2026
+    ]
    ],
    "sources": [
     "alkamel:imsa",
@@ -2844,7 +3564,10 @@
    "venue": "sebring",
    "lengthKm": 8.36,
    "seasons": [
-    [1959, 1959]
+    [
+     1959,
+     1959
+    ]
    ],
    "sources": [
     "f1db:sebring-1"
@@ -2855,8 +3578,14 @@
    "venue": "shanghai",
    "lengthKm": 5.451,
    "seasons": [
-    [2004, 2019],
-    [2024, 2026]
+    [
+     2004,
+     2019
+    ],
+    [
+     2024,
+     2026
+    ]
    ],
    "sources": [
     "f1db:shanghai-1"
@@ -2869,16 +3598,46 @@
    "venue": "silverstone",
    "lengthKm": 4.649,
    "seasons": [
-    [1950, 1954],
-    [1956, 1956],
-    [1958, 1958],
-    [1960, 1960],
-    [1963, 1963],
-    [1965, 1965],
-    [1967, 1967],
-    [1969, 1969],
-    [1971, 1971],
-    [1973, 1973]
+    [
+     1950,
+     1954
+    ],
+    [
+     1956,
+     1956
+    ],
+    [
+     1958,
+     1958
+    ],
+    [
+     1960,
+     1960
+    ],
+    [
+     1963,
+     1963
+    ],
+    [
+     1965,
+     1965
+    ],
+    [
+     1967,
+     1967
+    ],
+    [
+     1969,
+     1969
+    ],
+    [
+     1971,
+     1971
+    ],
+    [
+     1973,
+     1973
+    ]
    ],
    "sources": [
     "f1db:silverstone-1"
@@ -2889,12 +3648,30 @@
    "venue": "silverstone",
    "lengthKm": 4.719,
    "seasons": [
-    [1975, 1975],
-    [1977, 1977],
-    [1979, 1979],
-    [1981, 1981],
-    [1983, 1983],
-    [1985, 1985]
+    [
+     1975,
+     1975
+    ],
+    [
+     1977,
+     1977
+    ],
+    [
+     1979,
+     1979
+    ],
+    [
+     1981,
+     1981
+    ],
+    [
+     1983,
+     1983
+    ],
+    [
+     1985,
+     1985
+    ]
    ],
    "sources": [
     "f1db:silverstone-2"
@@ -2905,7 +3682,10 @@
    "venue": "silverstone",
    "lengthKm": 4.778,
    "seasons": [
-    [1987, 1990]
+    [
+     1987,
+     1990
+    ]
    ],
    "sources": [
     "f1db:silverstone-3"
@@ -2916,7 +3696,10 @@
    "venue": "silverstone",
    "lengthKm": 5.057,
    "seasons": [
-    [1994, 1995]
+    [
+     1994,
+     1995
+    ]
    ],
    "sources": [
     "f1db:silverstone-5"
@@ -2927,7 +3710,10 @@
    "venue": "silverstone",
    "lengthKm": 5.072,
    "seasons": [
-    [1996, 1996]
+    [
+     1996,
+     1996
+    ]
    ],
    "sources": [
     "f1db:silverstone-6"
@@ -2938,7 +3724,10 @@
    "venue": "silverstone",
    "lengthKm": 5.141,
    "seasons": [
-    [1997, 2009]
+    [
+     1997,
+     2009
+    ]
    ],
    "sources": [
     "f1db:silverstone-7"
@@ -2949,7 +3738,10 @@
    "venue": "silverstone",
    "lengthKm": 5.226,
    "seasons": [
-    [1991, 1993]
+    [
+     1991,
+     1993
+    ]
    ],
    "sources": [
     "f1db:silverstone-4"
@@ -2960,7 +3752,10 @@
    "venue": "silverstone",
    "lengthKm": 5.891,
    "seasons": [
-    [2010, 2026]
+    [
+     2010,
+     2026
+    ]
    ],
    "sources": [
     "f1db:silverstone-8",
@@ -2974,7 +3769,10 @@
    "venue": "singapore",
    "lengthKm": 4.927,
    "seasons": [
-    [2023, 2026]
+    [
+     2023,
+     2026
+    ]
    ],
    "sources": [
     "f1db:marina-bay-4"
@@ -2987,8 +3785,14 @@
    "venue": "singapore",
    "lengthKm": 5.065,
    "seasons": [
-    [2013, 2019],
-    [2022, 2022]
+    [
+     2013,
+     2019
+    ],
+    [
+     2022,
+     2022
+    ]
    ],
    "sources": [
     "f1db:marina-bay-2",
@@ -3000,7 +3804,10 @@
    "venue": "singapore",
    "lengthKm": 5.073,
    "seasons": [
-    [2008, 2012]
+    [
+     2008,
+     2012
+    ]
    ],
    "sources": [
     "f1db:marina-bay-1"
@@ -3011,7 +3818,10 @@
    "venue": "sochi",
    "lengthKm": 5.848,
    "seasons": [
-    [2014, 2021]
+    [
+     2014,
+     2021
+    ]
    ],
    "sources": [
     "f1db:sirius-1"
@@ -3023,8 +3833,14 @@
    "venue": "spa-francorchamps",
    "lengthKm": 6.94,
    "seasons": [
-    [1983, 1983],
-    [1985, 2002]
+    [
+     1983,
+     1983
+    ],
+    [
+     1985,
+     2002
+    ]
    ],
    "sources": [
     "f1db:spa-francorchamps-2"
@@ -3036,7 +3852,10 @@
    "venue": "spa-francorchamps",
    "lengthKm": 6.976,
    "seasons": [
-    [2004, 2005]
+    [
+     2004,
+     2005
+    ]
    ],
    "sources": [
     "f1db:spa-francorchamps-3"
@@ -3048,7 +3867,10 @@
    "venue": "spa-francorchamps",
    "lengthKm": 7.004,
    "seasons": [
-    [2007, 2026]
+    [
+     2007,
+     2026
+    ]
    ],
    "sources": [
     "f1db:spa-francorchamps-4",
@@ -3063,10 +3885,22 @@
    "venue": "spa-francorchamps",
    "lengthKm": 14.12,
    "seasons": [
-    [1950, 1956],
-    [1958, 1958],
-    [1960, 1968],
-    [1970, 1970]
+    [
+     1950,
+     1956
+    ],
+    [
+     1958,
+     1958
+    ],
+    [
+     1960,
+     1968
+    ],
+    [
+     1970,
+     1970
+    ]
    ],
    "sources": [
     "f1db:spa-francorchamps-1"
@@ -3077,8 +3911,14 @@
    "venue": "spielberg",
    "lengthKm": 4.326,
    "seasons": [
-    [1997, 2003],
-    [2014, 2026]
+    [
+     1997,
+     2003
+    ],
+    [
+     2014,
+     2026
+    ]
    ],
    "sources": [
     "f1db:spielberg-3",
@@ -3095,7 +3935,10 @@
    "venue": "spielberg",
    "lengthKm": 5.911,
    "seasons": [
-    [1970, 1976]
+    [
+     1970,
+     1976
+    ]
    ],
    "sources": [
     "f1db:spielberg-1"
@@ -3106,7 +3949,10 @@
    "venue": "spielberg",
    "lengthKm": 5.942,
    "seasons": [
-    [1977, 1987]
+    [
+     1977,
+     1987
+    ]
    ],
    "sources": [
     "f1db:spielberg-2"
@@ -3117,9 +3963,18 @@
    "venue": "suzuka",
    "lengthKm": 5.807,
    "seasons": [
-    [2003, 2006],
-    [2009, 2019],
-    [2022, 2026]
+    [
+     2003,
+     2006
+    ],
+    [
+     2009,
+     2019
+    ],
+    [
+     2022,
+     2026
+    ]
    ],
    "sources": [
     "f1db:suzuka-2"
@@ -3132,7 +3987,10 @@
    "venue": "suzuka",
    "lengthKm": 5.86,
    "seasons": [
-    [1987, 2002]
+    [
+     1987,
+     2002
+    ]
    ],
    "sources": [
     "f1db:suzuka-1"
@@ -3144,7 +4002,10 @@
    "venue": "valencia",
    "lengthKm": 5.419,
    "seasons": [
-    [2008, 2012]
+    [
+     2008,
+     2012
+    ]
    ],
    "sources": [
     "f1db:valencia-1"
@@ -3156,7 +4017,10 @@
    "venue": "vir",
    "lengthKm": 5.263,
    "seasons": [
-    [2021, 2026]
+    [
+     2021,
+     2026
+    ]
    ],
    "sources": [
     "alkamel:imsa"
@@ -3172,7 +4036,10 @@
    "venue": "watkins-glen",
    "lengthKm": 3.78,
    "seasons": [
-    [1961, 1970]
+    [
+     1961,
+     1970
+    ]
    ],
    "sources": [
     "f1db:watkins-glen-1"
@@ -3183,7 +4050,10 @@
    "venue": "watkins-glen",
    "lengthKm": 5.435,
    "seasons": [
-    [1971, 1980]
+    [
+     1971,
+     1980
+    ]
    ],
    "sources": [
     "f1db:watkins-glen-2",
@@ -3196,7 +4066,10 @@
    "venue": "watkins-glen",
    "lengthKm": 5.472,
    "seasons": [
-    [2021, 2026]
+    [
+     2021,
+     2026
+    ]
    ],
    "sources": [
     "alkamel:imsa"
@@ -3212,7 +4085,10 @@
    "venue": "yas-marina-circuit",
    "lengthKm": 5.281,
    "seasons": [
-    [2021, 2026]
+    [
+     2021,
+     2026
+    ]
    ],
    "sources": [
     "f1db:yas-marina-2",
@@ -3226,7 +4102,10 @@
    "venue": "yas-marina-circuit",
    "lengthKm": 5.554,
    "seasons": [
-    [2009, 2020]
+    [
+     2009,
+     2020
+    ]
    ],
    "sources": [
     "f1db:yas-marina-1"
@@ -3237,7 +4116,10 @@
    "venue": "yeongam",
    "lengthKm": 5.615,
    "seasons": [
-    [2010, 2013]
+    [
+     2010,
+     2013
+    ]
    ],
    "sources": [
     "f1db:yeongam-1"
@@ -3261,9 +4143,18 @@
    "venue": "zandvoort",
    "lengthKm": 4.193,
    "seasons": [
-    [1952, 1953],
-    [1955, 1955],
-    [1958, 1971]
+    [
+     1952,
+     1953
+    ],
+    [
+     1955,
+     1955
+    ],
+    [
+     1958,
+     1971
+    ]
    ],
    "sources": [
     "f1db:zandvoort-1"
@@ -3275,7 +4166,10 @@
    "venue": "zandvoort",
    "lengthKm": 4.226,
    "seasons": [
-    [1973, 1979]
+    [
+     1973,
+     1979
+    ]
    ],
    "sources": [
     "f1db:zandvoort-2",
@@ -3288,7 +4182,10 @@
    "venue": "zandvoort",
    "lengthKm": 4.252,
    "seasons": [
-    [1980, 1985]
+    [
+     1980,
+     1985
+    ]
    ],
    "sources": [
     "f1db:zandvoort-4"
@@ -3300,7 +4197,10 @@
    "venue": "zandvoort",
    "lengthKm": 4.259,
    "seasons": [
-    [2021, 2026]
+    [
+     2021,
+     2026
+    ]
    ],
    "sources": [
     "f1db:zandvoort-5"
@@ -3313,7 +4213,10 @@
    "venue": "zeltweg",
    "lengthKm": 3.186,
    "seasons": [
-    [1964, 1964]
+    [
+     1964,
+     1964
+    ]
    ],
    "sources": [
     "f1db:zeltweg-1"
@@ -3325,7 +4228,10 @@
    "venue": "zolder",
    "lengthKm": 4.22,
    "seasons": [
-    [1973, 1973]
+    [
+     1973,
+     1973
+    ]
    ],
    "sources": [
     "f1db:zolder-1"
@@ -3336,8 +4242,14 @@
    "venue": "zolder",
    "lengthKm": 4.262,
    "seasons": [
-    [1975, 1982],
-    [1984, 1984]
+    [
+     1975,
+     1982
+    ],
+    [
+     1984,
+     1984
+    ]
    ],
    "sources": [
     "f1db:zolder-2"
@@ -3349,7 +4261,10 @@
    "venue": "fe-london",
    "lengthKm": 2.077,
    "seasons": [
-    [2024, 2026]
+    [
+     2024,
+     2026
+    ]
    ],
    "sources": [
     "fia-fe-map"
@@ -3361,7 +4276,10 @@
    "venue": "fe-tokyo",
    "lengthKm": 2.575,
    "seasons": [
-    [2024, 2026]
+    [
+     2024,
+     2026
+    ]
    ],
    "sources": [
     "fia-fe-map"
@@ -3373,7 +4291,10 @@
    "venue": "shanghai",
    "lengthKm": 3.051,
    "seasons": [
-    [2024, 2026]
+    [
+     2024,
+     2026
+    ]
    ],
    "sources": [
     "fia-fe-map"
@@ -3385,7 +4306,10 @@
    "venue": "fe-sanya",
    "lengthKm": 2.52,
    "seasons": [
-    [2026, 2026]
+    [
+     2026,
+     2026
+    ]
    ],
    "sources": [
     "fia-fe-map"
@@ -3397,7 +4321,10 @@
    "venue": "fe-berlin",
    "lengthKm": 2.374,
    "seasons": [
-    [2025, 2026]
+    [
+     2025,
+     2026
+    ]
    ],
    "sources": [
     "fia-fe-map"
@@ -3409,7 +4336,10 @@
    "venue": "jarama",
    "lengthKm": 3.934,
    "seasons": [
-    [2026, 2026]
+    [
+     2026,
+     2026
+    ]
    ],
    "sources": [
     "fia-fe-map"
@@ -3421,7 +4351,10 @@
    "venue": "jeddah",
    "lengthKm": 3.001,
    "seasons": [
-    [2025, 2026]
+    [
+     2025,
+     2026
+    ]
    ],
    "sources": [
     "fia-fe-map"
@@ -3433,7 +4366,10 @@
    "venue": "miami",
    "lengthKm": 2.32,
    "seasons": [
-    [2026, 2026]
+    [
+     2026,
+     2026
+    ]
    ],
    "sources": [
     "fia-fe-map"
@@ -3445,7 +4381,10 @@
    "venue": "mexico-city",
    "lengthKm": 2.608,
    "seasons": [
-    [2026, 2026]
+    [
+     2026,
+     2026
+    ]
    ],
    "sources": [
     "fia-fe-map"
@@ -3457,7 +4396,10 @@
    "venue": "fe-sao-paulo",
    "lengthKm": 2.933,
    "seasons": [
-    [2023, 2026]
+    [
+     2023,
+     2026
+    ]
    ],
    "sources": [
     "fia-fe-map"
@@ -3469,7 +4411,10 @@
    "venue": "valencia",
    "lengthKm": 3.376,
    "seasons": [
-    [2024, 2026]
+    [
+     2024,
+     2026
+    ]
    ],
    "sources": [
     "fia-fe-map"
@@ -3481,7 +4426,10 @@
    "venue": "fe-jakarta",
    "lengthKm": 2.37,
    "seasons": [
-    [2023, 2025]
+    [
+     2023,
+     2025
+    ]
    ],
    "sources": [
     "fia-fe-map"
@@ -3493,7 +4441,10 @@
    "venue": "miami",
    "lengthKm": 3.551,
    "seasons": [
-    [2025, 2025]
+    [
+     2025,
+     2025
+    ]
    ],
    "sources": [
     "fia-fe-map"
@@ -3505,7 +4456,10 @@
    "venue": "mexico-city",
    "lengthKm": 2.63,
    "seasons": [
-    [2023, 2025]
+    [
+     2023,
+     2025
+    ]
    ],
    "sources": [
     "fia-fe-map"
@@ -3517,7 +4471,10 @@
    "venue": "jarama",
    "lengthKm": 3.915,
    "seasons": [
-    [2025, 2025]
+    [
+     2025,
+     2025
+    ]
    ],
    "sources": [
     "fia-fe-map"
@@ -3529,7 +4486,10 @@
    "venue": "fe-portland",
    "lengthKm": 3.19,
    "seasons": [
-    [2023, 2024]
+    [
+     2023,
+     2024
+    ]
    ],
    "sources": [
     "fia-fe-map"
@@ -3541,7 +4501,10 @@
    "venue": "fe-berlin",
    "lengthKm": 2.345,
    "seasons": [
-    [2024, 2024]
+    [
+     2024,
+     2024
+    ]
    ],
    "sources": [
     "fia-fe-map"
@@ -3553,7 +4516,10 @@
    "venue": "misano",
    "lengthKm": 3.382,
    "seasons": [
-    [2024, 2024]
+    [
+     2024,
+     2024
+    ]
    ],
    "sources": [
     "fia-fe-map"
@@ -3565,7 +4531,10 @@
    "venue": "fe-diriyah",
    "lengthKm": 2.495,
    "seasons": [
-    [2023, 2024]
+    [
+     2023,
+     2024
+    ]
    ],
    "sources": [
     "fia-fe-map"
@@ -3577,7 +4546,10 @@
    "venue": "fe-london",
    "lengthKm": 2.086,
    "seasons": [
-    [2023, 2023]
+    [
+     2023,
+     2023
+    ]
    ],
    "sources": [
     "fia-fe-map"
@@ -3589,7 +4561,10 @@
    "venue": "fe-rome",
    "lengthKm": 3.38,
    "seasons": [
-    [2023, 2023]
+    [
+     2023,
+     2023
+    ]
    ],
    "sources": [
     "fia-fe-map"
@@ -3601,7 +4576,10 @@
    "venue": "fe-berlin",
    "lengthKm": 2.355,
    "seasons": [
-    [2023, 2023]
+    [
+     2023,
+     2023
+    ]
    ],
    "sources": [
     "fia-fe-map"
@@ -3613,12 +4591,185 @@
    "venue": "fe-cape-town",
    "lengthKm": 2.921,
    "seasons": [
-    [2023, 2023]
+    [
+     2023,
+     2023
+    ]
    ],
    "sources": [
     "fia-fe-map"
    ],
    "sim": "fe-cape-town"
+  },
+  {
+   "id": "ricardo-tormo",
+   "venue": "valencia",
+   "lengthKm": 4.005,
+   "seasons": [],
+   "sources": [
+    "simulator"
+   ],
+   "sim": "ricardo-tormo"
+  },
+  {
+   "id": "misano",
+   "venue": "misano",
+   "lengthKm": 4.226,
+   "seasons": [],
+   "sources": [
+    "simulator"
+   ],
+   "sim": "misano"
+  },
+  {
+   "id": "sonoma",
+   "venue": "sonoma",
+   "lengthKm": 3.685,
+   "seasons": [],
+   "sources": [
+    "simulator"
+   ],
+   "sim": "sonoma"
+  },
+  {
+   "id": "sachsenring",
+   "venue": "sachsenring",
+   "lengthKm": 3.645,
+   "seasons": [],
+   "sources": [
+    "simulator"
+   ],
+   "sim": "sachsenring"
+  },
+  {
+   "id": "oschersleben",
+   "venue": "oschersleben",
+   "lengthKm": 3.696,
+   "seasons": [],
+   "sources": [
+    "simulator"
+   ],
+   "sim": "oschersleben"
+  },
+  {
+   "id": "zolder",
+   "venue": "zolder",
+   "lengthKm": 4,
+   "seasons": [],
+   "sources": [
+    "simulator"
+   ],
+   "sim": "zolder"
+  },
+  {
+   "id": "donington",
+   "venue": "donington",
+   "lengthKm": 4.003,
+   "seasons": [],
+   "sources": [
+    "simulator"
+   ],
+   "sim": "donington"
+  },
+  {
+   "id": "oulton-park",
+   "venue": "oulton-park",
+   "lengthKm": 4.332,
+   "seasons": [],
+   "sources": [
+    "simulator"
+   ],
+   "sim": "oulton-park"
+  },
+  {
+   "id": "motegi",
+   "venue": "motegi",
+   "lengthKm": 4.801,
+   "seasons": [],
+   "sources": [
+    "simulator"
+   ],
+   "sim": "motegi"
+  },
+  {
+   "id": "buriram",
+   "venue": "buriram",
+   "lengthKm": 4.554,
+   "seasons": [],
+   "sources": [
+    "simulator"
+   ],
+   "sim": "buriram"
+  },
+  {
+   "id": "okayama",
+   "venue": "okayama",
+   "lengthKm": 3.703,
+   "seasons": [],
+   "sources": [
+    "simulator"
+   ],
+   "sim": "okayama"
+  },
+  {
+   "id": "zhuhai",
+   "venue": "zhuhai",
+   "lengthKm": 4.318,
+   "seasons": [],
+   "sources": [
+    "simulator"
+   ],
+   "sim": "zhuhai"
+  },
+  {
+   "id": "vallelunga",
+   "venue": "vallelunga",
+   "lengthKm": 4.085,
+   "seasons": [],
+   "sources": [
+    "simulator"
+   ],
+   "sim": "vallelunga"
+  },
+  {
+   "id": "estoril",
+   "venue": "estoril",
+   "lengthKm": 4.182,
+   "seasons": [],
+   "sources": [
+    "simulator"
+   ],
+   "sim": "estoril"
+  },
+  {
+   "id": "sydney",
+   "venue": "sydney",
+   "lengthKm": 4.5,
+   "seasons": [],
+   "sources": [
+    "simulator"
+   ],
+   "sim": "sydney"
+  },
+  {
+   "id": "sydney-gardner",
+   "venue": "sydney",
+   "lengthKm": 3.905,
+   "seasons": [],
+   "sources": [
+    "simulator"
+   ],
+   "sim": "sydney-gardner"
+  },
+  {
+   "id": "inje",
+   "venue": "inje",
+   "lengthKm": 3.908,
+   "seasons": [],
+   "sources": [
+    "simulator"
+   ],
+   "sim": "inje"
   }
  ]
 }

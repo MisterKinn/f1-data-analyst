@@ -56,6 +56,27 @@ Owner instruction (2026-11-14): where a real lap of a car type exists, use it. T
 | bathurst | Mount Panorama 6.213 km | owner-list-other | 6156 (6213) | 700–874 m | 2 (0) | 0.46 | 0.29 | 1.0102 | 0.72 | – | pass (unseen) |
 | paul-ricard-f1 | F1 layout with the Mistral chicane 5.842 km | f1-history | 5746 (5842) | car positions | 1 (0) | 0.15 | -0.15 | – | – | – | ⚠️ curvature too high in fast corners: the pole lap implies 7.6 g against the 7.0 g limit |
 | rwanda | Provisional 5.302 km (owner diagram) | rwanda | 5196 (5302) | diagram labels | 0 (0) | – | – | – | – | – | ⚠️ provisional: hand-traced from a diagram that disagrees with the official October 2026 figures (about 6 km, 17 corners, anti-clockwise) |
+| paul-ricard | GT / ELMS 5.822 km (FIA list 2026) | owner-2026-11-15 | 5645 (5822) | 414–441 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| paul-ricard-2021 | 1A-V2 5.791 km (FIA list 2024; ELMS timing states 5.771 km) | owner-2026-11-15 | 5668 (5791) | 414–441 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| dubai | Grand Prix circuit 5.390 km | owner-2026-11-15 | 5295 (5390) | 17–37 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| ricardo-tormo | Ricardo Tormo 4.005 km | owner-2026-11-15 | 3940 (4005) | 145–164 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| misano | Misano Adriatico long track 4.226 km | owner-2026-11-15 | 4158 (4226) | 20–28 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| sonoma | Sonoma Raceway 3.685 km | owner-2026-11-15 | 3616 (3685) | 5–51 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| sachsenring | Sachsenring 3.645 km | owner-2026-11-15 | 3578 (3645) | 305–335 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| oschersleben | Motorsport Arena 3.696 km | owner-2026-11-15 | 3615 (3696) | 81–90 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| zolder | Circuit Zolder 4.000 km | owner-2026-11-15 | 3957 (4000) | 29–44 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| donington | Grand Prix circuit 4.003 km | owner-2026-11-15 | 3950 (4003) | 64–98 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| oulton-park | International circuit 4.332 km | owner-2026-11-15 | 4279 (4332) | 54–70 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| motegi | Mobility Resort Motegi road course 4.801 km | owner-2026-11-15 | 4737 (4801) | 149–178 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| buriram | Chang International Circuit 4.554 km | owner-2026-11-15 | 4503 (4554) | 166–182 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| okayama | Okayama International Circuit 3.703 km | owner-2026-11-15 | 3620 (3703) | 251–276 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| zhuhai | Zhuhai International Circuit 4.318 km | owner-2026-11-15 | 4265 (4318) | 0–11 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| vallelunga | International circuit 4.085 km | owner-2026-11-15 | 4009 (4085) | 178–199 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| estoril | Circuito Estoril 4.182 km | owner-2026-11-15 | 4115 (4182) | 118–141 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| jerez | Circuito de Jerez 4.428 km | owner-2026-11-15 | 4358 (4428) | 34–53 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| sydney | Brabham circuit 4.500 km | owner-2026-11-15 | 4405 (4500) | 51–78 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| sydney-gardner | Gardner circuit 3.905 km | owner-2026-11-15 | 3835 (3905) | 51–75 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| inje | Full course 3.908 km | owner-2026-11-15 | 3840 (3908) | 290–364 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 
 Length is the driven or least-curvature line; it is shorter than the official centre-line distance. "Own class" rows are WEC cars on WEC laps; the other rows use a borrowed car (IMSA GTP = LMDh car, every other GT3 series = LMGT3 car, an older F1 season = the 2023 F1 car times the season ratio).
 
@@ -328,6 +349,27 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 | bathurst | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | paul-ricard-f1 | 1 fixed (official) and 2 measured (driven line) | 2 measured (F1 car positions, 8 qualifying laps, 2021) | 2 measured (mean of the fastest qualifying laps) | not used | 2 measured (F1 car positions) | 4 borrowed (mean factor of the class's fitted tracks) |
 | rwanda | 4 stated on a diagram | 4 hand-traced from an oblique diagram of unknown origin | 3 inferred (least-curvature line inside the width) | 4 stated or assumed | 4 seven labels on the diagram, linear between | 4 borrowed (mean factor of the class's fitted tracks) |
+| paul-ricard | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| paul-ricard-2021 | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 4 assumed 12 m | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| dubai | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| ricardo-tormo | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| misano | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| sonoma | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| sachsenring | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| oschersleben | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| zolder | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| donington | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| oulton-park | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| motegi | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| buriram | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| okayama | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| zhuhai | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| vallelunga | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| estoril | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| jerez | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| sydney | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| sydney-gardner | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| inje | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 
 ## Sources
 
@@ -357,6 +399,27 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 - **bathurst**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
 - **paul-ricard-f1**: TracingInsights/2021 on GitHub: French Grand Prix, Qualifying (FastF1 car positions, lap times, corner positions)
 - **rwanda**: Owner's diagram (origin unknown), traced by scripts/sim/tracks/rwanda_trace.py on branch lapsim-laps/all-laps-2026-11-11
+- **paul-ricard**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **paul-ricard-2021**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2024-06-03; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **dubai**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **ricardo-tormo**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **misano**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **sonoma**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **sachsenring**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **oschersleben**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **zolder**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **donington**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **oulton-park**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **motegi**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **buriram**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **okayama**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **zhuhai**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **vallelunga**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **estoril**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2025-12-01; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **jerez**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **sydney**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **sydney-gardner**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **inje**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
 
 ## Not checked, known limits
 

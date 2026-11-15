@@ -218,6 +218,153 @@
    "sources": [
     "Owner's diagram (origin unknown), traced by scripts/sim/tracks/rwanda_trace.py on branch lapsim-laps/all-laps-2026-11-11"
    ]
+  },
+  "paul-ricard": {
+   "group": "owner-2026-11-15",
+   "file": "extra-tracks.json",
+   "candidate": "paul-ricard-paul-ricard",
+   "name": "Paul Ricard",
+   "layout": "GT / ELMS 5.822 km (FIA list 2026)"
+  },
+  "paul-ricard-2021": {
+   "group": "owner-2026-11-15",
+   "file": "extra-tracks.json",
+   "candidate": "paul-ricard-paul-ricard-1av2",
+   "name": "Paul Ricard (2021-24)",
+   "layout": "1A-V2 5.791 km (FIA list 2024; ELMS timing states 5.771 km)"
+  },
+  "dubai": {
+   "group": "owner-2026-11-15",
+   "file": "extra-tracks-2026-11-15.json",
+   "candidate": "dubai-dubai-grand-prix-circuit",
+   "name": "Dubai Autodrome",
+   "layout": "Grand Prix circuit 5.390 km"
+  },
+  "ricardo-tormo": {
+   "group": "owner-2026-11-15",
+   "file": "extra-tracks-2026-11-15.json",
+   "candidate": "valencia-ricardo-tormo-valencia-ricardo-tormo",
+   "name": "Valencia Ricardo Tormo",
+   "layout": "Ricardo Tormo 4.005 km"
+  },
+  "misano": {
+   "group": "owner-2026-11-15",
+   "file": "extra-tracks-2026-11-15.json",
+   "candidate": "misano-misano-adriatico-long-track",
+   "name": "Misano",
+   "layout": "Misano Adriatico long track 4.226 km"
+  },
+  "sonoma": {
+   "group": "owner-2026-11-15",
+   "file": "extra-tracks-2026-11-15.json",
+   "candidate": "sonoma-sonoma-raceway",
+   "name": "Sonoma",
+   "layout": "Sonoma Raceway 3.685 km"
+  },
+  "sachsenring": {
+   "group": "owner-2026-11-15",
+   "file": "extra-tracks-2026-11-15.json",
+   "candidate": "sachsenring-sachsenring",
+   "name": "Sachsenring",
+   "layout": "Sachsenring 3.645 km"
+  },
+  "oschersleben": {
+   "group": "owner-2026-11-15",
+   "file": "extra-tracks-2026-11-15.json",
+   "candidate": "oschersleben-oschersleben-motorsport-arena",
+   "name": "Oschersleben",
+   "layout": "Motorsport Arena 3.696 km"
+  },
+  "zolder": {
+   "group": "owner-2026-11-15",
+   "file": "extra-tracks-2026-11-15.json",
+   "candidate": "zolder-zolder",
+   "name": "Zolder",
+   "layout": "Circuit Zolder 4.000 km"
+  },
+  "donington": {
+   "group": "owner-2026-11-15",
+   "file": "extra-tracks-2026-11-15.json",
+   "candidate": "donington-donington-park",
+   "name": "Donington Park",
+   "layout": "Grand Prix circuit 4.003 km"
+  },
+  "oulton-park": {
+   "group": "owner-2026-11-15",
+   "file": "extra-tracks-2026-11-15.json",
+   "candidate": "oulton-park-oulton-park",
+   "name": "Oulton Park",
+   "layout": "International circuit 4.332 km"
+  },
+  "motegi": {
+   "group": "owner-2026-11-15",
+   "file": "extra-tracks-2026-11-15.json",
+   "candidate": "motegi-twin-ring-motegi-grand-prix",
+   "name": "Motegi",
+   "layout": "Mobility Resort Motegi road course 4.801 km"
+  },
+  "buriram": {
+   "group": "owner-2026-11-15",
+   "file": "extra-tracks-2026-11-15.json",
+   "candidate": "buriram-buriram",
+   "name": "Buriram",
+   "layout": "Chang International Circuit 4.554 km"
+  },
+  "okayama": {
+   "group": "owner-2026-11-15",
+   "file": "extra-tracks-2026-11-15.json",
+   "candidate": "okayama-okayama",
+   "name": "Okayama",
+   "layout": "Okayama International Circuit 3.703 km"
+  },
+  "zhuhai": {
+   "group": "owner-2026-11-15",
+   "file": "extra-tracks-2026-11-15.json",
+   "candidate": "zhuhai-zhuhai",
+   "name": "Zhuhai",
+   "layout": "Zhuhai International Circuit 4.318 km"
+  },
+  "vallelunga": {
+   "group": "owner-2026-11-15",
+   "file": "extra-tracks-2026-11-15.json",
+   "candidate": "vallelunga-vallelunga-international",
+   "name": "Vallelunga",
+   "layout": "International circuit 4.085 km"
+  },
+  "estoril": {
+   "group": "owner-2026-11-15",
+   "file": "extra-tracks-2026-11-15.json",
+   "candidate": "estoril-estoril",
+   "name": "Estoril",
+   "layout": "Circuito Estoril 4.182 km"
+  },
+  "jerez": {
+   "group": "owner-2026-11-15",
+   "file": "extra-tracks-2026-11-15.json",
+   "candidate": "jerez-jerez",
+   "name": "Jerez",
+   "layout": "Circuito de Jerez 4.428 km"
+  },
+  "sydney": {
+   "group": "owner-2026-11-15",
+   "file": "extra-tracks-2026-11-15.json",
+   "candidate": "sydney-sydney-motorsports-park-brabham",
+   "name": "Sydney Motorsport Park",
+   "layout": "Brabham circuit 4.500 km"
+  },
+  "sydney-gardner": {
+   "group": "owner-2026-11-15",
+   "file": "extra-tracks-2026-11-15.json",
+   "candidate": "sydney-sydney-motorsports-park-gardner",
+   "name": "Sydney Motorsport Park (Gardner)",
+   "layout": "Gardner circuit 3.905 km"
+  },
+  "inje": {
+   "group": "owner-2026-11-15",
+   "file": "extra-tracks-2026-11-15.json",
+   "candidate": "inje-inje",
+   "name": "Inje Speedium",
+   "layout": "Full course 3.908 km"
   }
  },
  "laps": [
