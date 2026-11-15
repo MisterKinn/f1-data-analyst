@@ -1,6 +1,19 @@
 // Self-contained lap simulator kernel. Everything the browser needs lives inside one function,
 // so it can be shipped as source text (lapsimKernel.toString()) without depending on module
 // names after bundling. Node modules re-export from the same instance.
+// Engine power at road speed from a torque or power curve and the gear ratios (bug report 2026-11-15: the kernel took neither).
+// car.engine = {rpm: [...], Nm: [...]} or {rpm, kW: [...]} or {rpm, frac: [...]} (share of car.pIce); rpmMax (default: last rpm).
+// car.gears = overall or gearbox ratios, car.finalDrive (default 1), car.tyreRadius (m, rolling). Shifts are seamless; the best gear
+// is used. Below the first curve point the torque of that point holds (clutch). The result never exceeds car.pIce (regulation or BoP cap).
+export function powertrain(car, iceFactor = 1) {
+  const cap = car.pIce * iceFactor, e = car.engine, g = car.gears;
+  if (!e || !e.rpm?.length || !g?.length) return () => cap;
+  const rpm = e.rpm, P = e.kW ? e.kW.map(x => x * 1e3) : e.Nm ? e.Nm.map((T, i) => T * rpm[i] * 2 * Math.PI / 60) : e.frac.map(f => f * car.pIce);
+  const rpmMax = e.rpmMax ?? rpm.at(-1), k = (car.finalDrive ?? 1) * 60 / (2 * Math.PI * (car.tyreRadius ?? 0.35)), n = rpm.length;
+  const at = x => { if (x <= rpm[0]) return P[0] * x / rpm[0]; for (let j = 1; j < n; j++) if (x <= rpm[j]) return P[j - 1] + (P[j] - P[j - 1]) * (x - rpm[j - 1]) / (rpm[j] - rpm[j - 1]); return P[n - 1]; };
+  return v => { let best = 0; for (const r of g) { const x = v * r * k; if (x > rpmMax * 1.0001) continue; const p = at(x); if (p > best) best = p; } return Math.min(cap, best * iceFactor); };
+}
+
 export function lapsimKernel() {
   // Air and wind for the lap simulator. Pure functions, shared by server and browser.
 
@@ -138,7 +151,7 @@ export function lapsimKernel() {
     const mg = t.m * G;
     const mu = track.mu, vScale = track.vScale, aeroLow = track.aeroLow, grade = track.grade, heading = track.heading;
     const etaD = car.etaDrive ?? 0.96, etaK = car.etaErs ?? 0.95;
-    const pIce = car.pIce * iceFactor;
+    const pIce = car.pIce * iceFactor, pAt = powertrain(car, iceFactor); // pAt(v): engine power at road speed v (torque curve and gears; flat pIce without them)
     const ers = car.ers || {pMax: 0};
     const vMaxCar = car.vMax ?? 110;
     const cRoll = car.cRoll ?? 0.012;
@@ -246,7 +259,7 @@ export function lapsimKernel() {
           const low = lowAt(i);
           const va = vAir(vi, i), L = aeroFactor * clAt(i, low) * va * va, N = normalAt(vi, i, L);
           const pErs = vi < vCut && (!track || soc > 0) ? erskLimitW(ers.rule, vi, ers.pMax || 0) : 0;
-          const fPow = (pIce * etaD + pErs * etaK * etaD) / vi;
+          const pI = pAt(vi), fPow = (pI * etaD + pErs * etaK * etaD) / vi;
           const nRear = t.rearStatic * (kv ? N - L : mg * cosG[i]) + t.rearAero * L;
           const muX = muAt(i) * (t.muXTrac / t.muY0) * pureCap(i, N) / N;
           // LMH hybrids also drive the front axle above a set speed (awdAboveKph): all four tyres
@@ -256,12 +269,12 @@ export function lapsimKernel() {
           powerLimited[i] = fPow <= fTrac ? 1 : 0;
           harv[i] = 0;
           if (throttleHarvest) {
-            const spare = pIce * etaD - fDrive * vi; // W at the wheels the ICE could still give
+            const spare = pI * etaD - fDrive * vi; // W at the wheels the ICE could still give
             if (spare > 0) harv[i] = Math.min(clipMax, spare / etaD) * etaRegen;
-            else if (pErs === 0 && vi > vH) { const pc = Math.min(clipMax, pIce); fDrive -= pc * etaD / vi; harv[i] = pc * etaRegen; }
+            else if (pErs === 0 && vi > vH) { const pc = Math.min(clipMax, pI); fDrive -= pc * etaD / vi; harv[i] = pc * etaRegen; }
           }
           // DC power the ERS-K actually supplies: whatever the ICE cannot, up to its limit
-          ersUsed[i] = pErs > 0 ? Math.min(pErs, Math.max(0, fDrive * vi - pIce * etaD) / (etaK * etaD)) : 0;
+          ersUsed[i] = pErs > 0 ? Math.min(pErs, Math.max(0, fDrive * vi - pI * etaD) / (etaK * etaD)) : 0;
           // Hypercar hybrids (LMH front axle, LMDh rear axle): the BoP caps total power, so the motor
           // replaces engine power rather than adding to it; it can only drive above its deploy speed
           if (ers.rule === 'hypercar') ersUsed[i] = vi > (ers.deployFrom || 0) && vi < vCut ? Math.min(ers.eMax || 0, fDrive * vi / etaD) : 0;

@@ -383,3 +383,20 @@ A learned factor must be inside 0.88–1.21, the range of the production track f
 - A learned factor absorbs line and car error as well as surface grip. Seven map-line tracks need 1.05–1.12: the map line is too slow there.
 - Most rows use a borrowed car (IMSA GTP = LMDh, other GT3 series = LMGT3). Only Fuji and Le Mans have own-class rows.
 - The 7.0 g limit was chosen after the values of the new tracks were seen.
+
+## Powertrain: torque curve and gears (2026-11-15)
+
+Bug report 2026-11-15: the kernel took no engine torque curve or gear ratios, and the tool showed an LMDh going faster with more
+drag. Fixed for every car:
+
+- `kernel.js powertrain(car)`: engine power at road speed from `car.engine` (`rpm` with `Nm`, `kW` or `frac` of `pIce`) and
+  `car.gears` (+ `finalDrive`, `tyreRadius`). The best gear is used, shifts are seamless, power above the top gear's rev limit is
+  zero, and power never exceeds `pIce` (the regulation or BoP cap). A car without a curve keeps flat `pIce`.
+- `worker/lapsim/powertrains.js`: presets per rule set (engineering estimates, ratios checked with Wolfram): F1 fuel-flow curve,
+  15 000 rpm, 8 gears; Hypercar 8 600 rpm, 7 gears; GT3 8 000 rpm, 6 gears; Formula E one reduction gear, constant torque to a
+  quarter of 20 000 rpm. Effect on fitted laps: below 0.25 % (largest GT3 at Le Mans, 0.17 %), so the calibrations stand.
+- Tool inputs: `torque_curve` or `power_curve_kw`, `gear_ratios`, `final_drive`, `tyre_radius_m`, `rpm_limit`, `engine_power_kw`,
+  `drag_cda`, `downforce_cla`. The real-lap correction of the unchanged car is kept, so a change shows as a difference from the real lap.
+- Drag bug: the sensitivity table compared the changed bare simulation with the corrected (real) lap; it now compares bare with
+  bare. Test: `tests/lapsim.test.mjs` (sign of every sensitivity, more drag is slower).
+- Known limit: the 2026 F1 car on Daytona (a track F1 never ran) gives a wrong grip sign through the energy-management heuristic.

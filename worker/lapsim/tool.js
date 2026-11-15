@@ -39,6 +39,15 @@ export const LAPSIM_TOOLS = [{name: 'lapsim_simulate',
     drying_time_min: num(0, 300, 'Track evolution: drying time constant (min; 0 = does not dry).'),
     tyre: {type: 'string', enum: ['slick', 'inter', 'wet'], description: 'Track evolution: tyre type on a wet track. Intermediates exist only in F1; WEC Hypercar and LMGT3 have slicks and wets only (inter is treated as wet there).'},
     tyre_warmup_laps: num(0, 5, 'Track evolution: laps after the out-lap before the tyre is at its best.'),
+    torque_curve: {type: 'array', maxItems: 40, items: {type: 'array', items: {type: 'number'}, minItems: 2, maxItems: 2}, description: 'Engine torque curve as [rpm, Nm] pairs (ascending rpm). Replaces the preset shape of the car; power is still capped at the car\'s regulation or BoP power. Give with gear_ratios.'},
+    power_curve_kw: {type: 'array', maxItems: 40, items: {type: 'array', items: {type: 'number'}, minItems: 2, maxItems: 2}, description: 'Alternative to torque_curve: [rpm, kW] pairs.'},
+    gear_ratios: {type: 'array', minItems: 1, maxItems: 10, items: {type: 'number', minimum: 0.3, maximum: 30}, description: 'Gearbox ratios, 1st to top (overall ratios when final_drive is not given).'},
+    final_drive: num(0.5, 15, 'Final drive ratio (default 1: gear_ratios are overall ratios).'),
+    tyre_radius_m: num(0.2, 0.5, 'Rolling tyre radius (m) for the gearing.'),
+    rpm_limit: num(1000, 25000, 'Rev limit (rpm); default the last point of the curve.'),
+    engine_power_kw: num(50, 1500, 'Engine power cap (kW) replacing the car\'s regulation or BoP value.'),
+    drag_cda: num(0.2, 3, 'Drag area CdA (m²) replacing the car\'s value (low-drag mode scales with it).'),
+    downforce_cla: num(0, 8, 'Downforce area ClA (m²) replacing the car\'s value (low-drag mode scales with it).'),
   }, additionalProperties: false}, annotations: ro}];
 
 export const LAPSIM_INSTRUCTIONS = ' LAP SIMULATOR: for what-if questions about lap time (F1 car generation 2019/2025/2026/2027/2028 or WEC Hypercar/LMGT3, air density or altitude, temperature, humidity, wind, FIA resurfacing or kerb changes, track evolution over a session: rubber, drying, tyre warm-up), call lapsim_simulate. Report its numbers as provisional model estimates with the error range, confidence label and assumptions it returns, keep real and simulated times apart, and never present them as a prediction of a real session result. Show the conditions used (with their sources) and link the /simulation page it returns.';
@@ -66,13 +75,29 @@ function summary(res, d, car) {
     limited_by_pct_of_lap: {cornering_grip: pct(share[0]), traction: pct(share[1]), power: pct(share[2]), braking: pct(share[3])}, corners};
 }
 
+const selKey0 = args => carKey(args.car || '2026');
 export function simulate(args = {}) {
   const ids = Object.keys(lapsimTracks).sort();
   if (!ids.length) return {status: 'unavailable', message: 'Track and calibration data are still being built.'};
   const id = args.track ? resolveTrack(args.track, ids) : null;
   if (!id) return {status: args.track ? 'track_not_found' : 'tracks', tracks: ids.map(k => ({id: k, name: TRACK_NAMES[k]?.[1] || k}))};
   const d = lapsimTracks[id], base = K.trackFromData(d), cars = carsFor(id), conds = realConditions(id);
-  const selKey = carKey(args.car || '2026'), sel = cars[selKey];
+  const selKey = carKey(args.car || '2026'), sel = cars[selKey] = {...cars[selKey0(args)]};
+  // user powertrain and aero (bug report 2026-11-15): torque curve, gears, power, drag and downforce replace the car's values
+  const given = [];
+  if (args.torque_curve || args.power_curve_kw || args.gear_ratios || Number.isFinite(args.engine_power_kw) || Number.isFinite(args.drag_cda) || Number.isFinite(args.downforce_cla)) {
+    const c = {...sel.car}, cv = args.torque_curve || args.power_curve_kw;
+    if (cv) { const pts = [...cv].filter(p => p[0] > 0 && p[1] > 0).sort((a, b) => a[0] - b[0]); if (pts.length >= 2) { c.engine = {rpm: pts.map(p => p[0]), [args.torque_curve ? 'Nm' : 'kW']: pts.map(p => p[1]), rpmMax: args.rpm_limit ?? pts.at(-1)[0]}; given.push('engine curve'); } }
+    else if (Number.isFinite(args.rpm_limit) && c.engine) c.engine = {...c.engine, rpmMax: args.rpm_limit};
+    if (args.gear_ratios) { c.gears = [...args.gear_ratios]; c.finalDrive = args.final_drive ?? 1; given.push('gear ratios'); } else if (Number.isFinite(args.final_drive)) c.finalDrive = args.final_drive;
+    if (Number.isFinite(args.tyre_radius_m)) c.tyreRadius = args.tyre_radius_m;
+    if (Number.isFinite(args.engine_power_kw)) { c.pIce = args.engine_power_kw * 1e3; given.push('engine power'); }
+    if (cv && args.torque_curve && !Number.isFinite(args.engine_power_kw)) c.pIce = Math.max(c.pIce, Math.max(...c.engine.Nm.map((T, i) => T * c.engine.rpm[i] * 2 * Math.PI / 60))); // the curve itself sets the power when no cap is given
+    if (Number.isFinite(args.drag_cda)) { const f = args.drag_cda / c.cdA; c.cdA = args.drag_cda; if (c.cdALow) c.cdALow *= f; given.push('drag'); }
+    if (Number.isFinite(args.downforce_cla)) { const f = args.downforce_cla / c.clA; c.clA = args.downforce_cla; if (c.clALow) c.clALow *= f; given.push('downforce'); }
+    // the real-lap correction of the unchanged car stays (real lap minus its simulated lap), so the change shows as a difference from the real lap
+    cars.__base = {...sel}; sel.car = c; if (sel.fix) sel.fix = {...sel.fix, ref: '__base'};
+  }
   // weather: the real qualifying session of the car's season (else the latest), overridden by inputs
   const own = sel.series ? selKey : String(sel.year);
   const realYear = conds[own] ? own : conds['2026'] ? '2026' : Object.keys(conds)[0];
@@ -138,8 +163,11 @@ export function simulate(args = {}) {
       note: 'projections add half the historical development range'}};
   // sensitivity table (common rule, as Formula Student teams report it): lap-time change for +10%
   const plus = (k, f) => { const c = structuredClone(sel.car); if (k === 'muY') { c.muX *= f; c.muY *= f; c.muXTrac = (c.muXTrac ?? c.muX) * f; } else if (k === 'clA') { c.clA *= f; c.clALow = (c.clALow ?? c.clA) * f; } else if (k === 'cdA') { c.cdA *= f; c.cdALow = (c.cdALow ?? c.cdA) * f; } else c[k] *= f; return c; };
+  // the change is measured against the same bare simulation (no real-lap correction), scaled like the shown lap: comparing with the
+  // corrected lap gave the correction's size, not the parameter's (bug report 2026-11-15: more drag made an LMDh faster)
+  const bare = c => K.simulateLap(withGrip(track, sel.grip || 1), c, env).lapTime * (sel.timeScale || 1), b0 = bare(sel.car);
   out.sensitivity_s_per_plus_10pct = Object.fromEntries(['mass', 'muY', 'clA', 'cdA', 'pIce'].map(k => [k === 'muY' ? 'tyre_grip' : k === 'pIce' ? 'engine_power' : k === 'clA' ? 'downforce_clA' : k === 'cdA' ? 'drag_cdA' : 'mass',
-    r3(K.simulateLap(withGrip(track, sel.grip || 1), plus(k, 1.1), env).lapTime - res.lapTime)]));
+    r3(bare(plus(k, 1.1)) - b0)]));
   // track evolution: only when asked, so the default output is unchanged
   if (['session_type', 'session_minute', 'rubber_gain_pct', 'saturation_min', 'track_wetness_start', 'drying_time_min', 'tyre', 'tyre_warmup_laps'].some(k => args[k] !== undefined)) {
     const se = sel.series === 'wec' ? 'wec' : 'f1', type = args.session_type || 'qualifying', c = evolutionCoeffs(se, id, type), qc = evolutionCoeffs(se, id, 'qualifying');
@@ -179,7 +207,7 @@ export function simulate(args = {}) {
     items: ch.changes.map(c => ({text: c.text, type: c.type, affects_lap: c.affectsLap, assumed_effect: c.affectsLap ? c.effect?.en : null})),
     applied: applied.map(a => ({type: a.type, applied: a.applied, from_m: a.sStart != null ? Math.round(a.sStart) : null, to_m: a.sEnd != null ? Math.round(a.sEnd) : null})),
     note: fittedYear(id) >= ch.year ? `The cars were fitted on a real ${fittedYear(id)} lap that already ran with these changes; switching them on adds them a second time.` : 'Not yet in the fitted laps: switch them on to estimate their effect.'};
-  out.assumptions = ['Grip versus track temperature is an assumed curve (best near 35 °C).', 'Engine power changes with air density as (density/1.18)^0.15 (assumed for a turbocharged engine).',
+  out.assumptions = [...(given.length ? [`Given by you: ${given.join(', ')}; the real-lap correction of the unchanged car is kept, so the result is the real lap plus the simulated difference.`] : []), 'Engine power follows a torque curve and gear ratios (preset per rule set in powertrains.js unless given), capped at the regulation or BoP power.', 'Grip versus track temperature is an assumed curve (best near 35 °C).', 'Engine power changes with air density as (density/1.18)^0.15 (assumed for a turbocharged engine).',
     'FIA change effects are assumed sizes, not measurements.', 'No gear shifts, tyre temperature, fuel burn or car-to-car effects.', '2026-2028 energy: recovered under braking and, on throttle, from engine power the tyres cannot use; harvesting at full throttle at the end of straights ("super-clipping") is used only when it makes the lap faster; per-event qualifying recharge limit from 2026 press reports (FIA values per circuit), reused for 2027/2028.'];
   out.page = `${SITE}/simulation?track=${encodeURIComponent(id)}&car=${selKey}`;
   return out;

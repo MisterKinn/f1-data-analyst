@@ -298,3 +298,17 @@ test('series cars: every raced session on a simulator track reproduces the real 
   assert.ok(n > 0);
   assert.equal(simulate({track: 'montreal', car: 'imsa-gtp'}).uncertainty.confidence, 'provisional');
 });
+
+test('powertrain and drag (bug report 2026-11-15): torque curve and gears are used, more drag is never faster, sensitivities have the physical sign', async () => {
+  const {simulate} = await import('../worker/lapsim/tool.js'), {powertrain} = await import('../worker/lapsim/kernel.js');
+  const p = powertrain({pIce: 500e3, engine: {rpm: [4000, 10500, 15000], frac: [0.4, 1, 0.9]}, gears: [4.72], tyreRadius: 0.36});
+  assert.ok(p(20) < p(90) && p(130) === 0, 'power follows the curve and stops above the rev limit');
+  for (const car of ['2026', 'wec-lmh', 'wec-lmdh', 'gt3-ferrari-296-gt3', 'fe-gen3evo']) for (const track of ['le-mans', 'monza', 'spa-francorchamps', 'catalunya', 'sakhir']) {
+    const s = simulate({track, car}).sensitivity_s_per_plus_10pct;
+    assert.ok(s.drag_cdA > 0 && s.mass > 0 && s.engine_power <= 0 && s.tyre_grip < 0, `${track} ${car} ${JSON.stringify(s)}`);
+  }
+  const laps = [1.0, 1.2, 1.4].map(d => simulate({track: 'le-mans', car: 'wec-lmdh', drag_cda: d}).result.lap_seconds);
+  assert.ok(laps[0] < laps[1] && laps[1] < laps[2], 'LMDh: more drag, slower: ' + laps);
+  const g = simulate({track: 'monza', car: 'gt3-ferrari-296-gt3', torque_curve: [[2500, 500], [6000, 700], [8000, 540]], gear_ratios: [3.1, 2.3, 1.85, 1.5, 1.25, 1.08], final_drive: 3, tyre_radius_m: 0.34});
+  assert.equal(g.status, 'ok'); assert.ok(g.result.top_speed_kph < 300);
+});

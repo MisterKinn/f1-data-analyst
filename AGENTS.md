@@ -29,6 +29,7 @@ Read `docs/lapsim-learn.md` first and follow it together with `docs/lapsim-physi
 12. WEC class cars (`wec-lmh`, `wec-lmdh`, `wec-lmgt3`) show WEC records first; another series only fills a track WEC never raced. A car with an Evo or Evo 2 kit opens on its newest kit.
 13. Formula E is learned per rule set (Gen2, Gen3, Gen3 Evo; Gen4 prior) on tracks built from the official FIA Formula E circuit maps (`scripts/sim/learn/build-fe.mjs`, docs/lapsim-learn.md section 8). Every raced layout and rule set must show its fastest real lap. Source: Al Kamel Formula E results, https://results.formulae.fia.com
 14. GT3 page: model first, then series spec (SRO GT3, IMSA GTD, WEC LMGT3, DTM), then kit; WEC lists LMH and LMDh only. Tyres follow the spec: SRO/DTM Pirelli, IMSA GTD Michelin, LMGT3 Goodyear; FE Gen2 Michelin, Gen3/Evo Hankook, Gen4 Bridgestone. Every raced GT3 model is listed, older generations too.
+15. Every car has an engine curve and gear ratios (`worker/lapsim/powertrains.js`; kernel `powertrain()`), capped at its regulation or BoP power; the tool takes a user torque curve, gears, power, drag and downforce. Unknown values are engineering estimates checked with Wolfram, stated in docs/lapsim-physics-rules.md.
 
 Sources learned so far or to be learned (the full table with the state of each is `docs/lapsim-learn.md` section 6; add every new source there and here):
 
