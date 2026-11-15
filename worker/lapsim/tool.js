@@ -1,5 +1,6 @@
 // lapsim_simulate: the lap simulator as a connector tool. Same engine, tracks and calibration as
 // the /simulation page (worker/lapsim/scenario.js), so the page and the tool agree.
+import {withZones} from './zones.js';
 import {lapsimKernel} from './kernel.js';
 import {lapsimAllTracks as lapsimTracks} from './tracks.js';
 import {lapsimCalibration} from './calibration-data.js';
@@ -129,16 +130,16 @@ export function simulate(args = {}) {
   const corrOf = c => {
     if (c.fix?.lap != null) { // lap-level correction (series whose sector lines may differ from these): spread by sector share
       const ref = cars[c.fix.ref], fw = Object.fromEntries(Object.entries(c.fix.weather || {}).filter(([, v]) => Number.isFinite(v)));
-      const r = K.simulateLap(withGrip(base, ref.grip || 1), ref.car, K.conditionsFromWeather({pressureHpa: 1013.25, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0, ...fw}));
+      const r = K.simulateLap(withGrip(withZones(K, d, base, ref), ref.grip || 1), ref.car, K.conditionsFromWeather({pressureHpa: 1013.25, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0, ...fw}));
       const rs = scaled(r, ref.timeScale), ss = secOf(rs) || [rs.lapTime, 0, 0], dl = c.fix.lap - rs.lapTime; return ss.map(x => dl * x / rs.lapTime);
     }
     if (!c.fix || d.sectors?.length !== 2) return null;
     const ref = cars[c.fix.ref], fw = Object.fromEntries(Object.entries(c.fix.weather || {}).filter(([, v]) => Number.isFinite(v)));
-    const ss = secOf(K.simulateLap(withGrip(base, ref.grip || 1), ref.car, K.conditionsFromWeather({pressureHpa: 1013.25, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0, ...fw, rechargeMJ: rechargeMJ ?? undefined})));
+    const ss = secOf(K.simulateLap(withGrip(withZones(K, d, base, ref), ref.grip || 1), ref.car, K.conditionsFromWeather({pressureHpa: 1013.25, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0, ...fw, rechargeMJ: rechargeMJ ?? undefined})));
     return c.fix.real.map((x, i) => x - ss[i]);
   };
   const run = c => {
-    const r = scaled(K.simulateLap(withGrip(track, c.grip || 1), c.car, env), c.timeScale), k = corrOf(c), sec = secOf(r);
+    const r = scaled(K.simulateLap(withGrip(withZones(K, d, track, c), c.grip || 1), c.car, env), c.timeScale), k = corrOf(c), sec = secOf(r);
     return k && sec ? {...r, lapTime: r.lapTime + k[0] + k[1] + k[2], sectors: sec.map((x, i) => x + k[i]), sectorCorrection: k} : k ? {...r, lapTime: r.lapTime + k.reduce((a, b) => a + b, 0), sectorCorrection: k} : r;
   };
   const res = run(sel);
