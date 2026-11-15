@@ -6,14 +6,14 @@ import {lapsimAllTracks as lapsimTracks} from '../worker/lapsim/tracks.js';
 import {carsFor, realConditions, CAR_ORDER} from '../worker/lapsim/scenario.js';
 
 const noFlag = s => s.replace(/^[\u{1F1E6}-\u{1F1FF}]{2}/u, '');
-const OWNER = {melbourne: 'AUS - Melbourne', 'spa-francorchamps': 'BEL - Spa', sakhir: 'BHA - Bahrain', 'sakhir-outer': 'BHA - Bahrain(Outer)',
+const OWNER = {melbourne: 'AUS - Melbourne', 'spa-francorchamps': 'BEL - Spa', sakhir: 'BHR - Bahrain', 'sakhir-outer': 'BHR - Bahrain(Outer)',
   interlagos: 'BRA - Interlagos', montreal: 'CAN - Montreal', 'le-mans': 'FRA - Le Mans', silverstone: 'GBR - Silverstone', monza: 'ITA - Monza',
   mugello: 'ITA - Mugello', yeongam: 'KOR - Yeongam', 'mexico-city': 'MEX - Mexico City', rwanda: 'RWA - Rwanda⚠️', austin: 'USA - COTA',
   indianapolis: 'USA - Indianapolis', 'las-vegas': 'USA - Las Vegas', sebring: 'USA - Sebring', 'road-atlanta': 'USA - Road Atlanta'};
 
 test('track labels use the owner format: flag, 3-letter code, " - ", name', () => {
   for (const [id, label] of Object.entries(OWNER)) assert.equal(noFlag(trackLabel(id)), label);
-  assert.equal(trackLabel('sakhir-outer'), '🇧🇭BHA - Bahrain(Outer)'); assert.equal(trackLabel('yeongam'), '🇰🇷KOR - Yeongam'); assert.equal(trackLabel('rwanda'), '🇷🇼RWA - Rwanda⚠️');
+  assert.equal(trackLabel('sakhir-outer'), '🇧🇭BHR - Bahrain(Outer)'); assert.equal(trackLabel('yeongam'), '🇰🇷KOR - Yeongam'); assert.equal(trackLabel('rwanda'), '🇷🇼RWA - Rwanda⚠️');
 });
 
 test('every track in the simulator data has a label in that format', () => {
@@ -22,7 +22,7 @@ test('every track in the simulator data has a label in that format', () => {
 
 test('tracks are sorted by the 3-letter code, then by name', () => {
   const ids = trackOrder(Object.fromEntries(Object.keys(OWNER).reverse().map(id => [id, {}])));
-  assert.deepEqual(ids.map(id => noFlag(trackLabel(id))), ['AUS - Melbourne', 'BEL - Spa', 'BHA - Bahrain', 'BHA - Bahrain(Outer)', 'BRA - Interlagos',
+  assert.deepEqual(ids.map(id => noFlag(trackLabel(id))), ['AUS - Melbourne', 'BEL - Spa', 'BHR - Bahrain', 'BHR - Bahrain(Outer)', 'BRA - Interlagos',
     'CAN - Montreal', 'FRA - Le Mans', 'GBR - Silverstone', 'ITA - Monza', 'ITA - Mugello', 'KOR - Yeongam', 'MEX - Mexico City', 'RWA - Rwanda⚠️',
     'USA - COTA', 'USA - Indianapolis', 'USA - Las Vegas', 'USA - Road Atlanta', 'USA - Sebring']);
 });
