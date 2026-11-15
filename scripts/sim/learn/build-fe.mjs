@@ -1,13 +1,13 @@
 // Formula E: tracks from the official circuit maps and a learned lap-time model per rule set (Gen2, Gen3, Gen3 Evo; Gen4 prior).
 //   node scripts/sim/learn/build-fe.mjs
 // In:  scripts/sim/data/learn/fe-maps.json (FIA / Al Kamel circuit-map PDFs, fetch-fe-maps.mjs), fe-cars.csv.gz (Al Kamel, every
-//      session of seasons 5-12, one row per car and session).
+//      session of seasons 5-12, one row per car and session), fe-duels.csv (qualifying duels, PDF classifications; optional).
 // Out: worker/lapsim/fe-tracks-data.js (lapsimFeTracks), worker/lapsim/fe-data.js (lapsimFe), scripts/sim/data/learn/fe-fit.json.
 // Model (log scale, ridge): log(real) = log(sim of the rule-set car at the session's power, session weather) + G(rule set) + T(layout);
 // T ~ N(0, 0.05). Session power (fe-cars.js feCarFor): qualifying groups below full power (Gen3 300 kW, Season 8 220 kW), duels and
 // practice at full power, so G holds no power deficit and exp(G + T) on the full-power page car predicts a full-power lap.
 // Reproduction: every layout and rule set that raced keeps its fastest real lap (owner rule 2026-11-14).
-import {readFileSync, writeFileSync} from 'node:fs';
+import {existsSync, readFileSync, writeFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
 import {lapsimKernel} from '../../../worker/lapsim/kernel.js';
 import {lapsimTracks, lapsimExtraTracks} from '../../../worker/lapsim/tracks-data.js';
@@ -56,7 +56,11 @@ for (const l of layouts) {
 }
 
 // 3. Rows: Al Kamel car-session bests, matched to a layout by venue and measured length
-const rows = parseCsv(gunzipSync(readFileSync(D + 'fe-cars.csv.gz')).toString()).map(r => ({...r, season: +r.season, best: +r.best, lenM: +r.lenKm * 1000, venue: venueOf(r.event)}))
+const base = parseCsv(gunzipSync(readFileSync(D + 'fe-cars.csv.gz')).toString());
+// duels (fetch-fe-duels.mjs, PDF classifications): lap length, car and team from the same car's group row of that event
+const duels = existsSync(D + 'fe-duels.csv') ? parseCsv(readFileSync(D + 'fe-duels.csv', 'utf8')).flatMap(d => {
+  const g = base.find(r => r.season === d.season && r.event === d.event && r.entry === d.entry && r.type === 'Q'); return g ? [{...g, ...d, session: d.session, type: 'Q', vehicle: g.vehicle, team: g.team, lenKm: g.lenKm}] : []; }) : [];
+const rows = [...base, ...duels].map(r => ({...r, season: +r.season, best: +r.best, lenM: +r.lenKm * 1000, venue: venueOf(r.event)}))
   .filter(r => r.best > 0 && r.lenM > 0);
 const skipped = {};
 for (const r of rows) { const l = layouts.find(l => l.venue === r.venue && Math.abs(r.lenM / l.lengthM - 1) < SAME); r.layout = l?.sim; r.key = feKeyOf(r.season);

@@ -304,5 +304,40 @@ Per track:
 | fe-cape-town | 1 | 5.64 | 4.41 |
 | fe-valencia | 1 | 7.4 | 1.9 |
 
-Not done: Gen2 layouts with no map (Hong Kong, Paris, Santiago, Seoul, New York, Puebla, Marrakesh, Bern, older London/Monaco/Rome/
-Valencia layouts) have records only in the data, not on the page; group qualifying (300 kW) and duels (350 kW) are not separated.
+**Group and duel power (2026-11-15).** A qualifying lap is simulated at the power of its session (`feCarFor()` in
+`worker/lapsim/fe-cars.js`): Gen3 and Gen3 Evo groups 300 kW, duels and free practice 350 kW; Season 8 (2021-22, Gen2) groups 220 kW,
+duels 250 kW; Seasons 5-7 250 kW (fiaformulae.com, groups and duels format). Before, the group laps were fitted against the 350 kW car,
+so G held the power deficit. Bare-car error dropped (Gen3 Evo 6.40 → 5.09 %, Gen3 5.87 → 5.34 %); event-hidden error is unchanged for
+Gen3 Evo (2.35 → 2.34) and Gen3 (2.88 → 2.87) and rose for Gen2 (1.86 → 2.13, Season 8 group laps now at 220 kW). G per rule set is now
+power-free: exp(G + T) on the full-power page car predicts a full-power lap. Every record carries the `kW` of its session.
+The duels are published only as PDF classifications (no Analysis CSV): `fetch-fe-duels.mjs` reads them into `fe-duels.csv`.
+
+**Season 5-8 maps (2026-11-15).** `fetch-fe-maps-gen2.mjs` read 53 more official maps (122 in all). None gives a vector lap line: the
+older PDFs are raster images or draw the track as thin black outlines. So the Gen2 street venues (Hong Kong, Paris, Santiago, Seoul,
+New York, Puebla, Marrakesh, Bern, older London/Monaco/Rome/Valencia) still have records only, not a track. The new maps widen the
+seasons of layouts that already had a line (Berlin 2.355 km 2020-23, Rome 2021-23, Valencia 2021-26, Diriyah 2019-24, Mexico 2020-26);
+the track id comes from the first map that gives the line, so ids do not change. Next step for those venues: centre line from the
+two black outline strokes of the Season 8 maps.
+
+## 9. Tracks, third pass (2026-11-15)
+
+Request files `scripts/sim/data/track-requests-2026-11-15c.json` and `-d.json`, runners `fetch-osm-tracks-c.mjs` / `-d.mjs` (Actions),
+candidates `scripts/sim/data/tracks/extra-tracks-2026-11-15c.json` / `-d.json`. The OpenStreetMap ways were read offline first through
+`probe-tracks3.mjs` (raw ways printed into the job log only; `probe-tracks3.json` keeps counts). Rule unchanged: a lap is accepted only
+within 0.5 % of the official length unless a wider tolerance is written in the request with its reason.
+
+| Track | Official | Map lap | Result |
+|---|---|---|---|
+| Sebring | 6,019 m (FIA) | 5,887 m (−2.2 %) | No piece is missing: every raceway way is on the lap and no way end is open. The map is short everywhere by the same share (Johnson Club Circuit loop 2,688 vs 2,736 m, −1.8 %; School Circuit loop 3,140 vs 3,219 m, −2.5 %), so the shape is kept and the lap is scaled to 6.019 km (`scaleToOfficial`). Provisional mark removed. Unseen check: 12 real laps, RMS 1.86 % (pass, no track factor fitted) |
+| Aragón | 5,346 m (FIA) | 5,333 m (−0.24 %) | Built (the first run had no map data). Registry layout `aragon-5344` is now `aragon` with the simulator track |
+| Lausitz DTM | 3,478 m (FIA) | 3,473 m (−0.14 %) | Built. The DEKRA test oval and slalom areas are skipped (`skipName`) and tagged pit lanes are no longer lap ways. Twenty loops fit the length; only one drives the one-way raceway pieces in their mapped direction (1 % against, the next 5 %), and that one is accepted (`oneway`) |
+| Autopolis | 4,674 m (FIA) | 4,640 m (−0.73 %) | Built with a stated 0.8 % tolerance (one closed map way plus the start/finish piece; same practice as Phillip Island 0.7 %) |
+| Snetterton 300 | 4,779 m | 4,789 m (+0.21 %) | Built. The FIA list has only the 1997–2010 lap (3.141 km), so the length is the circuit's stated 300 layout |
+| The Bend | 4,950 m (FIA) | open way 4,754 m | Not built: the circuit way is open and its ends do not meet in a straight line (nearest pass 127 m); the join would be invented |
+| Barber | 3,830 m (FIA) | 3,720 m (−2.9 %) | Not built: one closed way, short, and no second layout to show that the shortfall is spread (as at Sebring) |
+| Sugo | 3,704 m (FIA) | 3,617 m (−2.35 %) | Not built, same reason |
+| Long Beach, Detroit (2023+), Norisring | 3,167 / 2,647 / 2,162 m | – | Not built. A named-road method (roads and raceway pieces joined in lap order at map junctions, same acceptance) was tried offline, but these laps use both carriageways of one road with hairpins through median openings (Detroit Jefferson Avenue, Norisring Beuthener Straße) or unnamed car-park roads (Long Beach fountain and aquarium section), which road names cannot describe. Best named-road loops: Long Beach 2,528 m, Detroit 2,324 m. Next step: the official circuit-map PDFs (as for Formula E) |
+
+Aragón, Lausitz, Autopolis and Snetterton have no real lap of a calibrated class yet, so they carry ⚠️ (`trackWarn()`).
+Laps already in the tables that now have geometry: Sebring (IMSA and WEC, 301 rows) and Aragón (ELMS 2023, 17 rows); the learning
+step (`fit-endurance.mjs`) must be rerun to use them.

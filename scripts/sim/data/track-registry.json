@@ -1091,6 +1091,20 @@
    "aliases": [
     "phillip island"
    ]
+  },
+  "autopolis": {
+   "name": "Autopolis",
+   "country": null,
+   "aliases": [
+    "autopolis"
+   ]
+  },
+  "snetterton": {
+   "name": "Snetterton",
+   "country": null,
+   "aliases": [
+    "snetterton"
+   ]
   }
  },
  "layouts": [
@@ -1182,7 +1196,7 @@
    "default": true
   },
   {
-   "id": "aragon-5344",
+   "id": "aragon",
    "venue": "aragon",
    "lengthKm": 5.344,
    "seasons": [
@@ -1192,9 +1206,11 @@
     ]
    ],
    "sources": [
-    "alkamel:elms"
+    "alkamel:elms",
+    "simulator"
    ],
-   "default": true
+   "default": true,
+   "sim": "aragon"
   },
   {
    "id": "austin-5473",
@@ -4398,7 +4414,7 @@
    "lengthKm": 2.608,
    "seasons": [
     [
-     2026,
+     2020,
      2026
     ]
    ],
@@ -4428,7 +4444,7 @@
    "lengthKm": 3.376,
    "seasons": [
     [
-     2024,
+     2021,
      2026
     ]
    ],
@@ -4548,7 +4564,7 @@
    "lengthKm": 2.495,
    "seasons": [
     [
-     2023,
+     2019,
      2024
     ]
    ],
@@ -4578,7 +4594,7 @@
    "lengthKm": 3.38,
    "seasons": [
     [
-     2023,
+     2021,
      2023
     ]
    ],
@@ -4593,7 +4609,7 @@
    "lengthKm": 2.355,
    "seasons": [
     [
-     2023,
+     2020,
      2023
     ]
    ],
@@ -4806,6 +4822,36 @@
     "simulator"
    ],
    "sim": "phillip-island"
+  },
+  {
+   "id": "autopolis",
+   "venue": "autopolis",
+   "lengthKm": 4.674,
+   "seasons": [],
+   "sources": [
+    "simulator"
+   ],
+   "sim": "autopolis"
+  },
+  {
+   "id": "snetterton",
+   "venue": "snetterton",
+   "lengthKm": 4.779,
+   "seasons": [],
+   "sources": [
+    "simulator"
+   ],
+   "sim": "snetterton"
+  },
+  {
+   "id": "lausitz",
+   "venue": "lausitz",
+   "lengthKm": 3.478,
+   "seasons": [],
+   "sources": [
+    "simulator"
+   ],
+   "sim": "lausitz"
   }
  ]
 }
