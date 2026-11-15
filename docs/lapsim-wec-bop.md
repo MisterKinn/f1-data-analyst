@@ -9,6 +9,16 @@ Source: https://au.motorsport.com/wec/news/wec-will-stop-publishing-bop-data-202
 
 All 2026 events (Imola, Spa, Le Mans, Sao Paulo, COTA, Fuji, Barcelona, Monza) are null.
 
+### 2026 estimate (not official) — page `/bop`
+
+Built by `scripts/sim/bop-estimate.mjs` into `worker/lapsim/bop-estimate-data.js` from `scripts/sim/data/learn/wec-bop-pace.txt`
+(every Hypercar lap of every Al Kamel FIA WEC Analysis CSV 2024-2026, collected with the logic of `scripts/sim/learn/fetch-wec-bop.mjs`).
+- Learned (within model and season, all 2024-2025 events): lap % = 0.188 x weight % - 0.080 x power %; checked with Wolfram LinearModelFit (0.188 +/- 0.031, -0.080 +/- 0.019, R^2 0.41). Top speed and stint energy respond only weakly.
+- Each 2026 event: MAP inversion of the model's pace and top speed vs the field, prior = previous event estimate mixed 50/50 with the 2025 BoP at the same track (Imola starts from Bahrain 2025), limits from the LMH/LMDh rules (1030 kg minimum, Art. 4.1; 520 kW maximum seen in every table). Genesis (new in 2026) starts from the class mean with a wider spread.
+- Hold-out on 2025 (each event hidden, 48 cases): mean error kg 6.4 (previous BoP unchanged: 7.2), kW 8.6 (9.4), power above 250 km/h 2.3 pt (2.3), MJ 5.4 (5.4). A separate LMH/LMDh fit was not better.
+- IMSA 2026 GTP values are shown for reference only; no season has both tables, so the mapping cannot be learned.
+- Note: `lapsim_simulate` returns implausible `sensitivity_s_per_plus_10pct` for wec-lmh/wec-lmdh (e.g. +10 % power slower at Le Mans), so it was not used here.
+
 ## 2024
 
 Eight FIA WEC Hypercar BoP decisions (power threshold 210 kph in 2024). Values: kg | kW | power gain above 210 kph | stint energy MJ | additional docking s. Front-axle deployment 190 kph dry/wet for Ferrari, Toyota, Isotta (Peugeot 150 at Qatar, 190 later).

@@ -1,0 +1,55 @@
+// /bop: WEC Hypercar 2026 BoP estimate (FIA/ACO stopped publishing it from Imola 2026).
+// Data: worker/lapsim/bop-estimate-data.js (scripts/sim/bop-estimate.mjs). Text is authored in both
+// languages here, so the page is marked data-no-translate.
+import {translations} from './localization.js';
+import {bopEstimate2026 as D} from './lapsim/bop-estimate-data.js';
+
+if (!Object.hasOwn(translations, 'BoP 시뮬레이터')) translations['BoP 시뮬레이터'] = 'BoP simulator';
+
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
+const NAMES = {IMOLA: ['이몰라 6시간', '6 Hours of Imola'], SPA: ['스파 6시간', '6 Hours of Spa'], LEMANS: ['르망 24시간', '24 Hours of Le Mans'], SAOPAULO: ['상파울루 6시간', '6 Hours of São Paulo'], COTA: ['론스타 르망 (COTA)', 'Lone Star Le Mans (COTA)'], FUJI: ['후지 6시간', '6 Hours of Fuji'], BARCELONA: ['바르셀로나 8시간', '8 Hours of Barcelona'], MONZA: ['몬자 6시간', '6 Hours of Monza']};
+// IMSA GTP 2026 BoP published nearest before each WEC round (docs/lapsim-wec-bop.md). Shown for reference only:
+// there is no season with both IMSA and WEC tables to learn the mapping, so it does not enter the estimate.
+const IMSA = {
+  daytona: {name: 'Daytona', cars: {'Aston Martin Valkyrie': [1030, 913], 'BMW M Hybrid V8': [1038, 903], 'Cadillac V-Series.R': [1033, 896]}},
+  wg: {name: 'Watkins Glen', cars: {'Aston Martin Valkyrie': [1020, 914], 'BMW M Hybrid V8': [1030, 901], 'Cadillac V-Series.R': [1032, 903]}},
+  ra: {name: 'Road America', cars: {'Aston Martin Valkyrie': [1020, 912], 'BMW M Hybrid V8': [1030, 906], 'Cadillac V-Series.R': [1053, 908]}},
+};
+const IMSA_FOR = {IMOLA: 'daytona', SPA: 'daytona', LEMANS: 'wg', SAOPAULO: 'wg', COTA: 'ra', FUJI: 'ra', BARCELONA: 'ra', MONZA: 'ra'};
+const LAP = {IMOLA: 92, SPA: 125, LEMANS: 207, SAOPAULO: 86, COTA: 114, FUJI: 91, BARCELONA: 94, MONZA: 95}; // typical race lap, s (Al Kamel 2026)
+
+const css = `.bop-chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 4px;padding:0;list-style:none}.bop-chips a{display:inline-flex;min-height:44px;align-items:center;padding:0 14px;border:1px solid var(--line,#333);border-radius:999px;text-decoration:none}.bop-chips a[aria-current]{background:var(--accent,#3dd6b5);color:#000;border-color:transparent}
+.bop-wrap{overflow-x:auto}.bop-table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}.bop-table th,.bop-table td{padding:8px 10px;border-bottom:1px solid var(--line,#333);text-align:right;white-space:nowrap}.bop-table th:first-child,.bop-table td:first-child{text-align:left}.bop-sd{color:var(--muted,#999);font-size:.85em}.bop-cls{font-size:.75em;padding:1px 6px;border-radius:6px;border:1px solid var(--line,#333);margin-left:6px}
+.bop-calc{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;align-items:end}.bop-calc label{display:grid;gap:4px}.bop-out{font-size:1.4em;font-weight:600}`;
+
+export function bopPage(params = {}, lang = 'ko') {
+  const en = lang === 'en', t = (ko, eng) => esc(en ? eng : ko);
+  const ev = D.events.find(e => e.event.toLowerCase() === String(params.event || '').toLowerCase()) || D.events[0];
+  const chips = D.events.map(e => `<li><a href="/bop?event=${e.event.toLowerCase()}"${e === ev ? ' aria-current="page"' : ''}>${t(...NAMES[e.event])}</a></li>`).join('');
+  const im = IMSA[IMSA_FOR[ev.event]];
+  const cars = Object.entries(ev.cars).sort((a, b) => a[0].localeCompare(b[0]));
+  const pct = x => x == null ? '–' : (x > 0 ? '+' : '') + x.toFixed(2) + '%';
+  const rows = cars.map(([m, c]) => `<tr><td>${esc(m)}<span class="bop-cls">${c.cls.toUpperCase()}</span>${c.learned ? '' : ` <span class="bop-sd">${t('신규 차량', 'new car')}</span>`}</td>
+<td>${c.kg} <span class="bop-sd">±${c.sd.kg}</span></td><td>${c.kW} <span class="bop-sd">±${c.sd.kW}</span></td><td>${c.above250 > 0 ? '+' : ''}${c.above250}% <span class="bop-sd">±${c.sd.above250}</span></td><td>${c.MJ}</td>
+<td>${pct(c.evidence.pacePct)}</td><td>${pct(c.evidence.speedPct)}</td><td>${c.evidence.longestGreenStint ?? '–'}</td><td>${im.cars[m] ? `${im.cars[m][0]} kg · ${im.cars[m][1]} MJ` : '–'}</td></tr>`).join('');
+  const h = D.holdout2025, k = D.coefficients;
+  const opts = cars.map(([m]) => `<option>${esc(m)}</option>`).join('');
+  return `<style>${css}</style><div data-no-translate>
+<section class="hero"><h1>${t('하이퍼카 BoP 시뮬레이터', 'Hypercar BoP simulator')}</h1>
+<p class="lead">${t('FIA·ACO는 2026 이몰라부터 WEC 하이퍼카 BoP를 공개하지 않습니다. 2024~2026 알카멜 공식 타이밍의 모든 랩과 2024~2025 공개 BoP로 차가 BoP에 어떻게 반응하는지 학습해, 대회별 BoP를 거꾸로 추정했습니다. 공식 값이 아닙니다.', 'From Imola 2026 the FIA and ACO no longer publish the WEC Hypercar BoP. We learned how cars respond to BoP from every Al Kamel lap of 2024–2026 and the published 2024–2025 tables, then worked each 2026 event backwards. These are estimates, not official values.')}</p></section>
+<section class="panel"><h2>${t('대회 선택', 'Event')}</h2><ul class="bop-chips">${chips}</ul></section>
+<section class="panel"><h2>${t(...NAMES[ev.event])} · ${t('2026 추정 BoP', '2026 estimated BoP')}</h2>
+<div class="bop-wrap"><table class="bop-table"><thead><tr><th>${t('차량', 'Car')}</th><th>${t('최소 무게 kg', 'Min weight kg')}</th><th>${t('최대 출력 kW', 'Max power kW')}</th><th>${t('250 km/h 이상 출력', 'Power above 250 km/h')}</th><th>${t('스틴트 에너지 MJ', 'Stint energy MJ')}</th><th>${t('페이스 (필드 중앙값 대비)', 'Pace vs field median')}</th><th>${t('최고속 (필드 대비)', 'Top speed vs field')}</th><th>${t('최장 그린 스틴트', 'Longest green stint')}</th><th>IMSA 2026 (${esc(im.name)})</th></tr></thead><tbody>${rows}</tbody></table></div>
+<p class="fine">${t('± 는 추정의 1시그마 범위입니다. 페이스는 그 모델 최상위 차의 레이스 상위 20% 랩(예선 랩과 0.6% 이내면 6:4로 섞음), 음수가 빠름. IMSA 값은 참고용이며 추정에 넣지 않았습니다(같은 시즌 IMSA·WEC 표가 함께 있는 해가 없어 둘의 관계를 학습할 수 없음). 포르쉐 팩토리는 2026 WEC에 없습니다.', '± is the one-sigma range. Pace: best car of the model, mean of its fastest 20 % race laps (mixed 6:4 with qualifying when the two agree within 0.6 %); negative is faster. IMSA values are reference only and not used: no season has both tables, so the mapping cannot be learned. The Porsche factory team is not in WEC 2026.')}</p></section>
+<section class="panel"><h2>${t('BoP가 바뀌면 랩타임은?', 'What does a BoP change do to the lap?')}</h2>
+<div class="bop-calc"><label>${t('차량', 'Car')}<select id="bop-car">${opts}</select></label><label>${t('무게 변화 (kg)', 'Weight change (kg)')}<input id="bop-dkg" type="number" value="10" step="1"></label><label>${t('출력 변화 (kW)', 'Power change (kW)')}<input id="bop-dkw" type="number" value="0" step="1"></label><p class="bop-out" id="bop-out" role="status" aria-live="polite"></p></div>
+<p class="fine">${t('학습한 반응: 무게 1% → 랩 +', 'Learned response: 1 % weight → lap +')}${k.a}% · ${t('출력 1% → 랩 ', '1 % power → lap ')}${k.b}% (${t('2024~2025 모든 대회, 모델·시즌별 고정효과 제거 후 회귀; Wolfram LinearModelFit로 재확인: 무게 0.188±0.031, 출력 −0.080±0.019, R² 0.41', 'all 2024–2025 events, regression within each model and season; checked with Wolfram LinearModelFit: weight 0.188±0.031, power −0.080±0.019, R² 0.41')}). ${t('기준 랩', 'Base lap')} ${LAP[ev.event]} s.</p></section>
+<section class="panel"><h2>${t('얼마나 맞나', 'How accurate is it')}</h2>
+<p>${t('2025 대회를 하나씩 숨기고 같은 방법으로 추정해 실제 공개 BoP와 비교했습니다', 'Each 2025 event was hidden and estimated the same way, then compared with the published BoP')} (${h.cases} ${t('건', 'cases')}).</p>
+<div class="bop-wrap"><table class="bop-table"><thead><tr><th></th><th>kg</th><th>kW</th><th>${t('250 km/h 이상', 'Above 250')}</th><th>MJ</th></tr></thead><tbody>
+<tr><td>${t('이 모델 평균 오차', 'This model, mean error')}</td><td>${h.model.kg}</td><td>${h.model.kW}</td><td>${h.model.above250} pt</td><td>${h.model.MJ}</td></tr>
+<tr><td>${t('직전 BoP 그대로 쓸 때', 'Previous BoP unchanged')}</td><td>${h.priorOnly.kg}</td><td>${h.priorOnly.kW}</td><td>${h.priorOnly.above250} pt</td><td>${h.priorOnly.MJ}</td></tr></tbody></table></div>
+<p class="fine">${t('무게·출력은 타이밍 학습이 오차를 줄였고, 250 km/h 이상 출력과 스틴트 에너지는 직전 값과 비슷한 수준입니다(최고속·스틴트 길이 신호가 약함). 2026은 공개 값이 없어 대회마다 직전 추정치와 2025 같은 서킷 BoP를 반반 섞어 출발점으로 쓰므로 뒤 대회일수록 오차가 쌓일 수 있습니다. 규정 반영: LMH·LMDh 최소 무게 1030 kg(기술규정 4.1), 공개 표의 최대 출력 상한 520 kW, LMH MGU-K 200 kW 상한(LMH 5.3.2), 출력 경계 250 km/h(2025~). LMH·LMDh를 따로 학습한 모델도 시험했지만 나아지지 않아 공통 모델을 씁니다.', 'Timing data reduced the weight and power error; power above 250 km/h and stint energy stay close to the previous values (top-speed and stint signals are weak). With no published 2026 values, each event starts from the previous estimate mixed half-and-half with the 2025 BoP at the same track, so errors can build up later in the season. Rules used: LMH and LMDh minimum weight 1030 kg (Technical Regulations 4.1), 520 kW maximum seen in every published table, LMH MGU-K limit 200 kW (LMH 5.3.2), power threshold 250 km/h (from 2025). A separate LMH/LMDh model was tested and was not better, so one class model is used.')}</p>
+<p class="fine">${t('출처: 알카멜 FIA WEC 공식 타이밍(Analysis CSV), FIA WEC 2024~2025 하이퍼카 BoP 결정문, IMSA 기술 회보. 생성일', 'Sources: Al Kamel FIA WEC official timing (Analysis CSV), FIA WEC 2024–2025 Hypercar BoP decisions, IMSA technical bulletins. Built')} ${esc(D.generated)}.</p></section>
+<script>(function(){var a=${k.a},b=${k.b},lap=${LAP[ev.event]},c=${JSON.stringify(Object.fromEntries(cars.map(([m, x]) => [m, [x.kg, x.kW]])))};var s=document.getElementById('bop-car'),g=document.getElementById('bop-dkg'),w=document.getElementById('bop-dkw'),o=document.getElementById('bop-out');function f(){var x=c[s.value];if(!x)return;var d=lap*(a*(+g.value||0)/x[0]+b*(+w.value||0)/x[1]);o.textContent=(d>=0?'+':'')+d.toFixed(2)+' s';}[s,g,w].forEach(function(e){e.addEventListener('input',f)});f();})();</script></div>`;
+}

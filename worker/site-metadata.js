@@ -25,6 +25,10 @@ const PAGES = {
     ko: ['셋업 시뮬레이터', 'F1과 하이퍼카(LMH·LMDh)의 서킷별 셋업 방향을 물리 시뮬레이션, 규정, 피렐리 처방과 기술 보도로 보여 줍니다.'],
     en: ['Setup simulator', 'Set-up direction per circuit for F1 and Hypercar (LMH/LMDh) from the physics simulation, the rules, Pirelli prescriptions and technical reporting.'],
   },
+  '/bop': {
+    ko: ['하이퍼카 BoP 시뮬레이터', '2026 WEC 하이퍼카 BoP는 비공개입니다. 알카멜 공식 타이밍의 모든 랩과 2024~2025 공개 BoP로 대회별 무게·출력·에너지를 추정합니다.'],
+    en: ['Hypercar BoP simulator', 'The 2026 WEC Hypercar BoP is not published. Every Al Kamel lap and the 2024–2025 tables estimate weight, power and energy per event.'],
+  },
   '/account': {
     ko: ['계정', '꽁보다 계정에 로그인하고 연결 정보를 확인하세요.'],
     en: ['Account', 'Sign in to your Kongboda account and review your connections.'],
@@ -48,7 +52,7 @@ const SERIES = {
 };
 
 export const publicSitePaths = Object.freeze([
-  '/', '/about', '/guide', '/resources', '/simulation', '/setup',
+  '/', '/about', '/guide', '/resources', '/simulation', '/setup', '/bop',
   ...Object.keys(SERIES).map(slug => `/championships/${slug}`),
 ]);
 
