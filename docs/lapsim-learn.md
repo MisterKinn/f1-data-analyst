@@ -248,7 +248,9 @@ Rows that could not be used, by reason: no simulator geometry: sebring-6019: 301
   Misano: 1 → 10 events, error 3.8 % → 0.9 %. GT3 overall 1.16 % (262 events, with the IGTC and GTWC Australia PDFs).
 - DTM stays records only: with named layouts (short NGK = sprint) its Timing71 rows still carry no weather or rain flag, and single wet
   sessions gave 7-11 % errors (GT3 1.12 → 1.40 %).
-- Not read: NLS (no geometry for its layout), Macau (street circuit not built), IGTC Bathurst PDFs (another format).
+- IGTC Bathurst and GTWC Australia PDFs are Natsoft prints (1:25.5383*, Porsche "992 GT3R"): read since 2026-11-15. Gaps read as laps
+  are dropped (a best lap more than 8 % below its session median, or 5 % below the median event best of its layout and class).
+- Not read: NLS (no geometry for its layout), Macau (street circuit not built).
 - SRO official tables carry no weather, so they are records only (shown with the event weather unknown).
 - F1 per-team cars: unchanged in this step (F1 is shown per regulation and its production calibration was not touched).
 - Practice and race laps are in the car table (type P and R) but only qualifying is fitted: a fuel and tyre-age term must be declared first.

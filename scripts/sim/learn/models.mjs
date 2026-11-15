@@ -8,7 +8,7 @@ const BASE = [[/VALKYRIE/, 'Aston Martin Valkyrie'], [/499P/, 'Ferrari 499P'], [
   [/NSX/, 'Acura NSX GT3'], [/V12/, 'Aston Martin V12 Vantage GT3'], [/VANTAGE/, 'Aston Martin Vantage GT3'], [/SLS/, 'Mercedes SLS AMG GT3'], [/458/, 'Ferrari 458 Italia GT3'], [/650S/, 'McLaren 650S GT3'],
   [/12C/, 'McLaren 12C GT3'], [/GT R|GTR\b|NISMO/, 'Nissan GT-R Nismo GT3'], [/CONTINENTAL/, 'Bentley Continental GT3'], [/C7/, 'Chevrolet Corvette C7 GT3-R'], [/Z4/, 'BMW Z4 GT3'], [/JAGUAR|G3\b/, 'Emil Frey Jaguar G3'], [/R8/, 'Audi R8 LMS GT3'], [/M4/, 'BMW M4 GT3'], [/M6/, 'BMW M6 GT3'], [/C8.R GTD/, 'Chevrolet Corvette C8.R GTD'], [/Z06/, 'Chevrolet Corvette Z06 GT3.R'],
   [/296/, 'Ferrari 296 GT3'], [/488 GT3/, 'Ferrari 488 GT3'], [/MUSTANG/, 'Ford Mustang GT3'], [/TEMERARIO/, 'Lamborghini Temerario GT3'], [/HURACAN/, 'Lamborghini Huracan GT3'], [/RC ?F/, 'Lexus RC F GT3'],
-  [/720S/, 'McLaren 720S GT3'], [/AMG/, 'Mercedes-AMG GT3'], [/911 GT3 ?R/, 'Porsche 911 GT3 R'], [/ORECA|07 GIBSON/, 'Oreca 07'], [/LIGIER JS ?P2|JSP217/, 'Ligier JS P217']];
+  [/720S/, 'McLaren 720S GT3'], [/AMG/, 'Mercedes-AMG GT3'], [/(911|99[12]|PORSCHE) GT3 ?R\b/, 'Porsche 911 GT3 R'], [/ORECA|07 GIBSON/, 'Oreca 07'], [/LIGIER JS ?P2|JSP217/, 'Ligier JS P217']];
 export function modelOf(vehicle, season, cls = '') {
   const t = up(vehicle); if (!t) return null;
   if (/\b(GT4|GT2|GTE|RSR|CUP|TCR|SUPER TROFEO|CHALLENGE|TROFEO)\b/.test(t)) return null; // other categories that share a model name
