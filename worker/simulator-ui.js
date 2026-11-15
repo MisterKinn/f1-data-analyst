@@ -1,5 +1,5 @@
 // Simulator page UI, applied from outside the simulator script (attribute lookups only):
-// lap / setup tabs, a plain result sentence with one-tap compare buttons, folded detail
+// lap / compare tabs, a plain result sentence with one-tap compare buttons, folded detail
 // sections, and a map overlay (checkered finish line, corner labels placed beside the
 // track, corner names for selected tracks). The map is redrawn by the simulator on every
 // change, so the overlay is re-applied on each redraw (before paint, via MutationObserver).
@@ -8,15 +8,13 @@
 // is shown at the first turn of the list.
 // Spa uses the forms Korean fans use (owner's choice: 푸옹, 파녜, 스타벨로, 르 콤브, 말메디, 재키 익스).
 // Sources: formula1.com and team corner guides, circuit sites; unnamed or uncertain turns are left out.
-export const CORNER_NAMES = {"spa-francorchamps":[{"turns":[1],"ko":"라 수르스","en":"La Source"},{"turns":[2],"ko":"오 루주","en":"Eau Rouge"},{"turns":[3,4],"ko":"레디옹","en":"Raidillon"},{"turns":[5,6],"ko":"르 콤브","en":"Les Combes"},{"turns":[7],"ko":"말메디","en":"Malmedy"},{"turns":[8],"ko":"브뤼셀","en":"Bruxelles"},{"turns":[9],"ko":"재키 익스","en":"Jacky Ickx"},{"turns":[10,11],"ko":"푸옹","en":"Pouhon"},{"turns":[12,13],"ko":"파녜","en":"Fagnes"},{"turns":[15],"ko":"스타벨로","en":"Stavelot"},{"turns":[16,17],"ko":"블랑시몽","en":"Blanchimont"},{"turns":[18,19],"ko":"버스 스톱","en":"Bus Stop"}],"monza":[{"turns":[1,2],"ko":"레티필로","en":"Rettifilo"},{"turns":[3],"ko":"쿠르바 그란데","en":"Curva Grande"},{"turns":[4,5],"ko":"로자","en":"Roggia"},{"turns":[6],"ko":"레즈모 1","en":"Lesmo 1"},{"turns":[7],"ko":"레즈모 2","en":"Lesmo 2"},{"turns":[8,9,10],"ko":"아스카리","en":"Ascari"},{"turns":[11],"ko":"파라볼리카","en":"Parabolica"}],"silverstone":[{"turns":[1],"ko":"애비","en":"Abbey"},{"turns":[2],"ko":"팜","en":"Farm"},{"turns":[3],"ko":"빌리지","en":"Village"},{"turns":[4],"ko":"루프","en":"Loop"},{"turns":[5],"ko":"에인트리","en":"Aintree"},{"turns":[6],"ko":"브루클랜즈","en":"Brooklands"},{"turns":[7],"ko":"러필드","en":"Luffield"},{"turns":[8],"ko":"우드코트","en":"Woodcote"},{"turns":[9],"ko":"콥스","en":"Copse"},{"turns":[10,11],"ko":"매고츠","en":"Maggotts"},{"turns":[12,13],"ko":"베케츠","en":"Becketts"},{"turns":[14],"ko":"채플","en":"Chapel"},{"turns":[15],"ko":"스토","en":"Stowe"},{"turns":[16],"ko":"베일","en":"Vale"},{"turns":[17,18],"ko":"클럽","en":"Club"}],"interlagos":[{"turns":[1,2],"ko":"세나 S","en":"Senna S"},{"turns":[3],"ko":"쿠르바 두 솔","en":"Curva do Sol"},{"turns":[4,5],"ko":"데시다 두 라구","en":"Descida do Lago"},{"turns":[6,7],"ko":"페라두라","en":"Ferradura"},{"turns":[8],"ko":"라란지냐","en":"Laranjinha"},{"turns":[9],"ko":"피녜이리뉴","en":"Pinheirinho"},{"turns":[10],"ko":"비쿠 지 파투","en":"Bico de Pato"},{"turns":[11],"ko":"메르굴류","en":"Mergulho"},{"turns":[12],"ko":"중상","en":"Junção"},{"turns":[13],"ko":"카페","en":"Café"}],"imola":[{"turns":[2,3,4],"ko":"탐부렐로","en":"Tamburello"},{"turns":[5,6],"ko":"빌뇌브","en":"Villeneuve"},{"turns":[7],"ko":"토사","en":"Tosa"},{"turns":[9],"ko":"피라텔라","en":"Piratella"},{"turns":[11,12,13],"ko":"아쿠에 미네랄리","en":"Acque Minerali"},{"turns":[14,15],"ko":"바리안테 알타","en":"Variante Alta"},{"turns":[17,18],"ko":"리바차","en":"Rivazza"}],"suzuka":[{"turns":[3,4,5,6],"ko":"S 커브","en":"S Curves"},{"turns":[7],"ko":"던롭","en":"Dunlop"},{"turns":[8,9],"ko":"데그너","en":"Degner"},{"turns":[11],"ko":"헤어핀","en":"Hairpin"},{"turns":[13,14],"ko":"스푼","en":"Spoon"},{"turns":[15],"ko":"130R","en":"130R"},{"turns":[16,17],"ko":"카시오 트라이앵글","en":"Casio Triangle"}],"zandvoort":[{"turns":[1],"ko":"타잔","en":"Tarzan"},{"turns":[2],"ko":"헤를라흐","en":"Gerlach"},{"turns":[3],"ko":"휘헨홀츠","en":"Hugenholtz"},{"turns":[4],"ko":"훈서루흐","en":"Hunserug"},{"turns":[5],"ko":"슬로테마커","en":"Slotemaker"},{"turns":[6,7],"ko":"스헤이블락","en":"Scheivlak"},{"turns":[8],"ko":"마스터스","en":"Masters"},{"turns":[11,12],"ko":"한스 에른스트","en":"Hans Ernst"},{"turns":[14],"ko":"아리 라위언데이크","en":"Arie Luyendyk"}],"monte-carlo":[{"turns":[1],"ko":"생트 데보트","en":"Sainte Dévote"},{"turns":[2],"ko":"보 리바주","en":"Beau Rivage"},{"turns":[3],"ko":"마스네","en":"Massenet"},{"turns":[4],"ko":"카지노","en":"Casino"},{"turns":[5],"ko":"미라보 오트","en":"Mirabeau Haute"},{"turns":[6],"ko":"페어몬트 헤어핀","en":"Fairmont Hairpin"},{"turns":[7],"ko":"미라보 바","en":"Mirabeau Bas"},{"turns":[8],"ko":"포르티에","en":"Portier"},{"turns":[9],"ko":"터널","en":"Tunnel"},{"turns":[10,11],"ko":"누벨 시칸","en":"Nouvelle Chicane"},{"turns":[12],"ko":"타바크","en":"Tabac"},{"turns":[13,14,15,16],"ko":"수영장","en":"Piscine"},{"turns":[18],"ko":"라스카스","en":"Rascasse"},{"turns":[19],"ko":"앙토니 노게스","en":"Anthony Noghès"}]};
+export const CORNER_NAMES = {"spa-francorchamps":[{"turns":[1],"ko":"라 수르스","en":"La Source"},{"turns":[2],"ko":"오 루주","en":"Eau Rouge"},{"turns":[3,4],"ko":"레디옹","en":"Raidillon"},{"turns":[5,6],"ko":"르 콤브","en":"Les Combes"},{"turns":[7],"ko":"말메디","en":"Malmedy"},{"turns":[8],"ko":"리바지","en":"Rivage"},{"turns":[9],"ko":"재키 익스","en":"Jacky Ickx"},{"turns":[10,11],"ko":"푸옹","en":"Pouhon"},{"turns":[12,13],"ko":"파녜","en":"Fagnes"},{"turns":[15],"ko":"스타벨로","en":"Stavelot"},{"turns":[16,17],"ko":"블랑시몽","en":"Blanchimont"},{"turns":[18,19],"ko":"버스 스톱","en":"Bus Stop"}],"monza":[{"turns":[1,2],"ko":"레티필로","en":"Rettifilo"},{"turns":[3],"ko":"쿠르바 그란데","en":"Curva Grande"},{"turns":[4,5],"ko":"로자","en":"Roggia"},{"turns":[6],"ko":"레즈모 1","en":"Lesmo 1"},{"turns":[7],"ko":"레즈모 2","en":"Lesmo 2"},{"turns":[8,9,10],"ko":"아스카리","en":"Ascari"},{"turns":[11],"ko":"파라볼리카","en":"Parabolica"}],"silverstone":[{"turns":[1],"ko":"애비","en":"Abbey"},{"turns":[2],"ko":"팜","en":"Farm"},{"turns":[3],"ko":"빌리지","en":"Village"},{"turns":[4],"ko":"루프","en":"Loop"},{"turns":[5],"ko":"에인트리","en":"Aintree"},{"turns":[6],"ko":"브루클랜즈","en":"Brooklands"},{"turns":[7],"ko":"러필드","en":"Luffield"},{"turns":[8],"ko":"우드코트","en":"Woodcote"},{"turns":[9],"ko":"콥스","en":"Copse"},{"turns":[10,11],"ko":"매고츠","en":"Maggotts"},{"turns":[12,13],"ko":"베케츠","en":"Becketts"},{"turns":[14],"ko":"채플","en":"Chapel"},{"turns":[15],"ko":"스토","en":"Stowe"},{"turns":[16],"ko":"베일","en":"Vale"},{"turns":[17,18],"ko":"클럽","en":"Club"}],"interlagos":[{"turns":[1,2],"ko":"세나 S","en":"Senna S"},{"turns":[3],"ko":"쿠르바 두 솔","en":"Curva do Sol"},{"turns":[4,5],"ko":"데시다 두 라구","en":"Descida do Lago"},{"turns":[6,7],"ko":"페라두라","en":"Ferradura"},{"turns":[8],"ko":"라란지냐","en":"Laranjinha"},{"turns":[9],"ko":"피녜이리뉴","en":"Pinheirinho"},{"turns":[10],"ko":"비쿠 지 파투","en":"Bico de Pato"},{"turns":[11],"ko":"메르굴류","en":"Mergulho"},{"turns":[12],"ko":"중상","en":"Junção"},{"turns":[13],"ko":"카페","en":"Café"}],"imola":[{"turns":[2,3,4],"ko":"탐부렐로","en":"Tamburello"},{"turns":[5,6],"ko":"빌뇌브","en":"Villeneuve"},{"turns":[7],"ko":"토사","en":"Tosa"},{"turns":[9],"ko":"피라텔라","en":"Piratella"},{"turns":[11,12,13],"ko":"아쿠에 미네랄리","en":"Acque Minerali"},{"turns":[14,15],"ko":"바리안테 알타","en":"Variante Alta"},{"turns":[17,18],"ko":"리바차","en":"Rivazza"}],"suzuka":[{"turns":[3,4,5,6],"ko":"S 커브","en":"S Curves"},{"turns":[7],"ko":"던롭","en":"Dunlop"},{"turns":[8,9],"ko":"데그너","en":"Degner"},{"turns":[11],"ko":"헤어핀","en":"Hairpin"},{"turns":[13,14],"ko":"스푼","en":"Spoon"},{"turns":[15],"ko":"130R","en":"130R"},{"turns":[16,17],"ko":"카시오 트라이앵글","en":"Casio Triangle"}],"zandvoort":[{"turns":[1],"ko":"타잔","en":"Tarzan"},{"turns":[2],"ko":"헤를라흐","en":"Gerlach"},{"turns":[3],"ko":"휘헨홀츠","en":"Hugenholtz"},{"turns":[4],"ko":"훈서루흐","en":"Hunserug"},{"turns":[5],"ko":"슬로테마커","en":"Slotemaker"},{"turns":[6,7],"ko":"스헤이블락","en":"Scheivlak"},{"turns":[8],"ko":"마스터스","en":"Masters"},{"turns":[11,12],"ko":"한스 에른스트","en":"Hans Ernst"},{"turns":[14],"ko":"아리 라위언데이크","en":"Arie Luyendyk"}],"monte-carlo":[{"turns":[1],"ko":"생트 데보트","en":"Sainte Dévote"},{"turns":[2],"ko":"보 리바주","en":"Beau Rivage"},{"turns":[3],"ko":"마스네","en":"Massenet"},{"turns":[4],"ko":"카지노","en":"Casino"},{"turns":[5],"ko":"미라보 오트","en":"Mirabeau Haute"},{"turns":[6],"ko":"페어몬트 헤어핀","en":"Fairmont Hairpin"},{"turns":[7],"ko":"미라보 바","en":"Mirabeau Bas"},{"turns":[8],"ko":"포르티에","en":"Portier"},{"turns":[9],"ko":"터널","en":"Tunnel"},{"turns":[10,11],"ko":"누벨 시칸","en":"Nouvelle Chicane"},{"turns":[12],"ko":"타바크","en":"Tabac"},{"turns":[13,14,15,16],"ko":"수영장","en":"Piscine"},{"turns":[18],"ko":"라스카스","en":"Rascasse"},{"turns":[19],"ko":"앙토니 노게스","en":"Anthony Noghès"}]};
 
 export const simulatorUiCss = `
 .kb-sim-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 20px;border-bottom:1px solid var(--line);padding-bottom:8px;position:relative}
 .kb-sim-tabs button{min-height:44px;padding:0 16px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--muted);font:inherit;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
 .kb-sim-tabs button[aria-selected="true"]{border-color:var(--mint);color:var(--text);box-shadow:inset 0 0 0 1px var(--mint)}
 .kb-soon{font-size:12px;font-weight:700;padding:1px 7px;border:1px solid var(--line);border-radius:999px;color:var(--muted)}
-.kb-setup-view .ls-controls,.kb-setup-view .ls-stage,.kb-setup-view section.panel:not(.kb-setup-panel){display:none!important}
-.kb-setup-panel h2{margin-top:0}.kb-setup-panel ul{margin:8px 0 16px;padding-left:20px;color:var(--muted)}.kb-setup-panel .kb-empty-actions{display:flex;gap:8px;flex-wrap:wrap}
 .kb-sim-summary{margin:4px 0 0;font-size:16px;line-height:1.55;color:var(--text);max-width:520px}.kb-sim-summary b{font-variant-numeric:tabular-nums}
 .kb-presets{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 4px}.kb-presets button{font:inherit;font-size:14px;font-weight:600;min-height:38px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--text);cursor:pointer}.kb-presets button[aria-pressed="true"]{border-color:var(--mint);box-shadow:inset 0 0 0 1px var(--mint)}
 .kb-sec-fold>summary{display:flex;align-items:baseline;justify-content:space-between;gap:12px;cursor:pointer;list-style:none}.kb-sec-fold>summary::-webkit-details-marker{display:none}
@@ -42,7 +40,7 @@ export function simulatorUiClient(CORNER_NAMES) {
  const fmtLap = v => { const m = Math.floor(v / 60); return m + ':' + (v - m * 60).toFixed(3).padStart(6, '0'); };
  const trackId = () => $('select[name="track"]')?.value || new URLSearchParams(location.search).get('track') || 'monza';
  const names = () => CORNER_NAMES[trackId()] || [];
- const nameAt = num => { const n = Number(num); const hit = names().find(e => e.turns.includes(n)); return hit ? { name: en ? hit.en : hit.ko, sub: en || hit.en === hit.ko ? '' : hit.en, first: hit.turns[0] === n } : null; };
+ const nameAt = num => { const n = Number(num); const hit = names().find(e => e.turns.includes(n)); return hit ? { name: en ? hit.en : hit.ko, sub: '', first: hit.turns[0] === n } : null; /* one language only (owner 2026-11-15) */ };
 
  // --- Map geometry ---
  function mapGeometry(svg) {
@@ -115,10 +113,13 @@ export function simulatorUiClient(CORNER_NAMES) {
     const r = rot * Math.PI / 180, nx = -ty * side, ny = tx * side, dx = nx * Math.cos(r) - ny * Math.sin(r), dy = nx * Math.sin(r) + ny * Math.cos(r);
     const x = ax + dx * dist, y = ay + dy * dist, b = boxes(x, y, w + margin, h + margin);
     const out = Math.max(vw, vh) * 0.06; if (b.x0 < vx - out || b.y0 < vy - out || b.x1 > vx + vw + out || b.y1 > vy + vh + out || hits(b)) continue;
-    cands.push({ x, y, b, dist, rot, c: boxClear(boxes(x, y, w, h)) });
+    // own: the track nearest the label is this corner's own stretch, not another part of the lap (owner 2026-11-15: Suzuka T15 read as T8)
+    const nPts = geo.pts.length, j = nearest(geo.pts, x, y), gapIdx = Math.min(Math.abs(j - i), nPts - Math.abs(j - i)), own = gapIdx <= Math.max(4, nPts * 0.03);
+    cands.push({ x, y, b, dist, rot, own, c: boxClear(boxes(x, y, w, h)) });
    }
-   // nearest spot with enough room; if none has room, the spot farthest from the track
-   const ok = cands.filter(k => k.c >= gap).sort((a, b) => a.dist - b.dist || Math.abs(a.rot) - Math.abs(b.rot));
+   // nearest spot with enough room beside its own stretch; then any spot with room; if none has room, the spot farthest from the track
+   const byNear = (a, b) => a.dist - b.dist || Math.abs(a.rot) - Math.abs(b.rot);
+   const ok = cands.filter(k => k.c >= gap && k.own).sort(byNear).concat(cands.filter(k => k.c >= gap * 0.6 && k.own).sort(byNear), cands.filter(k => k.c >= gap).sort(byNear));
    let best = ok[0] || cands.sort((a, b) => b.c - a.c)[0];
    if (!best) { const x = ax, y = ay - base; best = { x, y, b: boxes(x, y, w, h), dist: base }; }
    placed.push(best.b);
@@ -175,8 +176,8 @@ export function simulatorUiClient(CORNER_NAMES) {
   const compare = q('compare'), car = q('car'); if (!compare || !car || $('.kb-presets')) return;
   const wanted = [['2027', t('2027 머신과 비교', 'Compare with 2027')], ['base2019', t('2019년 머신과 비교', 'Compare with 2019')], ['wec-lmh', t('WEC 하이퍼카와 비교', 'Compare with a WEC Hypercar')]];
   const row = el('div', 'kb-presets'); row.setAttribute('data-no-translate', '');
-  const sync = () => row.querySelectorAll('button').forEach(b => { b.hidden = b.dataset.v === car.value; b.setAttribute('aria-pressed', String(compare.value === b.dataset.v)); });
-  for (const [v, label] of wanted) { if (![...compare.options].some(o => o.value === v)) continue; const b = el('button', '', label); b.type = 'button'; b.dataset.v = v; b.addEventListener('click', () => { compare.value = compare.value === v ? '' : v; compare.dispatchEvent(new Event('change', { bubbles: true })); sync(); }); row.append(b); }
+  const sync = () => row.querySelectorAll('button').forEach(b => { b.hidden = b.dataset.v === car.value; b.setAttribute('aria-pressed', String(compare.value === b.dataset.v && $('main').classList.contains('kb-cmp-view'))); });
+  for (const [v, label] of wanted) { if (![...compare.options].some(o => o.value === v)) continue; const b = el('button', '', label); b.type = 'button'; b.dataset.v = v; b.addEventListener('click', () => { compare.value = v; if (showTab) showTab('compare'); compare.dispatchEvent(new Event('change', { bubbles: true })); sync(); }); row.append(b); }
   compare.addEventListener('change', sync); car.addEventListener('change', sync); sync();
   ($('.kb-sim-summary') || q('pole') || q('lap')).after(row);
  }
@@ -194,7 +195,7 @@ export function simulatorUiClient(CORNER_NAMES) {
    return t('펼쳐서 보기', 'Open to see');
   };
   for (const sec of document.querySelectorAll('main section.panel.ls-panel')) {
-   if (sec.querySelector('[data-ls="trace"]') || sec.querySelector(':scope>.kb-sec-fold')) continue;
+   if (sec.querySelector('[data-ls="trace"]') || sec.classList.contains('ls-cmp-panel') || sec.querySelector(':scope>.kb-sec-fold')) continue;
    const h2 = sec.querySelector(':scope>h2'); if (!h2) continue;
    const fold = el('details', 'kb-sec-fold'), sum = el('summary'), hint = el('span', 'kb-sec-hint'); hint.setAttribute('data-no-translate', '');
    sum.append(h2, hint); fold.append(sum); for (const n of [...sec.childNodes]) fold.append(n); sec.append(fold);
@@ -205,26 +206,28 @@ export function simulatorUiClient(CORNER_NAMES) {
   if (mode && air) { const open = () => { if (mode.value === 'manual') air.open = true; }; mode.addEventListener('change', open); open(); }
  }
 
- // --- Lap / setup tabs ---
+ // --- Lap / compare tabs (owner 2026-11-15: the setup tab left the page, the setup simulator has its own menu page) ---
  function tabs() {
   const hero = $('main .ls-hero'); if (!hero || $('.kb-sim-tabs')) return;
-  const bar = el('div', 'kb-sim-tabs'); bar.setAttribute('role', 'tablist'); bar.setAttribute('aria-label', t('시뮬레이터 종류', 'Simulator type')); bar.setAttribute('data-no-translate', '');
-  const mk = (id, label, soon) => { const b = el('button', '', label); b.type = 'button'; b.id = 'kb-tab-' + id; b.setAttribute('role', 'tab'); if (soon) b.append(el('span', 'kb-soon', t('준비 중', 'Soon'))); return b; };
-  const lapTab = mk('lap', t('랩타임 시뮬레이션', 'Lap-time simulation')), setupTab = mk('setup', t('셋업 시뮬레이션', 'Setup simulation'));
-  bar.append(lapTab, setupTab); hero.after(bar);
-  const panel = el('section', 'panel kb-setup-panel'); panel.id = 'kb-setup'; panel.setAttribute('role', 'tabpanel'); panel.setAttribute('aria-labelledby', 'kb-tab-setup'); panel.setAttribute('data-no-translate', ''); panel.hidden = true;
-  panel.append(el('h2', '', t('셋업 시뮬레이션은 준비 중입니다', 'Setup simulation is coming')), el('p', '', t('세션 기록과 FIA 문서로 팀별 셋업을 추정합니다. 이런 것을 보여 줄 예정입니다.', 'It will estimate each team’s setup from session records and FIA documents, for example:')));
-  const ul = el('ul'); for (const s of [t('다운포스 수준(윙 각도)과 직선 속도의 균형', 'Downforce level (wing) against straight-line speed'), t('차고·서스펜션 성향(연석 사용, 노면 대응)', 'Ride height and suspension tendency (kerbs, bumps)'), t('타이어 운용: 워밍업, 공기압·캠버 한도(FIA 문서)', 'Tyre use: warm-up, pressure and camber limits (FIA documents)')]) ul.append(el('li', '', s));
-  const act = el('div', 'kb-empty-actions'); const back = el('button', 'button', t('랩타임 시뮬레이션 해 보기', 'Try lap-time simulation')); back.type = 'button'; back.addEventListener('click', () => show('lap', true)); act.append(back);
-  panel.append(ul, act); bar.after(panel);
+  const bar = el('div', 'kb-sim-tabs'); bar.setAttribute('role', 'tablist'); bar.setAttribute('aria-label', t('시뮬레이터 보기', 'Simulator view')); bar.setAttribute('data-no-translate', '');
+  const mk = (id, label) => { const b = el('button', '', label); b.type = 'button'; b.id = 'kb-tab-' + id; b.setAttribute('role', 'tab'); return b; };
+  const lapTab = mk('lap', t('랩타임 시뮬레이션', 'Lap-time simulation')), cmpTab = mk('compare', t('비교하기', 'Compare'));
+  bar.append(lapTab, cmpTab); hero.after(bar);
   const main = $('main');
-  function show(which, focus) { if (which === 'setup') { toSetup(); return; } const setup = false; lapTab.setAttribute('aria-selected', String(!setup)); setupTab.setAttribute('aria-selected', String(setup)); lapTab.tabIndex = setup ? -1 : 0; setupTab.tabIndex = setup ? 0 : -1; panel.hidden = !setup; main.classList.toggle('kb-setup-view', setup); if (focus) (setup ? setupTab : lapTab).focus(); try { history.replaceState(null, '', setup ? '#setup' : location.pathname + location.search); } catch (e) {} }
-  // the setup simulator has its own page (/setup); the tab opens it for the same track
-  const toSetup = () => { const tr = new URLSearchParams(location.search).get('track'); location.href = '/setup' + (tr ? '?track=' + encodeURIComponent(tr) : ''); };
-  lapTab.addEventListener('click', () => show('lap')); setupTab.addEventListener('click', toSetup);
-  bar.addEventListener('keydown', e => { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); show(lapTab.getAttribute('aria-selected') === 'true' ? 'setup' : 'lap', true); } });
-  if (location.hash === '#setup') { toSetup(); return; } show('lap');
+  function show(which, focus) {
+   const cmp = which === 'compare';
+   lapTab.setAttribute('aria-selected', String(!cmp)); cmpTab.setAttribute('aria-selected', String(cmp)); lapTab.tabIndex = cmp ? -1 : 0; cmpTab.tabIndex = cmp ? 0 : -1;
+   main.classList.toggle('kb-cmp-view', cmp); if (focus) (cmp ? cmpTab : lapTab).focus();
+   try { history.replaceState(null, '', location.pathname + location.search + (cmp ? '#compare' : '')); } catch (e) {}
+   document.dispatchEvent(new CustomEvent('kb-sim-view', { detail: cmp ? 'compare' : 'lap' }));
+  }
+  showTab = show;
+  lapTab.addEventListener('click', () => show('lap')); cmpTab.addEventListener('click', () => show('compare'));
+  bar.addEventListener('keydown', e => { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); show(lapTab.getAttribute('aria-selected') === 'true' ? 'compare' : 'lap', true); } });
+  if (location.hash === '#setup') { const tr = new URLSearchParams(location.search).get('track'); location.href = '/setup' + (tr ? '?track=' + encodeURIComponent(tr) : ''); return; }
+  show(location.hash === '#compare' ? 'compare' : 'lap');
  }
+ let showTab = null;
 
  const start = () => {
   safe(tabs); safe(enhanceMap); safe(summary); safe(presets); safe(foldSections);

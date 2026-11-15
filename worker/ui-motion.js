@@ -133,7 +133,7 @@ export function uiMotionClient() {
    const tabs = panel.closest('[data-series-tabs]'), first = tabs?.querySelector('[role=tab]');
    const actions = [];
    if (first) actions.push(actionButton(t('지금은 ' + first.textContent.trim() + ' 보기', 'See ' + first.textContent.trim() + ' for now'), () => { first.click(); first.focus(); }, true));
-   actions.push(actionLink(t('꽁보다 AI에게 물어보기', 'Ask Kongboda AI'), '/ai'));
+   actions.push(actionLink(t('꽁보다 인텔리전스에게 물어보기', 'Ask Kongboda Intelligence'), '/ai'));
    const row = el('div', 'kb-empty-actions'); row.dataset.kbEmpty = ''; row.setAttribute('data-no-translate', ''); for (const a of actions) row.append(a);
    panel.append(row);
   }));

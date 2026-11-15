@@ -29,12 +29,14 @@ test('every car line stays inside the track width and is never slower than the l
   }
 });
 
-test('the racing line is drawn on the track map, with on/off, qualifying/race and zoom controls', async () => {
+test('the racing line is drawn on the track map, with qualifying/race, rotate, compass and zoom controls (no on/off: owner 2026-11-15)', async () => {
   const id = Object.keys(lapsimCarLines.tracks)[0];
   const h = await (await worker.fetch(new Request(`https://example.com/simulation?track=${id}&car=2026`), {})).text();
   assert.match(h, /data-line-mode="q"/);
   assert.match(h, /data-line-mode="r"/);
-  assert.match(h, /data-line-toggle/);
+  assert.doesNotMatch(h, /data-line-toggle/);
+  assert.match(h, /data-rot="-15"/);
+  assert.match(h, /data-compass/);
   assert.match(h, /data-zoom="in"/);
   assert.match(h, /<svg class="ls-map"[^>]*><polygon class="ls-band"/);
   assert.match(h, /class="ls-line-seg"/);

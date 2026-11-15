@@ -1,5 +1,5 @@
 // UI polish layer (presentation only). Loaded after every other stylesheet; touches the home
-// simulator entry, the "what Kongboda means" block and the Kongboda AI page. It never changes
+// simulator entry, the "what Kongboda means" block and the Kongboda Intelligence page. It never changes
 // data, handlers or markup other modules render, and leaves the simulator, calendar and
 // championship tables alone because other work streams own them.
 // Motion: native WAAPI (anime.js skill, WAAPI-first), transforms and opacity only, one

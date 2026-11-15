@@ -14,9 +14,9 @@ const L = {
   interlagos: ['BR', 'BRA', 'Interlagos'], 'fe-sao-paulo': ['BR', 'BRA', 'São Paulo Anhembi'], montreal: ['CA', 'CAN', 'Montreal'], mosport: ['CA', 'CAN', 'Mosport'],
   shanghai: ['CN', 'CHN', 'Shanghai'], 'fe-sanya': ['CN', 'CHN', 'Sanya Haitang Bay'], catalunya: ['ES', 'ESP', 'Barcelona'], madring: ['ES', 'ESP', 'Madrid'], jarama: ['ES', 'ESP', 'Jarama'],
   'le-mans': ['FR', 'FRA', 'Le Mans'], 'paul-ricard': ['FR', 'FRA', 'Paul Ricard'], 'paul-ricard-f1': ['FR', 'FRA', 'Paul Ricard(F1)'], silverstone: ['GB', 'GBR', 'Silverstone'], 'brands-hatch': ['GB', 'GBR', 'Brands Hatch'],
-  nurburgring: ['DE', 'GER', 'Nürburgring'], 'nurburgring-gp': ['DE', 'GER', 'Nürburgring GP'], 'nurburgring-sprint': ['DE', 'GER', 'Nürburgring Sprint'], 'nurburgring-24h': ['DE', 'GER', 'Nürburgring 24h'], hockenheim: ['DE', 'GER', 'Hockenheim'], 'fe-berlin': ['DE', 'GER', 'Berlin Tempelhof'], hungaroring: ['HU', 'HUN', 'Hungaroring'],
+  nurburgring: ['DE', 'GER', 'Nürburgring'], 'nurburgring-gp': ['DE', 'GER', 'Nürburgring GP'], 'nurburgring-sprint': ['DE', 'GER', 'Nürburgring Sprint'], 'nurburgring-24h': ['DE', 'GER', 'Nürburgring 24h'], hockenheim: ['DE', 'GER', 'Hockenheimring'], 'fe-berlin': ['DE', 'GER', 'Berlin Tempelhof'], hungaroring: ['HU', 'HUN', 'Hungaroring'],
   monza: ['IT', 'ITA', 'Monza'], mugello: ['IT', 'ITA', 'Mugello'], imola: ['IT', 'ITA', 'Imola'], suzuka: ['JP', 'JPN', 'Suzuka'], fuji: ['JP', 'JPN', 'Fuji'], 'fe-tokyo': ['JP', 'JPN', 'Tokyo'],
-  yeongam: ['KR', 'KOR', 'Yeongam'], yongin: ['KR', 'KOR', 'Yongin'], inje: ['KR', 'KOR', 'Inje'], jeddah: ['SA', 'KSA', 'Jeddah'], 'kuala-lumpur': ['MY', 'MAS', 'Sepang'],
+  yeongam: ['KR', 'KOR', 'Yeongam'], yongin: ['KR', 'KOR', 'Yongin'], inje: ['KR', 'KOR', 'Inje'], jeddah: ['SA', 'SAU', 'Jeddah'], 'kuala-lumpur': ['MY', 'MAS', 'Sepang'],
   'mexico-city': ['MX', 'MEX', 'Mexico City'], 'monte-carlo': ['MC', 'MON', 'Monaco'], zandvoort: ['NL', 'NED', 'Zandvoort'], portimao: ['PT', 'POR', 'Portimão'],
   lusail: ['QA', 'QAT', 'Lusail'], kyalami: ['ZA', 'RSA', 'Kyalami'], rwanda: ['RW', 'RWA', 'Rwanda', true], singapore: ['SG', 'SGP', 'Singapore'],
   'yas-marina-circuit': ['AE', 'UAE', 'Yas Marina'], austin: ['US', 'USA', 'COTA'], indianapolis: ['US', 'USA', 'Indianapolis'], 'las-vegas': ['US', 'USA', 'Las Vegas'],
@@ -29,7 +29,7 @@ const L = {
   aragon: ['ES', 'ESP', 'Aragón'], lausitz: ['DE', 'GER', 'Lausitzring (DTM)'], snetterton: ['GB', 'GBR', 'Snetterton 300'], istanbul: ['TR', 'TUR', 'Istanbul Park'], sochi: ['RU', 'RUS', 'Sochi'], autopolis: ['JP', 'JPN', 'Autopolis'], mandalika: ['ID', 'IDN', 'Mandalika'], 'magny-cours': ['FR', 'FRA', 'Magny-Cours'], 'phillip-island': ['AU', 'AUS', 'Phillip Island'],
   // Formula E street circuits (official FIA circuit maps); an older layout carries its seasons
   'fe-london': ['GB', 'GBR', 'London ExCeL'], 'fe-shanghai': ['CN', 'CHN', 'Shanghai (FE)'],
-  'jarama-2025': ['ES', 'ESP', 'Jarama (2025)'], 'fe-valencia': ['ES', 'ESP', 'Valencia (FE)'], 'fe-jeddah': ['SA', 'KSA', 'Jeddah Corniche (FE)'],
+  'jarama-2025': ['ES', 'ESP', 'Jarama (2025)'], 'fe-valencia': ['ES', 'ESP', 'Valencia (FE)'], 'fe-jeddah': ['SA', 'SAU', 'Jeddah Corniche (FE)'],
   'fe-miami': ['US', 'USA', 'Miami (FE)'], 'fe-miami-2025': ['US', 'USA', 'Homestead-Miami (FE)'],
   'fe-mexico': ['MX', 'MEX', 'Mexico City (FE)'], 'fe-mexico-2023': ['MX', 'MEX', 'Mexico City (FE 2023-25)'], 'fe-jakarta': ['ID', 'IDN', 'Jakarta'],
  
