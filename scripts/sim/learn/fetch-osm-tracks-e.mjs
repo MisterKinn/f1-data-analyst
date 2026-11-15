@@ -1,4 +1,5 @@
 // Owner 2026-11-15: Long Beach and Detroit from their OpenStreetMap circuit relations, scaled to the official length.
+// rerun 2026-11-15: Detroit pit lane skipped, open ends near each other now join (assemble.mjs)
 // Output (committed): scripts/sim/data/tracks/extra-tracks-2026-11-15e.json and loops-2026-11-15e.json. © OpenStreetMap contributors, ODbL.
 import {execFileSync} from 'node:child_process';
 import {copyFileSync, mkdirSync, existsSync} from 'node:fs';

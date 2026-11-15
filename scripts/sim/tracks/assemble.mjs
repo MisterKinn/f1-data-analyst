@@ -42,11 +42,13 @@ export function loops(elements, {maxM = 30000, minM = 1500, cap = 200000, snapM 
   const ways = elements.filter(e => e.type === 'way' && e.geometry?.length > 1 && (e.inRelation || (e.tags?.highway === 'raceway' && e.tags?.raceway !== 'pitlane' && !SKIP.test(e.tags?.sport || '') && !SKIPNAME.test(e.tags?.name || '') && !/dirt|ground|unpaved|gravel|grass|sand/i.test(e.tags?.surface || ''))))
     .map(e => ({name: e.tags?.name || null, pts: e.geometry.map(g => [g.lat, g.lon])}));
   // close small mapping gaps: a way end within SNAP_M of a point of another way is moved onto that point (map ways often do not share a node)
-  const SNAP_M = snapM, all = ways.flatMap((w, wi) => w.pts.map(p => ({p, wi}))); let snapped = 0;
+  // two open ends near each other (Detroit hairpin, 6 m): an end already moved is looked up at its new place, so the second end
+  // joins the first instead of the two swapping places and staying open
+  const SNAP_M = snapM, all = ways.flatMap((w, wi) => w.pts.map(p => ({p, wi}))), moved = new Map(), at = q => moved.get(q) || q; let snapped = 0;
   for (const [wi, w] of ways.entries()) for (const e of [0, w.pts.length - 1]) {
-    const p = w.pts[e]; if (all.some(o => o.wi !== wi && o.p[0] === p[0] && o.p[1] === p[1])) continue;
-    let best = null, bd = SNAP_M; for (const o of all) { if (o.wi === wi) continue; const dd = hav(p, o.p); if (dd < bd) { bd = dd; best = o.p; } }
-    if (best) { w.pts[e] = best; snapped++; }
+    const p = w.pts[e]; if (all.some(o => o.wi !== wi && at(o.p)[0] === p[0] && at(o.p)[1] === p[1])) continue;
+    let best = null, bd = SNAP_M; for (const o of all) { if (o.wi === wi) continue; const dd = hav(p, at(o.p)); if (dd < bd) { bd = dd; best = at(o.p); } }
+    if (best) { moved.set(p, best); w.pts[e] = best; snapped++; }
   }
   // split ways at every point that another way (or the same way) also touches
   const count = new Map(); for (const w of ways) w.pts.forEach((p, i) => { const k = key(p); count.set(k, (count.get(k) || 0) + (i === 0 || i === w.pts.length - 1 ? 2 : 1)); });
