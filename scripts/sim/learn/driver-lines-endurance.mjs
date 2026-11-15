@@ -67,14 +67,15 @@ const reg = buildRegistry([...new Set(laps.map(l => l.name))].map(name => ({name
 for (const l of laps) { const pid = reg.ids.get(l.name) || l.name; ((groups[l.id + '|' + l.b] ||= {})[pid] ||= []).push(l); }
 console.log('laps', laps.length, '(extra', laps.filter(l => !['wec', 'imsa', 'elms', 'alms'].includes(l.series)).length + ')', 'groups', Object.keys(groups).length, 'people', Object.keys(reg.people).length);
 mkdirSync(out, {recursive: true});
-Object.keys(groups).sort().filter((k, i) => i % pk === pi).forEach(key => {
+Object.keys(groups).sort().filter((k, i) => i % pk === pi).forEach(key => { try { fitGroup(key); } catch (e) { console.log('group failed', key, e.stack?.split('\n').slice(0, 3).join(' | ')); } });
+function fitGroup(key) {
   const [id, b] = key.split('|'), of = join(out, `dle-${id}-${b}.json`); if (existsSync(of)) return;
-  const L = lineData(id), c = carsFor(id)[CAR[b]]; if (!L || !c) return;
+  const L = lineData(id), c = carsFor(id)[CAR[b]]; if (!L || !c) { console.log('skip', key, !L ? 'no line' : 'no car'); return; }
   const env = K.conditionsFromWeather(realConditions(id)[CAR[b]] || {}), ref = [L.mid.map(p => p[0]), L.mid.map(p => p[1])], mc = L.base.map(x => x / 10), sp = L.sp.map(x => x / 10);
   // sector cuts: track-atlas, else estimated from the field's median sector shares with the car line (0.01 steps)
   const shareOf = s => s.map(x => x / (s[0] + s[1] + s[2]));
   // the car line's simulated time at a lap fraction, and the field's median sector shares
-  const best = Object.values(groups[key]).map(ls => ls.slice().sort((a, b2) => a.t - b2.t)[0]); if (best.length < 3) return;
+  const best = Object.values(groups[key]).map(ls => ls.slice().sort((a, b2) => a.t - b2.t)[0]); if (best.length < 3) { console.log('skip', key, 'fewer than 3 drivers'); return; }
   const med = [0, 1, 2].map(i => { const v = best.map(l => shareOf(l.s)[i]).sort((x, y) => x - y); return v[v.length >> 1]; });
   const cl0 = blendLine(K, ref, L.nrm, mc, sp, c.car, env, c.grip || 1), tr0 = lineTrack(K, ref[0].map((x, i) => x + L.nrm[i][0] * cl0.off[i]), ref[1].map((y, i) => y + L.nrm[i][1] * cl0.off[i]), 5); tr0.mu.fill(c.grip || 1);
   const r0 = K.simulateLap(tr0, c.car, env), n0 = r0.time.length, at = f => r0.time[Math.min(n0 - 1, Math.round(f * n0))] / r0.lapTime;
@@ -107,4 +108,4 @@ Object.keys(groups).sort().filter((k, i) => i % pk === pi).forEach(key => {
   }
   writeFileSync(of, JSON.stringify({id, bucket: b, cuts, atlas: cutSrc, names: Object.fromEntries(Object.keys(groups[key]).map(k => [k, reg.people[k]?.name || k])), carW3: w0, fieldW3: F.w, field: [+err(simOf(w0), field).toFixed(3), +F.best.toFixed(3)], drivers: res}));
   console.log(id, b, Object.keys(res).length, 'drivers');
-});
+}

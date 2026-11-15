@@ -1,7 +1,7 @@
 // Actions job (lapsim-learn.yml): racing line per driver in every series (owner 2026-11-15).
 // F1: scripts/sim/driver-lines.mjs (TracingInsights speed traces, 2026 and 2025). Formula E and SRO GT3 laps: driver-laps-extra.mjs. Endurance: driver-lines-endurance.mjs (Al Kamel
 // qualifying laps 2024-2026 of tobi/imsa_data + sector positions of tobi/track-atlas). Driver names of every source go through
-// drivers.mjs (one id per person); extra laps must fit their layout (class speed band). Each group is gated on unseen laps in driver-lines-data.mjs. Out (committed): scripts/sim/data/learn/driver-lines.json (derived table only).
+// drivers.mjs (one id per person; a failing group is logged, not fatal); extra laps must fit their layout (class speed band). Each group is gated on unseen laps in driver-lines-data.mjs. Out (committed): scripts/sim/data/learn/driver-lines.json (derived table only).
 import {execFileSync, spawn} from 'node:child_process';
 import {readdirSync, readFileSync, writeFileSync, mkdirSync, existsSync} from 'node:fs';
 import {cpus} from 'node:os';
@@ -19,7 +19,7 @@ if (!existsSync(imsa)) {
 }
 const atlas = join(C, 'learn', 'tracks.jsonl');
 if (!existsSync(atlas)) execFileSync('curl', ['-sSf', '--max-time', '120', '-o', atlas, 'https://raw.githubusercontent.com/tobi/track-atlas/main/tracks.jsonl']);
-const run = (args, env = {}) => new Promise(ok => { const p = spawn('node', args, {stdio: 'inherit', env: {...process.env, ...env}}); p.on('exit', ok); });
+const run = (args, env = {}) => new Promise(ok => { const p = spawn('node', args, {stdio: 'inherit', env: {...process.env, ...env}}); p.on('exit', (code, sig) => { if (code || sig) console.log('::warning::', args.join(' '), 'exit', code, sig); ok(); }); });
 const OUT = join(C, 'driver-lines');
 // the F1 part is rerun only when its script changed in the pushed commit; otherwise the committed F1 lines are kept
 const prev = existsSync('scripts/sim/data/learn/driver-lines.json') ? JSON.parse(readFileSync('scripts/sim/data/learn/driver-lines.json', 'utf8')) : null;
