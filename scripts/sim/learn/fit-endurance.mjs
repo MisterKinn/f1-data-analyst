@@ -95,6 +95,14 @@ export function loadRows(files = SOURCES) {
   const simsOf = v => [...REGL.values()].filter(l => l.venue === v && l.sim && !l.sim.startsWith('fe-')).length; // Formula E street layouts are no GT3 candidate
   const sroSure = (tr, y) => { if (tr.how === 'lap-time band' && simsOf(tr.venue) !== 1) return false; const sz = REGL.get(tr.layout)?.seasons || []; return !sz.length || sz.some(([a, b]) => y >= a - 1 && y <= b + 1); };
   // SRO rows fill only thin layouts: a layout with fewer than 3 GT3 seasons from the timed sources, and only its other seasons
+  // SRO tables and PDFs: a "best lap" far below its session's median is a gap or a total read as a lap (Natsoft race PDFs): dropped
+  { const med = new Map(); for (const p of pending) if (p.r.src === 'sro') (med.get(p.r.event + '|' + p.r.session) || med.set(p.r.event + '|' + p.r.session, []).get(p.r.event + '|' + p.r.session)).push(p.r.best);
+    for (const [k, a] of med) { a.sort((x, y) => x - y); med.set(k, a[a.length >> 1]); }
+    for (let i = pending.length - 1; i >= 0; i--) { const r = pending[i].r; if (r.src === 'sro' && r.best < 0.92 * med.get(r.event + '|' + r.session)) { pending.splice(i, 1); skip('SRO lap far below its session median (a gap read as a lap)'); } } }
+  // and an SRO lap more than 5 % below the median event best of its layout and class (3+ events) is not a lap of that layout
+  { const ev = new Map(); for (const p of pending) { const k = p.tr.layout + '|' + p.group, e = p.r.event + '|' + p.r.season; const m = ev.get(k) || ev.set(k, new Map()).get(k); m.set(e, Math.min(m.get(e) ?? Infinity, p.r.best)); }
+    const ref = new Map([...ev].filter(([, m]) => m.size >= 3).map(([k, m]) => { const a = [...m.values()].sort((x, y) => x - y); return [k, a[a.length >> 1]]; }));
+    for (let i = pending.length - 1; i >= 0; i--) { const p = pending[i], m = ref.get(p.tr.layout + '|' + p.group); if (p.r.src === 'sro' && m && p.r.best < 0.95 * m) { pending.splice(i, 1); skip('SRO lap far below the event bests of its layout'); } } }
   const covered = new Set(pending.filter(p => p.r.src !== 'sro' && p.r.type === 'Q' && p.group === 'gt3').map(p => p.tr.layout + '|' + p.r.season));
   const thick = new Set(Object.entries([...covered].reduce((o, k) => { const l = k.split('|')[0]; o[l] = (o[l] || 0) + 1; return o; }, {})).filter(([, n]) => n >= 3).map(([l]) => l));
   for (const {r, group, tr, w, b, num} of pending) {
