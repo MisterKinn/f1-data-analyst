@@ -14,7 +14,7 @@ Read AGENTS.md and docs/answer-principles.md first; they are the product rules.
 
 ## Before every PR
 
-- `npm ci && node --test tests/*.test.mjs && npm run build && npm run validate`
+- `npm ci && KONGBODA_FEATURES=all node --test tests/*.test.mjs && node --test tests/features-off.test.mjs && npm run build && npm run validate` (as CI does; without `KONGBODA_FEATURES=all` about 26 tests of hidden live-timing pages fail, which is not a regression)
 - Python collector tests need `fastf1` and `signalrcore`; failures from missing packages locally are not regressions (CI installs them).
 - When a change touches existing files that main may have changed, rebase on the latest `upstream/main` and rerun the tests.
 

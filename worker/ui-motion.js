@@ -195,7 +195,8 @@ export function uiMotionClient() {
    const text = lap.textContent, start = performance.now(), dur = 700;
    counting = true; written = text;
    // Stops at once if the simulator script writes a new value during the count.
-   const step = now => { if (!counting || lap.textContent !== written) { counting = false; return; } const k = Math.min(1, (now - start) / dur), e = 1 - Math.pow(1 - k, 3); written = k < 1 ? fmtLap(target * e) : text; lap.textContent = written; if (k < 1) requestAnimationFrame(step); else setTimeout(() => { counting = false; }, 0); };
+   // The first frame time can be earlier than start: without the floor the readout counts from a negative time (seen live).
+   const step = now => { if (!counting || lap.textContent !== written) { counting = false; return; } const k = Math.min(1, Math.max(0, (now - start) / dur)), e = 1 - Math.pow(1 - k, 3); written = k < 1 ? fmtLap(target * e) : text; lap.textContent = written; if (k < 1) requestAnimationFrame(step); else setTimeout(() => { counting = false; }, 0); };
    requestAnimationFrame(step);
   };
   // Lap replay built from the speed trace (x = distance, y = speed) and the map path lengths.
