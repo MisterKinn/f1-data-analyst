@@ -84,6 +84,8 @@ Owner instruction (2026-11-14): where a real lap of a car type exists, use it. T
 | autopolis | Full circuit 4.674 km | owner-2026-11-15 | 4542 (4674) | 771–822 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | snetterton | Snetterton 300 circuit 4.779 km | owner-2026-11-15 | 4722 (4779) | 40–47 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | lausitz | DTM circuit 3.478 km | owner-2026-11-15 | 3408 (3478) | 117–131 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| istanbul | Grand Prix 5.338 km | f1-history | 5263 (5338) | car positions | 1 (0) | 2.54 | 2.54 | – | – | – | pass (unseen) |
+| sochi | Grand Prix 5.848 km | f1-history | 5830 (5848) | car positions | 1 (0) | 0.28 | 0.28 | – | – | – | pass (unseen) |
 
 Length is the driven or least-curvature line; it is shorter than the official centre-line distance. "Own class" rows are WEC cars on WEC laps; the other rows use a borrowed car (IMSA GTP = LMDh car, every other GT3 series = LMGT3 car, an older F1 season = the 2023 F1 car times the season ratio).
 
@@ -224,6 +226,8 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 | sebring | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 107.363 | 105.331 | -1.89 |
 | sebring | wec | 2023 | HYPERCAR | Cadillac #2 | lmdh 2025 | 106.082 | 104.642 | -1.36 |
 | sebring | wec | 2023 | HYPERCAR | Ferrari #50 | lmh 2025 | 105.067 | 104.383 | -0.65 |
+| istanbul | f1 | 2021 | F1 | HAM (Mercedes), pole Q3 | f1 2023 × 0.9864 (borrowed) | 82.868 | 84.976 | 2.54 |
+| sochi | f1 | 2020 | F1 | HAM (Mercedes), pole Q3 | f1 2023 × 0.9686 (borrowed) | 91.304 | 91.558 | 0.28 |
 
 ## Held-out rows with a learned or sibling track factor
 
@@ -408,6 +412,8 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 | autopolis | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | snetterton | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 4 assumed 12 m | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | lausitz | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| istanbul | 1 fixed (official) and 2 measured (driven line) | 2 measured (F1 car positions, 8 qualifying laps, 2021) | 2 measured (mean of the fastest qualifying laps) | not used | 2 measured (F1 car positions) | 4 borrowed (mean factor of the class's fitted tracks) |
+| sochi | 1 fixed (official) and 2 measured (driven line) | 2 measured (F1 car positions, 8 qualifying laps, 2020) | 2 measured (mean of the fastest qualifying laps) | not used | 2 measured (F1 car positions) | 4 borrowed (mean factor of the class's fitted tracks) |
 
 ## Sources
 
@@ -465,6 +471,8 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 - **autopolis**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
 - **snetterton**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); Snetterton 300 Circuit, 4.779 km (MSV circuit; British GT since 2011); Terrarium elevation tiles (Mapzen/Tilezen open data)
 - **lausitz**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **istanbul**: TracingInsights/2021 on GitHub: Turkish Grand Prix, Qualifying (FastF1 car positions, lap times, corner positions)
+- **sochi**: TracingInsights/2020 on GitHub: Russian Grand Prix, Qualifying (FastF1 car positions, lap times, corner positions)
 
 ## Not checked, known limits
 

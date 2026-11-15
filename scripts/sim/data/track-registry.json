@@ -2120,7 +2120,7 @@
    ]
   },
   {
-   "id": "istanbul-5338",
+   "id": "istanbul",
    "venue": "istanbul",
    "lengthKm": 5.338,
    "seasons": [
@@ -2134,9 +2134,11 @@
     ]
    ],
    "sources": [
-    "f1db:istanbul-1"
+    "f1db:istanbul-1",
+    "simulator"
    ],
-   "default": true
+   "default": true,
+   "sim": "istanbul"
   },
   {
    "id": "jacarepagua-5031",
@@ -3846,7 +3848,7 @@
    ]
   },
   {
-   "id": "sochi-5848",
+   "id": "sochi",
    "venue": "sochi",
    "lengthKm": 5.848,
    "seasons": [
@@ -3856,9 +3858,11 @@
     ]
    ],
    "sources": [
-    "f1db:sirius-1"
+    "f1db:sirius-1",
+    "simulator"
    ],
-   "default": true
+   "default": true,
+   "sim": "sochi"
   },
   {
    "id": "spa-francorchamps-6940",

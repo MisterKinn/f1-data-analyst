@@ -415,6 +415,22 @@
    "candidate": "lausitz-eurospeedway-lausitz-dtm",
    "name": "Lausitzring",
    "layout": "DTM circuit 3.478 km"
+  },
+  "istanbul": {
+   "group": "f1-history",
+   "file": "extra-tracks-f1.json",
+   "driven": true,
+   "name": "Istanbul Park",
+   "layout": "Grand Prix 5.338 km",
+   "candidate": "istanbul"
+  },
+  "sochi": {
+   "group": "f1-history",
+   "file": "extra-tracks-f1.json",
+   "driven": true,
+   "name": "Sochi Autodrom",
+   "layout": "Grand Prix 5.848 km",
+   "candidate": "sochi"
   }
  },
  "laps": [
@@ -1613,6 +1629,34 @@
    "trackC": 38,
    "humidityPct": 59,
    "pressureHpa": null
+  },
+  {
+   "track": "istanbul",
+   "series": "f1",
+   "season": 2021,
+   "cls": "F1",
+   "car": "f1",
+   "borrowed": true,
+   "model": "HAM (Mercedes), pole Q3",
+   "lap": 82.868,
+   "airC": 18.3,
+   "trackC": 23.5,
+   "humidityPct": 82.2,
+   "pressureHpa": 1004.7
+  },
+  {
+   "track": "sochi",
+   "series": "f1",
+   "season": 2020,
+   "cls": "F1",
+   "car": "f1",
+   "borrowed": true,
+   "model": "HAM (Mercedes), pole Q3",
+   "lap": 91.304,
+   "airC": 25.8,
+   "trackC": 31.7,
+   "humidityPct": 54.1,
+   "pressureHpa": 1009
   }
  ]
 }
