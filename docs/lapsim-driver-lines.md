@@ -1,6 +1,6 @@
 # Racing line per driver (every series)
 
-Generated 2026-11-15T05:02:54.767Z by `scripts/sim/learn/fetch-driver-lines.mjs` (GitHub Actions) and `scripts/sim/driver-lines-data.mjs`.
+Generated 2026-11-15T05:20:09.506Z by `scripts/sim/learn/fetch-driver-lines.mjs` (GitHub Actions) and `scripts/sim/driver-lines-data.mjs`.
 
 No public source gives a measured driven line, so each driver's line is **estimated**:
 

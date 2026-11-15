@@ -56,12 +56,15 @@ for (const f of files) {
 for (const f of (process.env.LAPSIM_DL_EXTRA || '').split(',').filter(x => x && existsSync(x))) for (const line of readFileSync(f, 'utf8').split('\n')) {
   if (!line) continue; let r; try { r = JSON.parse(line); } catch { continue; }
   if (!r.driver || !(r.t > 0) || !Array.isArray(r.s) || r.s.length !== 3 || r.s.some(x => !(x > 0)) || Math.abs(r.s[0] + r.s[1] + r.s[2] - r.t) > 0.1) continue;
-  const id = resolveTrack({name: String(r.venue || '').replace(/-/g, ' '), lengthKm: r.lenKm || null, season: r.season}).sim; if (!id || !CAR[r.bucket]) continue;
+  const id = r.trackId || resolveTrack({name: String(r.venue || '').replace(/-/g, ' '), lengthKm: r.lenKm || null, season: r.season}).sim; if (!id || !CAR[r.bucket]) continue;
+  // a lap is learned only on its own layout: no Formula E layout for a GT3 lap, and the mean speed on this layout must be in the class band
+  const len = lapsimAllTracks[id]?.length, vKph = len ? len / 1000 / (r.t / 3600) : 0, band = r.bucket === 'gt3' ? [125, 215] : r.bucket.startsWith('fe-') ? [80, 170] : [140, 265];
+  if ((r.bucket === 'gt3') === id.startsWith('fe-') || vKph < band[0] || vKph > band[1]) continue;
   laps.push({id, b: r.bucket, name: String(r.driver).trim(), t: r.t, s: r.s, series: r.series, season: r.season, manufacturer: r.manufacturer || null, team: r.team || null});
 }
 const reg = buildRegistry([...new Set(laps.map(l => l.name))].map(name => ({name})));
 for (const l of laps) { const pid = reg.ids.get(l.name) || l.name; ((groups[l.id + '|' + l.b] ||= {})[pid] ||= []).push(l); }
-console.log('laps', laps.length, 'groups', Object.keys(groups).length, 'people', Object.keys(reg.people).length);
+console.log('laps', laps.length, '(extra', laps.filter(l => !['wec', 'imsa', 'elms', 'alms'].includes(l.series)).length + ')', 'groups', Object.keys(groups).length, 'people', Object.keys(reg.people).length);
 mkdirSync(out, {recursive: true});
 Object.keys(groups).sort().filter((k, i) => i % pk === pi).forEach(key => {
   const [id, b] = key.split('|'), of = join(out, `dle-${id}-${b}.json`); if (existsSync(of)) return;

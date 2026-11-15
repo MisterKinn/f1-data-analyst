@@ -45,9 +45,10 @@ for (const f of files(DIR)) {
     keys ||= Object.keys(r);
     const driver = r.driver ?? r.driverName ?? r.driver_name ?? null; if (!driver) { noDriver++; continue; }
     if ((r.q || []).some(q => HARD.includes(q)) || !/q/i.test(String(r.sessionType || r.session || ''))) continue;
-    const why = [r.s1, r.s2, r.s3].some(x => !(x > 0)) ? 'no sectors' : Math.abs(r.s1 + r.s2 + r.s3 - r.time) > 0.1 ? 'sectors do not add up' : !resolveTrack({name: [r.track, r.layout].filter(Boolean).join(' '), season: r.season}).sim ? 'track ' + r.track + ' / ' + r.layout : null;
+    let tid = null;
+    const why = [r.s1, r.s2, r.s3].some(x => !(x > 0)) ? 'no sectors' : Math.abs(r.s1 + r.s2 + r.s3 - r.time) > 0.1 ? 'sectors do not add up' : !(tid = resolveTrack({name: [r.track, r.layout].filter(Boolean).join(' ').replace(/-/g, ' '), season: r.season}).sim) ? 'track ' + r.track + ' / ' + r.layout : null;
     if (why) { drop[why] = (drop[why] || 0) + 1; continue; }
-    lines.push({series: r.series, season: r.season, venue: [r.track, r.layout].filter(Boolean).join(' '), lenKm: r.lenKm || null, bucket: 'gt3', driver, manufacturer: modelOf(r.carModel, r.season, 'GT3')?.base?.split(' ')[0] || null, team: r.team || null, t: r.time, s: [r.s1, r.s2, r.s3]}); t71++;
+    lines.push({trackId: tid, series: r.series, season: r.season, venue: [r.track, r.layout].filter(Boolean).join(' '), lenKm: r.lenKm || null, bucket: 'gt3', driver, manufacturer: modelOf(r.carModel, r.season, 'GT3')?.base?.split(' ')[0] || null, team: r.team || null, t: r.time, s: [r.s1, r.s2, r.s3]}); t71++;
   }
 }
 console.log('Timing71 dropped', JSON.stringify(Object.entries(drop).sort((a, b) => b[1] - a[1]).slice(0, 25)));
