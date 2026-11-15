@@ -1,15 +1,17 @@
 // Formula E: tracks from the official circuit maps and a learned lap-time model per rule set (Gen2, Gen3, Gen3 Evo; Gen4 prior).
 //   node scripts/sim/learn/build-fe.mjs
 // In:  scripts/sim/data/learn/fe-maps.json (FIA / Al Kamel circuit-map PDFs, fetch-fe-maps.mjs), fe-cars.csv.gz (Al Kamel, every
-//      session of seasons 5-12, one row per car and session).
+//      session of seasons 5-12, one row per car and session), fe-duels.csv (qualifying duels, PDF classifications; optional).
 // Out: worker/lapsim/fe-tracks-data.js (lapsimFeTracks), worker/lapsim/fe-data.js (lapsimFe), scripts/sim/data/learn/fe-fit.json.
-// Model (log scale, ridge): log(real) = log(sim of the rule-set car, session weather) + G(rule set) + T(layout); T ~ N(0, 0.05).
+// Model (log scale, ridge): log(real) = log(sim of the rule-set car at the session's power, session weather) + G(rule set) + T(layout);
+// T ~ N(0, 0.05). Session power (fe-cars.js feCarFor): qualifying groups below full power (Gen3 300 kW, Season 8 220 kW), duels and
+// practice at full power, so G holds no power deficit and exp(G + T) on the full-power page car predicts a full-power lap.
 // Reproduction: every layout and rule set that raced keeps its fastest real lap (owner rule 2026-11-14).
-import {readFileSync, writeFileSync} from 'node:fs';
+import {existsSync, readFileSync, writeFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
 import {lapsimKernel} from '../../../worker/lapsim/kernel.js';
 import {lapsimTracks, lapsimExtraTracks} from '../../../worker/lapsim/tracks-data.js';
-import {FE_GENS, feKeyOf} from '../../../worker/lapsim/fe-cars.js';
+import {feKeyOf, feCarFor} from '../../../worker/lapsim/fe-cars.js';
 import {buildTrack} from '../build-geometry-extra.mjs';
 import {parseCsv} from './build-endurance.mjs';
 import {lineOf, lengthOf, metres} from './fe-lines.mjs';
@@ -34,16 +36,19 @@ for (const m of maps.sort((a, b) => b.year - a.year)) {
   if (!L) layouts.push(L = {venue: m.venue, lengthM: m.lengthM, years: new Set(), maps: []});
   L.years.add(m.year); L.maps.push(m);
 }
+// the lap line of a layout: the newest map with a closed vector line (seasons 5-8 maps are raster or black outlines only)
+const pickLine = l => { for (const m of l.maps) { const line = lineOf(m); if (!line || line.gapPt > 40) continue; const g = metres(line, m.lengthM); if (Math.abs(Math.abs(g.turn) - 360) < 5) return {m, g}; } return null; };
 for (const l of layouts) { const ys = [...l.years].sort(), same = layouts.filter(o => o.venue === l.venue), newest = same.every(o => Math.max(...o.years) <= Math.max(...ys));
-  l.id = REUSE[`${l.venue}|${l.lengthM}`] || (IDS[l.venue] || 'fe-' + slug(l.venue)) + (newest ? '' : '-' + ys[0]); l.first = ys[0]; l.last = ys.at(-1); }
+  l.pick = pickLine(l); // the id year is the first year of a map that gives the line, so older maps without a line never rename a track
+  const idYear = l.pick ? Math.min(...l.maps.filter(m => pickLine({maps: [m]})).map(m => m.year)) : ys[0];
+  l.id = REUSE[`${l.venue}|${l.lengthM}`] || (IDS[l.venue] || 'fe-' + slug(l.venue)) + (newest ? '' : '-' + idYear); l.first = ys[0]; l.last = ys.at(-1); }
 
 // 2. Track geometry (least-curvature line inside an 11 m street track, flat)
 const tracks = {}, geomLog = [];
 for (const l of layouts) {
   if (lapsimAllTracks[l.id]) { l.sim = l.id; geomLog.push({id: l.id, from: 'existing simulator track'}); continue; }
-  let pick = null; for (const m of l.maps) { const line = lineOf(m); if (!line || line.gapPt > 40) continue; const g = metres(line, m.lengthM); if (Math.abs(Math.abs(g.turn) - 360) < 5) { pick = {m, g}; break; } }
-  if (!pick) { geomLog.push({id: l.id, from: 'no usable lap line on the maps'}); continue; }
-  const {m, g} = pick, c = {ds: g.ds, length: Math.round(g.kappa.length * g.ds), officialLengthM: l.lengthM, widthM: 11, kappa: Array.from(g.kappa, k => Math.round(k * 1e5)), grade: null, sectors: [], corners: []};
+  if (!l.pick) { geomLog.push({id: l.id, from: 'no usable lap line on the maps'}); continue; }
+  const {m, g} = l.pick, c = {ds: g.ds, length: Math.round(g.kappa.length * g.ds), officialLengthM: l.lengthM, widthM: 11, kappa: Array.from(g.kappa, k => Math.round(k * 1e5)), grade: null, sectors: [], corners: []};
   const span = l.first === l.last ? `${l.first - 1}-${String(l.first).slice(2)}` : `${l.first - 1}-${String(l.last).slice(2)}`;
   const t = buildTrack(l.id, {name: `${l.venue} (Formula E ${span})`, layout: `Formula E ${l.lengthM} m`, widthM: 11,
     shapeEvidence: '2 measured (official FIA Formula E circuit map, vector line)', sources: [`FIA Formula E circuit map, ${m.season}, ${m.event} (Al Kamel Systems): ${m.url}`]}, c);
@@ -51,7 +56,11 @@ for (const l of layouts) {
 }
 
 // 3. Rows: Al Kamel car-session bests, matched to a layout by venue and measured length
-const rows = parseCsv(gunzipSync(readFileSync(D + 'fe-cars.csv.gz')).toString()).map(r => ({...r, season: +r.season, best: +r.best, lenM: +r.lenKm * 1000, venue: venueOf(r.event)}))
+const base = parseCsv(gunzipSync(readFileSync(D + 'fe-cars.csv.gz')).toString());
+// duels (fetch-fe-duels.mjs, PDF classifications): lap length, car and team from the same car's group row of that event
+const duels = existsSync(D + 'fe-duels.csv') ? parseCsv(readFileSync(D + 'fe-duels.csv', 'utf8')).flatMap(d => {
+  const g = base.find(r => r.season === d.season && r.event === d.event && r.entry === d.entry && r.type === 'Q'); return g ? [{...g, ...d, session: d.session, type: 'Q', vehicle: g.vehicle, team: g.team, lenKm: g.lenKm}] : []; }) : [];
+const rows = [...base, ...duels].map(r => ({...r, season: +r.season, best: +r.best, lenM: +r.lenKm * 1000, venue: venueOf(r.event)}))
   .filter(r => r.best > 0 && r.lenM > 0);
 const skipped = {};
 for (const r of rows) { const l = layouts.find(l => l.venue === r.venue && Math.abs(r.lenM / l.lengthM - 1) < SAME); r.layout = l?.sim; r.key = feKeyOf(r.season);
@@ -59,7 +68,7 @@ for (const r of rows) { const l = layouts.find(l => l.venue === r.venue && Math.
 const used = rows.filter(r => r.layout && !(+r.rainShare > 0.02) && r.best < 1.3 * r.lenM / 1000 * 30); // dry; slower than 120 km/h average is not a lap
 
 // 4. Records: fastest lap per layout and rule set (any session), fastest race lap
-const rec = (r, type) => ({lap: r.best, weather: {airTempC: +r.airC || undefined, trackTempC: +r.trackC || undefined, humidityPct: +r.hum || undefined, pressureHpa: +r.hpa || undefined}, year: r.season, event: r.event, session: r.session.replace(/^\d+_/, ''), type, entry: r.entry, model: r.vehicle.replace(/\s+/g, ' ').trim(), team: r.team});
+const rec = (r, type) => ({lap: r.best, weather: {airTempC: +r.airC || undefined, trackTempC: +r.trackC || undefined, humidityPct: +r.hum || undefined, pressureHpa: +r.hpa || undefined}, year: r.season, event: r.event, session: r.session.replace(/^\d+_/, ''), type, kW: feCarFor(r.key, r.season, r.session, r.type).pIce / 1e3, entry: r.entry, model: r.vehicle.replace(/\s+/g, ' ').trim(), team: r.team});
 const real = {}, raceReal = {};
 for (const r of used) { const a = (real[r.layout] ||= {}), b = (raceReal[r.layout] ||= {});
   if (!a[r.key] || r.best < a[r.key].lap) a[r.key] = rec(r, r.type);
@@ -67,12 +76,12 @@ for (const r of used) { const a = (real[r.layout] ||= {}), b = (raceReal[r.layou
 
 // 5. Fit rows: best qualifying lap per layout, season and rule set
 const simCache = new Map(), trk = id => trk[id] ||= K.trackFromData(tracks[id] || lapsimAllTracks[id]);
-const simLap = (id, key, r) => { const k = [id, key, Math.round(+r.airC || 25), Math.round(+r.trackC || 35)].join('|'); if (simCache.has(k)) return simCache.get(k);
+const simLap = (id, key, r) => { const car = feCarFor(key, r.season, r.session, r.type), k = [id, key, car.pIce, Math.round(+r.airC || 25), Math.round(+r.trackC || 35)].join('|'); if (simCache.has(k)) return simCache.get(k);
   const env = K.conditionsFromWeather({pressureHpa: +r.hpa || 1013.25, airTempC: +r.airC || 25, humidityPct: +r.hum || 50, trackTempC: +r.trackC || 35, windSpeed: 0, windFromDeg: 0});
-  const v = K.simulateLap(trk(id), FE_GENS[key].car, env).lapTime; simCache.set(k, v); return v; };
+  const v = K.simulateLap(trk(id), car, env).lapTime; simCache.set(k, v); return v; };
 const qb = new Map();
 for (const r of used.filter(r => r.type === 'Q' && r.key !== 'fe-gen4')) { const k = `${r.layout}|${r.season}|${r.key}`; if (!qb.has(k) || r.best < qb.get(k).best) qb.set(k, r); }
-const fitRows = [...qb.values()].map(r => ({layout: r.layout, season: r.season, key: r.key, real: r.best, sim: simLap(r.layout, r.key, r), event: r.event}));
+const fitRows = [...qb.values()].map(r => ({layout: r.layout, season: r.season, key: r.key, real: r.best, sim: simLap(r.layout, r.key, r), kW: feCarFor(r.key, r.season, r.session, r.type).pIce / 1e3, session: r.session.replace(/^\d+_/, ''), event: r.event}));
 for (const f of fitRows) f.y = Math.log(f.real / f.sim);
 
 function fit(rs, tauT = 0.05, sigma = 0.01) { // alternating ridge: G per rule set (free), T per layout (shrunk to 0)

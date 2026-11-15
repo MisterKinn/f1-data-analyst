@@ -1,0 +1,11 @@
+{
+ "note": "Third pass (owner 2026-11-15). Sebring rebuilt with the official length; tracks that failed before retried. Lausitz: the DEKRA test oval and slalom areas are not part of any lap, and several loops fit the DTM length, so only the single loop that drives the one-way raceway pieces in their mapped direction is accepted. Snetterton: the FIA list carries only the 1997-2010 lap (3.141 km); British GT races the Snetterton 300 circuit.",
+ "tracks": [
+  {"id": "sebring", "status": "osm", "seed": [27.455, -81.35], "radius": 4000, "fia": "^SEBRING$", "tol": 0.025, "scaleToOfficial": true,
+   "tolNote": "No piece is missing: every raceway way is on the lap and no way end is open (gap closing 30 m). The map is short everywhere by the same share: full lap 5,887 m vs 6,019 m (-2.2 %), Johnson Club Circuit loop 2,688 m vs 2,736 m (-1.8 %), School Circuit loop 3,140 m vs 3,219 m (-2.5 %). The shape is kept and the lap is scaled to the official length."},
+  {"id": "aragon", "status": "osm", "seed": [41.0786, -0.2066], "radius": 3000, "fia": "^MOTORLAND ARAGON$"},
+  {"id": "lausitz", "status": "osm", "seed": [51.5333, 13.9264], "radius": 3000, "fia": "^EUROSPEEDWAY LAUSITZ DTM$", "skipName": "Test Oval|Slalom", "oneway": true},
+  {"id": "autopolis", "status": "osm", "seed": [33.0369, 130.9764], "radius": 3000, "fia": "^AUTOPOLIS", "tol": 0.008, "tolNote": "One closed map way (4,633 m) plus the start/finish piece: loop 4,640 m, 0.73 % shorter than the FIA 4.674 km (same tolerance practice as Phillip Island 0.7 %)"},
+  {"id": "snetterton", "status": "osm", "seed": [52.4636, 0.9461], "radius": 2500, "lengths": [{"name": "SNETTERTON 300", "lengthM": 4779, "source": "Snetterton 300 Circuit, 4.779 km (MSV circuit; British GT since 2011)"}]}
+ ]
+}

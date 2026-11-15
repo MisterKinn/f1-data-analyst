@@ -1,0 +1,584 @@
+{
+ "source": "OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); loops found by scripts/sim/tracks/assemble.mjs",
+ "rule": "accepted = within 0.5 % of the official lap length",
+ "tracks": {
+  "sebring": {
+   "gapClosedM": 30,
+   "snappedEnds": 2,
+   "ways": 26,
+   "edges": 35,
+   "junctions": 10,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 0,
+   "loopsFound": 27,
+   "loopLengthsM": [
+    {
+     "m": 5887,
+     "names": [
+      "Sunset Bend",
+      "Ullman Straight",
+      "Le Mans Curve",
+      "Gendebien Bend"
+     ]
+    },
+    {
+     "m": 5869,
+     "names": [
+      "Sunset Bend",
+      "Ullman Straight",
+      "Gendebien Bend",
+      "Bishop Bend"
+     ]
+    },
+    {
+     "m": 5848,
+     "names": [
+      "Sunset Bend",
+      "Ullman Straight",
+      "Gendebien Bend",
+      "Bishop Bend"
+     ]
+    },
+    {
+     "m": 3482,
+     "names": [
+      "Sunset Bend",
+      "Ullman Straight",
+      "Le Mans Curve",
+      "Gendebien Bend"
+     ]
+    },
+    {
+     "m": 3464,
+     "names": [
+      "Sunset Bend",
+      "Ullman Straight",
+      "Gendebien Bend",
+      "Bishop Bend"
+     ]
+    },
+    {
+     "m": 3442,
+     "names": [
+      "Sunset Bend",
+      "Ullman Straight",
+      "Gendebien Bend",
+      "Bishop Bend"
+     ]
+    },
+    {
+     "m": 3140,
+     "names": [
+      "Sunset Bend",
+      "Ullman Straight",
+      "Le Mans Curve",
+      "Gendebien Bend"
+     ]
+    },
+    {
+     "m": 3122,
+     "names": [
+      "Sunset Bend",
+      "Ullman Straight",
+      "Gendebien Bend",
+      "Bishop Bend"
+     ]
+    },
+    {
+     "m": 3100,
+     "names": [
+      "Sunset Bend",
+      "Ullman Straight",
+      "Gendebien Bend",
+      "Bishop Bend"
+     ]
+    },
+    {
+     "m": 2944,
+     "names": [
+      "Gurney Bend",
+      "Hairpin",
+      "Fangio",
+      "Cunningham Corner"
+     ]
+    },
+    {
+     "m": 2688,
+     "names": [
+      "Gurney Bend",
+      "Hairpin",
+      "Fangio",
+      "Cunningham Corner"
+     ]
+    },
+    {
+     "m": 2055,
+     "names": [
+      "Ullman Straight",
+      "Le Mans Curve",
+      "Gendebien Bend"
+     ]
+    }
+   ],
+   "accepted": [
+    {
+     "id": "sebring | SEBRING",
+     "officialM": 6019,
+     "source": "FIA list 2026-03-31",
+     "grade": "2",
+     "pole": "Left",
+     "widthM": 12,
+     "loopM": 5887,
+     "errorPct": 2.19,
+     "accepted": true,
+     "gapClosedM": 30,
+     "scaleToOfficial": true
+    }
+   ]
+  },
+  "aragon": {
+   "gapClosedM": 12,
+   "snappedEnds": 0,
+   "ways": 20,
+   "edges": 33,
+   "junctions": 20,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 1,
+   "loopsFound": 50,
+   "loopLengthsM": [
+    {
+     "m": 5434,
+     "names": [
+      "Curva Marc Márquez",
+      "Curva Carlos Checa",
+      "Variante FIA"
+     ]
+    },
+    {
+     "m": 5389,
+     "names": [
+      "Curva Marc Márquez",
+      "Curva Carlos Checa",
+      "Variante FIA"
+     ]
+    },
+    {
+     "m": 5367,
+     "names": [
+      "Curva Marc Márquez",
+      "Curva Carlos Checa",
+      "Variante FIM",
+      "Variante FIA"
+     ]
+    },
+    {
+     "m": 5333,
+     "names": [
+      "Curva Marc Márquez",
+      "Curva Carlos Checa"
+     ]
+    },
+    {
+     "m": 5311,
+     "names": [
+      "Curva Marc Márquez",
+      "Curva Carlos Checa",
+      "Variante FIM"
+     ]
+    },
+    {
+     "m": 5290,
+     "names": [
+      "Curva Marc Márquez",
+      "Variante FIA",
+      "Curva Carlos Checa"
+     ]
+    },
+    {
+     "m": 5266,
+     "names": [
+      "Curva Marc Márquez",
+      "Curva Carlos Checa",
+      "Variante FIM"
+     ]
+    },
+    {
+     "m": 5244,
+     "names": [
+      "Curva Marc Márquez",
+      "Variante FIA",
+      "Curva Carlos Checa"
+     ]
+    },
+    {
+     "m": 5189,
+     "names": [
+      "Curva Marc Márquez",
+      "Curva Carlos Checa"
+     ]
+    },
+    {
+     "m": 5168,
+     "names": [
+      "Curva Marc Márquez",
+      "Curva Carlos Checa",
+      "Variante FIM",
+      "Variante FIA"
+     ]
+    },
+    {
+     "m": 5123,
+     "names": [
+      "Curva Marc Márquez",
+      "Curva Carlos Checa",
+      "Variante FIM",
+      "Variante FIA"
+     ]
+    },
+    {
+     "m": 5068,
+     "names": [
+      "Curva Marc Márquez",
+      "Curva Carlos Checa",
+      "Variante FIM"
+     ]
+    },
+    {
+     "m": 5024,
+     "names": [
+      "Curva Marc Márquez",
+      "Variante FIA",
+      "Variante FIM",
+      "Curva Carlos Checa"
+     ]
+    },
+    {
+     "m": 4979,
+     "names": [
+      "Curva Marc Márquez",
+      "Variante FIA",
+      "Variante FIM",
+      "Curva Carlos Checa"
+     ]
+    },
+    {
+     "m": 4923,
+     "names": [
+      "Curva Marc Márquez",
+      "Variante FIM",
+      "Curva Carlos Checa"
+     ]
+    },
+    {
+     "m": 3876,
+     "names": [
+      "Curva Marc Márquez",
+      "Curva Carlos Checa",
+      "Shortcut Motorland Aragon"
+     ]
+    },
+    {
+     "m": 3831,
+     "names": [
+      "Curva Marc Márquez",
+      "Curva Carlos Checa",
+      "Shortcut Motorland Aragon"
+     ]
+    },
+    {
+     "m": 3738,
+     "names": [
+      "Curva Carlos Checa",
+      "Variante FIA"
+     ]
+    },
+    {
+     "m": 3682,
+     "names": [
+      "Curva Carlos Checa"
+     ]
+    },
+    {
+     "m": 3633,
+     "names": [
+      "Curva Marc Márquez",
+      "Curva Carlos Checa",
+      "Shortcut Motorland Aragon"
+     ]
+    },
+    {
+     "m": 3534,
+     "names": [
+      "Curva Marc Márquez",
+      "Shortcut Motorland Aragon",
+      "Curva Carlos Checa"
+     ]
+    },
+    {
+     "m": 3488,
+     "names": [
+      "Curva Marc Márquez",
+      "Shortcut Motorland Aragon",
+      "Curva Carlos Checa"
+     ]
+    },
+    {
+     "m": 3472,
+     "names": [
+      "Curva Carlos Checa",
+      "Variante FIM",
+      "Variante FIA"
+     ]
+    },
+    {
+     "m": 3417,
+     "names": [
+      "Curva Carlos Checa",
+      "Variante FIM"
+     ]
+    },
+    {
+     "m": 3357,
+     "names": [
+      "Curva Carlos Checa"
+     ]
+    },
+    {
+     "m": 3249,
+     "names": [
+      "Curva Marc Márquez"
+     ]
+    },
+    {
+     "m": 3214,
+     "names": [
+      "Curva Carlos Checa",
+      "Variante FIA"
+     ]
+    },
+    {
+     "m": 3159,
+     "names": [
+      "Curva Carlos Checa"
+     ]
+    },
+    {
+     "m": 3092,
+     "names": [
+      "Curva Carlos Checa",
+      "Variante FIM"
+     ]
+    },
+    {
+     "m": 3050,
+     "names": [
+      "Curva Marc Márquez"
+     ]
+    },
+    {
+     "m": 3005,
+     "names": [
+      "Curva Marc Márquez"
+     ]
+    },
+    {
+     "m": 2949,
+     "names": [
+      "Curva Carlos Checa",
+      "Variante FIM",
+      "Variante FIA"
+     ]
+    },
+    {
+     "m": 2893,
+     "names": [
+      "Curva Carlos Checa",
+      "Variante FIM"
+     ]
+    },
+    {
+     "m": 2789,
+     "names": [
+      "Curva Marc Márquez"
+     ]
+    },
+    {
+     "m": 2744,
+     "names": [
+      "Curva Marc Márquez"
+     ]
+    },
+    {
+     "m": 2641,
+     "names": [
+      "Shortcut Motorland Aragon",
+      "Variante FIA"
+     ]
+    },
+    {
+     "m": 2586,
+     "names": [
+      "Shortcut Motorland Aragon"
+     ]
+    },
+    {
+     "m": 2376,
+     "names": [
+      "Shortcut Motorland Aragon",
+      "Variante FIA",
+      "Variante FIM"
+     ]
+    },
+    {
+     "m": 2320,
+     "names": [
+      "Shortcut Motorland Aragon",
+      "Variante FIM"
+     ]
+    },
+    {
+     "m": 1982,
+     "names": [
+      "Curva Carlos Checa",
+      "Shortcut Motorland Aragon"
+     ]
+    }
+   ],
+   "accepted": [
+    {
+     "id": "aragon | MOTORLAND ARAGON",
+     "officialM": 5346,
+     "source": "FIA list 2026-03-31",
+     "grade": "1",
+     "pole": "Right",
+     "widthM": 12,
+     "loopM": 5333,
+     "errorPct": 0.24,
+     "accepted": true,
+     "gapClosedM": 12
+    }
+   ]
+  },
+  "lausitz": {
+   "error": "no map data"
+  },
+  "autopolis": {
+   "gapClosedM": 12,
+   "snappedEnds": 0,
+   "ways": 6,
+   "edges": 14,
+   "junctions": 8,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 0,
+   "loopsFound": 9,
+   "loopLengthsM": [
+    {
+     "m": 4640,
+     "names": [
+      "オートポリス"
+     ]
+    },
+    {
+     "m": 2983,
+     "names": [
+      "オートポリス"
+     ]
+    },
+    {
+     "m": 1956,
+     "names": [
+      "オートポリス"
+     ]
+    },
+    {
+     "m": 1764,
+     "names": [
+      "レイクサイドコース"
+     ]
+    }
+   ],
+   "accepted": [
+    {
+     "id": "autopolis | AUTOPOLIS",
+     "officialM": 4674,
+     "source": "FIA list 2026-03-31",
+     "grade": "2",
+     "pole": "Right",
+     "widthM": 12,
+     "loopM": 4640,
+     "errorPct": 0.73,
+     "accepted": true,
+     "gapClosedM": 12
+    }
+   ]
+  },
+  "snetterton": {
+   "gapClosedM": 12,
+   "snappedEnds": 0,
+   "ways": 26,
+   "edges": 28,
+   "junctions": 4,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 0,
+   "loopsFound": 5,
+   "loopLengthsM": [
+    {
+     "m": 4789,
+     "names": [
+      "Bentley Straight",
+      "Brundle",
+      "Nelson",
+      "Bomb Hole"
+     ]
+    },
+    {
+     "m": 3305,
+     "names": [
+      "Bentley Straight",
+      "Brundle",
+      "Nelson",
+      "Bomb Hole"
+     ]
+    },
+    {
+     "m": 3194,
+     "names": [
+      "Bentley Straight",
+      "Brundle",
+      "Nelson",
+      "Bomb Hole"
+     ]
+    },
+    {
+     "m": 1787,
+     "names": [
+      "Palmer",
+      "Agostini",
+      "Hamilton",
+      "Oggies"
+     ]
+    },
+    {
+     "m": 1562,
+     "names": [
+      "Firmans",
+      "Williams",
+      "Oggies",
+      "Hamilton"
+     ]
+    }
+   ],
+   "accepted": [
+    {
+     "id": "snetterton | SNETTERTON 300",
+     "officialM": 4779,
+     "source": "Snetterton 300 Circuit, 4.779 km (MSV circuit; British GT since 2011)",
+     "loopM": 4789,
+     "errorPct": 0.21,
+     "accepted": true,
+     "gapClosedM": 12
+    }
+   ]
+  }
+ }
+}

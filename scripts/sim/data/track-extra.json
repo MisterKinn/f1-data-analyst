@@ -361,11 +361,11 @@
   },
   "sebring": {
    "group": "owner-2026-11-15",
-   "file": "extra-tracks-2026-11-15b.json",
+   "file": "extra-tracks-2026-11-15c.json",
    "candidate": "sebring-sebring",
    "name": "Sebring",
    "layout": "IMSA layout 6.019 km",
-   "provisional": "OpenStreetMap lap is 2.2 % shorter than the official 6.019 km (a short piece of the map is missing)"
+   "layoutNote": "No piece of the map is missing; the OpenStreetMap lap is 2.2 % short everywhere (Club and School circuits too), so its shape is scaled to the official 6.019 km (track-requests-2026-11-15c.json)"
   },
   "magny-cours": {
    "group": "owner-2026-11-15",
@@ -387,6 +387,34 @@
    "candidate": "phillip-island-phillip-island",
    "name": "Phillip Island",
    "layout": "Grand Prix circuit 4.480 km"
+  },
+  "aragon": {
+   "group": "owner-2026-11-15",
+   "file": "extra-tracks-2026-11-15c.json",
+   "candidate": "aragon-motorland-aragon",
+   "name": "MotorLand Aragón",
+   "layout": "Motorland circuit 5.346 km"
+  },
+  "autopolis": {
+   "group": "owner-2026-11-15",
+   "file": "extra-tracks-2026-11-15c.json",
+   "candidate": "autopolis-autopolis",
+   "name": "Autopolis",
+   "layout": "Full circuit 4.674 km"
+  },
+  "snetterton": {
+   "group": "owner-2026-11-15",
+   "file": "extra-tracks-2026-11-15c.json",
+   "candidate": "snetterton-snetterton-300",
+   "name": "Snetterton",
+   "layout": "Snetterton 300 circuit 4.779 km"
+  },
+  "lausitz": {
+   "group": "owner-2026-11-15",
+   "file": "extra-tracks-2026-11-15d.json",
+   "candidate": "lausitz-eurospeedway-lausitz-dtm",
+   "name": "Lausitzring",
+   "layout": "DTM circuit 3.478 km"
   }
  },
  "laps": [

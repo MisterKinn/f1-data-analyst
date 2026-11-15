@@ -1,0 +1,1404 @@
+[
+ {
+  "season": "Season 12 - 2025-26",
+  "event": "R17 London",
+  "folders": [
+   {
+    "name": "ABB FIA Formula E World Championship",
+    "sessions": [
+     {
+      "name": "Event Booklet",
+      "files": [
+       "ABB FIA Formula E World Championship_R17_LDN_BOOKLET"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Final Championships",
+      "files": [
+       "Drivers Championship",
+       "Drivers Championship",
+       "Manufacturers Championship",
+       "Manufacturers Championship",
+       "Teams Championship",
+       "Teams Championship"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Race",
+      "files": [
+       "R17 Weather_Race",
+       "R17 Weather_Race",
+       "R17 Analysis_Race",
+       "R17 Analysis_Race",
+       "R17 AnalysisByLap_Race",
+       "R17 FastestLapSequence_Race",
+       "R17 BestSectors_Race",
+       "R17 LapChart_Race",
+       "R17 Classification_Race",
+       "R17 Classification_Race",
+       "R17 Grid_Race"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Duels Merge",
+      "files": [
+       "R17 Classification_Duels Merge"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Final",
+      "files": [
+       "R17 Classification Practice With Analysis_Qualifying Duel Final",
+       "R17 Weather_Qualifying Duel Final",
+       "R17 Weather_Qualifying Duel Final"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Semi-Final 2",
+      "files": [
+       "R17 Classification Practice With Analysis_Qualifying Duel Semi-Final 2",
+       "R17 Weather_Qualifying Duel Semi-Final 2",
+       "R17 Weather_Qualifying Duel Semi-Final 2"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Semi-Final 1",
+      "files": [
+       "R17 Classification Practice With Analysis_Qualifying Duel Semi-Final 1",
+       "R17 Weather_Qualifying Duel Semi-Final 1",
+       "R17 Weather_Qualifying Duel Semi-Final 1"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Quarter-Final 4",
+      "files": [
+       "R17 Classification Practice With Analysis_Qualifying Duel Quarter-Final 4",
+       "R17 Weather_Qualifying Duel Quarter-Final 4",
+       "R17 Weather_Qualifying Duel Quarter-Final 4"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Quarter-Final 3",
+      "files": [
+       "R17 Classification Practice With Analysis_Qualifying Duel Quarter-Final 3",
+       "R17 TrackLimits_Qualifying Duel Quarter-Final 3",
+       "R17 TrackLimits_Qualifying Duel Quarter-Final 3",
+       "R17 Weather_Qualifying Duel Quarter-Final 3",
+       "R17 Weather_Qualifying Duel Quarter-Final 3"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Quarter-Final 2",
+      "files": [
+       "R17 Classification Practice With Analysis_Qualifying Duel Quarter-Final 2",
+       "R17 Weather_Qualifying Duel Quarter-Final 2",
+       "R17 Weather_Qualifying Duel Quarter-Final 2"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Quarter-Final 1",
+      "files": [
+       "R17 Classification Practice With Analysis_Qualifying Duel Quarter-Final 1",
+       "R17 Weather_Qualifying Duel Quarter-Final 1",
+       "R17 Weather_Qualifying Duel Quarter-Final 1"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Group B",
+      "files": [
+       "R17 Weather_Qualifying Group B",
+       "R17 Weather_Qualifying Group B",
+       "R17 Analysis_Qualifying Group B",
+       "R17 Analysis_Qualifying Group B",
+       "R17 FastestLapSequence_Qualifying Group B",
+       "R17 BestSectors_Qualifying Group B",
+       "R17 Classification_Qualifying Group B",
+       "R17 Classification_Qualifying Group B"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Group A",
+      "files": [
+       "R17 TrackLimits_Qualifying Group A",
+       "R17 TrackLimits_Qualifying Group A",
+       "R17 Weather_Qualifying Group A",
+       "R17 Weather_Qualifying Group A",
+       "R17 Analysis_Qualifying Group A",
+       "R17 Analysis_Qualifying Group A",
+       "R17 FastestLapSequence_Qualifying Group A",
+       "R17 BestSectors_Qualifying Group A",
+       "R17 Classification_Qualifying Group A",
+       "R17 Classification_Qualifying Group A"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Free Practice 3",
+      "files": [
+       "R17 ClassificationFLByPower_Free Practice 3",
+       "R17 TrackLimits_Free Practice 3",
+       "R17 TrackLimits_Free Practice 3",
+       "R17 Weather_Free Practice 3",
+       "R17 Weather_Free Practice 3",
+       "R17 Analysis_Free Practice 3",
+       "R17 Analysis_Free Practice 3",
+       "R17 FastestLapSequence_Free Practice 3",
+       "R17 BestSectors_Free Practice 3",
+       "R17 Classification_Free Practice 3",
+       "R17 Classification_Free Practice 3"
+      ],
+      "sub": []
+     }
+    ]
+   },
+   {
+    "name": "Event Information",
+    "sessions": []
+   }
+  ]
+ },
+ {
+  "season": "Season 12 - 2025-26",
+  "event": "R16 London",
+  "folders": [
+   {
+    "name": "ABB FIA Formula E World Championship",
+    "sessions": [
+     {
+      "name": "Final Championships",
+      "files": [
+       "Drivers Championship",
+       "Drivers Championship",
+       "Manufacturers Championship",
+       "Manufacturers Championship",
+       "Teams Championship",
+       "Teams Championship"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Event Booklet",
+      "files": [
+       "ABB FIA Formula E World Championship_R16_LDN_BOOKLET"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Race",
+      "files": [
+       "R16 Weather_Race",
+       "R16 Weather_Race",
+       "R16 Analysis_Race",
+       "R16 Analysis_Race",
+       "PitStops_Race",
+       "R16 AnalysisByLap_Race",
+       "R16 FastestLapSequence_Race",
+       "R16 BestSectors_Race",
+       "R16 LapChart_Race",
+       "R16 Classification_Race",
+       "R16 Classification_Race",
+       "R16 Grid_Race"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Duels Merge",
+      "files": [
+       "R16 Classification_Duels Merge"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Final",
+      "files": [
+       "R16 Classification Practice With Analysis_Qualifying Duel Final",
+       "R16 Weather_Qualifying Duel Final",
+       "R16 Weather_Qualifying Duel Final"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Semi-Final 2",
+      "files": [
+       "R16 Classification Practice With Analysis_Qualifying Duel Semi-Final 2",
+       "R16 Weather_Qualifying Duel Semi-Final 2",
+       "R16 Weather_Qualifying Duel Semi-Final 2"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Semi-Final 1",
+      "files": [
+       "R16 Classification Practice With Analysis_Qualifying Duel Semi-Final 1",
+       "R16 Weather_Qualifying Duel Semi-Final 1",
+       "R16 Weather_Qualifying Duel Semi-Final 1"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Quarter-Final 4",
+      "files": [
+       "R16 Classification Practice With Analysis_Qualifying Duel Quarter-Final 4",
+       "R16 Weather_Qualifying Duel Quarter-Final 4",
+       "R16 Weather_Qualifying Duel Quarter-Final 4"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Quarter-Final 3",
+      "files": [
+       "R16 Classification Practice With Analysis_Qualifying Duel Quarter-Final 3",
+       "R16 Weather_Qualifying Duel Quarter-Final 3",
+       "R16 Weather_Qualifying Duel Quarter-Final 3"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Quarter-Final 2",
+      "files": [
+       "R16 Classification Practice With Analysis_Qualifying Duel Quarter-Final 2",
+       "R16 Weather_Qualifying Duel Quarter-Final 2",
+       "R16 Weather_Qualifying Duel Quarter-Final 2"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Quarter-Final 1",
+      "files": [
+       "R16 Classification Practice With Analysis_Qualifying Duel Quarter-Final 1",
+       "R16 Weather_Qualifying Duel Quarter-Final 1",
+       "R16 Weather_Qualifying Duel Quarter-Final 1"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Group B",
+      "files": [
+       "R16 Weather_Qualifying Group B",
+       "R16 Weather_Qualifying Group B",
+       "R16 Analysis_Qualifying Group B",
+       "R16 Analysis_Qualifying Group B",
+       "R16 FastestLapSequence_Qualifying Group B",
+       "R16 BestSectors_Qualifying Group B",
+       "R16 Classification_Qualifying Group B",
+       "R16 Classification_Qualifying Group B"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Group A",
+      "files": [
+       "R16 Weather_Qualifying Group A",
+       "R16 Weather_Qualifying Group A",
+       "R16 Analysis_Qualifying Group A",
+       "R16 Analysis_Qualifying Group A",
+       "R16 FastestLapSequence_Qualifying Group A",
+       "R16 BestSectors_Qualifying Group A",
+       "R16 Classification_Qualifying Group A",
+       "R16 Classification_Qualifying Group A"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Free Practice 2",
+      "files": [
+       "R16 ClassificationFLByPower_Free Practice 2",
+       "R16 TrackLimits_Free Practice 2",
+       "R16 TrackLimits_Free Practice 2",
+       "R16 Weather_Free Practice 2",
+       "R16 Weather_Free Practice 2",
+       "R16 Analysis_Free Practice 2",
+       "R16 Analysis_Free Practice 2",
+       "R16 FastestLapSequence_Free Practice 2",
+       "R16 BestSectors_Free Practice 2",
+       "R16 Classification_Free Practice 2",
+       "R16 Classification_Free Practice 2"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Free Practice 1",
+      "files": [
+       "R16 ClassificationFLByPower_Free Practice 1",
+       "R16 TrackLimits_Free Practice 1",
+       "R16 TrackLimits_Free Practice 1",
+       "R16 Weather_Free Practice 1",
+       "R16 Weather_Free Practice 1",
+       "R16 Analysis_Free Practice 1",
+       "R16 Analysis_Free Practice 1",
+       "R16 FastestLapSequence_Free Practice 1",
+       "R16 BestSectors_Free Practice 1",
+       "R16 Classification_Free Practice 1",
+       "R16 Classification_Free Practice 1"
+      ],
+      "sub": []
+     }
+    ]
+   },
+   {
+    "name": "Event Information",
+    "sessions": []
+   }
+  ]
+ },
+ {
+  "season": "Season 11 - 2024-25",
+  "event": "R16 London",
+  "folders": [
+   {
+    "name": "ABB FIA Formula E World Championship",
+    "sessions": [
+     {
+      "name": "Event Booklet",
+      "files": [
+       "ABB FIA Formula E World Championship_R16_LDN_BOOKLET"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Final Championships",
+      "files": [
+       "Drivers Championship",
+       "Drivers Championship",
+       "Manufacturers Championship",
+       "Manufacturers Championship",
+       "Teams Championship",
+       "Teams Championship"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Race",
+      "files": [
+       "R16 TrackLimits_Race",
+       "R16 TrackLimits_Race",
+       "R16 Weather_Race",
+       "R16 Weather_Race",
+       "R16 Analysis_Race",
+       "R16 Analysis_Race",
+       "R16 AnalysisByLap_Race",
+       "R16 FastestLapSequence_Race",
+       "R16 BestSectors_Race",
+       "R16 LapChart_Race",
+       "R16 Classification_Race",
+       "R16 Classification_Race",
+       "R16 Grid_Race"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Duels Merge",
+      "files": [
+       "R16 Classification_Duels Merge"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Final",
+      "files": [
+       "R16 Classification Practice With Analysis_Qualifying Duel Final",
+       "R16 Weather_Qualifying Duel Final",
+       "R16 Weather_Qualifying Duel Final"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Semi-Final 2",
+      "files": [
+       "R16 Classification Practice With Analysis_Qualifying Duel Semi-Final 2",
+       "R16 Weather_Qualifying Duel Semi-Final 2",
+       "R16 Weather_Qualifying Duel Semi-Final 2"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Semi-Final 1",
+      "files": [
+       "R16 Classification Practice With Analysis_Qualifying Duel Semi-Final 1",
+       "R16 Weather_Qualifying Duel Semi-Final 1",
+       "R16 Weather_Qualifying Duel Semi-Final 1"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Quarter-Final 4",
+      "files": [
+       "R16 Classification Practice With Analysis_Qualifying Duel Quarter-Final 4",
+       "R16 Weather_Qualifying Duel Quarter-Final 4",
+       "R16 Weather_Qualifying Duel Quarter-Final 4"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Quarter-Final 3",
+      "files": [
+       "R16 Classification Practice With Analysis_Qualifying Duel Quarter-Final 3",
+       "R16 Weather_Qualifying Duel Quarter-Final 3",
+       "R16 Weather_Qualifying Duel Quarter-Final 3"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Quarter-Final 2",
+      "files": [
+       "R16 Classification Practice With Analysis_Qualifying Duel Quarter-Final 2",
+       "R16 Weather_Qualifying Duel Quarter-Final 2",
+       "R16 Weather_Qualifying Duel Quarter-Final 2"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Quarter-Final 1",
+      "files": [
+       "R16 Classification Practice With Analysis_Qualifying Duel Quarter-Final 1",
+       "R16 Weather_Qualifying Duel Quarter-Final 1",
+       "R16 Weather_Qualifying Duel Quarter-Final 1"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Group B",
+      "files": [
+       "R16 Weather_Qualifying Group B",
+       "R16 Weather_Qualifying Group B",
+       "R16 Analysis_Qualifying Group B",
+       "R16 Analysis_Qualifying Group B",
+       "R16 FastestLapSequence_Qualifying Group B",
+       "R16 BestSectors_Qualifying Group B",
+       "R16 Classification_Qualifying Group B",
+       "R16 Classification_Qualifying Group B"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Group A",
+      "files": [
+       "R16 TrackLimits_Qualifying Group A",
+       "R16 TrackLimits_Qualifying Group A",
+       "R16 Weather_Qualifying Group A",
+       "R16 Weather_Qualifying Group A",
+       "R16 Analysis_Qualifying Group A",
+       "R16 Analysis_Qualifying Group A",
+       "R16 FastestLapSequence_Qualifying Group A",
+       "R16 BestSectors_Qualifying Group A",
+       "R16 Classification_Qualifying Group A",
+       "R16 Classification_Qualifying Group A"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Free Practice 3",
+      "files": [
+       "R16 ClassificationFLByPower_Free Practice 3",
+       "R16 TrackLimits_Free Practice 3",
+       "R16 TrackLimits_Free Practice 3",
+       "R16 Weather_Free Practice 3",
+       "R16 Weather_Free Practice 3",
+       "R16 Analysis_Free Practice 3",
+       "R16 Analysis_Free Practice 3",
+       "R16 FastestLapSequence_Free Practice 3",
+       "R16 BestSectors_Free Practice 3",
+       "R16 Classification_Free Practice 3",
+       "R16 Classification_Free Practice 3"
+      ],
+      "sub": []
+     }
+    ]
+   },
+   {
+    "name": "Event Information",
+    "sessions": []
+   }
+  ]
+ },
+ {
+  "season": "Season 11 - 2024-25",
+  "event": "R15 London",
+  "folders": [
+   {
+    "name": "ABB FIA Formula E World Championship",
+    "sessions": [
+     {
+      "name": "Event Booklet",
+      "files": [
+       "ABB FIA Formula E World Championship_R15_LDN_BOOKLET"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Final Championships",
+      "files": [
+       "Drivers Championship",
+       "Drivers Championship",
+       "Manufacturers Championship",
+       "Manufacturers Championship",
+       "Teams Championship",
+       "Teams Championship"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Race",
+      "files": [
+       "R15 TrackLimits_Race",
+       "R15 TrackLimits_Race",
+       "R15 Weather_Race",
+       "R15 Weather_Race",
+       "R15 Analysis_Race",
+       "R15 Analysis_Race",
+       "PitStops_Race",
+       "R15 AnalysisByLap_Race",
+       "R15 FastestLapSequence_Race",
+       "R15 BestSectors_Race",
+       "R15 LapChart_Race",
+       "R15 Classification_Race",
+       "R15 Classification_Race",
+       "R15 Grid_Race"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Duels Merge",
+      "files": [
+       "R15 Classification_Duels Merge"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Final",
+      "files": [
+       "R15 Classification Practice With Analysis_Qualifying Duel Final",
+       "R15 Weather_Qualifying Duel Final",
+       "R15 Weather_Qualifying Duel Final"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Semi-Final 2",
+      "files": [
+       "R15 Classification Practice With Analysis_Qualifying Duel Semi-Final 2",
+       "R15 Weather_Qualifying Duel Semi-Final 2",
+       "R15 Weather_Qualifying Duel Semi-Final 2"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Semi-Final 1",
+      "files": [
+       "R15 Classification Practice With Analysis_Qualifying Duel Semi-Final 1",
+       "R15 Weather_Qualifying Duel Semi-Final 1",
+       "R15 Weather_Qualifying Duel Semi-Final 1"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Quarter-Final 4",
+      "files": [
+       "R15 Classification Practice With Analysis_Qualifying Duel Quarter-Final 4",
+       "R15 Weather_Qualifying Duel Quarter-Final 4",
+       "R15 Weather_Qualifying Duel Quarter-Final 4"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Quarter-Final 3",
+      "files": [
+       "R15 Classification Practice With Analysis_Qualifying Duel Quarter-Final 3",
+       "R15 Weather_Qualifying Duel Quarter-Final 3",
+       "R15 Weather_Qualifying Duel Quarter-Final 3"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Quarter-Final 2",
+      "files": [
+       "R15 Classification Practice With Analysis_Qualifying Duel Quarter-Final 2",
+       "R15 Weather_Qualifying Duel Quarter-Final 2",
+       "R15 Weather_Qualifying Duel Quarter-Final 2"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Quarter-Final 1",
+      "files": [
+       "R15 Classification Practice With Analysis_Qualifying Duel Quarter-Final 1",
+       "R15 Weather_Qualifying Duel Quarter-Final 1",
+       "R15 Weather_Qualifying Duel Quarter-Final 1"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Group B",
+      "files": [
+       "R15 Weather_Qualifying Group B",
+       "R15 Weather_Qualifying Group B",
+       "R15 Analysis_Qualifying Group B",
+       "R15 Analysis_Qualifying Group B",
+       "R15 FastestLapSequence_Qualifying Group B",
+       "R15 BestSectors_Qualifying Group B",
+       "R15 Classification_Qualifying Group B",
+       "R15 Classification_Qualifying Group B"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Group A",
+      "files": [
+       "R15 Weather_Qualifying Group A",
+       "R15 Weather_Qualifying Group A",
+       "R15 Analysis_Qualifying Group A",
+       "R15 Analysis_Qualifying Group A",
+       "R15 FastestLapSequence_Qualifying Group A",
+       "R15 BestSectors_Qualifying Group A",
+       "R15 Classification_Qualifying Group A",
+       "R15 Classification_Qualifying Group A"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Free Practice 2",
+      "files": [
+       "R15 ClassificationFLByPower_Free Practice 2_AMENDED",
+       "R15 TrackLimits_Free Practice 2_AMENDED",
+       "R15 TrackLimits_Free Practice 2_AMENDED",
+       "R15 Weather_Free Practice 2_AMENDED",
+       "R15 Weather_Free Practice 2_AMENDED",
+       "R15 Analysis_Free Practice 2_AMENDED",
+       "R15 Analysis_Free Practice 2_AMENDED",
+       "R15 FastestLapSequence_Free Practice 2_AMENDED",
+       "R15 BestSectors_Free Practice 2_AMENDED",
+       "R15 Classification_Free Practice 2_AMENDED",
+       "R15 Classification_Free Practice 2_AMENDED"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Free Practice 1",
+      "files": [
+       "R15 ClassificationFLByPower_Free Practice 1",
+       "R15 TrackLimits_Free Practice 1",
+       "R15 TrackLimits_Free Practice 1",
+       "R15 Weather_Free Practice 1",
+       "R15 Weather_Free Practice 1",
+       "R15 Analysis_Free Practice 1",
+       "R15 Analysis_Free Practice 1",
+       "R15 FastestLapSequence_Free Practice 1",
+       "R15 BestSectors_Free Practice 1",
+       "R15 Classification_Free Practice 1",
+       "R15 Classification_Free Practice 1"
+      ],
+      "sub": []
+     }
+    ]
+   },
+   {
+    "name": "Event Information",
+    "sessions": []
+   }
+  ]
+ },
+ {
+  "season": "Season 10 - 2023-24",
+  "event": "R16 London",
+  "folders": [
+   {
+    "name": "ABB FIA Formula E World Championship",
+    "sessions": [
+     {
+      "name": "Event Booklet",
+      "files": [
+       "ABB FIA Formula E World Championship_UK_BOOKLET"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Final Championships",
+      "files": [
+       "Drivers Championship",
+       "Drivers Championship",
+       "Teams Championship",
+       "Teams Championship"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Race",
+      "files": [
+       "R16 Weather_Race",
+       "R16 Weather_Race",
+       "R16 Analysis_Race",
+       "R16 Analysis_Race",
+       "R16 AnalysisByLap_Race",
+       "R16 FastestLapSequence_Race",
+       "R16 BestSectors_Race",
+       "R16 LapChart_Race",
+       "R16 Classification_Race",
+       "R16 Classification_Race",
+       "R16 Grid_Race"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Duels Merge",
+      "files": [
+       "R16 Classification_Duels Merge"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Final",
+      "files": [
+       "ClassificationPracticeWithAnalysis_Qualifying Duel Final",
+       "R16 Weather_Qualifying Duel Final",
+       "R16 Weather_Qualifying Duel Final"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Semi-Final 2",
+      "files": [
+       "ClassificationPracticeWithAnalysis_Qualifying Duel Semi-Final 2",
+       "R16 Weather_Qualifying Duel Semi-Final 2",
+       "R16 Weather_Qualifying Duel Semi-Final 2"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Semi-Final 1",
+      "files": [
+       "ClassificationPracticeWithAnalysis_Qualifying Duel Semi-Final 1",
+       "R16 Weather_Qualifying Duel Semi-Final 1",
+       "R16 Weather_Qualifying Duel Semi-Final 1"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Quarter-Final 4",
+      "files": [
+       "ClassificationPracticeWithAnalysis_Qualifying Duel Quarter-Final 4",
+       "R16 Weather_Qualifying Duel Quarter-Final 4",
+       "R16 Weather_Qualifying Duel Quarter-Final 4"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Quarter-Final 3",
+      "files": [
+       "ClassificationPracticeWithAnalysis_Qualifying Duel Quarter-Final 3",
+       "R16 Weather_Qualifying Duel Quarter-Final 3",
+       "R16 Weather_Qualifying Duel Quarter-Final 3"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Quarter-Final 2",
+      "files": [
+       "ClassificationPracticeWithAnalysis_Qualifying Duel Quarter-Final 2",
+       "R16 Weather_Qualifying Duel Quarter-Final 2",
+       "R16 Weather_Qualifying Duel Quarter-Final 2"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Quarter-Final 1",
+      "files": [
+       "ClassificationPracticeWithAnalysis_Qualifying Duel Quarter-Final 1",
+       "R16 Weather_Qualifying Duel Quarter-Final 1",
+       "R16 Weather_Qualifying Duel Quarter-Final 1"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Group B",
+      "files": [
+       "R16 Weather_Qualifying Group B",
+       "R16 Weather_Qualifying Group B",
+       "R16 Analysis_Qualifying Group B",
+       "R16 Analysis_Qualifying Group B",
+       "R16 FastestLapSequence_Qualifying Group B",
+       "R16 BestSectors_Qualifying Group B",
+       "R16 Classification_Qualifying Group B",
+       "R16 Classification_Qualifying Group B"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Group A",
+      "files": [
+       "R16 Weather_Qualifying Group A",
+       "R16 Weather_Qualifying Group A",
+       "R16 Analysis_Qualifying Group A",
+       "R16 Analysis_Qualifying Group A",
+       "R16 FastestLapSequence_Qualifying Group A",
+       "R16 BestSectors_Qualifying Group A",
+       "R16 Classification_Qualifying Group A",
+       "R16 Classification_Qualifying Group A"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Free Practice 3",
+      "files": [
+       "ClassificationFLByPower_Free Practice 3",
+       "R16 Weather_Free Practice 3",
+       "R16 Weather_Free Practice 3",
+       "R16 Analysis_Free Practice 3",
+       "R16 Analysis_Free Practice 3",
+       "R16 FastestLapSequence_Free Practice 3",
+       "R16 BestSectors_Free Practice 3",
+       "R16 Classification_Free Practice 3",
+       "R16 Classification_Free Practice 3"
+      ],
+      "sub": []
+     }
+    ]
+   },
+   {
+    "name": "Event Information",
+    "sessions": []
+   }
+  ]
+ },
+ {
+  "season": "Season 10 - 2023-24",
+  "event": "R15 London",
+  "folders": [
+   {
+    "name": "ABB FIA Formula E World Championship",
+    "sessions": [
+     {
+      "name": "Event Booklet",
+      "files": [
+       "ABB FIA Formula E World Championship_UK_BOOKLET"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Final Championship",
+      "files": [
+       "Drivers Championship",
+       "Drivers Championship",
+       "Teams Championship",
+       "Teams Championship"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Race",
+      "files": [
+       "R15 Weather_Race",
+       "R15 Weather_Race",
+       "R15 Analysis_Race",
+       "R15 Analysis_Race",
+       "R15 AnalysisByLap_Race",
+       "R15 FastestLapSequence_Race",
+       "R15 BestSectors_Race",
+       "R15 LapChart_Race",
+       "R15 Classification_Race",
+       "R15 Classification_Race",
+       "R15 Grid_Race"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Duels Merge",
+      "files": [
+       "R15 Classification_Duels Merge"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Final",
+      "files": [
+       "ClassificationPracticeWithAnalysis_Qualifying Duel Final",
+       "R15 Weather_Qualifying Duel Final",
+       "R15 Weather_Qualifying Duel Final"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Semi-Final 2",
+      "files": [
+       "ClassificationPracticeWithAnalysis_Qualifying Duel Semi-Final 2",
+       "R15 Weather_Qualifying Duel Semi-Final 2",
+       "R15 Weather_Qualifying Duel Semi-Final 2"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Semi-Final 1",
+      "files": [
+       "ClassificationPracticeWithAnalysis_Qualifying Duel Semi-Final 1",
+       "R15 Weather_Qualifying Duel Semi-Final 1",
+       "R15 Weather_Qualifying Duel Semi-Final 1"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Quarter-Final 4",
+      "files": [
+       "ClassificationPracticeWithAnalysis_Qualifying Duel Quarter-Final 4",
+       "R15 Weather_Qualifying Duel Quarter-Final 4",
+       "R15 Weather_Qualifying Duel Quarter-Final 4"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Quarter-Final 3",
+      "files": [
+       "ClassificationPracticeWithAnalysis_Qualifying Duel Quarter-Final 3",
+       "R15 Weather_Qualifying Duel Quarter-Final 3",
+       "R15 Weather_Qualifying Duel Quarter-Final 3"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Quarter-Final 2",
+      "files": [
+       "ClassificationPracticeWithAnalysis_Qualifying Duel Quarter-Final 2",
+       "R15 Weather_Qualifying Duel Quarter-Final 2",
+       "R15 Weather_Qualifying Duel Quarter-Final 2"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Quarter-Final 1",
+      "files": [
+       "ClassificationPracticeWithAnalysis_Qualifying Duel Quarter-Final 1",
+       "R15 Weather_Qualifying Duel Quarter-Final 1",
+       "R15 Weather_Qualifying Duel Quarter-Final 1"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Group B",
+      "files": [
+       "R15 Weather_Qualifying Group B",
+       "R15 Weather_Qualifying Group B",
+       "R15 Analysis_Qualifying Group B",
+       "R15 Analysis_Qualifying Group B",
+       "R15 FastestLapSequence_Qualifying Group B",
+       "R15 BestSectors_Qualifying Group B",
+       "R15 Classification_Qualifying Group B",
+       "R15 Classification_Qualifying Group B"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Group A",
+      "files": [
+       "R15 Weather_Qualifying Group A",
+       "R15 Weather_Qualifying Group A",
+       "R15 Analysis_Qualifying Group A",
+       "R15 Analysis_Qualifying Group A",
+       "R15 FastestLapSequence_Qualifying Group A",
+       "R15 BestSectors_Qualifying Group A",
+       "R15 Classification_Qualifying Group A",
+       "R15 Classification_Qualifying Group A"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Free Practice 2",
+      "files": [
+       "ClassificationFLByPower_Free Practice 2",
+       "R15 Weather_Free Practice 2",
+       "R15 Weather_Free Practice 2",
+       "R15 Analysis_Free Practice 2",
+       "R15 Analysis_Free Practice 2",
+       "R15 FastestLapSequence_Free Practice 2",
+       "R15 BestSectors_Free Practice 2",
+       "R15 Classification_Free Practice 2",
+       "R15 Classification_Free Practice 2"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Free Practice 1",
+      "files": [
+       "ClassificationFLByPower_Free Practice 1",
+       "R15 Weather_Free Practice 1",
+       "R15 Weather_Free Practice 1",
+       "R15 Analysis_Free Practice 1",
+       "R15 Analysis_Free Practice 1",
+       "R15 FastestLapSequence_Free Practice 1",
+       "R15 BestSectors_Free Practice 1",
+       "R15 Classification_Free Practice 1",
+       "R15 Classification_Free Practice 1"
+      ],
+      "sub": []
+     }
+    ]
+   },
+   {
+    "name": "Event Information",
+    "sessions": []
+   }
+  ]
+ },
+ {
+  "season": "Season 9 - 2022-23",
+  "event": "R16 London",
+  "folders": [
+   {
+    "name": "ABB FIA Formula E World Championship",
+    "sessions": [
+     {
+      "name": "Race",
+      "files": [
+       "R16 Weather_Race",
+       "R16 Weather_Race",
+       "R16 Analysis_Race",
+       "R16 Analysis_Race",
+       "R16 AnalysisByLap_Race",
+       "R16 FastestLapSequence_Race",
+       "R16 BestSectors_Race",
+       "R16 LapChart_Race",
+       "R16 Classification_Race",
+       "R16 Classification_Race",
+       "R16 Grid_Race"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Duels Merge",
+      "files": [
+       "R16 Classification_Duels Merge"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Final",
+      "files": [
+       "ClassificationPracticeWithAnalysis_Qualifying Duel Final",
+       "R16 Weather_Qualifying Duel Final",
+       "R16 Weather_Qualifying Duel Final",
+       "R16 Classification_Qualifying Duel Final"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Semi-Final 2",
+      "files": [
+       "ClassificationPracticeWithAnalysis_Qualifying Duel Semi-Final 2",
+       "R16 Weather_Qualifying Duel Semi-Final 2",
+       "R16 Weather_Qualifying Duel Semi-Final 2",
+       "R16 Classification_Qualifying Duel Semi-Final 2"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Semi-Final 1",
+      "files": [
+       "ClassificationPracticeWithAnalysis_Qualifying Duel Semi-Final 1",
+       "R16 Weather_Qualifying Duel Semi-Final 1",
+       "R16 Weather_Qualifying Duel Semi-Final 1",
+       "R16 Classification_Qualifying Duel Semi-Final 1"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Quarter-Final 4",
+      "files": [
+       "ClassificationPracticeWithAnalysis_Qualifying Duel Quarter-Final 4",
+       "R16 Weather_Qualifying Duel Quarter-Final 4",
+       "R16 Weather_Qualifying Duel Quarter-Final 4",
+       "R16 Classification_Qualifying Duel Quarter-Final 4"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Quarter-Final 3",
+      "files": [
+       "ClassificationPracticeWithAnalysis_Qualifying Duel Quarter-Final 3",
+       "R16 Weather_Qualifying Duel Quarter-Final 3",
+       "R16 Weather_Qualifying Duel Quarter-Final 3",
+       "R16 Classification_Qualifying Duel Quarter-Final 3"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Quarter-Final 2",
+      "files": [
+       "ClassificationPracticeWithAnalysis_Qualifying Duel Quarter-Final 2",
+       "R16 Weather_Qualifying Duel Quarter-Final 2",
+       "R16 Weather_Qualifying Duel Quarter-Final 2",
+       "R16 Classification_Qualifying Duel Quarter-Final 2"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Quarter-Final 1",
+      "files": [
+       "ClassificationPracticeWithAnalysis_Qualifying Duel Quarter-Final 1",
+       "R16 Weather_Qualifying Duel Quarter-Final 1",
+       "R16 Weather_Qualifying Duel Quarter-Final 1",
+       "R16 Classification_Qualifying Duel Quarter-Final 1"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Group B",
+      "files": [
+       "R16 Weather_Qualifying Group B",
+       "R16 Weather_Qualifying Group B",
+       "R16 Analysis_Qualifying Group B",
+       "R16 Analysis_Qualifying Group B",
+       "R16 FastestLapSequence_Qualifying Group B",
+       "R16 BestSectors_Qualifying Group B",
+       "R16 Classification_Qualifying Group B",
+       "R16 Classification_Qualifying Group B"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Group A",
+      "files": [
+       "R16 Weather_Qualifying Group A",
+       "R16 Weather_Qualifying Group A",
+       "R16 Analysis_Qualifying Group A",
+       "R16 Analysis_Qualifying Group A",
+       "R16 FastestLapSequence_Qualifying Group A",
+       "R16 BestSectors_Qualifying Group A",
+       "R16 Classification_Qualifying Group A",
+       "R16 Classification_Qualifying Group A"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Free Practice 3",
+      "files": [
+       "ClassificationFLByPower_Free Practice 3",
+       "R16 Weather_Free Practice 3",
+       "R16 Weather_Free Practice 3",
+       "R16 Analysis_Free Practice 3",
+       "R16 Analysis_Free Practice 3",
+       "R16 FastestLapSequence_Free Practice 3",
+       "R16 BestSectors_Free Practice 3",
+       "R16 Classification_Free Practice 3",
+       "R16 Classification_Free Practice 3"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Event Booklet",
+      "files": [
+       "ABB FIA Formula E World Championship_United Kingdom_BOOKLET"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Final Championships",
+      "files": [
+       "Drivers Championship",
+       "Drivers Championship",
+       "Teams Championship",
+       "Teams Championship"
+      ],
+      "sub": []
+     }
+    ]
+   },
+   {
+    "name": "Event Information",
+    "sessions": []
+   }
+  ]
+ },
+ {
+  "season": "Season 9 - 2022-23",
+  "event": "R15 London",
+  "folders": [
+   {
+    "name": "ABB FIA Formula E World Championship",
+    "sessions": [
+     {
+      "name": "Race",
+      "files": [
+       "R15 Weather_Race",
+       "R15 Weather_Race",
+       "R15 Analysis_Race",
+       "R15 Analysis_Race",
+       "R15 AnalysisByLap_Race",
+       "R15 FastestLapSequence_Race",
+       "R15 BestSectors_Race",
+       "R15 LapChart_Race",
+       "R15 Classification_Race",
+       "R15 Classification_Race",
+       "R15 Grid_Race"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Duels Merge",
+      "files": [
+       "R15 Classification_Duels Merge"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Final",
+      "files": [
+       "ClassificationPracticeWithAnalysis_Qualifying Duel Final",
+       "R15 Weather_Qualifying Duel Final",
+       "R15 Weather_Qualifying Duel Final",
+       "R15 Classification_Qualifying Duel Final"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Semi-Final 2",
+      "files": [
+       "ClassificationPracticeWithAnalysis_Qualifying Duel Semi-Final 2",
+       "R15 Weather_Qualifying Duel Semi-Final 2",
+       "R15 Weather_Qualifying Duel Semi-Final 2",
+       "R15 Classification_Qualifying Duel Semi-Final 2"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Semi-Final 1",
+      "files": [
+       "ClassificationPracticeWithAnalysis_Qualifying Duel Semi-Final 1",
+       "R15 Weather_Qualifying Duel Semi-Final 1",
+       "R15 Weather_Qualifying Duel Semi-Final 1",
+       "R15 Classification_Qualifying Duel Semi-Final 1"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Quarter-Final 4",
+      "files": [
+       "ClassificationPracticeWithAnalysis_Qualifying Duel Quarter-Final 4",
+       "R15 Weather_Qualifying Duel Quarter-Final 4",
+       "R15 Weather_Qualifying Duel Quarter-Final 4",
+       "R15 Classification_Qualifying Duel Quarter-Final 4"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Quarter-Final 3",
+      "files": [
+       "ClassificationPracticeWithAnalysis_Qualifying Duel Quarter-Final 3",
+       "R15 Weather_Qualifying Duel Quarter-Final 3",
+       "R15 Weather_Qualifying Duel Quarter-Final 3",
+       "R15 Classification_Qualifying Duel Quarter-Final 3"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Quarter-Final 2",
+      "files": [
+       "ClassificationPracticeWithAnalysis_Qualifying Duel Quarter-Final 2",
+       "R15 Weather_Qualifying Duel Quarter-Final 2",
+       "R15 Weather_Qualifying Duel Quarter-Final 2",
+       "R15 Classification_Qualifying Duel Quarter-Final 2"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Duel Quarter-Final 1",
+      "files": [
+       "ClassificationPracticeWithAnalysis_Qualifying Duel Quarter-Final 1",
+       "R15 Weather_Qualifying Duel Quarter-Final 1",
+       "R15 Weather_Qualifying Duel Quarter-Final 1",
+       "R15 Classification_Qualifying Duel Quarter-Final 1"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Group B",
+      "files": [
+       "R15 Weather_Qualifying Group B",
+       "R15 Weather_Qualifying Group B",
+       "R15 Analysis_Qualifying Group B",
+       "R15 Analysis_Qualifying Group B",
+       "R15 FastestLapSequence_Qualifying Group B",
+       "R15 BestSectors_Qualifying Group B",
+       "R15 Classification_Qualifying Group B",
+       "R15 Classification_Qualifying Group B"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Qualifying Group A",
+      "files": [
+       "R15 Weather_Qualifying Group A",
+       "R15 Weather_Qualifying Group A",
+       "R15 Analysis_Qualifying Group A",
+       "R15 Analysis_Qualifying Group A",
+       "R15 FastestLapSequence_Qualifying Group A",
+       "R15 BestSectors_Qualifying Group A",
+       "R15 Classification_Qualifying Group A",
+       "R15 Classification_Qualifying Group A"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Free Practice 2",
+      "files": [
+       "ClassificationFLByPower_Free Practice 2",
+       "R15 Weather_Free Practice 2",
+       "R15 Weather_Free Practice 2",
+       "R15 Analysis_Free Practice 2",
+       "R15 Analysis_Free Practice 2",
+       "R15 FastestLapSequence_Free Practice 2",
+       "R15 BestSectors_Free Practice 2",
+       "R15 Classification_Free Practice 2",
+       "R15 Classification_Free Practice 2"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Free Practice 1",
+      "files": [
+       "ClassificationFLByPower_Free Practice 1",
+       "R15 Weather_Free Practice 1",
+       "R15 Weather_Free Practice 1",
+       "R15 Analysis_Free Practice 1",
+       "R15 Analysis_Free Practice 1",
+       "R15 FastestLapSequence_Free Practice 1",
+       "R15 BestSectors_Free Practice 1",
+       "R15 Classification_Free Practice 1",
+       "R15 Classification_Free Practice 1"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Event Booklet",
+      "files": [
+       "ABB FIA Formula E World Championship_United Kingdom_BOOKLET"
+      ],
+      "sub": []
+     },
+     {
+      "name": "Final Championships",
+      "files": [
+       "Drivers Championship",
+       "Drivers Championship",
+       "Teams Championship",
+       "Teams Championship"
+      ],
+      "sub": []
+     }
+    ]
+   },
+   {
+    "name": "Event Information",
+    "sessions": []
+   }
+  ]
+ }
+]

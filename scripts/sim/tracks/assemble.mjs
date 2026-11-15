@@ -6,7 +6,9 @@
 import {existsSync, readFileSync, writeFileSync} from 'node:fs';
 import {roadLap} from './road-lap.mjs';
 const FIA = existsSync('.cache/lapsim/osm/fia-circuits.json') ? JSON.parse(readFileSync('.cache/lapsim/osm/fia-circuits.json', 'utf8')).rows : [];
-const DIR = '.cache/lapsim/osm', REQ = JSON.parse(readFileSync(process.env.TRACK_REQUESTS || 'scripts/sim/data/track-requests.json', 'utf8')).tracks;
+const DIR = '.cache/lapsim/osm';
+// read only when run as a script: importing loops() must not need a request file (probe-sebring.mjs crashed on it in Actions)
+const requests = () => JSON.parse(readFileSync(process.env.TRACK_REQUESTS || 'scripts/sim/data/track-requests.json', 'utf8')).tracks;
 const hav = (a, b) => { const R = 6371008.8, r = Math.PI / 180, x = (b[1] - a[1]) * r * Math.cos((a[0] + b[0]) / 2 * r), y = (b[0] - a[0]) * r; return R * Math.hypot(x, y); };
 const key = p => p[0].toFixed(7) + ',' + p[1].toFixed(7);
 const SKIP = /kart|motocross|rallycross|off_road|bmx|drag|rc_car|speedway_dirt/i, SKIPNAME = /pit ?lane|pitlane|boxengasse|피트|ピット|kart|drag|rally|drift|ドリフト|カート|motocross|skid|glisse|driving center/i;
@@ -24,8 +26,20 @@ export function totalTurnDeg(pts) {
   return t * 180 / Math.PI;
 }
 
+// share of the one-way length of a loop that runs against the mapped direction, for the better of the two lap directions
+// (a raceway is mapped oneway=yes in race direction; a loop that drives a one-way piece backwards is not the lap)
+export function againstOneway(line, elements) {
+  const ow = elements.filter(e => e.tags?.oneway === 'yes' && e.geometry?.length > 1).map(e => e.geometry.map(g => [g.lat, g.lon])), idx = new Map();
+  ow.forEach((w, wi) => w.forEach((p, i) => { const k = key(p); if (!idx.has(k)) idx.set(k, []); idx.get(k).push([wi, i]); }));
+  let fw = 0, bw = 0;
+  for (let i = 1; i < line.length; i++) { const A = idx.get(key(line[i - 1])), B = idx.get(key(line[i])); if (!A || !B) continue;
+    const hit = A.flatMap(([w, a]) => B.filter(([v, b]) => v === w && Math.abs(a - b) === 1).map(([, b]) => b - a))[0]; if (hit === undefined) continue;
+    const m = hav(line[i - 1], line[i]); if (hit > 0) fw += m; else bw += m; }
+  return Math.min(fw, bw) / Math.max(1, fw + bw);
+}
+
 export function loops(elements, {maxM = 30000, minM = 1500, cap = 200000, snapM = 12} = {}) {
-  const ways = elements.filter(e => e.type === 'way' && e.geometry?.length > 1 && (e.inRelation || (e.tags?.highway === 'raceway' && !SKIP.test(e.tags?.sport || '') && !SKIPNAME.test(e.tags?.name || '') && !/dirt|ground|unpaved|gravel|grass|sand/i.test(e.tags?.surface || ''))))
+  const ways = elements.filter(e => e.type === 'way' && e.geometry?.length > 1 && (e.inRelation || (e.tags?.highway === 'raceway' && e.tags?.raceway !== 'pitlane' && !SKIP.test(e.tags?.sport || '') && !SKIPNAME.test(e.tags?.name || '') && !/dirt|ground|unpaved|gravel|grass|sand/i.test(e.tags?.surface || ''))))
     .map(e => ({name: e.tags?.name || null, pts: e.geometry.map(g => [g.lat, g.lon])}));
   // close small mapping gaps: a way end within SNAP_M of a point of another way is moved onto that point (map ways often do not share a node)
   const SNAP_M = snapM, all = ways.flatMap((w, wi) => w.pts.map(p => ({p, wi}))); let snapped = 0;
@@ -73,11 +87,13 @@ export function loops(elements, {maxM = 30000, minM = 1500, cap = 200000, snapM 
 
 if (process.argv[1]?.endsWith('assemble.mjs')) {
   const out = {source: 'OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); loops found by scripts/sim/tracks/assemble.mjs', rule: 'accepted = within 0.5 % of the official lap length', tracks: {}}, lines = {};
-  for (const t of REQ.filter(t => t.status === 'osm')) {
+  for (const t of requests().filter(t => t.status === 'osm')) {
     const f = `${DIR}/${t.id}.json`; if (!existsSync(f)) { out.tracks[t.id] = {error: 'no map data'}; continue; }
     const file = JSON.parse(readFileSync(f, 'utf8')), raw = file.elements, clone = a => JSON.parse(JSON.stringify(a));
     // permanent raceway ways and the ways of a route relation are searched separately (the same way can be in both)
-    const els = raw.filter(e => !e.inRelation), rel = raw.filter(e => e.inRelation);
+    // t.skipName: ways that are not part of any lap of the venue (Lausitz: the DEKRA test oval and slalom areas)
+    const skip = t.skipName ? new RegExp(t.skipName, 'i') : null, keep = e => !(skip && skip.test(e.tags?.name || ''));
+    const els = raw.filter(e => !e.inRelation && keep(e)), rel = raw.filter(e => e.inRelation && keep(e));
     // official lengths: every FIA-licensed layout whose name matches this venue (newest list first), plus any length stored with a source
     const re = t.fia ? new RegExp(t.fia, 'i') : null, seen = new Set();
     const fia = re ? FIA.filter(x => re.test(x.name) && !(t.fiaNot && new RegExp(t.fiaNot, 'i').test(x.name))).filter(x => !seen.has(x.name + x.lengthM) && seen.add(x.name + x.lengthM)) : [];
@@ -86,15 +102,17 @@ if (process.argv[1]?.endsWith('assemble.mjs')) {
     const maxM = targets.length ? Math.max(...targets.map(g => g.lengthM)) * 1.03 : 30000;
     const both = sm => { const a = loops(clone(els), {snapM: sm, maxM}); if (rel.length) { const b = loops(clone(rel), {snapM: sm, maxM}); a.loops.push(...b.loops); a.relationWays = b.ways; a.relationLoops = b.loops.length; } return a; };
     let r = both(12), snapUsed = 12;
-    const accepted = targets.map(g => { // nearest loops by length; a loop that crosses itself (total turn not ±360°) is not a lap
-      const best = r.loops.map(l => ({l, err: Math.abs(l.m - g.lengthM) / g.lengthM})).sort((a, b) => a.err - b.err).slice(0, 40).find(c => t.crossover || Math.abs(Math.abs(totalTurnDeg(c.l.line())) - 360) < 30); if (!best) return {id: g.id, officialM: g.lengthM, source: g.src, accepted: false};
-      const ok = best.err <= (t.tol ?? 0.005); if (ok) lines[g.id] = best.l.line().map(p => [+p[0].toFixed(7), +p[1].toFixed(7)]); return {id: g.id, officialM: g.lengthM, source: g.src, grade: g.fia?.grade, pole: g.fia?.pole, widthM: g.fia?.widthM, loopM: best.l.m, errorPct: +(best.err * 100).toFixed(2), accepted: ok}; });
-    // a venue with no accepted lap is tried again with wider gap closing; the length check still decides
-    const pick = () => targets.map(g => { const best = r.loops.map(l => ({l, err: Math.abs(l.m - g.lengthM) / g.lengthM})).sort((a, b) => a.err - b.err).slice(0, 40).find(c => t.crossover || Math.abs(Math.abs(totalTurnDeg(c.l.line())) - 360) < 30);
+    // nearest loops by length; a loop that crosses itself (total turn not ±360°) is not a lap. A venue with no accepted lap is
+    // tried again with wider gap closing; the length check still decides
+    const pick = () => targets.map(g => { const cand = r.loops.map(l => ({l, err: Math.abs(l.m - g.lengthM) / g.lengthM})).sort((a, b) => a.err - b.err).slice(0, 40).filter(c => t.crossover || Math.abs(Math.abs(totalTurnDeg(c.l.line())) - 360) < 30);
+      // t.oneway: several loops fit the length (Lausitz); only a loop that drives the one-way raceway pieces in their mapped direction
+      // (at most 2 % of its one-way length against it) counts, and exactly one distinct such loop must be within the tolerance
+      let best = cand[0], unique = true;
+      if (t.oneway) { const ok1 = cand.filter(c => c.err <= (t.tol ?? 0.005) && againstOneway(c.l.line(), els) <= 0.02), d = []; for (const c of ok1) if (!d.some(x => Math.abs(x.l.m - c.l.m) < 15)) d.push(c); unique = d.length === 1; best = d[0] || cand[0]; }
       if (!best) return {id: g.id, officialM: g.lengthM, source: g.src, accepted: false};
-      const ok = best.err <= (t.tol ?? 0.005); if (ok) lines[g.id] = best.l.line().map(p => [+p[0].toFixed(7), +p[1].toFixed(7)]);
-      return {id: g.id, officialM: g.lengthM, source: g.src, grade: g.fia?.grade, pole: g.fia?.pole, widthM: g.fia?.widthM, loopM: best.l.m, errorPct: +(best.err * 100).toFixed(2), accepted: ok, gapClosedM: snapUsed}; });
-    let acc2 = accepted;
+      const ok = unique && best.err <= (t.tol ?? 0.005); if (ok) lines[g.id] = best.l.line().map(p => [+p[0].toFixed(7), +p[1].toFixed(7)]);
+      return {id: g.id, officialM: g.lengthM, source: g.src, grade: g.fia?.grade, pole: g.fia?.pole, widthM: g.fia?.widthM, loopM: best.l.m, errorPct: +(best.err * 100).toFixed(2), accepted: ok, gapClosedM: snapUsed, scaleToOfficial: t.scaleToOfficial || undefined, oneway: t.oneway ? (unique ? 'one loop follows the one-way direction' : 'no single loop follows the one-way direction') : undefined}; });
+    const accepted = pick(); let acc2 = accepted;
     for (const sm of [30, 60]) { if (!targets.length || acc2.some(a => a.accepted)) break; r = both(sm); snapUsed = sm; acc2 = pick(); }
     accepted.splice(0, accepted.length, ...acc2);
     // a lap on public roads: named roads in lap order from an official description (road-lap.mjs); the length check still decides

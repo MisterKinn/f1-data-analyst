@@ -1,0 +1,359 @@
+{
+ "source": "OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); loops found by scripts/sim/tracks/assemble.mjs",
+ "rule": "accepted = within 0.5 % of the official lap length",
+ "tracks": {
+  "lausitz": {
+   "gapClosedM": 12,
+   "snappedEnds": 0,
+   "ways": 18,
+   "edges": 37,
+   "junctions": 26,
+   "searchCapped": false,
+   "duplicateEdgesDropped": 0,
+   "loopsFound": 305,
+   "loopLengthsM": [
+    {
+     "m": 3582,
+     "names": [
+      "DEKRA Lausitzring",
+      "2-Meilen-Superspeedway",
+      "Innenstrecke Variante",
+      "Innenstrecke"
+     ]
+    },
+    {
+     "m": 3567,
+     "names": [
+      "Innenstrecke Variante",
+      "DEKRA Lausitzring"
+     ]
+    },
+    {
+     "m": 3551,
+     "names": [
+      "DEKRA Lausitzring",
+      "Innenstrecke",
+      "2-Meilen-Superspeedway"
+     ]
+    },
+    {
+     "m": 3527,
+     "names": [
+      "DEKRA Lausitzring",
+      "2-Meilen-Superspeedway",
+      "Innenstrecke Variante",
+      "Innenstrecke"
+     ]
+    },
+    {
+     "m": 3512,
+     "names": [
+      "Innenstrecke Variante",
+      "DEKRA Lausitzring",
+      "2-Meilen-Superspeedway",
+      "Innenstrecke"
+     ]
+    },
+    {
+     "m": 3497,
+     "names": [
+      "Innenstrecke Variante",
+      "DEKRA Lausitzring",
+      "Innenstrecke"
+     ]
+    },
+    {
+     "m": 3479,
+     "names": [
+      "2-Meilen-Superspeedway",
+      "DEKRA Lausitzring",
+      "Innenstrecke"
+     ]
+    },
+    {
+     "m": 3464,
+     "names": [
+      "Innenstrecke Variante",
+      "DEKRA Lausitzring",
+      "2-Meilen-Superspeedway",
+      "Innenstrecke"
+     ]
+    },
+    {
+     "m": 3446,
+     "names": [
+      "Innenstrecke Variante",
+      "DEKRA Lausitzring",
+      "Innenstrecke",
+      "2-Meilen-Superspeedway"
+     ]
+    },
+    {
+     "m": 3430,
+     "names": [
+      "DEKRA Lausitzring",
+      "Innenstrecke Variante",
+      "2-Meilen-Superspeedway"
+     ]
+    },
+    {
+     "m": 3412,
+     "names": [
+      "Innenstrecke Variante",
+      "DEKRA Lausitzring",
+      "Innenstrecke",
+      "2-Meilen-Superspeedway"
+     ]
+    },
+    {
+     "m": 3394,
+     "names": [
+      "DEKRA Lausitzring",
+      "2-Meilen-Superspeedway"
+     ]
+    },
+    {
+     "m": 3378,
+     "names": [
+      "DEKRA Lausitzring",
+      "Innenstrecke",
+      "Innenstrecke Variante",
+      "2-Meilen-Superspeedway"
+     ]
+    },
+    {
+     "m": 3363,
+     "names": [
+      "DEKRA Lausitzring",
+      "Innenstrecke Variante",
+      "2-Meilen-Superspeedway"
+     ]
+    },
+    {
+     "m": 3348,
+     "names": [
+      "2-Meilen-Superspeedway",
+      "DEKRA Lausitzring",
+      "Innenstrecke"
+     ]
+    },
+    {
+     "m": 3332,
+     "names": [
+      "Innenstrecke Variante",
+      "DEKRA Lausitzring",
+      "Innenstrecke",
+      "2-Meilen-Superspeedway"
+     ]
+    },
+    {
+     "m": 3316,
+     "names": [
+      "Innenstrecke Variante",
+      "DEKRA Lausitzring",
+      "Innenstrecke"
+     ]
+    },
+    {
+     "m": 3301,
+     "names": [
+      "Innenstrecke Variante",
+      "DEKRA Lausitzring"
+     ]
+    },
+    {
+     "m": 3285,
+     "names": [
+      "Innenstrecke Variante",
+      "DEKRA Lausitzring",
+      "2-Meilen-Superspeedway"
+     ]
+    },
+    {
+     "m": 3270,
+     "names": [
+      "2-Meilen-Superspeedway",
+      "DEKRA Lausitzring"
+     ]
+    },
+    {
+     "m": 3255,
+     "names": [
+      "DEKRA Lausitzring"
+     ]
+    },
+    {
+     "m": 3239,
+     "names": [
+      "Innenstrecke Variante",
+      "DEKRA Lausitzring",
+      "2-Meilen-Superspeedway"
+     ]
+    },
+    {
+     "m": 3223,
+     "names": [
+      "2-Meilen-Superspeedway",
+      "DEKRA Lausitzring",
+      "Innenstrecke",
+      "Innenstrecke Variante"
+     ]
+    },
+    {
+     "m": 3206,
+     "names": [
+      "DEKRA Lausitzring",
+      "Innenstrecke",
+      "Innenstrecke Variante"
+     ]
+    },
+    {
+     "m": 3186,
+     "names": [
+      "Innenstrecke Variante",
+      "Innenstrecke",
+      "DEKRA Lausitzring",
+      "2-Meilen-Superspeedway"
+     ]
+    },
+    {
+     "m": 3169,
+     "names": [
+      "2-Meilen-Superspeedway",
+      "DEKRA Lausitzring"
+     ]
+    },
+    {
+     "m": 3149,
+     "names": [
+      "DEKRA Lausitzring",
+      "Innenstrecke"
+     ]
+    },
+    {
+     "m": 3133,
+     "names": [
+      "Innenstrecke Variante",
+      "DEKRA Lausitzring",
+      "Innenstrecke"
+     ]
+    },
+    {
+     "m": 3117,
+     "names": [
+      "DEKRA Lausitzring",
+      "2-Meilen-Superspeedway",
+      "Innenstrecke Variante",
+      "Innenstrecke"
+     ]
+    },
+    {
+     "m": 3089,
+     "names": [
+      "DEKRA Lausitzring",
+      "2-Meilen-Superspeedway",
+      "Innenstrecke Variante",
+      "Innenstrecke"
+     ]
+    },
+    {
+     "m": 3072,
+     "names": [
+      "Innenstrecke Variante",
+      "DEKRA Lausitzring",
+      "2-Meilen-Superspeedway",
+      "Innenstrecke"
+     ]
+    },
+    {
+     "m": 3054,
+     "names": [
+      "Innenstrecke Variante",
+      "DEKRA Lausitzring",
+      "Innenstrecke"
+     ]
+    },
+    {
+     "m": 3034,
+     "names": [
+      "Innenstrecke Variante",
+      "DEKRA Lausitzring",
+      "2-Meilen-Superspeedway",
+      "Innenstrecke"
+     ]
+    },
+    {
+     "m": 3006,
+     "names": [
+      "Innenstrecke Variante",
+      "DEKRA Lausitzring",
+      "2-Meilen-Superspeedway",
+      "Innenstrecke"
+     ]
+    },
+    {
+     "m": 2983,
+     "names": [
+      "Innenstrecke Variante",
+      "DEKRA Lausitzring",
+      "2-Meilen-Superspeedway",
+      "Innenstrecke"
+     ]
+    },
+    {
+     "m": 2941,
+     "names": [
+      "DEKRA Lausitzring",
+      "2-Meilen-Superspeedway"
+     ]
+    },
+    {
+     "m": 2918,
+     "names": [
+      "DEKRA Lausitzring",
+      "2-Meilen-Superspeedway"
+     ]
+    },
+    {
+     "m": 2902,
+     "names": [
+      "DEKRA Lausitzring",
+      "2-Meilen-Superspeedway",
+      "Innenstrecke Variante"
+     ]
+    },
+    {
+     "m": 2885,
+     "names": [
+      "Innenstrecke Variante",
+      "DEKRA Lausitzring",
+      "2-Meilen-Superspeedway"
+     ]
+    },
+    {
+     "m": 2857,
+     "names": [
+      "Innenstrecke Variante",
+      "DEKRA Lausitzring",
+      "2-Meilen-Superspeedway"
+     ]
+    }
+   ],
+   "accepted": [
+    {
+     "id": "lausitz | EUROSPEEDWAY LAUSITZ DTM",
+     "officialM": 3478,
+     "source": "FIA list 2026-03-31",
+     "grade": "2",
+     "pole": "Right",
+     "widthM": 12,
+     "loopM": 3473,
+     "errorPct": 0.14,
+     "accepted": true,
+     "gapClosedM": 12,
+     "oneway": "one loop follows the one-way direction"
+    }
+   ]
+  }
+ }
+}
