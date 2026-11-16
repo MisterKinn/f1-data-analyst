@@ -74,3 +74,18 @@ Not corrected (read one by one):
 - Road America: a real shape difference of up to ~100 m in the Carousel / Kink section (51 % over 12 m). Which line is right is decided
   by measured lap and sector data in task A4, not by the drawing.
 - Lime Rock, Long Beach, Portimão: 18–20 % of the lap skipped (over 12 m): checked again in A4.
+
+## A2. Official corner numbers from circuit maps
+
+Tracks with no official numbers in the lap data showed estimated corners. For each one, the circuit's map on Wikimedia Commons
+(SVG with numbered turn labels) is fitted onto our midline: scale from the length ratio, rotation and mirror searched, then rigid ICP.
+Each label then goes to the nearest stretch of our line. A label can sit nearer another part of the circuit, so the few nearest
+stretches per label are kept and one set is chosen that runs once round the lap in number order (dynamic programming). Each result
+snaps to our own bend peak (scripts/sim/tracks/corner-candidates.mjs) within 70 m, each peak used once.
+
+Kept (map turn count = official count, fit RMS ≤ 11 m): Sepang (kuala-lumpur), Sakhir Outer, Ricardo Tormo, Sachsenring,
+Oulton Park, Zhuhai, Autopolis, Madring. Left on estimated corners: Jerez and Sydney (the map is another layout), Phillip
+Island (T10 and T11 landed 10 m apart: the map labels sit too close to tell MG and Lukey Heights apart),
+Donington and Estoril (count differs by one), Aragón and Mandalika (dots only, count differs), and maps without numbers (Dubai,
+Sonoma, Oschersleben, Lausitz, Brands Hatch, Snetterton, Magny-Cours). Data: worker/lapsim/corner-numbers-data.js; script:
+scripts/sim/tracks/corner-numbers-place.py.

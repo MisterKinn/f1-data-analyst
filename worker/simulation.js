@@ -31,6 +31,7 @@ import {lapsimDriverLines} from './lapsim/driver-lines-data.js';
 import {trackLabel, trackOrder, evoPairs, carEvent} from './simulator-controls.js';
 import {lapsimTrackNorth} from './lapsim/track-north-data.js';
 import {lapsimTrackView} from './lapsim/track-view-data.js';
+import {lapsimCornerNumbers} from './lapsim/corner-numbers-data.js';
 import {lapsimF1Zones} from './lapsim/f1-zones-data.js';
 import {lapsimFeZones} from './lapsim/fe-zones-data.js';
 import {SURFACE_ERAS} from './lapsim/surface.js';
@@ -240,7 +241,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
   const id = ids.includes(query.track) ? query.track : (ids.includes('monza') ? 'monza' : ids[0]);
   // corner numbers on every map (owner 2026-11-15): the track's own official numbers, else MultiViewer's official numbers placed on
   // this map, else numbers found from the curvature (marked as estimated)
-  const td0 = lapsimTracks[id], view0 = lapsimTrackView?.[id], ownC = td0.corners?.length ? td0.corners : view0?.corners?.length ? view0.corners : null;
+  const td0 = lapsimTracks[id], view0 = lapsimTrackView?.[id], ownC = td0.corners?.length ? td0.corners : view0?.corners?.length ? view0.corners : lapsimCornerNumbers[id]?.corners || null;
   const td = ownC === td0.corners ? td0 : {...td0, corners: ownC || autoCorners(td0), cornersEstimated: !ownC}, cars = carsFor(id, lang), conds = realConditions(id), CAR_ORDER_P = CAR_ORDER.filter(k => cars[k]);
   // Evo kit: listed as a tick box beside its base car (only when the data has that Evo entry)
   const evoOf = evoPairs(cars, CAR_ORDER_P), evoKeys = new Set(Object.values(evoOf));
