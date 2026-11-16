@@ -2,7 +2,7 @@
 // drivers). Source: the official ADAC Nordrhein entry lists ("Starterliste" / "Teilnehmerliste", 24h-media.de, nuerburgring-langstrecken-serie.de,
 // copies on endurance-info.com / gt-place.com). They name the drivers per car, no FIA category: the rating comes from the FIA list of the
 // season (build-driver-ratings.mjs, how: fia-list). Runs in GitHub Actions (network, poppler). Writes scripts/sim/data/learn/n24-lineups.json
-// (rev 1).
+// (rev 2).
 import {writeFileSync, mkdtempSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {join} from 'node:path';
@@ -28,15 +28,24 @@ const get = async u => { for (const x of [u, `https://web.archive.org/web/2id_/$
 const NAT = /\(([A-Z]{3})\)/;
 // Two layouts: press list ("  1  23  Team   SP 9 PRO" then "     First Last    City (GER)   Make") and DMSB list ("Last, First (GER)").
 export function parseN24(txt) {
+  // DMSB list ("Start-Nr. Box Bewerber / Fahrer"): one block per car starting at the entrant line (entrant + licence, no nation); the
+  // start number sits in the middle of the block, the drivers ("Last, First (GER)"; a pseudonym prints as "SELV, (KGZ)") above and below it
+  if (/Start-Nr\.?\s+Box/.test(txt)) { const out = []; let blk = null;
+    for (const l of txt.split('\n')) { const name = l.slice(0, 46);
+      if (/^\s{8,20}\S/.test(l) && !/[(),]/.test(name) && !/Stand|Anzahl|Status|Number|Nürburgring|approval|Genehmigung/i.test(l)) { blk = {car: null, head: name.trim(), names: []}; out.push(blk); continue; }
+      if (!blk) continue; const c = /^(\d{1,3})\s{2,}\d{1,3}\s/.exec(l); if (c && !blk.car) blk.car = c[1];
+      const m = /([A-Za-zÀ-ÿ'’.\- ]{2,40}?), ?([A-Za-zÀ-ÿ'’.\- ]{0,30}?) ?\(([A-Z]{3})\)/.exec(name); if (m) blk.names.push(`${m[2].trim()} ${m[1].trim()}`.trim().replace(/^\d+\s+\d+\s+/, '')); }
+    return out.filter(b => b.car && b.names.length).map(b => ({...b, names: [...new Set(b.names)]})); }
   const cars = []; let cur = null;
   for (const raw of txt.split('\n')) { const l = raw.replace(/\s+$/, ''); if (!l.trim()) continue;
     const c = /^\s{0,4}#?(\d{1,3})\s+(\d{1,3})\s{1,}(\S.*)$/.exec(l);
     if (c && !NAT.test(l.slice(0, 40))) { cur = {car: c[1], head: c[3].replace(/\s{2,}/g, ' | '), names: []}; cars.push(cur); }
     if (!cur) continue;
     for (const m of l.matchAll(/([A-Za-zÀ-ÿ'’.\- ]{2,40}?), ([A-Za-zÀ-ÿ'’.\- ]{2,30}?) \(([A-Z]{3})\)/g)) cur.names.push(`${m[2].trim()} ${m[1].trim()}`);
-    if (!c) { const p = /^\s{2,}([„"“]?[A-Za-zÀ-ÿ'’.\- ]{3,40}?[“"]?)\s{2,}[^()]*\(([A-Z]{3})\)/.exec(l) || /^\s{2,}([A-Za-zÀ-ÿ'’.\- ]{3,40}?)\s+[A-Za-zÀ-ÿ.\-/ ]{2,30}\s\(([A-Z]{3})\)/.exec(l);
-      if (p && !/,/.test(p[1])) cur.names.push(p[1].replace(/[„"“”]/g, '').trim()); } }
-  return cars.filter(c => c.names.length).map(c => ({...c, names: [...new Set(c.names)]}));
+    // driver line: name, city (the name may run into the city column with one space: then the city is its last word), "(GER)"
+    if (!c) { const d = /^\s{4,}(\S.*?)\s*\(([A-Z]{3})\)/.exec(l); if (d && !/,/.test(d[1])) { const parts = d[1].split(/\s{2,}/), w = parts[0].split(' ');
+      const n = (parts.length > 1 ? parts[0] : w.length > 2 ? w.slice(0, -1).join(' ') : w.join(' ')).replace(/[„"“”]/g, '').trim(); if (n) cur.names.push(n); else cur.bad = true; } } }
+  return cars.filter(c => c.names.length && !c.bad).map(c => ({...c, names: [...new Set(c.names)]}));
 }
 const lineups = [], log = [];
 for (const [year, kind, url] of LISTS) {
