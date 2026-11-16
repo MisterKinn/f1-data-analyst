@@ -38,7 +38,7 @@ test('the racing line is drawn on the track map, with qualifying/race, rotate, c
   assert.match(h, /data-rot="-15"/);
   assert.match(h, /data-compass/);
   assert.match(h, /data-zoom="in"/);
-  assert.match(h, /<svg class="ls-map"[^>]*><polygon class="ls-band"/);
+  assert.match(h, /<svg class="ls-map"[^>]*>(<path class="ls-pit"[^>]*>)?<polygon class="ls-band"/);
   assert.match(h, /class="ls-line-seg"/);
   assert.doesNotMatch(h, /ls-line-panel/, 'no separate racing line panel');
 });
