@@ -345,6 +345,7 @@ const UI = {
 export const VIEW = {
   fuji: {longest: 'top'}, monza: {longest: 'bottom'}, interlagos: {straight: [3, 4], side: 'bottom'}, sakhir: {straight: [10, 11], side: 'bottom'}, 'sakhir-outer': {longest: 'bottom'},
   silverstone: {left: 15, right: 9}, suzuka: {deg: 0}, portimao: {longest: 'bottom', back: true},
+  'le-mans': {straight: [6, 9], side: 'top'}, // owner 2026-11-16: the Mulsanne straight (Tertre Rouge to Mulsanne corner) level at the top
 };
 export function landscapeRot(map, north, spec, corners, length) {
   // 5 m maps (2026-11-16): metre rounding makes 5 m steps wobble a few degrees, which split straights; pick the view on ≤400 points

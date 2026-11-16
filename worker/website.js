@@ -198,7 +198,7 @@ export function websiteRoute(request,identity={}){
  else if(path==='/ai')content=layout('꽁보다 인텔리전스',aiPage(),path,user);
  else if(path==='/simulation')content=layout('랩 시뮬레이터',simulationPage({track:url.searchParams.get('track'),car:url.searchParams.get('car'),evo:url.searchParams.get('evo')},chooseLanguage(request),identity.lapsimEnergy),path,user);
  else if(path==='/setup')content=layout('셋업 시뮬레이터',setupPage({series:url.searchParams.get('series'),car:url.searchParams.get('car'),track:url.searchParams.get('track')},chooseLanguage(request)),path,user);
- else if(path==='/bop')content=layout('BoP 시뮬레이터',bopPage(Object.fromEntries(['series','class','year','event'].map(k=>[k,url.searchParams.get(k)])),chooseLanguage(request)),path,user);
+ else if(path==='/bop')content=layout('BoP 시뮬레이터',bopPage(Object.fromEntries(['series','class','year','event','mode','track'].map(k=>[k,url.searchParams.get(k)])),chooseLanguage(request)),path,user);
  else if(path==='/alerts'&&identity.alertsBody!==undefined)content=layout('FIA 문서 알림',identity.alertsBody,path,user);
  else if(path==='/status'&&FEATURES.liveTiming)content=layout('수집기 상태',collectorStatusPage(),path,user);
  else if(path==='/about')return Response.redirect(new URL('/',request.url).href,301);

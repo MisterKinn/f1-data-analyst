@@ -29,3 +29,8 @@ test('real and virtual tabs on every BoP page', () => {
     const h = strip(bopPage(q, 'en')); assert.match(h, /Real BoP[\s\S]*Virtual BoP/, JSON.stringify(q)); assert.ok(!/undefined|NaN/.test(h), JSON.stringify(q));
   }
 });
+
+test('the route passes the tab and circuit to the BoP page (owner 2026-11-16: the tabs did not switch)', async () => {
+  const {readFileSync} = await import('node:fs'), src = readFileSync(new URL('../worker/website.js', import.meta.url), 'utf8');
+  assert.match(src, /bopPage\(Object\.fromEntries\(\[[^\]]*'mode'[^\]]*'track'/);
+});
