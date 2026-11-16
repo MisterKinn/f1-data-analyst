@@ -2,14 +2,17 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {bopPage} from '../worker/bop-page.js';
 
-const chosen = h => [...h.matchAll(/<option value="([^"]*)" selected>/g)].map(m => m[1]);
-const options = (h, name) => [...(h.match(new RegExp(`<select name="${name}"[^>]*>([\\s\\S]*?)</select>`)) || [, ''])[1].matchAll(/value="([^"]*)"/g)].map(m => m[1]);
+// the real tab's picker (the page also holds the virtual tab, owner 2026-11-16)
+const realOf = h => h.includes('id="bop-panel-virtual"') ? h.slice(0, h.indexOf('id="bop-panel-virtual"')) : h;
+const chosen = h => [...realOf(h).matchAll(/<option value="([^"]*)" selected>/g)].map(m => m[1]);
+const options = (h, name) => [...(realOf(h).match(new RegExp(`<select name="${name}"[^>]*>([\\s\\S]*?)</select>`)) || [, ''])[1].matchAll(/value="([^"]*)"/g)].map(m => m[1]);
 
 test('BoP picker: Series → Class → Year → Event dropdowns, with safe defaults', () => {
-  assert.deepEqual(chosen(bopPage({}, 'en')), ['wec', 'hypercar', '2026', 'imola']);
-  assert.deepEqual(chosen(bopPage({series: 'nope', class: 'x', year: '1990', event: '<b>'}, 'en')), ['wec', 'hypercar', '2026', 'imola']);
+  assert.deepEqual(chosen(bopPage({}, 'en')), ['wec.hypercar', '2026', 'imola']); // one Series · class dropdown (owner 2026-11-16)
+  assert.deepEqual(chosen(bopPage({series: 'nope', class: 'x', year: '1990', event: '<b>'}, 'en')), ['wec.hypercar', '2026', 'imola']);
+  assert.deepEqual(chosen(bopPage({sc: 'imsa.gtd'}, 'en')).slice(0, 1), ['imsa.gtd']);
   assert.equal(chosen(bopPage({event: 'spa'}, 'en')).at(-1), 'spa');
-  assert.deepEqual(options(bopPage({}, 'en'), 'class'), ['hypercar', 'lmgt3']);
+  assert.deepEqual(options(bopPage({}, 'en'), 'sc'), ['wec.hypercar', 'wec.lmgt3', 'elms.lmgt3', 'imsa.gtp', 'imsa.gtd']);
   assert.doesNotMatch(bopPage({}, 'en'), /font-style:italic/);
 });
 
@@ -29,7 +32,7 @@ test('LMGT3 table: every 2026 car with weight, power curve and gain', () => {
 });
 
 test('ELMS LMGT3: published tables are official, only the unpublished 2026 events are estimated', () => {
-  assert.deepEqual(options(bopPage({series: 'elms'}, 'en'), 'class'), ['lmgt3'], 'no LMP2 / LMP3');
+  assert.deepEqual(options(bopPage({series: 'elms'}, 'en'), 'sc').filter(x => x.startsWith('elms.')), ['elms.lmgt3'], 'no LMP2 / LMP3');
   assert.match(bopPage({series: 'elms', event: 'barcelona'}, 'en'), /Official BoP \(published decision\)/);
   const spa = bopPage({series: 'elms', event: 'spa'}, 'en');
   assert.match(spa, /2026 estimated BoP/); assert.match(spa, /±/);

@@ -14,6 +14,8 @@ import {PIRELLI_2026, PIRELLI_RANGE, BREMBO, F1_PRESS} from './setup-evidence.js
 import {optionTrack, puRampOf, slotOf} from './zones.js';
 import {lapsimF1Zones} from './f1-zones-data.js';
 import {bopEstimate2026} from './bop-estimate-data.js';
+import {bopLmgt3} from './bop-lmgt3-data.js';
+import {lapsimLearned} from './learned-data.js';
 
 const K = lapsimKernel();
 // 2026 BoP estimate (worker/lapsim/bop-estimate-data.js) per model at the WEC event on this track: weight and power relative to that
@@ -24,11 +26,17 @@ function bopFor(trackId, key) { const name = BOP_NAME[key], D = bopEstimate2026;
   const all = Object.values(e.cars), kg0 = all.reduce((a, x) => a + x.kg, 0) / all.length, kW0 = all.reduce((a, x) => a + x.kW, 0) / all.length;
   return {event: e.event, kg: car.kg, kW: car.kW, rKg: car.kg / kg0, rKW: car.kW / kW0, spec: car.spec || null, fun: !e.cars[name]}; }
 
+// GT3: the WEC LMGT3 2026 BoP estimate (published 2024-2025 tables where they exist) of the make at the event on this track
+const MAKE = [['aston', 'AstonMartin'], ['bmw', 'BMW'], ['corvette', 'Corvette'], ['ferrari', 'Ferrari'], ['mustang', 'Ford'], ['lamborghini', 'Lamborghini'], ['lexus', 'Lexus'], ['mclaren', 'McLaren'], ['mercedes', 'Mercedes'], ['porsche', 'Porsche']];
+function gt3BopFor(trackId, model) { const mk = (MAKE.find(([k]) => model.car.includes(k)) || [])[1], D = bopLmgt3; if (!mk || !D) return null;
+  const e = [...(D.events || [])].reverse().find(x => x.track === trackId && x.cars[mk]); if (!e) return null; const all = Object.values(e.cars), kg0 = all.reduce((a, x) => a + x.kg, 0) / all.length, c = e.cars[mk];
+  return {event: e.event, kg: c.kg, curve: c.curve, gain: c.gain, rKg: c.kg / kg0, official: !!c.official}; }
+
 // Aero window = downforce range of the wing choice, and the drag that comes with it. Extra wing
 // downforce is less efficient than the whole car: the drag step uses a marginal lift/drag of 2.5
 // (assumed until fitted from trap speeds). F1 teams pick a rear-wing spec per track (Monza to Monaco):
 // ±20 % downforce. Hypercar: one homologated bodywork with one adjustable device (LMH 3.4.1): ±8 %.
-export const AERO_RANGE = {f1: 0.40, hypercar: 0.16}, MARGINAL_LD = 2.5;
+export const AERO_RANGE = {f1: 0.40, hypercar: 0.16, gt3: 0.16, lmp2: 0.16}, MARGINAL_LD = 2.5; // GT3/LMP2: one rear wing inside a range (BoP / homologation), assumed like the hypercar
 export const aeroWindow = (car, kind) => { const cl = AERO_RANGE[kind]; return {cl, cd: cl * car.clA / (car.cdA * MARGINAL_LD), low: kind === 'f1' ? 0.5 : 1}; };
 // F1 2026: in straight mode the wings are flattened, so the wing level changes the straight-mode drag and
 // downforce only partly (w.low = 0.5, assumed); hypercars have no low-drag mode (w.low = 1, same as hypercar-setup.js).
@@ -74,20 +82,32 @@ export const HYPERCARS = [
   {key: 'alpine-a480', name: 'Alpine A480 (grandfathered LMP1)', cls: 'lmh', chassis: 'Oreca', hybrid: null, series: 'WEC 2021–2022'},
 ];
 
-// Tracks each class races on (calendar data) that the simulator has a line for
+// GT3 (owner 2026-11-16): every GT3 car model the learning step knows (worker/lapsim/learned-data.js, one entry per model; the
+// BoP-body variants share the model's car). Engine position sets the static weight split (layer 4, assumed from the layout:
+// front 50 %, front-mid 52 %, mid 57 %, rear 61 % on the rear axle) until homologation data is read.
+const LAYOUT = [[/911/, 'rear', 0.61], [/296|488|458|720s|650s|12c|huracan|temerario|r8|nsx|z06|corvette-c8|c7/, 'mid', 0.57], [/amg|sls|vantage|v12|m4|m6|z4|mustang|rc-f|continental|gt-r/, 'front-mid', 0.52]];
+const layoutOf = key => { const l = LAYOUT.find(([re]) => re.test(key)); return l ? {layout: l[1], rear: l[2]} : {layout: 'front', rear: 0.50}; };
+export const GT3_MODELS = (lapsimLearned?.models || []).filter(m => !/^gt3-(imsa|aco|dtm)-/.test(m.key)).sort((a, b) => a.name.localeCompare(b.name))
+  .map(m => ({key: m.key.slice(4), car: m.key, name: m.name, season: m.season, ...layoutOf(m.key)}));
+// LMP2 (owner 2026-11-16): the Oreca 07 Gibson only. No calibrated LMP2 car yet: the LMDh class car without its hybrid, at the LMP2
+// minimum weight (930 kg, + 90 kg driver and ballast as in the hypercar car) and Gibson GK428 power (600 hp ≈ 447 kW; at Le Mans the
+// ACO sets a lower figure). Layer 4 (assumed) until the LMP2 fit exists; no ABS (LMP2 TR 14.5).
+export const LMP2 = {key: 'oreca-07', name: 'Oreca 07 Gibson', massKg: 1020, kW: 447};
+// Every simulator circuit (owner 2026-11-16: not only where the class races); the series that race there are listed when known
 export function setupTracks(kind, events = calendarEvents, tracks = lapsimAllTracks) {
-  const series = kind === 'f1' ? ['f1'] : ['wec', 'imsa'], out = new Map();
+  const series = kind === 'f1' ? ['f1'] : ['wec', 'imsa', 'elms'], out = new Map(Object.keys(tracks).map(k => [k, new Set()]));
   for (const e of events) {
     if (!series.includes(e.series)) continue;
     const id = CIRCUIT[e.circuit] || e.circuit;
     if (!tracks[id]) continue;
     if (!out.has(id)) out.set(id, new Set());
-    out.get(id).add(e.series === 'f1' ? 'F1' : e.series === 'wec' ? 'WEC' : 'IMSA');
+    out.get(id).add(e.series.toUpperCase());
   }
   return Object.fromEntries([...out].map(([k, s]) => [k, [...s]]));
 }
 
 const clamp = x => Math.max(0, Math.min(1, x));
+const raceShift = (k, race) => race ? Object.fromEntries(Object.entries(k).map(([n, v]) => [n, PHASE.raceShift[n] ? {...v, p: clamp(v.p + PHASE.raceShift[n]), race: true} : v])) : k;
 const withGrip = (tr, g) => { if (!g || g === 1) return tr; const mu = Float64Array.from(tr.mu, m => m * g); return {...tr, mu}; };
 
 // Session weather to set up for (owner rule 2026-11-15): F1 car = the Grand Prix held there (newest season
@@ -107,8 +127,8 @@ export function pickWeather(id, kind, cls) {
 // Wet: intermediate-tyre grip as a fixed share of dry grip (assumed until fitted from wet sessions), cooler track
 export const WET = {grip: 0.75, trackOverAirC: 3};
 
-function envFor(id, kind, cls, wet) {
-  const pick = pickWeather(id, kind, cls);
+function envFor(id, kind, cls, wet, liveW = null) {
+  const pick = liveW ? {w: liveW, src: 'live', year: null} : pickWeather(id, kind, cls); // live: the latest session of this event (setup-live.js)
   const w = {pressureHpa: 1013.25, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0,
     ...Object.fromEntries(Object.entries(pick.w).filter(([, v]) => Number.isFinite(v)))};
   if (wet) { w.trackTempC = w.airTempC + WET.trackOverAirC; w.humidityPct = Math.max(w.humidityPct, 90); }
@@ -167,7 +187,7 @@ export function placeKnobs(kind, d, aero, surface = {}, ev = {}) {
     brakeCooling: ev.brembo ? pos(0.5 * brakeLoad + 0.5 * (ev.brembo.i - 1) / 4, 'brembo') : pos(brakeLoad, 'brakeCooling'),
     diff: pos(0.4 + 0.5 * tractionNeed - 0.2 * d.fastShare, 'diff'),
   };
-  if (kind !== 'f1') out.tc = pos(tractionNeed, 'tc');
+  if (kind === 'hypercar' || kind === 'gt3') out.tc = pos(tractionNeed, 'tc'); // LMP2: no traction-control article found in the LMP2 rules, so no knob
   return out;
 }
 
@@ -182,20 +202,33 @@ function wetShift(knobs, wet) {
 }
 
 // Full plan for one car on one track
-export function setupPlan(trackId, carId, {wet = false, sm = null, ot = true} = {}, tracks = lapsimAllTracks) {
-  const kind = carId.startsWith('f1') ? 'f1' : 'hypercar', model = kind === 'f1' ? null : HYPERCARS.find(m => m.key === carId.split(':')[1]);
-  const cls = kind === 'f1' ? null : (model?.cls || (carId.includes('lmdh') ? 'lmdh' : 'lmh'));
-  const carKey = kind === 'f1' ? '2026' : 'wec-' + cls, c = carsFor(trackId)[carKey]; if (!c) return null;
+// Qualifying vs race set-up (owner 2026-11-16). Race: the mean fuel of a stint and worn tyres (assumed, layer 4 until fitted from
+// stint data): more mass, a little less grip, then the usual rules of thumb for a long run (less camber, more brake cooling and
+// traction control). Qualifying: low fuel, new tyres (the plan as before).
+export const PHASE = {raceFuelKg: {f1: 50, hypercar: 25, lmp2: 25, gt3: 30}, raceGrip: 0.985, raceShift: {camber: -0.08, brakeCooling: 0.1, tc: 0.1}};
+// Which series may change the set-up between qualifying and the race (sources in worker/setup-page.js)
+export const SPLIT = {wec: true, imsa: true, elms: false, gtwc: false, dtm: false, f1: false};
+export function setupPlan(trackId, carId, {wet = false, sm = null, ot = true, phase = 'quali', live = null} = {}, tracks = lapsimAllTracks) {
+  const kind = carId.startsWith('f1') ? 'f1' : carId.startsWith('gt3:') ? 'gt3' : carId.startsWith('lmp2:') ? 'lmp2' : 'hypercar', key = carId.split(':')[1];
+  const model = kind === 'hypercar' ? HYPERCARS.find(m => m.key === key) : kind === 'gt3' ? GT3_MODELS.find(m => m.key === key) : kind === 'lmp2' ? LMP2 : null;
+  if (kind === 'gt3' && !model) return null;
+  const cls = kind === 'f1' ? null : kind === 'gt3' ? 'lmgt3' : kind === 'lmp2' ? 'lmdh' : (model?.cls || (carId.includes('lmdh') ? 'lmdh' : 'lmh'));
+  const all = carsFor(trackId), carKey = kind === 'f1' ? '2026' : kind === 'gt3' ? model.car : 'wec-' + cls, c = all[carKey] || (kind === 'gt3' ? all['wec-lmgt3'] : null); if (!c) return null;
   let car = c.car;
+  if (kind === 'gt3') { car = {...car, rearWeight: model.rear, label: model.name}; const b = gt3BopFor(trackId, model); if (b) car = {...car, mass: car.mass * b.rKg}; }
+  if (kind === 'lmp2') car = {...car, ers: {}, awdAboveKph: undefined, mass: LMP2.massKg, pIce: LMP2.kW * 1e3, label: LMP2.name};
   if (model && model.hybrid === null) car = {...car, ers: {}, awdAboveKph: undefined, label: model.name}; // Valkyrie: no hybrid
-  const bop = model ? bopFor(trackId, model.key) : null;
+  const bop = kind === 'hypercar' && model ? bopFor(trackId, model.key) : null;
   if (bop) car = {...car, mass: car.mass * bop.rKg, pIce: car.pIce * bop.rKW};
+  const race = phase === 'race' && kind !== 'f1';
+  if (race) car = {...car, mass: car.mass + PHASE.raceFuelKg[kind], muX: car.muX * PHASE.raceGrip, muY: car.muY * PHASE.raceGrip, muXTrac: (car.muXTrac ?? car.muX) * PHASE.raceGrip};
   if (wet) car = {...car, muX: car.muX * WET.grip, muY: car.muY * WET.grip, muXTrac: (car.muXTrac ?? car.muX) * WET.grip};
   let track = withGrip(trackCache(trackId, tracks), c.grip);
   // F1 2026 (owner 2026-11-16): the FIA Straight Mode zones (estimated where F1 does not race); wet = Low Grip Conditions = Alt zones with
   // partial activation; qualifying ERS-K curve by round (Overtake used where it pays, chosen once at the middle wing level); C5.12 rule
   const z26 = lapsimF1Zones?.tracks?.[trackId]?.[slotOf(lapsimF1Zones?.tracks?.[trackId], 2026)], smMode = kind === 'f1' ? (sm || (wet ? 'alt' : 'normal')) : null;
-  let {env, weather, source, energy} = envFor(trackId, kind, cls, wet), otUse = null;
+  let {env, weather, source, energy} = envFor(trackId, kind, cls, wet, live?.weather), otUse = null;
+  if (live?.weather) source = {src: 'live', year: live.year, session: live.session, at: live.at, rain: !!live.weather.rain};
   if (kind === 'f1') { const d = {...tracks[trackId], id: trackId}; track = optionTrack(K, d, track, {year: 2026}, {sm: smMode, drs: true}); env = {...env, puRamp: puRampOf(d, trackId)};
     if (ot) { const mid = withSetup(car, 0.5, aeroWindow(car, kind)), n = track.kappa.length, L = n * track.ds, zs = (z26?.zones || []).map(q => [q.from, q.to]);
       const opts = [['none', null], ['all', true], ...zs.map(([a, b], k) => { const o = new Uint8Array(n), i0 = Math.round(a / track.ds), len = Math.round((((b - a) % L) + L) % L / track.ds); for (let j = 0; j <= len; j++) o[(i0 + j) % n] = 1; return ['SM ' + (k + 1), o]; })];
@@ -204,7 +237,8 @@ export function setupPlan(trackId, carId, {wet = false, sm = null, ot = true} = 
   const w = aeroWindow(car, kind), aero = aeroSweep(track, car, env, w);
   const set = withSetup(car, aero.s, w), r = K.simulateLap(track, set, env), d = trackDemands(track, set, env, r);
   const low = aero.pts[0], high = aero.pts.at(-1);
-  const ev = kind === 'f1' ? {pirelli: PIRELLI_2026[trackId] || null, brembo: BREMBO[trackId] || null, sm: z26 ? z26.zones.length : null, smEstimated: !!z26?.est, smMode, overtake: otUse ? otUse.name : 'off', press: F1_PRESS[trackId] || null} : {bop};
-  return {trackId, carId, wet, source, kind, cls, model, vCapKph: car.vMax * 3.6, carLabel: car.label, kindLabel: c.kind, weather, energy, demands: d, aero: {...aero, low, high, lap: r.lapTime, vMax: r.vMaxKph}, window: w,
-    knobs: wetShift(placeKnobs(kind, d, aero, SURFACE[trackId], ev), wet), surface: SURFACE[trackId] || null, evidence: ev};
+  const ev = kind === 'gt3' ? {bop: gt3BopFor(trackId, model), layout: model.layout, learned: c.learned || null} : kind === 'lmp2' ? {} : kind === 'f1' ? {pirelli: PIRELLI_2026[trackId] || null, brembo: BREMBO[trackId] || null, sm: z26 ? z26.zones.length : null, smEstimated: !!z26?.est, smMode, overtake: otUse ? otUse.name : 'off', press: F1_PRESS[trackId] || null} : {bop};
+  return {trackId, carId, wet, source, kind, cls, model, vCapKph: car.vMax * 3.6, carLabel: car.label, kindLabel: c.kind, basis: {kind: kind === 'lmp2' ? 'prior' : c.kind, year: c.year, events: c.learned?.events ?? null, session: c.fix?.session ?? null}, weather, energy, demands: d, aero: {...aero, low, high, lap: r.lapTime, vMax: r.vMaxKph}, window: w,
+    phase: race ? 'race' : 'quali', live: live ? {session: live.session, at: live.at, lap: live.lap ?? null, cls: live.cls ?? null} : null,
+    knobs: raceShift(wetShift(placeKnobs(kind, d, aero, SURFACE[trackId], ev), wet), race), surface: SURFACE[trackId] || null, evidence: ev};
 }
