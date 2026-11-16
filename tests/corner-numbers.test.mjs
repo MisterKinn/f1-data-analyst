@@ -15,3 +15,8 @@ test('map-placed corner numbers: official count, each number once, in lap order'
     assert.deepEqual(rot, [...rot].sort((a, b) => a - b), `${id} numbers run round the lap`);
   }
 });
+
+test('map-placed corners: numbered turns at least 25 m apart', () => {
+  for (const [id, {corners}] of Object.entries(lapsimCornerNumbers))
+    for (let i = 1; i < corners.length; i++) assert.ok(corners[i].s - corners[i - 1].s >= 25 || corners[i].number === corners[i - 1].number, `${id} T${corners[i].number}`);
+});

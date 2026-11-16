@@ -84,7 +84,8 @@ stretches per label are kept and one set is chosen that runs once round the lap 
 snaps to our own bend peak (scripts/sim/tracks/corner-candidates.mjs) within 70 m, each peak used once.
 
 Kept (map turn count = official count, fit RMS ≤ 11 m): Sepang (kuala-lumpur), Sakhir Outer, Ricardo Tormo, Sachsenring,
-Oulton Park, Zhuhai, Phillip Island, Autopolis, Madring. Left on estimated corners: Jerez and Sydney (the map is another layout),
+Oulton Park, Zhuhai, Autopolis, Madring. Left on estimated corners: Jerez and Sydney (the map is another layout), Phillip
+Island (T10 and T11 landed 10 m apart: the map labels sit too close to tell MG and Lukey Heights apart),
 Donington and Estoril (count differs by one), Aragón and Mandalika (dots only, count differs), and maps without numbers (Dubai,
 Sonoma, Oschersleben, Lausitz, Brands Hatch, Snetterton, Magny-Cours). Data: worker/lapsim/corner-numbers-data.js; script:
 scripts/sim/tracks/corner-numbers-place.py.
