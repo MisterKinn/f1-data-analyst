@@ -4,6 +4,7 @@
 //   join     - one token is two tokens of the other name written together, the rest equal
 //   subset   - all tokens of the shorter name (at least two) are in the longer one
 //   short    - the first names are a short form and its full form of this table, the rest equal
+//   initial  - a first initial and the full first name (Natsoft result sheets: "C.Mostert"), the rest equal
 // No similarity score, no spelling correction ("Denis" / "Dennis" is not joined): a rating never moves to another person.
 // Used by fetch-sro-lineups.mjs (which list rows to keep) and build-driver-ratings.mjs (rating of a driver with no exact name).
 export const tokens = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z]+/g, ' ').trim().split(' ').filter(Boolean);
@@ -24,6 +25,10 @@ export function sameDriver(a, b) { // a, b: token arrays
   const [s, l] = A.length <= B.length ? [A, B] : [B, A]; if (s.length >= 2 && s.length < l.length && s.every(t => l.includes(t))) return 'subset';
   if (A.length === B.length && A.length >= 2) for (const t of A) { const u = B.find(v => !A.includes(v)); const rest = A.filter(v => v !== t);
     if (u && !B.includes(t) && short(t, u) && rest.every(v => B.includes(v)) && B.filter(v => v !== u).every(v => A.includes(v))) return 'short'; }
+  // initial: "C. Mostert" (Natsoft result sheets print first initials) and "Chaz Mostert": the same surname tokens, the initial is the
+  // first letter of the one first name
+  for (const [x, y] of [[A, B], [B, A]]) { const i = x.findIndex(t => t.length === 1); if (i < 0 || x.filter(t => t.length === 1).length > 1) continue;
+    const rest = x.filter((_, k) => k !== i); if (y.length === rest.length + 1 && rest.every(t => y.includes(t))) { const f = y.find(t => !rest.includes(t)); if (f && f.length > 1 && f[0] === x[i]) return 'initial'; } }
   return null;
 }
 // index of the one row of `rows` (token arrays) that is the same driver as `name`; -1 when none or more than one fit

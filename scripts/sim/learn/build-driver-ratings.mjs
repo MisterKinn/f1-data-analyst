@@ -59,7 +59,7 @@ function bestLapDriver(root, row, lapCache) {
 }
 
 const fold = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
-const STOP = new Set(['circuit', 'international', 'raceway', 'park', 'motorsport', 'motor', 'speedway', 'race', 'track', 'the', 'and', 'entry', 'list', 'world', 'challenge', 'powered', 'aws', 'europe', 'america', 'asia', 'australia', 'british', 'championship', 'cup', 'endurance', 'sprint', 'fanatec', 'gtworldcheu', 'pwrd', 'intercontinental', 'blancpain', 'series', 'hours', 'hour', 'circuito', 'autodromo', 'del', 'des', 'grand', 'prix']);
+const STOP = new Set(['circuit', 'international', 'raceway', 'park', 'motorsport', 'motor', 'speedway', 'race', 'track', 'the', 'and', 'entry', 'list', 'world', 'challenge', 'powered', 'aws', 'europe', 'america', 'asia', 'australia', 'british', 'championship', 'cup', 'endurance', 'sprint', 'fanatec', 'gtworldcheu', 'pwrd', 'intercontinental', 'blancpain', 'series', 'hours', 'hour', 'circuito', 'autodromo', 'del', 'des', 'grand', 'prix', 'results', 'test', 'days', 'day', 'official', 'session']);
 // SRO site(s) of a learned row: the event text of the SRO tables and Timing71 rows names the championship
 export function siteOf(series, event) { const e = fold(series + ' ' + event);
   if (/britishgt|british gt/.test(e)) return ['britishgt.com'];
@@ -127,7 +127,7 @@ export function build(root, extras = [], learned = null, sro = null, fia = null,
     const r = variantIn(names.get(id) || id.replace(/-/g, ' '), L.map(x => x.t), ix); return r.i >= 0 ? {rating: L[r.i].v.rating, how: 'fia-list', variant: `${r.rule}: ${L[r.i].v.name}`} : null; };
   const sroRating = (id, season) => fiaR[id]?.[season] ? {rating: fiaR[id][season].rating, how: 'fia-list'} : variant(id, season) ||
     (drivers[id]?.seasons?.[season] && !drivers[id].seasons[season].printedBy && !drivers[id].seasons[season].fiaList ? {rating: drivers[id].seasons[season].rating, how: 'season'} : {rating: null, how: 'unknown'});
-  const words = t => new Set(fold(t).replace(/nuerburg/g, 'nurburg').replace(/\bindy\b/g, 'indianapolis').split(' ').filter(w => w.length > 2 && !STOP.has(w)));
+  const words = t => new Set(fold(t).replace(/nuerburg/g, 'nurburg').replace(/\bindy\b/g, 'indianapolis').split(' ').filter(w => w.length > 2 && !/^\d+$/.test(w) && !STOP.has(w))); // a year or a number is no venue word
   const sroEvents = [...new Set(rows.filter(r => !SITE[r.series]).map(r => `${r.series}|${r.season}|${r.event}`))].map(ek => { const [series, season, ...ev] = ek.split('|'), event = ev.join('|');
     return {ek, year: +season, sites: siteOf(series, event), venue: words(event.split('|').at(-1)), R: rows.filter(r => `${r.series}|${r.season}|${r.event}` === ek)}; });
   const h24 = t => /\b24 ?h|24 hours/i.test(t), qual = t => /qualifier/i.test(t); // a 24-hour race (or its qualifiers) only matches a meeting of the same kind
@@ -139,9 +139,10 @@ export function build(root, extras = [], learned = null, sro = null, fia = null,
         const v = [...venue].filter(w => mw.has(w)).length, c = R.filter(r => m.cars.has(String(r.entry)) && (!m.cars.get(String(r.entry)).vehicle || make(m.cars.get(String(r.entry)).vehicle) === make(r.model))).length; return {m, v, c}; })
         .filter(x => x.v > 0 && x.c > 0 && (!h24(ek) || h24(x.m.title)) && qual(ek) === qual(x.m.title)).sort((a, b) => b.c - a.c || b.v - a.v);
       if (!cands.length) continue; const out = lineups[ek] ||= {};
-      // the best entry list of the meeting, then the best results page (official classification) for the cars the entry list lacks
+      // the best entry list of the meeting, then the best results page (official classification) for the cars the entry list lacks;
+      // a classification naming one driver of a GT3 car, or a car seen only in practice (test and reserve drivers), is not taken as its line-up
       for (const m of [cands.find(x => !/^results-/.test(x.m.meeting))?.m, cands.find(x => /^results-/.test(x.m.meeting))?.m].filter(Boolean))
-      for (const [car, l] of m.cars) { const names = l.drivers.filter(n => idOf(n)); if (out[car] || !car || !names.length) continue; const ds = names.map(n => { const id = idOf(n); return {id, ...sroRating(id, year)}; });
+      for (const [car, l] of m.cars) { const names = l.drivers.filter(n => idOf(n)); if (out[car] || !car || !names.length || (/^results-/.test(m.meeting) && (names.length < 2 || l.from === 'practice'))) continue; const ds = names.map(n => { const id = idOf(n); return {id, ...sroRating(id, year)}; });
         out[car] = {group: 'gt3', cls: l.cls, vehicle: l.vehicle, drivers: ds, lineup: lineupString(ds.map(d => d.rating)), source: `${/^results-/.test(m.meeting) ? `SRO results (${l.from})` : 'SRO entry list'} ${m.url}`}; } } }
   // Official SRO entry-list PDFs (fetch-sro-entry-pdfs.mjs): the category printed beside each driver at that meeting wins over the FIA
   // list (how: event). A driver of the web entry list whose name is in the PDF row of his car takes the printed value; a car with no web
