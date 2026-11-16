@@ -5,7 +5,7 @@
 //    G gold, P platinum), not text. Each row is read at the column of the "Category" / "Next Category" headers: the page is rendered
 //    at 72 dpi (pdftoppm) and the medal colour at the row is matched to the four medals (reference colours measured from the list's
 //    own images, 2026-11-16). Only drivers named in a line-up are written (no copy of the whole list).
-// (run 16) Output (derived tables): scripts/sim/data/learn/sro-lineups.json.gz, scripts/sim/data/learn/fia-categorisation.json
+// (run 18) Output (derived tables): scripts/sim/data/learn/sro-lineups.json.gz, scripts/sim/data/learn/fia-categorisation.json
 import {writeFileSync, readFileSync, mkdtempSync, existsSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {join} from 'node:path';
@@ -57,11 +57,12 @@ console.log(log.join('\n'));
 // ---- 2. FIA public list PDFs ----
 const fold = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z]+/g, ' ').trim();
 const key = s => fold(s).split(' ').sort().join(' ');
-const knownNames = new Set(lineups.flatMap(l => l.drivers)), known = new Set([...knownNames].map(key));
+const unent = n => String(n || '').replace(/&([A-Za-z])uml;/g, '$1\u0308').replace(/&([A-Za-z])(acute|grave|tilde|cedil|circ|ring);/g, '$1').replace(/&oslash;/gi, 'o').replace(/&amp;/g, '&').normalize('NFC'); // "Kirchh&ouml;fer"
+const knownNames = new Set(lineups.flatMap(l => l.drivers).map(unent)), known = new Set([...knownNames].map(key));
 // also the drivers named only by the ADAC N24 lists and by names-only SRO entry-list PDFs (no category printed there)
-for (const f of ['scripts/sim/data/learn/n24-lineups.json', 'scripts/sim/data/learn/sro-results-lineups.json.gz']) if (existsSync(f)) for (const l of JSON.parse((f.endsWith('.gz') ? gunzipSync(readFileSync(f)) : readFileSync(f)).toString()).lineups) for (const n of l.drivers) { knownNames.add(n); known.add(key(n)); }
-{ const f = 'scripts/sim/data/learn/sro-entry-ratings.json'; if (existsSync(f)) for (const m of JSON.parse(readFileSync(f, 'utf8')).meetings) for (const d of m.docs) for (const c of d.cars || []) for (const n of [...(c.names || []), ...(c.drivers || []).map(x => x.name)]) { knownNames.add(n); known.add(key(n)); } }
-const DR = 'scripts/sim/data/learn/driver-ratings.json.gz'; if (existsSync(DR)) for (const p of Object.values(JSON.parse(gunzipSync(readFileSync(DR)).toString()).drivers)) { knownNames.add(p.name); known.add(key(p.name)); }
+for (const f of ['scripts/sim/data/learn/n24-lineups.json', 'scripts/sim/data/learn/sro-results-lineups.json.gz']) if (existsSync(f)) for (const l of JSON.parse((f.endsWith('.gz') ? gunzipSync(readFileSync(f)) : readFileSync(f)).toString()).lineups) for (const n of l.drivers) { knownNames.add(unent(n)); known.add(key(unent(n))); }
+{ const f = 'scripts/sim/data/learn/sro-entry-ratings.json'; if (existsSync(f)) for (const m of JSON.parse(readFileSync(f, 'utf8')).meetings) for (const d of m.docs) for (const c of d.cars || []) for (const n of [...(c.names || []), ...(c.drivers || []).map(x => x.name)]) { knownNames.add(unent(n)); known.add(key(unent(n))); } }
+const DR = 'scripts/sim/data/learn/driver-ratings.json.gz'; if (existsSync(DR)) for (const p of Object.values(JSON.parse(gunzipSync(readFileSync(DR)).toString()).drivers)) { knownNames.add(unent(p.name)); known.add(key(unent(p.name))); }
 // Public list PDFs (official FIA document; copies hosted by the press when fia.com has removed them). The list year and print time are
 // read from the PDF itself ("FIA Driver Categorisation – 2024 List", "2024-10-09 06:00:01"); a URL that does not answer is skipped.
 const LISTS = ['https://www.fia.com/sites/default/files/fia_2024_reviewed_categorisations_list_0.pdf',
@@ -128,9 +129,9 @@ for (const url of new Set(LISTS)) {
     }
   }
   // kept: drivers named in a line-up, exactly or as the one variant of that name in this list (name-match.mjs)
-  const exact = new Set(), T = all.map(r => tokens(`${r.first} ${r.last}`)), ix = tokenIndex(T), keep = new Set();
+  const exact = new Set(), R = all.map(r => `${r.first} ${r.last}`), T = R.map(tokens), ix = tokenIndex(T), keep = new Set();
   all.forEach((r, i) => { const k = key(`${r.first} ${r.last}`); if (known.has(k)) { keep.add(i); exact.add(k); } });
-  let variants = 0; for (const n of knownNames) if (!exact.has(key(n))) { const v = variantIn(n, T, ix); if (v.i >= 0 && !keep.has(v.i)) { keep.add(v.i); variants++; } }
+  let variants = 0; for (const n of knownNames) if (!exact.has(key(n))) { const v = variantIn(n, T, ix, R); if (v.i >= 0 && !keep.has(v.i)) { keep.add(v.i); variants++; } }
   rows.push(...all.filter((_, i) => keep.has(i))); stat.variants = variants;
   fia.lists.push({url, label, stamp, pages, medals: stat, probe, drivers: rows});
   if (!rows.length) console.log('no rows read', url, T0(pdf));

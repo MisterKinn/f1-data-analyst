@@ -80,7 +80,10 @@ export function build(root, extras = [], learned = null, sro = null, fia = null,
   const extraLineups = extras.flatMap(f => Object.entries(JSON.parse(readFileSync(f, 'utf8')).lineups || {}));
   // identity: the same full name (accents, case and word order ignored). No initials or short first names: a rating must never move
   // to another person (drivers.mjs would join "Mikkel" and "Michael" Jensen).
-  const names = new Map(), idOf = n => { const k = nameParts(n).key; if (!k) return null; const id = k.replace(/ /g, '-'); if (!names.has(id)) names.set(id, n); return id; };
+  // HTML entities left in a scraped name ("Kirchh&ouml;fer") are the letters they stand for
+  const ENT = {auml: 'ä', ouml: 'ö', uuml: 'ü', Auml: 'Ä', Ouml: 'Ö', Uuml: 'Ü', szlig: 'ß', eacute: 'é', egrave: 'è', aacute: 'á', iacute: 'í', oacute: 'ó', uacute: 'ú', ntilde: 'ñ', ccedil: 'ç', oslash: 'ø', Oslash: 'Ø', aring: 'å', Aring: 'Å', atilde: 'ã', otilde: 'õ', ecirc: 'ê', amp: '&', apos: "'", rsquo: '’'};
+  const unent = n => String(n || '').replace(/&(#\d+|[A-Za-z]+);/g, (m, e) => e[0] === '#' ? String.fromCharCode(+e.slice(1)) : ENT[e] ?? m);
+  const names = new Map(), idOf = n0 => { const n = unent(n0), k = nameParts(n).key; if (!k) return null; const id = k.replace(/ /g, '-'); if (!names.has(id)) names.set(id, n); return id; };
   const files = [], fileIx = new Map(), F = f => fileIx.get(f) ?? (fileIx.set(f, files.length), files.push(f), files.length - 1);
   // ratings per driver and season: every dated official value (later files win inside a season; changes are kept)
   const drivers = {}, conflicts = [];
@@ -124,7 +127,7 @@ export function build(root, extras = [], learned = null, sro = null, fia = null,
   // a driver whose name is written differently on the FIA list of that season (name-match.mjs: one fitting row only) -> how: fia-list, variant
   const bySeason = {}; for (const [id, by] of Object.entries(fiaR)) for (const [season, v] of Object.entries(by)) (bySeason[season] ||= []).push({t: tokens(v.name), v});
   const sIx = {}; const variant = (id, season) => { const L = bySeason[season]; if (!L) return null; const ix = sIx[season] ||= tokenIndex(L.map(x => x.t));
-    const r = variantIn(names.get(id) || id.replace(/-/g, ' '), L.map(x => x.t), ix); return r.i >= 0 ? {rating: L[r.i].v.rating, how: 'fia-list', variant: `${r.rule}: ${L[r.i].v.name}`} : null; };
+    const r = variantIn(names.get(id) || id.replace(/-/g, ' '), L.map(x => x.t), ix, L.map(x => x.v.name)); return r.i >= 0 ? {rating: L[r.i].v.rating, how: 'fia-list', variant: `${r.rule}: ${L[r.i].v.name}`} : null; };
   const sroRating = (id, season) => fiaR[id]?.[season] ? {rating: fiaR[id][season].rating, how: 'fia-list'} : variant(id, season) ||
     (drivers[id]?.seasons?.[season] && !drivers[id].seasons[season].printedBy && !drivers[id].seasons[season].fiaList ? {rating: drivers[id].seasons[season].rating, how: 'season'} : {rating: null, how: 'unknown'});
   // one driver written twice in one car ("R. Stanaway" on one result sheet, "Richie Stanaway" on another): seats that resolve to the

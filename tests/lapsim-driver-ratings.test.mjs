@@ -74,4 +74,7 @@ test('name variants: one fitting FIA row only, fixed rules, never a different fi
   const rows = ['Nicholas Yelloly', 'Nicolas Yelloly', 'Daniel Juncadella'].map(tokens), ix = tokenIndex(rows);
   assert.equal(variantIn('Nick Yelloly', rows, ix).i, -1); // two rows fit: no match
   assert.equal(variantIn('Dani Juncadella', rows, ix).i, 2);
+  const raws = ['Maximilian Götz', 'Rafal Nowak'], r2 = raws.map(tokens);
+  assert.deepEqual(variantIn('Maximilian Goetz', r2, tokenIndex(r2), raws), {i: 0, rule: 'umlaut'});
+  assert.equal(variantIn('Rafael Nowak', r2, tokenIndex(r2), raws).i, -1); // not an umlaut spelling: another name
 });
