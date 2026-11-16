@@ -74,3 +74,17 @@ test('A4 part 2: kernel step repair is off unless asked, keeps the heading chang
       assert.ok(peak(b.kappa) < peak(a.kappa) * 0.7, `${id} ${s} m: the curvature spike of the step is gone (${peak(a.kappa).toFixed(4)} -> ${peak(b.kappa).toFixed(4)} 1/m)`); }
   }
 });
+
+test('A2 part 2: corner names on tracks without an official numbering; OSM turn refs only when the official count matches', async () => {
+  const {lapsimCornerNumbers} = await import('../worker/lapsim/corner-numbers-data.js');
+  const {lapsimCornerNames} = await import('../worker/lapsim/corner-names-data.js');
+  assert.ok(!lapsimCornerNumbers.zolder, 'Zolder: OSM refs T1-T16 disagree with the official count (10): names only');
+  assert.ok(lapsimCornerNames.zolder.names.length >= 8);
+  const len = {...lapsimTracks, ...lapsimExtraTracks};
+  for (const [id, t] of Object.entries(lapsimCornerNames)) for (const c of t.names) {
+    assert.ok(c.s >= 0 && c.s < len[id].length, `${id} ${c.name} off the lap`);
+    assert.ok(!/pit|circuit|straight|strecke/i.test(c.name), `${id}: ${c.name} is not a corner`); }
+  const {simulationPage} = await import('../worker/simulation.js');
+  assert.match(simulationPage({track: 'donington'}, 'en'), /ls-corner-nm">Redgate</);
+  assert.match(simulationPage({track: 'monza'}, 'en'), /"cornerNames":null/);
+});

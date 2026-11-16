@@ -164,3 +164,20 @@ Test: tests/track-map-detail.test.mjs (no right turn between 200 and 400 m). Dra
   that the fits use, so the change is judged inside the A6 full refit as a declared variant (production baseline vs `steps`,
   leave one track out). Turned on only after that and the owner's approval.
 - Test: tests/track-map-detail.test.mjs ("A4 part 2").
+
+## A2 part 2: Zolder numbers and corner names from OpenStreetMap (2026-11-17)
+
+- Most circuits still on estimated corners have no single official turn numbering: the circuits use corner names, and sources
+  disagree on the count (Donington: 9, 10, 11 or 12). Owner decision 2026-11-17: show the official corner names there, and numbers
+  only where an official numbered map exists.
+- `scripts/sim/tracks/corner-numbers-osm.py` (A5 OSM probe data, © OpenStreetMap contributors, ODbL): our raw midline is fitted onto
+  the raceway ways (start pose osm-fit-start.json). A way with a turn ref (Zolder `ref=T1…T16`) gives the number; a named way that
+  lies on our lap (every point within 15 m) and is shorter than 600 m gives a corner name, placed at our tightest bend inside it.
+  Generic names (circuit, pit, straight, layout, approach sections) are dropped; two names on one bend keep the way centred on it.
+- OSM turn refs are used only when they match the official count (`corner-counts.json`). Zolder's refs run T1–T16 (fit 0.9 m, in
+  lap order) but the official count is 10, so Zolder shows names. Corner names on the map (instead of estimated numbers): Zolder, Donington, Snetterton, Misano, Jerez, Vallelunga, Estoril, Oschersleben, Nürburgring 24h (Nordschleife names),
+  Aragón (2), Sonoma (1). Data: `worker/lapsim/corner-names-data.js`; the map note says the names come from OSM.
+- Still estimated (no numbered map and no corner names in OSM): Yongin, Nürburgring Sprint, Brands Hatch (no probe file), Dubai,
+  Motegi, Buriram, Okayama, Sydney (both), Inje, Magny-Cours, Mandalika, Phillip Island, Lausitz, Detroit, Jarama (both), and the
+  FE street tracks (their numbered maps are in the FE event documents: next source).
+- Charts keep the turn ticks of the map numbering; on name tracks those ticks are still the estimated ones.
