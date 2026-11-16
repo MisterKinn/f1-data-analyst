@@ -2,7 +2,7 @@
 // in the seasons the local archive (tobi/imsa_data, 2021+) does not hold: WEC 2013-2020 (files.alkamelcloud.com manifests), ELMS
 // 2013-2020, Asian Le Mans 2013-2021 and Michelin Le Mans Cup (all seasons; *.alkamelsystems.com result pages). Classification CSVs
 // only ("03_Classification*.CSV"; DRIVERn_LICENSE or a category column). Writes scripts/sim/data/learn/alkamel-ratings.json.gz:
-// one row per driver, season and printed value, with the first file that prints it. Raw files are not kept. Runs in GitHub Actions (rev 3).
+// one row per driver, season and printed value, with the first file that prints it. Raw files are not kept. Runs in GitHub Actions (rev 4).
 import {writeFileSync} from 'node:fs';
 import {gzipSync} from 'node:zlib';
 const UA = {headers: {'user-agent': 'Mozilla/5.0 (kongboda-motorsports lap simulator)'}};
@@ -41,9 +41,10 @@ async function readAll(series, urls) { let n = 0, files = 0; await pool(urls, 6,
 // 2. ELMS / Asian LMS / Le Mans Cup: <select name="season"> and <select name="evvent"> options; each event page (?season=&evvent=)
 // lists that event's files as Results/<season>/<event>/... links
 const opts = (t, name) => [...(new RegExp(`<select[^>]*name="${name}"[\\s\\S]*?</select>`, 'i').exec(t || '')?.[0] || '').matchAll(/value="([^"]+)"/gi)].map(m => m[1]);
-for (const [series, host, from, to] of [['elms', 'https://elms.alkamelsystems.com', 2013, 2020], ['alms', 'https://alms.alkamelsystems.com', 2013, 2021], ['lmc', 'https://lemanscup.alkamelsystems.com', 2013, 2026]]) {
+for (const [series, host, from, to] of [['elms', 'https://elms.alkamelsystems.com', 2013, 2020], ['alms', 'https://asianlms.alkamelsystems.com', 2013, 2021], ['alms', 'https://alms.alkamelsystems.com', 2013, 2021], ['alms', 'https://asianlemansseries.alkamelsystems.com', 2013, 2021], ['lmc', 'https://lemanscup.alkamelsystems.com', 2013, 2026]]) {
   const root = await get(host + '/') || ''; let seasons = opts(root, 'season');
   if (!seasons.length) { const cur = /Results\/(\d\d)_(20\d\d)/.exec(root); if (cur) for (let y = from; y <= to; y++) seasons.push(`${String(+cur[1] - (+cur[2] - y)).padStart(2, '0')}_${y}`); }
+  if (!seasons.length) { console.log(series, host, 'no season menu', root.length, (root.match(/<select[^>]*>/g) || []).join(' ')); continue; }
   seasons = seasons.filter(id => { const y = +(/(20\d\d)/.exec(id)?.[1] || 0); return y >= from && y <= to; }); console.log(series, 'seasons', seasons.join(' '));
   for (const sid of seasons) { const page = await get(`${host}/?season=${encodeURIComponent(sid)}`) || '', events = opts(page, 'evvent'), urls = new Set();
     const pages = [page, ...await Promise.all(events.map(e => get(`${host}/?season=${encodeURIComponent(sid)}&evvent=${encodeURIComponent(e)}`)))];
