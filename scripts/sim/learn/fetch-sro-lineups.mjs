@@ -5,7 +5,7 @@
 //    G gold, P platinum), not text. Each row is read at the column of the "Category" / "Next Category" headers: the page is rendered
 //    at 72 dpi (pdftoppm) and the medal colour at the row is matched to the four medals (reference colours measured from the list's
 //    own images, 2026-11-16). Only drivers named in a line-up are written (no copy of the whole list).
-// (run 23) Output (derived tables): scripts/sim/data/learn/sro-lineups.json.gz, scripts/sim/data/learn/fia-categorisation.json
+// (run 24) Output (derived tables): scripts/sim/data/learn/sro-lineups.json.gz, scripts/sim/data/learn/fia-categorisation.json
 import {writeFileSync, readFileSync, mkdtempSync, existsSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {join} from 'node:path';
@@ -134,7 +134,10 @@ for (const url of new Set(LISTS)) {
       const W2 = w => w ? {platinum: 'P', platinium: 'P', gold: 'G', silver: 'S', bronze: 'B'}[w.toLowerCase()] ?? null : null;
       // year columns: each rating word belongs to the nearer year header ("No" = not categorised that year)
       let yNow, yPrev; if (yearCols) { const ws = ts.filter(t => /^(Platinum|Platinium|Gold|Silver|Bronze|No)$/i.test(t.s)); if (!ws.length) continue;
-        for (const w of ws) { const d1 = Math.abs(mid(w) - mid(cat)), d0 = prevCol ? Math.abs(mid(w) - mid(prevCol)) : 1e9; if (d1 <= d0) yNow = W2(w.s); else yPrev = W2(w.s); }
+        // two words: left = the earlier year, right = the list year (the words sit left of their headers); one word: the nearer header
+        const sw = [...ws].sort((a, b) => a.left - b.left);
+        if (sw.length >= 2 && prevCol) { yPrev = W2(sw[0].s); yNow = W2(sw.at(-1).s); }
+        else for (const w of sw) { const d1 = Math.abs(mid(w) - mid(cat)), d0 = prevCol ? Math.abs(mid(w) - mid(prevCol)) : 1e9; if (d1 <= d0) yNow = W2(w.s); else yPrev = W2(w.s); }
         if (prevCol && yPrev) allPrev.push({last: col(0, Math.min(...ws.map(w => w.left)) - 3).replace(/\*+/g, '').trim(), first: '', category: yPrev, next: null, page: p}); }
       const cy = y + ts[0].h / 2, c = yearCols ? (yNow ?? null) : word ? W2(word) : medal(px(mid(cat) - 5, cy)), nx = next ? medal(px(mid(next) - 5, cy)) : null, date = eff ? col(eff.left - 30, 1e9) : '';
       if (probe.length < 12) probe.push({last, first, rgb: px(mid(cat) - 5, cy).map(Math.round), c, nx});
