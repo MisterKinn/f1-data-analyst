@@ -2,7 +2,7 @@
 // drivers). Source: the official ADAC Nordrhein entry lists ("Starterliste" / "Teilnehmerliste", 24h-media.de, nuerburgring-langstrecken-serie.de,
 // copies on endurance-info.com / gt-place.com). They name the drivers per car, no FIA category: the rating comes from the FIA list of the
 // season (build-driver-ratings.mjs, how: fia-list). Runs in GitHub Actions (network, poppler). Writes scripts/sim/data/learn/n24-lineups.json
-// (rev 2).
+// (rev 3).
 import {writeFileSync, mkdtempSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {join} from 'node:path';
@@ -30,7 +30,7 @@ const NAT = /\(([A-Z]{3})\)/;
 export function parseN24(txt) {
   // DMSB list ("Start-Nr. Box Bewerber / Fahrer"): one block per car starting at the entrant line (entrant + licence, no nation); the
   // start number sits in the middle of the block, the drivers ("Last, First (GER)"; a pseudonym prints as "SELV, (KGZ)") above and below it
-  if (/Start-Nr\.?\s+Box/.test(txt)) { const out = []; let blk = null;
+  if (/Start-(Nr|No)\.?\s+Box/.test(txt)) { const out = []; let blk = null;
     for (const l of txt.split('\n')) { const name = l.slice(0, 46);
       if (/^\s{8,20}\S/.test(l) && !/[(),]/.test(name) && !/Stand|Anzahl|Status|Number|Nürburgring|approval|Genehmigung/i.test(l)) { blk = {car: null, head: name.trim(), names: []}; out.push(blk); continue; }
       if (!blk) continue; const c = /^(\d{1,3})\s{2,}\d{1,3}\s/.exec(l); if (c && !blk.car) blk.car = c[1];
@@ -45,7 +45,7 @@ export function parseN24(txt) {
     // driver line: name, city (the name may run into the city column with one space: then the city is its last word), "(GER)"
     if (!c) { const d = /^\s{4,}(\S.*?)\s*\(([A-Z]{3})\)/.exec(l); if (d && !/,/.test(d[1])) { const parts = d[1].split(/\s{2,}/), w = parts[0].split(' ');
       const n = (parts.length > 1 ? parts[0] : w.length > 2 ? w.slice(0, -1).join(' ') : w.join(' ')).replace(/[„"“”]/g, '').trim(); if (n) cur.names.push(n); else cur.bad = true; } } }
-  return cars.filter(c => c.names.length && !c.bad).map(c => ({...c, names: [...new Set(c.names)]}));
+  return cars.filter(c => c.names.length && c.names.length <= 6 && !c.bad).map(c => ({...c, names: [...new Set(c.names)]}));
 }
 const lineups = [], log = [];
 for (const [year, kind, url] of LISTS) {
