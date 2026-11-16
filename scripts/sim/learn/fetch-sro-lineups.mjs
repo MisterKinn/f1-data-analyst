@@ -5,7 +5,7 @@
 //    G gold, P platinum), not text. Each row is read at the column of the "Category" / "Next Category" headers: the page is rendered
 //    at 72 dpi (pdftoppm) and the medal colour at the row is matched to the four medals (reference colours measured from the list's
 //    own images, 2026-11-16). Only drivers named in a line-up are written (no copy of the whole list).
-// (run 16) Output (derived tables): scripts/sim/data/learn/sro-lineups.json.gz, scripts/sim/data/learn/fia-categorisation.json
+// (run 17) Output (derived tables): scripts/sim/data/learn/sro-lineups.json.gz, scripts/sim/data/learn/fia-categorisation.json
 import {writeFileSync, readFileSync, mkdtempSync, existsSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {join} from 'node:path';
@@ -128,9 +128,9 @@ for (const url of new Set(LISTS)) {
     }
   }
   // kept: drivers named in a line-up, exactly or as the one variant of that name in this list (name-match.mjs)
-  const exact = new Set(), T = all.map(r => tokens(`${r.first} ${r.last}`)), ix = tokenIndex(T), keep = new Set();
+  const exact = new Set(), R = all.map(r => `${r.first} ${r.last}`), T = R.map(tokens), ix = tokenIndex(T), keep = new Set();
   all.forEach((r, i) => { const k = key(`${r.first} ${r.last}`); if (known.has(k)) { keep.add(i); exact.add(k); } });
-  let variants = 0; for (const n of knownNames) if (!exact.has(key(n))) { const v = variantIn(n, T, ix); if (v.i >= 0 && !keep.has(v.i)) { keep.add(v.i); variants++; } }
+  let variants = 0; for (const n of knownNames) if (!exact.has(key(n))) { const v = variantIn(n, T, ix, R); if (v.i >= 0 && !keep.has(v.i)) { keep.add(v.i); variants++; } }
   rows.push(...all.filter((_, i) => keep.has(i))); stat.variants = variants;
   fia.lists.push({url, label, stamp, pages, medals: stat, probe, drivers: rows});
   if (!rows.length) console.log('no rows read', url, T0(pdf));
