@@ -28,8 +28,17 @@ export function straighten(c, [a, b]) {
   return {...c, kappa: sp(c.kappa), grade: sp(c.grade), length: Math.round(n * ds), sectors: [],
     corners: (c.corners || []).filter(q => q.s < a || q.s > b).map(q => q.s > b ? {...q, s: Math.round(q.s - cut)} : q), straightened: {fromM: a, toM: b, chordM: Math.round(chord), cutM: Math.round(cut)}};
 }
+// 2026-11-16: the 2019 Paul Ricard lap turns -375.7° (the map outline closes at -360°): the extra 16° sits in the slow
+// T3-T6 bends, which then read too tight. Above 10° of error, scale the bend curvature (R < 150 m) so the lap closes.
+export function closeTurn(c) {
+  const k = c.kappa, turn = k.reduce((a, v) => a + v, 0) / 1e5 * c.ds, err = Math.sign(turn) * 2 * Math.PI - turn;
+  if (Math.abs(err) * 180 / Math.PI <= 10) return c;
+  const bend = k.reduce((a, v) => Math.abs(v) > 1e5 / 150 ? a + v : a, 0) / 1e5 * c.ds, f = 1 + err / bend;
+  return {...c, kappa: k.map(v => Math.abs(v) > 1e5 / 150 ? Math.round(v * f) : v), turnClosed: {fromDeg: +(turn * 180 / Math.PI).toFixed(1), bendScale: +f.toFixed(3)}};
+}
 export function buildTrack(id, spec, c) {
   if (spec.straighten) c = straighten(c, spec.straighten);
+  if (spec.driven) c = closeTurn(c);
   if (spec.driven) { // F1 car positions: already the driven line, with height, sectors and corner numbers
     const turn = c.kappa.reduce((a, k) => a + k / 1e5 * c.ds, 0) * 180 / Math.PI, n = c.kappa.length, step = Math.max(1, Math.floor(n / 360)), map = {x: [], y: []};
     // Map outline only (the lap uses kappa as measured): rounded curvature does not add up to one full turn, so the drawn loop
