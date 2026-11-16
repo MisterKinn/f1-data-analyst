@@ -127,3 +127,27 @@ IMSA rows only (2,487 qualifying best laps, 13 tracks). Error = measured − sim
   section 1.1). The class test of 2.1 cannot tell these apart. Next: the speed traps of IMSA's 2026 "All Sections" maps sit at a
   known distance, so the measured trap speed against the simulated speed at that point checks the corner before each trap directly.
 - No model or geometry change from this run.
+
+### 2.3 Speed traps and start line (2026-11-16 21:50 KST)
+
+IMSA's 2026 "All Sections" maps give each speed trap's start and length, now in `imsa-sector-lines.json` (`trap`). Measured 2026
+trap speed (IMSA rows) − simulated speed at the trap centre, km/h (LMP2 is simulated with the LMDh car here, so its column is not a check):
+
+| Track | Prototypes | GT3 | Where the trap falls on our lap |
+|---|---|---|---|
+| Road America | −0.2 | 0.0 | end of the straight: fine |
+| Road Atlanta | −4.7 | −3.0 | fine |
+| VIR | — | +3.8 | fine |
+| Detroit | +3.7 | +6.4 | fine |
+| Sebring | +57 | +45 | in our braking zone for T17 |
+| Watkins Glen | +108 | +84 | in our braking zone for the Bus Stop |
+| Mosport | — | +49 | in a dip between two of our speed peaks |
+
+At Sebring, Watkins Glen and Mosport the measured trap speed is near the top speed, but on our lap the same lap fraction is already
+under braking: the braking point sits about 50–90 m away from where the timing puts it. One start-line shift per track does not explain
+it (the best shift that fits the sector shares runs into ±250 m, which is not believable). Our lap lengths are also 1–2 % shorter than
+IMSA's measured lengths (Watkins Glen −89 m, Long Beach −75 m, Mid-Ohio −68 m, Daytona −63 m); line positions are mapped by lap
+fraction, so that alone moves the Bus Stop braking point by about 25 m.
+
+Decision: no geometry change yet. The shared corner-speed bias (section 1.1) moves braking points too, so the car model goes first
+(B1); this check is rerun after it, and what is left at these three corners is then the track.

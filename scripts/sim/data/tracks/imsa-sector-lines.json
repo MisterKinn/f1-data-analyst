@@ -100,7 +100,13 @@
      3453.8,
      1808.9
     ],
-    "lapM": 5955.4
+    "lapM": 5955.4,
+    "trap": {
+     "name": "SP6",
+     "startM": 5162.5,
+     "lengthM": 37.9,
+     "lapFraction": 0.87
+    }
    }
   },
   "long-beach": {
@@ -210,7 +216,13 @@
      1421.8,
      1546.9
     ],
-    "lapM": 3633.7
+    "lapM": 3633.7,
+    "trap": {
+     "name": "SP4",
+     "startM": 1555.7,
+     "lengthM": 36.6,
+     "lapFraction": 0.4332
+    }
    }
   },
   "detroit": {
@@ -244,7 +256,13 @@
      981.5,
      841.9
     ],
-    "lapM": 2646.6
+    "lapM": 2646.6,
+    "trap": {
+     "name": "SP4",
+     "startM": 1107.9,
+     "lengthM": 42.7,
+     "lapFraction": 0.4267
+    }
    }
   },
   "watkins-glen": {
@@ -286,7 +304,13 @@
      2056.9,
      1995.0
     ],
-    "lapM": 5490.4
+    "lapM": 5490.4,
+    "trap": {
+     "name": "SP3",
+     "startM": 1718.9,
+     "lengthM": 36.7,
+     "lapFraction": 0.3164
+    }
    }
   },
   "mosport": {
@@ -328,7 +352,13 @@
      1843.6,
      884.8
     ],
-    "lapM": 3957.3
+    "lapM": 3957.3,
+    "trap": {
+     "name": "SP3",
+     "startM": 3072.5,
+     "lengthM": 29.1,
+     "lapFraction": 0.7801
+    }
    }
   },
   "lime-rock": {
@@ -380,7 +410,13 @@
      3916.7,
      1797.7
     ],
-    "lapM": 6514.8
+    "lapM": 6514.8,
+    "trap": {
+     "name": "SP2",
+     "startM": 2033.3,
+     "lengthM": 36.6,
+     "lapFraction": 0.3149
+    }
    }
   },
   "vir": {
@@ -422,7 +458,13 @@
      2123.7,
      2167.8
     ],
-    "lapM": 5262.6
+    "lapM": 5262.6,
+    "trap": {
+     "name": "SP5",
+     "startM": 3810.6,
+     "lengthM": 36.6,
+     "lapFraction": 0.7276
+    }
    }
   },
   "road-atlanta": {
@@ -464,7 +506,13 @@
      1981.7,
      1546.6
     ],
-    "lapM": 4087.7
+    "lapM": 4087.7,
+    "trap": {
+     "name": "SP4",
+     "startM": 3023.9,
+     "lengthM": 38.7,
+     "lapFraction": 0.7445
+    }
    }
   },
   "austin": {
@@ -495,5 +543,6 @@
     "lapM": 3925.2
    }
   }
- }
+ },
+ "trapSource": "2026 \"Timing All Sections Map\" PDFs (same notice board): speed trap start and length"
 }

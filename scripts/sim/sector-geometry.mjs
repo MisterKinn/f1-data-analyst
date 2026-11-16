@@ -33,7 +33,7 @@ for (const file of ['endurance-cars.csv.gz', 'wec-alkamel-cars.csv.gz']) {
     if (!LAY.has(lk)) LAY.set(lk, layoutOf({name: r.venue || r.event, lengthKm: r.lenKm ? +r.lenKm : null, season: +r.season, lap: best, group: CARGROUP[cls], feed: r.feed, event: r.event}));
     const tr = LAY.get(lk);
     if (!tr.sim || !LINES[tr.sim] || r.series !== 'imsa' || tr.sim === 'austin') continue;
-    rows.push({series: r.series, season: +r.season, event: r.event, cls, entry: r.entry, model: modelOf(r.vehicle, +r.season, r.cls)?.key, sim: tr.sim, best, share: s.map(x => x / best), w: {airC: +r.airC || 25, trackC: +r.trackC || 35, hpa: +r.hpa || 1013, hum: +r.hum || 50}}); } }
+    rows.push({series: r.series, season: +r.season, event: r.event, cls, entry: r.entry, model: modelOf(r.vehicle, +r.season, r.cls)?.key, sim: tr.sim, best, share: s.map(x => x / best), trap: +r.trapKph || null, w: {airC: +r.airC || 25, trackC: +r.trackC || 35, hpa: +r.hpa || 1013, hum: +r.hum || 50}}); } }
 // simulated sector shares per layout and class car (standard weather of the row; shares hardly move with grip)
 const simCache = new Map();
 function simShares(id, cls, season, w) {
@@ -42,14 +42,14 @@ function simShares(id, cls, season, w) {
   const t = K.trackFromData(ALL[id]), WEC = lapsimCalibration.series.wec, c = {proto: 'lmdh', lmp2: 'lmdh', gt3: 'lmgt3'}[cls], cs = String(Math.min(2026, Math.max(2025, season)));
   const res = K.simulateLap(t, (WEC[c][cs] || WEC[c][Object.keys(WEC[c]).sort().at(-1)]).car, K.conditionsFromWeather({}));
   const n = res.v.length, ds = t.ds, tAt = []; let acc = 0; for (let i = 0; i < n; i++) { tAt.push(acc); acc += ds / Math.max(res.v[i], 1); }
-  const at = f => tAt[Math.min(n - 1, Math.round(f * n))], cuts = sec.cuts, out = {shares: [at(cuts[0]) / acc, (at(cuts[1]) - at(cuts[0])) / acc, (acc - at(cuts[1])) / acc], measuredLines: sec.measured};
+  const tr = LINES[id]?.[String(season)]?.trap, at = f => tAt[Math.min(n - 1, Math.round(f * n))], cuts = sec.cuts, out = {trapSimKph: tr ? Math.max(...[-1, 0, 1].map(k => res.v[Math.min(n - 1, Math.round(tr.lapFraction * n) + k)])) * 3.6 : null,shares: [at(cuts[0]) / acc, (at(cuts[1]) - at(cuts[0])) / acc, (acc - at(cuts[1])) / acc], measuredLines: sec.measured};
   simCache.set(key, out); return out; }
-console.error("rows", rows.length, "layouts", LAY.size); const per = {}; let nn = 0; for (const r of rows) { if (++nn % 500 === 0) console.error("sim", nn, simCache.size); const s = simShares(r.sim, r.cls, r.season, r.w); if (!s) continue; r.err = r.share.map((x, i) => (x - s.shares[i]) * 100); (per[r.sim] ||= []).push(r); }
+console.error("rows", rows.length, "layouts", LAY.size); const per = {}; let nn = 0; for (const r of rows) { if (++nn % 500 === 0) console.error("sim", nn, simCache.size); const s = simShares(r.sim, r.cls, r.season, r.w); if (!s) continue; r.err = r.share.map((x, i) => (x - s.shares[i]) * 100); r.trapErr = r.trap && s.trapSimKph ? r.trap - s.trapSimKph : null; (per[r.sim] ||= []).push(r); }
 const mean = a => a.length ? a.reduce((s, x) => s + x, 0) / a.length : null, r2 = x => x == null ? null : +x.toFixed(2);
 const table = {};
 for (const [id, R] of Object.entries(per)) { const by = c => R.filter(r => r.cls === c), m = (L, i) => r2(mean(L.map(r => r.err[i])));
   table[id] = {rows: R.length, measuredLines: simCache.get([...simCache.keys()].find(k => k.startsWith(id + '|')))?.measuredLines ?? null,
     proto: {n: by('proto').length, err: [0, 1, 2].map(i => m(by('proto'), i))}, gt3: {n: by('gt3').length, err: [0, 1, 2].map(i => m(by('gt3'), i))}, lmp2: {n: by('lmp2').length, err: [0, 1, 2].map(i => m(by('lmp2'), i))},
-    seasons: [...new Set(R.map(r => r.season))].sort(), bySeason: Object.fromEntries([...new Set(R.map(r => r.season))].sort().map(y => { const L = R.filter(r => r.season === y); return [y, {n: L.length, err: [0, 1, 2].map(i => m(L, i))}]; }))}; }
+    seasons: [...new Set(R.map(r => r.season))].sort(), trap: Object.fromEntries(['proto', 'gt3', 'lmp2'].map(c => { const L = R.filter(r => r.cls === c && r.trapErr != null); return [c, L.length ? {n: L.length, errKph: r2(mean(L.map(r => r.trapErr)))} : null]; })), bySeason: Object.fromEntries([...new Set(R.map(r => r.season))].sort().map(y => { const L = R.filter(r => r.season === y); return [y, {n: L.length, err: [0, 1, 2].map(i => m(L, i))}]; }))}; }
 mkdirSync('probe-out', {recursive: true}); writeFileSync('probe-out/sector-geometry.json', JSON.stringify({note: 'sector share error = measured − simulated, percentage points of the lap, mean per class', table}, null, 1));
 for (const [id, t] of Object.entries(table)) console.log(id.padEnd(18), String(t.rows).padStart(5), 'proto', JSON.stringify(t.proto.err), t.proto.n, '| gt3', JSON.stringify(t.gt3.err), t.gt3.n, '| lmp2', JSON.stringify(t.lmp2.err), t.lmp2.n, t.measuredLines ? 'lines measured' : '');
