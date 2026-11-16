@@ -53,3 +53,42 @@ up. That is the car model (cornering grip and aero balance, physics rules 4.3 no
 60 of 230 corners need a factor outside 0.75–1.33 even after that: listed in probe-out/geometry-fit.json for the per-corner check of
 part 2. 2026 braking points are 150 m off on average (2025: 79 m): the 2026 car's braking/energy recovery model is the next suspect.
 Next: part 2 (tracks without F1 traces: sector times and traps), and the car-model corner bias goes to task B1 / the axle model.
+
+## 2. Endurance tracks from measured sector times — declared 2026-11-16 16:45 KST, before any run
+
+Data: Al Kamel qualifying best laps (IMSA, WEC, ELMS, Asian LMS archive) whose three sector times add up to the best lap (±0.06 s,
+so the sectors are of that lap), dry. Sector lines: track-atlas timing sectors (measured on aerial imagery for the IMSA tracks and Le
+Mans; others are lap fractions). Car: the production class car (LMDh for prototypes and LMP2, LMGT3 for GT cars), standard weather.
+Metric: sector share error = measured share of the lap − simulated share, in percentage points, per layout, sector and class.
+Shares do not depend on the overall pace, so no grip or track factor enters.
+Rule (fixed now): a track correction for a sector is the prototype mean error; it is judged on the GT3 rows (other cars, same track),
+and the reverse (GT3 → prototypes). It counts as geometry only where both directions cut the other class's error by more than half and
+the two classes agree in sign. Those sectors become a curvature correction, tested again by lap time in the full refit (A6) before
+any production change. Everything else is the car model of that class and is not moved into the track.
+
+### 2.1 Result (run 2026-11-16, `scripts/sim/sector-geometry.mjs`, 5,500 qualifying best laps with their own sectors, 22 layouts)
+
+Sector share error (measured − simulated, points of the lap), mean per class, S1 / S2 / S3:
+
+| Layout | Prototypes | GT3 | LMP2 | Sector lines |
+|---|---|---|---|---|
+| Le Mans | −0.2 / −2.5 / +2.7 | −0.3 / −2.2 / +2.4 | −0.2 / −2.4 / +2.6 | measured |
+| Watkins Glen | +0.2 / −1.5 / +1.4 | +0.1 / −1.4 / +1.4 | +0.6 / −1.7 / +1.1 | measured |
+| Mosport | +0.2 / +1.1 / −1.3 | −0.2 / +1.3 / −1.1 | −0.4 / +2.1 / −1.7 | fractions |
+| Spa | −0.7 / +2.8 / −2.0 | −0.3 / +2.3 / −2.0 | −0.3 / +2.1 / −1.8 | fractions |
+| Daytona | −17.8 / +20.8 / −3.0 | −18.0 / +20.7 / −2.7 | −18.1 / +20.7 / −2.7 | measured |
+| Sebring | −23.1 / +26.6 / −3.5 | −25.8 / +32.7 / −6.9 | −22.8 / +26.5 / −3.7 | measured |
+| Road Atlanta | −31.3 / +19.0 / +12.4 | −31.8 / +19.0 / +12.8 | −31.3 / +18.2 / +13.1 | measured |
+| Road America | −18.7 / +15.7 / +3.1 | −18.3 / +14.8 / +3.5 | −18.7 / +15.7 / +3.0 | fractions |
+
+(all 22 layouts in probe-out/sector-geometry.json)
+
+Decision: **no conclusion, no change.** Errors of 15–30 points of the lap cannot come from curvature (a whole corner is worth 1–3);
+they are the same in every class to 0.5 points, so the sector lines used (track-atlas) are not the lines of the timing files, or the
+timing files' S1 starts elsewhere than our start line. The declared rule (prototype correction judged on GT3) cannot tell a misplaced
+timing line from a track error, because both move all classes alike: the rule was wrong for this data and is withdrawn, not applied.
+Where the lines agree (Le Mans, Watkins Glen, Mosport, Spa, Interlagos) every class is within 3 points, and classes agree to ~0.5:
+consistent with small track or line errors only.
+Needed first: the timing-sector line positions from the official Al Kamel "Timing 3 Sector Map" per circuit (physics rules 4.3 no. 1),
+placed on our line. Then this check is rerun with a rule that separates line position (moves all classes by the same time share) from
+curvature (moves slow and fast classes by different amounts).
