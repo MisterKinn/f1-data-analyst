@@ -152,7 +152,7 @@ for (const entry of index.filter(isGeometry)) {
     align = alignClosed(Array.from(grid.x), Array.from(grid.y), loc.x, loc.y);
     if (align.rms < 60) headingTrue = Array.from(heading, h => align.mirror ? Math.PI - h + align.theta : h + align.theta);
     const ct = Math.cos(align.theta), st = Math.sin(align.theta);
-    const step = Math.max(1, Math.floor(n / 360));
+    const step = 1; // owner 2026-11-16: a map point at every line point (5 m)
     map = {x: [], y: []};
     for (let i = 0; i < n; i += step) { const px = (align.mirror ? -1 : 1) * grid.x[i], py = grid.y[i]; map.x.push(Math.round(ct * px - st * py)); map.y.push(Math.round(st * px + ct * py)); }
   }
