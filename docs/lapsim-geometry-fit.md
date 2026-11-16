@@ -92,3 +92,38 @@ consistent with small track or line errors only.
 Needed first: the timing-sector line positions from the official Al Kamel "Timing 3 Sector Map" per circuit (physics rules 4.3 no. 1),
 placed on our line. Then this check is rerun with a rule that separates line position (moves all classes by the same time share) from
 curvature (moves slow and fast classes by different amounts).
+
+### 2.2 Rerun with the official IMSA sector lines (2026-11-16 21:30 KST)
+
+The atlas lines of 2.1 are replaced by IMSA's own timing maps (Al Kamel notice board, `03_Timing 3 Sector Map.pdf` of every season
+2022–2026: section lengths in inches, finish line → i1 → i2 → finish line), stored in `scripts/sim/data/tracks/imsa-sector-lines.json`.
+IMSA rows only (2,487 qualifying best laps, 13 tracks). Error = measured − simulated share of the lap, percentage points, mean per class.
+
+| Track | Prototypes (S1, S2, S3) | GT3 | LMP2 |
+|---|---|---|---|
+| Road America | −0.1, +0.3, −0.2 | 0.0, +0.2, −0.2 | 0.0, +0.1, −0.2 |
+| VIR | — | −0.1, −0.1, +0.2 | — |
+| Laguna Seca | +0.3, −0.1, −0.2 | +0.2, −0.5, +0.3 | +0.9, −1.7, +0.8 |
+| Road Atlanta | −0.5, +0.8, −0.3 | −0.6, +0.6, 0.0 | −0.5, 0.0, +0.4 |
+| Lime Rock | — | −0.2, +0.7, −0.5 | — |
+| Daytona | +1.2, +0.7, −1.9 | +0.9, +0.7, −1.6 | +0.9, +0.7, −1.6 |
+| Long Beach | +0.7, −1.1, +0.4 | +0.4, −0.9, +0.5 | — |
+| Indianapolis | 0.0, −1.1, +1.0 | 0.0, −1.0, +1.0 | −0.1, −1.1, +1.2 |
+| Detroit | −1.1, +0.3, +0.8 | −1.0, +0.3, +0.6 | — |
+| Mosport | +0.2, +1.1, −1.3 | −0.2, +1.3, −1.1 | −0.4, +2.1, −1.7 |
+| Watkins Glen | +0.2, −1.6, +1.4 | +0.1, −1.5, +1.4 | +0.6, −1.8, +1.2 |
+| Sebring | −1.8, +0.3, +1.5 | −1.6, +0.5, +1.0 | −1.7, +0.2, +1.5 |
+| Mid-Ohio | +0.4, −2.5, +2.1 | +0.1, −2.4, +2.3 | +0.5, −2.9, +2.4 |
+
+- With the official lines the 15–30 point gaps of 2.1 are gone: they were the atlas lines. Road America, VIR, Laguna Seca and Road
+  Atlanta now agree within one point.
+- Daytona: the 2022, 2024 and 2025 PDFs put i2 435 m earlier than the 2023 and 2026 PDFs. With the PDF line those seasons are 6–7
+  points off in every class; with the 2023/2026 line under 1. The timing files are measured, so the data file uses the 2023/2026 line in
+  every season and keeps the PDF value as `docSectorsM`.
+- Laguna Seca: the errors change sign from 2024 on with the same published line (2021–23: +0.9, −1.9, +1.0; 2024–26: −0.3, +1.0,
+  −0.6), so a line moved in 2024 that the PDF does not show.
+- Watkins Glen, Mid-Ohio, Sebring, Indianapolis, Mosport, Detroit, Long Beach: 1–2.5 points, the same in every class and season.
+  That is either the track (corner positions or radii in that sector) or the corner-speed bias that every class shares (F1: −12 km/h,
+  section 1.1). The class test of 2.1 cannot tell these apart. Next: the speed traps of IMSA's 2026 "All Sections" maps sit at a
+  known distance, so the measured trap speed against the simulated speed at that point checks the corner before each trap directly.
+- No model or geometry change from this run.
