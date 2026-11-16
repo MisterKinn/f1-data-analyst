@@ -347,7 +347,8 @@ export const VIEW = {
   silverstone: {left: 15, right: 9}, suzuka: {deg: 0}, portimao: {longest: 'bottom', back: true},
 };
 export function landscapeRot(map, north, spec, corners, length) {
-  const X = map?.x, Y = map?.y, n = X?.length || 0; if (n < 8) return 0;
+  // 5 m maps (2026-11-16): metre rounding makes 5 m steps wobble a few degrees, which split straights; pick the view on ≤400 points
+  const st = Math.max(1, Math.ceil((map?.x?.length || 0) / 400)), X = map?.x?.filter((_, i) => i % st === 0), Y = map?.y?.filter((_, i) => i % st === 0), n = X?.length || 0; if (n < 8) return 0;
   if (spec && Number.isFinite(spec.deg)) return spec.deg;
   const at = num => { const c = (corners || []).find(k => k.number === num && !k.letter) || (corners || []).find(k => k.number === num); return c ? Math.min(n - 1, Math.round(c.s / length * n)) : null; };
   const turnY = (deg, i) => { const t = deg * Math.PI / 180; return X[i] * Math.sin(t) + Y[i] * Math.cos(t); };
