@@ -6,16 +6,16 @@
 //      (IMSA prints its own driver rating, which uses the same four FIA names).
 //   2. extra.json files (same shape as `lineups` below) from other official entry lists (SRO, Le Mans Cup, FIA list), when present.
 // The driver of the car's best lap comes from the Al Kamel lap file of that session (DRIVER_NAME of the lap with the learned time).
-// Raw files stay out of git (physics rule 2.9): this writes the derived table scripts/sim/data/learn/driver-ratings.json.
+// Raw files stay out of git (physics rule 2.9): this writes the derived table scripts/sim/data/learn/driver-ratings.json.gz.
 import {readFileSync, writeFileSync, existsSync, readdirSync} from 'node:fs';
 import {join} from 'node:path';
-import {gunzipSync} from 'node:zlib';
+import {gunzipSync, gzipSync} from 'node:zlib';
 import {parseCsv, sessionType} from './build-endurance.mjs';
 import {nameParts} from './drivers.mjs';
 import {modelOf} from './models.mjs';
 import {groupOf, loadRows} from './fit-endurance.mjs';
 
-export const OUT = 'scripts/sim/data/learn/driver-ratings.json';
+export const OUT = 'scripts/sim/data/learn/driver-ratings.json.gz';
 const ARCHIVE = 'https://github.com/tobi/imsa_data (Al Kamel published CSV files)';
 const SITE = {wec: 'http://fiawec.alkamelsystems.com/', elms: 'http://elms.alkamelsystems.com/', alms: 'http://alms.alkamelsystems.com/', imsa: 'https://imsa.results.alkamelcloud.com/'};
 // printed value -> P/G/S/B. Anything else ("S*", "S-B", empty) is not a plain FIA category: kept as raw, rating unknown.
@@ -114,7 +114,7 @@ export function build(root, extras = [], learned = null, sro = null, fia = null,
   // the driver's value printed by an ACO-series Al Kamel file of that season (IMSA prints its own rating: not used for SRO cars).
   const fiaR = {}; for (const L of [...(fia?.lists || [])].sort((a, b) => String(a.stamp).localeCompare(String(b.stamp)))) { // latest print of a season wins
     const season = +L.label.slice(0, 4); for (const d of L.drivers || []) if (d.category)
-    (fiaR[idOf(`${d.first} ${d.last}`)] ||= {})[season] = {rating: d.category, source: `FIA Driver Categorisation ${L.label}, p. ${d.page}`, date: (L.stamp || '').slice(0, 10)}; }
+    (fiaR[idOf(`${d.first} ${d.last}`)] ||= {})[season] = {rating: d.category, source: `FIA Driver Categorisation ${L.label}, p. ${d.page}`, date: (L.stamp || '').slice(0, 10) || (m => m ? `${m[1]}-${m[2]}-${m[3]}` : `${season}-01-01`)(/web\/(\d{4})(\d\d)(\d\d)/.exec(L.url))}; } // undated lists: date of the archived copy
   for (const [id, by] of Object.entries(fiaR)) for (const [season, v] of Object.entries(by)) { const p = drivers[id] ||= {name: names.get(id), seasons: {}}, s = p.seasons[season];
     if (!s) p.seasons[season] = {...v}; else if ((s.changes?.at(-1)?.rating ?? s.rating) !== v.rating) s.fiaList = v; }
   const sroRating = (id, season) => fiaR[id]?.[season] ? {rating: fiaR[id][season].rating, how: 'fia-list'}
@@ -176,7 +176,7 @@ if (process.argv[1]?.endsWith('build-driver-ratings.mjs')) {
       + 'how: event = printed at that event; season = printed for that driver at another event of the same season; fia-list = FIA Driver Categorisation public list of that season (SRO cars); unknown = not found (never guessed). '
       + 'learned: the GT3 and LMP2 rows of fit-endurance.mjs with the line-up of the car that set the time and the driver of that lap. Built by scripts/sim/learn/build-driver-ratings.mjs.',
     sources: [ARCHIVE, ...Object.values(SITE), ...extras, 'SRO entry lists: scripts/sim/data/learn/sro-lineups.json.gz', 'SRO entry-list PDFs (printed category per driver): scripts/sim/data/learn/sro-entry-ratings.json', 'FIA Driver Categorisation public lists: scripts/sim/data/learn/fia-categorisation.json', ...(fia?.lists || []).map(L => `FIA Driver Categorisation ${L.label}: ${L.url}`)], ...res};
-  writeFileSync(OUT, JSON.stringify(out, null, 0) + '\n');
+  writeFileSync(OUT, gzipSync(JSON.stringify(out) + '\n', {level: 9}));
   const n = res.learned.length, k = res.learned.filter(r => r.lineup).length;
   console.log(`drivers ${Object.keys(res.drivers).length}, events ${Object.keys(res.lineups).length}, learned rows ${n}, with known line-up ${k}, best-lap driver ${res.learned.filter(r => r.bestLapDriver).length}, rating changes ${res.changes.length}`);
 }

@@ -360,7 +360,8 @@ Rows that could not be used, by reason: no simulator geometry: sebring-6019: 301
 | wec-data | https://github.com/Hanspeter007/wec-data | Schemas and 2026 examples of classifications, entry lists, line-ups | Read: schema only, no lap data |
 | 51GT3 | https://51gt3.com/en/track | GT3 tracks and lap records | Not reachable from the shell; probe in Actions |
 | SRO official results | https://www.gt-world-challenge-europe.com/results · https://www.gt-world-challenge-america.com/results · https://www.gt-world-challenge-asia.com/results · https://www.britishgt.com/results · https://www.intercontinentalgtchallenge.com/results | Every session table (position, car, best lap) of every meeting | Learned 2013–2026 (`fetch-sro.mjs` in Actions → `build-sro.mjs` → `sro-gt3-cars.csv.gz`, 54,134 rows): records only. IGTC gives PDFs (not read yet); GTWC Australia pages have no session tables |
-| FIA Driver Categorisation public list | https://driverscategorisation.fia.com · yearly PDF lists (fia.com; press copies on sportscar365.com and endurance-info.com) | Category per driver and season (printed as medal images) | Read 2026-11-16: 2021, 2023, 2024, 2025, 2026 lists (`fetch-sro-lineups.mjs`, section 13) |
+| FIA Driver Categorisation public list | https://driverscategorisation.fia.com · yearly PDF lists (fia.com; press copies on sportscar365.com, endurance-info.com, as-web.jp; archived copies on web.archive.org) | Category per driver and season (medal images or words) | Read 2026-11-16: 2015, 2019, 2021–2026 lists (`fetch-sro-lineups.mjs`, section 13) |
+| SRO entry-list PDFs | `/noticeboard?meeting_id=<id>` of every SRO site | Category printed per driver at the meeting | Read 2026-11-16 (`fetch-sro-entry-pdfs.mjs` → `sro-entry-ratings.json`, section 13) |
 | SRO entry lists | https://www.gt-world-challenge-europe.com/entry-lists (and America, Asia, British GT, IGTC) | Drivers per car and meeting, car cup | Read 2026-11-16 (`fetch-sro-lineups.mjs` → `sro-lineups.json.gz`, section 13) |
 | SRO PDF results | https://www.intercontinentalgtchallenge.com/results · https://www.gt-world-challenge-australia.com/results | Classification PDFs (IGTC 2019-2026: Spa 24h, Nürburgring 24h, Suzuka, Kyalami, Indianapolis 8h, Gulf 12h; GTWC Australia 2023-2026) | `fetch-sro-pdf.mjs` in Actions (pdftotext) → `sro-pdf-cars.csv.gz`, 6,394 rows (car, entry number, best lap; no names). Records everywhere; fitted only on thin layouts (Phillip Island learned: 3 events, 1.9 %) |
 | Timing71 core | https://github.com/timing71/livetiming-core | How Timing71 services record sessions (format of the replay archive) | Read |
@@ -542,7 +543,7 @@ Data only: no fit term and no flag uses it yet (the main session adds that varia
   S Silver, B Bronze) of each driver of that car at that event, the line-up rating (sorted P>G>S>B, e.g. `PSB`) and, when the lap
   file shows it, the driver who set the learned lap. Evidence layer 1 ("Known"): only values printed in official documents.
 - **Files.** `scripts/sim/learn/build-driver-ratings.mjs <imsa_data folder> [extra.json]` writes
-  `scripts/sim/data/learn/driver-ratings.json` (`drivers` {id: {name, seasons: {season: {rating, source, date, changes?}}}},
+  `scripts/sim/data/learn/driver-ratings.json.gz` (`drivers` {id: {name, seasons: {season: {rating, source, date, changes?}}}},
   `lineups` {"series|season|event": {car: {drivers, lineup}}}, `learned`, `changes`, `files`). Loader and coverage report:
   `node scripts/sim/learn/driver-ratings.mjs`. Test: `tests/lapsim-driver-ratings.test.mjs`.
 - **Sources.** Al Kamel results CSVs of WEC, ELMS, Asian LMS and IMSA (archive tobi/imsa_data): `DRIVERn_LICENSE` is the category the
@@ -557,18 +558,27 @@ Data only: no fit term and no flag uses it yet (the main session adds that varia
 - **Ratings that change inside a season** are kept with their date (`changes`, 103 cases, e.g. IMSA 2021 Daniel Serra G → P at
   Daytona); the line-up always uses the value printed at that event.
 
-- **SRO cars (P1b, 2026-11-16).** Drivers per car and meeting from the SRO entry-list pages (`/entry-list/<year>/<meeting>` of
-  GTWC Europe, America, Asia, Australia, British GT and IGTC; `fetch-sro-lineups.mjs` in Actions → `sro-lineups.json.gz`, 8,668 cars).
-  A learned row is matched to the meeting of its site, year and venue that holds its car number with the same make. The entry list
-  gives only the car's cup, so the driver's category comes from the **FIA Driver Categorisation public list** of that season
-  (`how: fia-list`), else from his value printed by an ACO-series Al Kamel file of that season (`how: season`; IMSA's own rating is
-  not used for SRO cars), else `unknown`.
-- **FIA public lists** (`fia-categorisation.json`, only drivers named in a line-up are kept): 2021 List (2021-11-10), 2023 List
-  (2023-10-04), 2024 List (2024-10-09), 2025 List (2025-09-29), 2026 List (2026-01-05). The PDFs print the category as a medal image
-  (S, B, G, P), not text: each row is read at the "Category" column of a 72 dpi render and the medal colour is matched to the four
-  medals of the list (0 rows unclear in every list). Check against the values Al Kamel printed for the same driver and season: 96–99 %
-  agree (2021 194/196, 2023 294/301, 2024 364/370, 2025 364/371, 2026 329/339; the rest are IMSA's own ratings and changes inside a
-  season). The "Next Category" column is not read: its sample did not decode reliably.
+- **SRO cars (P1b/P1c, 2026-11-16).** Sources in this order (the first that has the car wins):
+  1. **Official SRO entry-list PDFs** (`fetch-sro-entry-pdfs.mjs` → `sro-entry-ratings.json`): the noticeboard
+     (`/noticeboard?meeting_id=<id>`) and event page of every meeting of GTWC Europe, America, Asia, Australia, British GT and IGTC.
+     Most lists print the category beside each driver (SRO `CAT` P/G/S/B, British GT `GRADE`, IGTC `Platinum/Gold/…`; a `-` stays
+     unknown) → `how: event`. British GT 2020–2022 lists print only the car class: they give the drivers per car (`names`).
+     Parser: `sro-entry-parse.mjs` (test in `tests/lapsim-driver-ratings.test.mjs`). The PDF of a learned event is the one of the same
+     site and year that names the venue and holds the most learned car numbers (final / official before provisional). Raw PDF texts
+     are a workflow artifact only (7 days), never committed. Check against other official values for the same driver and season:
+     99 % agree with the FIA lists (4,709 of 4,761) and 95 % with Al Kamel (598 of 629; the rest are drivers rated differently by two
+     organisers in one year, e.g. Marcus Clutton British GT 2023 G, ELMS S).
+  2. **SRO entry-list web pages** (`/entry-list/<year>/<meeting>`, `fetch-sro-lineups.mjs` → `sro-lineups.json.gz`, 8,668 cars): the
+     drivers per car (the page shows only the car's cup).
+  3. For drivers named by 2 (or by a names-only PDF), the category comes from the **FIA Driver Categorisation public list** of that
+     season (`how: fia-list`), else from the driver's value printed by an ACO-series Al Kamel file of that season (`how: season`; IMSA's
+     own rating is not used for SRO cars), else `unknown`.
+- **FIA public lists** (`fia-categorisation.json`, only drivers named in a line-up are kept): 2015 (27.03.2015, archived copy of the
+  fia.com file), 2019 (legacy temporary list, archived copy of driverscategorisation.fia.com), 2021, 2022, 2023, 2024, 2025, 2026.
+  2021–2026 print the category as a medal image (S, B, G, P): each row is read at the "Category" column of a 72 dpi render and the colour
+  matched to the four medals (0 rows unclear); 2015 and 2019 print it as a word. Check against Al Kamel for the same driver and season:
+  96–99 % agree per list. The "Next Category" column is not read. Lists of 2016, 2017, 2018 and 2020 were not found (fia.com removed
+  them; the Internet Archive has no copy under the names searched; a 2018 copy exists only on Scribd, which is not an official source).
 
 Coverage (learned rows with a known line-up rating; best-lap driver known):
 
@@ -578,26 +588,26 @@ Coverage (learned rows with a known line-up rating; best-lap driver known):
 | GT3 | ELMS | 2024–2026 | 78 | 78 | 78 |
 | GT3 | Asian LMS | 2022–2026 | 90 | 90 | 90 |
 | GT3 | IMSA | 2021–2026 | 604 | 603 | 604 |
-| GT3 | GTWC (SRO tables, all regions) | 2013–2026 | 728 | 146 | 0 |
+| GT3 | GTWC (SRO tables, all regions) | 2013–2026 | 728 | 307 | 0 |
 | GT3 | GTWC Europe (Timing71: Endurance, Sprint, Spa 24h) | 2024–2026 | 133 | 91 | 0 |
-| GT3 | British GT | 2015–2026 | 273 | 0 | 0 |
-| GT3 | IGTC (PDFs, Suzuka 1000 km) | 2019–2026 | 79 | 19 | 0 |
+| GT3 | British GT | 2015–2026 | 273 | 158 | 0 |
+| GT3 | IGTC (PDFs, Suzuka 1000 km) | 2019–2026 | 79 | 50 | 0 |
 | GT3 | Nürburgring 24h | 2023–2026 | 36 | 0 | 0 |
 | LMP2 | WEC | 2021–2026 | 23 | 23 | 23 |
 | LMP2 | ELMS | 2021–2026 | 32 | 32 | 32 |
 | LMP2 | Asian LMS | 2022–2026 | 13 | 13 | 13 |
 | LMP2 | IMSA | 2021–2026 | 41 | 41 | 41 |
 
-All Al Kamel rows: 1,056 of 1,057 (IMSA 2021 Watkins Glen #39: Tyler McQuarrie has no printed rating). SRO rows in a season with an
-FIA list and a matched entry list are mostly complete (GTWC 2021 36/51, 2023 40/47, 2024–2026 Timing71 rows 97/121). Per season:
-`node scripts/sim/learn/driver-ratings.mjs`. SRO timing has no driver per lap, so no best-lap driver there.
+1,662 of 2,306 rows. All Al Kamel rows: 1,056 of 1,057 (IMSA 2021 Watkins Glen #39: Tyler McQuarrie has no printed rating). Per
+season: `node scripts/sim/learn/driver-ratings.mjs`. SRO timing has no driver per lap, so no best-lap driver there.
 
 Gaps and what was checked (2026-11-16):
 
-- **Seasons without an FIA list found:** 2013–2020 and 2022. GTWC rows of those seasons have line-ups (names) but no ratings.
-- **No entry list:** British GT since 2020 (the site lists none after 2019; 2015–2019 matched but no FIA list for those years),
-  GTWC Asia since 2023 and GTWC Australia (no entry-list pages), GTWC Europe Nürburgring 2024–2025 and Brands Hatch 2024, IGTC
-  Bathurst 2023–2024 and Indianapolis 2025 (names differ). Nürburgring 24h is not an SRO meeting.
+- **Seasons without an FIA list and without per-driver categories in the entry lists:** 2014, 2016–2018, 2020 (GTWC Europe, Asia,
+  British GT). Those cars have their drivers (names) but no rating; they stay `unknown`.
+- **No entry list matched:** GTWC Asia 2025 and part of 2024/2026, GTWC Australia 2023, GTWC Europe Nürburgring 2024–2025 (Timing71
+  rows), IGTC 2019–2020 partly. **Nürburgring 24h** (36 rows) is not an SRO meeting; its organiser's entry lists give car classes
+  (SP9 Pro / Pro-Am), not FIA categories per driver; the IGTC N24 list (2026) was found but prints no category.
 - The cup of an SRO car (PRO/GOLD/SILVER/BRONZE) is never used as a rating (a Bronze Cup car can be B+S+P).
 - **Data found for the main session:** WEC 2026 Imola and Spa LMP2 #46 (learned as Oreca 07) is an Oreca 05 of a historic support
   race filed in the same Al Kamel folder (one-driver files, "Bronze FIA"). Not changed here.

@@ -5,7 +5,7 @@
 const CAT = /^(P|G|S|B|PLATINUM|PLATINIUM|GOLD|SILVER|BRONZE)$/i;
 const catOf = t => ({p: 'P', platinum: 'P', platinium: 'P', g: 'G', gold: 'G', s: 'S', silver: 'S', b: 'B', bronze: 'B'})[t.toLowerCase()];
 const NAT = /^[A-Z]{3}$/, NUM = /^#?\d{1,3}$/;
-const isName = w => /^[\p{L}][\p{L}'’.\-]*\*?$/u.test(w) && !NAT.test(w);
+const isName = w => /^[\p{L}][\p{L}'’.\-]*[*,]?$/u.test(w) && !NAT.test(w); // "Farfus," (N24 lists: last name, first name)
 const cells = l => [...l.matchAll(/\S+(?: \S+)*/g)].map(m => ({t: m[0], x: m.index, e: m.index + m[0].length}));
 
 export function parseEntryText(txt) {
@@ -28,11 +28,11 @@ export function parseEntryText(txt) {
         // the name is the run of name words before the category (nationality codes in between are skipped)
         let j = k - 1; while (j >= 0 && NAT.test(toks[j].t)) j--;
         const w = []; while (j >= 0 && isName(toks[j].t) && !CAT.test(toks[j].t) && w.length < 4 && (o.x - toks[j].x) < 60 + 12 * w.length) { w.unshift(toks[j].t); j--; }
-        if (w.length >= 2) drivers.push({name: w.join(' ').replace(/\*/g, ''), cat: none ? null : catOf(o.t)}); });
+        if (w.length >= 2) drivers.push({name: w.join(' ').replace(/[*,]/g, ''), cat: none ? null : catOf(o.t)}); });
       if (drivers.length) { cars.push({car: num.t.replace('#', ''), drivers}); continue; }
     }
     // no category printed: names by the driver columns of the header
-    if (drvCols?.length >= 2) { const names = drvCols.map(c => toks.filter(o => { const m = o.x + o.t.length / 2; return m >= c.l && m < c.r && isName(o.t); }).map(o => o.t.replace(/\*/g, '')).join(' ')).filter(n => n.split(' ').length >= 2);
+    if (drvCols?.length >= 2) { const names = drvCols.map(c => toks.filter(o => { const m = o.x + o.t.length / 2; return m >= c.l && m < c.r && isName(o.t); }).map(o => o.t.replace(/[*,]/g, '')).join(' ')).filter(n => n.split(' ').length >= 2);
       if (names.length >= 2) cars.push({car: num.t.replace('#', ''), names}); }
   }
   return cars;

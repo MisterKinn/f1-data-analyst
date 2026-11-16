@@ -9,7 +9,7 @@
 import {writeFileSync, readFileSync, mkdtempSync, existsSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {join} from 'node:path';
-import {gzipSync} from 'node:zlib';
+import {gzipSync, gunzipSync} from 'node:zlib';
 import {tmpdir} from 'node:os';
 const UA = {headers: {'user-agent': 'Mozilla/5.0 (kongboda-motorsports lap simulator)'}}, TMP = mkdtempSync(join(tmpdir(), 'sro-lu-'));
 const get = async (u, bin) => { for (let i = 0; i < 3; i++) { try { const r = await fetch(u, {...UA, signal: AbortSignal.timeout(60000)}); if (r.ok) return bin ? Buffer.from(await r.arrayBuffer()) : await r.text(); if (r.status === 404) return null; } catch {} await new Promise(s => setTimeout(s, 1500)); } return null; };
@@ -51,7 +51,7 @@ console.log(log.join('\n'));
 const fold = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z]+/g, ' ').trim();
 const key = s => fold(s).split(' ').sort().join(' ');
 const known = new Set(lineups.flatMap(l => l.drivers).map(key));
-if (existsSync('scripts/sim/data/learn/driver-ratings.json')) for (const p of Object.values(JSON.parse(readFileSync('scripts/sim/data/learn/driver-ratings.json', 'utf8')).drivers)) known.add(key(p.name));
+const DR = 'scripts/sim/data/learn/driver-ratings.json.gz'; if (existsSync(DR)) for (const p of Object.values(JSON.parse(gunzipSync(readFileSync(DR)).toString()).drivers)) known.add(key(p.name));
 // Public list PDFs (official FIA document; copies hosted by the press when fia.com has removed them). The list year and print time are
 // read from the PDF itself ("FIA Driver Categorisation – 2024 List", "2024-10-09 06:00:01"); a URL that does not answer is skipped.
 const LISTS = ['https://www.fia.com/sites/default/files/fia_2024_reviewed_categorisations_list_0.pdf',

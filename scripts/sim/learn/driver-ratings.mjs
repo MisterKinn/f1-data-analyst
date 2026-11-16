@@ -1,12 +1,14 @@
-// Loader for scripts/sim/data/learn/driver-ratings.json (FIA driver categorisation of the GT3 and LMP2 rows fit-endurance.mjs learns
+// Loader for scripts/sim/data/learn/driver-ratings.json.gz (FIA driver categorisation of the GT3 and LMP2 rows fit-endurance.mjs learns
 // from; built by build-driver-ratings.mjs). Data only: nothing in the fit reads it yet (the main session adds that variant).
 //   node scripts/sim/learn/driver-ratings.mjs   -> coverage report (group x series x season, and the gaps)
 import {readFileSync} from 'node:fs';
+import {gunzipSync} from 'node:zlib';
 
-export const FILE = 'scripts/sim/data/learn/driver-ratings.json';
+export const FILE = 'scripts/sim/data/learn/driver-ratings.json.gz';
+const read = f => JSON.parse((f.endsWith('.gz') ? gunzipSync(readFileSync(f)) : readFileSync(f)).toString());
 export const RATINGS = ['P', 'G', 'S', 'B'];
 let cache;
-export const loadDriverRatings = (file = FILE) => file === FILE ? (cache ||= JSON.parse(readFileSync(file, 'utf8'))) : JSON.parse(readFileSync(file, 'utf8'));
+export const loadDriverRatings = (file = FILE) => file === FILE ? (cache ||= read(file)) : read(file);
 
 // rating of a driver valid at a date (YYYY-MM-DD) of a season: the season's value, or the last value printed on or before the date
 export function ratingAt(id, season, date = null, d = loadDriverRatings()) {
