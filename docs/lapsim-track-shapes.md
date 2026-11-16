@@ -61,3 +61,16 @@
 - Kerbs: one inside kerb at each official corner (where the line is closest to the inside) and one outside kerb at its exit (where the
   line runs widest within 80 m), instead of one pair per braking zone (Barcelona T1–T3 was one zone, so T1 had no outside kerb).
   Still estimated: kerb positions are not published for most circuits.
+
+## Endurance tracks onto the atlas midline (task A1, 2026-11-16)
+
+Same method as the F1 tracks, for the 16 endurance circuits that have a track-atlas line; the corrected midline is smoothed again
+(σ 5 m). Sideways gap RMS before → after: Daytona 1.96 → 0.31, Fuji 1.01 → 0.21, Indianapolis 3.03 → 0.29, Laguna Seca 1.04 → 0.34,
+Lime Rock 2.97 → 0.32, Long Beach 5.24 → 0.80, Mosport 1.47 → 0.18, Mugello 2.52 → 0.15, Portimão 1.69 → 0.30, Road Atlanta
+0.60 → 0.20, VIR 0.45 → 0.18, Watkins Glen 1.49 → 0.42, Le Mans 1.86 → 0.26 m.
+Not corrected (read one by one):
+- Paul Ricard: the atlas line is another layout (71 % over 12 m).
+- Sebring: same shape (similarity fit 1.1 m median), but the atlas line is 2.9 % shorter than the official 6.019 km lap: our line kept.
+- Road America: a real shape difference of up to ~100 m in the Carousel / Kink section (51 % over 12 m). Which line is right is decided
+  by measured lap and sector data in task A4, not by the drawing.
+- Lime Rock, Long Beach, Portimão: 18–20 % of the lap skipped (over 12 m): checked again in A4.
