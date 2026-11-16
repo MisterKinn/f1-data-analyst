@@ -38,3 +38,26 @@
 - The learning step was then refitted on the new lines (`fit-endurance.mjs`): per-track errors 0.1-1.0 % again; held-out errors
   unchanged (LMH 0.81 %, LMDh 0.73 %, GT3 0.96 %; LMDh before learning 1.74 -> 1.56 %). Racing lines per car, braking and energy
   follow these lines in the weekly lap-simulator data run.
+
+## Kink fix (owner 2026-11-16: "Daytona T1 and Barcelona T1/T4 entry squashed; check every map")
+
+- Scan: within 30 m a line that turns both ways by more than 0.25 rad while its net turn is small. Run over the band edges, the
+  midline, the least-curvature lines and every car line of all 99 tracks; each hit over 0.25 rad was read by eye (most are real
+  chicanes: Monza T1/T4, Montreal, Le Mans Ford, street corners).
+- Cause 1, every F1 track (Barcelona included): the band was smooth, the coloured car line zig-zagged (SPSA offsets, ±1 m point noise;
+  over 12 000 kinks on 26 tracks). Fix: car-line offsets smoothed (Gaussian σ 8 m) and the drawn line smoothed in position (σ 5 m).
+- Cause 2, map-built tracks: map points are whole metres 5 m apart; the rounding turned the normals, so edges and line wobbled.
+  Fix: Gaussian σ 5 m on the map points before the existing smoothing (shape change under 0.5 m).
+- Cause 3, side steps in four source lines where the real track is straight (Daytona 200 m before T1, Autopolis 185 m, Valencia
+  Ricardo Tormo 3400 m, Laguna Seca 2286 m before T7): drawn with a smooth curve (`MAP_STEPS` in worker/simulation.js).
+- Drawing only. The simulator geometry (kappa) still has the four side steps: fixing them changes lap times, so it is a separate
+  physics change with its own gate (queued).
+- Test: `tests/track-map-detail.test.mjs` (fails on the old code: 12 333 car-line kinks, Daytona 0.51 rad).
+- Cause 4, F1 outlines (owner, later on 2026-11-16: "Barcelona T1 goes straight, then right"): the TUM / car-position outline bent
+  into some corners too early (Barcelona: −21° of turn 30 m before T1 where the real straight is still straight). The drawn midline is
+  now moved sideways onto the checked track-atlas midline (`scripts/sim/tracks/map-shape-atlas.mjs` → `worker/lapsim/map-shape-data.js`,
+  rigid fit, gaps over 12 m = another layout and skipped, smoothed over 20 m). Sideways gap RMS, 24 tracks: 0.7–4.8 m → 0.2–1.1 m.
+  Measured data (laps, telemetry) is never changed; the simulator geometry is corrected to it in a separate physics task (task 13).
+- Kerbs: one inside kerb at each official corner (where the line is closest to the inside) and one outside kerb at its exit (where the
+  line runs widest within 80 m), instead of one pair per braking zone (Barcelona T1–T3 was one zone, so T1 had no outside kerb).
+  Still estimated: kerb positions are not published for most circuits.
