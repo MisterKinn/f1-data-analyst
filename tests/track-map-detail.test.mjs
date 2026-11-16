@@ -40,9 +40,16 @@ test('reviewed side steps in source lines (Daytona before T1 and others) are dra
   const {lineData, MAP_STEPS} = await import('../worker/simulation.js');
   const all = {...lapsimTracks, ...lapsimExtraTracks};
   for (const [id, steps] of Object.entries(MAP_STEPS)) { const L = lineData(id), n = L.mid.length, len = all[id].length;
-    for (const s of steps) { const c = Math.round(s / len * n), seg = Array.from({length: 41}, (_, k) => L.mid[(c - 20 + k + n) % n]);
+    for (const e of steps) { const s = Array.isArray(e) ? e[0] : e, c = Math.round(s / len * n), seg = Array.from({length: 41}, (_, k) => L.mid[(c - 20 + k + n) % n]);
       const open = seg.slice(0, -1).map((p, i) => Math.atan2(seg[i + 1][1] - p[1], seg[i + 1][0] - p[0])), d = open.slice(1).map((v, i) => { let x = v - open[i]; while (x > Math.PI) x -= 2 * Math.PI; while (x < -Math.PI) x += 2 * Math.PI; return x; });
       // both-way turning within any 30 m (6 points) of the ±100 m around the step: a straight or a plain bend scores 0
       const sc = Math.max(...d.slice(0, -6).map((_, i) => { const q = d.slice(i, i + 6); return q.reduce((a, x) => a + Math.abs(x), 0) - Math.abs(q.reduce((a, x) => a + x, 0)); }));
       assert.ok(sc < 0.25, `${id} at ${s} m: both-way turn ${sc.toFixed(3)} rad in 30 m`); } }
+});
+
+test('Daytona: the road course leaves the banking in one smooth left bend before T1 (owner 2026-11-16, no S-bend)', async () => {
+  const {lineData} = await import('../worker/simulation.js');
+  const len = {...lapsimTracks, ...lapsimExtraTracks}.daytona.length, M = lineData('daytona').mid, n = M.length, st = len / n, hd = i => Math.atan2(M[(i + 1) % n][1] - M[i][1], M[(i + 1) % n][0] - M[i][0]);
+  for (let s = 200; s < 400; s += 25) { const a = Math.round(s / st), b = Math.round((s + 25) / st); let d = hd(b) - hd(a); while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI;
+    assert.ok(d / 25 * 1000 > -0.5, `daytona ${s}-${s + 25} m turns right (${(d / 25 * 1000).toFixed(1)} mrad/m)`); }
 });

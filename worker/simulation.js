@@ -441,11 +441,11 @@ const smoothOff = (o, step) => { const n = o.length, {r, w} = gaussW(LINE_SIGMA_
 // (tests/track-map-detail.test.mjs) and checked by eye one by one against the circuit maps: lap distance of the step (m).
 // Drawing only: the points within ±MAP_REPAIR_M are replaced by a cubic Hermite curve between the line on either side. The simulator's
 // own geometry (kappa) is unchanged here; its fix is a separate physics change.
-export const MAP_STEPS = {daytona: [290], autopolis: [185], 'ricardo-tormo': [3400], 'laguna-seca': [2286]};
+export const MAP_STEPS = {daytona: [[300, 80]], autopolis: [185], 'ricardo-tormo': [3400], 'laguna-seca': [2286]};
 const MAP_REPAIR_M = 45;
 function mapRepair(id, P, len) {
   const steps = MAP_STEPS[id]; if (!steps) return P; const n = P.length, st = (len || n * 5) / n, h = Math.round(MAP_REPAIR_M / st), Q = P.map(p => p.slice()), at = i => P[((i % n) + n) % n];
-  for (const s of steps) { const c = Math.round(s / st), a = c - h, b = c + h, ta = [at(a)[0] - at(a - 3)[0], at(a)[1] - at(a - 3)[1]].map(v => v / 3), tb = [at(b + 3)[0] - at(b)[0], at(b + 3)[1] - at(b)[1]].map(v => v / 3), m = b - a;
+  for (const e of steps) { const [s, hw] = Array.isArray(e) ? e : [e, MAP_REPAIR_M], c = Math.round(s / st), hh = Math.round(hw / st), a = c - hh, b = c + hh, ta = [at(a)[0] - at(a - 3)[0], at(a)[1] - at(a - 3)[1]].map(v => v / 3), tb = [at(b + 3)[0] - at(b)[0], at(b + 3)[1] - at(b)[1]].map(v => v / 3), m = b - a;
     for (let k = 1; k < m; k++) { const t = k / m, h00 = 2 * t ** 3 - 3 * t * t + 1, h10 = t ** 3 - 2 * t * t + t, h01 = -2 * t ** 3 + 3 * t * t, h11 = t ** 3 - t * t;
       Q[((a + k) % n + n) % n] = [0, 1].map(j => h00 * at(a)[j] + h10 * m * ta[j] + h01 * at(b)[j] + h11 * m * tb[j]); } }
   return Q; }
@@ -476,7 +476,7 @@ export function lineData(id, {shape = true} = {}) {
     const P0 = mapRepair(id, m.x.map((x, i) => [x, m.y[i]]), lapsimTracks[id].length), st0 = (lapsimTracks[id].length || P0.length * 5) / P0.length;
     mid = smoothClosed(smoothPts(P0, LINE_SIGMA_M / 1.6 / st0)); nrm = normals(mid); half = mid.map(() => Math.max(0.5, h - 1));
     const cs = shape && lapsimMapShape?.tracks?.[id]?.corr; // checked atlas midline, as on the F1 tracks above
-    if (cs?.length === mid.length) { mid = smoothClosed(smoothPts(mid.map((p, i) => [p[0] + nrm[i][0] * cs[i] / 10, p[1] + nrm[i][1] * cs[i] / 10]), LINE_SIGMA_M / 1.6 / st0)); nrm = normals(mid); }
+    if (cs?.length === mid.length) { mid = smoothClosed(smoothPts(mapRepair(id, mid.map((p, i) => [p[0] + nrm[i][0] * cs[i] / 10, p[1] + nrm[i][1] * cs[i] / 10]), lapsimTracks[id].length), LINE_SIGMA_M / 1.6 / st0)); nrm = normals(mid); } // the atlas line has the same step (Daytona: where the road course leaves the banking), so repair it again after the correction
     left = mid.map((p, i) => [p[0] + nrm[i][0] * h, p[1] + nrm[i][1] * h]); right = mid.map((p, i) => [p[0] - nrm[i][0] * h, p[1] - nrm[i][1] * h]);
     base = minCurvatureLine(mid.map(p => p[0]), mid.map(p => p[1]), half).offset.map(v => Math.round(v * 10));
   }
