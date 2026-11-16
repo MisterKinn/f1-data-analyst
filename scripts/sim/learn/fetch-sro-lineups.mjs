@@ -5,7 +5,7 @@
 //    G gold, P platinum), not text. Each row is read at the column of the "Category" / "Next Category" headers: the page is rendered
 //    at 72 dpi (pdftoppm) and the medal colour at the row is matched to the four medals (reference colours measured from the list's
 //    own images, 2026-11-16). Only drivers named in a line-up are written (no copy of the whole list).
-// (run 10) Output (derived tables): scripts/sim/data/learn/sro-lineups.json.gz, scripts/sim/data/learn/fia-categorisation.json
+// (run 11) Output (derived tables): scripts/sim/data/learn/sro-lineups.json.gz, scripts/sim/data/learn/fia-categorisation.json
 import {writeFileSync, readFileSync, mkdtempSync, existsSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {join} from 'node:path';
@@ -99,7 +99,7 @@ for (const url of new Set(LISTS)) {
   for (let p = 1; p <= pages; p++) {
     const xml = execFileSync('pdftohtml', ['-xml', '-i', '-zoom', '1', '-f', String(p), '-l', String(p), '-stdout', pdf]).toString();
     const T = [...xml.matchAll(/<text top="(\d+)" left="(\d+)" width="(\d+)" height="(\d+)"[^>]*>([\s\S]*?)<\/text>/g)].map(m => ({top: +m[1], left: +m[2], w: +m[3], h: +m[4], s: clean(m[5])}));
-    const hd = re => T.find(t => re.test(t.s)); let cat = T.filter(t => /^Categori[sz]ation \d{4}$/i.test(t.s)).sort((a, b) => b.s.localeCompare(a.s))[0] || hd(/^(Category|Categori[sz]ation( \d{4})?)$/i), next = hd(/^Next Category$/), ln = hd(/^(Last ?name|Surname|Name)/i), fn = hd(/^First ?name/i), nat = hd(/^Nationality/) || cat, eff = hd(/next categorisation|^Effective date/);
+    const hd = re => T.find(t => re.test(t.s)); let cat = T.filter(t => /^Categori[sz]ation \d{4}$/i.test(t.s)).sort((a, b) => b.s.localeCompare(a.s))[0] || hd(/^(Category|Categori[sz]ation( \d{4})?)$/i), next = hd(/^Next Category$/), ln = hd(/^(Last ?name|Surname|Name)/i), fn = hd(/^First ?name/i), nat = hd(/^Nationality/) || T.filter(t => /^Categori[sz]ation( \d{4})?$/i.test(t.s)).sort((a, b) => a.left - b.left)[0] || cat, eff = hd(/next categorisation|^Effective date/);
     // 2018 lists print the column headers on page 1 only: later pages use the columns of the last page that had them (whole page)
     if (cat && ln) H = {cat, next, ln, fn, nat, eff}; else if (H) ({cat, next, ln, fn, nat, eff} = {...H, cat: {...H.cat, top: -1e9}});
     if (cat && cols.length > 1 && !cat.s.includes(year)) cat = null; // two-year list: only its later-year column, never the earlier one
