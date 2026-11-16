@@ -32,7 +32,8 @@ test('line-ups: ratings known or unknown, never guessed', () => {
       if (x.how === 'season') assert.equal(x.rating, ratingAt(x.id, ev.split('|')[1], null, d) ?? x.rating);
       if (x.file != null) assert.ok(d.files[x.file], `${ev} ${car} file index`);
     }
-    assert.equal(c.lineup, lineupString(c.drivers.map(x => x.rating)), `${ev} ${car}`);
+    // a source that listed a driver twice leaves the line-up unknown (`why`)
+    assert.equal(c.lineup, c.why ? null : lineupString(c.drivers.map(x => x.rating)), `${ev} ${car}`);
     if (c.lineup) assert.match(c.lineup, /^P*G*S*B*$/);
   }
   for (const r of d.learned) {

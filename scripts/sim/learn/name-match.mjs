@@ -7,7 +7,7 @@
 //   initial  - a first initial and the full first name (Natsoft result sheets: "C.Mostert"), the rest equal
 // No similarity score, no spelling correction ("Denis" / "Dennis" is not joined): a rating never moves to another person.
 // Used by fetch-sro-lineups.mjs (which list rows to keep) and build-driver-ratings.mjs (rating of a driver with no exact name).
-export const tokens = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z]+/g, ' ').trim().split(' ').filter(Boolean);
+export const tokens = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/(\w)['’](\w)/g, '$1$2').replace(/[^a-z]+/g, ' ').trim().split(' ').filter(Boolean); // "D'Alberto" is one word
 const SHORT = {alex: ['alexander', 'alexandre', 'alessandro', 'alejandro', 'alexis', 'alexey', 'aleksandr'], chris: ['christopher', 'christian', 'christoph', 'christophe'],
   dani: ['daniel'], dan: ['daniel'], danny: ['daniel'], nick: ['nicholas', 'nicolas', 'nicola', 'niklas', 'nicolai', 'nikolaj', 'nicky'], matt: ['matthew', 'mathew', 'matthias', 'matteo'],
   maxi: ['maximilian', 'maxime', 'maximiliano'], max: ['maximilian', 'maxime', 'maximiliano'], seb: ['sebastian', 'sebastien'], tom: ['thomas', 'tommaso'], tommy: ['thomas'],
