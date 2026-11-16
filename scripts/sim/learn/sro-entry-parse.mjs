@@ -11,19 +11,20 @@ export function parseEntryText(txt) {
   // column of the car number: the "#" / "No" / "Car" header cell (SRO tables put a "QT" index before it)
   let numCol = null;
   for (const l of lines) {
-    const h = /(^|\s)(#|No\.?|Nr\.?|Car ?#?|N°)(\s|$)/.exec(l);
-    if (h && /driver/i.test(l)) { numCol = h.index + h[1].length; }
+    const h = /(^|\s)(#|No\.?|Nr\.?|Car|N°)(\s|$)/.exec(l);
+    if (h && /driver/i.test(l)) { const hash = l.indexOf('#'); numCol = hash >= 0 ? hash : h.index + h[1].length; }
     const toks = [...l.matchAll(/\S+/g)].map(m => ({t: m[0], x: m.index}));
-    const cats = toks.filter(o => CAT.test(o.t)); if (cats.length < 1 || cats.length > 5) continue;
+    const cats = toks.filter(o => CAT.test(o.t)); if (cats.length < 1 || cats.length > 6) continue;
     const nums = toks.filter(o => NUM.test(o.t)); if (!nums.length) continue;
     const num = numCol != null ? nums.reduce((a, o) => Math.abs(o.x - numCol) < Math.abs(a.x - numCol) ? o : a) : nums[0];
-    if (numCol != null && Math.abs(num.x - numCol) > 6) continue;
+    if (numCol != null && Math.abs(num.x + num.t.length - 1 - numCol) > 8 && Math.abs(num.x - numCol) > 8) continue;
     const drivers = [];
-    toks.forEach((o, k) => { if (!CAT.test(o.t)) return;
+    // "-" in a category column = no category printed for that driver: kept as unknown (the car's line-up is then not complete)
+    toks.forEach((o, k) => { const none = o.t === '-' && k > 0 && NAT.test(toks[k - 1].t); if (!CAT.test(o.t) && !none) return;
       // the name is the run of name words before the category (nationality codes in between are skipped)
       let j = k - 1; while (j >= 0 && NAT.test(toks[j].t)) j--;
       const w = []; while (j >= 0 && isName(toks[j].t) && !CAT.test(toks[j].t) && w.length < 4 && (o.x - toks[j].x) < 60 + 12 * w.length) { w.unshift(toks[j].t); j--; }
-      if (w.length >= 2) drivers.push({name: w.join(' '), cat: catOf(o.t)}); });
+      if (w.length >= 2) drivers.push({name: w.join(' '), cat: none ? null : catOf(o.t)}); });
     if (drivers.length) cars.push({car: num.t.replace('#', ''), drivers});
   }
   return cars;
