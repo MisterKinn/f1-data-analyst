@@ -106,3 +106,10 @@ Tracks drawn from F1 car positions or TUM data were fitted (rigid, trimmed ICP) 
 The fix uses the same sideways correction as the atlas tracks (worker/lapsim/map-shape-data.js, atlas "osm"), from
 scripts/sim/tracks/map-shape-osm.mjs and scripts/sim/data/tracks/osm-raceways-a3.json (© OpenStreetMap contributors, ODbL).
 Drawing only: lap distance, corners and the simulator geometry are unchanged.
+
+## Daytona before T1, again (owner 2026-11-16 20:40)
+
+The step where the road course leaves the banking (about 300 m after the line) came back as an S-bend: the repair ran before the atlas
+correction, and the atlas line has the same small step there, so the correction put it back. Now the repair also runs after the
+correction, and a repair entry can set its own half-width (`MAP_STEPS.daytona = [[300, 80]]`: 220–380 m, one smooth left bend).
+Test: tests/track-map-detail.test.mjs (no right turn between 200 and 400 m). Drawing only.
