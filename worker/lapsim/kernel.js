@@ -441,8 +441,14 @@ export function lapsimKernel() {
 
   // Decode a stored track (see scripts/sim/build-tracks.mjs) into typed arrays.
   // Stored arrays are integers: kappa ×1e5 (1/m), grade ×1e4 (rad), heading ×1e3 (rad).
-  function trackFromData(d, {aero = 'auto'} = {}) {
+  function trackFromData(d, {aero = 'auto', steps = null} = {}) {
+    // steps (A4 part 2, flag LAPSIM_KAPPA_REPAIR, off by default): [[lapDistanceM, halfWidthM], ...] false side steps in the source line;
+    // kappa there becomes a straight blend between the two ends plus a constant that keeps the same heading change
     const kappa = Float64Array.from(d.kappa, v => v / 1e5);
+    if (steps) { const n0 = kappa.length, k0 = Float64Array.from(kappa), at = i => k0[((i % n0) + n0) % n0];
+      for (const [s, hw] of steps) { const c = Math.round(s / d.ds), h = Math.round(hw / d.ds), a = c - h, m = 2 * h, ka = at(a - 1), kb = at(a + m + 1), lin = j => ka + (kb - ka) * (j + 1) / (m + 2);
+        let tot = 0, tl = 0; for (let j = 0; j <= m; j++) { tot += at(a + j); tl += lin(j); }
+        for (let j = 0; j <= m; j++) kappa[((a + j) % n0 + n0) % n0] = lin(j) + (tot - tl) / (m + 1); } }
     const n = kappa.length;
     const track = {
       id: d.id, name: d.name, ds: d.ds, kappa,

@@ -34,6 +34,7 @@ import {lapsimTrackView} from './lapsim/track-view-data.js';
 import {lapsimCornerNumbers} from './lapsim/corner-numbers-data.js';
 import {lapsimPitLanes} from './lapsim/pit-lane-data.js';
 import {lapsimPitSpeed} from './lapsim/pit-speed-data.js';
+import {TRACK_STEPS, STEP_REPAIR_M} from './lapsim/track-steps.js';
 import {lapsimF1Zones} from './lapsim/f1-zones-data.js';
 import {lapsimFeZones} from './lapsim/fe-zones-data.js';
 import {SURFACE_ERAS} from './lapsim/surface.js';
@@ -444,8 +445,8 @@ const smoothOff = (o, step) => { const n = o.length, {r, w} = gaussW(LINE_SIGMA_
 // (tests/track-map-detail.test.mjs) and checked by eye one by one against the circuit maps: lap distance of the step (m).
 // Drawing only: the points within ±MAP_REPAIR_M are replaced by a cubic Hermite curve between the line on either side. The simulator's
 // own geometry (kappa) is unchanged here; its fix is a separate physics change.
-export const MAP_STEPS = {daytona: [[300, 80]], autopolis: [185], 'ricardo-tormo': [3400], 'laguna-seca': [2286]};
-const MAP_REPAIR_M = 45;
+export const MAP_STEPS = TRACK_STEPS; // shared with the simulator geometry (lapsim/track-steps.js)
+const MAP_REPAIR_M = STEP_REPAIR_M;
 function mapRepair(id, P, len) {
   const steps = MAP_STEPS[id]; if (!steps) return P; const n = P.length, st = (len || n * 5) / n, h = Math.round(MAP_REPAIR_M / st), Q = P.map(p => p.slice()), at = i => P[((i % n) + n) % n];
   for (const e of steps) { const [s, hw] = Array.isArray(e) ? e : [e, MAP_REPAIR_M], c = Math.round(s / st), hh = Math.round(hw / st), a = c - hh, b = c + hh, ta = [at(a)[0] - at(a - 3)[0], at(a)[1] - at(a - 3)[1]].map(v => v / 3), tb = [at(b + 3)[0] - at(b)[0], at(b + 3)[1] - at(b)[1]].map(v => v / 3), m = b - a;

@@ -60,3 +60,17 @@ test('Las Vegas: the straight runs into T5 without a swing the other way (owner 
   for (let s = 1300; s < 1475; s += 25) { const a = Math.round(s / st), b = Math.round((s + 25) / st); let d = hd(b) - hd(a); while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI;
     assert.ok(d / 25 * 1000 < 0.5, `las-vegas ${s}-${s + 25} m turns left before the right-hander T5 (${(d / 25 * 1000).toFixed(1)} mrad/m)`); }
 });
+
+test('A4 part 2: kernel step repair is off unless asked, keeps the heading change, and removes the curvature spike', async () => {
+  const {lapsimKernel} = await import('../worker/lapsim/kernel.js');
+  const {kappaSteps} = await import('../worker/lapsim/track-steps.js');
+  const K = lapsimKernel(), T = {...lapsimTracks, ...lapsimExtraTracks};
+  for (const id of ['daytona', 'autopolis', 'ricardo-tormo', 'laguna-seca']) {
+    const a = K.trackFromData(T[id]), b = K.trackFromData(T[id], {steps: kappaSteps(id)}), c = K.trackFromData(T[id], {steps: null});
+    assert.deepEqual([...a.kappa], [...c.kappa], `${id}: no steps -> unchanged`);
+    const sum = k => k.reduce((s, x) => s + x, 0);
+    assert.ok(Math.abs(sum(a.kappa) - sum(b.kappa)) < 1e-9, `${id}: heading change kept`);
+    for (const [s, hw] of kappaSteps(id)) { const i0 = Math.round((s - hw) / T[id].ds), i1 = Math.round((s + hw) / T[id].ds), peak = k => { let m = 0; for (let i = i0; i <= i1; i++) m = Math.max(m, Math.abs(k[i])); return m; };
+      assert.ok(peak(b.kappa) < peak(a.kappa) * 0.7, `${id} ${s} m: the curvature spike of the step is gone (${peak(a.kappa).toFixed(4)} -> ${peak(b.kappa).toFixed(4)} 1/m)`); }
+  }
+});
