@@ -98,6 +98,10 @@ jobs:
           LAPSIM_TRACK_DRAG: 'on'
           LAPSIM_TEAMS: 'on'
           LAPSIM_WPRIOR: '8'
+          # A6 (owner 2026-11-17): FIA zones + 2026 PU qualifying curve (experiment run 43775148422, variant zq: all 1.235 -> 1.144 %,
+          # WEC 1.432 -> 1.210 %, F1 1.008 -> 1.075 %; the owner accepts the F1 cost of following the real 2026 PU rules)
+          LAPSIM_FIA_ZONES: 'on'
+          LAPSIM_PU_QUALI: 'on'
         run: node scripts/sim/calibrate.mjs
       # TracingInsights race laps 2018 on; reference = mean of the best 8 qualifying laps (script defaults)
       - name: Fit race pace (fuel, tyres, pit loss)
