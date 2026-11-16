@@ -1,0 +1,471 @@
+{
+ "sro": [
+  {
+   "site": "https://www.gt-world-challenge-europe.com",
+   "year": 2025,
+   "meeting": "/results/2025/official-test-days",
+   "pdfs": []
+  },
+  {
+   "site": "https://www.gt-world-challenge-europe.com",
+   "year": 2025,
+   "meeting": "/results/2025/circuit-paul-ricard",
+   "pdfs": []
+  },
+  {
+   "site": "https://www.gt-world-challenge-europe.com",
+   "year": 2025,
+   "meeting": "/results/2025/brands-hatch",
+   "pdfs": []
+  },
+  {
+   "site": "https://www.gt-world-challenge-europe.com",
+   "entryListLinks": [
+    "/entry-list/2026/circuit-paul-ricard",
+    "/entry-list/2026/brands-hatch",
+    "/entry-list/2026/monza",
+    "/entry-list/2026/crowdstrike-24-hours-of-spa",
+    "/entry-list/2026/misano",
+    "/entry-list/2026/magny-cours",
+    "/entry-list/2026/n&uuml;rburgring",
+    "/entry-list/2026/zandvoort",
+    "/entry-list/2026/barcelona",
+    "/entry-list/2026/portimao"
+   ]
+  },
+  {
+   "site": "https://www.gt-world-challenge-europe.com",
+   "year": 2019,
+   "meeting": "/results/2019/blancpain-gt-series-test-days",
+   "pdfs": []
+  },
+  {
+   "site": "https://www.gt-world-challenge-europe.com",
+   "year": 2019,
+   "meeting": "/results/2019/blancpain-gt-series-endurance-cup-monza",
+   "pdfs": []
+  },
+  {
+   "site": "https://www.gt-world-challenge-europe.com",
+   "year": 2019,
+   "meeting": "/results/2019/blancpain-gt-series-sprint-cup-brands-hatch",
+   "pdfs": []
+  },
+  {
+   "site": "https://www.gt-world-challenge-europe.com",
+   "entryListLinks": [
+    "/entry-list/2026/circuit-paul-ricard",
+    "/entry-list/2026/brands-hatch",
+    "/entry-list/2026/monza",
+    "/entry-list/2026/crowdstrike-24-hours-of-spa",
+    "/entry-list/2026/misano",
+    "/entry-list/2026/magny-cours",
+    "/entry-list/2026/n&uuml;rburgring",
+    "/entry-list/2026/zandvoort",
+    "/entry-list/2026/barcelona",
+    "/entry-list/2026/portimao"
+   ]
+  },
+  {
+   "site": "https://www.gt-world-challenge-america.com",
+   "year": 2025,
+   "meeting": "/results/2025/sonoma-raceway",
+   "pdfs": []
+  },
+  {
+   "site": "https://www.gt-world-challenge-america.com",
+   "year": 2025,
+   "meeting": "/results/2025/Circuit-of-the-Americas",
+   "pdfs": []
+  },
+  {
+   "site": "https://www.gt-world-challenge-america.com",
+   "year": 2025,
+   "meeting": "/results/2025/sebring",
+   "pdfs": []
+  },
+  {
+   "site": "https://www.gt-world-challenge-america.com",
+   "entryListLinks": []
+  },
+  {
+   "site": "https://www.gt-world-challenge-america.com",
+   "year": 2019,
+   "meeting": "/results/2019/circuit-of-the-americas",
+   "pdfs": []
+  },
+  {
+   "site": "https://www.gt-world-challenge-america.com",
+   "year": 2019,
+   "meeting": "/results/2019/virginia-international-raceway",
+   "pdfs": []
+  },
+  {
+   "site": "https://www.gt-world-challenge-america.com",
+   "year": 2019,
+   "meeting": "/results/2019/canadian-tire-motorsport-park",
+   "pdfs": []
+  },
+  {
+   "site": "https://www.gt-world-challenge-america.com",
+   "entryListLinks": []
+  },
+  {
+   "site": "https://www.gt-world-challenge-asia.com",
+   "year": 2025,
+   "meeting": "/results/2025/sepang",
+   "pdfs": []
+  },
+  {
+   "site": "https://www.gt-world-challenge-asia.com",
+   "year": 2025,
+   "meeting": "/results/2025/pertamina-mandalika-international-circuit",
+   "pdfs": []
+  },
+  {
+   "site": "https://www.gt-world-challenge-asia.com",
+   "year": 2025,
+   "meeting": "/results/2025/chang",
+   "pdfs": []
+  },
+  {
+   "site": "https://www.gt-world-challenge-asia.com",
+   "entryListLinks": []
+  },
+  {
+   "site": "https://www.gt-world-challenge-asia.com",
+   "year": 2019,
+   "meeting": "/results/2019/sepang",
+   "pdfs": []
+  },
+  {
+   "site": "https://www.gt-world-challenge-asia.com",
+   "year": 2019,
+   "meeting": "/results/2019/chang",
+   "pdfs": []
+  },
+  {
+   "site": "https://www.gt-world-challenge-asia.com",
+   "year": 2019,
+   "meeting": "/results/2019/suzuka",
+   "pdfs": []
+  },
+  {
+   "site": "https://www.gt-world-challenge-asia.com",
+   "entryListLinks": []
+  },
+  {
+   "site": "https://www.britishgt.com",
+   "year": 2025,
+   "meeting": "/results/2025/donington-park",
+   "pdfs": []
+  },
+  {
+   "site": "https://www.britishgt.com",
+   "year": 2025,
+   "meeting": "/results/2025/silverstone",
+   "pdfs": []
+  },
+  {
+   "site": "https://www.britishgt.com",
+   "year": 2025,
+   "meeting": "/results/2025/oulton-park",
+   "pdfs": []
+  },
+  {
+   "site": "https://www.britishgt.com",
+   "entryListLinks": []
+  },
+  {
+   "site": "https://www.britishgt.com",
+   "year": 2019,
+   "meeting": "/results/2019/oulton-park",
+   "pdfs": []
+  },
+  {
+   "site": "https://www.britishgt.com",
+   "year": 2019,
+   "meeting": "/results/2019/snetterton",
+   "pdfs": []
+  },
+  {
+   "site": "https://www.britishgt.com",
+   "year": 2019,
+   "meeting": "/results/2019/silverstone",
+   "pdfs": []
+  },
+  {
+   "site": "https://www.britishgt.com",
+   "entryListLinks": []
+  },
+  {
+   "site": "https://www.intercontinentalgtchallenge.com",
+   "year": 2025,
+   "meeting": "/results/2025/bathurst-12-hour",
+   "pdfs": [
+    "/images/results/143/MOUN_31_01_2025_0835_Practice_P1_12H_RES_F_1.pdf",
+    "/images/results/143/MOUN_31_01_2025_1010_Practice_P2_12H_RES_F_1.pdf",
+    "/images/results/143/MOUN_31_01_2025_1345_Practice_P3_12H_RES_F_1.pdf",
+    "/images/results/143/MOUN_31_01_2025_1630_Practice_Prac4_12H_RES_F_1.pdf",
+    "/images/results/143/MOUN_01_02_2025_0835_Practice_P5_12H_RES_F_1.pdf",
+    "/images/results/143/MOUN_01_02_2025_1025_Practice_P6_12H_RES_F_1.pdf",
+    "/images/results/143/MOUN_01022025_1305_Qualifying_Q5_12H_RES_F_1.pdf",
+    "/images/results/143/MOUN_01022025_1605_Qualifying_Q6_12H_STD_P_1.pdf",
+    "/images/results/143/MOUN_01022025_1605_Qualifying_Q6_CQ_12H_RES_F_1.pdf",
+    "/images/results/143/MOUN_02022025_0545_Race_R6_12H_RES_F_1.pdf"
+   ]
+  },
+  {
+   "site": "https://www.intercontinentalgtchallenge.com",
+   "year": 2025,
+   "meeting": "/results/2025/adac-ravenol-24h-nuerburgring",
+   "pdfs": [
+    "/images/results/144/24h_nbr_02_Qualifying-1_Result_overall.pdf",
+    "/images/results/144/24h_nbr_03_Qualifying-1-2_Result_overall.pdf",
+    "/images/results/144/24h_nbr_04_Top-Qualifying_Result_overall.pdf",
+    "/images/results/144/24h_nbr_05_Qualifying-1-2-3-Top-Q_Result_overall.pdf.pdf",
+    "/images/results/144/24h_nbr_20_Race_Result_overall.pdf"
+   ]
+  },
+  {
+   "site": "https://www.intercontinentalgtchallenge.com",
+   "year": 2025,
+   "meeting": "/results/2025/crowdstrike-24-hours-of-spa",
+   "pdfs": [
+    "/images/results/145/GTWCEU_GT3 24H Spa_BT_ResultList_1-0.pdf",
+    "/images/results/145/GTWCEU_GT3 24H Spa_FP_ResultList_2.0.PDF",
+    "/images/results/145/GTWCEU_GT3 24H Spa_PQ_ResultList_1.0.PDF",
+    "/images/results/145/GTWCEU_GT3 24H Spa_Q1_ResultList_1.0.PDF",
+    "/images/results/145/GTWCEU_GT3 24H Spa_Q2_ResultList_1.0.PDF",
+    "/images/results/145/GTWCEU_GT3 24H Spa_Q3_ResultList_1.0.PDF",
+    "/images/results/145/GTWCEU_GT3 24H Spa_Q4_ResultList_1.0.PDF",
+    "/images/results/145/GTWCEU_GT3 24H Spa_CQ_CombinedTrainingResultList_1.0.PDF",
+    "/images/results/145/GTWCEU_GT3 24H Spa_NP_ResultList_1.0.PDF",
+    "/images/results/145/GTWCEU_GT3 24H Spa_SP_ResultList_2.0.PDF",
+    "/images/results/145/GTWCEU_GT3 24H Spa_WU_ResultList_1.0.PDF",
+    "/images/results/145/GTWCEU_GT3 24H Spa_R_ResultList_2.0.PDF",
+    "/images/results/145/GTWCEU_GT3 24H Spa_RA0_5_ResultList_1.0.PDF",
+    "/images/results/145/GTWCEU_GT3 24H Spa_RA0_1,5_ResultList_1.0.PDF",
+    "/images/results/145/GTWCEU_GT3 24H Spa_RA0_25_ResultList_1.0.PDF",
+    "/images/results/145/GTWCEU_GT3 24H Spa_RA0_3.5_ResultList_1.0.PDF",
+    "/images/results/145/GTWCEU_GT3 24H Spa_RA0_4.5_ResultList_1.0.PDF",
+    "/images/results/145/GTWCEU_GT3 24H Spa_RA0_5.5_ResultList_1.0.PDF",
+    "/images/results/145/GTWCEU_GT3 24H Spa_RA6_5_ResultList_1.0.PDF",
+    "/images/results/145/GTWCEU_GT3 24H Spa_RA7_5_ResultList_1.0.PDF",
+    "/images/results/145/GTWCEU_GT3 24H Spa_RA8_5_ResultList_1.0.PDF",
+    "/images/results/145/GTWCEU_GT3 24H Spa_RA9_5_ResultList_1.0.PDF",
+    "/images/results/145/GTWCEU_GT3 24H Spa_RA10_5_ResultList_1.0.PDF",
+    "/images/results/145/GTWCEU_GT3 24H Spa_RA11_5_ResultList_1.0.PDF",
+    "/images/results/145/GTWCEU_GT3 24H Spa_RA12_5_ResultList_1.0.PDF",
+    "/images/results/145/GTWCEU_GT3 24H Spa_RA13_5_ResultList_1.0.PDF",
+    "/images/results/145/GTWCEU_GT3 24H Spa_RA14_5_ResultList_1.0.PDF",
+    "/images/results/145/GTWCEU_GT3 24H Spa_RA15_5_ResultList_1.0.PDF",
+    "/images/results/145/GTWCEU_GT3 24H Spa_RA16_5_ResultList_1.0.PDF",
+    "/images/results/145/GTWCEU_GT3 24H Spa_RA17_5_ResultList_1.0.PDF",
+    "/images/results/145/GTWCEU_GT3 24H Spa_RA18_5_ResultList_1.0.PDF",
+    "/images/results/145/GTWCEU_GT3 24H Spa_RA19_5_ResultList_1.0.PDF",
+    "/images/results/145/GTWCEU_GT3 24H Spa_RA21_5_ResultList_1.0.PDF",
+    "/images/results/145/GTWCEU_GT3 24H Spa_RA22_5_ResultList_1.0.PDF",
+    "/images/results/145/GTWCEU_GT3 24H Spa_RA23_5_ResultList_1.0.PDF"
+   ]
+  },
+  {
+   "site": "https://www.intercontinentalgtchallenge.com",
+   "entryListLinks": [
+    "/entry-list/2026/bathurst-12-hour"
+   ]
+  },
+  {
+   "site": "https://www.intercontinentalgtchallenge.com",
+   "year": 2019,
+   "meeting": "/results/2019/liqui-moly-bathurst-12-hour",
+   "pdfs": [
+    "/images/results/114/MOUN_01022019_0850_Practice_P5_12H_STD_O_1.pdf",
+    "/images/results/114/MOUN_01022019_0925_Practice_P6_12H_STD_I_1.pdf",
+    "/images/results/114/MOUN_01022019_1110_Practice_P7_12H_STD_I_1.pdf",
+    "/images/results/114/MOUN_01022019_1515_Practice_P8_12H_STD_I_1.pdf",
+    "/images/results/114/MOUN_02022019_0835_Practice_P9_12H_STD_I_1.pdf",
+    "/images/results/114/MOUN_02022019_1125_Qualifying_Q5_12H_STD_I_1.pdf",
+    "/images/results/114/MOUN_02022019_1216_Qualifying_Q6_12H_STD_I_1.pdf",
+    "/images/results/114/MOUN_02022019_1640_Qualifying_Q7_12H_RES_O_1.pdf",
+    "/images/results/114/MOUN_03022019_0545_Race_R12_12H_RES_O_1.pdf"
+   ]
+  },
+  {
+   "site": "https://www.intercontinentalgtchallenge.com",
+   "year": 2019,
+   "meeting": "/results/2019/laguna-seca",
+   "pdfs": [
+    "/images/results/116/Free practice Cal8H 2019.pdf",
+    "/images/results/116/Pre-Qualifying Cal8H 2019.pdf",
+    "/images/results/116/Qualifying combined Cal8H 2019.pdf",
+    "/images/results/116/Pole Shootout Cal8H 2019.pdf",
+    "/images/results/116/California 8 Hours Classification FINAL.PDF"
+   ]
+  },
+  {
+   "site": "https://www.intercontinentalgtchallenge.com",
+   "year": 2019,
+   "meeting": "/results/2019/total-24-hours-of-spa",
+   "pdfs": [
+    "/images/results/113/Total 24 Hours of Spa_Free Practice_ResultList_1.0.pdf",
+    "/images/results/113/Total 24 Hours of Spa_Pre-Qualifying_ResultList_1.0.pdf",
+    "/images/results/113/Total 24 Hours of Spa_Qualifying 1_ResultList_1.0.PDF",
+    "/images/results/113/Total 24 Hours of Spa_Qualifying 2_ResultList_1.0.PDF",
+    "/images/results/113/Total 24 Hours of Spa_Qualifying 3_ResultList_1.0.PDF",
+    "/images/results/113/Total 24 Hours of Spa_Qualifying 4_ResultList_1.0.PDF",
+    "/images/results/113/Total 24 Hours of Spa_Qualifying Combined AVG_CombinedTrainingResultList_1.0.PDF",
+    "/images/results/113/Total 24 Hours of Spa_Night Practice_ResultList_1.0.PDF",
+    "/images/results/113/Total 24 Hours of Spa_Super Pole_PitStopList_1.0.PDF",
+    "/images/results/113/Total 24 Hours of Spa_Race_ResultList_1.1.PDF"
+   ]
+  },
+  {
+   "site": "https://www.intercontinentalgtchallenge.com",
+   "entryListLinks": [
+    "/entry-list/2026/bathurst-12-hour"
+   ]
+  },
+  {
+   "site": "https://www.gt-world-challenge-australia.com",
+   "year": 2025,
+   "meeting": "/results/2025/phillip-island",
+   "pdfs": [
+    "/images/results/16/PHIL_04_04_2025_1145_Practice_FP5_GT3_STD_P_1.pdf",
+    "/images/results/16/PHIL_04_04_2025_1435_Practice_P2_GT3_STD_P_1.pdf",
+    "/images/results/16/PHIL_05_04_2025_1133_Qualifying_Q6_GT3_RES_F_1.pdf",
+    "/images/results/16/PHIL_05_04_2025_1150_Qualifying_Q7_GT3_RES_F_1.pdf",
+    "/images/results/16/GT3 Race 1 FInal Results.pdf",
+    "/images/results/16/PHIL_06_04_2025_1345_Race_R10_GT3_RES_F_1.pdf"
+   ]
+  },
+  {
+   "site": "https://www.gt-world-challenge-australia.com",
+   "year": 2025,
+   "meeting": "/results/2025/Sydney",
+   "pdfs": [
+    "/images/results/17/SMP_02_05_2025_0900_Practice_FP1_GT3_RES_F_1.pdf",
+    "/images/results/17/SMP_02_05_2025_1305_Practice_FP6_GT3_RES_F_1.pdf",
+    "/images/results/17/SMP_02_05_2025_1740_Practice_P3_GT3_RES_F_1.pdf",
+    "/images/results/17/SMP_03_05_2025_1340_Qualifying_Q6_GT3_RES_F_1.pdf",
+    "/images/results/17/SMP_03_05_2025_1410_Qualifying_Q7_GT3_RES_F_1.pdf",
+    "/images/results/17/SMP_03_05_2025_1955_Race_R7_GT3_RES_F_2.pdf",
+    "/images/results/17/Final Results SMP Race 2 GT World Challenge Australia powered by AWS.pdf"
+   ]
+  },
+  {
+   "site": "https://www.gt-world-challenge-australia.com",
+   "year": 2025,
+   "meeting": "/results/2025/Queensland-Raceway",
+   "pdfs": [
+    "/images/results/18/GT3 QR Final Results Free Practice 1 GT3.pdf",
+    "/images/results/18/GT3 QR Final Results Free Practice 2 GT3.pdf",
+    "/images/results/18/GT3 QR Final Results Pre Qualifying GT3.pdf",
+    "/images/results/18/GT3 QR Final Results Qualifying 1 GT3.pdf",
+    "/images/results/18/GT3 QR Final Results Qualifying 2 GT3.pdf",
+    "/images/results/18/GT3 QR Final Results Race 1 GT3.pdf",
+    "/images/results/18/GT3 QR FInal Results Race 2 GT3.pdf"
+   ]
+  },
+  {
+   "site": "https://www.gt-world-challenge-australia.com",
+   "entryListLinks": []
+  }
+ ],
+ "samples": [],
+ "fia": {
+  "https://www.fia.com/node/1406": [
+   "https://www.fia.com/fia-driver-categorisation",
+   "/fia-driver-categorisation",
+   "https://www.facebook.com/sharer.php?u=https%3A//www.fia.com/fia-driver-categorisation&amp;t=FIA%20Driver%20Categorisation",
+   "https://twitter.com/share?url=https%3A//www.fia.com/fia-driver-categorisation&amp;text=FIA%20Driver%20Categorisation&amp;via=fia",
+   "https://driverscategorisation.fia.com",
+   "https://driverscategorisation.fia.com/public/drivers",
+   "/sites/default/files/driver_categorisation_regulations_2025_v.wmsc_june_2025.pdf",
+   "/sites/default/files/guide_to_categorisation.pdf"
+  ],
+  "https://www.fia.com/fia-driver-categorisation": [
+   "https://www.fia.com/fia-driver-categorisation",
+   "/fia-driver-categorisation",
+   "https://www.facebook.com/sharer.php?u=https%3A//www.fia.com/fia-driver-categorisation&amp;t=FIA%20Driver%20Categorisation",
+   "https://twitter.com/share?url=https%3A//www.fia.com/fia-driver-categorisation&amp;text=FIA%20Driver%20Categorisation&amp;via=fia",
+   "https://driverscategorisation.fia.com",
+   "https://driverscategorisation.fia.com/public/drivers",
+   "/sites/default/files/driver_categorisation_regulations_2025_v.wmsc_june_2025.pdf",
+   "/sites/default/files/guide_to_categorisation.pdf"
+  ],
+  "sample": {
+   "url": "https://www.fia.com/sites/default/files/fia_2024_reviewed_categorisations_list_0.pdf",
+   "head": [
+    "                       FIA Driver Categorisation – 2023 List",
+    "  The 2024 reviewed categorisations will be published on the 3rd October. Drivers wishing to contest the",
+    "decision will have to produce the relevant data and make the request within 7 days of the publication (so up",
+    "                                            to the 10th October).",
+    "                                                                                                        Effective date of",
+    "         Last name        First name        Nationality                 Category       Next Category",
+    "                                                                                                       next categorisation",
+    "            Abadie         Anouck             France",
+    "            Abadin         Jose Luis           Spain",
+    "           Abbelen          Klaus            Germany",
+    "            Abbott          James         United Kingdom",
+    "            Abbott          Hunter        United Kingdom",
+    "         Abdolvahabi        Ramin          United States",
+    "              Abe          HIKARU              Japan",
+    "              Abe            Kenji             Japan",
+    "             Abel           Jacob          United States",
+    "            Abello          Miguel             Spain",
+    "           Aberdein        Jonathan         South Africa",
+    "          Abkhazava         Shota           Kazakhstan",
+    "         Aboujaoudé         Jihad            Lebanon",
+    "             Abra          Richard        United Kingdom",
+    "          Abrahams          Arthur           Australia",
+    "          Abramczyk         Noam              France",
+    "          Abramczyk         David             France",
+    "             Abreu        Francisco          Portugal",
+    "             Abreu           Atila             Brazil",
+    "             Abril         Vincent            France                                                    Jan 01, 2024",
+    "2023-10-04 11:00:02                            FIA Driver Categorisation – 2023 List                           Page 1 of 202",
+    "\f                                                                                                           Effective date of",
+    "         Last name         First name          Nationality                 Category       Next Category",
+    "                                                                                                          next categorisation",
+    "              Abt             Daniel            Germany",
+    "              Abt            Christian          Germany",
+    "            Accary           Thomas              France",
+    "       Acosta Hinojosa    Julio Sebastian       Colombia",
+    "             Adam           Jonathan         United Kingdom",
+    "            Adams             Garrett         United States",
+    "            Adams              Rudi             Germany",
+    "            Adcock           Nicholas        United Kingdom",
+    "           Adelson            Adam            United States                                                Jan 01, 2024"
+   ],
+   "bbox": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"><html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head>\n<title></title>\n<meta name=\"Producer\" content=\"iText® 7.0.4 ©2000-2017 iText Group NV (AGPL-version)\"/>\n<meta name=\"CreationDate\" content=\"2023-10-04T11:00:02+02\"/>\n<meta name=\"ModDate\" content=\"2023-10-04T11:00:02+02\"/>\n</head>\n<body>\n<doc>\n  <page width=\"595.000000\" height=\"842.000000\">\n    <flow>\n      <block xMin=\"43.250000\" yMin=\"43.870000\" xMax=\"89.940000\" yMax=\"53.120000\">\n        <line xMin=\"43.250000\" yMin=\"43.870000\" xMax=\"89.940000\" yMax=\"53.120000\">\n          <word xMin=\"43.250000\" yMin=\"43.870000\" xMax=\"62.150000\" yMax=\"53.120000\">Last</word>\n          <word xMin=\"64.930000\" yMin=\"43.870000\" xMax=\"89.940000\" yMax=\"53.120000\">name</word>\n        </line>\n      </block>\n    </flow>\n    <flow>\n      <block xMin=\"150.120000\" yMin=\"43.870000\" xMax=\"197.350000\" yMax=\"53.120000\">\n        <line xMin=\"150.120000\" yMin=\"43.870000\" xMax=\"197.350000\" yMax=\"53.120000\">\n          <word xMin=\"150.120000\" yMin=\"43.870000\" xMax=\"169.560000\" yMax=\"53.120000\">First</word>\n          <word xMin=\"172.340000\" yMin=\"43.870000\" xMax=\"197.350000\" yMax=\"53.120000\">name</word>\n        </line>\n      </block>\n    </flow>\n    <flow>\n      <block xMin=\"246.280000\" yMin=\"43.870000\" xMax=\"292.960000\" yMax=\"53.120000\">\n        <line xMin=\"246.280000\" yMin=\"43.870000\" xMax=\"292.960000\" yMax=\"53.120000\">\n          <word xMin=\"246.280000\" yMin=\"43.870000\" xMax=\"292.960000\" yMax=\"53.120000\">Nationality</word>\n        </line>\n      </block>\n    </flow>\n    <flow>\n      <block xMin=\"60.010000\" yMin=\"71.008000\" xMax=\"73.519000\" yMax=\"79.333000\">\n        <line xMin=\"60.010000\" yMin=\"71.008000\" xMax=\"73.519000\" yMax=\"79.333000\">\n          <word xMin=\"60.010000\" yMin=\"71.008000\" xMax=\"73.519000\" yMax=\"79.333000\">Abt</word>\n        </line>\n      </block>\n    </flow>\n    <flow>\n      <block xMin=\"161.150000\" yMin=\"71.008000\" xMax=\"186.656000\" yMax=\"79.333000\">\n        <line xMin=\"161.150000\" yMin=\"71.008000\" xMax=\"186.656000\" yMax=\"79.333000\">\n          <word xMin=\"161.150000\" yMin=\"71.008000\" xMax=\"186.656000\" yMax=\"79.333000\">Daniel</word>\n        </line>\n      </block>\n    </flow>\n    <flow>\n      <block xMin=\"251.280000\" yMin=\"71.008000\" xMax=\"288.288000\" yMax=\"79.333000\">\n        <line xMin=\"251.280000\" yMin=\"71.008000\" xMax=\"288.288000\" yMax=\"79.333000\">\n          <word xMin=\"251.280000\" yMin=\"71.008000\" xMax=\"288.288000\" yMax=\"79.333000\">Germany</word>\n        </line>\n      </block>\n    </flow>\n    <flow>\n      <block xMin=\"60.010000\" yMin=\"96.008000\" xMax=\"73.519000\" yMax=\"104.333000\">\n        <line xMin=\"60.010000\" yMin=\"96.008000\" xMax=\"73.519000\" yMax=\"104.333000\">\n          <word xMin=\"60.010000\" yMin=\"96.008000\" xMax=\"73.519000\" yMax=\"104.333000\">Abt</word>\n        </line>\n      </block>\n    </flow>\n    <flow>\n      <block xMin=\"156.150000\" yMin=\"96.008000\" xMax=\"191.655000\" yMax=\"104.333000\">\n        <line xMin=\"156.150000\" yMin=\"96.008000\" xMax=\"191.655000\" yMax=\"104.333000\">\n          <word xMin=\"156.150000\" yMin=\"96.008000\" xMax=\"191.655000\" yMax=\"104.333000\">Christian</word>\n        </line>\n      </block>\n    </flow>\n    <flow>\n      <block xMin=\"251.280000\" yMin=\"96.008000\" xMax=\"288.288000\" yMax=\"104.333000\">\n        <line xMin=\"251.280000\" yMin=\"96.008000\" xMax=\"288.288000\" yMax=\"104.333000\">\n          <word xMin=\"251.280000\" yMin=\"96.008000\" xMax=\"288.288000\" yMax=\"104.333000\">Germany</word>\n        </line>\n      </block>\n    </flow>\n    <flow>\n      <block xMin=\"53.010000\" yMin=\"121.008000\" xMax=\"80.514000\" yMax=\"129.333000\">\n        <line xMin=\"53.010000\" yMin=\"121.008000\" xMax=\"80.514000\" yMax=\"129.333000\">\n          <word xMin=\"53.010000\" yMin=\"121.008000\" xMax=\"80.514000\" yMax=\"129.333000\">Accary</word>\n        </line>\n      </block>\n    </flow>\n    <flow>\n      <block xMin=\"157.650000\" yMin=\"121.008000\" xMax=\"190.158000\" yMax=\"129.333000\">\n        <line xMin=\"157.650000\" yMin=\"121.008000\" xMax=\"190.158000\" yMax=\"129.333000\">\n          <word xMin=\"157.650000\" yMin=\"121.008000\" xMax=\"190.158000\" yMax=\"129.333000\">Thomas</word>\n        </line>\n      </block>\n    </flow>\n    <flow>\n      <block xMin=\"255.780000\" yMin=\"121.008000\" xMax=\"283.788000\" yMax=\"129.333000\">\n        <line xMin=\"255.780000\" yMin=\"121.008000\" xMax=\"283.788000\" yMax=\"129.333000\">\n          <word xMin=\"255.780000\" yMin=\"121.008000\" xMax=\"283.788000\" yMax=\"129.333000\">France</word>\n        </line>\n      </block>\n    </flow>\n    <flow>\n      <block xMin=\"34.250000\" yMin=\"146.008000\" xMax=\"99.275000\" yMax=\"154.333000\">\n        <line xMin=\"34.250000\" yMin=\"146.008000\" xMax=\"99.275000\" yMax=\"154.333000\">\n          <word xMin=\"34.250000\" yMin=\"146.008000\" xMax=\"61.763000\" yMax=\"154.333000\">Acosta</word>\n          <word xMin=\"64.265000\" yMin=\"146.008000\" xMax=\"99.275000\" yMax=\"154.333000\">Hinojosa</word>\n        </line>\n      </block>\n    </flow>\n    <flow>\n      <block xMin=\"143.390000\" yMin=\"146.008000\" xMax=\"204.419000\" yMax=\"154.333000\">\n        <line xMin=\"143.390000\" yMin=\"146.008000\" xMax=\"204.419000\" yMax=\"154.333000\">\n          <word xMin=\"143.390000\" yMin=\"146.008000\" xMax=\"161.894000\" yMax=\"154.333000\">Julio</word>\n          <word xMin=\"164.396000\" yMin=\"146.008000\" xMax=\"204.419000\" yMax=\"154.333000\">Sebastian</word>\n        </line>\n      </block>\n    </flow>\n    <flow>\n      <block xMin=\"250.780000\" yMin=\"146.008000\" xMax=\"288.787000\" yMax=\"154.333000\">\n        <line xMin=\"250.780000\" yMin=\"146.008000\" xMax=\"288.787000\" yMax=\"154.333000\">\n          <word xMin=\"250.780000\" yMin=\"146.008000\" xMax=\"288.787000\" yMax=\"154.333000\">Colombia</word>\n        </line>\n      </block>\n    </flow>\n    <flow>\n      <block xMin=\"55.010000\" yMin=\"171.008000\" xMax=\"78.518000\" yMax=\"179.333000\">\n        <line xMin=\"55.010000\" yMin=\"171.008000\" xMax=\"78.518000\" yMax=\"179.333000\">\n          <word xMin=\"55.010000\" yMin=\"171.008000\" xMax=\"78.518000\" yMax=\"179.333000\">Adam</wor"
+  },
+  "images": [
+   "page   num  type   width height color comp bpc  enc interp  object ID x-ppi y-ppi size ratio",
+   "--------------------------------------------------------------------------------------------",
+   "   2     0 image      93    93  rgb     3   8  image  no        36  0   335   335 2993B  12%",
+   "   2     1 smask      93    93  gray    1   8  image  no        36  0   335   335  425B 4.9%",
+   "   2     2 image      93    93  rgb     3   8  image  no        47  0   335   335 2403B 9.3%",
+   "   2     3 smask      93    93  gray    1   8  image  no        47  0   335   335  434B 5.0%",
+   "   2     4 image      93    93  rgb     3   8  image  no        58  0   335   335 2403B 9.3%",
+   "   2     5 smask      93    93  gray    1   8  image  no        58  0   335   335  434B 5.0%",
+   "   2     6 image      93    93  rgb     3   8  image  no        62  0   335   335 2403B 9.3%",
+   "   2     7 smask      93    93  gray    1   8  image  no        62  0   335   335  434B 5.0%",
+   "   2     8 image      93    93  rgb     3   8  image  no        63  0   335   335 1790B 6.9%",
+   "   2     9 smask      93    93  gray    1   8  image  no        63  0   335   335  425B 4.9%",
+   "   2    10 image      93    93  rgb     3   8  image  no        64  0   335   335 2403B 9.3%",
+   "   2    11 smask      93    93  gray    1   8  image  no        64  0   335   335  434B 5.0%",
+   "   2    12 image      93    93  rgb     3   8  image  no        65  0   335   335 1965B 7.6%",
+   "   2    13 smask      93    93  gray    1   8  image  no        65  0   335   335  425B 4.9%",
+   "   2    14 image      93    93  rgb     3   8  image  no        66  0   335   335 1965B 7.6%",
+   "   2    15 smask      93    93  gray    1   8  image  no        66  0   335   335  425B 4.9%",
+   "   2    16 image      93    93  rgb     3   8  image  no        67  0   335   335 2403B 9.3%",
+   "   2    17 smask      93    93  gray    1   8  image  no        67  0   335   335  434B 5.0%",
+   "   2    18 image      93    93  rgb     3   8  image  no        37  0   335   335 2403B 9.3%",
+   "   2    19 smask      93    93  gray    1   8  image  no        37  0   335   335  434B 5.0%",
+   "   2    20 image      93    93  rgb     3   8  image  no        38  0   335   335 1965B 7.6%",
+   "   2    21 smask      93    93  gray    1   8  image  no        38  0   335   335  425B 4.9%",
+   "   2    22 image      93    93  rgb     3   8  image  no        39  0   335   335 2403B 9.3%"
+  ]
+ }
+}
