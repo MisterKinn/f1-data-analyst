@@ -177,14 +177,17 @@ function renderMap(map, v, opts) {
       let k = 2.2, lab = at(a, k), fz = sw * 2.4, bx = () => { const [x, y] = P(lab).split(' ').map(Number), hw = z.label.length * fz * 0.32; return [x - hw, y - fz * 0.6, x + hw, y + fz * 0.6]; };
       while (k < 8 && zBoxes.some(o => !(bx()[2] < o[0] || bx()[0] > o[2] || bx()[3] < o[1] || bx()[1] > o[3]))) { k += 1.4; lab = at(a, k); }
       zBoxes.push(bx());
-      zones += '<path class="ls-zone ls-zone-' + opts.zones.kind + '" d="M' + pts.map(P).join('L') + '" stroke-width="' + (sw * 0.4).toFixed(1) + '"/><text class="ls-zone-t" x="' + P(lab).split(' ')[0] + '" y="' + P(lab).split(' ')[1] + '" font-size="' + (sw * 2.4).toFixed(1) + '">' + z.label + '</text>';
+      // shown part as a dash on a unit-length path, so a change of option can animate it (vs = start of the shown part, show = drawn at all)
+      const vs = z.vs || 0, on = z.show !== false, zk = z.key ? ' data-zk="' + z.key + '"' : '';
+      zones += '<path class="ls-zone ls-zone-' + opts.zones.kind + '"' + zk + ' pathLength="1" style="stroke-dasharray:' + (on ? (1 - vs).toFixed(4) : 0) + ' 2;stroke-dashoffset:' + (-vs).toFixed(4) + ';opacity:' + (on ? 0.9 : 0) + '" d="M' + pts.map(P).join('L') + '" stroke-width="' + (sw * 0.4).toFixed(1) + '"/><text class="ls-zone-t"' + zk + ' style="opacity:' + (on ? 1 : 0) + '" x="' + P(lab).split(' ')[0] + '" y="' + P(lab).split(' ')[1] + '" font-size="' + (sw * 2.4).toFixed(1) + '">' + z.label + '</text>';
     }
     // a mark crosses the whole track (both edges plus a little), from the centre line
     const across = (i, dd) => { const p = (i - 2 + nn) % nn, q = (i + 2) % nn, tx = cx[q] - cx[p], ty = cy[q] - cy[p], l = Math.hypot(tx, ty) || 1; return [cx[i] + out * -ty / l * dd, cy[i] + out * tx / l * dd]; }, half = i => (hw ? hw[i] : 0) + off * 0.565;
     for (const m of opts.zones.marks || []) { const k = idx(m.s), a = P(across(k, -half(k))).split(' '), b = P(across(k, half(k))).split(' '), fm = sw * 2, hw = m.label.length * fm * 0.32; let o = 2.7, r = P(at(k, o)).split(' ').map(Number);
       const box = () => [r[0] - hw, r[1] - fm * 0.6, r[0] + hw, r[1] + fm * 0.6], busy = () => zBoxes.some(q => !(box()[2] < q[0] || box()[0] > q[2] || box()[3] < q[1] || box()[1] > q[3]));
       while (o < 9 && busy()) { o += 1.3; r = P(at(k, o)).split(' ').map(Number); } zBoxes.push(box());
-      zones += '<line class="ls-zone-m ls-zone-m-' + m.kind + '" x1="' + a[0] + '" y1="' + a[1] + '" x2="' + b[0] + '" y2="' + b[1] + '" stroke-width="' + (sw * 0.2).toFixed(1) + '"/><text class="ls-zone-mt ls-zone-mt-' + m.kind + '" x="' + r[0] + '" y="' + r[1] + '" font-size="' + (sw * 2).toFixed(1) + '">' + m.label + '</text>'; }
+      const mk = ' data-zk="m' + m.kind + m.label.replace(/\W/g, '') + '" style="opacity:' + (m.show === false ? 0 : 1) + '"';
+      zones += '<line class="ls-zone-m ls-zone-m-' + m.kind + '"' + mk + ' x1="' + a[0] + '" y1="' + a[1] + '" x2="' + b[0] + '" y2="' + b[1] + '" stroke-width="' + (sw * 0.2).toFixed(1) + '"/><text class="ls-zone-mt ls-zone-mt-' + m.kind + '"' + mk + ' x="' + r[0] + '" y="' + r[1] + '" font-size="' + (sw * 2).toFixed(1) + '">' + m.label + '</text>'; }
   }
   let corners = '', i0 = Math.round((opts.start || 0) * n) % n;
   for (const c of opts.corners || []) {
@@ -761,9 +764,13 @@ function computeView(K, data, state, R) {
   const ZD = data.zones, zy = !sel.series && ZD ? (sel.year >= 2025 ? ZD[slotOf(sel.year)] : null) : null;
   // the chosen options (owner 2026-11-16): Alt draws the low-grip zones (n/a ones left out), Off or DRS off draws none, Overtake off hides OT marks
   const om = zy ? optOf(sel) : null, LZ = d0.kappa.length * d0.ds;
-  const zlist = !zy ? [] : (zy.kind === 'drs' ? !om.drs : om.sm === 'off') ? [] : om.sm === 'alt' && zy.kind !== 'drs' ? zy.zones.filter(z => z.low !== null).map(z => Object.assign({}, z, {from: z.low != null ? z.low : (z.from + 50) % LZ})) : zy.zones;
-  let zoneOpts = zy ? {kind: zy.kind, list: zlist.map(z => ({from: z.from, to: z.to, label: (zy.kind === 'drs' ? 'DRS' : 'SM') + (zy.zones.length > 1 ? ' ' + z.n : '')})),
-    marks: (zy.marks || []).filter(m => zy.kind === 'drs' || om.ot).map(m => ({s: m.s, kind: m.kind, label: m.label}))} : null;
+  // every zone stays in the drawing with the part shown (owner 2026-11-16: zones grow and shrink, OT marks fade, when the option changes):
+  // vs = where the shown part starts along the zone (Alt starts at the low-grip point), show = false for Off / DRS off / n/a in Alt
+  const zoff = !zy ? true : zy.kind === 'drs' ? !om.drs : om.sm === 'off', zalt = zy && om.sm === 'alt' && zy.kind !== 'drs';
+  const zlist = !zy ? [] : zy.zones.map(z => { const len = ((z.to - z.from) % LZ + LZ) % LZ || 1, st = zalt ? (z.low != null ? z.low : (z.from + 50) % LZ) : z.from;
+    return Object.assign({}, z, {vs: zalt && z.low !== null ? Math.min(1, (((st - z.from) % LZ + LZ) % LZ) / len) : 0, show: !zoff && !(zalt && z.low === null)}); });
+  let zoneOpts = zy ? {kind: zy.kind, list: zlist.map(z => ({from: z.from, to: z.to, vs: z.vs, show: z.show, key: zy.kind + (z.n ?? ''), label: (zy.kind === 'drs' ? 'DRS' : 'SM') + (zy.zones.length > 1 ? ' ' + z.n : '')})),
+    marks: (zy.marks || []).map(m => ({s: m.s, kind: m.kind, label: m.label, show: zy.kind === 'drs' || om.ot}))} : null;
   const rq = zy && zy.real, rqp = rq ? [rq.grip === 'low' ? t.realAeroParts.low : '', rq.ot === 'off' ? t.realAeroParts.otOff : '', rq.drs === 'off' ? t.realAeroParts.drsOff : ''].filter(Boolean) : [];
   // Formula E (owner 2026-11-16): the Attack Zone of the car's rule set (Gen3 Evo / Gen4), real where the circuit map prints it, else estimated.
   // The zone only arms Attack Mode (the extra power lasts a set time, not one zone), so the lap itself does not change.
@@ -986,6 +993,16 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
   }
   const data = JSON.parse(el.textContent);
   const q = s => document.querySelector('[data-ls="' + s + '"]'), evoKeys = Object.values(data.evoOf);
+  // zone animation (owner 2026-11-16): a zone grows or shrinks along the line (400 ms) and OT marks fade and scale (250 ms) when SM / DRS /
+  // OT options change; native WAAPI; instant for prefers-reduced-motion
+  const zoneState = () => Object.fromEntries([...(q('map')?.querySelectorAll('[data-zk]') || [])].map(e => [e.tagName + e.dataset.zk, {strokeDasharray: e.style.strokeDasharray, strokeDashoffset: e.style.strokeDashoffset, opacity: e.style.opacity || '1'}]));
+  const animZones = prev => { if (!prev || !Element.prototype.animate || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    for (const e of q('map').querySelectorAll('[data-zk]')) { const p = prev[e.tagName + e.dataset.zk]; if (!p) continue; const path = e.tagName === 'path';
+      // a hidden zone keeps opacity 0 (a zero-length dash with round caps would leave a dot)
+      const to = path ? {strokeDasharray: e.style.strokeDasharray, strokeDashoffset: e.style.strokeDashoffset, opacity: e.style.opacity || '1'} : {opacity: e.style.opacity || '1'}, from = path ? {strokeDasharray: p.strokeDasharray, strokeDashoffset: p.strokeDashoffset, opacity: p.opacity} : {opacity: p.opacity};
+      if (JSON.stringify(to) === JSON.stringify(from)) continue;
+      if (!path && e.classList.contains('ls-zone-m') || e.classList.contains('ls-zone-mt')) { from.transform = to.opacity === '0' ? 'scale(1)' : 'scale(.4)'; to.transform = to.opacity === '0' ? 'scale(.4)' : 'scale(1)'; }
+      e.animate([from, to], {duration: path ? 400 : 250, easing: 'cubic-bezier(.2,.8,.2,1)'}); } };
   const yearKey = data.conds['2026'] ? '2026' : Object.keys(data.conds)[0];
   const state = {carId: data.carId, compareId: '', mode: 'real', manual: Object.assign({pressureHpa: 1013, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0}, data.conds[yearKey] || {}), active: {}, strength: 1, sm: 'normal', ot: true, drs: true, evo: {type: 'qualifying', tyre: '', useCurve: true, over: {}}};
   const sliders = document.querySelectorAll('[data-cond]');
@@ -1001,7 +1018,7 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
         if (q('sm')) { q('sm').value = state.sm; q('ot').value = state.ot ? '1' : '0'; q('drs').value = state.drs ? '1' : '0'; } }
       const v = computeView(K, data, state, R); lastTel = v.tel; lastView = v;
       q('lap').textContent = v.lap; q('pole').innerHTML = v.poleHtml; q('facts').innerHTML = v.factsHtml; q('air').innerHTML = v.airHtml;
-      q('map').innerHTML = v.mapSvg; apply(); needle(v.compassDeg); q('trace').innerHTML = v.traceSvg; q('soc').innerHTML = v.socHtml; q('brakes').innerHTML = v.brakeHtml; q('key').innerHTML = v.keyHtml; q('wind').innerHTML = v.windHtml;
+      { const prev = zoneState(); q('map').innerHTML = v.mapSvg; animZones(prev); } apply(); needle(v.compassDeg); q('trace').innerHTML = v.traceSvg; q('soc').innerHTML = v.socHtml; q('brakes').innerHTML = v.brakeHtml; q('key').innerHTML = v.keyHtml; q('wind').innerHTML = v.windHtml;
       { const c = data.cars[state.carId], f1 = !c.series && c.year; if (q('smWrap')) { q('smWrap').hidden = !(f1 && c.year >= 2026); q('otWrap').hidden = !(f1 && c.year >= 2026); q('drsWrap').hidden = !(f1 && c.year < 2026); } }
       q('carLabel').textContent = data.cars[state.carId].label; q('carKind').textContent = v.kindLabel;
       if (q('lineNote')) q('lineNote').textContent = v.lineNote;
@@ -1218,7 +1235,7 @@ const CSS = `:root{--sim-slow:#ffa94d;--kb-zone:#c4c9ce;--kb-zone-mark:#00d2be}:
 .ls-surf{fill:color-mix(in oklab,var(--mint) 35%,transparent);stroke:none}.ls-kerb-w{fill:none;stroke:#fff;stroke-width:1.5}.ls-kerb{fill:none;stroke:#e5484d;stroke-dasharray:2.5 2.5;stroke-width:1.5}.ls-zoombox{overflow:hidden;position:relative;touch-action:pan-y;border-radius:12px}.ls-zoombox.is-zoomed{touch-action:none;cursor:grab}.ls-line-bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px}.ls-zoom-btns{margin-left:auto;display:inline-flex;flex-wrap:wrap;gap:6px;max-width:100%}.ls-map .ls-mk{stroke:#fff;transform-box:fill-box;transform-origin:center;scale:var(--inv,1)}.ls-zoombox text{transform-box:fill-box;transform-origin:center;scale:var(--inv,1)}.ls-map .ls-band{fill:#e6e8ea;stroke:none}:root[data-theme="light"] .ls-band{fill:#1f1f1f}@media(prefers-color-scheme:light){:root:not([data-theme]) .ls-band{fill:#1f1f1f}}
 .ls-mk-b{fill:#e5484d}.ls-mk-a{fill:#f5a524}.ls-mk-t{fill:#30a46c}.ls-line-key [class^=ls-mk]{display:inline-block;width:10px;height:10px;border-radius:50%;margin:0 4px 0 10px;vertical-align:middle}.ls-line-key [class^=ls-mk]:first-child{margin-left:0}.ls-line-key .ls-mk-b{background:#e5484d}.ls-line-key .ls-mk-a{background:#f5a524}.ls-line-key .ls-mk-t{background:#30a46c}
 .ls-evo .ls-controls{grid-template-columns:repeat(3,minmax(0,1fr));margin:12px 0 16px}.ls-check{display:flex;align-items:center;gap:8px;align-self:end;min-height:40px}.ls-check input{width:20px;height:20px;min-height:0;accent-color:var(--mint)}.ls-evo .ls-facts{margin-top:16px}
-.ls-line-2{stroke:var(--text);stroke-dasharray:2 3}.ls-zone{fill:none;stroke-linecap:round;opacity:.9}.ls-zone-drs,.ls-zone-sm{stroke:var(--kb-zone)}.ls-zone-attack{stroke:#2fa4ff}.ls-zone-t{fill:var(--text);font-weight:700;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:var(--bg);stroke-width:3px}.ls-zone-m{stroke:var(--kb-zone-mark)}.ls-zone-m-act{stroke:var(--kb-zone)}.ls-zone-mt{fill:var(--kb-zone-mark);font-weight:700;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:var(--bg);stroke-width:3px}.ls-key-2{background:var(--text)}.ls-key-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;vertical-align:middle}
+.ls-line-2{stroke:var(--text);stroke-dasharray:2 3}.ls-zone{fill:none;stroke-linecap:round;opacity:.9}.ls-zone-m,.ls-zone-mt{transform-box:fill-box;transform-origin:center}.ls-zone-drs,.ls-zone-sm{stroke:var(--kb-zone)}.ls-zone-attack{stroke:#2fa4ff}.ls-zone-t{fill:var(--text);font-weight:700;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:var(--bg);stroke-width:3px}.ls-zone-m{stroke:var(--kb-zone-mark)}.ls-zone-m-act{stroke:var(--kb-zone)}.ls-zone-mt{fill:var(--kb-zone-mark);font-weight:700;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:var(--bg);stroke-width:3px}.ls-key-2{background:var(--text)}.ls-key-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;vertical-align:middle}
 main:not(.kb-cmp-view) .ls-cmp-only{display:none!important}
 .ls-export{display:inline-flex;gap:6px;flex-wrap:wrap}.ls-panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.ls-panel-head h2{margin:0}.ls-panel-head .pill{min-height:44px}
 .ls-chans{display:flex;flex-wrap:nowrap;gap:6px;margin:12px 0 4px;overflow-x:auto;scrollbar-width:thin;padding-bottom:2px}.ls-chan{display:inline-flex;flex:0 0 auto;min-width:0;align-items:center;gap:6px;min-height:40px;padding:0 12px;white-space:nowrap;touch-action:pan-x;border:1px solid var(--line);border-radius:999px;font-size:14px;color:var(--text);cursor:pointer;user-select:none}.ls-chan input{width:18px;height:18px;margin:0;accent-color:var(--mint)}.ls-chan:has(input:not(:checked)){color:var(--muted)}
