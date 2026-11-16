@@ -18,7 +18,7 @@ import {bopEstimate2026} from './bop-estimate-data.js';
 const K = lapsimKernel();
 // 2026 BoP estimate (worker/lapsim/bop-estimate-data.js) per model at the WEC event on this track: weight and power relative to that
 // event's class average scale the class car (owner 2026-11-16: set-ups follow the learned BoP and each car's spec, Evo kits included)
-const BOP_NAME = {toyota: 'Toyota GR010 Hybrid', ferrari: 'Ferrari 499P', peugeot: 'Peugeot 9X8', aston: 'Aston Martin Valkyrie', cadillac: 'Cadillac V-Series.R', bmw: 'BMW M Hybrid V8', alpine: 'Alpine A424', genesis: 'Genesis GMR-001', porsche: 'Porsche 963', lamborghini: 'Lamborghini SC63', acura: 'Acura ARX-06'};
+const BOP_NAME = {toyota: 'Toyota GR010 Hybrid', ferrari: 'Ferrari 499P', peugeot: 'Peugeot 9X8', aston: 'Aston Martin Valkyrie', cadillac: 'Cadillac V-Series.R', bmw: 'BMW M Hybrid V8', alpine: 'Alpine A424', genesis: 'Genesis GMR-001', porsche: 'Porsche 963', lamborghini: 'Lamborghini SC63', acura: 'Acura ARX-06', isotta: 'Isotta Fraschini Tipo6-C', glickenhaus: 'Glickenhaus SCG 007', vanwall: 'Vanwall Vandervell 680', 'alpine-a480': 'Alpine A480'};
 function bopFor(trackId, key) { const name = BOP_NAME[key], D = bopEstimate2026; if (!name || !D) return null;
   const e = [...(D.events || [])].reverse().find(x => x.track === trackId), f = e && (D.fun || []).find(x => x.event === e.event), car = e && (e.cars[name] || f?.cars?.[name]); if (!car) return null;
   const all = Object.values(e.cars), kg0 = all.reduce((a, x) => a + x.kg, 0) / all.length, kW0 = all.reduce((a, x) => a + x.kW, 0) / all.length;
@@ -68,6 +68,10 @@ export const HYPERCARS = [
   {key: 'porsche', name: 'Porsche 963', cls: 'lmdh', chassis: 'Multimatic', hybrid: 'rear', series: 'IMSA'},
   {key: 'acura', name: 'Acura ARX-06', cls: 'lmdh', chassis: 'Oreca', hybrid: 'rear', series: 'IMSA'},
   {key: 'lamborghini', name: 'Lamborghini SC63', cls: 'lmdh', chassis: 'Ligier', hybrid: 'rear', series: 'WEC 2024'},
+  {key: 'isotta', name: 'Isotta Fraschini Tipo6-C', cls: 'lmh', chassis: 'Isotta Fraschini / Michelotto', hybrid: 'front', series: 'WEC 2024'},
+  {key: 'glickenhaus', name: 'Glickenhaus SCG 007', cls: 'lmh', chassis: 'Podium Advanced Technologies', hybrid: null, series: 'WEC 2021–2023'},
+  {key: 'vanwall', name: 'Vanwall Vandervell 680', cls: 'lmh', chassis: 'ByKolles', hybrid: null, series: 'WEC 2023'},
+  {key: 'alpine-a480', name: 'Alpine A480 (grandfathered LMP1)', cls: 'lmh', chassis: 'Oreca', hybrid: null, series: 'WEC 2021–2022'},
 ];
 
 // Tracks each class races on (calendar data) that the simulator has a line for

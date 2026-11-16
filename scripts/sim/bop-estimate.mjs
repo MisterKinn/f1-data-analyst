@@ -199,7 +199,7 @@ for (const ev of EVENTS_2026) {
 // through the cars that race both series when scripts/sim/data/learn/imsa-gtp-pace.txt exists). Each gets, at every 2026 event, the BoP that
 // makes its learned level equal to the field (u + a·dkg% + b·dP% = 0, half by weight, half by power) from the event's class average.
 // Not part of any official table; their level is from their last season (the 2026 field's Evo kits are not in it).
-const FUN = {'Porsche 963': lastKey('Porsche 963', 2025), 'Lamborghini SC63': lastKey('Lamborghini SC63', 2024)};
+const FUN = {'Porsche 963': lastKey('Porsche 963', 2025), 'Lamborghini SC63': lastKey('Lamborghini SC63', 2024), 'Isotta Fraschini Tipo6-C': lastKey('Isotta Fraschini Tipo6-C', 2024)};
 const funLevel = Object.fromEntries(Object.entries(FUN).filter(([, k]) => k).map(([m, k]) => [m, {u: fit.u[k], from: k.replace(m + ' ', '')}]));
 try { // Acura ARX-06: IMSA pace vs each shared car, added to that car's WEC level
   const im = readFileSync(new URL('./data/learn/imsa-gtp-pace.txt', import.meta.url), 'utf8').split('\n').filter(l => l && !l.startsWith('#')).map(l => { const [y, ev, car, mf, q, r] = l.split(' '); return {y: +y, ev, mf, r: num(r)}; });
@@ -209,9 +209,24 @@ try { // Acura ARX-06: IMSA pace vs each shared car, added to that car's WEC lev
     for (const [mf, model] of Object.entries(IM)) { const o = best(mf), k = lastKey(model, Math.min(y, 2025)) || lastKey(model, 2025); if (o != null && k) d.push(fit.u[k] + ac - o); } }
   if (d.length >= 4) funLevel['Acura ARX-06'] = {u: med(d), from: `IMSA ${d.length} car-event pairs`, imsa: true};
 } catch (e) { /* no IMSA file yet */ }
+// cars raced only in 2021-2023 (owner 2026-11-16: every Hypercar at its latest spec): pace vs each car they raced that has a learned level
+// (Toyota, Ferrari, Peugeot, Porsche, Cadillac), added to that level; the Alpine of 2021-2022 is the A480 (grandfathered LMP1)
+try {
+  const old = readFileSync(new URL('./data/learn/wec-old-pace.txt', import.meta.url), 'utf8').split('\n').filter(l => l && !l.startsWith('#')).map(l => { const [y, ev, car, mf, q, r] = l.split(' '); return {y: +y, ev, mf: mf === 'Alpine' && +y <= 2022 ? 'AlpineA480' : mf, r: num(r)}; });
+  const COMMON = {Toyota: 'Toyota GR010 Hybrid', Ferrari: 'Ferrari 499P', Peugeot: 'Peugeot 9X8', Porsche: 'Porsche 963', Cadillac: 'Cadillac V-Series.R'}, OLD = {Glickenhaus: 'Glickenhaus SCG 007', Vanwall: 'Vanwall Vandervell 680', AlpineA480: 'Alpine A480'};
+  for (const [mf, name] of Object.entries(OLD)) { const d = []; let last = 0;
+    for (const key of new Set(old.map(x => x.y + ' ' + x.ev))) { const rows = old.filter(x => x.y + ' ' + x.ev === key && x.r), m = med(rows.map(x => x.r)), best = f => { const v = rows.filter(x => x.mf === f).map(x => x.r); return v.length ? 100 * (Math.min(...v) / m - 1) : null; };
+      const me = best(mf); if (me == null) continue; last = Math.max(last, +key.split(' ')[0]);
+      for (const [cf, model] of Object.entries(COMMON)) { const o = best(cf), k = lastKey(model, 2024) || lastKey(model, 2025); if (o != null && k) d.push(fit.u[k] + me - o); } }
+    if (d.length >= 3) funLevel[name] = {u: med(d), from: `WEC ${last} via ${d.length} car-event pairs`}; }
+} catch (e) { /* no 2021-2023 file yet */ }
+const FUN_CLS = {'Glickenhaus SCG 007': 'lmh', 'Vanwall Vandervell 680': 'lmh', 'Alpine A480': 'lmp1', 'Isotta Fraschini Tipo6-C': 'lmh', 'Porsche 963': 'lmdh', 'Lamborghini SC63': 'lmdh', 'Acura ARX-06': 'lmdh'};
 const fun26 = EVENTS_2026.map((ev, i) => { const base = out26[i].cars, ms = Object.values(base), kg0 = mean(ms.map(x => x.kg)), kW0 = mean(ms.map(x => x.kW)), g0 = mean(ms.map(x => x.above250)), MJ0 = mean(ms.map(x => x.MJ));
   return {event: ev, cars: Object.fromEntries(Object.entries(funLevel).map(([m, L]) => { const dkg = -L.u / (2 * fit.coef.a), dP = -L.u / (2 * fit.coef.b);
-    return [m, {cls: 'lmdh', kg: Math.max(LIMITS.kgMin, Math.round(kg0 * (1 + dkg / 100))), kW: Math.min(LIMITS.kWMax, Math.max(LIMITS.kWMin, Math.round(kW0 * (1 + dP / 100)))), above250: r1(g0), MJ: Math.round(MJ0), levelPct: +L.u.toFixed(2), from: L.from}]; }))}; });
+    const kg = Math.max(LIMITS.kgMin, Math.round(kg0 * (1 + dkg / 100))), kW = Math.min(LIMITS.kWMax, Math.max(LIMITS.kWMin, Math.round(kW0 * (1 + dP / 100))));
+    // what is left at the regulation limits (a car too slow for any allowed BoP stays slower by this, % of a lap)
+    const gap = L.u + fit.coef.a * 100 * (kg / kg0 - 1) + fit.coef.b * 100 * (kW / kW0 - 1);
+    return [m, {cls: FUN_CLS[m] || 'lmh', kg, kW, above250: r1(g0), MJ: Math.round(MJ0), levelPct: +L.u.toFixed(2), gapPct: Math.abs(gap) > 0.05 ? +gap.toFixed(2) : 0, from: L.from}]; }))}; });
 // ---- 2027 season-opener projection (owner 2026-11-16): the last 2026 estimate, plus for each car with a new 2027 spec (Ferrari, Aston
 // Martin, Peugeot Evo) the BoP change that cancels the learned Evo gain (half by weight, half by power: L = u + a·dkg% + b·dP%)
 const proj = {};
