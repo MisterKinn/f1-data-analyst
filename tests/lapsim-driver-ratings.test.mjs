@@ -32,7 +32,8 @@ test('line-ups: ratings known or unknown, never guessed', () => {
       if (x.how === 'season') assert.equal(x.rating, ratingAt(x.id, ev.split('|')[1], null, d) ?? x.rating);
       if (x.file != null) assert.ok(d.files[x.file], `${ev} ${car} file index`);
     }
-    assert.equal(c.lineup, lineupString(c.drivers.map(x => x.rating)), `${ev} ${car}`);
+    // a source that listed a driver twice leaves the line-up unknown (`why`)
+    assert.equal(c.lineup, c.why ? null : lineupString(c.drivers.map(x => x.rating)), `${ev} ${car}`);
     if (c.lineup) assert.match(c.lineup, /^P*G*S*B*$/);
   }
   for (const r of d.learned) {
@@ -51,10 +52,26 @@ test('SRO entry-list text: category printed beside each driver, "-" stays unknow
   const cars = parseEntryText(t);
   assert.deepEqual(cars.map(c => [c.car, c.drivers.map(x => x.cat).join('')]), [['2', 'BP'], ['25', 'P'], ['177', 'BB']]);
   assert.equal(cars[1].drivers[0].cat, null);
+  // one CATEGORY column after the drivers is the car's cup (2026 GTWC Europe drafts): names only, never a driver rating
+  const cup = parseEntryText(['QT  #   TEAM                 NAT  CAR                              DRIVER 1          LIC  DRIVER 2          LIC  DRIVER 3         LIC  CATEGORY',
+    '9   11  Comtoyou Racing      BEL  Aston Martin Vantage AMR GT3 EVO Marcelo TOMASONI  BRA  Aaron MUSS        USA  Kyle MARCELLI    CAN  BRONZE'].join('\n'));
+  assert.deepEqual(cup, [{car: '11', names: ['Marcelo TOMASONI', 'Aaron MUSS', 'Kyle MARCELLI']}]);
 });
 
 test('printed values: only the four FIA names map to a rating', () => {
   assert.equal(ratingOf('Platinum'), 'P'); assert.equal(ratingOf('Platinium'), 'P'); assert.equal(ratingOf('g'), 'G'); assert.equal(ratingOf('Bronze FIA'), 'B');
   for (const v of ['', 'S*', 'S-B', 'S*-B IN NA', 'Pro', null]) assert.equal(ratingOf(v), null);
   assert.equal(lineupString(['B', 'P', 'G']), 'PGB'); assert.equal(lineupString(['B', null]), null);
+});
+
+test('name variants: one fitting FIA row only, fixed rules, never a different first name', async () => {
+  const {sameDriver, tokens, variantIn, tokenIndex} = await import('../scripts/sim/learn/name-match.mjs');
+  const same = (a, b) => sameDriver(tokens(a), tokens(b));
+  assert.equal(same('Dani Juncadella', 'Daniel Juncadella'), 'short');
+  assert.equal(same('Alessandro Pierguidi', 'Alessandro Pier Guidi'), 'join');
+  assert.equal(same('Albert Costa', 'Albert Costa Balboa'), 'subset');
+  for (const [a, b] of [['Mikkel Jensen', 'Michael Jensen'], ['Denis Lind', 'Dennis Lind'], ['Tom Smith', 'Tim Smith']]) assert.equal(same(a, b), null);
+  const rows = ['Nicholas Yelloly', 'Nicolas Yelloly', 'Daniel Juncadella'].map(tokens), ix = tokenIndex(rows);
+  assert.equal(variantIn('Nick Yelloly', rows, ix).i, -1); // two rows fit: no match
+  assert.equal(variantIn('Dani Juncadella', rows, ix).i, 2);
 });
