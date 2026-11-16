@@ -36,6 +36,7 @@ import {lapsimFeZones} from './lapsim/fe-zones-data.js';
 import {SURFACE_ERAS} from './lapsim/surface.js';
 import {ZONES_ON, DRS_ONLY, PU_QUALI} from './lapsim/zones.js';
 import {lapsimStartLines} from './lapsim/start-lines.js';
+import {lapsimMapShape} from './lapsim/map-shape-data.js';
 
 const K = lapsimKernel();
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -444,8 +445,8 @@ function mapRepair(id, P, len) {
     for (let k = 1; k < m; k++) { const t = k / m, h00 = 2 * t ** 3 - 3 * t * t + 1, h10 = t ** 3 - 2 * t * t + t, h01 = -2 * t ** 3 + 3 * t * t, h11 = t ** 3 - t * t;
       Q[((a + k) % n + n) % n] = [0, 1].map(j => h00 * at(a)[j] + h10 * m * ta[j] + h01 * at(b)[j] + h11 * m * tb[j]); } }
   return Q; }
-export function lineData(id) {
-  if (LINE_CACHE.has(id)) return LINE_CACHE.get(id);
+export function lineData(id, {shape = true} = {}) {
+  if (shape && LINE_CACHE.has(id)) return LINE_CACHE.get(id);
   const L = lapsimRacingLines?.tracks?.[id], C = lapsimCarLines?.tracks?.[id], r1 = p => [+p[0].toFixed(1), +p[1].toFixed(1)];
   const normals = mid => mid.map((_, i, a) => { const n = a.length, p = a[(i - 1 + n) % n], q = a[(i + 1) % n], dx = q[0] - p[0], dy = q[1] - p[1], l = Math.hypot(dx, dy) || 1; return [+(-dy / l).toFixed(4), +(dx / l).toFixed(4)]; });
   // Width where no TUM edges exist (task H): the circuit's own figure, else the map's width, else 12 m assumed
@@ -458,6 +459,11 @@ export function lineData(id) {
     left = mid.map((p, i) => [p[0] + nrm[i][0] * hw[i], p[1] + nrm[i][1] * hw[i]]); right = mid.map((p, i) => [p[0] - nrm[i][0] * hw[i], p[1] - nrm[i][1] * hw[i]]);
     half = hw.map(h => Math.max(0.5, h - 1));
     base = line.map((p, i) => Math.round(Math.max(-half[i], Math.min(half[i], (p[0] - mid[i][0]) * nrm[i][0] + (p[1] - mid[i][1]) * nrm[i][1])) * 10));
+    // shape from the checked atlas midline (owner 2026-11-16: "Barcelona T1 goes straight, then right"): the TUM / car-position outline
+    // bends into some corners too early. The midline moves sideways by the stored correction; every line keeps its place on the track.
+    const cs = shape && lapsimMapShape?.tracks?.[id]?.corr;
+    if (cs?.length === mid.length) { mid = mid.map((p, i) => [p[0] + nrm[i][0] * cs[i] / 10, p[1] + nrm[i][1] * cs[i] / 10]); nrm = normals(mid);
+      left = mid.map((p, i) => [p[0] + nrm[i][0] * hw[i], p[1] + nrm[i][1] * hw[i]]); right = mid.map((p, i) => [p[0] - nrm[i][0] * hw[i], p[1] - nrm[i][1] * hw[i]]); }
   } else {
     const m = lapsimTracks[id]?.map; if (!m?.x?.length) { LINE_CACHE.set(id, null); return null; }
     const h = widthM / 2; edges = wS ? 'stated' : wM ? 'map' : 'assumed';
@@ -474,7 +480,7 @@ export function lineData(id) {
   const cars = Object.fromEntries(Object.entries(C || {}).map(([k, v]) => [k, Object.fromEntries(Object.entries(v).map(([m, q]) => [m, q?.off ? {...q, off: clampOff(smoothOff(q.off, step))} : q]))]));
   const xs = [...left, ...right].map(p => p[0]), ys = [...left, ...right].map(p => p[1]);
   const out = {mid: mid.map(r1), left: left.map(r1), right: right.map(r1), nrm, base, sp, edges, widthM, minX: Math.min(...xs), maxY: Math.max(...ys), pad: 40, cars};
-  LINE_CACHE.set(id, out); return out;
+  if (shape) LINE_CACHE.set(id, out); return out;
 }
 // Map controls: racing line on/off, qualifying/race line, zoom (+, −, fit; wheel/pinch and drag on the map)
 function lineControls(lang, view) {
@@ -771,12 +777,17 @@ function computeView(K, data, state, R) {
       if (e - i < 2 || (v[i] - v[a]) * 3.6 < 10) continue;
       marks.push([i, 'b'], [a, 'a'], [j, 't']); last = j < i ? n : j;
     }
-    // kerbs (owner 2026-11-15, estimated where OpenStreetMap has none): inside at each apex (±20 m), outside at the corner exit (±25 m
-    // around the full-throttle point); the inside is the side the line turns to there
-    const dsp = (tr.length || n * 5) / n, kerbs = [];
-    for (let q = 0; q + 2 < marks.length; q += 3) { const a = marks[q + 1][0], t = marks[q + 2][0], p0 = P[(a - 2 + n) % n], p1 = P[a], p2 = P[(a + 2) % n];
-      const left = (p1[0] - p0[0]) * (p2[1] - p1[1]) - (p1[1] - p0[1]) * (p2[0] - p1[0]) > 0, w = k => Math.round(k / dsp);
-      kerbs.push([left ? 'L' : 'R', a - w(20), a + w(20)], [left ? 'R' : 'L', t - w(25), t + w(25)]); }
+    // owner 2026-11-16 ("Barcelona T1 has no outside kerb"): one inside and one outside kerb per official corner, not per braking zone
+    // (T1-T2-T3 is one braking zone). Side from the turn of the track midline; inside kerb where the line comes closest to the inside
+    // within ±30 m of the corner, outside kerb where it runs out widest within 80 m after it (±15 m each). Kerb data are not
+    // published for most circuits, so they stay estimated.
+    const dsp = (tr.length || n * 5) / n, kerbs = [], w = k => Math.round(k / dsp), M = LD.mid, Lc = d0.length || n * dsp;
+    const lat = i => { const k = (i % n + n) % n; return (P[k][0] - M[k][0]) * LD.nrm[k][0] + (P[k][1] - M[k][1]) * LD.nrm[k][1]; };
+    for (const c of d0.corners || []) { const ic = Math.round(c.s / Lc * n), p0 = M[(ic - w(25) + n * 4) % n], p1 = M[(ic % n + n) % n], p2 = M[(ic + w(25)) % n];
+      const left = (p1[0] - p0[0]) * (p2[1] - p1[1]) - (p1[1] - p0[1]) * (p2[0] - p1[0]) > 0, sg = left ? 1 : -1;
+      let a = ic, e = ic + w(20); for (let k = ic - w(30); k <= ic + w(30); k++) if (sg * lat(k) > sg * lat(a)) a = k;
+      for (let k = a + w(10); k <= a + w(80); k++) if (-sg * lat(k) > -sg * lat(e)) e = k;
+      kerbs.push([left ? 'L' : 'R', a - w(15), a + w(15)], [left ? 'R' : 'L', e - w(15), e + w(15)]); }
     line = {pts: P, v, marks, kerbs, surf: data.surface?.spans || [], left: LD.left, right: LD.right};
     const edge = (LT0.edges[LD.edges] || '').replace('{m}', LD.widthM);
     const dname = (k, r) => (r.name || k) + (r.name && !sel.series ? ' (' + k + ')' : '') + (r.team ? ' · ' + r.team : r.manufacturer ? ' · ' + r.manufacturer : '');

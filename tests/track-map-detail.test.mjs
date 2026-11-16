@@ -30,7 +30,10 @@ test('car lines drawn on the map are smooth (SPSA point noise removed): at most 
   const {lineData} = await import('../worker/simulation.js');
   let total = 0;
   for (const id of Object.keys(lapsimTracks)) { const L = lineData(id); for (const v of Object.values(L.cars)) for (const m of ['q', 'r']) if (v[m]) {
-    const P = L.mid.map((p, i) => [p[0] + L.nrm[i][0] * v[m].off[i] / 10, p[1] + L.nrm[i][1] * v[m].off[i] / 10]); total += kinkCount(P); } }
+    // as the page draws it (computeView): offsets on the midline, then the 5 m position smoothing
+    const Q = L.mid.map((p, i) => [p[0] + L.nrm[i][0] * v[m].off[i] / 10, p[1] + L.nrm[i][1] * v[m].off[i] / 10]), N = Q.length, sg = 5 / (Q.reduce((s, p, i) => s + Math.hypot(p[0] - Q[(i + 1) % N][0], p[1] - Q[(i + 1) % N][1]), 0) / N), r = Math.ceil(3 * sg), w = [];
+    for (let k = -r; k <= r; k++) w.push(Math.exp(-k * k / (2 * sg * sg))); const W = w.reduce((s, x) => s + x, 0);
+    total += kinkCount(Q.map((_, i) => [0, 1].map(c => w.reduce((s, x, k) => s + x * Q[(i + k - r + N * 4) % N][c], 0) / W))); } }
   assert.ok(total < 150, `kinks on all car lines: ${total} (over 12 000 before the smoothing)`);
 });
 test('reviewed side steps in source lines (Daytona before T1 and others) are drawn as a smooth track', async () => {

@@ -53,3 +53,11 @@
 - Drawing only. The simulator geometry (kappa) still has the four side steps: fixing them changes lap times, so it is a separate
   physics change with its own gate (queued).
 - Test: `tests/track-map-detail.test.mjs` (fails on the old code: 12 333 car-line kinks, Daytona 0.51 rad).
+- Cause 4, F1 outlines (owner, later on 2026-11-16: "Barcelona T1 goes straight, then right"): the TUM / car-position outline bent
+  into some corners too early (Barcelona: −21° of turn 30 m before T1 where the real straight is still straight). The drawn midline is
+  now moved sideways onto the checked track-atlas midline (`scripts/sim/tracks/map-shape-atlas.mjs` → `worker/lapsim/map-shape-data.js`,
+  rigid fit, gaps over 12 m = another layout and skipped, smoothed over 20 m). Sideways gap RMS, 24 tracks: 0.7–4.8 m → 0.2–1.1 m.
+  Measured data (laps, telemetry) is never changed; the simulator geometry is corrected to it in a separate physics task (task 13).
+- Kerbs: one inside kerb at each official corner (where the line is closest to the inside) and one outside kerb at its exit (where the
+  line runs widest within 80 m), instead of one pair per braking zone (Barcelona T1–T3 was one zone, so T1 had no outside kerb).
+  Still estimated: kerb positions are not published for most circuits.
