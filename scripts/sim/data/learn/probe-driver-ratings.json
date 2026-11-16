@@ -1,471 +1,174 @@
 {
- "sro": [
-  {
-   "site": "https://www.gt-world-challenge-europe.com",
-   "year": 2025,
-   "meeting": "/results/2025/official-test-days",
-   "pdfs": []
+ "fiaXml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE pdf2xml SYSTEM \"pdf2xml.dtd\">\n\n<pdf2xml producer=\"poppler\" version=\"24.02.0\">\n<page number=\"2\" position=\"absolute\" top=\"0\" left=\"0\" height=\"1263\" width=\"892\">\n\t<fontspec id=\"0\" size=\"15\" family=\"Helvetica\" color=\"#ffffff\"/>\n\t<fontspec id=\"1\" size=\"14\" family=\"Helvetica\" color=\"#000000\"/>\n\t<fontspec id=\"2\" size=\"18\" family=\"Helvetica\" color=\"#000000\"/>\n\t<fontspec id=\"3\" size=\"11\" family=\"Helvetica\" color=\"#000000\"/>\n<text top=\"66\" left=\"65\" width=\"70\" height=\"14\" font=\"0\">Last name</text>\n<text top=\"66\" left=\"225\" width=\"71\" height=\"14\" font=\"0\">First name</text>\n<text top=\"66\" left=\"369\" width=\"70\" height=\"14\" font=\"0\">Nationality</text>\n<text top=\"66\" left=\"507\" width=\"61\" height=\"14\" font=\"0\">Category</text>\n<text top=\"66\" left=\"619\" width=\"96\" height=\"14\" font=\"0\">Next Category</text>\n<text top=\"55\" left=\"751\" width=\"112\" height=\"14\" font=\"0\">Effective date of </text>\n<text top=\"77\" left=\"741\" width=\"126\" height=\"14\" font=\"0\">next categorisation</text>\n<text top=\"107\" left=\"90\" width=\"20\" height=\"12\" font=\"1\">Abt</text>\n<text top=\"107\" left=\"242\" width=\"38\" height=\"12\" font=\"1\">Daniel</text>\n<text top=\"107\" left=\"377\" width=\"56\" height=\"12\" font=\"1\">Germany</text>\n<text top=\"144\" left=\"90\" width=\"20\" height=\"12\" font=\"1\">Abt</text>\n<text top=\"144\" left=\"234\" width=\"53\" height=\"12\" font=\"1\">Christian</text>\n<text top=\"144\" left=\"377\" width=\"56\" height=\"12\" font=\"1\">Germany</text>\n<text top=\"182\" left=\"80\" width=\"41\" height=\"12\" font=\"1\">Accary</text>\n<text top=\"182\" left=\"236\" width=\"49\" height=\"12\" font=\"1\">Thomas</text>\n<text top=\"182\" left=\"384\" width=\"42\" height=\"12\" font=\"1\">France</text>\n<text top=\"219\" left=\"51\" width=\"98\" height=\"12\" font=\"1\">Acosta Hinojosa</text>\n<text top=\"219\" left=\"215\" width=\"92\" height=\"12\" font=\"1\">Julio Sebastian</text>\n<text top=\"219\" left=\"376\" width=\"57\" height=\"12\" font=\"1\">Colombia</text>\n<text top=\"257\" left=\"83\" width=\"35\" height=\"12\" font=\"1\">Adam</text>\n<text top=\"257\" left=\"233\" width=\"56\" height=\"12\" font=\"1\">Jonathan</text>\n<text top=\"257\" left=\"357\" width=\"96\" height=\"12\" font=\"1\">United Kingdom</text>\n<text top=\"294\" left=\"79\" width=\"42\" height=\"12\" font=\"1\">Adams</text>\n<text top=\"294\" left=\"240\" width=\"42\" height=\"12\" font=\"1\">Garrett</text>\n<text top=\"294\" left=\"364\" width=\"81\" height=\"12\" font=\"1\">United States</text>\n<text top=\"332\" left=\"79\" width=\"42\" height=\"12\" font=\"1\">Adams</text>\n<text top=\"332\" left=\"247\" width=\"28\" height=\"12\" font=\"1\">Rudi</text>\n<text top=\"332\" left=\"377\" width=\"56\" height=\"12\" font=\"1\">Germany</text>\n<text top=\"369\" left=\"78\" width=\"44\" height=\"12\" font=\"1\">Adcock</text>\n<text top=\"369\" left=\"235\" width=\"52\" height=\"12\" font=\"1\">Nicholas</text>\n<text top=\"369\" left=\"357\" width=\"96\" height=\"12\" font=\"1\">United Kingdom</text>\n<text top=\"407\" left=\"76\" width=\"49\" height=\"12\" font=\"1\">Adelson</text>\n<text top=\"407\" left=\"243\" width=\"35\" height=\"12\" font=\"1\">Adam</text>\n<text top=\"407\" left=\"364\" width=\"81\" height=\"12\" font=\"1\">United States</text>\n<text top=\"408\" left=\"753\" width=\"104\" height=\"17\" font=\"2\">Jan 01, 2024</text>\n<text top=\"444\" left=\"84\" width=\"32\" height=\"12\" font=\"1\">Adler</text>\n<text top=\"444\" left=\"232\" width=\"58\" height=\"12\" font=\"1\">Stéphane</text>\n<text top=\"444\" left=\"384\" width=\"42\" height=\"12\" font=\"1\">France</text>\n<text top=\"482\" left=\"65\" width=\"70\" height=\"12\" font=\"1\">Adomaviius</text>\n<text top=\"482\" left=\"244\" width=\"35\" height=\"12\" font=\"1\">Julius</text>\n<text top=\"482\" left=\"377\" width=\"55\" height=\"12\" font=\"1\">Lithuania</text>\n<text top=\"519\" left=\"84\" width=\"32\" height=\"12\" font=\"1\">Adorf</text>\n<text top=\"519\" left=\"249\" width=\"24\" height=\"12\" font=\"1\">Dirk</text>\n<text top=\"519\" left=\"377\" width=\"56\" height=\"12\" font=\"1\">Germany</text>\n<text top=\"557\" left=\"58\" width=\"84\" height=\"12\" font=\"1\">Adulayavichitr</text>\n<text top=\"557\" left=\"239\" width=\"44\" height=\"12\" font=\"1\">Warren</text>\n<text top=\"557\" left=\"379\" width=\"52\" height=\"12\" font=\"1\">Thailand</text>\n<te",
+ "fiaIcons": {
+  "92277914": {
+   "n": 2,
+   "first": "i-002-008.png",
+   "png": "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"
   },
-  {
-   "site": "https://www.gt-world-challenge-europe.com",
-   "year": 2025,
-   "meeting": "/results/2025/circuit-paul-ricard",
-   "pdfs": []
+  "86ec7479": {
+   "n": 4,
+   "first": "i-002-000.png",
+   "png": "iVBORw0KGgoAAAANSUhEUgAAAF0AAABdCAIAAABIE/2UAAAACXBIWXMAAAsSAAALEgHS3X78AAANpUlEQVR42t2d2XMjR3LGM7Oq+gBAEiQxPIazMyNpZTnC8sbuhlf+/1/95GsV4V1LG1rNId4gjr6qKtMPTXLIIYA+AJCUK/jAmAFA9A9f5fFVdQFFBB5rpP+ml3l6/J17tLeK6+ayJIunYrRGLmsi8jh0Vs/lEXA8AqBVcnkSImuisxouT05k5XSW5dKaiAg6RwDgHIrgZ/9rDAOA1owoT0JnKS5NoVirrKXCknNU888igtZsnQPirZ4E5pHQtORSn4gI5oUqcsoLtcwH6Fmywlt2YQD7OxAGslY6bbjUhGKtynKVZWq14SPJ3TSzWsP2Jr7YljWhacylDhRr1TTR1tL6gmuSu3FaIMLeDtWh0xRNMy6VUB6ByN0xTu00K4iwDp1GaBpwWQxFBCdTs/JZUyfuXE7ywrk4VG8OcXHcqY+mLpfFUPJCjcfBI3agn49p5q6SDAD2d/TBYAVoanFZAOWpZDJjCns+H6UsEofqy1eolSyDpprLYijDq9A5fCaVrme5GGfWe63oyyOMo/aqqeCyAIpzNLwKn3DuzBwscj7KrPeE+PpQbfVaqmYRl18dlM/QAMDRCzXYbqMa+n8GBQAIcXczMkoBwPtTf3bZZjY0LjSeOZSZaK4mjSMgNQLpGZ8/lFs0OxsRIQLA3z/6adpMMjPiy7yHzss+As+REwICQOH4bJQAgFb0zVual7wfBpoG82gyNStNyaXtgrfQRejTvwhdX91yI9C0EYcA4Dz/+E4avTmpI5Ys1+PxbPOjsV6EBEAESjtKpLSe+NMMACjtKETB8nNHbqeXcpyNssI5ANjb0YeDWpKp5Rh4xsnELK8QEWJGEWbWLCKMLCjCIihiSjSIJRtCFFJCKEhMqIgEm9Mpx3YvPB46ADi5cNubOqrh3dzTyzyxjEbBAlepjl5KIiziHOW5SlNV5BjHPo681rK1ZW8+ZECSsuECgDRVeaGVckqB1kyI9eng/Tk4Tu04zQEgCtQ3b6vLmVpmyjJWmwiJgGfKMrw4D0YjvbeXH+yluzu51rWucDwJJlM9TUwQeKVQK2ghnG6kk9x65qzwp5e60pT4pJd5Yrm4iDwvin8L9FLKZDTSZ2dBltHr18kXb6Y1cTz8eM4uwjTTgfFaA2KFJY4PYnaSu+E0AwBN9E+/xcWSqdBLluvFUBa0lABYWPz4Pr641Hsv8j/+fhzH7Y1oY/zhfpKk5vQsZmGjiajZakEn1OOUPLNjPjk3e7vcuK77xHiqW0MZDvX//qU7nqhvvx3/8Q+Xy0D5dG2xfXU0JhJrkZkeLrAsHhtxUP5yeulr1bszJ1FeqHZiAcDLC/Pzz7Fj/NO/XLx6OV1hwaZIXh1Og9CXaBrVOJ1QlxWwYz65wAXl7yK9pGk7sdBwqN9/CAHgX/90sblh11HOHrxIAdF54IafXBxeFxznQ6nQy0yxeMYW9rUIja7Mh/ehtfTd2qCU49XhxHvyTCIN3mcvuuZSOJ8VcyUz9xWLvEVuRufw+BdTWPrHbyZrhQIARLI3yJzFRpJRhGWfDQAn53Mfphdkohbh9vhjmBeq33dv30zqmo8eR+PQWpxOlSIgku3totutxbQT2zAMnBMiQhSo15F0QnOVeAAYJzwvPM31E5q3iDgamfFEOw9f/7YWFGY8Pe8kqVKKCcUEIoyTqfn4Ie52/dGrZGsrr3yRwU76y0kMUBcKAATmepY4z1kxuy2gmcHFWtVCLJfngXO496LY2a6+nrzQ7z92raMoLMKAjRGtJQi5v13sv8zTlL7/fvP4OK5X2jQrFI2iMisBwOVotimj5xSXjSPudKKzHJyHN2+SOlBOziKlRREj4t2OERGj0O0dwtmx+fHHHgDs78/2lJJUj8dhbtFoIWrW0wdGZ4UFgDRrEl/KnSmNrIPpRDFjFHGlWJjx7DzSShTJLANBACEM/OYWuXP64Ydet+d6d8INM16Ng/HEAAAhGw0tWm2jqASS5rNDDM3h0iy4CMB4rLzHvb2i8sHDqxAQaDaU22DFvU0bhKy1/P2n7rWKHZ2cdX/+0JtOtVYQGA6MKOVbtJGhUbchpq5eWgSXLFUsyAL7e1lF++dokujAVLc2iNLftkWBxsjVKEwSU1hUigPNpARBoK0dU2br29+vxrS1wXXzdDMumWIGZqisWZLUaFWGEnk4GQH5xt8EAIhiF0YkjJNpgChBwGXZAgAi12Iv07MIIgDUbiPvcvEsNfXSOLgUOYlgFHGlh5AkmogfKv/GytP3PU0EEREp/RBEEIEHV6EQPCIRCUojNOSZASBJcWdL1qAXZGYUgU6HKyOudTO2YogQeyosekZmEdH3YxeWuhBBQIH7PTSiAARas9FeKaTmXJrVu43AFLkAgKkSS14oRQ+Vgie/RKMxdTr+D7+/bP0mrkZhkmoRbL2FsyIfNfUWSpsSADY2KxwW527rqfvWWun68VKrIiwI4FssrRRO6nHxjTuAmo9zngQAl8gjC41OYmmzf83W5EKNdSjYbAkJ18Sl3RO1qlfXad2MCyKUi2FpWlH4RKFDWdcNLIhA0AZNaGrXu031EoSMCJW7yYhAAGfqRQBhuXjJAgJ+VZN0JVxQKUEUX2Vsh4GTWVAQhUCIlp1HiAK1Q8yCJD2bi2q4viMCUcREMqmxeBAFZbFD98MTKIVKyTJQCAVA1W8ObrnEUb16l7DpxJYg9ESGEC4vw+2F/XS3684vA6Iy+l4vznd6XgdCJMcnnZs6TgDQe7AFOY9ffTmuNC6IuL7bcLf21wofNiV6Vtxt3p5GTAREMp6YxVziyCoVeE9af5p13V4ReSWC1iHflLMCcHURXA0VElRyyXLdqJy7y2WzVy9PI4pqaPMQSRw7reTDx7Dywf3NglmY7/1ppTwRKwVGi9ESGAm0pAl5xn6/2utNUlLXFm+tkdvrdTU951mzo1RTySByt+eVgjRRaVYRZeLIdjreObxBgzdwWSmvFCvlEeVqaIoCAeCrryrc4ry06LGBxWtvbJcopAb5qKljCgC9DWcMayV/+7Fb+eCdfhYE4hw6p0VuN04hAIqACKWZOjs1uaV/+HoSRxV5bjgKiZq1RYW9fs3OHH3TzD2sLbgg8lbfaQ3HJ2GlZABgb5Bs9611aC06j95L+eM8Xg31T3+LnMPffTt6+TKpykQqSUERY+10YT3zTXHZ35yl6O+cnjePFEnDBhI3t+x0ojyrv/6197t/HlY+odsposiOx0Ga6SwPvIMsU8NLHcX+7dv06GVSZzpfDIOmFm9h+Ta4zEzSi3yGIPQN16cFUXYGNs/V8DI4PYteDLIaJoj0t/J+jXWiee5flukgaPYBJrm9+WBoXkii+b2Mb9NrhH73RWE0/+V/Nsar2JK3MNfi8Wmkja+w0B9k6HKLPADs7yysd2eGmHIqtYgyvZ7d7Dsi+P7PW43XW5pAef+xZzQramZcTLJrsRitZk6iksai993pttnJQ8S7g6Lft+zp3/+jP1mDajzju489AFGqsSuS3kyiwRZV90czJRMGHltZJUS8vVsM9nLv6D//a2s4DFcOBUGMFqV8oy48yV2ZiRTRi525YqnQC6J02m7+IuKNTXtwlMWx/PefN3/4YWMlc2o8CX76eeMTlKZPT6+X/QZ9tbjeqapNY5ekup2TRMRRAPsH+XSiLofByWn48jA7Okra7cecJuZiGDmLgRGl2kBJclf20Ipof7f2PlWYs3EqTfVkuihGLN7XXC4MeQ9potNEWYsbG3Zvv25u9h7Hk2A0MdYqY7xSZaCV6uXK+0YPi5xepSWXgx2zP+AFkwjqrJPEscty3fqOCURWCohIbbi4y95Bnqt377vv3nVN4De6lhR0O+7eBSEkqRLBNNe2IK1YaY4jr1S57aGV3LJrsURGz4SySC/zJGOtGl4F7fRyRzgIgDf3B5D3xIIiAMIs6q5NiyiArBCRhFDK3odIsElneFcvnuV4eL0n9OvfmE5cIRaoua5mjI9j12575t0oXmZWESQSrW96FGEGvm+MoQgTEYAgAqJfMlpfTvKb3DwbSrVeYP6G+MthNHM2LXFfFgLIw92UCAIot4Ze25fGmxx0c8eE0d98sYb7sjY3c1zxyk/pY/JnPzclyQrWUwrHJRRF9MVvmmCduZwzTzKLA81zG57l9CphEUJ8+1JvdLmmWObqZd6Nxcb4jTXvyl3VYJGLcVbGsMNBMyjQYv0oCt3zR3P31vLDXTPYbpza53JZcC/6M0fzGZQF99MsuMb25zMsuBP0OUAhxKM9s7PlW0CBJc/zePJjXx4G2vI8D0X0+kBt9rgdFFj+/BfnaDwJnsNRJ7fnv0RGvz3CMGgPBVZyXpAIThO9ZDW85Lg9L2iwZV7uLeoqV3leUCWasrQZj41nfPy5U54vFRr9+gAXl/mrP1+qDhoASBLT2q9pY1OldpoViDjoq4OqLnld55HVRFNOqyxbL53y/DoA2N1SB4NqO2a959fVRFPSSVOdZWrlM6s875AI+xu4vyt1ll8f47zD+mhuc3lRqDxXS8qnPB8zdz40MNiGXqduCft452O2oFMCspacoxYbJy1bRN7oNsABT3Keajs0d6sez+gdAUAxC1NgGACUZkXSzid/yvN3l6SzpvEszmt+VnSe3fneT07nWZ8H//iAfk3fH/A4dH7F3zexckaP+f0k/wfDWFZkP9SREAAAAABJRU5ErkJggg=="
   },
-  {
-   "site": "https://www.gt-world-challenge-europe.com",
-   "year": 2025,
-   "meeting": "/results/2025/brands-hatch",
-   "pdfs": []
+  "382dc8b1": {
+   "n": 14,
+   "first": "i-002-001.png",
+   "png": "iVBORw0KGgoAAAANSUhEUgAAAF0AAABdCAAAAADiGjUfAAAACXBIWXMAAAsSAAALEgHS3X78AAABzElEQVRo3u2a0W2DMBiEz+4AcSfA3SAjeARGYARGSDdgBGcDsgEjsEF/Jqg7gfsAaVWVJmB8kaLmXixePk4/trD/s8ICmb2z1hbnx0FEuj4gg0zpJc5JfGk2sqs2XlJbpaNtE+I1hcamsX1cJm957AS+OcR1Oqz4wE7iWolbaryJKWoW2bd9TFO/oPouxFSFq9Wp4hZVTPgVvI9b5XnOL7rPAf8T72Iezc4cGzLRw8y8N33Mpf73qm1iPjWsos+W3khWuky10eNQF8ipoh5HNc6XN2TWi3x7P+SGT0TFsT6Z1xzrE1ORrI/mNYCaAUc9eQ87Bv3DABqoKHDsKkADJTgqAQXzTqLjOWg4FhwOmlYYoISCFCz6YBWv7MCz3vPg2GtHpDttiXR7z3QVifTzX/tBf9D/B30gwgctRLrcNb0j0jvyfzXwJs0QNHil6aDR0ugtfR8ZTiT4KUCDVpr2BmcPeIp1f5MznxwJ8KPc5qxNMH8Ufo/jCQAQVOZt/OuPRUTqLX0dE5h9MXJPj9yP5PZSyX1gcg+b3H8nZwfk3IOc2ZDzJnJWRs75wM0oQc5Xwc2GV/ET2AA3kx8XF+8+wfiBt9yFUIvekHqP4xNDYdxw8FNG4wAAAABJRU5ErkJggg=="
   },
-  {
-   "site": "https://www.gt-world-challenge-europe.com",
-   "entryListLinks": [
-    "/entry-list/2026/circuit-paul-ricard",
-    "/entry-list/2026/brands-hatch",
-    "/entry-list/2026/monza",
-    "/entry-list/2026/crowdstrike-24-hours-of-spa",
-    "/entry-list/2026/misano",
-    "/entry-list/2026/magny-cours",
-    "/entry-list/2026/n&uuml;rburgring",
-    "/entry-list/2026/zandvoort",
-    "/entry-list/2026/barcelona",
-    "/entry-list/2026/portimao"
-   ]
+  "252e29f8": {
+   "n": 18,
+   "first": "i-002-002.png",
+   "png": "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"
   },
-  {
-   "site": "https://www.gt-world-challenge-europe.com",
-   "year": 2019,
-   "meeting": "/results/2019/blancpain-gt-series-test-days",
-   "pdfs": []
+  "2c4976de": {
+   "n": 18,
+   "first": "i-002-003.png",
+   "png": "iVBORw0KGgoAAAANSUhEUgAAAF0AAABdCAAAAADiGjUfAAAACXBIWXMAAAsSAAALEgHS3X78AAAB00lEQVRo3u2a0W2DMBiEz+4AcSfA3SAjeARGYARGSDdgBGcDsgEjsEF/Jqg7gfsAaVWJJGB8kaLmXhAvH6ffNuD/rLBAZu+stcX5dhCRrg/IIFN6iXMSX5qN7KqN19RW6WjbhHhLobFpbB+XyVseO4FvDnGdDisG2ElcK3FL4U1MUbPIvu1jmvoF1XchpircrE4Vt6hiwm/gfdwqz3N+1X0O+EW8i3k0O3NsyEQPc/O+j7nU51r+F14KrKLPlt5IVrpMbzQ9XuoCOVXU41WN8+UDmfUmv94PueETUXGsT+Y1x/rEVCTro3kNoGbAUU/ew45B/zKABioKHLsK0EAJjkpAwXyS6HgNGo4Fh4OmFQYooSAFiz5YxSs78Kr3PDj22hHpTlsi3T4yXUUi/fzVftKf9P9BH4jwQQuRLg9N74j0jvxdDbxJMwQNXmk6aLQ0ekv/jwwnEvwUoEErTXuHvQc8xbq/y55PjgT4Ue6z1yaYPwq/x/ECAAgq82/8+59FROot/WwTmH0xck8PJmM/ciZF4PZSuX1gcg+b3H8nZwfk3IOc2ZDzJnJWBpgm0/K/VB1mRknOV8HNhlfxE9gAN5MfFxfvPME4wFvOQqhFT0g9x/ENtUfcMDiGFN4AAAAASUVORK5CYII="
   },
-  {
-   "site": "https://www.gt-world-challenge-europe.com",
-   "year": 2019,
-   "meeting": "/results/2019/blancpain-gt-series-endurance-cup-monza",
-   "pdfs": []
-  },
-  {
-   "site": "https://www.gt-world-challenge-europe.com",
-   "year": 2019,
-   "meeting": "/results/2019/blancpain-gt-series-sprint-cup-brands-hatch",
-   "pdfs": []
-  },
-  {
-   "site": "https://www.gt-world-challenge-europe.com",
-   "entryListLinks": [
-    "/entry-list/2026/circuit-paul-ricard",
-    "/entry-list/2026/brands-hatch",
-    "/entry-list/2026/monza",
-    "/entry-list/2026/crowdstrike-24-hours-of-spa",
-    "/entry-list/2026/misano",
-    "/entry-list/2026/magny-cours",
-    "/entry-list/2026/n&uuml;rburgring",
-    "/entry-list/2026/zandvoort",
-    "/entry-list/2026/barcelona",
-    "/entry-list/2026/portimao"
-   ]
-  },
-  {
-   "site": "https://www.gt-world-challenge-america.com",
-   "year": 2025,
-   "meeting": "/results/2025/sonoma-raceway",
-   "pdfs": []
-  },
-  {
-   "site": "https://www.gt-world-challenge-america.com",
-   "year": 2025,
-   "meeting": "/results/2025/Circuit-of-the-Americas",
-   "pdfs": []
-  },
-  {
-   "site": "https://www.gt-world-challenge-america.com",
-   "year": 2025,
-   "meeting": "/results/2025/sebring",
-   "pdfs": []
-  },
-  {
-   "site": "https://www.gt-world-challenge-america.com",
-   "entryListLinks": []
-  },
-  {
-   "site": "https://www.gt-world-challenge-america.com",
-   "year": 2019,
-   "meeting": "/results/2019/circuit-of-the-americas",
-   "pdfs": []
-  },
-  {
-   "site": "https://www.gt-world-challenge-america.com",
-   "year": 2019,
-   "meeting": "/results/2019/virginia-international-raceway",
-   "pdfs": []
-  },
-  {
-   "site": "https://www.gt-world-challenge-america.com",
-   "year": 2019,
-   "meeting": "/results/2019/canadian-tire-motorsport-park",
-   "pdfs": []
-  },
-  {
-   "site": "https://www.gt-world-challenge-america.com",
-   "entryListLinks": []
-  },
-  {
-   "site": "https://www.gt-world-challenge-asia.com",
-   "year": 2025,
-   "meeting": "/results/2025/sepang",
-   "pdfs": []
-  },
-  {
-   "site": "https://www.gt-world-challenge-asia.com",
-   "year": 2025,
-   "meeting": "/results/2025/pertamina-mandalika-international-circuit",
-   "pdfs": []
-  },
-  {
-   "site": "https://www.gt-world-challenge-asia.com",
-   "year": 2025,
-   "meeting": "/results/2025/chang",
-   "pdfs": []
-  },
-  {
-   "site": "https://www.gt-world-challenge-asia.com",
-   "entryListLinks": []
-  },
-  {
-   "site": "https://www.gt-world-challenge-asia.com",
-   "year": 2019,
-   "meeting": "/results/2019/sepang",
-   "pdfs": []
-  },
-  {
-   "site": "https://www.gt-world-challenge-asia.com",
-   "year": 2019,
-   "meeting": "/results/2019/chang",
-   "pdfs": []
-  },
-  {
-   "site": "https://www.gt-world-challenge-asia.com",
-   "year": 2019,
-   "meeting": "/results/2019/suzuka",
-   "pdfs": []
-  },
-  {
-   "site": "https://www.gt-world-challenge-asia.com",
-   "entryListLinks": []
-  },
-  {
-   "site": "https://www.britishgt.com",
-   "year": 2025,
-   "meeting": "/results/2025/donington-park",
-   "pdfs": []
-  },
-  {
-   "site": "https://www.britishgt.com",
-   "year": 2025,
-   "meeting": "/results/2025/silverstone",
-   "pdfs": []
-  },
-  {
-   "site": "https://www.britishgt.com",
-   "year": 2025,
-   "meeting": "/results/2025/oulton-park",
-   "pdfs": []
-  },
-  {
-   "site": "https://www.britishgt.com",
-   "entryListLinks": []
-  },
-  {
-   "site": "https://www.britishgt.com",
-   "year": 2019,
-   "meeting": "/results/2019/oulton-park",
-   "pdfs": []
-  },
-  {
-   "site": "https://www.britishgt.com",
-   "year": 2019,
-   "meeting": "/results/2019/snetterton",
-   "pdfs": []
-  },
-  {
-   "site": "https://www.britishgt.com",
-   "year": 2019,
-   "meeting": "/results/2019/silverstone",
-   "pdfs": []
-  },
-  {
-   "site": "https://www.britishgt.com",
-   "entryListLinks": []
-  },
-  {
-   "site": "https://www.intercontinentalgtchallenge.com",
-   "year": 2025,
-   "meeting": "/results/2025/bathurst-12-hour",
-   "pdfs": [
-    "/images/results/143/MOUN_31_01_2025_0835_Practice_P1_12H_RES_F_1.pdf",
-    "/images/results/143/MOUN_31_01_2025_1010_Practice_P2_12H_RES_F_1.pdf",
-    "/images/results/143/MOUN_31_01_2025_1345_Practice_P3_12H_RES_F_1.pdf",
-    "/images/results/143/MOUN_31_01_2025_1630_Practice_Prac4_12H_RES_F_1.pdf",
-    "/images/results/143/MOUN_01_02_2025_0835_Practice_P5_12H_RES_F_1.pdf",
-    "/images/results/143/MOUN_01_02_2025_1025_Practice_P6_12H_RES_F_1.pdf",
-    "/images/results/143/MOUN_01022025_1305_Qualifying_Q5_12H_RES_F_1.pdf",
-    "/images/results/143/MOUN_01022025_1605_Qualifying_Q6_12H_STD_P_1.pdf",
-    "/images/results/143/MOUN_01022025_1605_Qualifying_Q6_CQ_12H_RES_F_1.pdf",
-    "/images/results/143/MOUN_02022025_0545_Race_R6_12H_RES_F_1.pdf"
-   ]
-  },
-  {
-   "site": "https://www.intercontinentalgtchallenge.com",
-   "year": 2025,
-   "meeting": "/results/2025/adac-ravenol-24h-nuerburgring",
-   "pdfs": [
-    "/images/results/144/24h_nbr_02_Qualifying-1_Result_overall.pdf",
-    "/images/results/144/24h_nbr_03_Qualifying-1-2_Result_overall.pdf",
-    "/images/results/144/24h_nbr_04_Top-Qualifying_Result_overall.pdf",
-    "/images/results/144/24h_nbr_05_Qualifying-1-2-3-Top-Q_Result_overall.pdf.pdf",
-    "/images/results/144/24h_nbr_20_Race_Result_overall.pdf"
-   ]
-  },
-  {
-   "site": "https://www.intercontinentalgtchallenge.com",
-   "year": 2025,
-   "meeting": "/results/2025/crowdstrike-24-hours-of-spa",
-   "pdfs": [
-    "/images/results/145/GTWCEU_GT3 24H Spa_BT_ResultList_1-0.pdf",
-    "/images/results/145/GTWCEU_GT3 24H Spa_FP_ResultList_2.0.PDF",
-    "/images/results/145/GTWCEU_GT3 24H Spa_PQ_ResultList_1.0.PDF",
-    "/images/results/145/GTWCEU_GT3 24H Spa_Q1_ResultList_1.0.PDF",
-    "/images/results/145/GTWCEU_GT3 24H Spa_Q2_ResultList_1.0.PDF",
-    "/images/results/145/GTWCEU_GT3 24H Spa_Q3_ResultList_1.0.PDF",
-    "/images/results/145/GTWCEU_GT3 24H Spa_Q4_ResultList_1.0.PDF",
-    "/images/results/145/GTWCEU_GT3 24H Spa_CQ_CombinedTrainingResultList_1.0.PDF",
-    "/images/results/145/GTWCEU_GT3 24H Spa_NP_ResultList_1.0.PDF",
-    "/images/results/145/GTWCEU_GT3 24H Spa_SP_ResultList_2.0.PDF",
-    "/images/results/145/GTWCEU_GT3 24H Spa_WU_ResultList_1.0.PDF",
-    "/images/results/145/GTWCEU_GT3 24H Spa_R_ResultList_2.0.PDF",
-    "/images/results/145/GTWCEU_GT3 24H Spa_RA0_5_ResultList_1.0.PDF",
-    "/images/results/145/GTWCEU_GT3 24H Spa_RA0_1,5_ResultList_1.0.PDF",
-    "/images/results/145/GTWCEU_GT3 24H Spa_RA0_25_ResultList_1.0.PDF",
-    "/images/results/145/GTWCEU_GT3 24H Spa_RA0_3.5_ResultList_1.0.PDF",
-    "/images/results/145/GTWCEU_GT3 24H Spa_RA0_4.5_ResultList_1.0.PDF",
-    "/images/results/145/GTWCEU_GT3 24H Spa_RA0_5.5_ResultList_1.0.PDF",
-    "/images/results/145/GTWCEU_GT3 24H Spa_RA6_5_ResultList_1.0.PDF",
-    "/images/results/145/GTWCEU_GT3 24H Spa_RA7_5_ResultList_1.0.PDF",
-    "/images/results/145/GTWCEU_GT3 24H Spa_RA8_5_ResultList_1.0.PDF",
-    "/images/results/145/GTWCEU_GT3 24H Spa_RA9_5_ResultList_1.0.PDF",
-    "/images/results/145/GTWCEU_GT3 24H Spa_RA10_5_ResultList_1.0.PDF",
-    "/images/results/145/GTWCEU_GT3 24H Spa_RA11_5_ResultList_1.0.PDF",
-    "/images/results/145/GTWCEU_GT3 24H Spa_RA12_5_ResultList_1.0.PDF",
-    "/images/results/145/GTWCEU_GT3 24H Spa_RA13_5_ResultList_1.0.PDF",
-    "/images/results/145/GTWCEU_GT3 24H Spa_RA14_5_ResultList_1.0.PDF",
-    "/images/results/145/GTWCEU_GT3 24H Spa_RA15_5_ResultList_1.0.PDF",
-    "/images/results/145/GTWCEU_GT3 24H Spa_RA16_5_ResultList_1.0.PDF",
-    "/images/results/145/GTWCEU_GT3 24H Spa_RA17_5_ResultList_1.0.PDF",
-    "/images/results/145/GTWCEU_GT3 24H Spa_RA18_5_ResultList_1.0.PDF",
-    "/images/results/145/GTWCEU_GT3 24H Spa_RA19_5_ResultList_1.0.PDF",
-    "/images/results/145/GTWCEU_GT3 24H Spa_RA21_5_ResultList_1.0.PDF",
-    "/images/results/145/GTWCEU_GT3 24H Spa_RA22_5_ResultList_1.0.PDF",
-    "/images/results/145/GTWCEU_GT3 24H Spa_RA23_5_ResultList_1.0.PDF"
-   ]
-  },
-  {
-   "site": "https://www.intercontinentalgtchallenge.com",
-   "entryListLinks": [
-    "/entry-list/2026/bathurst-12-hour"
-   ]
-  },
-  {
-   "site": "https://www.intercontinentalgtchallenge.com",
-   "year": 2019,
-   "meeting": "/results/2019/liqui-moly-bathurst-12-hour",
-   "pdfs": [
-    "/images/results/114/MOUN_01022019_0850_Practice_P5_12H_STD_O_1.pdf",
-    "/images/results/114/MOUN_01022019_0925_Practice_P6_12H_STD_I_1.pdf",
-    "/images/results/114/MOUN_01022019_1110_Practice_P7_12H_STD_I_1.pdf",
-    "/images/results/114/MOUN_01022019_1515_Practice_P8_12H_STD_I_1.pdf",
-    "/images/results/114/MOUN_02022019_0835_Practice_P9_12H_STD_I_1.pdf",
-    "/images/results/114/MOUN_02022019_1125_Qualifying_Q5_12H_STD_I_1.pdf",
-    "/images/results/114/MOUN_02022019_1216_Qualifying_Q6_12H_STD_I_1.pdf",
-    "/images/results/114/MOUN_02022019_1640_Qualifying_Q7_12H_RES_O_1.pdf",
-    "/images/results/114/MOUN_03022019_0545_Race_R12_12H_RES_O_1.pdf"
-   ]
-  },
-  {
-   "site": "https://www.intercontinentalgtchallenge.com",
-   "year": 2019,
-   "meeting": "/results/2019/laguna-seca",
-   "pdfs": [
-    "/images/results/116/Free practice Cal8H 2019.pdf",
-    "/images/results/116/Pre-Qualifying Cal8H 2019.pdf",
-    "/images/results/116/Qualifying combined Cal8H 2019.pdf",
-    "/images/results/116/Pole Shootout Cal8H 2019.pdf",
-    "/images/results/116/California 8 Hours Classification FINAL.PDF"
-   ]
-  },
-  {
-   "site": "https://www.intercontinentalgtchallenge.com",
-   "year": 2019,
-   "meeting": "/results/2019/total-24-hours-of-spa",
-   "pdfs": [
-    "/images/results/113/Total 24 Hours of Spa_Free Practice_ResultList_1.0.pdf",
-    "/images/results/113/Total 24 Hours of Spa_Pre-Qualifying_ResultList_1.0.pdf",
-    "/images/results/113/Total 24 Hours of Spa_Qualifying 1_ResultList_1.0.PDF",
-    "/images/results/113/Total 24 Hours of Spa_Qualifying 2_ResultList_1.0.PDF",
-    "/images/results/113/Total 24 Hours of Spa_Qualifying 3_ResultList_1.0.PDF",
-    "/images/results/113/Total 24 Hours of Spa_Qualifying 4_ResultList_1.0.PDF",
-    "/images/results/113/Total 24 Hours of Spa_Qualifying Combined AVG_CombinedTrainingResultList_1.0.PDF",
-    "/images/results/113/Total 24 Hours of Spa_Night Practice_ResultList_1.0.PDF",
-    "/images/results/113/Total 24 Hours of Spa_Super Pole_PitStopList_1.0.PDF",
-    "/images/results/113/Total 24 Hours of Spa_Race_ResultList_1.1.PDF"
-   ]
-  },
-  {
-   "site": "https://www.intercontinentalgtchallenge.com",
-   "entryListLinks": [
-    "/entry-list/2026/bathurst-12-hour"
-   ]
-  },
-  {
-   "site": "https://www.gt-world-challenge-australia.com",
-   "year": 2025,
-   "meeting": "/results/2025/phillip-island",
-   "pdfs": [
-    "/images/results/16/PHIL_04_04_2025_1145_Practice_FP5_GT3_STD_P_1.pdf",
-    "/images/results/16/PHIL_04_04_2025_1435_Practice_P2_GT3_STD_P_1.pdf",
-    "/images/results/16/PHIL_05_04_2025_1133_Qualifying_Q6_GT3_RES_F_1.pdf",
-    "/images/results/16/PHIL_05_04_2025_1150_Qualifying_Q7_GT3_RES_F_1.pdf",
-    "/images/results/16/GT3 Race 1 FInal Results.pdf",
-    "/images/results/16/PHIL_06_04_2025_1345_Race_R10_GT3_RES_F_1.pdf"
-   ]
-  },
-  {
-   "site": "https://www.gt-world-challenge-australia.com",
-   "year": 2025,
-   "meeting": "/results/2025/Sydney",
-   "pdfs": [
-    "/images/results/17/SMP_02_05_2025_0900_Practice_FP1_GT3_RES_F_1.pdf",
-    "/images/results/17/SMP_02_05_2025_1305_Practice_FP6_GT3_RES_F_1.pdf",
-    "/images/results/17/SMP_02_05_2025_1740_Practice_P3_GT3_RES_F_1.pdf",
-    "/images/results/17/SMP_03_05_2025_1340_Qualifying_Q6_GT3_RES_F_1.pdf",
-    "/images/results/17/SMP_03_05_2025_1410_Qualifying_Q7_GT3_RES_F_1.pdf",
-    "/images/results/17/SMP_03_05_2025_1955_Race_R7_GT3_RES_F_2.pdf",
-    "/images/results/17/Final Results SMP Race 2 GT World Challenge Australia powered by AWS.pdf"
-   ]
-  },
-  {
-   "site": "https://www.gt-world-challenge-australia.com",
-   "year": 2025,
-   "meeting": "/results/2025/Queensland-Raceway",
-   "pdfs": [
-    "/images/results/18/GT3 QR Final Results Free Practice 1 GT3.pdf",
-    "/images/results/18/GT3 QR Final Results Free Practice 2 GT3.pdf",
-    "/images/results/18/GT3 QR Final Results Pre Qualifying GT3.pdf",
-    "/images/results/18/GT3 QR Final Results Qualifying 1 GT3.pdf",
-    "/images/results/18/GT3 QR Final Results Qualifying 2 GT3.pdf",
-    "/images/results/18/GT3 QR Final Results Race 1 GT3.pdf",
-    "/images/results/18/GT3 QR FInal Results Race 2 GT3.pdf"
-   ]
-  },
-  {
-   "site": "https://www.gt-world-challenge-australia.com",
-   "entryListLinks": []
+  "555bfa56": {
+   "n": 8,
+   "first": "i-002-012.png",
+   "png": "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"
   }
+ },
+ "fiaImgList": [
+  "page   num  type   width height color comp bpc  enc interp  object ID x-ppi y-ppi size ratio",
+  "--------------------------------------------------------------------------------------------",
+  "   2     0 image      93    93  rgb     3   8  image  no        36  0   335   335 2993B  12%",
+  "   2     1 smask      93    93  gray    1   8  image  no        36  0   335   335  425B 4.9%",
+  "   2     2 image      93    93  rgb     3   8  image  no        47  0   335   335 2403B 9.3%",
+  "   2     3 smask      93    93  gray    1   8  image  no        47  0   335   335  434B 5.0%",
+  "   2     4 image      93    93  rgb     3   8  image  no        58  0   335   335 2403B 9.3%",
+  "   2     5 smask      93    93  gray    1   8  image  no        58  0   335   335  434B 5.0%"
  ],
- "samples": [],
- "fia": {
-  "https://www.fia.com/node/1406": [
-   "https://www.fia.com/fia-driver-categorisation",
-   "/fia-driver-categorisation",
-   "https://www.facebook.com/sharer.php?u=https%3A//www.fia.com/fia-driver-categorisation&amp;t=FIA%20Driver%20Categorisation",
-   "https://twitter.com/share?url=https%3A//www.fia.com/fia-driver-categorisation&amp;text=FIA%20Driver%20Categorisation&amp;via=fia",
-   "https://driverscategorisation.fia.com",
-   "https://driverscategorisation.fia.com/public/drivers",
-   "/sites/default/files/driver_categorisation_regulations_2025_v.wmsc_june_2025.pdf",
-   "/sites/default/files/guide_to_categorisation.pdf"
-  ],
-  "https://www.fia.com/fia-driver-categorisation": [
-   "https://www.fia.com/fia-driver-categorisation",
-   "/fia-driver-categorisation",
-   "https://www.facebook.com/sharer.php?u=https%3A//www.fia.com/fia-driver-categorisation&amp;t=FIA%20Driver%20Categorisation",
-   "https://twitter.com/share?url=https%3A//www.fia.com/fia-driver-categorisation&amp;text=FIA%20Driver%20Categorisation&amp;via=fia",
-   "https://driverscategorisation.fia.com",
-   "https://driverscategorisation.fia.com/public/drivers",
-   "/sites/default/files/driver_categorisation_regulations_2025_v.wmsc_june_2025.pdf",
-   "/sites/default/files/guide_to_categorisation.pdf"
-  ],
-  "sample": {
-   "url": "https://www.fia.com/sites/default/files/fia_2024_reviewed_categorisations_list_0.pdf",
-   "head": [
-    "                       FIA Driver Categorisation – 2023 List",
-    "  The 2024 reviewed categorisations will be published on the 3rd October. Drivers wishing to contest the",
-    "decision will have to produce the relevant data and make the request within 7 days of the publication (so up",
-    "                                            to the 10th October).",
-    "                                                                                                        Effective date of",
-    "         Last name        First name        Nationality                 Category       Next Category",
-    "                                                                                                       next categorisation",
-    "            Abadie         Anouck             France",
-    "            Abadin         Jose Luis           Spain",
-    "           Abbelen          Klaus            Germany",
-    "            Abbott          James         United Kingdom",
-    "            Abbott          Hunter        United Kingdom",
-    "         Abdolvahabi        Ramin          United States",
-    "              Abe          HIKARU              Japan",
-    "              Abe            Kenji             Japan",
-    "             Abel           Jacob          United States",
-    "            Abello          Miguel             Spain",
-    "           Aberdein        Jonathan         South Africa",
-    "          Abkhazava         Shota           Kazakhstan",
-    "         Aboujaoudé         Jihad            Lebanon",
-    "             Abra          Richard        United Kingdom",
-    "          Abrahams          Arthur           Australia",
-    "          Abramczyk         Noam              France",
-    "          Abramczyk         David             France",
-    "             Abreu        Francisco          Portugal",
-    "             Abreu           Atila             Brazil",
-    "             Abril         Vincent            France                                                    Jan 01, 2024",
-    "2023-10-04 11:00:02                            FIA Driver Categorisation – 2023 List                           Page 1 of 202",
-    "\f                                                                                                           Effective date of",
-    "         Last name         First name          Nationality                 Category       Next Category",
-    "                                                                                                          next categorisation",
-    "              Abt             Daniel            Germany",
-    "              Abt            Christian          Germany",
-    "            Accary           Thomas              France",
-    "       Acosta Hinojosa    Julio Sebastian       Colombia",
-    "             Adam           Jonathan         United Kingdom",
-    "            Adams             Garrett         United States",
-    "            Adams              Rudi             Germany",
-    "            Adcock           Nicholas        United Kingdom",
-    "           Adelson            Adam            United States                                                Jan 01, 2024"
-   ],
-   "bbox": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"><html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head>\n<title></title>\n<meta name=\"Producer\" content=\"iText® 7.0.4 ©2000-2017 iText Group NV (AGPL-version)\"/>\n<meta name=\"CreationDate\" content=\"2023-10-04T11:00:02+02\"/>\n<meta name=\"ModDate\" content=\"2023-10-04T11:00:02+02\"/>\n</head>\n<body>\n<doc>\n  <page width=\"595.000000\" height=\"842.000000\">\n    <flow>\n      <block xMin=\"43.250000\" yMin=\"43.870000\" xMax=\"89.940000\" yMax=\"53.120000\">\n        <line xMin=\"43.250000\" yMin=\"43.870000\" xMax=\"89.940000\" yMax=\"53.120000\">\n          <word xMin=\"43.250000\" yMin=\"43.870000\" xMax=\"62.150000\" yMax=\"53.120000\">Last</word>\n          <word xMin=\"64.930000\" yMin=\"43.870000\" xMax=\"89.940000\" yMax=\"53.120000\">name</word>\n        </line>\n      </block>\n    </flow>\n    <flow>\n      <block xMin=\"150.120000\" yMin=\"43.870000\" xMax=\"197.350000\" yMax=\"53.120000\">\n        <line xMin=\"150.120000\" yMin=\"43.870000\" xMax=\"197.350000\" yMax=\"53.120000\">\n          <word xMin=\"150.120000\" yMin=\"43.870000\" xMax=\"169.560000\" yMax=\"53.120000\">First</word>\n          <word xMin=\"172.340000\" yMin=\"43.870000\" xMax=\"197.350000\" yMax=\"53.120000\">name</word>\n        </line>\n      </block>\n    </flow>\n    <flow>\n      <block xMin=\"246.280000\" yMin=\"43.870000\" xMax=\"292.960000\" yMax=\"53.120000\">\n        <line xMin=\"246.280000\" yMin=\"43.870000\" xMax=\"292.960000\" yMax=\"53.120000\">\n          <word xMin=\"246.280000\" yMin=\"43.870000\" xMax=\"292.960000\" yMax=\"53.120000\">Nationality</word>\n        </line>\n      </block>\n    </flow>\n    <flow>\n      <block xMin=\"60.010000\" yMin=\"71.008000\" xMax=\"73.519000\" yMax=\"79.333000\">\n        <line xMin=\"60.010000\" yMin=\"71.008000\" xMax=\"73.519000\" yMax=\"79.333000\">\n          <word xMin=\"60.010000\" yMin=\"71.008000\" xMax=\"73.519000\" yMax=\"79.333000\">Abt</word>\n        </line>\n      </block>\n    </flow>\n    <flow>\n      <block xMin=\"161.150000\" yMin=\"71.008000\" xMax=\"186.656000\" yMax=\"79.333000\">\n        <line xMin=\"161.150000\" yMin=\"71.008000\" xMax=\"186.656000\" yMax=\"79.333000\">\n          <word xMin=\"161.150000\" yMin=\"71.008000\" xMax=\"186.656000\" yMax=\"79.333000\">Daniel</word>\n        </line>\n      </block>\n    </flow>\n    <flow>\n      <block xMin=\"251.280000\" yMin=\"71.008000\" xMax=\"288.288000\" yMax=\"79.333000\">\n        <line xMin=\"251.280000\" yMin=\"71.008000\" xMax=\"288.288000\" yMax=\"79.333000\">\n          <word xMin=\"251.280000\" yMin=\"71.008000\" xMax=\"288.288000\" yMax=\"79.333000\">Germany</word>\n        </line>\n      </block>\n    </flow>\n    <flow>\n      <block xMin=\"60.010000\" yMin=\"96.008000\" xMax=\"73.519000\" yMax=\"104.333000\">\n        <line xMin=\"60.010000\" yMin=\"96.008000\" xMax=\"73.519000\" yMax=\"104.333000\">\n          <word xMin=\"60.010000\" yMin=\"96.008000\" xMax=\"73.519000\" yMax=\"104.333000\">Abt</word>\n        </line>\n      </block>\n    </flow>\n    <flow>\n      <block xMin=\"156.150000\" yMin=\"96.008000\" xMax=\"191.655000\" yMax=\"104.333000\">\n        <line xMin=\"156.150000\" yMin=\"96.008000\" xMax=\"191.655000\" yMax=\"104.333000\">\n          <word xMin=\"156.150000\" yMin=\"96.008000\" xMax=\"191.655000\" yMax=\"104.333000\">Christian</word>\n        </line>\n      </block>\n    </flow>\n    <flow>\n      <block xMin=\"251.280000\" yMin=\"96.008000\" xMax=\"288.288000\" yMax=\"104.333000\">\n        <line xMin=\"251.280000\" yMin=\"96.008000\" xMax=\"288.288000\" yMax=\"104.333000\">\n          <word xMin=\"251.280000\" yMin=\"96.008000\" xMax=\"288.288000\" yMax=\"104.333000\">Germany</word>\n        </line>\n      </block>\n    </flow>\n    <flow>\n      <block xMin=\"53.010000\" yMin=\"121.008000\" xMax=\"80.514000\" yMax=\"129.333000\">\n        <line xMin=\"53.010000\" yMin=\"121.008000\" xMax=\"80.514000\" yMax=\"129.333000\">\n          <word xMin=\"53.010000\" yMin=\"121.008000\" xMax=\"80.514000\" yMax=\"129.333000\">Accary</word>\n        </line>\n      </block>\n    </flow>\n    <flow>\n      <block xMin=\"157.650000\" yMin=\"121.008000\" xMax=\"190.158000\" yMax=\"129.333000\">\n        <line xMin=\"157.650000\" yMin=\"121.008000\" xMax=\"190.158000\" yMax=\"129.333000\">\n          <word xMin=\"157.650000\" yMin=\"121.008000\" xMax=\"190.158000\" yMax=\"129.333000\">Thomas</word>\n        </line>\n      </block>\n    </flow>\n    <flow>\n      <block xMin=\"255.780000\" yMin=\"121.008000\" xMax=\"283.788000\" yMax=\"129.333000\">\n        <line xMin=\"255.780000\" yMin=\"121.008000\" xMax=\"283.788000\" yMax=\"129.333000\">\n          <word xMin=\"255.780000\" yMin=\"121.008000\" xMax=\"283.788000\" yMax=\"129.333000\">France</word>\n        </line>\n      </block>\n    </flow>\n    <flow>\n      <block xMin=\"34.250000\" yMin=\"146.008000\" xMax=\"99.275000\" yMax=\"154.333000\">\n        <line xMin=\"34.250000\" yMin=\"146.008000\" xMax=\"99.275000\" yMax=\"154.333000\">\n          <word xMin=\"34.250000\" yMin=\"146.008000\" xMax=\"61.763000\" yMax=\"154.333000\">Acosta</word>\n          <word xMin=\"64.265000\" yMin=\"146.008000\" xMax=\"99.275000\" yMax=\"154.333000\">Hinojosa</word>\n        </line>\n      </block>\n    </flow>\n    <flow>\n      <block xMin=\"143.390000\" yMin=\"146.008000\" xMax=\"204.419000\" yMax=\"154.333000\">\n        <line xMin=\"143.390000\" yMin=\"146.008000\" xMax=\"204.419000\" yMax=\"154.333000\">\n          <word xMin=\"143.390000\" yMin=\"146.008000\" xMax=\"161.894000\" yMax=\"154.333000\">Julio</word>\n          <word xMin=\"164.396000\" yMin=\"146.008000\" xMax=\"204.419000\" yMax=\"154.333000\">Sebastian</word>\n        </line>\n      </block>\n    </flow>\n    <flow>\n      <block xMin=\"250.780000\" yMin=\"146.008000\" xMax=\"288.787000\" yMax=\"154.333000\">\n        <line xMin=\"250.780000\" yMin=\"146.008000\" xMax=\"288.787000\" yMax=\"154.333000\">\n          <word xMin=\"250.780000\" yMin=\"146.008000\" xMax=\"288.787000\" yMax=\"154.333000\">Colombia</word>\n        </line>\n      </block>\n    </flow>\n    <flow>\n      <block xMin=\"55.010000\" yMin=\"171.008000\" xMax=\"78.518000\" yMax=\"179.333000\">\n        <line xMin=\"55.010000\" yMin=\"171.008000\" xMax=\"78.518000\" yMax=\"179.333000\">\n          <word xMin=\"55.010000\" yMin=\"171.008000\" xMax=\"78.518000\" yMax=\"179.333000\">Adam</wor"
-  },
-  "images": [
-   "page   num  type   width height color comp bpc  enc interp  object ID x-ppi y-ppi size ratio",
-   "--------------------------------------------------------------------------------------------",
-   "   2     0 image      93    93  rgb     3   8  image  no        36  0   335   335 2993B  12%",
-   "   2     1 smask      93    93  gray    1   8  image  no        36  0   335   335  425B 4.9%",
-   "   2     2 image      93    93  rgb     3   8  image  no        47  0   335   335 2403B 9.3%",
-   "   2     3 smask      93    93  gray    1   8  image  no        47  0   335   335  434B 5.0%",
-   "   2     4 image      93    93  rgb     3   8  image  no        58  0   335   335 2403B 9.3%",
-   "   2     5 smask      93    93  gray    1   8  image  no        58  0   335   335  434B 5.0%",
-   "   2     6 image      93    93  rgb     3   8  image  no        62  0   335   335 2403B 9.3%",
-   "   2     7 smask      93    93  gray    1   8  image  no        62  0   335   335  434B 5.0%",
-   "   2     8 image      93    93  rgb     3   8  image  no        63  0   335   335 1790B 6.9%",
-   "   2     9 smask      93    93  gray    1   8  image  no        63  0   335   335  425B 4.9%",
-   "   2    10 image      93    93  rgb     3   8  image  no        64  0   335   335 2403B 9.3%",
-   "   2    11 smask      93    93  gray    1   8  image  no        64  0   335   335  434B 5.0%",
-   "   2    12 image      93    93  rgb     3   8  image  no        65  0   335   335 1965B 7.6%",
-   "   2    13 smask      93    93  gray    1   8  image  no        65  0   335   335  425B 4.9%",
-   "   2    14 image      93    93  rgb     3   8  image  no        66  0   335   335 1965B 7.6%",
-   "   2    15 smask      93    93  gray    1   8  image  no        66  0   335   335  425B 4.9%",
-   "   2    16 image      93    93  rgb     3   8  image  no        67  0   335   335 2403B 9.3%",
-   "   2    17 smask      93    93  gray    1   8  image  no        67  0   335   335  434B 5.0%",
-   "   2    18 image      93    93  rgb     3   8  image  no        37  0   335   335 2403B 9.3%",
-   "   2    19 smask      93    93  gray    1   8  image  no        37  0   335   335  434B 5.0%",
-   "   2    20 image      93    93  rgb     3   8  image  no        38  0   335   335 1965B 7.6%",
-   "   2    21 smask      93    93  gray    1   8  image  no        38  0   335   335  425B 4.9%",
-   "   2    22 image      93    93  rgb     3   8  image  no        39  0   335   335 2403B 9.3%"
+ "fiaSvg": [
+  "<image id=\"source-7\" x=\"0\" y=\"0\" width=\"93\" height=\"93\" xlink:href=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF0AAABdCAAAAADiGjUfAAAAAmJLR0QA/4ePzL8AAAHvSURBVGiB7drRcZtAEMbxP5cCjCvQpQOVcCVQAiWoBKUDSkAd",
+  "<use xlink:href=\"#source-7\" filter=\"url(#filter-color-to-alpha)\" transform=\"matrix(0.215054, 0, 0, 0.215054, 345.29, 67.97)\"/",
+  "<image id=\"source-6\" x=\"0\" y=\"0\" width=\"93\" height=\"93\" xlink:href=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF0AAABdCAIAAABIE/2UAAAABmJLR0QA/wD/AP+gvaeTAAAOLklEQVR4nO2d2XMjx5GHM7Oq+sBBgCSGx3CsGUnWaiNW",
+  "<image id=\"source-13\" x=\"0\" y=\"0\" width=\"93\" height=\"93\" xlink:href=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF0AAABdCAAAAADiGjUfAAAAAmJLR0QA/4ePzL8AAAH1SURBVGiB7drdcaMwFIbhF20BIRVY24FLUAmUQAkuwdsBJeA",
+  "<use xlink:href=\"#source-13\" filter=\"url(#filter-color-to-alpha)\" transform=\"matrix(0.215054, 0, 0, 0.215054, 345.29, 92.97)\"/",
+  "<image id=\"source-12\" x=\"0\" y=\"0\" width=\"93\" height=\"93\" xlink:href=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF0AAABdCAIAAABIE/2UAAAABmJLR0QA/wD/AP+gvaeTAAANHUlEQVR4nO2d+XPjthXHHwCC1C3LsnzI8madrHc3u90",
+  "<image id=\"source-19\" x=\"0\" y=\"0\" width=\"93\" height=\"93\" xlink:href=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF0AAABdCAAAAADiGjUfAAAAAmJLR0QA/4ePzL8AAAH1SURBVGiB7drdcaMwFIbhF20BIRVY24FLUAmUQAkuwdsBJeA",
+  "<use xlink:href=\"#source-19\" filter=\"url(#filter-color-to-alpha)\" transform=\"matrix(0.215054, 0, 0, 0.215054, 345.29, 117.97)\"/",
+  "<image id=\"source-18\" x=\"0\" y=\"0\" width=\"93\" height=\"93\" xlink:href=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF0AAABdCAIAAABIE/2UAAAABmJLR0QA/wD/AP+gvaeTAAANHUlEQVR4nO2d+XPjthXHHwCC1C3LsnzI8madrHc3u90",
+  "<image id=\"source-25\" x=\"0\" y=\"0\" width=\"93\" height=\"93\" xlink:href=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF0AAABdCAAAAADiGjUfAAAAAmJLR0QA/4ePzL8AAAH1SURBVGiB7drdcaMwFIbhF20BIRVY24FLUAmUQAkuwdsBJeA",
+  "<use xlink:href=\"#source-25\" filter=\"url(#filter-color-to-alpha)\" transform=\"matrix(0.215054, 0, 0, 0.215054, 345.29, 142.97)\"/",
+  "<image id=\"source-24\" x=\"0\" y=\"0\" width=\"93\" height=\"93\" xlink:href=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF0AAABdCAIAAABIE/2UAAAABmJLR0QA/wD/AP+gvaeTAAANHUlEQVR4nO2d+XPjthXHHwCC1C3LsnzI8madrHc3u90",
+  "<image id=\"source-31\" x=\"0\" y=\"0\" width=\"93\" height=\"93\" xlink:href=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF0AAABdCAAAAADiGjUfAAAAAmJLR0QA/4ePzL8AAAHvSURBVGiB7drRcZtAEMbxP5cCjCvQpQOVcCVQAiWoBKUDSkA",
+  "<use xlink:href=\"#source-31\" filter=\"url(#filter-color-to-alpha)\" transform=\"matrix(0.215054, 0, 0, 0.215054, 345.29, 167.97)\"/",
+  "<image id=\"source-30\" x=\"0\" y=\"0\" width=\"93\" height=\"93\" xlink:href=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF0AAABdCAIAAABIE/2UAAAABmJLR0QA/wD/AP+gvaeTAAAJvklEQVR4nO2dW3PbuBXHDy66+yIpihyP7TiXza3tZtu",
+  "<image id=\"source-37\" x=\"0\" y=\"0\" width=\"93\" height=\"93\" xlink:href=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF0AAABdCAAAAADiGjUfAAAAAmJLR0QA/4ePzL8AAAH1SURBVGiB7drdcaMwFIbhF20BIRVY24FLUAmUQAkuwdsBJeA",
+  "<use xlink:href=\"#source-37\" filter=\"url(#filter-color-to-alpha)\" transform=\"matrix(0.215054, 0, 0, 0.215054, 345.29, 192.97)\"/",
+  "<image id=\"source-36\" x=\"0\" y=\"0\" width=\"93\" height=\"93\" xlink:href=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF0AAABdCAIAAABIE/2UAAAABmJLR0QA/wD/AP+gvaeTAAANHUlEQVR4nO2d+XPjthXHHwCC1C3LsnzI8madrHc3u90",
+  "<image id=\"source-43\" x=\"0\" y=\"0\" width=\"93\" height=\"93\" xlink:href=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF0AAABdCAAAAADiGjUfAAAAAmJLR0QA/4ePzL8AAAHvSURBVGiB7drRcZtAEMbxP5cCjCvQpQOVcCVQAiWoBKUDSkA",
+  "<use xlink:href=\"#source-43\" filter=\"url(#filter-color-to-alpha)\" transform=\"matrix(0.215054, 0, 0, 0.215054, 345.29, 217.97)\"/",
+  "<image id=\"source-42\" x=\"0\" y=\"0\" width=\"93\" height=\"93\" xlink:href=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF0AAABdCAIAAABIE/2UAAAABmJLR0QA/wD/AP+gvaeTAAAJ40lEQVR4nO2dWXIbyRGGM7O6G42N4CJK1GixQuEJh19",
+  "<image id=\"source-49\" x=\"0\" y=\"0\" width=\"93\" height=\"93\" xlink:href=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF0AAABdCAAAAADiGjUfAAAAAmJLR0QA/4ePzL8AAAHvSURBVGiB7drRcZtAEMbxP5cCjCvQpQOVcCVQAiWoBKUDSkA",
+  "<use xlink:href=\"#source-49\" filter=\"url(#filter-color-to-alpha)\" transform=\"matrix(0.215054, 0, 0, 0.215054, 345.29, 242.97)\"/",
+  "<image id=\"source-48\" x=\"0\" y=\"0\" width=\"93\" height=\"93\" xlink:href=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF0AAABdCAIAAABIE/2UAAAABmJLR0QA/wD/AP+gvaeTAAAJ40lEQVR4nO2dWXIbyRGGM7O6G42N4CJK1GixQuEJh19",
+  "<image id=\"source-55\" x=\"0\" y=\"0\" width=\"93\" height=\"93\" xlink:href=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF0AAABdCAAAAADiGjUfAAAAAmJLR0QA/4ePzL8AAAH1SURBVGiB7drdcaMwFIbhF20BIRVY24FLUAmUQAkuwdsBJeA",
+  "<use xlink:href=\"#source-55\" filter=\"url(#filter-color-to-alpha)\" transform=\"matrix(0.215054, 0, 0, 0.215054, 345.29, 267.97)\"/",
+  "<image id=\"source-54\" x=\"0\" y=\"0\" width=\"93\" height=\"93\" xlink:href=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF0AAABdCAIAAABIE/2UAAAABmJLR0QA/wD/AP+gvaeTAAANHUlEQVR4nO2d+XPjthXHHwCC1C3LsnzI8madrHc3u90",
+  "<image id=\"source-61\" x=\"0\" y=\"0\" width=\"93\" height=\"93\" xlink:href=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF0AAABdCAAAAADiGjUfAAAAAmJLR0QA/4ePzL8AAAH1SURBVGiB7drdcaMwFIbhF20BIRVY24FLUAmUQAkuwdsBJeA",
+  "<use xlink:href=\"#source-61\" filter=\"url(#filter-color-to-alpha)\" transform=\"matrix(0.215054, 0, 0, 0.215054, 432.02, 267.97)\"/",
+  "<image id=\"source-60\" x=\"0\" y=\"0\" width=\"93\" height=\"93\" xlink:href=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAF0AAABdCAIAAABIE/2UAAAABmJLR0QA/wD/AP+gvaeTAAANHUlEQVR4nO2d+XPjthXHHwCC1C3LsnzI8madrHc3u90"
+ ],
+ "https://driverscategorisation.fia.com/public/drivers": "<!doctype html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <title>FIA - Driver categorisation</title> <base href=\"/\"> <meta content=\"IE=edge\" http-equiv=\"X-UA-Compatible\" > <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"> <link rel=\"icon\" type=\"image/x-icon\" href=\"assets/img/favicon.ico\"> <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/> <meta name=\"msapplication-TileColor\" content=\"#ffffff\" /> <meta name=\"msapplication-TileImage\" content=\"assets/img/ms-icon-144x144.png\" /> <meta name=\"apple-mobile-web-app-capable\" content=\"yes\" /> <meta name=\"mobile-web-app-capable\" content=\"yes\" /> <link href=\"assets/img/apple-icon.png\" rel=\"apple-touch-icon\" /> <link href=\"assets/img/apple-icon-precomposed.png\" rel=\"apple-touch-icon\" /> <link href=\"assets/img/apple-icon-57x57.png\" rel=\"apple-touch-icon\" sizes=\"57x57\" /> <link href=\"assets/img/apple-icon-60x60.png\" rel=\"apple-touch-icon\" sizes=\"57x57\" /> <link href=\"assets/img/apple-icon-72x72.png\" rel=\"apple-touch-icon\" sizes=\"57x57\" /> <link href=\"assets/img/apple-icon-76x76.png\" rel=\"apple-touch-icon\" sizes=\"76x76\" /> <link href=\"assets/img/apple-icon-114x114.png\" rel=\"apple-touch-icon\" sizes=\"114x114\" /> <link href=\"assets/img/apple-icon-120x120.png\" rel=\"apple-touch-icon\" sizes=\"120x120\" /> <link href=\"assets/img/apple-icon-144x144.png\" rel=\"apple-touch-icon\" sizes=\"144x144\" /> <link href=\"assets/img/apple-icon-152x152.png\" rel=\"apple-touch-icon\" sizes=\"152x152\" /> <!-- Loaded here, not imported: webpack/terser re-minifies the already-minified UMD bundle and silently breaks writeBuffer() in optimised builds. See ExcelService. --> <script src=\"assets/js/exceljs.min.js\"></script> <link rel=\"stylesheet\" href=\"styles.93f8a24fab9f0f8a831a.css\"></head> <body> <app-root><div style=\"padding:10px\">Loading</div></app-root> <script type=\"text/javascript\" src=\"runtime.a66f828dca56eeb90e02.js\"></script><script type=\"text/javascript\" src=\"polyfills.fbd4d8b5d39327f542fb.js\"></script><script type=\"text/javascript\" src=\"scripts.a04b2ba89e118ddbb91e.js\"></script><script type=\"text/javascript\" src=\"main.87efddd5e2927a06dd42.js\"></script></body> </html> ",
+ "https://driverscategorisation.fia.com": "<!doctype html> <html lang=\"en\"> <head> <meta charset=\"utf-8\"> <title>FIA - Driver categorisation</title> <base href=\"/\"> <meta content=\"IE=edge\" http-equiv=\"X-UA-Compatible\" > <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"> <link rel=\"icon\" type=\"image/x-icon\" href=\"assets/img/favicon.ico\"> <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/> <meta name=\"msapplication-TileColor\" content=\"#ffffff\" /> <meta name=\"msapplication-TileImage\" content=\"assets/img/ms-icon-144x144.png\" /> <meta name=\"apple-mobile-web-app-capable\" content=\"yes\" /> <meta name=\"mobile-web-app-capable\" content=\"yes\" /> <link href=\"assets/img/apple-icon.png\" rel=\"apple-touch-icon\" /> <link href=\"assets/img/apple-icon-precomposed.png\" rel=\"apple-touch-icon\" /> <link href=\"assets/img/apple-icon-57x57.png\" rel=\"apple-touch-icon\" sizes=\"57x57\" /> <link href=\"assets/img/apple-icon-60x60.png\" rel=\"apple-touch-icon\" sizes=\"57x57\" /> <link href=\"assets/img/apple-icon-72x72.png\" rel=\"apple-touch-icon\" sizes=\"57x57\" /> <link href=\"assets/img/apple-icon-76x76.png\" rel=\"apple-touch-icon\" sizes=\"76x76\" /> <link href=\"assets/img/apple-icon-114x114.png\" rel=\"apple-touch-icon\" sizes=\"114x114\" /> <link href=\"assets/img/apple-icon-120x120.png\" rel=\"apple-touch-icon\" sizes=\"120x120\" /> <link href=\"assets/img/apple-icon-144x144.png\" rel=\"apple-touch-icon\" sizes=\"144x144\" /> <link href=\"assets/img/apple-icon-152x152.png\" rel=\"apple-touch-icon\" sizes=\"152x152\" /> <!-- Loaded here, not imported: webpack/terser re-minifies the already-minified UMD bundle and silently breaks writeBuffer() in optimised builds. See ExcelService. --> <script src=\"assets/js/exceljs.min.js\"></script> <link rel=\"stylesheet\" href=\"styles.93f8a24fab9f0f8a831a.css\"></head> <body> <app-root><div style=\"padding:10px\">Loading</div></app-root> <script type=\"text/javascript\" src=\"runtime.a66f828dca56eeb90e02.js\"></script><script type=\"text/javascript\" src=\"polyfills.fbd4d8b5d39327f542fb.js\"></script><script type=\"text/javascript\" src=\"scripts.a04b2ba89e118ddbb91e.js\"></script><script type=\"text/javascript\" src=\"main.87efddd5e2927a06dd42.js\"></script></body> </html> ",
+ "sro_spa": {
+  "url": "https://www.intercontinentalgtchallenge.com/images/results/145/GTWCEU_GT3 24H Spa_Q1_ResultList_1.0.PDF",
+  "head": [
+   "                                                CrowdStrike 24 Hours of Spa Round 5",
+   "                                                CrowdStrike 24 Hours of Spa",
+   "                                                Qualifying 1",
+   "                                                                                          Result List",
+   "Circuit de Spa Francorchamps, Length: 7004m",
+   "                                                                                           Provisional",
+   "                                                                                    26 June 2025 21:15:00",
+   "  Stewards / Race Management                                                         Weather Start/Finish            Track Information",
+   "  STEWARD                                   Luis Roby; Yves Bacquelaine              AIR                 19.0°C      GREEN FLAG                                21:15:00",
+   "  STEWARD                                   Edith Vieira Da Silva, Francesco Maffezzoni TRACK            24.3°C      CHEQUERED FLAG                            22:08:34",
+   "  STEWARD                                   Michael Schweagerl, Jordi Parro          CONDITIONS          Dry         SAFETY CAR PHASE                                0",
+   "  RACE DIRECTOR                             Niels Wittich                            PRESSURE            965 hPa     FULL COURSE YELLOW PHASE                        0",
+   "  CLERK OF THE COURSE                       Jean-Yves Munsters                       AIR                 19.0°C      TRACK NAME            Circuit de Spa Francorchamps",
+   "  TECHNICAL DELEGATE                        Alain Marquet                            TRACK               23.1°C      TRACK LENGTH                               7004m",
+   "  CHIEF TIMEKEEPER                          Daniel Schulze; Steffen Ruhl             CONDITIONS          Wet         TURN COUNT                                     19",
+   "                                                                                     PRESSURE            965 hPa",
+   "                                                                                                                     FASTEST LAP:                   #66. NES - 2:24.833",
+   "  STARTED: 47 CLASSIFIED: 46 NOT CLASSIFIED: 1 DISQUALIFIED: 0",
+   "         Nr. Drivers                                                    Team                                       Lap Best Time        Gap     Diff Kph      Day Time",
+   "       Cl.  Car                                                         Entrant",
+   "   1     66 Nesov/Mukovoz/Hofer/Pereira                                 Tresor Attempto Racing                       5    2:24.833                   174.0       21:45:08",
+   "     Bronze Audi R8 LMS GT3 EVO II                                      Tresor Attempto Racing",
+   "   2     76 Collard/Garg/Collard/Ali                                    Barwell Motorsport                           5    2:25.094     0.261   0.261 173.7       21:45:11",
+   "     Bronze Lamborghini Huracan GT3 EVO 2                               Barwell Motorsport",
+   "   3     23 Dörr/Foster/Barr/Buncombe                                   Team RJN                                     5    2:25.102     0.269   0.008 173.7       21:45:23",
+   "     Gold McLaren 720S GT3 EVO                                          Team RJN",
+   "   4    333 Moretti/Rogalski/Southern Jr/Paul                           Paul Motorsport                              6    2:26.173     1.340   1.071 172.4       21:47:19",
+   "       Gold      Lamborghini Huracan GT3 EVO 2                          Paul Motorsport",
+   "   5          80 Pera/Rindone/Kolb/Feller                               Lionspeed GP                                 6    2:26.224     1.391   0.051 172.4       21:46:29",
+   "     Bronze Porsche 911 GT3 R (992)                                     Lionspeed GP",
+   "   6      12 Laser/Hook/Perel/Rigon                                     Rinaldi Racing                               8    2:27.528     2.695   1.304 170.9       22:09:56",
+   "     Bronze Ferrari 296 GT3                                             Rinaldi Racing",
+   "   7     991 Gelael/Sowery/Dennis/Leung                                 Paradine Competition                         3    2:27.691     2.858   0.163 170.7       21:46:27",
+   "     Bronze BMW M4 GT3 EVO                                              Paradine Competition",
+   "   8      58 Smalley/Schandorff/Macdonald/Prette                        Garage 59                                    6    2:27.841     3.008   0.150 170.5       21:47:07",
+   "     Gold McLaren 720S GT3 EVO                                          Garage 59 Group",
+   "   9      65 Owega/Andriolo/Wiebelhaus/Schumacher                       HRT Ford Performance                         5    2:27.889     3.056   0.048 170.4       21:46:16",
+   "     Silver Ford Mustang GT3                                            Haupt Racing Team",
+   "  10      93 Patrese/Hui/Froggatt/Cheever                               Ziggo Sport Tempesta                         9    2:28.016     3.183   0.127 170.3       22:09:38",
+   "     Bronze Ferrari 296 GT3                                             Ziggo Sport Tempesta"
   ]
- }
+ },
+ "sro_bathurst": {
+  "url": "https://www.intercontinentalgtchallenge.com/images/results/143/MOUN_02022025_0545_Race_R6_12H_RES_F_1.pdf",
+  "head": [
+   "                                    2025 Meguiar's Bathurst 12 Hour",
+   "                                       MOUNT PANORAMA - BATHURST",
+   "                               2025 Meguiar's Bathurst 12 Hour Race",
+   "                                                      CLASSIFICATION",
+   "Event R6        720 Mins              FINAL                 Page 1            Issue 1",
+   "Scheduled Start 05:45         Declared by Stewards at 19:40 Start Sun Feb 02    05:45",
+   "_____________________________________________________________________________",
+   "                                                            Elapsed Time     12:01:53",
+   "Pos Car    Competitor/Team                   Driver                   Vehicle                Cap   CL Laps       Race.Time Fastest...Lap",
+   "1    32    Team WRT                          A.Farfus/",
+   "                                             S.van der Linde/",
+   "                                             K.van der Linde          BMW M4 GT3                   PRO 306 12:01:53.1350     20 2:03.3070",
+   "2    46    Team WRT                          V.Rossi/C.Weerts/",
+   "                                             R.Marciello              BMW M4 GT3                   PRO 306 12:02:03.3800     19 2:03.2640",
+   "3    75    75 Express                        K.Habul/J.Gounon/",
+   "                                             L.Stolz                  Mercedes-AMG GT3 EVO         PRO 306 12:02:04.4980 133 2:02.5480",
+   "4    26    Arise Racing GT                   C.Mostert/W.Brown/",
+   "                                             D.Serra                  Ferrari 296 GT3              PRO 306 12:02:57.0970 299 2:02.2740*",
+   "5     77   Team Craft-Bamboo Racing          M.Gotz/L.Auer/J.Ojeda    Mercedes-AMG GT3 EVO         PRO 306 12:03:21.0390 20 2:03.1830",
+   "6    911   Absolute Racing                   A.Picariello/A.Guven/",
+   "                                             M.Campbell               Porsche 911 GT3R (99         PRO 306 12:03:35.2030     27 2:02.8660",
+   "7    27    Heart of Racing by SPS            R.Gunn/Z.Robichon/",
+   "                                             I.James                  Mercedes-AMG GT3 EVO         BRO 305 12:03:38.3790     20 2:03.5150",
+   "8    36    Arise Racing GT                   J.Evans/E.Schutte/",
+   "                                             B.Schumacher/A.Rovera    Ferrari 296 GT3              PAM 303 12:01:53.7460     86 2:03.0860",
+   "9    93    Wall Racing                       T.D'Alberto/B.Leitch/",
+   "                                             G.Denyer/A.Deitz         Lamborghini Huracan          SIL 303 12:03:15.8760 134 2:03.7210",
+   "10   91    The Bend Motorsport Park          L.Heinrich/Y.Shahin/",
+   "                                             S.Shahin/M.Schuring      Porsche 911 GT3R (99         PAM 303 12:03:18.3430     78 2:02.4170",
+   "11     9   Hallmarc / Team MPC               L.Holdsworth/D.Fiore/",
+   "                                             M.Cini                   Audi R8 LMS EVO II           BRO 291 12:02:58.6860     87 2:03.5080",
+   "12   47    Supabarn Supermarkets             L.Youlden/D.Russell/",
+   "                                             T.Koundouris/",
+   "                                             J.Koundouris             Mercedes-AMG GT3 EVO         SIL 283 12:02:23.8930     17 2:04.4280",
+   "13   14    Volante Rosso Motorsport          J.Day/M.Villagomez/",
+   "                                             J.Robotham               Aston Martin Vantage         SIL 276 12:02:37.4330 114 2:03.7840",
+   "14   24    Method Motorsport                 A.Levitt/J.Buchan/",
+   "                                             J.Santalucia             McLaren Artura GT4           GT4 276 12:06:20.5270     16 2:14.7260",
+   "15   50    KTM Vantage Racing                D.Crampton/T.Harrison/",
+   "                                             G.Wood                   KTM XBow GT2                 I     270 12:02:28.1630   16 2:05.9510"
+  ]
+ },
+ "gtwcEntryRow": [
+  "<tr> <th>Car #</th> <th>Team</th> <th>Driver 1</th> <th>Driver 2</th> <th>Driver 3</th> <th>Car</th> <th>Class</th> </tr>",
+  "<tr> <td>3</td> <td>GetSpeed</td> <td><span class=\"table__text\">Karol BASZ</span><span class=\"table__flag flag size--tiny pol\"></span></td> <td><span class=\"table__text\">Anthony BARTONE</span><span class=\"table__flag flag size--tiny usa\"></span></td> <td><span class=\"table__text\">Yannick METTLER</span><span class=\"table__flag flag size--tiny sui \"></span></td> <td>Mercedes-AMG GT3 EVO</td> <td>SILVER</td> </tr>",
+  "<tr> <td>5</td> <td>Optimum Motorsport</td> <td><span class=\"table__text\">James ALLEN</span><span class=\"table__flag flag size--tiny aus\"></span></td> <td><span class=\"table__text\">Largim ALI</span><span class=\"table__flag flag size--tiny den\"></span></td> <td><span class=\"table__text\">Michael PORTER</span><span class=\"table__flag flag size--tiny gbr\"></span></td> <td>McLaren 720S GT3 EVO</td> <td>GOLD</td> </tr>"
+ ]
 }
