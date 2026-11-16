@@ -27,7 +27,7 @@ test('line-ups: ratings known or unknown, never guessed', () => {
   for (const [ev, cars] of Object.entries(d.lineups)) for (const [car, c] of Object.entries(cars)) {
     for (const x of c.drivers) {
       assert.ok(x.rating === null || RATINGS.includes(x.rating), `${ev} ${car}`);
-      assert.ok(['event', 'season', 'unknown'].includes(x.how));
+      assert.ok(['event', 'season', 'fia-list', 'unknown'].includes(x.how));
       if (x.how === 'unknown') assert.equal(x.rating, null);
       if (x.how === 'season') assert.equal(x.rating, ratingAt(x.id, ev.split('|')[1], null, d) ?? x.rating);
       if (x.file != null) assert.ok(d.files[x.file], `${ev} ${car} file index`);
@@ -39,6 +39,18 @@ test('line-ups: ratings known or unknown, never guessed', () => {
     if (r.lineup) assert.equal(r.lineup, lineupOf(r.series, r.season, r.event, r.entry, d).lineup);
     if (r.bestLapDriver) { assert.ok(d.files[r.bestLapDriver.file]); assert.ok(lineupOf(r.series, r.season, r.event, r.entry, d).drivers.some(x => x.id === r.bestLapDriver.id), `${r.event} ${r.entry}`); }
   }
+});
+
+test('SRO entry-list text: category printed beside each driver, "-" stays unknown, car number from the # column', async () => {
+  const {parseEntryText} = await import('../scripts/sim/learn/sro-entry-parse.mjs');
+  const t = ['Car #       Competitor                Sponsor Name        Nationality Driver 1           Nationality categorisation   Driver 2           Nationality categorisa',
+    '          2 Melbourne Performance     KFC Team MPC        AUS         Brad Schumacher    AUS         Bronze           Markus Winkelhock  DEU         Platinum',
+    '         25 Method Motorsport         Method Motorsport   AUS         Marcos Flack       AUS         -                Chaz Mostert       AUS         Platinum',
+    'QT  #    TEAM                   NAT  CAR                   DRIVER 1          LIC CAT  DRIVER 2            LIC CAT  CATEGORY',
+    '53  177  Grupo Prom Racing Team GER  Mercedes-AMG GT3 EVO  Alfredo HERNANDEZ MEX B    Stephane TRIBAUDINI FRA B    BRONZE'].join('\n');
+  const cars = parseEntryText(t);
+  assert.deepEqual(cars.map(c => [c.car, c.drivers.map(x => x.cat).join('')]), [['2', 'BP'], ['25', 'P'], ['177', 'BB']]);
+  assert.equal(cars[1].drivers[0].cat, null);
 });
 
 test('printed values: only the four FIA names map to a rating', () => {

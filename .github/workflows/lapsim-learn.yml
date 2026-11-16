@@ -37,6 +37,10 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "push" ]; then JOBS=$(git diff --name-only HEAD~1 HEAD -- 'scripts/sim/learn/fetch-*.mjs' 'scripts/sim/learn/probe-*.mjs'); else JOBS=$(ls scripts/sim/learn/fetch-*.mjs scripts/sim/learn/probe-*.mjs); fi
           for j in $JOBS; do echo "::group::$j"; node "$j" || echo "::warning::$j failed"; echo "::endgroup::"; done
+      # raw texts of fetched documents (never committed, physics rule 2.9), kept 7 days for parser checks
+      - uses: actions/upload-artifact@v4
+        if: ${{ hashFiles('.cache/sro-entry-pdfs/**') != '' }}
+        with: {name: sro-entry-pdfs, path: .cache/sro-entry-pdfs, retention-days: 7}
       - name: Commit the derived tables
         run: |
           git config user.name "github-actions[bot]"
