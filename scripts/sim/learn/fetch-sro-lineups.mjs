@@ -5,13 +5,13 @@
 //    G gold, P platinum), not text. Each row is read at the column of the "Category" / "Next Category" headers: the page is rendered
 //    at 72 dpi (pdftoppm) and the medal colour at the row is matched to the four medals (reference colours measured from the list's
 //    own images, 2026-11-16). Only drivers named in a line-up are written (no copy of the whole list).
-// (run 18) Output (derived tables): scripts/sim/data/learn/sro-lineups.json.gz, scripts/sim/data/learn/fia-categorisation.json
+// (run 20) Output (derived tables): scripts/sim/data/learn/sro-lineups.json.gz, scripts/sim/data/learn/fia-categorisation.json
 import {writeFileSync, readFileSync, mkdtempSync, existsSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {join} from 'node:path';
 import {gzipSync, gunzipSync} from 'node:zlib';
 import {tmpdir} from 'node:os';
-import {tokens, tokenIndex, variantIn} from './name-match.mjs';
+import {tokens, tokenIndex, variantIn, aliasesOf} from './name-match.mjs';
 const UA = {headers: {'user-agent': 'Mozilla/5.0 (kongboda-motorsports lap simulator)'}}, TMP = mkdtempSync(join(tmpdir(), 'sro-lu-'));
 const get = async (u, bin) => { for (let i = 0; i < 3; i++) { try { const r = await fetch(u, {...UA, signal: AbortSignal.timeout(60000)}); if (r.ok) return bin ? Buffer.from(await r.arrayBuffer()) : await r.text(); if (r.status === 404) return null; } catch {} await new Promise(s => setTimeout(s, 1500)); } return null; };
 const clean = t => t.replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&#0?39;|&rsquo;/g, "'").replace(/&quot;/g, '"').replace(/&([a-z])(acute|grave|uml|circ|tilde|cedil|ring|slash);/gi, '$1').replace(/\s+/g, ' ').trim();
@@ -75,6 +75,8 @@ const LISTS = ['https://www.fia.com/sites/default/files/fia_2024_reviewed_catego
   // FIA's own downloads of 2016-2019 (linked by the press when published); provisional lists are marked as such by the label
   'http://www.fia.com/file/36290/download?token=QObMw1M8', 'http://www.fia.com/file/50676/download?token=94kYWE08',
   'https://www.fia.com/file/63678/download?token=OcTV602F', 'https://sportscar365.com/wp-content/uploads/2017/12/2018-FIA-Drivers-Categorisation-list_141217.pdf',
+  // 2014: the FIA WEC driver list (WEC / ELMS / Asian LMS; SRO used a separate FIA GT3 list that year), printed 27.11.2013
+  'http://f.cl.ly/items/263M3c0C1U2E2M0g3D1S/FIA_WEC_LIST_OF_DRIVERS_CATEGORISATION_271113.pdf',
   'https://www.fia.com/file/74960/download?token=fXNr_Fwf', 'https://web.archive.org/web/20190922123732id_/https://driverscategorisation.fia.com/assets/files/fia-drivers-temporary-list.pdf', 'https://www.fia.com/sites/default/files/drivers_categorisation_list_270315_0.pdf',
   ...[2019, 2020, 2021, 2022, 2023, 2025].flatMap(y => [9, 10, 11, 12].map(m => `https://sportscar365.com/wp-content/uploads/${y}/${String(m).padStart(2, '0')}/public-drivers-list-${y}.pdf`))];
 const ARTICLES = ['https://www.endurance-info.com/auto/article/117908-la-premiere-liste-fia-de-categorisation-des-pilotes-2026-publiee'];
@@ -87,12 +89,15 @@ const ARCH = []; for (const [u, f] of [['driverscategorisation.fia.com/assets/fi
 }
 { const t = await get('https://web.archive.org/cdx/search/cdx?url=driverscategorisation.fia.com&matchType=domain&output=json&from=2019&to=2021&filter=statuscode:200&collapse=urlkey&limit=500');
   try { const r = JSON.parse(t || '[]').slice(1); console.log('archived driverscategorisation.fia.com URLs', r.length); for (const x of r.slice(0, 120)) console.log('  ', x[1], x[3], x[2]); } catch { console.log('no CDX answer for driverscategorisation.fia.com'); } }
+for (const [u, f] of [['fia.com/sites/default/files/', '&filter=original:.*([Gg][Tt]3|[Ww][Ee][Cc]).*([Cc]ategor|[Dd]river|[Ll]ist).*'], ['fiawec.com/', '&filter=original:.*([Cc]ategor|[Rr]ating).*pdf']]) {
+  const t = await get(`https://web.archive.org/cdx/search/cdx?url=${u}&matchType=prefix&output=json&from=2012&to=2015&filter=statuscode:200&collapse=urlkey&limit=500${f}`);
+  try { for (const [, ts, orig] of JSON.parse(t || '[]').slice(1)) { console.log('2014 candidate', ts, orig); if (/categori|driver.*list|list.*driver/i.test(orig) && !/regulation|bulletin/i.test(orig)) ARCH.push({url: `https://web.archive.org/web/${ts}id_/${orig}`, orig, ts}); } } catch {} }
 console.log('archived list candidates', ARCH.length); for (const a of ARCH.filter(a => !/regulation|bulletin|f[23]_drivers|cross-country|priority/i.test(a.orig)).slice(0, 40)) LISTS.push(a.url);
 const REF = {S: [195, 206, 213], B: [198, 152, 103], G: [241, 196, 4], P: [153, 144, 147]};
 const medal = ([r, g, b]) => { if (r > 235 && g > 235 && b > 235) return null; let best = null, d0 = Infinity; for (const [k, c] of Object.entries(REF)) { const d = (r - c[0]) ** 2 + (g - c[1]) ** 2 + (b - c[2]) ** 2; if (d < d0) { d0 = d; best = k; } } return d0 < 2500 ? best : '?'; };
 const fia = {generated: new Date().toISOString().slice(0, 10), note: 'FIA Driver Categorisation public lists: category and next category read from the medal images (P/G/S/B). Only drivers named in a Kongboda line-up are kept.', lists: []};
 const T0 = f => execFileSync('pdftotext', ['-layout', '-l', '1', f, '-']).toString().split('\n').filter(l => l.trim()).slice(0, 12).join('\n');
-const seen = new Set();
+const seen = new Set(), parsed = [];
 for (const url of new Set(LISTS)) {
   let buf = await get(url, true); if (!buf || buf.subarray(0, 4).toString() !== '%PDF') buf = /web\.archive\.org/.test(url) ? null : await get(`https://web.archive.org/web/2id_/${url}`, true); // removed file: its archived copy
   if (!buf || buf.subarray(0, 4).toString() !== '%PDF') { console.log('not reachable', url); continue; }
@@ -101,8 +106,8 @@ for (const url of new Set(LISTS)) {
   let year; const head = execFileSync('pdftotext', ['-l', '1', pdf, '-']).toString(), upd = head.match(/(?:Updated|as of|Valid)[^0-9]{0,20}(\d{1,2})[.\/](\d{1,2})[.\/](\d{4})/i), stamp = head.match(/(\d{4}-\d\d-\d\d \d\d:\d\d:\d\d)/)?.[1] || (upd ? `${upd[3]}-${upd[2].padStart(2, '0')}-${upd[1].padStart(2, '0')} 00:00:00` : null), provisional = /provisional|pr[ée]liminaire/i.test(head),
     y0 = head.match(/Categori[sz]ation\s*[–-]\s*(\d{4}) List/)?.[1] || head.match(/Categori[sz]ation\s+(\d{4})/)?.[1] || head.match(/(\d{4})\s+(?:Provisional\s+)?(?:Drivers?['’]?\s+)?Categori[sz]ation/i)?.[1];
   // the 2019 provisional list prints two columns, "Categorisation 2018" and "Categorisation 2019": it is the list of the later year
-  year = y0; const cols = [...head.matchAll(/Categori[sz]ation (\d{4})/gi)].map(m => +m[1]); if (cols.length > 1) year = String(Math.max(...cols));
-  if (!year || seen.has(year + stamp)) { console.log('skip', url, year, stamp); continue; } seen.add(year + stamp); const label = `${year} List (${(stamp || '').slice(0, 10)}${provisional ? ', provisional' : ''})`;
+  year = y0 || (/WEC.*CATEGORI[SZ]ATION|CATEGORI[SZ]ATION.*WEC/i.test(head) && /271113|2014/.test(url + head) ? '2014' : y0); const wecList = /WEC/i.test(head + url) && !/Driver Categorisation\s*[–-]/i.test(head); const cols = [...head.matchAll(/Categori[sz]ation (\d{4})/gi)].map(m => +m[1]); if (cols.length > 1) year = String(Math.max(...cols));
+  if (!year || seen.has(year + stamp)) { console.log('skip', url, year, stamp); continue; } seen.add(year + stamp); const label = `${year} List (${(stamp || '').slice(0, 10)}${provisional ? ', provisional' : ''}${wecList ? ', FIA WEC list' : ''})`;
   let H = null;
   for (let p = 1; p <= pages; p++) {
     const xml = execFileSync('pdftohtml', ['-xml', '-i', '-zoom', '1', '-f', String(p), '-l', String(p), '-stdout', pdf]).toString();
@@ -128,13 +133,20 @@ for (const url of new Set(LISTS)) {
       all.push({last, first, category: c, next: nx, nextFrom: /\d{4}/.test(date) ? date : undefined, page: p});
     }
   }
+  parsed.push({url, label, stamp, pages, stat, probe, all, pdf: T0(pdf)});
+}
+// a list may print a nickname: John "Ian" Loggie. The driver named "Ian Loggie" in an entry list is that row, and the row of the same
+// person in the other lists ("John Loggie"): the canonical name is added to the names to keep (name-match.mjs aliases)
+const alias = aliasesOf(parsed.flatMap(L => L.all.map(r => unent(`${r.first} ${r.last}`))));
+for (const n of [...knownNames]) { const c = alias.get(key(n)); if (c) { knownNames.add(c); known.add(key(c)); } }
+for (const {url, label, stamp, pages, stat, probe, all, pdf} of parsed) {
   // kept: drivers named in a line-up, exactly or as the one variant of that name in this list (name-match.mjs)
-  const exact = new Set(), R = all.map(r => `${r.first} ${r.last}`), T = R.map(tokens), ix = tokenIndex(T), keep = new Set();
-  all.forEach((r, i) => { const k = key(`${r.first} ${r.last}`); if (known.has(k)) { keep.add(i); exact.add(k); } });
+  const rows = [], exact = new Set(), R = all.map(r => unent(`${r.first} ${r.last}`)), T = R.map(tokens), ix = tokenIndex(T), keep = new Set();
+  all.forEach((r, i) => { const k = key(R[i]), k2 = key(R[i].replace(/["“”][^"“”]*["“”]/g, ' ')); if (known.has(k) || known.has(k2)) { keep.add(i); exact.add(k); } });
   let variants = 0; for (const n of knownNames) if (!exact.has(key(n))) { const v = variantIn(n, T, ix, R); if (v.i >= 0 && !keep.has(v.i)) { keep.add(v.i); variants++; } }
   rows.push(...all.filter((_, i) => keep.has(i))); stat.variants = variants;
   fia.lists.push({url, label, stamp, pages, medals: stat, probe, drivers: rows});
-  if (!rows.length) console.log('no rows read', url, T0(pdf));
+  if (!rows.length) console.log('no rows read', url, pdf);
   console.log(label, pages, 'pages', JSON.stringify(stat), 'kept', rows.length);
 }
 writeFileSync('scripts/sim/data/learn/fia-categorisation.json', JSON.stringify(fia));
