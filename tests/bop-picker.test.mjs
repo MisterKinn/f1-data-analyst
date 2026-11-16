@@ -2,8 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {bopPage} from '../worker/bop-page.js';
 
-const chosen = h => [...h.matchAll(/<option value="([^"]*)" selected>/g)].map(m => m[1]);
-const options = (h, name) => [...(h.match(new RegExp(`<select name="${name}"[^>]*>([\\s\\S]*?)</select>`)) || [, ''])[1].matchAll(/value="([^"]*)"/g)].map(m => m[1]);
+// the real tab's picker (the page also holds the virtual tab, owner 2026-11-16)
+const realOf = h => h.includes('id="bop-panel-virtual"') ? h.slice(0, h.indexOf('id="bop-panel-virtual"')) : h;
+const chosen = h => [...realOf(h).matchAll(/<option value="([^"]*)" selected>/g)].map(m => m[1]);
+const options = (h, name) => [...(realOf(h).match(new RegExp(`<select name="${name}"[^>]*>([\\s\\S]*?)</select>`)) || [, ''])[1].matchAll(/value="([^"]*)"/g)].map(m => m[1]);
 
 test('BoP picker: Series → Class → Year → Event dropdowns, with safe defaults', () => {
   assert.deepEqual(chosen(bopPage({}, 'en')), ['wec', 'hypercar', '2026', 'imola']);

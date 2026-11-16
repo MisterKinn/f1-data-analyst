@@ -20,14 +20,20 @@ test('virtual BoP: every circuit for every class, error reported on held-out cir
     for (const t of tracks) assert.ok(C.values.kg[t] && Object.keys(C.values.kg[t]).length, `${k} ${t}`);
     for (const f of C.fields) assert.ok(C.holdout[f].model != null && C.holdout[f].carMeanOnly != null, `${k} ${f}`);
   }
-  const h = strip(bopPage({mode: 'virtual', class: 'imsa-gtd', track: 'yeongam'}, 'en'));
-  assert.match(h, /Virtual BoP/); assert.ok(!/undefined|NaN/.test(h));
+  const h = strip(bopPage({mode: 'virtual', series: 'imsa', class: 'imsa-gtd', track: 'yeongam'}, 'en'));
+  assert.match(h, /Virtual BoP \(if a race were held here\)/); assert.ok(!/undefined|NaN/.test(h));
 });
 
-test('real and virtual tabs on every BoP page', () => {
+// owner 2026-11-16: pill tabs like the lap simulator, both panels in one page (no reload), the virtual tab in the real tab's format
+test('real and virtual tabs: both panels in the page, same table format', () => {
   for (const q of [{}, {series: 'wec', class: 'lmgt3'}, {series: 'elms'}, {series: 'imsa'}, {mode: 'virtual'}]) {
-    const h = strip(bopPage(q, 'en')); assert.match(h, /Real BoP[\s\S]*Virtual BoP/, JSON.stringify(q)); assert.ok(!/undefined|NaN/.test(h), JSON.stringify(q));
+    const h = strip(bopPage(q, 'en')); assert.match(h, /role="tab"[^>]*>Real BoP<[\s\S]*role="tab"[^>]*>Virtual BoP</, JSON.stringify(q)); assert.ok(!/undefined|NaN/.test(h), JSON.stringify(q));
+    assert.match(h, /id="bop-panel-real"[\s\S]*id="bop-panel-virtual"/);
   }
+  const h = bopPage({mode: 'virtual'}, 'en'), heads = x => (x.match(/<thead><tr>(.*?)<\/tr>/) || [])[1];
+  const real = h.slice(h.indexOf('id="bop-panel-real"'), h.indexOf('id="bop-panel-virtual"')), virt = h.slice(h.indexOf('id="bop-panel-virtual"'));
+  assert.equal(heads(virt).replace(/IMSA 2026 \([^)]*\)/, ''), heads(real).replace(/IMSA 2026 \([^)]*\)/, ''), 'same columns');
+  assert.match(virt, /id="v-bop-csv"/); assert.match(virt, /id="v-bop-car"/);
 });
 
 test('the route passes the tab and circuit to the BoP page (owner 2026-11-16: the tabs did not switch)', async () => {
