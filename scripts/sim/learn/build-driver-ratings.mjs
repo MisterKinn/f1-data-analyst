@@ -7,6 +7,7 @@
 //   2. extra.json files (same shape as `lineups` below) from other official entry lists (SRO, Le Mans Cup, FIA list), when present.
 // The driver of the car's best lap comes from the Al Kamel lap file of that session (DRIVER_NAME of the lap with the learned time).
 // Raw files stay out of git (physics rule 2.9): this writes the derived table scripts/sim/data/learn/driver-ratings.json.gz.
+import {tokens, tokenIndex, variantIn} from './name-match.mjs';
 import {readFileSync, writeFileSync, existsSync, readdirSync} from 'node:fs';
 import {join} from 'node:path';
 import {gunzipSync, gzipSync} from 'node:zlib';
@@ -117,11 +118,15 @@ export function build(root, extras = [], learned = null, sro = null, fia = null,
   // the driver's value printed by an ACO-series Al Kamel file of that season (IMSA prints its own rating: not used for SRO cars).
   const fiaR = {}; for (const L of [...(fia?.lists || [])].sort((a, b) => String(a.stamp).localeCompare(String(b.stamp)))) { // latest print of a season wins
     const season = +L.label.slice(0, 4); for (const d of L.drivers || []) if (d.category)
-    (fiaR[idOf(`${d.first} ${d.last}`)] ||= {})[season] = {rating: d.category, source: `FIA Driver Categorisation ${L.label}, p. ${d.page}`, date: (L.stamp || '').slice(0, 10) || (m => m ? `${m[1]}-${m[2]}-${m[3]}` : `${season}-01-01`)(/web\/(\d{4})(\d\d)(\d\d)/.exec(L.url))}; } // undated lists: date of the archived copy
+    (fiaR[idOf(`${d.first} ${d.last}`)] ||= {})[season] = {rating: d.category, name: `${d.first} ${d.last}`.trim(), source: `FIA Driver Categorisation ${L.label}, p. ${d.page}`, date: (L.stamp || '').slice(0, 10) || (m => m ? `${m[1]}-${m[2]}-${m[3]}` : `${season}-01-01`)(/web\/(\d{4})(\d\d)(\d\d)/.exec(L.url))}; } // undated lists: date of the archived copy
   for (const [id, by] of Object.entries(fiaR)) for (const [season, v] of Object.entries(by)) { const p = drivers[id] ||= {name: names.get(id), seasons: {}}, s = p.seasons[season];
     if (!s) p.seasons[season] = {...v}; else if ((s.changes?.at(-1)?.rating ?? s.rating) !== v.rating) s.fiaList = v; }
-  const sroRating = (id, season) => fiaR[id]?.[season] ? {rating: fiaR[id][season].rating, how: 'fia-list'}
-    : drivers[id]?.seasons?.[season] && !drivers[id].seasons[season].printedBy && !drivers[id].seasons[season].fiaList ? {rating: drivers[id].seasons[season].rating, how: 'season'} : {rating: null, how: 'unknown'};
+  // a driver whose name is written differently on the FIA list of that season (name-match.mjs: one fitting row only) -> how: fia-list, variant
+  const bySeason = {}; for (const [id, by] of Object.entries(fiaR)) for (const [season, v] of Object.entries(by)) (bySeason[season] ||= []).push({t: tokens(v.name), v});
+  const sIx = {}; const variant = (id, season) => { const L = bySeason[season]; if (!L) return null; const ix = sIx[season] ||= tokenIndex(L.map(x => x.t));
+    const r = variantIn(names.get(id) || id.replace(/-/g, ' '), L.map(x => x.t), ix); return r.i >= 0 ? {rating: L[r.i].v.rating, how: 'fia-list', variant: `${r.rule}: ${L[r.i].v.name}`} : null; };
+  const sroRating = (id, season) => fiaR[id]?.[season] ? {rating: fiaR[id][season].rating, how: 'fia-list'} : variant(id, season) ||
+    (drivers[id]?.seasons?.[season] && !drivers[id].seasons[season].printedBy && !drivers[id].seasons[season].fiaList ? {rating: drivers[id].seasons[season].rating, how: 'season'} : {rating: null, how: 'unknown'});
   const words = t => new Set(fold(t).replace(/nuerburg/g, 'nurburg').replace(/\bindy\b/g, 'indianapolis').split(' ').filter(w => w.length > 2 && !STOP.has(w)));
   const sroEvents = [...new Set(rows.filter(r => !SITE[r.series]).map(r => `${r.series}|${r.season}|${r.event}`))].map(ek => { const [series, season, ...ev] = ek.split('|'), event = ev.join('|');
     return {ek, year: +season, sites: siteOf(series, event), venue: words(event.split('|').at(-1)), R: rows.filter(r => `${r.series}|${r.season}|${r.event}` === ek)}; });

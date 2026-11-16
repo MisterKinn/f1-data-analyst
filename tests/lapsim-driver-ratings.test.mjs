@@ -62,3 +62,15 @@ test('printed values: only the four FIA names map to a rating', () => {
   for (const v of ['', 'S*', 'S-B', 'S*-B IN NA', 'Pro', null]) assert.equal(ratingOf(v), null);
   assert.equal(lineupString(['B', 'P', 'G']), 'PGB'); assert.equal(lineupString(['B', null]), null);
 });
+
+test('name variants: one fitting FIA row only, fixed rules, never a different first name', async () => {
+  const {sameDriver, tokens, variantIn, tokenIndex} = await import('../scripts/sim/learn/name-match.mjs');
+  const same = (a, b) => sameDriver(tokens(a), tokens(b));
+  assert.equal(same('Dani Juncadella', 'Daniel Juncadella'), 'short');
+  assert.equal(same('Alessandro Pierguidi', 'Alessandro Pier Guidi'), 'join');
+  assert.equal(same('Albert Costa', 'Albert Costa Balboa'), 'subset');
+  for (const [a, b] of [['Mikkel Jensen', 'Michael Jensen'], ['Denis Lind', 'Dennis Lind'], ['Tom Smith', 'Tim Smith']]) assert.equal(same(a, b), null);
+  const rows = ['Nicholas Yelloly', 'Nicolas Yelloly', 'Daniel Juncadella'].map(tokens), ix = tokenIndex(rows);
+  assert.equal(variantIn('Nick Yelloly', rows, ix).i, -1); // two rows fit: no match
+  assert.equal(variantIn('Dani Juncadella', rows, ix).i, 2);
+});
