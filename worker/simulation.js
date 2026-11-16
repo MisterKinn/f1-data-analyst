@@ -221,7 +221,9 @@ function renderTrace(ds, series, opts) {
   for (const sb of opts.sectors || []) grid += '<line x1="' + x(sb) + '" x2="' + x(sb) + '" y1="' + top + '" y2="' + (H - B) + '" class="ls-sector"/>';
   for (const [a, b] of opts.bands || []) grid += '<rect x="' + x(a) + '" y="' + top + '" width="' + Math.max(1, x(b) - x(a)).toFixed(1) + '" height="' + (H - top - B) + '" class="' + (opts.bandCls || 'ls-risk') + '"/>';
   let lastTag = -99; // a tag closer than 26 units to the previous one is left out (the dashed line stays)
-  for (const c of opts.corners || []) { grid += '<line x1="' + x(c.s) + '" x2="' + x(c.s) + '" y1="' + (top - 4) + '" y2="' + (H - B) + '" class="ls-cline"/>'; if (+x(c.s) - lastTag >= 26) { grid += '<text x="' + x(c.s) + '" y="' + (top - 8) + '" text-anchor="middle" class="ls-axis ls-ctag">T' + c.number + (c.letter || '') + '</text>'; lastTag = +x(c.s); } }
+  // corner names (tracks with no official numbering, owner 2026-11-17) need more room than "T12": about 7 units a letter
+  for (const c of opts.corners || []) { const lab = c.name != null ? String(c.name).replace(/[<>&"]/g, '') : 'T' + c.number + (c.letter || ''), room = c.name != null ? Math.max(26, lab.length * 7) : 26;
+    grid += '<line x1="' + x(c.s) + '" x2="' + x(c.s) + '" y1="' + (top - 4) + '" y2="' + (H - B) + '" class="ls-cline"/>'; if (+x(c.s) - lastTag >= room) { grid += '<text x="' + x(c.s) + '" y="' + (top - 8) + '" text-anchor="middle" class="ls-axis ls-ctag">' + lab + '</text>'; lastTag = +x(c.s) + (c.name != null ? lab.length * 3.5 - 13 : 0); } }
   let lines = '';
   series.forEach((s, j) => {
     let d = '';
@@ -852,7 +854,8 @@ function computeView(K, data, state, R) {
   const chOf = (c, r, key) => R.lapChannels(r && r.trk || track, c.car, env, r, {cls: clsOf(c), seed: data.id + '|' + key, surface, wet: state.mode !== 'manual' && !!(data.conds[condKey] && data.conds[condKey].rain)});
   const ch = [chOf(sel, raw, state.carId)].concat(cmpRaws.map((r, j) => chOf(data.cars[cmpIds[j]], r, cmpIds[j])));
   const tag = arr => arr.map((v, j) => v ? {v, cls: 'ls-line-' + j} : null).filter(Boolean); // keeps each car's colour when one has no channel
-  const TL = t.tel, cOpt = (unit, step, h, lo, more) => Object.assign({sectors: d.sectors || [], corners: d.corners || [], label: unit, km: t.km, unit, step, h, lo}, more);
+  const chartCorners = data.cornerNames?.length ? data.cornerNames.map(c => ({name: c.name, s: Math.round((c.s - offS + LS) % LS)})).sort((a, b) => a.s - b.s) : d.corners || [];
+  const TL = t.tel, cOpt = (unit, step, h, lo, more) => Object.assign({sectors: d.sectors || [], corners: chartCorners, label: unit, km: t.km, unit, step, h, lo}, more);
   const bands = []; ch[0].risk.forEach((x, i) => { if (x >= 0.2) { const last = bands[bands.length - 1]; if (last && i * d.ds - last[1] <= d.ds * 1.5) last[1] = (i + 1) * d.ds; else bands.push([i * d.ds, (i + 1) * d.ds]); } });
   const series = tag([res.v].concat(cmps.map(c => c.v)).map(v => v.map(x => x * 3.6)));
   // battery energy along the lap (J; recovery capped at the per-lap limit, no clamping, so a profile the battery window cannot hold

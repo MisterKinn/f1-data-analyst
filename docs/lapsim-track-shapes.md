@@ -180,4 +180,5 @@ Test: tests/track-map-detail.test.mjs (no right turn between 200 and 400 m). Dra
 - Still estimated (no numbered map and no corner names in OSM): Yongin, Nürburgring Sprint, Brands Hatch (no probe file), Dubai,
   Motegi, Buriram, Okayama, Sydney (both), Inje, Magny-Cours, Mandalika, Phillip Island, Lausitz, Detroit, Jarama (both), and the
   FE street tracks (their numbered maps are in the FE event documents: next source).
-- Charts keep the turn ticks of the map numbering; on name tracks those ticks are still the estimated ones.
+- Charts: on name tracks the telemetry charts mark the same corner names (a name tick is left out when it would overlap the
+  previous one; its dashed line stays).
