@@ -96,7 +96,7 @@ export function build(root, extras = [], learned = null, sro = null, fia = null,
     r.series === 'imsa' ? {printedBy: 'IMSA'} : {});
   // Al Kamel classifications of seasons the archive lacks (WEC 2013-2020, ELMS 2013-2020, Asian LMS 2013-2021, Le Mans Cup):
   // the category printed for the driver that season (fetch-alkamel-ratings.mjs)
-  for (const r of [...(akOld?.rows || [])].sort((a, b) => String(a.date).localeCompare(String(b.date)))) { const rt = ratingOf(r.value), id = rt && idOf(r.name); if (id) note(id, r.name, r.season, rt, `Al Kamel ${r.series.toUpperCase()} results ${r.url}`, r.date || `${r.season}-01-01`); }
+  for (const r of [...(akOld?.rows || [])].sort((a, b) => String(a.date).localeCompare(String(b.date)))) { const rt = ratingOf(r.value), id = rt && idOf(r.name); if (id) note(id, r.name, r.season, rt, `Al Kamel ${r.series.toUpperCase()} results ${r.url}`, r.date || `${r.season}-01-01`, r.season <= 2014 ? {aco: true} : {}); } // before 2015 the ACO series used the FIA WEC list, SRO the FIA GT3 list
   for (const [ek, cars] of extraLineups) for (const c of Object.values(cars)) for (const d of c.drivers) if (ratingOf(d.rating)) note(idOf(d.name), d.name, +ek.split('|')[1], ratingOf(d.rating), d.source || c.source, d.date || c.date);
   // line-up per event and car: the drivers named for that car in the race classification of the event (else qualifying, else practice:
   // test days before an event list test drivers), rating printed at that event; a driver with no value printed at the event takes his
@@ -139,7 +139,7 @@ export function build(root, extras = [], learned = null, sro = null, fia = null,
     return v ? {rating: v.rating, how: 'fia-list', variant: `alias: ${c}`} : null; };
   // the 2014 FIA WEC list is the FIA rating of the driver for the ACO series; SRO used a separate FIA GT3 list that year: marked like a variant
   const sroRating = (id, season) => fiaR[id]?.[season] ? {rating: fiaR[id][season].rating, how: 'fia-list', ...(fiaR[id][season].wec ? {variant: 'FIA WEC list 2014 (SRO used the FIA GT3 list)'} : {})} : variant(id, season) || aliasRating(id, season) ||
-    (drivers[id]?.seasons?.[season] && !drivers[id].seasons[season].printedBy && !drivers[id].seasons[season].fiaList ? {rating: drivers[id].seasons[season].rating, how: 'season'}
+    (drivers[id]?.seasons?.[season] && !drivers[id].seasons[season].printedBy && !drivers[id].seasons[season].fiaList ? {rating: drivers[id].seasons[season].rating, how: 'season', ...(drivers[id].seasons[season].aco ? {variant: 'FIA WEC list rating (ACO series, before 2015); SRO used the FIA GT3 list'} : {})}
       : printedSeason(id, season) || {rating: null, how: 'unknown'});
   // the rating printed for the driver by another official SRO entry list of the SAME season (2020 Spa 24h, Indianapolis 8h, GTWC
   // rounds...). Only when every list of that season prints the same value (a change during the season leaves the seat unknown).

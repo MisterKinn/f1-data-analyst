@@ -618,9 +618,9 @@ Coverage (learned rows with a known line-up rating; best-lap driver known):
 | GT3 | ELMS | 2024–2026 | 78 | 78 | 78 |
 | GT3 | Asian LMS | 2022–2026 | 90 | 90 | 90 |
 | GT3 | IMSA | 2021–2026 | 604 | 603 | 604 |
-| GT3 | GTWC (SRO tables, all regions) | 2013–2026 | 728 | 632 (580 exact names) | 0 |
-| GT3 | GTWC Europe (Timing71: Endurance, Sprint, Spa 24h) | 2024–2026 | 133 | 128 (121) | 0 |
-| GT3 | British GT | 2015–2026 | 273 | 210 (189) | 0 |
+| GT3 | GTWC (SRO tables, all regions) | 2013–2026 | 728 | 656 (593 exact names) | 0 |
+| GT3 | GTWC Europe (Timing71: Endurance, Sprint, Spa 24h) | 2024–2026 | 133 | 129 (122) | 0 |
+| GT3 | British GT | 2015–2026 | 273 | 217 (191) | 0 |
 | GT3 | IGTC (PDFs, Suzuka 1000 km) | 2019–2026 | 79 | 61 (57) | 0 |
 | GT3 | Nürburgring 24h | 2023–2026 | 36 | 33 (32) | 0 |
 | LMP2 | WEC | 2021–2026 | 23 | 23 | 23 |
@@ -628,7 +628,7 @@ Coverage (learned rows with a known line-up rating; best-lap driver known):
 | LMP2 | Asian LMS | 2022–2026 | 13 | 13 | 13 |
 | LMP2 | IMSA | 2021–2026 | 41 | 41 | 41 |
 
-2,120 of 2,306 rows (91.9 %); 2,035 with exact names only (P1d: 1,881, P1c: 1,664). All Al Kamel rows: 1,056 of 1,057 (IMSA 2021 Watkins Glen #39: Tyler McQuarrie has no printed rating). Per
+2,152 of 2,306 rows (93.3 %); 2,051 (88.9 %) without any variant or flagged seat (P1d: 1,881, P1c: 1,664). All Al Kamel rows: 1,056 of 1,057 (IMSA 2021 Watkins Glen #39: Tyler McQuarrie has no printed rating). Per
 season: `node scripts/sim/learn/driver-ratings.mjs`. SRO timing has no driver per lap, so no best-lap driver there.
 
 Gaps and what was checked (2026-11-16):
@@ -642,6 +642,21 @@ Gaps and what was checked (2026-11-16):
   another official SRO entry list of the same season (e.g. Bathurst 2020: Maro Engel P, Luca Stolz G, Yelmer Buurman G from the
   2020 Spa / Indianapolis lists), `how: season` with that list as source, only when every list of the season prints one value. Years
   around it are never used: Buurman is P in 2019 and 2021 but G in 2020.
+- **More sources (P1g, 2026-11-17).**
+  - **FIA 2014 GT3 Driver Categorisation** (the list SRO used in 2014; 06.02.14, 27.06.14, 16.10.14, archived fia.com copies). It
+    prints two columns, "2013" and "2014": both are read (rating words assigned by position: left = 2013, right = 2014), so 2013 and 2014
+    have printed values. Check: 98 % agree with the 2013 SRO entry lists (403 of 412), 96 % with 2014 ones (85 of 89).
+  - **Al Kamel classifications of earlier seasons** (`fetch-alkamel-ratings.mjs` → `alkamel-ratings.json.gz`): WEC 2013–2020
+    (files.alkamelcloud.com manifests), ELMS 2013–2020 and Michelin Le Mans Cup 2017–2026 (season and event menus of the results
+    sites). Seasons whose CSVs print no category (WEC 2013/2015/2016, ELMS 2013–2016 and 2018, Le Mans Cup 2017–2018) give nothing; the
+    Asian LMS site has no season menu (not read). Agreement with the FIA list of the same year: 97–100 % (2017–2026). Before 2015 the
+    ACO series used the FIA WEC list, not the GT3 list: such a value carries `variant` (the row's `lineupExact` is null). The 2014 FIA
+    WEC list itself could not be found (the press link is dead, no archived copy).
+  - **Nicknames printed in FIA lists** (`aliasesOf`, name-match.mjs): 'John "Ian" Loggie' makes "Ian Loggie" that driver in every list
+    ("John Loggie"); marked `variant: alias`.
+- **Still unknown (154 rows after P1g; the P1f/P1e text below is older):** 120 rows with an unrated seat (seats: 56 drivers on no FIA
+  list, 46 missing from that year's list, 49 in 2020 with no list and no printed value), 23 cars with no full published line-up,
+  8 learned rows without a car number (IGTC Bathurst; a learned-data issue), 3 sources listing a driver twice.
 - **Still unknown (186 rows after P1f; P1e text below):** seats of seasons with no FIA list and no category in the entry list (2013: 26, 2014: 68,
   2020: 73 seats; the 2020 list existed only in the FIA web app, the Internet Archive kept no driver data); drivers on no FIA list
   we have under any accepted spelling (94 seats; mostly amateurs, one-off entries and spellings such as "Goetz" / "Götz"); drivers
