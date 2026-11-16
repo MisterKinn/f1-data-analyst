@@ -65,6 +65,9 @@ export function siteOf(series, event) { const e = fold(series + ' ' + event);
   if (/america/.test(e)) return ['gt-world-challenge-america.com'];
   if (/ asia|asia /.test(e)) return ['gt-world-challenge-asia.com'];
   if (/australia/.test(e)) return ['gt-world-challenge-australia.com'];
+  // Nürburgring 24h and its qualifiers (series "nur", VLN/ADAC events) are not SRO meetings: only an IGTC 24h list may name them, never
+  // the GT World Challenge Europe sprint/endurance round on the GP circuit
+  if (/^nur\b/.test(fold(series))) return ['intercontinentalgtchallenge.com'];
   if (/igtc|intercontinental|suzuka 1000|nur/.test(e)) return ['intercontinentalgtchallenge.com', 'gt-world-challenge-europe.com'];
   return ['gt-world-challenge-europe.com', 'intercontinentalgtchallenge.com']; }
 
@@ -122,13 +125,14 @@ export function build(root, extras = [], learned = null, sro = null, fia = null,
   const words = t => new Set(fold(t).replace(/nuerburg/g, 'nurburg').replace(/\bindy\b/g, 'indianapolis').split(' ').filter(w => w.length > 2 && !STOP.has(w)));
   const sroEvents = [...new Set(rows.filter(r => !SITE[r.series]).map(r => `${r.series}|${r.season}|${r.event}`))].map(ek => { const [series, season, ...ev] = ek.split('|'), event = ev.join('|');
     return {ek, year: +season, sites: siteOf(series, event), venue: words(event.split('|').at(-1)), R: rows.filter(r => `${r.series}|${r.season}|${r.event}` === ek)}; });
+  const h24 = t => /\b24 ?h|24 hours/i.test(t), qual = t => /qualifier/i.test(t); // a 24-hour race (or its qualifiers) only matches a meeting of the same kind
   if (sro) {
     const bySite = new Map(); for (const l of sro.lineups) { const k = `${l.site}|${l.year}|${l.meeting}`; (bySite.get(k) || bySite.set(k, {site: l.site, year: l.year, meeting: l.meeting, title: l.title, url: l.url, cars: new Map()}).get(k)).cars.set(l.car, l); }
     const meetings = [...bySite.values()];
     for (const {ek, year, sites, venue, R} of sroEvents) { const make = v => fold(v).split(' ')[0];
       const cands = meetings.filter(m => m.year === year && sites.includes(m.site)).map(m => { const mw = words(m.meeting + ' ' + m.title.split(' Entry List')[0]);
         const v = [...venue].filter(w => mw.has(w)).length, c = R.filter(r => m.cars.has(String(r.entry)) && make(m.cars.get(String(r.entry)).vehicle) === make(r.model)).length; return {m, v, c}; })
-        .filter(x => x.v > 0 && x.c > 0).sort((a, b) => b.c - a.c || b.v - a.v);
+        .filter(x => x.v > 0 && x.c > 0 && (!h24(ek) || h24(x.m.title)) && (!qual(ek) || qual(x.m.title))).sort((a, b) => b.c - a.c || b.v - a.v);
       if (!cands.length) continue; const m = cands[0].m, out = lineups[ek] ||= {};
       for (const [car, l] of m.cars) { const names = l.drivers.filter(n => idOf(n)); if (out[car] || !car || !names.length) continue; const ds = names.map(n => { const id = idOf(n); return {id, ...sroRating(id, year)}; });
         out[car] = {group: 'gt3', cls: l.cls, vehicle: l.vehicle, drivers: ds, lineup: lineupString(ds.map(d => d.rating)), source: `SRO entry list ${m.url}`}; } } }
@@ -137,11 +141,11 @@ export function build(root, extras = [], learned = null, sro = null, fia = null,
   // line-up takes the PDF row when it lists at least two drivers. The PDF is the one of the same site and year that names the venue and
   // holds the most learned cars (final / official lists before provisional ones).
   if (entry) { const rank = d => /final|official|starting/i.test(d.url + d.link) ? 2 : /provisional/i.test(d.url + d.link) ? 0 : 1;
-    const docs = entry.meetings.flatMap(m => m.docs.filter(d => d.cars?.length && d.year).map(d => ({...d, site: m.site, w: words(decodeURIComponent(d.url.split('/').pop()) + ' ' + d.link + ' ' + d.head + ' ' + m.title), cm: new Map(d.cars.map(c => [c.car, c.drivers || {names: c.names}]))})));
+    const docs = entry.meetings.flatMap(m => m.docs.filter(d => d.cars?.length && d.year).map(d => ({...d, site: m.site, mt: `${m.title} ${d.link} ${d.head} ${d.url}`, w: words(decodeURIComponent(d.url.split('/').pop()) + ' ' + d.link + ' ' + d.head + ' ' + m.title), cm: new Map(d.cars.map(c => [c.car, c.drivers || {names: c.names}]))})));
     const toks = n => new Set(fold(n).split(' '));
     for (const {ek, year, sites, venue, R} of sroEvents) {
       const cands = docs.filter(d => d.year === year && sites.includes(d.site)).map(d => ({d, v: [...venue].filter(w => d.w.has(w)).length, c: R.filter(r => d.cm.has(String(r.entry))).length}))
-        .filter(x => x.v > 0 && x.c > 0).sort((a, b) => b.c - a.c || rank(b.d) - rank(a.d) || b.v - a.v);
+        .filter(x => x.v > 0 && x.c > 0 && (!h24(ek) || h24(x.d.mt)) && (!qual(ek) || qual(x.d.mt))).sort((a, b) => b.c - a.c || rank(b.d) - rank(a.d) || b.v - a.v);
       if (!cands.length) continue; const d = cands[0].d, out = lineups[ek] ||= {};
       for (const [car, pdr] of d.cm) { const cur = out[car];
         if (!Array.isArray(pdr)) { if (!cur) { const ds = pdr.names.map(n => { const id = idOf(n); return {id, ...sroRating(id, year)}; }); out[car] = {group: 'gt3', drivers: ds, lineup: lineupString(ds.map(y => y.rating)), source: `SRO entry list ${d.url} (names; no category printed)`}; } continue; }
