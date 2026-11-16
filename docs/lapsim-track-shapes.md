@@ -89,3 +89,20 @@ Island (T10 and T11 landed 10 m apart: the map labels sit too close to tell MG a
 Donington and Estoril (count differs by one), Aragón and Mandalika (dots only, count differs), and maps without numbers (Dubai,
 Sonoma, Oschersleben, Lausitz, Brands Hatch, Snetterton, Magny-Cours). Data: worker/lapsim/corner-numbers-data.js; script:
 scripts/sim/tracks/corner-numbers-place.py.
+
+## A3. Shapes not from OpenStreetMap or the atlas, checked against OpenStreetMap
+
+Tracks drawn from F1 car positions or TUM data were fitted (rigid, trimmed ICP) onto every OpenStreetMap raceway way near the circuit
+(fetched in GitHub Actions, branch probe/osm-shape; Overpass is blocked from the workspace), then checked on Esri satellite images.
+
+| Track | Our line vs OSM (median / max) | Decision |
+|---|---|---|
+| Brands Hatch | 1.0 / 4 m | fine |
+| Istanbul | 4.0 / 16 m | fine: the 16 m is the line inside one corner |
+| Sakhir Outer | 3.0 / 24 m | fixed: after T1 the line ran 20 m off the asphalt (OSM matches the satellite image there) → 0.7 / 7 m |
+| Nürburgring GP | 2.9 / 21 m | not changed: three roads meet in the final section and neither line clearly matches the image |
+| Paul Ricard, Sochi | — | OSM has only fragments there: no reference |
+
+The fix uses the same sideways correction as the atlas tracks (worker/lapsim/map-shape-data.js, atlas "osm"), from
+scripts/sim/tracks/map-shape-osm.mjs and scripts/sim/data/tracks/osm-raceways-a3.json (© OpenStreetMap contributors, ODbL).
+Drawing only: lap distance, corners and the simulator geometry are unchanged.
