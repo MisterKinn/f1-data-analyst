@@ -59,6 +59,8 @@ const LISTS = ['https://www.fia.com/sites/default/files/fia_2024_reviewed_catego
   'https://sportscar365.com/wp-content/uploads/2024/10/public-drivers-list-2024.pdf',
   'https://www.endurance-info.com/sites/default/files/2024-10/Cat%C3%A9gorisation%20FIA%20des%20pilotes.pdf',
   'https://www.endurance-info.com/sites/default/files/2025-09/Liste%20FIA%20Septembre%202025.pdf',
+  'https://cdn-image.as-web.jp/2022/10/10141402/asimg_public-drivers-list-2022-1_compressed_ba6343aa1ad6332.pdf',
+  'https://www.endurance-info.com/sites/default/files/2021-10/public-drivers-list-2021.pdf',
   ...[2019, 2020, 2021, 2022, 2023, 2025].flatMap(y => [9, 10, 11, 12].map(m => `https://sportscar365.com/wp-content/uploads/${y}/${String(m).padStart(2, '0')}/public-drivers-list-${y}.pdf`))];
 const ARTICLES = ['https://www.endurance-info.com/auto/article/117908-la-premiere-liste-fia-de-categorisation-des-pilotes-2026-publiee'];
 for (const a of ARTICLES) { const t = await get(a); for (const h of links(t || '', /\.pdf$/i)) LISTS.push(abs('https://www.endurance-info.com', h)); }
