@@ -4,6 +4,7 @@
 //   join     - one token is two tokens of the other name written together, the rest equal
 //   subset   - all tokens of the shorter name (at least two) are in the longer one
 //   short    - the first names are a short form and its full form of this table, the rest equal
+//   umlaut   - "Götz" written "Goetz" (variantIn, with the written names)
 //   initial  - a first initial and the full first name (Natsoft result sheets: "C.Mostert"), the rest equal
 // No similarity score, no spelling correction ("Denis" / "Dennis" is not joined): a rating never moves to another person.
 // Used by fetch-sro-lineups.mjs (which list rows to keep) and build-driver-ratings.mjs (rating of a driver with no exact name).
@@ -32,8 +33,14 @@ export function sameDriver(a, b) { // a, b: token arrays
   return null;
 }
 // index of the one row of `rows` (token arrays) that is the same driver as `name`; -1 when none or more than one fit
-export function variantIn(name, rows, byToken) {
+// German spelling of an umlaut: "Götz" = "Goetz" (and "Gotz", the umlaut dropped). Needs the written names, not the folded tokens.
+export const tokensDE = s => tokens(String(s || '').replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/Ä/g, 'Ae').replace(/Ö/g, 'Oe').replace(/Ü/g, 'Ue'));
+const key = t => [...t].sort().join(' ');
+export function variantIn(name, rows, byToken, raws) {
   const t = tokens(name); if (t.length < 2) return {i: -1};
+  if (raws) { const a = key(tokensDE(name)), b = key(t); // umlaut: one fitting row only, the same words once the umlaut is spelt out
+    const u = raws.map((r, i) => r && (key(tokensDE(r)) === b || key(tokens(r)) === a) && key(rows[i]) !== b ? i : -1).filter(i => i >= 0);
+    if (u.length === 1) return {i: u[0], rule: 'umlaut'}; if (u.length > 1) return {i: -1, n: u.length}; }
   const cand = new Set(); for (const w of [...t, ...t.flatMap(x => SHORT[x] || []), ...Object.keys(SHORT).filter(k => SHORT[k].some(v => t.includes(v)))]) for (const i of byToken.get(w) || []) cand.add(i);
   for (const i of [...byToken.keys()].filter(k => t.some(x => x.length > 4 && x.startsWith(k) && x !== k)).flatMap(k => byToken.get(k))) cand.add(i); // "pierguidi" -> "pier"
   const hits = [...cand].map(i => [i, sameDriver(t, rows[i])]).filter(([, r]) => r && r !== 'exact');
