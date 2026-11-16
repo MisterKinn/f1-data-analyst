@@ -1,10 +1,15 @@
 // Driver ratings, part 5 (task P1e): line-ups from the SRO results pages (official classifications). Each session page
 // /results/<year>/<meeting>/<session> prints car number and "Drivers" ("Weian CHEN, Kaishun LIU"); no rating (the "Cat" column is the
 // car's cup). Used for rounds whose entry list was never published (GTWC Asia / Australia). Drivers of a car = the union over the
-// race sessions of the meeting (else qualifying, else practice). Runs in GitHub Actions. Writes scripts/sim/data/learn/sro-results-lineups.json.gz (rev 1).
-import {writeFileSync} from 'node:fs';
+// race sessions of the meeting (else qualifying, else practice). Runs in GitHub Actions. Writes scripts/sim/data/learn/sro-results-lineups.json.gz (rev 2).
+import {writeFileSync, mkdtempSync} from 'node:fs';
+import {execFileSync} from 'node:child_process';
+import {join} from 'node:path';
+import {tmpdir} from 'node:os';
 import {gzipSync} from 'node:zlib';
 const UA = {headers: {'user-agent': 'Mozilla/5.0 (kongboda-motorsports lap simulator)'}};
+const TMP = mkdtempSync(join(tmpdir(), 'sro-res-'));
+const bin = async u => { try { const r = await fetch(u, {...UA, signal: AbortSignal.timeout(60000)}); if (!r.ok) return null; const b = Buffer.from(await r.arrayBuffer()); return b.subarray(0, 4).toString() === '%PDF' ? b : null; } catch { return null; } };
 const get = async u => { for (let i = 0; i < 2; i++) { try { const r = await fetch(u, {...UA, signal: AbortSignal.timeout(45000)}); if (r.ok) return await r.text(); if (r.status === 404) return null; } catch {} } return null; };
 const clean = t => t.replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&#0?39;|&rsquo;/g, "'").replace(/\s+/g, ' ').trim();
 const SITES = ['https://www.gt-world-challenge-europe.com', 'https://www.gt-world-challenge-america.com', 'https://www.gt-world-challenge-asia.com',
@@ -28,6 +33,16 @@ for (const site of SITES) {
           const ds = (r[di] || '').split(/\s*[,/]\s*|\s+-\s+/).map(x => x.trim()).filter(x => x.split(' ').length >= 2);
           const o = by.get(car) || by.set(car, {drivers: new Set(), rank: 0, vehicle: r[vi] || '', cls: r[ki] || ''}).get(car);
           if (rk > o.rank) { o.drivers = new Set(); o.rank = rk; } if (rk === o.rank) for (const d of ds) o.drivers.add(d); } } }
+    // GTWC Australia publishes the classifications as Natsoft PDF sheets only (".../Race_R2_GT_STD_I_1.pdf"): Pos, Car, Team,
+    // Driver ("C.Mostert/L.Talbot", a long pair wraps after "/"), Vehicle. Race sheets only.
+    if (!by.size) for (const h of [...new Set([...t.matchAll(/href="([^"]+_Race_[^"]+\.pdf)"/gi)].map(m => m[1]))]) { const b = await bin(h.startsWith('http') ? h : site + h); if (!b) continue; pages++;
+      const f = join(TMP, 'r.pdf'); writeFileSync(f, b); let txt = ''; try { txt = execFileSync('pdftotext', ['-layout', '-l', '3', f, '-']).toString(); } catch { continue; }
+      const L = txt.split('\n'); let col = null;
+      for (let i = 0; i < L.length; i++) { const l = L[i]; if (/INDIVIDUAL LAP TIMES/.test(l)) break; const hd = l.indexOf('Driver'); if (/^Pos\s+Car/.test(l) && hd > 0) { col = hd; continue; }
+        const m = /^\s*(\d+|DNF|DNS|DSQ|NC|NS|EXC)\s+(\d{1,3})\s/.exec(l); if (!m || col == null) continue;
+        let drv = l.slice(col - 2).trim().split(/\s{2,}/)[0]; if (drv.endsWith('/') && L[i + 1]) drv += L[i + 1].slice(col - 2).trim().split(/\s{2,}/)[0];
+        const ds = drv.split('/').map(x => x.replace(/\s*\([A-Za-z]{2,3}\)\s*$/, '').replace(/^([A-Z])\./, '$1. ').trim()).filter(x => x.split(' ').length >= 2);
+        const o = by.get(m[2]) || by.set(m[2], {drivers: new Set(), rank: 3, vehicle: '', cls: ''}).get(m[2]); for (const d of ds) o.drivers.add(d); } }
     const [, year, slug] = /\/results\/(\d{4})\/(.+)/.exec(mp);
     for (const [car, o] of by) if (o.drivers.size) { lineups.push({site: site.replace(/^https:\/\/www\./, ''), year: +year, meeting: 'results-' + slug, title: title.replace(/\s*\|.*$/, '') + ' Results', url: site + mp, car, team: '', vehicle: o.vehicle, cls: o.cls, drivers: [...o.drivers], from: ['', 'practice', 'qualifying', 'race'][o.rank]}); cars++; } });
   log.push(`${site}: ${meetings.size} meetings, ${pages} session pages, ${cars} cars`); console.log(log.at(-1));
