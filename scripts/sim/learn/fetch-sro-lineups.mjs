@@ -59,7 +59,7 @@ const fold = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLow
 const key = s => fold(s).split(' ').sort().join(' ');
 const knownNames = new Set(lineups.flatMap(l => l.drivers)), known = new Set([...knownNames].map(key));
 // also the drivers named only by the ADAC N24 lists and by names-only SRO entry-list PDFs (no category printed there)
-for (const f of ['scripts/sim/data/learn/n24-lineups.json']) if (existsSync(f)) for (const l of JSON.parse(readFileSync(f, 'utf8')).lineups) for (const n of l.drivers) { knownNames.add(n); known.add(key(n)); }
+for (const f of ['scripts/sim/data/learn/n24-lineups.json', 'scripts/sim/data/learn/sro-results-lineups.json.gz']) if (existsSync(f)) for (const l of JSON.parse((f.endsWith('.gz') ? gunzipSync(readFileSync(f)) : readFileSync(f)).toString()).lineups) for (const n of l.drivers) { knownNames.add(n); known.add(key(n)); }
 { const f = 'scripts/sim/data/learn/sro-entry-ratings.json'; if (existsSync(f)) for (const m of JSON.parse(readFileSync(f, 'utf8')).meetings) for (const d of m.docs) for (const c of d.cars || []) for (const n of [...(c.names || []), ...(c.drivers || []).map(x => x.name)]) { knownNames.add(n); known.add(key(n)); } }
 const DR = 'scripts/sim/data/learn/driver-ratings.json.gz'; if (existsSync(DR)) for (const p of Object.values(JSON.parse(gunzipSync(readFileSync(DR)).toString()).drivers)) { knownNames.add(p.name); known.add(key(p.name)); }
 // Public list PDFs (official FIA document; copies hosted by the press when fia.com has removed them). The list year and print time are
