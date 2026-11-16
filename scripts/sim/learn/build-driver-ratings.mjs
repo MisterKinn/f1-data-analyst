@@ -254,6 +254,8 @@ if (process.argv[1]?.endsWith('build-driver-ratings.mjs')) {
   if (sro && n24) sro.lineups.push(...n24.lineups.map(l => ({...l, drivers: l.drivers.filter(n => !/^(sponsor|bewerber|entrant)\b/i.test(n))}))); // Nürburgring 24h / Qualifiers: official ADAC entry lists, same shape (site n24)
   const res = build(root, extras, null, sro, fia, opt('scripts/sim/data/learn/sro-entry-ratings.json'), opt('scripts/sim/data/learn/alkamel-ratings.json.gz'));
   const out = {generated: new Date().toISOString().slice(0, 10),
+    // backtest of the estimate layer (2026-11-17: a known value hidden and guessed again): share of right ratings per method
+    estimateAccuracy: {bracket: '99.7 % of 11,687 driver-seasons', 'nearest year': '85.5 % of 6,060', class: '68.5 % of 22,987 seats', 'no line-up (cup mode)': '71.3 % of seats, 37.8 % of whole line-ups'},
     note: 'FIA driver categorisation (P Platinum, G Gold, S Silver, B Bronze) as printed in official timing / entry-list documents: evidence layer 1 (Known). '
       + 'drivers: {id: {name, seasons: {season: {rating, source, date}}}} (date = the latest official document of that season with this value; changes = other values printed later). '
       + 'Al Kamel paths (data/...) are files of the archive in sources[0]; file = index into files. '

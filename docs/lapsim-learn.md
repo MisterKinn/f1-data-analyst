@@ -628,7 +628,7 @@ Coverage (learned rows with a known line-up rating; best-lap driver known):
 | LMP2 | Asian LMS | 2022–2026 | 13 | 13 | 13 |
 | LMP2 | IMSA | 2021–2026 | 41 | 41 | 41 |
 
-2,152 of 2,306 rows (93.3 %); 2,051 (88.9 %) without any variant or flagged seat (P1d: 1,881, P1c: 1,664). All Al Kamel rows: 1,056 of 1,057 (IMSA 2021 Watkins Glen #39: Tyler McQuarrie has no printed rating). Per
+2,152 of 2,306 rows (93.3 %); 2,051 (88.9 %) without any variant or flagged seat; `lineupEstimated`: 2,306 (100 %, estimate layer) (P1d: 1,881, P1c: 1,664). All Al Kamel rows: 1,056 of 1,057 (IMSA 2021 Watkins Glen #39: Tyler McQuarrie has no printed rating). Per
 season: `node scripts/sim/learn/driver-ratings.mjs`. SRO timing has no driver per lap, so no best-lap driver there.
 
 Gaps and what was checked (2026-11-16):
@@ -654,6 +654,17 @@ Gaps and what was checked (2026-11-16):
     WEC list itself could not be found (the press link is dead, no archived copy).
   - **Nicknames printed in FIA lists** (`aliasesOf`, name-match.mjs): 'John "Ian" Loggie' makes "Ian Loggie" that driver in every list
     ("John Loggie"); marked `variant: alias`.
+- **Estimate layer (P1h, owner decision 2026-11-17: guessing allowed).** Kept apart from the printed values: `lineup` and each seat's
+  `rating` are unchanged (2,152 rows); a seat with no value gets `est` + `estHow`, each learned row gets `lineupEstimated` (all 2,306
+  rows: the printed line-up when known), and `estimatedSeats` / `estimate` (methods used). Methods, in order, with a backtest (a known
+  value hidden and guessed again): **bracket** — the same rating in the nearest year before and after (99.7 % right, 11,687 cases);
+  **nearest year** — the driver's value of the nearest other year (85.5 %, 6,060); **class** — the most common printed line-up of that
+  series and cup with the same number of drivers that holds the known seats (68.5 % of seats, 22,987); a car with **no line-up** takes
+  the most common line-up of its cup (class from the timing table), else of the series (71.3 % of seats, 37.8 % of whole line-ups).
+  Rows: 28 bracket, 69 nearest year, 22 class, 32 no line-up, 3 source with a driver listed twice (a row can mix methods). A fit that
+  wants printed facts only keeps using `lineup` / `lineupExact`.
+- N24 DMSB lists: a block with two car numbers (an entrant line was missed, two cars merged) is dropped and a later list replaces a
+  car only with at most 5 drivers (51 merged crews of 7-9 drivers were found and removed).
 - **Still unknown (154 rows after P1g; the P1f/P1e text below is older):** 120 rows with an unrated seat (seats: 56 drivers on no FIA
   list, 46 missing from that year's list, 49 in 2020 with no list and no printed value), 23 cars with no full published line-up,
   8 learned rows without a car number (IGTC Bathurst; a learned-data issue), 3 sources listing a driver twice.
