@@ -3,7 +3,7 @@
 // (/noticeboard?meeting_id=<id>) or event page (/event/<id>/x). Runs in GitHub Actions (network, poppler).
 // Raw texts go to .cache/sro-entry-pdfs (uploaded as a workflow artifact, never committed: physics rule 2.9); the derived table
 // scripts/sim/data/learn/sro-entry-ratings.json keeps per meeting and car the drivers' printed categories (parseEntryText, sro-entry-parse.mjs;
-// a change to the parser needs a change here too, so the workflow reruns this script; parser rev 3).
+// a change to the parser needs a change here too, so the workflow reruns this script; parser rev 4).
 import {writeFileSync, mkdirSync, mkdtempSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {join} from 'node:path';

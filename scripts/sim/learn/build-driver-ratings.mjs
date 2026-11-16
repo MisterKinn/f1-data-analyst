@@ -137,13 +137,14 @@ export function build(root, extras = [], learned = null, sro = null, fia = null,
   // line-up takes the PDF row when it lists at least two drivers. The PDF is the one of the same site and year that names the venue and
   // holds the most learned cars (final / official lists before provisional ones).
   if (entry) { const rank = d => /final|official|starting/i.test(d.url + d.link) ? 2 : /provisional/i.test(d.url + d.link) ? 0 : 1;
-    const docs = entry.meetings.flatMap(m => m.docs.filter(d => d.cars?.length && d.year).map(d => ({...d, site: m.site, w: words(decodeURIComponent(d.url.split('/').pop()) + ' ' + d.link + ' ' + d.head + ' ' + m.title), cm: new Map(d.cars.map(c => [c.car, c.drivers]))})));
+    const docs = entry.meetings.flatMap(m => m.docs.filter(d => d.cars?.length && d.year).map(d => ({...d, site: m.site, w: words(decodeURIComponent(d.url.split('/').pop()) + ' ' + d.link + ' ' + d.head + ' ' + m.title), cm: new Map(d.cars.map(c => [c.car, c.drivers || {names: c.names}]))})));
     const toks = n => new Set(fold(n).split(' '));
     for (const {ek, year, sites, venue, R} of sroEvents) {
       const cands = docs.filter(d => d.year === year && sites.includes(d.site)).map(d => ({d, v: [...venue].filter(w => d.w.has(w)).length, c: R.filter(r => d.cm.has(String(r.entry))).length}))
         .filter(x => x.v > 0 && x.c > 0).sort((a, b) => b.c - a.c || rank(b.d) - rank(a.d) || b.v - a.v);
       if (!cands.length) continue; const d = cands[0].d, out = lineups[ek] ||= {};
       for (const [car, pdr] of d.cm) { const cur = out[car];
+        if (!Array.isArray(pdr)) { if (!cur) { const ds = pdr.names.map(n => { const id = idOf(n); return {id, ...sroRating(id, year)}; }); out[car] = {group: 'gt3', drivers: ds, lineup: lineupString(ds.map(y => y.rating)), source: `SRO entry list ${d.url} (names; no category printed)`}; } continue; }
         if (cur) { let hit = 0; cur.drivers = cur.drivers.map(x => { const t = x.id ? x.id.split('-') : [], p = t.length && pdr.find(y => { const s = toks(y.name); return t.every(w => s.has(w)); });
             return p?.cat ? (hit++, {id: x.id, rating: p.cat, how: 'event'}) : x; });
           if (hit) { cur.lineup = lineupString(cur.drivers.map(x => x.rating)); cur.entryList = d.url; } }
