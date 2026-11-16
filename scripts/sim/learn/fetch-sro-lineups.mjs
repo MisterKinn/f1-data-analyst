@@ -5,7 +5,7 @@
 //    G gold, P platinum), not text. Each row is read at the column of the "Category" / "Next Category" headers: the page is rendered
 //    at 72 dpi (pdftoppm) and the medal colour at the row is matched to the four medals (reference colours measured from the list's
 //    own images, 2026-11-16). Only drivers named in a line-up are written (no copy of the whole list).
-// (run 5) Output (derived tables): scripts/sim/data/learn/sro-lineups.json.gz, scripts/sim/data/learn/fia-categorisation.json
+// (run 6) Output (derived tables): scripts/sim/data/learn/sro-lineups.json.gz, scripts/sim/data/learn/fia-categorisation.json
 import {writeFileSync, readFileSync, mkdtempSync, existsSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {join} from 'node:path';
@@ -65,7 +65,7 @@ const LISTS = ['https://www.fia.com/sites/default/files/fia_2024_reviewed_catego
 const ARTICLES = ['https://www.endurance-info.com/auto/article/117908-la-premiere-liste-fia-de-categorisation-des-pilotes-2026-publiee'];
 for (const a of ARTICLES) { const t = await get(a); for (const h of links(t || '', /\.pdf$/i)) LISTS.push(abs('https://www.endurance-info.com', h)); }
 // Older lists (2015-2020) are no longer on fia.com: their archived copies (Internet Archive, original FIA URL kept as the source)
-const ARCH = []; for (const [u, f] of [['driverscategorisation.fia.com/assets/files/', ''], ['fia.com/sites/default/files/', '&filter=original:.*(categoris|categoriz).*'], ['sportscar365.com/wp-content/uploads/', '&filter=original:.*(categori|drivers?-list|ratings).*'],
+const ARCH = []; for (const [u, f] of [['driverscategorisation.fia.com/assets/files/', ''], ...['drivers_categ', 'driver_categ', 'drivers_list', 'fia_driver', 'fia_drivers', 'fia_categ', 'categori', 'list', 'public', '2015', '2016', '2017', '2018', '2019', '2020'].map(x => [`fia.com/sites/default/files/${x}`, '&filter=original:.*[Cc]ategori.*']), ['sportscar365.com/wp-content/uploads/', '&filter=original:.*(categori|drivers?-list|ratings).*'],
   ['endurance-info.com/sites/default/files/', '&filter=original:.*([Cc]at.*gorisation|[Ll]iste.FIA|drivers-list).*'], ['dailysportscar.com/', '&filter=original:.*(categori|drivers?-list).*pdf']]) {
   const t = await get(`https://web.archive.org/cdx/search/cdx?url=${u}&matchType=prefix&output=json&from=2014&to=2022&filter=statuscode:200&filter=mimetype:application/pdf&collapse=digest&limit=3000${f}`);
   try { for (const [ts, orig] of JSON.parse(t || '[]').slice(1).map(r => [r[1], r[2]])) if (/categori|list/i.test(orig)) ARCH.push({url: `https://web.archive.org/web/${ts}id_/${orig}`, orig, ts}); } catch {}
