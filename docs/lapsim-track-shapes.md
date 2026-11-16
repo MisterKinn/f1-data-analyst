@@ -38,3 +38,18 @@
 - The learning step was then refitted on the new lines (`fit-endurance.mjs`): per-track errors 0.1-1.0 % again; held-out errors
   unchanged (LMH 0.81 %, LMDh 0.73 %, GT3 0.96 %; LMDh before learning 1.74 -> 1.56 %). Racing lines per car, braking and energy
   follow these lines in the weekly lap-simulator data run.
+
+## Kink fix (owner 2026-11-16: "Daytona T1 and Barcelona T1/T4 entry squashed; check every map")
+
+- Scan: within 30 m a line that turns both ways by more than 0.25 rad while its net turn is small. Run over the band edges, the
+  midline, the least-curvature lines and every car line of all 99 tracks; each hit over 0.25 rad was read by eye (most are real
+  chicanes: Monza T1/T4, Montreal, Le Mans Ford, street corners).
+- Cause 1, every F1 track (Barcelona included): the band was smooth, the coloured car line zig-zagged (SPSA offsets, ±1 m point noise;
+  over 12 000 kinks on 26 tracks). Fix: car-line offsets smoothed (Gaussian σ 8 m) and the drawn line smoothed in position (σ 5 m).
+- Cause 2, map-built tracks: map points are whole metres 5 m apart; the rounding turned the normals, so edges and line wobbled.
+  Fix: Gaussian σ 5 m on the map points before the existing smoothing (shape change under 0.5 m).
+- Cause 3, side steps in four source lines where the real track is straight (Daytona 200 m before T1, Autopolis 185 m, Valencia
+  Ricardo Tormo 3400 m, Laguna Seca 2286 m before T7): drawn with a smooth curve (`MAP_STEPS` in worker/simulation.js).
+- Drawing only. The simulator geometry (kappa) still has the four side steps: fixing them changes lap times, so it is a separate
+  physics change with its own gate (queued).
+- Test: `tests/track-map-detail.test.mjs` (fails on the old code: 12 333 car-line kinks, Daytona 0.51 rad).

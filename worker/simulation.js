@@ -425,6 +425,25 @@ const LINE_CACHE = new Map();
 // (owner 2026-11-15: no wrinkled edges) and keeps the shape of real corners (Monaco hairpin, Montreal chicane checked)
 const SG7 = [-2, 3, 6, 7, 6, 3, -2].map(v => v / 21);
 const smoothClosed = P => { let a = P; for (let p = 0; p < 2; p++) { const n = a.length, b = a; a = b.map((q, i) => q.map((_, c) => SG7.reduce((s, w, k) => s + w * b[(i + k - 3 + n) % n][c], 0))); } return a; };
+// Line offsets (0.1 m) on a closed lap, Gaussian σ = LINE_SIGMA_M (owner 2026-11-16: no zig-zag lines). The per-car SPSA offsets carry
+// point-to-point noise of up to ±1 m that drew as kinks on the map (1561 kinks over 26 tracks → 41); a real line moves smoothly across the
+// track. The least-curvature lines (base, sp) are smooth already: smoothing their offsets would undo how they straighten the midline.
+const LINE_SIGMA_M = 8;
+const gaussW = sg => { const r = Math.ceil(3 * sg), w = []; for (let k = -r; k <= r; k++) w.push(Math.exp(-k * k / (2 * sg * sg))); const W = w.reduce((s, x) => s + x, 0); return {r, w: w.map(x => x / W)}; };
+const smoothPts = (P, sg) => { const n = P.length, {r, w} = gaussW(sg); return P.map((_, i) => [0, 1].map(c => w.reduce((s, x, k) => s + x * P[(i + k - r + n * 4) % n][c], 0))); };
+const smoothOff = (o, step) => { const n = o.length, {r, w} = gaussW(LINE_SIGMA_M / (step || 5)); return o.map((_, i) => Math.round(w.reduce((s, x, k) => s + x * o[(i + k - r + n * 4) % n], 0))); };
+// Side steps in a source line where the real track runs straight (owner 2026-11-16: "Daytona T1 squashed"), found by the kink scan
+// (tests/track-map-detail.test.mjs) and checked by eye one by one against the circuit maps: lap distance of the step (m).
+// Drawing only: the points within ±MAP_REPAIR_M are replaced by a cubic Hermite curve between the line on either side. The simulator's
+// own geometry (kappa) is unchanged here; its fix is a separate physics change.
+export const MAP_STEPS = {daytona: [290], autopolis: [185], 'ricardo-tormo': [3400], 'laguna-seca': [2286]};
+const MAP_REPAIR_M = 45;
+function mapRepair(id, P, len) {
+  const steps = MAP_STEPS[id]; if (!steps) return P; const n = P.length, st = (len || n * 5) / n, h = Math.round(MAP_REPAIR_M / st), Q = P.map(p => p.slice()), at = i => P[((i % n) + n) % n];
+  for (const s of steps) { const c = Math.round(s / st), a = c - h, b = c + h, ta = [at(a)[0] - at(a - 3)[0], at(a)[1] - at(a - 3)[1]].map(v => v / 3), tb = [at(b + 3)[0] - at(b)[0], at(b + 3)[1] - at(b)[1]].map(v => v / 3), m = b - a;
+    for (let k = 1; k < m; k++) { const t = k / m, h00 = 2 * t ** 3 - 3 * t * t + 1, h10 = t ** 3 - 2 * t * t + t, h01 = -2 * t ** 3 + 3 * t * t, h11 = t ** 3 - t * t;
+      Q[((a + k) % n + n) % n] = [0, 1].map(j => h00 * at(a)[j] + h10 * m * ta[j] + h01 * at(b)[j] + h11 * m * tb[j]); } }
+  return Q; }
 export function lineData(id) {
   if (LINE_CACHE.has(id)) return LINE_CACHE.get(id);
   const L = lapsimRacingLines?.tracks?.[id], C = lapsimCarLines?.tracks?.[id], r1 = p => [+p[0].toFixed(1), +p[1].toFixed(1)];
@@ -442,13 +461,19 @@ export function lineData(id) {
   } else {
     const m = lapsimTracks[id]?.map; if (!m?.x?.length) { LINE_CACHE.set(id, null); return null; }
     const h = widthM / 2; edges = wS ? 'stated' : wM ? 'map' : 'assumed';
-    mid = smoothClosed(m.x.map((x, i) => [x, m.y[i]])); nrm = normals(mid); half = mid.map(() => Math.max(0.5, h - 1));
+    // map points are whole metres 5 m apart: their rounding turns the heading by up to ±0.1 rad per point, which the normals carry to
+    // the line and the edges as a zig-zag; a Gaussian (σ = LINE_SIGMA_M / 1.6, about 5 m) first removes it (shape change under 0.5 m)
+    const P0 = mapRepair(id, m.x.map((x, i) => [x, m.y[i]]), lapsimTracks[id].length), st0 = (lapsimTracks[id].length || P0.length * 5) / P0.length;
+    mid = smoothClosed(smoothPts(P0, LINE_SIGMA_M / 1.6 / st0)); nrm = normals(mid); half = mid.map(() => Math.max(0.5, h - 1));
     left = mid.map((p, i) => [p[0] + nrm[i][0] * h, p[1] + nrm[i][1] * h]); right = mid.map((p, i) => [p[0] - nrm[i][0] * h, p[1] - nrm[i][1] * h]);
     base = minCurvatureLine(mid.map(p => p[0]), mid.map(p => p[1]), half).offset.map(v => Math.round(v * 10));
   }
   const sp = minCurvatureLine(mid.map(p => p[0]), mid.map(p => p[1]), half, {order: 2}).offset.map(v => Math.round(v * 10));
+  const step = mid.reduce((s, p, i) => s + Math.hypot(p[0] - mid[(i + 1) % mid.length][0], p[1] - mid[(i + 1) % mid.length][1]), 0) / mid.length;
+  const clampOff = o => o.map((v, i) => Math.max(-half[i] * 10, Math.min(half[i] * 10, v)));
+  const cars = Object.fromEntries(Object.entries(C || {}).map(([k, v]) => [k, Object.fromEntries(Object.entries(v).map(([m, q]) => [m, q?.off ? {...q, off: clampOff(smoothOff(q.off, step))} : q]))]));
   const xs = [...left, ...right].map(p => p[0]), ys = [...left, ...right].map(p => p[1]);
-  const out = {mid: mid.map(r1), left: left.map(r1), right: right.map(r1), nrm, base, sp, edges, widthM, minX: Math.min(...xs), maxY: Math.max(...ys), pad: 40, cars: C || {}};
+  const out = {mid: mid.map(r1), left: left.map(r1), right: right.map(r1), nrm, base, sp, edges, widthM, minX: Math.min(...xs), maxY: Math.max(...ys), pad: 40, cars};
   LINE_CACHE.set(id, out); return out;
 }
 // Map controls: racing line on/off, qualifying/race line, zoom (+, −, fit; wheel/pinch and drag on the map)
@@ -730,7 +755,11 @@ function computeView(K, data, state, R) {
       bl = computeView.blend[bk] = computeView.blend[bk] || R.blendLine(K, [LD.mid.map(p => p[0]), LD.mid.map(p => p[1])], LD.nrm, LD.base.map(x => x / 10), LD.sp.map(x => x / 10), sel.car, env, (sel.grip || 1) / Math.pow(sel.timeScale || 1, 2)); // a model's learned pace (time scale) counts as grip for its line
       off = bl.off.map(x => x * 10);
     }
-    const P = LD.mid.map((m, i) => [m[0] + LD.nrm[i][0] * off[i] / 10, m[1] + LD.nrm[i][1] * off[i] / 10]);
+    // drawn and simulated line smoothed in position, Gaussian σ = 5 m (owner 2026-11-16: no zig-zag lines; the least-curvature solutions
+    // and the SPSA car lines keep ±0.5 m point noise that drew as kinks). Self-contained: this function also runs in the browser.
+    const P = (Q => { const N = Q.length, st = Q.reduce((s, p, i) => s + Math.hypot(p[0] - Q[(i + 1) % N][0], p[1] - Q[(i + 1) % N][1]), 0) / N, sg = 5 / (st || 5), r = Math.ceil(3 * sg), w = [];
+      for (let k = -r; k <= r; k++) w.push(Math.exp(-k * k / (2 * sg * sg))); const W = w.reduce((s, x) => s + x, 0);
+      return Q.map((_, i) => [0, 1].map(c => w.reduce((s, x, k) => s + x * Q[(i + k - r + N * 4) % N][c], 0) / W)); })(LD.mid.map((m, i) => [m[0] + LD.nrm[i][0] * off[i] / 10, m[1] + LD.nrm[i][1] * off[i] / 10]));
     const tr = R.lineTrack(K, P.map(p => p[0]), P.map(p => p[1]));
     const car = mode === 'r' && cl ? Object.assign({}, sel.car, {mass: sel.car.mass + cl.fuelKg}) : sel.car;
     tr.mu.fill((sel.grip || 1) * (mode === 'r' && cl ? cl.grip : 1));
