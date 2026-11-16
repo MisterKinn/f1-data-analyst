@@ -5,7 +5,7 @@
 //    G gold, P platinum), not text. Each row is read at the column of the "Category" / "Next Category" headers: the page is rendered
 //    at 72 dpi (pdftoppm) and the medal colour at the row is matched to the four medals (reference colours measured from the list's
 //    own images, 2026-11-16). Only drivers named in a line-up are written (no copy of the whole list).
-// (run 8) Output (derived tables): scripts/sim/data/learn/sro-lineups.json.gz, scripts/sim/data/learn/fia-categorisation.json
+// (run 9) Output (derived tables): scripts/sim/data/learn/sro-lineups.json.gz, scripts/sim/data/learn/fia-categorisation.json
 import {writeFileSync, readFileSync, mkdtempSync, existsSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {join} from 'node:path';
@@ -91,12 +91,15 @@ for (const url of new Set(LISTS)) {
   const pdf = join(TMP, 'list.pdf'); writeFileSync(pdf, buf);
   const pages = +(execFileSync('pdfinfo', [pdf]).toString().match(/Pages:\s+(\d+)/)?.[1] || 0), rows = [], stat = {S: 0, B: 0, G: 0, P: 0, '?': 0, none: 0}, probe = [];
   const head = execFileSync('pdftotext', ['-l', '1', pdf, '-']).toString(), upd = head.match(/(?:Updated|as of|Valid)[^0-9]{0,20}(\d{1,2})[.\/](\d{1,2})[.\/](\d{4})/i), stamp = head.match(/(\d{4}-\d\d-\d\d \d\d:\d\d:\d\d)/)?.[1] || (upd ? `${upd[3]}-${upd[2].padStart(2, '0')}-${upd[1].padStart(2, '0')} 00:00:00` : null), provisional = /provisional|pr[ée]liminaire/i.test(head),
-    year = head.match(/Categori[sz]ation\s*[–-]\s*(\d{4}) List/)?.[1] || head.match(/Categori[sz]ation\s+(\d{4})/)?.[1] || head.match(/(\d{4})\s+(?:Drivers?'?\s+)?Categori[sz]ation/i)?.[1];
+    year = head.match(/Categori[sz]ation\s*[–-]\s*(\d{4}) List/)?.[1] || head.match(/Categori[sz]ation\s+(\d{4})/)?.[1] || head.match(/(\d{4})\s+(?:Provisional\s+)?(?:Drivers?['’]?\s+)?Categori[sz]ation/i)?.[1];
   if (!year || seen.has(year + stamp)) { console.log('skip', url, year, stamp); continue; } seen.add(year + stamp); const label = `${year} List (${(stamp || '').slice(0, 10)}${provisional ? ', provisional' : ''})`;
+  let H = null;
   for (let p = 1; p <= pages; p++) {
     const xml = execFileSync('pdftohtml', ['-xml', '-i', '-zoom', '1', '-f', String(p), '-l', String(p), '-stdout', pdf]).toString();
     const T = [...xml.matchAll(/<text top="(\d+)" left="(\d+)" width="(\d+)" height="(\d+)"[^>]*>([\s\S]*?)<\/text>/g)].map(m => ({top: +m[1], left: +m[2], w: +m[3], h: +m[4], s: clean(m[5])}));
-    const hd = re => T.find(t => re.test(t.s)), cat = hd(/^(Category|Categori[sz]ation( \d{4})?)$/i), next = hd(/^Next Category$/), ln = hd(/^(Last ?name|Surname|Name)/i), fn = hd(/^First ?name/i), nat = hd(/^Nationality/) || cat, eff = hd(/next categorisation|^Effective date/);
+    const hd = re => T.find(t => re.test(t.s)); let cat = hd(/^(Category|Categori[sz]ation( \d{4})?)$/i), next = hd(/^Next Category$/), ln = hd(/^(Last ?name|Surname|Name)/i), fn = hd(/^First ?name/i), nat = hd(/^Nationality/) || cat, eff = hd(/next categorisation|^Effective date/);
+    // 2018 lists print the column headers on page 1 only: later pages use the columns of the last page that had them (whole page)
+    if (cat && ln) H = {cat, next, ln, fn, nat, eff}; else if (H) ({cat, next, ln, fn, nat, eff} = {...H, cat: {...H.cat, top: -1e9}});
     if (!cat || !ln) continue; // 2015 list: one "Name" column ("Abbott Hunter"), no first-name column
     execFileSync('pdftoppm', ['-r', '72', '-f', String(p), '-l', String(p), '-singlefile', pdf, join(TMP, 'pg')]);
     const ppm = readFileSync(join(TMP, 'pg.ppm')), hdr = ppm.toString('latin1', 0, 40).match(/^P6\s+(\d+)\s+(\d+)\s+255\s/), W = +hdr[1], off = hdr[0].length;
