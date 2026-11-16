@@ -5,7 +5,7 @@
 //    G gold, P platinum), not text. Each row is read at the column of the "Category" / "Next Category" headers: the page is rendered
 //    at 72 dpi (pdftoppm) and the medal colour at the row is matched to the four medals (reference colours measured from the list's
 //    own images, 2026-11-16). Only drivers named in a line-up are written (no copy of the whole list).
-// (run 21) Output (derived tables): scripts/sim/data/learn/sro-lineups.json.gz, scripts/sim/data/learn/fia-categorisation.json
+// (run 22) Output (derived tables): scripts/sim/data/learn/sro-lineups.json.gz, scripts/sim/data/learn/fia-categorisation.json
 import {writeFileSync, readFileSync, mkdtempSync, existsSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {join} from 'node:path';
@@ -108,7 +108,7 @@ for (const url of new Set(LISTS)) {
   // the 2019 provisional list prints two columns, "Categorisation 2018" and "Categorisation 2019": it is the list of the later year
   year = y0 || (/WEC.*CATEGORI[SZ]ATION|CATEGORI[SZ]ATION.*WEC/i.test(head) && /271113|2014/.test(url + head) ? '2014' : y0); const wecList = /WEC/i.test(head + url) && !/Driver Categorisation\s*[–-]/i.test(head); const cols = [...head.matchAll(/Categori[sz]ation (\d{4})/gi)].map(m => +m[1]); if (cols.length > 1) year = String(Math.max(...cols));
   if (!year || seen.has(year + stamp)) { console.log('skip', url, year, stamp); continue; } seen.add(year + stamp); const label = `${year} List (${(stamp || '').slice(0, 10)}${provisional ? ', provisional' : ''}${wecList ? ', FIA WEC list' : ''})`;
-  let H = null;
+  let H = null, yearCols = null; const allPrev = [];
   for (let p = 1; p <= pages; p++) {
     const xml = execFileSync('pdftohtml', ['-xml', '-i', '-zoom', '1', '-f', String(p), '-l', String(p), '-stdout', pdf]).toString();
     const T = [...xml.matchAll(/<text top="(\d+)" left="(\d+)" width="(\d+)" height="(\d+)"[^>]*>([\s\S]*?)<\/text>/g)].map(m => ({top: +m[1], left: +m[2], w: +m[3], h: +m[4], s: clean(m[5])}));
@@ -116,6 +116,10 @@ for (const url of new Set(LISTS)) {
     // 2018 lists print the column headers on page 1 only: later pages use the columns of the last page that had them (whole page)
     if (cat && ln) H = {cat, next, ln, fn, nat, eff}; else if (H) ({cat, next, ln, fn, nat, eff} = {...H, cat: {...H.cat, top: -1e9}});
     if (cat && cols.length > 1 && !cat.s.includes(year)) cat = null; // two-year list: only its later-year column, never the earlier one
+    // the 2014 FIA GT3 list: header "Name  2013  2014" (a word per driver and year). The list-year column is the list; the column of the
+    // year before is that year's printed rating too (2013, a season with no other list): kept as its own list
+    let prevCol = null; if (!cat && ln) { const yc = T.filter(t => /^20\d\d$/.test(t.s) && Math.abs(t.top - ln.top) < 5); cat = yc.find(t => t.s === String(year)) || null; prevCol = yc.find(t => t.s === String(year - 1)) || null; if (cat) yearCols = {cat, prevCol}; }
+    else if (!cat && yearCols) ({cat, prevCol} = {cat: {...yearCols.cat, top: -1e9}, prevCol: yearCols.prevCol});
     if (!cat || !ln) continue; // 2015 list: one "Name" column ("Abbott Hunter"), no first-name column
     execFileSync('pdftoppm', ['-r', '72', '-f', String(p), '-l', String(p), '-singlefile', pdf, join(TMP, 'pg')]);
     const ppm = readFileSync(join(TMP, 'pg.ppm')), hdr = ppm.toString('latin1', 0, 40).match(/^P6\s+(\d+)\s+(\d+)\s+255\s/), W = +hdr[1], off = hdr[0].length;
@@ -124,16 +128,19 @@ for (const url of new Set(LISTS)) {
     const lines = new Map(); for (const t of T.filter(t => t.top > cat.top + cat.h)) { const k = [...lines.keys()].find(y => Math.abs(y - t.top) <= 3) ?? t.top; (lines.get(k) || lines.set(k, []).get(k)).push(t); }
     for (const [y, ts] of lines) {
       const col = (a, b) => ts.filter(t => mid(t) >= a && mid(t) < b).map(t => t.s).join(' ');
-      const last = fn ? col(0, fn.left - 5) : col(0, cat.left - 10), first = fn ? col(fn.left - 5, nat.left - 10) : ''; if (!last || /FIA Driver Categori|Page \d|^\d{4}-\d\d|Drivers in /.test(last)) continue;
+      const last = (fn ? col(0, fn.left - 5) : col(0, (prevCol || cat).left - 10)).replace(/\*+/g, '').trim(), first = fn ? col(fn.left - 5, nat.left - 10) : ''; if (!last || /FIA Driver Categori|Page \d|^\d{4}-\d\d|Drivers in /.test(last)) continue;
       // a list that prints the category as a word (older lists) is read as text; the others by the medal image
-      const word = col(cat.left - 30, cat.left + cat.w + 60).match(/\b(Platinum|Platinium|Gold|Silver|Bronze)\b/i)?.[1];
-      const cy = y + ts[0].h / 2, c = word ? {platinum: 'P', platinium: 'P', gold: 'G', silver: 'S', bronze: 'B'}[word.toLowerCase()] : medal(px(mid(cat) - 5, cy)), nx = next ? medal(px(mid(next) - 5, cy)) : null, date = eff ? col(eff.left - 30, 1e9) : '';
+      const word = col(prevCol ? Math.max(cat.left - 30, prevCol.left + prevCol.w + 40) : cat.left - 30, cat.left + cat.w + 60).match(/\b(Platinum|Platinium|Gold|Silver|Bronze)\b/i)?.[1];
+      const W2 = w => w ? {platinum: 'P', platinium: 'P', gold: 'G', silver: 'S', bronze: 'B'}[w.toLowerCase()] : null;
+      if (prevCol) { const pw = col(prevCol.left - 30, prevCol.left + prevCol.w + 40).match(/\b(Platinum|Platinium|Gold|Silver|Bronze)\b/i)?.[1]; if (pw) allPrev.push({last, first, category: W2(pw), next: null, page: p}); }
+      const cy = y + ts[0].h / 2, c = word ? W2(word) : yearCols ? null : medal(px(mid(cat) - 5, cy)), nx = next ? medal(px(mid(next) - 5, cy)) : null, date = eff ? col(eff.left - 30, 1e9) : '';
       if (probe.length < 12) probe.push({last, first, rgb: px(mid(cat) - 5, cy).map(Math.round), c, nx});
       stat[c ?? 'none']++;
       all.push({last, first, category: c, next: nx, nextFrom: /\d{4}/.test(date) ? date : undefined, page: p});
     }
   }
   parsed.push({url, label, stamp, pages, stat, probe, all, pdf: T0(pdf)});
+  if (allPrev.length && !seen.has(String(year - 1) + 'col' + stamp)) { seen.add(String(year - 1) + 'col' + stamp); parsed.push({url, label: `${year - 1} List (${year - 1} column of the ${year} GT3 list ${(stamp || '').slice(0, 10)})`, stamp: `${year - 1}-12-31 00:00:00`, pages, stat: {words: allPrev.length}, probe: [], all: allPrev, pdf: ''}); }
 }
 // a list may print a nickname: John "Ian" Loggie. The driver named "Ian Loggie" in an entry list is that row, and the row of the same
 // person in the other lists ("John Loggie"): the canonical name is added to the names to keep (name-match.mjs aliases)
