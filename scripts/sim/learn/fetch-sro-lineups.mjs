@@ -5,7 +5,7 @@
 //    G gold, P platinum), not text. Each row is read at the column of the "Category" / "Next Category" headers: the page is rendered
 //    at 72 dpi (pdftoppm) and the medal colour at the row is matched to the four medals (reference colours measured from the list's
 //    own images, 2026-11-16). Only drivers named in a line-up are written (no copy of the whole list).
-// (run 20) Output (derived tables): scripts/sim/data/learn/sro-lineups.json.gz, scripts/sim/data/learn/fia-categorisation.json
+// (run 21) Output (derived tables): scripts/sim/data/learn/sro-lineups.json.gz, scripts/sim/data/learn/fia-categorisation.json
 import {writeFileSync, readFileSync, mkdtempSync, existsSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {join} from 'node:path';
@@ -104,7 +104,7 @@ for (const url of new Set(LISTS)) {
   const pdf = join(TMP, 'list.pdf'); writeFileSync(pdf, buf);
   const pages = +(execFileSync('pdfinfo', [pdf]).toString().match(/Pages:\s+(\d+)/)?.[1] || 0), rows = [], all = [], stat = {S: 0, B: 0, G: 0, P: 0, '?': 0, none: 0}, probe = [];
   let year; const head = execFileSync('pdftotext', ['-l', '1', pdf, '-']).toString(), upd = head.match(/(?:Updated|as of|Valid)[^0-9]{0,20}(\d{1,2})[.\/](\d{1,2})[.\/](\d{4})/i), stamp = head.match(/(\d{4}-\d\d-\d\d \d\d:\d\d:\d\d)/)?.[1] || (upd ? `${upd[3]}-${upd[2].padStart(2, '0')}-${upd[1].padStart(2, '0')} 00:00:00` : null), provisional = /provisional|pr[ée]liminaire/i.test(head),
-    y0 = head.match(/Categori[sz]ation\s*[–-]\s*(\d{4}) List/)?.[1] || head.match(/Categori[sz]ation\s+(\d{4})/)?.[1] || head.match(/(\d{4})\s+(?:Provisional\s+)?(?:Drivers?['’]?\s+)?Categori[sz]ation/i)?.[1];
+    y0 = head.match(/Categori[sz]ation\s*[–-]\s*(\d{4}) List/)?.[1] || head.match(/Categori[sz]ation\s+(\d{4})/)?.[1] || head.match(/(\d{4})\s+(?:GT3\s+)?(?:Provisional\s+)?(?:Drivers?['’]?\s+)?Categori[sz]ation/i)?.[1];
   // the 2019 provisional list prints two columns, "Categorisation 2018" and "Categorisation 2019": it is the list of the later year
   year = y0 || (/WEC.*CATEGORI[SZ]ATION|CATEGORI[SZ]ATION.*WEC/i.test(head) && /271113|2014/.test(url + head) ? '2014' : y0); const wecList = /WEC/i.test(head + url) && !/Driver Categorisation\s*[–-]/i.test(head); const cols = [...head.matchAll(/Categori[sz]ation (\d{4})/gi)].map(m => +m[1]); if (cols.length > 1) year = String(Math.max(...cols));
   if (!year || seen.has(year + stamp)) { console.log('skip', url, year, stamp); continue; } seen.add(year + stamp); const label = `${year} List (${(stamp || '').slice(0, 10)}${provisional ? ', provisional' : ''}${wecList ? ', FIA WEC list' : ''})`;

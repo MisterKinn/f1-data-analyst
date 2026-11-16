@@ -2,7 +2,7 @@
 // in the seasons the local archive (tobi/imsa_data, 2021+) does not hold: WEC 2013-2020 (files.alkamelcloud.com manifests), ELMS
 // 2013-2020, Asian Le Mans 2013-2021 and Michelin Le Mans Cup (all seasons; *.alkamelsystems.com result pages). Classification CSVs
 // only ("03_Classification*.CSV"; DRIVERn_LICENSE or a category column). Writes scripts/sim/data/learn/alkamel-ratings.json.gz:
-// one row per driver, season and printed value, with the first file that prints it. Raw files are not kept. Runs in GitHub Actions (rev 1).
+// one row per driver, season and printed value, with the first file that prints it. Raw files are not kept. Runs in GitHub Actions (rev 2).
 import {writeFileSync} from 'node:fs';
 import {gzipSync} from 'node:zlib';
 const UA = {headers: {'user-agent': 'Mozilla/5.0 (kongboda-motorsports lap simulator)'}};
@@ -29,10 +29,12 @@ const isClass = u => /\/03_Classification[^/]*\.CSV$/i.test(decodeURIComponent(u
 async function readAll(series, urls) { let n = 0, files = 0; await pool(urls, 6, async u => { const t = await get(u); if (t) { files++; n += readCsv(series, u, t); } }); return {files, n}; }
 
 // 1. WEC: manifests (season list, then one JSON per season with every published file)
-{ const idx = JSON.parse(await get('https://files.alkamelcloud.com/wec/manifests/results.json') || '{"records":[]}');
-  for (const s of idx.records.filter(r => +r.name.slice(0, 4) >= 2013 && +r.name.slice(0, 4) <= 2020)) {
-    const m = await get(s.url); if (!m) { log.push(`wec ${s.name}: no manifest`); continue; }
-    const urls = [...new Set([...m.matchAll(/"(https?:\/\/[^"]+?\.CSV)"/gi)].map(x => x[1].replace(/\\\//g, '/')).filter(isClass))];
+{ const idx = await get('https://files.alkamelcloud.com/wec/manifests/results.json') || ''; console.log('wec index', idx.length, idx.slice(0, 300));
+  const seasons = [...new Set([...idx.matchAll(/results_(\d\d_(20\d\d)(?:-\d{4})?)\.json/g)].filter(m => +m[2] >= 2013 && +m[2] <= 2020).map(m => m[1]))]
+    .map(id => ({name: id, url: `https://files.alkamelcloud.com/wec/manifests/results_${id}.json`}));
+  for (const s of seasons) {
+    const m = await get(s.url); if (!m) { log.push(`wec ${s.name}: no manifest`); continue; } if (s === seasons[0]) console.log('manifest sample', m.slice(0, 600));
+    const urls = [...new Set([...m.matchAll(/"((?:https?:\/\/|\/?Results\/)[^"]+?\.CSV)"/gi)].map(x => x[1].replace(/\\\//g, '/')).map(u => u.startsWith('http') ? u : `https://fiawec.alkamelsystems.com/${u.replace(/^\//, '')}`).map(u => encodeURI(decodeURI(u))).filter(isClass))];
     const r = await readAll('wec', urls); log.push(`wec ${s.name}: ${urls.length} classification files, ${r.files} read, ${r.n} driver values`); console.log(log.at(-1)); } }
 
 // 2. ELMS / Asian LMS / Le Mans Cup: result pages (?season=<id>, then each event) list the files
