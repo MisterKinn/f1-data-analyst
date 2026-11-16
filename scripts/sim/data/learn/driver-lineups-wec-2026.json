@@ -1,0 +1,26 @@
+{
+ "note": "Line-ups of WEC 2026 LMGT3 cars whose learned row comes from the Al Kamel live-feed table (wec-alkamel-cars.csv.gz), not the CSV archive. Read through the Kongboda connector (wec_read_document) on 2026-11-16. These files print no driver category, so ratings come from the same driver's 2026 WEC files (how: season). bestLap: the Analysis CSV lap whose time equals the learned lap.",
+ "lineups": {
+  "wec|2026|SAO PAULO": {
+   "23": {"group": "gt3", "cls": "LMGT3", "vehicle": "Aston Martin Vantage AMR LMGT3", "date": "2026-07-12", "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO%20PAULO/666_FIA%20WEC/202607121130_Race/06_Hour%206/03_Classification_Race_Hour%206.CSV",
+          "drivers": [{"name": "Gray NEWELL"}, {"name": "Kobe PAUWELS"}, {"name": "Jonny ADAM"}],
+          "bestLap": {"name": "Kobe PAUWELS", "lap": 93.35, "session": "Hyperpole LMGT3", "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO%20PAULO/666_FIA%20WEC/202607111450_Hyperpole%20LMGT3/23_Analysis_Hyperpole%20LMGT3.CSV"}},
+   "79": {"group": "gt3", "cls": "LMGT3", "vehicle": "Mercedes-AMG LMGT3", "date": "2026-07-12", "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO%20PAULO/666_FIA%20WEC/202607121130_Race/06_Hour%206/03_Classification_Race_Hour%206.CSV",
+          "drivers": [{"name": "Johannes ZELGER"}, {"name": "Matteo CRESSONI"}, {"name": "Lin HODENIUS"}],
+          "bestLap": {"name": "Lin HODENIUS", "lap": 93.549, "session": "Hyperpole LMGT3", "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO%20PAULO/666_FIA%20WEC/202607111450_Hyperpole%20LMGT3/23_Analysis_Hyperpole%20LMGT3.CSV"}},
+   "92": {"group": "gt3", "cls": "LMGT3", "vehicle": "Porsche 911 GT3 R LMGT3", "date": "2026-07-12", "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO%20PAULO/666_FIA%20WEC/202607121130_Race/06_Hour%206/03_Classification_Race_Hour%206.CSV",
+          "drivers": [{"name": "Yasser SHAHIN"}, {"name": "Riccardo PERA"}, {"name": "Richard LIETZ"}],
+          "bestLap": {"name": "Riccardo PERA", "lap": 94.069, "session": "Hyperpole LMGT3", "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO%20PAULO/666_FIA%20WEC/202607111450_Hyperpole%20LMGT3/23_Analysis_Hyperpole%20LMGT3.CSV"}}
+  },
+  "wec|2026|CIRCUIT OF THE AMERICAS": {
+   "58": {"group": "gt3", "cls": "LMGT3", "vehicle": "McLaren 720S LMGT3 Evo", "date": "2026-09-06", "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT%20OF%20THE%20AMERICAS/673_FIA%20WEC/202609061300_Race/06_Hour%206/03_Classification_Race_Hour%206_Final.CSV",
+          "drivers": [{"name": "Alexander WEST"}, {"name": "Finn GEHRSITZ"}, {"name": "Benjamin GOETHE"}],
+          "bestLap": {"name": "Finn GEHRSITZ", "lap": 125.654, "session": "Hyperpole LMGT3", "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT%20OF%20THE%20AMERICAS/673_FIA%20WEC/202609051520_Hyperpole%20LMGT3/23_Analysis_Hyperpole%20LMGT3.CSV"}}
+  },
+  "wec|2026|BARCELONA-CATALUNYA": {
+   "33": {"group": "gt3", "cls": "LMGT3", "vehicle": "Corvette Z06 LMGT3.R", "date": "2026-10-18", "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA%20WEC/202610181200_Race/06_Hour%206/03_Classification_Race_Hour%206_Final.CSV",
+          "drivers": [{"name": "Ben KEATING"}, {"name": "Jonny EDGAR"}, {"name": "Nicky CATSBURG"}],
+          "bestLap": {"name": "Jonny EDGAR", "lap": 101.447, "session": "Hyperpole LMGT3", "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA%20WEC/202610171210_Hyperpole%20LMGT3/23_Analysis_Hyperpole%20LMGT3.CSV"}}
+  }
+ }
+}
