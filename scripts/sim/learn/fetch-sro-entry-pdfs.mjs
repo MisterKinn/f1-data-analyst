@@ -4,7 +4,7 @@
 // "Provisional entry list: ..."). Runs in GitHub Actions (network, poppler).
 // Raw texts go to .cache/sro-entry-pdfs (uploaded as a workflow artifact, never committed: physics rule 2.9); the derived table
 // scripts/sim/data/learn/sro-entry-ratings.json keeps per meeting and car the drivers' printed categories (parseEntryText, sro-entry-parse.mjs;
-// a change to the parser needs a change here too, so the workflow reruns this script; parser rev 6, crawl rev 5).
+// a change to the parser needs a change here too, so the workflow reruns this script; parser rev 6, crawl rev 5, re-read with parser 6).
 import {writeFileSync, mkdirSync, mkdtempSync, readFileSync, existsSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {join} from 'node:path';
