@@ -52,7 +52,7 @@ export function parseN24(txt) {
     const cityX = xs.length ? Math.min(...xs) : null;
     for (const l of L) { const words = [...l.matchAll(/\S+/g)].map(m => ({t: m[0], x: m.index})), gap = /\S\s{2,}\S/.exec(l);
       const n = (gap ? l.slice(0, gap.index + 1) : cityX != null ? words.filter(w => w.x < cityX - 1).map(w => w.t).join(' ') : '').replace(/[„"“”]/g, '').trim();
-      if (n.split(' ').length >= 2) car.names.push(n); else if (!n || /^[A-Z]{2}$/.test(n) === false) car.bad = true; } } // "GA (USA)": wrapped city line, not a driver
+      if (/^(sponsor|bewerber|entrant)\b/i.test(n)) continue; if (n.split(' ').length >= 2) car.names.push(n); else if (!n || /^[A-Z]{2}$/.test(n) === false) car.bad = true; } } // "GA (USA)": wrapped city line, not a driver
   return cars.filter(c => c.names.length && c.names.length <= 6 && !c.bad).map(({raw, bad, ...c}) => ({...c, names: [...new Set(c.names)]}));
 }
 const lineups = [], log = [];

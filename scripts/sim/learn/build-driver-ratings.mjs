@@ -177,7 +177,7 @@ if (process.argv[1]?.endsWith('build-driver-ratings.mjs')) {
   const [root, ...extras] = process.argv.slice(2); if (!root) { console.error('usage: build-driver-ratings.mjs <imsa_data folder> [extra.json ...]'); process.exit(1); }
   const opt = f => existsSync(f) ? JSON.parse((f.endsWith('.gz') ? gunzipSync(readFileSync(f)) : readFileSync(f)).toString()) : null; // written by fetch-sro-lineups.mjs (Actions)
   const fia = opt('scripts/sim/data/learn/fia-categorisation.json'), sro = opt('scripts/sim/data/learn/sro-lineups.json.gz'), n24 = opt('scripts/sim/data/learn/n24-lineups.json');
-  if (sro && n24) sro.lineups.push(...n24.lineups); // Nürburgring 24h / Qualifiers: official ADAC entry lists, same shape (site n24)
+  if (sro && n24) sro.lineups.push(...n24.lineups.map(l => ({...l, drivers: l.drivers.filter(n => !/^(sponsor|bewerber|entrant)\b/i.test(n))}))); // Nürburgring 24h / Qualifiers: official ADAC entry lists, same shape (site n24)
   const res = build(root, extras, null, sro, fia, opt('scripts/sim/data/learn/sro-entry-ratings.json'));
   const out = {generated: new Date().toISOString().slice(0, 10),
     note: 'FIA driver categorisation (P Platinum, G Gold, S Silver, B Bronze) as printed in official timing / entry-list documents: evidence layer 1 (Known). '
