@@ -2,16 +2,28 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {bopPage} from '../worker/bop-page.js';
 
-const current = h => [...h.matchAll(/aria-current="page">([^<]*)/g)].map(m => m[1]);
+const chosen = h => [...h.matchAll(/<option value="([^"]*)" selected>/g)].map(m => m[1]);
+const options = (h, name) => [...(h.match(new RegExp(`<select name="${name}"[^>]*>([\\s\\S]*?)</select>`)) || [, ''])[1].matchAll(/value="([^"]*)"/g)].map(m => m[1]);
 
-test('BoP picker: Series → Class → Year → Event, with safe defaults', () => {
-  assert.deepEqual(current(bopPage({}, 'en')), ['FIA WEC', 'Hypercar', '2026', '6 Hours of Imola']);
-  assert.deepEqual(current(bopPage({series: 'nope', class: 'x', year: '1990', event: '<b>'}, 'en')), ['FIA WEC', 'Hypercar', '2026', '6 Hours of Imola']);
-  assert.deepEqual(current(bopPage({event: 'spa'}, 'en')).at(-1), '6 Hours of Spa');
-  const p = bopPage({year: '2027'}, 'en');
-  assert.deepEqual(current(p).slice(2), ['2027 (projection)', 'Qatar 1812km']);
-  assert.match(p, /2027 BoP projection/);
-  assert.doesNotMatch(p, /id="bop-csv"/, '2027 shows the projection, not the 2026 table');
-  // every chip link carries the full selection
-  for (const m of p.matchAll(/href="(\/bop\?[^"]+)"/g)) assert.match(m[1].replace(/&amp;/g, '&'), /^\/bop\?series=\w+&class=\w+&year=\d{4}&event=[a-z]+$/);
+test('BoP picker: Series → Class → Year → Event dropdowns, with safe defaults', () => {
+  assert.deepEqual(chosen(bopPage({}, 'en')), ['wec', 'hypercar', '2026', 'imola']);
+  assert.deepEqual(chosen(bopPage({series: 'nope', class: 'x', year: '1990', event: '<b>'}, 'en')), ['wec', 'hypercar', '2026', 'imola']);
+  assert.equal(chosen(bopPage({event: 'spa'}, 'en')).at(-1), 'spa');
+  assert.deepEqual(options(bopPage({}, 'en'), 'class'), ['hypercar', 'lmgt3']);
+  assert.doesNotMatch(bopPage({}, 'en'), /font-style:italic/);
+});
+
+test('2027: all nine announced rounds, for Hypercar and LMGT3', () => {
+  const rounds = ['losail', 'imola', 'silverstone', 'spa', 'lemans', 'saopaulo', 'cota', 'fuji', 'bahrain'];
+  for (const cls of ['hypercar', 'lmgt3']) {
+    const p = bopPage({class: cls, year: '2027'}, 'en');
+    assert.deepEqual(options(p, 'event'), rounds, cls);
+    assert.match(bopPage({class: cls, year: '2027', event: 'bahrain'}, 'en'), /8 Hours of Bahrain · 2027 BoP projection/);
+  }
+});
+
+test('LMGT3 table: every 2026 car with weight, power curve and gain', () => {
+  const p = bopPage({class: 'lmgt3', event: 'fuji'}, 'en');
+  for (const car of ['Ferrari 296 LMGT3', 'Porsche 911 GT3 R LMGT3', 'Mercedes-AMG LMGT3']) assert.ok(p.includes(car), car);
+  assert.match(p, />P\d+ </);
 });

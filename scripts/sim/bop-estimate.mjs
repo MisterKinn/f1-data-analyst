@@ -12,7 +12,7 @@
 import {readFileSync, writeFileSync} from 'node:fs';
 import {lapsimWecBop} from '../../worker/lapsim/wec-bop-data.js';
 
-const TRACK = {LOSAIL: 'lusail', IMOLA: 'imola', SPA: 'spa-francorchamps', LEMANS: 'le-mans', SAOPAULO: 'interlagos', COTA: 'austin', FUJI: 'fuji', BAHRAIN: 'sakhir', BARCELONA: 'barcelona', MONZA: 'monza'};
+const TRACK = {LOSAIL: 'lusail', IMOLA: 'imola', SPA: 'spa-francorchamps', LEMANS: 'le-mans', SAOPAULO: 'interlagos', COTA: 'austin', FUJI: 'fuji', BAHRAIN: 'sakhir', BARCELONA: 'barcelona', MONZA: 'monza', SILVERSTONE: 'silverstone'};
 const MODEL = {Alpine: 'Alpine A424', Aston: 'Aston Martin Valkyrie', BMW: 'BMW M Hybrid V8', Cadillac: 'Cadillac V-Series.R', Ferrari: 'Ferrari 499P', Peugeot: 'Peugeot 9X8', Porsche: 'Porsche 963', Toyota: 'Toyota GR010 Hybrid', Lamborghini: 'Lamborghini SC63', Isotta: 'Isotta Fraschini Tipo6-C', Genesis: 'Genesis GMR-001'};
 const CLS = {'Alpine A424': 'lmdh', 'BMW M Hybrid V8': 'lmdh', 'Cadillac V-Series.R': 'lmdh', 'Porsche 963': 'lmdh', 'Lamborghini SC63': 'lmdh', 'Genesis GMR-001': 'lmdh', 'Aston Martin Valkyrie': 'lmh', 'Ferrari 499P': 'lmh', 'Peugeot 9X8': 'lmh', 'Toyota GR010 Hybrid': 'lmh', 'Isotta Fraschini Tipo6-C': 'lmh'};
 const EVENTS_2026 = ['IMOLA', 'SPA', 'LEMANS', 'SAOPAULO', 'COTA', 'FUJI', 'BARCELONA', 'MONZA'];
@@ -21,7 +21,7 @@ const EVENTS_2026 = ['IMOLA', 'SPA', 'LEMANS', 'SAOPAULO', 'COTA', 'FUJI', 'BARC
 // in 2026" (Dec 2025), The Race "who else can still upgrade" (2025), Sportscar365 "Ferrari reveals plans for major 499P overhaul in 2027",
 // Motorsport.com "Aston Martin begins testing updated Valkyrie for 2027", Autosport "Ferrari and Peugeot start testing updated hypercars
 // for WEC 2027". Porsche used two jokers since 2023 (dates not given) and left WEC after 2025: no break inside the data.
-const ORDER = {LOSAIL: 0, QATAR: 0, IMOLA: 1, SPA: 2, LEMANS: 3, SAOPAULO: 4, COTA: 5, FUJI: 6, BAHRAIN: 7, BARCELONA: 7, MONZA: 8};
+const ORDER = {LOSAIL: 0, QATAR: 0, IMOLA: 1, SILVERSTONE: 1.5, SPA: 2, LEMANS: 3, SAOPAULO: 4, COTA: 5, FUJI: 6, BAHRAIN: 7, BARCELONA: 7, MONZA: 8};
 export const SPECS = {
   'Toyota GR010 Hybrid': [[2026, 'IMOLA', 'Evo 2026 (aero joker, TR010)']],
   'Cadillac V-Series.R': [[2025, 'LOSAIL', 'joker 2025 (electronics)'], [2026, 'IMOLA', 'Evo 2026 (aero)']],
@@ -233,7 +233,23 @@ const proj = {};
 for (const [m, x] of Object.entries(last)) { const sp26 = specOf(m, 2026, 'MONZA'), sp27 = specOf(m, 2027, 'LOSAIL'), evo = sp27 !== sp26, d = evo ? EVO.shift : 0;
   const dkg = d ? -d / (2 * fit.coef.a) : 0, dP = d ? -d / (2 * fit.coef.b) : 0;
   proj[m] = {cls: CLS[m], kg: Math.max(LIMITS.kgMin, Math.round(x.kg * (1 + dkg / 100))), kW: Math.min(LIMITS.kWMax, Math.max(LIMITS.kWMin, Math.round(x.kW * (1 + dP / 100)))), above250: r1(x.g), MJ: Math.round(x.MJ), spec: sp27, evo}; }
-const projection2027 = {basis: 'Monza 2026 estimate', evoShiftPct: EVO.shift, note: 'Evo cars get the BoP change that cancels the learned Evo gain; others keep their last 2026 estimate', cars: proj};
+// ---- 2027, every announced round (owner 2026-11-16): a round with Al Kamel laps is estimated like 2026 (refit after each race by the
+// BoP refresh workflow); a round still to come is projected: the latest estimate, mixed with the newest value at the same track; the
+// first round starts from the Evo-adjusted projection above.
+export const ROUNDS_2027 = ['LOSAIL', 'IMOLA', 'SILVERSTONE', 'SPA', 'LEMANS', 'SAOPAULO', 'COTA', 'FUJI', 'BAHRAIN'];
+const at = (track, list) => { for (const e of [...list].reverse()) if (e.track === track) return Object.fromEntries(Object.entries(e.cars).map(([m, x]) => [m, {kg: x.kg, kW: x.kW, g: x.above250, MJ: x.MJ, from: `${e.event} ${e.year || 2026}`}])); return null; };
+let last27 = Object.fromEntries(Object.entries(proj).map(([m, x]) => [m, {kg: x.kg, kW: x.kW, g: x.above250, MJ: x.MJ, from: 'Evo-adjusted 2026 estimate'}]));
+const rounds27 = [];
+for (const [i, ev] of ROUNDS_2027.entries()) {
+  const e = events[`2027 ${ev}`], track = TRACK[ev], same = at(track, [...out26, ...rounds27]) || (bopOf(2025, track) ? priorFromBop(bopOf(2025, track), `${ev} 2025`) : null);
+  const prior = i && same ? mix(last27, same) : last27;
+  const em = e || {models: Object.fromEntries(Object.keys(prior).map(m => [m, {L: null, V: null, stint: null, cars: []}]))};
+  for (const m of Object.keys(em.models)) if (!prior[m]) prior[m] = classMean(prior);
+  const est = estimate(em, prior, fit, m => look26(m, 2027, ev));
+  rounds27.push({event: ev, track, year: 2027, measured: !!e, cars: est});
+  last27 = Object.fromEntries(Object.entries(est).map(([m, x]) => [m, {kg: x.kg, kW: x.kW, g: x.above250, MJ: x.MJ, from: `${ev} 2027 ${e ? 'estimate' : 'projection'}`}]));
+}
+const projection2027 = {basis: 'Monza 2026 estimate', evoShiftPct: EVO.shift, note: 'Evo cars get the BoP change that cancels the learned Evo gain; others keep their last 2026 estimate', cars: proj, events: rounds27};
 const result = {generated: new Date().toISOString().slice(0, 10), method: 'MAP inversion of class-wide BoP response learned from all Al Kamel laps 2024-2026 and the published 2024-2025 BoP', limits: LIMITS,
   coefficients: Object.fromEntries(Object.entries(fit.coef).map(([k, v]) => [k, typeof v === 'number' ? +v.toFixed(4) : v])), holdout2025: holdout, learnedPartUsed: use, evo: EVO, specs: SPECS, events: out26, projection2027, fun: fun26};
 writeFileSync(new URL('../../worker/lapsim/bop-estimate-data.js', import.meta.url), `// WEC Hypercar 2026 BoP estimate (not official). Built by scripts/sim/bop-estimate.mjs; method and hold-out test in docs/lapsim-wec-bop.md\nexport const bopEstimate2026 = ${JSON.stringify(result)};\n`);
