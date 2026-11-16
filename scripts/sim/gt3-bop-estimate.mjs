@@ -15,9 +15,9 @@ import {readFileSync, writeFileSync} from 'node:fs';
 const SERIES = process.argv[2] === 'elms' ? 'elms' : 'wec';
 const CFG = {
   wec: {table: 'wec-lmgt3-bop.json', out: 'bop-lmgt3-data.js', name: 'bopLmgt3', start: '2025 BAHRAIN', season26: 2025, events26: ['IMOLA', 'SPA', 'LEMANS', 'SAOPAULO', 'COTA', 'FUJI', 'BARCELONA', 'MONZA'],
-    order25: ['LOSAIL', 'IMOLA', 'SPA', 'SAOPAULO', 'COTA', 'FUJI', 'BAHRAIN'], rounds27: ['LOSAIL', 'IMOLA', 'SILVERSTONE', 'SPA', 'LEMANS', 'SAOPAULO', 'COTA', 'FUJI', 'BAHRAIN'], label: 'WEC', curveStep: 1, scale: 4},
+    order25: ['LOSAIL', 'IMOLA', 'SPA', 'SAOPAULO', 'COTA', 'FUJI', 'BAHRAIN'], rounds27: ['LOSAIL', 'IMOLA', 'SILVERSTONE', 'SPA', 'LEMANS', 'SAOPAULO', 'COTA', 'FUJI', 'BAHRAIN'], label: 'WEC', curveStep: 1},
   elms: {table: 'elms-lmgt3-bop.json', out: 'bop-elms-lmgt3-data.js', name: 'bopElmsLmgt3', start: null, season26: 2026, events26: ['BARCELONA', 'PAULRICARD', 'IMOLA', 'SPA', 'SILVERSTONE', 'PORTIMAO'],
-    order25: ['BARCELONA', 'PAULRICARD', 'IMOLA', 'SPA', 'SILVERSTONE', 'PORTIMAO'], rounds27: ['BARCELONA', 'PAULRICARD', 'IMOLA', 'SPA', 'SILVERSTONE', 'PORTIMAO'], label: 'ELMS', curveStep: 0.1, scale: 2}, // ELMS 2026 tables give curves to 0.1
+    order25: ['BARCELONA', 'PAULRICARD', 'IMOLA', 'SPA', 'SILVERSTONE', 'PORTIMAO'], rounds27: ['BARCELONA', 'PAULRICARD', 'IMOLA', 'SPA', 'SILVERSTONE', 'PORTIMAO'], label: 'ELMS', curveStep: 0.1}, // ELMS 2026 tables give curves to 0.1
 }[SERIES];
 const T = Object.fromEntries(Object.entries(JSON.parse(readFileSync(new URL('./data/' + CFG.table, import.meta.url), 'utf8')).events)
   .filter(([, v]) => Object.values(v.cars).every(c => c[2] != null))); // a table without its weight column cannot be used
@@ -76,7 +76,7 @@ const rms = a => Math.sqrt(mean(a.map(x => x * x)));
 const SD = {kg: Math.max(3, rms(steps.kg)), curve: Math.max(0.5, rms(steps.curve)), gain: Math.max(0.5, rms(steps.gain))};
 
 // ---- one event: MAP of (kg, curve, gain) per model around the prior
-function estimate(me, prior, F, season, S = SCALE) {
+function estimate(me, prior, F, season, S) {
   const out = {}, kg0 = mean(Object.values(prior).map(p => p.kg)), {coef: k} = F;
   for (const [m, p] of Object.entries(prior)) {
     const o = me?.[m], key = Object.keys(F.u).filter(x => x.startsWith(m + ' ')).sort().at(-1), known = !!key && key.endsWith(String(season));
@@ -96,17 +96,24 @@ const fromTab = (b, from) => b ? Object.fromEntries(Object.entries(b).map(([m, v
 function mix(a, b) { if (!a || !b) return a || b; const o = {}; for (const m of new Set([...Object.keys(a), ...Object.keys(b)])) { const x = a[m], y = b[m];
   o[m] = x && y ? {kg: (x.kg + y.kg) / 2, curve: (x.curve + y.curve) / 2, gain: (x.gain + y.gain) / 2, MJ: (x.MJ + y.MJ) / 2, from: `${x.from} + ${y.from}`} : {...(x || y)}; } return o; }
 
-// ---- hold-out on 2025 (SCALE: measurement noise multiplier, from the environment for tuning)
-const SCALE = +(process.env.SCALE || CFG.scale); // 4: best hold-out of 1, 2, 4, 8, 16 (8 and 16 tie); lap data is noisy in LMGT3 (Bronze drivers, traffic, success ballast)
-const test = [];
-for (let i = 1; i < ORDER25.length; i++) { const k = `2025 ${ORDER25[i]}`, truth = tab(k); if (!truth || !meas[k]) continue;
-  const F = fit(k), prior = mix(fromTab(tab(`2025 ${ORDER25[i - 1]}`), 'previous event'), fromTab(tab(`2024 ${ORDER25[i]}`), 'same track 2024'));
-  for (const m of Object.keys(prior)) if (!truth[m]) delete prior[m];
-  const est = estimate(meas[k], prior, F, 2025);
-  for (const [m, x] of Object.entries(est)) test.push({ekg: x.kg - truth[m].kg, ecu: x.curve - truth[m].curve, ega: x.gain - truth[m].gain, pkg: prior[m].kg - truth[m].kg, pcu: prior[m].curve - truth[m].curve, pga: prior[m].gain - truth[m].gain}); }
-const mae = f => +mean(test.map(t => Math.abs(t[f]))).toFixed(2);
-const holdout = {cases: test.length, model: {kg: mae('ekg'), curve: mae('ecu'), gain: mae('ega')}, priorOnly: {kg: mae('pkg'), curve: mae('pcu'), gain: mae('pga')}};
-const use = {kg: holdout.model.kg <= holdout.priorOnly.kg, curve: holdout.model.curve <= holdout.priorOnly.curve, gain: holdout.model.gain <= holdout.priorOnly.gain};
+// ---- hold-out (physics rule 3: settings are chosen on other rows than the ones reported). Each event of a season hidden in turn,
+// prior = the season's previous published event mixed with the same track a year before. The measurement-noise scale and the
+// "use the learned part" switches are chosen on 2024; the reported error is 2025 with those choices.
+function holdoutOf(year, S) {
+  const test = [], keys = Object.keys(T).filter(k => k.startsWith(year + ' ') && !T[k].lemans);
+  for (let i = 1; i < keys.length; i++) { const k = keys[i], ev = k.slice(5), truth = tab(k); if (!meas[k]) continue;
+    const F = fit(k), prior = mix(fromTab(tab(keys[i - 1]), 'previous event'), fromTab(tab(`${year - 1} ${ev}`), `same track ${year - 1}`));
+    for (const m of Object.keys(prior)) if (!truth[m]) delete prior[m];
+    const est = estimate(meas[k], prior, F, year, S);
+    for (const [m, x] of Object.entries(est)) test.push({ekg: x.kg - truth[m].kg, ecu: x.curve - truth[m].curve, ega: x.gain - truth[m].gain, pkg: prior[m].kg - truth[m].kg, pcu: prior[m].curve - truth[m].curve, pga: prior[m].gain - truth[m].gain}); }
+  const mae = f => +mean(test.map(t => Math.abs(t[f]))).toFixed(2);
+  return {cases: test.length, model: {kg: mae('ekg'), curve: mae('ecu'), gain: mae('ega')}, priorOnly: {kg: mae('pkg'), curve: mae('pcu'), gain: mae('pga')}};
+}
+const score = h => h.model.kg / SD.kg + h.model.curve / SD.curve + h.model.gain / SD.gain;
+const tune = [1, 2, 4, 8, 16].map(S => ({S, h: holdoutOf(2024, S)})).filter(x => x.h.cases), best = tune.length ? tune.reduce((a, b) => score(b.h) < score(a.h) ? b : a) : {S: 4, h: null};
+const SCALE = +(process.env.SCALE || best.S), h24 = best.h;
+const use = h24 ? {kg: h24.model.kg <= h24.priorOnly.kg, curve: h24.model.curve <= h24.priorOnly.curve, gain: h24.model.gain <= h24.priorOnly.gain} : {kg: true, curve: true, gain: true};
+const holdout = {...holdoutOf(2025, SCALE), chosenOn2024: {scale: SCALE, cases: h24?.cases ?? 0}};
 
 // ---- 2026 chain
 const F = fit(null); let last = CFG.start ? fromTab(tab(CFG.start), `${CFG.start} (last published)`) : fromTab(tab(`2025 ${ORDER25.at(-1)}`), `${ORDER25.at(-1)} 2025 (published)`); const events = [];
@@ -118,7 +125,7 @@ for (const e of EVENTS_2026) {
   const prior = lm ? same : same ? mix(last, same) : last; if (!prior) continue;
   const me = meas[k]; for (const m of Object.keys(me || {})) if (!prior[m]) { const v = Object.values(prior); prior[m] = {kg: mean(v.map(x => x.kg)), curve: 10, gain: mean(v.map(x => x.gain)), MJ: mean(v.map(x => x.MJ)), from: 'class mean (new car)'}; }
   for (const m of Object.keys(prior)) if (me && !me[m]) delete prior[m]; // a make not entered at this event
-  const est = estimate(me, prior, F, CFG.season26);
+  const est = estimate(me, prior, F, CFG.season26, SCALE);
   for (const [m, x] of Object.entries(est)) { if (!use.kg) x.kg = Math.round(prior[m].kg); if (!use.curve) x.curve = Math.round(prior[m].curve); if (!use.gain) x.gain = r1(prior[m].gain); }
   events.push({event: e, track: TRACK[e], lemans: lm, cars: est});
   if (!lm) last = Object.fromEntries(Object.entries(est).map(([m, x]) => [m, {kg: x.kg, curve: x.curve, gain: x.gain, MJ: x.MJ, from: `${e} 2026 estimate`}]));
@@ -130,7 +137,7 @@ const newest = (e, list) => { const hit = [...list].reverse().find(x => x.event 
 for (const e of ROUNDS_2027) {
   const lm = e === 'LEMANS', same = newest(e, [...events, ...rounds27]), prior = lm ? same : same ? mix(last, same) : {...last}; if (!prior) continue;
   const me = meas[`2027 ${e}`]; if (me) for (const m of Object.keys(prior)) if (!me[m]) delete prior[m];
-  const est = estimate(me, prior, F, 2026);
+  const est = estimate(me, prior, F, 2026, SCALE);
   rounds27.push({event: e, track: TRACK[e], year: 2027, lemans: lm, measured: !!me, cars: est});
   if (!lm) last = Object.fromEntries(Object.entries(est).map(([m, x]) => [m, {kg: x.kg, curve: x.curve, gain: x.gain, MJ: x.MJ, from: `${e} 2027 ${me ? 'estimate' : 'projection'}`}]));
 }
