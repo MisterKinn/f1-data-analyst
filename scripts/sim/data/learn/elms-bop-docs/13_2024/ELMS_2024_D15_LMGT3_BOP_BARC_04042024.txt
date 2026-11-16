@@ -1,0 +1,67 @@
+       TO:              ☒ Teams          ☒ Manufacturers
+
+       CATEGORY:        ☐ LMP2           ☐ LMP2 Pro/Am              ☐ LMP3            ☒ LMGT3
+
+
+       DECISION N°: ELMS_2024_D15_LMGT3_BOP
+
+
+       DATE:           04/04/2024                 FROM: The European le Mans Series Committee
+
+       SUBJECT:        Balance of Performance for Barcelona Competition
+
+
+       APPLICABLE REGULATION
+
+Articles 6.3 2024 European Le Mans Series Sporting Regulations
+
+       DECISION
+
+
+Please find below the BOP table.
+
+
+       PERIOD OF VALIDITY/APPLICATION OF THE DECISION
+
+       This decision comes into effect:
+               ☒ with immediate application
+               ☐ from:
+
+       And is applicable:
+               ☒ until further notice
+               ☐ for the mentioned event(s) only
+
+
+
+
+                      Any decision taken by the European Le Mans Series Committee is not subject to appeal.
+                                          http://elms.alkamelsystems.com/noticeBoard.php
+BARCELONE
+                             Vehicles                                                           Power                                            Aero                           Energy
+                                                                    Max. Power below 200 kph *      Power gain after 200 kph *   Min.RW angle Max.RW angle Min. ride     Maximum Stint Energy
+MANUFACTURER                                                                  (KW)                            (%)                     (°)          (°)     height (mm)          (MJ)
+
+                                                                        adj           current           adj           current       current      current      current     adj         current
+
+ASTON MARTIN                       Vantage AMR LMGT3                                   P15                           2.0%        LMGT3 homol.    11.0          50                        688
+FERRARI                            296 LMGT3                                           P13                           -1.0%       LMGT3 homol.    4.5           50                        683
+LAMBORGHINI                        Huracan LMGT3 Evo2                                  P14                           -3.0%       LMGT3 homol.     8.0          50                        687
+PORSCHE                            911 GT3 R LMGT3                                     P4                            1.0%        LMGT3 homol.    12.3          50                        690
+                                                                   (*) value that may be reviewed
+Adjustments are made with:         the data & information provided by the manufacturers, the analysis made by ACO
+                                                                                                              Weight
+COMPETITOR                                                                                              Min. Car Weight (kg)
+                                                                       initial      SB(race-1)      SB(race-2)      SB(champ.)       offset      current
+
+  50    FORMULA RACING                                                 1327                                                                      1327
+  51    AF CORSE                                                       1327                                                                      1327
+  55    SPIRIT OF RACE                                                 1327                                                                      1327
+  57    KESSEL RACING                                                  1327                                                                      1327
+  59    RACING SPIRIT OF LEMAN                                         1314                                                                      1314
+  60    PROTON COMPETITION                                             1310                                                                      1310
+  63    IRON LYNX                                                      1330                                                                      1330
+  66    JMW MOTORSPORT                                                 1327                                                                      1327
+  85    IRON DAMES                                                     1310                                                                      1310
+  86    GR RACING                                                      1327                                                                      1327
+  97    GRID MOTORSPORT BY TF                                          1314                                                                      1314
+

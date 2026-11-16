@@ -1,0 +1,67 @@
+       TO:              ☒ Teams          ☒ Manufacturers
+
+       CATEGORY:        ☐ LMP2           ☐ LMP2 Pro/Am              ☐ LMP3            ☒ LMGT3
+
+
+       DECISION N°: ELMS_2024_D27_LMGT3_BOP
+
+
+       DATE:           23/09/2024                 FROM: The European le Mans Series Committee
+
+       SUBJECT:        Balance of Performance for Mugello Competition
+
+
+       APPLICABLE REGULATION
+
+Articles 6.2 2024 European Le Mans Series Sporting Regulations
+
+       DECISION
+
+
+Please find below the BOP table.
+
+
+       PERIOD OF VALIDITY/APPLICATION OF THE DECISION
+
+       This decision comes into effect:
+               ☒ with immediate application
+               ☐ from:
+
+       And is applicable:
+               ☒ until further notice
+               ☐ for the mentioned event(s) only
+
+
+
+
+                      Any decision taken by the European Le Mans Series Committee is not subject to appeal.
+                                          http://elms.alkamelsystems.com/noticeBoard.php
+MUGELLO
+                             Vehicles                                                           Power                                        Weight                          Aero                             Energy
+                                                                    Max. Power below 200 kph *      Power gain after 200 kph *   Weight without sucess ballast Min.RW angle Max.RW angle  Min. ride    Maximum Stint Energy
+MANUFACTURER                                                                  (KW)                            (%)                            (kg)                   (°)          (°)     height (mm)          (MJ)
+
+                                                                         adj          current           adj           current        adj          current      current       current       current      adj         current
+
+ASTON MARTIN                       Vantage AMR LMGT3                     +4            P11           -4.0%           -1.0%          +3            1305          5.0           11.0           50         -1           684
+FERRARI                            296 LMGT3                             +2            P11           +1.0%           -1.0%          +23           1320          0.6            4.5           50         10           679
+LAMBORGHINI                        Huracan LMGT3 Evo2                    +2            P11           -3.0%           -7.0%          +16           1320          4.0            8.0           50         +8           682
+PORSCHE                            911 GT3 R LMGT3                       +1            P2            -1.0%            0.0%           -            1300          6.3           12.3           50         -8           680
+                                                                   (*) value that may be reviewed
+Adjustments are made with:         the data & information provided by the manufacturers, the analysis made by ACO
+                                                                                                              Weight
+COMPETITOR                                                                                              Min. Car Weight (kg)
+                                                                        initial     SB(race-1)      SB(race-2)      SB(champ.)      offset        current
+
+  50    FORMULA RACING                                                 1320                                                                       1320
+  51    AF CORSE                                                       1320              5                                                        1325
+  55    SPIRIT OF RACE                                                 1320                                                                       1320
+  57    KESSEL RACING                                                  1320             15                                                        1335
+  59    RACING SPIRIT OF LEMAN                                         1305                             10             15                         1330
+  60    PROTON COMPETITION                                             1300                                                                       1300
+  63    IRON LYNX                                                      1320                              5              5                         1330
+  66    JMW MOTORSPORT                                                 1320                                                                       1320
+  85    IRON DAMES                                                     1300                             15                                        1315
+  86    GR RACING                                                      1320             10                             10                         1340
+  97    GRID MOTORSPORT BY TF                                          1305                                                                       1305
+

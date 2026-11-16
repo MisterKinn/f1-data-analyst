@@ -1,0 +1,73 @@
+       TO:              ☒ Teams          ☒ Manufacturers
+
+       CATEGORY:        ☐ LMP2           ☐ LMP2 Pro/Am              ☐ LMP3            ☒ LMGT3
+
+
+       DECISION N°: ELMS_2025_D18_LMGT3_BOP
+
+
+       DATE:           08/09/2025                 FROM: The European le Mans Series Committee
+
+       SUBJECT:        Balance of Performance for Silverstone Round
+
+
+       APPLICABLE REGULATION
+
+Articles 6.2 2025 European Le Mans Series Sporting Regulations
+
+       DECISION
+
+
+Please find below the BOP table.
+
+
+       PERIOD OF VALIDITY/APPLICATION OF THE DECISION
+
+       This decision comes into effect:
+               ☒ with immediate application
+               ☐ from:
+
+       And is applicable:
+               ☒ until further notice
+               ☐ for the mentioned event(s) only
+
+
+
+
+                      Any decision taken by the European Le Mans Series Committee is not subject to appeal.
+                                          http://elms.alkamelsystems.com/noticeBoard.php
+SILVERSTONE
+                           Vehicles                                                           Power                                      Weight                             Aero                              Energy
+                                                                  Max. Power below 200 kph*      Power gain after 200 kph*     Weight without success                       Max.RW       Min. ride    Maximum Stint Energy
+                                                                                                                                                         Min.RW angle (°)
+MANUFACTURER                                                              (curve)                          (%)                      ballast (kg)                            angle (°)   height (mm)          (MJ)
+
+                                                                       adj.         current            adj.          current     adj.         current        current         current      current       adj         current
+
+ASTON                       Vantage AMR LMGT3                            -           P12              -0.1%         -2.0%        +5               1307     LMGT3 homol.      10.8           50          -1             777
+CORVETTE                    Z06 LMGT3.R                                  -           P1               +0.2%         -1.1%        -8               1311     LMGT3 homol.      7 (**)         50          +1             795
+FERRARI                     296 LMGT3                                  -1P           P14              +0.5%         -2.4%        +5               1380     LMGT3 homol.       4.5           50          +5             783
+MC LAREN                    720S LMGT3 Evo                               -           P7               +0.5%          0.5%        -10              1300     LMGT3 homol.      10.7           50          +4             807
+MERCEDES                    AMG LMGT3                                    -           P8               +0.2%          6.8%        +6               1344     LMGT3 homol.       9.0           50          -4             829
+PORSCHE                     911 GT3 R LMGT3                              -           P4               -0.2%          2.3%        -14              1347     LMGT3 homol.      12.3           50           -             789
+                                                                 (*) speed threshold may be reviewed
+                                                                  (**) with ACO/FIA centerline Jig
+Adjustments are made with: the data & information provided by the manufacturers, the analysis made by ACO
+                                                                                        Weight including success ballast
+COMPETITOR                                                                                             Min. Car Weight (kg)
+                                                                      initial     SB(race-1)     SB(race-2)       SB(champ.)    offset        current
+
+  23     UNITED AUTOSPORTS                                           1300                                                                         1300
+  50     RICHARD MILLE AF CORSE                                      1380                                              5                          1385
+  51     AF CORSE                                                    1380                                                                         1380
+  55     SPIRIT OF RACE                                              1380                               5                                         1385
+  57     KESSEL RACING                                               1380              5                                                          1385
+  59     RACING SPIRIT OF LEMAN                                      1307             15                               15                         1337
+  60     PROTON COMPETITION                                          1347                                                                         1347
+  63     IRON LYNX                                                   1344             10                                                          1354
+  66     JMW MOTORSPORT                                              1380                                                                         1380
+  74     KESSEL RACING                                               1380                              10                                         1390
+  82     TF SPORT                                                    1311                              15                                         1326
+  85     IRON DAMES                                                  1347                                              10                         1357
+  86     GR RACING                                                   1380                                                                         1380
+

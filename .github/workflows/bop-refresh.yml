@@ -28,18 +28,23 @@ jobs:
       - run: npm ci --ignore-scripts
       - name: Al Kamel laps (WEC Hypercar + LMGT3, ELMS LMGT3 + LMP3)
         run: node scripts/sim/learn/fetch-gt3-bop-pace.mjs
+      - name: ELMS BoP decisions (new published tables)
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
+          node scripts/sim/learn/fetch-elms-bop-docs.mjs && node scripts/sim/learn/parse-elms-bop.mjs || echo "::warning::ELMS notice board not read"
       - name: Re-run the estimators
         run: |
           node scripts/sim/bop-estimate.mjs
           node scripts/sim/gt3-bop-estimate.mjs
+          node scripts/sim/gt3-bop-estimate.mjs elms
       - name: Push a refresh branch when an estimate changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
-          git add scripts/sim/data/learn worker/lapsim/bop-estimate-data.js worker/lapsim/bop-lmgt3-data.js
+          git add scripts/sim/data/learn scripts/sim/data/elms-lmgt3-bop.json worker/lapsim/bop-estimate-data.js worker/lapsim/bop-lmgt3-data.js worker/lapsim/bop-elms-lmgt3-data.js
           # the build date alone is not a change
-          node -e "const fs=require('fs'),cp=require('child_process'),strip=s=>s.replace(/\"generated\":\"[^\"]*\"/,'');process.exit(['worker/lapsim/bop-estimate-data.js','worker/lapsim/bop-lmgt3-data.js'].some(f=>strip(fs.readFileSync(f,'utf8'))!==strip(cp.execSync('git show HEAD:'+f).toString()))?0:1)" || { echo "No BoP change"; exit 0; }
+          node -e "const fs=require('fs'),cp=require('child_process'),strip=s=>s.replace(/\"generated\":\"[^\"]*\"/,'');process.exit(['worker/lapsim/bop-estimate-data.js','worker/lapsim/bop-lmgt3-data.js','worker/lapsim/bop-elms-lmgt3-data.js'].some(f=>strip(fs.readFileSync(f,'utf8'))!==strip(cp.execSync('git show HEAD:'+f).toString()))?0:1)" || { echo "No BoP change"; exit 0; }
           B="lapsim-learn/bop-refresh-$(date -u +%Y%m%d-%H%M)"
-          git commit -m "BoP refit from the latest Al Kamel laps (WEC Hypercar, LMGT3)"
+          git commit -m "BoP refit from the latest Al Kamel laps (WEC Hypercar, LMGT3; ELMS LMGT3)"
           git push origin HEAD:"refs/heads/$B"
           echo "Open and merge: https://github.com/${{ github.repository }}/compare/main...$B?expand=1" >> "$GITHUB_STEP_SUMMARY"
