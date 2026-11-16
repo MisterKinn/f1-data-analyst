@@ -3,7 +3,7 @@
 // (/noticeboard?meeting_id=<id>) or event page (/event/<id>/x). Runs in GitHub Actions (network, poppler).
 // Raw texts go to .cache/sro-entry-pdfs (uploaded as a workflow artifact, never committed: physics rule 2.9); the derived table
 // scripts/sim/data/learn/sro-entry-ratings.json keeps per meeting and car the drivers' printed categories (parseEntryText, sro-entry-parse.mjs;
-// a change to the parser needs a change here too, so the workflow reruns this script; parser rev 2).
+// a change to the parser needs a change here too, so the workflow reruns this script; parser rev 3).
 import {writeFileSync, mkdirSync, mkdtempSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {join} from 'node:path';
@@ -39,7 +39,7 @@ for (const site of SITES) {
       const head = txt.split('\n').map(l => l.trim()).filter(Boolean).slice(0, 8).join(' | ').slice(0, 400), name = decodeURIComponent(url.split('/').pop());
       const yr = (s2 => (s2.match(/20(1[2-9]|2[0-7])/g) || []).sort((a, b) => (s2.split(b).length - s2.split(a).length))[0])(name + ' ' + text + ' ' + head);
       const cars = parseEntryText(txt);
-      if (cars.length < 3 && dbg[site] < 8) { dbg[site]++; console.log(`::group::unparsed ${url}`); console.log(txt.split('\n').filter(l => /\d/.test(l) && l.trim()).slice(0, 18).map(l => l.slice(0, 200)).join('\n')); console.log('::endgroup::'); }
+      if ((cars.length < 3 && dbg[site] < 8) || (cars.length < 3 && /britishgt/.test(site) && /20(20|21|22)/.test(yr || '')) || /nurburg|nbr/i.test(name)) { dbg[site]++; console.log(`::group::unparsed ${url}`); console.log(txt.split('\n').filter(l => /\d/.test(l) && l.trim()).slice(0, 18).map(l => l.slice(0, 200)).join('\n')); console.log('::endgroup::'); }
       docs.push({url, link: text, year: yr ? +yr : null, head, cars});
     }
     if (docs.length) { meetings.push({site: site.replace(/^https:\/\/www\./, ''), id, title, docs}); found++; }

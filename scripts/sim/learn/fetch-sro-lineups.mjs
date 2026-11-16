@@ -64,21 +64,29 @@ const LISTS = ['https://www.fia.com/sites/default/files/fia_2024_reviewed_catego
   ...[2019, 2020, 2021, 2022, 2023, 2025].flatMap(y => [9, 10, 11, 12].map(m => `https://sportscar365.com/wp-content/uploads/${y}/${String(m).padStart(2, '0')}/public-drivers-list-${y}.pdf`))];
 const ARTICLES = ['https://www.endurance-info.com/auto/article/117908-la-premiere-liste-fia-de-categorisation-des-pilotes-2026-publiee'];
 for (const a of ARTICLES) { const t = await get(a); for (const h of links(t || '', /\.pdf$/i)) LISTS.push(abs('https://www.endurance-info.com', h)); }
+// Older lists (2015-2020) are no longer on fia.com: their archived copies (Internet Archive, original FIA URL kept as the source)
+const ARCH = []; for (const [u, f] of [['driverscategorisation.fia.com/assets/files/', ''], ['fia.com/sites/default/files/', '&filter=original:.*(categoris|drivers?.?list).*']]) {
+  const t = await get(`https://web.archive.org/cdx/search/cdx?url=${u}&matchType=prefix&output=json&from=2014&to=2021&filter=statuscode:200&filter=mimetype:application/pdf&collapse=digest&limit=3000${f}`);
+  try { for (const [ts, orig] of JSON.parse(t || '[]').slice(1).map(r => [r[1], r[2]])) if (/categori|list/i.test(orig)) ARCH.push({url: `https://web.archive.org/web/${ts}id_/${orig}`, orig, ts}); } catch {}
+}
+console.log('archived list candidates', ARCH.length); for (const a of ARCH.slice(0, 40)) LISTS.push(a.url);
 const REF = {S: [195, 206, 213], B: [198, 152, 103], G: [241, 196, 4], P: [153, 144, 147]};
 const medal = ([r, g, b]) => { if (r > 235 && g > 235 && b > 235) return null; let best = null, d0 = Infinity; for (const [k, c] of Object.entries(REF)) { const d = (r - c[0]) ** 2 + (g - c[1]) ** 2 + (b - c[2]) ** 2; if (d < d0) { d0 = d; best = k; } } return d0 < 2500 ? best : '?'; };
 const fia = {generated: new Date().toISOString().slice(0, 10), note: 'FIA Driver Categorisation public lists: category and next category read from the medal images (P/G/S/B). Only drivers named in a Kongboda line-up are kept.', lists: []};
+const T0 = f => execFileSync('pdftotext', ['-layout', '-l', '1', f, '-']).toString().split('\n').filter(l => l.trim()).slice(0, 12).join('\n');
 const seen = new Set();
 for (const url of new Set(LISTS)) {
   const buf = await get(url, true); if (!buf || buf.subarray(0, 4).toString() !== '%PDF') continue;
   const pdf = join(TMP, 'list.pdf'); writeFileSync(pdf, buf);
   const pages = +(execFileSync('pdfinfo', [pdf]).toString().match(/Pages:\s+(\d+)/)?.[1] || 0), rows = [], stat = {S: 0, B: 0, G: 0, P: 0, '?': 0, none: 0}, probe = [];
-  const head = execFileSync('pdftotext', ['-l', '1', pdf, '-']).toString(), stamp = head.match(/(\d{4}-\d\d-\d\d \d\d:\d\d:\d\d)/)?.[1] || null, year = head.match(/Categorisation\s*[–-]\s*(\d{4}) List/)?.[1];
+  const head = execFileSync('pdftotext', ['-l', '1', pdf, '-']).toString(), stamp = head.match(/(\d{4}-\d\d-\d\d \d\d:\d\d:\d\d)/)?.[1] || null,
+    year = head.match(/Categori[sz]ation\s*[–-]\s*(\d{4}) List/)?.[1] || head.match(/Categori[sz]ation\s+(\d{4})/)?.[1] || head.match(/(\d{4})\s+(?:Drivers?'?\s+)?Categori[sz]ation/i)?.[1];
   if (!year || seen.has(year + stamp)) { console.log('skip', url, year, stamp); continue; } seen.add(year + stamp); const label = `${year} List (${(stamp || '').slice(0, 10)})`;
   for (let p = 1; p <= pages; p++) {
     const xml = execFileSync('pdftohtml', ['-xml', '-i', '-zoom', '1', '-f', String(p), '-l', String(p), '-stdout', pdf]).toString();
     const T = [...xml.matchAll(/<text top="(\d+)" left="(\d+)" width="(\d+)" height="(\d+)"[^>]*>([\s\S]*?)<\/text>/g)].map(m => ({top: +m[1], left: +m[2], w: +m[3], h: +m[4], s: clean(m[5])}));
-    const hd = re => T.find(t => re.test(t.s)), cat = hd(/^Category$/), next = hd(/^Next Category$/), ln = hd(/^Last name/), fn = hd(/^First name/), nat = hd(/^Nationality/), eff = hd(/next categorisation|^Effective date/);
-    if (!cat || !ln || !fn || !nat) continue;
+    const hd = re => T.find(t => re.test(t.s)), cat = hd(/^(Category|Categori[sz]ation( \d{4})?)$/i), next = hd(/^Next Category$/), ln = hd(/^(Last ?name|Surname|Name)/i), fn = hd(/^First ?name/i), nat = hd(/^Nationality/) || cat, eff = hd(/next categorisation|^Effective date/);
+    if (!cat || !ln || !fn) continue;
     execFileSync('pdftoppm', ['-r', '72', '-f', String(p), '-l', String(p), '-singlefile', pdf, join(TMP, 'pg')]);
     const ppm = readFileSync(join(TMP, 'pg.ppm')), hdr = ppm.toString('latin1', 0, 40).match(/^P6\s+(\d+)\s+(\d+)\s+255\s/), W = +hdr[1], off = hdr[0].length;
     const px = (x, y) => { const s = [0, 0, 0]; let n = 0; for (let dx = -1; dx <= 1; dx++) for (let dy = -1; dy <= 1; dy++) { const i = off + ((Math.round(y) + dy) * W + Math.round(x) + dx) * 3; s[0] += ppm[i]; s[1] += ppm[i + 1]; s[2] += ppm[i + 2]; n++; } return s.map(v => v / n); };
@@ -87,13 +95,16 @@ for (const url of new Set(LISTS)) {
     for (const [y, ts] of lines) {
       const col = (a, b) => ts.filter(t => mid(t) >= a && mid(t) < b).map(t => t.s).join(' ');
       const last = col(0, fn.left - 5), first = col(fn.left - 5, nat.left - 10); if (!last || /FIA Driver Categorisation|Page \d|^\d{4}-\d\d/.test(last)) continue;
-      const cy = y + ts[0].h / 2, c = medal(px(mid(cat) - 5, cy)), nx = next ? medal(px(mid(next) - 5, cy)) : null, date = eff ? col(eff.left - 30, 1e9) : '';
+      // a list that prints the category as a word (older lists) is read as text; the others by the medal image
+      const word = col(cat.left - 30, cat.left + cat.w + 60).match(/\b(Platinum|Platinium|Gold|Silver|Bronze)\b/i)?.[1];
+      const cy = y + ts[0].h / 2, c = word ? {platinum: 'P', platinium: 'P', gold: 'G', silver: 'S', bronze: 'B'}[word.toLowerCase()] : medal(px(mid(cat) - 5, cy)), nx = next ? medal(px(mid(next) - 5, cy)) : null, date = eff ? col(eff.left - 30, 1e9) : '';
       if (probe.length < 12) probe.push({last, first, rgb: px(mid(cat) - 5, cy).map(Math.round), c, nx});
       stat[c ?? 'none']++;
       if (known.has(key(`${first} ${last}`))) rows.push({last, first, category: c, next: nx, nextFrom: /\d{4}/.test(date) ? date : undefined, page: p});
     }
   }
   fia.lists.push({url, label, stamp, pages, medals: stat, probe, drivers: rows});
+  if (!rows.length) console.log('no rows read', url, T0(pdf));
   console.log(label, pages, 'pages', JSON.stringify(stat), 'kept', rows.length);
 }
 writeFileSync('scripts/sim/data/learn/fia-categorisation.json', JSON.stringify(fia));
