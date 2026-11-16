@@ -5,10 +5,11 @@
 //    G gold, P platinum), not text. Each row is read at the column of the "Category" / "Next Category" headers: the page is rendered
 //    at 72 dpi (pdftoppm) and the medal colour at the row is matched to the four medals (reference colours measured from the list's
 //    own images, 2026-11-16). Only drivers named in a line-up are written (no copy of the whole list).
-// Output (derived tables): scripts/sim/data/learn/sro-lineups.json, scripts/sim/data/learn/fia-categorisation.json
+// Output (derived tables): scripts/sim/data/learn/sro-lineups.json.gz, scripts/sim/data/learn/fia-categorisation.json
 import {writeFileSync, readFileSync, mkdtempSync, existsSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {join} from 'node:path';
+import {gzipSync} from 'node:zlib';
 import {tmpdir} from 'node:os';
 const UA = {headers: {'user-agent': 'Mozilla/5.0 (kongboda-motorsports lap simulator)'}}, TMP = mkdtempSync(join(tmpdir(), 'sro-lu-'));
 const get = async (u, bin) => { for (let i = 0; i < 3; i++) { try { const r = await fetch(u, {...UA, signal: AbortSignal.timeout(60000)}); if (r.ok) return bin ? Buffer.from(await r.arrayBuffer()) : await r.text(); if (r.status === 404) return null; } catch {} await new Promise(s => setTimeout(s, 1500)); } return null; };
@@ -43,7 +44,7 @@ for (const site of SITES) {
   }
   log.push(`${site}: ${seasons.length} seasons, ${pages.size} entry-list pages, ${n} cars`);
 }
-writeFileSync('scripts/sim/data/learn/sro-lineups.json', JSON.stringify({generated: new Date().toISOString().slice(0, 10), source: 'SRO entry-list pages (/entry-list/<year>/<meeting>) of ' + SITES.join(', '), log, lineups}));
+writeFileSync('scripts/sim/data/learn/sro-lineups.json.gz', gzipSync(JSON.stringify({generated: new Date().toISOString().slice(0, 10), source: 'SRO entry-list pages (/entry-list/<year>/<meeting>) of ' + SITES.join(', '), log, lineups}), {level: 9}));
 console.log(log.join('\n'));
 
 // ---- 2. FIA public list PDFs ----

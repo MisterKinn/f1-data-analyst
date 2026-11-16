@@ -27,7 +27,7 @@ test('line-ups: ratings known or unknown, never guessed', () => {
   for (const [ev, cars] of Object.entries(d.lineups)) for (const [car, c] of Object.entries(cars)) {
     for (const x of c.drivers) {
       assert.ok(x.rating === null || RATINGS.includes(x.rating), `${ev} ${car}`);
-      assert.ok(['event', 'season', 'unknown'].includes(x.how));
+      assert.ok(['event', 'season', 'fia-list', 'unknown'].includes(x.how));
       if (x.how === 'unknown') assert.equal(x.rating, null);
       if (x.how === 'season') assert.equal(x.rating, ratingAt(x.id, ev.split('|')[1], null, d) ?? x.rating);
       if (x.file != null) assert.ok(d.files[x.file], `${ev} ${car} file index`);

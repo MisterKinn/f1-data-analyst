@@ -9,6 +9,7 @@
 // Raw files stay out of git (physics rule 2.9): this writes the derived table scripts/sim/data/learn/driver-ratings.json.
 import {readFileSync, writeFileSync, existsSync, readdirSync} from 'node:fs';
 import {join} from 'node:path';
+import {gunzipSync} from 'node:zlib';
 import {parseCsv, sessionType} from './build-endurance.mjs';
 import {nameParts} from './drivers.mjs';
 import {modelOf} from './models.mjs';
@@ -56,7 +57,18 @@ function bestLapDriver(root, row, lapCache) {
   return {name: null, why: 'no lap file'};
 }
 
-export function build(root, extras = [], learned = null) {
+const fold = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+const STOP = new Set(['circuit', 'international', 'raceway', 'park', 'motorsport', 'motor', 'speedway', 'race', 'track', 'the', 'and', 'entry', 'list', 'world', 'challenge', 'powered', 'aws', 'europe', 'america', 'asia', 'australia', 'british', 'championship', 'cup', 'endurance', 'sprint', 'fanatec', 'gtworldcheu', 'pwrd', 'intercontinental', 'blancpain', 'series', 'hours', 'hour', 'circuito', 'autodromo', 'del', 'des', 'grand', 'prix']);
+// SRO site(s) of a learned row: the event text of the SRO tables and Timing71 rows names the championship
+export function siteOf(series, event) { const e = fold(series + ' ' + event);
+  if (/britishgt|british gt/.test(e)) return ['britishgt.com'];
+  if (/america/.test(e)) return ['gt-world-challenge-america.com'];
+  if (/ asia|asia /.test(e)) return ['gt-world-challenge-asia.com'];
+  if (/australia/.test(e)) return ['gt-world-challenge-australia.com'];
+  if (/igtc|intercontinental|suzuka 1000|nur/.test(e)) return ['intercontinentalgtchallenge.com', 'gt-world-challenge-europe.com'];
+  return ['gt-world-challenge-europe.com', 'intercontinentalgtchallenge.com']; }
+
+export function build(root, extras = [], learned = null, sro = null, fia = null) {
   const recs = readArchive(root);
   // car of a GT3 / LMP2 group only (the groups fit-endurance.mjs learns: gt3, lmp2)
   const keep = recs.filter(r => { const model = modelOf(r.vehicle, r.season, r.cls); return ['gt3', 'lmp2'].includes(groupOf({cls: r.cls, season: r.season, model, src: 'archive'})); });
@@ -96,8 +108,30 @@ export function build(root, extras = [], learned = null) {
     const season = ek.split('|')[1], ds = c.drivers.map(d => { const id = idOf(d.name), r = ratingOf(d.rating), s = drivers[id]?.seasons?.[season];
       return r ? {id, rating: r, how: 'event'} : s ? {id, rating: s.rating, how: 'season'} : {id, rating: null, how: 'unknown'}; });
     const {bestLap, ...rest} = c; out[entry] = {...rest, drivers: ds, lineup: lineupString(ds.map(d => d.rating))}; if (bestLap) extraBest.set(`${ek}|${entry}`, bestLap); } }
-  // the learned rows (fit-endurance.mjs): line-up of the car that set the model's best lap, and the driver of that lap when the lap file shows it
   const rows = learned ?? loadRows().rows.filter(r => r.group === 'gt3' || r.group === 'lmp2'), lapCache = new Map(), learnedOut = [];
+  // SRO rows (GT World Challenge, British GT, IGTC, Spa 24h): the drivers come from the SRO entry list of that meeting (names only, no
+  // category per driver), the rating from the FIA Driver Categorisation public list of that season (medal read from the PDF), else from
+  // the driver's value printed by an ACO-series Al Kamel file of that season (IMSA prints its own rating: not used for SRO cars).
+  const fiaR = {}; for (const L of [...(fia?.lists || [])].sort((a, b) => String(a.stamp).localeCompare(String(b.stamp)))) { // latest print of a season wins
+    const season = +L.label.slice(0, 4); for (const d of L.drivers || []) if (d.category)
+    (fiaR[idOf(`${d.first} ${d.last}`)] ||= {})[season] = {rating: d.category, source: `FIA Driver Categorisation ${L.label}, p. ${d.page}`, date: (L.stamp || '').slice(0, 10)}; }
+  for (const [id, by] of Object.entries(fiaR)) for (const [season, v] of Object.entries(by)) { const p = drivers[id] ||= {name: names.get(id), seasons: {}}, s = p.seasons[season];
+    if (!s) p.seasons[season] = {...v}; else if ((s.changes?.at(-1)?.rating ?? s.rating) !== v.rating) s.fiaList = v; }
+  const sroRating = (id, season) => fiaR[id]?.[season] ? {rating: fiaR[id][season].rating, how: 'fia-list'}
+    : drivers[id]?.seasons?.[season] && !drivers[id].seasons[season].printedBy && !drivers[id].seasons[season].fiaList ? {rating: drivers[id].seasons[season].rating, how: 'season'} : {rating: null, how: 'unknown'};
+  if (sro) { const words = t => new Set(fold(t).replace(/nuerburg/g, 'nurburg').split(' ').filter(w => w.length > 2 && !STOP.has(w)));
+    const bySite = new Map(); for (const l of sro.lineups) { const k = `${l.site}|${l.year}|${l.meeting}`; (bySite.get(k) || bySite.set(k, {site: l.site, year: l.year, meeting: l.meeting, title: l.title, url: l.url, cars: new Map()}).get(k)).cars.set(l.car, l); }
+    const meetings = [...bySite.values()];
+    for (const ek of new Set(rows.filter(r => !SITE[r.series]).map(r => `${r.series}|${r.season}|${r.event}`))) {
+      const [series, season, ...ev] = ek.split('|'), event = ev.join('|'), year = +season, sites = siteOf(series, event), venue = words(event.split('|').at(-1));
+      const R = rows.filter(r => `${r.series}|${r.season}|${r.event}` === ek), make = v => fold(v).split(' ')[0];
+      const cands = meetings.filter(m => m.year === year && sites.includes(m.site)).map(m => { const mw = words(m.meeting + ' ' + m.title.split(' Entry List')[0]);
+        const v = [...venue].filter(w => mw.has(w)).length, c = R.filter(r => m.cars.has(String(r.entry)) && make(m.cars.get(String(r.entry)).vehicle) === make(r.model)).length; return {m, v, c}; })
+        .filter(x => x.v > 0 && x.c > 0).sort((a, b) => b.c - a.c || b.v - a.v);
+      if (!cands.length) continue; const m = cands[0].m, out = lineups[ek] ||= {};
+      for (const [car, l] of m.cars) { const names = l.drivers.filter(n => idOf(n)); if (out[car] || !car || !names.length) continue; const ds = names.map(n => { const id = idOf(n); return {id, ...sroRating(id, year)}; });
+        out[car] = {group: 'gt3', cls: l.cls, vehicle: l.vehicle, drivers: ds, lineup: lineupString(ds.map(d => d.rating)), source: `SRO entry list ${m.url}`}; } } }
+  // the learned rows (fit-endurance.mjs): line-up of the car that set the model's best lap, and the driver of that lap when the lap file shows it
   for (const r of rows) { const k = `${r.series}|${r.season}|${r.event}`, L = lineups[k]?.[String(r.entry)];
     const xb = extraBest.get(`${k}|${r.entry}`), b = xb && Math.abs(xb.lap - r.real) < 0.0006 ? {name: xb.name, file: xb.source}
       : L && SITE[r.series] ? bestLapDriver(root, r, lapCache) : {name: null, why: 'no Al Kamel lap file for this source'};
@@ -114,15 +148,16 @@ export function build(root, extras = [], learned = null) {
 
 if (process.argv[1]?.endsWith('build-driver-ratings.mjs')) {
   const [root, ...extras] = process.argv.slice(2); if (!root) { console.error('usage: build-driver-ratings.mjs <imsa_data folder> [extra.json ...]'); process.exit(1); }
-  const res = build(root, extras);
+  const opt = f => existsSync(f) ? JSON.parse((f.endsWith('.gz') ? gunzipSync(readFileSync(f)) : readFileSync(f)).toString()) : null; // written by fetch-sro-lineups.mjs (Actions)
+  const fia = opt('scripts/sim/data/learn/fia-categorisation.json'), res = build(root, extras, null, opt('scripts/sim/data/learn/sro-lineups.json.gz'), fia);
   const out = {generated: new Date().toISOString().slice(0, 10),
     note: 'FIA driver categorisation (P Platinum, G Gold, S Silver, B Bronze) as printed in official timing / entry-list documents: evidence layer 1 (Known). '
       + 'drivers: {id: {name, seasons: {season: {rating, source, date}}}} (date = the latest official document of that season with this value; changes = other values printed later). '
       + 'Al Kamel paths (data/...) are files of the archive in sources[0]; file = index into files. '
       + 'lineups: {"series|season|event": {car: {drivers: [{id, rating, how}], lineup}}}; lineup = ratings sorted P>G>S>B, null when any driver is unknown. '
-      + 'how: event = printed at that event; season = printed for that driver at another event of the same season; unknown = not found (never guessed). '
+      + 'how: event = printed at that event; season = printed for that driver at another event of the same season; fia-list = FIA Driver Categorisation public list of that season (SRO cars); unknown = not found (never guessed). '
       + 'learned: the GT3 and LMP2 rows of fit-endurance.mjs with the line-up of the car that set the time and the driver of that lap. Built by scripts/sim/learn/build-driver-ratings.mjs.',
-    sources: [ARCHIVE, ...Object.values(SITE), ...extras], ...res};
+    sources: [ARCHIVE, ...Object.values(SITE), ...extras, 'SRO entry lists: scripts/sim/data/learn/sro-lineups.json.gz', 'FIA Driver Categorisation public lists: scripts/sim/data/learn/fia-categorisation.json', ...(fia?.lists || []).map(L => `FIA Driver Categorisation ${L.label}: ${L.url}`)], ...res};
   writeFileSync(OUT, JSON.stringify(out, null, 0) + '\n');
   const n = res.learned.length, k = res.learned.filter(r => r.lineup).length;
   console.log(`drivers ${Object.keys(res.drivers).length}, events ${Object.keys(res.lineups).length}, learned rows ${n}, with known line-up ${k}, best-lap driver ${res.learned.filter(r => r.bestLapDriver).length}, rating changes ${res.changes.length}`);
