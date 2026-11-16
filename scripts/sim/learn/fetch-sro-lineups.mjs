@@ -5,7 +5,7 @@
 //    G gold, P platinum), not text. Each row is read at the column of the "Category" / "Next Category" headers: the page is rendered
 //    at 72 dpi (pdftoppm) and the medal colour at the row is matched to the four medals (reference colours measured from the list's
 //    own images, 2026-11-16). Only drivers named in a line-up are written (no copy of the whole list).
-// (run 14) Output (derived tables): scripts/sim/data/learn/sro-lineups.json.gz, scripts/sim/data/learn/fia-categorisation.json
+// (run 15) Output (derived tables): scripts/sim/data/learn/sro-lineups.json.gz, scripts/sim/data/learn/fia-categorisation.json
 import {writeFileSync, readFileSync, mkdtempSync, existsSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {join} from 'node:path';
