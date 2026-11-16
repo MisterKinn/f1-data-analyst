@@ -4,8 +4,8 @@
 // "Provisional entry list: ..."). Runs in GitHub Actions (network, poppler).
 // Raw texts go to .cache/sro-entry-pdfs (uploaded as a workflow artifact, never committed: physics rule 2.9); the derived table
 // scripts/sim/data/learn/sro-entry-ratings.json keeps per meeting and car the drivers' printed categories (parseEntryText, sro-entry-parse.mjs;
-// a change to the parser needs a change here too, so the workflow reruns this script; parser rev 5, crawl rev 3).
-import {writeFileSync, mkdirSync, mkdtempSync} from 'node:fs';
+// a change to the parser needs a change here too, so the workflow reruns this script; parser rev 5, crawl rev 4).
+import {writeFileSync, mkdirSync, mkdtempSync, readFileSync, existsSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
@@ -19,7 +19,10 @@ const SITES = ['https://www.gt-world-challenge-europe.com', 'https://www.gt-worl
   'https://www.gt-world-challenge-australia.com', 'https://www.britishgt.com', 'https://www.intercontinentalgtchallenge.com'];
 const MAXID = +(process.env.SRO_MAXID || 320), MAXNEWS = +(process.env.SRO_MAXNEWS || 400);
 const pool = async (items, n, f) => { const out = []; let i = 0; await Promise.all(Array.from({length: n}, async () => { while (i < items.length) { const k = i++; try { out[k] = await f(items[k]); } catch (e) { console.log('skip', items[k], e.message); } } })); return out; };
+const OUT = 'scripts/sim/data/learn/sro-entry-ratings.json', FULL = !!process.env.SRO_FULL || !existsSync(OUT);
 const meetings = [], log = [], seen = new Set(), dbg = Object.fromEntries(SITES.map(x => [x, 0]));
+// incremental run (default once the table exists): keep the meetings read before, add only the archive and results-page sources below
+if (!FULL) { const old = JSON.parse(readFileSync(OUT, 'utf8')); for (const m of old.meetings) { meetings.push(m); for (const d of m.docs) seen.add(d.url); } log.push(...(old.log || []).filter(l => !/archive|results pages/.test(l))); }
 const ENTRY = (name, text) => /entry|entries|engag/i.test(name + ' ' + text) && !/spotter|timetable|regulation|bulletin|decision/i.test(name + ' ' + text);
 const pdfLinks = (p, out) => { for (const m of p.matchAll(/<a[^>]+href="([^"]+\.pdf)"[^>]*>([\s\S]*?)<\/a>/gi)) { const text = clean(m[2]), name = dec(m[1].split('/').pop()); if (ENTRY(name, text)) out.set(m[1], text || name); } };
 // a 4-digit year, else a dd.mm.yy date ("05.05.25"), in the file name, link text or first lines of the PDF
@@ -40,7 +43,7 @@ async function readDocs(site, id, title, pdfs) {
   }
   return docs;
 }
-for (const site of SITES) {
+for (const site of FULL ? SITES : []) {
   let found = 0, news = 0;
   // 1. noticeboard and event page of every meeting id
   await pool(Array.from({length: MAXID}, (_, i) => i + 1), 8, async id => {
@@ -63,6 +66,33 @@ for (const site of SITES) {
     if (docs.length) { meetings.push({site: site.replace(/^https:\/\/www\./, ''), id: 'news' + a.split('/')[2], title, docs}); news++; } });
   log.push(`${site}: ${found} meetings and ${news} news articles with entry-list PDFs (${arts.size} articles read)`); console.log(log.at(-1));
 }
+// 3. older entry lists (2013-2020) are stored under /images/results/<meeting id>/ and linked from the results pages of the season,
+// not from the noticeboard: (a) every results page of every season, (b) the Internet Archive index of /images/results/ on the site and on
+// the series' earlier domains (the PDF is read from the site, else from its archived copy). P1e.
+const OLD = {'https://www.gt-world-challenge-europe.com': ['www.blancpain-gt-series.com', 'www.blancpain-endurance-series.com', 'www.blancpain-sprint-series.com'],
+  'https://www.gt-world-challenge-asia.com': ['www.blancpain-gt-series-asia.com', 'www.gt-asia.com'], 'https://www.gt-world-challenge-america.com': ['www.world-challenge.com'],
+  'https://www.gt-world-challenge-australia.com': [], 'https://www.britishgt.com': [], 'https://www.intercontinentalgtchallenge.com': []};
+for (const site of SITES) {
+  const before = meetings.length, idx = await get(`${site}/results`) || '', years = [...new Set([...idx.matchAll(/\/results\/(20\d\d)\//g)].map(m => +m[1]))];
+  for (let y = 2012; y <= 2026; y++) years.includes(y) || years.push(y);
+  const pages = new Set();
+  for (const y of years) { const t = await get(`${site}/results/${y}`) || ''; for (const m of t.matchAll(/href="((?:https?:\/\/[^"]+)?\/results\/\d{4}\/[^"?#]+)"/g)) pages.add(m[1].replace(/^https?:\/\/[^/]+/, '')); }
+  await pool([...pages], 6, async pg => { const t = await get(site + pg); if (!t) return; const pdfs = new Map(); pdfLinks(t, pdfs); if (!pdfs.size) return;
+    const title = clean(t.match(/<title>([\s\S]*?)<\/title>/)?.[1] || ''), id = 'results' + pg.replace(/\W+/g, '-'), docs = await readDocs(site, id, title, pdfs);
+    if (docs.length) meetings.push({site: site.replace(/^https:\/\/www\./, ''), id, title, docs}); });
+  const n1 = meetings.length - before, arch = new Map();
+  for (const host of [site.replace(/^https:\/\//, ''), ...OLD[site]]) {
+    const t = await get(`https://web.archive.org/cdx/search/cdx?url=${host}/images/&matchType=prefix&output=json&filter=statuscode:200&collapse=urlkey&limit=20000&filter=original:.*\\.pdf.*`);
+    try { for (const [, ts, orig] of JSON.parse(t || '[]').slice(1)) { const name = dec(orig.split('/').pop()); if (ENTRY(name, '')) arch.set(orig.replace(/^https?:\/\/[^/]+/, '').replace(/:80\//, '/'), {ts, orig}); } } catch {} }
+  // group by meeting id folder; each PDF is read from the live site, else from the archive
+  const byId = new Map(); for (const [path, a] of arch) { const id = path.match(/\/results\/(\d+)\//)?.[1] || 'x'; (byId.get(id) || byId.set(id, []).get(id)).push([path, a]); }
+  await pool([...byId], 4, async ([id, list]) => { const pdfs = new Map(), docs = [];
+    for (const [path, a] of list) { if (seen.has(site + path)) continue; const live = await get(site + path, true);
+      pdfs.set(live && live.subarray(0, 4).toString() === '%PDF' ? site + path : `https://web.archive.org/web/${a.ts}id_/${a.orig}`, dec(path.split('/').pop())); }
+    docs.push(...await readDocs(site, 'archive-' + id, '', pdfs));
+    if (docs.length) meetings.push({site: site.replace(/^https:\/\/www\./, ''), id: 'archive-' + id, title: '', docs}); });
+  log.push(`${site}: ${pages.size} results pages (${n1} with entry-list PDFs), ${arch.size} archived entry-list PDFs in ${byId.size} folders (${meetings.length - before - n1} read)`); console.log(log.at(-1));
+}
 meetings.sort((a, b) => a.site.localeCompare(b.site) || String(a.id).localeCompare(String(b.id), 'en', {numeric: true}));
-writeFileSync('scripts/sim/data/learn/sro-entry-ratings.json', JSON.stringify({generated: new Date().toISOString().slice(0, 10),
+writeFileSync(OUT, JSON.stringify({generated: new Date().toISOString().slice(0, 10),
   note: 'Official SRO entry-list PDFs (noticeboard / event page of each meeting, and entry lists linked from the site news): per car the drivers with the category printed beside them (P/G/S/B). Built by fetch-sro-entry-pdfs.mjs + sro-entry-parse.mjs.', log, meetings}));
