@@ -51,17 +51,26 @@ const fold = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLow
 const key = s => fold(s).split(' ').sort().join(' ');
 const known = new Set(lineups.flatMap(l => l.drivers).map(key));
 if (existsSync('scripts/sim/data/learn/driver-ratings.json')) for (const p of Object.values(JSON.parse(readFileSync('scripts/sim/data/learn/driver-ratings.json', 'utf8')).drivers)) known.add(key(p.name));
-const LISTS = [ // [url, list name as printed on the PDF] — add a list here when its URL is found
-  ['https://www.fia.com/sites/default/files/fia_2024_reviewed_categorisations_list_0.pdf', '2023 List (2023-10-04)'],
-  ['https://www.endurance-info.com/sites/default/files/2026-01/Liste%20FIA%202026.pdf', '2026 List (2026-01-05)']];
+// Public list PDFs (official FIA document; copies hosted by the press when fia.com has removed them). The list year and print time are
+// read from the PDF itself ("FIA Driver Categorisation – 2024 List", "2024-10-09 06:00:01"); a URL that does not answer is skipped.
+const LISTS = ['https://www.fia.com/sites/default/files/fia_2024_reviewed_categorisations_list_0.pdf',
+  'https://www.endurance-info.com/sites/default/files/2026-01/Liste%20FIA%202026.pdf',
+  'https://sportscar365.com/wp-content/uploads/2024/10/public-drivers-list-2024.pdf',
+  'https://www.endurance-info.com/sites/default/files/2024-10/Cat%C3%A9gorisation%20FIA%20des%20pilotes.pdf',
+  'https://www.endurance-info.com/sites/default/files/2025-09/Liste%20FIA%20Septembre%202025.pdf',
+  ...[2019, 2020, 2021, 2022, 2023, 2025].flatMap(y => [9, 10, 11, 12].map(m => `https://sportscar365.com/wp-content/uploads/${y}/${String(m).padStart(2, '0')}/public-drivers-list-${y}.pdf`))];
+const ARTICLES = ['https://www.endurance-info.com/auto/article/117908-la-premiere-liste-fia-de-categorisation-des-pilotes-2026-publiee'];
+for (const a of ARTICLES) { const t = await get(a); for (const h of links(t || '', /\.pdf$/i)) LISTS.push(abs('https://www.endurance-info.com', h)); }
 const REF = {S: [195, 206, 213], B: [198, 152, 103], G: [241, 196, 4], P: [153, 144, 147]};
 const medal = ([r, g, b]) => { if (r > 235 && g > 235 && b > 235) return null; let best = null, d0 = Infinity; for (const [k, c] of Object.entries(REF)) { const d = (r - c[0]) ** 2 + (g - c[1]) ** 2 + (b - c[2]) ** 2; if (d < d0) { d0 = d; best = k; } } return d0 < 2500 ? best : '?'; };
 const fia = {generated: new Date().toISOString().slice(0, 10), note: 'FIA Driver Categorisation public lists: category and next category read from the medal images (P/G/S/B). Only drivers named in a Kongboda line-up are kept.', lists: []};
-for (const [url, label] of LISTS) {
-  const buf = await get(url, true); if (!buf) { fia.lists.push({url, label, error: 'not reachable'}); continue; }
+const seen = new Set();
+for (const url of new Set(LISTS)) {
+  const buf = await get(url, true); if (!buf || buf.subarray(0, 4).toString() !== '%PDF') continue;
   const pdf = join(TMP, 'list.pdf'); writeFileSync(pdf, buf);
   const pages = +(execFileSync('pdfinfo', [pdf]).toString().match(/Pages:\s+(\d+)/)?.[1] || 0), rows = [], stat = {S: 0, B: 0, G: 0, P: 0, '?': 0, none: 0}, probe = [];
-  const stamp = execFileSync('pdftotext', ['-l', '1', pdf, '-']).toString().match(/(\d{4}-\d\d-\d\d \d\d:\d\d:\d\d)/)?.[1] || null;
+  const head = execFileSync('pdftotext', ['-l', '1', pdf, '-']).toString(), stamp = head.match(/(\d{4}-\d\d-\d\d \d\d:\d\d:\d\d)/)?.[1] || null, year = head.match(/Categorisation\s*[–-]\s*(\d{4}) List/)?.[1];
+  if (!year || seen.has(year + stamp)) { console.log('skip', url, year, stamp); continue; } seen.add(year + stamp); const label = `${year} List (${(stamp || '').slice(0, 10)})`;
   for (let p = 1; p <= pages; p++) {
     const xml = execFileSync('pdftohtml', ['-xml', '-i', '-zoom', '1', '-f', String(p), '-l', String(p), '-stdout', pdf]).toString();
     const T = [...xml.matchAll(/<text top="(\d+)" left="(\d+)" width="(\d+)" height="(\d+)"[^>]*>([\s\S]*?)<\/text>/g)].map(m => ({top: +m[1], left: +m[2], w: +m[3], h: +m[4], s: clean(m[5])}));
