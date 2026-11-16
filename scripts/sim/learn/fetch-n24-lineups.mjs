@@ -2,7 +2,7 @@
 // drivers). Source: the official ADAC Nordrhein entry lists ("Starterliste" / "Teilnehmerliste", 24h-media.de, nuerburgring-langstrecken-serie.de,
 // copies on endurance-info.com / gt-place.com). They name the drivers per car, no FIA category: the rating comes from the FIA list of the
 // season (build-driver-ratings.mjs, how: fia-list). Runs in GitHub Actions (network, poppler). Writes scripts/sim/data/learn/n24-lineups.json
-// (rev 3).
+// (rev 4).
 import {writeFileSync, mkdtempSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {join} from 'node:path';
@@ -43,8 +43,14 @@ export function parseN24(txt) {
     if (!cur) continue;
     for (const m of l.matchAll(/([A-Za-zÀ-ÿ'’.\- ]{2,40}?), ([A-Za-zÀ-ÿ'’.\- ]{2,30}?) \(([A-Z]{3})\)/g)) cur.names.push(`${m[2].trim()} ${m[1].trim()}`);
     // driver line: name, city (the name may run into the city column with one space: then the city is its last word), "(GER)"
-    if (!c) { const d = /^\s{4,}(\S.*?)\s*\(([A-Z]{3})\)/.exec(l); if (d && !/,/.test(d[1])) { const parts = d[1].split(/\s{2,}/), w = parts[0].split(' ');
-      const n = (parts.length > 1 ? parts[0] : w.length > 2 ? w.slice(0, -1).join(' ') : w.join(' ')).replace(/[„"“”]/g, '').trim(); if (n) cur.names.push(n); else cur.bad = true; } } }
+    if (!c) { const d = /^\s{4,}(\S.*?)\s*\(([A-Z]{3})\)/.exec(l); if (d && !/,/.test(d[1])) (cur.lines ||= []).push(l.slice(0, l.indexOf('(', d.index + 4))); } }
+  // per car: the city column starts where the second chunk (after a gap of 2+ spaces) starts on its lines; a line whose name runs into
+  // the city (one space) is cut at that column. A car with a line that cannot be cut is dropped (never a partial line-up).
+  for (const car of cars) { const L = car.lines || []; const xs = L.map(l => /^(\s*\S.*?\S?)\s{2,}\S/.exec(l)).filter(Boolean).map(m => m[1].length + /\s{2,}/.exec(L.find(x => x.startsWith(m[1])).slice(m[1].length))[0].length);
+    const cityX = xs.length ? Math.min(...xs) : null;
+    for (const l of L) { const words = [...l.matchAll(/\S+/g)].map(m => ({t: m[0], x: m.index})), gap = /\S\s{2,}\S/.exec(l);
+      const n = (gap ? l.slice(0, gap.index + 1) : cityX != null ? words.filter(w => w.x < cityX - 1).map(w => w.t).join(' ') : '').replace(/[„"“”]/g, '').trim();
+      if (n) car.names.push(n); else car.bad = true; } }
   return cars.filter(c => c.names.length && c.names.length <= 6 && !c.bad).map(c => ({...c, names: [...new Set(c.names)]}));
 }
 const lineups = [], log = [];
