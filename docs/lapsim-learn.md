@@ -592,13 +592,13 @@ Coverage (learned rows with a known line-up rating; best-lap driver known):
 | GT3 | GTWC Europe (Timing71: Endurance, Sprint, Spa 24h) | 2024–2026 | 133 | 91 | 0 |
 | GT3 | British GT | 2015–2026 | 273 | 158 | 0 |
 | GT3 | IGTC (PDFs, Suzuka 1000 km) | 2019–2026 | 79 | 50 | 0 |
-| GT3 | Nürburgring 24h | 2023–2026 | 36 | 0 | 0 |
+| GT3 | Nürburgring 24h | 2023–2026 | 36 | 2 | 0 |
 | LMP2 | WEC | 2021–2026 | 23 | 23 | 23 |
 | LMP2 | ELMS | 2021–2026 | 32 | 32 | 32 |
 | LMP2 | Asian LMS | 2022–2026 | 13 | 13 | 13 |
 | LMP2 | IMSA | 2021–2026 | 41 | 41 | 41 |
 
-1,662 of 2,306 rows. All Al Kamel rows: 1,056 of 1,057 (IMSA 2021 Watkins Glen #39: Tyler McQuarrie has no printed rating). Per
+1,664 of 2,306 rows. All Al Kamel rows: 1,056 of 1,057 (IMSA 2021 Watkins Glen #39: Tyler McQuarrie has no printed rating). Per
 season: `node scripts/sim/learn/driver-ratings.mjs`. SRO timing has no driver per lap, so no best-lap driver there.
 
 Gaps and what was checked (2026-11-16):
@@ -606,8 +606,8 @@ Gaps and what was checked (2026-11-16):
 - **Seasons without an FIA list and without per-driver categories in the entry lists:** 2014, 2016–2018, 2020 (GTWC Europe, Asia,
   British GT). Those cars have their drivers (names) but no rating; they stay `unknown`.
 - **No entry list matched:** GTWC Asia 2025 and part of 2024/2026, GTWC Australia 2023, GTWC Europe Nürburgring 2024–2025 (Timing71
-  rows), IGTC 2019–2020 partly. **Nürburgring 24h** (36 rows) is not an SRO meeting; its organiser's entry lists give car classes
-  (SP9 Pro / Pro-Am), not FIA categories per driver; the IGTC N24 list (2026) was found but prints no category.
+  rows), IGTC 2019–2020 partly. **Nürburgring 24h** (36 rows) is not an SRO meeting: only the IGTC copy of the 2026 entry list
+  was found (drivers per car, no category; rated through the FIA 2026 list: 2 rows complete).
 - The cup of an SRO car (PRO/GOLD/SILVER/BRONZE) is never used as a rating (a Bronze Cup car can be B+S+P).
 - **Data found for the main session:** WEC 2026 Imola and Spa LMP2 #46 (learned as Oreca 07) is an Oreca 05 of a historic support
   race filed in the same Al Kamel folder (one-driver files, "Bronze FIA"). Not changed here.
