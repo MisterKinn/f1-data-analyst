@@ -560,7 +560,9 @@ Data only: no fit term and no flag uses it yet (the main session adds that varia
 
 - **SRO cars (P1b/P1c, 2026-11-16).** Sources in this order (the first that has the car wins):
   1. **Official SRO entry-list PDFs** (`fetch-sro-entry-pdfs.mjs` → `sro-entry-ratings.json`): the noticeboard
-     (`/noticeboard?meeting_id=<id>`) and event page of every meeting of GTWC Europe, America, Asia, Australia, British GT and IGTC.
+     (`/noticeboard?meeting_id=<id>`) and event page of every meeting of GTWC Europe, America, Asia, Australia, British GT and IGTC,
+     and the entry lists linked from each site's news articles (event previews, `/news/<id>/x`, P1d). A list dated only `dd.mm.yy`
+     takes its year from that date.
      Most lists print the category beside each driver (SRO `CAT` P/G/S/B, British GT `GRADE`, IGTC `Platinum/Gold/…`; a `-` stays
      unknown) → `how: event`. British GT 2020–2022 lists print only the car class: they give the drivers per car (`names`).
      Parser: `sro-entry-parse.mjs` (test in `tests/lapsim-driver-ratings.test.mjs`). The PDF of a learned event is the one of the same
@@ -568,17 +570,22 @@ Data only: no fit term and no flag uses it yet (the main session adds that varia
      are a workflow artifact only (7 days), never committed. Check against other official values for the same driver and season:
      99 % agree with the FIA lists (4,709 of 4,761) and 95 % with Al Kamel (598 of 629; the rest are drivers rated differently by two
      organisers in one year, e.g. Marcus Clutton British GT 2023 G, ELMS S).
-  2. **SRO entry-list web pages** (`/entry-list/<year>/<meeting>`, `fetch-sro-lineups.mjs` → `sro-lineups.json.gz`, 8,668 cars): the
-     drivers per car (the page shows only the car's cup).
+  2. **SRO entry-list web pages** (`/entry-list/<year>/<meeting>`, and `/entry-list?filter_meeting_id=<id>` for meetings missing from
+     the season index, e.g. GTWC Europe Nürburgring 2015–2026; `fetch-sro-lineups.mjs` → `sro-lineups.json.gz`): the drivers per car
+     (the page shows only the car's cup).
   3. For drivers named by 2 (or by a names-only PDF), the category comes from the **FIA Driver Categorisation public list** of that
      season (`how: fia-list`), else from the driver's value printed by an ACO-series Al Kamel file of that season (`how: season`; IMSA's
      own rating is not used for SRO cars), else `unknown`.
-- **FIA public lists** (`fia-categorisation.json`, only drivers named in a line-up are kept): 2015 (27.03.2015, archived copy of the
-  fia.com file), 2019 (legacy temporary list, archived copy of driverscategorisation.fia.com), 2021, 2022, 2023, 2024, 2025, 2026.
-  2021–2026 print the category as a medal image (S, B, G, P): each row is read at the "Category" column of a 72 dpi render and the colour
-  matched to the four medals (0 rows unclear); 2015 and 2019 print it as a word. Check against Al Kamel for the same driver and season:
-  96–99 % agree per list. The "Next Category" column is not read. Lists of 2016, 2017, 2018 and 2020 were not found (fia.com removed
-  them; the Internet Archive has no copy under the names searched; a 2018 copy exists only on Scribd, which is not an official source).
+- **FIA public lists** (`fia-categorisation.json`, only drivers named in a line-up are kept), one or more per season:
+  2015 (27.03.2015), 2016, 2017 (FIA downloads `fia.com/file/36290`, `/50676`), 2018 (provisional 20.11.2017 and final 14.12.2017),
+  2019 (provisional 16.11.2018, `fia.com/file/74960`, which prints "Categorisation 2018" and "Categorisation 2019": only the 2019
+  column is read; and the 2019 temporary list of driverscategorisation.fia.com, archived copy), 2021–2026. A removed file is read
+  from its Internet Archive copy (original URL kept as the source). Inside a season the latest print wins; undated lists take the
+  date of the archived copy, else 1 January. 2021–2026 print the category as a medal image (S, B, G, P): each row is read at the
+  "Category" column of a 72 dpi render and the colour matched to the four medals (0 rows unclear); 2015–2019 print it as a word
+  (2018 prints the column headers on page 1 only; later pages reuse them). The "Next Category" column is not read. **2020 not
+  found:** that year the list was only in the driverscategorisation.fia.com web app; the Internet Archive kept its pages and scripts
+  (99 URLs, 2019–2021) but no driver data (the `/api/public/...` answers archived are settings, not drivers).
 
 Coverage (learned rows with a known line-up rating; best-lap driver known):
 
@@ -588,26 +595,31 @@ Coverage (learned rows with a known line-up rating; best-lap driver known):
 | GT3 | ELMS | 2024–2026 | 78 | 78 | 78 |
 | GT3 | Asian LMS | 2022–2026 | 90 | 90 | 90 |
 | GT3 | IMSA | 2021–2026 | 604 | 603 | 604 |
-| GT3 | GTWC (SRO tables, all regions) | 2013–2026 | 728 | 307 | 0 |
-| GT3 | GTWC Europe (Timing71: Endurance, Sprint, Spa 24h) | 2024–2026 | 133 | 91 | 0 |
-| GT3 | British GT | 2015–2026 | 273 | 158 | 0 |
-| GT3 | IGTC (PDFs, Suzuka 1000 km) | 2019–2026 | 79 | 50 | 0 |
-| GT3 | Nürburgring 24h | 2023–2026 | 36 | 2 | 0 |
+| GT3 | GTWC (SRO tables, all regions) | 2013–2026 | 728 | 493 | 0 |
+| GT3 | GTWC Europe (Timing71: Endurance, Sprint, Spa 24h) | 2024–2026 | 133 | 112 | 0 |
+| GT3 | British GT | 2015–2026 | 273 | 166 | 0 |
+| GT3 | IGTC (PDFs, Suzuka 1000 km) | 2019–2026 | 79 | 54 | 0 |
+| GT3 | Nürburgring 24h | 2023–2026 | 36 | 0 | 0 |
 | LMP2 | WEC | 2021–2026 | 23 | 23 | 23 |
 | LMP2 | ELMS | 2021–2026 | 32 | 32 | 32 |
 | LMP2 | Asian LMS | 2022–2026 | 13 | 13 | 13 |
 | LMP2 | IMSA | 2021–2026 | 41 | 41 | 41 |
 
-1,664 of 2,306 rows. All Al Kamel rows: 1,056 of 1,057 (IMSA 2021 Watkins Glen #39: Tyler McQuarrie has no printed rating). Per
+1,881 of 2,306 rows (P1c: 1,664). All Al Kamel rows: 1,056 of 1,057 (IMSA 2021 Watkins Glen #39: Tyler McQuarrie has no printed rating). Per
 season: `node scripts/sim/learn/driver-ratings.mjs`. SRO timing has no driver per lap, so no best-lap driver there.
 
 Gaps and what was checked (2026-11-16):
 
-- **Seasons without an FIA list and without per-driver categories in the entry lists:** 2014, 2016–2018, 2020 (GTWC Europe, Asia,
-  British GT). Those cars have their drivers (names) but no rating; they stay `unknown`.
-- **No entry list matched:** GTWC Asia 2025 and part of 2024/2026, GTWC Australia 2023, GTWC Europe Nürburgring 2024–2025 (Timing71
-  rows), IGTC 2019–2020 partly. **Nürburgring 24h** (36 rows) is not an SRO meeting: only the IGTC copy of the 2026 entry list
-  was found (drivers per car, no category; rated through the FIA 2026 list: 2 rows complete).
+- **Check of the new lists (P1d):** printed SRO entry-list categories agree with the FIA list of the same year: 2017 98 % (940 of
+  958), 2018 97 % (723 of 742), 2019 97 % (182 of 188); the 2019 provisional list agrees 99.6 % with the 2019 temporary list.
+- **Drivers still without a rating (the car's line-up stays `unknown`):** 2014 (no list found, no category in the entry lists) and
+  2020 (see above); other years: drivers who are on no FIA list of that year and on no printed entry list (mostly amateurs before
+  2019, e.g. GTWC Europe 2016–2017 about 23 cars a year, British GT 2015–2022).
+- **No entry list matched:** GTWC Asia 2023–2026 (38 rows; the site has no list for several rounds), GTWC Australia 2023–2024
+  (14), IGTC 2019–2020 (12), British GT 2026 (5), GTWC Europe 2016 (8).
+- **Nürburgring 24h** (36 rows, 2023–2026, races and ADAC qualifiers) is not an SRO meeting and no IGTC list covers those years. The
+  2 rows of P1c are removed: they matched the GTWC Europe round at the Nürburgring GP circuit, a different meeting. A 24-hour race (or
+  its qualifiers) now only matches a meeting of the same kind. Official N24 entry lists (ADAC) would be the source; not read yet.
 - The cup of an SRO car (PRO/GOLD/SILVER/BRONZE) is never used as a rating (a Bronze Cup car can be B+S+P).
 - **Data found for the main session:** WEC 2026 Imola and Spa LMP2 #46 (learned as Oreca 07) is an Oreca 05 of a historic support
   race filed in the same Al Kamel folder (one-driver files, "Bronze FIA"). Not changed here.
