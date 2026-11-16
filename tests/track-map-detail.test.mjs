@@ -53,3 +53,10 @@ test('Daytona: the road course leaves the banking in one smooth left bend before
   for (let s = 200; s < 400; s += 25) { const a = Math.round(s / st), b = Math.round((s + 25) / st); let d = hd(b) - hd(a); while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI;
     assert.ok(d / 25 * 1000 > -0.5, `daytona ${s}-${s + 25} m turns right (${(d / 25 * 1000).toFixed(1)} mrad/m)`); }
 });
+
+test('Las Vegas: the straight runs into T5 without a swing the other way (owner 2026-11-16, shape-only correction)', async () => {
+  const {lineData} = await import('../worker/simulation.js');
+  const len = {...lapsimTracks, ...lapsimExtraTracks}['las-vegas'].length, M = lineData('las-vegas').mid, n = M.length, st = len / n, hd = i => Math.atan2(M[(i + 1) % n][1] - M[i][1], M[(i + 1) % n][0] - M[i][0]);
+  for (let s = 1300; s < 1475; s += 25) { const a = Math.round(s / st), b = Math.round((s + 25) / st); let d = hd(b) - hd(a); while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI;
+    assert.ok(d / 25 * 1000 < 0.5, `las-vegas ${s}-${s + 25} m turns left before the right-hander T5 (${(d / 25 * 1000).toFixed(1)} mrad/m)`); }
+});
