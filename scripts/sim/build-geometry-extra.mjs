@@ -38,7 +38,7 @@ export function closeTurn(c) {
 }
 // Drawn map: at most every 15 m (owner 2026-11-16: with 360 points a 13.6 km Le Mans lap had a point every 35 m and the 25 km
 // Nürburgring every 65 m, so the Mulsanne chicanes looked blunt and the Ford chicanes vanished). Short tracks keep their 360+ points.
-export const MAP_EVERY_M = 15, mapStep = (n, ds) => Math.max(1, Math.min(Math.floor(n / 360), Math.round(MAP_EVERY_M / ds)));
+export const MAP_EVERY_M = 5, mapStep = (n, ds) => Math.max(1, Math.round(MAP_EVERY_M / ds)); // owner 2026-11-16: as fine as the line itself (5 m)
 export function buildTrack(id, spec, c) {
   if (spec.straighten) c = straighten(c, spec.straighten);
   if (spec.driven) c = closeTurn(c);

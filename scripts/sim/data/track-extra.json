@@ -37,8 +37,9 @@
   "mugello": {
     "cornerCount": 15,
    "group": "europe-africa-asia",
-   "file": "extra-tracks.json",
-   "candidate": "mugello-mugello",
+   "file": "extra-tracks-atlas.json",
+   "candidate": "mugello-atlas",
+   "atlasFrom": {"file": "extra-tracks.json", "candidate": "mugello-mugello"},
    "name": "Mugello",
    "layout": "Grand Prix 5.245 km",
    "direction": "cw",
@@ -100,8 +101,9 @@
   "fuji": {
     "cornerCount": 16,
    "group": "europe-africa-asia",
-   "file": "extra-tracks.json",
-   "candidate": "fuji-fuji-speedway",
+   "file": "extra-tracks-atlas.json",
+   "candidate": "fuji-atlas",
+   "atlasFrom": {"file": "extra-tracks.json", "candidate": "fuji-fuji-speedway"},
    "name": "Fuji",
    "layout": "Fuji Speedway 4.563 km",
    "direction": "cw"
@@ -118,8 +120,9 @@
   "laguna-seca": {
     "cornerCount": 11,
    "group": "imsa",
-   "file": "extra-tracks.json",
-   "candidate": "laguna-seca-laguna-seca-raceway",
+   "file": "extra-tracks-atlas.json",
+   "candidate": "laguna-seca-atlas",
+   "atlasFrom": {"file": "extra-tracks.json", "candidate": "laguna-seca-laguna-seca-raceway"},
    "name": "Laguna Seca",
    "layout": "Raceway 3.602 km",
    "direction": "ccw"
@@ -136,8 +139,9 @@
   "mosport": {
     "cornerCount": 10,
    "group": "imsa",
-   "file": "extra-tracks.json",
-   "candidate": "mosport-grand-prix-track-imsa",
+   "file": "extra-tracks-atlas.json",
+   "candidate": "mosport-atlas",
+   "atlasFrom": {"file": "extra-tracks.json", "candidate": "mosport-grand-prix-track-imsa"},
    "name": "Mosport",
    "layout": "Grand Prix track (IMSA) 3.957 km",
    "direction": "cw"
@@ -145,16 +149,18 @@
   "road-america": {
     "cornerCount": 14,
    "group": "imsa",
-   "file": "extra-tracks.json",
-   "candidate": "road-america-road-america-elkhart-lake",
+   "file": "extra-tracks-atlas.json",
+   "candidate": "road-america-atlas",
+   "atlasFrom": {"file": "extra-tracks.json", "candidate": "road-america-road-america-elkhart-lake"},
    "name": "Road America",
    "layout": "Elkhart Lake 6.514 km",
    "direction": "cw"
   },
   "vir": {
    "group": "imsa",
-   "file": "extra-tracks.json",
-   "candidate": "vir-full-course-imsa",
+   "file": "extra-tracks-atlas.json",
+   "candidate": "vir-atlas",
+   "atlasFrom": {"file": "extra-tracks.json", "candidate": "vir-full-course-imsa"},
    "name": "VIR",
    "layout": "Full course (IMSA) 5.263 km",
    "direction": "cw"
@@ -162,8 +168,9 @@
   "indianapolis": {
     "cornerCount": 14,
    "group": "imsa",
-   "file": "extra-tracks.json",
-   "candidate": "indianapolis-indianapolis-road-course",
+   "file": "extra-tracks-atlas.json",
+   "candidate": "indianapolis-atlas",
+   "atlasFrom": {"file": "extra-tracks.json", "candidate": "indianapolis-indianapolis-road-course"},
    "name": "Indianapolis",
    "layout": "Road course 3.910 km",
    "direction": "cw"
@@ -171,8 +178,9 @@
   "road-atlanta": {
     "cornerCount": 12,
    "group": "imsa",
-   "file": "extra-tracks.json",
-   "candidate": "road-atlanta-road-atlanta",
+   "file": "extra-tracks-atlas.json",
+   "candidate": "road-atlanta-atlas",
+   "atlasFrom": {"file": "extra-tracks.json", "candidate": "road-atlanta-road-atlanta"},
    "name": "Road Atlanta",
    "layout": "Road Atlanta 4.088 km",
    "direction": "cw"
@@ -197,8 +205,9 @@
   },
   "le-mans": {
    "group": "owner-list-other",
-   "file": "extra-tracks.json",
-   "candidate": "le-mans-le-mans-24-heures",
+   "file": "extra-tracks-atlas.json",
+   "candidate": "le-mans-atlas",
+   "atlasFrom": {"file": "extra-tracks.json", "candidate": "le-mans-le-mans-24-heures"},
    "name": "Le Mans",
    "layout": "Circuit des 24 Heures 13.626 km",
    "direction": "cw"
@@ -510,8 +519,9 @@
   "long-beach": {
     "cornerCount": 11,
    "group": "owner-2026-11-15",
-   "file": "extra-tracks-2026-11-15e.json",
-   "candidate": "long-beach-long-beach",
+   "file": "extra-tracks-atlas.json",
+   "candidate": "long-beach-atlas",
+   "atlasFrom": {"file": "extra-tracks-2026-11-15e.json", "candidate": "long-beach-long-beach"},
    "name": "Long Beach",
    "layout": "Street circuit 3.167 km",
    "direction": "cw"
