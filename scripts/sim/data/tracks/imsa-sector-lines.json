@@ -1,0 +1,499 @@
+{
+ "source": "IMSA timing sector maps (Al Kamel notice board, Results_NoticeBoard/<season>/<event>/03_Timing 3 Sector Map.pdf): section lengths in inches along the racing surface, FL \u2192 i1 \u2192 i2 \u2192 FL. The race event of the season; tests and support series with the same lines are not listed.",
+ "tracks": {
+  "daytona": {
+   "2022": {
+    "sectorsM": [
+     1105.6,
+     2594.1,
+     2029.6
+    ],
+    "lapM": 5729.3,
+    "docSectorsM": [
+     1105.6,
+     2159.1,
+     2464.6
+    ],
+    "note": "the PDF of this season shows i2 435 m earlier (ROAR map reused); the sector times of every class fit the 2023/2026 line (share error 6-7 points with the PDF line, under 1 with this one)"
+   },
+   "2023": {
+    "sectorsM": [
+     1105.6,
+     2594.1,
+     2029.6
+    ],
+    "lapM": 5729.3
+   },
+   "2024": {
+    "sectorsM": [
+     1105.6,
+     2594.1,
+     2029.6
+    ],
+    "lapM": 5729.3,
+    "docSectorsM": [
+     1105.6,
+     2159.1,
+     2464.6
+    ],
+    "note": "the PDF of this season shows i2 435 m earlier (ROAR map reused); the sector times of every class fit the 2023/2026 line (share error 6-7 points with the PDF line, under 1 with this one)"
+   },
+   "2025": {
+    "sectorsM": [
+     1105.6,
+     2594.1,
+     2029.6
+    ],
+    "lapM": 5729.3,
+    "docSectorsM": [
+     1105.6,
+     2159.1,
+     2464.6
+    ],
+    "note": "the PDF of this season shows i2 435 m earlier (ROAR map reused); the sector times of every class fit the 2023/2026 line (share error 6-7 points with the PDF line, under 1 with this one)"
+   },
+   "2026": {
+    "sectorsM": [
+     1105.6,
+     2594.1,
+     2029.6
+    ],
+    "lapM": 5729.3
+   }
+  },
+  "sebring": {
+   "2022": {
+    "sectorsM": [
+     692.6,
+     3453.8,
+     1808.9
+    ],
+    "lapM": 5955.4
+   },
+   "2023": {
+    "sectorsM": [
+     692.6,
+     3453.8,
+     1808.9
+    ],
+    "lapM": 5955.4
+   },
+   "2024": {
+    "sectorsM": [
+     692.6,
+     3453.8,
+     1808.9
+    ],
+    "lapM": 5955.4
+   },
+   "2025": {
+    "sectorsM": [
+     692.6,
+     3453.8,
+     1808.9
+    ],
+    "lapM": 5955.4
+   },
+   "2026": {
+    "sectorsM": [
+     692.6,
+     3453.8,
+     1808.9
+    ],
+    "lapM": 5955.4
+   }
+  },
+  "long-beach": {
+   "2022": {
+    "sectorsM": [
+     1136.9,
+     1193.3,
+     837.9
+    ],
+    "lapM": 3168.1
+   },
+   "2023": {
+    "sectorsM": [
+     1136.9,
+     1193.3,
+     837.9
+    ],
+    "lapM": 3168.1
+   },
+   "2024": {
+    "sectorsM": [
+     1136.9,
+     1193.3,
+     837.9
+    ],
+    "lapM": 3168.1
+   },
+   "2025": {
+    "sectorsM": [
+     1136.9,
+     1193.3,
+     837.9
+    ],
+    "lapM": 3168.1
+   },
+   "2026": {
+    "sectorsM": [
+     1136.9,
+     1193.3,
+     837.9
+    ],
+    "lapM": 3168.1
+   }
+  },
+  "laguna-seca": {
+   "2022": {
+    "sectorsM": [
+     1376.1,
+     1461.0,
+     764.6
+    ],
+    "lapM": 3601.7
+   },
+   "2023": {
+    "sectorsM": [
+     1376.1,
+     1461.0,
+     764.6
+    ],
+    "lapM": 3601.7
+   },
+   "2024": {
+    "sectorsM": [
+     1376.1,
+     1461.0,
+     764.6
+    ],
+    "lapM": 3601.7
+   },
+   "2025": {
+    "sectorsM": [
+     1376.1,
+     1461.0,
+     764.6
+    ],
+    "lapM": 3601.7
+   }
+  },
+  "mid-ohio": {
+   "2022": {
+    "sectorsM": [
+     588.6,
+     1451.8,
+     1593.8
+    ],
+    "lapM": 3634.1
+   },
+   "2024": {
+    "sectorsM": [
+     665.0,
+     1421.8,
+     1546.9
+    ],
+    "lapM": 3633.7
+   },
+   "2025": {
+    "sectorsM": [
+     588.6,
+     1451.8,
+     1593.8
+    ],
+    "lapM": 3634.1
+   },
+   "2026": {
+    "sectorsM": [
+     665.0,
+     1421.8,
+     1546.9
+    ],
+    "lapM": 3633.7
+   }
+  },
+  "detroit": {
+   "2023": {
+    "sectorsM": [
+     823.3,
+     981.5,
+     841.9
+    ],
+    "lapM": 2646.6
+   },
+   "2024": {
+    "sectorsM": [
+     823.3,
+     981.5,
+     841.9
+    ],
+    "lapM": 2646.6
+   },
+   "2025": {
+    "sectorsM": [
+     823.3,
+     981.5,
+     841.9
+    ],
+    "lapM": 2646.6
+   },
+   "2026": {
+    "sectorsM": [
+     823.3,
+     981.5,
+     841.9
+    ],
+    "lapM": 2646.6
+   }
+  },
+  "watkins-glen": {
+   "2022": {
+    "sectorsM": [
+     1438.6,
+     2056.9,
+     1995.0
+    ],
+    "lapM": 5490.4
+   },
+   "2023": {
+    "sectorsM": [
+     1438.6,
+     2056.9,
+     1995.0
+    ],
+    "lapM": 5490.4
+   },
+   "2024": {
+    "sectorsM": [
+     1438.6,
+     2056.9,
+     1995.0
+    ],
+    "lapM": 5490.4
+   },
+   "2025": {
+    "sectorsM": [
+     1438.6,
+     2056.9,
+     1995.0
+    ],
+    "lapM": 5490.4
+   },
+   "2026": {
+    "sectorsM": [
+     1438.6,
+     2056.9,
+     1995.0
+    ],
+    "lapM": 5490.4
+   }
+  },
+  "mosport": {
+   "2022": {
+    "sectorsM": [
+     1229.0,
+     1843.6,
+     884.8
+    ],
+    "lapM": 3957.3
+   },
+   "2023": {
+    "sectorsM": [
+     1229.0,
+     1843.6,
+     884.8
+    ],
+    "lapM": 3957.3
+   },
+   "2024": {
+    "sectorsM": [
+     1229.0,
+     1843.6,
+     884.8
+    ],
+    "lapM": 3957.3
+   },
+   "2025": {
+    "sectorsM": [
+     1229.0,
+     1843.6,
+     884.8
+    ],
+    "lapM": 3957.3
+   },
+   "2026": {
+    "sectorsM": [
+     1229.0,
+     1843.6,
+     884.8
+    ],
+    "lapM": 3957.3
+   }
+  },
+  "lime-rock": {
+   "2022": {
+    "sectorsM": [
+     883.2,
+     811.5,
+     678.3
+    ],
+    "lapM": 2373.0
+   }
+  },
+  "road-america": {
+   "2022": {
+    "sectorsM": [
+     908.0,
+     3574.8,
+     2032.2
+    ],
+    "lapM": 6515.0
+   },
+   "2023": {
+    "sectorsM": [
+     800.4,
+     3916.7,
+     1797.7
+    ],
+    "lapM": 6514.8
+   },
+   "2024": {
+    "sectorsM": [
+     800.4,
+     3916.7,
+     1797.7
+    ],
+    "lapM": 6514.8
+   },
+   "2025": {
+    "sectorsM": [
+     800.4,
+     3916.7,
+     1797.7
+    ],
+    "lapM": 6514.8
+   },
+   "2026": {
+    "sectorsM": [
+     800.4,
+     3916.7,
+     1797.7
+    ],
+    "lapM": 6514.8
+   }
+  },
+  "vir": {
+   "2022": {
+    "sectorsM": [
+     971.0,
+     2123.7,
+     2167.8
+    ],
+    "lapM": 5262.6
+   },
+   "2023": {
+    "sectorsM": [
+     971.0,
+     2123.7,
+     2167.8
+    ],
+    "lapM": 5262.6
+   },
+   "2024": {
+    "sectorsM": [
+     971.0,
+     2123.7,
+     2167.8
+    ],
+    "lapM": 5262.6
+   },
+   "2025": {
+    "sectorsM": [
+     971.0,
+     2123.7,
+     2167.8
+    ],
+    "lapM": 5262.6
+   },
+   "2026": {
+    "sectorsM": [
+     971.0,
+     2123.7,
+     2167.8
+    ],
+    "lapM": 5262.6
+   }
+  },
+  "road-atlanta": {
+   "2022": {
+    "sectorsM": [
+     559.4,
+     1980.2,
+     1548.1
+    ],
+    "lapM": 4087.7
+   },
+   "2023": {
+    "sectorsM": [
+     559.4,
+     1980.2,
+     1548.1
+    ],
+    "lapM": 4087.7
+   },
+   "2024": {
+    "sectorsM": [
+     559.4,
+     1980.2,
+     1548.1
+    ],
+    "lapM": 4087.7
+   },
+   "2025": {
+    "sectorsM": [
+     559.4,
+     1980.2,
+     1548.1
+    ],
+    "lapM": 4087.7
+   },
+   "2026": {
+    "sectorsM": [
+     559.4,
+     1981.7,
+     1546.6
+    ],
+    "lapM": 4087.7
+   }
+  },
+  "austin": {
+   "2025": {
+    "sectorsM": [
+     507.5,
+     1557.8,
+     1742.5
+    ],
+    "lapM": 3807.9
+   },
+   "2026": {
+    "sectorsM": [
+     507.5,
+     1557.8,
+     1742.5
+    ],
+    "lapM": 3807.9
+   }
+  },
+  "indianapolis": {
+   "2026": {
+    "sectorsM": [
+     1364.3,
+     1353.9,
+     1207.0
+    ],
+    "lapM": 3925.2
+   }
+  }
+ }
+}
