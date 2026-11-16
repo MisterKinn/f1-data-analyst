@@ -113,3 +113,71 @@ The step where the road course leaves the banking (about 300 m after the line) c
 correction, and the atlas line has the same small step there, so the correction put it back. Now the repair also runs after the
 correction, and a repair entry can set its own half-width (`MAP_STEPS.daytona = [[300, 80]]`: 220–380 m, one smooth left bend).
 Test: tests/track-map-detail.test.mjs (no right turn between 200 and 400 m). Drawing only.
+
+## Shape-only correction, all tracks (owner 2026-11-16 22:46: "Las Vegas T5 is distorted too; check and fix every track")
+
+- Cause (Las Vegas T5, and the same artefact on many corrected tracks): the sideways correction moved whole straights onto the
+  reference (Las Vegas: 10 m, the atlas midline of the wide Strip) and dropped to zero where the reference was skipped as another
+  road. The line therefore bent into an S over about 80 m just before the corner (2.5 mrad/m to the left before the right-hander T5).
+- Fix (`scripts/sim/tracks/shape-corr.mjs`, used by map-shape-atlas.mjs and map-shape-osm.mjs): the slow part of the gap
+  (normalised Gaussian over the kept points, σ 150 m) is removed first, so only bends shorter than a few hundred metres are corrected
+  and a skipped stretch joins without a step. The reports now give the shape gap (slow drift removed) before → after.
+- Scan used to find these (every track): within 120 m the centre line swings one way by more than 3° and back, each swing under 12°.
+  Hits that are real road bends were read on plots against the reference; the correction may add a hit only where the reference has
+  the same bend (Miami T8, Watkins Glen before T1, Sakhir T4–T5 were checked this way).
+- More references: OpenStreetMap raceway ways for every track (A5 probe, `scripts/sim/data/tracks/osm-raceways-all.json`, from
+  `osm-raceways-from-probe.mjs`). OSM often maps other circuits next to the main one (kart, moto, oval), so the start pose is
+  searched over the whole area in Python (`raw-lines.mjs` → `osm-fit-start.py` → `osm-fit-start.json`, about 15 s a track; the
+  same search in the JS script took over 9 minutes for one track). `map-shape-osm.mjs` refines from it and uses OSM only when the
+  fit is good (median ≤ 4 m, at most 25 % of the lap more than 15 m away). Order: atlas script first (it rewrites the file), then
+  the OSM script.
+- Result (2026-11-17): 38 more tracks get the shape correction. Largest fixes: Sakhir Outer 3.95 → 1.26 m shape gap rms, FE Shanghai
+  4.00 → 0.93, Jarama 3.46 → 0.65 (hairpin), Istanbul 3.16 → 0.86 (T9 complex), Nürburgring GP 3.15 → 1.04, Kuala Lumpur
+  2.55 → 0.70, Lausitz 1.97 → 0.93. Tracks built from OSM (Aragon, Misano, Motegi, Yongin, Yeongam, Inje …) already matched within
+  about 1 m and change by 1–3 m at most.
+- Not corrected (no usable OSM line: another layout or only part of the lap is mapped): Madring, Sochi, Paul Ricard (both),
+  Road America, Sebring (median 6.7 m), FE Mexico (both), FE Tokyo, FE São Paulo, FE Valencia. Las Vegas, Barcelona and the other
+  atlas tracks keep the atlas reference.
+- Wobble scan after both corrections: 370 hits (raw lines 416). The 82 that the correction adds were read on plots against the
+  reference (Zolder, Kyalami, Oulton Park, Jarama, Nürburgring 24h, Sakhir Outer, FE Shanghai, Istanbul, Miami, Watkins Glen,
+  Sakhir, Indianapolis, Le Mans, Singapore): each is a bend of the real road.
+- Test: tests/track-map-detail.test.mjs (Las Vegas: no left turn in the 175 m before T5; fails on the old data at 2.5 mrad/m).
+  Drawing only: lap distance, corners and the simulator geometry are unchanged.
+
+## A4 part 2: the side steps in the simulator geometry (2026-11-17, flag off)
+
+- The four side steps fixed on the drawn map in 2026-11-16 (`TRACK_STEPS`, now shared in `worker/lapsim/track-steps.js`) are
+  still in the simulator's curvature: each one is a false S-bend. Autopolis 185 m: curvature +0.004 → −0.014 → 0 1/m within 30 m
+  (a 70 m radius where the real road is straight); Valencia 3400 m: +0.014 → −0.009 1/m.
+- Kernel option (`trackFromData(d, {steps})`): within ± the half-width the curvature becomes a straight blend between the two ends
+  plus a constant that keeps the same heading change. Not passed by production yet, so every output is byte-identical.
+- Effect when passed (qualifying lap, 25 °C, no wind):
+
+  | Track | F1 2025 | Hypercar (LMH) | GTP / LMDh | GT3 (IMSA GTD) | FE Gen3 Evo |
+  |---|---|---|---|---|---|
+  | Autopolis | −0.926 s | −2.066 s | −2.074 s | −2.195 s | −1.948 s |
+  | Valencia (Ricardo Tormo) | −0.567 s | −1.321 s | −1.326 s | −1.384 s | −1.681 s |
+  | Daytona | 0.000 s | −0.062 s | −0.067 s | −0.201 s | −0.409 s |
+  | Laguna Seca | 0.000 s | −0.014 s | −0.016 s | −0.061 s | −0.153 s |
+
+- Gate: Autopolis and Valencia have no real lap of a calibrated class (no rows either way). Daytona and Laguna Seca have IMSA rows
+  that the fits use, so the change is judged inside the A6 full refit as a declared variant (production baseline vs `steps`,
+  leave one track out). Turned on only after that and the owner's approval.
+- Test: tests/track-map-detail.test.mjs ("A4 part 2").
+
+## A2 part 2: Zolder numbers and corner names from OpenStreetMap (2026-11-17)
+
+- Most circuits still on estimated corners have no single official turn numbering: the circuits use corner names, and sources
+  disagree on the count (Donington: 9, 10, 11 or 12). Owner decision 2026-11-17: show the official corner names there, and numbers
+  only where an official numbered map exists.
+- `scripts/sim/tracks/corner-numbers-osm.py` (A5 OSM probe data, © OpenStreetMap contributors, ODbL): our raw midline is fitted onto
+  the raceway ways (start pose osm-fit-start.json). A way with a turn ref (Zolder `ref=T1…T16`) gives the number; a named way that
+  lies on our lap (every point within 15 m) and is shorter than 600 m gives a corner name, placed at our tightest bend inside it.
+  Generic names (circuit, pit, straight, layout, approach sections) are dropped; two names on one bend keep the way centred on it.
+- OSM turn refs are used only when they match the official count (`corner-counts.json`). Zolder's refs run T1–T16 (fit 0.9 m, in
+  lap order) but the official count is 10, so Zolder shows names. Corner names on the map (instead of estimated numbers): Zolder, Donington, Snetterton, Misano, Jerez, Vallelunga, Estoril, Oschersleben, Nürburgring 24h (Nordschleife names),
+  Aragón (2), Sonoma (1). Data: `worker/lapsim/corner-names-data.js`; the map note says the names come from OSM.
+- Still estimated (no numbered map and no corner names in OSM): Yongin, Nürburgring Sprint, Brands Hatch (no probe file), Dubai,
+  Motegi, Buriram, Okayama, Sydney (both), Inje, Magny-Cours, Mandalika, Phillip Island, Lausitz, Detroit, Jarama (both), and the
+  FE street tracks (their numbered maps are in the FE event documents: next source).
+- Charts keep the turn ticks of the map numbering; on name tracks those ticks are still the estimated ones.

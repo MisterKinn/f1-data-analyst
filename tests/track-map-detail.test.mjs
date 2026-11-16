@@ -53,3 +53,38 @@ test('Daytona: the road course leaves the banking in one smooth left bend before
   for (let s = 200; s < 400; s += 25) { const a = Math.round(s / st), b = Math.round((s + 25) / st); let d = hd(b) - hd(a); while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI;
     assert.ok(d / 25 * 1000 > -0.5, `daytona ${s}-${s + 25} m turns right (${(d / 25 * 1000).toFixed(1)} mrad/m)`); }
 });
+
+test('Las Vegas: the straight runs into T5 without a swing the other way (owner 2026-11-16, shape-only correction)', async () => {
+  const {lineData} = await import('../worker/simulation.js');
+  const len = {...lapsimTracks, ...lapsimExtraTracks}['las-vegas'].length, M = lineData('las-vegas').mid, n = M.length, st = len / n, hd = i => Math.atan2(M[(i + 1) % n][1] - M[i][1], M[(i + 1) % n][0] - M[i][0]);
+  for (let s = 1300; s < 1475; s += 25) { const a = Math.round(s / st), b = Math.round((s + 25) / st); let d = hd(b) - hd(a); while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI;
+    assert.ok(d / 25 * 1000 < 0.5, `las-vegas ${s}-${s + 25} m turns left before the right-hander T5 (${(d / 25 * 1000).toFixed(1)} mrad/m)`); }
+});
+
+test('A4 part 2: kernel step repair is off unless asked, keeps the heading change, and removes the curvature spike', async () => {
+  const {lapsimKernel} = await import('../worker/lapsim/kernel.js');
+  const {kappaSteps} = await import('../worker/lapsim/track-steps.js');
+  const K = lapsimKernel(), T = {...lapsimTracks, ...lapsimExtraTracks};
+  for (const id of ['daytona', 'autopolis', 'ricardo-tormo', 'laguna-seca']) {
+    const a = K.trackFromData(T[id]), b = K.trackFromData(T[id], {steps: kappaSteps(id)}), c = K.trackFromData(T[id], {steps: null});
+    assert.deepEqual([...a.kappa], [...c.kappa], `${id}: no steps -> unchanged`);
+    const sum = k => k.reduce((s, x) => s + x, 0);
+    assert.ok(Math.abs(sum(a.kappa) - sum(b.kappa)) < 1e-9, `${id}: heading change kept`);
+    for (const [s, hw] of kappaSteps(id)) { const i0 = Math.round((s - hw) / T[id].ds), i1 = Math.round((s + hw) / T[id].ds), peak = k => { let m = 0; for (let i = i0; i <= i1; i++) m = Math.max(m, Math.abs(k[i])); return m; };
+      assert.ok(peak(b.kappa) < peak(a.kappa) * 0.7, `${id} ${s} m: the curvature spike of the step is gone (${peak(a.kappa).toFixed(4)} -> ${peak(b.kappa).toFixed(4)} 1/m)`); }
+  }
+});
+
+test('A2 part 2: corner names on tracks without an official numbering; OSM turn refs only when the official count matches', async () => {
+  const {lapsimCornerNumbers} = await import('../worker/lapsim/corner-numbers-data.js');
+  const {lapsimCornerNames} = await import('../worker/lapsim/corner-names-data.js');
+  assert.ok(!lapsimCornerNumbers.zolder, 'Zolder: OSM refs T1-T16 disagree with the official count (10): names only');
+  assert.ok(lapsimCornerNames.zolder.names.length >= 8);
+  const len = {...lapsimTracks, ...lapsimExtraTracks};
+  for (const [id, t] of Object.entries(lapsimCornerNames)) for (const c of t.names) {
+    assert.ok(c.s >= 0 && c.s < len[id].length, `${id} ${c.name} off the lap`);
+    assert.ok(!/pit|circuit|straight|strecke/i.test(c.name), `${id}: ${c.name} is not a corner`); }
+  const {simulationPage} = await import('../worker/simulation.js');
+  assert.match(simulationPage({track: 'donington'}, 'en'), /ls-corner-nm">Redgate</);
+  assert.match(simulationPage({track: 'monza'}, 'en'), /"cornerNames":null/);
+});
