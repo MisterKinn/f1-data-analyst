@@ -30,9 +30,11 @@ test('SM, Overtake and DRS options change the predicted lap in the right directi
 test('telemetry and map follow the zone options', () => {
   const n = lapOf('melbourne', '2026', {view: 1}), alt = lapOf('melbourne', '2026', {view: 1, sm: 'alt'}), off = lapOf('melbourne', '2026', {view: 1, sm: 'off'});
   assert.notEqual(n.socHtml, off.socHtml); assert.notEqual(n.brakeHtml, off.brakeHtml); assert.notEqual(n.traceSvg, alt.traceSvg);
-  const bands = v => (v.mapSvg.match(/class="ls-zone ls-zone-sm"/g) || []).length;
+  // every zone stays in the drawing so a change can animate (owner 2026-11-16): count the shown ones
+  const bands = v => (v.mapSvg.match(/class="ls-zone ls-zone-sm"[^>]*opacity:0\.9/g) || []).length;
   assert.equal(bands(n), 5); assert.equal(bands(alt), 3); assert.equal(bands(off), 0);
   assert.ok((off.mapSvg.match(/OT [AD]</g) || []).length === 2, 'Overtake marks stay while Overtake is on');
+  assert.equal((n.mapSvg.match(/class="ls-zone ls-zone-sm"/g) || []).length, 5, 'hidden zones are still drawn (opacity 0)');
 });
 
 // the connector's lap tool has the same options and gives the same laps as the page (owner 2026-11-16)
