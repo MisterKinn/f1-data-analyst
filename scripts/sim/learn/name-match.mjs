@@ -47,3 +47,14 @@ export function variantIn(name, rows, byToken, raws) {
   return hits.length === 1 ? {i: hits[0][0], rule: hits[0][1]} : {i: -1, n: hits.length};
 }
 export const tokenIndex = rows => { const m = new Map(); rows.forEach((r, i) => { for (const w of r) (m.get(w) || m.set(w, []).get(w)).push(i); }); return m; };
+// nicknames printed in an FIA list: 'John "Ian" Loggie' (or 'Loggie John "Ian"'). Returns key("Ian Loggie") -> "John Loggie": the name
+// the driver races under, and the list name without the nickname (the name the other lists print).
+export function aliasesOf(rawNames) {
+  const m = new Map(), k = t => [...t].sort().join(' ');
+  for (const raw of rawNames) { const q = /["“”]([^"“”]+)["“”]/.exec(raw); if (!q) continue;
+    const canon = raw.replace(q[0], ' ').replace(/\s+/g, ' ').trim(), c = tokens(canon), nick = tokens(q[1]); if (c.length < 2 || !nick.length) continue;
+    const after = tokens(raw.slice(q.index + q[0].length)), sur = after.length ? after.at(-1) : tokens(raw.slice(0, q.index))[0]; // First "Nick" Last, or Last First "Nick"
+    if (sur) { const key = k([...nick, sur]); if (!m.has(key)) m.set(key, canon); else if (m.get(key) !== canon && tokens(m.get(key)).sort().join(' ') !== k(c)) m.set(key, null); } }
+  for (const [key, v] of m) if (!v) m.delete(key); // two drivers with the same nickname and surname: no alias
+  return m;
+}
