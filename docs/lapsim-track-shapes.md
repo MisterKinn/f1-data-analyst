@@ -18,3 +18,17 @@
   Road America 61 m = Turn 8, a real right angle the reference smooths (a rebuild from the reference made the lap 8.9 % too slow:
   rejected). Street circuits (Long Beach, Las Vegas, Monaco, Singapore) 15–19 m at single walls, within the street width.
 - Every map: no spikes, no gaps over 40 m, no self-crossing except Suzuka and Yongin (both real crossovers).
+
+## Better source lines? (owner 2026-11-16: "find the best source line for every track, fit to measured data")
+
+- Sources: F1 car positions (26 F1 tracks; measured driven line, kept), OpenStreetMap at full node resolution (the current line of
+  the other tracks), and track-atlas midlines checked against aerial imagery (16 of them overlap).
+- Gates before a test: lap length within 0.5 % of the official figure, same race direction, a measured start/finish point.
+  Watkins Glen, Lime Rock, Sebring and Paul Ricard failed (another layout or length); 11 tracks were rebuilt from the atlas line.
+- Gate after: simulated laps against the real laps of each track (unseen check, no fit). Result, RMS error % old → atlas:
+  Mugello 1.56 → 1.52, Fuji 1.23 → 1.70, VIR 2.04 → 3.17, Road Atlanta 2.95 → 4.37, Le Mans 2.77 → 4.76, Long Beach 1.18 → 6.42,
+  Mosport 1.74 → 8.52, Laguna Seca 2.72 → 8.62, Road America 2.78 → 9.00, Indianapolis 3.43 → 13.36, Portimão 3.41 → 26.42.
+  The atlas lines carry more small wiggles (Le Mans: 3,476° of total turning against 1,897°), so every lap reads slower.
+  Mugello's gain is inside the noise (one real lap). Decision: keep every current line; nothing the simulator reads changed.
+- The Ford chicanes: the current line already has them (radii 16–37 m, atlas 18–39 m); the live map showed them blunt only because it
+  drew one point every 38 m. With a point every 5 m they show.
