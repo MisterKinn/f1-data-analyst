@@ -11,17 +11,21 @@ const cells = l => [...l.matchAll(/\S+(?: \S+)*/g)].map(m => ({t: m[0], x: m.ind
 export function parseEntryText(txt) {
   const lines = txt.split('\n'), cars = [];
   // column of the car number: the "#" / "No" / "Car" header cell (SRO tables put a "QT" index before it); driver columns of the header
-  let numCol = null, drvCols = null;
+  // cupOnly: the header has DRIVER n columns and one category cell after them ("CATEGORY" = the car's cup, 2026 GTWC Europe drafts):
+  // no rating per driver is printed, the words BRONZE/GOLD there are the cup, never a driver's rating
+  let numCol = null, drvCols = null, cupOnly = false;
   for (const l of lines) {
     const h = /(^|\s)(#|No\.?|Nr\.?|Car|N°)(\s|$)/.exec(l);
     if (h && /driver/i.test(l)) { const hash = l.indexOf('#'); numCol = hash >= 0 ? hash : h.index + h[1].length;
-      const hc = cells(l); drvCols = hc.map((c, i) => /^DRIVER ?\d/i.test(c.t) ? {l: i ? (hc[i - 1].e + c.x) / 2 : 0, r: i + 1 < hc.length ? (c.e + hc[i + 1].x) / 2 : 1e9} : null).filter(Boolean); continue; }
+      const hc = cells(l); drvCols = hc.map((c, i) => /^DRIVER ?\d/i.test(c.t) ? {l: i ? (hc[i - 1].e + c.x) / 2 : 0, r: i + 1 < hc.length ? (c.e + hc[i + 1].x) / 2 : 1e9} : null).filter(Boolean);
+      const catCells = [...l.matchAll(/\S+/g)].map(m => ({t: m[0], x: m.index})).filter(c => /^(CAT\.?|CATEGORY|CATEGORIE|categorisa\w*|GRADE|RATING)$/i.test(c.t)), lastDrv = Math.max(...hc.filter(c => /^DRIVER ?\d/i.test(c.t)).map(c => c.x));
+      cupOnly = drvCols.length >= 2 && catCells.length === 1 && catCells[0].x > lastDrv; if (cupOnly) drvCols.at(-1).r = catCells[0].x - 1; continue; }
     const toks = [...l.matchAll(/\S+/g)].map(m => ({t: m[0], x: m.index}));
     const nums = toks.filter(o => NUM.test(o.t)); if (!nums.length) continue;
     const num = numCol != null ? nums.reduce((a, o) => Math.abs(o.x - numCol) < Math.abs(a.x - numCol) ? o : a) : nums[0];
     if (numCol != null && Math.abs(num.x + num.t.length - 1 - numCol) > 8 && Math.abs(num.x - numCol) > 8) continue;
     const cats = toks.filter(o => CAT.test(o.t));
-    if (cats.length >= 1 && cats.length <= 6) {
+    if (!cupOnly && cats.length >= 1 && cats.length <= 6) {
       const drivers = [];
       // "-" in a category column = no category printed for that driver: kept as unknown (the car's line-up is then not complete)
       toks.forEach((o, k) => { const none = o.t === '-' && k > 0 && NAT.test(toks[k - 1].t); if (!CAT.test(o.t) && !none) return;

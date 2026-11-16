@@ -51,6 +51,10 @@ test('SRO entry-list text: category printed beside each driver, "-" stays unknow
   const cars = parseEntryText(t);
   assert.deepEqual(cars.map(c => [c.car, c.drivers.map(x => x.cat).join('')]), [['2', 'BP'], ['25', 'P'], ['177', 'BB']]);
   assert.equal(cars[1].drivers[0].cat, null);
+  // one CATEGORY column after the drivers is the car's cup (2026 GTWC Europe drafts): names only, never a driver rating
+  const cup = parseEntryText(['QT  #   TEAM                 NAT  CAR                              DRIVER 1          LIC  DRIVER 2          LIC  DRIVER 3         LIC  CATEGORY',
+    '9   11  Comtoyou Racing      BEL  Aston Martin Vantage AMR GT3 EVO Marcelo TOMASONI  BRA  Aaron MUSS        USA  Kyle MARCELLI    CAN  BRONZE'].join('\n'));
+  assert.deepEqual(cup, [{car: '11', names: ['Marcelo TOMASONI', 'Aaron MUSS', 'Kyle MARCELLI']}]);
 });
 
 test('printed values: only the four FIA names map to a rating', () => {
