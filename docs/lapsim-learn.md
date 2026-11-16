@@ -602,9 +602,9 @@ Data only: no fit term and no flag uses it yet (the main session adds that varia
   - **Name variants** (`name-match.mjs`): an entry list and the FIA list may write one driver differently. A variant counts only
     when exactly one driver of that season's FIA list fits one of three fixed rules: two tokens written together ("Pierguidi" /
     "Pier Guidi"), all tokens of the shorter name in the longer ("Albert Costa" / "Albert Costa Balboa"), or a short first name of a
-    fixed table ("Dani" / "Daniel"), or a first initial with the full first name (Natsoft "C. Mostert" / "Chaz Mostert"). No similarity score and no spelling fix ("Denis" / "Dennis", "Mikkel" / "Michael" stay apart).
+    fixed table ("Dani" / "Daniel"), or a first initial with the full first name (Natsoft "C. Mostert" / "Chaz Mostert"), or an umlaut written out ("Goetz" / "Götz", compared on the written names; P1f). HTML entities left in scraped names ("Kirchh&amp;ouml;fer") are decoded first. No similarity score and no spelling fix ("Denis" / "Dennis", "Mikkel" / "Michael" stay apart).
     Such seats carry `variant: "<rule>: <FIA name>"`; a learned row whose line-up needed one has `lineupExact: null` and
-    `variantSeats` (64 rows), so the fit can use the exact-name rows only.
+    `variantSeats` (81 rows), so the fit can use the exact-name rows only.
   - **Parser fix:** the 2026 GTWC Europe "draft" entry lists print one CATEGORY column after the drivers: that is the car's cup, not
     a driver's rating (it had been read as the last driver's rating, e.g. Kyle Marcelli "B"). Those lists now give names only.
     Printed categories agree with the FIA list of the same year in 98.8 % of 16,353 seats (2017–2026); most of the rest are the
@@ -618,9 +618,9 @@ Coverage (learned rows with a known line-up rating; best-lap driver known):
 | GT3 | ELMS | 2024–2026 | 78 | 78 | 78 |
 | GT3 | Asian LMS | 2022–2026 | 90 | 90 | 90 |
 | GT3 | IMSA | 2021–2026 | 604 | 603 | 604 |
-| GT3 | GTWC (SRO tables, all regions) | 2013–2026 | 728 | 594 (545 exact names) | 0 |
+| GT3 | GTWC (SRO tables, all regions) | 2013–2026 | 728 | 596 (545 exact names) | 0 |
 | GT3 | GTWC Europe (Timing71: Endurance, Sprint, Spa 24h) | 2024–2026 | 133 | 123 (116) | 0 |
-| GT3 | British GT | 2015–2026 | 273 | 184 (181) | 0 |
+| GT3 | British GT | 2015–2026 | 273 | 203 (185) | 0 |
 | GT3 | IGTC (PDFs, Suzuka 1000 km) | 2019–2026 | 79 | 58 (54) | 0 |
 | GT3 | Nürburgring 24h | 2023–2026 | 36 | 33 (32) | 0 |
 | LMP2 | WEC | 2021–2026 | 23 | 23 | 23 |
@@ -628,7 +628,7 @@ Coverage (learned rows with a known line-up rating; best-lap driver known):
 | LMP2 | Asian LMS | 2022–2026 | 13 | 13 | 13 |
 | LMP2 | IMSA | 2021–2026 | 41 | 41 | 41 |
 
-2,048 of 2,306 rows; 1,984 with exact names only (P1d: 1,881, P1c: 1,664). All Al Kamel rows: 1,056 of 1,057 (IMSA 2021 Watkins Glen #39: Tyler McQuarrie has no printed rating). Per
+2,069 of 2,306 rows; 1,988 with exact names only (P1d: 1,881, P1c: 1,664). All Al Kamel rows: 1,056 of 1,057 (IMSA 2021 Watkins Glen #39: Tyler McQuarrie has no printed rating). Per
 season: `node scripts/sim/learn/driver-ratings.mjs`. SRO timing has no driver per lap, so no best-lap driver there.
 
 Gaps and what was checked (2026-11-16):
@@ -638,7 +638,7 @@ Gaps and what was checked (2026-11-16):
 - **Data checks (P1e):** a year or number never counts as a venue word (it had matched IGTC Bathurst rows to GTWC Europe result pages);
   a seat "A N Other" / "NA" / "TBA" or a name with car text makes that source give no line-up for the car; a source that lists one
   driver twice for a car leaves its line-up unknown (`why`), since a driver may be missing.
-- **Still unknown (258 rows, P1e):** seats of seasons with no FIA list and no category in the entry list (2013: 26, 2014: 68,
+- **Still unknown (237 rows after P1f; P1e text below):** seats of seasons with no FIA list and no category in the entry list (2013: 26, 2014: 68,
   2020: 73 seats; the 2020 list existed only in the FIA web app, the Internet Archive kept no driver data); drivers on no FIA list
   we have under any accepted spelling (94 seats; mostly amateurs, one-off entries and spellings such as "Goetz" / "Götz"); drivers
   missing from the list of that year but on other years' lists (74 seats); cars with no full published line-up (31 rows: GTWC Asia
