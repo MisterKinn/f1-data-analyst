@@ -36,11 +36,14 @@ export function closeTurn(c) {
   const bend = k.reduce((a, v) => Math.abs(v) > 1e5 / 150 ? a + v : a, 0) / 1e5 * c.ds, f = 1 + err / bend;
   return {...c, kappa: k.map(v => Math.abs(v) > 1e5 / 150 ? Math.round(v * f) : v), turnClosed: {fromDeg: +(turn * 180 / Math.PI).toFixed(1), bendScale: +f.toFixed(3)}};
 }
+// Drawn map: at most every 15 m (owner 2026-11-16: with 360 points a 13.6 km Le Mans lap had a point every 35 m and the 25 km
+// Nürburgring every 65 m, so the Mulsanne chicanes looked blunt and the Ford chicanes vanished). Short tracks keep their 360+ points.
+export const MAP_EVERY_M = 15, mapStep = (n, ds) => Math.max(1, Math.min(Math.floor(n / 360), Math.round(MAP_EVERY_M / ds)));
 export function buildTrack(id, spec, c) {
   if (spec.straighten) c = straighten(c, spec.straighten);
   if (spec.driven) c = closeTurn(c);
   if (spec.driven) { // F1 car positions: already the driven line, with height, sectors and corner numbers
-    const turn = c.kappa.reduce((a, k) => a + k / 1e5 * c.ds, 0) * 180 / Math.PI, n = c.kappa.length, step = Math.max(1, Math.floor(n / 360)), map = {x: [], y: []};
+    const turn = c.kappa.reduce((a, k) => a + k / 1e5 * c.ds, 0) * 180 / Math.PI, n = c.kappa.length, step = mapStep(n, c.ds), map = {x: [], y: []};
     // Map outline only (the lap uses kappa as measured): rounded curvature does not add up to one full turn, so the drawn loop
     // stayed open (Paul Ricard 153 m, Nürburgring 106 m, Sakhir Outer 31 m). Spread the heading error and the end gap along the lap.
     const dh = (Math.sign(turn) * 360 - turn) * Math.PI / 180 / n, px = [], py = [];
@@ -58,7 +61,7 @@ export function buildTrack(id, spec, c) {
   if (c.grade) c = {...c, grade: o.order.map(i => o.reversed ? -c.grade[i] : c.grade[i])};
   const width = spec.widthM || c.widthM || null, halfW = Math.max(1, (width || 12) / 2 - 1.2);
   const rl = minCurvatureLine(cx, cy, new Array(n0).fill(halfW)), line = lineTrack(K, rl.x, rl.y, 5), n = line.kappa.length;
-  const flat = !c.grade || c.grade.every(g => g === 0), step = Math.max(1, Math.floor(n / 360)), map = {x: [], y: []};
+  const flat = !c.grade || c.grade.every(g => g === 0), step = mapStep(n, line.ds), map = {x: [], y: []};
   // the drawn map is the track's centre line (owner 2026-11-15: corners as angular as the circuit diagram); the lap uses the
   // least-curvature line above, which rounds every corner by design. Same number of points, spread evenly along the centre line.
   for (let j = 0, k = Math.ceil(n / step); j < k; j++) { const i = Math.min(n0 - 1, Math.round(j * n0 / k)); map.x.push(Math.round(cx[i])); map.y.push(Math.round(cy[i])); }

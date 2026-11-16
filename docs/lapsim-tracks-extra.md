@@ -581,3 +581,15 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 - Surface changes in scripts/sim/data/tracks/track-state.json were not applied to the reference rows: Laguna Seca 2023 rows are on the old surface.
 - Error includes geometry, car and borrowed-car error together; rows with a borrowed car say less about the track.
 - The Timing71 venue id "nurburgring-gp" holds three layouts; rows were split by lap time (80–90 s sprint, 105–125 s Grand Prix, 470–520 s 24 Hours lap). No Grand Prix lap of a GT3 or Hypercar class exists in the table.
+
+## Shape audit, 2026-11-16 (owner: Le Mans chicanes blunt, Ford chicanes missing; check every track)
+
+- Cause: the drawn map had 360 points per lap whatever the length: Le Mans one point every 35 m, Nürburgring 24h every 65 m, so the
+  Mulsanne and Ford chicanes were cut. The lap geometry itself was right. Fix: a map point at most every 15 m (`MAP_EVERY_M`,
+  `build-geometry-extra.mjs`); only these two maps changed. Test: `tests/track-map-detail.test.mjs`.
+- Check against an independent midline: the 40 circuits of tobi/track-atlas (MIT; OSM midline checked against aerial imagery),
+  rigid fit (ICP). Le Mans RMS 2.1 m, max 9 m; most tracks 1.3–6 m. Larger gaps read one by one: Portimão and Interlagos = errors in
+  the reference (chords across the lap); Paul Ricard = another layout; Catalunya = the old final chicane in the reference;
+  Road America 61 m = Turn 8, a real right angle the reference smooths (a rebuild from the reference made the lap 8.9 % too slow:
+  rejected). Street circuits (Long Beach, Las Vegas, Monaco, Singapore) 15–19 m at single walls, within the street width.
+- Every map: no spikes, no gaps over 40 m, no self-crossing except Suzuka and Yongin (both real crossovers).
