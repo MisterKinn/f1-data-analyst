@@ -102,6 +102,7 @@ for (const url of new Set(LISTS)) {
     const hd = re => T.find(t => re.test(t.s)); let cat = T.filter(t => /^Categori[sz]ation \d{4}$/i.test(t.s)).sort((a, b) => b.s.localeCompare(a.s))[0] || hd(/^(Category|Categori[sz]ation( \d{4})?)$/i), next = hd(/^Next Category$/), ln = hd(/^(Last ?name|Surname|Name)/i), fn = hd(/^First ?name/i), nat = hd(/^Nationality/) || cat, eff = hd(/next categorisation|^Effective date/);
     // 2018 lists print the column headers on page 1 only: later pages use the columns of the last page that had them (whole page)
     if (cat && ln) H = {cat, next, ln, fn, nat, eff}; else if (H) ({cat, next, ln, fn, nat, eff} = {...H, cat: {...H.cat, top: -1e9}});
+    if (cat && cols.length > 1 && !cat.s.includes(year)) cat = null; // two-year list: only its later-year column, never the earlier one
     if (!cat || !ln) continue; // 2015 list: one "Name" column ("Abbott Hunter"), no first-name column
     execFileSync('pdftoppm', ['-r', '72', '-f', String(p), '-l', String(p), '-singlefile', pdf, join(TMP, 'pg')]);
     const ppm = readFileSync(join(TMP, 'pg.ppm')), hdr = ppm.toString('latin1', 0, 40).match(/^P6\s+(\d+)\s+(\d+)\s+255\s/), W = +hdr[1], off = hdr[0].length;
