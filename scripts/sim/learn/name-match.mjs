@@ -16,7 +16,7 @@ const SHORT = {alex: ['alexander', 'alexandre', 'alessandro', 'alejandro', 'alex
   andy: ['andrew', 'andreas'], jon: ['jonathan'], josh: ['joshua'], phil: ['philip', 'philipp', 'phillip'], tim: ['timothy'], will: ['william'], fred: ['frederick', 'frederik'],
   freddie: ['frederick', 'frederik'], jim: ['james'], jimmy: ['james'], johnny: ['john'], toni: ['anton', 'antonio'], tony: ['anthony', 'antonio'], ed: ['edward'], ted: ['edward'],
   greg: ['gregory', 'gregor'], steve: ['steven', 'stephen'], rick: ['richard'], ricky: ['richard'], charlie: ['charles'], harry: ['henry', 'harrison'], kenny: ['kenneth'],
-  manu: ['manuel', 'emmanuel'], nico: ['nicolas', 'nicolai', 'niklas', 'nicola'], gabi: ['gabriel', 'gabriele'], beni: ['benjamin']};
+  manu: ['manuel', 'emmanuel'], jonny: ['jonathan', 'john'], bob: ['robert'], leo: ['leonardo', 'leon'], nico: ['nicolas', 'nicolai', 'niklas', 'nicola'], gabi: ['gabriel', 'gabriele'], beni: ['benjamin']};
 const short = (a, b) => (SHORT[a] || []).includes(b) || (SHORT[b] || []).includes(a);
 export function sameDriver(a, b) { // a, b: token arrays
   const A = [...a], B = [...b]; if (A.join(' ') === B.join(' ')) return 'exact';
