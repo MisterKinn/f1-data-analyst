@@ -5,7 +5,7 @@
 //    G gold, P platinum), not text. Each row is read at the column of the "Category" / "Next Category" headers: the page is rendered
 //    at 72 dpi (pdftoppm) and the medal colour at the row is matched to the four medals (reference colours measured from the list's
 //    own images, 2026-11-16). Only drivers named in a line-up are written (no copy of the whole list).
-// (run 11) Output (derived tables): scripts/sim/data/learn/sro-lineups.json.gz, scripts/sim/data/learn/fia-categorisation.json
+// (run 12) Output (derived tables): scripts/sim/data/learn/sro-lineups.json.gz, scripts/sim/data/learn/fia-categorisation.json
 import {writeFileSync, readFileSync, mkdtempSync, existsSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {join} from 'node:path';
@@ -20,8 +20,11 @@ const links = (t, re) => [...new Set([...t.matchAll(/href="([^"]+)"/g)].map(m =>
 // ---- 1. SRO entry lists ----
 const SITES = ['https://www.gt-world-challenge-europe.com', 'https://www.gt-world-challenge-america.com', 'https://www.gt-world-challenge-asia.com',
   'https://www.gt-world-challenge-australia.com', 'https://www.britishgt.com', 'https://www.intercontinentalgtchallenge.com'];
-const lineups = [], log = [];
-for (const site of SITES) {
+const lineups = [], log = [], PAGES_REV = 2, LU = 'scripts/sim/data/learn/sro-lineups.json.gz';
+// the entry-list pages are crawled again only when the crawl changes (PAGES_REV): a run for the FIA lists alone reuses them
+const prev = existsSync(LU) ? JSON.parse(gunzipSync(readFileSync(LU)).toString()) : null;
+if (prev && (prev.rev ?? 2) === PAGES_REV) { lineups.push(...prev.lineups); log.push(...prev.log); }
+for (const site of prev && (prev.rev ?? 2) === PAGES_REV ? [] : SITES) {
   const idx = await get(site + '/entry-lists') || '';
   const sel = idx.match(/<select[^>]*season[^>]*>([\s\S]*?)<\/select>/i)?.[1] || '';
   const seasons = [...sel.matchAll(/value="([^"]+)"[^>]*>\s*(\d{4})/g)].map(m => [m[1], +m[2]]).filter(([, y]) => y >= 2013 && y <= 2026);
@@ -47,13 +50,16 @@ for (const site of SITES) {
   }
   log.push(`${site}: ${seasons.length} seasons, ${pages.size} entry-list pages, ${n} cars`);
 }
-writeFileSync('scripts/sim/data/learn/sro-lineups.json.gz', gzipSync(JSON.stringify({generated: new Date().toISOString().slice(0, 10), source: 'SRO entry-list pages (/entry-list/<year>/<meeting>) of ' + SITES.join(', '), log, lineups}), {level: 9}));
+writeFileSync(LU, gzipSync(JSON.stringify({generated: new Date().toISOString().slice(0, 10), rev: PAGES_REV, source: 'SRO entry-list pages (/entry-list/<year>/<meeting>) of ' + SITES.join(', '), log, lineups}), {level: 9}));
 console.log(log.join('\n'));
 
 // ---- 2. FIA public list PDFs ----
 const fold = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z]+/g, ' ').trim();
 const key = s => fold(s).split(' ').sort().join(' ');
 const known = new Set(lineups.flatMap(l => l.drivers).map(key));
+// also the drivers named only by the ADAC N24 lists and by names-only SRO entry-list PDFs (no category printed there)
+for (const f of ['scripts/sim/data/learn/n24-lineups.json']) if (existsSync(f)) for (const l of JSON.parse(readFileSync(f, 'utf8')).lineups) for (const n of l.drivers) known.add(key(n));
+{ const f = 'scripts/sim/data/learn/sro-entry-ratings.json'; if (existsSync(f)) for (const m of JSON.parse(readFileSync(f, 'utf8')).meetings) for (const d of m.docs) for (const c of d.cars || []) for (const n of [...(c.names || []), ...(c.drivers || []).map(x => x.name)]) known.add(key(n)); }
 const DR = 'scripts/sim/data/learn/driver-ratings.json.gz'; if (existsSync(DR)) for (const p of Object.values(JSON.parse(gunzipSync(readFileSync(DR)).toString()).drivers)) known.add(key(p.name));
 // Public list PDFs (official FIA document; copies hosted by the press when fia.com has removed them). The list year and print time are
 // read from the PDF itself ("FIA Driver Categorisation – 2024 List", "2024-10-09 06:00:01"); a URL that does not answer is skipped.
