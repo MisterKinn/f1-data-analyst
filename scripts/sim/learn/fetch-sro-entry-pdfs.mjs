@@ -4,7 +4,7 @@
 // "Provisional entry list: ..."). Runs in GitHub Actions (network, poppler).
 // Raw texts go to .cache/sro-entry-pdfs (uploaded as a workflow artifact, never committed: physics rule 2.9); the derived table
 // scripts/sim/data/learn/sro-entry-ratings.json keeps per meeting and car the drivers' printed categories (parseEntryText, sro-entry-parse.mjs;
-// a change to the parser needs a change here too, so the workflow reruns this script; parser rev 5, crawl rev 2).
+// a change to the parser needs a change here too, so the workflow reruns this script; parser rev 5, crawl rev 3).
 import {writeFileSync, mkdirSync, mkdtempSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {join} from 'node:path';
@@ -13,26 +13,27 @@ import {parseEntryText} from './sro-entry-parse.mjs';
 const UA = {headers: {'user-agent': 'Mozilla/5.0 (kongboda-motorsports lap simulator)'}}, TMP = mkdtempSync(join(tmpdir(), 'sro-ep-')), CACHE = '.cache/sro-entry-pdfs';
 mkdirSync(CACHE, {recursive: true});
 const get = async (u, bin) => { for (let i = 0; i < 2; i++) { try { const r = await fetch(u, {...UA, signal: AbortSignal.timeout(45000)}); if (r.ok) return bin ? Buffer.from(await r.arrayBuffer()) : await r.text(); if (r.status === 404) return null; } catch {} await new Promise(s => setTimeout(s, 1000)); } return null; };
+const dec = s => { try { return decodeURIComponent(s); } catch { return s; } };
 const clean = t => t.replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&#0?39;/g, "'").replace(/\s+/g, ' ').trim();
 const SITES = ['https://www.gt-world-challenge-europe.com', 'https://www.gt-world-challenge-america.com', 'https://www.gt-world-challenge-asia.com',
   'https://www.gt-world-challenge-australia.com', 'https://www.britishgt.com', 'https://www.intercontinentalgtchallenge.com'];
 const MAXID = +(process.env.SRO_MAXID || 320), MAXNEWS = +(process.env.SRO_MAXNEWS || 400);
-const pool = async (items, n, f) => { const out = []; let i = 0; await Promise.all(Array.from({length: n}, async () => { while (i < items.length) { const k = i++; out[k] = await f(items[k]); } })); return out; };
+const pool = async (items, n, f) => { const out = []; let i = 0; await Promise.all(Array.from({length: n}, async () => { while (i < items.length) { const k = i++; try { out[k] = await f(items[k]); } catch (e) { console.log('skip', items[k], e.message); } } })); return out; };
 const meetings = [], log = [], seen = new Set(), dbg = Object.fromEntries(SITES.map(x => [x, 0]));
 const ENTRY = (name, text) => /entry|entries|engag/i.test(name + ' ' + text) && !/spotter|timetable|regulation|bulletin|decision/i.test(name + ' ' + text);
-const pdfLinks = (p, out) => { for (const m of p.matchAll(/<a[^>]+href="([^"]+\.pdf)"[^>]*>([\s\S]*?)<\/a>/gi)) { const text = clean(m[2]), name = decodeURIComponent(m[1].split('/').pop()); if (ENTRY(name, text)) out.set(m[1], text || name); } };
+const pdfLinks = (p, out) => { for (const m of p.matchAll(/<a[^>]+href="([^"]+\.pdf)"[^>]*>([\s\S]*?)<\/a>/gi)) { const text = clean(m[2]), name = dec(m[1].split('/').pop()); if (ENTRY(name, text)) out.set(m[1], text || name); } };
 // a 4-digit year, else a dd.mm.yy date ("05.05.25"), in the file name, link text or first lines of the PDF
 const yearOf = s => { const y = (s.match(/20(1[2-9]|2[0-7])/g) || []).sort((a, b) => s.split(b).length - s.split(a).length)[0]; if (y) return +y; const d = s.match(/\b\d{1,2}[.\/-]\d{1,2}[.\/-](1[2-9]|2[0-7])\b/); return d ? 2000 + +d[1] : null; };
 async function readDocs(site, id, title, pdfs) {
   const docs = [];
   for (const [href, text] of pdfs) {
     const url = href.startsWith('http') ? href : site + (href.startsWith('/') ? '' : '/') + href; if (seen.has(url)) continue; seen.add(url);
-    const buf = await get(encodeURI(decodeURI(url)), true);
+    let u2 = url; try { u2 = encodeURI(decodeURI(url)); } catch {} const buf = await get(u2, true);
     if (!buf || buf.subarray(0, 4).toString() !== '%PDF') continue;
     const f = join(TMP, `${String(id).replace(/\W/g, '')}-${docs.length}.pdf`); writeFileSync(f, buf); let txt = '';
     try { txt = execFileSync('pdftotext', ['-layout', f, '-'], {maxBuffer: 1 << 26}).toString(); } catch { continue; }
     const key = `${site.replace(/^https:\/\/www\./, '')}-${id}-${docs.length}`; writeFileSync(join(CACHE, key + '.txt'), `URL ${url}\nTITLE ${title}\nLINK ${text}\n\n` + txt);
-    const head = txt.split('\n').map(l => l.trim()).filter(Boolean).slice(0, 8).join(' | ').slice(0, 400), name = decodeURIComponent(url.split('/').pop());
+    const head = txt.split('\n').map(l => l.trim()).filter(Boolean).slice(0, 8).join(' | ').slice(0, 400), name = dec(url.split('/').pop());
     const yr = yearOf(name + ' ' + text + ' ' + head), cars = parseEntryText(txt);
     if (cars.length < 3 && dbg[site] < 6) { dbg[site]++; console.log(`::group::unparsed ${url}`); console.log(txt.split('\n').filter(l => /\d/.test(l) && l.trim()).slice(0, 14).map(l => l.slice(0, 200)).join('\n')); console.log('::endgroup::'); }
     docs.push({url, link: text, year: yr, head, cars});

@@ -5,7 +5,7 @@
 //    G gold, P platinum), not text. Each row is read at the column of the "Category" / "Next Category" headers: the page is rendered
 //    at 72 dpi (pdftoppm) and the medal colour at the row is matched to the four medals (reference colours measured from the list's
 //    own images, 2026-11-16). Only drivers named in a line-up are written (no copy of the whole list).
-// (run 7) Output (derived tables): scripts/sim/data/learn/sro-lineups.json.gz, scripts/sim/data/learn/fia-categorisation.json
+// (run 8) Output (derived tables): scripts/sim/data/learn/sro-lineups.json.gz, scripts/sim/data/learn/fia-categorisation.json
 import {writeFileSync, readFileSync, mkdtempSync, existsSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {join} from 'node:path';
@@ -31,7 +31,7 @@ for (const site of SITES) {
   for (let id = 1; id <= 320; id++) pages.add(`/entry-list?filter_meeting_id=${id}`);
   for (const [v] of seasons) { const t = await get(`${site}/entry-lists?${name}=${encodeURIComponent(v)}`) || ''; for (const h of links(t, /entry-list\//)) pages.add(h); }
   let n = 0;
-  for (const h of pages) {
+  for (const h of [...pages].sort((a, b) => /filter_meeting_id/.test(a) - /filter_meeting_id/.test(b))) { // slug pages first, so a meeting-id page that repeats one is skipped
     const u = abs(site, h), byId = /filter_meeting_id=(\d+)/.exec(u), page = await get(u); if (!page) continue;
     const title = clean(page.match(/<title>([\s\S]*?)<\/title>/)?.[1] || ''), tables = page.match(/<table[\s\S]*?<\/table>/g) || [];
     const m = /entry-list\/(\d{4})\/([^/?#]+)/.exec(decodeURIComponent(u)) || (byId && /Entry List (\d{4})/.exec(title) ? [null, /Entry List (\d{4})/.exec(title)[1], 'meeting-' + byId[1]] : null); if (!m) continue;
