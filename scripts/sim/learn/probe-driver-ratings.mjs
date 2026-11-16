@@ -1,37 +1,36 @@
-// Probe (task P1, driver ratings): which official SRO entry lists exist as PDF and whether they print a category per driver, and how
-// the FIA Drivers' Categorisation public list is laid out. Runs in GitHub Actions (network, poppler). Writes a small probe file only.
-import {writeFileSync, mkdtempSync} from 'node:fs';
+// Probe 2 (task P1, driver ratings): FIA public list (category icons: positions and the icon images), the FIA public driver database,
+// and whether SRO result PDFs / entry-list pages print a category per driver. Runs in GitHub Actions. Writes a small probe file only.
+import {writeFileSync, mkdtempSync, readdirSync, readFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
-const SITES = ['https://www.gt-world-challenge-europe.com', 'https://www.gt-world-challenge-america.com', 'https://www.gt-world-challenge-asia.com', 'https://www.britishgt.com', 'https://www.intercontinentalgtchallenge.com', 'https://www.gt-world-challenge-australia.com'];
+import {createHash} from 'node:crypto';
 const UA = {headers: {'user-agent': 'Mozilla/5.0 (kongboda-motorsports lap simulator)'}}, TMP = mkdtempSync(join(tmpdir(), 'probe-dr-'));
 const get = async (u, bin) => { for (let i = 0; i < 3; i++) { try { const r = await fetch(u, {...UA, signal: AbortSignal.timeout(60000)}); if (r.ok) return bin ? Buffer.from(await r.arrayBuffer()) : await r.text(); if (r.status === 404) return null; } catch {} await new Promise(s => setTimeout(s, 2000)); } return null; };
-const links = (t, re) => [...new Set([...t.matchAll(/href="([^"]+)"/g)].map(m => m[1]).filter(h => re.test(h)))];
-const text = async (u, args = ['-layout']) => { const b = await get(u, true); if (!b) return null; const p = join(TMP, 'x.pdf'); writeFileSync(p, b); try { return execFileSync('pdftotext', [...args, p, '-'], {maxBuffer: 1 << 26}).toString(); } catch (e) { return 'ERR ' + e.message; } };
-const out = {sro: [], samples: [], fia: {}};
-for (const site of SITES) {
-  const idx = await get(site + '/results') || '', sel = idx.match(/name="filter_season_id"[^>]*>([\s\S]*?)<\/select>/)?.[1] || '';
-  const seasons = [...sel.matchAll(/value="(\d+)"[^>]*>\s*(\d{4})/g)].map(m => [m[1], +m[2]]).filter(([, y]) => [2019, 2025].includes(y));
-  for (const [sid, year] of seasons) {
-    const list = await get(`${site}/results?filter_season_id=${sid}&filter_meeting_id=0`) || '';
-    for (const m of links(list, new RegExp(`^(https?://[^/]+)?/results/${year}/[^/?#]+$`)).slice(0, 3)) {
-      const page = await get(m.startsWith('http') ? m : site + m) || '', pdfs = links(page, /\.pdf$/i);
-      out.sro.push({site, year, meeting: m, pdfs: pdfs.map(decodeURIComponent)});
-      const e = pdfs.filter(f => /entr/i.test(decodeURIComponent(f)))[0];
-      if (e && out.samples.filter(s => s.site === site).length < 2) { const u = e.startsWith('http') ? e : site + e, t = await text(u); out.samples.push({site, year, url: u, head: (t || '').split('\n').filter(l => l.trim()).slice(0, 45)}); }
-    }
-    // entry-list pages (HTML) too
-    const el = await get(`${site}/entry-lists`) || ''; out.sro.push({site, entryListLinks: links(el, /entry-list\//).slice(0, 30)});
-  }
+const pdf = async (u, name) => { const b = await get(u, true); if (!b) return null; const p = join(TMP, name); writeFileSync(p, b); return p; };
+const run = (c, a) => { try { return execFileSync(c, a, {maxBuffer: 1 << 27}).toString(); } catch (e) { return 'ERR ' + e.message.slice(0, 200); } };
+const out = {};
+// 1. FIA list: page 2 as XML (text and image boxes) and the distinct icons
+const F = await pdf('https://www.fia.com/sites/default/files/fia_2024_reviewed_categorisations_list_0.pdf', 'fia.pdf');
+if (F) {
+  out.fiaXml = run('pdftohtml', ['-xml', '-i', '-f', '2', '-l', '2', '-stdout', F]).slice(0, 4000);
+  const dir = join(TMP, 'img'); run('mkdir', ['-p', dir]); run('pdfimages', ['-png', '-f', '2', '-l', '2', '-p', F, join(dir, 'i')]);
+  const seen = {}; for (const f of readdirSync(dir).sort()) { const b = readFileSync(join(dir, f)), h = createHash('md5').update(b).digest('hex').slice(0, 8); (seen[h] ||= {n: 0, first: f, png: b.length < 6000 ? b.toString('base64') : null}).n++; }
+  out.fiaIcons = seen; out.fiaImgList = run('pdfimages', ['-list', '-f', '2', '-l', '2', F]).split('\n').slice(0, 8);
+  // do the images sit on the rows? positions from the content stream (pdftocairo svg of page 2, image tags only)
+  out.fiaSvg = run('pdftocairo', ['-svg', '-f', '2', '-l', '2', F, '-']).match(/<(use|image)[^>]{0,200}/g)?.slice(0, 30) || [];
 }
-// FIA public list
-for (const u of ['https://www.fia.com/driver-categorisation', 'https://www.fia.com/node/1406', 'https://www.fia.com/fia-driver-categorisation']) {
-  const p = await get(u); if (!p) continue; out.fia[u] = links(p, /\.pdf|categoris/i).slice(0, 40);
+// 2. FIA public database
+for (const u of ['https://driverscategorisation.fia.com/public/drivers', 'https://driverscategorisation.fia.com']) { const t = await get(u); out[u] = t ? t.replace(/\s+/g, ' ').slice(0, 3000) : null; }
+// 3. SRO result PDFs: Spa 24h 2025 race result list, Bathurst 2025 race
+for (const [k, u] of [['spa', 'https://www.intercontinentalgtchallenge.com/files/results/GTWCEU_GT3%2024H%20Spa_Q1_ResultList_1.0.PDF'], ['bathurst', 'https://www.intercontinentalgtchallenge.com/files/results/MOUN_02022025_0545_Race_R6_12H_RES_F_1.pdf']]) {
+  const page = await get('https://www.intercontinentalgtchallenge.com/results/2025/' + (k === 'spa' ? 'crowdstrike-24-hours-of-spa' : 'bathurst-12-hour')) || '';
+  const href = [...page.matchAll(/href="([^"]+\.pdf)"/gi)].map(m => m[1]).find(h => k === 'spa' ? /Q1_ResultList/.test(decodeURIComponent(h)) : /Race_R6/.test(h));
+  const url = href ? (href.startsWith('http') ? href : 'https://www.intercontinentalgtchallenge.com' + href) : u, p = await pdf(url, k + '.pdf');
+  out['sro_' + k] = {url, head: p ? run('pdftotext', ['-layout', '-l', '1', p, '-']).split('\n').filter(l => l.trim()).slice(0, 40) : null};
 }
-const L = 'https://www.fia.com/sites/default/files/fia_2024_reviewed_categorisations_list_0.pdf';
-const t = await text(L), b = await text(L, ['-bbox-layout', '-f', '2', '-l', '2']);
-out.fia.sample = {url: L, head: (t || '').split('\n').filter(l => l.trim()).slice(0, 40), bbox: (b || '').slice(0, 6000)};
-try { const buf = await get(L, true); const p = join(TMP, 'f.pdf'); writeFileSync(p, buf); out.fia.images = execFileSync('pdfimages', ['-list', '-f', '2', '-l', '2', p]).toString().split('\n').slice(0, 25); } catch (e) { out.fia.images = 'ERR ' + e.message; }
+// 4. GTWC Europe entry-list page raw table row (hidden per-driver attributes?)
+const el = await get('https://www.gt-world-challenge-europe.com/entry-list/2025/monza');
+out.gtwcEntryRow = el ? (el.match(/<tr[\s\S]*?<\/tr>/g) || []).slice(0, 3).map(x => x.replace(/\s+/g, ' ').slice(0, 2500)) : null;
 writeFileSync('scripts/sim/data/learn/probe-driver-ratings.json', JSON.stringify(out, null, 1));
-console.log('sro meetings', out.sro.length, 'samples', out.samples.length);
+console.log(Object.keys(out));
