@@ -192,7 +192,45 @@ export function build(root, extras = [], learned = null, sro = null, fia = null,
   // the seat is kept once and the car's line-up is unknown
   for (const cars of Object.values(lineups)) for (const c of Object.values(cars)) { const seen = new Set(), ds = c.drivers.filter(d => d.id && !seen.has(d.id) && seen.add(d.id));
     if (ds.length !== c.drivers.length) { c.drivers = ds; c.lineup = null; c.why = 'a driver listed twice in the source'; } }
+  // ---- estimate layer (owner decision 2026-11-17: guessing allowed, kept apart from the printed values) ----
+  // A seat with no printed / listed rating gets `est` (never `rating`) and `estHow`, in this order:
+  //  1. bracket: the same rating on the nearest year before and after with a value for the driver;
+  //  2. nearest: the driver's value of the nearest other year (FIA lists, printed entry lists, Al Kamel; earlier year on a tie);
+  //  3. class: the most common printed line-up of that series and cup (else series, else all SRO) of the same size that holds the
+  //     known seats; the rest of it fills the unknown seats.
+  // A car with no line-up at all takes the most common line-up of its cup (class from the timing table), else of its series and season.
+  const valAt = (id, y) => fiaR[id]?.[y]?.rating || variant(id, y)?.rating || aliasRating(id, y)?.rating
+    || (drivers[id]?.seasons?.[y] && !drivers[id].seasons[y].printedBy ? drivers[id].seasons[y].changes?.at(-1)?.rating ?? drivers[id].seasons[y].rating : null)
+    || [...(seasonPrint.get(`${id}|${y}`)?.cats || [])][0] || null;
+  const histEst = (id, season) => { const ys = []; for (let y = 2012; y <= 2027; y++) if (y !== +season) { const v = valAt(id, y); if (v) ys.push([y, v]); }
+    const b = ys.filter(([y]) => y < season).at(-1), a = ys.find(([y]) => y > season);
+    if (b && a && b[1] === a[1]) return {est: b[1], estHow: `bracket: ${b[0]} ${b[1]}, ${a[0]} ${a[1]}`};
+    const n = [...ys].sort((x, y) => Math.abs(x[0] - season) - Math.abs(y[0] - season) || x[0] - y[0])[0]; return n ? {est: n[1], estHow: `nearest year: ${n[0]} ${n[1]}`} : null; };
+  const cupOf = c => { c = String(c || '').toLowerCase(); return /pro[\s-]?am|^pa$/.test(c) ? 'proam' : /sil(ver)?[\s-]?am/.test(c) ? 'silveram' : /silver/.test(c) ? 'silver' : /bronze/.test(c) ? 'bronze'
+    : /gold/.test(c) ? 'gold' : /(^|\W)am(\W|$)|^am\b/.test(c) ? 'am' : /pro/.test(c) ? 'pro' : c.replace(/[^a-z0-9]+/g, ''); };
+  const isSro = sr => !SITE[sr]; const stats = new Map(), bump = (k, l) => { const m = stats.get(k) || stats.set(k, new Map()).get(k); m.set(l, (m.get(l) || 0) + 1); };
+  for (const [ek, cars] of Object.entries(lineups)) { const [sr, se] = ek.split('|'); for (const c of Object.values(cars)) if (c.lineup) { const cup = cupOf(c.cls), n = c.lineup.length;
+    for (const k of [`${sr}|${cup}|${n}`, `${isSro(sr) ? 'sro' : 'aco'}|${cup}|${n}`, `${sr}|${se}|${n}`, `${sr}|${n}`, `${isSro(sr) ? 'sro' : 'aco'}|${n}`, `${sr}|${cup}|*`, `${sr}|${se}|*`, `${sr}|*`, `all|*`]) bump(k, c.lineup); } }
+  const modeOf = (keys, fits = () => true) => { for (const k of keys) { const m = stats.get(k); if (!m) continue; const best = [...m].filter(([l]) => fits(l)).sort((a, b) => b[1] - a[1])[0]; if (best) return {lineup: best[0], key: k, n: best[1]}; } return null; };
+  const contains = (l, known) => { const a = [...l]; for (const x of known) { const i = a.indexOf(x); if (i < 0) return null; a.splice(i, 1); } return a; };
+  const clsTable = new Map(); for (const f of ['sro-gt3-cars', 't71-gt3-cars', 'sro-pdf-cars']) { const p = `scripts/sim/data/learn/${f}.csv.gz`; if (!existsSync(p)) continue;
+    const L = gunzipSync(readFileSync(p)).toString().split('\n'), H = L[0].split(','); const iS = H.indexOf('series'), iY = H.indexOf('season'), iE = H.indexOf('event'), iC = H.indexOf('cls'), iN = H.indexOf('entry');
+    for (const l of L.slice(1)) { const c = l.split(','); if (c[iC]) clsTable.set(`${c[iS]}|${c[iY]}|${c[iE]}|${c[iN]}`, c[iC]); } }
+  for (const [ek, cars] of Object.entries(lineups)) { const [sr, se] = ek.split('|');
+    for (const [car, c] of Object.entries(cars)) { if (c.lineup) continue; const cup = cupOf(c.cls);
+      for (const d of c.drivers) if (!d.rating) { const h = d.id && histEst(d.id, +se); if (h) Object.assign(d, h); }
+      const unk = c.drivers.filter(d => !d.rating && !d.est), known = c.drivers.filter(d => d.rating || d.est).map(d => d.rating || d.est), n = c.drivers.length;
+      if (unk.length) { const m = modeOf([`${sr}|${cup}|${n}`, `${isSro(sr) ? 'sro' : 'aco'}|${cup}|${n}`, `${sr}|${se}|${n}`, `${sr}|${n}`, `${isSro(sr) ? 'sro' : 'aco'}|${n}`], l => !!contains(l, known));
+        const rest = m ? contains(m.lineup, known) : null;
+        if (rest) unk.forEach((d, i) => Object.assign(d, {est: rest[i], estHow: `class: most common ${m.key.replace(/\|\d+$/, '')} line-up ${m.lineup} (${m.n} cars)`})); }
+      c.lineupEstimated = lineupString(c.drivers.map(d => d.rating || d.est || null)); } }
   // the learned rows (fit-endurance.mjs): line-up of the car that set the model's best lap, and the driver of that lap when the lap file shows it
+  // lineupEstimated: the printed line-up when known, else the estimate layer; for a car with no line-up, the most common line-up of its
+  // cup (class from the timing table) in that series, else of the series and season
+  function estOf(r, L) { if (L?.lineup) return {lineupEstimated: L.lineup};
+    if (L?.lineupEstimated) return {lineupEstimated: L.lineupEstimated, estimatedSeats: L.drivers.filter(d => !d.rating).length, estimate: [...new Set(L.drivers.filter(d => !d.rating && d.estHow).map(d => d.estHow.split(':')[0]))].join(', ') || (L.why ? 'source listed a driver twice: the other seats' : '')};
+    const cup = cupOf(L?.cls || clsTable.get(`${r.series}|${r.season}|${r.event}|${r.entry}`)), m = modeOf([`${r.series}|${cup}|*`, `${r.series}|${r.season}|*`, `${r.series}|*`, `all|*`]);
+    return m ? {lineupEstimated: m.lineup, estimatedSeats: m.lineup.length, estimate: `no line-up: most common ${m.key.replace(/\|\*$/, '')} line-up (${m.n} cars)`} : {lineupEstimated: null}; }
   for (const r of rows) { const k = `${r.series}|${r.season}|${r.event}`, L = lineups[k]?.[String(r.entry)];
     const xb = extraBest.get(`${k}|${r.entry}`), b = xb && Math.abs(xb.lap - r.real) < 0.0006 ? {name: xb.name, file: xb.source}
       : L && SITE[r.series] ? bestLapDriver(root, r, lapCache) : {name: null, why: 'no Al Kamel lap file for this source'};
@@ -200,7 +238,7 @@ export function build(root, extras = [], learned = null, sro = null, fia = null,
     learnedOut.push({series: r.series, season: r.season, event: r.event, session: r.session, group: r.group, model: r.model, entry: String(r.entry), lap: r.real,
       // lineupExact: the same line-up only when no seat needed a name variant (name-match.mjs) — the strict reading of "same name"
       lineup: L?.lineup ?? null, ...(L?.lineup && L.drivers.some(d => d.variant) ? {lineupExact: null, variantSeats: L.drivers.filter(d => d.variant).length} : {}), bestLapDriver: id ? {id, rating: L.drivers.find(d => d.id === id)?.rating ?? drivers[id]?.seasons?.[r.season]?.rating ?? null, file: F(b.file)} : null,
-      ...(L ? {} : {why: 'no official line-up found'}), ...(!id && L ? {bestLapWhy: b.why} : {})}); }
+      ...(L ? {} : {why: 'no official line-up found'}), ...(!id && L ? {bestLapWhy: b.why} : {}), ...estOf(r, L)}); }
   // keep the events the fit learns from (every car of those events), and the drivers of those line-ups
   const evKeep = new Set(learnedOut.map(r => `${r.series}|${r.season}|${r.event}`)), L2 = Object.fromEntries(Object.entries(lineups).filter(([k]) => evKeep.has(k)));
   const ids = new Set(Object.values(L2).flatMap(cars => Object.values(cars).flatMap(c => c.drivers.map(x => x.id))));
