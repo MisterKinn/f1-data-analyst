@@ -27,3 +27,11 @@ test('LMGT3 table: every 2026 car with weight, power curve and gain', () => {
   for (const car of ['Ferrari 296 LMGT3', 'Porsche 911 GT3 R LMGT3', 'Mercedes-AMG LMGT3']) assert.ok(p.includes(car), car);
   assert.match(p, />P\d+ </);
 });
+
+test('ELMS LMGT3: published tables are official, only the unpublished 2026 events are estimated', () => {
+  assert.deepEqual(options(bopPage({series: 'elms'}, 'en'), 'class'), ['lmgt3'], 'no LMP2 / LMP3');
+  assert.match(bopPage({series: 'elms', event: 'barcelona'}, 'en'), /Official BoP \(published decision\)/);
+  const spa = bopPage({series: 'elms', event: 'spa'}, 'en');
+  assert.match(spa, /2026 estimated BoP/); assert.match(spa, /±/);
+  assert.deepEqual(options(bopPage({series: 'elms', year: '2027'}, 'en'), 'event'), ['barcelona', 'paulricard', 'imola', 'spa', 'silverstone', 'portimao']);
+});

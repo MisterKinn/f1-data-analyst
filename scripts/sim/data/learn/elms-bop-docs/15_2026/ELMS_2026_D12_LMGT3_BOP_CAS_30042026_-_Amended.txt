@@ -1,0 +1,74 @@
+To:     ☐ LMP2          ☐ LMP2 Pro/Am              ☐ LMP3            ☒ LMGT3
+
+Decision: ELMS_2026_D12_LMGT3_BOP_CAS_Amended
+
+Date: 30/04/2026
+
+Subject: Balance of Performance 4 Hours of Le Castellet
+
+APPLICABLE REGULATION(S)
+
+
+Articles 6.2.4   ☒ 2026 European Le Mans Series Sporting Regulations
+
+
+DECISION
+
+
+Please find below the BOP table.
+
+
+
+PERIOD OF VALIDITY/APPLICATION OF THE DECISION
+
+        This decision comes into effect:
+                ☒ with immediate application
+                ☐ from:
+
+        And is applicable:
+                ☒ until further notice
+                ☐ for the above-mentioned Competition only
+
+
+
+
+                       Any decision taken by the European Le Mans Series Committee is not subject to appeal.
+                                           http://elms.alkamelsystems.com/noticeBoard.php
+CASTELET - AMENDED
+                        Vehicles                                                      Power                                             Weight                                       Aero                                   Energy
+                                                              Max. power curve below           Power gain above vehicle                                                              Max.RW      Min. ride height   Maximum Stint Energy
+                                                                                                                           Weight without success ballast (kg)   Min.RW angle (°)
+MANUFACTURER                                                     vehicle speed 1                      speed 2                                                                        angle (°)        (mm)                 (MJ)
+
+                                                                 adj.          current            adj.         current       adj.                current             current          current        current         adj         current
+
+ASTON MARTIN               Vantage AMR LMGT3                     0.0           P11.0              0.0%        -2.4%            -                 1310              LMGT3 homol.       10.8             50              -             783
+CORVETTE                   Z06 LMGT3.R                           0.0           P1.0               0.0%        -1.8%            -                 1325              LMGT3 homol.       7 (**)           50              -             795
+FERRARI                    296 LMGT3 Evo                         0.0           P10.6              0.0%        -6.7%            -                 1388              LMGT3 homol.        6.3             50              -             795
+MC LAREN                   720S LMGT3 Evo                        0.0           P7.5               0.0%        0.3%             -                 1325              LMGT3 homol.       10.7             50              -             801
+MERCEDES                   AMG LMGT3                             0.0           P7.1               0.0%        6.1%             -                 1364              LMGT3 homol.        9.0             50              -             834
+PORSCHE                    911 GT3 R LMGT3                       -1.2          P2.4               1.2%        -1.4%          -10                 1365              LMGT3 homol.        9.3             50             -4             788
+                                                            (*) speed threshold may be reviewed
+                                                            (**) with ACO/FIA centerline Jig
+Adjustments are made with: the data & information provided by the manufacturers, the analysis made by ACO/FiA
+                                                                                           Weight including success ballast
+COMPETITOR                                                                                         Success Handicap                     Min. Car Weight (kg)
+                                                                Initial                                       Champ.
+                                                                             Race-1 (kg)       Race-2 (kg)                Offset (kg)         Current (kg)
+                                                                 (kg)                                          (kg)
+
+  23    UNITED AUTOSPORTS                                      1325              10                             10                               1345                                            BOP control parameters
+  33    TF SPORT                                               1325                                                                              1325                                                                adj.        current
+  50    RICHARD MILLE AF CORSE                                 1388                                                                              1388                               Vehicle speed 1 (kph)             0              180
+  51    AF CORSE                                               1388                                                                              1388                               Vehicle speed 2 (kph)             0              220
+  54    HIGH CLASS RACING                                      1365                                                                              1365
+  55    SPIRIT OF RACE                                         1388                                                                              1388
+  57    KESSEL RACING                                          1388               5                              5                               1398
+  59    RACING SPIRIT OF LEMAN                                 1310                                                                              1310
+  62    TEAM QATAR BY IRON LYNX                                1364                                                                              1364
+  63    IRON LYNX                                              1364                                                                              1364
+  74    KESSEL RACING                                          1388                                                                              1388
+  75    PROTON COMPETITION                                     1365              15                             15                               1395
+  77    PROTON COMPETITION                                     1365                                                                              1365
+  86    GR RACING                                              1388                                                                              1388
+

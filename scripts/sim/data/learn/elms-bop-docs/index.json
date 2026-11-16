@@ -1,0 +1,116 @@
+{
+ "generated": "2026-11-16T01:34:08.859Z",
+ "seasons": {
+  "13_2024": 6,
+  "14_2025": 6,
+  "15_2026": 9
+ },
+ "files": [
+  {
+   "season": "13_2024",
+   "base": "ELMS_2024_D15_LMGT3_BOP_BARC_04042024",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/13_2024/committee/ELMS_2024_D15_LMGT3_BOP_BARC_04042024.pdf"
+  },
+  {
+   "season": "13_2024",
+   "base": "ELMS_2024_D18_LMGT3_BOP_CAST_30042024",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/13_2024/committee/ELMS_2024_D18_LMGT3_BOP_CAST_30042024.pdf"
+  },
+  {
+   "season": "13_2024",
+   "base": "ELMS_2024_D19_LMGT3_BOP_IMOL_20062024",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/13_2024/committee/ELMS_2024_D19_LMGT3_BOP_IMOL_20062024.pdf"
+  },
+  {
+   "season": "13_2024",
+   "base": "ELMS_2024_D22_LMGT3_BOP_SPA_12082024",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/13_2024/committee/ELMS_2024_D22_LMGT3_BOP_SPA_12082024.pdf"
+  },
+  {
+   "season": "13_2024",
+   "base": "ELMS_2024_D27_LMGT3_BOP_MUGE_23092024",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/13_2024/committee/ELMS_2024_D27_LMGT3_BOP_MUGE_23092024.pdf"
+  },
+  {
+   "season": "13_2024",
+   "base": "ELMS_2024_D29_LMGT3_BOP_PORT_14102024",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/13_2024/committee/ELMS_2024_D29_LMGT3_BOP_PORT_14102024.pdf"
+  },
+  {
+   "season": "14_2025",
+   "base": "ELMS_2025_D02_LMGT3_BOP_BARC_21032025",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/14_2025/committee/ELMS_2025_D02_LMGT3_BOP_BARC_21032025.pdf"
+  },
+  {
+   "season": "14_2025",
+   "base": "ELMS_2025_D09_LMGT3_BOP_CAST_25042025",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/14_2025/committee/ELMS_2025_D09_LMGT3_BOP_CAST_25042025.pdf"
+  },
+  {
+   "season": "14_2025",
+   "base": "ELMS_2025_D12_LMGT3_BOP_IMOLA_30062025",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/14_2025/committee/ELMS_2025_D12_LMGT3_BOP_IMOLA_30062025.pdf"
+  },
+  {
+   "season": "14_2025",
+   "base": "ELMS_2025_D15_LMGT3_BOP_SPA_12082025",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/14_2025/committee/ELMS_2025_D15_LMGT3_BOP_SPA_12082025.pdf"
+  },
+  {
+   "season": "14_2025",
+   "base": "ELMS_2025_D18_LMGT3_BOP_SIL_08092025",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/14_2025/committee/ELMS_2025_D18_LMGT3_BOP_SIL_08092025.pdf"
+  },
+  {
+   "season": "14_2025",
+   "base": "ELMS_2025_D21_LMGT3_BOP_POR_09102025",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/14_2025/committee/ELMS_2025_D21_LMGT3_BOP_POR_09102025.pdf"
+  },
+  {
+   "season": "15_2026",
+   "base": "ELMS_2026_D09_LMGT3_BOP_BAR_02042026",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/15_2026/committee/committee/ELMS_2026_D09_LMGT3_BOP_BAR_02042026.pdf"
+  },
+  {
+   "season": "15_2026",
+   "base": "ELMS_2026_D09_LMGT3_BOP_BAR_09042026_-_Amended",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/15_2026/committee/committee/ELMS_2026_D09_LMGT3_BOP_BAR_09042026%20-%20Amended.pdf"
+  },
+  {
+   "season": "15_2026",
+   "base": "ELMS_2026_D12_LMGT3_BOP_CAS_23042026",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/15_2026/committee/committee/ELMS_2026_D12_LMGT3_BOP_CAS_23042026.pdf"
+  },
+  {
+   "season": "15_2026",
+   "base": "ELMS_2026_D12_LMGT3_BOP_CAS_30042026_-_Amended",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/15_2026/committee/committee/ELMS_2026_D12_LMGT3_BOP_CAS_30042026%20-%20Amended.pdf"
+  },
+  {
+   "season": "15_2026",
+   "base": "ELMS_2026_D15_LMGT3_BOP_IMO_24062026",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/15_2026/committee/committee/ELMS_2026_D15_LMGT3_BOP_IMO_24062026.pdf"
+  },
+  {
+   "season": "15_2026",
+   "base": "ELMS_2026_D17_LMGT3_BOP_SPA",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/15_2026/committee/committee/ELMS_2026_D17_LMGT3_BOP_SPA.pdf"
+  },
+  {
+   "season": "15_2026",
+   "base": "ELMS_2026_D21_LMGT3_BOP_SIL_Amended",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/15_2026/committee/committee/ELMS_2026_D21_LMGT3_BOP_SIL_Amended.pdf"
+  },
+  {
+   "season": "15_2026",
+   "base": "ELMS_2026_D21_LMGT3_BOP_SPA",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/15_2026/committee/committee/ELMS_2026_D21_LMGT3_BOP_SPA.pdf"
+  },
+  {
+   "season": "15_2026",
+   "base": "ELMS_2026_D23_LMGT3_BOP_PORT",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/15_2026/committee/committee/ELMS_2026_D23_LMGT3_BOP_PORT.pdf"
+  }
+ ],
+ "page": 268608
+}

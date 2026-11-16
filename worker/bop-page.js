@@ -4,6 +4,7 @@
 import {translations} from './localization.js';
 import {bopEstimate2026 as D} from './lapsim/bop-estimate-data.js';
 import {bopLmgt3 as G} from './lapsim/bop-lmgt3-data.js';
+import {bopElmsLmgt3 as E} from './lapsim/bop-elms-lmgt3-data.js';
 
 if (!Object.hasOwn(translations, 'BoP 시뮬레이터')) translations['BoP 시뮬레이터'] = 'BoP simulator';
 
@@ -24,7 +25,10 @@ const LAP = {IMOLA: 92, SPA: 125, LEMANS: 207, SAOPAULO: 86, COTA: 114, FUJI: 91
 const R27 = P => (P?.events || []).map(e => e.event);
 const SERIES = {wec: {name: ['FIA WEC', 'FIA WEC'], classes: {
   hypercar: {name: ['하이퍼카', 'Hypercar'], years: {2026: D.events.map(e => e.event), 2027: R27(D.projection2027)}},
-  lmgt3: {name: ['LMGT3', 'LMGT3'], years: {2026: G.events.map(e => e.event), 2027: R27(G.projection2027)}}}}};
+  lmgt3: {name: ['LMGT3', 'LMGT3'], years: {2026: G.events.map(e => e.event), 2027: R27(G.projection2027)}}}},
+  // ELMS (owner 2026-11-16): LMGT3 only (LMP2 is one spec car, LMP3 has never had a BoP); published tables shown as official
+  elms: {name: ['ELMS', 'ELMS'], classes: {lmgt3: {name: ['LMGT3', 'LMGT3'], years: {2026: E.events.map(e => e.event), 2027: R27(E.projection2027)}}}}};
+const ELMS_NAMES = {BARCELONA: ['바르셀로나 4시간', '4 Hours of Barcelona'], PAULRICARD: ['르 카스텔레 4시간', '4 Hours of Le Castellet'], IMOLA: ['이몰라 4시간', '4 Hours of Imola'], SPA: ['스파 4시간', '4 Hours of Spa-Francorchamps'], SILVERSTONE: ['실버스톤 4시간', '4 Hours of Silverstone'], PORTIMAO: ['포르티망 4시간', '4 Hours of Portimão']};
 
 const css = `.bop-fun-head td{padding-top:18px;color:var(--muted);font-weight:600;border-top:2px solid var(--line)}.bop-chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 4px;padding:0;list-style:none}.bop-chips a{display:inline-flex;min-height:44px;align-items:center;padding:0 14px;border:1px solid var(--line,#333);border-radius:999px;text-decoration:none}.bop-chips a[aria-current]{background:var(--accent,#3dd6b5);color:#000;border-color:transparent}
 .bop-wrap{overflow-x:visible}.bop-table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;table-layout:auto}.bop-table th,.bop-table td{padding:8px 8px;border-bottom:1px solid var(--line,#333);text-align:right}.bop-table th{white-space:normal;vertical-align:bottom;font-size:.86em;line-height:1.3}.bop-table td{white-space:nowrap}.bop-table td:first-child{white-space:normal}.bop-table td>span{white-space:nowrap}
@@ -46,9 +50,9 @@ export function bopPage(params = {}, lang = 'ko') {
   const chips = `<form class="bop-calc bop-pick" method="get" action="/bop">${sel('series', t('시리즈', 'Series'), Object.entries(SERIES).map(([k, x]) => [k, t(...x.name), k === sid]))}
 ${sel('class', t('클래스', 'Class'), Object.entries(S.classes).map(([k, x]) => [k, t(...x.name), k === cid]))}
 ${sel('year', t('연도', 'Year'), Object.keys(C.years).map(y => [y, y === '2027' ? `2027 ${t('(전망)', '(projection)')}` : y, y === year]))}
-${sel('event', t('대회', 'Event'), evs.map(e => [e.toLowerCase(), t(...NAMES[e]), e === evId]))}<noscript><button class="pill">${t('보기', 'Show')}</button></noscript></form>
+${sel('event', t('대회', 'Event'), evs.map(e => [e.toLowerCase(), t(...(sid === 'elms' ? ELMS_NAMES : NAMES)[e]), e === evId]))}<noscript><button class="pill">${t('보기', 'Show')}</button></noscript></form>
 <script>(function(){var f=document.currentScript.previousElementSibling,o=['series','class','year','event'];f.addEventListener('change',function(e){var i=o.indexOf(e.target.name);o.slice(i+1).forEach(function(n){var s=f.elements[n];if(s)s.disabled=true;});f.submit();});})();</script>`;
-  if (cid === 'lmgt3') return lmgt3Page({G, year, evId, proj, chips, t, en});
+  if (cid === 'lmgt3') return lmgt3Page({G: sid === 'elms' ? E : G, N: sid === 'elms' ? ELMS_NAMES : NAMES, label: S.name[0], year, evId, proj, chips, t, en});
   const im = IMSA[IMSA_FOR[ev.event]] || {name: '', cars: {}};
   const calcCars = Object.entries(ev.cars).sort((a, b) => a[0].localeCompare(b[0])), cars = calcCars;
   const pct = x => x == null ? '–' : (x > 0 ? '+' : '') + x.toFixed(2) + '%';
@@ -94,24 +98,24 @@ ${(() => { const P = D.projection2027, E = D.evo; if (!P || !proj) return '';
 }
 
 // WEC LMGT3 (owner 2026-11-16): same picker, same table layout; data worker/lapsim/bop-lmgt3-data.js (scripts/sim/gt3-bop-estimate.mjs)
-function lmgt3Page({G, evId, proj, chips, t}) {
+function lmgt3Page({G, N, label, evId, proj, chips, t}) {
   const ev = (proj ? G.projection2027.events : G.events).find(e => e.event === evId), cars = Object.entries(ev.cars).sort((a, b) => a[0].localeCompare(b[0]));
-  const pct = x => x == null ? '–' : (x > 0 ? '+' : '') + x.toFixed(2) + '%', h = G.holdout2025, k = G.coefficients;
+  const pct = x => x == null ? '–' : (x > 0 ? '+' : '') + x.toFixed(2) + '%', h = G.holdout2025, k = G.coefficients, sd = (c, f) => c.official ? '' : ` <span class="bop-sd">±${c.sd[f]}</span>`;
   const H = [t('차량', 'Car'), t('최소 무게 kg (석세스 밸러스트 제외)', 'Min weight kg (no success ballast)'), t('출력 커브', 'Power curve'), t('파워 게인 (200 km/h 이상)', 'Power gain (above 200 km/h)'), t('스틴트 에너지 MJ', 'Stint energy MJ'), t('페이스 (필드 중앙값 대비)', 'Pace vs field median'), t('최고속 (필드 대비)', 'Top speed vs field')];
-  const rows = cars.map(([m, c]) => `<tr><td>${esc(G.names[m] || m)}${c.learned ? '' : ` <span class="bop-sd">${t('이번 시즌 학습 없음', 'not learned this season')}</span>`}</td><td data-l="${H[1]}"><span>${c.kg} <span class="bop-sd">±${c.sd.kg}</span></span></td><td data-l="${H[2]}"><span>P${c.curve} <span class="bop-sd">±${c.sd.curve}</span></span></td><td data-l="${H[3]}"><span>${c.gain > 0 ? '+' : ''}${c.gain}% <span class="bop-sd">±${c.sd.gain}</span></span></td><td data-l="${H[4]}">${c.MJ}</td><td data-l="${H[5]}">${pct(c.evidence.pacePct)}</td><td data-l="${H[6]}">${pct(c.evidence.speedPct)}</td></tr>`).join('');
-  const title = proj ? (ev.measured ? t('2027 추정 BoP (경기 후 재학습)', '2027 estimated BoP (refit after the race)') : t('2027 BoP 전망', '2027 BoP projection')) : t('2026 추정 BoP', '2026 estimated BoP');
+  const rows = cars.map(([m, c]) => `<tr><td>${esc(G.names[m] || m)}${c.official || c.learned ? '' : ` <span class="bop-sd">${t('이번 시즌 학습 없음', 'not learned this season')}</span>`}</td><td data-l="${H[1]}"><span>${c.kg}${sd(c, 'kg')}</span></td><td data-l="${H[2]}"><span>P${c.curve}${sd(c, 'curve')}</span></td><td data-l="${H[3]}"><span>${c.gain > 0 ? '+' : ''}${c.gain}%${sd(c, 'gain')}</span></td><td data-l="${H[4]}">${c.MJ}</td><td data-l="${H[5]}">${pct(c.evidence?.pacePct)}</td><td data-l="${H[6]}">${pct(c.evidence?.speedPct)}</td></tr>`).join('');
+  const title = ev.official ? t('공식 BoP (공개 결정문)', 'Official BoP (published decision)') : proj ? (ev.measured ? t('2027 추정 BoP (경기 후 재학습)', '2027 estimated BoP (refit after the race)') : t('2027 BoP 전망', '2027 BoP projection')) : t('2026 추정 BoP', '2026 estimated BoP');
   return `<style>${css}</style><div data-no-translate>
-<section class="hero"><h1>FIA WEC LMGT3 ${t('BoP 시뮬레이터', 'BoP simulator')}</h1>
-<p class="lead">${t('2026년부터 LMGT3 BoP 표도 공개되지 않습니다. 2024~2025 공개 표와 2024~2026 알카멜 LMGT3 모든 랩으로 차가 BoP에 어떻게 반응하는지 학습해 대회별 값을 거꾸로 추정했습니다. 공식 값이 아닙니다.', 'From 2026 the LMGT3 BoP tables are not published either. We learned how the cars respond to BoP from the published 2024–2025 tables and every Al Kamel LMGT3 lap of 2024–2026, then worked each event backwards. Estimates, not official values.')}</p></section>
+<section class="hero"><h1>${esc(label)} LMGT3 ${t('BoP 시뮬레이터', 'BoP simulator')}</h1>
+<p class="lead">${label === 'ELMS' ? t('ELMS는 2026 이몰라까지 LMGT3 BoP 표를 공개했고, 스파부터는 표 없이 결정문만 올립니다. 공개된 대회는 공식 값을 그대로 보여 주고, 표가 없는 대회만 2024~2026 공개 표와 알카멜 ELMS LMGT3 랩으로 학습해 추정합니다. LMP2는 한 가지 스펙 차, LMP3는 BoP가 없어 다루지 않습니다.', 'ELMS published its LMGT3 BoP tables up to Imola 2026; from Spa on only the decision is posted, without the table. Published events show the official values; only the events without a table are estimated, learned from the 2024–2026 published tables and the Al Kamel ELMS LMGT3 laps. LMP2 is one spec car and LMP3 has no BoP, so neither is covered.') : t('2026년부터 LMGT3 BoP 표도 공개되지 않습니다. 2024~2025 공개 표와 2024~2026 알카멜 LMGT3 모든 랩으로 차가 BoP에 어떻게 반응하는지 학습해 대회별 값을 거꾸로 추정했습니다. 공식 값이 아닙니다.', 'From 2026 the LMGT3 BoP tables are not published either. We learned how the cars respond to BoP from the published 2024–2025 tables and every Al Kamel LMGT3 lap of 2024–2026, then worked each event backwards. Estimates, not official values.')}</p></section>
 <section class="panel" aria-label="${t('대회 선택', 'Choose an event')}">${chips}</section>
-<section class="panel"><h2>${t(...NAMES[ev.event])} · ${title}</h2>
+<section class="panel"><h2>${t(...N[ev.event])} · ${title}</h2>${ev.official && ev.url ? `<p class="fine"><a href="${esc(ev.url)}">${esc(ev.doc)}</a></p>` : ''}
 <div class="bop-wrap"><table class="bop-table bop-cards"><thead><tr>${H.map(x => `<th>${x}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div>
 <p class="fine">${t('출력 커브(P1, P2 …)는 차마다 따로 정한 출력 표의 번호라 차끼리 비교하지 않고, 같은 차 안의 변화만 학습했습니다(번호가 클수록 출력 제한이 큼). ± 는 1시그마. 스틴트 에너지는 랩 기록으로 알 수 없어 직전 값을 씁니다. 르망은 ACO 표(다른 무게 기준)라 따로 추정합니다.', 'Power curve (P1, P2 …) is a number in each car\'s own power table, so only changes within one car are learned (higher number = more restricted). ± is one sigma. Stint energy cannot be read from laps: the previous value is kept. Le Mans uses the ACO table (another weight basis) and is estimated on its own.')}</p></section>
 <section class="panel"><h2>${t('얼마나 맞나', 'How accurate is it')}</h2>
-<p>${t('2025 대회를 하나씩 숨기고 같은 방법으로 추정해 공개 표와 비교', 'Each 2025 event hidden, estimated the same way and compared with the published table')} (${h.cases} ${t('건', 'cases')}).</p>
+<p>${t('2025 대회를 하나씩 숨기고 같은 방법으로 추정해 공개 표와 비교', 'Each 2025 event hidden, estimated the same way and compared with the published table')} (${esc(label)}) (${h.cases} ${t('건', 'cases')}).</p>
 <div class="bop-wrap"><table class="bop-table"><thead><tr><th></th><th>kg</th><th>${t('커브 단계', 'Curve steps')}</th><th>${t('게인 %p', 'Gain pts')}</th></tr></thead><tbody>
 <tr><td>${t('이 모델 평균 오차', 'This model, mean error')}</td><td>${h.model.kg}</td><td>${h.model.curve}</td><td>${h.model.gain}</td></tr>
 <tr><td>${t('직전 BoP 그대로 쓸 때', 'Previous BoP unchanged')}</td><td>${h.priorOnly.kg}</td><td>${h.priorOnly.curve}</td><td>${h.priorOnly.gain}</td></tr></tbody></table></div>
 <p class="fine">${t('학습한 반응: 무게 1% → 랩 +', 'Learned response: 1 % weight → lap +')}${k.a}% · ${t('출력 커브 1단계 → 랩 ', 'one power-curve step → lap ')}${k.b > 0 ? '+' : ''}${k.b}% · ${t('파워 게인 1%p → 랩 ', '1 pt power gain → lap ')}${k.c}% (${k.n} ${t('개 관측, 모델·시즌별 고정효과 제거). 학습 이득이 작은 편입니다: LMGT3 랩에는 브론즈 드라이버, 트래픽, 석세스 밸러스트가 섞여 있습니다.', 'observations, fixed effects per model and season). The gain from learning is small: LMGT3 laps mix Bronze drivers, traffic and success ballast.')}</p>
-<p class="fine">${t('출처: 알카멜 FIA WEC 공식 타이밍, FIA WEC 2024~2025 LMGT3 BoP 결정문', 'Sources: Al Kamel FIA WEC official timing, FIA WEC 2024–2025 LMGT3 BoP decisions')} (${Object.values(G.sources).map(x => `<a href="${esc(x.url)}">${esc(x.doc.split(' ')[0])}</a>`).join(', ')}). ${t('생성일', 'Built')} ${esc(G.generated)}.</p></section></div>`;
+<p class="fine">${label === 'ELMS' ? t('출처: 알카멜 ELMS 공식 타이밍, ELMS 위원회 LMGT3 BoP 결정문', 'Sources: Al Kamel ELMS official timing, ELMS Committee LMGT3 BoP decisions') : t('출처: 알카멜 FIA WEC 공식 타이밍, FIA WEC 2024~2025 LMGT3 BoP 결정문', 'Sources: Al Kamel FIA WEC official timing, FIA WEC 2024–2025 LMGT3 BoP decisions')} (${Object.values(G.sources).map(x => `<a href="${esc(x.url)}">${esc(x.doc.split(' ')[0])}</a>`).join(', ')}). ${t('생성일', 'Built')} ${esc(G.generated)}.</p></section></div>`;
 }

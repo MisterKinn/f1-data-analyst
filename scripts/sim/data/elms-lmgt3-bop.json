@@ -1,0 +1,585 @@
+{
+ "note": "ELMS LMGT3 BoP decisions (ELMS notice board). Per car: [power curve, power gain after 200 kph (%), min weight without success ballast (kg, null when the table has no weight column), max stint energy (MJ)]. Built by scripts/sim/learn/parse-elms-bop.mjs.",
+ "events": {
+  "2024 BARCELONA": {
+   "doc": "ELMS_2024_D15_LMGT3_BOP_BARC_04042024",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/13_2024/committee/ELMS_2024_D15_LMGT3_BOP_BARC_04042024.pdf",
+   "cars": {
+    "AstonMartin": [
+     15,
+     2,
+     null,
+     688
+    ],
+    "Ferrari": [
+     13,
+     -1,
+     null,
+     683
+    ],
+    "Lamborghini": [
+     14,
+     -3,
+     null,
+     687
+    ],
+    "Porsche": [
+     4,
+     1,
+     null,
+     690
+    ]
+   }
+  },
+  "2024 PAULRICARD": {
+   "doc": "ELMS_2024_D18_LMGT3_BOP_CAST_30042024",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/13_2024/committee/ELMS_2024_D18_LMGT3_BOP_CAST_30042024.pdf",
+   "cars": {
+    "AstonMartin": [
+     15,
+     3,
+     1314,
+     684
+    ],
+    "Ferrari": [
+     13,
+     -2,
+     1333,
+     673
+    ],
+    "Lamborghini": [
+     14,
+     -2,
+     1330,
+     679
+    ],
+    "Porsche": [
+     4,
+     1,
+     1309,
+     681
+    ]
+   }
+  },
+  "2024 IMOLA": {
+   "doc": "ELMS_2024_D19_LMGT3_BOP_IMOL_20062024",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/13_2024/committee/ELMS_2024_D19_LMGT3_BOP_IMOL_20062024.pdf",
+   "cars": {
+    "AstonMartin": [
+     15,
+     4,
+     1310,
+     681
+    ],
+    "Ferrari": [
+     13,
+     -1,
+     1335,
+     675
+    ],
+    "Lamborghini": [
+     14,
+     -2,
+     1320,
+     679
+    ],
+    "Porsche": [
+     4,
+     2,
+     1313,
+     687
+    ]
+   }
+  },
+  "2024 SPA": {
+   "doc": "ELMS_2024_D22_LMGT3_BOP_SPA_12082024",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/13_2024/committee/ELMS_2024_D22_LMGT3_BOP_SPA_12082024.pdf",
+   "cars": {
+    "AstonMartin": [
+     15,
+     3,
+     1302,
+     685
+    ],
+    "Ferrari": [
+     13,
+     -2,
+     1297,
+     669
+    ],
+    "Lamborghini": [
+     13,
+     -4,
+     1304,
+     674
+    ],
+    "Porsche": [
+     3,
+     1,
+     1300,
+     688
+    ]
+   }
+  },
+  "2024 MUGELLO": {
+   "doc": "ELMS_2024_D27_LMGT3_BOP_MUGE_23092024",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/13_2024/committee/ELMS_2024_D27_LMGT3_BOP_MUGE_23092024.pdf",
+   "cars": {
+    "AstonMartin": [
+     11,
+     -1,
+     1305,
+     684
+    ],
+    "Ferrari": [
+     11,
+     -1,
+     1320,
+     679
+    ],
+    "Lamborghini": [
+     11,
+     -7,
+     1320,
+     682
+    ],
+    "Porsche": [
+     2,
+     0,
+     1300,
+     680
+    ]
+   }
+  },
+  "2024 PORTIMAO": {
+   "doc": "ELMS_2024_D29_LMGT3_BOP_PORT_14102024",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/13_2024/committee/ELMS_2024_D29_LMGT3_BOP_PORT_14102024.pdf",
+   "cars": {
+    "AstonMartin": [
+     11,
+     -3,
+     1318,
+     693
+    ],
+    "Ferrari": [
+     11,
+     -5,
+     1330,
+     684
+    ],
+    "Lamborghini": [
+     11,
+     -7,
+     1330,
+     697
+    ],
+    "Porsche": [
+     2,
+     0,
+     1319,
+     695
+    ]
+   }
+  },
+  "2025 BARCELONA": {
+   "doc": "ELMS_2025_D02_LMGT3_BOP_BARC_21032025",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/14_2025/committee/ELMS_2025_D02_LMGT3_BOP_BARC_21032025.pdf",
+   "cars": {
+    "AstonMartin": [
+     11,
+     1.2,
+     1346,
+     812
+    ],
+    "Corvette": [
+     1,
+     -0.6,
+     1358,
+     808
+    ],
+    "Ferrari": [
+     12,
+     -0.8,
+     1355,
+     795
+    ],
+    "McLaren": [
+     7,
+     -0.7,
+     1355,
+     806
+    ],
+    "Mercedes": [
+     6,
+     3.4,
+     1333,
+     830
+    ],
+    "Porsche": [
+     2,
+     1,
+     1343,
+     806
+    ]
+   }
+  },
+  "2025 PAULRICARD": {
+   "doc": "ELMS_2025_D09_LMGT3_BOP_CAST_25042025",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/14_2025/committee/ELMS_2025_D09_LMGT3_BOP_CAST_25042025.pdf",
+   "cars": {
+    "AstonMartin": [
+     11,
+     -0.1,
+     1328,
+     805
+    ],
+    "Corvette": [
+     1,
+     -1.8,
+     1336,
+     803
+    ],
+    "Ferrari": [
+     11,
+     -2.8,
+     1360,
+     793
+    ],
+    "McLaren": [
+     8,
+     1.2,
+     1335,
+     799
+    ],
+    "Mercedes": [
+     8,
+     6.9,
+     1333,
+     833
+    ],
+    "Porsche": [
+     2,
+     1,
+     1350,
+     801
+    ]
+   }
+  },
+  "2025 IMOLA": {
+   "doc": "ELMS_2025_D12_LMGT3_BOP_IMOLA_30062025",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/14_2025/committee/ELMS_2025_D12_LMGT3_BOP_IMOLA_30062025.pdf",
+   "cars": {
+    "AstonMartin": [
+     12,
+     -1.8,
+     1302,
+     781
+    ],
+    "Corvette": [
+     1,
+     -1.6,
+     1325,
+     799
+    ],
+    "Ferrari": [
+     13,
+     -2,
+     1360,
+     783
+    ],
+    "McLaren": [
+     7,
+     -1,
+     1323,
+     799
+    ],
+    "Mercedes": [
+     8,
+     6.3,
+     1334,
+     825
+    ],
+    "Porsche": [
+     4,
+     3,
+     1360,
+     792
+    ]
+   }
+  },
+  "2025 SPA": {
+   "doc": "ELMS_2025_D15_LMGT3_BOP_SPA_12082025",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/14_2025/committee/ELMS_2025_D15_LMGT3_BOP_SPA_12082025.pdf",
+   "cars": {
+    "AstonMartin": [
+     12,
+     -1.9,
+     1302,
+     778
+    ],
+    "Corvette": [
+     1,
+     -1.3,
+     1319,
+     794
+    ],
+    "Ferrari": [
+     13,
+     -2.9,
+     1375,
+     778
+    ],
+    "McLaren": [
+     7,
+     0,
+     1310,
+     803
+    ],
+    "Mercedes": [
+     8,
+     6.6,
+     1338,
+     833
+    ],
+    "Porsche": [
+     4,
+     2.5,
+     1361,
+     789
+    ]
+   }
+  },
+  "2025 SILVERSTONE": {
+   "doc": "ELMS_2025_D18_LMGT3_BOP_SIL_08092025",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/14_2025/committee/ELMS_2025_D18_LMGT3_BOP_SIL_08092025.pdf",
+   "cars": {
+    "AstonMartin": [
+     12,
+     -2,
+     1307,
+     777
+    ],
+    "Corvette": [
+     1,
+     -1.1,
+     1311,
+     795
+    ],
+    "Ferrari": [
+     14,
+     -2.4,
+     1380,
+     783
+    ],
+    "McLaren": [
+     7,
+     0.5,
+     1300,
+     807
+    ],
+    "Mercedes": [
+     8,
+     6.8,
+     1344,
+     829
+    ],
+    "Porsche": [
+     4,
+     2.3,
+     1347,
+     789
+    ]
+   }
+  },
+  "2025 PORTIMAO": {
+   "doc": "ELMS_2025_D21_LMGT3_BOP_POR_09102025",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/14_2025/committee/ELMS_2025_D21_LMGT3_BOP_POR_09102025.pdf",
+   "cars": {
+    "AstonMartin": [
+     12,
+     -2,
+     1308,
+     777
+    ],
+    "Corvette": [
+     1,
+     -1.1,
+     1315,
+     795
+    ],
+    "Ferrari": [
+     14,
+     -2.4,
+     1380,
+     784
+    ],
+    "McLaren": [
+     8,
+     1.5,
+     1301,
+     804
+    ],
+    "Mercedes": [
+     9,
+     7.8,
+     1347,
+     826
+    ],
+    "Porsche": [
+     4,
+     2.3,
+     1347,
+     788
+    ]
+   }
+  },
+  "2026 BARCELONA": {
+   "doc": "ELMS_2026_D09_LMGT3_BOP_BAR_09042026_-_Amended",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/15_2026/committee/committee/ELMS_2026_D09_LMGT3_BOP_BAR_09042026%20-%20Amended.pdf",
+   "cars": {
+    "AstonMartin": [
+     11,
+     -2.2,
+     1324,
+     788
+    ],
+    "Corvette": [
+     1,
+     -1.8,
+     1325,
+     795
+    ],
+    "Ferrari": [
+     10.5,
+     -6.6,
+     1380,
+     800
+    ],
+    "McLaren": [
+     7.5,
+     0.7,
+     1314,
+     796
+    ],
+    "Mercedes": [
+     7.1,
+     6.1,
+     1354,
+     833
+    ],
+    "Porsche": [
+     1,
+     -2.7,
+     1355,
+     787
+    ]
+   }
+  },
+  "2026 PAULRICARD": {
+   "doc": "ELMS_2026_D12_LMGT3_BOP_CAS_30042026_-_Amended",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/15_2026/committee/committee/ELMS_2026_D12_LMGT3_BOP_CAS_30042026%20-%20Amended.pdf",
+   "cars": {
+    "AstonMartin": [
+     11,
+     -2.4,
+     1310,
+     783
+    ],
+    "Corvette": [
+     1,
+     -1.8,
+     1325,
+     795
+    ],
+    "Ferrari": [
+     10.6,
+     -6.7,
+     1388,
+     795
+    ],
+    "McLaren": [
+     7.5,
+     0.3,
+     1325,
+     801
+    ],
+    "Mercedes": [
+     7.1,
+     6.1,
+     1364,
+     834
+    ],
+    "Porsche": [
+     2.4,
+     -1.4,
+     1365,
+     788
+    ]
+   }
+  },
+  "2026 IMOLA": {
+   "doc": "ELMS_2026_D15_LMGT3_BOP_IMO_24062026",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/15_2026/committee/committee/ELMS_2026_D15_LMGT3_BOP_IMO_24062026.pdf",
+   "cars": {
+    "AstonMartin": [
+     10.8,
+     -2.9,
+     1310,
+     779
+    ],
+    "Corvette": [
+     1,
+     -1.6,
+     1325,
+     794
+    ],
+    "Ferrari": [
+     15.2,
+     -1.2,
+     1365,
+     776
+    ],
+    "McLaren": [
+     9.9,
+     3.5,
+     1325,
+     807
+    ],
+    "Mercedes": [
+     8.3,
+     7.3,
+     1350,
+     824
+    ],
+    "Porsche": [
+     4.5,
+     1.1,
+     1360,
+     787
+    ]
+   }
+  }
+ },
+ "unpublished": [
+  {
+   "event": "2026 SPA",
+   "doc": "ELMS_2026_D17_LMGT3_BOP_SPA",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/15_2026/committee/committee/ELMS_2026_D17_LMGT3_BOP_SPA.pdf"
+  },
+  {
+   "event": "2026 SILVERSTONE",
+   "doc": "ELMS_2026_D21_LMGT3_BOP_SIL_Amended",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/15_2026/committee/committee/ELMS_2026_D21_LMGT3_BOP_SIL_Amended.pdf"
+  },
+  {
+   "event": "2026 SPA",
+   "doc": "ELMS_2026_D21_LMGT3_BOP_SPA",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/15_2026/committee/committee/ELMS_2026_D21_LMGT3_BOP_SPA.pdf"
+  },
+  {
+   "event": "2026 PORTIMAO",
+   "doc": "ELMS_2026_D23_LMGT3_BOP_PORT",
+   "url": "https://elms.alkamelsystems.com/Results_NoticeBoard/15_2026/committee/committee/ELMS_2026_D23_LMGT3_BOP_PORT.pdf"
+  }
+ ]
+}
