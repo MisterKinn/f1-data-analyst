@@ -20,3 +20,25 @@ Owner 2026-11-16: "add the pit lane on every track". Drawing and pit-lane length
   - pit ways that do not join the lap at both ends: Kyalami, Lausitz.
   These need another source (official circuit maps) and stay without a pit lane until then.
 - Test: tests/lapsim-pit-lanes.test.mjs.
+
+# Pit speed limits and pit loss (task A5, part 2)
+
+- Limits (`worker/lapsim/pit-speed-data.js`, evidence layer 1): F1 80 km/h (Sporting Regulations B1.6.3 a); the Race Director may set
+  another limit for an event), WEC 60 km/h (art. 12.1.4), IMSA 60 km/h (2025–26 driver briefings). Per-event values go in `tracks`
+  only from the event's Race Director notes; none are recorded yet.
+- Page: the map note now reads "Pit lane {m} m (OpenStreetMap), speed limit {v} km/h ({source}), measured pit loss {l} s (F1 race
+  median)" for the selected series. The pit loss shown is always the measured one (race-data.js); nothing is simulated.
+- Experiment (declared 2026-11-17 06:00, `scripts/sim/pit-loss-fit.mjs`): can the pit path predict the measured F1 pit loss?
+  Rows: 21 F1 tracks with both a pit lane and a measured loss. Every number is leave one track out.
+
+  | Variant | Left-out rms |
+  |---|---|
+  | Baseline: median of the other tracks' measured loss | 3.58 s |
+  | A: whole OSM path at the limit + constant C | 7.36 s |
+  | B: limit only on a middle zone of Z m (Z, C fitted on the other tracks), path bends elsewhere | 3.42 s |
+
+  B vs baseline: paired gain 1.10 ± 2.75 s² (1 SE), within noise → **rejected**. A fails because the OSM path includes entry and
+  exit roads where the limit does not apply (Hungaroring 1067 m, Spa 1201 m). The "60 km/h?" hint from these residuals is not
+  reliable either, so no per-event limit was inferred from it.
+- Next source: every F1 event publishes "Competition Notes – Circuit Map, Pit Lane Drawing and Emergency Exits Map" (FIA documents,
+  e.g. 2026 Dutch GP doc 6). It gives the speed-limit lines and the missing pit lanes; it is also the source for A2 part 2.
