@@ -166,7 +166,8 @@ export function build(root, extras = [], learned = null, sro = null, fia = null,
       : L && SITE[r.series] ? bestLapDriver(root, r, lapCache) : {name: null, why: 'no Al Kamel lap file for this source'};
     const id = b.name ? idOf(b.name) ?? null : null;
     learnedOut.push({series: r.series, season: r.season, event: r.event, session: r.session, group: r.group, model: r.model, entry: String(r.entry), lap: r.real,
-      lineup: L?.lineup ?? null, bestLapDriver: id ? {id, rating: L.drivers.find(d => d.id === id)?.rating ?? drivers[id]?.seasons?.[r.season]?.rating ?? null, file: F(b.file)} : null,
+      // lineupExact: the same line-up only when no seat needed a name variant (name-match.mjs) — the strict reading of "same name"
+      lineup: L?.lineup ?? null, ...(L?.lineup && L.drivers.some(d => d.variant) ? {lineupExact: null, variantSeats: L.drivers.filter(d => d.variant).length} : {}), bestLapDriver: id ? {id, rating: L.drivers.find(d => d.id === id)?.rating ?? drivers[id]?.seasons?.[r.season]?.rating ?? null, file: F(b.file)} : null,
       ...(L ? {} : {why: 'no official line-up found'}), ...(!id && L ? {bestLapWhy: b.why} : {})}); }
   // keep the events the fit learns from (every car of those events), and the drivers of those line-ups
   const evKeep = new Set(learnedOut.map(r => `${r.series}|${r.season}|${r.event}`)), L2 = Object.fromEntries(Object.entries(lineups).filter(([k]) => evKeep.has(k)));

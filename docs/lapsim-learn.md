@@ -587,6 +587,26 @@ Data only: no fit term and no flag uses it yet (the main session adds that varia
   found:** that year the list was only in the driverscategorisation.fia.com web app; the Internet Archive kept its pages and scripts
   (99 URLs, 2019–2021) but no driver data (the `/api/public/...` answers archived are settings, not drivers).
 
+- **More sources (P1e, 2026-11-17).**
+  - **Older SRO entry-list PDFs** (2013–2020) under `/images/results/<id>/`, found through the Internet Archive index of the site and
+    of the Blancpain-era domains; read from the site, else from the archived copy (`fetch-sro-entry-pdfs.mjs`, incremental: a new
+    parser re-reads every PDF).
+  - **SRO results pages** (`fetch-sro-results.mjs` → `sro-results-lineups.json.gz`): every session page prints the drivers per car
+    (official classification). Used only for cars the entry list of that meeting lacks (race drivers, else qualifying, else practice).
+  - **Nürburgring 24h and ADAC Qualifiers** (`fetch-n24-lineups.mjs` → `n24-lineups.json`): the official ADAC Nordrhein entry
+    lists (press list "Starterliste" and DMSB list "Teilnehmerliste"; drivers per car, no category) for 2023–2026; the rating comes
+    from the FIA list of the season. Only an N24 list (or an IGTC 24h list) can name an N24 car.
+  - **Name variants** (`name-match.mjs`): an entry list and the FIA list may write one driver differently. A variant counts only
+    when exactly one driver of that season's FIA list fits one of three fixed rules: two tokens written together ("Pierguidi" /
+    "Pier Guidi"), all tokens of the shorter name in the longer ("Albert Costa" / "Albert Costa Balboa"), or a short first name of a
+    fixed table ("Dani" / "Daniel"). No similarity score and no spelling fix ("Denis" / "Dennis", "Mikkel" / "Michael" stay apart).
+    Such seats carry `variant: "<rule>: <FIA name>"`; a learned row whose line-up needed one has `lineupExact: null` and
+    `variantSeats` (62 rows), so the fit can use the exact-name rows only.
+  - **Parser fix:** the 2026 GTWC Europe "draft" entry lists print one CATEGORY column after the drivers: that is the car's cup, not
+    a driver's rating (it had been read as the last driver's rating, e.g. Kyle Marcelli "B"). Those lists now give names only.
+    Printed categories agree with the FIA list of the same year in 98.8 % of 16,353 seats (2017–2026); most of the rest are the
+    same drivers in several lists (rating changed during the season; the value printed at the event is used).
+
 Coverage (learned rows with a known line-up rating; best-lap driver known):
 
 | Group | Series | Seasons | Rows | Line-up known | Best-lap driver |
@@ -595,31 +615,29 @@ Coverage (learned rows with a known line-up rating; best-lap driver known):
 | GT3 | ELMS | 2024–2026 | 78 | 78 | 78 |
 | GT3 | Asian LMS | 2022–2026 | 90 | 90 | 90 |
 | GT3 | IMSA | 2021–2026 | 604 | 603 | 604 |
-| GT3 | GTWC (SRO tables, all regions) | 2013–2026 | 728 | 493 | 0 |
-| GT3 | GTWC Europe (Timing71: Endurance, Sprint, Spa 24h) | 2024–2026 | 133 | 112 | 0 |
-| GT3 | British GT | 2015–2026 | 273 | 166 | 0 |
-| GT3 | IGTC (PDFs, Suzuka 1000 km) | 2019–2026 | 79 | 54 | 0 |
-| GT3 | Nürburgring 24h | 2023–2026 | 36 | 0 | 0 |
+| GT3 | GTWC (SRO tables, all regions) | 2013–2026 | 728 | 599 (551 exact names) | 0 |
+| GT3 | GTWC Europe (Timing71: Endurance, Sprint, Spa 24h) | 2024–2026 | 133 | 123 (116) | 0 |
+| GT3 | British GT | 2015–2026 | 273 | 179 (176) | 0 |
+| GT3 | IGTC (PDFs, Suzuka 1000 km) | 2019–2026 | 79 | 53 (50) | 0 |
+| GT3 | Nürburgring 24h | 2023–2026 | 36 | 33 (32) | 0 |
 | LMP2 | WEC | 2021–2026 | 23 | 23 | 23 |
 | LMP2 | ELMS | 2021–2026 | 32 | 32 | 32 |
 | LMP2 | Asian LMS | 2022–2026 | 13 | 13 | 13 |
 | LMP2 | IMSA | 2021–2026 | 41 | 41 | 41 |
 
-1,881 of 2,306 rows (P1c: 1,664). All Al Kamel rows: 1,056 of 1,057 (IMSA 2021 Watkins Glen #39: Tyler McQuarrie has no printed rating). Per
+2,043 of 2,306 rows; 1,981 with exact names only (P1d: 1,881, P1c: 1,664). All Al Kamel rows: 1,056 of 1,057 (IMSA 2021 Watkins Glen #39: Tyler McQuarrie has no printed rating). Per
 season: `node scripts/sim/learn/driver-ratings.mjs`. SRO timing has no driver per lap, so no best-lap driver there.
 
 Gaps and what was checked (2026-11-16):
 
 - **Check of the new lists (P1d):** printed SRO entry-list categories agree with the FIA list of the same year: 2017 98 % (940 of
   958), 2018 97 % (723 of 742), 2019 97 % (182 of 188); the 2019 provisional list agrees 99.6 % with the 2019 temporary list.
-- **Drivers still without a rating (the car's line-up stays `unknown`):** 2014 (no list found, no category in the entry lists) and
-  2020 (see above); other years: drivers who are on no FIA list of that year and on no printed entry list (mostly amateurs before
-  2019, e.g. GTWC Europe 2016–2017 about 23 cars a year, British GT 2015–2022).
-- **No entry list matched:** GTWC Asia 2023–2026 (38 rows; the site has no list for several rounds), GTWC Australia 2023–2024
-  (14), IGTC 2019–2020 (12), British GT 2026 (5), GTWC Europe 2016 (8).
-- **Nürburgring 24h** (36 rows, 2023–2026, races and ADAC qualifiers) is not an SRO meeting and no IGTC list covers those years. The
-  2 rows of P1c are removed: they matched the GTWC Europe round at the Nürburgring GP circuit, a different meeting. A 24-hour race (or
-  its qualifiers) now only matches a meeting of the same kind. Official N24 entry lists (ADAC) would be the source; not read yet.
+- **Still unknown (263 rows, P1e):** seats of seasons with no FIA list and no category in the entry list (2013: 26, 2014: 68,
+  2020: 66 seats; the 2020 list existed only in the FIA web app, the Internet Archive kept no driver data); drivers on no FIA list
+  we have under any accepted spelling (103 seats; mostly amateurs and one-off entries); drivers missing from the list of that year
+  but on other years' lists (74 seats: not categorised that year, or a list we lack, e.g. a mid-season update); cars with no
+  published line-up (31 rows: GTWC Australia 2023–2024 publishes results only as Natsoft PDFs, GTWC Asia Japan Cup joint rounds,
+  IGTC Bathurst rows without a car number). None of these is filled by inference.
 - The cup of an SRO car (PRO/GOLD/SILVER/BRONZE) is never used as a rating (a Bronze Cup car can be B+S+P).
 - **Data found for the main session:** WEC 2026 Imola and Spa LMP2 #46 (learned as Oreca 07) is an Oreca 05 of a historic support
   race filed in the same Al Kamel folder (one-driver files, "Bronze FIA"). Not changed here.
