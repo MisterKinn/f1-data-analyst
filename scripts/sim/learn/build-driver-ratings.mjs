@@ -128,8 +128,14 @@ export function build(root, extras = [], learned = null, sro = null, fia = null,
   const bySeason = {}; for (const [id, by] of Object.entries(fiaR)) for (const [season, v] of Object.entries(by)) (bySeason[season] ||= []).push({t: tokens(v.name), v});
   const sIx = {}; const variant = (id, season) => { const L = bySeason[season]; if (!L) return null; const ix = sIx[season] ||= tokenIndex(L.map(x => x.t));
     const r = variantIn(names.get(id) || id.replace(/-/g, ' '), L.map(x => x.t), ix, L.map(x => x.v.name)); return r.i >= 0 ? {rating: L[r.i].v.rating, how: 'fia-list', variant: `${r.rule}: ${L[r.i].v.name}`} : null; };
+  const seasonPrint = new Map(); for (const m of entry?.meetings || []) for (const d of m.docs) if (d.year) for (const c of d.cars || []) for (const x of c.drivers || []) if (x.cat) {
+    const id = idOf(x.name); if (!id) continue; const k = `${id}|${d.year}`, v = seasonPrint.get(k) || seasonPrint.set(k, {cats: new Set(), url: d.url}).get(k); v.cats.add(x.cat); }
   const sroRating = (id, season) => fiaR[id]?.[season] ? {rating: fiaR[id][season].rating, how: 'fia-list'} : variant(id, season) ||
-    (drivers[id]?.seasons?.[season] && !drivers[id].seasons[season].printedBy && !drivers[id].seasons[season].fiaList ? {rating: drivers[id].seasons[season].rating, how: 'season'} : {rating: null, how: 'unknown'});
+    (drivers[id]?.seasons?.[season] && !drivers[id].seasons[season].printedBy && !drivers[id].seasons[season].fiaList ? {rating: drivers[id].seasons[season].rating, how: 'season'}
+      : printedSeason(id, season) || {rating: null, how: 'unknown'});
+  // the rating printed for the driver by another official SRO entry list of the SAME season (2020 Spa 24h, Indianapolis 8h, GTWC
+  // rounds...). Only when every list of that season prints the same value (a change during the season leaves the seat unknown).
+  function printedSeason(id, season) { const v = seasonPrint.get(`${id}|${season}`); return v && v.cats.size === 1 ? {rating: [...v.cats][0], how: 'season', source: `SRO entry list ${v.url}`} : null; }
   // one driver written twice in one car ("R. Stanaway" on one result sheet, "Richie Stanaway" on another): seats that resolve to the
   // same FIA list name are one seat
   const dedupe = (ds, season) => { const seen = new Set(); return ds.filter(d => { const k = d.variant ? d.variant.replace(/^\w+: /, '') : fiaR[d.id]?.[season]?.name || d.id; const t = tokens(k).sort().join(' ');

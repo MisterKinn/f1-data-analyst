@@ -618,17 +618,17 @@ Coverage (learned rows with a known line-up rating; best-lap driver known):
 | GT3 | ELMS | 2024–2026 | 78 | 78 | 78 |
 | GT3 | Asian LMS | 2022–2026 | 90 | 90 | 90 |
 | GT3 | IMSA | 2021–2026 | 604 | 603 | 604 |
-| GT3 | GTWC (SRO tables, all regions) | 2013–2026 | 728 | 596 (545 exact names) | 0 |
-| GT3 | GTWC Europe (Timing71: Endurance, Sprint, Spa 24h) | 2024–2026 | 133 | 123 (116) | 0 |
-| GT3 | British GT | 2015–2026 | 273 | 203 (185) | 0 |
-| GT3 | IGTC (PDFs, Suzuka 1000 km) | 2019–2026 | 79 | 58 (54) | 0 |
+| GT3 | GTWC (SRO tables, all regions) | 2013–2026 | 728 | 632 (580 exact names) | 0 |
+| GT3 | GTWC Europe (Timing71: Endurance, Sprint, Spa 24h) | 2024–2026 | 133 | 128 (121) | 0 |
+| GT3 | British GT | 2015–2026 | 273 | 210 (189) | 0 |
+| GT3 | IGTC (PDFs, Suzuka 1000 km) | 2019–2026 | 79 | 61 (57) | 0 |
 | GT3 | Nürburgring 24h | 2023–2026 | 36 | 33 (32) | 0 |
 | LMP2 | WEC | 2021–2026 | 23 | 23 | 23 |
 | LMP2 | ELMS | 2021–2026 | 32 | 32 | 32 |
 | LMP2 | Asian LMS | 2022–2026 | 13 | 13 | 13 |
 | LMP2 | IMSA | 2021–2026 | 41 | 41 | 41 |
 
-2,069 of 2,306 rows; 1,988 with exact names only (P1d: 1,881, P1c: 1,664). All Al Kamel rows: 1,056 of 1,057 (IMSA 2021 Watkins Glen #39: Tyler McQuarrie has no printed rating). Per
+2,120 of 2,306 rows (91.9 %); 2,035 with exact names only (P1d: 1,881, P1c: 1,664). All Al Kamel rows: 1,056 of 1,057 (IMSA 2021 Watkins Glen #39: Tyler McQuarrie has no printed rating). Per
 season: `node scripts/sim/learn/driver-ratings.mjs`. SRO timing has no driver per lap, so no best-lap driver there.
 
 Gaps and what was checked (2026-11-16):
@@ -638,7 +638,11 @@ Gaps and what was checked (2026-11-16):
 - **Data checks (P1e):** a year or number never counts as a venue word (it had matched IGTC Bathurst rows to GTWC Europe result pages);
   a seat "A N Other" / "NA" / "TBA" or a name with car text makes that source give no line-up for the car; a source that lists one
   driver twice for a car leaves its line-up unknown (`why`), since a driver may be missing.
-- **Still unknown (237 rows after P1f; P1e text below):** seats of seasons with no FIA list and no category in the entry list (2013: 26, 2014: 68,
+- **Same-season printed rating (P1f):** a driver with no FIA list value for the season takes the category printed for him by
+  another official SRO entry list of the same season (e.g. Bathurst 2020: Maro Engel P, Luca Stolz G, Yelmer Buurman G from the
+  2020 Spa / Indianapolis lists), `how: season` with that list as source, only when every list of the season prints one value. Years
+  around it are never used: Buurman is P in 2019 and 2021 but G in 2020.
+- **Still unknown (186 rows after P1f; P1e text below):** seats of seasons with no FIA list and no category in the entry list (2013: 26, 2014: 68,
   2020: 73 seats; the 2020 list existed only in the FIA web app, the Internet Archive kept no driver data); drivers on no FIA list
   we have under any accepted spelling (94 seats; mostly amateurs, one-off entries and spellings such as "Goetz" / "Götz"); drivers
   missing from the list of that year but on other years' lists (74 seats); cars with no full published line-up (31 rows: GTWC Asia
