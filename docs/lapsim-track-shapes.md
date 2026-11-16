@@ -143,3 +143,24 @@ Test: tests/track-map-detail.test.mjs (no right turn between 200 and 400 m). Dra
   Sakhir, Indianapolis, Le Mans, Singapore): each is a bend of the real road.
 - Test: tests/track-map-detail.test.mjs (Las Vegas: no left turn in the 175 m before T5; fails on the old data at 2.5 mrad/m).
   Drawing only: lap distance, corners and the simulator geometry are unchanged.
+
+## A4 part 2: the side steps in the simulator geometry (2026-11-17, flag off)
+
+- The four side steps fixed on the drawn map in 2026-11-16 (`TRACK_STEPS`, now shared in `worker/lapsim/track-steps.js`) are
+  still in the simulator's curvature: each one is a false S-bend. Autopolis 185 m: curvature +0.004 → −0.014 → 0 1/m within 30 m
+  (a 70 m radius where the real road is straight); Valencia 3400 m: +0.014 → −0.009 1/m.
+- Kernel option (`trackFromData(d, {steps})`): within ± the half-width the curvature becomes a straight blend between the two ends
+  plus a constant that keeps the same heading change. Not passed by production yet, so every output is byte-identical.
+- Effect when passed (qualifying lap, 25 °C, no wind):
+
+  | Track | F1 2025 | Hypercar (LMH) | GTP / LMDh | GT3 (IMSA GTD) | FE Gen3 Evo |
+  |---|---|---|---|---|---|
+  | Autopolis | −0.926 s | −2.066 s | −2.074 s | −2.195 s | −1.948 s |
+  | Valencia (Ricardo Tormo) | −0.567 s | −1.321 s | −1.326 s | −1.384 s | −1.681 s |
+  | Daytona | 0.000 s | −0.062 s | −0.067 s | −0.201 s | −0.409 s |
+  | Laguna Seca | 0.000 s | −0.014 s | −0.016 s | −0.061 s | −0.153 s |
+
+- Gate: Autopolis and Valencia have no real lap of a calibrated class (no rows either way). Daytona and Laguna Seca have IMSA rows
+  that the fits use, so the change is judged inside the A6 full refit as a declared variant (production baseline vs `steps`,
+  leave one track out). Turned on only after that and the owner's approval.
+- Test: tests/track-map-detail.test.mjs ("A4 part 2").
