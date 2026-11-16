@@ -4,10 +4,11 @@ import {setupPlan, setupTracks, aeroWindow} from '../worker/lapsim/setup-plan.js
 import {PIRELLI_2026, SM_ZONES} from '../worker/lapsim/setup-evidence.js';
 import {setupPage} from '../worker/setup-page.js';
 
-test('setup tracks: F1 from the F1 calendar, hypercar from WEC and IMSA', () => {
+// owner 2026-11-16: every circuit for every series; the series that race there are still labelled
+test('setup tracks: every circuit; F1/WEC/IMSA labels from the calendars', () => {
   const f1 = setupTracks('f1'), hy = setupTracks('hypercar');
-  assert.ok(f1.monza && f1['monte-carlo'] && !f1['le-mans']);
-  assert.ok(hy['le-mans'] && hy.daytona && !hy['monte-carlo']);
+  assert.ok(f1.monza.includes('F1') && f1['le-mans'] && !f1['le-mans'].length);
+  assert.ok(hy['le-mans'].includes('WEC') && hy.daytona.includes('IMSA') && hy['monte-carlo'] && !hy['monte-carlo'].length);
 });
 
 test('aero sweep follows the circuit: Monza low, Monaco high (F1 2026)', () => {
