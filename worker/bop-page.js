@@ -61,18 +61,18 @@ b.forEach(function(x,i){x.addEventListener('click',function(){show(i)});});b[0].
 
 function realPanel(params, t, en) {
   const pick = (obj, v) => Object.hasOwn(obj, String(v || '').toLowerCase()) ? String(v).toLowerCase() : Object.keys(obj)[0];
-  const sid = pick(SERIES, params.series), S = SERIES[sid], cid = pick(S.classes, params.class), C = S.classes[cid];
+  // one Series · Class dropdown (owner 2026-11-16): sc = "series.class"; series/class still accepted for old links
+  const [scS, scC] = String(params.sc || '').split('.'), sid = pick(SERIES, scS || params.series), S = SERIES[sid], cid = pick(S.classes, scS ? scC : params.class), C = S.classes[cid];
   const year = Object.hasOwn(C.years, String(params.year)) ? String(params.year) : sid === 'imsa' ? Object.keys(C.years).at(-1) : Object.keys(C.years)[0], evs = C.years[year];
   const evId = evs.find(e => e.toLowerCase() === String(params.event || '').toLowerCase()) || evs[0];
   const proj = year === '2027';
   const ev = (proj ? D.projection2027.events : D.events).find(e => e.event === evId);
   // dropdowns like the LapSim controls (owner 2026-11-16); changing one level resets the levels below it
   const sel = (name, label, items) => `<label>${label}<select name="${name}" data-bop-pick>${items.map(([v, txt, on]) => `<option value="${esc(v)}"${on ? ' selected' : ''}>${txt}</option>`).join('')}</select></label>`;
-  const chips = `<form class="bop-calc bop-pick" method="get" action="/bop">${sel('series', t('시리즈', 'Series'), Object.entries(SERIES).map(([k, x]) => [k, t(...x.name), k === sid]))}
-${sel('class', t('클래스', 'Class'), Object.entries(S.classes).map(([k, x]) => [k, t(...x.name), k === cid]))}
+  const chips = `<form class="bop-calc bop-pick" method="get" action="/bop">${sel('sc', t('시리즈 · 클래스', 'Series · class'), Object.entries(SERIES).flatMap(([k, x]) => Object.entries(x.classes).map(([c, y]) => [k + '.' + c, esc((en ? x.name[1] : x.name[0]) + ' ' + (en ? y.name[1] : y.name[0])), k === sid && c === cid])))}
 ${sel('year', t('연도', 'Year'), Object.keys(C.years).map(y => [y, y === '2027' ? `2027 ${t('(전망)', '(projection)')}` : y, y === year]))}
 ${sel('event', t('대회', 'Event'), evs.map(e => [e.toLowerCase(), t(...(sid === 'elms' ? ELMS_NAMES : sid === 'imsa' ? IMSA_NAMES : NAMES)[e]), e === evId]))}<noscript><button class="pill">${t('보기', 'Show')}</button></noscript></form>
-<script>(function(){var f=document.currentScript.previousElementSibling,o=['series','class','year','event'];f.addEventListener('change',function(e){var i=o.indexOf(e.target.name);o.slice(i+1).forEach(function(n){var s=f.elements[n];if(s)s.disabled=true;});f.submit();});})();</script>`;
+<script>(function(){var f=document.currentScript.previousElementSibling,o=['sc','year','event'];f.addEventListener('change',function(e){var i=o.indexOf(e.target.name);o.slice(i+1).forEach(function(n){var s=f.elements[n];if(s)s.disabled=true;});f.submit();});})();</script>`;
   if (sid === 'imsa') return imsaPage({cid, year, ev: I.events.find(e => String(e.year) === String(year) && e.event === evId), name: t(...IMSA_NAMES[evId]) + ' ' + esc(year), chips, t});
   if (cid === 'lmgt3') { const GG = sid === 'elms' ? E : G; return lmgt3Page({G: GG, N: sid === 'elms' ? ELMS_NAMES : NAMES, label: S.name[0], ev: (proj ? GG.projection2027.events : GG.events).find(e => e.event === evId), proj, chips, t, en}); }
   return hyperPage({ev, S, C, year, proj, chips, t});
@@ -167,13 +167,12 @@ function virtualPage(params, t, en) {
   // same picker style, same table and sections as the real tab (owner 2026-11-16); Series → Class → Circuit
   const ser = {wec: ['wec-hypercar', 'wec-lmgt3'], elms: ['elms-lmgt3'], imsa: ['imsa-gtp', 'imsa-gtd']}, sname = {wec: 'FIA WEC', elms: 'ELMS', imsa: 'IMSA'};
   const cname = {'wec-hypercar': ['하이퍼카', 'Hypercar'], 'wec-lmgt3': ['LMGT3', 'LMGT3'], 'elms-lmgt3': ['LMGT3', 'LMGT3'], 'imsa-gtp': ['GTP', 'GTP'], 'imsa-gtd': ['GTD PRO · GTD', 'GTD PRO · GTD']};
-  const sid = Object.hasOwn(ser, params.series) ? params.series : 'wec', keys = ser[sid].filter(k => V.classes[k]), key = keys.find(k => k === params.class || k.endsWith('-' + params.class)) || keys[0], C = V.classes[key];
+  const all = Object.values(ser).flat().filter(k => V.classes[k]), key = all.includes(params.sc) ? params.sc : all.find(k => k === params.class || k === params.series + '-' + params.class) || all[0], C = V.classes[key];
   const ids = trackOrder(Object.fromEntries(Object.keys(C.values.kg || {}).map(k => [k, lapsimAllTracks[k]]))), id = ids.includes(params.track) ? params.track : (ids.includes('monza') ? 'monza' : ids[0]);
   const sel = (name, label, items) => `<label>${label}<select name="${name}" data-bop-pick>${items.map(([v, txt, on]) => `<option value="${esc(v)}"${on ? ' selected' : ''}>${txt}</option>`).join('')}</select></label>`;
-  const chips = `<form class="bop-calc bop-pick" method="get" action="/bop"><input type="hidden" name="mode" value="virtual">${sel('series', t('시리즈', 'Series'), Object.keys(ser).map(k => [k, esc(sname[k]), k === sid]))}
-${sel('class', t('클래스', 'Class'), keys.map(k => [k, t(...cname[k]), k === key]))}
+  const chips = `<form class="bop-calc bop-pick" method="get" action="/bop"><input type="hidden" name="mode" value="virtual">${sel('sc', t('시리즈 · 클래스', 'Series · class'), all.map(k => [k, esc(sname[k.split('-')[0]] + ' ') + t(...cname[k]), k === key]))}
 ${sel('track', t('서킷', 'Circuit'), ids.map(k => [k, esc(trackLabel(k, lapsimAllTracks[k])) + (C.realTracks.includes(k) ? ' ✓' : ''), k === id]))}<noscript><button class="pill">${t('보기', 'Show')}</button></noscript></form>
-<script>(function(){var f=document.currentScript.previousElementSibling,o=['series','class','track'];f.addEventListener('change',function(e){var i=o.indexOf(e.target.name);o.slice(i+1).forEach(function(n){var s=f.elements[n];if(s)s.disabled=true;});f.submit();});})();</script>`;
+<script>(function(){var f=document.currentScript.previousElementSibling,o=['sc','track'];f.addEventListener('change',function(e){var i=o.indexOf(e.target.name);o.slice(i+1).forEach(function(n){var s=f.elements[n];if(s)s.disabled=true;});f.submit();});})();</script>`;
   const v = (f, c) => C.values[f]?.[id]?.[c], H = C.holdout, cars = C.cars.filter(c => v(C.fields[0], c) != null);
   const name = esc(trackLabel(id, lapsimAllTracks[id])), title = t('가상 BoP (이 서킷에서 경기가 열린다면)', 'Virtual BoP (if a race were held here)');
   const lead = t('이 서킷에서 경기가 열린다면 각 차가 받을 BoP를 예상합니다. 이 클래스의 실제 BoP(공개 표와, 공개하지 않는 대회는 추정치)를 학습해, 차마다 평소 수준에 서킷 성격(이 클래스 차의 시뮬레이션 평균속도·최고속도)에 따른 변화를 더합니다. 실제 경기·BoP가 쌓일 때마다 매일 다시 학습합니다.', 'The BoP each car would get if this class raced here. Learned from the class\'s real BoP (published tables, and estimates where they are not published): each car\'s usual level plus how it moves with the circuit\'s character (the class car\'s simulated mean and top speed). Relearned every day as real races and BoP come in.');
