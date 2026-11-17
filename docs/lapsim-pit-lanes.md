@@ -34,11 +34,24 @@ Owner 2026-11-16: "add the pit lane on every track". Drawing and pit-lane length
   | Variant | Left-out rms |
   |---|---|
   | Baseline: median of the other tracks' measured loss | 3.58 s |
-  | A: whole OSM path at the limit + constant C | 7.36 s |
-  | B: limit only on a middle zone of Z m (Z, C fitted on the other tracks), path bends elsewhere | 3.42 s |
+  | A: whole OSM path at the limit + constant C | 6.68 s |
+  | B: limit only on a middle zone of Z m (Z, C fitted on the other tracks), path bends elsewhere | 3.37 s |
 
-  B vs baseline: paired gain 1.10 ± 2.75 s² (1 SE), within noise → **rejected**. A fails because the OSM path includes entry and
-  exit roads where the limit does not apply (Hungaroring 1067 m, Spa 1201 m). The "60 km/h?" hint from these residuals is not
+  B vs baseline: paired gain 1.42 ± 2.41 s² (1 SE), within noise → **rejected** (rerun 2026-11-17 with the F1 pit lane at Spa). A fails because the OSM path includes entry and
+  exit roads where the limit does not apply (Hungaroring 1067 m; Spa used the 1201 m Endurance lane before the rerun). The "60 km/h?" hint from these residuals is not
   reliable either, so no per-event limit was inferred from it.
 - Next source: every F1 event publishes "Competition Notes – Circuit Map, Pit Lane Drawing and Emergency Exits Map" (FIA documents,
   e.g. 2026 Dutch GP doc 6). It gives the speed-limit lines and the missing pit lanes; it is also the source for A2 part 2.
+
+## Two pit lanes: Spa and Silverstone (owner 2026-11-17)
+
+- Spa-Francorchamps: F1 and WEC use the F1 pits (Bus Stop to La Source: entry 6707 m, exit 512 m, 719 m). Le Mans Cup and the
+  support series use the Endurance pits (after La Source to Kemmel: entry 416 m, exit 1625 m, 1201 m); the Spa 24 Hours uses both.
+  Until now the map showed the Endurance pits for every series.
+- Silverstone: F1 uses the Wing pits (Club to Abbey: entry 5202 m, exit 672 m, 1127 m); most other series use the National pits
+  (Woodcote to Copse: entry 2289 m, exit 3329 m, 1007 m).
+- Data: `pit-lane-data.js` keeps the F1 lane as the track's lane and adds `alt` {name, mainName, use, note} with the series that
+  take the other lane (`alt`) or both (`both`): Spa {gt3: both}, Silverstone {wec: alt, gt3: alt}. The page draws the lanes of the
+  selected series and names them in the map note. Le Mans, Nürburgring, Daytona and Indianapolis share one pit lane.
+- Input: probe/osm-pits-all (every non-FE track) plus probe/osm-pits-fe. Against the older probe this also adds Brands Hatch
+  (560 m) and moves Kuala Lumpur's lane (991 → 1012 m); Hockenheim and Monza only gain path detail.

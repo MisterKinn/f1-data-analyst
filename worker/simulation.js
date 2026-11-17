@@ -141,13 +141,13 @@ function renderMap(map, v, opts) {
   const bucket = i => Math.min(5, Math.floor((vAt(i) - lo) / (hi - lo + 1e-9) * 6));
   let paths = '', run = [0], b = bucket(0);
   const flush = () => { if (run.length > 1) paths += '<path d="M' + run.map(i => px(i) + ' ' + py(i)).join('L') + '" stroke="color-mix(in oklab,var(--mint) ' + (b * 20) + '%,var(--sim-slow))"/>'; };
-  const sw = (Math.max(vw, vh) / 110).toFixed(1), L = opts.line && ra ? Object.assign({}, opts.line, {pts: opts.line.pts.map(R2), left: opts.line.left.map(R2), right: opts.line.right.map(R2), pit: opts.line.pit && opts.line.pit.map(R2)}) : opts.line;
+  const sw = (Math.max(vw, vh) / 110).toFixed(1), L = opts.line && ra ? Object.assign({}, opts.line, {pts: opts.line.pts.map(R2), left: opts.line.left.map(R2), right: opts.line.right.map(R2), pit: opts.line.pit && opts.line.pit.map(q => q.map(R2))}) : opts.line;
   let band = '', marks = '';
   if (L) {
     // racing line on the track band: the line replaces the centre path, coloured by the car's speed on it
     const X = p => (p[0] - minX + pad).toFixed(1), Y = p => (maxY - p[1] + pad).toFixed(1), m = L.pts.length;
     // pit lane (A5, owner 2026-11-16): OpenStreetMap path, drawn under the track at about its real width (map units are metres)
-    band = (L.pit ? '<path class="ls-pit" d="M' + L.pit.map(p => X(p) + ' ' + Y(p)).join('L') + '"/>' : '') + '<polygon class="ls-band" points="' + L.left.concat(L.right.slice().reverse()).map(p => X(p) + ',' + Y(p)).join(' ') + '"/>';
+    band = (L.pit ? L.pit.map(q => '<path class="ls-pit" d="M' + q.map(p => X(p) + ' ' + Y(p)).join('L') + '"/>').join('') : '') + '<polygon class="ls-band" points="' + L.left.concat(L.right.slice().reverse()).map(p => X(p) + ',' + Y(p)).join(' ') + '"/>';
     for (const [f0, f1] of L.surf || []) { const k = L.left.length, a = Math.round(f0 * k), b = Math.round(f1 * k) + (f1 < f0 ? k : 0), lt = [], rt = [];
       for (let i = a; i <= b; i++) { lt.push(L.left[i % k]); rt.push(L.right[i % k]); }
       band += '<polygon class="ls-surf" points="' + lt.concat(rt.reverse()).map(p => X(p) + ',' + Y(p)).join(' ') + '"/>'; }
@@ -804,7 +804,9 @@ function computeView(K, data, state, R) {
       let a = ic, e = ic + w(20); for (let k = ic - w(30); k <= ic + w(30); k++) if (sg * lat(k) > sg * lat(a)) a = k;
       for (let k = a + w(10); k <= a + w(80); k++) if (-sg * lat(k) > -sg * lat(e)) e = k;
       kerbs.push([left ? 'L' : 'R', a - w(15), a + w(15)], [left ? 'R' : 'L', e - w(15), e + w(15)]); }
-    line = {pts: P, v, marks, kerbs, surf: data.surface?.spans || [], left: LD.left, right: LD.right, pit: data.pit?.pts || null};
+    // two pit lanes (Spa, Silverstone; owner 2026-11-17): the main lane is the F1 one, alt.use says which series take the other or both
+    const pa = data.pit?.alt, pu = sel.series && pa?.use?.[sel.series] || 'main', pits = !data.pit ? [] : pu === 'alt' ? [pa] : pu === 'both' ? [{...data.pit, name: pa.mainName}, pa] : [data.pit];
+    line = {pts: P, v, marks, kerbs, surf: data.surface?.spans || [], left: LD.left, right: LD.right, pit: pits.length ? pits.map(q => q.pts) : null};
     const edge = (LT0.edges[LD.edges] || '').replace('{m}', LD.widthM);
     const dname = (k, r) => (r.name || k) + (r.name && !sel.series ? ' (' + k + ')' : '') + (r.team ? ' · ' + r.team : r.manufacturer ? ' · ' + r.manufacturer : '');
     driverOpts = DLy ? '<option value="">' + LT0.carLine + '</option>' + Object.entries(DLy.drivers).sort((a, b) => String(a[1].name || a[0]).localeCompare(String(b[1].name || b[0]))).map(([k, r]) => '<option value="' + k + '"' + (k === state.driver ? ' selected' : '') + '>' + dname(k, r) + '</option>').join('') : '';
@@ -814,7 +816,7 @@ function computeView(K, data, state, R) {
     const sf = data.surface, surfNote = sf ? (sf.n ? LT0.surf.replace('{y}', sf.year).replace('{n}', sf.n) : LT0.surfEra.replace('{y}', sf.era)) : '';
     // pit lane (A5): length from OSM, speed limit from the rules or the event's Race Director notes, measured F1 pit loss (never simulated)
     const psKey = !sel.series ? 'f1' : sel.series, ps = data.pitSpeed?.event[psKey] || data.pitSpeed?.series[psKey];
-    const pitNote = data.pit ? LT0.pit.replace('{m}', data.pit.lengthM) + (ps ? ', ' + LT0.pitLim.replace('{v}', ps.kph).replace('{src}', ps.src) : '') + (!sel.series && data.pitLossF1 ? ', ' + LT0.pitLoss.replace('{l}', data.pitLossF1.toFixed(1)) : '') : '';
+    const pitNote = pits.length ? LT0.pit.replace('{m} m', pits.map(q => q.lengthM + ' m' + (pa && (q.name || pu === 'main') ? ' ' + (q.name || pa.mainName) : '')).join(' + ')) + (ps ? ', ' + LT0.pitLim.replace('{v}', ps.kph).replace('{src}', ps.src) : '') + (!sel.series && data.pitLossF1 ? ', ' + LT0.pitLoss.replace('{l}', data.pitLossF1.toFixed(1)) : '') : '';
     lineNote += (edge ? ' · ' + edge : '') + (line.kerbs.length ? ' · ' + LT0.kerbs : '') + (surfNote ? ' · ' + surfNote : '') + (pitNote ? ' · ' + pitNote : '') + (data.cornerNames?.length ? ' · ' + LT0.cnames : '');
   }
   // F1 zones (owner 2026-11-15): 2026–2028 cars show the 2026 Straight Mode zones and overtake detection/activation (2027 documents
