@@ -14,8 +14,10 @@ const raw = JSON.parse(readFileSync(new URL('./data/learn/f1-zones-raw.json', im
 try { raw.events.push(...JSON.parse(readFileSync(new URL('./data/learn/f1-zones-raw-extra.json', import.meta.url), 'utf8')).events); } catch (e) { /* optional */ }
 // zones read from the FIA map pictures (their legend is part of the picture, not text): scripts/sim/data/learn/f1-zones-visual.json
 try { raw.events.push(...JSON.parse(readFileSync(new URL('./data/learn/f1-zones-visual.json', import.meta.url), 'utf8')).events.map(e => ({...e, docs: [{title: e.doc + ' (read from the map picture)', url: e.url || '', lines: e.lines.map(text => ({text}))}]}))); } catch (e) { /* optional */ }
+// DRS numbers: a digit glued to 'm' is a distance, not the zone number (Lusail 2025 'DRS Activation 305m After Turn 16' read as zone 3)
 // one FIA position: "90m after T15", "40m before T3", "12m after finish line", "Entry/Apex/Mid/Exit (of) T11", "T3 exit", "T1A-entry", "T11"
-const POS = String.raw`(?:\d+% from T\d+ to T\d+|\d+\s?m\s+(?:before|after)\s+(?:(?:T|Turn\s?)\d+[A-Z]?(?:[- ](?:entry|exit))?|(?:the\s)?(?:finish|control|start) line)|(?:Entry|Apex|Mid|Exit|Start|End)(?:\s+of)?[- ]?(?:T|Turn\s?)\d+[A-Z]?|T\d+[A-Z]?[- ](?:entry|exit))`;
+// 'entry to turn 10' (Zandvoort 2025) reads as 'entry of T10'
+const POS = String.raw`(?:\d+% from T\d+ to T\d+|\d+\s?m\s+(?:before|after)\s+(?:(?:T|Turn\s?)\d+[A-Z]?(?:[- ](?:entry|exit))?|(?:the\s)?(?:finish|control|start) line)|(?:Entry|Apex|Mid|Exit|Start|End)(?:\s+(?:of|to))?[- ]?(?:T|Turn\s?)\d+[A-Z]?|T\d+[A-Z]?[- ](?:entry|exit))`;
 const posRe = new RegExp(POS, 'i');
 const cornersOf = id => (T[id].corners?.length ? T[id].corners : lapsimTrackView[id]?.corners) || [];
 function at(id, txt) {
@@ -91,8 +93,8 @@ for (const e of raw.events) {
     if (zones.length || marks.length) (out[id] ||= {})[String(e.year)] = {kind: 'sm', year: e.year, zones: zones.sort((a, b) => a.n - b.n), marks, doc: doc?.title || '', url: doc?.url || ''};
   } else {
     const zones = [], marks = [];
-    for (const m of text.matchAll(new RegExp(String.raw`DRS\s*Activation\s*(?:point\s*)?(\d)\D{0,6}?(?:` + POS + String.raw`|(?:T|Turn\s?)\d+[A-Z]?\b)`, 'gi'))) { const s = at(id, m[0].slice(Math.max(0, m[0].search(/\(|\d+\s?m\b|Entry|Apex|Mid|Exit|T\d|Turn/i, 4)))); if (s != null && !zones.some(z => z.n === Number(m[1]))) zones.push({n: Number(m[1]), from: Math.round(s), to: Math.round(zoneEnd(id, s))}); }
-    for (const m of text.matchAll(new RegExp(String.raw`DRS\s*Detection\s*(?:point\s*)?(\d?)\D{0,6}?(?:` + POS + String.raw`|(?:T|Turn\s?)\d+[A-Z]?\b)`, 'gi'))) { const s = at(id, m[0].slice(Math.max(0, m[0].search(/\(|\d+\s?m\b|Entry|Apex|Mid|Exit|T\d|Turn/i, 4)))); if (s != null && !marks.some(k => k.label === 'D' + (m[1] || '1'))) marks.push({s: Math.round(s), kind: 'det', label: 'D' + (m[1] || '1')}); } // no number (Hungaroring 2025): one detection, D1
+    for (const m of text.matchAll(new RegExp(String.raw`DRS\s*Activation\s*(?:point\s*)?(\d?)(?!\d|\s?m\b)\D{0,6}?(?:` + POS + String.raw`|(?:T|Turn\s?)\d+[A-Z]?\b)`, 'gi'))) { const s = at(id, m[0].slice(Math.max(0, m[0].search(/\(|\d+\s?m\b|Entry|Apex|Mid|Exit|T\d|Turn/i, 4)))); const n = m[1] ? Number(m[1]) : zones.length + 1; if (s != null && !zones.some(z => z.n === n)) zones.push({n, from: Math.round(s), to: Math.round(zoneEnd(id, s))}); }
+    for (const m of text.matchAll(new RegExp(String.raw`DRS\s*Detection\s*(?:point\s*)?(\d?)(?!\d|\s?m\b)\D{0,6}?(?:` + POS + String.raw`|(?:T|Turn\s?)\d+[A-Z]?\b)`, 'gi'))) { const s = at(id, m[0].slice(Math.max(0, m[0].search(/\(|\d+\s?m\b|Entry|Apex|Mid|Exit|T\d|Turn/i, 4)))); if (s != null && !marks.some(k => k.label === 'D' + (m[1] || '1'))) marks.push({s: Math.round(s), kind: 'det', label: 'D' + (m[1] || '1')}); } // no number (Hungaroring 2025): one detection, D1
     noOverlap(id, zones);
     // the 2025 slot holds 2025, else the newest earlier year (a circuit F1 left before 2025)
     if (zones.length && (!out[id]?.['2025'] || out[id]['2025'].year < e.year)) (out[id] ||= {})['2025'] = {kind: 'drs', year: e.year, zones: zones.sort((a, b) => a.n - b.n), marks, doc: doc?.title || '', url: doc?.url || ''};
