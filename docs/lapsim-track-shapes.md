@@ -225,3 +225,31 @@ tracks are rebuilt on the new line.
 - Pit lanes were refitted in the new map frames (`pit-lanes-osm.py`, probe/osm-pits and probe/osm-pits-fe). When the stored
   start pose no longer fits a warped map, the script now searches the whole area. This also gave Road America (967 m) and
   Sebring (534 m) their pit lanes. Portimão needed its own start pose (osm-fit-start.json, 0.61 m).
+
+## Start/finish lines from iRacing (2026-11-17)
+
+`scripts/sim/data/tracks/sf-lines.json` holds start/finish line coordinates taken from the owner's iRacing telemetry (the position where
+LapDistPct wraps from 1 to 0, median of 4–101 crossings, spread under 1.5 m). `build-geometry-extra.mjs` uses them before OSM and
+the "pit straight" estimate, never over a start stated by the source (track-atlas). Check on 15 F1 tracks, whose start comes from F1
+timing: the iRacing line is a median 32 m earlier (−80 to 0 m), so the method is good to a few tens of metres.
+
+| Track | Line moved by (old start → new start) |
+|---|---|
+| watkins-glen | -195 m |
+| bathurst | -240 m |
+| sonoma | +185 m |
+| oschersleben | +1230 m |
+| motegi | -20 m |
+| okayama | +1365 m |
+| sebring | -245 m |
+| phillip-island | -345 m |
+
+- Old starts: Okayama and Oschersleben had none ("first mapped point"), the others the middle of the pit lane (±150 m).
+- After the move every pit lane of these tracks spans the line, as a pit straight should (before: Okayama and Oschersleben did not).
+- Moved with the line: corners (rebuilt), map shape corrections (per-point arrays rotated), corner names (Sonoma, Oschersleben),
+  pit lanes, estimated F1 zones and FE attack zones (rebuilt; only these 8 tracks change), estimated PU documents (rebuilt for every
+  track: they were last built before the track-atlas lines of 31013a2 and were stale on 21 tracks).
+- Lap times: only the simulated laps move (start of the flying lap), by 0.05 s or less; measured laps are unchanged.
+- Still unverified: Brands Hatch (TUM line, no coordinates), Rwanda, Sachsenring, Buriram, Zhuhai, Inje, Autopolis; pit-straight
+  estimates: Yongin, Mid-Ohio, Lime Rock, Dubai, Ricardo Tormo, Estoril, Jerez, Magny-Cours, Mandalika. Next sources: the OSM
+  finish probe (12 tracks retrying) and official circuit maps.

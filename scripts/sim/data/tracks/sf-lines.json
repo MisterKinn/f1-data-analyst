@@ -1,0 +1,46 @@
+{
+ "source": "iRacing track models (SimRacingSetup 26S4 telemetry, owner's iRacing data, personal use): position where LapDistPct wraps from 1 to 0, interpolated between the 60 Hz samples, median over the crossings. Checked on 15 F1 tracks against the F1-timing start of the simulator: median 32 m earlier, range -80 to 0 m (Imola and Montreal excluded: layout or pose). Used only where the start was not verified.",
+ "built": "2026-11-17",
+ "tracks": {
+  "bathurst": {
+   "lat": -33.439462,
+   "lon": 149.559806,
+   "source": "iRacing start/finish line (bathurst; 53 crossings, spread 0.4 m)"
+  },
+  "motegi": {
+   "lat": 36.532983,
+   "lon": 140.226676,
+   "source": "iRacing start/finish line (twinring fullrc, Full Road Course; 87 crossings, spread 0.2 m)"
+  },
+  "okayama": {
+   "lat": 34.914292,
+   "lon": 134.21887,
+   "source": "iRacing start/finish line (okayama full, Full Course; 55 crossings, spread 0.2 m)"
+  },
+  "oschersleben": {
+   "lat": 52.02712,
+   "lon": 11.280366,
+   "source": "iRacing start/finish line (oschersleben gp, Grand Prix; 22 crossings, spread 0.4 m)"
+  },
+  "phillip-island": {
+   "lat": -38.502359,
+   "lon": 145.232231,
+   "source": "iRacing start/finish line (phillipisland; 16 crossings, spread 0.3 m)"
+  },
+  "sebring": {
+   "lat": 27.450242,
+   "lon": -81.353782,
+   "source": "iRacing start/finish line (sebring international, International; 59 crossings, spread 0.4 m)"
+  },
+  "sonoma": {
+   "lat": 38.161573,
+   "lon": -122.454674,
+   "source": "iRacing start/finish line (sonoma 2025 nascarlong, NASCAR Long; 101 crossings, spread 0.2 m)"
+  },
+  "watkins-glen": {
+   "lat": 42.341053,
+   "lon": -76.928895,
+   "source": "iRacing start/finish line (watkinsglen 2021 fullnoloop, Classic Boot; 4 crossings, spread 0.0 m)"
+  }
+ }
+}

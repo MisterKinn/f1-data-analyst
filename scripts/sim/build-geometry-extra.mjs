@@ -62,7 +62,7 @@ export function buildTrack(id, spec, c) {
   const t0 = K.trackFromData(c), n0 = t0.kappa.length, ax = new Array(n0), ay = new Array(n0);
   for (let i = 0, h = 0, x = 0, y = 0; i < n0; i++) { ax[i] = x; ay[i] = y; h += t0.kappa[i] * c.ds; x += Math.cos(h) * c.ds; y += Math.sin(h) * c.ds; }
   // owner 2026-11-15: real direction and start line (map ways run either way and start at any node)
-  const o = orient(c, spec, ax, ay, OSM[id]), cx = o.order.map(i => ax[i]), cy = o.order.map(i => ay[i]);
+  const o = orient(c, spec, ax, ay, OSM[id], SF[id]), cx = o.order.map(i => ax[i]), cy = o.order.map(i => ay[i]);
   if (c.grade) c = {...c, grade: o.order.map(i => o.reversed ? -c.grade[i] : c.grade[i])};
   const width = spec.widthM || c.widthM || null, halfW = Math.max(1, (width || 12) / 2 - 1.2);
   const rl = minCurvatureLine(cx, cy, new Array(n0).fill(halfW)), line = lineTrack(K, rl.x, rl.y, 5), n = line.kappa.length;
@@ -88,6 +88,8 @@ export function buildTrack(id, spec, c) {
 // turn sense differs. Start: an OpenStreetMap start/finish feature on the lap, else the middle of the pit lane next to the lap
 // (scripts/sim/learn/fetch-osm-starts.mjs). Map x/y are east/north metres from c.centre, sampled every `step` lap points.
 const OSM = existsSync(D + 'learn/osm-starts.json') ? JSON.parse(readFileSync(D + 'learn/osm-starts.json', 'utf8')).tracks : {};
+// start/finish lines with coordinates (owner 2026-11-17: unknown geometry may be learned from iRacing; measured data is never changed)
+const SF = existsSync(D + 'tracks/sf-lines.json') ? JSON.parse(readFileSync(D + 'tracks/sf-lines.json', 'utf8')).tracks : {};
 export // official corner numbers stored with a curated atlas midline (marker = share of the source line): placed on the lap after the start and
 // direction were set by orient() (owner 2026-11-15: Daytona T1-T12, the Bus Stop is T8-T11)
 function atlasCorners(c, o, n0, len) {
@@ -95,12 +97,18 @@ function atlasCorners(c, o, n0, len) {
   const pos = new Map(o.order.map((i, k) => [i, k]));
   return c.atlasCorners.map(a => ({number: a.number, letter: '', name: a.name, s: Math.round((pos.get(Math.min(n0 - 1, Math.round(a.marker * n0))) ?? 0) / n0 * len)})).sort((a, b) => a.s - b.s);
 }
-function orient(c, spec, ax, ay, osm = OSM[spec.id]) {
+function orient(c, spec, ax, ay, osm = OSM[spec.id], sfLine = null) {
   const n = ax.length, area = ax.reduce((a, x, i) => a + x * ay[(i + 1) % n] - ax[(i + 1) % n] * ay[i], 0), mapped = area > 0 ? 'ccw' : 'cw';
   const reversed = !!spec.direction && spec.direction !== mapped, idx = i => reversed ? (n - i) % n : i; // reversed lap keeps point 0
   let s0 = 0, start = 'first mapped point (not verified)', startVerified = false, pitOneway = null;
   if (c.startFromSource) { start = c.startFromSource; startVerified = c.startVerified ?? true; } // the source states its own start/finish point (track-atlas)
-  else if (osm?.elements?.length && c.map && c.centre) {
+  const sfl = !c.startFromSource && sfLine && c.map && c.centre ? sfLine : null;
+  if (sfl) { // a start/finish line with coordinates (sf-lines.json: iRacing track model), placed on the nearest map point
+    const step = Math.max(1, Math.floor(n / 360)), R = 6371008.8, r = Math.PI / 180, [la, lo] = c.centre, q = [(sfl.lon - lo) * r * R * Math.cos(la * r), (sfl.lat - la) * r * R];
+    let best = Infinity, k = -1; c.map.x.forEach((x, j) => { const d = Math.hypot(x - q[0], c.map.y[j] - q[1]); if (d < best) { best = d; k = j; } });
+    if (best < 40) { s0 = Math.min(n - 1, k * step); start = `${sfl.source}, ${Math.round(best)} m off the lap`; startVerified = true; }
+  }
+  if (!c.startFromSource && osm?.elements?.length && c.map && c.centre) {
     const step = Math.max(1, Math.floor(n / 360)), R = 6371008.8, r = Math.PI / 180, [la, lo] = c.centre;
     const en = ([a, b]) => [(b - lo) * r * R * Math.cos(la * r), (a - la) * r * R];
     const near = p => { let best = Infinity, k = -1; c.map.x.forEach((x, j) => { const d = Math.hypot(x - p[0], c.map.y[j] - p[1]); if (d < best) { best = d; k = j; } }); return {d: best, i: Math.min(n - 1, k * step)}; };
@@ -111,7 +119,8 @@ function orient(c, spec, ax, ay, osm = OSM[spec.id]) {
       .map(e => { const ps = e.geom.map(en), seg = ps.slice(1).map((p, j) => Math.hypot(p[0] - ps[j][0], p[1] - ps[j][1])), L = seg.reduce((a, b) => a + b, 0);
         let acc = 0, j = 0; while (j < seg.length - 1 && acc + seg[j] < L / 2) acc += seg[j++]; const m = ps[j + 1]; return {e, ps, L, ...near(m)}; })
       .filter(h => h.d < 150 && h.L > 150 && h.L < 2500).sort((a, b) => b.L - a.L);
-    if (fin.length) { s0 = fin[0].i; start = `OpenStreetMap ${fin[0].e.type} ${fin[0].e.id} (${tg(fin[0].e).name || tg(fin[0].e).raceway}), ${Math.round(fin[0].d)} m off the lap`; startVerified = true; }
+    if (startVerified === true) { /* start already set from sf-lines.json */ }
+    else if (fin.length) { s0 = fin[0].i; start = `OpenStreetMap ${fin[0].e.type} ${fin[0].e.id} (${tg(fin[0].e).name || tg(fin[0].e).raceway}), ${Math.round(fin[0].d)} m off the lap`; startVerified = true; }
     else if (pits.length) { s0 = pits[0].i; start = `middle of the pit lane (OpenStreetMap way ${pits[0].e.id}, ${Math.round(pits[0].L)} m), ${Math.round(pits[0].d)} m off the lap; line position along the straight ±150 m`; startVerified = 'pit straight'; }
     const p = pits.find(h => tg(h.e).oneway === 'yes'); // a one-way pit lane is drawn in the race direction
     if (p) { const a = p.ps[0], b = p.ps[p.ps.length - 1], j0 = Math.floor(near(a).i / step), j1 = Math.floor(near(b).i / step), m = c.map.x.length, fwd = ((j1 - j0) % m + m) % m < m / 2;
