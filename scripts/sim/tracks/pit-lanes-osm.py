@@ -81,6 +81,16 @@ for id in ids:
         Rm0 = np.array([[math.cos(st0['th']), -math.sin(st0['th'])], [math.sin(st0['th']), math.cos(st0['th'])]])
         best = (0, Rm0, np.array(st0['T']) + (cM - RAWC[id]) @ Rm0.T)
     d, Rm, t = icp(S, T, tr, best[1], best[2], 40, 0.9); med = float(np.median(d))
+    if med > 6:   # a warped map (map-warp-osm.py) no longer fits the pose stored for its raw line: search the whole area, as osm-fit-start.py
+        lo, hi = T.min(0), T.max(0); step = max(250, float((hi - lo).max()) / 16); Sq = S[::6]; best = None
+        for deg in range(0, 360, 10):
+            th = math.radians(deg); R0 = np.array([[math.cos(th), -math.sin(th)], [math.sin(th), math.cos(th)]])
+            for ox in np.arange(lo[0], hi[0] + 1, step):
+                for oy in np.arange(lo[1], hi[1] + 1, step):
+                    d2, Rm2, t2 = icp(Sq, T, tr, R0, np.array([ox, oy]), 6); q = np.quantile(d2, .5)
+                    if best is None or q < best[0]: best = (q, Rm2, t2)
+        d2, Rm2, t2 = icp(S, T, tr, best[1], best[2], 40, 0.9)
+        if float(np.median(d2)) < med: d, Rm, t, med = d2, Rm2, t2, float(np.median(d2))
     if med > 6: report.append(f'{id}: our line does not fit the OSM raceways (median {med:.1f} m)'); continue
     inv = lambda Q: (Q - t) @ Rm + cM          # cloud frame -> our map frame
     trM = cKDTree(M); n = len(M); L = MID[id]['len']; kept = None
