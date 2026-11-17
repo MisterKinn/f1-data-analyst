@@ -78,3 +78,12 @@ test('name variants: one fitting FIA row only, fixed rules, never a different fi
   assert.deepEqual(variantIn('Maximilian Goetz', r2, tokenIndex(r2), raws), {i: 0, rule: 'umlaut'});
   assert.equal(variantIn('Rafael Nowak', r2, tokenIndex(r2), raws).i, -1); // not an umlaut spelling: another name
 });
+
+test('estimate layer: apart from printed values, every learned row has lineupEstimated', () => {
+  for (const [ev, cars] of Object.entries(d.lineups)) for (const [car, c] of Object.entries(cars)) for (const x of c.drivers) {
+    if (x.est != null) { assert.equal(x.rating, null, `${ev} ${car} ${x.id}: an estimate never sits beside a printed rating`); assert.ok(RATINGS.includes(x.est)); assert.ok(x.estHow); } }
+  for (const r of d.learned) {
+    assert.ok(r.lineupEstimated && /^P*G*S*B*$/.test(r.lineupEstimated), `${r.series} ${r.season} ${r.entry}`);
+    if (r.lineup) { assert.equal(r.lineupEstimated, r.lineup); assert.equal(r.estimatedSeats, undefined); } else assert.ok(r.estimate !== undefined);
+  }
+});

@@ -14,7 +14,7 @@ import {lapsimTracks, lapsimExtraTracks} from '../../../worker/lapsim/tracks-dat
 import {FE_GENS, feKeyOf, feCarFor} from '../../../worker/lapsim/fe-cars.js';
 import {buildTrack} from '../build-geometry-extra.mjs';
 import {parseCsv} from './build-endurance.mjs';
-import {lineOf, lengthOf, metres} from './fe-lines.mjs';
+import {lineOf, lengthOf, metres, orientLine} from './fe-lines.mjs';
 
 const K = lapsimKernel(), D = 'scripts/sim/data/learn/', lapsimAllTracks = {...lapsimTracks, ...lapsimExtraTracks}; // not the FE tracks this script writes
 const NAME = {'são paolo': 'São Paulo', 'mexico city': 'Mexico', 'ad diriyah': 'Diriyah', madrid: 'Jarama', 'new york city': 'New York'};
@@ -37,11 +37,20 @@ for (const m of maps.sort((a, b) => b.year - a.year)) {
   L.years.add(m.year); L.maps.push(m);
 }
 // the lap line of a layout: the newest map with a closed vector line (seasons 5-8 maps are raster or black outlines only)
-const pickLine = l => { for (const m of l.maps) { const line = lineOf(m); if (!line || line.gapPt > 40) continue; const g = metres(line, m.lengthM); if (Math.abs(Math.abs(g.turn) - 360) < 5) return {m, g}; } return null; };
+// a line that encloses almost no area (4 pi A / L^2 < 0.08) is the outline of one piece of a filled track, not the lap (Mexico, Rome, Diriyah maps)
+const compact = g => { let a = 0; for (let i = 0; i < g.x.length; i++) { const j = (i + 1) % g.x.length; a += g.x[i] * g.y[j] - g.x[j] * g.y[i]; } return 2 * Math.PI * Math.abs(a) / (g.x.length * g.ds) ** 2; };
+const pickLine = l => { for (const m of l.maps) { const line0 = lineOf(m); if (!line0 || line0.gapPt > 40) continue; const o = orientLine(line0, m, m.lengthM), g = metres(o.line, m.lengthM); if (Math.abs(Math.abs(g.turn) - 360) < 5 && compact(g) >= 0.08) return {m, g, o}; } return null; };
+// layouts whose maps give no lap line: OSM raceway ways matched to the official map (scripts/sim/tracks/fe-osm-lines.py), by track id
+const OSM_LINES = JSON.parse(readFileSync('scripts/sim/data/tracks/fe-osm-lines.json', 'utf8'));
+const OSM_LAYOUT = {'Mexico|2608': 'fe-mexico', 'Mexico|2630': 'fe-mexico-2023'};
+const osmLine = (id, lengthM) => { const o = OSM_LINES.tracks[id]; if (!o) return null; const pts = o.x.map((x, i) => [x, -o.y[i]]); // metres() flips y back
+  const lenPt = pts.reduce((a, q, i) => a + Math.hypot(q[0] - pts[(i + 1) % pts.length][0], q[1] - pts[(i + 1) % pts.length][1]), 0);
+  return {o, g: metres({pts, lenPt}, lengthM)}; };
 for (const l of layouts) { const ys = [...l.years].sort(), same = layouts.filter(o => o.venue === l.venue), newest = same.every(o => Math.max(...o.years) <= Math.max(...ys));
   l.pick = pickLine(l); // the id year is the first year of a map that gives the line, so older maps without a line never rename a track
   const idYear = l.pick ? Math.min(...l.maps.filter(m => pickLine({maps: [m]})).map(m => m.year)) : ys[0];
-  l.id = REUSE[`${l.venue}|${l.lengthM}`] || (IDS[l.venue] || 'fe-' + slug(l.venue)) + (newest ? '' : '-' + idYear); l.first = ys[0]; l.last = ys.at(-1); }
+  l.id = OSM_LAYOUT[`${l.venue}|${l.lengthM}`] || REUSE[`${l.venue}|${l.lengthM}`] || (IDS[l.venue] || 'fe-' + slug(l.venue)) + (newest ? '' : '-' + idYear); l.first = ys[0]; l.last = ys.at(-1);
+  const osm = osmLine(l.id, l.lengthM); if (osm) l.pick = {m: l.maps[0], g: osm.g, osm: osm.o}; }
 
 // 2. Track geometry (least-curvature line inside an 11 m street track, flat)
 const tracks = {}, geomLog = [];
@@ -49,10 +58,12 @@ for (const l of layouts) {
   if (l.last < 2025) { geomLog.push({id: l.id, from: 'not raced by Gen3 Evo (owner 2026-11-15: Formula E from Gen3 Evo on)'}); continue; }
   if (lapsimAllTracks[l.id]) { l.sim = l.id; geomLog.push({id: l.id, from: 'existing simulator track'}); continue; }
   if (!l.pick) { geomLog.push({id: l.id, from: 'no usable lap line on the maps'}); continue; }
-  const {m, g} = l.pick, c = {ds: g.ds, length: Math.round(g.kappa.length * g.ds), officialLengthM: l.lengthM, widthM: 11, kappa: Array.from(g.kappa, k => Math.round(k * 1e5)), grade: null, sectors: [], corners: []};
+  const {m, g} = l.pick, st = l.pick.o || (l.pick.osm && {start: `"FINISH" label on the official circuit map (${l.pick.osm.map}), projected by the map-to-OpenStreetMap fit, ${l.pick.osm.finishOffsetM} m from the line`, startVerified: l.pick.osm.finishOffsetM <= 60 ? true : 'label far from the line'}),
+    c = {startFromSource: st?.start, startVerified: st?.startVerified, ds: g.ds, length: Math.round(g.kappa.length * g.ds), officialLengthM: l.lengthM, widthM: 11, kappa: Array.from(g.kappa, k => Math.round(k * 1e5)), grade: null, sectors: [], corners: []};
   const span = l.first === l.last ? `${l.first - 1}-${String(l.first).slice(2)}` : `${l.first - 1}-${String(l.last).slice(2)}`;
   const t = buildTrack(l.id, {name: `${l.venue} (Formula E ${span})`, layout: `Formula E ${l.lengthM} m`, widthM: 11,
-    shapeEvidence: '2 measured (official FIA Formula E circuit map, vector line)', sources: [`FIA Formula E circuit map, ${m.season}, ${m.event} (Al Kamel Systems): ${m.url}`]}, c);
+    shapeEvidence: l.pick.osm ? '2 measured (OpenStreetMap raceway ways matched to the official FIA Formula E circuit map)' : '2 measured (official FIA Formula E circuit map, vector line)',
+    sources: [`FIA Formula E circuit map, ${m.season}, ${m.event} (Al Kamel Systems): ${m.url}`, ...(l.pick.osm ? [`OpenStreetMap raceway ways ${l.pick.osm.ways.join(', ')} (© OpenStreetMap contributors, ODbL): ${l.pick.osm.note}`] : [])]}, c);
   t.series = 'fe'; t.fit = true; tracks[l.id] = t; l.sim = l.id; geomLog.push({id: l.id, from: `${m.season} ${m.event}`, turn: Math.round(g.turn), length: t.length});
 }
 
