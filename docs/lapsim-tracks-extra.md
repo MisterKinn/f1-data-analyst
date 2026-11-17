@@ -36,7 +36,7 @@ Owner instruction (2026-11-14): where a real lap of a car type exists, use it. T
 | nurburgring-gp | Grand Prix 5.148 km | f1-history | 5084 (5148) | car positions | 6 (0) | 2.51 | 2.35 | 1.0581 | 1.04 | – | pass (learned) |
 | nurburgring-sprint | Sprint 3.629 km (DTM, ADAC GT Masters) | europe-africa-asia | 3559 (3629) | 588–621 m | 2 (0) | 0.72 | 0.72 | 1.0209 | 0.13 | – | pass (unseen) |
 | nurburgring-24h | 24 Hours combined lap 25.378 km | europe-africa-asia | 25018 (25378) | 340–627 m | 3 (0) | 2.12 | -2.04 | 0.9336 | 0.89 | – | pass (unseen) |
-| brands-hatch | Grand Prix 3.916 km | europe-africa-asia | 3876 (3916) | flat assumed | 1 (0) | 0.25 | -0.25 | – | – | – | pass (unseen) |
+| brands-hatch | Grand Prix 3.916 km | europe-africa-asia | 3876 (3916) | 0–35 m | 1 (0) | 0.47 | -0.47 | – | – | – | pass (unseen) |
 | sakhir-outer | Outer circuit 3.543 km | f1-history | 3499 (3543) | car positions | 1 (0) | 0.24 | -0.24 | – | – | – | pass (unseen) |
 | kyalami | Grand Prix 4.522 km | europe-africa-asia | 4457 (4522) | 1458–1501 m | 2 (0) | 3.01 | -2.98 | 0.9188 | 0.96 | – | pass (learned) |
 | fuji | Fuji Speedway 4.563 km | europe-africa-asia | 4445 (4549) | 544–594 m | 8 (8) | 1.95 | -1.85 | 0.9503 | 0.88 | – | pass (unseen) |
@@ -68,7 +68,7 @@ Owner instruction (2026-11-14): where a real lap of a car type exists, use it. T
 | oulton-park | International circuit 4.332 km | owner-2026-11-15 | 4279 (4332) | 54–70 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | motegi | Mobility Resort Motegi road course 4.801 km | owner-2026-11-15 | 4736 (4801) | 149–178 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | buriram | Chang International Circuit 4.554 km | owner-2026-11-15 | 4503 (4554) | 166–182 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
-| okayama | Okayama International Circuit 3.703 km | owner-2026-11-15 | 3620 (3703) | 251–276 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| okayama | Okayama International Circuit 3.703 km | owner-2026-11-15 | 3620 (3703) | 0–30 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | zhuhai | Zhuhai International Circuit 4.318 km | owner-2026-11-15 | 4265 (4318) | 0–11 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | vallelunga | International circuit 4.085 km | owner-2026-11-15 | 4009 (4085) | 178–199 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | estoril | Circuito Estoril 4.182 km | owner-2026-11-15 | 4114 (4182) | 118–141 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
@@ -128,7 +128,7 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 | nurburgring-24h | nur | 2023 | SP 9 | Mercedes-AMG GT3 | lmgt3 2025 (borrowed) | 496.609 | 482.59 | -2.82 |
 | nurburgring-24h | nur | 2024 | SP 9 | Porsche 911 GT3 R (992) | lmgt3 2025 (borrowed) | 489.591 | 482.59 | -1.43 |
 | nurburgring-24h | nur | 2025 | SP 9 | Porsche 911 GT3 R (992) | lmgt3 2025 (borrowed) | 491.855 | 482.59 | -1.88 |
-| brands-hatch | x-miata-trophy | 2026 | Pro | BMW M4 GT3 EVO | lmgt3 2026 (borrowed) | 83.26 | 83.049 | -0.25 |
+| brands-hatch | x-miata-trophy | 2026 | Pro | BMW M4 GT3 EVO | lmgt3 2026 (borrowed) | 83.26 | 82.865 | -0.47 |
 | sakhir-outer | f1 | 2020 | F1 | BOT (Mercedes), pole Q3 | f1 2023 × 0.9686 (borrowed) | 53.377 | 53.248 | -0.24 |
 | kyalami | igtc | 2019 (older) | Pro | ? | lmgt3 2025 (borrowed) | 102.378 | 98.872 | -3.42 |
 | kyalami | igtc | 2020 (older) | Overall | ? | lmgt3 2025 (borrowed) | 101.979 | 99.389 | -2.54 |
@@ -458,7 +458,7 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 | nurburgring-gp | 1 fixed (official) and 2 measured (driven line) | 2 measured (F1 car positions, 8 qualifying laps, 2020) | 2 measured (mean of the fastest qualifying laps) | not used | 2 measured (F1 car positions) | 3 inferred (one factor fitted on real laps of this track) |
 | nurburgring-sprint | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | nurburgring-24h | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 4 assumed 12 m | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
-| brands-hatch | 1 fixed (official list) | 2 measured (TUM racetrack database centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | none (flat assumed) | 4 borrowed (mean factor of the class's fitted tracks) |
+| brands-hatch | 1 fixed (official list) | 2 measured (TUM racetrack database centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 4 borrowed (iRacing laser-scanned track, median of 5 laps) | 4 borrowed (mean factor of the class's fitted tracks) |
 | sakhir-outer | 1 fixed (official) and 2 measured (driven line) | 2 measured (F1 car positions, 8 qualifying laps, 2020) | 2 measured (mean of the fastest qualifying laps) | not used | 2 measured (F1 car positions) | 4 borrowed (mean factor of the class's fitted tracks) |
 | kyalami | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 4 assumed 12 m | 2 measured, coarse (about 30 m ground grid) | 3 inferred (one factor fitted on real laps of this track) |
 | fuji | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
@@ -490,7 +490,7 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 | oulton-park | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | motegi | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | buriram | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
-| okayama | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
+| okayama | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 4 borrowed (iRacing laser-scanned track, median of 7 laps) | 4 borrowed (mean factor of the class's fitted tracks) |
 | zhuhai | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | vallelunga | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | estoril | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
