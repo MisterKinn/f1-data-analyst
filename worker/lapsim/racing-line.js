@@ -5,16 +5,18 @@
 // (each point toward the position of zero curvature change from its neighbours), clamped to the corridor;
 // this converges to the least-curvature path the corridor allows (the classic geometric racing line).
 // order 2 instead of 4: each point toward the midpoint of its neighbours, i.e. the shortest path inside the corridor.
-export function minCurvatureLine(x, y, half, {iters = 4000, rate = 0.5, init = null, order = 4} = {}) {
+// right: optional half width on the right side (default: the same as half, which is then the left side); owner 2026-11-17 kerbs per side
+export function minCurvatureLine(x, y, half, {iters = 4000, rate = 0.5, init = null, order = 4, right = null} = {}) {
   const n = x.length, nx = new Float64Array(n), ny = new Float64Array(n), o = new Float64Array(n);
   // coarse to fine: the curvature smoothing travels one point per step, so solve on every 4th point
   // first (global shape), then refine from there
   if (!init && n > 240) {
     const k = 4, sub = Array.from({length: Math.floor(n / k)}, (_, j) => j * k);
-    const c = minCurvatureLine(sub.map(i => x[i]), sub.map(i => y[i]), sub.map(i => half[i]), {iters, rate, order});
+    const c = minCurvatureLine(sub.map(i => x[i]), sub.map(i => y[i]), sub.map(i => half[i]), {iters, rate, order, right: right && sub.map(i => right[i])});
     init = Array.from({length: n}, (_, i) => { const j = Math.floor(i / k) % sub.length, j2 = (j + 1) % sub.length, f = (i - j * k) / k; return c.offset[j] * (1 - f) + c.offset[j2] * f; });
   }
-  if (init) for (let i = 0; i < n; i++) o[i] = Math.max(-half[i], Math.min(half[i], init[i]));
+  const lo = right || half;
+  if (init) for (let i = 0; i < n; i++) o[i] = Math.max(-lo[i], Math.min(half[i], init[i]));
   for (let i = 0; i < n; i++) {
     const dx = x[(i + 1) % n] - x[(i - 1 + n) % n], dy = y[(i + 1) % n] - y[(i - 1 + n) % n], l = Math.hypot(dx, dy) || 1;
     nx[i] = -dy / l; ny[i] = dx / l;
@@ -27,7 +29,7 @@ export function minCurvatureLine(x, y, half, {iters = 4000, rate = 0.5, init = n
       // curvature, not the length), projected on its normal
       const tx = (order === 2 ? (px(a) + px(b)) / 2 : (4 * (px(a) + px(b)) - px(a2) - px(b2)) / 6) - x[i], ty = (order === 2 ? (py(a) + py(b)) / 2 : (4 * (py(a) + py(b)) - py(a2) - py(b2)) / 6) - y[i];
       const target = tx * nx[i] + ty * ny[i];
-      o[i] = Math.max(-half[i], Math.min(half[i], o[i] + rate * (target - o[i])));
+      o[i] = Math.max(-lo[i], Math.min(half[i], o[i] + rate * (target - o[i])));
     }
   }
   return {offset: Array.from(o), x: Array.from(o, (v, i) => x[i] + nx[i] * v), y: Array.from(o, (v, i) => y[i] + ny[i] * v)};
