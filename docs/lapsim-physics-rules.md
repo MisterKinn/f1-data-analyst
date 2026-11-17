@@ -38,6 +38,13 @@ Planned outputs, in build order: optimal gear per corner, then a better car mode
 11. **Experiments never change production.** An experiment branch produces artifacts and a doc update. A model change is a separate PR after a full-settings confirmation and the owner's approval.
 12. **One purpose per PR.** Do not mix website fixes with physics or experiment changes. `main` deploys to production automatically.
 13. **Do not merge before your own stop condition is met.** If the PR text says "wait for X", wait for X.
+14. **Measured data is never changed; unknown values are learned (owner 2026-11-17).** Data that really exists (F1 lap times,
+    throttle, braking points; Hypercar/GTP lap and sector times; Al Kamel and IMSA timing) is never edited, replaced or "corrected"
+    by a model. Values nobody publishes (brake line pressure, steering angle, setup knobs, start/finish line positions of tracks without
+    a verified one) are learned actively from the owner's iRacing data (SimRacingSetup 26S4 packs, personal use) and shown as "model".
+15. **LapSim, SetupSim and BoPSim improve together (owner 2026-11-17).** A learned value goes into every simulator that uses it
+    (for example the brake model: LapSim pressure channel, SetupSim brake advice, BoPSim braking response). Do not fix one and leave
+    the others on an older value.
 
 ## 3. Data handling method
 
