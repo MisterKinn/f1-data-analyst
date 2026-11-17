@@ -533,6 +533,16 @@
    "name": "Detroit",
    "layout": "Downtown street circuit 2.650 km (2023 on)",
    "direction": "ccw"
+  },
+  "macau": {
+   "corners": [[1, 260], [2, 1085], [3, 1920], [4, 2075], [5, 2570], [6, 2690], [7, 2775], [8, 3020], [9, 3185], [10, 3304], [11, 3389], [12, 3594], [13, 3654], [14, 3819], [15, 3944], [16, 4094], [17, 4249], [18, 4389], [19, 4594], [20, 4659], [21, 4729], [22, 5224], [23, 5759]],
+   "cornersSource": "TCR Macau 2023 track map (Hyundai Motorsport): turn labels fitted onto our line (median 2.5 m), each snapped to our bend peak within 70 m",
+   "group": "owner-2026-11-18",
+   "file": "extra-tracks-2026-11-18.json",
+   "candidate": "macau-macau",
+   "name": "Macau",
+   "layout": "Guia Circuit 6.120 km",
+   "direction": "cw"
   }
  },
  "laps": [

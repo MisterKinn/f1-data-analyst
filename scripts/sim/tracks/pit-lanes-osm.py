@@ -207,6 +207,10 @@ for id in ids:
     if not kept: report.append(f'{id}: pit ways found, but none joins the lap at both ends'); continue
     out[id] = kept; report.append(f"{id}: pit lane {kept['lengthM']} m, entry {kept['entryS']} m, exit {kept['exitS']} m (fit median {kept['fitMedianM']} m)"
                                   + (f"; {kept['alt']['name']} {kept['alt']['lengthM']} m, entry {kept['alt']['entryS']} m, exit {kept['alt']['exitS']} m" if 'alt' in kept else ''))
+# pit lanes drawn from official track maps where OpenStreetMap maps none (Macau 2026-11-18: TCR Macau map), never over an OSM lane
+DRAWN = json.load(open('scripts/sim/data/tracks/pit-lanes-drawn.json'))['tracks'] if os.path.exists('scripts/sim/data/tracks/pit-lanes-drawn.json') else {}
+for k, v in DRAWN.items():
+    if k not in out and (not ONLY_IDS or k in ONLY_IDS): out[k] = v; report.append(f"{k}: pit lane drawn from {v.get('source', 'a track map')}")
 if ONLY_IDS:
     old = open('worker/lapsim/pit-lane-data.js').read().split('lapsimPitLanes = ', 1)[1]; out = {**json.loads(old[:old.rindex('}') + 1])['tracks'], **out}
 with open('worker/lapsim/pit-lane-data.js', 'w') as f:
