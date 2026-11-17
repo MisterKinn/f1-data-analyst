@@ -70,6 +70,7 @@
    "lat": 51.534974,
    "lon": 13.927569,
    "source": "start/finish mark on the DTM track map (DTM Track Facts), fitted onto the OpenStreetMap raceways (median 2.3 m)"
-  }
+  },
+  "macau": {"lat": 22.199055, "lon": 113.559813, "source": "TCR Macau 2023 track map (Hyundai Motorsport, web.archive.org copy): chequered start/finish flag, map fitted onto the OSM line (median 2.5 m), about +-20 m"}
  }
 }

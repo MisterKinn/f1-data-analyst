@@ -26,7 +26,7 @@ const L = {
   oschersleben: ['DE', 'GER', 'Oschersleben'], zolder: ['BE', 'BEL', 'Zolder'], donington: ['GB', 'GBR', 'Donington Park'], 'oulton-park': ['GB', 'GBR', 'Oulton Park'], motegi: ['JP', 'JPN', 'Motegi'],
   buriram: ['TH', 'THA', 'Buriram'], okayama: ['JP', 'JPN', 'Okayama'], zhuhai: ['CN', 'CHN', 'Zhuhai'], vallelunga: ['IT', 'ITA', 'Vallelunga'], estoril: ['PT', 'POR', 'Estoril'], jerez: ['ES', 'ESP', 'Jerez'],
   sydney: ['AU', 'AUS', 'Sydney Motorsport Park'], 'sydney-gardner': ['AU', 'AUS', 'Sydney Motorsport Park (Gardner)'], 'paul-ricard-2021': ['FR', 'FRA', 'Paul Ricard (GT, 2021-24)'],
-  aragon: ['ES', 'ESP', 'Aragón'], lausitz: ['DE', 'GER', 'Lausitzring (DTM)'], snetterton: ['GB', 'GBR', 'Snetterton 300'], istanbul: ['TR', 'TUR', 'Istanbul Park'], sochi: ['RU', 'RUS', 'Sochi'], autopolis: ['JP', 'JPN', 'Autopolis'], mandalika: ['ID', 'IDN', 'Mandalika'], 'magny-cours': ['FR', 'FRA', 'Magny-Cours'], 'phillip-island': ['AU', 'AUS', 'Phillip Island'],
+  aragon: ['ES', 'ESP', 'Aragón'], lausitz: ['DE', 'GER', 'Lausitzring (DTM)'], macau: ['MO', 'MAC', 'Macau Guia'], snetterton: ['GB', 'GBR', 'Snetterton 300'], istanbul: ['TR', 'TUR', 'Istanbul Park'], sochi: ['RU', 'RUS', 'Sochi'], autopolis: ['JP', 'JPN', 'Autopolis'], mandalika: ['ID', 'IDN', 'Mandalika'], 'magny-cours': ['FR', 'FRA', 'Magny-Cours'], 'phillip-island': ['AU', 'AUS', 'Phillip Island'],
   // Formula E street circuits (official FIA circuit maps); an older layout carries its seasons
   'fe-london': ['GB', 'GBR', 'London ExCeL'], 'fe-shanghai': ['CN', 'CHN', 'Shanghai (FE)'],
   'jarama-2025': ['ES', 'ESP', 'Jarama (2025)'], 'fe-valencia': ['ES', 'ESP', 'Valencia (FE)'], 'fe-jeddah': ['SA', 'SAU', 'Jeddah Corniche (FE)'],
