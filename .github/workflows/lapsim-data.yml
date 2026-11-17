@@ -65,6 +65,10 @@ jobs:
       - name: Choose track smoothing and build tracks
         run: node scripts/sim/tune-geometry.mjs
       - run: npm ci --omit=dev --ignore-scripts
+      # build-geometry.mjs writes only the F1 tracks: put back the extra tracks (second export, from their committed sources) and the
+      # dense map points, as docs/lapsim-tracks-extra.md describes (2026-11-17 run 44069662431 failed at calibrate: no lapsimExtraTracks)
+      - name: Rebuild extra tracks and dense maps
+        run: node scripts/sim/build-geometry-extra.mjs > /dev/null && node scripts/sim/densify-maps.mjs
       - name: Fetch WEC timing (Al Kamel)
         run: node scripts/sim/fetch-wec.mjs && node scripts/sim/wec-poles.mjs
       # derived speed traces and tracks for local calibration experiments (not committed)
@@ -91,13 +95,22 @@ jobs:
         if: inputs.calibrate != 'false'
         env:
           LAPSIM_FITTER: bcd
-          LAPSIM_ROUNDS: '5'
-          LAPSIM_BCD_ITERS: '200'
+          # 3 rounds x 100 coordinate steps, as in the experiments the production settings were chosen from (2026-11-17: 5 x 200 plus
+          # the 2 h track build ran past the 340-minute job limit twice; the experiment fits take about 1 h 45 min)
+          LAPSIM_ROUNDS: '3'
+          LAPSIM_BCD_ITERS: '100'
           LAPSIM_WTIME: '20'
           LAPSIM_WSECTOR: '2'
           LAPSIM_TRACK_DRAG: 'on'
           LAPSIM_TEAMS: 'on'
           LAPSIM_WPRIOR: '8'
+          # A6 (owner 2026-11-17): FIA zones + 2026 PU qualifying curve (experiment run 43775148422, variant zq: all 1.235 -> 1.144 %,
+          # WEC 1.432 -> 1.210 %, F1 1.008 -> 1.075 %; the owner accepts the F1 cost of following the real 2026 PU rules)
+          LAPSIM_FIA_ZONES: 'on'
+          LAPSIM_PU_QUALI: 'on'
+          # Hypercar (LMH/LMDh) peak braking capped at the iRacing GTP envelope 8.63 + 0.003234 v^2 m/s^2 (owner rule 14: learned from
+          # iRacing, "model"). Experiment 44043761033: hypercar holdout mean 1.24 -> 1.16 % (BE0 -> BE1; 1.15x envelope BE2: 1.20 %)
+          LAPSIM_BRAKE_ENV_HYPER: '8.63,0.003234'
         run: node scripts/sim/calibrate.mjs
       # TracingInsights race laps 2018 on; reference = mean of the best 8 qualifying laps (script defaults)
       - name: Fit race pace (fuel, tyres, pit loss)

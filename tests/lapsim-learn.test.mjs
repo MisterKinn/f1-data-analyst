@@ -46,6 +46,8 @@ test('map outline of every extra track is a closed loop (Sakhir Outer, Paul Rica
 
 test('car models: Evo kit, generation and class are part of the identity', () => {
   assert.equal(modelOf('BMW M4 GT3 EVO', 2025, 'GTD').key, 'BMW M4 GT3 +EVO');
+  assert.equal(modelOf('Oreca  05 2015', 2026, 'LMP2').key, 'Oreca 05'); // not learned as an Oreca 07 (A6)
+  assert.equal(modelOf('Oreca 07 - Gibson', 2026, 'LMP2').key, 'Oreca 07');
   assert.equal(modelOf('BMW M4 LMGT3', 2024, 'LMGT3').key, 'BMW M4 GT3');
   assert.equal(modelOf('Lamborghini Huracan GT3 EVO2', 2024, 'GTD').evo, 'evo2');
   assert.equal(modelOf('Porsche 911 GT3R', 2022, 'GTD').key, 'Porsche 911 GT3 R (991.2)');

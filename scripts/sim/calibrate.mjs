@@ -241,6 +241,9 @@ for (const [cls, def] of Object.entries(SERIES.wec.classes)) {
     let laps = lapsWith(f1Grip);
     if (new Set(laps.map(l => l.name)).size < 3) { report.push(`WEC ${cls} ${year}: not enough tracks (${new Set(laps.map(l => l.name)).size})`); continue; }
     const base = {...structuredClone(def.prior), linkMu: true, ...AXLE(cls === 'lmgt3' ? 1.62 : 1.65)};
+    // owner 2026-11-17 (rule 14): Hypercar braking capped at the iRacing GTP envelope, LAPSIM_BRAKE_ENV_HYPER="a0,a2" (m/s², 1/m;
+    // experiment 44043761033 BE1, hypercar holdout mean 1.24 -> 1.16 %)
+    if (cls !== 'lmgt3' && E.LAPSIM_BRAKE_ENV_HYPER) base.brakeEnv = E.LAPSIM_BRAKE_ENV_HYPER.split(',').map(Number);
     const params = Object.entries(def.bounds).map(([k, [lo, hi]]) => ({key: k, path: k, base: base[k], step: 0.08, min: lo, max: hi}));
     let h = holdout(laps, base, params, {iters: HOLDOUT_ITERS, folds: 99, gripFor: l => l.grip});
     // Transfer track factors (F1 fit without per-track drag): used for this class-season only when its

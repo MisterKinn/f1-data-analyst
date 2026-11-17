@@ -102,6 +102,17 @@ This layer does not change the physics model or `calibration-data.js`. BoP is no
 
 ## 4. Result per class (RMS error, %)
 
+### Refit 2026-11-17 (A6: Oreca 05 fix; calibration with FIA zones + 2026 PU qualifying curve)
+
+- Oreca 05 fix: the historic 2015 Oreca 05 of a support race filed in the WEC folder (2026 Imola and Spa #46) is its own model now,
+  not an Oreca 07, so LMP2 no longer learns it. LMP2 event hidden 1.24 → **1.18 %** (102 events); LMH 0.81 → 0.80, LMDh, GT3
+  unchanged (on the production calibration of 2026-11-16).
+- Calibration (owner 2026-11-17): `LAPSIM_FIA_ZONES=on` and `LAPSIM_PU_QUALI=on` in the production workflow. Experiment run
+  43775148422 (screen settings, held-out RMS %, baseline ctl → zq): all 1.235 → 1.144, WEC 1.432 → 1.210 (LMH, LMDh, LMGT3 2026 each
+  better beyond noise), F1 1.008 → 1.075 (F1 2025 0.976 → 0.975, F1 2026 1.051 → 1.204). The F1 rule "must not get worse" is waived by
+  the owner: the 2026 dip comes from applying the real PU rules; it is a known cost to fix in the car model (B0/B1), not by turning
+  the rules off. The endurance fit is rerun on the new calibration when the workflow has committed it.
+
 ### Refit 2026-11-15 evening (model terms of section 12, fixed track geometry #204/#206/#209)
 
 Event hidden, class-best, RMS %. Before = main after #206 (same fixed geometry, old model).

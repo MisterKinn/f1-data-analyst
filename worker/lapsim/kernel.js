@@ -249,6 +249,8 @@ export function lapsimKernel() {
       const drag = aeroFactor * car.cdA * va * va, roll = cRoll * N;
       let a = (fx + drag + roll) / t.m + G * sinG[i];
       if (car.brakeDecelMax) a = Math.min(a, car.brakeDecelMax);
+      // speed-dependent peak deceleration [a0 m/s², a2 1/m]: a ≤ a0 + a2·v² (Hypercar: the iRacing GTP envelope, owner rule 14, "model"; unset = no cap)
+      if (car.brakeEnv) a = Math.min(a, car.brakeEnv[0] + car.brakeEnv[1] * v * v);
       return a;
     };
     const vBack = new Float64Array(n);
