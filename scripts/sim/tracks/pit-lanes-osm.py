@@ -144,6 +144,17 @@ for id in ids:
                     if best is None or q < best[0]: best = (q, Rm2, t2)
         d2, Rm2, t2 = icp(Sn, T, tr, best[1], best[2], 40, 0.9)
         if float(np.median(d2)) < 6: Rm, t, med = Rm2, t2 + (cM - M[near].mean(0)) @ Rm2.T, float(np.median(d2)); report.append(f'{id}: fitted on the 3 km around the line')
+    if med > 6:   # OSM maps only pieces of the lap (Madring 2026): fit those pieces onto our line instead (each OSM point to its nearest
+        # point of our line; small turns and shifts around the area centre), then use the inverse pose
+        Md = dens(np.r_[M, M[:1]]); trm = cKDTree(Md); best = None
+        for deg in range(-30, 31, 3):
+            th = math.radians(deg); R0 = np.array([[math.cos(th), -math.sin(th)], [math.sin(th), math.cos(th)]])
+            for ox in range(-400, 401, 100):
+                for oy in range(-400, 401, 100):
+                    d2, Rm2, t2 = icp(T, Md, trm, R0, np.array([ox, oy], float) + cM, 30, 0.7)
+                    if best is None or np.median(d2) < best[0]: best = (float(np.median(d2)), Rm2, t2)
+        if best[0] < 3:   # OSM -> ours: Y = X Rm2' + t2, so X = (Y - cM) Rm2 + (cM - t2) Rm2
+            Rm, t, med = best[1].T, (cM - best[2]) @ best[1], best[0]; report.append(f'{id}: OSM pieces fitted onto our line (median {med:.1f} m)')
     if med > 6: report.append(f'{id}: our line does not fit the OSM raceways (median {med:.1f} m)'); continue
     inv = lambda Q: (Q - t) @ Rm + cM          # cloud frame -> our map frame
     trM = cKDTree(M); n = len(M); L = MID[id]['len']; kept = None

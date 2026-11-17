@@ -6,7 +6,7 @@ export const lapsimStraights = {
   silverstone: [{between: [18, 1], ko: '해밀턴 스트레이트', en: 'Hamilton Straight'}, {between: [5, 6], ko: '웰링턴 스트레이트', en: 'Wellington Straight'},
     {between: [8, 9], ko: '내셔널 스트레이트', en: 'National Straight'}, {between: [14, 15], ko: '행어 스트레이트', en: 'Hangar Straight'}],
   interlagos: [{between: [3, 4], ko: '헤타 오포스타', en: 'Reta Oposta'}, {between: [13, 14], ko: '수비다 도스 복시스', en: 'Subida dos Boxes'}],
-  'le-mans': [{between: [6, 7], ko: '뮬산 스트레이트', en: 'Mulsanne Straight'}],
+  'le-mans': [6, 7, 8].map(k => ({between: [k, k + 1], ko: '뮬산 스트레이트', en: 'Mulsanne Straight'})), // owner 2026-11-18: on each of the three parts (SM 1-3)
   sebring: [{between: [16, 17], ko: '울만 스트레이트', en: 'Ulmann Straight'}],
   singapore: [{between: [12, 13], ko: '앤더슨 브리지', en: 'Anderson Bridge'}, {between: [13, 14], ko: '에스플러네이드 브리지', en: 'Esplanade Bridge'}],
 };
