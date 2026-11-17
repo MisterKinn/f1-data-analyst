@@ -16,6 +16,7 @@ import {lapsimF1Zones} from './f1-zones-data.js';
 import {bopEstimate2026} from './bop-estimate-data.js';
 import {bopLmgt3} from './bop-lmgt3-data.js';
 import {lapsimLearned} from './learned-data.js';
+import {lapsimSurfaceLearned} from './surface-learned-data.js';
 
 const K = lapsimKernel();
 // 2026 BoP estimate (worker/lapsim/bop-estimate-data.js) per model at the WEC event on this track: weight and power relative to that
@@ -58,6 +59,14 @@ export const SURFACE = {
   zandvoort: {bumpy: 0.3, kerbs: 0.7}, monza: {bumpy: 0.3, kerbs: 0.9}, 'road-atlanta': {bumpy: 0.5, kerbs: 0.6}, 'watkins-glen': {bumpy: 0.5, kerbs: 0.5},
   sebring: {bumpy: 1, kerbs: 0.5}, 'road-america': {bumpy: 0.4, kerbs: 0.5}, 'laguna-seca': {bumpy: 0.4, kerbs: 0.6}, fuji: {bumpy: 0.3, kerbs: 0.5},
 };
+
+// Bumpiness learned from iRacing laps (owner 2026-11-17, rule 14): track roughness with the car taken out (surface-learned-data.js),
+// ×0.6 → 0, ×1.6 → 1. Where the table above has a value the two are averaged (public notes and the laser-scanned iRacing track can
+// differ: a resurfaced track, a scan from another year); elsewhere the learned value is used. Kerbs and street flags stay as noted.
+export function surfaceOf(id) {
+  const h = SURFACE[id], L = lapsimSurfaceLearned?.tracks?.[id]; if (!L) return h;
+  const b = clamp((L.rough - 0.6) / 1.0); return {...(h || {}), bumpy: Math.round((h?.bumpy != null ? (h.bumpy + b) / 2 : b) * 100) / 100, bumpySource: h?.bumpy != null ? 'notes+iracing' : 'iracing'};
+}
 
 // Cars. F1: one rule set, team = power-unit supplier (2026 grid). Hypercar: model → class, chassis, hybrid axle.
 export const F1_TEAMS = [
@@ -240,5 +249,5 @@ export function setupPlan(trackId, carId, {wet = false, sm = null, ot = true, ph
   const ev = kind === 'gt3' ? {bop: gt3BopFor(trackId, model), layout: model.layout, learned: c.learned || null} : kind === 'lmp2' ? {} : kind === 'f1' ? {pirelli: PIRELLI_2026[trackId] || null, brembo: BREMBO[trackId] || null, sm: z26 ? z26.zones.length : null, smEstimated: !!z26?.est, smMode, overtake: otUse ? otUse.name : 'off', press: F1_PRESS[trackId] || null} : {bop};
   return {trackId, carId, wet, source, kind, cls, model, vCapKph: car.vMax * 3.6, carLabel: car.label, kindLabel: c.kind, basis: {kind: kind === 'lmp2' ? 'prior' : c.kind, year: c.year, events: c.learned?.events ?? null, session: c.fix?.session ?? null}, weather, energy, demands: d, aero: {...aero, low, high, lap: r.lapTime, vMax: r.vMaxKph}, window: w,
     phase: race ? 'race' : 'quali', live: live ? {session: live.session, at: live.at, lap: live.lap ?? null, cls: live.cls ?? null} : null,
-    knobs: raceShift(wetShift(placeKnobs(kind, d, aero, SURFACE[trackId], ev), wet), race), surface: SURFACE[trackId] || null, evidence: ev};
+    knobs: raceShift(wetShift(placeKnobs(kind, d, aero, surfaceOf(trackId), ev), wet), race), surface: surfaceOf(trackId) || null, evidence: ev};
 }

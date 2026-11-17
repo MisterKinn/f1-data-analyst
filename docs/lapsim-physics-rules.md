@@ -482,6 +482,13 @@ values below. Layer 4 (a simulator, not a real car): every channel stays labelle
 - Foot: t90 = time to 90 % of the zone's peak front pressure; overshoot = peak over the hold; ripple = sd of the detrended hold;
   tail = exponential fall from 30 % to 3 % of the peak. Medians over 157 open-wheel, 472 GTP and 6,860 GT3 zones. The page draws each
   zone with the class median and a seeded spread (t90 ±20 %, overshoot ±40 %, ripple ±30 %, tail ±30 %).
+- Surface for SetupSim (2026-11-17): track roughness with the car taken out (log RMS of vertical acceleration above 1 Hz = car +
+  track effect, 1,615 laps, 34 cars, 30 tracks; kept with ≥ 5 cars and ≥ 20 laps: 18 tracks) sets the bump rating where no public
+  note exists and is averaged with the note where one does (`setup-plan.js surfaceOf`). Disagreements to keep in mind: Austin comes out
+  smooth (×0.69) against its bumpy reputation, Monza rough (×1.29); the iRacing scan may predate resurfacing. Kerb ratings stay as noted.
+- BoPSim: unchanged by the channel and surface constants (it uses lap times only). The braking envelope below is the one item that
+  would move lap times, so it runs as a gated experiment (lapsim-exp/brake-env-2026-11-17: BE0 control, BE1 pooled iRacing GTP
+  envelope 8.63 + 0.003234·v² m/s², BE2 +15 %); BoP is refitted only if a variant passes the gate.
 - Finding for the physics model (not applied): the iRacing GTP peak-decel envelope is 0.85 g + 0.003·v² (about 3.0 g at 300 km/h);
   the simulated Hypercar at Spa needs up to about 183 bar with this gain, i.e. well above 3 g at top speed. This points at the open
   "downforce at the bound" problem of section 8 and needs a gated experiment, not a channel fix.
