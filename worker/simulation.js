@@ -483,6 +483,8 @@ export function lineData(id, {shape = true} = {}) {
     // the line and the edges as a zig-zag; a Gaussian (σ = LINE_SIGMA_M / 1.6, about 5 m) first removes it (shape change under 0.5 m)
     const P0 = mapRepair(id, m.x.map((x, i) => [x, m.y[i]]), lapsimTracks[id].length), st0 = (lapsimTracks[id].length || P0.length * 5) / P0.length;
     mid = smoothClosed(smoothPts(P0, LINE_SIGMA_M / 1.6 / st0)); nrm = normals(mid); half = mid.map(() => Math.max(0.5, h - 1));
+    const wp = shape && lapsimMapShape?.tracks?.[id]?.warp; // a map that drifts over the lap, moved onto the OSM raceways (map-warp-osm.py)
+    if (wp?.x?.length === mid.length) { mid = smoothClosed(smoothPts(mid.map((p, i) => [p[0] + wp.x[i] / 10, p[1] + wp.y[i] / 10]), LINE_SIGMA_M / 1.6 / st0)); nrm = normals(mid); }
     const cs = shape && lapsimMapShape?.tracks?.[id]?.corr; // checked atlas midline, as on the F1 tracks above
     if (cs?.length === mid.length) { mid = smoothClosed(smoothPts(mapRepair(id, mid.map((p, i) => [p[0] + nrm[i][0] * cs[i] / 10, p[1] + nrm[i][1] * cs[i] / 10]), lapsimTracks[id].length), LINE_SIGMA_M / 1.6 / st0)); nrm = normals(mid); } // the atlas line has the same step (Daytona: where the road course leaves the banking), so repair it again after the correction
     left = mid.map((p, i) => [p[0] + nrm[i][0] * h, p[1] + nrm[i][1] * h]); right = mid.map((p, i) => [p[0] - nrm[i][0] * h, p[1] - nrm[i][1] * h]);

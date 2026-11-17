@@ -39,6 +39,11 @@ export function closeTurn(c) {
 // Drawn map: at most every 15 m (owner 2026-11-16: with 360 points a 13.6 km Le Mans lap had a point every 35 m and the 25 km
 // Nürburgring every 65 m, so the Mulsanne chicanes looked blunt and the Ford chicanes vanished). Short tracks keep their 360+ points.
 export const MAP_EVERY_M = 5, mapStep = (n, ds) => Math.max(1, Math.round(MAP_EVERY_M / ds)); // owner 2026-11-16: as fine as the line itself (5 m)
+// source map points at curvature step i (lap fraction i / n0 of the closed source polyline), in the lap order of orient()
+function srcMap(m, n0, order) { const k = m.x.length, cum = [0]; for (let j = 1; j <= k; j++) cum.push(cum[j - 1] + Math.hypot(m.x[j % k] - m.x[j - 1], m.y[j % k] - m.y[j - 1]));
+  const L = cum[k], at = f => { const s = f * L; let j = 0, hi = k; while (hi - j > 1) { const md = (j + hi) >> 1; if (cum[md] <= s) j = md; else hi = md; } const u = (s - cum[j]) / Math.max(1e-9, cum[j + 1] - cum[j]);
+    return [m.x[j] + (m.x[(j + 1) % k] - m.x[j]) * u, m.y[j] + (m.y[(j + 1) % k] - m.y[j]) * u]; };
+  const P = Array.from({length: n0}, (_, i) => at(i / n0)); return {x: order.map(i => P[i][0]), y: order.map(i => P[i][1])}; }
 export function buildTrack(id, spec, c) {
   if (spec.straighten) c = straighten(c, spec.straighten);
   if (spec.driven) c = closeTurn(c);
@@ -64,7 +69,10 @@ export function buildTrack(id, spec, c) {
   const flat = !c.grade || c.grade.every(g => g === 0), step = mapStep(n, line.ds), map = {x: [], y: []};
   // the drawn map is the track's centre line (owner 2026-11-15: corners as angular as the circuit diagram); the lap uses the
   // least-curvature line above, which rounds every corner by design. Same number of points, spread evenly along the centre line.
-  for (let j = 0, k = Math.ceil(n / step); j < k; j++) { const i = Math.min(n0 - 1, Math.round(j * n0 / k)); map.x.push(Math.round(cx[i])); map.y.push(Math.round(cy[i])); }
+  // owner 2026-11-17 (Road America drawn warped): cx, cy integrate the curvature, which drifts over a lap (Road America 170 m); the
+  // candidate's own map points (source coordinates, same start and direction as the curvature) are drawn instead, placed by lap fraction.
+  const src = c.map?.x?.length > 50 ? srcMap(c.map, n0, o.order) : {x: cx, y: cy};
+  for (let j = 0, k = Math.ceil(n / step); j < k; j++) { const i = Math.min(n0 - 1, Math.round(j * n0 / k)); map.x.push(Math.round(src.x[i])); map.y.push(Math.round(src.y[i])); }
   const turn = line.kappa.reduce((a, k) => a + k * line.ds, 0) * 180 / Math.PI;
   return {id, name: spec.name, circuit: spec.name, layout: spec.layout, year: null, ds: line.ds, length: Math.round(line.length),
     officialLengthM: spec.officialLengthM ?? c.officialLengthM ?? null, sectors: [], corners: spec.corners ? spec.corners.map(([number, s]) => ({number, letter: '', s})) : c.atlasCorners?.length ? atlasCorners(c, o, n0, line.length) : spec.cornerCount ? placeCorners(Array.from(line.kappa, v => v * 1e5), line.ds, spec.cornerCount) : [], ...(spec.cornerCount && !spec.corners && !c.atlasCorners?.length ? {cornersEstimated: true} : {}),
@@ -91,7 +99,7 @@ function orient(c, spec, ax, ay, osm = OSM[spec.id]) {
   const n = ax.length, area = ax.reduce((a, x, i) => a + x * ay[(i + 1) % n] - ax[(i + 1) % n] * ay[i], 0), mapped = area > 0 ? 'ccw' : 'cw';
   const reversed = !!spec.direction && spec.direction !== mapped, idx = i => reversed ? (n - i) % n : i; // reversed lap keeps point 0
   let s0 = 0, start = 'first mapped point (not verified)', startVerified = false, pitOneway = null;
-  if (c.startFromSource) { start = c.startFromSource; startVerified = true; } // the source states its own start/finish point (track-atlas)
+  if (c.startFromSource) { start = c.startFromSource; startVerified = c.startVerified ?? true; } // the source states its own start/finish point (track-atlas)
   else if (osm?.elements?.length && c.map && c.centre) {
     const step = Math.max(1, Math.floor(n / 360)), R = 6371008.8, r = Math.PI / 180, [la, lo] = c.centre;
     const en = ([a, b]) => [(b - lo) * r * R * Math.cos(la * r), (a - la) * r * R];
