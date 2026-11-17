@@ -192,29 +192,34 @@ function renderMap(map, v, opts) {
     const zBoxes = [];
     // a zone or OT label never sits on another part of the track (owner 2026-11-17 audit: Silverstone "SM 2" on the Loop): model units, y up
     const onTrack = (x, y, a, b) => { for (let j = 0; j < nn; j++) { const e = (hw ? hw[j] : 0) + sw * 0.4; if (Math.abs(cx[j] - x) < a + e && Math.abs(cy[j] - y) < b + e) return true; } return false; };
-    const free = (bx, pt, a, b) => !zBoxes.some(o => !(bx[2] < o[0] || bx[0] > o[2] || bx[3] < o[1] || bx[1] > o[3])) && !onTrack(pt[0], pt[1], a, b);
     for (const z of opts.zones.list) {
       const a = idx(z.from), b = idx(z.to), ro = room(a, b, out), sd = ro >= off * 1.5 || ro >= room(a, b, -out) ? out : -out, pts = [];
       for (let i = a, g = 0; g <= nn; g++, i = (i + 1) % nn) { pts.push(at(i, 1, sd)); if (i === b) break; }
       if (pts.length < 2) continue;
       // zone and OT labels never overlap each other: step further out until the box is free
-      let k = 2.2, lab = at(a, k, sd), fz = sw * 2.4, bx = () => { const [x, y] = P(lab).split(' ').map(Number), hw = z.label.length * fz * 0.32; return [x - hw, y - fz * 0.6, x + hw, y + fz * 0.6]; };
-      const zw = z.label.length * fz * 0.32, zh = fz * 0.6;
-      search: for (const s2 of [sd, -sd]) for (let k2 = 2.2; k2 < 8; k2 += 1.4) { lab = at(a, k2, s2); if (free(bx(), lab, zw, zh)) break search; lab = null; }
-      if (!lab) lab = at(a, k, sd);
-      zBoxes.push(bx());
+      // owner 2026-11-17: the zone label is smaller and written along its band, beside the start of the zone
+      const fz = sw * 1.6, zw = z.label.length * fz * 0.3, zh = fz * 0.6, zlen = ((b - a) % nn + nn) % nn || 1;
+      const along = (ia, k2, s2) => { const c = at(ia, k2, s2), p = (ia - 3 + nn) % nn, q = (ia + 3) % nn, tl = Math.hypot(cx[q] - cx[p], cy[q] - cy[p]) || 1, ux = (cx[q] - cx[p]) / tl, uy = (cy[q] - cy[p]) / tl;
+        const [X, Y] = P(c).split(' ').map(Number), ex = zw * Math.abs(ux) + zh * Math.abs(uy), ey = zw * Math.abs(uy) + zh * Math.abs(ux);
+        let ang = Math.atan2(-uy, ux) * 180 / Math.PI; if (ang > 90) ang -= 180; if (ang < -90) ang += 180;
+        return {X, Y, ang, box: [X - ex, Y - ey, X + ex, Y + ey], clear: [-1, -0.5, 0, 0.5, 1].every(t2 => !onTrack(c[0] + ux * zw * t2, c[1] + uy * zw * t2, zh, zh))}; };
+      let lab = null;
+      search: for (const s2 of [sd, -sd]) for (const f2 of [0.12, 0.3, 0.5]) for (const k2 of [1.6, 2.2, 3]) { const o = along((a + Math.round(zlen * f2)) % nn, k2, s2);
+        if (o.clear && !zBoxes.some(q => !(o.box[2] < q[0] || o.box[0] > q[2] || o.box[3] < q[1] || o.box[1] > q[3]))) { lab = o; break search; } }
+      if (!lab) lab = along((a + Math.round(zlen * 0.12)) % nn, 1.6, sd);
+      zBoxes.push(lab.box);
       // shown part as a dash on a unit-length path, so a change of option can animate it (vs = start of the shown part, show = drawn at all)
       const vs = z.vs || 0, on = z.show !== false, zk = z.key ? ' data-zk="' + z.key + '"' : '';
-      zones += '<path class="ls-zone ls-zone-' + opts.zones.kind + '"' + zk + ' pathLength="1" style="stroke-dasharray:' + (on ? (1 - vs).toFixed(4) : 0) + ' 2;stroke-dashoffset:' + (-vs).toFixed(4) + ';opacity:' + (on ? 0.9 : 0) + '" d="M' + pts.map(P).join('L') + '" stroke-width="' + (sw * 0.4).toFixed(1) + '"/><text class="ls-zone-t"' + zk + ' style="opacity:' + (on ? 1 : 0) + '" x="' + P(lab).split(' ')[0] + '" y="' + P(lab).split(' ')[1] + '" font-size="' + (sw * 2.4).toFixed(1) + '">' + z.label + '</text>';
+      zones += '<path class="ls-zone ls-zone-' + opts.zones.kind + '"' + zk + ' pathLength="1" style="stroke-dasharray:' + (on ? (1 - vs).toFixed(4) : 0) + ' 2;stroke-dashoffset:' + (-vs).toFixed(4) + ';opacity:' + (on ? 0.9 : 0) + '" d="M' + pts.map(P).join('L') + '" stroke-width="' + (sw * 0.4).toFixed(1) + '"/><text class="ls-zone-t"' + zk + ' style="opacity:' + (on ? 1 : 0) + ';transform-box:fill-box;transform-origin:center" x="' + lab.X + '" y="' + lab.Y + '" font-size="' + fz.toFixed(1) + '" transform="rotate(' + lab.ang.toFixed(1) + ')">' + z.label + '</text>';
     }
     // a mark crosses the whole track (both edges plus a little), from the centre line
     const across = (i, dd) => { const p = (i - 2 + nn) % nn, q = (i + 2) % nn, tx = cx[q] - cx[p], ty = cy[q] - cy[p], l = Math.hypot(tx, ty) || 1; return [cx[i] + out * -ty / l * dd, cy[i] + out * tx / l * dd]; }, half = i => (hw ? hw[i] : 0) + off * 0.565;
-    for (const m of opts.zones.marks || []) { const k = idx(m.s), a = P(across(k, -half(k))).split(' '), b = P(across(k, half(k))).split(' '), fm = sw * 2, hw = m.label.length * fm * 0.32; let o = 2.7, r = P(at(k, o)).split(' ').map(Number);
+    for (const m of opts.zones.marks || []) { const k = idx(m.s), a = P(across(k, -half(k))).split(' '), b = P(across(k, half(k))).split(' '), fm = sw * 1.5, hw = m.label.length * fm * 0.32; let o = 2.7, r = P(at(k, o)).split(' ').map(Number);
       const box = () => [r[0] - hw, r[1] - fm * 0.6, r[0] + hw, r[1] + fm * 0.6], busy = () => zBoxes.some(q => !(box()[2] < q[0] || box()[0] > q[2] || box()[3] < q[1] || box()[1] > q[3]));
       let ok = false; mark: for (const s2 of [out, -out]) for (let o2 = 2.7; o2 < 9; o2 += 1.3) { const pt = at(k, o2, s2); r = P(pt).split(' ').map(Number); if (!busy() && !onTrack(pt[0], pt[1], hw, fm * 0.6)) { ok = true; break mark; } }
       if (!ok) { r = P(at(k, o)).split(' ').map(Number); while (o < 9 && busy()) { o += 1.3; r = P(at(k, o)).split(' ').map(Number); } } zBoxes.push(box());
       const mk = ' data-zk="m' + m.kind + m.label.replace(/\W/g, '') + '" style="opacity:' + (m.show === false ? 0 : 1) + '"';
-      zones += '<line class="ls-zone-m ls-zone-m-' + m.kind + '"' + mk + ' x1="' + a[0] + '" y1="' + a[1] + '" x2="' + b[0] + '" y2="' + b[1] + '" stroke-width="' + (sw * 0.2).toFixed(1) + '"/><text class="ls-zone-mt ls-zone-mt-' + m.kind + '"' + mk + ' x="' + r[0] + '" y="' + r[1] + '" font-size="' + (sw * 2).toFixed(1) + '">' + m.label + '</text>'; }
+      zones += '<line class="ls-zone-m ls-zone-m-' + m.kind + '"' + mk + ' x1="' + a[0] + '" y1="' + a[1] + '" x2="' + b[0] + '" y2="' + b[1] + '" stroke-width="' + (sw * 0.2).toFixed(1) + '"/><text class="ls-zone-mt ls-zone-mt-' + m.kind + '"' + mk + ' x="' + r[0] + '" y="' + r[1] + '" font-size="' + fm.toFixed(1) + '">' + m.label + '</text>'; }
   }
   let corners = '', i0 = Math.round((opts.start || 0) * n) % n;
   // official corner names where the circuit has no official numbering (owner 2026-11-17), else the turn numbers
@@ -297,7 +302,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
   const data = {startAlt: lapsimStartLines[id] || null, driverLines: lapsimDriverLines?.tracks?.[id] || null, pu: lapsimPuDocs?.events?.[id] || lapsimPuEst?.tracks?.[id] || null, lang, t, id, track: td, cars, carOrder: CAR_ORDER_P, carId, evoOf, fam, bodyLabel: BODY_LABEL, events, conds, raceRec: raceRecords(id), changes, energy: (liveEnergy && (query.track || 'monza') === id ? liveEnergy : energyLimit(id, 2026)),
     compounds: lapsimCompounds?.[id] || {}, wecTyres: lapsimWecTyres?.[id] || {}, line: lineData(id), bumps: lapsimTrackBumps?.tracks?.[id] || null, pit: lapsimPitLanes?.tracks?.[id] || null, pitSpeed: {series: lapsimPitSpeed.series, event: lapsimPitSpeed.tracks[id] || {}}, pitLossF1: lapsimRace?.tracks?.[id]?.pitLoss ?? null, lineText: LT[lang], qsplit: lapsimQsplit ? {off: lapsimQsplit.offsetPct, test: lapsimQsplit.test, real: lapsimQsplit.tracks?.[id] || null} : null, brakes: lapsimBrakes ? {ramp: lapsimBrakes.rampS ?? 0, k: lapsimBrakes.pedalKgPerG, g: lapsimBrakes.gScale, t: lapsimBrakes.timeScale, test: lapsimBrakes.test, real: lapsimBrakes.races?.[id] || null, text: BT[lang]} : null, compoundGap: compoundGap(id), compoundTest: lapsimCompoundGap?.test?.rmsPct ?? null,
     evo: Object.fromEntries(['f1', 'wec'].map(se => [se, Object.fromEntries(['practice', 'qualifying'].map(ty => [ty, evolutionCoeffs(se, id, ty)]))])),
-    zones: lapsimF1Zones?.tracks?.[id] || null, feZones: lapsimFeZones?.tracks?.[id] || null, zonesOn: ZONES_ON ? (DRS_ONLY ? 'drs' : 'all') : '', puQuali: PU_QUALI, puRamp: !!lapsimCalibration?.puRamp, otChoice: lapsimCalibration?.otChoice?.[id] ?? null, surface: surfaceOf(id, td, changes), mapRot0: (Number.isFinite(view0?.openDeg) ? view0.openDeg : landscapeRot(td.map, lapsimTrackNorth?.[id], VIEW[id], td.corners, td.length)) + (VIEW[id]?.flip ? 180 : 0), cornersEstimated: !!td.cornersEstimated, cornerNames: td.cornersEstimated ? lapsimCornerNames?.[id]?.names?.map(c => ({...c, name: lang === 'en' ? c.name : lapsimNamesKo[c.name] || c.name})) || null : null, straights: straightsOf(id, td, lang), north: lapsimTrackNorth?.[id] || null, ui: UI[lang],
+    zones: lapsimF1Zones?.tracks?.[id] || null, feZones: lapsimFeZones?.tracks?.[id] || null, zonesOn: ZONES_ON ? (DRS_ONLY ? 'drs' : 'all') : '', puQuali: PU_QUALI, puRamp: !!lapsimCalibration?.puRamp, otChoice: lapsimCalibration?.otChoice?.[id] ?? null, surface: surfaceOf(id, td, changes), mapRot0: (Number.isFinite(view0?.openDeg) ? view0.openDeg : landscapeRot(td.map, lapsimTrackNorth?.[id], VIEW[id], td.corners, td.length)) + (VIEW[id]?.flip ? 180 : 0), cornersEstimated: !!td.cornersEstimated, cornerNames: td.cornersEstimated ? lapsimCornerNames?.[id]?.names?.map(c => ({...c, name: /* 'Curva 1' is only a number */ /^(Turn|Curva|Corner)\s*\d+$/i.test(c.name) ? c.name.replace(/\D+/, '') : lang === 'en' ? c.name : lapsimNamesKo[c.name] || c.name})) || null : null, straights: straightsOf(id, td, lang), north: lapsimTrackNorth?.[id] || null, ui: UI[lang],
     calibration: {generatedAt: lapsimCalibration?.generatedAt || null, seasons: Object.fromEntries(Object.entries(lapsimCalibration?.seasons || {}).map(([y, s]) => [y, s.tracks?.[id] || null]))}};
   // first render on the server with the same code the browser uses
   const view = computeView(K, data, {carId, compareId: '', mode: 'real', manual: null, active: {}, strength: 1, evo: null}, {renderMap, renderTrace, evolutionDelta, evolutionCurve, lineTrack, brakeZones, lapChannels});
@@ -394,7 +399,8 @@ export const VIEW = {
   fuji: {longest: 'top'}, monza: {longest: 'bottom'}, interlagos: {straight: [3, 4], side: 'bottom'}, sakhir: {straight: [10, 11], side: 'bottom'}, 'sakhir-outer': {longest: 'bottom'},
   silverstone: {left: 15, right: 9}, suzuka: {deg: 0}, portimao: {longest: 'bottom', back: true},
   'le-mans': {straight: [6, 9], side: 'top'}, // owner 2026-11-16: the Mulsanne straight (Tertre Rouge to Mulsanne corner) level at the top
-  shanghai: {flip: true}, indianapolis: {flip: true}, // owner 2026-11-17: turned 180° from the automatic view
+  shanghai: {flip: true}, imola: {flip: true}, // owner 2026-11-17: turned 180° from the automatic view
+  indianapolis: {straight: [14, 1], side: 'bottom'}, // owner 2026-11-17: the pit straight level at the bottom
 };
 export function landscapeRot(map, north, spec, corners, length) {
   // 5 m maps (2026-11-16): metre rounding makes 5 m steps wobble a few degrees, which split straights; pick the view on ≤400 points
