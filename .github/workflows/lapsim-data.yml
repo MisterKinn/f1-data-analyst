@@ -65,6 +65,10 @@ jobs:
       - name: Choose track smoothing and build tracks
         run: node scripts/sim/tune-geometry.mjs
       - run: npm ci --omit=dev --ignore-scripts
+      # build-geometry.mjs writes only the F1 tracks: put back the extra tracks (second export, from their committed sources) and the
+      # dense map points, as docs/lapsim-tracks-extra.md describes (2026-11-17 run 44069662431 failed at calibrate: no lapsimExtraTracks)
+      - name: Rebuild extra tracks and dense maps
+        run: node scripts/sim/build-geometry-extra.mjs > /dev/null && node scripts/sim/densify-maps.mjs
       - name: Fetch WEC timing (Al Kamel)
         run: node scripts/sim/fetch-wec.mjs && node scripts/sim/wec-poles.mjs
       # derived speed traces and tracks for local calibration experiments (not committed)
