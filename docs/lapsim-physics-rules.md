@@ -462,6 +462,30 @@ Owner request 2026-11-15. Code: `worker/lapsim/channels.js` (`lapChannels`), `wo
 These are display channels of the simulated lap. They do not change the lap time, the kernel or any calibration. Evidence layer 4
 (estimates) unless stated; no channel is compared with measured telemetry yet, so no held-out error exists for them.
 
+### Learned from iRacing (owner 2026-11-17, rule 14)
+
+The owner's iRacing data (SimRacingSetup 26S4 packs, 407 sessions, 1,229 clean laps, 11,974 braking zones; personal use, raw
+files not in git; method and tables in the owner's `iRacing_SRS\results\brake_model.md`) replaces the guessed driver and steering
+values below. Layer 4 (a simulator, not a real car): every channel stays labelled "model".
+
+| Class in /simulation | Source class | Pressure gain k (m/s² per bar front) | Steering ratio | Understeer (deg/g at the wheel) | t90 (s) | Overshoot | Ripple | Tail τ (s) |
+|---|---|---|---|---|---|---|---|---|
+| F1 | Super Formula Lights + F3 | – (pad and caliper physics below) | 11.0 (was 11) | 0.44 (was 0.6) | 0.217 | 11 % | 1.8 % | 0.25 |
+| Hypercar | 6 GTP cars | 0.203 | 12.8 (was 12) | 0.32 (was 0.8) | 0.25 | 15 % | 1.2 % | 0.37 |
+| GT3 | 11 GT3 cars | 0.255 | 17.6 (was 14) | 0.34 (was 1.0) | 0.38 | 8.5 % | 1.1 % | 0.34 |
+| Formula E | Super Formula Lights + F3 | – (physics below) | 12 | 0.8 | 0.217 | 11 % | 1.8 % | 0.25 |
+
+- Pressure: with a learned k the front line pressure is the whole stopping need over m·k (the iRacing fit has bias and regen inside k,
+  R² 0.89–0.99 per car). F1 and FE keep the pad and caliper model: no F1 or FE car in the data.
+- Steering: wheel angle = ratio × (L·kappa + kus·ay), fitted on clean cornering samples (kappa = yaw rate / speed; GT3 530k samples,
+  R² 0.88; GTP 45k, 0.83; open wheel 18k, 0.71). Wheelbase from the Kongboda car (GT3 2.7 m, Hypercar 3.15 m, SFL/F3 2.75 m).
+- Foot: t90 = time to 90 % of the zone's peak front pressure; overshoot = peak over the hold; ripple = sd of the detrended hold;
+  tail = exponential fall from 30 % to 3 % of the peak. Medians over 157 open-wheel, 472 GTP and 6,860 GT3 zones. The page draws each
+  zone with the class median and a seeded spread (t90 ±20 %, overshoot ±40 %, ripple ±30 %, tail ±30 %).
+- Finding for the physics model (not applied): the iRacing GTP peak-decel envelope is 0.85 g + 0.003·v² (about 3.0 g at 300 km/h);
+  the simulated Hypercar at Spa needs up to about 183 bar with this gain, i.e. well above 3 g at top speed. This points at the open
+  "downforce at the bound" problem of section 8 and needs a gated experiment, not a channel fix.
+
 ### Brake line pressure (bar, front circuit)
 
 Friction brake force = m · deceleration − aero drag − rolling resistance − regen (on its axle: F1 and LMDh rear, LMH front, Formula E
