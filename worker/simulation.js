@@ -949,7 +949,8 @@ function computeView(K, data, state, R) {
   const chOf = (c, r, key) => R.lapChannels(r && r.trk || track, c.car, env, r, {cls: clsOf(c), seed: data.id + '|' + key, surface, wet: state.mode !== 'manual' && !!(data.conds[condKey] && data.conds[condKey].rain)});
   const ch = [chOf(sel, raw, state.carId)].concat(cmpRaws.map((r, j) => chOf(data.cars[cmpIds[j]], r, cmpIds[j])));
   const tag = arr => arr.map((v, j) => v ? {v, cls: 'ls-line-' + j} : null).filter(Boolean); // keeps each car's colour when one has no channel
-  const chartCorners = data.cornerNames?.length ? data.cornerNames.map(c => ({name: c.name, s: Math.round((c.s - offS + LS) % LS)})).sort((a, b) => a.s - b.s) : (d.corners || []).map(c => ({number: mapOpts.renumber ? mapOpts.renumber(c.number) : c.number, letter: c.letter, s: c.s}));
+  // telemetry charts: corner numbers only, also where the map shows OpenStreetMap corner names (owner 2026-11-18)
+  const chartCorners = (d.corners || []).map(c => ({number: mapOpts.renumber ? mapOpts.renumber(c.number) : c.number, letter: c.letter, s: c.s}));
   const TL = t.tel, cOpt = (unit, step, h, lo, more) => Object.assign({sectors: d.sectors || [], corners: chartCorners, label: unit, km: t.km, unit, step, h, lo}, more);
   const bands = []; ch[0].risk.forEach((x, i) => { if (x >= 0.2) { const last = bands[bands.length - 1]; if (last && i * d.ds - last[1] <= d.ds * 1.5) last[1] = (i + 1) * d.ds; else bands.push([i * d.ds, (i + 1) * d.ds]); } });
   const series = tag([res.v].concat(cmps.map(c => c.v)).map(v => v.map(x => x * 3.6)));
