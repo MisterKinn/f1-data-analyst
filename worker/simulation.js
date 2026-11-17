@@ -1367,7 +1367,7 @@ export function lapsimScriptVersion() {
   return (h >>> 0).toString(36);
 }
 
-const CSS = `:root{--sim-slow:#ffa94d;--kb-zone:#e8b800;--kb-zone-mark:#00d2be}:root[data-theme="light"]{--sim-slow:#245d9c;--kb-zone:#e8b800;--kb-zone-mark:#8a0000}@media(prefers-color-scheme:light){:root:not([data-theme]){--sim-slow:#245d9c;--kb-zone:#e8b800;--kb-zone-mark:#8a0000}}
+const CSS = `:root{--sim-slow:#ffa94d;--kb-zone:#c0c0c0;--kb-zone-mark:#00d2be}:root[data-theme="light"]{--sim-slow:#245d9c;--kb-zone:#fce500;--kb-zone-mark:#8a0000}@media(prefers-color-scheme:light){:root:not([data-theme]){--sim-slow:#245d9c;--kb-zone:#fce500;--kb-zone-mark:#8a0000}}
 .ls-hero h1{font-size:44px;max-width:20ch}.ls-controls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.ls-controls label{min-width:0}.ls-controls select{width:100%}.ls-controls .ls-check{display:flex;align-items:center;gap:8px;flex-wrap:wrap;align-self:end;min-height:44px}.ls-check input{width:18px;height:18px;margin:0}.ls-check input:disabled+span{color:var(--muted)}.ls-check small{color:var(--muted);font-size:13px}.ls-event{margin:8px 0 0}
 .ls-stage{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(280px,1fr);gap:40px;align-items:center}.ls-map-wrap{margin:0;display:grid;gap:12px}.ls-map{width:100%;height:auto;max-height:540px;color:var(--text)}
 .ls-start{fill:var(--text)}.ls-corner{fill:var(--muted);text-anchor:middle;font-weight:600}
