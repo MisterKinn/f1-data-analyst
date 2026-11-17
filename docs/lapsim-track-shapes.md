@@ -182,3 +182,19 @@ Test: tests/track-map-detail.test.mjs (no right turn between 200 and 400 m). Dra
   FE street tracks (their numbered maps are in the FE event documents: next source).
 - Charts: on name tracks the telemetry charts mark the same corner names (a name tick is left out when it would overlap the
   previous one; its dashed line stays).
+
+## Formula E Mexico from OpenStreetMap (2026-11-17)
+
+The official FIA Formula E circuit maps of Mexico City (2.608 km, 2026; 2.630 km, 2023-25) draw the track as a blue fill, not a
+line. `lineOf` (scripts/sim/learn/fe-lines.mjs) then traced the outline of one piece of the fill, so the simulator lap was a thin
+out-and-back loop. The same fault hit the Rome and Diriyah maps (not used: no Gen3 Evo race).
+
+- Guard: `build-fe.mjs` now rejects a map line that encloses almost no area (4πA/L² < 0.08; real FE tracks are 0.12 or more,
+  the outlines 0.01-0.04). Test: `tests/fe-tracks-shape.test.mjs`.
+- Mexico lap lines: `scripts/sim/tracks/fe-osm-lines.py` chains the OSM raceway ways that the official map covers (map fill
+  fitted to the ways by similarity ICP, median error 5-6 m) and starts the lap at the FINISH label. 2026: ways 8, 4, 7, 2, 6, 19,
+  17, 10, 15, 13, 9 (no back-straight jog). 2023-25: the same with the jog (way 18). OSM length 2579 / 2612 m, scaled to the
+  printed 2608 / 2630 m by `build-fe`. The 2026 map fill misses the left stadium arc, so 76 % of the chain is covered by it;
+  the arc is on the FE website map (fiaformulae.com news 823702).
+- The Attack Zone label is placed by the same fit (26 / 39 m from the line, was 285 m). Effect on the Formula E fit
+  (fe-fit.json, layout-out error): Gen3 Evo 4.21 → 3.73 %, Gen3 4.77 → 3.96 %.

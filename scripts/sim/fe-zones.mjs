@@ -21,6 +21,7 @@ import {lapsimTracks, lapsimExtraTracks} from '../../worker/lapsim/tracks-data.j
 import {lineOf} from './learn/fe-lines.mjs';
 
 const LEN = 60, NEAR = 80, D = 'scripts/sim/data/learn/';
+const OSM_LINES = JSON.parse(readFileSync('scripts/sim/data/tracks/fe-osm-lines.json', 'utf8')); // scripts/sim/tracks/fe-osm-lines.py
 const maps = JSON.parse(readFileSync(D + 'fe-maps.json', 'utf8')).events;
 const med = a => { a = [...a].sort((x, y) => x - y); return a.length ? (a.length % 2 ? a[a.length >> 1] : (a[a.length / 2 - 1] + a[a.length / 2]) / 2) : null; };
 const mod = (x, L) => ((x % L) + L) % L;
@@ -48,6 +49,11 @@ const real = {}, learn = [];
 for (const [id, t] of Object.entries(lapsimFeTracks)) {
   const url = (t.sources || []).map(s => (/https?:\/\/\S+/.exec(s) || [])[0]).find(Boolean), m = url && maps.find(e => e.url === url);
   const w = m && m.words.find(x => /^attack$/i.test(x.t)); if (!w) continue;
+  const o = OSM_LINES.tracks[id]?.attack?.[0]; // track line from OSM (the map has no lap line): label placed by the map-to-OSM fit
+  if (o) { const L = t.kappa.length * t.ds; real[id] = {s: o.frac * L, gapM: o.gapM, src: `${m.season} ${m.event}`, url}; if (o.gapM > NEAR) continue;
+    const cs = corners(t), s = o.frac * L; if (!cs.length) continue;
+    const c = cs.reduce((a, b) => Math.abs(mod(b.s - s + L / 2, L) - L / 2) < Math.abs(mod(a.s - s + L / 2, L) - L / 2) ? b : a);
+    learn.push({id, rank: c.rank, off: mod(s - c.s + L / 2, L) - L / 2}); continue; }
   const line = lineOf(m); if (!line) continue;
   const P = line.pts, cum = [0]; for (let i = 1; i < P.length; i++) cum.push(cum[i - 1] + Math.hypot(P[i][0] - P[i - 1][0], P[i][1] - P[i - 1][1]));
   let bi = 0, bd = Infinity; P.forEach((p, i) => { const d = Math.hypot(p[0] - w.x, p[1] - (w.y - w.h / 2)); if (d < bd) { bd = d; bi = i; } });
