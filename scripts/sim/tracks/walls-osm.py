@@ -16,10 +16,12 @@ import numpy as np
 from scipy.spatial import cKDTree
 
 D, POSES = sys.argv[1], json.load(open(sys.argv[2])); ONLY = sys.argv[3:]
-R = 6371008.8; NEAR_M = 40; DRAW_M = 25
+R = 6371008.8; NEAR_M = 40; DRAW_M = 25; FENCE_M = 4
 # street circuits (temporary concrete blocks and fences along the kerb): where OSM maps no barrier within 15 m of the edge, the wall is
 # taken at the road edge (gap 0.5 m, kind 'street'); escape roads are not known there. Labelled as a rule on the page, not a measurement.
-STREET = {'monte-carlo', 'singapore', 'las-vegas', 'baku', 'jeddah', 'long-beach', 'detroit', 'macau', 'miami', 'melbourne', 'madring'}
+STREET = {'monte-carlo', 'singapore', 'las-vegas', 'baku', 'jeddah', 'long-beach', 'detroit', 'macau', 'miami', 'madring'}  # Melbourne: park circuit with gravel traps, OSM barriers only
+# circuits on park or public roads with no raceway in OSM: the roads the lap runs on (roads/<id>.json, OSM API map call, highway=*)
+CIRCUIT_ROADS = {'melbourne': {'Lakeside Drive', 'Aughtie Drive'}}
 KIND = {'wall': 'wall', 'retaining_wall': 'wall', 'jersey_barrier': 'wall', 'concrete_barrier': 'wall', 'block': 'wall',
         'guard_rail': 'armco', 'crash_barrier': 'armco', 'cable_barrier': 'armco', 'tyres': 'tyres', 'fence': 'fence'}
 ids = [f[:-5] for f in sorted(os.listdir(D)) if f.endswith('.json') and f != 'seeds.json']
@@ -78,13 +80,15 @@ def race_pose(seed, Ln, ways):
             if np.linalg.det(Q) < 0: Vt[1] *= -1; Q = Vt.T @ U.T
             Rm = Q @ Rm; t = Q @ (t - ma) + mb
         return float(np.median(tr.query(S @ Rm.T + t)[0])), Rm, t
-    for deg in range(0, 360, 10):
-        th = math.radians(deg); R0 = np.array([[math.cos(th), -math.sin(th)], [math.sin(th), math.cos(th)]])
-        for ox in (-300, 0, 300):
-            for oy in (-300, 0, 300):
-                r = icp(S[::4], R0, np.array([ox, oy], float), 12, 0.8)
-                if best is None or r[0] < best[0]: best = r
-    med, Rm, t = icp(S, best[1], best[2], 40, 0.9)
+    for F in (np.eye(2), np.diag([-1.0, 1.0])):           # some drawn lines are mirrored against the ground (F1 timing frames)
+        for deg in range(0, 360, 10):
+            th = math.radians(deg); R0 = np.array([[math.cos(th), -math.sin(th)], [math.sin(th), math.cos(th)]])
+            for ox in (-300, 0, 300):
+                for oy in (-300, 0, 300):
+                    r = icp(S[::4] @ F, R0, np.array([ox, oy], float), 12, 0.8)
+                    if best is None or r[0] < best[0]: best = (*r, F)
+    med, Rm, t = icp(S @ best[3], best[1], best[2], 40, 0.9); Rm = Rm @ best[3]      # S@F@Rm.T = S@(Rm F).T; inverse (X-t)@(Rm F) holds
+    if os.environ.get('POSE_DEBUG'): print('race_pose median', round(med, 2), 'mirrored' if best[3][0, 0] < 0 else '')
     return {'Rm': Rm.tolist(), 't': t.tolist(), 'cM': cM.tolist(), 'medianM': round(med, 2)} if med < 3 else None
 
 out, report = {}, []
@@ -93,6 +97,9 @@ for id in ids:
     if not Ln: report.append(f'{id}: no simulator track'); continue
     o = json.load(open(f'{D}/{id}.json')); seed = o['seed']; P = POSES.get(id)
     if not P: P = race_pose(seed, Ln, o['ways'])
+    if not P and id in CIRCUIT_ROADS and os.path.exists(f'{D}/roads/{id}.json'):        # track on public roads: fit onto the named roads
+        rw = [{**w, 'tags': {'highway': 'raceway'}} for w in json.load(open(f'{D}/roads/{id}.json'))['ways'] if w['tags'].get('name') in CIRCUIT_ROADS[id]]
+        P = race_pose(seed, Ln, rw)
     if not P and centre_of(id) and Ln.get('map'): P = geo_pose(seed, {**Ln, 'centre': centre_of(id)})
     if not P or P['medianM'] > 4: report.append(f'{id}: no pose of our line in the OSM frame'); continue
     Rm, t, cM = np.array(P['Rm']), np.array(P['t']), np.array(P['cM'])
@@ -107,6 +114,7 @@ for id in ids:
         lat = tang[i, 0] * (Yd[:, 1] - M[i, 1]) - tang[i, 1] * (Yd[:, 0] - M[i, 0])          # signed: + left of the driving direction
         gap = np.abs(lat) - half[i]
         keep = (gap > -0.3 * half[i]) & (gap < NEAR_M)     # on the road itself (crossing rails) or far away: out
+        if k == 'fence': keep &= gap < FENCE_M              # a fence away from the edge is a spectator or boundary fence, not a barrier
         if not keep.any(): continue
         pts.append(np.c_[Yd[keep], lat[keep], i[keep]]); kinds += [k] * int(keep.sum())
         # map lines: runs of points near the edge
