@@ -30,7 +30,7 @@ export const lapsimTrackNorth = {"aragon":{"deg":142,"src":"OpenStreetMap candid
 "kyalami":{"deg":47.9,"src":"OpenStreetMap candidate kyalami-grand-prix-circuit","rms":3.5},
 "laguna-seca":{"deg":188.7,"src":"OpenStreetMap candidate laguna-seca-laguna-seca-raceway","rms":3.3},
 "las-vegas":{"deg":0,"src":"bacinger/f1-circuits (map built in true orientation)","rms":17},
-"lausitz":{"deg":156.8,"src":"OpenStreetMap candidate lausitz-eurospeedway-lausitz-dtm","rms":3.6},
+"lausitz":{"deg":0,"src":"OpenStreetMap candidate lausitz-eurospeedway-lausitz-dtm","rms":0.5},
 "le-mans":{"deg":285.3,"src":"OpenStreetMap candidate le-mans-le-mans-24-heures","rms":2.5},
 "lime-rock":{"deg":113.1,"src":"OpenStreetMap candidate lime-rock-imsa-layout","rms":3.2},
 "long-beach":{"deg":2.6,"src":"OpenStreetMap candidate long-beach-long-beach","rms":3.8},

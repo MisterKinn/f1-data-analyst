@@ -23,12 +23,15 @@ export function decodePng(buf) {
   return {w, h, bpp, data: out};
 }
 const tiles = new Map();
+const HEIGHTS = process.env.EXTRA_HEIGHTS ? JSON.parse(readFileSync(process.env.EXTRA_HEIGHTS, 'utf8')) : null;
 async function tile(x, y) {
   const k = `${Z}/${x}/${y}`; if (tiles.has(k)) return tiles.get(k);
   let t = null; for (let n = 0; n < 3 && !t; n++) try { const r = await fetch(`https://s3.amazonaws.com/elevation-tiles-prod/terrarium/${k}.png`, {signal: AbortSignal.timeout(30000)}); if (!r.ok) throw new Error(r.status); t = decodePng(Buffer.from(await r.arrayBuffer())); } catch (e) { if (n === 2) throw new Error(`elevation tile ${k}: ${e.message}`); }
   tiles.set(k, t); return t;
 }
 async function heightAt(lat, lon) {
+  // EXTRA_HEIGHTS: [[lat, lon, metres], ...] from another DEM (Wolfram GeoElevationData, Lausitz 2026-11-18) where the tiles are not reachable
+  if (HEIGHTS) { let best = HEIGHTS[0], bd = Infinity; for (const h of HEIGHTS) { const d = (h[0] - lat) ** 2 + ((h[1] - lon) * Math.cos(lat * Math.PI / 180)) ** 2; if (d < bd) { bd = d; best = h; } } return best[2]; }
   const n = 2 ** Z, fx = (lon + 180) / 360 * n, r = lat * Math.PI / 180, fy = (1 - Math.log(Math.tan(r) + 1 / Math.cos(r)) / Math.PI) / 2 * n;
   const px = fx * 256 - 0.5, py = fy * 256 - 0.5, x0 = Math.floor(px), y0 = Math.floor(py), ax = px - x0, ay = py - y0;
   const at = async (X, Y) => { const t = await tile(Math.floor(X / 256), Math.floor(Y / 256)), i = ((Y % 256) * 256 + (X % 256)) * t.bpp; return t.data[i] * 256 + t.data[i + 1] + t.data[i + 2] / 256 - 32768; };

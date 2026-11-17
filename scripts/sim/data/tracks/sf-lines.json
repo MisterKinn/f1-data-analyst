@@ -65,6 +65,11 @@
    "lat": 50.791187,
    "lon": 12.687043,
    "source": "OpenStreetMap race-control tower on the main straight, projected onto the lap (no painted line visible on the satellite image)"
+  },
+  "lausitz": {
+   "lat": 51.534974,
+   "lon": 13.927569,
+   "source": "start/finish mark on the DTM track map (DTM Track Facts), fitted onto the OpenStreetMap raceways (median 2.3 m)"
   }
  }
 }

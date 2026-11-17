@@ -83,7 +83,7 @@ Owner instruction (2026-11-14): where a real lap of a car type exists, use it. T
 | aragon | Motorland circuit 5.346 km | owner-2026-11-15 | 5265 (5346) | 357–408 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | autopolis | Full circuit 4.674 km | owner-2026-11-15 | 4544 (4674) | 771–822 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | snetterton | Snetterton 300 circuit 4.779 km | owner-2026-11-15 | 4722 (4779) | 40–47 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
-| lausitz | DTM circuit 3.478 km | owner-2026-11-15 | 3409 (3478) | 117–131 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| lausitz | DTM circuit 3.478 km | owner-2026-11-15 | 3391 (3478) | 116–129 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | istanbul | Grand Prix 5.338 km | f1-history | 5263 (5338) | car positions | 7 (0) | 2.29 | 2.13 | 1.0576 | 0.95 | – | pass (learned) |
 | sochi | Grand Prix 5.848 km | f1-history | 5830 (5848) | car positions | 7 (0) | 1.48 | 1.34 | 1.0363 | 0.73 | – | pass (learned) |
 | long-beach | Street circuit 3.167 km | owner-2026-11-15 | 3093 (3167) | 1–5 m | 10 (0) | 3.26 | -3.03 | 0.9207 | 1.27 | – | pass (learned) |
@@ -566,7 +566,7 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 - **aragon**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
 - **autopolis**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
 - **snetterton**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); Snetterton 300 Circuit, 4.779 km (MSV circuit; British GT since 2011); Terrarium elevation tiles (Mapzen/Tilezen open data)
-- **lausitz**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); FIA list 2026-03-31; Terrarium elevation tiles (Mapzen/Tilezen open data)
+- **lausitz**: OpenStreetMap raceway ways (© OpenStreetMap contributors, ODbL); DTM track map (layout and start/finish mark); FIA list 2026-03-31; Wolfram GeoElevationData (height)
 - **istanbul**: TracingInsights/2021 on GitHub: Turkish Grand Prix, Qualifying (FastF1 car positions, lap times, corner positions)
 - **sochi**: TracingInsights/2020 on GitHub: Russian Grand Prix, Qualifying (FastF1 car positions, lap times, corner positions)
 - **long-beach**: tobi/track-atlas tracks/long-beach/raw/layers/gp.geojson (MIT; geometry OpenStreetMap, ODbL), midline, width and midline checked on aerial imagery
