@@ -24,12 +24,11 @@ test('pit lanes: the map draws the pit lane under the track band', () => {
   assert.ok(html.includes('.ls-pit{'), 'pit style present');
 });
 
-test('pit note: documented limit per series and the measured F1 pit loss, never a simulated one', async () => {
+test('pit data: documented limit per series and the measured F1 pit loss, never a simulated one (the note above the map is gone, owner 2026-11-17)', async () => {
   const {lapsimPitSpeed} = await import('../worker/lapsim/pit-speed-data.js');
   assert.equal(lapsimPitSpeed.series.f1.kph, 80); assert.equal(lapsimPitSpeed.series.wec.kph, 60); assert.equal(lapsimPitSpeed.series.imsa.kph, 60);
   for (const s of Object.values(lapsimPitSpeed.series)) assert.ok(s.src);
   const html = simulationPage({track: 'monza'}, 'en');
-  assert.ok(html.includes("pitLim: 'speed limit {v} km/h ({src})'") || html.includes('speed limit {v} km/h'), 'note text present');
   assert.match(html, /"pitLossF1":25\.8\d*/);
 });
 
