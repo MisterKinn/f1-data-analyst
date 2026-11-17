@@ -208,3 +208,20 @@ The PDF path of a Formula E map is drawn from any point in either direction, and
 ("START/FINISH" on Tokyo and Jeddah). Labels more than 60 m from the line are marked `startVerified: 'label far from the line'`
 (Tokyo 160 m, Berlin 97 m, Jeddah 96 m, Valencia 68 m). The Attack Zones (fe-zones.mjs), F1-style zones and pit lanes of these
 tracks are rebuilt on the new line.
+
+## Extra-track maps from source coordinates, drift warp, pit lanes (2026-11-17)
+
+- `build-geometry-extra.mjs` draws an extra track's map from the candidate's own source coordinates (placed by lap fraction, same
+  start and direction), not from the integrated curvature, which drifted (Road America up to 170 m). Only the map fields change.
+- `scripts/sim/tracks/map-warp-osm.py <ids>` moves a map that still drifts onto the OSM raceway ways (rigid fit, then a smoothed
+  point-by-point pull, raceway trusted within GATE m). Drawing only; stored as `warp` in `map-shape-data.js`. Used on Paul Ricard
+  2021 (median 17.7 → 0.5 m), Paul Ricard F1 (GATE=25, 13.3 → 0.6 m; the two 140 m links east of Signes have no OSM way) and
+  Yongin (14.9 → 0.6 m, p95 3.4 m).
+- `scripts/sim/tracks/map-shape-audit.py <out.json> [ids]` (not in CI) fits our drawn line to the OSM raceways and lists the parts
+  more than 12 m away. All 89 tracks with OSM ways: 63 have median ≤ 1.5 m and p95 ≤ 5 m. Known gaps in OSM, not our errors:
+  Hockenheim (hairpin tip), Silverstone (one 330 m piece), Interlagos; Okayama is a uniform scale difference. Misano's 17 m was a
+  wrong start pose of the audit (90 % criterion); with the median criterion it is 0.8 m. Street circuits (Las Vegas, Baku,
+  Singapore, Monaco, Long Beach, Le Mans, Sochi, Madring, FE Tokyo) cannot be checked this way: OSM maps them as streets.
+- Pit lanes were refitted in the new map frames (`pit-lanes-osm.py`, probe/osm-pits and probe/osm-pits-fe). When the stored
+  start pose no longer fits a warped map, the script now searches the whole area. This also gave Road America (967 m) and
+  Sebring (534 m) their pit lanes. Portimão needed its own start pose (osm-fit-start.json, 0.61 m).
