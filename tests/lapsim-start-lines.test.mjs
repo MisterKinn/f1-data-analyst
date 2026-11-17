@@ -12,7 +12,7 @@ test('start lines from coordinates: used by the build, pit lane spans the line',
   for (const id of Object.keys(sf)) {
     const t = T[id]; assert.ok(t, id);
     assert.equal(t.quality.startVerified, true, `${id}: start verified`);
-    assert.match(t.quality.start, /^iRacing start\/finish line/, `${id}: start from sf-lines.json`);
+    assert.ok(t.quality.start.startsWith(sf[id].source), `${id}: start from sf-lines.json`);
     const p = lapsimPitLanes.tracks[id]; if (!p) continue;
     assert.ok(p.entryS > p.exitS, `${id}: pit lane entry ${p.entryS} m and exit ${p.exitS} m should span the line`);
   }
