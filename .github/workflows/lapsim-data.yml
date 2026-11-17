@@ -91,8 +91,10 @@ jobs:
         if: inputs.calibrate != 'false'
         env:
           LAPSIM_FITTER: bcd
-          LAPSIM_ROUNDS: '5'
-          LAPSIM_BCD_ITERS: '200'
+          # 3 rounds x 100 coordinate steps, as in the experiments the production settings were chosen from (2026-11-17: 5 x 200 plus
+          # the 2 h track build ran past the 340-minute job limit twice; the experiment fits take about 1 h 45 min)
+          LAPSIM_ROUNDS: '3'
+          LAPSIM_BCD_ITERS: '100'
           LAPSIM_WTIME: '20'
           LAPSIM_WSECTOR: '2'
           LAPSIM_TRACK_DRAG: 'on'
