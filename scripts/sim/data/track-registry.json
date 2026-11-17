@@ -2472,6 +2472,17 @@
    "default": true
   },
   {
+   "id": "macau",
+   "venue": "macau",
+   "lengthKm": 6.12,
+   "seasons": [],
+   "sources": [
+    "simulator"
+   ],
+   "sim": "macau",
+   "default": true
+  },
+  {
    "id": "madring",
    "venue": "madring",
    "lengthKm": 5.416,
