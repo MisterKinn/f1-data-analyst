@@ -91,8 +91,11 @@ export function lapChannels(track, car, env, res, {cls = 'f1', seed = '', surfac
   // above the deploy cut-off or clipping speed the battery, not the foot, limits the car: the driver stays flat out
   const clip = Math.min(res.energy?.cutoffKph ?? Infinity, res.energy?.clipFromKph ?? Infinity) / 3.6 - 0.3;
   const lim = res.limit || [], ersW = ers.pMax ?? ers.eMax ?? 0, eta = car.etaDrive ?? 0.95;
+  // near the lap's top speed the car is on the rev limiter or the speed cap (the kernel's power toggles there point to point,
+  // owner 2026-11-17: F1 2025 at Fuji drew a 40-55 % zigzag at the end of the straight); a driver is flat out there
+  const vTop = Math.max(...v) * 0.985;
   const throttle = v.map((vi, i) => {
-    if (brakeBar[i] > 0) return 0; if (lim[i] === 2 || lim[(i + 1) % n] === 2 || lim[(i - 1 + n) % n] === 2 || vi >= clip) return 1; // next to a power-limited point the foot is flat (the kernel's deploy toggles point to point) // a speed drop with no brake need (2026 clipping, lift) keeps the pedal
+    if (brakeBar[i] > 0) return 0; if (lim[i] === 2 || lim[(i + 1) % n] === 2 || lim[(i - 1 + n) % n] === 2 || vi >= clip || vi >= vTop) return 1; // next to a power-limited point the foot is flat (the kernel's deploy toggles point to point) // a speed drop with no brake need (2026 clipping, lift) keeps the pedal
     // acceleration over ±2 points: the kernel's deploy on/off from point to point is not a foot movement
     const a2 = v[(i + 2) % n], b2 = v[(i - 2 + n) % n], q = 0.5 * rho * vi * vi, F = m * (a2 * a2 - b2 * b2) / (8 * ds) + q * cdI(i) + (car.cRoll ?? 0.012) * (m * G + q * clI(i));
     return Math.max(0, Math.min(1, F * vi / ((powerW ? powerW[i] : car.pIce) * eta + ersW)));
@@ -146,7 +149,8 @@ export function lapChannels(track, car, env, res, {cls = 'f1', seed = '', surfac
         lift = r() < 0.2 + 0.6 * rm ? t[k] + 0.15 + 0.2 * r() : -1;
       }
       y += (want - y) * (1 - Math.exp(-dt / (want > y ? 0.1 : 0.025)));
-      let o = y + (y > 0.05 && y < 0.97 ? 0.04 * (1 + 2 * R[k]) * Math.sin(2 * Math.PI * Math.min(fT, fmax(k)) * t[k] + phT) * Math.min(y, 1 - y) * 4 : 0);
+      const lowV = Math.max(0, Math.min(1, (70 - up(v, k)) / 30)); // traction ripple below about 250 km/h, full below 145 km/h
+      let o = y + (y > 0.05 && y < 0.97 ? 0.04 * (1 + 2 * R[k]) * lowV * Math.sin(2 * Math.PI * Math.min(fT, fmax(k)) * t[k] + phT) * Math.min(y, 1 - y) * 4 : 0);
       if (lift > 0 && Math.abs(t[k] - lift) < 0.06) o *= 0.85;
       thr[k] = brake[k] > 2 ? 0 : Math.max(0, Math.min(1, o));
     }
