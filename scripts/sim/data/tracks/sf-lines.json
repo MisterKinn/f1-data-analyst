@@ -41,6 +41,15 @@
    "lat": 42.341053,
    "lon": -76.928895,
    "source": "iRacing start/finish line (watkinsglen 2021 fullnoloop, Classic Boot; 4 crossings, spread 0.0 m)"
+  },
+  "brands-hatch": {
+   "lat": 51.360315,
+   "lon": 0.260324,
+   "source": "iRacing start/finish line (brandshatch grandprix, Grand Prix; 224 crossings, spread 1.4 m; TUM map fitted on 6 iRacing GPS laps, median 2.0 m)",
+   "map": [
+    1.0,
+    1.0
+   ]
   }
  }
 }

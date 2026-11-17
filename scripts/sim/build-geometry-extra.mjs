@@ -64,6 +64,12 @@ export function buildTrack(id, spec, c) {
   // owner 2026-11-15: real direction and start line (map ways run either way and start at any node)
   const o = orient(c, spec, ax, ay, OSM[id], SF[id]), cx = o.order.map(i => ax[i]), cy = o.order.map(i => ay[i]);
   if (c.grade) c = {...c, grade: o.order.map(i => o.reversed ? -c.grade[i] : c.grade[i])};
+  // owner 2026-11-17 (rule 14; Wolfram check: Okayama 24.9 m vs iRacing 29.5 m, Brands Hatch flat): height from the laser-scanned iRacing
+  // track where it exists. Heights are per 1/bins of the lap from the iRacing start line, so only tracks whose start comes from the
+  // iRacing line (sf-lines.json) use them; grade = slope of that height along this lap.
+  const IZ = IRZ[id] && SF[id]?.source?.startsWith('iRacing') ? IRZ[id] : null;
+  if (IZ) { const z = IZ.z, nb = z.length, zAt = f => { const x = ((f * nb - 0.5) % nb + nb) % nb, i = Math.floor(x), u = x - i; return z[i] * (1 - u) + z[(i + 1) % nb] * u; };
+    c = {...c, grade: Array.from({length: n0}, (_, i) => Math.round(Math.atan((zAt((i + 1) / n0) - zAt((i - 1) / n0)) / (2 * c.ds)) * 1e4)), elevation: {minM: 0, maxM: Math.round(Math.max(...z))}}; spec = {...spec, heightEvidence: `4 borrowed (iRacing laser-scanned track, median of ${IZ.laps} laps)`}; }
   const width = spec.widthM || c.widthM || null, halfW = Math.max(1, (width || 12) / 2 - 1.2);
   const rl = minCurvatureLine(cx, cy, new Array(n0).fill(halfW)), line = lineTrack(K, rl.x, rl.y, 5), n = line.kappa.length;
   const flat = !c.grade || c.grade.every(g => g === 0), step = mapStep(n, line.ds), map = {x: [], y: []};
@@ -89,6 +95,7 @@ export function buildTrack(id, spec, c) {
 // (scripts/sim/learn/fetch-osm-starts.mjs). Map x/y are east/north metres from c.centre, sampled every `step` lap points.
 const OSM = existsSync(D + 'learn/osm-starts.json') ? JSON.parse(readFileSync(D + 'learn/osm-starts.json', 'utf8')).tracks : {};
 // start/finish lines with coordinates (owner 2026-11-17: unknown geometry may be learned from iRacing; measured data is never changed)
+const IRZ = existsSync(D + 'tracks/iracing-elevation.json') ? JSON.parse(readFileSync(D + 'tracks/iracing-elevation.json', 'utf8')).tracks : {};
 const SF = existsSync(D + 'tracks/sf-lines.json') ? JSON.parse(readFileSync(D + 'tracks/sf-lines.json', 'utf8')).tracks : {};
 export // official corner numbers stored with a curated atlas midline (marker = share of the source line): placed on the lap after the start and
 // direction were set by orient() (owner 2026-11-15: Daytona T1-T12, the Bus Stop is T8-T11)
@@ -102,9 +109,10 @@ function orient(c, spec, ax, ay, osm = OSM[spec.id], sfLine = null) {
   const reversed = !!spec.direction && spec.direction !== mapped, idx = i => reversed ? (n - i) % n : i; // reversed lap keeps point 0
   let s0 = 0, start = 'first mapped point (not verified)', startVerified = false, pitOneway = null;
   if (c.startFromSource) { start = c.startFromSource; startVerified = c.startVerified ?? true; } // the source states its own start/finish point (track-atlas)
-  const sfl = !c.startFromSource && sfLine && c.map && c.centre ? sfLine : null;
-  if (sfl) { // a start/finish line with coordinates (sf-lines.json: iRacing track model), placed on the nearest map point
-    const step = Math.max(1, Math.floor(n / 360)), R = 6371008.8, r = Math.PI / 180, [la, lo] = c.centre, q = [(sfl.lon - lo) * r * R * Math.cos(la * r), (sfl.lat - la) * r * R];
+  const sfl = !c.startFromSource && sfLine && c.map && (c.centre || sfLine.map) ? sfLine : null;
+  if (sfl) { // a start/finish line with coordinates (sf-lines.json: iRacing track model), placed on the nearest map point; `map` = the
+    // line already in the frame of a source map without a geographic centre (TUM), from a fit of that map onto the iRacing GPS laps
+    const step = Math.max(1, Math.floor(n / 360)), R = 6371008.8, r = Math.PI / 180, [la, lo] = c.centre || [0, 0], q = sfl.map || [(sfl.lon - lo) * r * R * Math.cos(la * r), (sfl.lat - la) * r * R];
     let best = Infinity, k = -1; c.map.x.forEach((x, j) => { const d = Math.hypot(x - q[0], c.map.y[j] - q[1]); if (d < best) { best = d; k = j; } });
     if (best < 40) { s0 = Math.min(n - 1, k * step); start = `${sfl.source}, ${Math.round(best)} m off the lap`; startVerified = true; }
   }
