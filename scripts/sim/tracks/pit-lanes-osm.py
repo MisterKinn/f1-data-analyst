@@ -22,6 +22,10 @@ SERIES = {
 # Circuits where OSM also maps other pit roads (Le Mans: the motorcycle pit exit to the Dunlop chicane, the Maison Blanche kart pits):
 # only ways with these names; their pieces sit a few metres apart, so they are chained with a wider gap (m)
 ONLY = {'le-mans': (re.compile(r'^(pit entry|pit lane|pit exit)$', re.I), 12)}
+# Pit roads that meet in T-junctions (Le Mans: the entry road runs outside the Ford chicanes and joins the pit lane from the side):
+# shortest path through all pit ways (points within 6 m joined) from the track point in the entry window to the one in the exit
+# window (lap distances, m)
+GRAPH = {'le-mans': ((12700, 13150), (380, 700))}
 SEED_ID = {'valencia-ricardo-tormo': 'ricardo-tormo'}   # probe seeds named after the track request
 FILES = {}
 for f in sorted(os.listdir(D)):
@@ -127,11 +131,39 @@ for id in ids:
     inv = lambda Q: (Q - t) @ Rm + cM          # cloud frame -> our map frame
     trM = cKDTree(M); n = len(M); L = MID[id]['len']; kept = None
     cands = []
-    for p, ln in chains(pitW, ONLY[id][1] if id in ONLY else 3)[:10 if id in SERIES else 4]:
-        P = inv(dens(p, 4.0)); da, ia = trM.query(P[0]); db, ib = trM.query(P[-1])
+    if id in GRAPH:
+        from scipy.sparse import coo_matrix
+        from scipy.sparse.csgraph import dijkstra
+        Pg = np.vstack([inv(dens(g, 2.0)) for g in pitW]); kg = cKDTree(Pg); pr = kg.query_pairs(6.0, output_type='ndarray')
+        wgt = np.hypot(*(Pg[pr[:, 0]] - Pg[pr[:, 1]]).T); Gm = coo_matrix((np.r_[wgt, wgt], (np.r_[pr[:, 0], pr[:, 1]], np.r_[pr[:, 1], pr[:, 0]])), shape=(len(Pg), len(Pg))).tocsr()
+        sl = np.arange(n) / n * L; dg, jg = kg.query(M)
+        def end(lo, hi, last):   # the entry leaves the track where the pit road first touches it, the exit joins where it last does
+            w = np.flatnonzero((sl >= lo) & (sl <= hi) & (dg < 10)); return None if not len(w) else int(jg[w[-1] if last else w[0]])
+        a, b = end(*GRAPH[id][0], False), end(*GRAPH[id][1], True)
+        if a is not None and b is not None:
+            dist, pred = dijkstra(Gm, indices=a, return_predecessors=True)
+            if np.isfinite(dist[b]):
+                path = [b]
+                while path[-1] != a: path.append(pred[path[-1]])
+                Pp = Pg[path[::-1]]
+                gr = [(Pp, float(dist[b]))]
+            else: gr = []
+        else: gr = []
+    for p, ln in (gr if id in GRAPH else chains(pitW, ONLY[id][1] if id in ONLY else 3))[:10 if id in SERIES else 4]:
+        P = p if id in GRAPH else inv(dens(p, 4.0)); da, ia = trM.query(P[0]); db, ib = trM.query(P[-1])
         if da > END_MAX_M or db > END_MAX_M or ln < 150 or ln > 2500: continue
         sA, sB = ia / n * L, ib / n * L
         if (sB - sA) % L > L / 2: P = P[::-1]; sA, sB = sB, sA; ia, ib = ib, ia   # entry is reached first: before the line when the pits sit beside it
+        # an end that dangles past the junction (owner 2026-11-17, Le Mans: the entry drew a hook): where the path first runs towards
+        # the track, it starts at the point where it stops getting closer (within 150 m); the dangling piece is dropped
+        dP = trM.query(P)[0]; cum = np.r_[0, np.cumsum(np.hypot(*np.diff(P, axis=0).T))]
+        def cut(d, c):   # walk in from the end while the path still comes closer to the track (a hook); stop at that local minimum
+            i = 0
+            while i + 1 < len(d) and c[i] < 150 and d[i + 1] < d[i] - 0.3: i += 1
+            return i
+        i0 = cut(dP, cum); i1 = len(P) - 1 - cut(dP[::-1], cum[-1] - cum[::-1])
+        if i1 - i0 > 2 and (i0 or i1 < len(P) - 1):
+            ln -= float(cum[i0] + cum[-1] - cum[i1]); P = P[i0:i1 + 1]; _, ia = trM.query(P[0]); _, ib = trM.query(P[-1]); sA, sB = ia / n * L, ib / n * L
         # both ends on the track (owner 2026-11-17: the Sebring entry stopped short): add the nearest line point when the end is off it
         if np.hypot(*(P[0] - M[ia])) > 1: ln += float(np.hypot(*(P[0] - M[ia]))); P = np.vstack([M[ia], P])
         if np.hypot(*(P[-1] - M[ib])) > 1: ln += float(np.hypot(*(P[-1] - M[ib]))); P = np.vstack([P, M[ib]])
