@@ -6,11 +6,18 @@ export function lapChannels(track, car, env, res, {cls = 'f1', seed = '', surfac
   const G = 9.81, v = res.v, n = v.length, ds = track.ds, rho = env.rho ?? 1.2, m = car.mass, Rt = car.tyreRadius ?? 0.34;
   // bal: front share of the brake force; mu: pad friction; rf, rr: effective disc radius (m); af, ar: piston area on one side of the
   // caliper (mm²; the two pads each press with p·A); ratio: steering ratio; kus: understeer gradient (deg/g at the road wheels)
+  // Learned from the owner's iRacing data (owner 2026-11-17, docs/lapsim-physics-rules.md rule 14; layer 4, shown as "model"):
+  // k: deceleration per bar of front line pressure (m/s², straight-line, no ABS; GT3 0.255 over 11 cars, GTP 0.203 over 6),
+  // ratio and kus: steering wheel angle = ratio × (L·kappa + kus·ay) fitted on clean cornering samples (GT3 530k, R² 0.88; GTP 45k,
+  // 0.83; open wheel SFL/F3 18k, 0.71), h: the driver's foot (time to 90 % of the zone's peak pressure, overshoot over the hold,
+  // hold ripple, trail-brake tail time constant; medians over 6,860 GT3, 472 GTP and 157 open-wheel braking zones). F1 and FE take
+  // the open-wheel foot and steering (no F1 or FE car in the data); F1 and FE pressure stay on the pad and caliper physics below.
+  const OW = {t90: 0.217, os: 0.11, rip: 0.0176, tau: 0.251};
   const C = {
-    f1: {bal: 0.57, mu: 0.5, rf: 0.137, af: 3060, rr: 0.115, ar: 1323, ratio: 11, kus: 0.6},
-    hyper: {bal: 0.56, mu: 0.5, rf: 0.160, af: 3409, rr: 0.150, ar: 1712, ratio: 12, kus: 0.8},
-    gt3: {bal: 0.58, mu: 0.45, rf: 0.160, af: 2956, rr: 0.150, ar: 1511, ratio: 14, kus: 1.0},
-    fe: {bal: 0.6, mu: 0.45, rf: 0.115, af: 1926, rr: 0.1, ar: 0, ratio: 12, kus: 0.8}, // Gen3 on: no rear friction brakes, rear by regen
+    f1: {bal: 0.57, mu: 0.5, rf: 0.137, af: 3060, rr: 0.115, ar: 1323, ratio: 11.0, kus: 0.44, h: OW},
+    hyper: {bal: 0.56, mu: 0.5, rf: 0.160, af: 3409, rr: 0.150, ar: 1712, ratio: 12.8, kus: 0.32, k: 0.203, h: {t90: 0.25, os: 0.148, rip: 0.012, tau: 0.372}},
+    gt3: {bal: 0.58, mu: 0.45, rf: 0.160, af: 2956, rr: 0.150, ar: 1511, ratio: 17.6, kus: 0.34, k: 0.255, h: {t90: 0.383, os: 0.085, rip: 0.0112, tau: 0.343}},
+    fe: {bal: 0.6, mu: 0.45, rf: 0.115, af: 1926, rr: 0.1, ar: 0, ratio: 12, kus: 0.8, h: OW}, // Gen3 on: no rear friction brakes, rear by regen
   }[cls] || {};
   const ers = car.ers || {}, axle = ers.axle || (ers.rule === 'f1-2026' || ers.pMax || car.regen ? 'rear' : null);
   const regenW = ers.regenMax ?? ers.eMax ?? car.regen?.maxW ?? 0, regenShare = ers.regenShare ?? car.regen?.share ?? 0.6;
@@ -26,7 +33,8 @@ export function lapChannels(track, car, env, res, {cls = 'f1', seed = '', surfac
     const regen = axle ? Math.min(regenW / Math.max(vm, 1), regenShare * need) : 0;
     let front = C.bal * need - (axle === 'front' ? regen : 0), rear = (1 - C.bal) * need - (axle === 'rear' ? regen : 0);
     if (!C.ar && rear > 0) { front += rear; rear = 0; } // no rear friction brakes: the brake-by-wire moves the rest forward
-    brakeBar[i] = +(Math.max(0, front) / perBar).toFixed(1);
+    // with a learned gain the front line pressure follows the whole stopping need, as in the iRacing fit (bias and regen inside k)
+    brakeBar[i] = +(C.k ? Math.max(0, need) / (m * C.k) : Math.max(0, front) / perBar).toFixed(1);
   }
   // gear and rpm: the gear with the most engine power at this speed (same rule as kernel powertrain()); a gear within 1 % of the
   // best is kept, so the trace does not hunt on the flat top of the curve
@@ -89,18 +97,20 @@ export function lapChannels(track, car, env, res, {cls = 'f1', seed = '', surfac
     const a2 = v[(i + 2) % n], b2 = v[(i - 2 + n) % n], q = 0.5 * rho * vi * vi, F = m * (a2 * a2 - b2 * b2) / (8 * ds) + q * cdI(i) + (car.cRoll ?? 0.012) * (m * G + q * clI(i));
     return Math.max(0, Math.min(1, F * vi / ((powerW ? powerW[i] : car.pIce) * eta + ersW)));
   });
-  const ped = humanPedals(brakeBar, throttle, risk, res.time, res.lapTime ?? res.time[n - 1], String(seed) + '|pedals');
+  const ped = humanPedals(brakeBar, throttle, risk, res.time, res.lapTime ?? res.time[n - 1], String(seed) + '|pedals', C.h || OW);
   return {brakeBar, gear, rpm, shifts, steerDeg, steerMeanDeg: mean.map(d => +d.toFixed(1)), throttle, risk: risk.map(x => +x.toFixed(2)), ...ped};
 
   // A human foot on the pedals (owner 2026-11-15: "the trace is too honest"), on a grid twice as fine as the lap (half a point
   // apart, so a 0.1 s stab still has a few samples at 300 km/h). Physics gives the pressure and throttle the lap needs; the driver:
-  // brake: stabs it (90 % in 0.08 s), overshoots the peak by 4–10 % for about 0.1 s, then holds it with a 4–7 Hz ripple of 1.5–3 %
-  //   and a slower 1–2 Hz wander, sometimes eases off 10–18 % for a moment (lock-up relief), and releases with a trail-brake tail
-  //   (time constant 0.10–0.18 s) into the corner. Each zone keeps the brake impulse of the physics (same deceleration on average).
+  // brake: builds to 90 % of the pressure in t90 (open wheel 0.22 s, GTP 0.25 s, GT3 0.38 s), overshoots the hold by the class
+  //   median (8.5–15 %, ±40 %), holds it with a 4–7 Hz ripple of about 1–2 % and a slower 1–2 Hz wander, sometimes eases off 10–18 %
+  //   for a moment (lock-up relief), and releases with a trail-brake tail (class time constant 0.25–0.37 s, ±30 %) into the corner.
+  //   Per-class values learned from the owner's iRacing data (H, see C above; the 2026-11-15 values were 0.08 s, 4–10 %, 0.10–0.18 s).
+  //   Each zone keeps the brake impulse of the physics (same deceleration on average).
   // throttle: squeezed on (time constant 0.10 s), snapped off (0.025 s), with a 2.5–4 Hz traction ripple while it is part-open and
   //   sometimes a short lift on the way up; off whenever the brake is on.
   // Seeded per track and car, so the page is stable. Values checked with Wolfram (docs/lapsim-physics-rules.md).
-  function humanPedals(pb, th, rk, time, lapT, sd) {
+  function humanPedals(pb, th, rk, time, lapT, sd, H) {
     let hh = 2166136261; for (const c of sd) { hh ^= c.charCodeAt(0); hh = Math.imul(hh, 16777619); }
     const r = () => { hh = Math.imul(hh ^ (hh >>> 15), 2246822507) ^ Math.imul(hh ^ (hh >>> 13), 3266489909); return ((hh ^= hh >>> 16) >>> 0) / 4294967296; };
     const N = 2 * n, tAt = k => { const i = k >> 1; return k & 1 ? (time[i] + (i + 1 < n ? time[i + 1] : lapT)) / 2 : time[i]; };
@@ -110,20 +120,21 @@ export function lapChannels(track, car, env, res, {cls = 'f1', seed = '', surfac
     for (let k = 0; k < N; k++) {
       if (!(base[k] > 0.5) || base[(k - 1 + N) % N] > 0.5) continue;
       let e = k; while (e + 1 < N && base[e + 1] > 0.5) e++;
-      const t0 = t[k], P = Math.max(...base.slice(k, e + 1)), os = 0.04 + 0.06 * r(), f1 = 4 + 3 * r(), f2 = 1 + r(), a1 = 0.015 + 0.015 * r(), ph1 = 6.28 * r(), ph2 = 6.28 * r();
+      const t0 = t[k], P = Math.max(...base.slice(k, e + 1)), os = H.os * (0.6 + 0.8 * r()), f1 = 4 + 3 * r(), f2 = 1 + r(), a1 = H.rip * (0.7 + 0.6 * r()), ph1 = 6.28 * r(), ph2 = 6.28 * r();
+      const tr = H.t90 / 2.303 * (0.8 + 0.4 * r()), tg = Math.max(0.09, 0.9 * H.t90); // rise: 90 % of the pressure after t90 (learned per class)
       // the riskiest point of the zone (crest, tailwind, bumps, ...) is where a lock-up is most likely: the relief goes there
       let kr = k; for (let q = k; q <= e; q++) if (R[q] > R[kr]) kr = q;
-      const rz = R[kr], dipAt = r() < 0.25 + 0.6 * rz ? (rz > 0.15 ? t[kr] : t0 + (0.35 + 0.25 * r()) * (t[e] - t0)) : -1, dip = (0.1 + 0.08 * r()) * (1 + rz), tauOff = 0.1 + 0.08 * r();
+      const rz = R[kr], dipAt = r() < 0.25 + 0.6 * rz ? (rz > 0.15 ? t[kr] : t0 + (0.35 + 0.25 * r()) * (t[e] - t0)) : -1, dip = (0.1 + 0.08 * r()) * (1 + rz), tauOff = H.tau * (0.7 + 0.6 * r());
       let sumB = 0, sumH = 0;
       for (let q = k; q <= e; q++) {
-        const x = t[q] - t0, rise = 1 - Math.exp(-x / 0.035), hold = Math.min(1, x / 0.15), g = x / 0.09 * Math.exp(1 - x / 0.09);
+        const x = t[q] - t0, rise = 1 - Math.exp(-x / tr), hold = Math.min(1, x / 0.15), g = x / tg * Math.exp(1 - x / tg);
         const rip = P * hold * (1 + 2 * R[q]) * (a1 * Math.sin(2 * Math.PI * Math.min(f1, fmax(q)) * x + ph1) + 0.012 * Math.sin(2 * Math.PI * f2 * x + ph2));
         const d = dipAt > 0 ? dip * base[q] * Math.exp(-(((t[q] - dipAt) / 0.04) ** 2)) : 0;
         brake[q] = Math.max(0, base[q] * rise + os * P * g + rip - d); sumB += base[q]; sumH += brake[q];
       }
       for (let q = k; q <= e; q++) brake[q] *= sumB / Math.max(1e-9, sumH); // same impulse as the physics
       const pEnd = Math.max(0.06 * P, brake[e]);
-      for (let q = e + 1; q < N && t[q] - t[e] < 0.5 && !(base[q] > 0.5); q++) { const y = pEnd * Math.exp(-(t[q] - t[e]) / tauOff); if (y < 0.5) break; brake[q] = y; }
+      for (let q = e + 1; q < N && t[q] - t[e] < 2.5 * tauOff && !(base[q] > 0.5); q++) { const y = pEnd * Math.exp(-(t[q] - t[e]) / tauOff); if (y < 0.5) break; brake[q] = y; }
       k = e;
     }
     const thr = new Array(N), fT = 2.5 + 1.5 * r(), phT = 6.28 * r();

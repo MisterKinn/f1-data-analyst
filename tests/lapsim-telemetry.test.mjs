@@ -50,7 +50,11 @@ test('human pedals: stab, overshoot, ripple and trail-off; throttle; grip-loss z
   // same brake impulse as the physics (the trail-off tail adds a little), more peak than the physics (overshoot), not monotonic (ripple)
   const sumP = ch.brakeBar.reduce((a, x) => a + x, 0) * 2, sumH = ch.brakeHuman.reduce((a, x) => a + x, 0);
   assert.ok(sumH >= sumP * 0.98 && sumH < sumP * 1.15, sumH / sumP);
-  assert.ok(Math.max(...ch.brakeHuman) > Math.max(...ch.brakeBar));
+  // overshoot over the hold (owner 2026-11-17: the build-up time is learned from iRacing, so the human peak no longer has to beat the
+  // physics' first sample): in the longest zone the early peak is above the hold
+  { let best = [0, 0]; for (let k = 0; k < 2 * n; k++) { if (!(ch.brakeHuman[k] > 0.5) || ch.brakeHuman[k - 1] > 0.5) continue; let e = k; while (e + 1 < 2 * n && ch.brakeHuman[e + 1] > 0.5) e++; if (e - k > best[1] - best[0]) best = [k, e]; }
+    const z = ch.brakeHuman.slice(best[0], best[1] + 1), m = z.length, hold = z.slice(Math.floor(0.4 * m), Math.floor(0.8 * m)).sort((x, y) => x - y)[Math.floor(0.2 * m)];
+    assert.ok(Math.max(...z.slice(0, Math.floor(0.4 * m))) > 1.02 * hold, 'overshoot'); }
   let turns = 0; for (let k = 2; k < 2 * n; k++) if (ch.brakeHuman[k - 1] > 20 && (ch.brakeHuman[k] - ch.brakeHuman[k - 1]) * (ch.brakeHuman[k - 1] - ch.brakeHuman[k - 2]) < 0) turns++;
   assert.ok(turns > 20, 'ripple ' + turns);
   // brake only in braking zones and their short tails; no throttle while braking; flat out on the straights
