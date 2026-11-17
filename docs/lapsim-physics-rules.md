@@ -482,6 +482,11 @@ values below. Layer 4 (a simulator, not a real car): every channel stays labelle
 - Foot: t90 = time to 90 % of the zone's peak front pressure; overshoot = peak over the hold; ripple = sd of the detrended hold;
   tail = exponential fall from 30 % to 3 % of the peak. Medians over 157 open-wheel, 472 GTP and 6,860 GT3 zones. The page draws each
   zone with the class median and a seeded spread (t90 ±20 %, overshoot ±40 %, ripple ±30 %, tail ±30 %).
+- Zone shape (owner 2026-11-18: the brake trace still looked inhuman, a spike that fell with the downforce): heavy zones (speed lost
+  > 15 m/s) hold near the peak and release over the last part of the zone, release = from the last sample above 90 % of the peak to
+  the end, p/p_peak = 0.9·u^k with u the speed still to lose. Medians: GTP release 67 % of the zone, k 0.63 (340 zones); GT3 50 %,
+  0.58 (4,043); SFL/F3 70 %, 0.58 (91). The page draws each zone as rise (t90) → hold 100 → 90 % → release u^k, with the
+  physics impulse kept (the physics need no longer sets the shape inside a zone). Source: zones.parquet of the owner's extract.
 - Surface for SetupSim (2026-11-17): track roughness with the car taken out (log RMS of vertical acceleration above 1 Hz = car +
   track effect, 1,615 laps, 34 cars, 30 tracks; kept with ≥ 5 cars and ≥ 20 laps: 18 tracks) sets the bump rating where no public
   note exists and is averaged with the note where one does (`setup-plan.js surfaceOf`). Disagreements to keep in mind: Austin comes out
