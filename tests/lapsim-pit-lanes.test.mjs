@@ -32,3 +32,19 @@ test('pit note: documented limit per series and the measured F1 pit loss, never 
   assert.ok(html.includes("pitLim: 'speed limit {v} km/h ({src})'") || html.includes('speed limit {v} km/h'), 'note text present');
   assert.match(html, /"pitLossF1":25\.8\d*/);
 });
+
+test('two pit lanes (owner 2026-11-17): Spa F1 pits for F1/WEC, Endurance pits for GT3 too; Silverstone Wing for F1, National for others', () => {
+  const T = lapsimPitLanes.tracks, spa = T['spa-francorchamps'], sil = T.silverstone, L = id => lapsimAllTracks[id].length;
+  assert.ok(spa.entryS > L('spa-francorchamps') - 400 && spa.exitS < 700, 'Spa main lane: Bus Stop to La Source');
+  assert.equal(spa.alt.name, 'Endurance pits'); assert.ok(spa.alt.entryS > 300 && spa.alt.entryS < 600);
+  assert.deepEqual(spa.alt.use, {gt3: 'both'});
+  assert.ok(sil.entryS > 4900 && sil.exitS < 900, 'Silverstone main lane: Wing');
+  assert.equal(sil.alt.name, 'National pits'); assert.ok(sil.alt.entryS > 2100 && sil.alt.exitS < 3600);
+  assert.deepEqual(sil.alt.use, {wec: 'alt', gt3: 'alt'});
+  for (const id of ['spa-francorchamps', 'silverstone']) {
+    const a = T[id].alt, M = lineData(id).mid, near = q => Math.min(...M.map(m => Math.hypot(m[0] - q[0], m[1] - q[1])));
+    assert.ok(near(a.pts[0]) <= 35 && near(a.pts.at(-1)) <= 35, `${id}: second pit lane ends away from the track`);
+  }
+  const html = simulationPage({track: 'spa-francorchamps'}, 'en');
+  assert.ok(html.includes('"alt":{"name":"Endurance pits"'), 'second lane embedded');
+});
