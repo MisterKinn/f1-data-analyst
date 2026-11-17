@@ -42,12 +42,42 @@ test('Bahrain Outer opens with its long straight flat along the bottom (owner 20
   assert.deepEqual(VIEW['sakhir-outer'], {longest: 'bottom'});
 });
 
-test('corner names: one label per named complex, smaller than turn numbers (owner 2026-11-17, Le Mans)', async () => {
+test('map labels (owner 2026-11-17): numbers smaller than before, names sized near them, one label per named complex, page language', async () => {
+  const {simulationPage} = await import('../worker/simulation.js'), {CORNER_NAMES} = await import('../worker/simulator-ui.js');
+  const map = (q, lang) => simulationPage(q, lang).match(/<svg class="ls-map"[\s\S]*?<\/svg>/)[0];
+  const lm = map({track: 'le-mans'}, 'en');
+  assert.deepEqual([...lm.matchAll(/class="ls-corner">([^<]+)</g)].slice(0, 3).map(m => m[1]), ['1', '2', '3'], 'numbered corners show their number');
+  const fs = k => +lm.match(new RegExp('\\.' + k + '\\{font-size:([\\d.]+)px'))[1];
+  assert.ok(fs('ls-corner\\.ls-corner-nm') > fs('ls-corner') * 0.6 && fs('ls-corner\\.ls-corner-nm') < fs('ls-corner'));
+  // Le Mans names in both languages, each complex once; the first / second chicanes are Daytona and Michelin
+  const le = CORNER_NAMES['le-mans'], en = le.map(e => e.en);
+  assert.equal(new Set(en).size, en.length);
+  for (const n of ['Dunlop Curve', 'Dunlop Chicane', 'Daytona Chicane', 'Michelin Chicane', 'Porsche Curves', 'Ford Chicane']) assert.ok(en.includes(n), n);
+  assert.ok(!en.some(n => /^(Turn|The|First|Second|Corvette)\b/.test(n)));
+  assert.ok(le.every(e => e.ko && !/[A-Za-z]{3}/.test(e.ko)), 'Korean names in Korean');
+  // OpenStreetMap names (estimated corners): Korean page in Korean, English page as written, whole names
+  assert.match(map({track: 'zolder'}, 'ko'), /class="ls-corner ls-corner-nm"[^>]*>에어스터 링크서</);
+  assert.match(map({track: 'zolder'}, 'en'), /class="ls-corner ls-corner-nm"[^>]*>Eerste linkse</);
+  // named straights, in the page language
+  assert.match(map({track: 'silverstone'}, 'ko'), /ls-straight"[^>]*>행어 스트레이트</);
+  assert.match(map({track: 'interlagos'}, 'en'), /ls-straight"[^>]*>Reta Oposta</);
+});
+
+test('Silverstone (owner 2026-11-17): non-F1 series number from Copse and start on the National Straight; Formula E keeps the F1 set-up', async () => {
   const {simulationPage} = await import('../worker/simulation.js');
-  const svg = simulationPage({track: 'le-mans'}, 'en').match(/<svg class="ls-map"[\s\S]*?<\/svg>/)[0];
-  const names = [...svg.matchAll(/class="ls-corner ls-corner-nm">([^<]+)</g)].map(m => m[1]);
-  assert.ok(names.length > 5);
-  assert.equal(new Set(names).size, names.length, names.join(' | '));
-  const fs = k => +svg.match(new RegExp('\\.' + k + '\\{font-size:([\\d.]+)px'))[1];
-  assert.ok(fs('ls-corner\\.ls-corner-nm') < fs('ls-corner') * 0.7);
+  const map = q => simulationPage(q, 'en').match(/<svg class="ls-map"[\s\S]*?<\/svg>/)[0];
+  const nums = svg => [...svg.matchAll(/class="ls-corner"( data-orig="(\d+)")?>(\d+)</g)].map(m => [m[3], m[2] || m[3]]);
+  const wec = nums(map({track: 'silverstone', car: 'wec-lmh'})), f1 = nums(map({track: 'silverstone'})), fe = nums(map({track: 'silverstone', car: 'fe-gen4'}));
+  assert.deepEqual(wec.find(([, o]) => o === '9'), ['1', '9'], 'Copse is T1');
+  assert.deepEqual(wec.find(([, o]) => o === '8'), ['18', '8'], 'Woodcote is the last turn');
+  assert.ok(f1.every(([a, b]) => a === b) && fe.every(([a, b]) => a === b), 'F1 and Formula E keep the official numbers');
+});
+
+test('Safety Car lines (owner 2026-11-17): yellow, track width, a tiny label, drawn under the racing line', async () => {
+  const {simulationPage} = await import('../worker/simulation.js');
+  const svg = simulationPage({track: 'monza'}, 'en').match(/<svg class="ls-map"[\s\S]*?<\/svg>/)[0];
+  assert.equal((svg.match(/<line class="ls-sc"/g) || []).length, 2);
+  assert.ok(svg.indexOf('class="ls-sc"') < svg.indexOf('class="ls-line-seg"'), 'under the racing line');
+  assert.match(svg, /class="ls-sc-t"[^>]*>SC1</);
+  assert.ok(!/ls-zone-mt-sc/.test(svg));
 });
