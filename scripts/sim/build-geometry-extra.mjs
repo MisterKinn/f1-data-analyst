@@ -91,7 +91,7 @@ function orient(c, spec, ax, ay, osm = OSM[spec.id]) {
   const n = ax.length, area = ax.reduce((a, x, i) => a + x * ay[(i + 1) % n] - ax[(i + 1) % n] * ay[i], 0), mapped = area > 0 ? 'ccw' : 'cw';
   const reversed = !!spec.direction && spec.direction !== mapped, idx = i => reversed ? (n - i) % n : i; // reversed lap keeps point 0
   let s0 = 0, start = 'first mapped point (not verified)', startVerified = false, pitOneway = null;
-  if (c.startFromSource) { start = c.startFromSource; startVerified = true; } // the source states its own start/finish point (track-atlas)
+  if (c.startFromSource) { start = c.startFromSource; startVerified = c.startVerified ?? true; } // the source states its own start/finish point (track-atlas)
   else if (osm?.elements?.length && c.map && c.centre) {
     const step = Math.max(1, Math.floor(n / 360)), R = 6371008.8, r = Math.PI / 180, [la, lo] = c.centre;
     const en = ([a, b]) => [(b - lo) * r * R * Math.cos(la * r), (a - la) * r * R];

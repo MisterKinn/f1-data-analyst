@@ -20,3 +20,10 @@ test('Formula E Mexico: lap line from OpenStreetMap ways matched to the official
     assert.ok(Z.tracks[id].gen3evo.doc.includes('ATTACK ZONE') && !Z.tracks[id].gen3evo.est, `${id} Attack Zone label near the line`);
   }
 });
+
+test('Formula E tracks: race direction from the printed turn numbers, lap starts at the finish label', () => {
+  for (const [id, t] of Object.entries(lapsimFeTracks)) {
+    assert.match(t.quality.start, /label on the official circuit map/, `${id} start`);
+    assert.notEqual(t.quality.startVerified, false, `${id} start placed`);
+  }
+});

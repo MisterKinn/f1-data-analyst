@@ -31,3 +31,20 @@ export function metres(line, lengthM, ds = 5) {
   const turn = kappa.reduce((a, k) => a + k * (r.ds ?? ds), 0) * 180 / Math.PI;
   return {x: r.x, y: r.y, ds: r.ds ?? ds, kappa, turn};
 }
+// Race direction and finish line of a traced lap line (owner 2026-11-17: start lines and directions were wrong): the PDF path is drawn
+// in either direction from an arbitrary point. Direction: the printed turn numbers (integer labels near the line, the nearest instance
+// of each) must run forward; majority of consecutive pairs. Start: the FINISH (or START/FINISH, else START) label projected onto the line.
+export function orientLine(line, map, lengthM) {
+  let P = line.pts; const scale = lengthM / line.lenPt;
+  const along = Q => { const c = [0]; for (let i = 1; i < Q.length; i++) c.push(c[i - 1] + Math.hypot(Q[i][0] - Q[i - 1][0], Q[i][1] - Q[i - 1][1])); return c; };
+  const near = (Q, w) => { let b = Infinity, k = 0; Q.forEach((p, i) => { const d = Math.hypot(p[0] - w.x, p[1] - (w.y - w.h / 2)); if (d < b) { b = d; k = i; } }); return {k, d: b}; };
+  let cum = along(P); const L = line.lenPt, T = {};
+  for (const w of map.words) if (/^\d{1,2}$/.test(w.t)) { const q = near(P, w); if (q.d * scale < 80 && (!T[w.t] || q.d < T[w.t].d)) T[w.t] = q; }
+  let fwd = 0, back = 0; for (let k = 1; k < 30; k++) if (T[k] && T[k + 1]) { const ds = ((cum[T[k + 1].k] - cum[T[k].k]) % L + L) % L; if (ds < L / 2) fwd++; else back++; }
+  const reversed = back > fwd; if (reversed) P = [...P].reverse();
+  const w = map.words.find(x => x.t === 'FINISH' || x.t === 'START/FINISH') || map.words.find(x => /^finish$/i.test(x.t)) || map.words.find(x => x.t === 'START');
+  let start = 'first point of the map line (not verified)', startVerified = false;
+  if (w) { const q = near(P, w), off = Math.round(q.d * scale); P = [...P.slice(q.k), ...P.slice(0, q.k)];
+    start = `"${w.t}" label on the official circuit map, ${off} m from the line`; startVerified = off <= 60 ? true : 'label far from the line'; }
+  return {line: {...line, pts: P}, reversed, turnVotes: {fwd, back}, start, startVerified};
+}

@@ -18,7 +18,7 @@
 import {readFileSync, writeFileSync} from 'node:fs';
 import {lapsimFeTracks} from '../../worker/lapsim/fe-tracks-data.js';
 import {lapsimTracks, lapsimExtraTracks} from '../../worker/lapsim/tracks-data.js';
-import {lineOf} from './learn/fe-lines.mjs';
+import {lineOf, orientLine} from './learn/fe-lines.mjs';
 
 const LEN = 60, NEAR = 80, D = 'scripts/sim/data/learn/';
 const OSM_LINES = JSON.parse(readFileSync('scripts/sim/data/tracks/fe-osm-lines.json', 'utf8')); // scripts/sim/tracks/fe-osm-lines.py
@@ -54,7 +54,7 @@ for (const [id, t] of Object.entries(lapsimFeTracks)) {
     const cs = corners(t), s = o.frac * L; if (!cs.length) continue;
     const c = cs.reduce((a, b) => Math.abs(mod(b.s - s + L / 2, L) - L / 2) < Math.abs(mod(a.s - s + L / 2, L) - L / 2) ? b : a);
     learn.push({id, rank: c.rank, off: mod(s - c.s + L / 2, L) - L / 2}); continue; }
-  const line = lineOf(m); if (!line) continue;
+  const line0 = lineOf(m); if (!line0) continue; const line = orientLine(line0, m, t.officialLengthM || 1).line; // same direction and start as the track (build-fe)
   const P = line.pts, cum = [0]; for (let i = 1; i < P.length; i++) cum.push(cum[i - 1] + Math.hypot(P[i][0] - P[i - 1][0], P[i][1] - P[i - 1][1]));
   let bi = 0, bd = Infinity; P.forEach((p, i) => { const d = Math.hypot(p[0] - w.x, p[1] - (w.y - w.h / 2)); if (d < bd) { bd = d; bi = i; } });
   const L = t.kappa.length * t.ds, s = cum[bi] / line.lenPt * L, gapM = bd * L / line.lenPt;
