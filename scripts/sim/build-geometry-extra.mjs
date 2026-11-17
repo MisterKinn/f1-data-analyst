@@ -66,8 +66,8 @@ export function buildTrack(id, spec, c) {
   if (c.grade) c = {...c, grade: o.order.map(i => o.reversed ? -c.grade[i] : c.grade[i])};
   // owner 2026-11-17 (rule 14; Wolfram check: Okayama 24.9 m vs iRacing 29.5 m, Brands Hatch flat): height from the laser-scanned iRacing
   // track where it exists. Heights are per 1/bins of the lap from the iRacing start line, so only tracks whose start comes from the
-  // iRacing line (sf-lines.json) use them; grade = slope of that height along this lap.
-  const IZ = IRZ[id] && SF[id]?.source?.startsWith('iRacing') ? IRZ[id] : null;
+  // iRacing line (sf-lines.json, placed by orient()) use them; grade = slope of that height along this lap.
+  const IZ = IRZ[id] && o.start.startsWith('iRacing') ? IRZ[id] : null;
   if (IZ) { const z = IZ.z, nb = z.length, zAt = f => { const x = ((f * nb - 0.5) % nb + nb) % nb, i = Math.floor(x), u = x - i; return z[i] * (1 - u) + z[(i + 1) % nb] * u; };
     c = {...c, grade: Array.from({length: n0}, (_, i) => Math.round(Math.atan((zAt((i + 1) / n0) - zAt((i - 1) / n0)) / (2 * c.ds)) * 1e4)), elevation: {minM: 0, maxM: Math.round(Math.max(...z))}}; spec = {...spec, heightEvidence: `4 borrowed (iRacing laser-scanned track, median of ${IZ.laps} laps)`}; }
   const width = spec.widthM || c.widthM || null, halfW = Math.max(1, (width || 12) / 2 - 1.2);
