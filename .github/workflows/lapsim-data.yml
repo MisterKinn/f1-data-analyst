@@ -35,7 +35,9 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  rebuild:
+  # Two jobs, each under the 340-minute limit (2026-11-18: the 2 h track build plus the A6 calibration, 3.5 h and still running,
+  # hit the limit in run 44112257363): `prepare` fetches and builds the tracks, `rebuild` calibrates and commits.
+  prepare:
     if: github.event_name != 'schedule' || github.repository == 'MisterKinn/f1-data-analyst'
     runs-on: ubuntu-latest
     timeout-minutes: 340
@@ -84,6 +86,38 @@ jobs:
             worker/lapsim/tracks-data.js
           retention-days: 5
           include-hidden-files: true
+      # everything the build changed (tracks, WEC poles) plus the derived cache, for the next job
+      - name: Bundle the build for the calibration job
+        run: |
+          files=$(git ls-files -m -o --exclude-standard worker scripts docs)
+          tar czf /tmp/lapsim-prep.tgz --exclude=.cache/lapsim/raw .cache/lapsim $files
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lapsim-prep
+          path: /tmp/lapsim-prep.tgz
+          retention-days: 2
+  rebuild:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Restore raw data cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .cache/lapsim/raw
+          key: lapsim-raw-v1-${{ github.run_id }}
+          restore-keys: lapsim-raw-v1-
+      - uses: actions/download-artifact@v4
+        with:
+          name: lapsim-prep
+          path: /tmp
+      - name: Unpack the build
+        run: tar xzf /tmp/lapsim-prep.tgz
+      - run: npm ci --omit=dev --ignore-scripts
       # official recharge limits (FIA PU documents) and 2027/28 + FE Gen4 rule values feed the fit
       - name: Read FIA energy documents and regulation values
         continue-on-error: true
