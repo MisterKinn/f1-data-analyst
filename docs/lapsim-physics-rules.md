@@ -489,7 +489,10 @@ values below. Layer 4 (a simulator, not a real car): every channel stays labelle
 - BoPSim: unchanged by the channel and surface constants (it uses lap times only). The braking envelope below is the one item that
   would move lap times, so it runs as a gated experiment (lapsim-exp/brake-env-2026-11-17: BE0 control, BE1 pooled iRacing GTP
   envelope 8.63 + 0.003234·v² m/s², BE2 +15 %); BoP is refitted only if a variant passes the gate.
-- Finding for the physics model (not applied): the iRacing GTP peak-decel envelope is 0.85 g + 0.003·v² (about 3.0 g at 300 km/h);
+  Result (run 44043761033, leave one track out, WEC holdout RMS %): LMH 2025 1.60 / 1.48 / 1.54, LMH 2026 1.04 / 1.15 / 1.02,
+  LMDh 2025 1.24 / 1.09 / 1.30, LMDh 2026 1.07 / 0.91 / 0.95 (BE0 / BE1 / BE2); hypercar mean 1.24 / 1.16 / 1.20 %. F1 and LMGT3
+  unchanged. BE1 applied in the A6 refit (2026-11-17): the Hypercar classes carry `brakeEnv` [8.63, 0.003234] ("model").
+- Finding for the physics model (applied as above): the iRacing GTP peak-decel envelope is 0.85 g + 0.003·v² (about 3.0 g at 300 km/h);
   the simulated Hypercar at Spa needs up to about 183 bar with this gain, i.e. well above 3 g at top speed. This points at the open
   "downforce at the bound" problem of section 8 and needs a gated experiment, not a channel fix.
 

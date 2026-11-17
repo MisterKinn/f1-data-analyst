@@ -104,6 +104,9 @@ jobs:
           # WEC 1.432 -> 1.210 %, F1 1.008 -> 1.075 %; the owner accepts the F1 cost of following the real 2026 PU rules)
           LAPSIM_FIA_ZONES: 'on'
           LAPSIM_PU_QUALI: 'on'
+          # Hypercar (LMH/LMDh) peak braking capped at the iRacing GTP envelope 8.63 + 0.003234 v^2 m/s^2 (owner rule 14: learned from
+          # iRacing, "model"). Experiment 44043761033: hypercar holdout mean 1.24 -> 1.16 % (BE0 -> BE1; 1.15x envelope BE2: 1.20 %)
+          LAPSIM_BRAKE_ENV_HYPER: '8.63,0.003234'
         run: node scripts/sim/calibrate.mjs
       # TracingInsights race laps 2018 on; reference = mean of the best 8 qualifying laps (script defaults)
       - name: Fit race pace (fuel, tyres, pit loss)
