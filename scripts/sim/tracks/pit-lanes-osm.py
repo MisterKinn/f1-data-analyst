@@ -9,7 +9,7 @@ import numpy as np
 from scipy.spatial import cKDTree
 
 D = sys.argv[1]; R = 6371008.8; END_MAX_M = 35
-PIT = re.compile(r'pit|box', re.I)
+PIT = re.compile(r'\bpit(s|lane|_lane|stop|straat|strasse|straße|ten)?\b|\bbox(engasse)?\b|\bvoie des stands\b|\bcorsia box\b', re.I)   # "Pit Lane", service=pit; not Capital, Hospital, Pitts Avenue
 # Circuits with two pit lanes (owner 2026-11-17): the first lane is the F1 one; `alt` is the other, with the series that use it
 # ('alt': only the other lane, 'both': both lanes; a series not listed uses the main lane). A lane is picked by where its entry
 # joins the lap (metres from the line). Input since 2026-11-17: probe/osm-pits-all plus probe/osm-pits-fe (Formula E, Jarama).
@@ -19,6 +19,9 @@ SERIES = {
     'silverstone': {'main': (4900, 5500), 'alt': {'name': 'National pits', 'mainName': 'Wing pits', 'entry': (2100, 2500), 'use': {'wec': 'alt', 'gt3': 'alt'},
                     'note': 'F1: Wing pits (Club to Abbey); most other series: National pits (Woodcote to Copse)'}},
 }
+# Circuits where OSM also maps other pit roads (Le Mans: the motorcycle pit exit to the Dunlop chicane, the Maison Blanche kart pits):
+# only ways with these names; their pieces sit a few metres apart, so they are chained with a wider gap (m)
+ONLY = {'le-mans': (re.compile(r'^(pit entry|pit lane|pit exit)$', re.I), 12)}
 SEED_ID = {'valencia-ricardo-tormo': 'ricardo-tormo'}   # probe seeds named after the track request
 FILES = {}
 for f in sorted(os.listdir(D)):
@@ -31,6 +34,9 @@ const o = {}; for (const id of process.argv.slice(1)) { if (!T[id]) continue; co
 MID = json.loads(dump)
 RAWC = {k: np.array(v['raw']) for k, v in MID.items()}
 START = json.load(open('scripts/sim/data/tracks/osm-fit-start.json')) if os.path.exists('scripts/sim/data/tracks/osm-fit-start.json') else {}
+# pose of our drawn line from iRacing GPS laps (laser-scanned tracks), where OSM maps only part of the lap as raceway (Le Mans, Bathurst):
+# scripts/sim/data/tracks/gps-fit.json, fitted on lineData(id).mid minus its centroid (only derived pose numbers are stored)
+GPS = json.load(open('scripts/sim/data/tracks/gps-fit.json')) if os.path.exists('scripts/sim/data/tracks/gps-fit.json') else {}
 
 def is_pit(w):
     t = w['tags']; s = ' '.join(str(t.get(k, '')) for k in ('name', 'service', 'raceway', 'name:en'))
@@ -50,7 +56,7 @@ def icp(S, T, tr, Rm, t, it, trim=0.8):
         if np.linalg.det(Q) < 0: Vt[1] *= -1; Q = Vt.T @ U.T
         Rm = Q @ Rm; t = Q @ (t - ma) + mb
     d, _ = tr.query(S @ Rm.T + t); return d, Rm, t
-def chains(W):
+def chains(W, gap=3):
     segs = [list(map(tuple, g)) for g in W]; used = set(); out = []; dd = lambda a, b: math.hypot(a[0] - b[0], a[1] - b[1])
     for s in range(len(segs)):
         if s in used: continue
@@ -60,10 +66,10 @@ def chains(W):
             for t in range(len(segs)):
                 if t in used: continue
                 g = segs[t]
-                if dd(path[-1], g[0]) < 3: path = path + g[1:]
-                elif dd(path[-1], g[-1]) < 3: path = path + g[:-1][::-1]
-                elif dd(path[0], g[-1]) < 3: path = g[:-1] + path
-                elif dd(path[0], g[0]) < 3: path = g[1:][::-1] + path
+                if dd(path[-1], g[0]) < gap: path = path + g[1:]
+                elif dd(path[-1], g[-1]) < gap: path = path + g[:-1][::-1]
+                elif dd(path[0], g[-1]) < gap: path = g[:-1] + path
+                elif dd(path[0], g[0]) < gap: path = g[1:][::-1] + path
                 else: continue
                 used.add(t); grown = True
         p = np.array(path); out.append((p, float(np.hypot(*np.diff(p, axis=0).T).sum())))
@@ -73,10 +79,12 @@ out, report = {}, []
 for id in ids:
     if id not in MID: report.append(f'{id}: no map line'); continue
     o = json.load(open(f'{D}/{FILES[id]}')); seed = o['seed']
-    pitW = [local(seed, w['g']) for w in o['ways'] if is_pit(w) and len(w['g']) > 1]
+    only = ONLY.get(id)
+    pitW = [local(seed, w['g']) for w in o['ways'] if is_pit(w) and len(w['g']) > 1 and (not only or only[0].match(w['tags'].get('name', '')))]
     race = [local(seed, w['g']) for w in o['ways'] if not is_pit(w) and w['tags'].get('highway') == 'raceway' and len(w['g']) > 1]
     if not pitW: report.append(f'{id}: no pit way in OpenStreetMap'); continue
-    if not race: report.append(f'{id}: no raceway ways to fit on'); continue
+    if not race and id not in GPS: report.append(f'{id}: no raceway ways to fit on'); continue
+    if not race: race = pitW
     T = np.vstack([dens(g) for g in race]); tr = cKDTree(T)
     M = np.array(MID[id]['mid']); cM = M.mean(0); S = M - cM; Ss = S[::4]; best = None
     for deg in range(0, 360, 10):
@@ -90,6 +98,10 @@ for id in ids:
         Rm0 = np.array([[math.cos(st0['th']), -math.sin(st0['th'])], [math.sin(st0['th']), math.cos(st0['th'])]])
         best = (0, Rm0, np.array(st0['T']) + (cM - RAWC[id]) @ Rm0.T)
     d, Rm, t = icp(S, T, tr, best[1], best[2], 40, 0.9); med = float(np.median(d))
+    g = GPS.get(id)
+    if g and med > 3:   # the whole-lap OSM fit is poor: take the GPS pose (a fit on the stretch around the line can slide along the straight)
+        Rm = np.array([[math.cos(g['th']), -math.sin(g['th'])], [math.sin(g['th']), math.cos(g['th'])]]); t = np.array(g['T'], float); med = g['medianM']
+        report.append(f'{id}: pose from iRacing GPS laps (median {med} m)')
     if med > 6:   # a warped map (map-warp-osm.py) no longer fits the pose stored for its raw line: search the whole area, as osm-fit-start.py
         lo, hi = T.min(0), T.max(0); step = max(250, float((hi - lo).max()) / 16); Sq = S[::6]; best = None
         for deg in range(0, 360, 10):
@@ -100,15 +112,29 @@ for id in ids:
                     if best is None or q < best[0]: best = (q, Rm2, t2)
         d2, Rm2, t2 = icp(S, T, tr, best[1], best[2], 40, 0.9)
         if float(np.median(d2)) < med: d, Rm, t, med = d2, Rm2, t2, float(np.median(d2))
+    if med > 6:   # street and part-public circuits: OSM maps only part of the lap as raceway; fit the stretch around the line (pits sit there)
+        sl = np.arange(len(M)) / len(M) * MID[id]['len']; near = (sl < 1500) | (sl > MID[id]['len'] - 1500); Sn = M[near] - M[near].mean(0)
+        lo, hi = T.min(0), T.max(0); step = max(150, float((hi - lo).max()) / 20); best = None
+        for deg in range(0, 360, 10):
+            th = math.radians(deg); R0 = np.array([[math.cos(th), -math.sin(th)], [math.sin(th), math.cos(th)]])
+            for ox in np.arange(lo[0], hi[0] + 1, step):
+                for oy in np.arange(lo[1], hi[1] + 1, step):
+                    d2, Rm2, t2 = icp(Sn[::4], T, tr, R0, np.array([ox, oy]), 6); q = np.quantile(d2, .5)
+                    if best is None or q < best[0]: best = (q, Rm2, t2)
+        d2, Rm2, t2 = icp(Sn, T, tr, best[1], best[2], 40, 0.9)
+        if float(np.median(d2)) < 6: Rm, t, med = Rm2, t2 + (cM - M[near].mean(0)) @ Rm2.T, float(np.median(d2)); report.append(f'{id}: fitted on the 3 km around the line')
     if med > 6: report.append(f'{id}: our line does not fit the OSM raceways (median {med:.1f} m)'); continue
     inv = lambda Q: (Q - t) @ Rm + cM          # cloud frame -> our map frame
     trM = cKDTree(M); n = len(M); L = MID[id]['len']; kept = None
     cands = []
-    for p, ln in chains(pitW)[:10 if id in SERIES else 4]:
+    for p, ln in chains(pitW, ONLY[id][1] if id in ONLY else 3)[:10 if id in SERIES else 4]:
         P = inv(dens(p, 4.0)); da, ia = trM.query(P[0]); db, ib = trM.query(P[-1])
         if da > END_MAX_M or db > END_MAX_M or ln < 150 or ln > 2500: continue
         sA, sB = ia / n * L, ib / n * L
-        if (sB - sA) % L > L / 2: P = P[::-1]; sA, sB = sB, sA   # entry is reached first: before the line when the pits sit beside it
+        if (sB - sA) % L > L / 2: P = P[::-1]; sA, sB = sB, sA; ia, ib = ib, ia   # entry is reached first: before the line when the pits sit beside it
+        # both ends on the track (owner 2026-11-17: the Sebring entry stopped short): add the nearest line point when the end is off it
+        if np.hypot(*(P[0] - M[ia])) > 1: ln += float(np.hypot(*(P[0] - M[ia]))); P = np.vstack([M[ia], P])
+        if np.hypot(*(P[-1] - M[ib])) > 1: ln += float(np.hypot(*(P[-1] - M[ib]))); P = np.vstack([P, M[ib]])
         cands.append({'entryS': round(sA), 'exitS': round(sB), 'lengthM': round(ln), 'fitMedianM': round(med, 1), 'pts': [[round(x, 1), round(y, 1)] for x, y in P]})
         if id not in SERIES: break
     if id in SERIES:

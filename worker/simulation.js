@@ -174,15 +174,21 @@ function renderMap(map, v, opts) {
     const cx = E ? E.left.map((p, i) => (p[0] + E.right[i][0]) / 2) : xs, cy = E ? E.left.map((p, i) => (p[1] + E.right[i][1]) / 2) : ys, hw = E ? E.left.map((p, i) => Math.hypot(p[0] - E.right[i][0], p[1] - E.right[i][1]) / 2) : null;
     let area2 = 0; if (E) for (let i = 0; i < m2; i++) { const j = (i + 1) % m2; area2 += cx[i] * cy[j] - cx[j] * cy[i]; }
     const out = (E ? area2 : area) > 0 ? -1 : 1, off = sw * 2.3, idx = s0 => ((Math.round(s0 / opts.length * m2) % m2) + m2) % m2, nn = m2;
-    const at = (i, k) => { const p = (i - 2 + nn) % nn, q = (i + 2) % nn, tx = cx[q] - cx[p], ty = cy[q] - cy[p], l = Math.hypot(tx, ty) || 1, o = (hw ? hw[i] : 0) + off * k; return [cx[i] + out * -ty / l * o, cy[i] + out * tx / l * o]; };
+    const at = (i, k, sd = out) => { const p = (i - 2 + nn) % nn, q = (i + 2) % nn, tx = cx[q] - cx[p], ty = cy[q] - cy[p], l = Math.hypot(tx, ty) || 1, o = (hw ? hw[i] : 0) + off * k; return [cx[i] + sd * -ty / l * o, cy[i] + sd * tx / l * o]; };
+    // owner 2026-11-17 (Baku: "the line overlaps the opposite part"): a band goes on the side with room. Clearance = distance from the
+    // band to any other part of the track (more than ~60 points away along the lap) minus that part's half width; the outer side wins ties.
+    const room = (a, b, sd) => { let r = Infinity; for (let i = a, g = 0; g <= nn; g++, i = (i + 1) % nn) { const [x, y] = at(i, 1, sd);
+      for (let j = 0; j < nn; j++) { const di = Math.abs(i - j), dl = Math.min(di, nn - di); if (dl < 60) continue; const e = Math.hypot(cx[j] - x, cy[j] - y) - (hw ? hw[j] : 0); if (e < r) r = e; }
+      if (i === b) break; } return r; };
     const P = ([x, y]) => (x - minX + pad).toFixed(1) + ' ' + (maxY - y + pad).toFixed(1);
     const zBoxes = [];
     for (const z of opts.zones.list) {
-      const a = idx(z.from), b = idx(z.to), pts = []; for (let i = a, g = 0; g <= nn; g++, i = (i + 1) % nn) { pts.push(at(i, 1)); if (i === b) break; }
+      const a = idx(z.from), b = idx(z.to), ro = room(a, b, out), sd = ro >= off * 1.5 || ro >= room(a, b, -out) ? out : -out, pts = [];
+      for (let i = a, g = 0; g <= nn; g++, i = (i + 1) % nn) { pts.push(at(i, 1, sd)); if (i === b) break; }
       if (pts.length < 2) continue;
       // zone and OT labels never overlap each other: step further out until the box is free
-      let k = 2.2, lab = at(a, k), fz = sw * 2.4, bx = () => { const [x, y] = P(lab).split(' ').map(Number), hw = z.label.length * fz * 0.32; return [x - hw, y - fz * 0.6, x + hw, y + fz * 0.6]; };
-      while (k < 8 && zBoxes.some(o => !(bx()[2] < o[0] || bx()[0] > o[2] || bx()[3] < o[1] || bx()[1] > o[3]))) { k += 1.4; lab = at(a, k); }
+      let k = 2.2, lab = at(a, k, sd), fz = sw * 2.4, bx = () => { const [x, y] = P(lab).split(' ').map(Number), hw = z.label.length * fz * 0.32; return [x - hw, y - fz * 0.6, x + hw, y + fz * 0.6]; };
+      while (k < 8 && zBoxes.some(o => !(bx()[2] < o[0] || bx()[0] > o[2] || bx()[3] < o[1] || bx()[1] > o[3]))) { k += 1.4; lab = at(a, k, sd); }
       zBoxes.push(bx());
       // shown part as a dash on a unit-length path, so a change of option can animate it (vs = start of the shown part, show = drawn at all)
       const vs = z.vs || 0, on = z.show !== false, zk = z.key ? ' data-zk="' + z.key + '"' : '';
@@ -198,11 +204,22 @@ function renderMap(map, v, opts) {
   }
   let corners = '', i0 = Math.round((opts.start || 0) * n) % n;
   // official corner names where the circuit has no official numbering (owner 2026-11-17), else the turn numbers
+  // owner 2026-11-17 (Le Mans: "names too large and repeated"): corners of one named complex (Ford, Dunlop Chicane) share one label at
+  // their middle; names are drawn at about half the number size; a name that would cover another label moves up until it is free (numbers stay put).
+  const groups = [];
   for (const c of opts.names?.length ? opts.names : opts.corners || []) {
-    const i = Math.min(n - 1, Math.round(c.s / opts.length * n)), lab = c.name != null ? String(c.name).replace(/[<>&"]/g, '') : c.number + (c.letter || '');
-    corners += '<text x="' + px(i) + '" y="' + py(i) + '" dy="' + (-sw * 2.2).toFixed(1) + '" class="ls-corner' + (c.name != null ? ' ls-corner-nm' : '') + '">' + lab + '</text>';
+    const g = c.name != null && groups.find(o => o.name === c.name && Math.abs(c.s - o.s2) < 900);
+    if (g) g.s2 = c.s; else groups.push({...c, s1: c.s, s2: c.s});
   }
-  return '<svg class="ls-map" viewBox="0 0 ' + vw.toFixed(0) + ' ' + vh.toFixed(0) + '" role="img" aria-label="' + opts.label + '">' + band + '<g fill="none" stroke-width="' + (L ? sw * 0.45 : sw) + '" stroke-linecap="round" stroke-linejoin="round">' + paths + '</g>' + zones + marks + '<rect x="' + (px(i0) - sw * 2) + '" y="' + (py(i0) - sw * 2) + '" width="' + (sw * 4) + '" height="' + (sw * 4) + '" class="ls-start"/>' + corners + '<style>.ls-corner{font-size:' + (sw * 3.4).toFixed(1) + 'px}</style></svg>';
+  const cBoxes = [], fN = sw * 3.4, fT = sw * 1.9;
+  for (const c of groups) {
+    const i = Math.min(n - 1, Math.round((c.s1 + c.s2) / 2 / opts.length * n)), nm = c.name != null, lab = nm ? String(c.name).replace(/[<>&"]/g, '') : c.number + (c.letter || '');
+    const fs = nm ? fT : fN, w = lab.length * fs * 0.55, x = +px(i), box = dy => [x - w / 2, +py(i) + dy - fs, x + w / 2, +py(i) + dy];
+    let dy = -sw * 2.2; while (nm && dy > -sw * 30 && cBoxes.some(o => { const b = box(dy); return !(b[2] < o[0] || b[0] > o[2] || b[3] < o[1] || b[1] > o[3]); })) dy -= fs * 1.1;
+    cBoxes.push(box(dy));
+    corners += '<text x="' + px(i) + '" y="' + py(i) + '" dy="' + dy.toFixed(1) + '" class="ls-corner' + (nm ? ' ls-corner-nm' : '') + '">' + lab + '</text>';
+  }
+  return '<svg class="ls-map" viewBox="0 0 ' + vw.toFixed(0) + ' ' + vh.toFixed(0) + '" role="img" aria-label="' + opts.label + '">' + band + '<g fill="none" stroke-width="' + (L ? sw * 0.45 : sw) + '" stroke-linecap="round" stroke-linejoin="round">' + paths + '</g>' + zones + marks + '<rect x="' + (px(i0) - sw * 2) + '" y="' + (py(i0) - sw * 2) + '" width="' + (sw * 4) + '" height="' + (sw * 4) + '" class="ls-start"/>' + corners + '<style>.ls-corner{font-size:' + (sw * 3.4).toFixed(1) + 'px}.ls-corner.ls-corner-nm{font-size:' + (sw * 1.9).toFixed(1) + 'px}</style></svg>';
 }
 
 function renderTrace(ds, series, opts) {

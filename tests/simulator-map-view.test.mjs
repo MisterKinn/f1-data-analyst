@@ -41,3 +41,13 @@ test('Sakhir 2026 zones come from the Bahrain pre-season test map, not the Sepan
 test('Bahrain Outer opens with its long straight flat along the bottom (owner 2026-11-15)', () => {
   assert.deepEqual(VIEW['sakhir-outer'], {longest: 'bottom'});
 });
+
+test('corner names: one label per named complex, smaller than turn numbers (owner 2026-11-17, Le Mans)', async () => {
+  const {simulationPage} = await import('../worker/simulation.js');
+  const svg = simulationPage({track: 'le-mans'}, 'en').match(/<svg class="ls-map"[\s\S]*?<\/svg>/)[0];
+  const names = [...svg.matchAll(/class="ls-corner ls-corner-nm">([^<]+)</g)].map(m => m[1]);
+  assert.ok(names.length > 5);
+  assert.equal(new Set(names).size, names.length, names.join(' | '));
+  const fs = k => +svg.match(new RegExp('\\.' + k + '\\{font-size:([\\d.]+)px'))[1];
+  assert.ok(fs('ls-corner\\.ls-corner-nm') < fs('ls-corner') * 0.7);
+});
