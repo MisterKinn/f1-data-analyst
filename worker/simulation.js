@@ -33,6 +33,7 @@ import {lapsimTrackNorth} from './lapsim/track-north-data.js';
 import {lapsimTrackView} from './lapsim/track-view-data.js';
 import {lapsimCornerNumbers} from './lapsim/corner-numbers-data.js';
 import {lapsimCornerNames} from './lapsim/corner-names-data.js';
+import {lapsimStraights, lapsimNamesKo} from './lapsim/place-names.js';
 import {lapsimPitLanes} from './lapsim/pit-lane-data.js';
 import {lapsimPitSpeed} from './lapsim/pit-speed-data.js';
 import {TRACK_STEPS, STEP_REPAIR_M} from './lapsim/track-steps.js';
@@ -54,7 +55,7 @@ const T = {
   ko: {
     title: '랩 시뮬레이터', h1: '2026–2028 F1 머신으로 한 바퀴를 계산합니다',
     lead: '실제 예선 랩으로 보정한 물리 모델이 지금의 트랙 형상, 예선 날씨, FIA가 공지한 서킷 변경 사항을 반영해 랩타임과 속도를 계산합니다.',
-    track: '트랙', series: '시리즈', car: '규정 · 클래스', spec: '대회별 스펙', evoNone: '이 차는 Evo 데이터가 없습니다', eventFor: '이 차의 대회: {n} ({a} – {b}) · 세션 날씨: {y} 시즌', compare: '비교', soonShort: '준비 중',
+    track: '트랙', series: '시리즈', car: '규정 · 클래스', model: '차종', spec: '대회별 스펙', evoNone: '이 차는 Evo 데이터가 없습니다', eventFor: '이 차의 대회: {n} ({a} – {b}) · 세션 날씨: {y} 시즌', compare: '비교', soonShort: '준비 중',
     seriesNames: {f1: 'F1', wec: 'Hypercar/GTP', fe: '포뮬러 E', gt3: 'GT3 (차종별)'}, none: '없음', realAero: '실제 {y} 예선: {s}', realAeroParts: {low: '로우그립 컨디션 (Alt SM 존, 부분 작동)', otOff: '오버테이크 꺼짐', drsOff: 'DRS 꺼짐'}, conditions: '조건', sm: 'SM 존', smOpt: {normal: '기본', alt: 'Alt (로우그립)', off: '끔'}, ot: '오버테이크', drs: 'DRS', onOff: ['켬', '끔'], real: '실제 예선 조건', manual: '직접 설정',
     lap: '계산된 랩타임', vsPole: '실제 폴', realLap: '실제 랩', wecBest: '실제 최고 랩', raceBest: '실제 레이스 최고 랩', errRange: '오차 범위(1σ)', conf: {medium: '신뢰도 보통', low: '신뢰도 낮음', 'very-low': '신뢰도 매우 낮음', 'not-fitted': '실측 보정 전'},
     soon: '준비 중: 기타 GT3(IMSA GTD·DTM·SP9), 포뮬러 E Gen4. 같은 보정 규칙을 쓰며 데이터 연결 후 추가됩니다.', sector: '섹터', vmax: '최고 속도', vmin: '최저 속도', energy: '배치 에너지', clip: '배치 상한 속도',
@@ -86,7 +87,7 @@ const T = {
   en: {
     title: 'Lap simulator', h1: 'Simulate a lap in a 2026–2028 F1 car',
     lead: 'A physics model calibrated on real qualifying laps works out lap time and speed on today’s track layout, with qualifying weather and the circuit changes the FIA has announced.',
-    track: 'Track', series: 'Series', car: 'Rules · class', spec: 'Series spec', evoNone: 'No Evo data for this car', eventFor: 'Event for this car: {n} ({a} – {b}) · session weather: {y} season', compare: 'Compare', soonShort: 'coming soon',
+    track: 'Track', series: 'Series', car: 'Rules · class', model: 'Car model', spec: 'Series spec', evoNone: 'No Evo data for this car', eventFor: 'Event for this car: {n} ({a} – {b}) · session weather: {y} season', compare: 'Compare', soonShort: 'coming soon',
     seriesNames: {f1: 'F1', wec: 'Hypercar/GTP', fe: 'Formula E', gt3: 'GT3 (by car model)'}, none: 'None', realAero: 'Real {y} qualifying: {s}', realAeroParts: {low: 'Low Grip Conditions (Alt SM zones, partial activation)', otOff: 'Overtake disabled', drsOff: 'DRS disabled'}, conditions: 'Conditions', sm: 'SM zones', smOpt: {normal: 'Normal', alt: 'Alt (low grip)', off: 'Off'}, ot: 'Overtake', drs: 'DRS', onOff: ['On', 'Off'], real: 'Real qualifying conditions', manual: 'Set my own',
     lap: 'Simulated lap time', vsPole: 'Real pole', realLap: 'Real lap', wecBest: 'Real best lap', raceBest: 'Real fastest race lap', errRange: 'Error range (1σ)', conf: {medium: 'medium confidence', low: 'low confidence', 'very-low': 'very low confidence', 'not-fitted': 'not fitted to real laps'},
     soon: 'Formula E: Gen2, Gen3 and Gen3 Evo are learned from Al Kamel laps; Gen4 is a prior from the 2026-27 regulations until its first laps.', sector: 'Sector', vmax: 'Top speed', vmin: 'Lowest speed', energy: 'Energy deployed', clip: 'Deploy cut-off',
@@ -162,6 +163,11 @@ function renderMap(map, v, opts) {
     const fl = () => { if (r.length > 1) paths += '<path class="ls-line-seg" d="M' + r.map(i => X(L.pts[i]) + ' ' + Y(L.pts[i])).join('L') + '" stroke="color-mix(in oklab,var(--mint) ' + (c * 20) + '%,var(--sim-slow))"/>'; };
     for (let i = 1; i <= m; i++) { const k = i % m; r.push(k); if (i === m || bk(k) !== c) { fl(); r = [k]; c = bk(k); } }
     // braking / apex / full-throttle dots removed (owner 2026-11-15: too busy)
+    // Safety Car lines (owner 2026-11-17): exactly the track width, yellow, a tiny white label along the line; only readable zoomed in
+    for (const q of opts.sc || []) { const k = L.left.length, j = Math.round(q.s / opts.length * k) % k, a = L.left[j], e = L.right[j], p = L.pts[Math.round(q.s / opts.length * m) % m];
+      // the label sits between the racing line and the farther edge, written along the line
+      const far = Math.hypot(p[0] - a[0], p[1] - a[1]) > Math.hypot(p[0] - e[0], p[1] - e[1]) ? a : e, c = [(p[0] + far[0]) / 2, (p[1] + far[1]) / 2], ang = Math.atan2(-(e[1] - a[1]), e[0] - a[0]) * 180 / Math.PI, up = ang > 90 || ang < -90 ? ang + 180 : ang;
+      band += '<line class="ls-sc" x1="' + X(a) + '" y1="' + Y(a) + '" x2="' + X(e) + '" y2="' + Y(e) + '" stroke-width="' + (sw * 0.16).toFixed(2) + '"/><text class="ls-sc-t" x="' + X(c) + '" y="' + Y(c) + '" font-size="' + (sw * 0.12).toFixed(2) + '" style="transform-box:fill-box;transform-origin:center" transform="rotate(' + up.toFixed(1) + ')">' + q.label + '</text>'; }
   } else {
     for (let i = 1; i < n; i++) { run.push(i); const nb = bucket(i); if (nb !== b) { flush(); run = [i]; b = nb; } }
     run.push(0); flush();
@@ -184,13 +190,18 @@ function renderMap(map, v, opts) {
       if (i === b) break; } return r; };
     const P = ([x, y]) => (x - minX + pad).toFixed(1) + ' ' + (maxY - y + pad).toFixed(1);
     const zBoxes = [];
+    // a zone or OT label never sits on another part of the track (owner 2026-11-17 audit: Silverstone "SM 2" on the Loop): model units, y up
+    const onTrack = (x, y, a, b) => { for (let j = 0; j < nn; j++) { const e = (hw ? hw[j] : 0) + sw * 0.4; if (Math.abs(cx[j] - x) < a + e && Math.abs(cy[j] - y) < b + e) return true; } return false; };
+    const free = (bx, pt, a, b) => !zBoxes.some(o => !(bx[2] < o[0] || bx[0] > o[2] || bx[3] < o[1] || bx[1] > o[3])) && !onTrack(pt[0], pt[1], a, b);
     for (const z of opts.zones.list) {
       const a = idx(z.from), b = idx(z.to), ro = room(a, b, out), sd = ro >= off * 1.5 || ro >= room(a, b, -out) ? out : -out, pts = [];
       for (let i = a, g = 0; g <= nn; g++, i = (i + 1) % nn) { pts.push(at(i, 1, sd)); if (i === b) break; }
       if (pts.length < 2) continue;
       // zone and OT labels never overlap each other: step further out until the box is free
       let k = 2.2, lab = at(a, k, sd), fz = sw * 2.4, bx = () => { const [x, y] = P(lab).split(' ').map(Number), hw = z.label.length * fz * 0.32; return [x - hw, y - fz * 0.6, x + hw, y + fz * 0.6]; };
-      while (k < 8 && zBoxes.some(o => !(bx()[2] < o[0] || bx()[0] > o[2] || bx()[3] < o[1] || bx()[1] > o[3]))) { k += 1.4; lab = at(a, k, sd); }
+      const zw = z.label.length * fz * 0.32, zh = fz * 0.6;
+      search: for (const s2 of [sd, -sd]) for (let k2 = 2.2; k2 < 8; k2 += 1.4) { lab = at(a, k2, s2); if (free(bx(), lab, zw, zh)) break search; lab = null; }
+      if (!lab) lab = at(a, k, sd);
       zBoxes.push(bx());
       // shown part as a dash on a unit-length path, so a change of option can animate it (vs = start of the shown part, show = drawn at all)
       const vs = z.vs || 0, on = z.show !== false, zk = z.key ? ' data-zk="' + z.key + '"' : '';
@@ -200,7 +211,8 @@ function renderMap(map, v, opts) {
     const across = (i, dd) => { const p = (i - 2 + nn) % nn, q = (i + 2) % nn, tx = cx[q] - cx[p], ty = cy[q] - cy[p], l = Math.hypot(tx, ty) || 1; return [cx[i] + out * -ty / l * dd, cy[i] + out * tx / l * dd]; }, half = i => (hw ? hw[i] : 0) + off * 0.565;
     for (const m of opts.zones.marks || []) { const k = idx(m.s), a = P(across(k, -half(k))).split(' '), b = P(across(k, half(k))).split(' '), fm = sw * 2, hw = m.label.length * fm * 0.32; let o = 2.7, r = P(at(k, o)).split(' ').map(Number);
       const box = () => [r[0] - hw, r[1] - fm * 0.6, r[0] + hw, r[1] + fm * 0.6], busy = () => zBoxes.some(q => !(box()[2] < q[0] || box()[0] > q[2] || box()[3] < q[1] || box()[1] > q[3]));
-      while (o < 9 && busy()) { o += 1.3; r = P(at(k, o)).split(' ').map(Number); } zBoxes.push(box());
+      let ok = false; mark: for (const s2 of [out, -out]) for (let o2 = 2.7; o2 < 9; o2 += 1.3) { const pt = at(k, o2, s2); r = P(pt).split(' ').map(Number); if (!busy() && !onTrack(pt[0], pt[1], hw, fm * 0.6)) { ok = true; break mark; } }
+      if (!ok) { r = P(at(k, o)).split(' ').map(Number); while (o < 9 && busy()) { o += 1.3; r = P(at(k, o)).split(' ').map(Number); } } zBoxes.push(box());
       const mk = ' data-zk="m' + m.kind + m.label.replace(/\W/g, '') + '" style="opacity:' + (m.show === false ? 0 : 1) + '"';
       zones += '<line class="ls-zone-m ls-zone-m-' + m.kind + '"' + mk + ' x1="' + a[0] + '" y1="' + a[1] + '" x2="' + b[0] + '" y2="' + b[1] + '" stroke-width="' + (sw * 0.2).toFixed(1) + '"/><text class="ls-zone-mt ls-zone-mt-' + m.kind + '"' + mk + ' x="' + r[0] + '" y="' + r[1] + '" font-size="' + (sw * 2).toFixed(1) + '">' + m.label + '</text>'; }
   }
@@ -208,20 +220,21 @@ function renderMap(map, v, opts) {
   // official corner names where the circuit has no official numbering (owner 2026-11-17), else the turn numbers
   // owner 2026-11-17 (Le Mans: "names too large and repeated"): corners of one named complex (Ford, Dunlop Chicane) share one label at
   // their middle; names are drawn at about half the number size; a name that would cover another label moves up until it is free (numbers stay put).
-  const groups = [];
-  for (const c of opts.names?.length ? opts.names : opts.corners || []) {
+  const groups = [], items = (opts.names?.length ? opts.names : (opts.corners || []).map(c => ({number: c.number, letter: c.letter, s: c.s}))).concat(opts.straights || []);
+  for (const c of items) {
     const g = c.name != null && groups.find(o => o.name === c.name && Math.abs(c.s - o.s2) < 900);
     if (g) g.s2 = c.s; else groups.push({...c, s1: c.s, s2: c.s});
   }
-  const cBoxes = [], fN = sw * 3.4, fT = sw * 1.9;
+  const cBoxes = [], fN = sw * 2.4, fT = sw * 1.75;
   for (const c of groups) {
-    const i = Math.min(n - 1, Math.round((c.s1 + c.s2) / 2 / opts.length * n)), nm = c.name != null, lab = nm ? String(c.name).replace(/[<>&"]/g, '') : c.number + (c.letter || '');
+    const i = Math.min(n - 1, Math.round((c.s1 + c.s2) / 2 / opts.length * n)), nm = c.name != null, num = !nm && opts.renumber ? opts.renumber(c.number) : c.number;
+    const lab = nm ? String(c.name).replace(/[<>&"]/g, '') : num + (c.letter || ''), orig = !nm && num !== c.number ? ' data-orig="' + c.number + '"' : '';
     const fs = nm ? fT : fN, w = lab.length * fs * 0.55, x = +px(i), box = dy => [x - w / 2, +py(i) + dy - fs, x + w / 2, +py(i) + dy];
     let dy = -sw * 2.2; while (nm && dy > -sw * 30 && cBoxes.some(o => { const b = box(dy); return !(b[2] < o[0] || b[0] > o[2] || b[3] < o[1] || b[1] > o[3]); })) dy -= fs * 1.1;
     cBoxes.push(box(dy));
-    corners += '<text x="' + px(i) + '" y="' + py(i) + '" dy="' + dy.toFixed(1) + '" class="ls-corner' + (nm ? ' ls-corner-nm' : '') + '">' + lab + '</text>';
+    corners += '<text x="' + px(i) + '" y="' + py(i) + '" dy="' + dy.toFixed(1) + '" class="ls-corner' + (nm ? ' ls-corner-nm' : '') + (c.straight ? ' ls-straight' : '') + '"' + orig + '>' + lab + '</text>';
   }
-  return '<svg class="ls-map" viewBox="0 0 ' + vw.toFixed(0) + ' ' + vh.toFixed(0) + '" role="img" aria-label="' + opts.label + '">' + band + '<g fill="none" stroke-width="' + (L ? sw * 0.45 : sw) + '" stroke-linecap="round" stroke-linejoin="round">' + paths + '</g>' + zones + marks + '<rect x="' + (px(i0) - sw * 2) + '" y="' + (py(i0) - sw * 2) + '" width="' + (sw * 4) + '" height="' + (sw * 4) + '" class="ls-start"/>' + corners + '<style>.ls-corner{font-size:' + (sw * 3.4).toFixed(1) + 'px}.ls-corner.ls-corner-nm{font-size:' + (sw * 1.9).toFixed(1) + 'px}</style></svg>';
+  return '<svg class="ls-map" viewBox="0 0 ' + vw.toFixed(0) + ' ' + vh.toFixed(0) + '" role="img" aria-label="' + opts.label + '">' + band + '<g fill="none" stroke-width="' + (L ? sw * 0.45 : sw) + '" stroke-linecap="round" stroke-linejoin="round">' + paths + '</g>' + zones + marks + '<rect x="' + (px(i0) - sw * 2) + '" y="' + (py(i0) - sw * 2) + '" width="' + (sw * 4) + '" height="' + (sw * 4) + '" class="ls-start"/>' + corners + '<style>.ls-corner{font-size:' + (sw * 2.4).toFixed(1) + 'px}.ls-corner.ls-corner-nm{font-size:' + (sw * 1.75).toFixed(1) + 'px}</style></svg>';
 }
 
 function renderTrace(ds, series, opts) {
@@ -284,7 +297,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
   const data = {startAlt: lapsimStartLines[id] || null, driverLines: lapsimDriverLines?.tracks?.[id] || null, pu: lapsimPuDocs?.events?.[id] || lapsimPuEst?.tracks?.[id] || null, lang, t, id, track: td, cars, carOrder: CAR_ORDER_P, carId, evoOf, fam, bodyLabel: BODY_LABEL, events, conds, raceRec: raceRecords(id), changes, energy: (liveEnergy && (query.track || 'monza') === id ? liveEnergy : energyLimit(id, 2026)),
     compounds: lapsimCompounds?.[id] || {}, wecTyres: lapsimWecTyres?.[id] || {}, line: lineData(id), bumps: lapsimTrackBumps?.tracks?.[id] || null, pit: lapsimPitLanes?.tracks?.[id] || null, pitSpeed: {series: lapsimPitSpeed.series, event: lapsimPitSpeed.tracks[id] || {}}, pitLossF1: lapsimRace?.tracks?.[id]?.pitLoss ?? null, lineText: LT[lang], qsplit: lapsimQsplit ? {off: lapsimQsplit.offsetPct, test: lapsimQsplit.test, real: lapsimQsplit.tracks?.[id] || null} : null, brakes: lapsimBrakes ? {ramp: lapsimBrakes.rampS ?? 0, k: lapsimBrakes.pedalKgPerG, g: lapsimBrakes.gScale, t: lapsimBrakes.timeScale, test: lapsimBrakes.test, real: lapsimBrakes.races?.[id] || null, text: BT[lang]} : null, compoundGap: compoundGap(id), compoundTest: lapsimCompoundGap?.test?.rmsPct ?? null,
     evo: Object.fromEntries(['f1', 'wec'].map(se => [se, Object.fromEntries(['practice', 'qualifying'].map(ty => [ty, evolutionCoeffs(se, id, ty)]))])),
-    zones: lapsimF1Zones?.tracks?.[id] || null, feZones: lapsimFeZones?.tracks?.[id] || null, zonesOn: ZONES_ON ? (DRS_ONLY ? 'drs' : 'all') : '', puQuali: PU_QUALI, puRamp: !!lapsimCalibration?.puRamp, otChoice: lapsimCalibration?.otChoice?.[id] ?? null, surface: surfaceOf(id, td, changes), mapRot0: Number.isFinite(view0?.openDeg) ? view0.openDeg : landscapeRot(td.map, lapsimTrackNorth?.[id], VIEW[id], td.corners, td.length), cornersEstimated: !!td.cornersEstimated, cornerNames: td.cornersEstimated ? lapsimCornerNames?.[id]?.names || null : null, north: lapsimTrackNorth?.[id] || null, ui: UI[lang],
+    zones: lapsimF1Zones?.tracks?.[id] || null, feZones: lapsimFeZones?.tracks?.[id] || null, zonesOn: ZONES_ON ? (DRS_ONLY ? 'drs' : 'all') : '', puQuali: PU_QUALI, puRamp: !!lapsimCalibration?.puRamp, otChoice: lapsimCalibration?.otChoice?.[id] ?? null, surface: surfaceOf(id, td, changes), mapRot0: (Number.isFinite(view0?.openDeg) ? view0.openDeg : landscapeRot(td.map, lapsimTrackNorth?.[id], VIEW[id], td.corners, td.length)) + (VIEW[id]?.flip ? 180 : 0), cornersEstimated: !!td.cornersEstimated, cornerNames: td.cornersEstimated ? lapsimCornerNames?.[id]?.names?.map(c => ({...c, name: lang === 'en' ? c.name : lapsimNamesKo[c.name] || c.name})) || null : null, straights: straightsOf(id, td, lang), north: lapsimTrackNorth?.[id] || null, ui: UI[lang],
     calibration: {generatedAt: lapsimCalibration?.generatedAt || null, seasons: Object.fromEntries(Object.entries(lapsimCalibration?.seasons || {}).map(([y, s]) => [y, s.tracks?.[id] || null]))}};
   // first render on the server with the same code the browser uses
   const view = computeView(K, data, {carId, compareId: '', mode: 'real', manual: null, active: {}, strength: 1, evo: null}, {renderMap, renderTrace, evolutionDelta, evolutionCurve, lineTrack, brakeZones, lapChannels});
@@ -292,7 +305,10 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
   // cascade: series → rules/class (the car models of that series); series without a model yet are listed as coming soon
   const seriesOf = k => cars[k].series || 'f1', curSeries = seriesOf(carId);
   const carOpts = (sel, only, noEvo) => only === 'gt3' && noEvo ? famOpts(fam, cars, cars[sel]?.base) : data.carOrder.filter(k => k !== 'wec-lmgt3' && (!only || seriesOf(k) === only) && !(noEvo && evoKeys.has(k))).map(k => `<option value="${k}"${k === sel ? ' selected' : ''}>${esc(cars[k].label)}</option>`).join('');
-  const seriesOpts = SERIES_UI.map(se => { const live = data.carOrder.some(k => seriesOf(k) === se); return `<option value="${se}"${se === curSeries ? ' selected' : ''}${live ? '' : ' disabled'}>${esc(t.seriesNames[se] + (live ? '' : ' · ' + t.soonShort))}</option>`; }).join('');
+  const menuKeys = SERIES_UI.flatMap(se => se === 'gt3' ? (data.carOrder.some(k => seriesOf(k) === 'gt3') ? ['gt3'] : []) : data.carOrder.filter(k => k !== 'wec-lmgt3' && seriesOf(k) === se && !evoKeys.has(k))
+    .sort((a, b) => se === 'fe' ? (a === 'fe-gen3evo' ? -1 : b === 'fe-gen3evo' ? 1 : 0) : 0)), curMenu = curSeries === 'gt3' || carId === 'wec-lmgt3' ? 'gt3' : baseId; // the WEC LMGT3 car sits under GT3
+  const menuLabel = k => k === 'gt3' ? 'GT3' : seriesOf(k) === 'f1' ? 'F1 ' + cars[k].label : k === 'wec-lmh' ? 'LMH' : k === 'wec-lmdh' ? 'LMDh' : seriesOf(k) === 'fe' ? t.seriesNames.fe + ' ' + (k === 'fe-gen4' ? 'Gen4' : 'Gen3 Evo') : cars[k].label;
+  const seriesOpts = menuKeys.map(k => `<option value="${k}"${k === curMenu ? ' selected' : ''}>${esc(menuLabel(k))}</option>`).join('');
   const cmpOpts = SERIES_UI.filter(se => data.carOrder.some(k => seriesOf(k) === se)).map(se => `<optgroup label="${esc(t.seriesNames[se])}">${carOpts('', se)}</optgroup>`).join('');
   const evoSlider = (key, label, min, max, step, unit) => `<label class="ls-slider"><span>${esc(label)}</span><input type="range" data-evo="${key}" min="${min}" max="${max}" step="${step}" value="${view.evo[key]}"><output data-evo-out="${key}">${view.evo[key]}</output><span class="ls-unit">${unit}</span></label>`;
   const slider = (key, label, min, max, step, unit) => `<label class="ls-slider"><span>${esc(label)}</span><input type="range" data-cond="${key}" min="${min}" max="${max}" step="${step}"><output data-out="${key}"></output><span class="ls-unit">${unit}</span></label>`;
@@ -306,7 +322,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
 <form class="ls-controls" method="get" action="/simulation">
  <label>${esc(t.track)}<select name="track" data-no-translate onchange="this.form.submit()">${options}</select></label>
  <label>${esc(t.series)}<select data-ls="series">${seriesOpts}</select></label>
- <label>${esc(t.car)}<select name="car" data-ls="car">${carOpts(baseId, curSeries, true)}</select></label>
+ <label data-ls="carWrap"${curSeries === 'gt3' ? '' : ' hidden'}>${esc(t.model)}<select name="car" data-ls="car">${curSeries === 'gt3' ? carOpts(baseId, curSeries, true) : `<option value="${baseId}" selected>${esc(cars[baseId].label)}</option>`}</select></label>
  <label data-ls="specWrap"${fl ? '' : ' hidden'}>${esc(t.spec)}<select data-ls="spec">${fl ? specOpts(fam[cars[carId].base], cars[carId].cls) : ''}</select></label>
  <label class="ls-check"><input type="checkbox" name="evo" value="1" data-ls="evo"${fl ? (fl.length > 1 ? (carId === fl.at(-1) ? ' checked' : '') : ' disabled') : evoOf[baseId] ? (carId !== baseId ? ' checked' : '') : ' disabled'}><span data-no-translate>Evo</span><small data-no-translate data-ls="evoHint">${esc(evoOf[baseId] ? '' : t.evoNone)}</small></label>
  <label class="ls-cmp-only">${esc(UI[lang].cmp1)}<select data-ls="compare"><option value="">${esc(t.none)}</option>${cmpOpts}</select></label>
@@ -378,6 +394,7 @@ export const VIEW = {
   fuji: {longest: 'top'}, monza: {longest: 'bottom'}, interlagos: {straight: [3, 4], side: 'bottom'}, sakhir: {straight: [10, 11], side: 'bottom'}, 'sakhir-outer': {longest: 'bottom'},
   silverstone: {left: 15, right: 9}, suzuka: {deg: 0}, portimao: {longest: 'bottom', back: true},
   'le-mans': {straight: [6, 9], side: 'top'}, // owner 2026-11-16: the Mulsanne straight (Tertre Rouge to Mulsanne corner) level at the top
+  shanghai: {flip: true}, indianapolis: {flip: true}, // owner 2026-11-17: turned 180° from the automatic view
 };
 export function landscapeRot(map, north, spec, corners, length) {
   // 5 m maps (2026-11-16): metre rounding makes 5 m steps wobble a few degrees, which split straights; pick the view on ≤400 points
@@ -666,12 +683,20 @@ function racePanel(id, lang, raceYear) {
 </section>`;
 }
 
+// named straights (worker/lapsim/place-names.js), halfway between their two corners on the lap, in the page language
+function straightsOf(id, td, lang) {
+  const L = td.ds * td.kappa.length, at = k => td.corners?.find(c => c.number === k)?.s;
+  const out = (lapsimStraights[id] || []).map(q => { const a = at(q.between[0]), b = at(q.between[1]); if (a == null || b == null) return null;
+    return {s: Math.round(((a + ((b - a) % L + L) % L / 2) % L + L) % L), name: lang === 'en' ? q.en : q.ko, straight: true}; }).filter(Boolean);
+  return out.length ? out : null;
+}
+
 // One computation for a given UI state. Used on the server and (as source text) in the browser.
 function computeView(K, data, state, R) {
   const t = data.t, sel = data.cars[state.carId], d0 = data.track;
   // series start line (owner 2026-11-15): a non-F1 car on a track whose other series start elsewhere (Silverstone: National Pits Straight)
   // runs the same lap from that line; F1 sectors do not apply there. Map, racing line and corner labels on the map stay as drawn.
-  const kS = sel.series && data.startAlt ? Math.round(data.startAlt.m / d0.ds) % d0.kappa.length : 0, offS = kS * d0.ds, LS = d0.kappa.length * d0.ds;
+  const kS = sel.series && data.startAlt && (!data.startAlt.series || data.startAlt.series.includes(sel.series)) ? Math.round(data.startAlt.m / d0.ds) % d0.kappa.length : 0, offS = kS * d0.ds, LS = d0.kappa.length * d0.ds;
   const rot = a => a ? a.slice(kS).concat(a.slice(0, kS)) : a;
   const d = kS ? Object.assign({}, d0, {kappa: rot(d0.kappa), grade: rot(d0.grade), heading: rot(d0.heading), aeroZones: undefined, sectors: [],
     corners: (d0.corners || []).map(c => Object.assign({}, c, {s: Math.round((c.s - offS + LS) % LS)})).sort((a, b) => a.s - b.s)}) : d0;
@@ -904,9 +929,10 @@ function computeView(K, data, state, R) {
   // Safety Car lines (owner 2026-11-17): by the FIA definition SC line 1 crosses the track at the start of the pit entry and SC line 2
   // at the end of the pit exit, so they are drawn where the drawn pit lane leaves and rejoins the lap (lap distances of the pit lane)
   const scP = sel.series && data.pit?.alt?.use?.[sel.series] === 'alt' ? data.pit.alt : data.pit;
-  if (scP && Number.isFinite(scP.entryS) && Number.isFinite(scP.exitS)) { zoneOpts = zoneOpts || {kind: 'sc', list: [], marks: []};
-    zoneOpts = {...zoneOpts, marks: zoneOpts.marks.concat([{s: scP.entryS, kind: 'sc', label: 'SC1'}, {s: scP.exitS, kind: 'sc', label: 'SC2'}])}; }
-  const mapOpts = {zones: zoneOpts, corners: d0.corners, names: data.cornerNames, length: d.length, label: t.map, line, start: kS / d0.kappa.length, rot: Number.isFinite(state.mapRot) ? state.mapRot : (data.mapRot0 || 0)};
+  const sc = scP && Number.isFinite(scP.entryS) && Number.isFinite(scP.exitS) ? [{s: scP.entryS, label: 'SC1'}, {s: scP.exitS, label: 'SC2'}] : [];
+  // a series that starts on its own line may number the corners from there (Silverstone non-F1: Copse = T1)
+  const rn = kS && data.startAlt.renumberFrom, nT = rn ? Math.max(...(d0.corners || []).map(c => c.number)) : 0;
+  const mapOpts = {zones: zoneOpts, corners: d0.corners, names: data.cornerNames, straights: data.straights, sc, renumber: rn ? k => ((k - rn) % nT + nT) % nT + 1 : null, length: d.length, label: t.map, line, start: kS / d0.kappa.length, rot: Number.isFinite(state.mapRot) ? state.mapRot : (data.mapRot0 || 0)};
   // compass: the map frame turned by north.deg (counter-clockwise) is true east-north; the needle turns clockwise on screen
   const compassDeg = data.north && !data.north.mirror ? ((data.north.deg - mapOpts.rot) % 360 + 360) % 360 : null;
   const mapSvg = R.renderMap(d.map || {x: [], y: []}, kS ? res.v.slice(res.v.length - kS).concat(res.v.slice(0, res.v.length - kS)) : res.v, mapOpts);
@@ -926,7 +952,7 @@ function computeView(K, data, state, R) {
   const chOf = (c, r, key) => R.lapChannels(r && r.trk || track, c.car, env, r, {cls: clsOf(c), seed: data.id + '|' + key, surface, wet: state.mode !== 'manual' && !!(data.conds[condKey] && data.conds[condKey].rain)});
   const ch = [chOf(sel, raw, state.carId)].concat(cmpRaws.map((r, j) => chOf(data.cars[cmpIds[j]], r, cmpIds[j])));
   const tag = arr => arr.map((v, j) => v ? {v, cls: 'ls-line-' + j} : null).filter(Boolean); // keeps each car's colour when one has no channel
-  const chartCorners = data.cornerNames?.length ? data.cornerNames.map(c => ({name: c.name, s: Math.round((c.s - offS + LS) % LS)})).sort((a, b) => a.s - b.s) : d.corners || [];
+  const chartCorners = data.cornerNames?.length ? data.cornerNames.map(c => ({name: c.name, s: Math.round((c.s - offS + LS) % LS)})).sort((a, b) => a.s - b.s) : (d.corners || []).map(c => ({number: mapOpts.renumber ? mapOpts.renumber(c.number) : c.number, letter: c.letter, s: c.s}));
   const TL = t.tel, cOpt = (unit, step, h, lo, more) => Object.assign({sectors: d.sectors || [], corners: chartCorners, label: unit, km: t.km, unit, step, h, lo}, more);
   const bands = []; ch[0].risk.forEach((x, i) => { if (x >= 0.2) { const last = bands[bands.length - 1]; if (last && i * d.ds - last[1] <= d.ds * 1.5) last[1] = (i + 1) * d.ds; else bands.push([i * d.ds, (i + 1) * d.ds]); } });
   const series = tag([res.v].concat(cmps.map(c => c.v)).map(v => v.map(x => x * 3.6)));
@@ -1279,8 +1305,8 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
     if (out) out.innerHTML = '<b>' + Math.round(at) + ' m</b>' + ordered(lastTel.lanes.map(L => L.key)).map(k => lastTel.lanes.find(L => L.key === k)).filter(L => !hidden[L.key]).map(L => '<b>' + L.name + ' ' + L.ser.map(s0 => s0.v).map(a => num(a[Math.min(a.length - 1, Math.round(at / L.ds))], L.unit)).join(' / ') + (L.unit && L.unit !== 's' ? ' ' + L.unit : L.unit) + '</b>').join('');
   });
   q('series').addEventListener('change', e => {
-    const se = e.target.value, ids = se === 'gt3' ? Object.keys(data.fam).sort((a, b) => a.localeCompare(b, 'en')).map(b => { const f = data.fam[b]; return f[GT3B.find(x => f[x])].at(-1); })
-      : data.carOrder.filter(k => k !== 'wec-lmgt3' && (data.cars[k].series || 'f1') === se && !evoKeys.includes(k));
+    const se = e.target.value, ids = se === 'gt3' ? Object.keys(data.fam).sort((a, b) => a.localeCompare(b, 'en')).map(b => { const f = data.fam[b]; return f[GT3B.find(x => f[x])].at(-1); }) : [se];
+    q('carWrap').hidden = se !== 'gt3';
     q('car').innerHTML = ids.map(k => '<option value="' + k + '">' + (se === 'gt3' ? data.cars[k].base : data.cars[k].label) + '</option>').join('');
     q('car').value = ids[0]; q('car').dispatchEvent(new Event('change'));
   });
@@ -1367,7 +1393,7 @@ const CSS = `:root{--sim-slow:#ffa94d;--kb-zone:#c4c9ce;--kb-zone-mark:#00d2be}:
 .ls-changes{list-style:none;margin:0;padding:0;display:grid;gap:10px}.ls-change label{display:flex;gap:12px;align-items:flex-start;color:var(--text);font-size:14px;min-width:0}.ls-change input{width:20px;height:20px;min-height:0;margin-top:2px;accent-color:var(--mint)}.ls-change small{display:block;color:var(--muted);font-size:12px;margin-top:2px}.ls-change.is-info label{color:var(--muted)}.ls-dot{width:20px;flex:0 0 20px;text-align:center}.ls-dot::before{content:'·'}
 .ls-table td,.ls-table th{white-space:nowrap}.ls-notes{margin:0;padding-left:20px;display:grid;gap:10px;line-height:1.7;color:var(--muted);max-width:80ch}.ls-panel h3{font-size:18px;margin-top:6px}
 
-.ls-surf{fill:color-mix(in oklab,var(--mint) 35%,transparent);stroke:none}.ls-kerb-w{fill:none;stroke:#fff;stroke-width:1.5}.ls-corner-nm{font-size:.62em;font-weight:600}.ls-zone-m-sc{stroke:#f5a623}.ls-zone-mt-sc{fill:#f5a623;font-weight:700}.ls-pit{fill:none;stroke:#8b9096;stroke-width:7;stroke-linejoin:round;stroke-linecap:round;opacity:.75}.ls-kerb{fill:none;stroke:#e5484d;stroke-dasharray:2.5 2.5;stroke-width:1.5}.ls-zoombox{overflow:hidden;position:relative;touch-action:pan-y;border-radius:12px}.ls-zoombox.is-zoomed{touch-action:none;cursor:grab}.ls-line-bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px}.ls-zoom-btns{margin-left:auto;display:inline-flex;flex-wrap:wrap;gap:6px;max-width:100%}.ls-map .ls-mk{stroke:#fff;transform-box:fill-box;transform-origin:center;scale:var(--inv,1)}.ls-zoombox text{transform-box:fill-box;transform-origin:center;scale:var(--inv,1)}.ls-map .ls-band{fill:#e6e8ea;stroke:none}:root[data-theme="light"] .ls-band{fill:#1f1f1f}@media(prefers-color-scheme:light){:root:not([data-theme]) .ls-band{fill:#1f1f1f}}
+.ls-surf{fill:color-mix(in oklab,var(--mint) 35%,transparent);stroke:none}.ls-kerb-w{fill:none;stroke:#fff;stroke-width:1.5}.ls-corner-nm{font-size:.62em;font-weight:600}.ls-sc{stroke:#f5c518;stroke-linecap:butt}.ls-sc-t{fill:#fff;font-weight:700;text-anchor:middle;dominant-baseline:central}.ls-straight{font-weight:500}.ls-pit{fill:none;stroke:#8b9096;stroke-width:7;stroke-linejoin:round;stroke-linecap:round;opacity:.75}.ls-kerb{fill:none;stroke:#e5484d;stroke-dasharray:2.5 2.5;stroke-width:1.5}.ls-zoombox{overflow:hidden;position:relative;touch-action:pan-y;border-radius:12px}.ls-zoombox.is-zoomed{touch-action:none;cursor:grab}.ls-line-bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px}.ls-zoom-btns{margin-left:auto;display:inline-flex;flex-wrap:wrap;gap:6px;max-width:100%}.ls-map .ls-mk{stroke:#fff;transform-box:fill-box;transform-origin:center;scale:var(--inv,1)}.ls-zoombox text{transform-box:fill-box;transform-origin:center;scale:var(--inv,1)}.ls-map .ls-band{fill:#e6e8ea;stroke:none}:root[data-theme="light"] .ls-band{fill:#1f1f1f}@media(prefers-color-scheme:light){:root:not([data-theme]) .ls-band{fill:#1f1f1f}}
 .ls-mk-b{fill:#e5484d}.ls-mk-a{fill:#f5a524}.ls-mk-t{fill:#30a46c}.ls-line-key [class^=ls-mk]{display:inline-block;width:10px;height:10px;border-radius:50%;margin:0 4px 0 10px;vertical-align:middle}.ls-line-key [class^=ls-mk]:first-child{margin-left:0}.ls-line-key .ls-mk-b{background:#e5484d}.ls-line-key .ls-mk-a{background:#f5a524}.ls-line-key .ls-mk-t{background:#30a46c}
 .ls-evo .ls-controls{grid-template-columns:repeat(3,minmax(0,1fr));margin:12px 0 16px}.ls-check{display:flex;align-items:center;gap:8px;align-self:end;min-height:40px}.ls-check input{width:20px;height:20px;min-height:0;accent-color:var(--mint)}.ls-evo .ls-facts{margin-top:16px}
 .ls-line-2{stroke:var(--text);stroke-dasharray:2 3}.ls-zone{fill:none;stroke-linecap:round;opacity:.9}.ls-zone-m,.ls-zone-mt{transform-box:fill-box;transform-origin:center}.ls-zone-drs,.ls-zone-sm{stroke:var(--kb-zone)}.ls-zone-attack{stroke:#2fa4ff}.ls-zone-t{fill:var(--text);font-weight:700;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:var(--bg);stroke-width:3px}.ls-zone-m{stroke:var(--kb-zone-mark)}.ls-zone-m-act{stroke:var(--kb-zone)}.ls-zone-mt{fill:var(--kb-zone-mark);font-weight:700;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:var(--bg);stroke-width:3px}.ls-key-2{background:var(--text)}.ls-key-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;vertical-align:middle}

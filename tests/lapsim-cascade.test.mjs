@@ -5,14 +5,14 @@ import worker from '../worker/index.js';
 const page = async q => (await worker.fetch(new Request('https://example.com/simulation?' + q), {})).text();
 const opts = (h, ls) => [...(h.match(new RegExp(`data-ls="${ls}"[^>]*>([\\s\\S]*?)</select>`)) || [])[1].matchAll(/<option value="([^"]*)"([^>]*)>([^<]*)/g)].map(m => ({v: m[1], off: /disabled/.test(m[2]), t: m[3]}));
 
-test('simulator cascade: series first, then the rules/classes of that series only', async () => {
-  const f1 = await page('track=monza'), wec = await page('track=monza&car=wec-lmgt3');
-  assert.deepEqual(opts(f1, 'series').map(o => o.v), ['f1', 'wec', 'fe', 'gt3']); // owner 2026-11-15: no IMSA tab
-  assert.equal(opts(f1, 'series').find(o => o.v === 'wec').t, 'Hypercar/GTP');
-  assert.ok(opts(f1, 'series').filter(o => o.off).every(o => /준비 중/.test(o.t)) && opts(f1, 'series').find(o => o.v === 'gt3').t === 'GT3 (차종별)' && !opts(f1, 'series').find(o => o.v === 'gt3').off); // GT3 is live: one car per model
-  assert.ok(opts(f1, 'car').every(o => !o.v.startsWith('wec')));
-  assert.deepEqual(opts(wec, 'car').map(o => o.v), ['wec-lmh', 'wec-lmdh']); // owner 2026-11-15: LMGT3 only under GT3 (model, then the WEC LMGT3 spec)
-  assert.match(wec, /<option value="wec" selected/);
+test('simulator: one menu for series and class (owner 2026-11-17), GT3 then picks the car model', async () => {
+  const f1 = await page('track=monza'), wec = await page('track=monza&car=wec-lmgt3'), fe = await page('track=monza&car=fe-gen4');
+  assert.deepEqual(opts(f1, 'series').map(o => o.t), ['F1 2025', 'F1 2026', 'F1 2027 (예측)', 'F1 2028 (예측)', 'LMH', 'LMDh', '포뮬러 E Gen3 Evo', '포뮬러 E Gen4', 'GT3']);
+  assert.ok(opts(f1, 'series').every(o => !o.off));
+  assert.deepEqual(opts(f1, 'car').map(o => o.v), ['2026']);
+  assert.match(f1, /data-ls="carWrap" hidden/, 'the model menu is for GT3 only');
+  assert.match(fe, /<option value="fe-gen4" selected/);
+  assert.match(wec, /<option value="gt3" selected/, 'the WEC LMGT3 car sits under GT3');
   assert.match(f1, /<optgroup label="Hypercar\/GTP">/, 'compare lists every series');
 });
 
