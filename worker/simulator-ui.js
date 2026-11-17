@@ -143,7 +143,7 @@ export function simulatorUiClient(CORNER_NAMES) {
    // clearance of the whole label box from the track (3 x 3 sample points)
    const boxClear = b => rectClear(geo.pts, b);
    const cands = [];
-   for (const dist of [base, base * 1.3, base * 1.7, base * 2.2, base * 2.9, base * 3.6]) for (const rot of [0, 20, -20, 40, -40, 60, -60, 85, -85, 115, -115]) for (const side of [1, -1]) {
+   for (const dist of [base, base * 1.3, base * 1.7, base * 2.2, base * 2.9, base * 3.6, base * 4.6, base * 5.8]) for (const rot of [0, 20, -20, 40, -40, 60, -60, 85, -85, 115, -115]) for (const side of [1, -1]) {
     const r = rot * Math.PI / 180, nx = -ty * side, ny = tx * side, dx = nx * Math.cos(r) - ny * Math.sin(r), dy = nx * Math.sin(r) + ny * Math.cos(r);
     const x = ax + dx * dist, y = ay + dy * dist, b = boxes(x, y, w + margin, h + margin);
     const out = Math.max(vw, vh) * 0.06; if (b.x0 < vx - out || b.y0 < vy - out || b.x1 > vx + vw + out || b.y1 > vy + vh + out || hits(b)) continue;
