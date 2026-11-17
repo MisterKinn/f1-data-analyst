@@ -86,6 +86,7 @@ test('A2 part 2: corner names on tracks without an official numbering; OSM turn 
     assert.ok(!/pit|circuit|straight|strecke/i.test(c.name), `${id}: ${c.name} is not a corner`); }
   const {simulationPage} = await import('../worker/simulation.js');
   assert.match(simulationPage({track: 'donington'}, 'en'), /ls-corner-nm">Redgate</);
-  assert.match(simulationPage({track: 'donington'}, 'en'), /ls-ctag">Redgate</, 'charts mark the names too');
+  assert.doesNotMatch(simulationPage({track: 'donington'}, 'en'), /ls-ctag">Redgate</, 'charts: numbers, not names (owner 2026-11-18)');
+  assert.match(simulationPage({track: 'donington'}, 'en'), /ls-ctag">T1</);
   assert.match(simulationPage({track: 'monza'}, 'en'), /"cornerNames":null/);
 });
