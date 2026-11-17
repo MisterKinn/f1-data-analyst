@@ -48,7 +48,7 @@ Owner instruction (2026-11-14): where a real lap of a car type exists, use it. T
 | vir | Full course (IMSA) 5.263 km | imsa | 5202 (5262) | 113–151 m | 5 (0) | 2.58 | -2.49 | 0.9191 | 0.91 | – | pass (unseen) |
 | indianapolis | Road course 3.910 km | imsa | 3840 (3925) | 221–224 m | 10 (0) | 1.56 | 1.23 | 1.0337 | 1.15 | – | pass (unseen) |
 | road-atlanta | Road Atlanta 4.088 km | imsa | 4041 (4088) | 275–308 m | 11 (0) | 3.99 | -2.56 | 0.9261 | 3.35 | – | ⚠️ held-out error 3.35 % with a learned track factor, above 3 % |
-| mid-ohio | IMSA layout 3.634 km | imsa | 3566 (3634) | 398–437 m | 3 (0) | 3.82 | 3.75 | 1.1042 | 1.06 | – | pass (learned) |
+| mid-ohio | IMSA layout 3.634 km | imsa | 3566 (3634) | 398–437 m | 3 (0) | 3.87 | 3.8 | 1.1057 | 1.07 | – | pass (learned) |
 | lime-rock | IMSA layout 2.414 km | imsa | 2370 (2414) | 164–180 m | 1 (0) | 2.36 | 2.36 | – | – | – | pass (unseen) |
 | le-mans | Circuit des 24 Heures 13.626 km | owner-list-other | 13530 (13626) | 46–82 m | 12 (11) | 0.96 | -0.63 | 0.9741 | 0.74 | – | pass (unseen) |
 | portimao | Algarve 4.653 km | owner-list-other | 4539 (4653) | 95–124 m | 6 (2) | 3.41 | 3.32 | 1.0881 | 0.88 | – | pass (learned) |
@@ -61,7 +61,7 @@ Owner instruction (2026-11-14): where a real lap of a car type exists, use it. T
 | ricardo-tormo | Ricardo Tormo 4.005 km | owner-2026-11-15 | 3939 (4005) | 145–164 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | misano | Misano Adriatico long track 4.226 km | owner-2026-11-15 | 4158 (4226) | 20–28 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | sonoma | Sonoma Raceway 3.685 km | owner-2026-11-15 | 3616 (3685) | 5–51 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
-| sachsenring | Sachsenring 3.645 km | owner-2026-11-15 | 3578 (3645) | 305–335 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| sachsenring | Sachsenring 3.645 km | owner-2026-11-15 | 3579 (3645) | 305–335 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | oschersleben | Motorsport Arena 3.696 km | owner-2026-11-15 | 3616 (3696) | 81–90 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | zolder | Circuit Zolder 4.000 km | owner-2026-11-15 | 3957 (4000) | 29–44 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | donington | Grand Prix circuit 4.003 km | owner-2026-11-15 | 3950 (4003) | 64–98 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
@@ -207,9 +207,9 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 | road-atlanta | imsa | 2026 | GTDPRO | BMW #1 | lmgt3 2026 (borrowed) | 78.194 | 78.548 | 0.45 |
 | road-atlanta | imsa | 2026 | GTP | Acura #60 | lmdh 2026 (borrowed) | 69.703 | 68.445 | -1.8 |
 | road-atlanta | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 70.363 | 68.434 | -2.74 |
-| mid-ohio | imsa | 2018 (older) | GTD | ? | lmgt3 2025 (borrowed) | 79.317 | 83.01 | 4.66 |
-| mid-ohio | imsa | 2020 (older) | GTD | ? | lmgt3 2025 (borrowed) | 80.974 | 83.296 | 2.87 |
-| mid-ohio | imsa | 2021 (older) | GTD | ? | lmgt3 2025 (borrowed) | 80.083 | 83.069 | 3.73 |
+| mid-ohio | imsa | 2018 (older) | GTD | ? | lmgt3 2025 (borrowed) | 79.317 | 83.054 | 4.71 |
+| mid-ohio | imsa | 2020 (older) | GTD | ? | lmgt3 2025 (borrowed) | 80.974 | 83.34 | 2.92 |
+| mid-ohio | imsa | 2021 (older) | GTD | ? | lmgt3 2025 (borrowed) | 80.083 | 83.113 | 3.78 |
 | lime-rock | imsa | 2023 | GTDPRO | Aston Martin #23 | lmgt3 2025 (borrowed) | 50.593 | 51.784 | 2.36 |
 | le-mans | x-le-mans-cup | 2023 | GT3 | BMW M4 GT3 | lmgt3 2025 (borrowed) | 236.181 | 234.553 | -0.69 |
 | le-mans | wec | 2023 | HYPERCAR | Porsche #75 | lmdh 2025 | 204.531 | 201.781 | -1.34 |
@@ -374,7 +374,7 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 | road-atlanta | imsa | 2026 | GTDPRO | BMW #1 | lmgt3 2026 (borrowed) | 78.194 | 80.578 | 3.05 |
 | road-atlanta | imsa | 2026 | GTP | Acura #60 | lmdh 2026 (borrowed) | 69.703 | 70.669 | 1.39 |
 | road-atlanta | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 70.363 | 70.567 | 0.29 |
-| mid-ohio | imsa | 2018 (older) | GTD | ? | lmgt3 2025 (borrowed) | 79.317 | 80.366 | 1.32 |
+| mid-ohio | imsa | 2018 (older) | GTD | ? | lmgt3 2025 (borrowed) | 79.317 | 80.368 | 1.33 |
 | mid-ohio | imsa | 2020 (older) | GTD | ? | lmgt3 2025 (borrowed) | 80.974 | 79.937 | -1.28 |
 | mid-ohio | imsa | 2021 (older) | GTD | ? | lmgt3 2025 (borrowed) | 80.083 | 80.061 | -0.03 |
 | le-mans | x-le-mans-cup | 2023 | GT3 | BMW M4 GT3 | lmgt3 2025 (borrowed) | 236.181 | 235.825 | -0.15 |

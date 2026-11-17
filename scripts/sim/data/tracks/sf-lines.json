@@ -1,5 +1,5 @@
 {
- "source": "iRacing track models (SimRacingSetup 26S4 telemetry, owner's iRacing data, personal use): position where LapDistPct wraps from 1 to 0, interpolated between the 60 Hz samples, median over the crossings. Checked on 15 F1 tracks against the F1-timing start of the simulator: median 32 m earlier, range -80 to 0 m (Imola and Montreal excluded: layout or pose). Used only where the start was not verified.",
+ "source": "iRacing track models (SimRacingSetup 26S4 telemetry, owner's iRacing data, personal use): position where LapDistPct wraps from 1 to 0, interpolated between the 60 Hz samples, median over the crossings. Checked on 15 F1 tracks against the F1-timing start of the simulator: median 32 m earlier, range -80 to 0 m (Imola and Montreal excluded: layout or pose). Used only where the start was not verified. Entries whose source does not start with \"iRacing\" come from elsewhere (satellite image of the painted line, OpenStreetMap) and say so.",
  "built": "2026-11-17",
  "tracks": {
   "bathurst": {
@@ -50,6 +50,21 @@
     1.0,
     1.0
    ]
+  },
+  "mid-ohio": {
+   "lat": 40.689508,
+   "lon": -82.635277,
+   "source": "painted start/finish line on the satellite image (Google Maps), white line across the front straight at the starter stand"
+  },
+  "dubai": {
+   "lat": 25.04755,
+   "lon": 55.23741,
+   "source": "painted start/finish line on the satellite image (Google Maps), white line across the main straight and the pit lane"
+  },
+  "sachsenring": {
+   "lat": 50.791187,
+   "lon": 12.687043,
+   "source": "OpenStreetMap race-control tower on the main straight, projected onto the lap (no painted line visible on the satellite image)"
   }
  }
 }
