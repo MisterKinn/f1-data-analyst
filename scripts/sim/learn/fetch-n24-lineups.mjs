@@ -2,7 +2,7 @@
 // drivers). Source: the official ADAC Nordrhein entry lists ("Starterliste" / "Teilnehmerliste", 24h-media.de, nuerburgring-langstrecken-serie.de,
 // copies on endurance-info.com / gt-place.com). They name the drivers per car, no FIA category: the rating comes from the FIA list of the
 // season (build-driver-ratings.mjs, how: fia-list). Runs in GitHub Actions (network, poppler). Writes scripts/sim/data/learn/n24-lineups.json
-// (rev 5).
+// (rev 6).
 import {writeFileSync, mkdtempSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {join} from 'node:path';
@@ -33,9 +33,9 @@ export function parseN24(txt) {
   if (/Start-(Nr|No)\.?\s+Box/.test(txt)) { const out = []; let blk = null;
     for (const l of txt.split('\n')) { const name = l.slice(0, 46);
       if (/^\s{8,20}\S/.test(l) && !/[(),]/.test(name) && !/Stand|Anzahl|Status|Number|Nürburgring|approval|Genehmigung/i.test(l)) { blk = {car: null, head: name.trim(), names: []}; out.push(blk); continue; }
-      if (!blk) continue; const c = /^(\d{1,3})\s{2,}\d{1,3}\s/.exec(l); if (c && !blk.car) blk.car = c[1];
+      if (!blk) continue; const c = /^(\d{1,3})\s{2,}\d{1,3}\s/.exec(l); if (c) { if (blk.car && blk.car !== c[1]) blk.bad = true; blk.car = blk.car || c[1]; } // two numbers: an entrant line was missed, two cars merged
       const m = /([A-Za-zÀ-ÿ'’.\- ]{2,40}?), ?([A-Za-zÀ-ÿ'’.\- ]{0,30}?) ?\(([A-Z]{3})\)/.exec(name); if (m) blk.names.push(`${m[2].trim()} ${m[1].trim()}`.trim().replace(/^\d+\s+\d+\s+/, '')); }
-    return out.filter(b => b.car && b.names.length).map(b => ({...b, names: [...new Set(b.names)]})); }
+    return out.filter(b => b.car && b.names.length && !b.bad && b.names.length <= 5).map(({bad, ...b}) => ({...b, names: [...new Set(b.names)]})); }
   const cars = []; let cur = null;
   for (const raw of txt.split('\n')) { const l = raw.replace(/\s+$/, ''); if (!l.trim()) continue;
     const c = /^\s{0,4}#?(\d{1,3})\s+(\d{1,3})\s{1,}(\S.*)$/.exec(l);
@@ -66,5 +66,5 @@ for (const [year, kind, url] of LISTS) {
   for (const c of cars) lineups.push({site: 'n24', year, meeting: `${kind}-${year}`, title, url, car: c.car, team: '', vehicle: '', cls: c.head, drivers: c.names});
 }
 // a later list of the same event replaces the earlier one per car
-const seen = new Map(); for (const l of lineups) seen.set(`${l.meeting}|${l.car}`, l);
+const seen = new Map(); for (const l of lineups) if (l.drivers.length <= 5) seen.set(`${l.meeting}|${l.car}`, l); // a later list wins only with a plausible crew (N24: at most 4-5 drivers)
 writeFileSync('scripts/sim/data/learn/n24-lineups.json', JSON.stringify({generated: new Date().toISOString().slice(0, 10), note: 'Official ADAC Nordrhein entry lists of the Nürburgring 24h and its Qualifiers: drivers per car (no category printed). Built by fetch-n24-lineups.mjs.', log, lineups: [...seen.values()]}));
