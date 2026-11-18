@@ -522,7 +522,7 @@
    }
   },
   "2025": {
-   "source": "https://es.motorsport.com/wec/news/bop-le-mans-equilibrio-rendimiento/10729991/",
+   "source": "https://fiawec.alkamelsystems.com/Results_NoticeBoard/13_2025/committee/02_Decisions/WEC_2025_D29_Hypercar_BOP_03062025.pdf",
    "cars": {
     "Alpine A424": {
      "cls": "lmdh",
@@ -545,7 +545,7 @@
      "kg": 1039,
      "kW": 510,
      "MJ": 919,
-     "above250": 2.2,
+     "above250": 2,
      "dock": null
     },
     "Cadillac V-Series.R": {
