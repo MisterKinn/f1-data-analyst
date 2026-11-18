@@ -11,6 +11,8 @@ import {carsFor, realConditions, latestChanges, fittedYear, SERIES_CARS, CAR_ORD
 import {rechargeLimitMJ} from './energy-limits.js';
 import {lapsimLearned} from './learned-data.js';
 import {evolutionCoeffs, evolutionDelta, evolutionCurve} from './evolution.js';
+import {wetGap} from './wet-gap.js';
+import {lapsimWetGap} from './wet-gap-data.js';
 
 const K = lapsimKernel();
 const SITE = 'https://kongboda-motorsports.vercel.app';
@@ -41,6 +43,9 @@ export const LAPSIM_TOOLS = [{name: 'lapsim_simulate',
     drying_time_min: num(0, 300, 'Track evolution: drying time constant (min; 0 = does not dry).'),
     tyre: {type: 'string', enum: ['slick', 'inter', 'wet'], description: 'Track evolution: tyre type on a wet track. Intermediates exist only in F1; WEC Hypercar and LMGT3 have slicks and wets only (inter is treated as wet there).'},
     tyre_warmup_laps: num(0, 5, 'Track evolution: laps after the out-lap before the tyre is at its best.'),
+    car_model: {type: 'string', maxLength: 20, description: 'F1 inter/wet: real car model (e.g. "RB18") to replay its measured wet gap in a past session of this track (with wet_season and session_type).'},
+    wet_season: {type: 'integer', minimum: 2018, maximum: 2026, description: 'F1 inter/wet: season of the past wet session to replay (default: the car year).'},
+    wet_session: {type: 'string', maxLength: 20, description: 'F1 inter/wet: exact past session name to replay, e.g. "Practice 1", "Sprint Shootout" (default: the latest wet session of session_type).'},
     torque_curve: {type: 'array', maxItems: 40, items: {type: 'array', items: {type: 'number'}, minItems: 2, maxItems: 2}, description: 'Engine torque curve as [rpm, Nm] pairs (ascending rpm). Replaces the preset shape of the car; power is still capped at the car\'s regulation or BoP power. Give with gear_ratios.'},
     power_curve_kw: {type: 'array', maxItems: 40, items: {type: 'array', items: {type: 'number'}, minItems: 2, maxItems: 2}, description: 'Alternative to torque_curve: [rpm, kW] pairs.'},
     gear_ratios: {type: 'array', minItems: 1, maxItems: 10, items: {type: 'number', minimum: 0.3, maximum: 30}, description: 'Gearbox ratios, 1st to top (overall ratios when final_drive is not given).'},
@@ -182,7 +187,7 @@ export function simulate(args = {}) {
   out.sensitivity_s_per_plus_10pct = Object.fromEntries(['mass', 'muY', 'clA', 'cdA', 'pIce'].map(k => [k === 'muY' ? 'tyre_grip' : k === 'pIce' ? 'engine_power' : k === 'clA' ? 'downforce_clA' : k === 'cdA' ? 'drag_cdA' : 'mass',
     r3(bare(plus(k, 1.1)) - b0)]));
   // track evolution: only when asked, so the default output is unchanged
-  if (['session_type', 'session_minute', 'rubber_gain_pct', 'saturation_min', 'track_wetness_start', 'drying_time_min', 'tyre', 'tyre_warmup_laps'].some(k => args[k] !== undefined)) {
+  if (['session_type', 'session_minute', 'rubber_gain_pct', 'saturation_min', 'track_wetness_start', 'drying_time_min', 'tyre', 'tyre_warmup_laps', 'car_model', 'wet_season', 'wet_session'].some(k => args[k] !== undefined)) {
     const se = sel.series === 'wec' ? 'wec' : 'f1', type = args.session_type || 'qualifying', c = evolutionCoeffs(se, id, type), qc = evolutionCoeffs(se, id, 'qualifying');
     const endOf = x => x.curve ? x.curve.at(-1)[0] : se === 'wec' ? (type === 'qualifying' ? 20 : 90) : 60;
     const formula = Number.isFinite(args.rubber_gain_pct) || Number.isFinite(args.saturation_min);
@@ -191,9 +196,21 @@ export function simulate(args = {}) {
     const end = args.session_minute ?? endOf(c);
     const lap0 = res.lapTime / (1 + evolutionDelta({...qc, session: 'qualifying', useCurve: !!qc.curve}, endOf(qc)));
     const curve = evolutionCurve(lap0, P, {to: Math.max(end, 1), step: Math.max(1, Math.round(end / 12))});
+    // F1 intermediate / full wet: measured gap to the dry lap (W2-F); the evolution curve is not added on top (Gate G reject)
+    const f1Wet = se === 'f1' && !sel.series && (args.tyre === 'inter' || args.tyre === 'wet');
+    if (f1Wet) {
+      const g = wetGap({track: id, compound: args.tyre, year: args.wet_season ?? sel.year, type, carModel: args.car_model, session: args.wet_session}), T = lapsimWetGap.test, lapW = res.lapTime * (1 + g.pct / 100);
+      for (const p of curve.points) p.lap = lapW;
+      out.wet = {tyre: args.tyre, gap_to_dry_pct: g.pct, lap: fmt(lapW), lap_s: r3(lapW), dry_lap_s: r3(res.lapTime),
+        value_used: g.basis === 'car' ? `measured: ${g.carModel}, ${g.year} ${g.event} GP ${g.session} (${g.laps} laps, exact replay)` : g.basis === 'session' ? `measured: ${g.year} ${g.event} GP ${g.session}, mean of ${g.cars} cars (${g.laps} laps, exact replay)` : `constant ${args.tyre === 'wet' ? 'full wet' : 'intermediate'} gap (all F1 wet laps 2018-2026)`,
+        source: 'measured gap to dry pace, TracingInsights 2018-26', held_out_error_pp: T.loo.mae, unseen_2026_error_pp: T.unseen2026.mae,
+        ...(args.car_model && g.basis !== 'car' ? {car_model_note: `${args.car_model} has no measured ${args.tyre} laps in that session; ${g.basis === 'session' ? 'session mean' : 'constant'} used`} : {}),
+        note: 'pp = percentage points of the dry lap. Wetness, drying time and rubber are not added: the measured gap already contains them.'};
+    }
     out.evolution = {session_type: type, minute: end, lap_at_minute: fmt(curve.last.lap), lap_at_minute_s: r3(curve.last.lap), change_from_start_s: r3(curve.last.lap - curve.points[0].lap),
       curve: curve.points.map(p => ({minute: p.minute, lap_s: r3(p.lap)})),
-      basis: P.useCurve ? `measured ${type} curve at this track` : c.calibrated ? 'fitted series coefficients' : 'uncalibrated default coefficients',
+      basis: f1Wet ? 'flat: measured wet gap to the dry lap (evolution shape rejected by Gate G)' : P.useCurve ? `measured ${type} curve at this track` : c.calibrated ? 'fitted series coefficients' : 'uncalibrated default coefficients',
+      ...(se === 'wec' && args.tyre && args.tyre !== 'slick' ? {wet_note: 'WEC/LMGT3 wet pace: not measured (wetness formula with assumed tyre penalties)'} : {}),
       holdout_error_pct: c.holdoutPct, reference: 'the simulated lap = track state at the end of qualifying',
       assumptions: 'lap = reference × (1 + rubber(t) + wet(t) + warm-up(k)); rubber −a(1−e^(−t/τ)) or the measured curve, wet = wetness × tyre penalty × e^(−t/drying), warm-up fades over the given laps'};
   }
