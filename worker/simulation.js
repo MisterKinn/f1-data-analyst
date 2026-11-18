@@ -46,6 +46,7 @@ import {lapsimStartLines} from './lapsim/start-lines.js';
 import {lapsimMapShape} from './lapsim/map-shape-data.js';
 import {lapsimKerbUse} from './lapsim/kerb-use-data.js';
 import {lapsimTrackBumps} from './lapsim/track-bumps-data.js';
+import {viewHash, canonJson, viewBuildKey, carStartOptions} from './lapsim/view-keys.js';
 
 const K = lapsimKernel();
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -1189,8 +1190,7 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
     requestAnimationFrame(() => {
       pending = false;
       // options start at the real qualifying's state when this car's season raced here (Brazil 2026: Alt, OT off), else the defaults
-      if (state.optCar !== state.carId) { state.optCar = state.carId; const c = data.cars[state.carId], z = !c.series && c.year && data.zones ? data.zones[c.year < 2026 ? '2025' : String(Math.max(2026, ...Object.keys(data.zones).map(Number).filter(k => k >= 2026 && k <= c.year)))] : null, rq = z && z.real && z.year === c.year && c.fix ? z.real : {};
-        state.sm = rq.grip === 'low' ? 'alt' : 'normal'; state.ot = rq.ot !== 'off'; state.drs = rq.drs !== 'off';
+      if (state.optCar !== state.carId) { state.optCar = state.carId; Object.assign(state, carStartOptions(data, state.carId));
         if (q('sm')) { q('sm').value = state.sm; q('ot').value = state.ot ? '1' : '0'; q('drs').value = state.drs ? '1' : '0'; } }
       viewOf(state, v => { lastTel = v.tel; lastView = v;
       q('lap').textContent = v.lap; q('pole').innerHTML = v.poleHtml; q('facts').innerHTML = v.factsHtml; q('air').innerHTML = v.airHtml;
@@ -1207,11 +1207,21 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
   let W = null, wid = 0;
   try { if (src && typeof Worker === 'function') { W = new Worker(src); W.postMessage({data}); } } catch (e) { W = null; }
   const busy = on => { const m = q('map'); if (m) { m.style.transition = 'opacity .25s .15s'; m.style.opacity = on ? '.55' : ''; } }; // quiet "calculating" state
+  // first-view job (owner 2026-11-18): a stored view (GitHub Pages, scripts/sim/precompute-views.mjs) is used when its build and state
+  // are exactly this page's; a missing, different or slow (300 ms) one falls back to the worker
+  const VIEWS = 'https://misterkinn.github.io/f1-data-analyst/views/';
+  let BUILD = null; try { BUILD = src ? viewBuildKey(new URL(src).searchParams.get('v'), el.textContent) : null; } catch (e) { BUILD = null; }
+  const unpack = v => { const o = v.mapArgs && v.mapArgs[2], f = o && o.renumber; if (f && typeof f !== 'function') { const {rn, nT} = f; o.renumber = Object.assign(k => ((k - rn) % nT + nT) % nT + 1, {rn, nT}); } return v; };
+  const stored = (st, then) => { if (!BUILD || typeof fetch !== 'function') { then(null); return; }
+    const key = canonJson(st), ac = typeof AbortController === 'function' ? new AbortController() : null, tm = setTimeout(() => ac && ac.abort(), 300);
+    fetch(VIEWS + BUILD + '/' + viewHash(key) + '.json', ac ? {signal: ac.signal} : {}).then(r => r.ok ? r.json() : null).then(j => { clearTimeout(tm); then(j && j.build === BUILD && j.state === key ? unpack(j.v) : null); }, () => { clearTimeout(tm); then(null); }); };
   const viewOf = (st, done) => {
-    if (!W) { done(computeView(K, data, st, R)); return; }
     const id = ++wid; busy(true);
-    W.onmessage = e => { if (e.data.id !== wid) return; busy(false); if (e.data.err) { W = null; done(computeView(K, data, st, R)); return; }
-      const v = e.data.v, o = v.mapArgs && v.mapArgs[2], f = o && o.renumber; if (f) { const {rn, nT} = f; o.renumber = Object.assign(k => ((k - rn) % nT + nT) % nT + 1, {rn, nT}); } done(v); };
+    stored(st, sv => { if (id !== wid) return; if (sv) { busy(false); done(sv); return; } live(st, done, id); });
+  };
+  const live = (st, done, id) => {
+    if (!W) { busy(false); done(computeView(K, data, st, R)); return; }
+    W.onmessage = e => { if (e.data.id !== wid) return; busy(false); if (e.data.err) { W = null; done(computeView(K, data, st, R)); return; } done(unpack(e.data.v)); };
     W.onerror = () => { W = null; busy(false); done(computeView(K, data, st, R)); };
     W.postMessage({id, state: st});
   };
@@ -1402,7 +1412,7 @@ function lapsimWorker(K, computeView, R) {
 let scriptText = null;
 export function lapsimScript() {
   // powertrain() lives outside lapsimKernel() and simulateLap calls it: it must be in the browser script too
-  if (!scriptText) scriptText = '(()=>{const powertrain=' + powertrain.toString() + ';const K=(' + lapsimKernel.toString() + ')();const lapChannels=' + lapChannels.toString() + ';const blendLine=' + blendLine.toString() + ';const blendOff=' + blendOff.toString() + ';const renderMap=' + renderMap.toString() + ';const renderTrace=' + renderTrace.toString() + ';const evolutionDelta=' + evolutionDelta.toString() + ';const evolutionCurve=' + evolutionCurve.toString() + ';const lineTrack=' + lineTrack.toString() + ';const brakeZones=' + brakeZones.toString() + ';const computeView=' + computeView.toString() + ';const lapsimWorker=' + lapsimWorker.toString() + ';(' + lapsimClient.toString() + ')(K,computeView,renderMap,renderTrace,evolutionDelta,evolutionCurve,lineTrack,brakeZones,lapChannels,blendLine,blendOff,typeof document!==\'undefined\'&&document.currentScript&&document.currentScript.src);})();';
+  if (!scriptText) scriptText = '(()=>{const powertrain=' + powertrain.toString() + ';const K=(' + lapsimKernel.toString() + ')();const lapChannels=' + lapChannels.toString() + ';const blendLine=' + blendLine.toString() + ';const blendOff=' + blendOff.toString() + ';const renderMap=' + renderMap.toString() + ';const renderTrace=' + renderTrace.toString() + ';const evolutionDelta=' + evolutionDelta.toString() + ';const evolutionCurve=' + evolutionCurve.toString() + ';const lineTrack=' + lineTrack.toString() + ';const brakeZones=' + brakeZones.toString() + ';const computeView=' + computeView.toString() + ';const lapsimWorker=' + lapsimWorker.toString() + ';const viewHash=' + viewHash.toString() + ';const canonJson=' + canonJson.toString() + ';const viewBuildKey=' + viewBuildKey.toString() + ';const carStartOptions=' + carStartOptions.toString() + ';(' + lapsimClient.toString() + ')(K,computeView,renderMap,renderTrace,evolutionDelta,evolutionCurve,lineTrack,brakeZones,lapChannels,blendLine,blendOff,typeof document!==\'undefined\'&&document.currentScript&&document.currentScript.src);})();';
   return scriptText;
 }
 export function lapsimScriptVersion() {

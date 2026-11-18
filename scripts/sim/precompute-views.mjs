@@ -1,7 +1,8 @@
 // First-view job (owner 2026-11-18), stage 2: store the lap simulator's first view of every track × car, so the page can show it at
 // once. The views come from the page's own worker code path (lapsimScript() run with no document), from the page data the server
 // sends, for the state the page builds for a car's first view (worker/lapsim/view-keys.js). GT3 cars are left out: they compute in
-// about 0.1 s. Output (not committed; published to GitHub Pages by .github/workflows/lapsim-views.yml):
+// about 0.1 s. Output (not committed; published to the fork's GitHub Pages by .github/workflows/lapsim-views.yml, which checks out
+// upstream main every hour and runs this script):
 //   <out>/<build>/<state hash>.json = {build, state, v}    build = script version + hash of the page data without carId
 //   <out>/manifest-<shard>.json     = [{track, lang, car, build, file, ms}]
 // Usage: node scripts/sim/precompute-views.mjs <out dir> [k/n shard] [--check <dir> <share>]

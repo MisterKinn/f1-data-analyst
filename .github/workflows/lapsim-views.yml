@@ -1,25 +1,25 @@
 name: Lap simulator stored views
 
 # First-view job (owner 2026-11-18): the lap simulator's first view of every track × car (GT3 left out: they compute in about
-# 0.1 s), computed with the page's own worker code (scripts/sim/precompute-views.mjs) and published to this fork's GitHub Pages
+# 0.1 s), computed with the page's own worker code (scripts/sim/precompute-views.mjs) and published to this repository's GitHub Pages
 # (never committed). The page uses a stored view only when its build key (script version + page data) and its state match exactly.
 # A second, fresh process recomputes a random 3 % of the views and every F1 view of Spa, Silverstone and Suzuka; any difference
-# stops the deploy. Runs on the fork only (the upstream repository has no Pages site for this).
+# stops the deploy. Runs on MisterKinn/f1-data-analyst only (Settings → Pages → Source: GitHub Actions); forks skip it.
 on:
   push:
     branches: [main]
     paths: ['worker/lapsim/**', 'worker/simulation.js', 'worker/simulator-ui.js', 'scripts/sim/precompute-views.mjs', '.github/workflows/lapsim-views.yml']
   workflow_run:
-    workflows: ['Lap simulator data', 'Sync fork with upstream']
+    workflows: ['Lap simulator data']
     types: [completed]
   workflow_dispatch:
 
 concurrency: {group: lapsim-views, cancel-in-progress: true}
 
 jobs:
-  # skip when the published views were built from the same worker/ tree (the fork syncs every hour, mostly without changes)
+  # skip when the published views were built from the same worker/ tree
   plan:
-    if: github.repository == 'kangjeongmin1229/f1-data-analyst-deploy'
+    if: github.repository == 'MisterKinn/f1-data-analyst'
     runs-on: ubuntu-latest
     outputs: {run: '${{ steps.p.outputs.run }}', tree: '${{ steps.p.outputs.tree }}'}
     steps:
@@ -28,7 +28,7 @@ jobs:
       - id: p
         run: |
           tree=$(git rev-parse HEAD:worker)-$(git rev-parse HEAD:scripts/sim/precompute-views.mjs); echo "tree=$tree" >> "$GITHUB_OUTPUT"
-          old=$(curl -fsS "https://kangjeongmin1229.github.io/f1-data-analyst-deploy/views/index.json" | sed -n 's/.*"tree":"\([^"]*\)".*/\1/p' || true)
+          old=$(curl -fsS "https://misterkinn.github.io/f1-data-analyst/views/index.json" | sed -n 's/.*"tree":"\([^"]*\)".*/\1/p' || true)
           if [ "$old" = "$tree" ] && [ "${{ github.event_name }}" != workflow_dispatch ]; then echo run=false >> "$GITHUB_OUTPUT"; else echo run=true >> "$GITHUB_OUTPUT"; fi
 
   views:
