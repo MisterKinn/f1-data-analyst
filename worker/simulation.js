@@ -145,24 +145,13 @@ function renderMap(map, v, opts) {
   const bucket = i => Math.min(5, Math.floor((vAt(i) - lo) / (hi - lo + 1e-9) * 6));
   let paths = '', run = [0], b = bucket(0);
   const flush = () => { if (run.length > 1) paths += '<path d="M' + run.map(i => px(i) + ' ' + py(i)).join('L') + '" stroke="color-mix(in oklab,var(--mint) ' + (b * 20) + '%,var(--sim-slow))"/>'; };
-  const sw = (Math.max(vw, vh) / 110).toFixed(1), L = opts.line && ra ? Object.assign({}, opts.line, {pts: opts.line.pts.map(R2), left: opts.line.left.map(R2), right: opts.line.right.map(R2), pit: opts.line.pit && opts.line.pit.map(q => q.map(R2)), walls: opts.line.walls && {...opts.line.walls, lines: opts.line.walls.lines.map(w => ({k: w.k, pts: w.pts.map(R2)}))}}) : opts.line;
+  const sw = (Math.max(vw, vh) / 110).toFixed(1), L = opts.line && ra ? Object.assign({}, opts.line, {pts: opts.line.pts.map(R2), left: opts.line.left.map(R2), right: opts.line.right.map(R2), pit: opts.line.pit && opts.line.pit.map(q => q.map(R2))}) : opts.line;
   let band = '', marks = '';
   if (L) {
     // racing line on the track band: the line replaces the centre path, coloured by the car's speed on it
     const X = p => (p[0] - minX + pad).toFixed(1), Y = p => (maxY - p[1] + pad).toFixed(1), m = L.pts.length;
     // pit lane (A5, owner 2026-11-16): OpenStreetMap path, drawn under the track at about its real width (map units are metres)
-    // walls and barriers (owner 2026-11-18): OpenStreetMap barrier lines beside the track; on street circuits, where OSM maps none, a wall
-    // along the road edge (rule, 0.5 m out)
-    const W = L.walls; let walls = '';
-    // one path per kind (Spa has 110 pieces: one DOM node each made Chromium slow to pan and zoom, owner 2026-11-18)
-    if (W) { const byK = {}; for (const w of W.lines) byK[w.k] = (byK[w.k] || '') + 'M' + w.pts.map(p => X(p) + ' ' + Y(p)).join('L');
-      walls = Object.entries(byK).map(([k, d]) => '<path class="ls-wall ls-wall-' + k + '" d="' + d + '"/>').join(''); let st = '';
-      const k = L.left.length, out = (E, O, i) => { const a = E[i % k], b = O[i % k], d = Math.hypot(a[0] - b[0], a[1] - b[1]) || 1; return [a[0] + (a[0] - b[0]) / d * 0.6, a[1] + (a[1] - b[1]) / d * 0.6]; };
-      for (const [E, O, ks] of [[L.left, L.right, W.kindLeft], [L.right, L.left, W.kindRight]]) { let run = [];
-        const flushW = () => { if (run.length > 1) st += 'M' + run.map(p => X(p) + ' ' + Y(p)).join('L'); run = []; };
-        for (let j = 0; j <= ks.length; j++) { if (ks[j % ks.length] === 'street' && j < ks.length) for (let i = j * W.step; i < (j + 1) * W.step + 1; i++) run.push(out(E, O, i)); else flushW(); } flushW(); }
-      if (st) walls += '<path class="ls-wall ls-wall-street" d="' + st + '"/>'; }
-    band = walls + (L.pit ? L.pit.map(q => '<path class="ls-pit" d="M' + q.map(p => X(p) + ' ' + Y(p)).join('L') + '"/>').join('') : '') + '<polygon class="ls-band" points="' + L.left.concat(L.right.slice().reverse()).map(p => X(p) + ',' + Y(p)).join(' ') + '"/>';
+    band = (L.pit ? L.pit.map(q => '<path class="ls-pit" d="M' + q.map(p => X(p) + ' ' + Y(p)).join('L') + '"/>').join('') : '') + '<polygon class="ls-band" points="' + L.left.concat(L.right.slice().reverse()).map(p => X(p) + ',' + Y(p)).join(' ') + '"/>';
     for (const [f0, f1] of L.surf || []) { const k = L.left.length, a = Math.round(f0 * k), b = Math.round(f1 * k) + (f1 < f0 ? k : 0), lt = [], rt = [];
       for (let i = a; i <= b; i++) { lt.push(L.left[i % k]); rt.push(L.right[i % k]); }
       band += '<polygon class="ls-surf" points="' + lt.concat(rt.reverse()).map(p => X(p) + ',' + Y(p)).join(' ') + '"/>'; }
@@ -294,6 +283,12 @@ function surfaceOf(id, td, ch) {
   const spans = ap.flatMap(a => (a.spans || []).map(([x, y]) => [+(x / L).toFixed(4), +(Math.max(y, x + 30) / L).toFixed(4)]));
   return items.length || SURFACE_ERAS[id] ? {year: items.length ? ch.year : null, n: items.length, spans, era: SURFACE_ERAS[id] || null} : null;
 }
+// walls (owner 2026-11-18: "use the walls only for the lap telemetry model, do not draw them"): per lap point 0–10, closeness of the
+// nearest barrier (OSM, street rule) = 10 · max(0, 1 − gap / 3 m); feeds the driver-correction risk in channels.js
+function wallNear(id, n) {
+  const w = lapsimWalls?.tracks?.[id]; if (!w) return null; const m = w.left.length;
+  return Array.from({length: n}, (_, i) => { const j = Math.min(m - 1, Math.floor(i / n * m)), g = Math.min(w.left[j] ?? 40, w.right[j] ?? 40); return Math.round(10 * Math.max(0, 1 - g / 3)); });
+}
 // --- Page ---
 export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
   lang = lang === 'en' ? 'en' : 'ko';
@@ -316,7 +311,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
     .map(([k, e]) => [k, t.eventFor.replace('{n}', lang === 'en' ? e.nameEn : e.name).replace('{a}', e.start).replace('{b}', e.end).replace('{y}', e.weatherYear)]));
   const changes = latestChanges(id);
   const data = {startAlt: lapsimStartLines[id] || null, driverLines: lapsimDriverLines?.tracks?.[id] || null, pu: lapsimPuDocs?.events?.[id] || lapsimPuEst?.tracks?.[id] || null, lang, t, id, track: td, cars, carOrder: CAR_ORDER_P, carId, evoOf, fam, bodyLabel: BODY_LABEL, events, conds, raceRec: raceRecords(id), changes, energy: (liveEnergy && (query.track || 'monza') === id ? liveEnergy : energyLimit(id, 2026)),
-    compounds: lapsimCompounds?.[id] || {}, wecTyres: lapsimWecTyres?.[id] || {}, line: lineData(id), bumps: lapsimTrackBumps?.tracks?.[id] || null, pit: lapsimPitLanes?.tracks?.[id] || null, walls: lapsimWalls?.tracks?.[id] || null, pitSpeed: {series: lapsimPitSpeed.series, event: lapsimPitSpeed.tracks[id] || {}}, pitLossF1: lapsimRace?.tracks?.[id]?.pitLoss ?? null, lineText: LT[lang], qsplit: lapsimQsplit ? {off: lapsimQsplit.offsetPct, test: lapsimQsplit.test, real: lapsimQsplit.tracks?.[id] || null} : null, brakes: lapsimBrakes ? {ramp: lapsimBrakes.rampS ?? 0, k: lapsimBrakes.pedalKgPerG, g: lapsimBrakes.gScale, t: lapsimBrakes.timeScale, test: lapsimBrakes.test, real: lapsimBrakes.races?.[id] || null, text: BT[lang]} : null, compoundGap: compoundGap(id), compoundTest: lapsimCompoundGap?.test?.rmsPct ?? null,
+    compounds: lapsimCompounds?.[id] || {}, wecTyres: lapsimWecTyres?.[id] || {}, line: lineData(id), bumps: lapsimTrackBumps?.tracks?.[id] || null, pit: lapsimPitLanes?.tracks?.[id] || null, wallNear: wallNear(id, td.kappa.length), pitSpeed: {series: lapsimPitSpeed.series, event: lapsimPitSpeed.tracks[id] || {}}, pitLossF1: lapsimRace?.tracks?.[id]?.pitLoss ?? null, lineText: LT[lang], qsplit: lapsimQsplit ? {off: lapsimQsplit.offsetPct, test: lapsimQsplit.test, real: lapsimQsplit.tracks?.[id] || null} : null, brakes: lapsimBrakes ? {ramp: lapsimBrakes.rampS ?? 0, k: lapsimBrakes.pedalKgPerG, g: lapsimBrakes.gScale, t: lapsimBrakes.timeScale, test: lapsimBrakes.test, real: lapsimBrakes.races?.[id] || null, text: BT[lang]} : null, compoundGap: compoundGap(id), compoundTest: lapsimCompoundGap?.test?.rmsPct ?? null,
     evo: Object.fromEntries(['f1', 'wec'].map(se => [se, Object.fromEntries(['practice', 'qualifying'].map(ty => [ty, evolutionCoeffs(se, id, ty)]))])),
     zones: lapsimF1Zones?.tracks?.[id] || null, feZones: lapsimFeZones?.tracks?.[id] || null, zonesOn: ZONES_ON ? (DRS_ONLY ? 'drs' : 'all') : '', puQuali: PU_QUALI, puRamp: !!lapsimCalibration?.puRamp, otChoice: lapsimCalibration?.otChoice?.[id] ?? null, surface: surfaceOf(id, td, changes), mapRot0: (Number.isFinite(view0?.openDeg) ? view0.openDeg : landscapeRot(td.map, lapsimTrackNorth?.[id], VIEW[id], td.corners, td.length)) + (VIEW[id]?.flip ? 180 : 0), cornersEstimated: !!td.cornersEstimated, cornerNames: td.cornersEstimated ? lapsimCornerNames?.[id]?.names?.map(c => ({...c, name: /* 'Curva 1' is only a number */ /^(Turn|Curva|Corner)\s*\d+$/i.test(c.name) ? c.name.replace(/\D+/, '') : lang === 'en' ? c.name : lapsimNamesKo[c.name] || c.name})) || null : null, straights: straightsOf(id, td, lang), north: lapsimTrackNorth?.[id] || null, ui: UI[lang],
     calibration: {generatedAt: lapsimCalibration?.generatedAt || null, seasons: Object.fromEntries(Object.entries(lapsimCalibration?.seasons || {}).map(([y, s]) => [y, s.tracks?.[id] || null]))}};
@@ -356,7 +351,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
 </form>
 <p class="fine ls-event" data-no-translate data-ls="event"${events[carId] ? '' : ' hidden'}>${esc(events[carId] || '')}</p>
 <section class="ls-stage">
- <figure class="ls-map-wrap">${lineControls(lang, view)}<div class="ls-zoombox" data-ls-zoom><div data-ls="map">${view.mapSvg}</div></div><figcaption><span class="ls-legend" aria-hidden="true"></span><span>${esc(t.slow)}</span><span>${esc(t.fast)}</span>${lapsimWalls?.tracks?.[id] ? '<span class="ls-wallkey">' + (lang === 'ko' ? '벽·방호벽 (OSM)' : 'Walls and barriers (OSM)') + '</span>' : ''}<span class="ls-windkey" data-ls="wind">${view.windHtml}</span></figcaption></figure>
+ <figure class="ls-map-wrap">${lineControls(lang, view)}<div class="ls-zoombox" data-ls-zoom><div data-ls="map">${view.mapSvg}</div></div><figcaption><span class="ls-legend" aria-hidden="true"></span><span>${esc(t.slow)}</span><span>${esc(t.fast)}</span><span class="ls-windkey" data-ls="wind">${view.windHtml}</span></figcaption></figure>
  <div class="ls-readout">
   <p class="ls-track" data-no-translate>${esc(trackName(id, lang))}</p>
   <p class="ls-label"><span data-ls="carLabel">${esc(cars[carId].label)}</span> · <span data-ls="carKind">${esc(view.kindLabel)}</span></p>
@@ -915,7 +910,7 @@ function computeView(K, data, state, R) {
       kerbs.push([left ? 'L' : 'R', a - w(15), a + w(15)], [left ? 'R' : 'L', e - w(15), e + w(15)]); }
     // two pit lanes (Spa, Silverstone; owner 2026-11-17): the main lane is the F1 one, alt.use says which series take the other or both
     const pa = data.pit?.alt, pu = sel.series && pa?.use?.[sel.series] || 'main', pits = !data.pit ? [] : pu === 'alt' ? [pa] : pu === 'both' ? [{...data.pit, name: pa.mainName}, pa] : [data.pit];
-    line = {pts: P, v, marks, kerbs, surf: data.surface?.spans || [], left: LD.left, right: LD.right, pit: pits.length ? pits.map(q => q.pts) : null, walls: data.walls};
+    line = {pts: P, v, marks, kerbs, surf: data.surface?.spans || [], left: LD.left, right: LD.right, pit: pits.length ? pits.map(q => q.pts) : null};
     const dname = (k, r) => (r.name || k) + (r.name && !sel.series ? ' (' + k + ')' : '') + (r.team ? ' · ' + r.team : r.manufacturer ? ' · ' + r.manufacturer : '');
     driverOpts = DLy ? '<option value="">' + LT0.carLine + '</option>' + Object.entries(DLy.drivers).sort((a, b) => String(a[1].name || a[0]).localeCompare(String(b[1].name || b[0]))).map(([k, r]) => '<option value="' + k + '"' + (k === state.driver ? ' selected' : '') + '>' + dname(k, r) + '</option>').join('') : '';
   }
@@ -958,7 +953,7 @@ function computeView(K, data, state, R) {
     if (!w0) { if (c.type === 'resurfacing') surface.fill(0.15); continue; }
     for (let x = w0[0]; x <= w1[1]; x += d.ds) surface[(Math.round(x / d.ds) % nP + nP) % nP] = 0.25;
   }
-  const chOf = (c, r, key) => R.lapChannels(r && r.trk || track, c.car, env, r, {cls: clsOf(c), seed: data.id + '|' + key, surface, wet: state.mode !== 'manual' && !!(data.conds[condKey] && data.conds[condKey].rain)});
+  const chOf = (c, r, key) => R.lapChannels(r && r.trk || track, c.car, env, r, {cls: clsOf(c), seed: data.id + '|' + key, surface, walls: data.wallNear, wet: state.mode !== 'manual' && !!(data.conds[condKey] && data.conds[condKey].rain)});
   const ch = [chOf(sel, raw, state.carId)].concat(cmpRaws.map((r, j) => chOf(data.cars[cmpIds[j]], r, cmpIds[j])));
   const tag = arr => arr.map((v, j) => v ? {v, cls: 'ls-line-' + j} : null).filter(Boolean); // keeps each car's colour when one has no channel
   // telemetry charts: corner numbers only, also where the map shows OpenStreetMap corner names (owner 2026-11-18)
@@ -1397,7 +1392,7 @@ const CSS = `:root{--sim-slow:#ffa94d;--kb-zone:#c0c0c0;--kb-zone-mark:#00d2be}:
 .ls-changes{list-style:none;margin:0;padding:0;display:grid;gap:10px}.ls-change label{display:flex;gap:12px;align-items:flex-start;color:var(--text);font-size:14px;min-width:0}.ls-change input{width:20px;height:20px;min-height:0;margin-top:2px;accent-color:var(--mint)}.ls-change small{display:block;color:var(--muted);font-size:12px;margin-top:2px}.ls-change.is-info label{color:var(--muted)}.ls-dot{width:20px;flex:0 0 20px;text-align:center}.ls-dot::before{content:'·'}
 .ls-table td,.ls-table th{white-space:nowrap}.ls-notes{margin:0;padding-left:20px;display:grid;gap:10px;line-height:1.7;color:var(--muted);max-width:80ch}.ls-panel h3{font-size:18px;margin-top:6px}
 
-.ls-surf{fill:color-mix(in oklab,var(--mint) 35%,transparent);stroke:none}.ls-wall{fill:none;stroke:#7d848c;stroke-width:.8px;vector-effect:non-scaling-stroke;stroke-linejoin:round;opacity:.6}.ls-wall-armco{stroke:#9aa2ab}.ls-wall-tyres{stroke:#5a6067;stroke-width:1.2px}.ls-wall-fence{stroke-dasharray:3 2;opacity:.4}.ls-wall-street{opacity:.5}.ls-wallkey::before{content:'';display:inline-block;width:14px;border-top:1px solid #8a9199;vertical-align:middle;margin-right:4px}.ls-kerb-w{fill:none;stroke:#fff;stroke-width:1.5}.ls-corner-nm{font-size:.62em;font-weight:600}.ls-sc{stroke:#f5c518;stroke-linecap:butt}.ls-sc-t{fill:#fff;font-weight:700;text-anchor:middle;dominant-baseline:central}.ls-straight{font-weight:500}.ls-pit{fill:none;stroke:#8b9096;stroke-width:7;stroke-linejoin:round;stroke-linecap:round;opacity:.75}.ls-kerb{fill:none;stroke:#e5484d;stroke-dasharray:2.5 2.5;stroke-width:1.5}.ls-zoombox{overflow:hidden;position:relative;touch-action:pan-y;border-radius:12px}.ls-zoombox.is-zoomed{touch-action:none;cursor:grab}.ls-line-bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px}.ls-zoom-btns{margin-left:auto;display:inline-flex;flex-wrap:wrap;gap:6px;max-width:100%}.ls-map .ls-mk{stroke:#fff;transform-box:fill-box;transform-origin:center;scale:var(--inv,1)}.ls-map .ls-band{fill:#e6e8ea;stroke:none}:root[data-theme="light"] .ls-band{fill:#1f1f1f}@media(prefers-color-scheme:light){:root:not([data-theme]) .ls-band{fill:#1f1f1f}}
+.ls-surf{fill:color-mix(in oklab,var(--mint) 35%,transparent);stroke:none}.ls-kerb-w{fill:none;stroke:#fff;stroke-width:1.5}.ls-corner-nm{font-size:.62em;font-weight:600}.ls-sc{stroke:#f5c518;stroke-linecap:butt}.ls-sc-t{fill:#fff;font-weight:700;text-anchor:middle;dominant-baseline:central}.ls-straight{font-weight:500}.ls-pit{fill:none;stroke:#8b9096;stroke-width:7;stroke-linejoin:round;stroke-linecap:round;opacity:.75}.ls-kerb{fill:none;stroke:#e5484d;stroke-dasharray:2.5 2.5;stroke-width:1.5}.ls-zoombox{overflow:hidden;position:relative;touch-action:pan-y;border-radius:12px}.ls-zoombox.is-zoomed{touch-action:none;cursor:grab}.ls-line-bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px}.ls-zoom-btns{margin-left:auto;display:inline-flex;flex-wrap:wrap;gap:6px;max-width:100%}.ls-map .ls-mk{stroke:#fff;transform-box:fill-box;transform-origin:center;scale:var(--inv,1)}.ls-map .ls-band{fill:#e6e8ea;stroke:none}:root[data-theme="light"] .ls-band{fill:#1f1f1f}@media(prefers-color-scheme:light){:root:not([data-theme]) .ls-band{fill:#1f1f1f}}
 .ls-mk-b{fill:#e5484d}.ls-mk-a{fill:#f5a524}.ls-mk-t{fill:#30a46c}
 .ls-evo .ls-controls{grid-template-columns:repeat(3,minmax(0,1fr));margin:12px 0 16px}.ls-check{display:flex;align-items:center;gap:8px;align-self:end;min-height:40px}.ls-check input{width:20px;height:20px;min-height:0;accent-color:var(--mint)}.ls-evo .ls-facts{margin-top:16px}
 .ls-line-2{stroke:var(--text);stroke-dasharray:2 3}.ls-zone{fill:none;stroke-linecap:round;opacity:.9}.ls-zone-m,.ls-zone-mt{transform-box:fill-box;transform-origin:center}.ls-zone-drs,.ls-zone-sm{stroke:var(--kb-zone)}.ls-zone-attack{stroke:#2fa4ff}.ls-zone-t{fill:var(--text);font-weight:700;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:var(--bg);stroke-width:3px}.ls-zone-m{stroke:var(--kb-zone-mark)}.ls-zone-m-act{stroke:var(--kb-zone)}.ls-zone-mt{fill:var(--kb-zone-mark);font-weight:700;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:var(--bg);stroke-width:3px}.ls-key-2{background:var(--text)}.ls-key-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;vertical-align:middle}

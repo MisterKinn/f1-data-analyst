@@ -88,7 +88,7 @@ Owner instruction (2026-11-14): where a real lap of a car type exists, use it. T
 | sochi | Grand Prix 5.848 km | f1-history | 5830 (5848) | car positions | 7 (0) | 1.48 | 1.34 | 1.0363 | 0.73 | – | pass (learned) |
 | long-beach | Street circuit 3.167 km | owner-2026-11-15 | 3093 (3167) | 1–5 m | 10 (0) | 3.26 | -3.03 | 0.9207 | 1.27 | – | pass (learned) |
 | detroit | Downtown street circuit 2.650 km (2023 on) | owner-2026-11-15 | 2631 (2650) | 177–184 m | 8 (0) | 3.69 | -3.03 | 0.9252 | 2.25 | – | pass (learned) |
-| macau | Guia Circuit 6.120 km | owner-2026-11-18 | 6039 (6120) | 0–28 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| macau | Guia Circuit 6.120 km | owner-2026-11-18 | 6041 (6120) | 0–28 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 
 Length is the driven or least-curvature line; it is shorter than the official centre-line distance. "Own class" rows are WEC cars on WEC laps; the other rows use a borrowed car (IMSA GTP = LMDh car, every other GT3 series = LMGT3 car, an older F1 season = the 2023 F1 car times the season ratio).
 

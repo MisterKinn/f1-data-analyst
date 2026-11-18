@@ -15,7 +15,9 @@
 - Street circuits (Monaco, Singapore, Las Vegas, Baku, Jeddah, Long Beach, Detroit, Macau, Miami, Madring): where OSM maps no
   barrier within 15 m, the wall is set at the road edge (0.5 m, kind `street`). This is a rule (model), not a measurement; escape
   roads there are not known. Melbourne is a park circuit with gravel traps: OSM barriers only.
-- The map draws the barrier lines (grey; armco lighter, tyres darker, catch fence dashed) and the street rule 0.6 m outside the edge.
+- Not drawn on the map (owner 2026-11-18, later: "use the walls only for the lap telemetry model, do not draw them"). The page
+  sends per lap point 0–10 = 10 · max(0, 1 − gap / 3 m); `lapChannels` adds 0.025 × that to the risk (up to 0.25), so the
+  driver's steering corrections, brake ripple and throttle lifts grow beside a wall. Model; the lap time is unchanged (below).
 - Not yet: Paul Ricard and Sochi (our line does not fit the OSM raceways within 3 m), Formula E London; circuits still being
   fetched are added in the next run.
 

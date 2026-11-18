@@ -2,7 +2,7 @@
 // angle. Self-contained (the /simulation page sends its source to the browser). Per-class values are engineering estimates; their
 // basis and the Wolfram checks are in docs/lapsim-physics-rules.md, "Telemetry channels".
 // track: kernel track (ds, kappa, mu), res: simulateLap result (v, time, limit), cls: 'f1' | 'hyper' | 'gt3' | 'fe', seed: any string.
-export function lapChannels(track, car, env, res, {cls = 'f1', seed = '', surface = null, wet = false} = {}) {
+export function lapChannels(track, car, env, res, {cls = 'f1', seed = '', surface = null, walls = null, wet = false} = {}) {
   const G = 9.81, v = res.v, n = v.length, ds = track.ds, rho = env.rho ?? 1.2, m = car.mass, Rt = car.tyreRadius ?? 0.34;
   // bal: front share of the brake force; mu: pad friction; rf, rr: effective disc radius (m); af, ar: piston area on one side of the
   // caliper (mm²; the two pads each press with p·A); ratio: steering ratio; kus: understeer gradient (deg/g at the road wheels)
@@ -71,7 +71,8 @@ export function lapChannels(track, car, env, res, {cls = 'f1', seed = '', surfac
   // where grip is easy to lose (owner 2026-11-15), 0–1 per point: weight lost over a crest (v² × vertical curvature from the track
   // grade), braking downhill, downforce lost to a tailwind, lower surface grip (FIA changes switched on), fresh asphalt or patched
   // bumps named in the latest FIA notes (surface), a track away from the tyre's temperature window, rain. The driver's corrections
-  // grow with it (steering, brake ripple and lock-up relief, throttle ripple and lifts).
+  // grow with it (steering, brake ripple and lock-up relief, throttle ripple and lifts). A wall within 3 m of the edge (walls: 0–10 per
+  // point, worker/lapsim/walls-data.js) adds up to 0.25: model (owner 2026-11-18); pole laps show no speed loss there (docs/lapsim-walls.md).
   const gr = track.grade, hd = track.heading, ws = env.windSpeed || 0, wTo = ((env.windFromDeg || 0) + 180) * Math.PI / 180;
   const risk = new Array(n);
   for (let i = 0; i < n; i++) {
@@ -79,7 +80,7 @@ export function lapChannels(track, car, env, res, {cls = 'f1', seed = '', surfac
     const crest = Math.max(0, -v[i] * v[i] * kv / G), down = gr && v[(i + 1) % n] < v[i] ? Math.max(0, -Math.sin(gr[i])) * 5 : 0;
     const tail = hd && ws ? ws * Math.sin(wTo) * Math.cos(hd[i]) + ws * Math.cos(wTo) * Math.sin(hd[i]) : 0;
     const aero = 0.5 * rho * car.clA * v[i] * v[i] / (m * G + 0.5 * rho * car.clA * v[i] * v[i]), tailLoss = aero * (1 - (Math.max(0, v[i] - tail) / Math.max(v[i], 1)) ** 2);
-    risk[i] = Math.min(1, 0.6 * crest + 0.3 * down + 3 * tailLoss + 2 * Math.max(0, 1 - (track.mu ? track.mu[i] : 1)) + (surface ? surface[i] || 0 : 0) + 3 * Math.max(0, 1 - (env.grip ?? 1)) + (wet ? 0.5 : 0));
+    risk[i] = Math.min(1, 0.6 * crest + 0.3 * down + 3 * tailLoss + 2 * Math.max(0, 1 - (track.mu ? track.mu[i] : 1)) + (surface ? surface[i] || 0 : 0) + (walls ? 0.025 * (walls[i] || 0) : 0) + 3 * Math.max(0, 1 - (env.grip ?? 1)) + (wet ? 0.5 : 0));
   }
   const steerDeg = mean.map((d, i) => {
     const u = Math.min(1, use[i] / ref), amp = 1.2 * u * u * u * (1 + 25 / Math.max(v[i], 10)) * (1 + 1.5 * risk[i]); // deg at the wheel: grows near the limit, at low speed and where grip is easy to lose
