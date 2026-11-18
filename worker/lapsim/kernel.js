@@ -290,8 +290,14 @@ export function lapsimKernel() {
     const causal = ers.rule === 'f1-2026' && ers.causalSoc !== false;
     const socMax = ers.socWindow ?? 4e6, recMax = env.rechargeMax ?? ers.rechargeMax ?? 8.5e6;
     let vhLo = -Infinity, vhHi = Infinity; // after forward(): every vH in [vhLo, vhHi) takes the same branches, so gives the same run
+    let cLo = -Infinity, cHi = Infinity; // likewise every vCut in (cLo, cHi]
+    // per-point values of forward() that do not depend on speed, worked out once with the same operations
+    const clF = new Float64Array(n), cdF = new Float64Array(n), muXF = new Float64Array(n);
+    const maxOf = a => { let m = -Infinity; for (let i = 0; i < a.length; i++) { const x = a[i]; if (x !== x) return NaN; if (x > m) m = x; } return m; }; // Math.max(...a) for the speeds (no ±0 case)
+    for (let i = 0; i < n; i++) { const low = lowAt(i); clF[i] = clAt(i, low); cdF[i] = cdAt(i, low); muXF[i] = muAt(i) * (t.muXTrac / t.muY0); }
+    const below = (vi, vCut) => vi < vCut ? (vi > cLo && (cLo = vi), true) : (vi < cHi && (cHi = vi), false);
     const forward = (vCut, vH = Infinity) => {
-      const v = fwd; vhLo = -Infinity; vhHi = Infinity;
+      const v = fwd; vhLo = -Infinity; vhHi = Infinity; cLo = -Infinity; cHi = Infinity;
       v[iMin] = Math.min(vLat[iMin], vBack[iMin]);
       let soc = socMax, got = 0;
       for (let pass = 0; pass < 2; pass++) {
@@ -299,12 +305,11 @@ export function lapsimKernel() {
         for (let c = 0; c < n; c++) {
           const i = (start + c) % n, j = (i + 1) % n;
           const vi = Math.max(v[i], 1);
-          const low = lowAt(i);
-          const va = vAir(vi, i), L = aeroFactor * clAt(i, low) * va * va, N = normalAt(vi, i, L);
-          const pErs = vi < vCut && (!track || soc > 0) ? Math.min(erskLimitW(ers.rule, vi, ers.pMax || 0, otOn === true || !!(otOn && otOn[i])), ersCap ? ersCap[i] : Infinity) : 0;
+          const va = vAir(vi, i), L = aeroFactor * clF[i] * va * va, N = normalAt(vi, i, L);
+          const pErs = below(vi, vCut) && (!track || soc > 0) ? Math.min(erskLimitW(ers.rule, vi, ers.pMax || 0, otOn === true || !!(otOn && otOn[i])), ersCap ? ersCap[i] : Infinity) : 0;
           const pI = pAt(vi), fPow = (pI * etaD + pErs * etaK * etaD) / vi;
           const nRear = t.rearStatic * (kv ? N - L : mg * cosG[i]) + t.rearAero * L;
-          const muX = muAt(i) * (t.muXTrac / t.muY0) * pureCap(i, N) / N;
+          const muX = muXF[i] * pureCap(i, N) / N;
           // LMH hybrids also drive the front axle above a set speed (awdAboveKph): all four tyres
           const awd = t.awdAbove != null && vi > t.awdAbove;
           const fTrac = (awd ? muX * N : muX * nRear / Math.max(0.2, 1 - muX * t.hOverWb)) * ellipse(vi, i);
@@ -320,8 +325,8 @@ export function lapsimKernel() {
           ersUsed[i] = pErs > 0 ? Math.min(pErs, Math.max(0, fDrive * vi - pI * etaD) / (etaK * etaD)) : 0;
           // Hypercar hybrids (LMH front axle, LMDh rear axle): the BoP caps total power, so the motor
           // replaces engine power rather than adding to it; it can only drive above its deploy speed
-          if (ers.rule === 'hypercar') ersUsed[i] = vi > (ers.deployFrom || 0) && vi < vCut ? Math.min(ers.eMax || 0, fDrive * vi / etaD) : 0;
-          const drag = aeroFactor * cdAt(i, low) * va * va, roll = cRoll * N;
+          if (ers.rule === 'hypercar') ersUsed[i] = vi > (ers.deployFrom || 0) && below(vi, vCut) ? Math.min(ers.eMax || 0, fDrive * vi / etaD) : 0;
+          const drag = aeroFactor * cdF[i] * va * va, roll = cRoll * N;
           const a = (fDrive - drag - roll) / (t.m * t.inertia) - G * sinG[i];
           const vn = Math.sqrt(Math.max(1, vi * vi + 2 * a * ds));
           v[j] = Math.min(vn, vLat[j], vMaxCar, vBack[j]);
@@ -367,10 +372,15 @@ export function lapsimKernel() {
       if (ers.rule === 'f1-2026') return (ers.socWindow ?? 4e6) + Math.min(eRegen, env.rechargeMax ?? ers.rechargeMax ?? 8.5e6);
       return ers.deployMax ?? 4e6;
     };
+    // runs already made at this vH: a cut-off inside a recorded band gives the identical lap, so its account is reused. top = the
+    // profile's top speed, read later from the shared buffer (vTopA) as it was left by the last run of the search
+    const cutRuns = new Map(); let lastTop = null;
     const fitCut = (vH, fixedBudget) => {
-      let lo = 5, hi = vMaxCar + 1;
+      let lo = 5, hi = vMaxCar + 1, list = cutRuns.get(vH); if (!list) cutRuns.set(vH, list = []);
       for (let it = 0; it < 20; it++) {
-        const mid = 0.5 * (lo + hi), a = account(forward(mid, vH));
+        const mid = 0.5 * (lo + hi); let r = null; for (const b of list) if (mid > b.lo && mid <= b.hi) { r = b; break; }
+        if (!r) { const fv = forward(mid, vH); r = {lo: cLo, hi: cHi, a: account(fv), top: maxOf(fv)}; list.push(r); }
+        const a = r.a; lastTop = r.top;
         if (a.eDeploy > (fixedBudget ?? budget(a.eRegen))) hi = mid; else lo = mid;
       }
       return lo;
@@ -390,7 +400,7 @@ export function lapsimKernel() {
         const bands = new Map(), runAt = (cut, vh) => { let list = bands.get(cut); if (!list) bands.set(cut, list = []);
           for (const b of list) if (vh >= b.lo && vh < b.hi) return b.a;
           const a = account(forward(cut, vh)); list.push({lo: vhLo, hi: vhHi, a}); return a; };
-        const vTopA = Math.max(...v); // cut-offs from the top speed down (the full-recharge cut-off is often above it: no cut-off at all)
+        const vTopA = lastTop; // cut-offs from the top speed down (the full-recharge cut-off is often above it: no cut-off at all)
         for (const cut of [cutB, ...[1, 0.98, 0.96, 0.94, 0.92, 0.9, 0.87, 0.84].map(f => Math.min(cutB, vTopA) * f)]) {
           for (const tol of [0, 1.5e3]) { let lo = 5, hi = vMaxCar + 1; // strict search (the earlier plan) and the tolerant one; the faster legal plan wins
           for (let it = 0; it < 20; it++) { const mid = 0.5 * (lo + hi), a = runAt(cut, mid); if (a.eDeploy > budget(a.eRegen) + tol) hi = mid; else lo = mid; }
