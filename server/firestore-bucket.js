@@ -6,7 +6,7 @@ const dec=value=>Buffer.from(value,'base64url').toString('utf8');
 const digest=value=>createHash('sha256').update(value).digest('hex');
 
 export function createFirestoreBucket(db,{collection='objectStore'}={}){
- const store=db.collection(collection);
+ const store=db.collection(collection),listed=new Map();
  const ref=key=>store.doc(digest(key));
  const object=data=>({
   key:data.key,etag:data.etag,httpMetadata:{contentType:data.contentType||'application/json; charset=utf-8'},
@@ -42,15 +42,17 @@ export function createFirestoreBucket(db,{collection='objectStore'}={}){
     };
     const result=await callback(bucket);
     if(writes.size>450)throw Error('Account transaction exceeds document limit');
-    for(const [key,value]of writes){if(value===null)transaction.delete(ref(key));else transaction.set(ref(key),value);}
+    for(const [key,value]of writes){listed.delete(key);if(value===null)transaction.delete(ref(key));else transaction.set(ref(key),value);}
     return result;
    });
   },
-  async get(key){const snap=await ref(key).get();return snap.exists?object(snap.data()):null;},
+  // A key just listed is served from the listing (the query already paid for that document read); writes and deletes drop it.
+  async get(key){const hit=listed.get(key);if(hit&&hit.until>Date.now())return object(hit.data);const snap=await ref(key).get();return snap.exists?object(snap.data()):null;},
   async put(key,value,options={}){
    const body=typeof value==='string'?value:Buffer.from(value).toString('utf8');
    if(Buffer.byteLength(body)>MAX_BODY_BYTES)throw new Error(`Firestore object exceeds ${MAX_BODY_BYTES} bytes`);
    const contentType=options.httpMetadata?.contentType||'application/json; charset=utf-8';
+   listed.delete(key);
    return db.runTransaction(async transaction=>{
     const target=ref(key),snap=await transaction.get(target),current=snap.exists?snap.data():null,condition=options.onlyIf;
     if(condition?.etagMatches!==undefined&&current?.etag!==condition.etagMatches)return null;
@@ -61,7 +63,7 @@ export function createFirestoreBucket(db,{collection='objectStore'}={}){
     return {key,etag};
    });
   },
-  async delete(key){await ref(key).delete();},
+  async delete(key){listed.delete(key);await ref(key).delete();},
   list:options=>listKeys(options)
  };
  async function listKeys({prefix='',limit=1000,cursor}={}){
@@ -69,6 +71,7 @@ export function createFirestoreBucket(db,{collection='objectStore'}={}){
    let query=store.where('key','>=',prefix).where('key','<',prefix+'\uf8ff').orderBy('key').limit(size+1);
    if(cursor){const last=dec(cursor);if(!last.startsWith(prefix))throw new Error('Invalid cursor');query=query.startAfter(last);}
    const snap=await query.get(),docs=snap.docs.slice(0,size),truncated=snap.docs.length>size;
+   if(listed.size>2000)listed.clear();for(const doc of docs)listed.set(doc.data().key,{data:doc.data(),until:Date.now()+5000});
    return {objects:docs.map(doc=>({key:doc.data().key})),truncated,cursor:truncated&&docs.length?enc(docs.at(-1).data().key):undefined};
  }
 }
