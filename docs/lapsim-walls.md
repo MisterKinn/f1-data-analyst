@@ -18,8 +18,8 @@
 - Not drawn on the map (owner 2026-11-18, later: "use the walls only for the lap telemetry model, do not draw them"). The page
   sends per lap point 0–10 = 10 · max(0, 1 − gap / 3 m); `lapChannels` adds 0.025 × that to the risk (up to 0.25), so the
   driver's steering corrections, brake ripple and throttle lifts grow beside a wall. Model; the lap time is unchanged (below).
-- Not yet: Paul Ricard and Sochi (our line does not fit the OSM raceways within 3 m), Formula E London; circuits still being
-  fetched are added in the next run.
+- 66 circuits (all 88 fetched 2026-11-18). No barrier mapped in OSM near the track: Autopolis, Catalunya, Dubai, Fuji, Istanbul,
+  Kyalami, Mandalika, Motegi, Mugello, Shanghai, Zhuhai, Zolder, FE Shanghai. No fit of our line: Paul Ricard, Sochi, FE London, FE Tokyo.
 
 ## Lap time (owner 2026-11-18: "the walls and the elevation must change the predicted lap time")
 
