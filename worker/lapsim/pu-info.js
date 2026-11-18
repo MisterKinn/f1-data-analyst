@@ -4,6 +4,8 @@
 const LABELS = [
   {key: 'qualiMJ', re: /^qualifying/i}, {key: 'practiceMJ', re: /^free practice/i}, {key: 'outLapMJ', re: /^out laps/i},
   {key: 'raceMJ', re: /^overtake not/i}, {key: 'raceOvertakeMJ', re: /^overtake active/i},
+  // round 1 (Melbourne 2026) heads the race columns "Normal lap" and "Overtake"
+  {key: 'raceMJ', re: /^normal lap/i}, {key: 'raceOvertakeMJ', re: /^overtake$/i},
 ];
 export function parsePuInfo(pages) {
   for (const p of pages || []) {
