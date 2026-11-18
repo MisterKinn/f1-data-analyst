@@ -13,6 +13,7 @@ import {lapsimLearned} from './learned-data.js';
 import {evolutionCoeffs, evolutionDelta, evolutionCurve} from './evolution.js';
 import {wetGap} from './wet-gap.js';
 import {lapsimWetGap} from './wet-gap-data.js';
+import {driveEnergyJ} from './stint-energy.js';
 
 const K = lapsimKernel();
 const SITE = 'https://kongboda-motorsports.vercel.app';
@@ -86,7 +87,9 @@ function summary(res, d, car) {
 }
 
 const selKey0 = args => carKey(args.car || '2026');
-export function simulate(args = {}) {
+// opts.carPatch (in-process only, not in the connector schema): change the selected car like a given input, e.g. BoP mass, for
+// scripts/sim/bop-sensitivity.mjs; the real-lap correction of the unchanged car stays, as for engine_power_kw
+export function simulate(args = {}, opts = {}) {
   const ids = Object.keys(lapsimTracks).sort();
   if (!ids.length) return {status: 'unavailable', message: 'Track and calibration data are still being built.'};
   const id = args.track ? resolveTrack(args.track, ids) : null;
@@ -95,7 +98,7 @@ export function simulate(args = {}) {
   const selKey = carKey(args.car || '2026'), sel = cars[selKey] = {...cars[selKey0(args)]};
   // user powertrain and aero (bug report 2026-11-15): torque curve, gears, power, drag and downforce replace the car's values
   const given = [];
-  if (args.torque_curve || args.power_curve_kw || args.gear_ratios || Number.isFinite(args.engine_power_kw) || Number.isFinite(args.drag_cda) || Number.isFinite(args.downforce_cla)) {
+  if (args.torque_curve || args.power_curve_kw || args.gear_ratios || Number.isFinite(args.engine_power_kw) || Number.isFinite(args.drag_cda) || Number.isFinite(args.downforce_cla) || opts.carPatch) {
     const c = {...sel.car}, cv = args.torque_curve || args.power_curve_kw;
     if (cv) { const pts = [...cv].filter(p => p[0] > 0 && p[1] > 0).sort((a, b) => a[0] - b[0]); if (pts.length >= 2) { c.engine = {rpm: pts.map(p => p[0]), [args.torque_curve ? 'Nm' : 'kW']: pts.map(p => p[1]), rpmMax: args.rpm_limit ?? pts.at(-1)[0]}; given.push('engine curve'); } }
     else if (Number.isFinite(args.rpm_limit) && c.engine) c.engine = {...c.engine, rpmMax: args.rpm_limit};
@@ -105,6 +108,7 @@ export function simulate(args = {}) {
     if (cv && args.torque_curve && !Number.isFinite(args.engine_power_kw)) c.pIce = Math.max(c.pIce, Math.max(...c.engine.Nm.map((T, i) => T * c.engine.rpm[i] * 2 * Math.PI / 60))); // the curve itself sets the power when no cap is given
     if (Number.isFinite(args.drag_cda)) { const f = args.drag_cda / c.cdA; c.cdA = args.drag_cda; if (c.cdALow) c.cdALow *= f; given.push('drag'); }
     if (Number.isFinite(args.downforce_cla)) { const f = args.downforce_cla / c.clA; c.clA = args.downforce_cla; if (c.clALow) c.clALow *= f; given.push('downforce'); }
+    if (opts.carPatch) { opts.carPatch(c); given.push('car patch'); }
     // the real-lap correction of the unchanged car stays (real lap minus its simulated lap), so the change shows as a difference from the real lap
     cars.__base = {...sel}; sel.car = c; if (sel.fix) sel.fix = {...sel.fix, ref: '__base'};
   }
@@ -157,6 +161,8 @@ export function simulate(args = {}) {
     return k && sec ? {...r, lapTime: r.lapTime + k[0] + k[1] + k[2], sectors: sec.map((x, i) => x + k[i]), sectorCorrection: k} : k ? {...r, lapTime: r.lapTime + k.reduce((a, b) => a + b, 0), sectorCorrection: k} : r;
   };
   const res = run(sel);
+  // in-process only: driveshaft energy of this lap (MJ), the quantity the WEC stint energy limits (stint-energy.js)
+  if (opts.driveEnergy) opts.driveEnergy.mj = driveEnergyJ(withGrip(withZones(K, d, track, sel), sel.grip || 1), sel.car, env, res.v) / 1e6;
   const xc = d.quality?.check; // set on extra circuits only
   const lt = lapsimLearned?.tracks?.[id]; // real laps of every car model on this track (docs/lapsim-learn.md)
   const out = {status: 'ok', model: 'quasi-steady-state lap simulation (estimate, not a prediction of a real session)',
