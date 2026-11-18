@@ -26,6 +26,10 @@ on:
         description: 'Calibrate and commit (false: only build data and upload it as an artifact)'
         required: false
         default: 'true'
+      tracks:
+        description: 'keep: calibrate on the committed track shapes (traces scaled to them); rebuild: new shapes from the data'
+        required: false
+        default: 'keep'
 
 permissions:
   contents: write
@@ -64,13 +68,25 @@ jobs:
         with:
           path: .cache/lapsim/raw
           key: lapsim-raw-v1-${{ github.run_id }}
+      # keep (default, owner 2026-11-18): a rebuild moves every F1 track by metres and the hand-built zones, car lines and stored
+      # lines then no longer fit (run 44180547107: 6 tests failed), so the cars are fitted on the committed shapes
       - name: Choose track smoothing and build tracks
+        if: (inputs.tracks || 'keep') == 'rebuild'
         run: node scripts/sim/tune-geometry.mjs
+      - name: Speed traces on the committed tracks
+        if: (inputs.tracks || 'keep') != 'rebuild'
+        run: LAPSIM_TRACKS_OUT=.cache/lapsim/tracks-built.mjs node scripts/sim/build-geometry.mjs && node scripts/sim/traces-to-tracks.mjs .cache/lapsim/tracks-built.mjs
       - run: npm ci --omit=dev --ignore-scripts
       # build-geometry.mjs writes only the F1 tracks: put back the extra tracks (second export, from their committed sources) and the
       # dense map points, as docs/lapsim-tracks-extra.md describes (2026-11-17 run 44069662431 failed at calibrate: no lapsimExtraTracks)
       - name: Rebuild extra tracks and dense maps
+        if: (inputs.tracks || 'keep') == 'rebuild'
         run: node scripts/sim/build-geometry-extra.mjs > /dev/null && node scripts/sim/densify-maps.mjs
+      # zone positions are metres on the track line: rebuild them on the new geometry (2026-11-18 run 44180547107 failed its zone
+      # test: rebuilt Imola 4 m shorter, the old zone 4 then ran into a bend). Reads only the stored FIA zone text, no network.
+      - name: Rebuild F1 zones on the new tracks
+        if: (inputs.tracks || 'keep') == 'rebuild'
+        run: node scripts/sim/f1-zones.mjs > /dev/null
       - name: Fetch WEC timing (Al Kamel)
         run: node scripts/sim/fetch-wec.mjs && node scripts/sim/wec-poles.mjs
       # derived speed traces and tracks for local calibration experiments (not committed)
@@ -84,6 +100,7 @@ jobs:
             .cache/lapsim/races.json
             .cache/lapsim/races/
             worker/lapsim/tracks-data.js
+            worker/lapsim/f1-zones-data.js
           retention-days: 5
           include-hidden-files: true
       # everything the build changed (tracks, WEC poles) plus the derived cache, for the next job
@@ -194,7 +211,7 @@ jobs:
         run: |
           git config user.name "kongboda-lapsim[bot]"
           git config user.email "lapsim@users.noreply.github.com"
-          for f in worker/lapsim/tracks-data.js worker/lapsim/calibration-data.js worker/lapsim/track-changes-data.js docs/lapsim-report.md docs/lapsim-geometry.md \
+          for f in worker/lapsim/tracks-data.js worker/lapsim/f1-zones-data.js worker/lapsim/calibration-data.js worker/lapsim/track-changes-data.js docs/lapsim-report.md docs/lapsim-geometry.md \
             worker/lapsim/race-data.js docs/lapsim-race.md worker/lapsim/change-effects-data.js worker/lapsim/energy-docs-data.js worker/lapsim/rules-data.js docs/lapsim-rules.md \
             worker/lapsim/racing-lines-data.js docs/lapsim-racing-lines.md \
             worker/lapsim/stint-data.js scripts/sim/data/wec-stints.json worker/lapsim/brake-data.js worker/lapsim/wec-poles-data.js; do
