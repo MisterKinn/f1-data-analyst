@@ -16,7 +16,7 @@ export function lapChannels(track, car, env, res, {cls = 'f1', seed = '', surfac
   const C = {
     f1: {bal: 0.57, mu: 0.5, rf: 0.137, af: 3060, rr: 0.115, ar: 1323, ratio: 11.0, kus: 0.44, h: OW},
     hyper: {bal: 0.56, mu: 0.5, rf: 0.160, af: 3409, rr: 0.150, ar: 1712, ratio: 12.8, kus: 0.32, k: 0.203, h: {t90: 0.25, os: 0.148, rip: 0.012, tau: 0.372, rel: 0.67, k: 0.75}},
-    gt3: {bal: 0.58, mu: 0.45, rf: 0.160, af: 2956, rr: 0.150, ar: 1511, ratio: 17.6, kus: 0.34, k: 0.255, h: {t90: 0.383, os: 0.085, rip: 0.0112, tau: 0.343, rel: 0.50, k: 0.86}},
+    gt3: {bal: 0.58, mu: 0.45, rf: 0.160, af: 2956, rr: 0.150, ar: 1511, ratio: 17.6, kus: 0.34, k: 0.255, h: {t90: 0.383, os: 0.085, rip: 0.0112, tau: 0.343, rel: 0.50, k: 0.86, abs: true}},
     fe: {bal: 0.6, mu: 0.45, rf: 0.115, af: 1926, rr: 0.1, ar: 0, ratio: 12, kus: 0.8, h: OW}, // Gen3 on: no rear friction brakes, rear by regen
   }[cls] || {};
   const ers = car.ers || {}, axle = ers.axle || (ers.rule === 'f1-2026' || ers.pMax || car.regen ? 'rear' : null);
@@ -126,9 +126,11 @@ export function lapChannels(track, car, env, res, {cls = 'f1', seed = '', surfac
       let e = k; while (e + 1 < N && base[e + 1] > 0.5) e++;
       const t0 = t[k], P = Math.max(...base.slice(k, e + 1)), os = H.os * (0.6 + 0.8 * r()), f1 = 4 + 3 * r(), f2 = 1 + r(), a1 = H.rip * (0.7 + 0.6 * r()), ph1 = 6.28 * r(), ph2 = 6.28 * r();
       const tr = H.t90 / 2.303 * (0.8 + 0.4 * r()), tg = Math.max(0.09, 0.9 * H.t90); // rise: 90 % of the pressure after t90 (learned per class)
-      // the riskiest point of the zone (crest, tailwind, bumps, ...) is where a lock-up is most likely: the relief goes there
+      // the riskiest point of the zone (crest, tailwind, bumps, ...) is where a lock-up is most likely: the relief goes there. Not for
+      // ABS cars (H.abs: GT3; iRacing GT3 has ABS active in 96 % of heavy zones, docs/lapsim-physics-rules.md): the ABS cycles in the
+      // learned hold ripple instead, the driver keeps the pedal down
       let kr = k; for (let q = k; q <= e; q++) if (R[q] > R[kr]) kr = q;
-      const rz = R[kr], dipAt = r() < 0.25 + 0.6 * rz ? (rz > 0.15 ? t[kr] : t0 + (0.35 + 0.25 * r()) * (t[e] - t0)) : -1, dip = (0.1 + 0.08 * r()) * (1 + rz), tauOff = H.tau * (0.7 + 0.6 * r());
+      const rz = R[kr], dipAt = r() < 0.25 + 0.6 * rz && !H.abs ? (rz > 0.15 ? t[kr] : t0 + (0.35 + 0.25 * r()) * (t[e] - t0)) : -1, dip = (0.1 + 0.08 * r()) * (1 + rz), tauOff = H.tau * (0.7 + 0.6 * r());
       // zone shape learned from iRacing (owner 2026-11-18, heavy zones): hold near the peak (100 → 90 %), then release over the last
       // `rel` of the zone as p = 0.9 · u^k, u = speed left to lose (1 at release start, 0 at the end); not the physics need, whose
       // grip-limited fall with downforce drew a spike. The impulse is still the physics one (rescaled below). k is refitted (2026-11-18) so the
