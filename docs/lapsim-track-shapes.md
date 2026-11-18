@@ -300,3 +300,42 @@ dense maps, F1 zones and stored racing lines, as the data workflow's `tracks: re
 - C5.12 (Monza, a 175 kW cut to 0 at 221 km/h): a kernel error, not a shape problem. C5.12.4 allows at most 150 kW at the start of a
   cut, held for 1 s; C5.12.7 lifts only the ramp below 100 kW. `rampCaps` skipped the 1 s hold whenever the step landed below 100 kW.
   The fix moves 2026 laps by −0.07 to +0.38 s on 26 tracks, so it waits for a paired-gate experiment after the A6 calibration (open).
+## Kerb use on 20 tracks: similarity fit (task 5, 2026-11-18)
+
+The rigid fit of #303 started every rotation from the centroid of the iRacing laps and allowed no scale. Our map metres are
+stretched to the official length, so a 1 % scale error alone puts the far end of a 5 km lap 25 m off, and laps that cover more or
+less than our line move the centroid. `kerb_use.py` now starts from every 5° and a 5 × 5 grid of centres over a quarter of the laps'
+extent, then refines a trimmed similarity fit (rotation, shift and one scale, limited to ±3 %). Same gate as before (fit median
+≤ 2.2 m, drift p95 ≤ 8 m, ≥ 30k closed-wheel samples). The 8 tracks of #303 are recomputed with the same method (Monza 1.18 → 1.24 m,
+the others better). Lap times do not change (checked: F1 2026 on all 26 tracks, identical).
+
+| Track | Fit median (m) | Scale | Drift p95 (m) | Samples | |
+|---|---|---|---|---|---|
+| indianapolis | 3.53 → 0.68 | 0.9993 | 6.48 | 704947 | kept |
+| road-atlanta | 11.66 → 0.73 | 0.9967 | 6.43 | 800404 | kept |
+| austin | 3.59 → 0.92 | 1.0094 | 5.39 | 477608 | kept |
+| mexico-city | 2.78 → 0.99 | 1.0064 | 6.32 | 455813 | kept |
+| suzuka | 4.23 → 1.11 | 0.9996 | 4.43 | 296022 | kept |
+| le-mans | 50.93 → 1.19 | 0.9999 | 4.0 | 431278 | kept |
+| zolder | 33.37 → 1.22 | 0.9992 | 3.43 | 256941 | kept |
+| long-beach | 4.94 → 1.26 | 1.0016 | 5.04 | 464221 | kept |
+| hungaroring | 5.29 → 1.4 | 1.0073 | 3.09 | 61963 | kept |
+| zandvoort | 2.67 → 1.64 | 0.9935 | 5.57 | 332549 | kept |
+| daytona | 5.2 → 1.86 | 0.9989 | 3.72 | 28682 |  |
+| sebring | 2.58 → 1.96 | 1.0063 | 6.86 | 65242 | kept |
+| interlagos | 17.12 → 1.99 | 0.9997 | None | – |  |
+| portimao | 4.77 → 2.03 | 1.014 | 6.21 | 42057 | kept |
+| montreal | 8.32 → 2.09 | 0.9774 | 32.66 | 463263 |  |
+| vir | 7.38 → 2.09 | 0.9986 | None | – |  |
+| road-america | 22.51 → 2.24 | 1.0047 | 0.44 | 16346 |  |
+| misano | 14.79 → 2.26 | 0.9932 | 6.17 | 349750 |  |
+| okayama | 3.58 → 2.38 | 1.007 | 3.45 | 75849 |  |
+| phillip-island | 11.8 → 2.43 | 0.9958 | 3.9 | 22624 |  |
+| sonoma | 3.45 → 2.5 | 1.0038 | 18.73 | 134424 |  |
+| watkins-glen | 3.48 → 2.86 | 1.0077 | None | – |  |
+| imola | 10.55 → 3.15 | 1.004 | None | – |  |
+| mugello | 15.57 → 3.72 | 0.9831 | 12.58 | 69975 |  |
+
+- Left out: Montreal (fits 2.1 m but at scale 0.977 and drifts 33 m: the layout differs), Mugello and Sonoma ("nascarlong", 18.7 m
+  drift), Misano, Okayama, Phillip Island, Road America (2.2–2.4 m), Daytona (28.7k samples), Interlagos, VIR, Watkins Glen and
+  Imola (formula cars only), Bathurst and Brands Hatch (no OSM seed).

@@ -11,6 +11,13 @@ from scipy.ndimage import gaussian_filter1d, maximum_filter1d
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); from irmap import IR; from chfit import local, icp
 import pyarrow.parquet as pq
 REPO = os.getcwd(); out_f = sys.argv[1]; ids = sys.argv[2:]
+def icps(S, tr, T, A, t, it, trim=0.8):
+    """trimmed ICP with one scale (Umeyama): A = scale x rotation; X = S @ A.T + t"""
+    for _ in range(it):
+        X = S @ A.T + t; d, j = tr.query(X); w = d <= np.quantile(d, trim); P, Q = S[w], T[j[w]]; mp, mq = P.mean(0), Q.mean(0)
+        U, D, Vt = np.linalg.svd((Q - mq).T @ (P - mp)); E = np.diag([1, np.sign(np.linalg.det(U @ Vt))])
+        Rr = U @ E @ Vt; sc = float((D * np.diag(E)).sum() / ((P - mp) ** 2).sum()); sc = min(1.03, max(0.97, sc)); A = sc * Rr; t = mq - A @ mp
+    return A, t
 res = json.load(open(out_f)) if os.path.exists(out_f) else {}
 D = json.loads(subprocess.run(['node', '--input-type=module', '-e', '''
 import {lineData} from './worker/simulation.js'; const o = {};
@@ -34,12 +41,19 @@ for id in ids:
     allP = [p for v in groups.values() for p in v]
     if not allP: print(id, 'no laps'); continue
     G = np.vstack(allP); trG = cKDTree(G[::5]); S = M - M.mean(0); best = None
+    # start poses: every 5° and a 5 x 5 grid of centres over a quarter of the lap's extent (the laps may cover more or less than our
+    # line, so their centroid is not our centre); a similarity fit (rotation, shift and one scale: our map metres may be stretched
+    # to the official length) is refined from the best
+    ext = (G.max(0) - G.min(0)) / 4
     for deg in range(0, 360, 5):
         th = math.radians(deg); R0 = np.array([[math.cos(th), -math.sin(th)], [math.sin(th), math.cos(th)]])
-        Rm, t = icp(S[::4], trG, G[::5], R0, G.mean(0), 8); e = float(np.median(trG.query(S[::4] @ Rm.T + t)[0]))
-        if best is None or e < best[0]: best = (e, Rm, t)
-    Rm, t = icp(S, trG, G[::5], best[1], best[2], 40)
-    toMap = lambda Q: (Q - t) @ Rm + M.mean(0); trM = cKDTree(M); out = {'fitMedianM': round(best[0], 2)}
+        for ox in (-1, -.5, 0, .5, 1):
+            for oy in (-1, -.5, 0, .5, 1):
+                Rm, t = icp(S[::8], trG, G[::5], R0, G.mean(0) + ext * (ox, oy), 4); e = float(np.median(trG.query(S[::8] @ Rm.T + t)[0]))
+                if best is None or e < best[0]: best = (e, Rm, t)
+    Rm, t = icp(S[::2], trG, G[::5], best[1], best[2], 20)
+    Rm, t = icps(S, trG, G[::5], Rm, t, 40); best = (float(np.median(trG.query(S @ Rm.T + t)[0])), Rm, t)
+    Ai = np.linalg.inv(Rm); toMap = lambda Q: (Q - t) @ Ai.T + M.mean(0); trM = cKDTree(M); out = {'fitMedianM': round(best[0], 2), 'scale': round(float(np.sqrt(abs(np.linalg.det(Rm)))), 4)}
     for g, Ps in groups.items():
         if not Ps: continue
         Q = toMap(np.vstack(Ps)); _, j = trM.query(Q); lat = ((Q - M[j]) * Nn[j]).sum(1)
