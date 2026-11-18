@@ -34,3 +34,14 @@ test('Firestore bucket rejects oversized values and cross-prefix cursors',async(
  await assert.rejects(()=>bucket.put('large','x'.repeat(FIRESTORE_BUCKET_MAX_BODY_BYTES+1)),/exceeds/);
  const encoded=Buffer.from('other/key').toString('base64url');await assert.rejects(()=>bucket.list({prefix:'accounts/',cursor:encoded}),/Invalid cursor/);
 });
+
+test('Firestore bucket reuses a just-listed document instead of reading it again',async()=>{
+ const db=fakeFirestore(),bucket=createFirestoreBucket(db);
+ await bucket.put('subs/a.json','{"n":1}');await bucket.put('subs/b.json','{"n":2}');
+ let reads=0;const coll=db.collection;db.collection=()=>{const c=coll();return {...c,doc:id=>{const d=c.doc(id);return {...d,get:async()=>{reads++;return d.get();}};}};};
+ const fresh=createFirestoreBucket(db),page=await fresh.list({prefix:'subs/'});
+ for(const item of page.objects)assert.ok(await fresh.get(item.key));
+ assert.equal(reads,0);
+ await fresh.put('subs/a.json','{"n":3}');assert.equal((await (await fresh.get('subs/a.json')).json()).n,3);
+ await fresh.delete('subs/b.json');assert.equal(await fresh.get('subs/b.json'),null);
+});

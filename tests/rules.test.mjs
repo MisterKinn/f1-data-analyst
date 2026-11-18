@@ -200,3 +200,12 @@ import {parseOpsBiblio,patentsIngest,patentsLookup,saveOpsKey,opsStatus,opsToken
  assert.ok(!('supercars' in sources.tier3_unavailable));
  assert.equal(L.seriesFrom('슈퍼카 챔피언십'),'supercars');assert.equal(L.seriesFrom('Repco Supercars'),'supercars');}
 console.log('rules noticeboards ok');
+
+{// Rules state answers 503 instead of crashing when the store fails.
+ clearRulesCache();
+ const env={BUCKET:{get:async()=>{throw Error('RESOURCE_EXHAUSTED');}}};
+ for(const path of ['/api/rules/state','/api/rules/state?source=fia-f1']){
+  const res=await rulesState(new Request('https://x.test'+path),env);
+  assert.equal(res.status,503);assert.deepEqual(await res.json(),{error:'Storage unavailable'});
+ }
+}

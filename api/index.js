@@ -100,12 +100,14 @@ export async function send(response,res){res.statusCode=response.status;for(cons
  try{for(;;){const {done,value}=await reader.read();if(done||gone)break;if(!res.write(Buffer.from(value)))await new Promise(resolve=>{res.once('drain',resolve);res.once('close',resolve);});}}
  catch{stop();}finally{res.off?.('close',stop);if(!res.writableEnded)res.end();}}
 
+let sharedBucket=null;
 export default async function handler(req,res){
  const measurement=beginRequestMeasurement();let diagnosticsBucket=null,measure=false;
  try{
   let request=await webRequest(req);const firebaseReady=['FIREBASE_WEB_API_KEY','FIREBASE_WEB_AUTH_DOMAIN','FIREBASE_PROJECT_ID','FIREBASE_WEB_APP_ID'].every(key=>process.env[key]);
   const runtimeEnv={...process.env,APP_ORIGIN:new URL(request.url).origin,FIREBASE_AUTH_CONFIGURED:String(firebaseReady)};
-  runtimeEnv.BUCKET=createFirestoreBucket(firebaseAdmin().firestore);
+  // One store per warm instance, so per-store caches (rules index, calendar refresh) last across requests.
+  runtimeEnv.BUCKET=sharedBucket||=createFirestoreBucket(firebaseAdmin().firestore);
   diagnosticsBucket=runtimeEnv.BUCKET;
   const direct=await authRoute(request,runtimeEnv);if(direct)return send(direct,res);
   const headers=new Headers(request.headers),requestUrl=new URL(request.url),accountCsrf=firebaseReady&&request.method==='GET'&&requestUrl.pathname==='/account'?randomBytes(32).toString('base64url'):null,session=readCookie(headers.get('cookie'),SESSION);let firebaseUser=null;
