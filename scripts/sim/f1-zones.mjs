@@ -8,6 +8,7 @@ import {eventFor} from '../../worker/lapsim/names.js';
 import {lapsimTrackView} from '../../worker/lapsim/track-view-data.js';
 import {lapsimKernel} from '../../worker/lapsim/kernel.js';
 import {carsFor} from '../../worker/lapsim/scenario.js';
+import {lapsimPitLanes} from '../../worker/lapsim/pit-lane-data.js';
 
 const raw = JSON.parse(readFileSync(new URL('./data/learn/f1-zones-raw.json', import.meta.url), 'utf8'));
 // earlier years for circuits whose map of the wanted year is an image (fetch-f1-zones-extra.mjs); the 2025 slot keeps the newest year found
@@ -95,6 +96,9 @@ for (const e of raw.events) {
     const zones = [], marks = [];
     for (const m of text.matchAll(new RegExp(String.raw`DRS\s*Activation\s*(?:point\s*)?(\d?)(?!\d|\s?m\b)\D{0,6}?(?:` + POS + String.raw`|(?:T|Turn\s?)\d+[A-Z]?\b)`, 'gi'))) { const s = at(id, m[0].slice(Math.max(0, m[0].search(/\(|\d+\s?m\b|Entry|Apex|Mid|Exit|T\d|Turn/i, 4)))); const n = m[1] ? Number(m[1]) : zones.length + 1; if (s != null && !zones.some(z => z.n === n)) zones.push({n, from: Math.round(s), to: Math.round(zoneEnd(id, s))}); }
     for (const m of text.matchAll(new RegExp(String.raw`DRS\s*Detection\s*(?:point\s*)?(\d?)(?!\d|\s?m\b)\D{0,6}?(?:` + POS + String.raw`|(?:T|Turn\s?)\d+[A-Z]?\b)`, 'gi'))) { const s = at(id, m[0].slice(Math.max(0, m[0].search(/\(|\d+\s?m\b|Entry|Apex|Mid|Exit|T\d|Turn/i, 4)))); if (s != null && !marks.some(k => k.label === 'D' + (m[1] || '1'))) marks.push({s: Math.round(s), kind: 'det', label: 'D' + (m[1] || '1')}); } // no number (Hungaroring 2025): one detection, D1
+    // "DRS Detection1 SC2 before Turn 2" (Baku 2025): a Safety Car line, SC1 at the pit entry and SC2 at the pit exit (pit-lane-data.js)
+    for (const m of text.matchAll(/DRS\s*Detection\s*(?:point\s*)?(\d?)\s*SC\s?([12])\b/gi)) { const p = lapsimPitLanes.tracks?.[id], s = p && (m[2] === '1' ? p.entryS : p.exitS);
+      if (s != null && !marks.some(k => k.label === 'D' + (m[1] || '1'))) marks.push({s: Math.round(s), kind: 'det', label: 'D' + (m[1] || '1')}); }
     noOverlap(id, zones);
     // the 2025 slot holds 2025, else the newest earlier year (a circuit F1 left before 2025)
     if (zones.length && (!out[id]?.['2025'] || out[id]['2025'].year < e.year)) (out[id] ||= {})['2025'] = {kind: 'drs', year: e.year, zones: zones.sort((a, b) => a.n - b.n), marks, doc: doc?.title || '', url: doc?.url || ''};
