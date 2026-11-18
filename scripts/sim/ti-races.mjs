@@ -11,7 +11,8 @@ const GP = {bahrain: 'sakhir', 'saudi-arabian': 'jeddah', 'emilia-romagna': 'imo
   'abu-dhabi': 'yas-marina-circuit', australian: 'melbourne', chinese: 'shanghai', japanese: 'suzuka', miami: 'miami', canadian: 'montreal', monaco: 'monte-carlo',
   barcelona: 'catalunya', 'barcelona-catalunya': 'catalunya', austrian: 'spielberg', british: 'silverstone', belgian: 'spa-francorchamps', hungarian: 'hungaroring', dutch: 'zandvoort', italian: 'monza',
   azerbaijan: 'baku', singapore: 'singapore', 'united-states': 'austin', 'mexico-city': 'mexico-city', mexican: 'mexico-city'};
-export const tiTrack = (event, year) => { const k = slug(event.normalize('NFD').replace(/[̀-ͯ]/g, '')).replace(/-grand-prix$/, ''); return k === 'spanish' ? (year >= 2026 ? 'madring' : 'catalunya') : GP[k] || k; };
+// the 2026 Bahrain Grand Prix ran at Sepang (FIA: "2026 Bahrain Grand Prix in Malaysia"): track kuala-lumpur, not sakhir
+export const tiTrack = (event, year) => { const k = slug(event.normalize('NFD').replace(/[̀-ͯ]/g, '')).replace(/-grand-prix$/, ''); return k === 'spanish' ? (year >= 2026 ? 'madring' : 'catalunya') : k === 'bahrain' && year === 2026 ? 'kuala-lumpur' : GP[k] || k; };
 const val = v => v === 'None' || v == null ? null : v;
 const median = a => { const s = [...a].sort((x, y) => x - y); return s.length ? (s[(s.length - 1) >> 1] + s[s.length >> 1]) / 2 : NaN; };
 const COMPOUNDS = ['SOFT', 'MEDIUM', 'HARD'];

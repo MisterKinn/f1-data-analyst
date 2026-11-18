@@ -7,5 +7,7 @@ test('TracingInsights event names map to the track ids (2026 Barcelona and Spani
   assert.equal(tiTrack('Barcelona-Catalunya Grand Prix', 2026), 'catalunya');
   assert.equal(tiTrack('Spanish Grand Prix', 2026), 'madring');
   assert.equal(tiTrack('Spanish Grand Prix', 2025), 'catalunya');
+  assert.equal(tiTrack('Bahrain Grand Prix', 2026), 'kuala-lumpur', '2026 Bahrain GP ran at Sepang');
+  assert.equal(tiTrack('Bahrain Grand Prix', 2025), 'sakhir');
   assert.equal(tiTrack('São Paulo Grand Prix', 2026), 'interlagos');
 });
