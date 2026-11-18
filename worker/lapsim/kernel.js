@@ -164,15 +164,19 @@ export function lapsimKernel() {
   }
   // Same inputs, same lap: a page view asks for the same lap several times (about half the calls).
   // The key holds every track field simulateLap reads, so a hit is the exact same result; callers get a copy (they scale times in place).
-  const lapCache = new Map(), LAP_CACHE_MAX = 64;
+  // least recently used first out (owner 2026-11-18: one 2027 view needs 68 laps, so a 64-lap first-in-first-out cache forgot the car
+  // switched away from); at most 600 laps or about 96 MB of their arrays
+  const lapCache = new Map(), LAP_CACHE_MAX = 600, LAP_CACHE_BYTES = 96e6; let lapBytes = 0;
+  const lapSize = r => { let b = 1e3; for (const x of Object.values(r)) b += ArrayBuffer.isView(x) ? x.byteLength : Array.isArray(x) ? 8 * x.length : 0; return b; };
   const lapKey = (track, car, env, opts) => JSON.stringify([track.kappa, track.ds, track.mu, track.vScale, track.aeroLow, track.grade, track.heading, track.otOn, track.ersCap, track.kv, track.bank, track.sectors, car, env, opts],
     (k, v) => ArrayBuffer.isView(v) ? Array.from(v) : typeof v === 'number' && !Number.isFinite(v) ? String(v) : v === undefined ? '__u' : v);
   function simulateLap(track, car, env = {}, opts = {}) {
     const key = lapKey(track, car, env, opts), hit = lapCache.get(key);
-    if (hit) return structuredClone(hit);
-    const r = simulateLapRaw(track, car, env, opts);
-    if (lapCache.size >= LAP_CACHE_MAX) lapCache.delete(lapCache.keys().next().value);
-    lapCache.set(key, structuredClone(r)); return r;
+    if (hit) { lapCache.delete(key); lapCache.set(key, hit); return structuredClone(hit.r); }
+    const r = simulateLapRaw(track, car, env, opts), e = {r: structuredClone(r), b: lapSize(r)};
+    lapCache.set(key, e); lapBytes += e.b;
+    for (const [k, x] of lapCache) { if ((lapCache.size <= LAP_CACHE_MAX && lapBytes <= LAP_CACHE_BYTES) || k === key) break; lapCache.delete(k); lapBytes -= x.b; }
+    return r;
   }
   function simulateLapRaw(track, car, env = {}, opts = {}) {
     if (env.puRamp && car.ers && car.ers.rule === 'f1-2026' && !opts.noRamp) {
