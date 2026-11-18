@@ -253,3 +253,29 @@ timing: the iRacing line is a median 32 m earlier (−80 to 0 m), so the method 
 - Still unverified: Brands Hatch (TUM line, no coordinates), Rwanda, Sachsenring, Buriram, Zhuhai, Inje, Autopolis; pit-straight
   estimates: Yongin, Mid-Ohio, Lime Rock, Dubai, Ricardo Tormo, Estoril, Jerez, Magny-Cours, Mandalika. Next sources: the OSM
   finish probe (12 tracks retrying) and official circuit maps.
+- OSM check (2026-11-18, OSM API map call around each seed, since the Overpass servers were timing out): no finish-line or
+  start-line feature is mapped at Buriram, Zhuhai, Inje, Autopolis, Yongin, Lime Rock, Ricardo Tormo, Estoril, Jerez, Magny-Cours
+  or Mandalika. Only unnamed towers, which do not place the line. Official circuit maps remain the source.
+
+## Kerb use and track width from iRacing, 8 tracks (2026-11-18)
+
+`scripts/sim/learn/iracing/kerb_use.py` run on all 34 iRacing tracks that have a matching layout (`irmap.py`), from the owner's
+407 sessions (on-track GPS samples only; raw files stay on the owner's PC). Kept where our drawn line fits the iRacing laps well
+enough for a 1 m answer: median fit ≤ 2.2 m, 95th-percentile drift correction ≤ 8 m, ≥ 30k closed-wheel samples.
+
+| Track | Fit median (m) | Samples |
+|---|---|---|
+| fuji | 0.61 | 297,797 |
+| monza | 1.18 | 234,342 |
+| motegi | 1.64 | 496,748 |
+| spielberg | 1.65 | 436,941 |
+| silverstone | 1.68 | 596,727 |
+| miami | 1.88 | 37,959 |
+| spa-francorchamps | 2.11 | 275,033 |
+| oschersleben | 2.14 | 52,145 |
+
+- Monza is recomputed on today's midline (same samples). Its old values were learned on the 11-17 midline.
+- Left out (fit 2.6–51 m, or too few samples): Sebring, Zandvoort, Mexico City, Indianapolis, Austin, Suzuka and others, where
+  our line and the iRacing layout differ or the rigid fit finds a wrong pose. Sonoma (iRacing "nascarlong") drifts 18.6 m.
+- Effect: drawn edges and the series lines (WEC, IMSA, GT3 may use the kerbs; F1 stays inside the white lines). The kernel lap
+  times do not change (checked: F1 2025 and Hypercar on all 8 tracks, 0.000 s).
