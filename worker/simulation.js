@@ -1108,7 +1108,7 @@ function computeView(K, data, state, R) {
 }
 
 // Browser controller
-function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, evolutionCurve, lineTrack, brakeZones, lapChannels, blendLine, blendOff) {
+function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, evolutionCurve, lineTrack, brakeZones, lapChannels, blendLine, blendOff, src) {
   const el = document.getElementById('lapsim-data'); if (!el) return;
   const R = {renderMap, renderTrace, evolutionDelta, evolutionCurve, lineTrack, brakeZones, lapChannels, blendLine, blendOff};
   document.querySelectorAll('[data-line-mode]').forEach(b => b.addEventListener('click', () => {
@@ -1177,7 +1177,7 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
       if (state.optCar !== state.carId) { state.optCar = state.carId; const c = data.cars[state.carId], z = !c.series && c.year && data.zones ? data.zones[c.year < 2026 ? '2025' : String(Math.max(2026, ...Object.keys(data.zones).map(Number).filter(k => k >= 2026 && k <= c.year)))] : null, rq = z && z.real && z.year === c.year && c.fix ? z.real : {};
         state.sm = rq.grip === 'low' ? 'alt' : 'normal'; state.ot = rq.ot !== 'off'; state.drs = rq.drs !== 'off';
         if (q('sm')) { q('sm').value = state.sm; q('ot').value = state.ot ? '1' : '0'; q('drs').value = state.drs ? '1' : '0'; } }
-      const v = computeView(K, data, state, R); lastTel = v.tel; lastView = v;
+      viewOf(state, v => { lastTel = v.tel; lastView = v;
       q('lap').textContent = v.lap; q('pole').innerHTML = v.poleHtml; q('facts').innerHTML = v.factsHtml; q('air').innerHTML = v.airHtml;
       { const prev = zoneState(); q('map').innerHTML = v.mapSvg; animZones(prev); } apply(); needle(v.compassDeg); q('trace').innerHTML = v.traceSvg; q('soc').innerHTML = v.socHtml; q('brakes').innerHTML = v.brakeHtml; q('key').innerHTML = v.keyHtml; q('wind').innerHTML = v.windHtml;
       { const c = data.cars[state.carId], f1 = !c.series && c.year; if (q('smWrap')) { q('smWrap').hidden = !(f1 && c.year >= 2026); q('otWrap').hidden = !(f1 && c.year >= 2026); q('drsWrap').hidden = !(f1 && c.year < 2026); } }
@@ -1186,7 +1186,18 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
       q('evoFacts').innerHTML = v.evoFacts; q('evoChart').innerHTML = v.evoSvg; q('qsplit').innerHTML = v.qsHtml; q('tyre').innerHTML = v.tyreHtml;
       lanesUi(); cmpTable(v.cmpRows);
       document.querySelectorAll('[data-evo-out]').forEach(o => { const k = o.dataset.evoOut; o.textContent = v.evo[k]; const i = document.querySelector('input[data-evo="' + k + '"]'); if (i && document.activeElement !== i) i.value = v.evo[k]; });
-    });
+      }); });
+  };
+  // the lap work runs in a worker (same script); only the newest request is drawn. Without a worker, or if it fails, it runs here as before
+  let W = null, wid = 0;
+  try { if (src && typeof Worker === 'function') { W = new Worker(src); W.postMessage({data}); } } catch (e) { W = null; }
+  const busy = on => { const m = q('map'); if (m) { m.style.transition = 'opacity .25s .15s'; m.style.opacity = on ? '.55' : ''; } }; // quiet "calculating" state
+  const viewOf = (st, done) => {
+    if (!W) { done(computeView(K, data, st, R)); return; }
+    const id = ++wid; busy(true);
+    W.onmessage = e => { if (e.data.id !== wid) return; busy(false); if (e.data.err) { W = null; done(computeView(K, data, st, R)); } else done(e.data.v); };
+    W.onerror = () => { W = null; busy(false); done(computeView(K, data, st, R)); };
+    W.postMessage({id, state: st});
   };
   if (q('driver')) q('driver').addEventListener('change', e => { state.driver = e.target.value; update(); });
   // map rotation (owner 2026-11-15): ⟲ ⟳ turn the map 15°; the compass needle shows true north; pressing it returns to the first view
@@ -1363,10 +1374,17 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
   if (data.line) update(); // the server drew the least-curvature line; the browser draws this car's own line
 }
 
+// speed job stage 4 (2026-11-18): the same script, loaded by new Worker(), works out the view off the main thread, so a heavy lap
+// (Spa, Silverstone) never freezes the page. The page data comes once; each message after it is one state.
+function lapsimWorker(K, computeView, R) {
+  let data = null;
+  self.onmessage = e => { const m = e.data; if (m.data) { data = m.data; return; }
+    try { self.postMessage({id: m.id, v: computeView(K, data, m.state, R)}); } catch (err) { self.postMessage({id: m.id, err: String(err && err.message || err)}); } };
+}
 let scriptText = null;
 export function lapsimScript() {
   // powertrain() lives outside lapsimKernel() and simulateLap calls it: it must be in the browser script too
-  if (!scriptText) scriptText = '(()=>{const powertrain=' + powertrain.toString() + ';const K=(' + lapsimKernel.toString() + ')();const lapChannels=' + lapChannels.toString() + ';const blendLine=' + blendLine.toString() + ';const blendOff=' + blendOff.toString() + ';const renderMap=' + renderMap.toString() + ';const renderTrace=' + renderTrace.toString() + ';const evolutionDelta=' + evolutionDelta.toString() + ';const evolutionCurve=' + evolutionCurve.toString() + ';const lineTrack=' + lineTrack.toString() + ';const brakeZones=' + brakeZones.toString() + ';const computeView=' + computeView.toString() + ';(' + lapsimClient.toString() + ')(K,computeView,renderMap,renderTrace,evolutionDelta,evolutionCurve,lineTrack,brakeZones,lapChannels,blendLine,blendOff);})();';
+  if (!scriptText) scriptText = '(()=>{const powertrain=' + powertrain.toString() + ';const K=(' + lapsimKernel.toString() + ')();const lapChannels=' + lapChannels.toString() + ';const blendLine=' + blendLine.toString() + ';const blendOff=' + blendOff.toString() + ';const renderMap=' + renderMap.toString() + ';const renderTrace=' + renderTrace.toString() + ';const evolutionDelta=' + evolutionDelta.toString() + ';const evolutionCurve=' + evolutionCurve.toString() + ';const lineTrack=' + lineTrack.toString() + ';const brakeZones=' + brakeZones.toString() + ';const computeView=' + computeView.toString() + ';if(typeof document===\'undefined\'){(' + lapsimWorker.toString() + ')(K,computeView,{renderMap,renderTrace,evolutionDelta,evolutionCurve,lineTrack,brakeZones,lapChannels,blendLine,blendOff});return;}(' + lapsimClient.toString() + ')(K,computeView,renderMap,renderTrace,evolutionDelta,evolutionCurve,lineTrack,brakeZones,lapChannels,blendLine,blendOff,document.currentScript&&document.currentScript.src);})();';
   return scriptText;
 }
 export function lapsimScriptVersion() {
