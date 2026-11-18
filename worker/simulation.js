@@ -334,7 +334,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
   const calRows = ['2025', '2026'].filter(y => s[y]).map(y => `<tr><td>${y}</td><td data-no-translate>${fmtLap(s[y].realLap)}${s[y].position > 1 ? ` (P${s[y].position})` : ''}</td><td data-no-translate>${fmtLap(s[y].simLap)}</td><td data-no-translate>${s[y].errorSec > 0 ? '+' : ''}${s[y].errorSec.toFixed(3)} s</td><td data-no-translate>${s[y].rmsKph} km/h</td></tr>`).join('');
   const proj = lapsimCalibration?.projections || {};
   const projRows = [2027, 2028].map(y => proj[y] ? `<li><strong>${y}</strong> — ${esc(t.projRules)}: ${esc(RULE_CHANGES[y].note[lang])} (${proj[y].rulesEffectPct > 0 ? '+' : ''}${proj[y].rulesEffectPct}%). ${esc(t.projDev)}: ${proj[y].developmentTargetPct}% (${proj[y].bandPct[0]} … ${proj[y].bandPct[1]}%).</li>` : `<li><strong>${y}</strong> — ${esc(t.projRules)}: ${esc(RULE_CHANGES[y].note[lang])}</li>`).join('');
-  return `<style>${CSS}</style>
+  return `<link rel="preconnect" href="https://misterkinn.github.io" crossorigin><style>${CSS}</style>
 <section class="hero ls-hero"><h1>${esc(t.h1)}</h1><p class="lead">${esc(t.lead)}</p></section>
 <form class="ls-controls" method="get" action="/simulation">
  <label>${esc(t.track)}<select name="track" data-no-translate onchange="this.form.submit()">${options}</select></label>
@@ -1208,12 +1208,13 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
   try { if (src && typeof Worker === 'function') { W = new Worker(src); W.postMessage({data}); } } catch (e) { W = null; }
   const busy = on => { const m = q('map'); if (m) { m.style.transition = 'opacity .25s .15s'; m.style.opacity = on ? '.55' : ''; } }; // quiet "calculating" state
   // first-view job (owner 2026-11-18): a stored view (GitHub Pages, scripts/sim/precompute-views.mjs) is used when its build and state
-  // are exactly this page's; a missing, different or slow (300 ms) one falls back to the worker
+  // are exactly this page's; a missing, different or slow (1 s: the worker needs 1.4-2.9 s for a first view, and a cold
+  // connection to GitHub Pages took 470 ms live, warm 90 ms) one falls back to the worker
   const VIEWS = 'https://misterkinn.github.io/f1-data-analyst/views/';
   let BUILD = null; try { BUILD = src ? viewBuildKey(new URL(src).searchParams.get('v'), el.textContent) : null; } catch (e) { BUILD = null; }
   const unpack = v => { const o = v.mapArgs && v.mapArgs[2], f = o && o.renumber; if (f && typeof f !== 'function') { const {rn, nT} = f; o.renumber = Object.assign(k => ((k - rn) % nT + nT) % nT + 1, {rn, nT}); } return v; };
   const stored = (st, then) => { if (!BUILD || typeof fetch !== 'function') { then(null); return; }
-    const key = canonJson(st), ac = typeof AbortController === 'function' ? new AbortController() : null, tm = setTimeout(() => ac && ac.abort(), 300);
+    const key = canonJson(st), ac = typeof AbortController === 'function' ? new AbortController() : null, tm = setTimeout(() => ac && ac.abort(), 1000);
     fetch(VIEWS + BUILD + '/' + viewHash(key) + '.json', ac ? {signal: ac.signal} : {}).then(r => r.ok ? r.json() : null).then(j => { clearTimeout(tm); then(j && j.build === BUILD && j.state === key ? unpack(j.v) : null); }, () => { clearTimeout(tm); then(null); }); };
   const viewOf = (st, done) => {
     const id = ++wid; busy(true);
