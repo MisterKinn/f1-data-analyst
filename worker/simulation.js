@@ -291,7 +291,7 @@ function wallNear(id, n) {
   return Array.from({length: n}, (_, i) => { const j = Math.min(m - 1, Math.floor(i / n * m)), g = Math.min(w.left[j] ?? 40, w.right[j] ?? 40); return Math.round(10 * Math.max(0, 1 - g / 3)); });
 }
 // --- Page ---
-export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
+export function simulationPage(query = {}, lang = 'ko', liveEnergy = null, firstView = null) {
   lang = lang === 'en' ? 'en' : 'ko';
   const t = T[lang], ids = trackOrder(lapsimTracks);
   if (!ids.length) return `<section class="hero ls-hero"><h1>${esc(t.h1)}</h1><p class="lead">${esc(t.pending)} · ${esc(t.pendingLead)}</p></section>`;
@@ -317,7 +317,8 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null) {
     zones: lapsimF1Zones?.tracks?.[id] || null, feZones: lapsimFeZones?.tracks?.[id] || null, zonesOn: ZONES_ON ? (DRS_ONLY ? 'drs' : 'all') : '', puQuali: PU_QUALI, puRamp: !!lapsimCalibration?.puRamp, otChoice: lapsimCalibration?.otChoice?.[id] ?? null, surface: surfaceOf(id, td, changes), mapRot0: (Number.isFinite(view0?.openDeg) ? view0.openDeg : landscapeRot(td.map, lapsimTrackNorth?.[id], VIEW[id], td.corners, td.length)) + (VIEW[id]?.flip ? 180 : 0), cornersEstimated: !!td.cornersEstimated, cornerNames: td.cornersEstimated ? lapsimCornerNames?.[id]?.names?.map(c => ({...c, name: /* 'Curva 1' is only a number */ /^(Turn|Curva|Corner)\s*\d+$/i.test(c.name) ? c.name.replace(/\D+/, '') : lang === 'en' ? c.name : lapsimNamesKo[c.name] || c.name})) || null : null, straights: straightsOf(id, td, lang), north: lapsimTrackNorth?.[id] || null, ui: UI[lang],
     calibration: {generatedAt: lapsimCalibration?.generatedAt || null, seasons: Object.fromEntries(Object.entries(lapsimCalibration?.seasons || {}).map(([y, s]) => [y, s.tracks?.[id] || null]))}};
   // first render on the server with the same code the browser uses
-  const view = computeView(K, data, {carId, compareId: '', mode: 'real', manual: null, active: {}, strength: 1, evo: null}, {renderMap, renderTrace, evolutionDelta, evolutionCurve, lineTrack, brakeZones, lapChannels});
+  // firstView (first-view job, stage 4): the stored view of this car's first view, so the page arrives as the browser will show it
+  const view = (firstView && firstView(data, carId)) || computeView(K, data, {carId, compareId: '', mode: 'real', manual: null, active: {}, strength: 1, evo: null}, {renderMap, renderTrace, evolutionDelta, evolutionCurve, lineTrack, brakeZones, lapChannels});
   const options = ids.map(k => `<option value="${esc(k)}"${k === id ? ' selected' : ''}>${esc(trackLabel(k, lapsimTracks[k]))}</option>`).join('');
   // cascade: series → rules/class (the car models of that series); series without a model yet are listed as coming soon
   const seriesOf = k => cars[k].series || 'f1', curSeries = seriesOf(carId);
