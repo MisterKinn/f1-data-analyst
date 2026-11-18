@@ -494,6 +494,15 @@ values below. Layer 4 (a simulator, not a real car): every channel stays labelle
   refitted on our own laps to match: open wheel 0.58 → 0.68 (0.564), Hypercar 0.63 → 0.75 (0.561), GT3 0.58 → 0.86 (0.661). Wolfram:
   the release part alone has mean 0.9/(k + 1) (0.57, 0.54, 0.51, 0.48 for k 0.58, 0.68, 0.75, 0.86). The earlier figures 0.683 / 0.76
   compared the pedal model with iRacing's deceleration ratio, not its pressure; those are not like for like.
+- ABS and front/rear line pressure (owner 2026-11-18, model; srs_brake_abs.py, same heavy zones and sessions; derived numbers only,
+  results/brake_abs.json stays on the owner's PC). Share of zones with any BrakeABSactive / median share of zone time: GT3 0.96 /
+  0.35 (9,708 zones), GT4 0.98 / 0.49, TCR 0.91 / 0.31, Club 0.95 / 0.33, Cup 0.82 / 0.43; GTP, LMP and Formula 0 (no ABS). So the
+  GT3 trace's learned hold ripple already includes ABS cycling, and the "lock-up relief" dip is a non-ABS habit (open: apply it only
+  to classes without ABS). Front share of line pressure (LF+RF)/(all four), time-weighted / at the zone's pressure peak: GT3 0.52 /
+  0.52, GT4 0.54, TCR 0.52, LMP 0.56, Formula 0.54, GTP 0.64 / 0.50. These are hydraulic pressure shares (the bias setting), not the
+  brake force share `bal` in channels.js, which also needs disc radius and piston area per axle. GTP: at the peak the split is the
+  bias (0.50); over the whole zone the rear line carries only about 0.57 of that (0.364/0.636 against 0.499/0.501) because the rear
+  motor takes the rest, as channels.js and brakes.js already model with regen on the LMDh rear axle.
 - Surface for SetupSim (2026-11-17): track roughness with the car taken out (log RMS of vertical acceleration above 1 Hz = car +
   track effect, 1,615 laps, 34 cars, 30 tracks; kept with ≥ 5 cars and ≥ 20 laps: 18 tracks) sets the bump rating where no public
   note exists and is averaged with the note where one does (`setup-plan.js surfaceOf`). Disagreements to keep in mind: Austin comes out
