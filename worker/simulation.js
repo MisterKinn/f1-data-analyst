@@ -936,7 +936,7 @@ function computeView(K, data, state, R) {
   const sc = scP && Number.isFinite(scP.entryS) && Number.isFinite(scP.exitS) ? [{s: scP.entryS, label: 'SC1'}, {s: scP.exitS, label: 'SC2'}] : [];
   // a series that starts on its own line may number the corners from there (Silverstone non-F1: Copse = T1)
   const rn = kS && data.startAlt.renumberFrom, nT = rn ? Math.max(...(d0.corners || []).map(c => c.number)) : 0;
-  const mapOpts = {zones: zoneOpts, corners: d0.corners, names: data.cornerNames, straights: data.straights, sc, renumber: rn ? k => ((k - rn) % nT + nT) % nT + 1 : null, length: d.length, label: t.map, line, start: kS / d0.kappa.length, rot: Number.isFinite(state.mapRot) ? state.mapRot : (data.mapRot0 || 0)};
+  const mapOpts = {zones: zoneOpts, corners: d0.corners, names: data.cornerNames, straights: data.straights, sc, renumber: rn ? Object.assign(k => ((k - rn) % nT + nT) % nT + 1, {rn, nT}) : null, length: d.length, label: t.map, line, start: kS / d0.kappa.length, rot: Number.isFinite(state.mapRot) ? state.mapRot : (data.mapRot0 || 0)};
   // compass: the map frame turned by north.deg (counter-clockwise) is true east-north; the needle turns clockwise on screen
   const compassDeg = data.north && !data.north.mirror ? ((data.north.deg - mapOpts.rot) % 360 + 360) % 360 : null;
   const mapSvg = R.renderMap(d.map || {x: [], y: []}, kS ? res.v.slice(res.v.length - kS).concat(res.v.slice(0, res.v.length - kS)) : res.v, mapOpts);
@@ -1195,7 +1195,8 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
   const viewOf = (st, done) => {
     if (!W) { done(computeView(K, data, st, R)); return; }
     const id = ++wid; busy(true);
-    W.onmessage = e => { if (e.data.id !== wid) return; busy(false); if (e.data.err) { W = null; done(computeView(K, data, st, R)); } else done(e.data.v); };
+    W.onmessage = e => { if (e.data.id !== wid) return; busy(false); if (e.data.err) { W = null; done(computeView(K, data, st, R)); return; }
+      const v = e.data.v, o = v.mapArgs && v.mapArgs[2], f = o && o.renumber; if (f) { const {rn, nT} = f; o.renumber = Object.assign(k => ((k - rn) % nT + nT) % nT + 1, {rn, nT}); } done(v); };
     W.onerror = () => { W = null; busy(false); done(computeView(K, data, st, R)); };
     W.postMessage({id, state: st});
   };
@@ -1379,7 +1380,9 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
 function lapsimWorker(K, computeView, R) {
   let data = null;
   self.onmessage = e => { const m = e.data; if (m.data) { data = m.data; return; }
-    try { self.postMessage({id: m.id, v: computeView(K, data, m.state, R)}); } catch (err) { self.postMessage({id: m.id, err: String(err && err.message || err)}); } };
+    try { const v = computeView(K, data, m.state, R), o = v.mapArgs && v.mapArgs[2], f = o && o.renumber; // functions cannot be posted: send the renumber's numbers
+      if (f) v.mapArgs[2] = Object.assign({}, o, {renumber: {rn: f.rn, nT: f.nT}});
+      self.postMessage({id: m.id, v}); } catch (err) { self.postMessage({id: m.id, err: String(err && err.message || err)}); } };
 }
 let scriptText = null;
 export function lapsimScript() {
