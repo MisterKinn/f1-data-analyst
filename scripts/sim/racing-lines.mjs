@@ -119,13 +119,14 @@ for (const [id, td] of Object.entries(lapsimTracks)) {
   } else { left = ref.x.map(() => ASSUMED_HALF); right = ref.x.map(() => -ASSUMED_HALF); }
   // predicted line: minimum curvature inside the edges, starting from the corridor midline
   const mid = left.map((l, i) => (l + right[i]) / 2), half = left.map((l, i) => Math.max(0.3, (l - right[i]) / 2 - CAR_HALF));
-  const pred = minCurvatureLine(ref.x.map((x, i) => x + nrm[i][0] * mid[i]), ref.y.map((y, i) => y + nrm[i][1] * mid[i]), half);
+  const mx = ref.x.map((x, i) => x + nrm[i][0] * mid[i]), my = ref.y.map((y, i) => y + nrm[i][1] * mid[i]), nm = normals(mx, my);
+  const pred = minCurvatureLine(mx, my, half);
   let tumGap = null;
   if (cross && edges === 'TUM') { const g = pred.x.map((x, i) => nearest(cross.x, cross.y, x, pred.y[i])[1]); tumGap = [mean(g), pct(g, 0.95)]; tumGaps.push(tumGap[0]); }
   const pole = await poleCarData(id, years);
   const along = (arr, i) => { const d = pole.tel.distance, D = d.at(-1) * i / ref.x.length; let j = 0; while (j < d.length - 2 && d[j + 1] < D) j++; return arr[j]; };
-  const r1 = v => Math.round(v * 2) / 2, edge = w => ref.x.map((x, i) => [Math.round(x + nrm[i][0] * w[i]), Math.round(ref.y[i] + nrm[i][1] * w[i])]);
-  out.tracks[id] = {edges, line: pred.x.map((x, i) => [r1(x), r1(pred.y[i])]), left: edge(left), right: edge(right),
+  const r1 = v => Math.round(v * 2) / 2, edge = sg => mx.map((x, i) => { const h = sg * (left[i] - right[i]) / 2; return [r1(x + nm[i][0] * h), r1(my[i] + nm[i][1] * h)]; });
+  out.tracks[id] = {edges, line: pred.x.map((x, i) => [r1(x), r1(pred.y[i])]), left: edge(1), right: edge(-1),
     speed: pole && ref.x.map((_, i) => Math.round(along(pole.tel.speed, i))), brake: pole && ref.x.map((_, i) => along(pole.tel.brake, i) ? 1 : 0),
     throttle: pole && ref.x.map((_, i) => Math.round(along(pole.tel.throttle, i))), pole: pole && {year: pole.year, driver: pole.d, lap: pole.lap, time: pole.time},
     check: {edgeFitM: fitM, timingInsidePct: inside, vsTumMeanM: tumGap && Math.round(tumGap[0] * 100) / 100, vsTum95M: tumGap && Math.round(tumGap[1] * 100) / 100}};
