@@ -31,7 +31,9 @@ export async function simulationFirstView(query, lang, liveEnergy, {fetchImpl = 
   if (hit && hit.until > now) return hit.view;
   let view = null;
   try {
-    const r = await fetchImpl(VIEWS + file, {signal: AbortSignal.timeout(timeoutMs)}), j = r.ok ? await r.json() : null;
+    const ac = new AbortController();let timer;
+    const late = new Promise((_, no) => { timer = setTimeout(() => { ac.abort(); no(Error('slow')); }, timeoutMs); });
+    const j = await Promise.race([fetchImpl(VIEWS + file, {signal: ac.signal}).then(r => r.ok ? r.json() : null), late]).finally(() => clearTimeout(timer));
     view = j && j.build === build && j.state === state ? {file, v: j.v} : null;
   } catch { view = null; }
   if (found.size > 500) found.clear();

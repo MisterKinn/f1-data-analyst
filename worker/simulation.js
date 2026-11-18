@@ -46,7 +46,7 @@ import {lapsimStartLines} from './lapsim/start-lines.js';
 import {lapsimMapShape} from './lapsim/map-shape-data.js';
 import {lapsimKerbUse} from './lapsim/kerb-use-data.js';
 import {lapsimTrackBumps} from './lapsim/track-bumps-data.js';
-import {viewHash, canonJson, viewBuildKey, carStartOptions} from './lapsim/view-keys.js';
+import {viewHash, canonJson, viewBuildKey, carStartOptions, firstViewState} from './lapsim/view-keys.js';
 
 const K = lapsimKernel();
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -290,6 +290,11 @@ function wallNear(id, n) {
   const w = lapsimWalls?.tracks?.[id]; if (!w) return null; const m = w.left.length;
   return Array.from({length: n}, (_, i) => { const j = Math.min(m - 1, Math.floor(i / n * m)), g = Math.min(w.left[j] ?? 40, w.right[j] ?? 40); return Math.round(10 * Math.max(0, 1 - g / 3)); });
 }
+// a stored first view drawn as the page script draws it (redrawMap: the map turned to its opening angle); renumber comes as numbers
+function storedPaint(v, data) {
+  const [m, lane, o] = v.mapArgs, f = o && o.renumber, rn = f && typeof f !== 'function' ? Object.assign(k => ((k - f.rn) % f.nT + f.nT) % f.nT + 1, {rn: f.rn, nT: f.nT}) : f;
+  return {...v, mapSvg: renderMap(m, lane, Object.assign({}, o, rn ? {renumber: rn} : {}, {rot: data.mapRot0 || 0}))};
+}
 // --- Page ---
 export function simulationPage(query = {}, lang = 'ko', liveEnergy = null, firstView = null) {
   lang = lang === 'en' ? 'en' : 'ko';
@@ -318,7 +323,8 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null, first
     calibration: {generatedAt: lapsimCalibration?.generatedAt || null, seasons: Object.fromEntries(Object.entries(lapsimCalibration?.seasons || {}).map(([y, s]) => [y, s.tracks?.[id] || null]))}};
   // first render on the server with the same code the browser uses
   // firstView (first-view job, stage 4): the stored view of this car's first view, so the page arrives as the browser will show it
-  const view = (firstView && firstView(data, carId)) || computeView(K, data, {carId, compareId: '', mode: 'real', manual: null, active: {}, strength: 1, evo: null}, {renderMap, renderTrace, evolutionDelta, evolutionCurve, lineTrack, brakeZones, lapChannels});
+  const stored = firstView && firstView(data, carId);
+  const view = stored ? storedPaint(stored, data) : computeView(K, data, {carId, compareId: '', mode: 'real', manual: null, active: {}, strength: 1, evo: null}, {renderMap, renderTrace, evolutionDelta, evolutionCurve, lineTrack, brakeZones, lapChannels});
   const options = ids.map(k => `<option value="${esc(k)}"${k === id ? ' selected' : ''}>${esc(trackLabel(k, lapsimTracks[k]))}</option>`).join('');
   // cascade: series → rules/class (the car models of that series); series without a model yet are listed as coming soon
   const seriesOf = k => cars[k].series || 'f1', curSeries = seriesOf(carId);
@@ -329,7 +335,9 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null, first
   const seriesOpts = menuKeys.map(k => `<option value="${k}"${k === curMenu ? ' selected' : ''}>${esc(menuLabel(k))}</option>`).join('');
   const cmpOpts = SERIES_UI.filter(se => data.carOrder.some(k => seriesOf(k) === se)).map(se => `<optgroup label="${esc(t.seriesNames[se])}">${carOpts('', se)}</optgroup>`).join('');
   const evoSlider = (key, label, min, max, step, unit) => `<label class="ls-slider"><span>${esc(label)}</span><input type="range" data-evo="${key}" min="${min}" max="${max}" step="${step}" value="${view.evo[key]}"><output data-evo-out="${key}">${view.evo[key]}</output><span class="ls-unit">${unit}</span></label>`;
-  const slider = (key, label, min, max, step, unit) => `<label class="ls-slider"><span>${esc(label)}</span><input type="range" data-cond="${key}" min="${min}" max="${max}" step="${step}"><output data-out="${key}"></output><span class="ls-unit">${unit}</span></label>`;
+  // sliders and channel chips arrive set as the page script sets them for the first view (syncSliders, lanesUi with no saved order)
+  const man = firstViewState(data, carId).manual, at = (k, min, max, step) => Number.isFinite(man[k]) ? Math.min(max, Math.max(min, min + Math.round((man[k] - min) / step) * step)) : null;
+  const slider = (key, label, min, max, step, unit, v = at(key, min, max, step)) => `<label class="ls-slider"><span>${esc(label)}</span><input type="range" data-cond="${key}" min="${min}" max="${max}" step="${step}"${v === null ? '' : ` value="${v}"`}><output data-out="${key}">${v === null ? '' : v.toFixed(step < 1 ? 1 : 0)}</output><span class="ls-unit">${unit}</span></label>`;
   const changeRows = changes?.changes?.length ? changes.changes.map((c, i) => `<li class="ls-change${c.affectsLap ? '' : ' is-info'}"><label>${c.affectsLap ? `<input type="checkbox" data-change="${i}">` : '<span class="ls-dot" aria-hidden="true"></span>'}<span><span class="ls-change-text" data-no-translate lang="en">${esc(c.text)}</span><small>${esc(c.affectsLap ? (lang === 'en' ? c.effect.en : c.effect.ko) : t.noLap)}</small></span></label></li>`).join('') : '';
   const s = data.calibration.seasons;
   const calRows = ['2025', '2026'].filter(y => s[y]).map(y => `<tr><td>${y}</td><td data-no-translate>${fmtLap(s[y].realLap)}${s[y].position > 1 ? ` (P${s[y].position})` : ''}</td><td data-no-translate>${fmtLap(s[y].simLap)}</td><td data-no-translate>${s[y].errorSec > 0 ? '+' : ''}${s[y].errorSec.toFixed(3)} s</td><td data-no-translate>${s[y].rmsKph} km/h</td></tr>`).join('');
@@ -363,7 +371,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null, first
  </div>
 </section>
 <section class="panel ls-panel ls-cmp-panel ls-cmp-only"><div class="ls-panel-head"><h2>${esc(UI[lang].cmpH)}</h2><button type="button" class="pill" data-ls="cmpCsv">${esc(UI[lang].csv)}</button></div><div class="output" data-ls="cmpTable"></div><p class="fine">${esc(UI[lang].cmpNote)}</p></section>
-<section class="panel ls-panel ls-tel"><div class="ls-panel-head"><h2>${esc(t.trace)}</h2><span class="ls-export"><button type="button" class="pill" data-ls="telPng">${esc(UI[lang].png)}</button> <button type="button" class="pill" data-ls="telCsv">${esc(UI[lang].csv)}</button></span></div><div class="ls-chans" data-ls="chans" role="group" aria-label="${esc(UI[lang].chans)}"></div><div class="ls-scroll" data-ls="trace">${view.traceSvg}</div><p class="ls-key" data-ls="key">${view.keyHtml}</p><div data-ls="soc">${view.socHtml}</div></section>
+<section class="panel ls-panel ls-tel"><div class="ls-panel-head"><h2>${esc(t.trace)}</h2><span class="ls-export"><button type="button" class="pill" data-ls="telPng">${esc(UI[lang].png)}</button> <button type="button" class="pill" data-ls="telCsv">${esc(UI[lang].csv)}</button></span></div><div class="ls-chans" data-ls="chans" role="group" aria-label="${esc(UI[lang].chans)}">${(view.tel?.lanes || []).map(L => '<label class="ls-chan"><button type="button" class="ls-grip" aria-label="' + data.ui.move.replace('{c}', L.name) + '">⠿</button><input type="checkbox" value="' + L.key + '" checked><span>' + L.name + '</span></label>').join('')}</div><div class="ls-scroll" data-ls="trace">${view.traceSvg}</div><p class="ls-key" data-ls="key">${view.keyHtml}</p><div data-ls="soc">${view.socHtml}</div></section>
 <section class="panel ls-panel ls-brakes"><h2>${esc(BT[lang].h)}</h2><div data-ls="brakes">${view.brakeHtml}</div></section>
 <section class="panel ls-panel ls-air"><h2>${esc(t.air)}</h2>
  <dl class="ls-facts ls-air-facts" data-ls="air">${view.airHtml}</dl>
