@@ -289,5 +289,6 @@ export function simulatorUiClient(CORNER_NAMES) {
   const map = q('map'); if (map) new MutationObserver(() => { safe(enhanceMap); }).observe(map, { childList: true });
   let timer = null; const lap = q('lap'); if (lap) new MutationObserver(() => { clearTimeout(timer); timer = setTimeout(() => safe(summary), 120); }).observe(lap, { childList: true, characterData: true, subtree: true });
  };
+ window.kbSimReinit = (window.kbSimReinit || []).concat(start); // a track change swaps the simulator part (lapsimClient)
  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
 }
