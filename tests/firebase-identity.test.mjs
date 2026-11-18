@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {firebaseIdentity,platformIdentity} from '../worker/accounts.js';
-import {crossSiteGoogleLoginAllowed,firebaseGoogleSubject,firebaseSessionFailure} from '../api/index.js';
+import {crossSiteGoogleLoginAllowed,firebaseGoogleSubject,firebaseSessionFailure,signedOutFallback} from '../api/index.js';
 
 test('Firebase session uses the Google provider subject for legacy account continuity',()=>{
  assert.equal(firebaseGoogleSubject({uid:'firebase-only-id',firebase:{identities:{'google.com':['google-provider-id']}}}),'google-provider-id');
@@ -25,4 +25,12 @@ test('Firebase website identity is separate from ChatGPT platform identity',()=>
  const request=new Request('https://preview.example/account',{headers:{'x-kongboda-firebase-user-id':'firebase-user','x-kongboda-firebase-user-email':'verified@example.test','x-kongboda-firebase-user-name':encodeURIComponent('테스트 사용자'),'x-kongboda-firebase-user-name-encoding':'percent-encoded-utf-8'}});
  assert.deepEqual(firebaseIdentity(request),{provider:'google',sub:'firebase-user',email:'verified@example.test',name:'테스트 사용자'});
  assert.equal(platformIdentity(request),null);
+});
+
+test('a signed-in page whose account read fails is served signed out',async()=>{
+ const run=async r=>{if(r.headers.get('x-kongboda-firebase-user-id'))throw Object.assign(new Error('quota'),{code:8});return new Response('ok');};
+ const get=new Request('https://preview.example/',{headers:{'x-kongboda-firebase-user-id':'u','x-kongboda-firebase-user-email':'e@example.test'}});
+ assert.equal(await (await signedOutFallback(run,get,true)).text(),'ok');
+ await assert.rejects(signedOutFallback(run,new Request(get,{method:'POST',body:'x'}),true));
+ await assert.rejects(signedOutFallback(async()=>{throw new Error('x');},new Request('https://preview.example/'),false));
 });
