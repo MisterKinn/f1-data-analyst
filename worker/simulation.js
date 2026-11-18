@@ -936,7 +936,7 @@ function computeView(K, data, state, R) {
   const sc = scP && Number.isFinite(scP.entryS) && Number.isFinite(scP.exitS) ? [{s: scP.entryS, label: 'SC1'}, {s: scP.exitS, label: 'SC2'}] : [];
   // a series that starts on its own line may number the corners from there (Silverstone non-F1: Copse = T1)
   const rn = kS && data.startAlt.renumberFrom, nT = rn ? Math.max(...(d0.corners || []).map(c => c.number)) : 0;
-  const mapOpts = {zones: zoneOpts, corners: d0.corners, names: data.cornerNames, straights: data.straights, sc, renumber: rn ? k => ((k - rn) % nT + nT) % nT + 1 : null, length: d.length, label: t.map, line, start: kS / d0.kappa.length, rot: Number.isFinite(state.mapRot) ? state.mapRot : (data.mapRot0 || 0)};
+  const mapOpts = {zones: zoneOpts, corners: d0.corners, names: data.cornerNames, straights: data.straights, sc, renumber: rn ? Object.assign(k => ((k - rn) % nT + nT) % nT + 1, {rn, nT}) : null, length: d.length, label: t.map, line, start: kS / d0.kappa.length, rot: Number.isFinite(state.mapRot) ? state.mapRot : (data.mapRot0 || 0)};
   // compass: the map frame turned by north.deg (counter-clockwise) is true east-north; the needle turns clockwise on screen
   const compassDeg = data.north && !data.north.mirror ? ((data.north.deg - mapOpts.rot) % 360 + 360) % 360 : null;
   const mapSvg = R.renderMap(d.map || {x: [], y: []}, kS ? res.v.slice(res.v.length - kS).concat(res.v.slice(0, res.v.length - kS)) : res.v, mapOpts);
@@ -1108,7 +1108,9 @@ function computeView(K, data, state, R) {
 }
 
 // Browser controller
-function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, evolutionCurve, lineTrack, brakeZones, lapChannels, blendLine, blendOff) {
+function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, evolutionCurve, lineTrack, brakeZones, lapChannels, blendLine, blendOff, src) {
+  // loaded by new Worker(): answer views, no page
+  if (typeof document === 'undefined') { lapsimWorker(K, computeView, {renderMap, renderTrace, evolutionDelta, evolutionCurve, lineTrack, brakeZones, lapChannels, blendLine, blendOff}); return; }
   const el = document.getElementById('lapsim-data'); if (!el) return;
   const R = {renderMap, renderTrace, evolutionDelta, evolutionCurve, lineTrack, brakeZones, lapChannels, blendLine, blendOff};
   document.querySelectorAll('[data-line-mode]').forEach(b => b.addEventListener('click', () => {
@@ -1177,7 +1179,7 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
       if (state.optCar !== state.carId) { state.optCar = state.carId; const c = data.cars[state.carId], z = !c.series && c.year && data.zones ? data.zones[c.year < 2026 ? '2025' : String(Math.max(2026, ...Object.keys(data.zones).map(Number).filter(k => k >= 2026 && k <= c.year)))] : null, rq = z && z.real && z.year === c.year && c.fix ? z.real : {};
         state.sm = rq.grip === 'low' ? 'alt' : 'normal'; state.ot = rq.ot !== 'off'; state.drs = rq.drs !== 'off';
         if (q('sm')) { q('sm').value = state.sm; q('ot').value = state.ot ? '1' : '0'; q('drs').value = state.drs ? '1' : '0'; } }
-      const v = computeView(K, data, state, R); lastTel = v.tel; lastView = v;
+      viewOf(state, v => { lastTel = v.tel; lastView = v;
       q('lap').textContent = v.lap; q('pole').innerHTML = v.poleHtml; q('facts').innerHTML = v.factsHtml; q('air').innerHTML = v.airHtml;
       { const prev = zoneState(); q('map').innerHTML = v.mapSvg; animZones(prev); } apply(); needle(v.compassDeg); q('trace').innerHTML = v.traceSvg; q('soc').innerHTML = v.socHtml; q('brakes').innerHTML = v.brakeHtml; q('key').innerHTML = v.keyHtml; q('wind').innerHTML = v.windHtml;
       { const c = data.cars[state.carId], f1 = !c.series && c.year; if (q('smWrap')) { q('smWrap').hidden = !(f1 && c.year >= 2026); q('otWrap').hidden = !(f1 && c.year >= 2026); q('drsWrap').hidden = !(f1 && c.year < 2026); } }
@@ -1186,7 +1188,19 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
       q('evoFacts').innerHTML = v.evoFacts; q('evoChart').innerHTML = v.evoSvg; q('qsplit').innerHTML = v.qsHtml; q('tyre').innerHTML = v.tyreHtml;
       lanesUi(); cmpTable(v.cmpRows);
       document.querySelectorAll('[data-evo-out]').forEach(o => { const k = o.dataset.evoOut; o.textContent = v.evo[k]; const i = document.querySelector('input[data-evo="' + k + '"]'); if (i && document.activeElement !== i) i.value = v.evo[k]; });
-    });
+      }); });
+  };
+  // the lap work runs in a worker (same script); only the newest request is drawn. Without a worker, or if it fails, it runs here as before
+  let W = null, wid = 0;
+  try { if (src && typeof Worker === 'function') { W = new Worker(src); W.postMessage({data}); } } catch (e) { W = null; }
+  const busy = on => { const m = q('map'); if (m) { m.style.transition = 'opacity .25s .15s'; m.style.opacity = on ? '.55' : ''; } }; // quiet "calculating" state
+  const viewOf = (st, done) => {
+    if (!W) { done(computeView(K, data, st, R)); return; }
+    const id = ++wid; busy(true);
+    W.onmessage = e => { if (e.data.id !== wid) return; busy(false); if (e.data.err) { W = null; done(computeView(K, data, st, R)); return; }
+      const v = e.data.v, o = v.mapArgs && v.mapArgs[2], f = o && o.renumber; if (f) { const {rn, nT} = f; o.renumber = Object.assign(k => ((k - rn) % nT + nT) % nT + 1, {rn, nT}); } done(v); };
+    W.onerror = () => { W = null; busy(false); done(computeView(K, data, st, R)); };
+    W.postMessage({id, state: st});
   };
   if (q('driver')) q('driver').addEventListener('change', e => { state.driver = e.target.value; update(); });
   // map rotation (owner 2026-11-15): ⟲ ⟳ turn the map 15°; the compass needle shows true north; pressing it returns to the first view
@@ -1363,10 +1377,19 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
   if (data.line) update(); // the server drew the least-curvature line; the browser draws this car's own line
 }
 
+// speed job stage 4 (2026-11-18): the same script, loaded by new Worker(), works out the view off the main thread, so a heavy lap
+// (Spa, Silverstone) never freezes the page. The page data comes once; each message after it is one state.
+function lapsimWorker(K, computeView, R) {
+  let data = null;
+  self.onmessage = e => { const m = e.data; if (m.data) { data = m.data; return; }
+    try { const v = computeView(K, data, m.state, R), o = v.mapArgs && v.mapArgs[2], f = o && o.renumber; // functions cannot be posted: send the renumber's numbers
+      if (f) v.mapArgs[2] = Object.assign({}, o, {renumber: {rn: f.rn, nT: f.nT}});
+      self.postMessage({id: m.id, v}); } catch (err) { self.postMessage({id: m.id, err: String(err && err.message || err)}); } };
+}
 let scriptText = null;
 export function lapsimScript() {
   // powertrain() lives outside lapsimKernel() and simulateLap calls it: it must be in the browser script too
-  if (!scriptText) scriptText = '(()=>{const powertrain=' + powertrain.toString() + ';const K=(' + lapsimKernel.toString() + ')();const lapChannels=' + lapChannels.toString() + ';const blendLine=' + blendLine.toString() + ';const blendOff=' + blendOff.toString() + ';const renderMap=' + renderMap.toString() + ';const renderTrace=' + renderTrace.toString() + ';const evolutionDelta=' + evolutionDelta.toString() + ';const evolutionCurve=' + evolutionCurve.toString() + ';const lineTrack=' + lineTrack.toString() + ';const brakeZones=' + brakeZones.toString() + ';const computeView=' + computeView.toString() + ';(' + lapsimClient.toString() + ')(K,computeView,renderMap,renderTrace,evolutionDelta,evolutionCurve,lineTrack,brakeZones,lapChannels,blendLine,blendOff);})();';
+  if (!scriptText) scriptText = '(()=>{const powertrain=' + powertrain.toString() + ';const K=(' + lapsimKernel.toString() + ')();const lapChannels=' + lapChannels.toString() + ';const blendLine=' + blendLine.toString() + ';const blendOff=' + blendOff.toString() + ';const renderMap=' + renderMap.toString() + ';const renderTrace=' + renderTrace.toString() + ';const evolutionDelta=' + evolutionDelta.toString() + ';const evolutionCurve=' + evolutionCurve.toString() + ';const lineTrack=' + lineTrack.toString() + ';const brakeZones=' + brakeZones.toString() + ';const computeView=' + computeView.toString() + ';const lapsimWorker=' + lapsimWorker.toString() + ';(' + lapsimClient.toString() + ')(K,computeView,renderMap,renderTrace,evolutionDelta,evolutionCurve,lineTrack,brakeZones,lapChannels,blendLine,blendOff,typeof document!==\'undefined\'&&document.currentScript&&document.currentScript.src);})();';
   return scriptText;
 }
 export function lapsimScriptVersion() {
