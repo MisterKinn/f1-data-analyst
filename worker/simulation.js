@@ -1158,14 +1158,27 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
   const q = s => document.querySelector('[data-ls="' + s + '"]'), evoKeys = Object.values(data.evoOf);
   // zone animation (owner 2026-11-16): a zone grows or shrinks along the line (400 ms) and OT marks fade and scale (250 ms) when SM / DRS /
   // OT options change; native WAAPI; instant for prefers-reduced-motion
-  const zoneState = () => Object.fromEntries([...(q('map')?.querySelectorAll('[data-zk]') || [])].map(e => [e.tagName + e.dataset.zk, {strokeDasharray: e.style.strokeDasharray, strokeDashoffset: e.style.strokeDashoffset, opacity: e.style.opacity || '1'}]));
+  const zoneState = () => { const els = [...(q('map')?.querySelectorAll('[data-zk]') || [])];
+    return Object.assign(Object.fromEntries(els.map(e => [e.tagName + e.dataset.zk, {strokeDasharray: e.style.strokeDasharray, strokeDashoffset: e.style.strokeDashoffset, opacity: e.style.opacity || '1'}])), {__els: els.map(e => e.cloneNode(true))}); };
   const animZones = prev => { if (!prev || !Element.prototype.animate || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    for (const e of q('map').querySelectorAll('[data-zk]')) { const p = prev[e.tagName + e.dataset.zk]; if (!p) continue; const path = e.tagName === 'path';
+    const ease = 'cubic-bezier(.2,.8,.2,1)', seen = new Set(), scaled = e => e.tagName !== 'path' && (e.classList.contains('ls-zone-m') || e.classList.contains('ls-zone-mt'));
+    for (const e of q('map').querySelectorAll('[data-zk]')) { const p = prev[e.tagName + e.dataset.zk], path = e.tagName === 'path'; seen.add(e.tagName + e.dataset.zk);
+      // owner 2026-11-18 (car change: 2025 DRS, 2026 SM, LMH none): a zone the last car did not have grows along the line, its label and
+      // marks fade and scale in; zones it had and this car has not shrink back and fade out (below)
+      if (!p) { const to = path ? {strokeDasharray: e.style.strokeDasharray, strokeDashoffset: e.style.strokeDashoffset, opacity: e.style.opacity || '1'} : {opacity: e.style.opacity || '1'};
+        if (to.opacity === '0') continue; const from = path ? {strokeDasharray: '0 2', strokeDashoffset: e.style.strokeDashoffset, opacity: '0'} : {opacity: '0'};
+        if (scaled(e)) { from.transform = 'scale(.4)'; to.transform = 'scale(1)'; }
+        e.animate([from, to], {duration: path ? 400 : 250, easing: ease}); continue; }
       // a hidden zone keeps opacity 0 (a zero-length dash with round caps would leave a dot)
       const to = path ? {strokeDasharray: e.style.strokeDasharray, strokeDashoffset: e.style.strokeDashoffset, opacity: e.style.opacity || '1'} : {opacity: e.style.opacity || '1'}, from = path ? {strokeDasharray: p.strokeDasharray, strokeDashoffset: p.strokeDashoffset, opacity: p.opacity} : {opacity: p.opacity};
       if (JSON.stringify(to) === JSON.stringify(from)) continue;
       if (!path && e.classList.contains('ls-zone-m') || e.classList.contains('ls-zone-mt')) { from.transform = to.opacity === '0' ? 'scale(1)' : 'scale(.4)'; to.transform = to.opacity === '0' ? 'scale(.4)' : 'scale(1)'; }
-      e.animate([from, to], {duration: path ? 400 : 250, easing: 'cubic-bezier(.2,.8,.2,1)'}); } };
+      e.animate([from, to], {duration: path ? 400 : 250, easing: ease}); }
+    const host = q('map').querySelector('[data-zk]')?.parentNode || q('map').querySelector('.ls-band')?.parentNode;
+    if (host) for (const c of prev.__els || []) { if (seen.has(c.tagName + c.dataset.zk) || (c.style.opacity || '1') === '0') continue;
+      const path = c.tagName === 'path', from = path ? {strokeDasharray: c.style.strokeDasharray, strokeDashoffset: c.style.strokeDashoffset, opacity: c.style.opacity || '1'} : {opacity: c.style.opacity || '1'};
+      const to = path ? {strokeDasharray: '0 2', strokeDashoffset: c.style.strokeDashoffset, opacity: '0'} : {opacity: '0'}; if (scaled(c)) { from.transform = 'scale(1)'; to.transform = 'scale(.4)'; }
+      host.appendChild(c); c.animate([from, to], {duration: path ? 400 : 250, easing: ease, fill: 'forwards'}).onfinish = () => c.remove(); } };
   const yearKey = data.conds['2026'] ? '2026' : Object.keys(data.conds)[0];
   const state = {carId: data.carId, compareId: '', mode: 'real', manual: Object.assign({pressureHpa: 1013, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0}, data.conds[yearKey] || {}), active: {}, strength: 1, sm: 'normal', ot: true, drs: true, evo: {type: 'qualifying', tyre: '', useCurve: true, over: {}}};
   const sliders = document.querySelectorAll('[data-cond]');
