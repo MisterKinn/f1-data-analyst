@@ -24,5 +24,10 @@ export async function liveEnergyLimit(id, year = 2026, {timeoutMs = 3000} = {}) 
   let value = null;
   try { value = await Promise.race([lookup, new Promise(res => setTimeout(() => res(undefined), timeoutMs))]); } catch {}
   if (value !== undefined) cache.set(key, {at: Date.now(), value});
+  else { // speed job 2026-11-18: a slow fia.com no longer holds every page view for 3 s; the estimate is used for 2 min while the lookup
+    // finishes in the background and fills the cache
+    cache.set(key, {at: Date.now() - TTL + 120e3, value: null});
+    lookup.then(v => cache.set(key, {at: Date.now(), value: v}), () => {});
+  }
   return value || known;
 }
