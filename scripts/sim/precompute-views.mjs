@@ -20,6 +20,8 @@ let posted = null; globalThis.self = {postMessage: m => { posted = structuredClo
 const version = lapsimScriptVersion();
 const viewOf = (data, state) => { posted = null; self.onmessage({data: {id: 1, state: structuredClone(state)}}); if (!posted || posted.err) throw new Error(posted?.err || 'no answer'); return posted.v; };
 const cars = data => Object.keys(data.cars).filter(k => !k.startsWith('gt3-'));
+// JSON writes -0 as 0 (telemetry lanes hold -0): keep it, so the file parses back to the exact numbers
+const exactJson = x => JSON.stringify(x, (k, y) => Object.is(y, -0) ? '\u0000NEG0' : y).replaceAll('"\\u0000NEG0"', '-0');
 
 if (checkAt >= 0) {
   const dir = args[checkAt + 1], share = Number(args[checkAt + 2] ?? 0.03), must = ['spa-francorchamps', 'silverstone', 'suzuka'];
@@ -31,7 +33,7 @@ if (checkAt >= 0) {
     if (viewBuildKey(version, text) !== r.build) { console.log('build changed', r.track, r.lang); bad++; continue; }
     if (last !== r.track + r.lang) { self.onmessage({data: {data}}); last = r.track + r.lang; }
     const stored = JSON.parse(readFileSync(dir + '/' + r.file, 'utf8')), state = firstViewState(data, r.car);
-    if (stored.state !== canonJson(state) || JSON.stringify(viewOf(data, state)) !== JSON.stringify(stored.v)) { console.log('DIFFERENT', r.track, r.lang, r.car); bad++; }
+    if (stored.state !== canonJson(state) || exactJson(viewOf(data, state)) !== exactJson(stored.v)) { console.log('DIFFERENT', r.track, r.lang, r.car); bad++; }
   }
   console.log(`checked ${pick.length} of ${rows.length} views, ${bad} different`);
   process.exit(bad ? 1 : 0);
@@ -45,7 +47,7 @@ for (const track of ids) for (const lang of ['ko', 'en']) {
   for (const car of cars(data)) {
     const state = firstViewState(data, car), key = canonJson(state), t0 = performance.now(), v = viewOf(data, state), ms = Math.round(performance.now() - t0);
     const file = build + '/' + viewHash(key) + '.json';
-    writeFileSync(out + '/' + file, JSON.stringify({build, state: key, v}));
+    writeFileSync(out + '/' + file, exactJson({build, state: key, v}));
     rows.push({track, lang, car, build, file, ms});
   }
   console.log(track, lang, cars(data).length, 'views');
