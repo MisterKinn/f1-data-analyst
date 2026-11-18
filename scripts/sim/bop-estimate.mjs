@@ -34,6 +34,7 @@ export const SPECS = {
 const specOf = (m, y, ev) => { let s = 'base'; for (const [yy, e, name] of SPECS[m] || []) if (y > yy || (y === yy && (ORDER[ev] ?? 0) >= (ORDER[e] ?? 0))) s = name; return s; };
 const keyOf = (m, y, ev) => `${m} ${y} ${specOf(m, y, ev)}`;
 const LIMITS = {kgMin: 1030, kWMax: 520, kWMin: 470};
+const RECERT_2026 = ['Ferrari 499P', 'Peugeot 9X8']; // re-certified for 2026 (W6-F lineage, FIA/ACO): no compatible published setting
 const PRIOR_SD = {kg: 12, kW: 8, g: 2.5}; // spread of one event-to-event BoP change in 2024-2025 (checked below)
 
 const num = s => s === '-' || s === undefined ? null : +s;
@@ -153,7 +154,9 @@ function mix(a, b, wa = 0.5) { // per model; a model missing in one side keeps t
 const classMean = pr => { const v = Object.values(pr); return {kg: mean(v.map(x => x.kg)), kW: mean(v.map(x => x.kW)), g: mean(v.map(x => x.g)), MJ: mean(v.map(x => x.MJ)), from: 'class mean (new car)'}; };
 
 // ---- hold-out test on 2025: each event hidden from the fit, prior = previous 2025 event BoP + same track 2024
-const order25 = ['LOSAIL', 'IMOLA', 'SPA', 'LEMANS', 'SAOPAULO', 'FUJI', 'BAHRAIN'];
+const order25 = ['LOSAIL', 'IMOLA', 'SPA', 'LEMANS', 'SAOPAULO', 'FUJI', 'BAHRAIN'], CARRY_ORDER25 = ['LOSAIL', 'IMOLA', 'SPA', 'LEMANS', 'SAOPAULO', 'COTA', 'FUJI', 'BAHRAIN'];
+// nominal peak power: base power, or the power above 250 km/h when that is higher (W6-F common measure)
+const peak = (kW, g) => Math.max(kW, kW * (1 + g / 100));
 const test = [];
 for (let i = 1; i < order25.length; i++) {
   const ev = order25[i], e = events[`2025 ${ev}`], truth = bopOf(2025, e.track); if (!truth) continue;
@@ -161,10 +164,27 @@ for (let i = 1; i < order25.length; i++) {
   let prior = mix(priorFromBop(bopOf(2025, TRACK[order25[i - 1]]), 'previous event'), bopOf(2024, e.track) ? priorFromBop(bopOf(2024, e.track), 'same track 2024') : null);
   for (const m of Object.keys(e.models)) if (!prior[m] && truth[m]) prior[m] = classMean(prior);
   const est = estimate(e, prior, fit, m => { const k = keyOf(m, 2025, ev); return {u: fit.u[k] ?? 0, w: fit.w[k] ?? 0, known: k in fit.u, spec: specOf(m, 2025, ev)}; });
-  for (const [m, x] of Object.entries(est)) if (truth[m]) test.push({ev, m, ekg: x.kg - truth[m].kg, ekW: x.kW - truth[m].kW, eg: x.above250 - gainOf(truth[m]), eMJ: x.MJ - truth[m].MJ,
+  // carry-forward (W6-F): the last published setting of the same spec before this event (COTA included, it has no site timing)
+  const prevEv = CARRY_ORDER25[CARRY_ORDER25.indexOf(ev) - 1], prevB = bopOf(2025, TRACK[prevEv]);
+  for (const [m, x] of Object.entries(est)) if (truth[m]) test.push({ev, m, ekg: x.kg - truth[m].kg, epk: peak(x.kW, x.above250) - peak(truth[m].kW, gainOf(truth[m])),
+    ...(prevB?.[m] && specOf(m, 2025, prevEv) === specOf(m, 2025, ev) ? {ckg: prevB[m].kg - truth[m].kg, cpk: peak(prevB[m].kW, gainOf(prevB[m])) - peak(truth[m].kW, gainOf(truth[m])), cMJ: prevB[m].MJ - truth[m].MJ} : {}), ekW: x.kW - truth[m].kW, eg: x.above250 - gainOf(truth[m]), eMJ: x.MJ - truth[m].MJ,
     pkg: Math.round(prior[m].kg) - truth[m].kg, pkW: Math.round(prior[m].kW) - truth[m].kW, pg: prior[m].g - gainOf(truth[m]), pMJ: Math.round(prior[m].MJ) - truth[m].MJ});
 }
 const mae = k => +mean(test.map(t => Math.abs(t[k]))).toFixed(1);
+// Gate G (W6-F): site model vs carry-forward on the same rows, each event one vote, paired SE across events
+const sd = a => Math.sqrt(a.reduce((x, y) => x + (y - mean(a)) ** 2, 0) / (a.length - 1));
+function carryGate(es, ec) {
+  const rowsC = test.filter(t => t[ec] != null), evs = [...new Set(rowsC.map(t => t.ev))];
+  const em = k => evs.map(ev => mean(rowsC.filter(t => t.ev === ev).map(t => Math.abs(t[k])))), a = em(es), b = em(ec), d = a.map((x, i) => x - b[i]), n = evs.length, r4 = x => +x.toFixed(4);
+  const gain = mean(d), se = sd(d) / Math.sqrt(n);
+  return {rows: rowsC.length, events: n, site: {mae: r4(mean(a)), se: r4(sd(a) / Math.sqrt(n))}, carry: {mae: r4(mean(b)), se: r4(sd(b) / Math.sqrt(n))}, carryGain: r4(gain), pairedSe: r4(se),
+    winner: gain > se ? 'carry' : -gain > se ? 'site' : 'none'};
+}
+const carryTest = {kg: carryGate('ekg', 'ckg'), peakKW: carryGate('epk', 'cpk'), MJ: carryGate('eMJ', 'cMJ')};
+// Energy passed by 0.002 MJ here and did not repeat on the W6 22-row overlap (0.90 ± 1.14 MJ, reject): a tie, the site model stays.
+// Only peak power is carried; the decision is fixed in the code and checked against this run.
+const CARRY_LEVERS = {kg: false, peakKW: true, MJ: false};
+if (carryTest.peakKW.winner !== 'carry') throw Error('peak power carry-forward no longer wins Gate G: review CARRY_LEVERS');
 const holdout = {cases: test.length, model: {kg: mae('ekg'), kW: mae('ekW'), above250: mae('eg'), MJ: mae('eMJ')}, priorOnly: {kg: mae('pkg'), kW: mae('pkW'), above250: mae('pg'), MJ: mae('pMJ')}};
 // a learned part is used only where it beats the prior alone (learning must not make the estimate worse)
 const use = {kg: holdout.model.kg <= holdout.priorOnly.kg, kW: holdout.model.kW <= holdout.priorOnly.kW, above250: holdout.model.above250 <= holdout.priorOnly.above250, MJ: holdout.model.MJ <= holdout.priorOnly.MJ};
@@ -191,8 +211,16 @@ for (const ev of EVENTS_2026) {
   for (const [m, x] of Object.entries(est)) { // keep the prior where the hold-out test says learning did not help
     if (!use.kg) x.kg = Math.round(prior[m].kg); if (!use.kW) x.kW = Math.round(prior[m].kW); if (!use.above250) x.above250 = r1(prior[m].g); if (!use.MJ) x.MJ = Math.round(prior[m].MJ);
   }
+  // carry-forward for peak power (Gate G winner): the last published setting when the 2026 spec is the one of Bahrain 2025 and the car was
+  // not recertified for 2026 (W6-F lineage: Ferrari 499P and Peugeot 9X8 were; Genesis is new; Alpine, BMW, Cadillac, Toyota have Evo specs)
+  const chained = Object.fromEntries(Object.entries(est).map(([m, x]) => [m, {kg: x.kg, kW: x.kW, g: x.above250, MJ: x.MJ, from: `${ev} 2026 estimate`}]));
+  for (const [m, x] of Object.entries(est)) {
+    const pub = bopOf(2025, 'sakhir')?.[m], ok = pub && !RECERT_2026.includes(m) && specOf(m, 2026, ev) === specOf(m, 2025, 'BAHRAIN');
+    x.method = {kg: 'site', kW: ok ? 'carry' : 'site', MJ: 'site'};
+    if (ok) { x.model = {kW: x.kW, above250: x.above250}; x.kW = pub.kW; x.above250 = gainOf(pub); x.carryFrom = 'Bahrain 2025 (WEC_2025_D46)'; }
+  }
   out26.push({event: ev, track: e.track, cars: est});
-  last = Object.fromEntries(Object.entries(est).map(([m, x]) => [m, {kg: x.kg, kW: x.kW, g: x.above250, MJ: x.MJ, from: `${ev} 2026 estimate`}]));
+  last = chained; // the chain stays on the site model, so other cars and later events are unchanged
 }
 
 // ---- "for fun" cars (owner 2026-11-16): Porsche 963 (WEC to 2025), Lamborghini SC63 (WEC 2024), Acura ARX-06 (IMSA only, level carried over
@@ -251,10 +279,12 @@ for (const [i, ev] of ROUNDS_2027.entries()) {
 }
 const projection2027 = {basis: 'Monza 2026 estimate', evoShiftPct: EVO.shift, note: 'Evo cars get the BoP change that cancels the learned Evo gain; others keep their last 2026 estimate', cars: proj, events: rounds27};
 const result = {generated: new Date().toISOString().slice(0, 10), method: 'MAP inversion of class-wide BoP response learned from all Al Kamel laps 2024-2026 and the published 2024-2025 BoP', limits: LIMITS,
-  coefficients: Object.fromEntries(Object.entries(fit.coef).map(([k, v]) => [k, typeof v === 'number' ? +v.toFixed(4) : v])), holdout2025: holdout, learnedPartUsed: use, evo: EVO, specs: SPECS, events: out26, projection2027, fun: fun26};
+  coefficients: Object.fromEntries(Object.entries(fit.coef).map(([k, v]) => [k, typeof v === 'number' ? +v.toFixed(4) : v])), holdout2025: holdout, learnedPartUsed: use, carryTest, carryLevers: CARRY_LEVERS,
+  label: {en: '2026 BoP estimates · Weight and stint energy use the site model. Peak power uses the last published setting of the same specification, or the site model if none exists.',
+    ko: '2026 BoP 추정치 · 중량과 스틴트 에너지는 사이트 모델값이며, 최고출력은 같은 사양의 마지막 공개값을 사용합니다. 공개값이 없으면 모델값을 표시합니다.'}, evo: EVO, specs: SPECS, events: out26, projection2027, fun: fun26};
 writeFileSync(new URL('../../worker/lapsim/bop-estimate-data.js', import.meta.url), `// WEC Hypercar 2026 BoP estimate (not official). Built by scripts/sim/bop-estimate.mjs; method and hold-out test in docs/lapsim-wec-bop.md\nexport const bopEstimate2026 = ${JSON.stringify(result)};\n`);
 if (process.argv.includes('--design')) writeFileSync('/tmp/bop-design.json', JSON.stringify({X: fit.X, Y: fit.Y}));
-console.log(JSON.stringify({coef: result.coefficients, holdout, use, evo: EVO}, null, 1));
+console.log(JSON.stringify({coef: result.coefficients, holdout, use, evo: EVO, carryTest}, null, 1));
 console.log('fun', JSON.stringify(fun26[0].cars));
 console.log('2027', Object.entries(proj).map(([m, x]) => `${m.split(' ')[0]} ${x.kg}/${x.kW}${x.evo ? ' EVO' : ''}`).join(' | '));
 for (const e of out26) console.log(e.event, Object.entries(e.cars).map(([m, x]) => `${m.split(' ')[0]} ${x.kg}/${x.kW}/${x.above250}/${x.MJ}`).join(' | '));
