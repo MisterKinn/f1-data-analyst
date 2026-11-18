@@ -91,19 +91,19 @@ Source: https://www.fia.com/sites/default/files/wec_2025_d24_hypercar_bop_050520
 
 ### Le Mans
 
-Decision: WEC_2025_D29_Hypercar_BOP (03/06/2025) - values from press, PDF unreadable  
-Source: https://es.motorsport.com/wec/news/bop-le-mans-equilibrio-rendimiento/10729991/  
+Decision: WEC_2025_D29_Hypercar_BOP (03/06/2025) - W6-F cross-check against the FIA PDFs (2026-11-18): 64 official 2025 rows × kg/kW/MJ replay at 0.000%; the only difference was the BMW gain (+2.0%, fixed here)  
+Source: https://fiawec.alkamelsystems.com/Results_NoticeBoard/13_2025/committee/02_Decisions/WEC_2025_D29_Hypercar_BOP_03062025.pdf  
+Also: https://es.motorsport.com/wec/news/bop-le-mans-equilibrio-rendimiento/10729991/  
 Also: https://sportscar365.com/?p=134405  
 Also: https://www.autosport.com/wec/news/ferrari-given-bop-gains-ahead-of-le-mans-24-hours/10729998/  
 Also: https://www.onlyendurance.com/le-mans-bop-analysis-pulling-apart-the-power-and-weight-figures  
-Also: https://fiawec.alkamelsystems.com/Results_NoticeBoard/13_2025/committee/02_Decisions/WEC_2025_D29_Hypercar_BOP_03062025.pdf (official PDF; did not load)  
 Note: Front-axle deployment speed and docking time not stated in any source found.
 
 | Car | kg | kW | gain >250 | MJ | Ft depl dry/wet | Dock s | Note |
 |---|---|---|---|---|---|---|---|
 | Alpine A424 | 1039 | 517 | -1.7% | 897 | ? | ? |  |
 | Aston Martin Valkyrie | 1030 | 520 | -0.8% | 910 | ? | ? | MJ conflict: 910 (motorsport.com ES) vs 908 (OnlyEndurance) |
-| BMW M Hybrid V8 | 1039 | 510 | +2.2% | 919 | ? | ? | gain conflict: +2.2% (motorsport.com ES) vs +2.0% (Sportscar365) |
+| BMW M Hybrid V8 | 1039 | 510 | +2.0% | 919 | ? | ? | FIA D29: +2.0% (was +2.2% from motorsport.com ES; Sportscar365 also +2.0%) |
 | Cadillac V-Series.R | 1037 | 517 | -0.8% | 905 | ? | ? | kW conflict: 517 (Sportscar365, motorsport.com) vs 520 (OnlyEndurance); kg/kW 2.006 supports 517 |
 | Ferrari 499P | 1042 | 515 | -2.9% | 896 | ? | ? | OnlyEndurance text says -3.3% but its 500.065 kW = 515 x 0.971 (-2.9%) |
 | Peugeot 9X8 | 1039 | 507 | -1.2% | 889 | ? | ? |  |
