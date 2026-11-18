@@ -276,6 +276,7 @@ export function uiMotionClient() {
   new MutationObserver(redraw).observe(mapBox, { childList: true });
   if (traceBox) new MutationObserver(redraw).observe(traceBox, { childList: true });
   addEventListener('keydown', e => { if (e.key === 'Escape' && rp.car) stop(); });
+  document.addEventListener('kb-sim-teardown', () => { if (rp.car) stop(); pause(); }, { once: true });
   label();
   // First view: draw the line, count up the lap, then replay once.
   let first = true;
@@ -327,6 +328,8 @@ export function uiMotionClient() {
   document.querySelectorAll('[data-race-results]').forEach(root => { const target = root.querySelector('[data-result-table]'); if (target) { safe(() => watchBusy(target, true)); safe(() => watchTable(target, false)); } safe(() => watchResultsEmpty(root)); });
   document.querySelectorAll('[data-series-tabs] .tab-list').forEach(list => safe(() => tabInk(list)));
   safe(enhanceComingSoon); safe(enhanceAlertsEmpty); safe(heroEntry); safe(simulation); safe(evolutionAuto); safe(foldCircuitChanges);
+  // the simulator swaps its part on a track change (lapsimClient): enhance the new part again
+  window.kbSimReinit = (window.kbSimReinit || []).concat(() => { safe(simulation); safe(evolutionAuto); safe(foldCircuitChanges); });
  };
  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
 }

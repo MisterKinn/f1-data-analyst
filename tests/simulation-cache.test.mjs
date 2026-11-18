@@ -28,3 +28,12 @@ test('stored first view: used only when build and state match, and the page arri
   assert.equal(await simulationFirstView({track: 'monza'}, lang, null, {fetchImpl: serve(() => ({build: 'other', state: '{}', v: {}})), now: 1}), null);
   assert.equal(await simulationFirstView({track: 'spa-francorchamps'}, lang, null, {fetchImpl: () => new Promise(() => {}), timeoutMs: 20, now: 1}).catch(() => 'threw'), null);
 });
+
+// first-view job, stage 4 step 2: the simulator part is one swappable block and the track menu switches without a reload when the
+// page script is running (plain form submit otherwise)
+test('simulator page is one swappable part with a no-reload track switch', () => {
+  const html = simulationPage({track: 'monza'}, 'en');
+  assert.match(html, /^<div data-ls-page style="display:contents">/); assert.match(html, /<\/script><\/div>$/);
+  assert.match(html, /<select name="track"[^>]*onchange="window\.kbLapsimGo\?kbLapsimGo\(this\.form\):this\.form\.submit\(\)"/);
+  assert.match(lapsimScript(), /kbLapsimGo/);
+});
