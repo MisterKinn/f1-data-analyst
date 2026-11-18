@@ -35,6 +35,16 @@ function loginPage(env,csrf,back,host=''){
  return new Response(`<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Google 로그인</title><style>body{font:16px system-ui;background:#0b0d12;color:#fff;display:grid;place-items:center;min-height:100vh;margin:0}main{max-width:420px;padding:32px;text-align:center}button{font:inherit;padding:12px 18px;border:0;border-radius:8px;cursor:pointer}p{color:#b8bfcc}</style><main><h1>Google로 로그인</h1><p>계속하려면 아래 버튼을 눌러 주세요.</p><button id="login">Google로 로그인</button><p id="status" role="status" aria-live="polite"></p></main>${googleLoginScript(data,{button:'#login',status:'#status'})}</html>`,{headers:{'content-type':'text/html; charset=utf-8','cache-control':'no-store','content-security-policy':"default-src 'none'; script-src 'unsafe-inline' https://www.gstatic.com https://apis.google.com; connect-src 'self' https://*.googleapis.com https://*.firebaseapp.com https://*.firebaseio.com; frame-src 'self' https://accounts.google.com https://apis.google.com https://*.firebaseapp.com; style-src 'unsafe-inline'; img-src data: https:; base-uri 'none'; form-action 'self'",'set-cookie':cookie(CSRF,csrf,600)}});
 }
 
+// A signed-in page read fails when the account store does (2026-11-18: database reads failing, every page 500 for signed-in
+// visitors only). The page is then served signed out instead of an error; other methods still fail.
+export async function signedOutFallback(run,request,signedIn){
+ try{return await run(request);}catch(error){
+  if(!signedIn||request.method!=='GET')throw error;
+  console.error('signed-in-request-failed',error?.code||error?.name||'unknown');
+  const headers=new Headers(request.headers);for(const k of [...headers.keys()])if(k.startsWith('x-kongboda-firebase-user'))headers.delete(k);
+  return run(new Request(request,{headers}));
+ }
+}
 export async function authRoute(request,env,{admin=firebaseAdmin}={}){
  const url=new URL(request.url);
  if(url.pathname==='/auth/google/start'&&request.method==='GET'){
@@ -110,7 +120,7 @@ export default async function handler(req,res){
   }
   const measuredPath=new URL(request.url).pathname;
   measure=(firebaseUser||headers.has('oai-authenticated-user-id'))&&(measuredPath==='/mcp'||measuredPath.startsWith('/api/live/'));
-  const response=await worker.fetch(request,runtimeEnv,{waitUntil});
+  const response=await signedOutFallback(r=>worker.fetch(r,runtimeEnv,{waitUntil}),request,!!firebaseUser);
   if(accountCsrf){const responseHeaders=new Headers(response.headers);responseHeaders.append('set-cookie',cookie(CSRF,accountCsrf,600));return send(new Response(response.body,{status:response.status,statusText:response.statusText,headers:responseHeaders}),res);}
   return send(response,res);
  }catch(error){
