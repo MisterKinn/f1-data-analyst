@@ -487,6 +487,13 @@ values below. Layer 4 (a simulator, not a real car): every channel stays labelle
   the end, p/p_peak = 0.9·u^k with u the speed still to lose. Medians: GTP release 67 % of the zone, k 0.63 (340 zones); GT3 50 %,
   0.58 (4,043); SFL/F3 70 %, 0.58 (91). The page draws each zone as rise (t90) → hold 100 → 90 % → release u^k, with the
   physics impulse kept (the physics need no longer sets the shape inside a zone). Source: zones.parquet of the owner's extract.
+- Zone shape refit (owner 2026-11-18, like for like): iRacing front line pressure, time-weighted mean/peak per heavy zone (speed
+  lost > 15 m/s, pit road out; srs_brake_shape.py over the 407 sessions): Formula 0.565 (430 zones), GTP 0.562 (1,577), LMP 0.589,
+  GT3 0.660 (9,708), GT4 0.688, TCR 0.689. The drawn trace gave 0.591 (F1, open-wheel foot), 0.587 (Hypercar) and 0.709 (GT3) on 10
+  tracks: the release held too full, because our speed falls differently in the release than iRacing's. The release exponent k is
+  refitted on our own laps to match: open wheel 0.58 → 0.68 (0.564), Hypercar 0.63 → 0.75 (0.561), GT3 0.58 → 0.86 (0.661). Wolfram:
+  the release part alone has mean 0.9/(k + 1) (0.57, 0.54, 0.51, 0.48 for k 0.58, 0.68, 0.75, 0.86). The earlier figures 0.683 / 0.76
+  compared the pedal model with iRacing's deceleration ratio, not its pressure; those are not like for like.
 - Surface for SetupSim (2026-11-17): track roughness with the car taken out (log RMS of vertical acceleration above 1 Hz = car +
   track effect, 1,615 laps, 34 cars, 30 tracks; kept with ≥ 5 cars and ≥ 20 laps: 18 tracks) sets the bump rating where no public
   note exists and is averaged with the note where one does (`setup-plan.js surfaceOf`). Disagreements to keep in mind: Austin comes out

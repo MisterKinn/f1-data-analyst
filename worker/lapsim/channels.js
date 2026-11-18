@@ -12,11 +12,11 @@ export function lapChannels(track, car, env, res, {cls = 'f1', seed = '', surfac
   // 0.83; open wheel SFL/F3 18k, 0.71), h: the driver's foot (time to 90 % of the zone's peak pressure, overshoot over the hold,
   // hold ripple, trail-brake tail time constant; medians over 6,860 GT3, 472 GTP and 157 open-wheel braking zones). F1 and FE take
   // the open-wheel foot and steering (no F1 or FE car in the data); F1 and FE pressure stay on the pad and caliper physics below.
-  const OW = {t90: 0.217, os: 0.11, rip: 0.0176, tau: 0.251, rel: 0.70, k: 0.58};
+  const OW = {t90: 0.217, os: 0.11, rip: 0.0176, tau: 0.251, rel: 0.70, k: 0.68};
   const C = {
     f1: {bal: 0.57, mu: 0.5, rf: 0.137, af: 3060, rr: 0.115, ar: 1323, ratio: 11.0, kus: 0.44, h: OW},
-    hyper: {bal: 0.56, mu: 0.5, rf: 0.160, af: 3409, rr: 0.150, ar: 1712, ratio: 12.8, kus: 0.32, k: 0.203, h: {t90: 0.25, os: 0.148, rip: 0.012, tau: 0.372, rel: 0.67, k: 0.63}},
-    gt3: {bal: 0.58, mu: 0.45, rf: 0.160, af: 2956, rr: 0.150, ar: 1511, ratio: 17.6, kus: 0.34, k: 0.255, h: {t90: 0.383, os: 0.085, rip: 0.0112, tau: 0.343, rel: 0.50, k: 0.58}},
+    hyper: {bal: 0.56, mu: 0.5, rf: 0.160, af: 3409, rr: 0.150, ar: 1712, ratio: 12.8, kus: 0.32, k: 0.203, h: {t90: 0.25, os: 0.148, rip: 0.012, tau: 0.372, rel: 0.67, k: 0.75}},
+    gt3: {bal: 0.58, mu: 0.45, rf: 0.160, af: 2956, rr: 0.150, ar: 1511, ratio: 17.6, kus: 0.34, k: 0.255, h: {t90: 0.383, os: 0.085, rip: 0.0112, tau: 0.343, rel: 0.50, k: 0.86}},
     fe: {bal: 0.6, mu: 0.45, rf: 0.115, af: 1926, rr: 0.1, ar: 0, ratio: 12, kus: 0.8, h: OW}, // Gen3 on: no rear friction brakes, rear by regen
   }[cls] || {};
   const ers = car.ers || {}, axle = ers.axle || (ers.rule === 'f1-2026' || ers.pMax || car.regen ? 'rear' : null);
@@ -131,7 +131,8 @@ export function lapChannels(track, car, env, res, {cls = 'f1', seed = '', surfac
       const rz = R[kr], dipAt = r() < 0.25 + 0.6 * rz ? (rz > 0.15 ? t[kr] : t0 + (0.35 + 0.25 * r()) * (t[e] - t0)) : -1, dip = (0.1 + 0.08 * r()) * (1 + rz), tauOff = H.tau * (0.7 + 0.6 * r());
       // zone shape learned from iRacing (owner 2026-11-18, heavy zones): hold near the peak (100 → 90 %), then release over the last
       // `rel` of the zone as p = 0.9 · u^k, u = speed left to lose (1 at release start, 0 at the end); not the physics need, whose
-      // grip-limited fall with downforce drew a spike. The impulse is still the physics one (rescaled below).
+      // grip-limited fall with downforce drew a spike. The impulse is still the physics one (rescaled below). k is refitted (2026-11-18) so the
+      // zone's mean/peak pressure equals iRacing's (heavy zones: open wheel 0.565, GTP 0.562, GT3 0.660; docs/lapsim-physics-rules.md)
       const tRel = t0 + (t[e] - t0) * (1 - H.rel * (0.85 + 0.3 * r())), vE = up(v, e);
       let qr = k; while (qr < e && t[qr + 1] <= tRel) qr++;
       const vR = up(v, qr), shape = q => t[q] <= tRel ? 1 - 0.1 * (t[q] - t0) / Math.max(1e-3, tRel - t0) : 0.9 * Math.max(0, Math.min(1, (up(v, q) - vE) / Math.max(0.1, vR - vE))) ** H.k;
