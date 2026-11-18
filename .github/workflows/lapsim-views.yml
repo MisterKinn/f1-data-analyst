@@ -1,30 +1,34 @@
 name: Lap simulator stored views
 
-# First-view job (owner 2026-11-18): the Kongboda lap simulator's first view of every track × car (GT3 left out), computed with the
-# page's own worker code (scripts/sim/precompute-views.mjs in MisterKinn/f1-data-analyst) and published to this repository's GitHub
-# Pages. Nothing is committed. The site uses a stored view only when its build key and state match exactly. A fresh process
-# rechecks a random 3 % plus every F1 view of Spa, Silverstone and Suzuka; any difference stops the deploy.
-# Runs on the fork (kangjeongmin1229/f1-data-analyst-deploy, Pages source: GitHub Actions) and always builds from upstream main, so a
-# fork main that lags behind (its hourly sync cannot carry workflow changes) still publishes the views of the site in production.
+# First-view job (owner 2026-11-18): the lap simulator's first view of every track × car (GT3 left out: they compute in about
+# 0.1 s), computed with the page's own worker code (scripts/sim/precompute-views.mjs) and published to this repository's GitHub Pages
+# (never committed). The page uses a stored view only when its build key (script version + page data) and its state match exactly.
+# A second, fresh process recomputes a random 3 % of the views and every F1 view of Spa, Silverstone and Suzuka; any difference
+# stops the deploy. Runs on MisterKinn/f1-data-analyst only (Settings → Pages → Source: GitHub Actions); forks skip it.
 on:
-  schedule: [{cron: '17 * * * *'}]
+  push:
+    branches: [main]
+    paths: ['worker/lapsim/**', 'worker/simulation.js', 'worker/simulator-ui.js', 'scripts/sim/precompute-views.mjs', '.github/workflows/lapsim-views.yml']
+  workflow_run:
+    workflows: ['Lap simulator data']
+    types: [completed]
   workflow_dispatch:
 
-concurrency: {group: views, cancel-in-progress: true}
-env: {SRC: MisterKinn/f1-data-analyst}
+concurrency: {group: lapsim-views, cancel-in-progress: true}
 
 jobs:
+  # skip when the published views were built from the same worker/ tree
   plan:
-    if: github.repository == 'kangjeongmin1229/f1-data-analyst-deploy'
+    if: github.repository == 'MisterKinn/f1-data-analyst'
     runs-on: ubuntu-latest
     outputs: {run: '${{ steps.p.outputs.run }}', tree: '${{ steps.p.outputs.tree }}'}
     steps:
       - uses: actions/checkout@v4
-        with: {repository: '${{ env.SRC }}', ref: main, path: src}
+        with: {ref: main}
       - id: p
         run: |
-          cd src; tree=$(git rev-parse HEAD:worker)-$(git rev-parse HEAD:scripts/sim/precompute-views.mjs); echo "tree=$tree" >> "$GITHUB_OUTPUT"
-          old=$(curl -fsS "https://kangjeongmin1229.github.io/f1-data-analyst-deploy/views/index.json" | sed -n 's/.*"tree":"\([^"]*\)".*/\1/p' || true)
+          tree=$(git rev-parse HEAD:worker)-$(git rev-parse HEAD:scripts/sim/precompute-views.mjs); echo "tree=$tree" >> "$GITHUB_OUTPUT"
+          old=$(curl -fsS "https://misterkinn.github.io/f1-data-analyst/views/index.json" | sed -n 's/.*"tree":"\([^"]*\)".*/\1/p' || true)
           if [ "$old" = "$tree" ] && [ "${{ github.event_name }}" != workflow_dispatch ]; then echo run=false >> "$GITHUB_OUTPUT"; else echo run=true >> "$GITHUB_OUTPUT"; fi
 
   views:
@@ -35,11 +39,12 @@ jobs:
     strategy: {matrix: {shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]}}
     steps:
       - uses: actions/checkout@v4
-        with: {repository: '${{ env.SRC }}', ref: main}
+        with: {ref: main}
       - uses: actions/setup-node@v4
         with: {node-version: '22'}
       - run: npm ci --omit=dev --ignore-scripts
-      - run: KONGBODA_FEATURES=all node scripts/sim/precompute-views.mjs out ${{ matrix.shard }}/12
+      - name: Compute views (shard ${{ matrix.shard }} of 12)
+        run: KONGBODA_FEATURES=all node scripts/sim/precompute-views.mjs out ${{ matrix.shard }}/12
       - uses: actions/upload-artifact@v4
         with: {name: 'views-${{ matrix.shard }}', path: out, retention-days: 1}
 
@@ -51,17 +56,17 @@ jobs:
     environment: {name: github-pages, url: '${{ steps.deploy.outputs.page_url }}'}
     steps:
       - uses: actions/checkout@v4
-        with: {repository: '${{ env.SRC }}', ref: main}
+        with: {ref: main}
       - uses: actions/setup-node@v4
         with: {node-version: '22'}
       - run: npm ci --omit=dev --ignore-scripts
       - uses: actions/download-artifact@v4
         with: {pattern: 'views-*', merge-multiple: true, path: site/views}
-      - name: Recheck in a fresh process
+      - name: Recheck in a fresh process (random 3 % plus every F1 view of Spa, Silverstone, Suzuka)
         run: KONGBODA_FEATURES=all node scripts/sim/precompute-views.mjs --check site/views 0.03
-      - name: Size (GitHub Pages limit 1 GB) and stamp
+      - name: Size (GitHub Pages limit 1 GB)
         run: |
-          du -sh site; size=$(du -sb site | cut -f1); test "$size" -lt 950000000
+          du -sh site; size=$(du -sb site | cut -f1); echo "bytes $size"; test "$size" -lt 950000000
           printf '{"generatedAt":"%s","commit":"%s","tree":"%s"}\n' "$(date -u +%FT%TZ)" "$(git rev-parse HEAD)" "${{ needs.plan.outputs.tree }}" > site/views/index.json
       - uses: actions/upload-pages-artifact@v3
         with: {path: site}

@@ -1209,7 +1209,7 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
   const busy = on => { const m = q('map'); if (m) { m.style.transition = 'opacity .25s .15s'; m.style.opacity = on ? '.55' : ''; } }; // quiet "calculating" state
   // first-view job (owner 2026-11-18): a stored view (GitHub Pages, scripts/sim/precompute-views.mjs) is used when its build and state
   // are exactly this page's; a missing, different or slow (300 ms) one falls back to the worker
-  const VIEWS = 'https://kangjeongmin1229.github.io/f1-data-analyst-deploy/views/';
+  const VIEWS = 'https://misterkinn.github.io/f1-data-analyst/views/';
   let BUILD = null; try { BUILD = src ? viewBuildKey(new URL(src).searchParams.get('v'), el.textContent) : null; } catch (e) { BUILD = null; }
   const unpack = v => { const o = v.mapArgs && v.mapArgs[2], f = o && o.renumber; if (f && typeof f !== 'function') { const {rn, nT} = f; o.renumber = Object.assign(k => ((k - rn) % nT + nT) % nT + 1, {rn, nT}); } return v; };
   const stored = (st, then) => { if (!BUILD || typeof fetch !== 'function') { then(null); return; }
