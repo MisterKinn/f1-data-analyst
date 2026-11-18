@@ -517,7 +517,9 @@ function mapRepair(id, P, len) {
 export function lineData(id, {shape = true} = {}) {
   if (shape && LINE_CACHE.has(id)) return LINE_CACHE.get(id);
   // per-car SPSA lines were searched on the old midline; on an FIA-drawing midline they are left out until lapsim-car-lines.yml reruns
-  const L = lapsimRacingLines?.tracks?.[id], C = shape && lapsimMapShape?.tracks?.[id]?.fia ? null : lapsimCarLines?.tracks?.[id], r1 = p => [+p[0].toFixed(1), +p[1].toFixed(1)];
+  // and after a track rebuild (other point count) until the same rerun
+  const L = lapsimRacingLines?.tracks?.[id], C0 = shape && lapsimMapShape?.tracks?.[id]?.fia ? null : lapsimCarLines?.tracks?.[id];
+  const C = C0 && Object.values(C0).every(c => ['q', 'r'].every(m => !c[m]?.off || c[m].off.length === L?.line?.length)) ? C0 : null, r1 = p => [+p[0].toFixed(1), +p[1].toFixed(1)];
   const normals = mid => mid.map((_, i, a) => { const n = a.length, p = a[(i - 1 + n) % n], q = a[(i + 1) % n], dx = q[0] - p[0], dy = q[1] - p[1], l = Math.hypot(dx, dy) || 1; return [+(-dy / l).toFixed(4), +(dx / l).toFixed(4)]; });
   // Width where no TUM edges exist (task H): the circuit's own figure, else the map's width, else 12 m assumed
   const wS = lapsimTrackWidths[id]?.m, wM = lapsimTracks[id]?.quality?.widthM, widthM = wS ?? wM ?? 12;
