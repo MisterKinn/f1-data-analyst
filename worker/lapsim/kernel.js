@@ -162,7 +162,19 @@ export function lapsimKernel() {
       any = true; }
     return any ? cap : null;
   }
+  // Same inputs, same lap: a page view asks for the same lap several times (about half the calls).
+  // The key holds every track field simulateLap reads, so a hit is the exact same result; callers get a copy (they scale times in place).
+  const lapCache = new Map(), LAP_CACHE_MAX = 64;
+  const lapKey = (track, car, env, opts) => JSON.stringify([track.kappa, track.ds, track.mu, track.vScale, track.aeroLow, track.grade, track.heading, track.otOn, track.ersCap, track.kv, track.bank, track.sectors, car, env, opts],
+    (k, v) => ArrayBuffer.isView(v) ? Array.from(v) : typeof v === 'number' && !Number.isFinite(v) ? String(v) : v === undefined ? '__u' : v);
   function simulateLap(track, car, env = {}, opts = {}) {
+    const key = lapKey(track, car, env, opts), hit = lapCache.get(key);
+    if (hit) return structuredClone(hit);
+    const r = simulateLapRaw(track, car, env, opts);
+    if (lapCache.size >= LAP_CACHE_MAX) lapCache.delete(lapCache.keys().next().value);
+    lapCache.set(key, structuredClone(r)); return r;
+  }
+  function simulateLapRaw(track, car, env = {}, opts = {}) {
     if (env.puRamp && car.ers && car.ers.rule === 'f1-2026' && !opts.noRamp) {
       const o = Object.assign({}, opts, {noRamp: true}); let r = simulateLap(track, car, env, o), cap = track.ersCap ? Float32Array.from(track.ersCap) : null, k = 0;
       // the new ceiling moves the speeds, which can make new cuts: repeat until none is left (at most 5 rounds)
@@ -277,8 +289,9 @@ export function lapsimKernel() {
     // the usable window is lost. Earlier passes only warm up the speed profile.
     const causal = ers.rule === 'f1-2026' && ers.causalSoc !== false;
     const socMax = ers.socWindow ?? 4e6, recMax = env.rechargeMax ?? ers.rechargeMax ?? 8.5e6;
+    let vhLo = -Infinity, vhHi = Infinity; // after forward(): every vH in [vhLo, vhHi) takes the same branches, so gives the same run
     const forward = (vCut, vH = Infinity) => {
-      const v = fwd;
+      const v = fwd; vhLo = -Infinity; vhHi = Infinity;
       v[iMin] = Math.min(vLat[iMin], vBack[iMin]);
       let soc = socMax, got = 0;
       for (let pass = 0; pass < 2; pass++) {
@@ -301,7 +314,7 @@ export function lapsimKernel() {
           if (throttleHarvest) {
             const spare = pI * etaD - fDrive * vi; // W at the wheels the ICE could still give
             if (spare > 0) harv[i] = Math.min(clipMax, spare / etaD) * etaRegen;
-            else if (pErs === 0 && vi > vH) { const pc = Math.min(clipMax, pI); fDrive -= pc * etaD / vi; harv[i] = pc * etaRegen; }
+            else if (pErs === 0 && (vi > vH ? (vi < vhHi && (vhHi = vi), true) : (vi > vhLo && (vhLo = vi), false))) { const pc = Math.min(clipMax, pI); fDrive -= pc * etaD / vi; harv[i] = pc * etaRegen; }
           }
           // DC power the ERS-K actually supplies: whatever the ICE cannot, up to its limit
           ersUsed[i] = pErs > 0 ? Math.min(pErs, Math.max(0, fDrive * vi - pI * etaD) / (etaK * etaD)) : 0;
@@ -373,11 +386,15 @@ export function lapsimKernel() {
         // recharge, then vH) missed the energy limit by a few kJ when grip rose and fell back to the slower plan (Daytona, bug
         // 2026-11-15: more grip, slower lap). Now a few cut-offs below it are tried too and the fastest legal plan is kept.
         const cutB = fitCut(Infinity, soc + limit);
+        // runs already made for this cut-off: a vH inside a recorded band gives the identical lap, so its account is reused
+        const bands = new Map(), runAt = (cut, vh) => { let list = bands.get(cut); if (!list) bands.set(cut, list = []);
+          for (const b of list) if (vh >= b.lo && vh < b.hi) return b.a;
+          const a = account(forward(cut, vh)); list.push({lo: vhLo, hi: vhHi, a}); return a; };
         const vTopA = Math.max(...v); // cut-offs from the top speed down (the full-recharge cut-off is often above it: no cut-off at all)
         for (const cut of [cutB, ...[1, 0.98, 0.96, 0.94, 0.92, 0.9, 0.87, 0.84].map(f => Math.min(cutB, vTopA) * f)]) {
           for (const tol of [0, 1.5e3]) { let lo = 5, hi = vMaxCar + 1; // strict search (the earlier plan) and the tolerant one; the faster legal plan wins
-          for (let it = 0; it < 20; it++) { const mid = 0.5 * (lo + hi), a = account(forward(cut, mid)); if (a.eDeploy > budget(a.eRegen) + tol) hi = mid; else lo = mid; }
-          const b = account(forward(cut, lo));
+          for (let it = 0; it < 20; it++) { const mid = 0.5 * (lo + hi), a = runAt(cut, mid); if (a.eDeploy > budget(a.eRegen) + tol) hi = mid; else lo = mid; }
+          const b = runAt(cut, lo);
           // tolerance 1.5 kJ: the forward pass caps deploy by its own state of charge, and the lap account differs from it by
           // about 1 kJ (the old 1 kJ tolerance rejected legal plans)
           if (b.eDeploy <= budget(b.eRegen) + 1.5e3 && b.time < acc.time) { vCut = cut; vH = lo; acc = b; } } }
