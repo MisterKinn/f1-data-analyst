@@ -498,8 +498,8 @@ values below. Layer 4 (a simulator, not a real car): every channel stays labelle
 - ABS and front/rear line pressure (owner 2026-11-18, model; srs_brake_abs.py, same heavy zones and sessions; derived numbers only,
   results/brake_abs.json stays on the owner's PC). Share of zones with any BrakeABSactive / median share of zone time: GT3 0.96 /
   0.35 (9,708 zones), GT4 0.98 / 0.49, TCR 0.91 / 0.31, Club 0.95 / 0.33, Cup 0.82 / 0.43; GTP, LMP and Formula 0 (no ABS). So the
-  GT3 trace's learned hold ripple already includes ABS cycling, and the "lock-up relief" dip is a non-ABS habit (open: apply it only
-  to classes without ABS). Front share of line pressure (LF+RF)/(all four), time-weighted / at the zone's pressure peak: GT3 0.52 /
+  GT3 trace's learned hold ripple already includes ABS cycling, and the "lock-up relief" dip is a non-ABS habit: since 2026-11-18 only classes without ABS
+  draw it (`h.abs` in channels.js: GT3). Front share of line pressure (LF+RF)/(all four), time-weighted / at the zone's pressure peak: GT3 0.52 /
   0.52, GT4 0.54, TCR 0.52, LMP 0.56, Formula 0.54, GTP 0.64 / 0.50. These are hydraulic pressure shares (the bias setting), not the
   brake force share `bal` in channels.js, which also needs disc radius and piston area per axle. GTP: at the peak the split is the
   bias (0.50); over the whole zone the rear line carries only about 0.57 of that (0.364/0.636 against 0.499/0.501) because the rear
