@@ -13,6 +13,7 @@ import {lapsimLearned} from './learned-data.js';
 import {evolutionCoeffs, evolutionDelta, evolutionCurve} from './evolution.js';
 import {wetGap} from './wet-gap.js';
 import {lapsimWetGap} from './wet-gap-data.js';
+import {climatePreset} from './climate.js';
 
 const K = lapsimKernel();
 const SITE = 'https://kongboda-motorsports.vercel.app';
@@ -110,9 +111,11 @@ export function simulate(args = {}) {
   }
   // weather: the real qualifying session of the car's season (else the latest), overridden by inputs
   const own = sel.series ? selKey : String(sel.year);
-  const realYear = conds[own] ? own : conds['2026'] ? '2026' : Object.keys(conds)[0];
-  const real = realYear ? conds[realYear] : null;
-  const realSrc = !real ? null : real.source && real.source !== 'timing71' && realYear === own ? `real ${real.year} ${real.event} (${real.source}, session mean weather)` // extra circuit: the source is stored with the lap
+  // no real session of this car here (future round, projected car, series not raced here): typical weather of its series' slot (same as the page)
+  const clim = conds[own] ? null : climatePreset(id, sel);
+  const realYear = conds[own] ? own : clim ? null : conds['2026'] ? '2026' : Object.keys(conds)[0];
+  const real = clim ? clim.w : realYear ? conds[realYear] : null;
+  const realSrc = !real ? null : clim ? `typical ${clim.m}/${clim.h}:00 local${clim.hourAssumed ? ' (hour assumed)' : ''}${clim.via ? `, ${clim.via} slot` : ''}: ERA5 2016-2025 median via Open-Meteo (CC BY 4.0, contains modified Copernicus Climate Change Service information); air p10-p90 ${clim.air[0] ?? '–'}-${clim.air[2] ?? '–'} °C, rain probability ${clim.rain}%, ERA5 air error vs trackside RMS 2.25 °C` : real.source && real.source !== 'timing71' && realYear === own ? `real ${real.year} ${real.event} (${real.source}, session mean weather)` // extra circuit: the source is stored with the lap
     : real.source === 'timing71' && realYear === own ? `real ${real.year} ${sel.series.toUpperCase()} qualifying (Timing71 weather, session median)` : sel.series && realYear === own ? `real ${real.year} WEC qualifying/Hyperpole (Al Kamel weather, session mean)` : `real ${realYear} F1 qualifying (OpenF1 weather, session mean)`;
   const pick = (given, key, fallback) => Number.isFinite(given) ? [given, 'given'] : Number.isFinite(real?.[key]) ? [real[key], realSrc] : [fallback, 'default'];
   const [airTempC, airSrc] = pick(args.air_temp_c, 'airTempC', 25), [trackTempC, trackSrc] = pick(args.track_temp_c, 'trackTempC', 35);
