@@ -109,8 +109,10 @@ export async function rulesIngest(request,env,{verify=t=>verifyCollectorToken(t,
 export async function rulesState(request,env){
  if(!env.BUCKET)return json({error:'Storage unavailable'},503);
  const url=new URL(request.url),sid=url.searchParams.get('source');
+ try{
  if(sid){if(!SAFE.test(sid))return json({error:'Invalid source'},400);return json({source:sid,known:await readJson(env,`rules/known/${sid}.json`,{fresh:true})||{}});}
  return json({status:await readJson(env,'rules/status.json',{fresh:true})||{sources:{}},catalog:await readJson(env,'rules/catalog.json',{fresh:true})||{series:{}}});
+ }catch{console.error('rules-state storage-read-failed');return json({error:'Storage unavailable'},503);}
 }
 
 export async function rulesRoutes(request,env){
