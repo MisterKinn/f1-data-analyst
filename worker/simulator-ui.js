@@ -68,6 +68,10 @@ export function simulatorUiClient(CORNER_NAMES) {
   let best = Infinity;
   for (let i = 0; i < pts.length; i++) {
    const a = pts[i], c = pts[(i + 1) % pts.length];
+   // speed (2026-11-18): a segment whose bounding box is farther from the box than the best so far can neither touch the box nor
+   // lower the minimum, so it is skipped (same result; the margin covers rounding)
+   const gx = Math.max(b.x0 - Math.max(a[0], c[0]), 0, Math.min(a[0], c[0]) - b.x1), gy = Math.max(b.y0 - Math.max(a[1], c[1]), 0, Math.min(a[1], c[1]) - b.y1);
+   if (gx * gx + gy * gy > best * best * (1 + 1e-9) + 1e-9) continue;
    if (inside(a[0], a[1])) return 0;
    for (let k = 0; k < 4; k++) if (segSeg(a, c, corners[k], corners[(k + 1) % 4])) return 0;
    best = Math.min(best, ptRect(a[0], a[1]), ...corners.map(([x, y]) => ptSeg(x, y, a, c)));
