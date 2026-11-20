@@ -14,15 +14,11 @@ import {lapsimAllTracks as T} from '../../worker/lapsim/tracks.js';
 import {lapsimRace} from '../../worker/lapsim/race-data.js';
 import {lapsimPitLanes} from '../../worker/lapsim/pit-lane-data.js';
 import {carsFor} from '../../worker/lapsim/scenario.js';
-import {lapsimPitSpeed} from '../../worker/lapsim/pit-speed-data.js';
+import {pitSpeedKph} from '../../worker/lapsim/pit-speed-data.js';
 
 // Experiment only (not used by the site): the drive models A and B.
 const PIT_BRAKE_MS2 = 20, PIT_ACCEL_MS2 = 9; // engineering estimates: braking into the limit, accelerating out of the lane
 
-function pitSpeedKph(series, trackId) {
-  const ev = lapsimPitSpeed.tracks?.[trackId]?.[series];
-  return ev?.kph ?? lapsimPitSpeed.series[series]?.kph ?? null;
-}
 
 // v: racing-lap speed (m/s) every ds metres over a lap of len metres; pit: {entryS, exitS, lengthM}; limKph: pit speed limit
 function pitDrive(v, ds, len, pit, limKph) {
@@ -70,7 +66,7 @@ for (const [key, r] of Object.entries(lapsimRace.tracks)) {
   const pit = lapsimPitLanes.tracks[id]; if (!pit || !(r.pitLoss > 0) || !T[id]) continue;
   const car = carsFor(id)['2025']?.car; if (!car) continue;
   const t = K.trackFromData(T[id]), res = K.simulateLap(t, car, ENV);
-  const kph = pitSpeedKph('f1', id), drive = k => pitDrive(res.v, t.ds, T[id].length, pit, k).loss;
+  const kph = pitSpeedKph('f1', id, lapsimRace.season), drive = k => pitDrive(res.v, t.ds, T[id].length, pit, k).loss;
   rows.push({id, measured: r.pitLoss, kph, d: drive(kph), d80: drive(80), d60: drive(60), pitM: pit.lengthM, z: Object.fromEntries(ZONES.map(z => [z, pitDriveZone(res.v, t.ds, T[id].length, pit, kph, z).loss]))});
 }
 const median = a => { const s = [...a].sort((x, y) => x - y); return s[Math.floor(s.length / 2)]; };
