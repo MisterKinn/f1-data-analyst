@@ -87,7 +87,7 @@ const report = ['# Lap simulator calibration', '', `Generated ${new Date().toISO
 // raced yet with the factor learned from another season.
 // 2026+ qualifying laps: the per-event ERS recharge limit is part of the conditions
 const withEnergy = (w, id, year) => { const mj = year >= 2026 && process.env.LAPSIM_ENERGY_LIMITS !== 'off' ? rechargeLimitMJ(id, year) : null; const o = mj ? {...w, rechargeMJ: mj} : w; return year >= 2026 && E.LAPSIM_PU_RAMP === 'on' ? {...o, puRamp: rampOf(id)} : o; };
-// LAPSIM_PU_RAMP=on (owner 2026-11-16): C5.12 power-reduction shape (kernel rampCaps) with each event's PU document, else 100 kW/s
+// LAPSIM_PU_RAMP=on (owner 2026-11-16): C5.12 power-reduction shape (kernel forward(), C5.12 ramp) with each event's PU document, else 100 kW/s
 const PUR = E.LAPSIM_PU_RAMP === 'on';
 const rampOf = id => { const p = lapsimPuDocs?.events?.[id], d = tracks[id], k = p?.centrelineKm && d ? d.kappa.length * d.ds / (p.centrelineKm * 1000) : 1, sc = z => ({...z, from: z.from * k, to: z.to * k}); return {rateKWs: p?.rampKWs || 100, bigCut: (p?.bigCut || []).map(sc), speed: (p?.speed || []).map(sc)}; };
 const groups = [];

@@ -77,7 +77,7 @@ export function lapsimKernel() {
       grip: gripFromTrackTemp(w.trackTempC, opts.grip),
       iceFactor: icePowerFactor(rho, opts.ice),
       // per-event ERS recharge limit (2026+ rules), MJ per lap
-      rechargeMax: Number.isFinite(w.rechargeMJ) ? w.rechargeMJ * 1e6 : undefined, puRamp: w.puRamp || undefined, // C5.12 shape (rampCaps)
+      rechargeMax: Number.isFinite(w.rechargeMJ) ? w.rechargeMJ * 1e6 : undefined, puRamp: w.puRamp || undefined, // C5.12 shape (ramp inside forward())
       clipMax: Number.isFinite(w.clipKW) ? w.clipKW * 1e3 : undefined,
       inputs: { pressureHpa, tempC, humidityPct: w.humidityPct ?? 50, trackTempC: w.trackTempC ?? null },
     };
@@ -147,21 +147,6 @@ export function lapsimKernel() {
   // the FIA's listed sectors), held 1 s, then by at most 100 kW/s (50 kW/s where the power-limited distance exceeds 3500 m) while the
   // ERS-K gives more than 100 kW, above 210 km/h (or the sector's threshold). The lap is run once, every sudden cut is replaced by that
   // shape starting early enough to use the same energy, and the lap is run again with that ERS-K ceiling.
-  function rampCaps(track, res, pr) {
-    const n = track.kappa.length, ds = track.ds, v = res.v, T = res.time, dep = res.flow && res.flow.dep; if (!dep || !T) return null;
-    const P = dep.map((e, i) => { const j = (i + 1) % n, dt = ds / Math.max(0.5 * (v[i] + v[j]), 1); return e / dt; });
-    const inS = (list, s) => (list || []).find(z => z.to >= z.from ? s >= z.from && s <= z.to : s >= z.from || s <= z.to);
-    const R = (pr.rateKWs || 100) * 1e3, cap = new Float32Array(n).fill(Infinity), lap = res.lapTime; let any = false;
-    for (let j = 1; j < n; j++) { const P0 = P[j - 1], s = j * ds, big = inS(pr.bigCut, s), sp = inS(pr.speed, s), vMin = (sp ? sp.kph : 210) / 3.6;
-      const S = big ? (big.maxKW || 350) * 1e3 : 150e3; if (!(P0 > 100e3 && P[j] < P0 - 1e3 && v[j] >= vMin && res.limit[j] !== 3 && res.limit[j] !== 0)) continue;
-      if (P0 - S <= 100e3) continue; // the allowed step already reaches 100 kW: it may drop at once
-      // greedy energy from the start of the shape to the cut equals the energy of the shape: hold P0 − S for 1 s, then ramp to 100 kW
-      const P1 = P0 - S, D = 1 + (P1 - 100e3) / R, E = P1 * 1 + 0.5 * (P1 + 100e3) * (P1 - 100e3) / R, tj = T[j], ts = tj - E / P0;
-      let i0 = j; while (i0 > 0 && T[i0 - 1] > ts && P[i0 - 1] > 100e3) i0--;
-      for (let k = i0, g = 0; g < n && res.limit[k % n] !== 3; g++, k++) { const t = (T[k % n] + (k >= n ? lap : 0)) - T[i0], c = t < 1 ? P1 : P1 - R * (t - 1); if (t > D) break; cap[k % n] = Math.min(cap[k % n], Math.max(100e3, c)); }
-      any = true; }
-    return any ? cap : null;
-  }
   // Same inputs, same lap: a page view asks for the same lap several times (about half the calls).
   // The key holds every track field simulateLap reads, so a hit is the exact same result; callers get a copy (they scale times in place).
   // least recently used first out (owner 2026-11-18: one 2027 view needs 68 laps, so a 64-lap first-in-first-out cache forgot the car
@@ -179,12 +164,6 @@ export function lapsimKernel() {
     return r;
   }
   function simulateLapRaw(track, car, env = {}, opts = {}) {
-    if (env.puRamp && car.ers && car.ers.rule === 'f1-2026' && !opts.noRamp) {
-      const o = Object.assign({}, opts, {noRamp: true}); let r = simulateLap(track, car, env, o), cap = track.ersCap ? Float32Array.from(track.ersCap) : null, k = 0;
-      // the new ceiling moves the speeds, which can make new cuts: repeat until none is left (at most 5 rounds)
-      for (; k < 5; k++) { const c = rampCaps(track, r, env.puRamp); if (!c) break; cap = cap ? cap.map((x, i) => Math.min(x, c[i])) : c; r = simulateLap(Object.assign({}, track, {ersCap: cap}), car, env, o); }
-      r.puRamp = {rateKWs: env.puRamp.rateKWs || 100, rounds: k}; return r;
-    }
     const n = track.kappa.length, ds = track.ds;
     const rho = env.rho ?? RHO_REF;
     const grip = env.grip ?? 1;
@@ -196,6 +175,12 @@ export function lapsimKernel() {
     const etaD = car.etaDrive ?? 0.96, etaK = car.etaErs ?? 0.95;
     const pIce = car.pIce * iceFactor, pAt = powertrain(car, iceFactor); // pAt(v): engine power at road speed v (torque curve and gears; flat pIce without them)
     const ers = car.ers || {pMax: 0};
+    const pr = env.puRamp && ers.rule === 'f1-2026' ? env.puRamp : null, inZ = (list, x) => (list || []).find(z => z.to >= z.from ? x >= z.from && x <= z.to : x >= z.from || x <= z.to);
+    // HOLD_MIN 100 kW: a step that already reaches 100 kW may drop at once. C5.12.4 read strictly also holds steps below 100 kW for 1 s
+    // (HOLD_MIN 0); that variant waits for its own Gate G test (claude/release/c512-hold-wip-2026-11-21.patch)
+    const ramp = pr ? {R: (pr.rateKWs || 100) * 1e3} : null, HOLD_MIN = 100e3;
+    const rampStep = i => { const b = inZ(pr.bigCut, i * track.ds); return b ? (b.maxKW || 350) * 1e3 : 150e3; };
+    const rampVMin = i => { const z = inZ(pr.speed, i * track.ds); return (z ? z.kph : 210) / 3.6; };
     const vMaxCar = car.vMax ?? 110;
     const cRoll = car.cRoll ?? 0.012;
     const k = Math.max(1, car.frictionExp ?? 2);
@@ -305,12 +290,24 @@ export function lapsimKernel() {
       v[iMin] = Math.min(vLat[iMin], vBack[iMin]);
       let soc = socMax, got = 0;
       for (let pass = 0; pass < 2; pass++) {
-        const track = causal && pass === 1, start = track ? 0 : iMin;
+        const track = causal && pass === 1, start = track ? 0 : iMin; let pPrev = 0, rp = null;
         for (let c = 0; c < n; c++) {
           const i = (start + c) % n, j = (i + 1) % n;
           const vi = Math.max(v[i], 1);
           const va = vAir(vi, i), L = aeroFactor * clF[i] * va * va, N = normalAt(vi, i, L);
-          const pErs = below(vi, vCut) && (!track || soc > 0) ? Math.min(erskLimitW(ers.rule, vi, ers.pMax || 0, otOn === true || !!(otOn && otOn[i])), ersCap ? ersCap[i] : Infinity) : 0;
+          const lim = erskLimitW(ers.rule, vi, ers.pMax || 0, otOn === true || !!(otOn && otOn[i]));
+          let pErs = below(vi, vCut) && (!track || soc > 0) ? Math.min(lim, ersCap ? ersCap[i] : Infinity) : 0;
+          // C5.12 (2026 PU documents): a voluntary cut of ERS-K power while accelerating is one step of at most 150 kW (the event's
+          // value in a listed corner zone) held 1 s, then a ramp at rateKWs down to 100 kW; below 100 kW it may stop at once
+          // (C5.12.4/6/7). Done here, inside the deployment, so the cut-off speed is solved with the ramp's energy included (the
+          // earlier ceiling passes after the lap did not converge: Hungaroring and Monza kept a 300 kW cut, A6 run 44259689110).
+          if (ramp) {
+            // an empty battery is no excuse: the ramp starts when the charge left is what the ramp itself will use
+            // (at any speed: the cut it avoids may fall above the rule's speed)
+            if (!rp && pPrev > 100e3) { const P1 = pPrev - rampStep(i), lo = Math.min(P1, 100e3), eR = P1 + 0.5 * (P1 - lo) * (P1 + lo) / ramp.R;
+              if (P1 > HOLD_MIN && ((pErs < pPrev - 1e3 && vi >= rampVMin(i)) || (track && soc <= eR))) rp = {P1, t: 0}; }
+            if (rp) { const al = rp.t < 1 ? rp.P1 : rp.P1 - ramp.R * (rp.t - 1); if (rp.t >= 1 && al <= 100e3) rp = null; else if (!track || soc > 0) pErs = Math.min(lim, al); }
+          }
           const pI = pAt(vi), fPow = (pI * etaD + pErs * etaK * etaD) / vi;
           const nRear = t.rearStatic * (kv ? N - L : mg * cosG[i]) + t.rearAero * L;
           const muX = muXF[i] * pureCap(i, N) / N;
@@ -334,6 +331,7 @@ export function lapsimKernel() {
           const a = (fDrive - drag - roll) / (t.m * t.inertia) - G * sinG[i];
           const vn = Math.sqrt(Math.max(1, vi * vi + 2 * a * ds));
           v[j] = Math.min(vn, vLat[j], vMaxCar, vBack[j]);
+          if (ramp) { if (v[j] > vi + 1e-6) { pPrev = ersUsed[i]; if (rp) rp.t += ds / vi; } else { pPrev = 0; rp = null; } }
           if (track) {
             // same energy terms as account(): deploy while accelerating, throttle harvest, braking regen
             const vm = 0.5 * (vi + v[j]), dt = ds / Math.max(vm, 1);
