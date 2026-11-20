@@ -167,7 +167,10 @@ jobs:
       - name: Fit race pace (fuel, tyres, pit loss)
         continue-on-error: true
         run: node scripts/sim/race-pace.mjs
+      # only with rebuilt tracks: on the kept shapes a rebuild still moved Austin's line 680 -> 677 points (run 44259689110), which
+      # broke the per-car lines and walls drawn on it; lapsim-car-lines.yml reruns those after a track rebuild
       - name: Build racing lines (TUM track widths + TracingInsights pole laps)
+        if: (inputs.tracks || 'keep') == 'rebuild'
         continue-on-error: true
         run: node scripts/sim/racing-lines.mjs
       - name: Hypercar stints (Al Kamel race timing) and stint-energy fit
