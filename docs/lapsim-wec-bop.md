@@ -15,7 +15,16 @@ Built by `scripts/sim/bop-estimate.mjs` into `worker/lapsim/bop-estimate-data.js
 (every Hypercar lap of every Al Kamel FIA WEC Analysis CSV 2024-2026, collected with the logic of `scripts/sim/learn/fetch-wec-bop.mjs`).
 - Learned (within model and season, all 2024-2025 events): lap % = 0.188 x weight % - 0.080 x power %; checked with Wolfram LinearModelFit (0.188 +/- 0.031, -0.080 +/- 0.019, R^2 0.41). Top speed and stint energy respond only weakly.
 - Each 2026 event: MAP inversion of the model's pace and top speed vs the field, prior = previous event estimate mixed 50/50 with the 2025 BoP at the same track (Imola starts from Bahrain 2025), limits from the LMH/LMDh rules (1030 kg minimum, Art. 4.1; 520 kW maximum seen in every table). Genesis (new in 2026) starts from the class mean with a wider spread.
-- Hold-out on 2025 (each event hidden, 48 cases): mean error kg 6.4 (previous BoP unchanged: 7.2), kW 8.6 (9.4), power above 250 km/h 2.3 pt (2.3), MJ 5.4 (5.4). A separate LMH/LMDh fit was not better.
+- Hold-out on 2025 (each event hidden, 48 cases): mean error kg 6.5 (previous BoP unchanged: 7.2), kW 8.6 (9.4), power above 250 km/h 2.3 pt (2.3), MJ 5.4 (5.4). A separate LMH/LMDh fit was not better.
+- Carry-forward check (W6-F, Gate G, 2026-11-18): the site model against carrying the last published setting of the same spec, on the same 48 cases, one vote per event, nominal peak = max(base, base × (1 + gain/100)).
+
+  | Lever | Site model MAE ± SE | Carry MAE ± SE | Carry gain ± paired SE | Shown on the page |
+  |---|---|---|---|---|
+  | Weight, kg | 6.52 ± 0.75 | 6.15 ± 1.79 | 0.38 ± 1.28 | model (no winner) |
+  | Peak power, kW | 4.61 ± 0.56 | 4.00 ± 0.84 | 0.61 ± 0.41 | **carry** where a compatible spec exists |
+  | Stint energy, MJ | 5.40 ± 0.92 | 4.71 ± 0.94 | 0.69 ± 0.69 | model: the margin is 0.002 MJ and it does not repeat on the W6 22-case overlap (0.90 ± 1.14, reject), so a tie |
+
+  On the pinned W6-F inputs (BMW Le Mans +2.2%) the generator gives W6-F's site numbers exactly (6.500 kg, 4.670 kW, 5.396 MJ); with the D29 fix (+2.0%) the site model is 4.61 kW and the carry numbers equal W6-F's (3.999 kW, 4.708 MJ). Carry applies when the 2026 spec is the Bahrain 2025 spec and the car was not recertified for 2026 (Ferrari 499P and Peugeot 9X8 were; Genesis is new; Alpine, BMW, Cadillac and Toyota have Evo specs): 8 of 64 model-event rows, all Aston Martin Valkyrie at its Bahrain 2025 setting (520 kW, −1.7%). The page tags every cell (model / carried), and the 64 rows match W6-F's `table2026.csv` methods 64/64. Seven site values differ by ≤ 1 kg or 1 kW from W6-F because of the D29 fix. The chain to the next event stays on the site model.
 - IMSA 2026 GTP values are shown for reference only; no season has both tables, so the mapping cannot be learned.
 - Note: `lapsim_simulate` returns implausible `sensitivity_s_per_plus_10pct` for wec-lmh/wec-lmdh (e.g. +10 % power slower at Le Mans), so it was not used here.
 
