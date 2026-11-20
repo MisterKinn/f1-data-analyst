@@ -8,7 +8,19 @@ import {calendarEvents} from '../../worker/race-calendar-data.js';
 import {sessionSchedule} from '../../worker/session-schedule.js';
 import {lapsimAllTracks} from '../../worker/lapsim/tracks.js';
 
-const W = JSON.parse(readFileSync(process.env.W4 || '.cache/gpt-2026-11-18/w4-climatology.json', 'utf8'));
+const W = norm(JSON.parse(readFileSync(process.env.W4 || '.cache/gpt-2026-11-18/w4-climatology.json', 'utf8')));
+// the raw W4 hand-back (results.json: climatology / weather_by_local_slot per W4 track) → the slot/grid shape used below
+function norm(w) {
+  if (!Object.values(w.tracks).some(t => t.climatology)) return w;
+  const P = ['air_degC', 'rh_pct', 'p_hPa', 'wind_ms', 'wind_dir_deg', 'sw_W_m2'], tri = x => [x.p10, x.p50, x.p90], cols = ['m', 'h', ...P, 'rain'], tracks = {};
+  for (const [k, t] of Object.entries(w.tracks)) tracks[t.site_track_id || k] = {lat: t.lat, tz: t.timezone, grid_cols: cols,
+    slots: (t.climatology || []).map(c => ({series: c.series, m: c.month, h: c.local_hour, ...Object.fromEntries(P.map(q => [q, tri(c[q])])), rain: c.precip_prob_pct})),
+    grid: (t.weather_by_local_slot || []).map(c => [c.month, c.local_hour, ...P.map(q => c[q].p50), c.rain_prob_pct])};
+  const a = w.archive_vs_trackside.air_degC;
+  return {...w, tracks, archive_vs_trackside: {...w.archive_vs_trackside, air_degC: {...a, bias: Math.round(a.bias * 100) / 100, rms: Math.round(a.rms * 100) / 100}}};
+}
+// W10 (2026-11-21): the hour/month of the latest documented first-qualifying start, with its source; replaces the rule's slot where they differ
+const FIX = JSON.parse(readFileSync(new URL('./data/climate-slots-w10.json', import.meta.url), 'utf8')).slots;
 // site series key → W4 slot series and race-calendar series (first one with data at the track wins)
 export const SERIES = {f1: [['F1'], ['f1']], wec: [['WEC'], ['wec']], imsa: [['IMSA'], ['imsa']], fe: [['FE'], ['formula-e']], elms: [[], ['elms']], alms: [[], ['alms']],
   gtwc: [['GTWC Europe', 'GTWC America', 'GTWC Asia', 'GTWC Australia'], ['gtwc-europe', 'gtwc-america', 'gtwc-asia', 'gtwc-australia']], dtm: [['DTM'], []],
@@ -34,13 +46,15 @@ for (const id of Object.keys(lapsimAllTracks)) {
     if (slots.length) {
       const by = {}; for (const x of slots) (by[x.m] ||= []).push(x);
       // month: this series' event here in the race calendar; else a known usual month; else the month with most documented hours (earlier wins)
-      const ms = Object.keys(by).map(Number), m = month && by[month] ? month : USUAL[`${id}|${key}`] && by[USUAL[`${id}|${key}`]] ? USUAL[`${id}|${key}`]
+      const ms = Object.keys(by).map(Number); let m = month && by[month] ? month : USUAL[`${id}|${key}`] && by[USUAL[`${id}|${key}`]] ? USUAL[`${id}|${key}`]
         : ms.sort((a, b) => by[b].length - by[a].length || a - b)[0];
       // hour: the official qualifying start of that event (session schedule), else its race start, else the first hour of the documented
       // block (a block covering the whole day, a 24-hour race, gets 14:00, labelled assumed)
       const hs = by[m].map(x => x.h).sort((a, b) => a - b), q = cal && qualiStart(cal), want = q ? localHour(q, t.tz) : cal?.raceStart ? localHour(cal.raceStart, t.tz) : null;
-      const first = hs.length === 24 ? 14 : hs.find(h => !hs.includes((h + 23) % 24)) ?? hs[0], h = want != null && hs.includes(want) ? want : first, sl = by[m].find(x => x.h === h);
-      P[key] = {basis: 'slot', series: sl.series, m, h, hourAssumed: want == null && hs.length === 24, air: sl.air_degC.map(r1), rh: sl.rh_pct.map(Math.round), p: sl.p_hPa.map(r1), wind: sl.wind_ms.map(r1),
+      const first = hs.length === 24 ? 14 : hs.find(h => !hs.includes((h + 23) % 24)) ?? hs[0], h0 = want != null && hs.includes(want) ? want : first;
+      const fx = FIX[`${id}|${slots[0].series}`], fs = fx && slots.find(x => x.m === fx.m && x.h === fx.h);
+      const sl = fs || by[m].find(x => x.h === h0); if (fs) { m = fs.m; } const h = sl.h;
+      P[key] = {basis: 'slot', series: sl.series, m, h, hourAssumed: !fs && want == null && hs.length === 24, ...(fs ? {src: fx.source} : {}), air: sl.air_degC.map(r1), rh: sl.rh_pct.map(Math.round), p: sl.p_hPa.map(r1), wind: sl.wind_ms.map(r1),
         dir: Math.round(sl.wind_dir_deg[1]), sw: Math.round(sl.sw_W_m2[1]), rain: r1(sl.rain)};
       if (!month && !USUAL[`${id}|${key}`] && ms.length > 1) rows.push(`${id} ${key} → month ${m} of ${ms.join('/')}`);
     } else if (cal) {
