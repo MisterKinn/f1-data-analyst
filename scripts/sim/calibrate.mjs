@@ -23,12 +23,14 @@ import {lapsimWecBop} from '../../worker/lapsim/wec-bop-data.js';
 
 const CACHE = process.env.LAPSIM_CACHE || '.cache/lapsim';
 const ITERS = Number(process.env.LAPSIM_ITERS || 70), HOLDOUT_ITERS = Number(process.env.LAPSIM_HOLDOUT_ITERS || 25);
-// experiment knobs (defaults are the published settings)
-const WTIME = Number(process.env.LAPSIM_WTIME || 2);
+// experiment knobs. Defaults = the published F1 fit (CI run 42398451242, 2026-11-07): joint BCD fit over all four seasons
+// 2023–2026, 5 rounds x 200 steps, lap time x20, sectors x2, track drag, team pace, prior weight 8. G1 (2026-11-18): 3 rounds
+// instead of 5 raised the held-out error on all 34 poles 1.014 -> 1.205 % (Gate G reject)
+const WTIME = Number(process.env.LAPSIM_WTIME || 20);
 const E = process.env;
-const FITTER = E.LAPSIM_FITTER || 'nm';
-const BCD = {rounds: Number(E.LAPSIM_ROUNDS || 4), iters: Number(E.LAPSIM_BCD_ITERS || 150), wTime: WTIME, wSector: Number(E.LAPSIM_WSECTOR || 0),
-  trackDrag: E.LAPSIM_TRACK_DRAG === 'on', teams: E.LAPSIM_TEAMS === 'on', residual: E.LAPSIM_RESIDUAL === 'on', residualLambda: Number(E.LAPSIM_RESIDUAL_LAMBDA || 1), wPrior: Number(E.LAPSIM_WPRIOR || 2), log: m => console.log(m)};
+const FITTER = E.LAPSIM_FITTER || 'bcd';
+const BCD = {rounds: Number(E.LAPSIM_ROUNDS || 5), iters: Number(E.LAPSIM_BCD_ITERS || 200), wTime: WTIME, wSector: Number(E.LAPSIM_WSECTOR || 2),
+  trackDrag: E.LAPSIM_TRACK_DRAG !== 'off', teams: E.LAPSIM_TEAMS !== 'off', residual: E.LAPSIM_RESIDUAL === 'on', residualLambda: Number(E.LAPSIM_RESIDUAL_LAMBDA || 1), wPrior: Number(E.LAPSIM_WPRIOR || 8), log: m => console.log(m)};
 const MAX_POS = Number(E.LAPSIM_MAX_POS || 3);
 const HOLDOUT_YEARS = (E.LAPSIM_HOLDOUT_YEARS || '2025,2026').split(',').map(Number);
 const fitAll = gs => FITTER === 'bcd' ? fitJointBCD(gs, BCD) : fitJoint(gs, {iters: ITERS, wTime: WTIME});

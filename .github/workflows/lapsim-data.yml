@@ -145,16 +145,9 @@ jobs:
       - name: Calibrate cars (F1 and WEC)
         if: inputs.calibrate != 'false'
         env:
-          LAPSIM_FITTER: bcd
-          # 3 rounds x 100 coordinate steps, as in the experiments the production settings were chosen from (2026-11-17: 5 x 200 plus
-          # the 2 h track build ran past the 340-minute job limit twice; the experiment fits take about 1 h 45 min)
-          LAPSIM_ROUNDS: '3'
-          LAPSIM_BCD_ITERS: '100'
-          LAPSIM_WTIME: '20'
-          LAPSIM_WSECTOR: '2'
-          LAPSIM_TRACK_DRAG: 'on'
-          LAPSIM_TEAMS: 'on'
-          LAPSIM_WPRIOR: '8'
+          # fit settings: the script defaults = the published fit (5 rounds x 200 steps, all four seasons). G1 2026-11-18: 3 x 100
+          # raised the held-out error on all 34 poles (1.014 -> 1.205 %, Gate G reject). The calibration job is separate from the
+          # 2 h build since run 44259689110 (3 x 100 took 40 min, so 5 x 200 is about 2 h 15 min, under the 340-minute limit)
           # A6 (owner 2026-11-17): FIA zones + 2026 PU qualifying curve (experiment run 43775148422, variant zq: all 1.235 -> 1.144 %,
           # WEC 1.432 -> 1.210 %, F1 1.008 -> 1.075 %; the owner accepts the F1 cost of following the real 2026 PU rules)
           LAPSIM_FIA_ZONES: 'on'
@@ -195,6 +188,8 @@ jobs:
       - name: Test
         if: inputs.calibrate != 'false'
         run: node --test tests/lapsim*.test.mjs
+        env:
+          LAPSIM_TRACKS_REBUILT: ${{ (inputs.tracks || 'keep') == 'rebuild' && '1' || '0' }}
       # keep the fit output even when Test fails (2026-11-21: run 44858524098 fitted 3.5 h, failed one test and lost its output)
       - name: Upload calibration output (always)
         if: always() && inputs.calibrate != 'false'
