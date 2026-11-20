@@ -20,7 +20,7 @@ test('BoP page calculator uses the simulator sensitivity, labelled not measured,
   for (const lang of ['ko', 'en']) {
     const h = bopPage({}, lang);
     assert.match(h, lang === 'en' ? /Simulator sensitivity, not measured/ : /시뮬레이터 민감도, 실측 아님/);
-    assert.match(h, lang === 'en' ? /only on 2024 events/ : /2024 대회에서만/);
+    assert.match(h, lang === 'en' ? /On 2024 events alone the pass is narrow/ : /2024 대회만 보면/);
     assert.match(h, /x\.length>2\?x\[2\]\*m/);
     assert.doesNotMatch(h, /bop-dmj/);
   }
