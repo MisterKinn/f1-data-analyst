@@ -1,6 +1,6 @@
 {
  "source": "OpenF1 race control (copies of F1 race-control messages)",
- "generatedAt": "2026-11-15T22:09:04.645Z",
+ "generatedAt": "2026-11-20T21:47:11.804Z",
  "sessions": {
   "9684": {
    "year": 2025,
@@ -3958,6 +3958,74 @@
     "start": "low",
     "end": "low",
     "changes": 2
+   },
+   "ot": {
+    "start": "off",
+    "end": "off"
+   }
+  },
+  "11413": {
+   "year": 2026,
+   "track": "las-vegas",
+   "circuit": "Las Vegas",
+   "session": "Practice 1",
+   "start": "2026-11-20T00:30:00+00:00",
+   "end": "2026-11-20T01:30:00+00:00",
+   "events": [
+    {
+     "t": "2026-11-20T00:25:01+00:00",
+     "kind": "wet",
+     "state": "wet"
+    },
+    {
+     "t": "2026-11-20T00:25:06+00:00",
+     "kind": "grip",
+     "state": "low"
+    },
+    {
+     "t": "2026-11-20T00:25:09+00:00",
+     "kind": "ot",
+     "state": "off"
+    }
+   ],
+   "grip": {
+    "start": "low",
+    "end": "low",
+    "changes": 0
+   },
+   "ot": {
+    "start": "off",
+    "end": "off"
+   }
+  },
+  "11414": {
+   "year": 2026,
+   "track": "las-vegas",
+   "circuit": "Las Vegas",
+   "session": "Practice 2",
+   "start": "2026-11-20T04:00:00+00:00",
+   "end": "2026-11-20T05:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-11-20T03:55:00+00:00",
+     "kind": "wet",
+     "state": "wet"
+    },
+    {
+     "t": "2026-11-20T03:55:05+00:00",
+     "kind": "grip",
+     "state": "low"
+    },
+    {
+     "t": "2026-11-20T03:55:08+00:00",
+     "kind": "ot",
+     "state": "off"
+    }
+   ],
+   "grip": {
+    "start": "low",
+    "end": "low",
+    "changes": 0
    },
    "ot": {
     "start": "off",

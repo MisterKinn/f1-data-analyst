@@ -46,7 +46,17 @@ const FLAT = (() => { try { return JSON.parse(readFileSync(new URL('./data/f1-fl
 // bend radius that splits a run / ends an estimated zone (300 m learned; a track left with no zone retries at 200 m, owner 2026-11-16:
 // Ricardo Tormo's main straight curves at about 256 m). Tighter than that a track may have no zone at all, like Monaco 2026 (owner)
 let RB = 300;
-function bendAt(id, s) { const t = T[id], n = t.kappa.length, w = Math.max(1, Math.round(25 / t.ds)), i = Math.round(s / t.ds) % n; let m = 0; for (let j = -w; j <= w; j++) m += t.kappa[(i + j + n) % n] / 1e5; return Math.abs(m / (2 * w + 1)) > 1 / RB; }
+// a long sweep counts as a bend too (owner rule: no Straight Mode through the Daytona banking, about 300 m radius, now that rb is 250):
+// a stretch curving one way tighter than 500 m radius that turns more than 150 degrees in all (2026-11-21, the loosest sweep that still passes Gate G)
+const arcMemo = new Map();
+function arcOf(id) { if (arcMemo.has(id)) return arcMemo.get(id);
+  const t = T[id], n = t.kappa.length, w = Math.max(1, Math.round(25 / t.ds)), k = Array.from({length: n}, (_, i) => { let m = 0; for (let j = -w; j <= w; j++) m += t.kappa[(i + j + n) % n] / 1e5; return m / (2 * w + 1); });
+  const arc = new Float32Array(n), on = i => Math.abs(k[i]) > 1 / 500, i0 = k.findIndex((_, i) => !on(i));
+  if (i0 >= 0) for (let a = 0; a < n;) { const i = (i0 + a) % n; if (!on(i) || (a && on((i - 1 + n) % n) && Math.sign(k[i]) === Math.sign(k[(i - 1 + n) % n]))) { a++; continue; }
+    let b = 0, tot = 0; while (b < n && on((i + b) % n) && Math.sign(k[(i + b) % n]) === Math.sign(k[i])) { tot += Math.abs(k[(i + b) % n]) * t.ds; b++; }
+    for (let j = 0; j < b; j++) arc[(i + j) % n] = tot; a += Math.max(1, b); }
+  arcMemo.set(id, {k, arc}); return arcMemo.get(id); }
+function bendAt(id, s) { const t = T[id], n = t.kappa.length, i = Math.round(s / t.ds) % n, {k, arc} = arcOf(id); return Math.abs(k[i]) > 1 / RB || arc[i] > 150 * Math.PI / 180; }
 function zoneEnd(id, s0, est = false) {
   const t = T[id], ds = t.ds, n = t.kappa.length, L = n * ds, ahead = s => ((s - s0) % L + L) % L;
   const v = speed[id] ??= K.simulateLap(K.trackFromData(t), carsFor(id)['2025'].car, ENV).v;
@@ -59,7 +69,7 @@ function zoneEnd(id, s0, est = false) {
     if (lift) end = Math.round(((lift.s - 40) % L + L) % L); }
   if (est || !F) { const k = t.kappa.map(x => x / 1e5), w = Math.max(1, Math.round(25 / ds));
     for (let d = est ? ds : 120; d < ahead(end); d += ds) { const i = Math.round(((s0 + d) % L) / ds) % n; let m = 0; for (let j = -w; j <= w; j++) m += k[(i + j + n) % n];
-      if (Math.abs(m / (2 * w + 1)) > 1 / RB) { end = Math.round((s0 + Math.max(0, d - 20)) % L); break; } } } // a bend at the start leaves a zero-length zone, dropped by the 300 m minimum
+      if (est ? bendAt(id, (s0 + d) % L) : Math.abs(m / (2 * w + 1)) > 1 / RB) { end = Math.round((s0 + Math.max(0, d - 20)) % L); break; } } } // a bend at the start leaves a zero-length zone, dropped by the 300 m minimum
   return end;
 }
 // documented zones never overlap: a zone that runs into the next one ends 50 m before it starts (Spa 2026 zones 4 and 5)
@@ -85,8 +95,13 @@ for (const e of raw.events) {
       if (/n\/a/i.test(tail) && !lp) z.low = null; else if (lp) { const q = at(id, lp[0]); if (q != null) z.low = Math.round(q); }
       zones.push(z); }
     // overtake lines: "DETECTION - Entry T11", "ACTIVATION - T11" (a bare turn = the turn itself)
-    const ot = (word, kind, label) => { const m = new RegExp(word + String.raw`\s*-\s*(` + POS + String.raw`|T(\d+[A-Z]?)\b)`, 'i').exec(text); if (!m) return; const s = m[2] ? at(id, '0m after T' + m[2]) : at(id, m[1]); if (s != null) marks.push({s: Math.round(s), kind, label}); };
+    const ot = (word, kind, label) => { const m = new RegExp(word + String.raw`\s*-\s*(` + POS + String.raw`|T(\d+[A-Z]?)\b)`, 'i').exec(text); if (!m) return; const s = m[2] ? at(id, '0m after T' + m[2]) : at(id, m[1]); if (s != null) marks.push({s: Math.round(s), kind, label, txt: m[1]}); };
     ot('DETECTION', 'det', 'OT D'); ot('ACTIVATION', 'act', 'OT A');
+    // detection comes before activation: "DETECTION - Exit T16" and "ACTIVATION - 40m after T16" (Las Vegas 2026) both read T16 + 40 m;
+    // on a tie the exit is read as the turn itself
+    { const d = marks.find(m => m.kind === 'det'), a = marks.find(m => m.kind === 'act'), tn = /(?:Exit|Entry|Apex|Mid)(?:\s+of)?[- ]?T(\d+[A-Z]?)/i.exec(d?.txt || '');
+      if (d && a && d.s === a.s && tn) { const s = at(id, '0m after T' + tn[1]); if (s != null) d.s = Math.round(s); } }
+    for (const m of marks) delete m.txt;
     // activation not readable (columns run together, Hungaroring): the start of the first zone after the detection point
     const det = marks.find(m => m.kind === 'det'), L0 = T[id].length;
     if (det && !marks.some(m => m.kind === 'act') && zones.length) { const z = [...zones].sort((a, b) => ((a.from - det.s) % L0 + L0) % L0 - ((b.from - det.s) % L0 + L0) % L0)[0]; marks.push({s: z.from, kind: 'act', label: 'OT A'}); }
@@ -111,11 +126,13 @@ for (const e of raw.events) {
 // run starts, detection 340 m before it. 2026 Straight Mode: every run of 300 m or more, at most 4 (score 0.83); activation 45 m after
 // the run starts; overtake activation 140 m into the start-line straight and detection 120 m before it (all 17 documented circuits put
 // them on that straight). Zones end at braking or before the first bend under 300 m radius (zoneEnd).
-function runsOf(id) {
+const runsMemo = new Map(); // the same circuit and bend radius give the same runs (the leave-one-out check asks many times)
+function runsOf(id) { const key = id + ':' + RB; if (!runsMemo.has(key)) runsMemo.set(key, runsOf0(id)); return runsMemo.get(key); }
+function runsOf0(id) {
   const t = T[id], ds = t.ds, r = K.simulateLap(K.trackFromData(t), carsFor(id)['2025'].car, ENV), n = r.v.length, L = n * ds;
   speed[id] ??= r.v;
   // a run is full throttle on a straight: bends tighter than 300 m radius split it (no zone through the Watkins Glen esses)
-  const kk = t.kappa.map(x => x / 1e5), w = Math.max(1, Math.round(25 / ds)), bend = i => { let m = 0; for (let j = -w; j <= w; j++) m += kk[(i + j + n) % n]; return Math.abs(m / (2 * w + 1)) > 1 / RB; };
+  const kk = t.kappa.map(x => x / 1e5), w = Math.max(1, Math.round(25 / ds)), bend = i => bendAt(id, i * ds);
   const fast = Array.from({length: n}, (_, i) => (r.limit[i] === 1 || r.limit[i] === 2) && !bend(i)), out = [], s0 = fast.findIndex(f => !f);
   if (s0 < 0) return [];
   for (let k = 0; k < n;) { const i = (s0 + k) % n; if (!fast[i]) { k++; continue; } let len = 0; while (len < n && fast[(s0 + k + len) % n]) len++; out.push({from: i * ds, len: len * ds}); k += len; }
@@ -123,38 +140,65 @@ function runsOf(id) {
   return m.map(q => ({...q, L}));
 }
 const EST = 'estimated: where a race director would put them (rule learned from the FIA zones of the F1 circuits)';
-for (const id of Object.keys(T)) {
-  if (id.startsWith('fe-') || (out[id]?.['2025'] && out[id]?.['2026'])) continue; // a documented slot is never replaced
-  const need = ['2025', '2026'].filter(y => !out[id]?.[y]), got = {};
-  for (const rb of [300, 200]) { RB = rb; let R; try { R = runsOf(id); } catch { break; }
+// the numbers of the rule. 2026 relearned 2026-11-21 leave-one-track-out on the 22 documented 2026 circuits with the corrected starts
+// (scripts/sim/f1-zones-loto.mjs, Gate G passed on zone error, overtake mark error and lap effect): rb = bend radius (m) that splits a
+// run and ends an estimated zone (300 -> 250), smOff = Straight Mode activation after the run start, otZone = overtake activation after
+// the start of the zone over the line (was 140 m into the start-line straight) and otDet = detection before it. The 2025 DRS rule keeps
+// its 2026-11-16 numbers (no held-out check for it yet).
+export const EST_P = {rb: 250, smOff: 45, otZone: -160, otDet: 80}, DRS_P = {rb: 300};
+export function estimate(id, need, E = EST_P) {
+  const got = {};
+  for (const rb of [E.rb, Math.min(E.rb, 200)]) { RB = rb; let R; try { R = runsOf(id); } catch { break; }
     if (!R.length) continue;
     const L = R[0].L, inRun = (s, q) => ((s - q.from) % L + L) % L < q.len, byLen = [...R].sort((a, b) => b.len - a.len);
     // the start-line straight; where the line sits in a bend or under braking (Inje, Las Vegas, Daytona …): the run nearest the line
     const gap = q => Math.min(((q.from - 0) % L + L) % L, ((0 - (q.from + q.len)) % L + L) % L), st = R.find(q => inRun(0, q) || inRun(L - 1, q)) || [...R].sort((a, b) => gap(a) - gap(b))[0];
-    const stIn = R.some(q => inRun(0, q) || inRun(L - 1, q));
     // an estimated zone starts clear of the bend before it
     const zoneOf = (q, off, n) => { let from = Math.round((q.from + Math.min(off, Math.max(0, q.len - 300))) % L); for (let k = 0; k < 40 && bendAt(id, from); k++) from = Math.round((from + T[id].ds) % L); return {n, from, to: Math.round(zoneEnd(id, from, true))}; };
-    const order = P => [...new Set(P)].sort((a, b) => a.from - b.from);
+    const order = P => [...new Set(P)].sort((a, b) => a.from - b.from), mark = (rb2) => (rb2 !== 300 ? {bendR: rb2} : {});
     if (need.includes('2025') && !got['2025']?.zones.length) { let P = byLen.filter((q, i) => i === 0 || q.len >= 500); if (st && !P.includes(st)) P = [st, ...P]; P = order(P.slice(0, 3));
       const zones = P.map(q => zoneOf(q, 145, 0)).filter(z => ((z.to - z.from) % L + L) % L >= 300).map((z, i) => ({...z, n: i + 1}));
-      got['2025'] = {kind: 'drs', year: 2025, est: true, ...(RB !== 300 ? {bendR: RB} : {}), zones, marks: zones.map(z => ({s: Math.round(((z.from - 340) % L + L) % L), kind: 'det', label: 'D' + z.n})), doc: EST, url: ''}; }
-    if (need.includes('2026') && !got['2026']?.zones.length) { const P = order(byLen.filter((q, i) => i === 0 || q.len >= 300).slice(0, 4)), zones = P.map(q => zoneOf(q, 45, 0)).filter(z => ((z.to - z.from) % L + L) % L >= 300).map((z, i) => ({...z, n: i + 1})), marks = [];
-      // overtake: activation 140 m into the start-line straight (or 45 m into the run nearest the line), detection 120 m before it
-      if (st) { const a = Math.round((stIn ? st.from + 140 : st.from + 45) % L); marks.push({s: Math.round(((a - 120) % L + L) % L), kind: 'det', label: 'OT D'}, {s: a, kind: 'act', label: 'OT A'}); }
-      got['2026'] = {kind: 'sm', year: 2026, est: true, ...(RB !== 300 ? {bendR: RB} : {}), zones, marks, doc: EST, url: ''}; }
+      got['2025'] = {kind: 'drs', year: 2025, est: true, ...mark(RB), zones, marks: zones.map(z => ({s: Math.round(((z.from - 340) % L + L) % L), kind: 'det', label: 'D' + z.n})), doc: EST, url: ''}; }
+    if (need.includes('2026') && !got['2026']?.zones.length) { const P = order(byLen.filter((q, i) => i === 0 || q.len >= 300).slice(0, 4)), zones = P.map(q => zoneOf(q, E.smOff, 0)).filter(z => ((z.to - z.from) % L + L) % L >= 300).map((z, i) => ({...z, n: i + 1})), marks = [];
+      // overtake: activation otZone after the start of the zone over the line (else the zone nearest it), detection otDet before it
+      const zl = zones.find(z => ((0 - z.from) % L + L) % L <= ((z.to - z.from) % L + L) % L) || [...zones].sort((a, b) => gap({from: a.from, len: ((a.to - a.from) % L + L) % L}) - gap({from: b.from, len: ((b.to - b.from) % L + L) % L}))[0];
+      // no zone at all (Sonoma): the start-line run stands in for it
+      const z0 = zl || (st && {from: Math.round((st.from + E.smOff) % L)});
+      if (z0) { const a = Math.round(((z0.from + E.otZone) % L + L) % L); marks.push({s: Math.round(((a - E.otDet) % L + L) % L), kind: 'det', label: 'OT D'}, {s: a, kind: 'act', label: 'OT A'}); }
+      got['2026'] = {kind: 'sm', year: 2026, est: true, ...mark(RB), zones, marks, doc: EST, url: ''}; }
     // two runs split by a lift with no bend end at the same braking point (Las Vegas Strip, owner 2026-11-16): keep the longer, no overlap
     for (const y of need) { const g = got[y]; if (!g) continue; const len = z => ((z.to - z.from) % L + L) % L;
       g.zones = g.zones.filter(z => !g.zones.some(o => o !== z && o.to === z.to && len(o) > len(z))); noOverlap(id, g.zones); g.zones = g.zones.filter(z => len(z) >= 300).map((z, i) => ({...z, n: i + 1}));
       if (y === '2025') g.marks = g.zones.map(z => ({s: Math.round(((z.from - 340) % L + L) % L), kind: 'det', label: 'D' + z.n})); }
     if (need.every(y => got[y]?.zones.length)) break; }
   RB = 300;
+  return got;
+}
+for (const id of Object.keys(T)) {
+  if (id.startsWith('fe-') || (out[id]?.['2025'] && out[id]?.['2026'])) continue; // a documented slot is never replaced
+  const need = ['2025', '2026'].filter(y => !out[id]?.[y]), got = {...estimate(id, need.filter(y => y === '2025'), DRS_P), ...estimate(id, need.filter(y => y === '2026'))};
   for (const y of need) if (got[y]) (out[id] ||= {})[y] = got[y];
 }
+// Corrected official starts (G4, owner 2026-11-21): starts measured on the FIA maps (W7-F drop-in) replace the text-read starts; the
+// site's zone ends of main 378a10a are kept (Sepang 2026 zones 2 and 3 had none: the W7-F ends). Sepang and Madring 2026 have no
+// official turn numbers on the simulator track, so their FIA text cannot be placed: the drop-in makes them documented slots.
+try { const D = JSON.parse(readFileSync(new URL('./data/learn/f1-zones-raw-starts.json', import.meta.url), 'utf8')).zones;
+  const slots = {}; for (const d of D) (slots[d.track + '|' + d.year] ||= []).push(d);
+  for (const [k, ds] of Object.entries(slots)) { const [id, yr] = k.split('|'), y = Number(yr) >= 2026 ? yr : '2025', cur = out[id]?.[y]; if (!T[id] || (cur && cur.year !== Number(yr))) continue;
+    const was = cur?.est;
+    const old = cur?.zones || [], zones = ds.map(d => { const o = old.find(z => z.n === d.site); const z = {n: d.n, from: d.from, to: was ? d.to : o?.to ?? d.to};
+      const low = d.low !== undefined ? d.low : o?.low; if (low !== undefined) z.low = low; return z; }).sort((a, b) => a.n - b.n);
+    if (!was) { cur.zones = zones; continue; }
+    // the overtake marks of these two are not in the drop-in: the estimated ones stay, flagged
+    const e = raw.events.find(e => e.track === id && e.year === Number(yr)), doc = e?.docs?.[0];
+    out[id][y] = {kind: cur.kind, year: Number(yr), zones, marks: cur.marks, ...(cur.marks.length ? {marksEst: true} : {}), doc: doc?.title || '', url: doc?.url || ''}; } } catch (e) { if (e.code !== 'ENOENT') throw e; }
 // real qualifying of each slot (owner 2026-11-16: Brazil 2026 qualifying ran in Low Grip Conditions with Overtake disabled; Las Vegas 2025
 // qualifying without DRS): the state at the green flag, from race control (scripts/sim/learn/fetch-aero-state.mjs)
 try { const A = JSON.parse(readFileSync(new URL('./data/learn/f1-aero-state.json', import.meta.url), 'utf8'));
   for (const e of Object.values(A.sessions)) { if (e.session !== 'Qualifying' || !out[e.track]) continue; const sl = e.year >= 2026 ? String(e.year) : '2025', z = out[e.track][sl]; if (!z || z.est || z.year !== e.year) continue;
     z.real = {grip: e.grip.start, ...(e.ot ? {ot: e.ot.start} : {}), ...(e.drs ? {drs: (e.drs || {}).start || 'on'} : {})}; } } catch (e) { /* optional */ }
+export const documented = out;
+if (!process.env.F1_ZONES_NO_WRITE) {
 const missing = [...new Set(raw.events.map(e => (e.year >= 2026 ? '2026' : '2025') + ' ' + e.track))].filter(k => { const [y, id] = k.split(' '); return !out[id]?.[y] || out[id][y].est; }); // no text table in any FIA map or note read
 writeFileSync(new URL('../../worker/lapsim/f1-zones-data.js', import.meta.url), `// Generated by scripts/sim/f1-zones.mjs from FIA F1 event documents (circuit maps, Race Director notes). Do not edit by hand.
 // Owner rules 2026-11-15 (AGENTS.md rule 17). Lap distances in metres on the simulator track; zone ends are the next turn's braking point.
@@ -162,3 +206,4 @@ export const lapsimF1Zones = ${JSON.stringify({generatedAt: new Date().toISOStri
 `);
 console.log(Object.keys(out).length, 'tracks'); for (const [id, o] of Object.entries(out)) console.log(id, Object.entries(o).map(([y, z]) => `${y}(${z.year}) ${z.kind} ${z.zones.map(q => q.n + ':' + q.from + '-' + q.to).join(' ')} ${z.marks.map(m => m.label + '@' + m.s).join(' ')}`).join(' | '));
 console.log('missing', missing.join(', '));
+}
