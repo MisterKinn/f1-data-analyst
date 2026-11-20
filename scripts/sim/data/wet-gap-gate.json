@@ -1,0 +1,74 @@
+{
+ "generatedAt": "2026-11-18T10:58:18.694Z",
+ "source": "TracingInsights lap times 2018-2026 (W2-F lap selection), W2-F groups",
+ "laps": 13697,
+ "coveredLaps": 11050,
+ "groups": 928,
+ "groupMaxDiffPp": 0.000134,
+ "fragmentsDropped": 1,
+ "constants": {
+  "INTERMEDIATE": 17.7404,
+  "WET": 28.1898
+ },
+ "through2025": {
+  "INTERMEDIATE": 17.8435,
+  "WET": 27.8662
+ },
+ "gates": {
+  "aVsSite": {
+   "laps": 11050,
+   "events": 49,
+   "candMae": 6.7182,
+   "candSe": 0.5768,
+   "baseMae": 20.2985,
+   "baseSe": 0.8203,
+   "gain": 13.5803,
+   "gainSe": 0.6553,
+   "pass": true
+  },
+  "aVsSite2026": {
+   "laps": 760,
+   "events": 4,
+   "candMae": 3.7859,
+   "candSe": 1.2344,
+   "baseMae": 13.9099,
+   "baseSe": 2.3646,
+   "gain": 10.1241,
+   "gainSe": 3.3083,
+   "pass": true
+  },
+  "evolutionOnTopVsA": {
+   "laps": 11050,
+   "events": 49,
+   "candMae": 7.12,
+   "candSe": 0.5507,
+   "baseMae": 6.7182,
+   "baseSe": 0.5768,
+   "gain": -0.4018,
+   "gainSe": 0.1432,
+   "pass": false
+  },
+  "evolutionOnTopRefitVsA": {
+   "laps": 11050,
+   "events": 49,
+   "candMae": 7.1038,
+   "candSe": 0.555,
+   "baseMae": 6.7182,
+   "baseSe": 0.5768,
+   "gain": -0.3856,
+   "gainSe": 0.1446,
+   "pass": false
+  },
+  "evolutionOnTopRefitVsA2026": {
+   "laps": 760,
+   "events": 4,
+   "candMae": 5.6125,
+   "candSe": 1.5707,
+   "baseMae": 3.7859,
+   "baseSe": 1.2344,
+   "gain": -1.8267,
+   "gainSe": 0.8878,
+   "pass": false
+  }
+ }
+}
