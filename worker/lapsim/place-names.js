@@ -9,6 +9,13 @@ export const lapsimStraights = {
   'le-mans': [6, 7, 8].map(k => ({between: [k, k + 1], ko: '뮬산 스트레이트', en: 'Mulsanne Straight'})), // owner 2026-11-18: on each of the three parts (SM 1-3)
   sebring: [{between: [16, 17], ko: '울만 스트레이트', en: 'Ulmann Straight'}],
   singapore: [{between: [12, 13], ko: '앤더슨 브리지', en: 'Anderson Bridge'}, {between: [13, 14], ko: '에스플러네이드 브리지', en: 'Esplanade Bridge'}],
+  // landmarks along the lap (owner 2026-11-21, broadcast map): f = share of the way from the first corner to the second (default half)
+  'las-vegas': [{between: [5, 6], ko: '스피어', en: 'Sphere'}, {between: [6, 7], ko: '베네치안', en: 'The Venetian'},
+    {between: [8, 9], f: 0.3, ko: '팔라조', en: 'The Palazzo'}, {between: [9, 10], ko: '트레저 아일랜드', en: 'Treasure Island'},
+    {between: [10, 11], ko: '미라지', en: 'The Mirage'}, {between: [12, 13], f: 0.3, ko: '시저스 팰리스', en: "Caesars Palace"},
+    {between: [12, 13], f: 0.55, ko: '하이 롤러', en: 'High Roller'}, {between: [12, 13], f: 0.8, ko: '플라밍고', en: 'Flamingo'},
+    {between: [13, 14], f: 0.3, ko: '벨라지오', en: 'Bellagio'}, {between: [13, 14], f: 0.6, ko: '패리스', en: 'Paris'},
+    {between: [13, 14], f: 0.9, ko: '플래닛 할리우드', en: 'Planet Hollywood'}],
 };
 
 export const lapsimNamesKo = {
