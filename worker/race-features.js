@@ -265,7 +265,8 @@ export function raceFeaturesClient(dictionary,translateText,weekBounds,sessionSt
  function fitSessionLabels(){for(const abbr of root.querySelectorAll('abbr[data-short]')){abbr.textContent=abbr.dataset.full;const box=abbr.parentElement;if(!box||!box.clientWidth)continue;const line=parseFloat(getComputedStyle(box).lineHeight)||16;if(box.scrollWidth>box.clientWidth+1||abbr.getBoundingClientRect().height>line*1.5)abbr.textContent=abbr.dataset.short;}}
  // Weekly view state survives re-renders (refresh, week change): 'series' cards or 'time' list.
  let weekView='series',hiddenSeries=new Set();
- function loadCalendar(){return publicJsonRequest('/api/race-calendar',{cache:'no-store',timeoutMs:15000}).then(({response:r,data})=>{if(!r.ok)throw Error();return data;}).then(data=>{
+ /* every calendar box on the page (home: week + f1) shares one first request; each gets its own copy */
+ function loadCalendar(){return (window.kbCalendarRequest??=publicJsonRequest('/api/race-calendar',{cache:'no-store',timeoutMs:15000}).catch(e=>{window.kbCalendarRequest=null;throw e;})).then(({response:r,data})=>{if(!r.ok){window.kbCalendarRequest=null;throw Error();}return structuredClone(data);}).then(data=>{
   function render(){
   if(data.unavailable){cards.replaceChildren();status.textContent=t('24시간 이내 확인된 일정이 없습니다. 공식 일정 갱신을 다시 확인하고 있습니다.','No schedule verified within 24 hours. Checking the official sources again.');return ()=>{};}
   carouselObserver?.disconnect();cards.onscroll=null;cards.onkeydown=null;cards.replaceChildren();{const carousel=root.querySelector('.week-carousel');if(carousel){carousel.before(cards);carousel.remove();}}root.querySelector('.week-scroll-controls')?.remove();root.querySelector('.week-view-bar')?.remove();root.querySelector('.week-timeline')?.remove();cards.hidden=false;
