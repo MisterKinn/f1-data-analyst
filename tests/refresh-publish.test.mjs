@@ -24,10 +24,10 @@ test('session dispatcher starts the F1 refresh about 1, 3 and 6 h after qualifyi
   const events = [{id: 'f1-x', series: 'f1'}, {id: 'wrc-x', series: 'wrc', raceStart: '2026-01-01T10:00:00Z'}];
   const schedule = {'f1-x': [{nameEn: 'FP1', start: '2026-01-01T10:00:00Z'}, {nameEn: 'Qualifying', start: '2026-01-01T10:00:00Z'}]};
   const at = min => plan(new Date(Date.parse('2026-01-01T11:00:00Z') + min * 60e3), events, schedule);
-  assert.deepEqual(at(60).run, ['f1-zones-refresh.yml', 'f2f3-laps.yml']);  // qualifying ended 1 h ago
+  assert.deepEqual(at(60).run, ['energy-docs-refresh.yml', 'f1-zones-refresh.yml', 'f2f3-laps.yml']);  // qualifying ended 1 h ago
   assert.deepEqual(at(30).run, []);
-  assert.deepEqual(at(180).run, ['f1-zones-refresh.yml', 'f2f3-laps.yml']);
-  assert.deepEqual(at(360).run, ['f1-zones-refresh.yml', 'f2f3-laps.yml']);
+  assert.deepEqual(at(180).run, ['energy-docs-refresh.yml', 'f1-zones-refresh.yml', 'f2f3-laps.yml']);
+  assert.deepEqual(at(360).run, ['energy-docs-refresh.yml', 'f1-zones-refresh.yml', 'f2f3-laps.yml']);
   assert.deepEqual(at(400).run, []);
   assert.deepEqual(plan(new Date('2026-01-01T17:00:00Z'), events, schedule).unwired, ['wrc']);  // ended 7 h after its start, 1 h ago; no source (not for the simulator)
 });
