@@ -1,12 +1,13 @@
 name: Lap simulator ERS clipping from practice
 
-# Owner 2026-11-21: the 2026 clipping map measured in each weekend's dry practice (W17 practice plan) updates itself. Every two
-# hours: read TracingInsights/2026, build the map of events with practice in the last 5 days (or none yet), frozen at qualifying,
+# Owner 2026-11-21: the 2026 clipping map measured in each weekend's dry practice (W17 practice plan) updates itself after every
+# session. Every 30 minutes: read TracingInsights/2026 (a session it has not published yet comes from the F1 timing archive via
+# FastF1), build the map of events with practice in the last 5 days (or none yet), frozen at qualifying,
 # test, and commit worker/lapsim/energy-clip-data.js to main (the site deploys from main). If main refuses a bot push, a
 # lapsim-learn/energy-clip-* branch is pushed instead and its compare link is in the run summary.
 on:
   schedule:
-    - cron: '23 */2 * * *'
+    - cron: '7,37 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -18,7 +19,7 @@ concurrency:
 
 jobs:
   clip:
-    if: github.event_name != 'schedule' || github.repository == 'MisterKinn/f1-data-analyst'
+    if: github.repository == 'MisterKinn/f1-data-analyst'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
@@ -27,7 +28,7 @@ jobs:
         with: {node-version: '22'}
       - uses: actions/setup-python@v5
         with: {python-version: '3.12'}
-      - run: npm ci --ignore-scripts && pip install numpy==2.3.5 pandas==2.2.3 scipy==1.17.0
+      - run: npm ci --ignore-scripts && pip install numpy==2.3.5 pandas==2.2.3 scipy==1.17.0 fastf1==3.9.2 && mkdir -p .cache/fastf1
       - name: TracingInsights 2026 (session files only; practice of the events to build is added by the script)
         run: |
           git clone -q --depth 1 --filter=blob:none --sparse https://github.com/TracingInsights/2026 .cache/ti2026
