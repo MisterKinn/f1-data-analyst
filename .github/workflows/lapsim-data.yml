@@ -113,6 +113,10 @@ jobs:
           LAPSIM_BRAKE_ENV_HYPER: '8.63,0.003234'
         run: node scripts/sim/calibrate.mjs
       # TracingInsights race laps 2018 on; reference = mean of the best 8 qualifying laps (script defaults)
+      # Hypercar per maker (LapSim × BoPSim × SetupSim, owner 2026-11-21): the residuals are learned on the class cars just fitted
+      - name: Hypercar per maker
+        if: inputs.calibrate != 'false'
+        run: node scripts/sim/learn/hypercar-makers.mjs --write
       - name: Fit race pace (fuel, tyres, pit loss)
         continue-on-error: true
         run: node scripts/sim/race-pace.mjs

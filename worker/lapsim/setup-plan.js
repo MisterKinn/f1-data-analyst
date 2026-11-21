@@ -13,19 +13,17 @@ import {calendarEvents} from '../race-calendar-data.js';
 import {PIRELLI_2026, PIRELLI_RANGE, BREMBO, F1_PRESS} from './setup-evidence.js';
 import {optionTrack, puRampOf, slotOf} from './zones.js';
 import {lapsimF1Zones} from './f1-zones-data.js';
-import {bopEstimate2026} from './bop-estimate-data.js';
 import {bopLmgt3} from './bop-lmgt3-data.js';
 import {lapsimLearned} from './learned-data.js';
 import {lapsimSurfaceLearned} from './surface-learned-data.js';
+import {HYPERCARS, hypercarBop} from './hypercar-makers.js';
 
 const K = lapsimKernel();
 // 2026 BoP estimate (worker/lapsim/bop-estimate-data.js) per model at the WEC event on this track: weight and power relative to that
 // event's class average scale the class car (owner 2026-11-16: set-ups follow the learned BoP and each car's spec, Evo kits included)
-const BOP_NAME = {toyota: 'Toyota GR010 Hybrid', ferrari: 'Ferrari 499P', peugeot: 'Peugeot 9X8', aston: 'Aston Martin Valkyrie', cadillac: 'Cadillac V-Series.R', bmw: 'BMW M Hybrid V8', alpine: 'Alpine A424', genesis: 'Genesis GMR-001', porsche: 'Porsche 963', lamborghini: 'Lamborghini SC63', acura: 'Acura ARX-06', isotta: 'Isotta Fraschini Tipo6-C', glickenhaus: 'Glickenhaus SCG 007', vanwall: 'Vanwall Vandervell 680', 'alpine-a480': 'Alpine A480'};
-function bopFor(trackId, key) { const name = BOP_NAME[key], D = bopEstimate2026; if (!name || !D) return null;
-  const e = [...(D.events || [])].reverse().find(x => x.track === trackId), f = e && (D.fun || []).find(x => x.event === e.event), car = e && (e.cars[name] || f?.cars?.[name]); if (!car) return null;
-  const all = Object.values(e.cars), kg0 = all.reduce((a, x) => a + x.kg, 0) / all.length, kW0 = all.reduce((a, x) => a + x.kW, 0) / all.length;
-  return {event: e.event, kg: car.kg, kW: car.kW, rKg: car.kg / kg0, rKW: car.kW / kW0, spec: car.spec || null, fun: !e.cars[name]}; }
+// shared with LapSim and BoPSim (hypercar-makers.js): 2026 estimate, else virtual BoP, else the latest published table
+function bopFor(trackId, key) { const m = HYPERCARS.find(x => x.key === key), b = m && hypercarBop(trackId, m); if (!b) return null;
+  return {event: b.event || (b.source === 'virtual' ? 'virtual' : ''), kg: b.kg, kW: b.kW, rKg: b.rKg, rKW: b.rKW, spec: b.spec, fun: !!b.fun || b.source === 'virtual', source: b.source}; }
 
 // GT3: the WEC LMGT3 2026 BoP estimate (published 2024-2025 tables where they exist) of the make at the event on this track
 const MAKE = [['aston', 'AstonMartin'], ['bmw', 'BMW'], ['corvette', 'Corvette'], ['ferrari', 'Ferrari'], ['mustang', 'Ford'], ['lamborghini', 'Lamborghini'], ['lexus', 'Lexus'], ['mclaren', 'McLaren'], ['mercedes', 'Mercedes'], ['porsche', 'Porsche']];
@@ -73,23 +71,7 @@ export const F1_TEAMS = [
   ['mclaren', 'McLaren', 'Mercedes'], ['mercedes', 'Mercedes', 'Mercedes'], ['williams', 'Williams', 'Mercedes'], ['alpine', 'Alpine', 'Mercedes'],
   ['ferrari', 'Ferrari', 'Ferrari'], ['haas', 'Haas', 'Ferrari'], ['cadillac', 'Cadillac', 'Ferrari'], ['red-bull', 'Red Bull', 'Red Bull Ford'],
   ['racing-bulls', 'Racing Bulls', 'Red Bull Ford'], ['aston-martin', 'Aston Martin', 'Honda'], ['audi', 'Audi', 'Audi']];
-export const HYPERCARS = [
-  {key: 'toyota', name: 'Toyota GR010 HYBRID', cls: 'lmh', chassis: 'Toyota', hybrid: 'front', series: 'WEC'},
-  {key: 'ferrari', name: 'Ferrari 499P', cls: 'lmh', chassis: 'Ferrari', hybrid: 'front', series: 'WEC'},
-  {key: 'peugeot', name: 'Peugeot 9X8', cls: 'lmh', chassis: 'Peugeot', hybrid: 'front', series: 'WEC'},
-  {key: 'aston', name: 'Aston Martin Valkyrie', cls: 'lmh', chassis: 'Aston Martin / Multimatic', hybrid: null, series: 'WEC · IMSA'},
-  {key: 'cadillac', name: 'Cadillac V-Series.R', cls: 'lmdh', chassis: 'Dallara', hybrid: 'rear', series: 'WEC · IMSA'},
-  {key: 'bmw', name: 'BMW M Hybrid V8', cls: 'lmdh', chassis: 'Dallara', hybrid: 'rear', series: 'WEC · IMSA'},
-  {key: 'alpine', name: 'Alpine A424', cls: 'lmdh', chassis: 'Oreca', hybrid: 'rear', series: 'WEC'},
-  {key: 'genesis', name: 'Genesis GMR-001', cls: 'lmdh', chassis: 'Oreca', hybrid: 'rear', series: 'WEC'},
-  {key: 'porsche', name: 'Porsche 963', cls: 'lmdh', chassis: 'Multimatic', hybrid: 'rear', series: 'IMSA'},
-  {key: 'acura', name: 'Acura ARX-06', cls: 'lmdh', chassis: 'Oreca', hybrid: 'rear', series: 'IMSA'},
-  {key: 'lamborghini', name: 'Lamborghini SC63', cls: 'lmdh', chassis: 'Ligier', hybrid: 'rear', series: 'WEC 2024'},
-  {key: 'isotta', name: 'Isotta Fraschini Tipo6-C', cls: 'lmh', chassis: 'Isotta Fraschini / Michelotto', hybrid: 'front', series: 'WEC 2024'},
-  {key: 'glickenhaus', name: 'Glickenhaus SCG 007', cls: 'lmh', chassis: 'Podium Advanced Technologies', hybrid: null, series: 'WEC 2021–2023'},
-  {key: 'vanwall', name: 'Vanwall Vandervell 680', cls: 'lmh', chassis: 'ByKolles', hybrid: null, series: 'WEC 2023'},
-  {key: 'alpine-a480', name: 'Alpine A480 (grandfathered LMP1)', cls: 'lmh', chassis: 'Oreca', hybrid: null, series: 'WEC 2021–2022'},
-];
+export {HYPERCARS}; // shared with LapSim and BoPSim (worker/lapsim/hypercar-makers.js, owner 2026-11-21)
 
 // GT3 (owner 2026-11-16): every GT3 car model the learning step knows (worker/lapsim/learned-data.js, one entry per model; the
 // BoP-body variants share the model's car). Engine position sets the static weight split (layer 4, assumed from the layout:

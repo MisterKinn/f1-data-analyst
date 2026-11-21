@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {setupPlan, setupTracks, GT3_MODELS, LMP2, SPLIT} from '../worker/lapsim/setup-plan.js';
+import {setupPlan, setupTracks, GT3_MODELS, LMP2, SPLIT, HYPERCARS} from '../worker/lapsim/setup-plan.js';
 import {setupPage} from '../worker/setup-page.js';
 import {lapsimAllTracks} from '../worker/lapsim/tracks.js';
 
@@ -59,4 +59,18 @@ test('GT3 rear weight share: iRacing value with its session count, else the labe
   assert.deepEqual([m('ferrari-488-gt3').rear, m('ferrari-488-gt3').rearSource], [0.57, 'layout']);
   assert.match(strip(setupPage({series: 'gt3', car: 'mclaren-720s-gt3-evo', track: 'spa-francorchamps'}, 'en')), /51\.2%<\/b><span>rear weight share · model \(iRacing\), 16 sessions/);
   assert.match(strip(setupPage({series: 'gt3', car: 'ferrari-488-gt3', track: 'spa-francorchamps'}, 'en')), /57%<\/b><span>rear weight share · assumed \(engine layout\)/);
+});
+
+// owner 2026-11-21: LapSim, BoPSim and SetupSim share one Hypercar maker list and one BoP choice, and the maker data follows every update
+test('Hypercar per maker: one list and one BoP for LapSim and SetupSim; maker data is up to date', async () => {
+  const {HYPERCARS: H1, hypercarBop} = await import('../worker/lapsim/hypercar-makers.js'), {carsFor} = await import('../worker/lapsim/scenario.js');
+  assert.equal(HYPERCARS, H1);
+  for (const [id, key] of [['fuji', 'toyota'], ['jeddah', 'cadillac'], ['monza', 'ferrari']]) {
+    const m = H1.find(x => x.key === key), b = hypercarBop(id, m), car = carsFor(id)['hyper-' + key], sp = setupPlan(id, 'hypercar:' + key);
+    assert.ok(b && car && sp, id + ' ' + key);
+    assert.deepEqual([car.bop.kg, car.bop.kW, car.bop.source], [b.kg, b.kW, b.source], 'LapSim uses the shared BoP');
+    assert.deepEqual([sp.evidence.bop.kg, sp.evidence.bop.kW, sp.evidence.bop.source], [b.kg, b.kW, b.source], 'SetupSim uses the shared BoP');
+  }
+  const {execFileSync} = await import('node:child_process');
+  execFileSync('node', ['scripts/sim/learn/hypercar-makers.mjs', '--check']); // throws when the residuals are stale
 });

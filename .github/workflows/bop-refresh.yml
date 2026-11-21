@@ -40,6 +40,8 @@ jobs:
           node scripts/sim/gt3-bop-estimate.mjs elms | tee -a /tmp/gt3-holdout.txt
           node scripts/sim/learn/parse-imsa-bop.mjs
           node scripts/sim/bop-virtual.mjs | tee /tmp/virtual-holdout.txt
+          # Hypercar per maker (LapSim × BoPSim × SetupSim, owner 2026-11-21): residuals follow the laps and BoP tables
+          node scripts/sim/learn/hypercar-makers.mjs --write | tail -3 | tee -a /tmp/virtual-holdout.txt
           GEN
           bash /tmp/gen.sh
       - name: Publish the published BoP tables to main (checks first)
@@ -53,9 +55,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
-          git add scripts/sim/data/learn worker/lapsim/bop-estimate-data.js worker/lapsim/bop-lmgt3-data.js worker/lapsim/bop-elms-lmgt3-data.js worker/lapsim/bop-virtual-data.js
+          git add scripts/sim/data/learn worker/lapsim/bop-estimate-data.js worker/lapsim/bop-lmgt3-data.js worker/lapsim/bop-elms-lmgt3-data.js worker/lapsim/bop-virtual-data.js worker/lapsim/hypercar-maker-data.js
           # the build date alone is not a change
-          node -e "const fs=require('fs'),cp=require('child_process'),strip=s=>s.replace(/\"generated\":\"[^\"]*\"/,'');process.exit(['worker/lapsim/bop-estimate-data.js','worker/lapsim/bop-lmgt3-data.js','worker/lapsim/bop-elms-lmgt3-data.js','worker/lapsim/bop-virtual-data.js'].some(f=>strip(fs.readFileSync(f,'utf8'))!==strip(cp.execSync('git show HEAD:'+f).toString()))?0:1)" || { echo "No BoP estimate change" >> "$GITHUB_STEP_SUMMARY"; exit 0; }
+          node -e "const fs=require('fs'),cp=require('child_process'),strip=s=>s.replace(/\"generated\":\"[^\"]*\"/,'');process.exit(['worker/lapsim/bop-estimate-data.js','worker/lapsim/bop-lmgt3-data.js','worker/lapsim/bop-elms-lmgt3-data.js','worker/lapsim/bop-virtual-data.js','worker/lapsim/hypercar-maker-data.js'].some(f=>strip(fs.readFileSync(f,'utf8'))!==strip(cp.execSync('git show HEAD:'+f).toString()))?0:1)" || { echo "No BoP estimate change" >> "$GITHUB_STEP_SUMMARY"; exit 0; }
           B="lapsim-learn/bop-refresh-$(date -u +%Y%m%d-%H%M)"
           git commit -m "BoP refit from the latest Al Kamel laps (WEC Hypercar, LMGT3; ELMS LMGT3)"
           git push origin HEAD:"refs/heads/$B"
