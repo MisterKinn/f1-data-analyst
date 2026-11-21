@@ -16,7 +16,7 @@ const WIRED = {
   f1: {qualifying: ['f1-zones-refresh.yml'], race: ['f1-zones-refresh.yml']},  // zones/grip state + real poles; ERS clipping runs every 30 min itself
   wec: {qualifying: ['bop-refresh.yml'], race: ['bop-refresh.yml', 'lapsim-track-laps.yml']},
   imsa: {race: ['bop-refresh.yml', 'lapsim-track-laps.yml']},
-  elms: {race: ['bop-refresh.yml']},
+  elms: {practice: ['alkamel-laps.yml'], qualifying: ['alkamel-laps.yml'], race: ['bop-refresh.yml', 'alkamel-laps.yml']},
   'gtwc-america': {practice: ['alkamel-laps.yml'], qualifying: ['alkamel-laps.yml'], race: ['alkamel-laps.yml']},  // Al Kamel every lap
   igtc: {race: ['alkamel-laps.yml']},  // Indianapolis 8 Hour is on Al Kamel; the other IGTC rounds have no source wired
 };
