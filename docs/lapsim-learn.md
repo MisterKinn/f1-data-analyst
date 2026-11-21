@@ -694,3 +694,10 @@ A group lap (300 kW) is fitted as the full-power (350 kW) lap plus `f ×` the si
 (Gen3 0.6925, Gen3 Evo 0.7737; W12 `indirect/refit.json`, through Season 12). W12 Gate G on 56 events / 425 driver pairs, median group −
 quarter-final time: race out 0.333 → 0.226 s (+0.107 ± 0.026), venue out 0.359 → 0.241 s, Season 12 out 0.396 → 0.204 s, all pass; the
 uncalibrated simulation (f = 1) rejects. Site fit: Gen3 Evo event-hidden 2.49 → 2.46 %, layout-hidden 4.07 → 4.00 %; records unchanged.
+
+### Endurance full-course yellows (W14, 2026-11-21)
+`scripts/sim/fcy-rates.mjs` → `worker/lapsim/fcy-data.js`, shown as "Full-course yellows and safety cars (model)" on /simulation.
+Rate per hour = (neutralisations + series rate × prior hours) / (race hours + prior hours), from the W14 certified flag clocks (83 races).
+Gate G (Poisson NLL, one vote per event): leave-one-event-out 2.317 → 2.217 (+0.100 ± 0.061) ✓, unseen 2026 2.577 → 2.339 ✓,
+leave-one-track-out = series rate (no gain) ✗. By series: IMSA +0.230 ± 0.078 ✓, WEC −0.163 ± 0.104 ✗, ELMS −0.134 ± 0.097 ✗ →
+IMSA uses the track rate, WEC and ELMS the series mean. Stint-slope and pit-loss models reject (W14): measured lookups only.

@@ -14,6 +14,7 @@ import {lapsimRacingLines} from './lapsim/racing-lines-data.js';
 import {lapsimTrackWidths} from './lapsim/track-widths.js';
 import {lapsimCompounds} from './lapsim/compounds-data.js';
 import {lapsimStints} from './lapsim/stint-data.js';
+import {lapsimFcy, lapsimFcyMeta} from './lapsim/fcy-data.js';
 import {lapsimCompoundGap} from './lapsim/compound-gap-data.js';
 import {wetGapPage} from './lapsim/wet-gap.js';
 import {lapsimTrackTemp} from './lapsim/tracktemp-data.js';
@@ -400,6 +401,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null, first
  <h3>${esc(t.proj)}</h3><ul class="ls-notes">${projRows}</ul>
 </section>
 ${stintPanel(id, lang)}
+${fcyPanel(id, lang)}
 ${racePanel(id, lang, query.race || null)}
 <section class="panel ls-panel"><h2>${esc(t.model)}</h2><ul class="ls-notes"><li>${esc(t.m1)}</li><li>${esc(t.m2)}</li><li>${esc(t.m3)}</li><li>${esc(t.m4)}</li><li>${esc(t.m5)}</li><li>${esc(t.soon)}</li></ul>
  <p class="fine">${esc(t.src)}: <a href="https://openf1.org" target="_blank" rel="noopener noreferrer">OpenF1</a>, MultiViewer, <a href="https://github.com/bacinger/f1-circuits" target="_blank" rel="noopener noreferrer">f1-circuits</a>, <a href="https://github.com/f1db/f1db" target="_blank" rel="noopener noreferrer">f1db</a> (CC BY 4.0), <a href="https://github.com/TUMFTM/laptime-simulation" target="_blank" rel="noopener noreferrer">TUMFTM laptime-simulation</a> (LGPL-3.0), <a href="https://github.com/TracingInsights" target="_blank" rel="noopener noreferrer">TracingInsights</a> (wet/inter gap), <a href="https://open-meteo.com" target="_blank" rel="noopener noreferrer">Open-Meteo</a> ERA5 (CC BY 4.0; contains modified Copernicus Climate Change Service information), FIA Section C Issue 21${data.calibration.generatedAt ? ` · ${esc(t.updated)} <span data-no-translate>${esc(data.calibration.generatedAt)}</span>` : ''}</p>
@@ -648,6 +650,24 @@ function stintPanel(id, lang) {
   return `<section class="panel ls-panel"><h2>${esc(t.h)}</h2><p>${esc(t.lead)}</p>
  <div class="output"><table class="ls-table"><thead><tr>${t.cols.map(c => `<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div>
  <p class="fine">${esc(t.test.replace('{e}', T.rmsPct).replace('{n}', T.events).replace('{k}', lapsimStints.k))}</p>${T.unseen ? `<p class="fine">${esc(t.unseen.replace('{y}', T.unseen.year).replace('{n}', T.unseen.events).replace('{r}', T.unseen.rows).replace('{e}', T.unseen.rmsPct))}</p>` : ''}<p class="fine">${esc(t.note)}</p></section>`;
+}
+// Full-course yellows and safety cars per endurance race here (W14 model, scripts/sim/fcy-rates.mjs)
+const FY = {
+  ko: {h: '풀코스 옐로·세이프티카 (모델)', lead: '이 서킷 내구 레이스에서 시간당 몇 번 레이스가 중립화되는지(FCY·세이프티카·슬로 존) 공식 타이밍의 깃발 시각으로 센 값입니다. 모델이며 실측 예보가 아닙니다.',
+    cols: ['시리즈', '시간당', '레이스 길이', '예상 횟수', '한 번 이상', '근거'], basis: {track: '이 서킷 기록 (시리즈 평균 쪽으로 보정)', series: '시리즈 평균'}, h1: '시간',
+    gate: '검증(대회 하나씩 빼고, 포아송 NLL): 서킷별 비율 {a} → {b} (+{g} ± {s}), 2026 미공개 대회 +{g2} ± {s2}. 시리즈별로는 IMSA만 통과, WEC({w})·ELMS({e})는 탈락해 시리즈 평균을 씁니다.'},
+  en: {h: 'Full-course yellows and safety cars (model)', lead: 'How often an endurance race here is neutralised (FCY, safety car, slow zone) per hour, counted from the flag clocks of the official timing. A model, not a forecast.',
+    cols: ['Series', 'Per hour', 'Race length', 'Expected', 'At least one', 'Basis'], basis: {track: 'this circuit (pulled toward the series mean)', series: 'series mean'}, h1: 'h',
+    gate: 'Check (each event left out, Poisson NLL): track rate {a} → {b} (+{g} ± {s}), unseen 2026 events +{g2} ± {s2}. By series only IMSA passes; WEC ({w}) and ELMS ({e}) reject, so they use the series mean.'},
+};
+function fcyPanel(id, lang) {
+  const F = lapsimFcy?.[id]; if (!F) return '';
+  const t = FY[lang], G = lapsimFcyMeta.gate, f = (x, n = 2) => x == null ? '–' : x.toFixed(n);
+  const rows = Object.entries(F).map(([se, r]) => `<tr><td>${se.toUpperCase()}</td><td data-no-translate>${f(r.perHour)}</td><td data-no-translate>${r.raceHours ?? '–'} ${t.h1}</td><td data-no-translate>${f(r.expected, 1)}</td><td data-no-translate>${r.pAtLeastOne == null ? '–' : Math.round(r.pAtLeastOne * 100) + '%'}</td><td>${esc(t.basis[r.basis])}</td></tr>`).join('');
+  const g = t.gate.replace('{a}', G.overall[0]).replace('{b}', G.overall[1]).replace('{g}', G.overall[2]).replace('{s}', G.overall[3]).replace('{g2}', G.unseen2026[2]).replace('{s2}', G.unseen2026[3])
+    .replace('{w}', G.wec[0] + ' ± ' + G.wec[1]).replace('{e}', G.elms[0] + ' ± ' + G.elms[1]);
+  return `<section class="panel ls-panel"><h2>${esc(t.h)}</h2><p>${esc(t.lead)}</p>
+ <div class="output"><table class="ls-table"><thead><tr>${t.cols.map(c => `<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div><p class="fine">${esc(g)}</p></section>`;
 }
 // Brake panel texts
 const BT = {

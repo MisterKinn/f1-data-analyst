@@ -1,0 +1,142 @@
+{
+ "ELMS|aragon": {
+  "event": "20230826-circuito-motorland-aragon",
+  "hours": 4.0
+ },
+ "ELMS|catalunya": {
+  "event": "20260412-barcelona-catalunya",
+  "hours": 4.0
+ },
+ "ELMS|french": {
+  "event": "20260503-paul-ricard",
+  "hours": 4.0
+ },
+ "ELMS|imola": {
+  "event": "20260705-imola",
+  "hours": 4.0
+ },
+ "ELMS|monza": {
+  "event": "20220703-autodromo-nazionale-di-monza",
+  "hours": 4.0
+ },
+ "ELMS|mugello": {
+  "event": "20240929-mugello",
+  "hours": 4.0
+ },
+ "ELMS|portimao": {
+  "event": "20261010-autodromo-do-algarve",
+  "hours": 4.0
+ },
+ "ELMS|silverstone": {
+  "event": "20260913-silverstone",
+  "hours": 4.0
+ },
+ "ELMS|spa-francorchamps": {
+  "event": "20260823-spa-francorchamps",
+  "hours": 4.0
+ },
+ "IMSA|belle-isle": {
+  "event": "belle-isle",
+  "hours": 1.666666666667
+ },
+ "IMSA|daytona": {
+  "event": "daytona",
+  "hours": 24.0
+ },
+ "IMSA|detroit": {
+  "event": "detroit",
+  "hours": 1.666666666667
+ },
+ "IMSA|indianapolis": {
+  "event": "indianapolis",
+  "hours": 2.666666666667
+ },
+ "IMSA|laguna-seca": {
+  "event": "laguna-seca",
+  "hours": 2.666666666667
+ },
+ "IMSA|lime-rock": {
+  "event": "lime-rock",
+  "hours": 2.666666666667
+ },
+ "IMSA|long-beach": {
+  "event": "long-beach",
+  "hours": 1.666666666667
+ },
+ "IMSA|mid-ohio": {
+  "event": "mid-ohio",
+  "hours": 2.666666666667
+ },
+ "IMSA|mosport": {
+  "event": "mosport",
+  "hours": 2.666666666667
+ },
+ "IMSA|road-america": {
+  "event": "road-america",
+  "hours": 2.666666666667
+ },
+ "IMSA|road-atlanta": {
+  "event": "road-atlanta",
+  "hours": 10.0
+ },
+ "IMSA|sebring": {
+  "event": "sebring",
+  "hours": 12.0
+ },
+ "IMSA|vir": {
+  "event": "vir",
+  "hours": 2.666666666667
+ },
+ "IMSA|watkins-glen": {
+  "event": "watkins-glen",
+  "hours": 6.0
+ },
+ "WEC|austin": {
+  "event": "20260906-circuit-of-the-americas",
+  "hours": 6.0
+ },
+ "WEC|catalunya": {
+  "event": "20261018-barcelona-catalunya",
+  "hours": 6.0
+ },
+ "WEC|fuji": {
+  "event": "20260927-fuji-speedway",
+  "hours": 6.0
+ },
+ "WEC|imola": {
+  "event": "20260419-imola",
+  "hours": 6.0
+ },
+ "WEC|interlagos": {
+  "event": "20260712-sao-paulo",
+  "hours": 6.0
+ },
+ "WEC|le-mans": {
+  "event": "20260613-le-mans",
+  "hours": 24.0
+ },
+ "WEC|lusail": {
+  "event": "20250228-losail",
+  "hours": 10.0
+ },
+ "WEC|monza": {
+  "event": "20261108-autodromo-nazionale-di-monza",
+  "hours": 6.0
+ },
+ "WEC|portimao": {
+  "event": "20230416-autodromo-do-algarve",
+  "hours": 6.0
+ },
+ "WEC|sakhir": {
+  "event": "20251108-bahrain-international-circuit",
+  "hours": 8.0
+ },
+ "WEC|sebring": {
+  "event": "20230317-sebring",
+  "hours": 8.0
+ },
+ "WEC|spa-francorchamps": {
+  "event": "20260509-spa-francorchamps",
+  "hours": 6.0
+ }
+}
