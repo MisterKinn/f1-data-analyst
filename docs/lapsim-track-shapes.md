@@ -339,3 +339,16 @@ the others better). Lap times do not change (checked: F1 2026 on all 26 tracks, 
 - Left out: Montreal (fits 2.1 m but at scale 0.977 and drifts 33 m: the layout differs), Mugello and Sonoma ("nascarlong", 18.7 m
   drift), Misano, Okayama, Phillip Island, Road America (2.2–2.4 m), Daytona (28.7k samples), Interlagos, VIR, Watkins Glen and
   Imola (formula cars only), Bathurst and Brands Hatch (no OSM seed).
+
+## Finish lines from official briefings (task 8, 2026-11-18)
+
+Three of the 11 pit-straight estimates now have a sourced line (`sf-lines.json`), placed on Esri World Imagery:
+- Jerez: the timing (finish) line "in front of the race tower" (GT4 Winter Series Jerez 2024 briefing; start and finish are not
+  the same), a full-width painted line at the round tower (z20). Start moved +140 m.
+- Magny-Cours: the finish line just after T17, start line 186 m after it (SRO GT4 France briefing map), a chequered strip at the
+  west end of the pit garages (z19). Start moved −345 m.
+- Ricardo Tormo: "START/FINISH LINE – LIGHTS" (Valencia 2026 drivers' briefing), the start-light gantry (z19). Start moved −255 m.
+Moved with the line (same rule as earlier finish-line changes): corner names and numbers, pit-lane entry/exit, map-shape
+corrections and wall gaps (rotated), the Valencia step repair (3400 → 3655 m), F1/FE zone estimates and the PU estimate
+(rebuilt). Still estimated: Estoril (grid boxes on both sides of every painted line), Mandalika (TSL map: pit entry 176.3 m before
+the line, pit exit 356.4 m after; only z18 imagery), Lime Rock, Yongin, and Buriram, Zhuhai, Inje, Autopolis (no geographic frame yet).
