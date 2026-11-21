@@ -26,6 +26,10 @@ on:
         description: 'Calibrate and commit (false: only build data and upload it as an artifact)'
         required: false
         default: 'true'
+      tracks:
+        description: 'keep: calibrate on the committed track shapes (traces scaled to them); rebuild: new shapes from the data'
+        required: false
+        default: 'keep'
 
 permissions:
   contents: write
@@ -35,7 +39,9 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  rebuild:
+  # Two jobs, each under the 340-minute limit (2026-11-18: the 2 h track build plus the A6 calibration, 3.5 h and still running,
+  # hit the limit in run 44112257363): `prepare` fetches and builds the tracks, `rebuild` calibrates and commits.
+  prepare:
     if: github.event_name != 'schedule' || github.repository == 'MisterKinn/f1-data-analyst'
     runs-on: ubuntu-latest
     timeout-minutes: 340
@@ -54,7 +60,12 @@ jobs:
         timeout-minutes: 150
         env:
           LAPSIM_TRACE_DRIVERS: ${{ inputs.trace_drivers || '10' }}
-        run: node scripts/sim/fetch-openf1.mjs "${{ inputs.years || '2023,2024,2025,2026' }}"
+        # stop on any failed qualifying session: OpenF1 answers 401 to free use while an F1 session is live (run 44840216114 during Las
+        # Vegas FP3 calibrated on 230 of 885 traces, one season, and failed 9 tests); rerun when no session is live
+        run: |
+          set -o pipefail; mkdir -p .cache
+          node scripts/sim/fetch-openf1.mjs "${{ inputs.years || '2023,2024,2025,2026' }}" | tee .cache/fetch-openf1.log
+          if grep -E '^fail [0-9]{4} ' .cache/fetch-openf1.log; then echo "::error::OpenF1 fetch incomplete (401 = an F1 session is live)"; exit 1; fi
       # saved even when a later step fails, so a rerun does not fetch everything again
       - name: Save raw data cache
         if: always()
@@ -62,13 +73,25 @@ jobs:
         with:
           path: .cache/lapsim/raw
           key: lapsim-raw-v1-${{ github.run_id }}
+      # keep (default, owner 2026-11-18): a rebuild moves every F1 track by metres and the hand-built zones, car lines and stored
+      # lines then no longer fit (run 44180547107: 6 tests failed), so the cars are fitted on the committed shapes
       - name: Choose track smoothing and build tracks
+        if: (inputs.tracks || 'keep') == 'rebuild'
         run: node scripts/sim/tune-geometry.mjs
+      - name: Speed traces on the committed tracks
+        if: (inputs.tracks || 'keep') != 'rebuild'
+        run: LAPSIM_TRACKS_OUT=.cache/lapsim/tracks-built.mjs node scripts/sim/build-geometry.mjs && node scripts/sim/traces-to-tracks.mjs .cache/lapsim/tracks-built.mjs
       - run: npm ci --omit=dev --ignore-scripts
       # build-geometry.mjs writes only the F1 tracks: put back the extra tracks (second export, from their committed sources) and the
       # dense map points, as docs/lapsim-tracks-extra.md describes (2026-11-17 run 44069662431 failed at calibrate: no lapsimExtraTracks)
       - name: Rebuild extra tracks and dense maps
+        if: (inputs.tracks || 'keep') == 'rebuild'
         run: node scripts/sim/build-geometry-extra.mjs > /dev/null && node scripts/sim/densify-maps.mjs
+      # zone positions are metres on the track line: rebuild them on the new geometry (2026-11-18 run 44180547107 failed its zone
+      # test: rebuilt Imola 4 m shorter, the old zone 4 then ran into a bend). Reads only the stored FIA zone text, no network.
+      - name: Rebuild F1 zones on the new tracks
+        if: (inputs.tracks || 'keep') == 'rebuild'
+        run: node scripts/sim/f1-zones.mjs > /dev/null
       - name: Fetch WEC timing (Al Kamel)
         run: node scripts/sim/fetch-wec.mjs && node scripts/sim/wec-poles.mjs
       # derived speed traces and tracks for local calibration experiments (not committed)
@@ -82,8 +105,41 @@ jobs:
             .cache/lapsim/races.json
             .cache/lapsim/races/
             worker/lapsim/tracks-data.js
+            worker/lapsim/f1-zones-data.js
           retention-days: 5
           include-hidden-files: true
+      # everything the build changed (tracks, WEC poles) plus the derived cache, for the next job
+      - name: Bundle the build for the calibration job
+        run: |
+          files=$(git ls-files -m -o --exclude-standard worker scripts docs)
+          tar czf /tmp/lapsim-prep.tgz --exclude=.cache/lapsim/raw .cache/lapsim $files
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lapsim-prep
+          path: /tmp/lapsim-prep.tgz
+          retention-days: 2
+  rebuild:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Restore raw data cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .cache/lapsim/raw
+          key: lapsim-raw-v1-${{ github.run_id }}
+          restore-keys: lapsim-raw-v1-
+      - uses: actions/download-artifact@v4
+        with:
+          name: lapsim-prep
+          path: /tmp
+      - name: Unpack the build
+        run: tar xzf /tmp/lapsim-prep.tgz
+      - run: npm ci --omit=dev --ignore-scripts
       # official recharge limits (FIA PU documents) and 2027/28 + FE Gen4 rule values feed the fit
       - name: Read FIA energy documents and regulation values
         continue-on-error: true
@@ -94,16 +150,9 @@ jobs:
       - name: Calibrate cars (F1 and WEC)
         if: inputs.calibrate != 'false'
         env:
-          LAPSIM_FITTER: bcd
-          # 3 rounds x 100 coordinate steps, as in the experiments the production settings were chosen from (2026-11-17: 5 x 200 plus
-          # the 2 h track build ran past the 340-minute job limit twice; the experiment fits take about 1 h 45 min)
-          LAPSIM_ROUNDS: '3'
-          LAPSIM_BCD_ITERS: '100'
-          LAPSIM_WTIME: '20'
-          LAPSIM_WSECTOR: '2'
-          LAPSIM_TRACK_DRAG: 'on'
-          LAPSIM_TEAMS: 'on'
-          LAPSIM_WPRIOR: '8'
+          # fit settings: the script defaults = the published fit (5 rounds x 200 steps, all four seasons). G1 2026-11-18: 3 x 100
+          # raised the held-out error on all 34 poles (1.014 -> 1.205 %, Gate G reject). The calibration job is separate from the
+          # 2 h build since run 44259689110 (3 x 100 took 40 min, so 5 x 200 is about 2 h 15 min, under the 340-minute limit)
           # A6 (owner 2026-11-17): FIA zones + 2026 PU qualifying curve (experiment run 43775148422, variant zq: all 1.235 -> 1.144 %,
           # WEC 1.432 -> 1.210 %, F1 1.008 -> 1.075 %; the owner accepts the F1 cost of following the real 2026 PU rules)
           LAPSIM_FIA_ZONES: 'on'
@@ -123,7 +172,10 @@ jobs:
       - name: Fit race pace (fuel, tyres, pit loss)
         continue-on-error: true
         run: node scripts/sim/race-pace.mjs
+      # only with rebuilt tracks: on the kept shapes a rebuild still moved Austin's line 680 -> 677 points (run 44259689110), which
+      # broke the per-car lines and walls drawn on it; lapsim-car-lines.yml reruns those after a track rebuild
       - name: Build racing lines (TUM track widths + TracingInsights pole laps)
+        if: (inputs.tracks || 'keep') == 'rebuild'
         continue-on-error: true
         run: node scripts/sim/racing-lines.mjs
       - name: Hypercar stints (Al Kamel race timing) and stint-energy fit
@@ -144,6 +196,8 @@ jobs:
       - name: Test
         if: inputs.calibrate != 'false'
         run: node --test tests/lapsim*.test.mjs
+        env:
+          LAPSIM_TRACKS_REBUILT: ${{ (inputs.tracks || 'keep') == 'rebuild' && '1' || '0' }}
       # keep the fit output even when Test fails (2026-11-21: run 44858524098 fitted 3.5 h, failed one test and lost its output)
       - name: Upload calibration output (always)
         if: always() && inputs.calibrate != 'false'
@@ -160,7 +214,7 @@ jobs:
         run: |
           git config user.name "kongboda-lapsim[bot]"
           git config user.email "lapsim@users.noreply.github.com"
-          for f in worker/lapsim/tracks-data.js worker/lapsim/calibration-data.js worker/lapsim/track-changes-data.js docs/lapsim-report.md docs/lapsim-geometry.md \
+          for f in worker/lapsim/tracks-data.js worker/lapsim/f1-zones-data.js worker/lapsim/calibration-data.js worker/lapsim/track-changes-data.js docs/lapsim-report.md docs/lapsim-geometry.md \
             worker/lapsim/race-data.js docs/lapsim-race.md worker/lapsim/change-effects-data.js worker/lapsim/energy-docs-data.js worker/lapsim/rules-data.js docs/lapsim-rules.md \
             worker/lapsim/racing-lines-data.js docs/lapsim-racing-lines.md \
             worker/lapsim/stint-data.js scripts/sim/data/wec-stints.json worker/lapsim/brake-data.js worker/lapsim/wec-poles-data.js; do

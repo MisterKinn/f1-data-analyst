@@ -26,6 +26,9 @@ export function withZones(K, d, track, c) {
   const slot = slotOf(lapsimF1Zones?.tracks?.[id], y), z = lapsimF1Zones?.tracks?.[id]?.[slot];
   if (!z?.zones?.length) return pq(track);
   const key = id + ':' + slot;
+  // the fit used the real 2026 qualifying's race-control state (calibration realState): Low Grip = Alt zones, partial activation
+  const lg = lapsimCalibration?.realState && y === 2026 && slot === '2026' && z.real?.grip === 'low';
+  if (lg) return pq({...track, aeroLow: optionTrack(K, d, track, c, {sm: 'alt'}).aeroLow});
   if (!cache.has(key)) cache.set(key, K.trackFromData({...d, aeroZones: z.zones.map(q => [q.from, q.to])}, {aero: 'fia'}).aeroLow);
   return pq({...track, aeroLow: cache.get(key)});
 }
