@@ -26,3 +26,19 @@ test('Al Kamel index: option values (capital Value=) and session kinds', () => {
   assert.deepEqual(['Qualify Driver 1', 'Race 1', 'Practice 2', 'SRO Test'].map(sessionKind), ['qualifying', 'race', 'practice', 'test']);
   assert.equal(secs('2:03.527'), 123.527); assert.equal(secs(''), null);
 });
+
+test('Al Kamel paths with and without a series level; endurance hour folders', async () => {
+  const {sessionFile} = await import('../scripts/sim/learn/fetch-alkamel-laps.mjs');
+  assert.deepEqual(sessionFile('/Results/06_SRO/26_2026/01_Sonoma%20Raceway/01_GT%20World%20Challenge%20America/202603281035_Race%201/23_AnalysisEnduranceWithSections_Race%201.CSV'),
+    {champ: '01_GT World Challenge America', session: '202603281035_Race 1', hour: 0, file: '23_AnalysisEnduranceWithSections_Race 1.CSV'});
+  assert.deepEqual(sessionFile('/Results/21_2026/04_SPA%20FRANCORCHAMPS/668_European%20Le%20Mans%20Series/202608231300_Race/Hour%204/23_Analysis_Race.CSV'),
+    {champ: '668_European Le Mans Series', session: '202608231300_Race', hour: 4, file: '23_Analysis_Race.CSV'});
+  assert.equal(sessionFile('/Results/21_2026/x/file.CSV'), null);
+});
+
+test('Al Kamel: deleted laps (quicker, not marked as improvement) are skipped; race times with an apostrophe', () => {
+  const a = `NUMBER;LAP_NUMBER;LAP_TIME;LAP_IMPROVEMENT;CROSSING_FINISH_LINE_IN_PIT;FLAG_AT_FL\n31;1;2:20.000;1;;GF\n31;2;2:14.280;0;;GF\n31;3;2:15.245;1;;GF\n31;4;2:16.000;0;;GF`;
+  const r = carRows(parseCsv(a), parseCsv(`NUMBER;FL_TIME\n31;2'15.245`))[0];
+  assert.equal(r.best, 135.245); assert.equal(r.officialBest, 135.245); assert.equal(r.clean.lap, 135.245); assert.equal(r.laps, 4);
+  assert.equal(secs("2'03.875"), 123.875);
+});
