@@ -29,3 +29,14 @@ test('no measured lap (or another driver picked, manual weather): the model chan
   assert.doesNotMatch(lane(view(d, {mode: 'manual'}), 'speed').title, /measured/);
   assert.doesNotMatch(lane(view(d, {driver: 'ANT'}), 'speed').title, /measured/);
 });
+
+test('a picked driver: the page asks for that lap\'s measured telemetry, then shows it as measured', () => {
+  const d = page(); d.realTel = {2026: REAL};
+  d.driverQuali = {2026: {ANT: {lap: 78.811, sectors: [27.556, 17.44, 33.815], lapNo: 17, ev: 'Australian Grand Prix'}}};
+  const v0 = view(d, {driver: 'ANT'});
+  assert.equal(v0.telNeed.url, 'https://raw.githubusercontent.com/TracingInsights/2026/main/Australian%20Grand%20Prix/Qualifying/ANT/17_tel.json');
+  assert.doesNotMatch(lane(v0, 'speed').title, /measured/);
+  const v1 = view(d, {driver: 'ANT', drvTel: {...REAL, driver: 'ANT', year: '2026', speed: [310, 90, 330, 110]}});
+  assert.equal(v1.telNeed, null); assert.match(lane(v1, 'speed').title, /· measured$/); assert.equal(lane(v1, 'speed').ser[0].v[0], 310);
+  assert.equal(view(d).telNeed, null, 'the pole lap is in the page data');
+});

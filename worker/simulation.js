@@ -1095,7 +1095,10 @@ function computeView(K, data, state, R) {
   // measured telemetry (owner 2026-11-22, AGENTS.md "Measured telemetry is always shown"): a raced F1 car in its real session shows the
   // real pole lap's speed, throttle, brake (on/off), gear and rpm as measured (f1-real-telemetry-data.js, position = share of the lap);
   // the model fills only channels that were not measured (motor, battery, steering). Compared cars stay model.
-  const RT0 = !sel.series && sel.year && sameConditions && data.realTel ? data.realTel[String(sel.year)] : null, RT = RT0 && (!state.driver || state.driver === RT0.driver) ? RT0 : null;
+  const RT0 = !sel.series && sel.year && sameConditions && data.realTel ? data.realTel[String(sel.year)] : null, DT = sameConditions && state.drvTel && state.drvTel.driver === state.driver && state.drvTel.year === String(sel.year) ? state.drvTel : null,
+    RT = RT0 && (!state.driver || state.driver === RT0.driver) ? RT0 : DT;
+  // a picked driver's own lap: the page loads its measured telemetry (TracingInsights lap file) and recomputes; until then the model
+  const telNeed = !RT && sameConditions && !sel.series && dq && dq.lapNo != null && dq.ev ? {driver: state.driver, year: String(sel.year), url: 'https://raw.githubusercontent.com/TracingInsights/' + sel.year + '/main/' + [dq.ev, 'Qualifying', state.driver, dq.lapNo + '_tel.json'].map(encodeURIComponent).join('/')} : null;
   const realAt = (key, n, step) => { const F = RT.f, A = RT[key]; let j = 0; return Array.from({length: n}, (_, i) => { const x = i / n * 1e4; while (j < F.length - 1 && F[j + 1] <= x) j++;
     if (step || j >= F.length - 1 || F[j + 1] === F[j]) return A[j]; const w = Math.min(1, Math.max(0, (x - F[j]) / (F[j + 1] - F[j]))); return +(A[j] + w * (A[j + 1] - A[j])).toFixed(1); }); };
   const mk = (title, real) => RT ? title + (real ? (data.lang === 'en' ? ' · measured' : ' · 실측') : (data.lang === 'en' ? ' · model' : ' · 모델')) : title;
@@ -1253,7 +1256,7 @@ function computeView(K, data, state, R) {
   const evoSvg = '<svg class="ls-race" viewBox="0 0 ' + ew + ' ' + eh + '" role="img" aria-label="' + t.evoChart + '">' + qsBands + '<polyline fill="none" stroke="currentColor" stroke-width="2" points="' + curve.points.map(p => ex(p.minute).toFixed(1) + ',' + ey(p.lap).toFixed(1)).join(' ') + '"/>'
     + '<text x="2" y="16" font-size="11" fill="currentColor">' + fmt(hi) + '</text><text x="2" y="' + (eh - 28) + '" font-size="11" fill="currentColor">' + fmt(lo) + '</text>'
     + '<text x="44" y="' + (eh - 6) + '" font-size="11" fill="currentColor">0</text><text x="' + (ew - 12) + '" y="' + (eh - 6) + '" font-size="11" text-anchor="end" fill="currentColor">' + evo.end + ' ' + t.min + '</text></svg>';
-  return {compassDeg, cmpRows, mapArgs: [d.map || {x: [], y: []}, res.v, mapOpts], driverOpts, tel, lap: fmt(res.lapTime), poleHtml: poleHtml + raceHtml, factsHtml, airHtml, kindLabel, mapSvg, traceSvg, keyHtml, windHtml, weather: w, evo, evoFacts, evoSvg, qsHtml, socHtml, brakeHtml, tyreHtml};
+  return {telNeed, compassDeg, cmpRows, mapArgs: [d.map || {x: [], y: []}, res.v, mapOpts], driverOpts, tel, lap: fmt(res.lapTime), poleHtml: poleHtml + raceHtml, factsHtml, airHtml, kindLabel, mapSvg, traceSvg, keyHtml, windHtml, weather: w, evo, evoFacts, evoSvg, qsHtml, socHtml, brakeHtml, tyreHtml};
 }
 
 // Browser controller
@@ -1353,7 +1356,7 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
       // options start at the real qualifying's state when this car's season raced here (Brazil 2026: Alt, OT off), else the defaults
       if (state.optCar !== state.carId) { state.optCar = state.carId; Object.assign(state, carStartOptions(data, state.carId));
         if (q('sm')) { q('sm').value = state.sm; q('ot').value = state.ot ? '1' : '0'; q('drs').value = state.drs ? '1' : '0'; } }
-      viewOf(state, v => { lastTel = v.tel; lastView = v;
+      viewOf(state, v => { lastTel = v.tel; lastView = v; loadTel(v.telNeed);
       q('lap').textContent = v.lap; q('pole').innerHTML = v.poleHtml; q('facts').innerHTML = v.factsHtml; q('air').innerHTML = v.airHtml;
       { const prev = zoneState(); q('map').innerHTML = v.mapSvg; animZones(prev); } apply(); needle(v.compassDeg); q('trace').innerHTML = v.traceSvg; q('soc').innerHTML = v.socHtml; q('brakes').innerHTML = v.brakeHtml; q('key').innerHTML = v.keyHtml; q('wind').innerHTML = v.windHtml;
       { const c = data.cars[state.carId], f1 = !c.series && c.year; if (q('smWrap')) { q('smWrap').hidden = !(f1 && c.year >= 2026); q('otWrap').hidden = !(f1 && c.year >= 2026); q('drsWrap').hidden = !(f1 && c.year < 2026); } }
@@ -1387,7 +1390,16 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
     W.onerror = () => { W = null; busy(false); done(computeView(K, data, st, R)); };
     W.postMessage({id, state: st});
   };
-  if (q('driver')) q('driver').addEventListener('change', e => { state.driver = e.target.value; update(); });
+  if (q('driver')) q('driver').addEventListener('change', e => { state.driver = e.target.value; state.drvTel = null; update(); });
+  // measured telemetry of a picked driver's qualifying lap (owner 2026-11-22: measured data is always shown), loaded once per lap file
+  const telTried = {};
+  const tiTel = (j, driver, year) => { const t = j && (j.tel || j); if (!t || !t.speed || !t.speed.length || !t.distance) return null;
+    const n = t.speed.length, L = +t.distance[n - 1], st = Math.ceil(n / 900), ix = [], G = t.gear || t.nGear, P = t.rpm || t.RPM; for (let k = 0; k < n; k += st) ix.push(k);
+    const pos = k => Number.isFinite(+(t.rel_distance || [])[k]) ? +t.rel_distance[k] : +t.distance[k] / L;
+    return {driver, year, f: ix.map(k => Math.round(pos(k) * 1e4)), speed: ix.map(k => Math.round(+t.speed[k])), throttle: ix.map(k => Math.round(+t.throttle[k])),
+      brake: ix.map(k => t.brake[k] === true || +t.brake[k] > 0 ? 1 : 0), gear: ix.map(k => +G[k]), rpm: ix.map(k => Math.round(+P[k]))}; };
+  const loadTel = need => { if (!need || telTried[need.url] || typeof fetch !== 'function') return; telTried[need.url] = 1;
+    fetch(need.url).then(r => r.ok ? r.json() : null).then(j => { const T = tiTel(j, need.driver, need.year); if (T && state.driver === need.driver) { state.drvTel = T; update(); } }, () => {}); };
   // map rotation (owner 2026-11-15): ⟲ ⟳ turn the map 15°; the compass needle shows true north; pressing it returns to the first view
   let lastView = null;
   const needle = deg => { const g = document.querySelector('[data-compass] svg g'); if (g && deg != null) g.setAttribute('transform', 'rotate(' + Math.round(deg) + ')'); };
