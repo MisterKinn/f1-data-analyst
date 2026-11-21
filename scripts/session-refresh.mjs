@@ -18,9 +18,14 @@ const WIRED = {
   imsa: {race: ['bop-refresh.yml', 'lapsim-track-laps.yml']},
   elms: {practice: ['alkamel-laps.yml'], qualifying: ['alkamel-laps.yml'], race: ['bop-refresh.yml', 'alkamel-laps.yml']},
   alms: {practice: ['alkamel-laps.yml'], qualifying: ['alkamel-laps.yml'], race: ['alkamel-laps.yml']},  // Asian Le Mans: Al Kamel JSON manifests
-  'gtwc-america': {practice: ['alkamel-laps.yml'], qualifying: ['alkamel-laps.yml'], race: ['alkamel-laps.yml']},  // Al Kamel every lap
+  'gtwc-america': {practice: ['alkamel-laps.yml'], qualifying: ['alkamel-laps.yml'], race: ['alkamel-laps.yml', 'sro-refresh.yml']},  // Al Kamel every lap
+  // SRO's own results pages and PDFs (one run refreshes every SRO series)
+  'gtwc-europe': {qualifying: ['sro-refresh.yml'], race: ['sro-refresh.yml']},
+  'gtwc-asia': {qualifying: ['sro-refresh.yml'], race: ['sro-refresh.yml']},
+  'gtwc-australia': {qualifying: ['sro-refresh.yml'], race: ['sro-refresh.yml']},
+  'british-gt': {qualifying: ['sro-refresh.yml'], race: ['sro-refresh.yml']},
   nascar: {qualifying: ['nascar-laps.yml'], race: ['nascar-laps.yml']},  // public results feed, every lap
-  igtc: {race: ['alkamel-laps.yml']},  // Indianapolis 8 Hour is on Al Kamel; the other IGTC rounds have no source wired
+  igtc: {race: ['alkamel-laps.yml', 'sro-refresh.yml']},  // Indianapolis 8 Hour on Al Kamel; every round as SRO PDFs
 };
 const WINDOWS = [[45, 75], [165, 195], [345, 375]];
 

@@ -30,3 +30,16 @@ test('session dispatcher starts the F1 refresh about 1, 3 and 6 h after qualifyi
   assert.deepEqual(at(400).run, []);
   assert.deepEqual(plan(new Date('2026-01-01T17:00:00Z'), events, schedule).unwired, ['nls']);  // 6 h race ended 1 h ago, no source
 });
+
+test('refresh-changed: a .gz output whose only change is its date is not a change', async () => {
+  const {mkdtempSync, writeFileSync} = await import('node:fs'), {join} = await import('node:path'), {tmpdir} = await import('node:os');
+  const {gzipSync} = await import('node:zlib'), {execFileSync, spawnSync} = await import('node:child_process');
+  const dir = mkdtempSync(join(tmpdir(), 'rc-')), git = (...a) => execFileSync('git', a, {cwd: dir});
+  const put = (fetched, rows) => writeFileSync(join(dir, 'x.json.gz'), gzipSync(JSON.stringify({fetched, rows})));
+  git('init', '-q'); git('config', 'user.email', 't@t'); git('config', 'user.name', 't');
+  put('2026-11-20', [1, 2]); git('add', '.'); git('commit', '-qm', 'a');
+  const changed = () => spawnSync(process.execPath, [new URL('../scripts/refresh-changed.mjs', import.meta.url).pathname, 'x.json.gz'], {cwd: dir}).status;
+  put('2026-11-21', [1, 2]); assert.equal(changed(), 1);   // only the date moved
+  put('2026-11-21', [1, 2, 3]); assert.equal(changed(), 0);  // a new row
+});
+
