@@ -1,0 +1,850 @@
+{
+ "source": "W3-F review 2026-11-18 (TracingInsights race laps 2022-2026): pit loss = stop lap pair minus the local green median of the 3 laps on each side; dry green only, SC/VSC/red-flag stops and wet/dry switches left out; wet races labelled. Measured lookup (no model).",
+ "outliers": {
+  "jeddah 2022": "The first neutralisation began on lap 16. Albon and Stroll pitted on lap 13 and both lacked a green flying lap after the stop inside W3\u2019s three-lap window. Their local one-sided estimates agree with the single two-sided observation for Ricciardo lap 8. The site also accepts Zhou\u2019s drive-through and Bottas lap 35, whose out-lap was also his retirement in-lap. For the shared Ricciardo stop, the different driver reference explains the rest. A later VSC and temporary pit-entry closure further reduced the dry-green sample.",
+  "monte-carlo 2024": "The lap-one red flag was at 13:04:08 UTC. Sixteen cars entered the pits during the suspension. Fifteen switched compound before the restart. Sargeant stayed on hard tyres. The standing-start message was at 13:44:53 UTC. These lap-one visits contribute to neither loss median. FIA timing shows seven later stops by six drivers. Four pass W3's dry-green rules. Hamilton's out-lap and Verstappen's in-lap overlap a double yellow. Stroll's second in-lap was deleted after his puncture. Using the site reference gives 17.8130 s on seven stops and 18.4635 s on the four common stops. On the same four stops the W3 local reference gives 21.3915 s. Both stop selection and the reference change the median.",
+  "monte-carlo 2025": "The site compares each stop with whole-race driver pace. W3 uses nearby green laps on each side. Official team accounts confirm that Racing Bulls and Williams slowed the field to create gaps under the two-stop rule. A green lap can therefore be unusually slow. The site also accepted the lap 53 Russell drive-through. Race control confirmed his penalty. H\u00fclkenberg lap 12 and Verstappen lap 77 lacked a two-sided local reference. Timing alone cannot assign a tactical cause to every stop.",
+  "montreal 2026": "Seven of the 17 site stops changed from intermediates to slicks on laps 1\u20133, while the rain sensor read false on both laps. They do not enter the dry W3 median. Other site-only stops include Norris on lap 15 (deleted out-lap), Bottas on lap 9 (no green reference after), and yellow-affected stops for Piastri and Bortoleto. Service time also varies within the six dry W3 rows. H\u00fclkenberg stopped for 9.00 s on lap 20 after a 5 s penalty. Hadjar stopped for 13.88 s on lap 62 during a stop-and-go penalty. Their W3 losses were 27.682 and 32.029 s. The common-stop comparison shows that the group of accepted stops explains more of the median difference than the reference choice.",
+  "spa-francorchamps 2025": "The field started on intermediates. The site includes the switch to slicks and compares both laps to dry, whole-race pace. The dry W3 table requires slicks on both laps and local green laps on both sides. Only Hadjar on lap 20 and Sainz on lap 26 pass; Bearman on lap 12 has no dry green reference before his stop. The source labels Bearman lap 11 intermediate and lap 12 medium. Four other exits have no reported compound. There is no evidence to relabel any of these laps. The rainfall flag alone misses a drying track.",
+  "singapore 2022": "Two of three dry-labelled W3 stops followed the same Turn 1 collision. Schumacher and Russell both suffered punctures and lost time on the in-lap. RCM noted contact at lap 41 although their full laps had status 1. The paired gate times were much shorter than the local lap losses. The third stop (Russell lap 51) is the only remaining two-sided observation after removing this documented incident. It is a single observation on a drying track. Of seven site stops, five changed from inters to slicks. The site allowed those stops and removed both puncture stops with its 60 s ceiling. Its other slick stop, Verstappen on lap 40, followed a lock-up and flat spot after the safety-car restart.",
+  "suzuka 2026": "Five of the 14 site pairs are consecutive Albon stops on laps 45\u201349. Williams says it tested front-wing settings. Each pair shares a lap with another pit passage and cannot isolate a single stop. Another three site stops on lap 19 (Bottas, Hadjar and Ocon) have no eligible green reference after the out-lap within the W3 window. Race control deployed the safety car on lap 22. Six pairs remain. Holding those six fixed, the median falls from 24.4645 to 22.5845 s with the nearby reference. Five of those six drivers had slower local reference laps than their whole-race median.",
+  "las-vegas 2023": "All 31 paired stops match the official stop list. The site median is 25.680 s on 16 stops. It stays 25.680 s on the 12 shared stops. The W3 local reference gives 23.667 s on these same stops. The reference choice accounts for the 2.013 s gap. 11 of the 12 common stops took place by lap 21; 11 have slower local green reference pace than the whole-race reference. The two flag rules differ on Magnussen lap 14 and Ocon lap 20. Hamilton\u2019s deleted lap 17 and Bottas\u2019s missing green reference after lap 24 also change membership. The ten lap-26 stops overlap the second safety car and are outside both medians. Verstappen\u2019s five-second penalty is in both samples.",
+  "shanghai 2026": "Four dry W3 stops remain after the early safety car. The site also admits Hadjar on lap 1, Colapinto on lap 32 (yellow-affected out-lap) and Alonso on lap 31 (yellow-affected out-lap with a second pit entry). All four W3 drivers/stops had faster local reference laps than the corresponding whole-race reference, which raises the median loss. On lap 35 H\u00fclkenberg spent 16.16 s stationary; Audi confirms a wheelgun problem. Ocon spent 26.93 s stationary on lap 46 after a 10 s collision penalty. Race control confirms he served it. These long stationary times help explain the 16.03925 s W3 IQR. The cause of the remaining time in Ocon\u2019s service is unverified."
+ },
+ "tracks": {
+  "sakhir": {
+   "2022": {
+    "s": 24.928,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 31,
+    "iqr": 2.78
+   },
+   "2023": {
+    "s": 24.437,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 43,
+    "iqr": 2.962
+   },
+   "2024": {
+    "s": 24.142,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 37,
+    "iqr": 1.44
+   },
+   "2025": {
+    "s": 23.0845,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 24,
+    "iqr": 1.729
+   }
+  },
+  "jeddah": {
+   "2022": {
+    "s": 21.248,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 1
+   },
+   "2023": {
+    "s": 20.193,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 7,
+    "iqr": 1.236
+   },
+   "2024": {
+    "s": 22.019,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 5,
+    "iqr": 2.643
+   },
+   "2025": {
+    "s": 20.847,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 16,
+    "iqr": 2.586
+   }
+  },
+  "melbourne": {
+   "2022": {
+    "s": 21.3225,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 8,
+    "iqr": 1.436
+   },
+   "2023": {
+    "s": 21.169,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 2,
+    "iqr": 0.424
+   },
+   "2024": {
+    "s": 20.546,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 31,
+    "iqr": 2.07
+   },
+   "2025": {
+    "s": 75.643,
+    "method": "wet_transition_or_other_one_sided",
+    "condition": "wet",
+    "n": 3,
+    "iqr": 4.422
+   },
+   "2026": {
+    "s": 24.56,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 9,
+    "iqr": 15.753
+   }
+  },
+  "imola": {
+   "2022": {
+    "s": 29.4685,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 4,
+    "iqr": 1.48
+   },
+   "2024": {
+    "s": 28.103,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 25,
+    "iqr": 1.477
+   },
+   "2025": {
+    "s": 28.0245,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 10,
+    "iqr": 1.058
+   }
+  },
+  "miami": {
+   "2022": {
+    "s": 21.228,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 13,
+    "iqr": 1.757
+   },
+   "2023": {
+    "s": 20.128,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 19,
+    "iqr": 1.407
+   },
+   "2024": {
+    "s": 20.318,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 11,
+    "iqr": 2.433
+   },
+   "2025": {
+    "s": 19.184,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 1
+   },
+   "2026": {
+    "s": 19.776,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 18,
+    "iqr": 1.517
+   }
+  },
+  "catalunya": {
+   "2022": {
+    "s": 22.6255,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 48,
+    "iqr": 2.235
+   },
+   "2023": {
+    "s": 23.873,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 42,
+    "iqr": 1.556
+   },
+   "2024": {
+    "s": 22.5215,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 42,
+    "iqr": 1.698
+   },
+   "2025": {
+    "s": 22.208,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 39,
+    "iqr": 2.361
+   },
+   "2026": {
+    "s": 23.8285,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 38,
+    "iqr": 1.798
+   }
+  },
+  "monte-carlo": {
+   "2022": {
+    "s": 23.663,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 1
+   },
+   "2023": {
+    "s": 19.9635,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 10,
+    "iqr": 4.771
+   },
+   "2024": {
+    "s": 21.3915,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 4,
+    "iqr": 2.783
+   },
+   "2025": {
+    "s": 21.17,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 33,
+    "iqr": 1.439
+   },
+   "2026": {
+    "s": 22.263,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 17,
+    "iqr": 1.409
+   }
+  },
+  "baku": {
+   "2022": {
+    "s": 23.737,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 9,
+    "iqr": 5.623
+   },
+   "2023": {
+    "s": 21.941,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 5,
+    "iqr": 1.867
+   },
+   "2024": {
+    "s": 21.327,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 15,
+    "iqr": 2.036
+   },
+   "2025": {
+    "s": 21.505,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 14,
+    "iqr": 1.451
+   },
+   "2026": {
+    "s": 22.699,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 1
+   }
+  },
+  "montreal": {
+   "2022": {
+    "s": 19.002,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 10,
+    "iqr": 1.206
+   },
+   "2023": {
+    "s": 20.0905,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 12,
+    "iqr": 0.656
+   },
+   "2024": {
+    "s": 24.458,
+    "method": "wet_green_two_sided",
+    "condition": "wet",
+    "n": 2,
+    "iqr": 1.555
+   },
+   "2025": {
+    "s": 19.822,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 28,
+    "iqr": 1.712
+   },
+   "2026": {
+    "s": 23.375,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 6,
+    "iqr": 6.601
+   }
+  },
+  "silverstone": {
+   "2022": {
+    "s": 22.245,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 18,
+    "iqr": 2.223
+   },
+   "2023": {
+    "s": 20.011,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 9,
+    "iqr": 1.784
+   },
+   "2024": {
+    "s": 23.126,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 3,
+    "iqr": 8.48
+   },
+   "2025": {
+    "s": 20.1605,
+    "method": "wet_green_two_sided",
+    "condition": "wet",
+    "n": 2,
+    "iqr": 2.643
+   },
+   "2026": {
+    "s": 20.947,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 20,
+    "iqr": 5.481
+   }
+  },
+  "spielberg": {
+   "2022": {
+    "s": 21.984,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 25,
+    "iqr": 1.834
+   },
+   "2023": {
+    "s": 21.899,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 27,
+    "iqr": 5.226
+   },
+   "2024": {
+    "s": 20.6275,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 40,
+    "iqr": 2.017
+   },
+   "2025": {
+    "s": 21.447,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 29,
+    "iqr": 1.879
+   },
+   "2026": {
+    "s": 21.484,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 31,
+    "iqr": 1.01
+   }
+  },
+  "french": {
+   "2022": {
+    "s": 28.966,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 5,
+    "iqr": 2.742
+   }
+  },
+  "hungaroring": {
+   "2022": {
+    "s": 22.86,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 25,
+    "iqr": 2.828
+   },
+   "2023": {
+    "s": 21.571,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 34,
+    "iqr": 2.0
+   },
+   "2024": {
+    "s": 20.274,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 39,
+    "iqr": 1.696
+   },
+   "2025": {
+    "s": 21.144,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 28,
+    "iqr": 1.98
+   },
+   "2026": {
+    "s": 21.946,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 32,
+    "iqr": 2.058
+   }
+  },
+  "spa-francorchamps": {
+   "2022": {
+    "s": 18.664,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 35,
+    "iqr": 1.877
+   },
+   "2023": {
+    "s": 18.336,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 22,
+    "iqr": 1.85
+   },
+   "2024": {
+    "s": 18.4685,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 32,
+    "iqr": 1.471
+   },
+   "2025": {
+    "s": 22.1315,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 2,
+    "iqr": 0.2
+   },
+   "2026": {
+    "s": 20.934,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 9,
+    "iqr": 4.72
+   }
+  },
+  "zandvoort": {
+   "2022": {
+    "s": 22.415,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 29,
+    "iqr": 2.586
+   },
+   "2023": {
+    "s": 22.1245,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 16,
+    "iqr": 1.651
+   },
+   "2024": {
+    "s": 22.994,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 26,
+    "iqr": 1.875
+   },
+   "2025": {
+    "s": 19.176,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 5,
+    "iqr": 0.894
+   },
+   "2026": {
+    "s": 19.357,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 15,
+    "iqr": 1.728
+   }
+  },
+  "monza": {
+   "2022": {
+    "s": 25.238,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 19,
+    "iqr": 2.156
+   },
+   "2023": {
+    "s": 25.065,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 25,
+    "iqr": 1.173
+   },
+   "2024": {
+    "s": 25.8585,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 30,
+    "iqr": 2.616
+   },
+   "2025": {
+    "s": 25.414,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 18,
+    "iqr": 1.046
+   },
+   "2026": {
+    "s": 31.0585,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 2,
+    "iqr": 4.295
+   }
+  },
+  "singapore": {
+   "2022": {
+    "s": 93.61,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 3,
+    "iqr": 32.883
+   },
+   "2023": {
+    "s": 28.418,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 2,
+    "iqr": 1.196
+   },
+   "2024": {
+    "s": 29.658,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 21,
+    "iqr": 2.381
+   },
+   "2025": {
+    "s": 23.617,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 22,
+    "iqr": 3.141
+   },
+   "2026": {
+    "s": 24.6165,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 14,
+    "iqr": 1.182
+   }
+  },
+  "suzuka": {
+   "2022": {
+    "s": 24.188,
+    "method": "wet_green_two_sided",
+    "condition": "wet",
+    "n": 23,
+    "iqr": 4.745
+   },
+   "2023": {
+    "s": 22.305,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 23,
+    "iqr": 1.391
+   },
+   "2024": {
+    "s": 22.26,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 33,
+    "iqr": 1.851
+   },
+   "2025": {
+    "s": 23.471,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 21,
+    "iqr": 1.895
+   },
+   "2026": {
+    "s": 22.5845,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 6,
+    "iqr": 1.159
+   }
+  },
+  "austin": {
+   "2022": {
+    "s": 20.711,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 24,
+    "iqr": 4.425
+   },
+   "2023": {
+    "s": 21.0025,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 32,
+    "iqr": 1.487
+   },
+   "2024": {
+    "s": 21.5915,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 18,
+    "iqr": 1.909
+   },
+   "2025": {
+    "s": 21.341,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 18,
+    "iqr": 2.469
+   },
+   "2026": {
+    "s": 21.548,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 25,
+    "iqr": 1.985
+   }
+  },
+  "mexico-city": {
+   "2022": {
+    "s": 23.517,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 23,
+    "iqr": 1.708
+   },
+   "2023": {
+    "s": 21.68,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 13,
+    "iqr": 1.931
+   },
+   "2024": {
+    "s": 23.314,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 21,
+    "iqr": 2.677
+   },
+   "2025": {
+    "s": 22.372,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 23,
+    "iqr": 2.087
+   },
+   "2026": {
+    "s": 23.84,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 18,
+    "iqr": 2.923
+   }
+  },
+  "interlagos": {
+   "2022": {
+    "s": 21.8485,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 36,
+    "iqr": 1.865
+   },
+   "2023": {
+    "s": 22.066,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 33,
+    "iqr": 1.137
+   },
+   "2024": {
+    "s": 49.939,
+    "method": "wet_transition_or_other_two_sided",
+    "condition": "wet",
+    "n": 7,
+    "iqr": 2.06
+   },
+   "2025": {
+    "s": 22.139,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 33,
+    "iqr": 2.104
+   },
+   "2026": {
+    "s": 26.1515,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 16,
+    "iqr": 1.568
+   }
+  },
+  "yas-marina-circuit": {
+   "2022": {
+    "s": 23.2515,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 26,
+    "iqr": 1.611
+   },
+   "2023": {
+    "s": 22.4945,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 34,
+    "iqr": 2.14
+   },
+   "2024": {
+    "s": 23.041,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 19,
+    "iqr": 3.197
+   },
+   "2025": {
+    "s": 22.4725,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 26,
+    "iqr": 1.369
+   }
+  },
+  "lusail": {
+   "2023": {
+    "s": 28.279,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 39,
+    "iqr": 1.458
+   },
+   "2024": {
+    "s": 28.235,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 5,
+    "iqr": 4.713
+   },
+   "2025": {
+    "s": 27.084,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 22,
+    "iqr": 1.531
+   }
+  },
+  "las-vegas": {
+   "2023": {
+    "s": 23.667,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 12,
+    "iqr": 2.468
+   },
+   "2024": {
+    "s": 22.01,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 33,
+    "iqr": 1.797
+   },
+   "2025": {
+    "s": 21.7425,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 14,
+    "iqr": 2.423
+   }
+  },
+  "shanghai": {
+   "2024": {
+    "s": 23.519,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 22,
+    "iqr": 1.554
+   },
+   "2025": {
+    "s": 22.676,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 24,
+    "iqr": 1.494
+   },
+   "2026": {
+    "s": 36.123,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 4,
+    "iqr": 16.039
+   }
+  },
+  "madring": {
+   "2026": {
+    "s": 26.5235,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 12,
+    "iqr": 1.521
+   }
+  },
+  "kuala-lumpur": {
+   "2026": {
+    "s": 27.002,
+    "method": "dry_green_two_sided",
+    "condition": "dry",
+    "n": 20,
+    "iqr": 2.423
+   }
+  }
+ }
+}

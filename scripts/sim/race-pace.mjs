@@ -12,6 +12,13 @@ const CACHE = process.env.LAPSIM_CACHE || '.cache/lapsim';
 const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 const read = async f => JSON.parse(await readFile(join(CACHE, f), 'utf8'));
 const median = a => { const s = [...a].sort((x, y) => x - y); return s.length ? (s[(s.length - 1) >> 1] + s[s.length >> 1]) / 2 : NaN; };
+// measured pit loss per race (W3-F review, scripts/sim/data/pit-loss-lookups.json): stop minus the local green median of the 3 laps on
+// each side, dry green only; replaces this script's own in/out-lap estimate where it exists (replayed as is, no rounding)
+const PL = JSON.parse(await readFile(new URL('./data/pit-loss-lookups.json', import.meta.url), 'utf8')).tracks;
+// only where at least 10 stops were measured (2026-11-21, Wolfram on the 104 dry rows: a median of n stops scatters
+// 1.38 s × 1.25 / √n around the race value; at n = 10 that is half the 1.08 s year-to-year spread; n < 10 rows scatter 1.9–3.7 s)
+const MIN_STOPS = 10;
+const pitOf = (id, year, own) => (PL[id]?.[year]?.n >= MIN_STOPS ? PL[id][year].s : own);
 
 // Source: TracingInsights race laps 2018 on (LAPSIM_RACE_SRC=ti, default) or OpenF1 races from fetch-openf1.mjs
 const SRC = process.env.LAPSIM_RACE_SRC || 'ti', TOP = Math.max(1, Number(process.env.LAPSIM_RACE_TOP || 8));
@@ -49,7 +56,7 @@ if (SRC === 'ti') {
     const f = fitRace(r.laps, {top: TOP});
     if (!f) { log.push(`${r.year} ${r.track}: too few clean laps`); continue; }
     const pole = r.poleRain <= 0.05 ? r.pole : null;
-    (fits[r.track] ||= []).push({...f, year: r.year, pole, pole1: r.poleRain <= 0.05 ? r.pole1 : null, raceRatio: pole ? f.ref / pole : null, pitLoss: r.pitLoss, laps: r.totalLaps, cleanLaps: r.laps});
+    (fits[r.track] ||= []).push({...f, year: r.year, pole, pole1: r.poleRain <= 0.05 ? r.pole1 : null, raceRatio: pole ? f.ref / pole : null, pitLoss: pitOf(r.track, r.year, r.pitLoss), laps: r.totalLaps, cleanLaps: r.laps});
     log.push(`${r.year} ${r.track}: ${r.laps.length} clean laps, ratio ${pole ? (f.ref / pole).toFixed(4) : '– (wet qualifying)'}, slope ${f.slope.toFixed(3)} s/lap, fit RMS ${f.rmsSec.toFixed(2)} s`);
   }
 }
@@ -61,7 +68,7 @@ for (const r of races.filter(x => x.session === 'Race').sort((a, b) => a.year - 
   const pole = poleOf(r.year, r.circuit);
   if (!f) { log.push(`${r.year} ${r.circuit}: too few clean laps`); continue; }
   const id = slug(r.circuit);
-  const fit = {...f, year: r.year, pole, raceRatio: pole ? f.ref / pole : null, pitLoss: pitLoss(race, laps), laps: totalLaps, cleanLaps: laps};
+  const fit = {...f, year: r.year, pole, raceRatio: pole ? f.ref / pole : null, pitLoss: pitOf(slug(r.circuit), r.year, pitLoss(race, laps)), laps: totalLaps, cleanLaps: laps};
   (fits[id] ||= []).push(fit);
   log.push(`${r.year} ${r.circuit}: ${laps.length} clean laps, ratio ${fit.raceRatio?.toFixed(4) ?? '– (wet qualifying)'}, slope ${f.slope.toFixed(3)} s/lap, fit RMS ${f.rmsSec.toFixed(2)} s`);
 }

@@ -29,7 +29,7 @@ test('pit data: documented limit per series and the measured F1 pit loss, never 
   assert.equal(lapsimPitSpeed.series.f1.kph, 80); assert.equal(lapsimPitSpeed.series.wec.kph, 60); assert.equal(lapsimPitSpeed.series.imsa.kph, 60);
   for (const s of Object.values(lapsimPitSpeed.series)) assert.ok(s.src);
   const html = simulationPage({track: 'monza'}, 'en');
-  assert.match(html, /"pitLossF1":25\.8\d*/);
+  assert.match(html, /"pitLossF1":25\.6875\b/); // W3-F measured stops 2022–25 (10+ stops each), pooled
 });
 
 test('two pit lanes (owner 2026-11-17): Spa F1 pits for F1/WEC, Endurance pits for GT3 too; Silverstone Wing for F1, National for others', () => {
