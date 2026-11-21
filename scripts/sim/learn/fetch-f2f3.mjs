@@ -4,8 +4,8 @@
 //   practice / qualifying: best lap, laps, km/h;  race: laps, best lap and the lap it was set on, km/h, status (classified / DNF ...)
 // For each session the newest version is used: final > amended > plain > provisional.
 //   node scripts/sim/learn/fetch-f2f3.mjs [--years=2024,2025,2026]
-import {writeFileSync} from 'node:fs';
-import {gzipSync} from 'node:zlib';
+import {writeFileSync, readFileSync, existsSync} from 'node:fs';
+import {gzipSync, gunzipSync} from 'node:zlib';
 import {parseDocuments, fiaDocumentText} from '../../../worker/fia.js';
 
 export const CHAMPS = {f2: '/documents/championships/fia-formula-2-championship-44', f3: '/documents/championships/fia-formula-3-championship-1012'};
@@ -50,12 +50,12 @@ export function classificationRows(text, kind) {
 // the race documents also print the overall fastest lap: a parity check for the rows
 export const overallFastest = text => { const m = /OVERALL FASTEST LAP\n[^\n]*?\|\s*(\d{1,2}:\d{2}\.\d{3})/.exec(text); return m ? secs(m[1]) : null; };
 
-// fia.com throttles a burst (the first run lost every request after ~100 documents): one request per ~1.2 s, retries with backoff
+// fia.com throttles a burst (the first run lost every request after ~100 documents): one request per ~1.2 s, retries after 5 and 20 s; 6 failures in a row stop the run (data so far is kept)
 const wait = ms => new Promise(r => setTimeout(r, ms));
 let last = 0;
 async function paced(fn) {
   let error;
-  for (const backoff of [0, 10000, 30000, 90000]) {
+  for (const backoff of [0, 5000, 20000]) {
     await wait(Math.max(backoff, last + 1200 - Date.now())); last = Date.now();
     try { return await fn(); } catch (e) { error = e; }
   }
@@ -64,31 +64,52 @@ async function paced(fn) {
 const html = path => paced(async () => { const r = await fetch(new URL(path, ROOT), {headers: {'user-agent': 'Mozilla/5.0 (kongboda-motorsports lap simulator)'}, signal: AbortSignal.timeout(45000)}); if (!r.ok) throw Error('HTTP ' + r.status + ' ' + path); return r.text(); });
 const opts = (h, re) => [...h.matchAll(/<option[^>]*value="([^"]*)"[^>]*>([^<]*)</g)].map(m => ({url: m[1].replace(/&amp;/g, '&'), label: m[2].trim()})).filter(o => re.test(o.url));
 
+// keep what earlier runs read: a session whose newest document was already read is reused, not fetched again
+export function reuse(rows) {
+  const m = new Map();
+  for (const r of rows || []) { const k = [r.series, r.season, r.event, r.session].join('|'); (m.get(k) || m.set(k, {document: r.document, rows: []}).get(k)).rows.push(r); }
+  return m;
+}
+
 if (process.argv[1]?.endsWith('fetch-f2f3.mjs')) {
+  const FILE = 'scripts/sim/data/learn/f2f3-laps.json.gz';
   const years = (process.argv.find(a => a.startsWith('--years='))?.slice(8) || '2024,2025,2026').split(',');
-  const out = [], log = [];
+  const old = reuse(existsSync(FILE) ? JSON.parse(gunzipSync(readFileSync(FILE))).rows : []), seen = new Set();
+  const out = [], t0 = Date.now(), BUDGET = 70 * 60e3;  // stop new reads after 70 min; the rest waits for the next run
+  let fails = 0, stopped = '';
+  const say = m => console.log(m);
+  const step = async (what, fn) => {
+    if (stopped) return null;
+    if (Date.now() - t0 > BUDGET) { stopped = 'time budget used'; return null; }
+    try { const r = await fn(); fails = 0; return r; }
+    catch (e) { say(`${what}: failed (${String(e.message).slice(0, 80)})`); if (++fails >= 6) stopped = 'fia.com stopped answering (6 failures in a row)'; return null; }
+  };
   for (const [series, path] of Object.entries(CHAMPS)) {
-    const seasons = opts(await html(path).catch(e => (log.push(`${series}: index failed (${e.message})`), '')), /\/season\//).filter(o => years.some(y => o.label.endsWith(y)));
+    const seasons = opts(await step(series + ' index', () => html(path)) || '', /\/season\//).filter(o => years.some(y => o.label.endsWith(y)));
     for (const season of seasons) {
-      const year = +season.label.slice(-4), events = opts(await html(season.url).catch(e => (log.push(`${series} ${year}: season failed (${e.message})`), '')), /\/event\//);
-      log.push(`${series} ${year}: ${events.length} events`);
+      const year = +season.label.slice(-4), events = opts(await step(`${series} ${year}`, () => html(season.url)) || '', /\/event\//);
+      say(`${series} ${year}: ${events.length} events`);
       for (const ev of events) {
-        const page = await html(ev.url).catch(e => (log.push(`${series} ${year} ${ev.label}: event page failed (${e.message})`), ''));
-        const docs = pickDocs(parseDocuments(page, ROOT + ev.url));
-        for (const d of docs) {
-          const kind = kindOf(d.session); let text = '';
-          try { text = await paced(() => fiaDocumentText(d.url, 4)); } catch (e) { log.push(`${series} ${year} ${ev.label} ${d.session}: read failed (${String(e.message).slice(0, 80)})`); continue; }
-          const rows = classificationRows(text, kind), fastest = kind === 'race' ? overallFastest(text) : null;
+        const page = await step(`${series} ${year} ${ev.label}`, () => html(ev.url));
+        for (const d of pickDocs(parseDocuments(page || '', ROOT + ev.url))) {
+          const key = [series, year, ev.label, d.session].join('|'), was = old.get(key); seen.add(key);
+          const row = r => ({series, season: year, event: ev.label, session: d.session, kind: kindOf(d.session), version: d.version || 'plain', document: d.document_number, ...r});
+          if (was && was.document === d.document_number) { out.push(...was.rows); continue; }
+          const text = await step(`${series} ${year} ${ev.label} ${d.session}`, () => paced(() => fiaDocumentText(d.url, 4)));
+          if (text == null) { if (was) out.push(...was.rows); continue; }
+          const kind = kindOf(d.session), rows = classificationRows(text, kind), fastest = kind === 'race' ? overallFastest(text) : null;
           const check = fastest == null ? '' : Math.abs(Math.min(...rows.map(r => r.best).filter(Number.isFinite)) - fastest) < 0.0005 ? ' fastest ok' : ' fastest ✗';
-          for (const r of rows) out.push({series, season: year, event: ev.label, session: d.session, kind, version: d.version || 'plain', document: d.document_number, ...r});
-          log.push(`${series} ${year} ${ev.label} ${d.session} (${d.version || 'plain'}): ${rows.length} drivers${check}`);
+          out.push(...rows.map(row));
+          say(`${series} ${year} ${ev.label} ${d.session} (${d.version || 'plain'}): ${rows.length} drivers${check}`);
         }
       }
     }
   }
-  writeFileSync('scripts/sim/data/learn/f2f3-laps.json.gz', gzipSync(JSON.stringify({
+  for (const [k, v] of old) if (!seen.has(k)) out.push(...v.rows);  // sessions not listed this time (page failed) stay
+  writeFileSync(FILE, gzipSync(JSON.stringify({
     source: 'FIA F2 / F3 classification documents (fia.com decision documents). Derived numbers only, one row per driver and session; the documents are not stored or reproduced.',
     fields: 'best = best lap (s); race rows also bestLap (lap number), laps, status; kph = speed listed by the timekeeper',
     fetched: new Date().toISOString().slice(0, 10), rows: out})));
-  console.log(log.join('\n')); console.log('rows', out.length);
+  if (stopped) say(`stopped early: ${stopped}; the next run continues from here`);
+  say(`rows ${out.length}, sessions ${new Set(out.map(r => [r.series, r.season, r.event, r.session].join('|'))).size}`);
 }

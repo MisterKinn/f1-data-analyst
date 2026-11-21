@@ -39,3 +39,10 @@ test('F2/F3 documents: newest version per session, no grids or championship tabl
   assert.deepEqual(picked.map(x => [x.session, x.url]), [['Practice', 'u26'], ['Qualifying 2', 'u59']]);
   assert.deepEqual(['Race 1 (Sprint)', 'Qualifying 1', 'Practice'].map(kindOf), ['race', 'qualifying', 'practice']);
 });
+
+test('F2/F3 reuse: rows grouped per session with the document they came from', async () => {
+  const {reuse} = await import('../scripts/sim/learn/fetch-f2f3.mjs');
+  const m = reuse([{series: 'f2', season: 2026, event: 'Baku', session: 'Practice', document: '26', car: '1'},
+    {series: 'f2', season: 2026, event: 'Baku', session: 'Practice', document: '26', car: '2'}]);
+  assert.equal(m.get('f2|2026|Baku|Practice').document, '26'); assert.equal(m.get('f2|2026|Baku|Practice').rows.length, 2);
+});

@@ -29,8 +29,8 @@ jobs:
       - run: npm ci --ignore-scripts
       - name: Read the FIA F2 and F3 classifications
         run: |
-          node scripts/sim/learn/fetch-f2f3.mjs | tee /tmp/f2f3.log | grep -vE "drivers( fastest ok)?$" | tail -60
-          echo "sessions read: $(grep -cE ' drivers' /tmp/f2f3.log || true)"
+          node scripts/sim/learn/fetch-f2f3.mjs | tee /tmp/f2f3.log | grep -vE "drivers( fastest ok)?$"
+          echo "sessions read this run: $(grep -cE ' drivers' /tmp/f2f3.log || true)"
           echo "races where the fastest lap differs from the FIA overall fastest: $(grep -c "fastest ✗" /tmp/f2f3.log || true)"
       - name: Publish to main (checks first)
         env: {GH_TOKEN: '${{ github.token }}'}
