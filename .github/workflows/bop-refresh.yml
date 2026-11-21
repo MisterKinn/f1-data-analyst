@@ -2,8 +2,9 @@ name: BoP refresh
 
 # Owner 2026-11-16: after every WEC race the BoP simulator refits itself. Reads every Al Kamel FIA WEC Analysis CSV (Hypercar and LMGT3,
 # plus ELMS LMGT3/LMP3), re-runs the estimators (a raced 2026/2027 round is estimated from its laps, the rounds still to come are
-# projected again from it) and pushes a lapsim-learn/bop-refresh-* branch when anything changed; the owner opens and merges the PR
-# (link in the run summary). Same pattern as f1-zones-refresh.yml.
+# projected again from it). Owner 2026-11-21: published BoP tables (ELMS decisions, IMSA bulletins) are measured lookups and go live
+# by themselves (scripts/publish-refresh.sh: CI checks, then main). The estimates are models: they still go to a
+# lapsim-learn/bop-refresh-* branch with their hold-out numbers in the run summary, for the BoP lane to gate and merge.
 on:
   schedule:
     - cron: '23 4 * * *'
@@ -11,6 +12,7 @@ on:
 
 permissions:
   contents: write
+  actions: write  # start the stored-views rebuild after publishing
 
 concurrency:
   group: bop-refresh
@@ -18,7 +20,7 @@ concurrency:
 
 jobs:
   refresh:
-    if: github.event_name != 'schedule' || github.repository == 'MisterKinn/f1-data-analyst'
+    if: github.repository == 'MisterKinn/f1-data-analyst'
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
@@ -26,27 +28,36 @@ jobs:
       - uses: actions/setup-node@v4
         with: {node-version: '22'}
       - run: npm ci --ignore-scripts
-      - name: Al Kamel laps (WEC Hypercar + LMGT3, ELMS LMGT3 + LMP3)
-        run: node scripts/sim/learn/fetch-gt3-bop-pace.mjs
-      - name: ELMS BoP decisions (new published tables)
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
+      - name: Read the sources and re-run the estimators
         run: |
-          sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
-          node scripts/sim/learn/fetch-elms-bop-docs.mjs && node scripts/sim/learn/parse-elms-bop.mjs || echo "::warning::ELMS notice board not read"
-      - name: Re-run the estimators
-        run: |
+          cat > /tmp/gen.sh <<'GEN'
+          set -e
+          node scripts/sim/learn/fetch-gt3-bop-pace.mjs
+          { node scripts/sim/learn/fetch-elms-bop-docs.mjs && node scripts/sim/learn/parse-elms-bop.mjs; } || echo "::warning::ELMS notice board not read"
           node scripts/sim/bop-estimate.mjs
-          node scripts/sim/gt3-bop-estimate.mjs
-          node scripts/sim/gt3-bop-estimate.mjs elms
+          node scripts/sim/gt3-bop-estimate.mjs | tee /tmp/gt3-holdout.txt
+          node scripts/sim/gt3-bop-estimate.mjs elms | tee -a /tmp/gt3-holdout.txt
           node scripts/sim/learn/parse-imsa-bop.mjs
-          node scripts/sim/bop-virtual.mjs
-      - name: Push a refresh branch when an estimate changed
+          node scripts/sim/bop-virtual.mjs | tee /tmp/virtual-holdout.txt
+          GEN
+          bash /tmp/gen.sh
+      - name: Publish the published BoP tables to main (checks first)
+        env: {GH_TOKEN: '${{ github.token }}'}
+        run: |
+          scripts/publish-refresh.sh -m "Published BoP tables (ELMS decisions, IMSA bulletins) from the official notice boards" \
+            -g "bash /tmp/gen.sh" -b lapsim-learn/bop-tables \
+            -c "node scripts/refresh-changed.mjs scripts/sim/data/elms-lmgt3-bop.json worker/lapsim/bop-imsa-data.js" \
+            -- scripts/sim/data/elms-lmgt3-bop.json worker/lapsim/bop-imsa-data.js
+      - name: Push a refresh branch when an estimate changed (model; not auto-published)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
-          git add scripts/sim/data/learn scripts/sim/data/elms-lmgt3-bop.json worker/lapsim/bop-estimate-data.js worker/lapsim/bop-lmgt3-data.js worker/lapsim/bop-elms-lmgt3-data.js worker/lapsim/bop-virtual-data.js worker/lapsim/bop-imsa-data.js
+          git add scripts/sim/data/learn worker/lapsim/bop-estimate-data.js worker/lapsim/bop-lmgt3-data.js worker/lapsim/bop-elms-lmgt3-data.js worker/lapsim/bop-virtual-data.js
           # the build date alone is not a change
-          node -e "const fs=require('fs'),cp=require('child_process'),strip=s=>s.replace(/\"generated\":\"[^\"]*\"/,'');process.exit(['worker/lapsim/bop-estimate-data.js','worker/lapsim/bop-lmgt3-data.js','worker/lapsim/bop-elms-lmgt3-data.js','worker/lapsim/bop-virtual-data.js'].some(f=>strip(fs.readFileSync(f,'utf8'))!==strip(cp.execSync('git show HEAD:'+f).toString()))?0:1)" || { echo "No BoP change"; exit 0; }
+          node -e "const fs=require('fs'),cp=require('child_process'),strip=s=>s.replace(/\"generated\":\"[^\"]*\"/,'');process.exit(['worker/lapsim/bop-estimate-data.js','worker/lapsim/bop-lmgt3-data.js','worker/lapsim/bop-elms-lmgt3-data.js','worker/lapsim/bop-virtual-data.js'].some(f=>strip(fs.readFileSync(f,'utf8'))!==strip(cp.execSync('git show HEAD:'+f).toString()))?0:1)" || { echo "No BoP estimate change" >> "$GITHUB_STEP_SUMMARY"; exit 0; }
           B="lapsim-learn/bop-refresh-$(date -u +%Y%m%d-%H%M)"
           git commit -m "BoP refit from the latest Al Kamel laps (WEC Hypercar, LMGT3; ELMS LMGT3)"
           git push origin HEAD:"refs/heads/$B"
-          echo "Open and merge: https://github.com/${{ github.repository }}/compare/main...$B?expand=1" >> "$GITHUB_STEP_SUMMARY"
+          { echo "BoP estimates changed (model): not published automatically — gate on the hold-out numbers, then merge:"
+            echo "https://github.com/${{ github.repository }}/compare/main...$B?expand=1"; echo '```'; tail -5 /tmp/gt3-holdout.txt /tmp/virtual-holdout.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
