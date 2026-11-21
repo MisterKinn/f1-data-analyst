@@ -20,7 +20,7 @@ for (const y of YEARS) {
       d.time.forEach((t, i) => {
         const lap = num(t), s = [num(d.s1[i]), num(d.s2[i]), num(d.s3[i])];
         if (lap == null || d.del?.[i] || s.some(x => x == null) || Math.abs(s[0] + s[1] + s[2] - lap) > 0.002) return;
-        if (!rows[drv] || lap < rows[drv].lap) rows[drv] = {lap, sectors: s, compound: d.compound?.[i] || null, seg: d.qs?.[i] || ''};
+        if (!rows[drv] || lap < rows[drv].lap) rows[drv] = {lap, sectors: s, compound: d.compound?.[i] || null, seg: d.qs?.[i] || '', lapNo: d.lap?.[i] ?? null, ev}; // lapNo + ev: the page loads this lap's measured telemetry
       });
     }
     if (Object.keys(rows).length) (out[tiTrack(ev, +y)] ||= {})[y] = rows;
