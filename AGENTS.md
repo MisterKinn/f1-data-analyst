@@ -49,6 +49,18 @@ estimates, tracks) must leave all three in step in the same PR or refresh run:
 - never copy maker names, BoP values or residuals into another file: import them from these two modules;
 - the BoP-fastest maker per track (`bopRank`) is computed from these, so it follows by itself; report the held-out line of the builder.
 
+### Real laps are never changed (owner 2026-11-22)
+- Measured data (real lap and sector times, official weather) is read-only. No fit, rule change or new physics may rewrite or move it; a
+  raced track shows its real lap exactly (tests: "every car that raced on a track reproduces its real lap exactly", "F1 sector
+  correction"). A model change that breaks this is a bug in the model path, fixed there, never by editing the real lap.
+- Qualifying with rain: the dry fit leaves the session out, but the page and tool still default to that session's real pole in its own
+  weather (scripts/sim/learn/wet-quali.mjs → worker/lapsim/f1-wet-quali-data.js, input scripts/sim/data/learn/f1-wet-quali.json from
+  OpenF1). Next to it they show a dry pole estimate labelled model: the simulator prediction and that weekend's fastest dry race lap ×
+  the season's pole/race-best ratio, weighted by their held-out errors; its ± is the blend's held-out error. lapsim-data rebuilds it.
+- 2026 Bahrain Grand Prix was held at Sepang (Kuala Lumpur, Malaysia), not Sakhir. OpenF1 lists both: Sakhir session 11257 is
+  cancelled; the real one is Kuala Lumpur 11730 (pole 1:35.130). Its laps, weather and fit row belong to track id kuala-lumpur; never
+  file them under sakhir, and there is no 2026 sakhir row.
+
 ## Lap simulator learning data (owner rules, 2026-11-14) — read before adding laps, tracks or cars
 
 Read `docs/lapsim-learn.md` first and follow it together with `docs/lapsim-physics-rules.md`. The rules, in short:

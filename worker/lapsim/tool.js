@@ -147,10 +147,16 @@ export function simulate(args = {}, opts = {}) {
   const secOf = r => { if (d.sectors?.length !== 2) return null; const i1 = Math.round(d.sectors[0] / d.ds), i2 = Math.round(d.sectors[1] / d.ds); return [r.time[i1], r.time[i2] - r.time[i1], r.lapTime - r.time[i2]]; };
   // the fit's C5.12 setting (calibration.puRamp) also in the sector-correction reference lap, so a raced track still reproduces its pole
   const rampEnv = e => PU_RAMP ? {...e, puRamp: puRampOf(d, id)} : e;
+  // the real qualifying's zone state of a car that raced here (Interlagos 2026: Low Grip → Alt, Overtake off), as the page's realOpt:
+  // the reference lap and the default lap both run with it, so the default reproduces the real lap and options move from there
+  const realM = c => { if (c.series || !c.year || !c.fix) return null; const zt = lapsimF1Zones?.tracks?.[id], z = zt?.[slotOf(zt, c.year)], q = z?.real; if (!q || z.year !== c.year) return null;
+    const m = c.year >= 2026 ? {sm: q.grip === 'low' ? 'alt' : 'normal', ot: q.ot !== 'off', drs: true} : {sm: 'normal', ot: false, drs: q.drs !== 'off'};
+    return (c.year >= 2026 ? m.sm === 'normal' && m.ot : m.drs) ? null : m; };
   const corrOf = c => {
     if (c.fix?.lap != null) { // lap-level correction (series whose sector lines may differ from these): spread by sector share
       const ref = cars[c.fix.ref], fw = Object.fromEntries(Object.entries(c.fix.weather || {}).filter(([, v]) => Number.isFinite(v)));
-      const r = K.simulateLap(withGrip(withZones(K, d, base, ref), ref.grip || 1), ref.car, rampEnv(K.conditionsFromWeather({pressureHpa: 1013.25, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0, ...fw})));
+      const envR = rampEnv(K.conditionsFromWeather({pressureHpa: 1013.25, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0, ...fw})), simR = tr => K.simulateLap(withGrip(tr, ref.grip || 1), ref.car, envR), mR = realM(ref);
+      const r = (mR && simulateWithOptions(K, d, base, ref, mR, simR, simR)) || simR(withZones(K, d, base, ref));
       const rs = scaled(r, ref.timeScale), ss = secOf(rs) || [rs.lapTime, 0, 0], dl = c.fix.lap - rs.lapTime; return ss.map(x => dl * x / rs.lapTime);
     }
     if (!c.fix || d.sectors?.length !== 2) return null;
@@ -159,7 +165,7 @@ export function simulate(args = {}, opts = {}) {
     return c.fix.real.map((x, i) => x - ss[i]);
   };
   // zone options (owner 2026-11-16); none given = the fitted lap, as before
-  const opt = ['straight_mode', 'overtake', 'drs'].some(k => args[k] !== undefined) ? {sm: args.straight_mode || 'normal', ot: args.overtake !== false, drs: args.drs !== false} : null;
+  const opt = ['straight_mode', 'overtake', 'drs'].some(k => args[k] !== undefined) ? {sm: args.straight_mode || 'normal', ot: args.overtake !== false, drs: args.drs !== false} : realM(sel);
   const run = c => {
     // options run with the C5.12 rule; the fit's own setup (scale) without it until the fit includes it (same as the page)
     const envP = {...env, puRamp: puRampOf(d, id)}, sim = tr => K.simulateLap(withGrip(tr, c.grip || 1), c.car, envP), simFit = tr => K.simulateLap(withGrip(tr, c.grip || 1), c.car, PU_RAMP ? envP : env);
@@ -254,6 +260,11 @@ export function simulate(args = {}, opts = {}) {
     note: fittedYear(id) >= ch.year ? `The cars were fitted on a real ${fittedYear(id)} lap that already ran with these changes; switching them on adds them a second time.` : 'Not yet in the fitted laps: switch them on to estimate their effect.'};
   out.assumptions = [...(given.length ? [`Given by you: ${given.join(', ')}; the real-lap correction of the unchanged car is kept, so the result is the real lap plus the simulated difference.`] : []), 'Engine power follows a torque curve and gear ratios (preset per rule set in powertrains.js unless given), capped at the regulation or BoP power.', 'Grip versus track temperature is an assumed curve (best near 35 °C).', 'Engine power changes with air density as (density/1.18)^0.15 (assumed for a turbocharged engine).',
     'FIA change effects are assumed sizes, not measurements.', 'No gear shifts, tyre temperature, fuel burn or car-to-car effects.', '2026-2028 energy: recovered under braking and, on throttle, from engine power the tyres cannot use; harvesting at full throttle at the end of straights ("super-clipping") is used only when it makes the lap faster; per-event qualifying recharge limit from the FIA Power Unit Information document of the event (a press-report or estimated value until it is published), reused for 2027/2028.'];
+  // qualifying with rain (owner 2026-11-22): the lap is that session's real pole; a dry pole estimate (model) is given beside it
+  if (sel.fix?.wet && conds[own]?.wet) { const w = conds[own];
+    out.wet_qualifying = {session: sel.fix.session, real_pole_s: w.realLap, driver: w.driver, tyre: w.tyre, rain_minutes: w.rainMinutes,
+      note: 'The dry fit leaves this session out (rain fell). The lap shown is the real pole in that session\'s weather; real laps are never changed.',
+      ...(w.dry ? {dry_pole_estimate: {lap_s: w.dry.lap, error_pct_1sigma: w.dry.pct, method: `model: ${Math.round((1 - w.dry.wRace) * 100)} % simulator prediction (${w.dry.model}) + ${Math.round(w.dry.wRace * 100)} % fastest dry race lap of that weekend (${w.dry.raceLap}) x season median pole/race-best ${w.dry.ratio}; weights from held-out errors`}} : {})}; }
   out.page = `${SITE}/simulation?track=${encodeURIComponent(id)}&car=${selKey}`;
   return out;
 }

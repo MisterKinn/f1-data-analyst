@@ -326,6 +326,13 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null, first
   // event this car races at here (calendar data) with the season of its session weather; absent = nothing shown
   const events = Object.fromEntries(CAR_ORDER_P.filter(k => cars[k]).map(k => [k, carEvent(id, k, cars[k], conds)]).filter(([, e]) => e)
     .map(([k, e]) => [k, t.eventFor.replace('{n}', lang === 'en' ? e.nameEn : e.name).replace('{a}', e.start).replace('{b}', e.end).replace('{y}', e.weatherYear)]));
+  // qualifying with rain (owner 2026-11-22): the 2026 car shows that session's real pole; the dry pole estimate (model) is named here
+  { const w = conds['2026'], f = cars['2026']?.fix; if (f?.wet && w?.wet) { const mm = v => `${Math.floor(v / 60)}:${(v % 60).toFixed(3).padStart(6, '0')}`;
+    events['2026'] = (lang === 'en'
+      ? `2026 qualifying had rain (${w.rainMinutes} min, ${w.tyre === 'intermediate' ? 'intermediates' : 'slicks'}): the lap is the real pole (${w.driver} ${mm(w.realLap)}) in that session's weather.`
+        + (w.dry ? ` Dry pole estimate ${mm(w.dry.lap)} ± ${w.dry.pct.toFixed(2)} % (model: simulator ${Math.round((1 - w.dry.wRace) * 100)} % + dry race laps of that weekend ${Math.round(w.dry.wRace * 100)} %).` : '')
+      : `2026 예선은 비가 왔습니다(${w.rainMinutes}분, ${w.tyre === 'intermediate' ? '인터미디어트' : '슬릭'}). 이 랩은 그 세션 날씨의 실제 폴(${w.driver} ${mm(w.realLap)})입니다.`
+        + (w.dry ? ` 드라이 예상 폴 ${mm(w.dry.lap)} ± ${w.dry.pct.toFixed(2)} % (모델: 시뮬레이터 ${Math.round((1 - w.dry.wRace) * 100)} % + 그 주말 레이스 드라이 랩 ${Math.round(w.dry.wRace * 100)} %).` : '')); } }
   const changes = latestChanges(id);
   // 2026 ERS clipping measured in this event's dry practice before qualifying (field row; scripts/sim/energy-clip.mjs)
   const clipEv = lapsimEnergyClip?.events?.[id], clipFp = clipEv ? {refM: clipEv.refM, sessions: clipEv.sessions, rows: clipEv.teams['*'] || []} : null;
@@ -337,7 +344,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null, first
   // first render on the server with the same code the browser uses
   // firstView (first-view job, stage 4): the stored view of this car's first view, so the page arrives as the browser will show it
   const stored = firstView && firstView(data, carId);
-  const view = stored ? storedPaint(stored, data) : computeView(K, data, {carId, compareId: '', mode: 'real', manual: null, active: {}, strength: 1, evo: null}, {renderMap, renderTrace, evolutionDelta, evolutionCurve, lineTrack, brakeZones, lapChannels});
+  const view = stored ? storedPaint(stored, data) : computeView(K, data, {carId, compareId: '', mode: 'real', manual: null, active: {}, strength: 1, evo: null, ...carStartOptions(data, carId)}, {renderMap, renderTrace, evolutionDelta, evolutionCurve, lineTrack, brakeZones, lapChannels});
   const options = ids.map(k => `<option value="${esc(k)}"${k === id ? ' selected' : ''}>${esc(trackLabel(k, lapsimTracks[k]))}</option>`).join('');
   // cascade: series → rules/class (the car models of that series); series without a model yet are listed as coming soon
   const seriesOf = k => cars[k].series || 'f1', curSeries = seriesOf(carId);
@@ -896,7 +903,7 @@ function computeView(K, data, state, R) {
       if (computeView.fixCache[keyL] == null) {
         const ref = data.cars[c.fix.ref], fw = {};
         for (const k of ['pressureHpa', 'airTempC', 'humidityPct', 'trackTempC', 'windSpeed', 'windFromDeg']) if (Number.isFinite(c.fix.weather && c.fix.weather[k])) fw[k] = c.fix.weather[k];
-        const envR = K.conditionsFromWeather(Object.assign({pressureHpa: 1013.25, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0}, fw));
+        const envR = K.conditionsFromWeather(Object.assign({pressureHpa: 1013.25, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0}, fw, {rechargeMJ: data.energy && data.energy.mj != null ? data.energy.mj : undefined}));
         if (data.puRamp) envR.puRamp = envP.puRamp; // the fit's C5.12 setting, as in the shown lap (tool.js rampEnv)
         computeView.fixCache[keyL] = c.fix.lap - refSim(base, ref, envR).lapTime * (ref.timeScale || 1);
       }

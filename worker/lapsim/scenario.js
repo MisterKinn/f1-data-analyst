@@ -20,6 +20,7 @@ import {TUM_2019, PRIOR, applyRules, applyDevelopment} from './cars.js';
 import {SERIES} from './series.js';
 import {HYPERCARS, hypercarFor, hypercarRanking} from './hypercar-makers.js';
 import {lapsimWecTrackGrip} from './wec-track-grip-data.js';
+import {lapsimF1WetQuali} from './f1-wet-quali-data.js';
 import {lapsimKernel} from './kernel.js';
 import {lapsimAllTracks} from './tracks.js';
 import {lapsimHypercarMakers} from './hypercar-maker-data.js';
@@ -74,6 +75,10 @@ export function carsFor(id) {
     const real = p?.sectors || (t.position === 1 ? t.realSectors : null); return real ? {real, weather: t.weather, ref: '2026'} : null; };
   if (out[2026].kind === 'calibrated' && fix(t26, 2026)) for (const y of [2026, 2027, 2028]) out[y].fix = fix(t26, 2026);
   if (out[2025].kind === 'calibrated' && fix(t25, 2025)) out[2025].fix = {...fix(t25, 2025), ref: '2025'};
+  // qualifying with rain (owner 2026-11-22): the dry fit leaves it out; the 2026 car shows the real pole of that session exactly, in its
+  // weather (lap-level correction; real laps are never changed). The dry pole estimate is shown beside it (f1-wet-quali-data.js).
+  const wq = lapsimF1WetQuali?.[id]?.[2026];
+  if (wq && !out[2026].fix) out[2026].fix = {lap: wq.lap, weather: wq.weather, ref: '2026', session: `F1 2026 qualifying (rain ${wq.rainMinutes} min)`, wet: true};
   // Learned from real laps (docs/lapsim-learn.md): a lap-time factor on the class car with no track factor.
   // Class cars take it only where their own calibration has no value for this track; GT3 model cars always (elsewhere: the
   // LMGT3 class car of this track times the model's gap to the fastest model).
@@ -145,6 +150,9 @@ export function uncertainty(c, id) {
 export function realConditions(id) {
   const s = lapsimCalibration?.seasons || {}, out = {};
   for (const y of ['2025', '2026']) { const r = s[y]?.tracks?.[id]; if (r?.weather) out[y] = {...r.weather, realLap: r.realLap, driver: r.driver, position: r.position ?? 1}; }
+  // qualifying with rain: that session's real weather and pole (scripts/sim/learn/wet-quali.mjs)
+  const wq = lapsimF1WetQuali?.[id]?.[2026];
+  if (wq && !out['2026']) out['2026'] = {...wq.weather, realLap: wq.lap, driver: wq.driver, position: 1, rainMinutes: wq.rainMinutes, tyre: wq.tyre, wet: true, dry: wq.dry};
   // WEC: best qualifying/Hyperpole lap per class, keyed like the car ('wec-hypercar')
   for (const [cls, seasons] of Object.entries(lapsimCalibration?.series?.wec || {})) {
     const y = Object.keys(seasons).filter(k => seasons[k].tracks?.[id]).sort().at(-1), r = y && seasons[y].tracks[id];
