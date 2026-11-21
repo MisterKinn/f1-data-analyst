@@ -7,6 +7,7 @@ import {stripDates} from '../scripts/refresh-changed.mjs';
 test('a refresh that only stamps a new build date is not a change', () => {
   assert.equal(stripDates('{"generatedAt":"2026-11-21","a":1}'), stripDates('{"generatedAt":"2026-11-22","a":1}'));
   assert.notEqual(stripDates('{"generated":"2026-11-21","a":1}'), stripDates('{"generated":"2026-11-21","a":2}'));
+  assert.equal(stripDates('Generated 2026-11-21T01:42:50.290Z. Season 2026'), stripDates('Generated 2026-11-21T10:19:46.654Z. Season 2026'));
 });
 
 test('publish script parses, and every scheduled job runs on the production repo only', () => {

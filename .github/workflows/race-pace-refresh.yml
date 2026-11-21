@@ -1,0 +1,40 @@
+name: F1 race pace refresh
+
+# Owner 2026-11-21: refreshes go live without hand work. Race pace (fuel, tyres, pit loss per track; scripts/sim/race-pace.mjs,
+# TracingInsights laps) was only rebuilt by hand or in the weekly lapsim-data run. Gate G: a race-pace rebuild is a data fix (new races,
+# measured pit losses) and ships even if its leave-out error rises; the commit carries the leave-out line before and after and, through
+# publish-refresh.sh, the calibration held-out line. Started by "Refresh after sessions" about 1, 3 and 6 h after an F1 race; weekly too.
+on:
+  schedule:
+    - cron: '23 9 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write  # start the stored-views rebuild after publishing
+
+concurrency:
+  group: race-pace-refresh
+  cancel-in-progress: false
+
+jobs:
+  race-pace:
+    if: github.repository == 'MisterKinn/f1-data-analyst'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - run: npm ci --ignore-scripts
+      - name: Fit race pace
+        run: node scripts/sim/race-pace.mjs | tail -20
+      - name: Publish to main (checks first)
+        env: {GH_TOKEN: '${{ github.token }}'}
+        run: |
+          before=$(git show HEAD:docs/lapsim-race.md | grep -m1 'Leave-out test' || true)
+          after=$(grep -m1 'Leave-out test' docs/lapsim-race.md || true)
+          echo "Race pace leave-out before: ${before:-none}" >> "$GITHUB_STEP_SUMMARY"; echo "Race pace leave-out after: ${after:-none}" >> "$GITHUB_STEP_SUMMARY"
+          scripts/publish-refresh.sh -m "F1 race pace refresh (data fix). Leave-out before: ${before:-none} | after: ${after:-none}" \
+            -g "node scripts/sim/race-pace.mjs" -b lapsim-learn/race-pace \
+            -c "node scripts/refresh-changed.mjs worker/lapsim/race-data.js docs/lapsim-race.md" -- worker/lapsim/race-data.js docs/lapsim-race.md
