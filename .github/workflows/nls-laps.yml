@@ -33,6 +33,6 @@ jobs:
       - name: Publish to main (checks first)
         env: {GH_TOKEN: '${{ github.token }}'}
         run: |
-          scripts/publish-refresh.sh -m "NLS laps (every lap per car, deleted laps dropped) (one row per car and session)" \
+          scripts/publish-refresh.sh -k -m "NLS laps (every lap per car, deleted laps dropped) (one row per car and session)" \
             -g "node scripts/sim/learn/fetch-nls.mjs" -b lapsim-learn/nls-laps \
             -c "node scripts/refresh-changed.mjs scripts/sim/data/learn/nls-laps.json.gz" -- scripts/sim/data/learn/nls-laps.json.gz

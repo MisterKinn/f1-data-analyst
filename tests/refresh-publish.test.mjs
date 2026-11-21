@@ -68,3 +68,23 @@ test('Gate G: publish-refresh never publishes a model setting; data commits carr
   assert.equal(line({all: {n: 67, base: 1.113, cand: 1.12}, f1: {n: 34, base: 0.865, cand: 0.865}}),
     'Held-out RMS % before → after (same rows, calibration-data.js): all 1.113 → 1.12 (n 67), f1 0.865 → 0.865 (n 34)');
 });
+
+test('publish-refresh -k: when main moves during the checks, the fetched files are kept (no refetch)', async () => {
+  const {mkdtempSync, writeFileSync, readFileSync} = await import('node:fs'), {join} = await import('node:path'), {tmpdir} = await import('node:os');
+  const {execFileSync, spawnSync} = await import('node:child_process');
+  const root = mkdtempSync(join(tmpdir(), 'prk-')), origin = join(root, 'o.git'), work = join(root, 'w'), other = join(root, 'x');
+  const git = (cwd, ...a) => execFileSync('git', a, {cwd, encoding: 'utf8'}).trim();
+  git(root, 'init', '-q', '--bare', '-b', 'main', origin);
+  for (const d of [work, other]) { git(root, 'clone', '-q', origin, d); git(d, 'config', 'user.email', 't@t'); git(d, 'config', 'user.name', 't'); }
+  writeFileSync(join(work, 'laps.json'), 'old'); git(work, 'add', '.'); git(work, 'commit', '-qm', 'init'); git(work, 'push', '-q', 'origin', 'HEAD:main');
+  git(other, 'pull', '-q', 'origin', 'main');
+  writeFileSync(join(work, 'laps.json'), 'fetched');
+  // the "checks" of the first attempt push an unrelated commit to main, so the first push is rejected
+  const flag = join(root, 'moved'), checks = join(root, 'checks.sh');  // PUBLISH_CHECKS is run as a plain command
+  writeFileSync(checks, `#!/bin/bash\ntest -e ${flag} || (cd ${other} && echo x > other.txt && git add . && git commit -qm other && git push -q origin HEAD:main && touch ${flag})\n`, {mode: 0o755});
+  const r = spawnSync('bash', [new URL('../scripts/publish-refresh.sh', import.meta.url).pathname, '-k', '-m', 'laps', '-g', 'false', '--', 'laps.json'],
+    {cwd: work, env: {...process.env, PUBLISH_CHECKS: checks, GITHUB_STEP_SUMMARY: '/dev/null', GH_TOKEN: ''}, encoding: 'utf8'});
+  assert.equal(r.status, 0, r.stdout + r.stderr); assert.match(r.stdout, /kept the fetched files/);
+  git(other, 'pull', '-q', 'origin', 'main');
+  assert.equal(readFileSync(join(other, 'laps.json'), 'utf8'), 'fetched'); assert.equal(readFileSync(join(other, 'other.txt'), 'utf8').trim(), 'x');
+});
