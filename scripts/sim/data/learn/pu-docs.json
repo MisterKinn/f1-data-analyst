@@ -1,6 +1,6 @@
 {
  "source": "FIA F1 event documents \"Power Unit Information\" (2026)",
- "generatedAt": "2026-11-15T02:56:55.269Z",
+ "generatedAt": "2026-11-21T12:56:46.841Z",
  "events": {
   "interlagos": {
    "event": "São Paulo Grand Prix",
@@ -80,6 +80,8 @@
   },
   "melbourne": {
    "event": "Australian Grand Prix",
+   "raceMJ": 8,
+   "raceOvertakeMJ": 8.5,
    "qualiMJ": 7,
    "practiceMJ": 8.5,
    "outLapMJ": 8.5,
@@ -1479,6 +1481,102 @@
     "title": "Doc 6 - Power Unit Information",
     "url": "https://www.fia.com/system/files/decision-document/2026_mexico_city_grand_prix_-_power_unit_information.pdf",
     "published": "Published on 29.10.26 22:46 CET"
+   }
+  },
+  "las-vegas": {
+   "event": "Las Vegas Grand Prix",
+   "raceMJ": 8,
+   "raceOvertakeMJ": 8.5,
+   "qualiMJ": 6,
+   "practiceMJ": 8.5,
+   "outLapMJ": 9,
+   "round": 21,
+   "centrelineKm": 6.201,
+   "alt": [
+    {
+     "sector": "T1-T3",
+     "from": 300,
+     "to": 500,
+     "qOnly": false
+    },
+    {
+     "sector": "T5-T12",
+     "from": 1520,
+     "to": 3150,
+     "qOnly": false
+    }
+   ],
+   "bigCut": [
+    {
+     "sector": "T1-T3",
+     "from": 300,
+     "to": 500,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "T7-T9",
+     "from": 2000,
+     "to": 2200,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "T10-T11",
+     "from": 2670,
+     "to": 3100,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "[Exit T14]",
+     "from": 5100,
+     "to": 5700,
+     "qOnly": true,
+     "maxKW": 350
+    }
+   ],
+   "reset": [
+    {
+     "sector": "Exit T3",
+     "from": 540,
+     "to": 800,
+     "qOnly": false
+    },
+    {
+     "sector": "[Exit T16]",
+     "from": 5700,
+     "to": 6200,
+     "qOnly": true
+    }
+   ],
+   "speed": [
+    {
+     "sector": "T3-T4",
+     "from": 450,
+     "to": 620,
+     "qOnly": false,
+     "kph": 240
+    },
+    {
+     "sector": "T10-T12",
+     "from": 2550,
+     "to": 3100,
+     "qOnly": false,
+     "kph": 310
+    }
+   ],
+   "overtake": {
+    "detectionM": 5299,
+    "activationM": 5400,
+    "tbc": false
+   },
+   "powerLimitedDistanceM": 4448,
+   "rampKWs": 50,
+   "document": {
+    "title": "Doc 3 - Power Unit Information",
+    "url": "https://www.fia.com/system/files/decision-document/2026_las_vegas_grand_prix_-_power_unit_information.pdf",
+    "published": "Published on 18.11.26 00:42 CET"
    }
   }
  }
