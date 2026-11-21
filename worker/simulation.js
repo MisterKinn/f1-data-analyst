@@ -797,7 +797,7 @@ function phasesTable(id, t, year, pole, L) {
 function straightsOf(id, td, lang) {
   const L = td.ds * td.kappa.length, at = k => td.corners?.find(c => c.number === k)?.s;
   const out = (lapsimStraights[id] || []).map(q => { const a = at(q.between[0]), b = at(q.between[1]); if (a == null || b == null) return null;
-    return {s: Math.round(((a + ((b - a) % L + L) % L / 2) % L + L) % L), name: lang === 'en' ? q.en : q.ko, straight: true}; }).filter(Boolean);
+    return {s: Math.round(((a + ((b - a) % L + L) % L * (q.f ?? 0.5)) % L + L) % L), name: lang === 'en' ? q.en : q.ko, straight: true}; }).filter(Boolean);
   return out.length ? out : null;
 }
 
