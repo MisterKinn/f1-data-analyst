@@ -18,6 +18,7 @@ const WIRED = {
   imsa: {race: ['bop-refresh.yml', 'lapsim-track-laps.yml']},
   elms: {practice: ['alkamel-laps.yml'], qualifying: ['alkamel-laps.yml'], race: ['bop-refresh.yml', 'alkamel-laps.yml']},
   'gtwc-america': {practice: ['alkamel-laps.yml'], qualifying: ['alkamel-laps.yml'], race: ['alkamel-laps.yml']},  // Al Kamel every lap
+  nascar: {qualifying: ['nascar-laps.yml'], race: ['nascar-laps.yml']},  // public results feed, every lap
   igtc: {race: ['alkamel-laps.yml']},  // Indianapolis 8 Hour is on Al Kamel; the other IGTC rounds have no source wired
 };
 const WINDOWS = [[45, 75], [165, 195], [345, 375]];

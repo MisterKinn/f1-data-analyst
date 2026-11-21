@@ -1,0 +1,38 @@
+name: NASCAR laps (Cup, Xfinity, Truck)
+
+# Owner 2026-11-21: read NASCAR too. The public results feed nascar.com uses (cf.nascar.com/cacher) has every lap per car,
+# cautions and pit stops. scripts/sim/learn/fetch-nascar.mjs keeps one derived row per car and session (best and clean
+# green-flag laps, official laps completed; qualifying best laps); raw files are not stored.
+# Started by "Refresh after sessions" about 1, 3 and 6 h after a session; weekly as a safety net. Publishes through
+# scripts/publish-refresh.sh (CI checks, then main).
+on:
+  schedule:
+    - cron: '47 5 * * 2'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write  # start the stored-views rebuild after publishing
+
+concurrency:
+  group: nascar-laps
+  cancel-in-progress: false
+
+jobs:
+  laps:
+    if: github.repository == 'MisterKinn/f1-data-analyst'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - run: npm ci --ignore-scripts
+      - name: Read the NASCAR results feed
+        run: node scripts/sim/learn/fetch-nascar.mjs | tail -40
+      - name: Publish to main (checks first)
+        env: {GH_TOKEN: '${{ github.token }}'}
+        run: |
+          scripts/publish-refresh.sh -m "NASCAR laps: Cup, Xfinity, Truck (one row per car and session)" \
+            -g "node scripts/sim/learn/fetch-nascar.mjs" -b lapsim-learn/nascar-laps \
+            -c "node scripts/refresh-changed.mjs scripts/sim/data/learn/nascar-laps.json.gz" -- scripts/sim/data/learn/nascar-laps.json.gz
