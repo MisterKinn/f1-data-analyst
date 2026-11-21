@@ -1,0 +1,38 @@
+name: NLS laps (wige SOLUTIONS PDFs)
+
+# Owner 2026-11-21: every series with a public source. The NLS posts wige SOLUTIONS timing PDFs in its results archive (result and
+# lap by lap for qualifying and race; robots.txt allows /wp-content/uploads). scripts/sim/learn/fetch-nls.mjs keeps one derived row
+# per car and session; the PDFs are not stored. Weekly and after NLS qualifying and races.
+
+on:
+  schedule:
+    - cron: '41 7 * * 2'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write  # start the stored-views rebuild after publishing
+
+concurrency:
+  group: nls-laps
+  cancel-in-progress: false
+
+jobs:
+  laps:
+    if: github.repository == 'MisterKinn/f1-data-analyst'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - run: npm ci --ignore-scripts
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
+      - name: Read the NLS result and lap-by-lap PDFs
+        run: node scripts/sim/learn/fetch-nls.mjs | tail -40
+      - name: Publish to main (checks first)
+        env: {GH_TOKEN: '${{ github.token }}'}
+        run: |
+          scripts/publish-refresh.sh -m "NLS laps (every lap per car, deleted laps dropped) (one row per car and session)" \
+            -g "node scripts/sim/learn/fetch-nls.mjs" -b lapsim-learn/nls-laps \
+            -c "node scripts/refresh-changed.mjs scripts/sim/data/learn/nls-laps.json.gz" -- scripts/sim/data/learn/nls-laps.json.gz
