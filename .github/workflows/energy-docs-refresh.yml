@@ -2,7 +2,7 @@ name: F1 energy limits refresh (FIA Power Unit Information)
 
 # Owner 2026-11-21: official per-event recharge limits (race / overtake / qualifying / practice / out-lap MJ, from the FIA
 # "Power Unit Information" document of race week) were only read in the weekly lapsim-data run, so the Las Vegas values were
-# missing on the race weekend. Data fix under Gate G: ships through publish-refresh.sh with the held-out line.
+# missing on the race weekend. The same run rebuilds pu-docs (power-limited distance, ramp rate, sector tables; last built 11-15). Data fix under Gate G: ships through publish-refresh.sh with the held-out line.
 # Started by "Refresh after sessions" after F1 practice and qualifying; daily too (the document comes out in race week).
 on:
   schedule:
@@ -28,9 +28,14 @@ jobs:
         with: {node-version: '22'}
       - run: npm ci --ignore-scripts
       - name: Read the FIA Power Unit Information documents
-        run: node scripts/sim/energy-docs.mjs | grep -v 'no Power Unit Information yet'
+        run: |
+          node scripts/sim/energy-docs.mjs | grep -v 'no Power Unit Information yet'
+          # the rest of the document (power-limited distance, ramp rate, exception sectors, overtake lines) for the kernel and the page
+          node scripts/sim/learn/fetch-pu-docs.mjs | grep -v 'no Power Unit Information' && node scripts/sim/pu-docs-data.mjs
       - name: Publish to main (checks first)
         env: {GH_TOKEN: '${{ github.token }}'}
         run: |
           scripts/publish-refresh.sh -k -m "F1 energy limits from the FIA Power Unit Information documents (data fix)" \
-            -g "node scripts/sim/energy-docs.mjs" -b lapsim-learn/energy-docs -- worker/lapsim/energy-docs-data.js
+            -g "node scripts/sim/energy-docs.mjs && node scripts/sim/learn/fetch-pu-docs.mjs && node scripts/sim/pu-docs-data.mjs" \
+            -b lapsim-learn/energy-docs -c "node scripts/refresh-changed.mjs worker/lapsim/energy-docs-data.js worker/lapsim/pu-docs-data.js" \
+            -- worker/lapsim/energy-docs-data.js scripts/sim/data/learn/pu-docs.json worker/lapsim/pu-docs-data.js

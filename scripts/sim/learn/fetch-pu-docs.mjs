@@ -1,13 +1,15 @@
 // Reads every 2026 F1 "Power Unit Information" event document (FIA) and stores what it sets per event: recharge per lap by session,
 // round, power-limited distance, power reduction rate, the exception sector tables and the overtake lines (worker/lapsim/pu-info.js).
 // Runs in GitHub Actions (lapsim-learn.yml): the shell of a Claude session cannot reach fia.com. Out: scripts/sim/data/learn/pu-docs.json.
-import {writeFile} from 'node:fs/promises';
+import {readFile, writeFile} from 'node:fs/promises';
 import {lapsimTracks} from '../../../worker/lapsim/tracks-data.js';
 import {eventDocuments, fiaCall} from '../../../worker/fia.js';
 import {eventFor} from '../../../worker/lapsim/names.js';
 import {parsePuInfo, parsePuSectors} from '../../../worker/lapsim/pu-info.js';
 
-const out = {source: 'FIA F1 event documents "Power Unit Information" (2026)', generatedAt: new Date().toISOString(), events: {}};
+// an event that fails to load (FIA throttling) keeps its earlier entry instead of disappearing
+const before = await readFile('scripts/sim/data/learn/pu-docs.json', 'utf8').then(JSON.parse, () => ({}));
+const out = {source: 'FIA F1 event documents "Power Unit Information" (2026)', generatedAt: new Date().toISOString(), events: {...before.events}};
 for (const id of Object.keys(lapsimTracks)) {
   const name = eventFor(id, 2026); if (!name) continue;
   try {
