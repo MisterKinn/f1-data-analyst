@@ -701,3 +701,10 @@ Rate per hour = (neutralisations + series rate × prior hours) / (race hours + p
 Gate G (Poisson NLL, one vote per event): leave-one-event-out 2.317 → 2.217 (+0.100 ± 0.061) ✓, unseen 2026 2.577 → 2.339 ✓,
 leave-one-track-out = series rate (no gain) ✗. By series: IMSA +0.230 ± 0.078 ✓, WEC −0.163 ± 0.104 ✗, ELMS −0.134 ± 0.097 ✗ →
 IMSA uses the track rate, WEC and ELMS the series mean. Stint-slope and pit-loss models reject (W14): measured lookups only.
+
+### Formula E race pace and Gen4 estimate (W12, 2026-11-21)
+`scripts/sim/learn/fe-race-w12.mjs` → `worker/lapsim/fe-race-data.js`, panel "Formula E race pace" on /simulation. Measured lookups (Gen3 Evo, dry
+race): race/pole ratio (median green race lap ÷ pole, with first/last five laps) and Attack Mode lap gain per layout, the mean of that
+layout's events; the script stops if a track mean does not replay its events. Rejected in W12 and not used: track offsets for new
+venues/seasons (venue out 0.000 ± 0.000, S12 out −0.165 ± 0.188 pp), Attack Mode length model, driver/model identity. Gen4: W12 prior
+(e.g. Monaco race/pole 1.099, 1.042–1.155; Attack Mode −0.17 s, −5.43 … +4.97 s), labelled model with its range.
