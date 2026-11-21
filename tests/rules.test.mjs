@@ -219,3 +219,11 @@ import {siteError,runFailed} from '../scripts/rules-monitor.mjs';
  assert.equal(runFailed(5,1),false); // one bad source degrades, the job stays green
  assert.equal(runFailed(0,0),false); // nothing due
 }
+
+// registry: a disabled or allow_empty source says why; the GTWC dead link is excluded
+{
+ for(const s of sources.sources)if(s.enabled===false||s.allow_empty)assert.ok(s.note&&s.note.length>20,s.id);
+ const gt=sources.sources.find(s=>s.id==='gtwc-europe-regs');
+ const html='<a href="/docs/assets/2026GTWCSportingRegulations.pdf">Download the complete PDF document</a><a href="/docs/assets/GTWCEuropeSportingRegulations.pdf">Download Complete 2026 Sporting Regulations PDF</a>';
+ assert.deepEqual(L.parsePdfLinks(html,'https://europeregs.sporting.gt-world-challenge.com/',{exclude:gt.exclude}).map(d=>d.url),['https://europeregs.sporting.gt-world-challenge.com/docs/assets/2026GTWCSportingRegulations.pdf']);
+}
