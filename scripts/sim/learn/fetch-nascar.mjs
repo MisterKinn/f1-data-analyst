@@ -54,12 +54,14 @@ if (process.argv[1]?.endsWith('fetch-nascar.mjs')) {
       for (const run of feed.weekend_runs || []) { const rows = runRows(run); for (const r of rows) out.push({...head, session: run.run_name, kind: KIND[run.run_type] || 'practice', ...r}); }
       const laps = await get(base + 'lap-times.json');
       if (laps?.laps?.length) { const rows = raceRows(laps, w, await get(base + 'live-pit-data.json') || []); for (const r of rows) out.push({...head, session: 'Race', kind: 'race', ...r});
-        const off = rows.filter(r => r.officialLaps != null && r.laps !== r.officialLaps).length; log.push(`${year} ${name} ${race.race_name}: ${rows.length} cars, lap count != official ${off}`); }
+        // a car out of the race (accident, engine ...) gets a time for its last, unfinished lap that NASCAR does not count
+        const diff = rows.filter(r => r.officialLaps != null && r.laps !== r.officialLaps), crash = diff.filter(r => r.status !== 'Running' && r.laps === r.officialLaps + 1).length;
+        log.push(`${year} ${name} ${race.race_name}: ${rows.length} cars, lap count != official ${diff.length - crash} (+${crash} retired on a timed, uncounted lap)`); }
     }
   }
   writeFileSync('scripts/sim/data/learn/nascar-laps.json.gz', gzipSync(JSON.stringify({
     source: 'NASCAR public results feed (cf.nascar.com/cacher: race list, weekend feed, lap times, pit data). One row per car and session; raw files not stored.',
-    fields: 'race: best = fastest lap; cleanBest / cleanMedian = green-flag laps outside cautions (and their restart lap), pit-in and pit-out laps; officialLaps = laps_completed. qualifying/practice: best lap as listed.',
+    fields: 'race: best = fastest lap; cleanBest / cleanMedian = green-flag laps outside cautions (and their restart lap), pit-in and pit-out laps; officialLaps = laps_completed (a retired car can have one more timed lap than laps_completed). qualifying/practice: best lap as listed.',
     fetched: new Date().toISOString().slice(0, 10), rows: out})));
   console.log(log.join('\n')); console.log('rows', out.length);
 }
