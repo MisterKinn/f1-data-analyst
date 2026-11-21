@@ -21,9 +21,9 @@ test('a loop that drives a one-way raceway backwards is counted against it', () 
   assert.ok(Math.abs(againstOneway(ring, [half, back]) - 0.5) < 1e-9); // half the one-way length against the other half
 });
 
-test('Hypercar/GTP class cars show the fastest lap of WEC and IMSA together (owner 2026-11-15, Sebring)', async () => {
+test('Hypercar/GTP class cars reproduce the class bests of the same event (owner 2026-11-21, Sebring: IMSA 2026)', async () => {
   const {carsFor} = await import('../worker/lapsim/scenario.js'), {lapsimLearned} = await import('../worker/lapsim/learned-data.js');
   const c = carsFor('sebring'), r = lapsimLearned.tracks.sebring.classReal;
   for (const k of ['wec-lmh', 'wec-lmdh']) assert.equal(c[k].fix.lap, r[k].lap, k);
-  assert.equal(r['wec-lmdh'].series, 'imsa'); // IMSA GTP 2023 is faster than the WEC 2023 LMDh lap
+  assert.equal(r['wec-lmh'].pairEvent, r['wec-lmdh'].pairEvent); assert.equal(r['wec-lmdh'].series, 'imsa'); assert.equal(r['wec-lmdh'].year, 2026);
 });

@@ -712,3 +712,12 @@ Race distance (W14 race check, same panel): laps = smallest n with n·green + �
 seconds; distance-limited rounds stop at the leader's finish), inputs from the season before. All 1,118 latest-race rows replay W14
 exactly; Le Mans 2026 Hypercar checked with Wolfram (399 all green, 396 with FCY). Pooled MAE on 1,506 cars / 38 races: previous winner
 47.86, all green 45.06, expected FCY 32.99, real FCY 28.80 laps.
+
+### Hypercar class laps from the same event (owner 2026-11-21, "같은 시즌으로 맞춤")
+`fit-endurance.mjs` now stores, for `wec-lmh` and `wec-lmdh` in `classReal` (dry qualifying) and `raceReal` (race), the class bests of the
+latest event where both classes ran at that layout (latest season; WEC before IMSA in the same season), with `pairEvent`. Without such an
+event the class keeps the fastest WEC/IMSA lap of any season (`pairEvent: null`). Tracks in the WEC calibration keep that season's laps for
+both classes (already the same season). Measured lookup: all 56 paired laps replay their Al Kamel / IMSA rows exactly.
+W16 sign check on the page gap, dry qualifying (22 tracks): median-over-makers measure 14 same / 7 wrong → 17 / 4; best measure 18 / 3 → 19 / 2.
+Remaining wrong: Austin, Monza (calibrated 2025/26 laps), Portimão (only 2023 data: class-best gap −2.23 s vs maker median +0.02 s), Spa.
+Gaps in the inputs: no Monza Hypercar qualifying after 2023 in `endurance-cars.csv.gz`.
