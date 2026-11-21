@@ -11,6 +11,7 @@ import {TRACK_NAMES as NAMES} from './lapsim/names.js';
 import {energyLimit} from './lapsim/energy-limits.js';
 import {lapsimEnergyClip} from './lapsim/energy-clip-data.js';
 import {lapsimRace} from './lapsim/race-data.js';
+import {lapsimLapPhases} from './lapsim/lap-phases-data.js';
 import {lapsimRacingLines} from './lapsim/racing-lines-data.js';
 import {lapsimTrackWidths} from './lapsim/track-widths.js';
 import {lapsimCompounds} from './lapsim/compounds-data.js';
@@ -732,8 +733,10 @@ const specOf = f => BODY_ORDER.filter(b => f[b]);
 const specOpts = (f, sel) => specOf(f).map(b => `<option value="${b}"${b === sel ? ' selected' : ''}>${BODY_LABEL[b]}</option>`).join('');
 const famOpts = (fam, cars, sel) => Object.keys(fam).sort((a, b) => a.localeCompare(b, 'en')).map(base => `<option value="${fam[base][specOf(fam[base])[0]].at(-1)}"${base === sel ? ' selected' : ''}>${esc(base)}</option>`).join('');
 const RT = {
-  ko: {h: '레이스 페이스 예측', lead: '연료가 줄고, 타이어가 닳고, 피트 스톱을 하면서 랩타임이 어떻게 바뀌는지 실제 레이스 랩으로 맞춘 값입니다.', strat: '전략', time: '레이스 시간', gap: '차이', laps: '랩', pole: '기준 폴', refTop: '기준 랩 (예선 상위 {n}명 평균)', basis: {pred: '2026 예측', real: '2026 실제'}, test: '이전 시즌만으로 예측한 레이스 페이스 오차', season: '시즌', now: '예측/최근', repro: '이미 열린 레이스 재현 오차 (전 시즌 최대)', chart: '최적 전략의 예상 랩타임', c: {S: '소프트', M: '미디엄', H: '하드'}},
-  en: {h: 'Race pace prediction', lead: 'How lap time changes as fuel burns, tyres wear and cars stop, fitted to real race laps.', strat: 'Strategy', time: 'Race time', gap: 'Gap', laps: 'laps', pole: 'Pole used', refTop: 'Reference lap (mean of the best {n} in qualifying)', basis: {pred: '2026 prediction', real: '2026 real'}, test: 'Race-pace error predicted from earlier seasons only', season: 'Season', now: 'Prediction/latest', repro: 'Races already run, reproduction error (largest, all seasons)', chart: 'Expected lap times, best strategy', c: {S: 'Soft', M: 'Medium', H: 'Hard'}},
+  ko: {h: '레이스 페이스 예측', lead: '연료가 줄고, 타이어가 닳고, 피트 스톱을 하면서 랩타임이 어떻게 바뀌는지 실제 레이스 랩으로 맞춘 값입니다.', strat: '전략', time: '레이스 시간', gap: '차이', laps: '랩', pole: '기준 폴', refTop: '기준 랩 (예선 상위 {n}명 평균)', basis: {pred: '2026 예측', real: '2026 실제'}, test: '이전 시즌만으로 예측한 레이스 페이스 오차', season: '시즌', now: '예측/최근', repro: '이미 열린 레이스 재현 오차 (전 시즌 최대)', chart: '최적 전략의 예상 랩타임', c: {S: '소프트', M: '미디엄', H: '하드'},
+    ph: {h: '아웃랩·인랩·세이프티카', src: '실측 중앙값 (TracingInsights 2022–26, 드라이·그린; 랩 = 비율 × 기준 랩)', row: '구간', time: '시간', basis: '근거', qOut: '예선 아웃랩 (피트 출구→라인)', qCool: '예선 쿨다운 랩', sc: '세이프티카 랩', vsc: 'VSC 랩', exit: '레이스 아웃랩: 피트 출구→라인', entry: '레이스 인랩: 라인→피트 입구', stat: '정차 시간', ratio: '비율 {r} (n={n}, {y})', meas: '실측 (n={n})'}},
+  en: {h: 'Race pace prediction', lead: 'How lap time changes as fuel burns, tyres wear and cars stop, fitted to real race laps.', strat: 'Strategy', time: 'Race time', gap: 'Gap', laps: 'laps', pole: 'Pole used', refTop: 'Reference lap (mean of the best {n} in qualifying)', basis: {pred: '2026 prediction', real: '2026 real'}, test: 'Race-pace error predicted from earlier seasons only', season: 'Season', now: 'Prediction/latest', repro: 'Races already run, reproduction error (largest, all seasons)', chart: 'Expected lap times, best strategy', c: {S: 'Soft', M: 'Medium', H: 'Hard'},
+    ph: {h: 'Out-lap, in-lap and safety car', src: 'Measured median (TracingInsights 2022–26, dry green; lap = ratio × reference lap)', row: 'Phase', time: 'Time', basis: 'Basis', qOut: 'Qualifying out-lap (pit exit to line)', qCool: 'Qualifying cool-down lap', sc: 'Safety-car lap', vsc: 'VSC lap', exit: 'Race out-lap: pit exit to line', entry: 'Race in-lap: line to pit entry', stat: 'Stationary time', ratio: 'ratio {r} (n={n}, {y})', meas: 'measured (n={n})'}},
 };
 function racePanel(id, lang, raceYear) {
   // a past race (any season) is shown from its own fit, so it reproduces that race
@@ -764,8 +767,22 @@ function racePanel(id, lang, raceYear) {
   return `<section class="panel ls-panel"><h2>${esc(t.h)}</h2><p>${esc(t.lead)}</p>${pick}
  <p class="fine">${esc(tr.reproduced && lapsimRace.refTop > 1 ? t.refTop.replace('{n}', lapsimRace.refTop) : t.pole)}: <span data-no-translate>${fmtLap(pole)}</span> (${esc(own ? String(raceYear).replace('-2', ' (2)') + ' ' + t.basis.real.replace(/^\d+ /, '') : real || tr.reproduced ? t.basis.real : t.basis.pred)}) · <span data-no-translate>${n}</span> ${esc(t.laps)}</p>
  <div class="output"><table class="ls-table"><thead><tr><th>${esc(t.strat)}</th><th>${esc(t.time)}</th><th>${esc(t.gap)}</th></tr></thead><tbody>${rows}</tbody></table></div>
- <h3>${esc(t.chart)}</h3><div class="ls-scroll">${svg}</div>${test}
+ <h3>${esc(t.chart)}</h3><div class="ls-scroll">${svg}</div>${test}${phasesTable(id, t.ph, own ? raceYear : null, pole, L)}
 </section>`;
+}
+// out-lap, in-lap and neutralised laps (owner 2026-11-18): measured medians per track (lap-phases-data.js); a lap = ratio × the push lap
+// (qualifying) or × the median green race lap of the best strategy (SC/VSC). Only this track's row reaches the page.
+function phasesTable(id, t, year, pole, L) {
+  const P = lapsimLapPhases?.tracks?.[id]; if (!P) return '';
+  const ys = Object.keys(P.years || {}).filter(y => Object.keys(P.years[y]).some(k => P.years[y][k]?.median != null)).sort(), y = ys.includes(String(year).slice(0, 4)) ? String(year).slice(0, 4) : ys.at(-1), Y = P.years?.[y] || {};
+  const green = [...L.map(l => l.time)].sort((a, b) => a - b)[L.length >> 1], rows = [];
+  const ratioRow = (label, s, ref) => s?.median != null && Number.isFinite(ref) && rows.push([label, fmtLap(s.median * ref), t.ratio.replace('{r}', s.median.toFixed(3)).replace('{n}', s.n).replace('{y}', y)]);
+  ratioRow(t.qOut, Y.qOutLap, pole); ratioRow(t.qCool, Y.qCoolDown, pole); ratioRow(t.sc, Y.sc, green); ratioRow(t.vsc, Y.vsc, green);
+  const lane = P.years?.[y]?.exitToLineS != null && P.years[y].n >= 5 ? P.years[y] : P.lane; // one season with under 5 stops: pooled
+  if (lane?.exitToLineS != null) { rows.push([t.exit, fmtLap(lane.exitToLineS), t.meas.replace('{n}', lane.n)]); rows.push([t.entry, fmtLap(lane.lineToEntryS), t.meas.replace('{n}', lane.n)]); }
+  if (Y.stationaryS?.median != null && Y.stationaryS.n >= 5) rows.push([t.stat, Y.stationaryS.median.toFixed(2) + ' s', t.meas.replace('{n}', Y.stationaryS.n)]);
+  if (!rows.length) return '';
+  return `<h3>${esc(t.h)}</h3><div class="output"><table class="ls-table"><thead><tr><th>${esc(t.row)}</th><th>${esc(t.time)}</th><th>${esc(t.basis)}</th></tr></thead><tbody>${rows.map(([a, b, c]) => `<tr><td>${esc(a)}</td><td data-no-translate>${esc(b)}</td><td>${esc(c)}</td></tr>`).join('')}</tbody></table></div><p class="fine">${esc(t.src)}</p>`;
 }
 
 // named straights (worker/lapsim/place-names.js), halfway between their two corners on the lap, in the page language
