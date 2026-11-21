@@ -14,6 +14,7 @@ import {lapsimRacingLines} from './lapsim/racing-lines-data.js';
 import {lapsimTrackWidths} from './lapsim/track-widths.js';
 import {lapsimCompounds} from './lapsim/compounds-data.js';
 import {lapsimStints} from './lapsim/stint-data.js';
+import {lapsimFeRace} from './lapsim/fe-race-data.js';
 import {lapsimFcy, lapsimFcyMeta} from './lapsim/fcy-data.js';
 import {lapsimCompoundGap} from './lapsim/compound-gap-data.js';
 import {wetGapPage} from './lapsim/wet-gap.js';
@@ -402,6 +403,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null, first
 </section>
 ${stintPanel(id, lang)}
 ${fcyPanel(id, lang)}
+${feRacePanel(id, lang)}
 ${racePanel(id, lang, query.race || null)}
 <section class="panel ls-panel"><h2>${esc(t.model)}</h2><ul class="ls-notes"><li>${esc(t.m1)}</li><li>${esc(t.m2)}</li><li>${esc(t.m3)}</li><li>${esc(t.m4)}</li><li>${esc(t.m5)}</li><li>${esc(t.soon)}</li></ul>
  <p class="fine">${esc(t.src)}: <a href="https://openf1.org" target="_blank" rel="noopener noreferrer">OpenF1</a>, MultiViewer, <a href="https://github.com/bacinger/f1-circuits" target="_blank" rel="noopener noreferrer">f1-circuits</a>, <a href="https://github.com/f1db/f1db" target="_blank" rel="noopener noreferrer">f1db</a> (CC BY 4.0), <a href="https://github.com/TUMFTM/laptime-simulation" target="_blank" rel="noopener noreferrer">TUMFTM laptime-simulation</a> (LGPL-3.0), <a href="https://github.com/TracingInsights" target="_blank" rel="noopener noreferrer">TracingInsights</a> (wet/inter gap), <a href="https://open-meteo.com" target="_blank" rel="noopener noreferrer">Open-Meteo</a> ERA5 (CC BY 4.0; contains modified Copernicus Climate Change Service information), FIA Section C Issue 21${data.calibration.generatedAt ? ` · ${esc(t.updated)} <span data-no-translate>${esc(data.calibration.generatedAt)}</span>` : ''}</p>
@@ -668,6 +670,26 @@ function fcyPanel(id, lang) {
     .replace('{w}', G.wec[0] + ' ± ' + G.wec[1]).replace('{e}', G.elms[0] + ' ± ' + G.elms[1]);
   return `<section class="panel ls-panel"><h2>${esc(t.h)}</h2><p>${esc(t.lead)}</p>
  <div class="output"><table class="ls-table"><thead><tr>${t.cols.map(c => `<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div><p class="fine">${esc(g)}</p></section>`;
+}
+// Formula E race pace here (W12): measured race/pole ratio and Attack Mode gain (Gen3 Evo, dry), Gen4 estimate with its range
+const FR = {
+  ko: {h: '포뮬러 E 레이스 페이스', lead: '공식 랩 기록으로 잰 값입니다: 결승 그린 랩 중앙값 ÷ 폴 타임(에너지 관리 때문에 예선보다 느림), 그리고 어택 모드 랩이 같은 조건 랩보다 얼마나 빨랐는지. Gen3 Evo, 마른 노면 결승.',
+    ratio: '결승 ÷ 폴 (실측)', first: '처음 5랩', last: '마지막 5랩', am: '어택 모드 랩 이득 (실측)', wetQ: '예선은 젖은 노면', events: '대회', faster: '빠름', slower: '느림',
+    g4: 'Gen4 추정 (모델, Gen4 랩 없음)', g4r: '결승 ÷ 폴', g4am: '어택 모드', range: '범위',
+    note: '새 서킷·새 시즌에 쓰는 서킷 보정은 검증(Gate G)에서 탈락해 여기 경기한 적 있는 레이아웃만 보여 줍니다. 어택 모드 길이 모델도 탈락했습니다. 출처: Al Kamel 공식 분석 PDF, 44,219랩 대조.'},
+  en: {h: 'Formula E race pace', lead: 'Measured from the official lap records: median green race lap ÷ pole time (slower than qualifying because of energy saving), and how much faster Attack Mode laps were than matched laps. Gen3 Evo, dry races.',
+    ratio: 'Race ÷ pole (measured)', first: 'first 5 laps', last: 'last 5 laps', am: 'Attack Mode lap gain (measured)', wetQ: 'wet qualifying', events: 'events', faster: 'faster', slower: 'slower',
+    g4: 'Gen4 estimate (model, no Gen4 lap yet)', g4r: 'race ÷ pole', g4am: 'Attack Mode', range: 'range',
+    note: 'A track offset for new circuits or new seasons failed the check (Gate G), so only layouts that have raced are shown. The Attack Mode length model failed too. Source: Al Kamel official analysis PDFs, 44,219 laps matched.'},
+};
+function feRacePanel(id, lang) {
+  const R = lapsimFeRace?.[id]; if (!R) return '';
+  const t = FR[lang], f3 = x => x == null ? '–' : x.toFixed(3), sec = x => (x > 0 ? '+' : x < 0 ? '−' : '') + Math.abs(x).toFixed(2) + ' s';
+  const li = [];
+  if (R.ratio) li.push(`<li>${esc(t.ratio)}: <span data-no-translate>${f3(R.ratio.mean)}</span> (${esc(t.first)} ${f3(R.ratio.first5)} → ${esc(t.last)} ${f3(R.ratio.last5)}; ${R.ratio.events.length} ${esc(t.events)}${R.ratio.qualifying !== 'dry' ? ', ' + esc(t.wetQ) : ''})</li>`);
+  if (R.am) li.push(`<li>${esc(t.am)}: <span data-no-translate>${sec(R.am.meanS)}</span> (${R.am.events.length} ${esc(t.events)}; − = ${esc(t.faster)})</li>`);
+  if (R.gen4) li.push(`<li>${esc(t.g4)}: ${esc(t.g4r)} <span data-no-translate>${f3(R.gen4.ratio[1])}</span> (${esc(t.range)} ${f3(R.gen4.ratio[0])}–${f3(R.gen4.ratio[2])})${R.gen4.amS ? ` · ${esc(t.g4am)} <span data-no-translate>${sec(R.gen4.amS[1])}</span> (${esc(t.range)} ${sec(R.gen4.amS[0])} … ${sec(R.gen4.amS[2])})` : ''}</li>`);
+  return `<section class="panel ls-panel"><h2>${esc(t.h)}</h2><p>${esc(t.lead)}</p><ul class="ls-notes">${li.join('')}</ul><p class="fine">${esc(t.note)}</p></section>`;
 }
 // Brake panel texts
 const BT = {
