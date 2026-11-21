@@ -2,7 +2,7 @@
 // Rows: F1 holdout laps per season (track left out, factor from the other season) and WEC holdout laps per
 // class/season (track left out of the WEC fit, F1 track factor). node scripts/sim/exp-compare.mjs base.js cand.js [...]
 import {pathToFileURL} from 'node:url';
-import {gate} from './gate.mjs';
+import {gate, nonInferior, kForVariants} from './gate.mjs';
 import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 
@@ -20,6 +20,23 @@ export function compare(base, cand) {
   for (const k of keys) (by[k.split('|')[0]] ||= []).push(k);
   return Object.fromEntries(Object.entries(by).map(([g, ks]) => { const r = gate(ks.map(k => a[k]), ks.map(k => b[k]));
     return [g, {n: r.n, base: +r.rmsCur.toFixed(3), cand: +r.rmsNew.toFixed(3), reason: r.reason}]; }));
+}
+// Gate G v2 (AGENTS.md "Model changes", owner 2026-11-21): decision groups all / f1 / wec with k by the number of variants m; type
+// 'accuracy' = paired test, 'correctness' = non-inferiority (margin 5 % of the group's baseline RMS). Class-season groups are reported;
+// one whose RMS rises by more than 2 × that margin blocks the change for that class only. scope 'f1': the change is judged on F1 rows
+// and WEC keeps its current factors (coupled stages), so WEC groups are reported but do not decide.
+export function decideV2(base, cand, {type = 'accuracy', m = 1, scope = 'all'} = {}) {
+  const a = heldOut(base), b = heldOut(cand), keys = Object.keys(a).filter(k => k in b), k = kForVariants(m);
+  const sel = pre => keys.filter(x => x.startsWith(pre)), groups = {all: keys, f1: sel('f1'), wec: sel('wec')};
+  for (const x of keys) (groups[x.split('|')[0]] ||= []).push(x);
+  const decide = scope === 'f1' ? ['f1'] : ['all', 'f1', 'wec'], rows = {}, blocked = [];
+  for (const [g, ks] of Object.entries(groups)) {
+    const ea = ks.map(x => a[x]), eb = ks.map(x => b[x]), r = type === 'correctness' ? nonInferior(ea, eb, {k}) : gate(ea, eb, {k});
+    const margin = 0.05 * r.rmsCur, small = !['all', 'f1', 'wec'].includes(g);
+    if (small && r.rmsNew - r.rmsCur > 2 * margin && !(scope === 'f1' && g.startsWith('wec'))) blocked.push(g);
+    rows[g] = {n: r.n, base: +r.rmsCur.toFixed(3), cand: +r.rmsNew.toFixed(3), decides: decide.includes(g), reason: small ? (r.rmsNew - r.rmsCur > 2 * margin ? 'blocks this class: RMS up > 2 × margin' : 'reported') : r.reason};
+  }
+  return {type, m, k, scope, pass: decide.every(g => rows[g]?.reason?.startsWith('accepted')), blockedGroups: blocked, groups: rows};
 }
 if (process.argv[1]?.endsWith('exp-compare.mjs')) {
   const load = async f => (await import(pathToFileURL(f).href)).lapsimCalibration;
@@ -42,6 +59,11 @@ if (process.argv[1]?.endsWith('exp-compare.mjs')) {
       comparisons: variants.slice(1).map((v, i) => ({candidate: v.calibration,
         heldOut: compare(calibrations[0], calibrations[i + 1]),
         physical: comparePhysical(variants[0].physical, v.physical)}))}, null, 2));
+  } else if (process.argv[2] === '--v2') {
+    // node exp-compare.mjs --v2 <accuracy|correctness> <m> <all|f1> base.js cand.js [...]
+    const [type, m, scope, baseF, ...cands] = process.argv.slice(3), base = await load(baseF);
+    for (const f of cands) { const r = decideV2(base, await load(f), {type, m: Number(m), scope}); console.log('==', f, `type ${r.type}, m ${r.m}, k ${r.k}, scope ${r.scope}: ${r.pass ? 'PASS' : 'FAIL'}${r.blockedGroups.length ? ' (blocked: ' + r.blockedGroups.join(', ') + ')' : ''}`);
+      for (const [g, x] of Object.entries(r.groups)) console.log(g.padEnd(16), JSON.stringify(x)); }
   } else {
   const base = await load(process.argv[2]);
   for (const f of process.argv.slice(3)) { console.log('==', f); for (const [g, r] of Object.entries(compare(base, await load(f)))) console.log(g.padEnd(16), JSON.stringify(r)); }
