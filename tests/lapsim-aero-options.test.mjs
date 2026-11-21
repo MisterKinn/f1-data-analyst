@@ -47,7 +47,9 @@ test('lapsim_simulate zone options match the page', async () => {
 });
 
 // C5.12.4–7 (owner 2026-11-16): with the power-reduction rule on, a 2026 lap has no ERS-K cut of more than 150 kW above 210 km/h off the
-// brakes (outside the FIA's large-cut sectors), and uses about the same energy
+// brakes (outside the FIA's large-cut sectors), and uses about the same energy. A cut from at most 250 kW may come at once: its first 150 kW
+// step already reaches 100 kW, below which C5.12.7 lifts the ramp (the kernel's HOLD_MIN 100 kW reading; the strict reading, HOLD_MIN 0, is
+// experiment S). Found by A6 run 44858524098: Monza 200 → 32 kW at 2925 m with the refitted car.
 test('C5.12 power-reduction rule removes sudden ERS-K cuts', async () => {
   const {lapsimKernel} = await import('../worker/lapsim/kernel.js'), {lapsimAllTracks: T} = await import('../worker/lapsim/tracks.js'), {carsFor} = await import('../worker/lapsim/scenario.js'), {puRampOf} = await import('../worker/lapsim/zones.js');
   const K = lapsimKernel();
@@ -55,7 +57,7 @@ test('C5.12 power-reduction rule removes sudden ERS-K cuts', async () => {
     const e0 = K.conditionsFromWeather({rechargeMJ: 7}), r = K.simulateLap(tr, car, {...e0, puRamp: pr}), r0 = K.simulateLap(tr, car, e0), n = r.v.length;
     const P = j => r.flow.dep[j] / (d.ds / Math.max(0.5 * (r.v[j] + r.v[(j + 1) % n]), 1));
     for (let i = 1; i < n; i++) { const s = i * d.ds, big = pr.bigCut.some(z => s >= z.from && s <= z.to);
-      if (!big && r.limit[i] !== 3 && r.limit[i] !== 0 && r.v[i] * 3.6 > 210 && P(i - 1) > 100e3) assert.ok(P(i - 1) - P(i) <= 160e3, `${id} cut of ${Math.round((P(i - 1) - P(i)) / 1e3)} kW at ${Math.round(s)} m`); }
+      if (!big && r.limit[i] !== 3 && r.limit[i] !== 0 && r.v[i] * 3.6 > 210 && P(i - 1) - 150e3 > 100e3) assert.ok(P(i - 1) - P(i) <= 160e3, `${id} cut of ${Math.round((P(i - 1) - P(i)) / 1e3)} kW at ${Math.round(s)} m`); }
     assert.ok(Math.abs(r.energy.deployJ - r0.energy.deployJ) < 0.5e6, id + ' energy'); }
 });
 
