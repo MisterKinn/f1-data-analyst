@@ -28,7 +28,9 @@ jobs:
         with: {node-version: '22'}
       - run: npm ci --ignore-scripts
       - name: Read the FIA F2 and F3 classifications
-        run: node scripts/sim/learn/fetch-f2f3.mjs | tee /tmp/f2f3.log | tail -15 && echo "races where the fastest lap differs from the FIA overall fastest: $(grep -c "fastest ✗" /tmp/f2f3.log || true)"
+        run: |
+          node scripts/sim/learn/fetch-f2f3.mjs | tee /tmp/f2f3.log | tail -15
+          echo "races where the fastest lap differs from the FIA overall fastest: $(grep -c "fastest ✗" /tmp/f2f3.log || true)"
       - name: Publish to main (checks first)
         env: {GH_TOKEN: '${{ github.token }}'}
         run: |
