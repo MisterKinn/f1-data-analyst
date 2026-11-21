@@ -1114,7 +1114,11 @@ function computeView(K, data, state, R) {
   // alternative curve (Alt 1, from Miami on) and is summarised under the lane. Display only: the kernel is not changed.
   const motorOf = r => { const F = r && r.flow; if (!F) return null; const n = F.dep.length; return F.dep.map((e, i) => { const j = (i + 1) % n, dt = d.ds / Math.max((r.v[i] + r.v[j]) / 2, 1); return Math.round((e - F.brk[i] - F.thr[i]) / dt / 1000); }); };
   const ersSel = sel.car.ers || {}, otU = raw.trk && raw.trk.otOn, capOf = (v, i) => ersSel.rule === 'f1-2026' ? K.erskLimitW('f1-2026', v, ersSel.pMax, otU === true || !!(otU && otU[i])) / 1000 : ersSel.rule === 'hypercar' ? (v >= (ersSel.deployFrom || 0) ? (ersSel.eMax || 0) / 1000 : 0) : (ersSel.pMax || 0) / 1000;
-  const motorLane = tag([motorOf(raw)].concat(cmpRaws.map(motorOf)));
+  // super-clipping at the store floor flips deploy / recovery every step (Las Vegas T10–T11 drew a solid band, owner 2026-11-22): the lane
+  // shows the net power over 4 steps (≈ 20 m; an even window cancels the step-to-step flip). Display only: lap time, battery lane and
+  // the kernel are unchanged.
+  const net = a => a && a.map((_, i) => { let sm = 0; for (let k = -2; k <= 1; k++) sm += a[(i + k + a.length) % a.length]; return Math.round(sm / 4); });
+  const motorLane = tag([net(motorOf(raw))].concat(cmpRaws.map(r => net(motorOf(r)))));
   if (motorLane.length) motorLane.push({v: raw.v.map((v, i) => Math.round(capOf(v, i))), cls: 'ls-cap'});
   const PU = ersSel.rule === 'f1-2026' ? data.pu : null, puK = PU && PU.centrelineKm ? (d.length || nP * d.ds) / (PU.centrelineKm * 1000) : 1, altBands = PU && (PU.est || PU.round > 3) ? (PU.alt || []).filter(z => !z.qOnly).map(z => [z.from * puK, z.to * puK]) : []; // FIA lap distances are on the FIA centreline
   const puNote = !PU ? '' : (PU.est ? TL.puEst : (PU.round <= 3 ? TL.puEarly : TL.puLate).replace('{r}', PU.round)) + ' ' + TL.puDoc.replace('{q}', PU.qualiMJ ?? '–').replace('{race}', PU.raceMJ ?? '–').replace('{d}', PU.powerLimitedDistanceM ?? '–').replace('{rate}', PU.rampKWs ?? '–').replace('{alt}', (PU.alt || []).filter(z => !z.qOnly).map(z => z.sector + ' ' + z.from + '–' + z.to + ' m').join(', ') || '–') + (PU.speed && PU.speed.length ? ' ' + TL.puSpeed.replace('{s}', PU.speed.map(z => z.sector + ' ' + z.from + '–' + z.to + ' m ≥ ' + z.kph + ' km/h').join(', ')) : '') + (PU.document ? ' <a href="' + PU.document.url + '" target="_blank" rel="noopener noreferrer">' + PU.document.title + '</a>' : '');
