@@ -17,6 +17,7 @@ import {lapsimCompounds} from './lapsim/compounds-data.js';
 import {lapsimStints} from './lapsim/stint-data.js';
 import {lapsimFeRace} from './lapsim/fe-race-data.js';
 import {lapsimFcy, lapsimFcyMeta} from './lapsim/fcy-data.js';
+import {lapsimFcyDistance, lapsimFcyDistanceMeta} from './lapsim/fcy-distance-data.js';
 import {lapsimCompoundGap} from './lapsim/compound-gap-data.js';
 import {wetGapPage} from './lapsim/wet-gap.js';
 import {lapsimTrackTemp} from './lapsim/tracktemp-data.js';
@@ -660,9 +661,11 @@ function stintPanel(id, lang) {
 const FY = {
   ko: {h: '풀코스 옐로·세이프티카 (모델)', lead: '이 서킷 내구 레이스에서 시간당 몇 번 레이스가 중립화되는지(FCY·세이프티카·슬로 존) 공식 타이밍의 깃발 시각으로 센 값입니다. 모델이며 실측 예보가 아닙니다.',
     cols: ['시리즈', '시간당', '레이스 길이', '예상 횟수', '한 번 이상', '근거'], basis: {track: '이 서킷 기록 (시리즈 평균 쪽으로 보정)', series: '시리즈 평균'}, h1: '시간',
+    dist: '레이스 거리 예측 ({y} {s}, {h}시간, 예상 중립화 {m}분)', dcols: ['클래스', '전부 그린일 때', '예상 FCY 반영', '실제 우승'], laps: '랩', dnote: '전년도 실측 그린 페이스·피트 손실·스틴트 길이로 계산한 모델 예측(차량별 중앙값). 같은 1,506대·38경기에서 평균 오차: 전년 우승 거리 {p}랩, 전부 그린 {g}랩, 예상 FCY {e}랩, 실제 FCY {r}랩.',
     gate: '검증(대회 하나씩 빼고, 포아송 NLL): 서킷별 비율 {a} → {b} (+{g} ± {s}), 2026 미공개 대회 +{g2} ± {s2}. 시리즈별로는 IMSA만 통과, WEC({w})·ELMS({e})는 탈락해 시리즈 평균을 씁니다.'},
   en: {h: 'Full-course yellows and safety cars (model)', lead: 'How often an endurance race here is neutralised (FCY, safety car, slow zone) per hour, counted from the flag clocks of the official timing. A model, not a forecast.',
     cols: ['Series', 'Per hour', 'Race length', 'Expected', 'At least one', 'Basis'], basis: {track: 'this circuit (pulled toward the series mean)', series: 'series mean'}, h1: 'h',
+    dist: 'Race distance forecast ({y} {s}, {h} h, {m} min neutralised expected)', dcols: ['Class', 'All green', 'With expected FCY', 'Real winner'], laps: 'laps', dnote: 'Model forecast from the year before\'s measured green pace, pit loss and stint length (median over cars). Mean error on the same 1,506 cars in 38 races: previous winner {p} laps, all green {g}, expected FCY {e}, real FCY {r}.',
     gate: 'Check (each event left out, Poisson NLL): track rate {a} → {b} (+{g} ± {s}), unseen 2026 events +{g2} ± {s2}. By series only IMSA passes; WEC ({w}) and ELMS ({e}) reject, so they use the series mean.'},
 };
 function fcyPanel(id, lang) {
@@ -671,8 +674,11 @@ function fcyPanel(id, lang) {
   const rows = Object.entries(F).map(([se, r]) => `<tr><td>${se.toUpperCase()}</td><td data-no-translate>${f(r.perHour)}</td><td data-no-translate>${r.raceHours ?? '–'} ${t.h1}</td><td data-no-translate>${f(r.expected, 1)}</td><td data-no-translate>${r.pAtLeastOne == null ? '–' : Math.round(r.pAtLeastOne * 100) + '%'}</td><td>${esc(t.basis[r.basis])}</td></tr>`).join('');
   const g = t.gate.replace('{a}', G.overall[0]).replace('{b}', G.overall[1]).replace('{g}', G.overall[2]).replace('{s}', G.overall[3]).replace('{g2}', G.unseen2026[2]).replace('{s2}', G.unseen2026[3])
     .replace('{w}', G.wec[0] + ' ± ' + G.wec[1]).replace('{e}', G.elms[0] + ' ± ' + G.elms[1]);
+  const DD = lapsimFcyDistance?.[id] || {}, M = lapsimFcyDistanceMeta.pooled;
+  const dist = Object.entries(DD).map(([se, d]) => `<h3>${esc(t.dist.replace('{y}', d.season).replace('{s}', se.toUpperCase()).replace('{h}', d.hours).replace('{m}', d.fcyMin ?? '–'))}</h3>
+ <div class="output"><table class="ls-table"><thead><tr>${t.dcols.map(c => `<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${Object.entries(d.classes).map(([c, r]) => `<tr><td>${esc(c)}</td><td data-no-translate>${r.allGreen ?? '–'}</td><td data-no-translate>${r.expectedFcy ?? '–'}</td><td data-no-translate>${r.winner}</td></tr>`).join('')}</tbody></table></div>`).join('');
   return `<section class="panel ls-panel"><h2>${esc(t.h)}</h2><p>${esc(t.lead)}</p>
- <div class="output"><table class="ls-table"><thead><tr>${t.cols.map(c => `<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div><p class="fine">${esc(g)}</p></section>`;
+ <div class="output"><table class="ls-table"><thead><tr>${t.cols.map(c => `<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div><p class="fine">${esc(g)}</p>${dist}${dist ? `<p class="fine">${esc(t.dnote.replace('{p}', M.priorWinner).replace('{g}', M.allGreen).replace('{e}', M.expectedFcy).replace('{r}', M.realFcy))}</p>` : ''}</section>`;
 }
 // Formula E race pace here (W12): measured race/pole ratio and Attack Mode gain (Gen3 Evo, dry), Gen4 estimate with its range
 const FR = {

@@ -708,3 +708,7 @@ race): race/pole ratio (median green race lap ÷ pole, with first/last five laps
 layout's events; the script stops if a track mean does not replay its events. Rejected in W12 and not used: track offsets for new
 venues/seasons (venue out 0.000 ± 0.000, S12 out −0.165 ± 0.188 pp), Attack Mode length model, driver/model identity. Gen4: W12 prior
 (e.g. Monaco race/pole 1.099, 1.042–1.155; Attack Mode −0.17 s, −5.43 … +4.97 s), labelled model with its range.
+Race distance (W14 race check, same panel): laps = smallest n with n·green + ⌊(n−1)/stint⌋·pit ≥ race s − Y + Y/ratio (Y = expected FCY
+seconds; distance-limited rounds stop at the leader's finish), inputs from the season before. All 1,118 latest-race rows replay W14
+exactly; Le Mans 2026 Hypercar checked with Wolfram (399 all green, 396 with FCY). Pooled MAE on 1,506 cars / 38 races: previous winner
+47.86, all green 45.06, expected FCY 32.99, real FCY 28.80 laps.
