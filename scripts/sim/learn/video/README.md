@@ -7,7 +7,7 @@ Session D, started 2026-11-21. Video files never go into git; only derived numbe
   (`resolveTrack`), class, car, driver, URL, host (official / YouTube / third-party). Status "listed, not watched".
 - `hud_ocr.py`: reads a data overlay (speed, gear, rpm, throttle and brake bars) frame by frame with Tesseract. The crop boxes fit the
   720×1280 "Car #98" GT3 overlay; a new overlay needs new boxes.
-- `macau-gt3-98.json`: first video, Macau Guia Circuit, GT3 #98 onboard, 10 Hz trace by time with GPS distance and a quality block.
+- `macau-gt3-98.json`: first video, Macau Guia Circuit, 2019 FIA GT World Cup, Earl Bamber, ROWE Racing Porsche 911 GT3 R (991.2) #98 (qualifying 2:16.066; the video lap, ~139.3 s, is a slower lap of unknown session). 10 Hz trace with GPS distance and a quality block.
 
 Pipeline plan (Task 1): watch-video frames → overlay OCR (or speed from the broadcast graphic) → lap clock → track distance from
 corner landmarks and the official lap time → speed trace per lap with a quality score. Validate first on F1 laps that also have
