@@ -376,5 +376,5 @@ vs stored 0.8 m). Lap times cannot move: only the map (`lineData`) reads `kerb-u
 | phillip-island | 2.43 | 1.45 | 82 % | 2.65 | 19,637 | ✗ samples |
 | road-america | 2.24 | 1.20 | 63 % | 0.88 | 12,851 | ✗ samples |
 
-Interlagos, Imola, VIR and Watkins Glen have only formula-car laps in the pack (no closed-wheel group). Old vs new edges with the laps:
-Project doc `claude/release/kerbs-old-new-2026-11-21.png`.
+Interlagos, Imola, VIR and Watkins Glen have only formula-car laps in the pack (no closed-wheel group). Old vs new edges with the laps
+were checked on plots (Misano, Mugello, Bathurst; sent to the owner, not committed).
