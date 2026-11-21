@@ -53,6 +53,11 @@ estimates, tracks) must leave all three in step in the same PR or refresh run:
 - Measured data (real lap and sector times, official weather) is read-only. No fit, rule change or new physics may rewrite or move it; a
   raced track shows its real lap exactly (tests: "every car that raced on a track reproduces its real lap exactly", "F1 sector
   correction"). A model change that breaks this is a bug in the model path, fixed there, never by editing the real lap.
+- Measured telemetry is always shown (owner 2026-11-22): where a real lap exists (F1 speed, throttle, brake, gear / shifts, rpm, DRS,
+  sector and lap times, …), every measured channel is shown from that real lap, labelled measured / 실측. Never show model or
+  predicted data in place of a measured channel. The model fills only channels that were not measured (e.g. ERS deploy / harvest,
+  battery SoC) and tracks or cars that never ran, labelled model / 모델. Predictions for unraced tracks are learned from the measured
+  data and shipped only after Gate G.
 - Qualifying with rain: the dry fit leaves the session out, but the page and tool still default to that session's real pole in its own
   weather (scripts/sim/learn/wet-quali.mjs → worker/lapsim/f1-wet-quali-data.js, input scripts/sim/data/learn/f1-wet-quali.json from
   OpenF1). Next to it they show a dry pole estimate labelled model: the simulator prediction and that weekend's fastest dry race lap ×
