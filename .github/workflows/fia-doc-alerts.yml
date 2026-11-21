@@ -16,6 +16,7 @@ concurrency:
 
 jobs:
   check:
+    if: github.repository == 'MisterKinn/f1-data-analyst'
     runs-on: ubuntu-latest
     timeout-minutes: 6
     steps:
