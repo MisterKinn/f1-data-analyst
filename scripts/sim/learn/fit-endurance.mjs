@@ -124,6 +124,9 @@ export function loadRows(files = SOURCES) {
     if (r.src === 'alkamel' && archive.has(r.season + '|' + tr.venue)) continue; // the archive already holds this WEC event (same season and venue)
     const dry = !(+r.rainShare > 0.02), o = {series: r.series, season: r.season, event: r.event, layout: tr.layout, group, model: r.model.key, body: b, entry: r.entry, real: r.best, type: r.type, session: r.session, w};
     if (dry && tr.sim && (r.src !== 'sro' || sroSure(tr, r.season))) for (const k of [`${tr.layout}|m|${o.model}|${b}`, `${tr.layout}|c|${group}`, `${tr.layout}|c|${group}|${b}`, `${tr.layout}|c|${group}|s:${r.series}`]) { keep(k, o); if (r.type === 'R') keep(k + '|race', o); }
+    // Hypercar class pair (owner 2026-11-21): each event's class best, dry qualifying (and race), so LMH and LMDh can come from the same event
+    if (dry && tr.sim && (group === 'lmh' || group === 'lmdh') && (r.type === 'Q' || r.type === 'R') && (r.series === 'wec' || r.series === 'imsa'))
+      keep(`${tr.layout}|ev|${r.series}|${r.season}|${r.event}|${group}${r.type === 'R' ? '|race' : ''}`, o);
     // DTM: records only. Tried 2026-11-15 with named layouts (short NGK = sprint): Timing71 DTM rows carry no weather or rain flag, and
     // single wet sessions gave 7-11 % errors (GT3 event-hidden 1.12 -> 1.40 %), so they stay out of the fit.
     // SRO official tables (no weather): fitted only for a layout and season that no
@@ -221,14 +224,23 @@ if (process.argv[1]?.endsWith('fit-endurance.mjs')) {
   // Real laps to REPRODUCE (owner rule 2026-11-14): the fastest real lap of each car (model + body) and each class on every layout
   // with geometry, any season and dry session. WEC class cars take the fastest WEC or IMSA lap (owner 2026-11-15), then the same
   // class in other series (ACO-body GT3 for LMGT3, then any GT3).
-  const realOf = r => ({lap: r.real, year: r.season, series: r.series, event: r.event, session: r.session, type: r.type, entry: r.entry, model: r.model, body: r.body || undefined,
+  const realOf = r => ({lap: r.real, year: r.season, series: r.series, event: r.event, session: r.session, type: r.type, entry: r.entry, model: r.model, body: r.body || undefined, ...(r.pairEvent !== undefined ? {pairEvent: r.pairEvent} : {}),
     weather: Object.fromEntries(Object.entries({airTempC: r.w.airC, trackTempC: r.w.trackC, humidityPct: r.w.hum, pressureHpa: r.w.hpa}).filter(([, v]) => Number.isFinite(v)).map(([k, v]) => [k, +v.toFixed(2)]))});
   const rec = loaded.records, get = (...ks) => ks.map(k => rec.get(k)).find(Boolean), pack = o => Object.fromEntries(Object.entries(o).filter(([, v]) => v).map(([k, v]) => [k, realOf(v)]));
   const recLayouts = new Set([...rec.keys()].map(k => k.split('|')[0]).filter(id => registry().layouts.find(l => l.id === id)?.sim));
   for (const id of new Set([...ownLayouts, ...recLayouts])) { const t = tracks[id] ||= {events: 0, cls: {}, errPct: {}, models: {}};
     // WEC class cars: the faster of the WEC and IMSA records (owner 2026-11-15, rule 12); another series fills only an empty slot
     const best = (g, sfx) => [rec.get(`${id}|c|${g}|s:wec${sfx}`), rec.get(`${id}|c|${g}|s:imsa${sfx}`)].filter(Boolean).sort((a, b) => a.real - b.real)[0];
-    const cls = sfx => ({'wec-lmh': best('lmh', sfx) || get(`${id}|c|lmh${sfx}`), 'wec-lmdh': best('lmdh', sfx) || get(`${id}|c|lmdh${sfx}`), 'wec-lmgt3': best('gt3', sfx) || get(`${id}|c|gt3|aco${sfx}`, `${id}|c|gt3${sfx}`)});
+    // LMH and LMDh (owner 2026-11-21, "같은 시즌으로 맞춤"): both class laps from the latest event where both classes set a dry qualifying
+    // (race: race) lap here (latest season; WEC before IMSA in the same season); so the page's LMH − LMDh gap is a real same-event gap under that event's BoP. Without such
+    // an event the class keeps the fastest WEC/IMSA lap of any season, marked pairEvent: null.
+    const pair = sfx => { const ev = {}; for (const [k, v] of rec) { const q = k.split('|'); if (q[0] !== id || q[1] !== 'ev' || (sfx ? q[6] !== 'race' : q.length !== 6)) continue;
+        (ev[q.slice(2, 5).join('|')] ||= {series: q[2], season: +q[3], session: ''})[q[5]] = v; }
+      const both = Object.values(ev).filter(e => e.lmh && e.lmdh).sort((a, b) => b.season - a.season || (a.series === 'wec' ? 0 : 1) - (b.series === 'wec' ? 0 : 1)
+        || String(b.lmh.session).localeCompare(String(a.lmh.session)));
+      return both[0] || null; };
+    const paired = (g, sfx) => { const p = pair(sfx); return p ? {...p[g], pairEvent: `${p.series.toUpperCase()} ${p.season} ${p[g].event}`} : (v => v && {...v, pairEvent: null})(best(g, sfx) || get(`${id}|c|${g}${sfx}`)); };
+    const cls = sfx => ({'wec-lmh': paired('lmh', sfx), 'wec-lmdh': paired('lmdh', sfx), 'wec-lmgt3': best('gt3', sfx) || get(`${id}|c|gt3|aco${sfx}`, `${id}|c|gt3${sfx}`)});
     t.real = pack(Object.fromEntries(shown.map(x => [slug(x.m, x.b), get(`${id}|m|${x.m}|${x.b}`)]))); t.classReal = pack(cls(''));
     t.raceReal = pack({...Object.fromEntries(shown.map(x => [slug(x.m, x.b), get(`${id}|m|${x.m}|${x.b}|race`)])), ...cls('|race')}); }
   const learned = {generated: res.generated, source: 'Al Kamel published timing 2021-2026 (IMSA, WEC, ELMS, Asian Le Mans Series) and Timing71 (SRO GT World Challenge, IGTC, DTM, Nürburgring, Macau): every car model. scripts/sim/learn/fit-endurance.mjs, docs/lapsim-learn.md',
