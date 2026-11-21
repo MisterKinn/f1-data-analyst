@@ -1,5 +1,5 @@
 // Every-lap timing of the series Al Kamel publishes but no other fetcher reads (owner 2026-11-21: GTWC must read Al Kamel too).
-// Today: GT World Challenge America and the IGTC Indianapolis 8 Hour (usac), ELMS (elms) and the Michelin Le Mans Cup (lemanscup) (usac.alkamelsystems.com, series "06_SRO"; same results site as
+// Today: GT World Challenge America and the IGTC Indianapolis 8 Hour (usac), ELMS (elms), the Michelin Le Mans Cup (lemanscup) and the Asian Le Mans Series (alms, JSON manifests) (usac.alkamelsystems.com, series "06_SRO"; same results site as
 // IMSA/ELMS: one folder per session with 23_AnalysisEnduranceWithSections_*.CSV = every lap with sectors, 03_Results_*.CSV = official
 // classification, 26_Weather_*.CSV). Runs in GitHub Actions (network). Raw files are not stored (physics rule 2.9): out is one derived
 // row per car and session in scripts/sim/data/learn/alkamel-laps.json.gz.
@@ -11,6 +11,8 @@ export const SITES = {
   usac: {base: 'https://usac.alkamelsystems.com/', series: '06_SRO', champ: /GT World Challenge America|IGTC/i},
   elms: {base: 'https://elms.alkamelsystems.com/', champ: /^\d+_European Le Mans Series$/i},
   lemanscup: {base: 'https://lemanscup.alkamelsystems.com/', champ: /^\d+_Michelin Le Mans Cup$/i},
+  // alms.alkamelsystems.com is a newer app: same folders and CSV files, listed in JSON manifests instead of index pages
+  alms: {manifest: 'https://files.alkamelcloud.com/alms/manifests/results.json', files: 'https://files.alkamelcloud.com/', champ: /^\d+_Asian Le Mans Series$/i},
 };
 const UA = {headers: {'user-agent': 'Mozilla/5.0 (kongboda-motorsports lap simulator; official results reader)'}};
 
@@ -61,13 +63,25 @@ const csvLinks = (html, base) => [...new Set([...html.matchAll(/href=["']([^"']+
 if (process.argv[1]?.endsWith('fetch-alkamel-laps.mjs')) {
   const years = (process.argv.find(a => a.startsWith('--years='))?.slice(8) || '2023,2024,2025,2026').split(',');
   const out = [], log = [];
-  for (const [site, s] of Object.entries(SITES)) {
+  // every (season, event, CSV links) of a site, from its index pages or its JSON manifests
+  async function* eventsOf(s) {
+    if (s.manifest) {
+      for (const {id, manifestUrl} of JSON.parse(await get(s.manifest) || '{}').seasons || []) { if (!years.some(y => id.endsWith(y))) continue;
+        const paths = new Set(), walk = o => Array.isArray(o) ? o.forEach(walk) : o && typeof o === 'object' ? Object.values(o).forEach(walk) : typeof o === 'string' && /\.csv$/i.test(o) && paths.add(o);
+        walk(JSON.parse(await get(s.files + manifestUrl) || '{}')); const byEvent = new Map();
+        for (const path of paths) { const ev = path.split('/')[3]; (byEvent.get(ev) || byEvent.set(ev, []).get(ev)).push(s.files + path.split('/').map(encodeURIComponent).join('/')); }
+        for (const [event, files] of byEvent) yield {season: id, event, files};
+      }
+      return;
+    }
     const q = o => s.base + '?' + new URLSearchParams(s.series ? {series: s.series, ...o} : o);
-    const seasons = options(await get(q({})), 'season').filter(v => years.some(y => v.endsWith(y)));
-    for (const season of seasons) {
-      const events = options(await get(q({season})), 'evvent');
-      for (const event of events) {
-        const files = csvLinks(await get(q({season, evvent: event})), s.base).map(f => ({f, ...sessionFile(new URL(f).pathname)})).filter(x => x.champ && s.champ.test(x.champ)).sort((a, b) => a.hour - b.hour), bySession = new Map();
+    for (const season of options(await get(q({})), 'season').filter(v => years.some(y => v.endsWith(y))))
+      for (const event of options(await get(q({season})), 'evvent')) yield {season, event, files: csvLinks(await get(q({season, evvent: event})), s.base)};
+  }
+  for (const [site, s] of Object.entries(SITES)) {
+    for await (const {season, event, files: links} of eventsOf(s)) {
+      {
+        const files = links.map(f => ({f, ...sessionFile(new URL(f).pathname)})).filter(x => x.champ && s.champ.test(x.champ)).sort((a, b) => a.hour - b.hour), bySession = new Map();
         for (const {f, champ, session, file} of files) { const k = champ + '|' + session; (bySession.get(k) || bySession.set(k, {champ, session, files: {}}).get(k)).files[file] = f; }
         for (const {champ, session, files: fs} of bySession.values()) {
           const pick = re => Object.entries(fs).find(([n]) => re.test(n))?.[1];
@@ -81,7 +95,7 @@ if (process.argv[1]?.endsWith('fetch-alkamel-laps.mjs')) {
     }
   }
   writeFileSync('scripts/sim/data/learn/alkamel-laps.json.gz', gzipSync(JSON.stringify({
-    source: 'Al Kamel Systems published timing (usac.alkamelsystems.com: GT World Challenge America, IGTC Indianapolis 8 Hour; elms.alkamelsystems.com: European Le Mans Series; lemanscup.alkamelsystems.com: Michelin Le Mans Cup). One row per car and session; raw files not stored.',
+    source: 'Al Kamel Systems published timing (usac.alkamelsystems.com: GT World Challenge America, IGTC Indianapolis 8 Hour; elms.alkamelsystems.com: European Le Mans Series; lemanscup.alkamelsystems.com: Michelin Le Mans Cup; files.alkamelcloud.com manifests: Asian Le Mans Series). One row per car and session; raw files not stored.',
     fields: 'best = fastest lap of any kind; clean = fastest green/finish-flag lap not into the pit lane, with sectors (s) and top speed; officialBest = 03_Results classification',
     fetched: new Date().toISOString().slice(0, 10), rows: out})));
   console.log(log.join('\n')); console.log('rows', out.length);
