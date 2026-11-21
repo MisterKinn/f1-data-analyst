@@ -13,7 +13,7 @@ const kind = n => /race|grand prix ·|main/i.test(n) && !/qualif|practice|warm/i
 const hours = (series, k, name) => k === 'race' ? (/\b(\d+)\s*h(ours)?\b/i.exec(name)?.[1] * 1 || RACE_H[series] || 2) : 1;
 // what each series can refresh today (workflow files; all publish through scripts/publish-refresh.sh)
 const WIRED = {
-  f1: {qualifying: ['f1-zones-refresh.yml'], race: ['f1-zones-refresh.yml']},  // zones/grip state + real poles; ERS clipping runs every 30 min itself
+  f1: {qualifying: ['f1-zones-refresh.yml', 'f2f3-laps.yml'], race: ['f1-zones-refresh.yml', 'f2f3-laps.yml']},  // zones/grip state + real poles (ERS clipping runs every 30 min itself); F2/F3 run on F1 weekends
   wec: {qualifying: ['bop-refresh.yml'], race: ['bop-refresh.yml', 'lapsim-track-laps.yml']},
   imsa: {race: ['bop-refresh.yml', 'lapsim-track-laps.yml']},
   elms: {practice: ['alkamel-laps.yml'], qualifying: ['alkamel-laps.yml'], race: ['bop-refresh.yml', 'alkamel-laps.yml']},
