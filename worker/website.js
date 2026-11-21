@@ -206,8 +206,12 @@ export function websiteRoute(request,identity={}){
  else {const c=championships.find(c=>path==='/championships/'+c.slug);if(c&&FEATURES.fullSite)content=layout(c.name,explore(c),path,user);else if(c)return Response.redirect(new URL('/?series='+c.slug+'#series',request.url).href,302);} // the full site keeps its series pages
  if(content===undefined){if(path.startsWith('/api/')||path.startsWith('/assets/')||path==='/mcp'||path.startsWith('/.well-known/'))return null;responseStatus=404;content=layout('페이지를 찾을 수 없습니다',`<section class="hero not-found"><h1>페이지를 찾을 수 없습니다</h1><p>주소가 바뀌었거나 현재 제공하지 않는 페이지입니다.</p><div class="actions"><a class="button primary" href="/">홈으로 돌아가기</a><a class="button" href="/guide">이용 방법</a></div></section>`,path,user);}
  if(type.startsWith('text/html')){if(identity.accountInfo?.account?.deleted)content=content.replace(/<button\b[^>]*data-copy="https:\/\/kongboda-motorsports\.vercel\.app\/mcp"[^>]*>[^<]*<\/button>/g,'');const language=chooseLanguage(request);if(language==='ko')content=content.replace(/<p class="tag">YOUR RACE ENGINEER<\/p>/g,'');content=translateHtml(content,language).replace('<option value="'+language+'">','<option value="'+language+'" selected>');content=versionScriptUrls(applySiteMetadata(content,{origin:url.origin,pathname:path,language}));}
- return new Response(request.method==='HEAD'?null:content,{status:responseStatus,headers:{'content-type':type,'cache-control':path.startsWith('/assets/')?(type==='font/woff2'?'public, max-age=86400':/\.js$/.test(path)&&url.searchParams.get('v')===scriptVersion(path.slice(8,-3))?'public, max-age=31536000, immutable':'public, max-age=300, must-revalidate'):'private, no-store','x-content-type-options':'nosniff'}});
+ return new Response(request.method==='HEAD'?null:content,{status:responseStatus,headers:{'content-type':type,'cache-control':path.startsWith('/assets/')?(type==='font/woff2'?'public, max-age=86400':/\.js$/.test(path)&&url.searchParams.get('v')===scriptVersion(path.slice(8,-3))?'public, max-age=31536000, immutable':'public, max-age=300, must-revalidate')+ASSET_EDGE:'private, no-store','x-content-type-options':'nosniff'}});
 }
+
+// Assets are the same for every visitor within one deployment, and Vercel clears its edge cache on each
+// deploy: let the edge keep them, so a page view is one function call instead of about 14.
+export const ASSET_EDGE=', s-maxage=31536000';
 
 // This function is shipped as a small standalone browser script; no framework needed.
 function websiteClient(teamLogoFor,gtTeamLogoFor,koreanStandingName,standingsKoreanNames){
