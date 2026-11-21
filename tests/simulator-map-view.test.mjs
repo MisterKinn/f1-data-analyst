@@ -61,6 +61,10 @@ test('map labels (owner 2026-11-17): numbers smaller than before, names sized ne
   // named straights, in the page language
   assert.match(map({track: 'silverstone'}, 'ko'), /ls-straight"[^>]*>행어 스트레이트</);
   assert.match(map({track: 'interlagos'}, 'en'), /ls-straight"[^>]*>Reta Oposta</);
+  // Las Vegas landmarks (owner 2026-11-21), in lap order on the map
+  const lv = map({track: 'las-vegas'}, 'ko');
+  for (const n of ['스피어', '베네치안', '팔라조', '트레저 아일랜드', '미라지', '시저스 팰리스', '하이 롤러', '플라밍고', '벨라지오', '패리스', '플래닛 할리우드']) assert.match(lv, new RegExp('ls-straight"[^>]*>' + n + '<'), n);
+  assert.match(map({track: 'las-vegas'}, 'en'), /ls-straight"[^>]*>Caesars Palace</);
 });
 
 test('Silverstone (owner 2026-11-17): non-F1 series number from Copse and start on the National Straight; Formula E keeps the F1 set-up', async () => {
