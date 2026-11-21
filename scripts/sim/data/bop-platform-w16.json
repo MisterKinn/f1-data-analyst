@@ -1,0 +1,2359 @@
+{
+"note": "W16 (ChatGPT compute 2026-11-19, reviewed 2026-11-21): LMH minus LMDh lap gap per track (negative = LMH faster), measured from official timing, next to the Kongboda simulator. Sign check of the simulator, not a gate. Copied unchanged from platform_comparison.json.",
+"method": {
+"sign": "LMH minus LMDh; negative is faster LMH. Percent denominator is LMDh pace.",
+"best": "Fastest of all known editions within each maker, then fastest maker in each architecture.",
+"median": "Median across editions for each maker, then median across makers; each maker gets one vote.",
+"track": "Median of eligible event gaps at matching series, track, session and weather; seconds and percent summarized separately.",
+"weather": "Dry, wet, and unknown are separate. Only dry gaps get a sign check against the simulator. Simulator matched_class_weather gives both cars the same qualifying weather; neither mode matches historical event temperature. Event measured temperatures are medians of available maker-edition temperature summaries.",
+"scope": "Directional diagnostic. The production simulator estimates a qualifying lap; race differences also include race effects. Qualifying corrections may use historical timing from these circuits.",
+"provenance": "Measured inputs are the maker_event rows of results.json. Simulator command, weather sources and input revision are in simulator.json."
+},
+"tracks": [
+{
+"series": "IMSA",
+"track": "daytona",
+"condition": "dry",
+"session": "qualifying",
+"observed_events": 4,
+"paired_events": 1,
+"paired_event_keys": [
+{
+"season": 2026,
+"event": "Daytona International Speedway"
+}
+],
+"best_gap_s": 1.443,
+"best_gap_pct": 1.536103215916725,
+"best_direction": "LMDh faster",
+"median_gap_s": 1.1615,
+"median_gap_pct": 1.2327465891180833,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": 2.726,
+"default_sim_direction": "LMDh faster",
+"best_default_wrong_sign": false,
+"median_default_wrong_sign": false,
+"matched_class_weather_sim_gap_s": 2.778,
+"matched_class_weather_sim_direction": "LMDh faster",
+"best_matched_class_weather_wrong_sign": false,
+"median_matched_class_weather_wrong_sign": false
+},
+{
+"series": "IMSA",
+"track": "daytona",
+"condition": "dry",
+"session": "race",
+"observed_events": 4,
+"paired_events": 1,
+"paired_event_keys": [
+{
+"season": 2026,
+"event": "Daytona International Speedway"
+}
+],
+"best_gap_s": 0.777235204,
+"best_gap_pct": 0.7957931822961669,
+"best_direction": "LMDh faster",
+"median_gap_s": 0.668496429,
+"median_gap_pct": 0.6836968656433163,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": 2.726,
+"default_sim_direction": "LMDh faster",
+"best_default_wrong_sign": false,
+"median_default_wrong_sign": false,
+"matched_class_weather_sim_gap_s": 2.778,
+"matched_class_weather_sim_direction": "LMDh faster",
+"best_matched_class_weather_wrong_sign": false,
+"median_matched_class_weather_wrong_sign": false
+},
+{
+"series": "IMSA",
+"track": "daytona",
+"condition": "unknown",
+"session": "race",
+"observed_events": 3,
+"paired_events": 1,
+"paired_event_keys": [
+{
+"season": 2026,
+"event": "Daytona International Speedway"
+}
+],
+"best_gap_s": 1.233775762,
+"best_gap_pct": 1.2690902330416356,
+"best_direction": "LMDh faster",
+"median_gap_s": 0.976607402,
+"median_gap_pct": 1.0019105735895883,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": 2.726,
+"default_sim_direction": "LMDh faster",
+"best_default_wrong_sign": null,
+"best_default_withheld_reason": "surface condition unresolved",
+"median_default_wrong_sign": null,
+"median_default_withheld_reason": "surface condition unresolved",
+"matched_class_weather_sim_gap_s": 2.778,
+"matched_class_weather_sim_direction": "LMDh faster",
+"best_matched_class_weather_wrong_sign": null,
+"best_matched_class_weather_withheld_reason": "surface condition unresolved",
+"median_matched_class_weather_wrong_sign": null,
+"median_matched_class_weather_withheld_reason": "surface condition unresolved"
+},
+{
+"series": "IMSA",
+"track": "detroit",
+"condition": "dry",
+"session": "qualifying",
+"observed_events": 3,
+"paired_events": 2,
+"paired_event_keys": [
+{
+"season": 2025,
+"event": "Detroit Street Course"
+},
+{
+"season": 2026,
+"event": "Detroit Street Course"
+}
+],
+"best_gap_s": 2.051,
+"best_gap_pct": 3.1290514048640756,
+"best_direction": "LMDh faster",
+"median_gap_s": 1.5092500000000002,
+"median_gap_pct": 2.283495533149953,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": 1.683,
+"default_sim_direction": "LMDh faster",
+"best_default_wrong_sign": false,
+"median_default_wrong_sign": false,
+"matched_class_weather_sim_gap_s": 1.804,
+"matched_class_weather_sim_direction": "LMDh faster",
+"best_matched_class_weather_wrong_sign": false,
+"median_matched_class_weather_wrong_sign": false
+},
+{
+"series": "IMSA",
+"track": "detroit",
+"condition": "dry",
+"session": "race",
+"observed_events": 3,
+"paired_events": 2,
+"paired_event_keys": [
+{
+"season": 2025,
+"event": "Detroit Street Course"
+},
+{
+"season": 2026,
+"event": "Detroit Street Course"
+}
+],
+"best_gap_s": 0.6926073260000001,
+"best_gap_pct": 1.0328173312422826,
+"best_direction": "LMDh faster",
+"median_gap_s": 0.567528457,
+"median_gap_pct": 0.8444397979571856,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": 1.683,
+"default_sim_direction": "LMDh faster",
+"best_default_wrong_sign": false,
+"median_default_wrong_sign": false,
+"matched_class_weather_sim_gap_s": 1.804,
+"matched_class_weather_sim_direction": "LMDh faster",
+"best_matched_class_weather_wrong_sign": false,
+"median_matched_class_weather_wrong_sign": false
+},
+{
+"series": "IMSA",
+"track": "indianapolis",
+"condition": "dry",
+"session": "qualifying",
+"observed_events": 4,
+"paired_events": 2,
+"paired_event_keys": [
+{
+"season": 2025,
+"event": "Indianapolis Motor Speedway RC"
+},
+{
+"season": 2026,
+"event": "Indianapolis Motor Speedway RC"
+}
+],
+"best_gap_s": 0.8845000000000001,
+"best_gap_pct": 1.18529742576851,
+"best_direction": "LMDh faster",
+"median_gap_s": 0.539,
+"median_gap_pct": 0.7189682214520101,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": 1.762,
+"default_sim_direction": "LMDh faster",
+"best_default_wrong_sign": false,
+"median_default_wrong_sign": false,
+"matched_class_weather_sim_gap_s": 1.599,
+"matched_class_weather_sim_direction": "LMDh faster",
+"best_matched_class_weather_wrong_sign": false,
+"median_matched_class_weather_wrong_sign": false
+},
+{
+"series": "IMSA",
+"track": "indianapolis",
+"condition": "dry",
+"session": "race",
+"observed_events": 2,
+"paired_events": 1,
+"paired_event_keys": [
+{
+"season": 2025,
+"event": "Indianapolis Motor Speedway RC"
+}
+],
+"best_gap_s": 0.226282051,
+"best_gap_pct": 0.2913549938576147,
+"best_direction": "LMDh faster",
+"median_gap_s": 0.026025641,
+"median_gap_pct": 0.03342376960188741,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": 1.762,
+"default_sim_direction": "LMDh faster",
+"best_default_wrong_sign": false,
+"median_default_wrong_sign": false,
+"matched_class_weather_sim_gap_s": 1.599,
+"matched_class_weather_sim_direction": "LMDh faster",
+"best_matched_class_weather_wrong_sign": false,
+"median_matched_class_weather_wrong_sign": false
+},
+{
+"series": "IMSA",
+"track": "indianapolis",
+"condition": "unknown",
+"session": "race",
+"observed_events": 3,
+"paired_events": 1,
+"paired_event_keys": [
+{
+"season": 2026,
+"event": "Indianapolis Motor Speedway RC"
+}
+],
+"best_gap_s": 0.041823684,
+"best_gap_pct": 0.05412909863249649,
+"best_direction": "LMDh faster",
+"median_gap_s": -0.027302632,
+"median_gap_pct": -0.035304059830750904,
+"median_direction": "LMH faster",
+"default_sim_gap_s": 1.762,
+"default_sim_direction": "LMDh faster",
+"best_default_wrong_sign": null,
+"best_default_withheld_reason": "surface condition unresolved",
+"median_default_wrong_sign": null,
+"median_default_withheld_reason": "surface condition unresolved",
+"matched_class_weather_sim_gap_s": 1.599,
+"matched_class_weather_sim_direction": "LMDh faster",
+"best_matched_class_weather_wrong_sign": null,
+"best_matched_class_weather_withheld_reason": "surface condition unresolved",
+"median_matched_class_weather_wrong_sign": null,
+"median_matched_class_weather_withheld_reason": "surface condition unresolved"
+},
+{
+"series": "IMSA",
+"track": "indianapolis",
+"condition": "wet",
+"session": "race",
+"observed_events": 1,
+"paired_events": 0,
+"paired_event_keys": [],
+"best_gap_s": null,
+"best_gap_pct": null,
+"best_direction": null,
+"median_gap_s": null,
+"median_gap_pct": null,
+"median_direction": null,
+"default_sim_gap_s": 1.762,
+"default_sim_direction": "LMDh faster",
+"best_default_wrong_sign": null,
+"best_default_withheld_reason": "both measured groups required",
+"median_default_wrong_sign": null,
+"median_default_withheld_reason": "both measured groups required",
+"matched_class_weather_sim_gap_s": 1.599,
+"matched_class_weather_sim_direction": "LMDh faster",
+"best_matched_class_weather_wrong_sign": null,
+"best_matched_class_weather_withheld_reason": "both measured groups required",
+"median_matched_class_weather_wrong_sign": null,
+"median_matched_class_weather_withheld_reason": "both measured groups required"
+},
+{
+"series": "IMSA",
+"track": "laguna-seca",
+"condition": "dry",
+"session": "qualifying",
+"observed_events": 4,
+"paired_events": 2,
+"paired_event_keys": [
+{
+"season": 2025,
+"event": "Weathertech Raceway Laguna Seca"
+},
+{
+"season": 2026,
+"event": "Weathertech Raceway Laguna Seca"
+}
+],
+"best_gap_s": 0.7909999999999999,
+"best_gap_pct": 1.0832632550667431,
+"best_direction": "LMDh faster",
+"median_gap_s": 0.498,
+"median_gap_pct": 0.6811012443291736,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": 1.273,
+"default_sim_direction": "LMDh faster",
+"best_default_wrong_sign": false,
+"median_default_wrong_sign": false,
+"matched_class_weather_sim_gap_s": 1.149,
+"matched_class_weather_sim_direction": "LMDh faster",
+"best_matched_class_weather_wrong_sign": false,
+"median_matched_class_weather_wrong_sign": false
+},
+{
+"series": "IMSA",
+"track": "laguna-seca",
+"condition": "dry",
+"session": "race",
+"observed_events": 4,
+"paired_events": 2,
+"paired_event_keys": [
+{
+"season": 2025,
+"event": "Weathertech Raceway Laguna Seca"
+},
+{
+"season": 2026,
+"event": "Weathertech Raceway Laguna Seca"
+}
+],
+"best_gap_s": 0.5712045455,
+"best_gap_pct": 0.7554457299457874,
+"best_direction": "LMDh faster",
+"median_gap_s": 0.314074337,
+"median_gap_pct": 0.4138742096808125,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": 1.273,
+"default_sim_direction": "LMDh faster",
+"best_default_wrong_sign": false,
+"median_default_wrong_sign": false,
+"matched_class_weather_sim_gap_s": 1.149,
+"matched_class_weather_sim_direction": "LMDh faster",
+"best_matched_class_weather_wrong_sign": false,
+"median_matched_class_weather_wrong_sign": false
+},
+{
+"series": "IMSA",
+"track": "long-beach",
+"condition": "dry",
+"session": "qualifying",
+"observed_events": 4,
+"paired_events": 2,
+"paired_event_keys": [
+{
+"season": 2025,
+"event": "Long Beach Street Circuit"
+},
+{
+"season": 2026,
+"event": "Long Beach Street Circuit"
+}
+],
+"best_gap_s": 1.112,
+"best_gap_pct": 1.554081946594226,
+"best_direction": "LMDh faster",
+"median_gap_s": 0.7214999999999999,
+"median_gap_pct": 1.0004005326276078,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": 2.088,
+"default_sim_direction": "LMDh faster",
+"best_default_wrong_sign": false,
+"median_default_wrong_sign": false,
+"matched_class_weather_sim_gap_s": 2.037,
+"matched_class_weather_sim_direction": "LMDh faster",
+"best_matched_class_weather_wrong_sign": false,
+"median_matched_class_weather_wrong_sign": false
+},
+{
+"series": "IMSA",
+"track": "long-beach",
+"condition": "dry",
+"session": "race",
+"observed_events": 4,
+"paired_events": 2,
+"paired_event_keys": [
+{
+"season": 2025,
+"event": "Long Beach Street Circuit"
+},
+{
+"season": 2026,
+"event": "Long Beach Street Circuit"
+}
+],
+"best_gap_s": 1.1593499999999999,
+"best_gap_pct": 1.5844706209133357,
+"best_direction": "LMDh faster",
+"median_gap_s": 0.795028793,
+"median_gap_pct": 1.080997843443726,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": 2.088,
+"default_sim_direction": "LMDh faster",
+"best_default_wrong_sign": false,
+"median_default_wrong_sign": false,
+"matched_class_weather_sim_gap_s": 2.037,
+"matched_class_weather_sim_direction": "LMDh faster",
+"best_matched_class_weather_wrong_sign": false,
+"median_matched_class_weather_wrong_sign": false
+},
+{
+"series": "IMSA",
+"track": "mosport",
+"condition": "dry",
+"session": "qualifying",
+"observed_events": 1,
+"paired_events": 0,
+"paired_event_keys": [],
+"best_gap_s": null,
+"best_gap_pct": null,
+"best_direction": null,
+"median_gap_s": null,
+"median_gap_pct": null,
+"median_direction": null,
+"default_sim_gap_s": -0.016,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": null,
+"best_default_withheld_reason": "both measured groups required",
+"median_default_wrong_sign": null,
+"median_default_withheld_reason": "both measured groups required",
+"matched_class_weather_sim_gap_s": -0.016,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": null,
+"best_matched_class_weather_withheld_reason": "both measured groups required",
+"median_matched_class_weather_wrong_sign": null,
+"median_matched_class_weather_withheld_reason": "both measured groups required"
+},
+{
+"series": "IMSA",
+"track": "mosport",
+"condition": "dry",
+"session": "race",
+"observed_events": 1,
+"paired_events": 0,
+"paired_event_keys": [],
+"best_gap_s": null,
+"best_gap_pct": null,
+"best_direction": null,
+"median_gap_s": null,
+"median_gap_pct": null,
+"median_direction": null,
+"default_sim_gap_s": -0.016,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": null,
+"best_default_withheld_reason": "both measured groups required",
+"median_default_wrong_sign": null,
+"median_default_withheld_reason": "both measured groups required",
+"matched_class_weather_sim_gap_s": -0.016,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": null,
+"best_matched_class_weather_withheld_reason": "both measured groups required",
+"median_matched_class_weather_wrong_sign": null,
+"median_matched_class_weather_withheld_reason": "both measured groups required"
+},
+{
+"series": "IMSA",
+"track": "road-america",
+"condition": "dry",
+"session": "qualifying",
+"observed_events": 4,
+"paired_events": 2,
+"paired_event_keys": [
+{
+"season": 2025,
+"event": "Road America"
+},
+{
+"season": 2026,
+"event": "Road America"
+}
+],
+"best_gap_s": 1.126,
+"best_gap_pct": 1.032560126812799,
+"best_direction": "LMDh faster",
+"median_gap_s": 0.84375,
+"median_gap_pct": 0.7714162925629146,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": 1.579,
+"default_sim_direction": "LMDh faster",
+"best_default_wrong_sign": false,
+"median_default_wrong_sign": false,
+"matched_class_weather_sim_gap_s": 1.608,
+"matched_class_weather_sim_direction": "LMDh faster",
+"best_matched_class_weather_wrong_sign": false,
+"median_matched_class_weather_wrong_sign": false
+},
+{
+"series": "IMSA",
+"track": "road-america",
+"condition": "dry",
+"session": "race",
+"observed_events": 3,
+"paired_events": 2,
+"paired_event_keys": [
+{
+"season": 2025,
+"event": "Road America"
+},
+{
+"season": 2026,
+"event": "Road America"
+}
+],
+"best_gap_s": 0.662529861,
+"best_gap_pct": 0.5870199156438067,
+"best_direction": "LMDh faster",
+"median_gap_s": 0.4036452385,
+"median_gap_pct": 0.35672832004198957,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": 1.579,
+"default_sim_direction": "LMDh faster",
+"best_default_wrong_sign": false,
+"median_default_wrong_sign": false,
+"matched_class_weather_sim_gap_s": 1.608,
+"matched_class_weather_sim_direction": "LMDh faster",
+"best_matched_class_weather_wrong_sign": false,
+"median_matched_class_weather_wrong_sign": false
+},
+{
+"series": "IMSA",
+"track": "road-america",
+"condition": "unknown",
+"session": "race",
+"observed_events": 1,
+"paired_events": 0,
+"paired_event_keys": [],
+"best_gap_s": null,
+"best_gap_pct": null,
+"best_direction": null,
+"median_gap_s": null,
+"median_gap_pct": null,
+"median_direction": null,
+"default_sim_gap_s": 1.579,
+"default_sim_direction": "LMDh faster",
+"best_default_wrong_sign": null,
+"best_default_withheld_reason": "both measured groups required",
+"median_default_wrong_sign": null,
+"median_default_withheld_reason": "both measured groups required",
+"matched_class_weather_sim_gap_s": 1.608,
+"matched_class_weather_sim_direction": "LMDh faster",
+"best_matched_class_weather_wrong_sign": null,
+"best_matched_class_weather_withheld_reason": "both measured groups required",
+"median_matched_class_weather_wrong_sign": null,
+"median_matched_class_weather_withheld_reason": "both measured groups required"
+},
+{
+"series": "IMSA",
+"track": "road-atlanta",
+"condition": "dry",
+"session": "qualifying",
+"observed_events": 3,
+"paired_events": 2,
+"paired_event_keys": [
+{
+"season": 2025,
+"event": "Road Atlanta"
+},
+{
+"season": 2026,
+"event": "Road Atlanta"
+}
+],
+"best_gap_s": 0.643,
+"best_gap_pct": 0.922969095803861,
+"best_direction": "LMDh faster",
+"median_gap_s": 0.12475,
+"median_gap_pct": 0.17787769863960776,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": 0.626,
+"default_sim_direction": "LMDh faster",
+"best_default_wrong_sign": false,
+"median_default_wrong_sign": false,
+"matched_class_weather_sim_gap_s": 0.626,
+"matched_class_weather_sim_direction": "LMDh faster",
+"best_matched_class_weather_wrong_sign": false,
+"median_matched_class_weather_wrong_sign": false
+},
+{
+"series": "IMSA",
+"track": "road-atlanta",
+"condition": "dry",
+"session": "race",
+"observed_events": 4,
+"paired_events": 2,
+"paired_event_keys": [
+{
+"season": 2025,
+"event": "Road Atlanta"
+},
+{
+"season": 2026,
+"event": "Road Atlanta"
+}
+],
+"best_gap_s": 0.1917341025,
+"best_gap_pct": 0.26358667724477247,
+"best_direction": "LMDh faster",
+"median_gap_s": -0.0385629485,
+"median_gap_pct": -0.05250427976742863,
+"median_direction": "LMH faster",
+"default_sim_gap_s": 0.626,
+"default_sim_direction": "LMDh faster",
+"best_default_wrong_sign": false,
+"median_default_wrong_sign": true,
+"matched_class_weather_sim_gap_s": 0.626,
+"matched_class_weather_sim_direction": "LMDh faster",
+"best_matched_class_weather_wrong_sign": false,
+"median_matched_class_weather_wrong_sign": true
+},
+{
+"series": "IMSA",
+"track": "road-atlanta",
+"condition": "unknown",
+"session": "race",
+"observed_events": 1,
+"paired_events": 1,
+"paired_event_keys": [
+{
+"season": 2026,
+"event": "Road Atlanta"
+}
+],
+"best_gap_s": 0.172289778,
+"best_gap_pct": 0.23717200968996666,
+"best_direction": "LMDh faster",
+"median_gap_s": -0.163264669,
+"median_gap_pct": -0.223714771093967,
+"median_direction": "LMH faster",
+"default_sim_gap_s": 0.626,
+"default_sim_direction": "LMDh faster",
+"best_default_wrong_sign": null,
+"best_default_withheld_reason": "surface condition unresolved",
+"median_default_wrong_sign": null,
+"median_default_withheld_reason": "surface condition unresolved",
+"matched_class_weather_sim_gap_s": 0.626,
+"matched_class_weather_sim_direction": "LMDh faster",
+"best_matched_class_weather_wrong_sign": null,
+"best_matched_class_weather_withheld_reason": "surface condition unresolved",
+"median_matched_class_weather_wrong_sign": null,
+"median_matched_class_weather_withheld_reason": "surface condition unresolved"
+},
+{
+"series": "IMSA",
+"track": "road-atlanta",
+"condition": "wet",
+"session": "qualifying",
+"observed_events": 1,
+"paired_events": 0,
+"paired_event_keys": [],
+"best_gap_s": null,
+"best_gap_pct": null,
+"best_direction": null,
+"median_gap_s": null,
+"median_gap_pct": null,
+"median_direction": null,
+"default_sim_gap_s": 0.626,
+"default_sim_direction": "LMDh faster",
+"best_default_wrong_sign": null,
+"best_default_withheld_reason": "both measured groups required",
+"median_default_wrong_sign": null,
+"median_default_withheld_reason": "both measured groups required",
+"matched_class_weather_sim_gap_s": 0.626,
+"matched_class_weather_sim_direction": "LMDh faster",
+"best_matched_class_weather_wrong_sign": null,
+"best_matched_class_weather_withheld_reason": "both measured groups required",
+"median_matched_class_weather_wrong_sign": null,
+"median_matched_class_weather_withheld_reason": "both measured groups required"
+},
+{
+"series": "IMSA",
+"track": "road-atlanta",
+"condition": "wet",
+"session": "race",
+"observed_events": 1,
+"paired_events": 1,
+"paired_event_keys": [
+{
+"season": 2026,
+"event": "Road Atlanta"
+}
+],
+"best_gap_s": 1.625,
+"best_gap_pct": 2.0679562229574957,
+"best_direction": "LMDh faster",
+"median_gap_s": 0.5015,
+"median_gap_pct": 0.6292069984379698,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": 0.626,
+"default_sim_direction": "LMDh faster",
+"best_default_wrong_sign": null,
+"best_default_withheld_reason": "no matched wet simulator",
+"median_default_wrong_sign": null,
+"median_default_withheld_reason": "no matched wet simulator",
+"matched_class_weather_sim_gap_s": 0.626,
+"matched_class_weather_sim_direction": "LMDh faster",
+"best_matched_class_weather_wrong_sign": null,
+"best_matched_class_weather_withheld_reason": "no matched wet simulator",
+"median_matched_class_weather_wrong_sign": null,
+"median_matched_class_weather_withheld_reason": "no matched wet simulator"
+},
+{
+"series": "IMSA",
+"track": "sebring",
+"condition": "dry",
+"session": "qualifying",
+"observed_events": 4,
+"paired_events": 2,
+"paired_event_keys": [
+{
+"season": 2025,
+"event": "Sebring International Raceway"
+},
+{
+"season": 2026,
+"event": "Sebring International Raceway"
+}
+],
+"best_gap_s": 1.7595,
+"best_gap_pct": 1.6479871911762944,
+"best_direction": "LMDh faster",
+"median_gap_s": 1.415375,
+"median_gap_pct": 1.320987386069947,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": -0.769,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": true,
+"median_default_wrong_sign": true,
+"matched_class_weather_sim_gap_s": -0.349,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": true,
+"median_matched_class_weather_wrong_sign": true
+},
+{
+"series": "IMSA",
+"track": "sebring",
+"condition": "dry",
+"session": "race",
+"observed_events": 4,
+"paired_events": 2,
+"paired_event_keys": [
+{
+"season": 2025,
+"event": "Sebring International Raceway"
+},
+{
+"season": 2026,
+"event": "Sebring International Raceway"
+}
+],
+"best_gap_s": 0.655159483,
+"best_gap_pct": 0.5937507430053115,
+"best_direction": "LMDh faster",
+"median_gap_s": 0.4563831465,
+"median_gap_pct": 0.41296727151342105,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": -0.769,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": true,
+"median_default_wrong_sign": true,
+"matched_class_weather_sim_gap_s": -0.349,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": true,
+"median_matched_class_weather_wrong_sign": true
+},
+{
+"series": "IMSA",
+"track": "sebring",
+"condition": "unknown",
+"session": "race",
+"observed_events": 1,
+"paired_events": 0,
+"paired_event_keys": [],
+"best_gap_s": null,
+"best_gap_pct": null,
+"best_direction": null,
+"median_gap_s": null,
+"median_gap_pct": null,
+"median_direction": null,
+"default_sim_gap_s": -0.769,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": null,
+"best_default_withheld_reason": "both measured groups required",
+"median_default_wrong_sign": null,
+"median_default_withheld_reason": "both measured groups required",
+"matched_class_weather_sim_gap_s": -0.349,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": null,
+"best_matched_class_weather_withheld_reason": "both measured groups required",
+"median_matched_class_weather_wrong_sign": null,
+"median_matched_class_weather_withheld_reason": "both measured groups required"
+},
+{
+"series": "IMSA",
+"track": "watkins-glen",
+"condition": "dry",
+"session": "qualifying",
+"observed_events": 3,
+"paired_events": 2,
+"paired_event_keys": [
+{
+"season": 2025,
+"event": "Watkins Glen International"
+},
+{
+"season": 2026,
+"event": "Watkins Glen International"
+}
+],
+"best_gap_s": 1.572,
+"best_gap_pct": 1.7191442450703267,
+"best_direction": "LMDh faster",
+"median_gap_s": 0.69325,
+"median_gap_pct": 0.7535924093012533,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": 1.342,
+"default_sim_direction": "LMDh faster",
+"best_default_wrong_sign": false,
+"median_default_wrong_sign": false,
+"matched_class_weather_sim_gap_s": 1.342,
+"matched_class_weather_sim_direction": "LMDh faster",
+"best_matched_class_weather_wrong_sign": false,
+"median_matched_class_weather_wrong_sign": false
+},
+{
+"series": "IMSA",
+"track": "watkins-glen",
+"condition": "dry",
+"session": "race",
+"observed_events": 4,
+"paired_events": 2,
+"paired_event_keys": [
+{
+"season": 2025,
+"event": "Watkins Glen International"
+},
+{
+"season": 2026,
+"event": "Watkins Glen International"
+}
+],
+"best_gap_s": 1.104053968,
+"best_gap_pct": 1.1556385543997938,
+"best_direction": "LMDh faster",
+"median_gap_s": 0.5844564255,
+"median_gap_pct": 0.6088505859141238,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": 1.342,
+"default_sim_direction": "LMDh faster",
+"best_default_wrong_sign": false,
+"median_default_wrong_sign": false,
+"matched_class_weather_sim_gap_s": 1.342,
+"matched_class_weather_sim_direction": "LMDh faster",
+"best_matched_class_weather_wrong_sign": false,
+"median_matched_class_weather_wrong_sign": false
+},
+{
+"series": "IMSA",
+"track": "watkins-glen",
+"condition": "unknown",
+"session": "race",
+"observed_events": 3,
+"paired_events": 1,
+"paired_event_keys": [
+{
+"season": 2025,
+"event": "Watkins Glen International"
+}
+],
+"best_gap_s": 1.295625,
+"best_gap_pct": 1.3444469089394882,
+"best_direction": "LMDh faster",
+"median_gap_s": 0.871,
+"median_gap_pct": 0.8998561366624171,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": 1.342,
+"default_sim_direction": "LMDh faster",
+"best_default_wrong_sign": null,
+"best_default_withheld_reason": "surface condition unresolved",
+"median_default_wrong_sign": null,
+"median_default_withheld_reason": "surface condition unresolved",
+"matched_class_weather_sim_gap_s": 1.342,
+"matched_class_weather_sim_direction": "LMDh faster",
+"best_matched_class_weather_wrong_sign": null,
+"best_matched_class_weather_withheld_reason": "surface condition unresolved",
+"median_matched_class_weather_wrong_sign": null,
+"median_matched_class_weather_withheld_reason": "surface condition unresolved"
+},
+{
+"series": "IMSA",
+"track": "watkins-glen",
+"condition": "wet",
+"session": "race",
+"observed_events": 1,
+"paired_events": 1,
+"paired_event_keys": [
+{
+"season": 2025,
+"event": "Watkins Glen International"
+}
+],
+"best_gap_s": 0.42925,
+"best_gap_pct": 0.44314137422862804,
+"best_direction": "LMDh faster",
+"median_gap_s": 0.08775,
+"median_gap_pct": 0.09027150892299123,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": 1.342,
+"default_sim_direction": "LMDh faster",
+"best_default_wrong_sign": null,
+"best_default_withheld_reason": "no matched wet simulator",
+"median_default_wrong_sign": null,
+"median_default_withheld_reason": "no matched wet simulator",
+"matched_class_weather_sim_gap_s": 1.342,
+"matched_class_weather_sim_direction": "LMDh faster",
+"best_matched_class_weather_wrong_sign": null,
+"best_matched_class_weather_withheld_reason": "no matched wet simulator",
+"median_matched_class_weather_wrong_sign": null,
+"median_matched_class_weather_withheld_reason": "no matched wet simulator"
+},
+{
+"series": "WEC",
+"track": "austin",
+"condition": "dry",
+"session": "qualifying",
+"observed_events": 2,
+"paired_events": 2,
+"paired_event_keys": [
+{
+"season": 2024,
+"event": "CIRCUIT OF THE AMERICAS"
+},
+{
+"season": 2026,
+"event": "CIRCUIT OF THE AMERICAS"
+}
+],
+"best_gap_s": -0.172,
+"best_gap_pct": -0.15509953769187376,
+"best_direction": "LMH faster",
+"median_gap_s": 0.10450000000000001,
+"median_gap_pct": 0.09341633162571314,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": -0.29,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": false,
+"median_default_wrong_sign": true,
+"matched_class_weather_sim_gap_s": -0.29,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": false,
+"median_matched_class_weather_wrong_sign": true
+},
+{
+"series": "WEC",
+"track": "austin",
+"condition": "dry",
+"session": "race",
+"observed_events": 1,
+"paired_events": 1,
+"paired_event_keys": [
+{
+"season": 2024,
+"event": "CIRCUIT OF THE AMERICAS"
+}
+],
+"best_gap_s": -0.011259581,
+"best_gap_pct": -0.009924932058596198,
+"best_direction": "LMH faster",
+"median_gap_s": -0.153613636,
+"median_gap_pct": -0.13516878735154103,
+"median_direction": "LMH faster",
+"default_sim_gap_s": -0.29,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": false,
+"median_default_wrong_sign": false,
+"matched_class_weather_sim_gap_s": -0.29,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": false,
+"median_matched_class_weather_wrong_sign": false
+},
+{
+"series": "WEC",
+"track": "austin",
+"condition": "unknown",
+"session": "qualifying",
+"observed_events": 1,
+"paired_events": 1,
+"paired_event_keys": [
+{
+"season": 2026,
+"event": "CIRCUIT OF THE AMERICAS"
+}
+],
+"best_gap_s": 0.785,
+"best_gap_pct": 0.6974553983936284,
+"best_direction": "LMDh faster",
+"median_gap_s": -1.778,
+"median_gap_pct": -1.5434295734300991,
+"median_direction": "LMH faster",
+"default_sim_gap_s": -0.29,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": null,
+"best_default_withheld_reason": "surface condition unresolved",
+"median_default_wrong_sign": null,
+"median_default_withheld_reason": "surface condition unresolved",
+"matched_class_weather_sim_gap_s": -0.29,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": null,
+"best_matched_class_weather_withheld_reason": "surface condition unresolved",
+"median_matched_class_weather_wrong_sign": null,
+"median_matched_class_weather_withheld_reason": "surface condition unresolved"
+},
+{
+"series": "WEC",
+"track": "austin",
+"condition": "unknown",
+"session": "race",
+"observed_events": 2,
+"paired_events": 2,
+"paired_event_keys": [
+{
+"season": 2025,
+"event": "CIRCUIT OF THE AMERICAS"
+},
+{
+"season": 2026,
+"event": "CIRCUIT OF THE AMERICAS"
+}
+],
+"best_gap_s": -0.1398101805,
+"best_gap_pct": -0.1104031780849426,
+"best_direction": "LMH faster",
+"median_gap_s": 0.5284917490000001,
+"median_gap_pct": 0.41805407650128906,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": -0.29,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": null,
+"best_default_withheld_reason": "surface condition unresolved",
+"median_default_wrong_sign": null,
+"median_default_withheld_reason": "surface condition unresolved",
+"matched_class_weather_sim_gap_s": -0.29,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": null,
+"best_matched_class_weather_withheld_reason": "surface condition unresolved",
+"median_matched_class_weather_wrong_sign": null,
+"median_matched_class_weather_withheld_reason": "surface condition unresolved"
+},
+{
+"series": "WEC",
+"track": "austin",
+"condition": "wet",
+"session": "qualifying",
+"observed_events": 1,
+"paired_events": 1,
+"paired_event_keys": [
+{
+"season": 2025,
+"event": "CIRCUIT OF THE AMERICAS"
+}
+],
+"best_gap_s": -0.5,
+"best_gap_pct": -0.42317295078498585,
+"best_direction": "LMH faster",
+"median_gap_s": 0.4075,
+"median_gap_pct": 0.340430153339765,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": -0.29,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": null,
+"best_default_withheld_reason": "no matched wet simulator",
+"median_default_wrong_sign": null,
+"median_default_withheld_reason": "no matched wet simulator",
+"matched_class_weather_sim_gap_s": -0.29,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": null,
+"best_matched_class_weather_withheld_reason": "no matched wet simulator",
+"median_matched_class_weather_wrong_sign": null,
+"median_matched_class_weather_withheld_reason": "no matched wet simulator"
+},
+{
+"series": "WEC",
+"track": "austin",
+"condition": "wet",
+"session": "race",
+"observed_events": 1,
+"paired_events": 1,
+"paired_event_keys": [
+{
+"season": 2025,
+"event": "CIRCUIT OF THE AMERICAS"
+}
+],
+"best_gap_s": -0.972333333,
+"best_gap_pct": -0.7528739291054403,
+"best_direction": "LMH faster",
+"median_gap_s": -0.733311111,
+"median_gap_pct": -0.5625763709911672,
+"median_direction": "LMH faster",
+"default_sim_gap_s": -0.29,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": null,
+"best_default_withheld_reason": "no matched wet simulator",
+"median_default_wrong_sign": null,
+"median_default_withheld_reason": "no matched wet simulator",
+"matched_class_weather_sim_gap_s": -0.29,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": null,
+"best_matched_class_weather_withheld_reason": "no matched wet simulator",
+"median_matched_class_weather_wrong_sign": null,
+"median_matched_class_weather_withheld_reason": "no matched wet simulator"
+},
+{
+"series": "WEC",
+"track": "catalunya",
+"condition": "dry",
+"session": "qualifying",
+"observed_events": 1,
+"paired_events": 1,
+"paired_event_keys": [
+{
+"season": 2026,
+"event": "BARCELONA-CATALUNYA"
+}
+],
+"best_gap_s": 0.17,
+"best_gap_pct": 0.18854113523944915,
+"best_direction": "LMDh faster",
+"median_gap_s": 0.3705,
+"median_gap_pct": 0.4082509669101924,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": 0.17,
+"default_sim_direction": "LMDh faster",
+"best_default_wrong_sign": false,
+"median_default_wrong_sign": false,
+"matched_class_weather_sim_gap_s": 0.17,
+"matched_class_weather_sim_direction": "LMDh faster",
+"best_matched_class_weather_wrong_sign": false,
+"median_matched_class_weather_wrong_sign": false
+},
+{
+"series": "WEC",
+"track": "catalunya",
+"condition": "unknown",
+"session": "race",
+"observed_events": 1,
+"paired_events": 1,
+"paired_event_keys": [
+{
+"season": 2026,
+"event": "BARCELONA-CATALUNYA"
+}
+],
+"best_gap_s": -0.475474194,
+"best_gap_pct": -0.5019605978792434,
+"best_direction": "LMH faster",
+"median_gap_s": -0.112379032,
+"median_gap_pct": -0.11815935953980733,
+"median_direction": "LMH faster",
+"default_sim_gap_s": 0.17,
+"default_sim_direction": "LMDh faster",
+"best_default_wrong_sign": null,
+"best_default_withheld_reason": "surface condition unresolved",
+"median_default_wrong_sign": null,
+"median_default_withheld_reason": "surface condition unresolved",
+"matched_class_weather_sim_gap_s": 0.17,
+"matched_class_weather_sim_direction": "LMDh faster",
+"best_matched_class_weather_wrong_sign": null,
+"best_matched_class_weather_withheld_reason": "surface condition unresolved",
+"median_matched_class_weather_wrong_sign": null,
+"median_matched_class_weather_withheld_reason": "surface condition unresolved"
+},
+{
+"series": "WEC",
+"track": "catalunya",
+"condition": "wet",
+"session": "race",
+"observed_events": 1,
+"paired_events": 1,
+"paired_event_keys": [
+{
+"season": 2026,
+"event": "BARCELONA-CATALUNYA"
+}
+],
+"best_gap_s": -1.258666667,
+"best_gap_pct": -1.190271672574396,
+"best_direction": "LMH faster",
+"median_gap_s": 0.18875,
+"median_gap_pct": 0.17810650375754844,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": 0.17,
+"default_sim_direction": "LMDh faster",
+"best_default_wrong_sign": null,
+"best_default_withheld_reason": "no matched wet simulator",
+"median_default_wrong_sign": null,
+"median_default_withheld_reason": "no matched wet simulator",
+"matched_class_weather_sim_gap_s": 0.17,
+"matched_class_weather_sim_direction": "LMDh faster",
+"best_matched_class_weather_wrong_sign": null,
+"best_matched_class_weather_withheld_reason": "no matched wet simulator",
+"median_matched_class_weather_wrong_sign": null,
+"median_matched_class_weather_withheld_reason": "no matched wet simulator"
+},
+{
+"series": "WEC",
+"track": "fuji",
+"condition": "dry",
+"session": "qualifying",
+"observed_events": 3,
+"paired_events": 3,
+"paired_event_keys": [
+{
+"season": 2023,
+"event": "FUJI SPEEDWAY"
+},
+{
+"season": 2024,
+"event": "FUJI SPEEDWAY"
+},
+{
+"season": 2025,
+"event": "FUJI SPEEDWAY"
+}
+],
+"best_gap_s": 0.041,
+"best_gap_pct": 0.046118716324897155,
+"best_direction": "LMDh faster",
+"median_gap_s": 0.044,
+"median_gap_pct": 0.04935391241923561,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": -0.442,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": true,
+"median_default_wrong_sign": true,
+"matched_class_weather_sim_gap_s": -0.573,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": true,
+"median_matched_class_weather_wrong_sign": true
+},
+{
+"series": "WEC",
+"track": "fuji",
+"condition": "dry",
+"session": "race",
+"observed_events": 3,
+"paired_events": 3,
+"paired_event_keys": [
+{
+"season": 2023,
+"event": "FUJI SPEEDWAY"
+},
+{
+"season": 2024,
+"event": "FUJI SPEEDWAY"
+},
+{
+"season": 2025,
+"event": "FUJI SPEEDWAY"
+}
+],
+"best_gap_s": 0.194924242,
+"best_gap_pct": 0.21312336305849922,
+"best_direction": "LMDh faster",
+"median_gap_s": 0.151410749,
+"median_gap_pct": 0.1646252541197018,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": -0.442,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": true,
+"median_default_wrong_sign": true,
+"matched_class_weather_sim_gap_s": -0.573,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": true,
+"median_matched_class_weather_wrong_sign": true
+},
+{
+"series": "WEC",
+"track": "fuji",
+"condition": "unknown",
+"session": "qualifying",
+"observed_events": 1,
+"paired_events": 1,
+"paired_event_keys": [
+{
+"season": 2023,
+"event": "FUJI SPEEDWAY"
+}
+],
+"best_gap_s": -0.846,
+"best_gap_pct": -0.9535940124215242,
+"best_direction": "LMH faster",
+"median_gap_s": 0.1935,
+"median_gap_pct": 0.21789681712995573,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": -0.442,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": null,
+"best_default_withheld_reason": "surface condition unresolved",
+"median_default_wrong_sign": null,
+"median_default_withheld_reason": "surface condition unresolved",
+"matched_class_weather_sim_gap_s": -0.573,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": null,
+"best_matched_class_weather_withheld_reason": "surface condition unresolved",
+"median_matched_class_weather_wrong_sign": null,
+"median_matched_class_weather_withheld_reason": "surface condition unresolved"
+},
+{
+"series": "WEC",
+"track": "fuji",
+"condition": "unknown",
+"session": "race",
+"observed_events": 1,
+"paired_events": 1,
+"paired_event_keys": [
+{
+"season": 2026,
+"event": "FUJI SPEEDWAY"
+}
+],
+"best_gap_s": 0.213605747,
+"best_gap_pct": 0.23421023654646866,
+"best_direction": "LMDh faster",
+"median_gap_s": 0.148951375,
+"median_gap_pct": 0.16230246749301303,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": -0.442,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": null,
+"best_default_withheld_reason": "surface condition unresolved",
+"median_default_wrong_sign": null,
+"median_default_withheld_reason": "surface condition unresolved",
+"matched_class_weather_sim_gap_s": -0.573,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": null,
+"best_matched_class_weather_withheld_reason": "surface condition unresolved",
+"median_matched_class_weather_wrong_sign": null,
+"median_matched_class_weather_withheld_reason": "surface condition unresolved"
+},
+{
+"series": "WEC",
+"track": "fuji",
+"condition": "wet",
+"session": "race",
+"observed_events": 1,
+"paired_events": 1,
+"paired_event_keys": [
+{
+"season": 2026,
+"event": "FUJI SPEEDWAY"
+}
+],
+"best_gap_s": 0.239666667,
+"best_gap_pct": 0.2619837526348813,
+"best_direction": "LMDh faster",
+"median_gap_s": 0.050416667,
+"median_gap_pct": 0.05491565454696009,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": -0.442,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": null,
+"best_default_withheld_reason": "no matched wet simulator",
+"median_default_wrong_sign": null,
+"median_default_withheld_reason": "no matched wet simulator",
+"matched_class_weather_sim_gap_s": -0.573,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": null,
+"best_matched_class_weather_withheld_reason": "no matched wet simulator",
+"median_matched_class_weather_wrong_sign": null,
+"median_matched_class_weather_withheld_reason": "no matched wet simulator"
+},
+{
+"series": "WEC",
+"track": "imola",
+"condition": "dry",
+"session": "qualifying",
+"observed_events": 3,
+"paired_events": 3,
+"paired_event_keys": [
+{
+"season": 2024,
+"event": "IMOLA"
+},
+{
+"season": 2025,
+"event": "IMOLA"
+},
+{
+"season": 2026,
+"event": "IMOLA"
+}
+],
+"best_gap_s": -0.635,
+"best_gap_pct": -0.7047646530005274,
+"best_direction": "LMH faster",
+"median_gap_s": -0.329,
+"median_gap_pct": -0.36354394572253457,
+"median_direction": "LMH faster",
+"default_sim_gap_s": -0.965,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": false,
+"median_default_wrong_sign": false,
+"matched_class_weather_sim_gap_s": -0.965,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": false,
+"median_matched_class_weather_wrong_sign": false
+},
+{
+"series": "WEC",
+"track": "imola",
+"condition": "dry",
+"session": "race",
+"observed_events": 1,
+"paired_events": 1,
+"paired_event_keys": [
+{
+"season": 2024,
+"event": "IMOLA"
+}
+],
+"best_gap_s": -0.400263158,
+"best_gap_pct": -0.42935416213836375,
+"best_direction": "LMH faster",
+"median_gap_s": -0.090031955,
+"median_gap_pct": -0.09641132169280459,
+"median_direction": "LMH faster",
+"default_sim_gap_s": -0.965,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": false,
+"median_default_wrong_sign": false,
+"matched_class_weather_sim_gap_s": -0.965,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": false,
+"median_matched_class_weather_wrong_sign": false
+},
+{
+"series": "WEC",
+"track": "imola",
+"condition": "unknown",
+"session": "race",
+"observed_events": 3,
+"paired_events": 3,
+"paired_event_keys": [
+{
+"season": 2024,
+"event": "IMOLA"
+},
+{
+"season": 2025,
+"event": "IMOLA"
+},
+{
+"season": 2026,
+"event": "IMOLA"
+}
+],
+"best_gap_s": -0.168468961,
+"best_gap_pct": -0.18095886767849542,
+"best_direction": "LMH faster",
+"median_gap_s": 0.000540486,
+"median_gap_pct": 0.0005794076764861925,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": -0.965,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": null,
+"best_default_withheld_reason": "surface condition unresolved",
+"median_default_wrong_sign": null,
+"median_default_withheld_reason": "surface condition unresolved",
+"matched_class_weather_sim_gap_s": -0.965,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": null,
+"best_matched_class_weather_withheld_reason": "surface condition unresolved",
+"median_matched_class_weather_wrong_sign": null,
+"median_matched_class_weather_withheld_reason": "surface condition unresolved"
+},
+{
+"series": "WEC",
+"track": "imola",
+"condition": "wet",
+"session": "race",
+"observed_events": 1,
+"paired_events": 1,
+"paired_event_keys": [
+{
+"season": 2024,
+"event": "IMOLA"
+}
+],
+"best_gap_s": 0.358333333,
+"best_gap_pct": 0.3517267328676511,
+"best_direction": "LMDh faster",
+"median_gap_s": -0.254708333,
+"median_gap_pct": -0.24674265786202793,
+"median_direction": "LMH faster",
+"default_sim_gap_s": -0.965,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": null,
+"best_default_withheld_reason": "no matched wet simulator",
+"median_default_wrong_sign": null,
+"median_default_withheld_reason": "no matched wet simulator",
+"matched_class_weather_sim_gap_s": -0.965,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": null,
+"best_matched_class_weather_withheld_reason": "no matched wet simulator",
+"median_matched_class_weather_wrong_sign": null,
+"median_matched_class_weather_withheld_reason": "no matched wet simulator"
+},
+{
+"series": "WEC",
+"track": "interlagos",
+"condition": "dry",
+"session": "qualifying",
+"observed_events": 3,
+"paired_events": 3,
+"paired_event_keys": [
+{
+"season": 2024,
+"event": "SAO PAULO"
+},
+{
+"season": 2025,
+"event": "SAO PAULO"
+},
+{
+"season": 2026,
+"event": "SAO PAULO"
+}
+],
+"best_gap_s": 0.346,
+"best_gap_pct": 0.41666164906492414,
+"best_direction": "LMDh faster",
+"median_gap_s": 0.3685,
+"median_gap_pct": 0.4433269370740562,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": 0.378,
+"default_sim_direction": "LMDh faster",
+"best_default_wrong_sign": false,
+"median_default_wrong_sign": false,
+"matched_class_weather_sim_gap_s": 0.378,
+"matched_class_weather_sim_direction": "LMDh faster",
+"best_matched_class_weather_wrong_sign": false,
+"median_matched_class_weather_wrong_sign": false
+},
+{
+"series": "WEC",
+"track": "interlagos",
+"condition": "dry",
+"session": "race",
+"observed_events": 3,
+"paired_events": 3,
+"paired_event_keys": [
+{
+"season": 2024,
+"event": "SAO PAULO"
+},
+{
+"season": 2025,
+"event": "SAO PAULO"
+},
+{
+"season": 2026,
+"event": "SAO PAULO"
+}
+],
+"best_gap_s": 0.272666667,
+"best_gap_pct": 0.31610411341106115,
+"best_direction": "LMDh faster",
+"median_gap_s": -0.062460227,
+"median_gap_pct": -0.07083964798373309,
+"median_direction": "LMH faster",
+"default_sim_gap_s": 0.378,
+"default_sim_direction": "LMDh faster",
+"best_default_wrong_sign": false,
+"median_default_wrong_sign": true,
+"matched_class_weather_sim_gap_s": 0.378,
+"matched_class_weather_sim_direction": "LMDh faster",
+"best_matched_class_weather_wrong_sign": false,
+"median_matched_class_weather_wrong_sign": true
+},
+{
+"series": "WEC",
+"track": "interlagos",
+"condition": "unknown",
+"session": "race",
+"observed_events": 1,
+"paired_events": 1,
+"paired_event_keys": [
+{
+"season": 2026,
+"event": "SAO PAULO"
+}
+],
+"best_gap_s": 0.180613636,
+"best_gap_pct": 0.20979702197522232,
+"best_direction": "LMDh faster",
+"median_gap_s": 0.089376782,
+"median_gap_pct": 0.10357433141005704,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": 0.378,
+"default_sim_direction": "LMDh faster",
+"best_default_wrong_sign": null,
+"best_default_withheld_reason": "surface condition unresolved",
+"median_default_wrong_sign": null,
+"median_default_withheld_reason": "surface condition unresolved",
+"matched_class_weather_sim_gap_s": 0.378,
+"matched_class_weather_sim_direction": "LMDh faster",
+"best_matched_class_weather_wrong_sign": null,
+"best_matched_class_weather_withheld_reason": "surface condition unresolved",
+"median_matched_class_weather_wrong_sign": null,
+"median_matched_class_weather_withheld_reason": "surface condition unresolved"
+},
+{
+"series": "WEC",
+"track": "le-mans",
+"condition": "dry",
+"session": "qualifying",
+"observed_events": 4,
+"paired_events": 4,
+"paired_event_keys": [
+{
+"season": 2023,
+"event": "LE MANS"
+},
+{
+"season": 2024,
+"event": "LE MANS"
+},
+{
+"season": 2025,
+"event": "LE MANS"
+},
+{
+"season": 2026,
+"event": "LE MANS"
+}
+],
+"best_gap_s": 0.29100000000000004,
+"best_gap_pct": 0.14293902619783388,
+"best_direction": "LMDh faster",
+"median_gap_s": 1.01625,
+"median_gap_pct": 0.4995975573657371,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": 0.423,
+"default_sim_direction": "LMDh faster",
+"best_default_wrong_sign": false,
+"median_default_wrong_sign": false,
+"matched_class_weather_sim_gap_s": 0.557,
+"matched_class_weather_sim_direction": "LMDh faster",
+"best_matched_class_weather_wrong_sign": false,
+"median_matched_class_weather_wrong_sign": false
+},
+{
+"series": "WEC",
+"track": "le-mans",
+"condition": "dry",
+"session": "race",
+"observed_events": 3,
+"paired_events": 3,
+"paired_event_keys": [
+{
+"season": 2024,
+"event": "LE MANS"
+},
+{
+"season": 2025,
+"event": "LE MANS"
+},
+{
+"season": 2026,
+"event": "LE MANS"
+}
+],
+"best_gap_s": -0.576191852,
+"best_gap_pct": -0.27623772634373056,
+"best_direction": "LMH faster",
+"median_gap_s": 0.259734998,
+"median_gap_pct": 0.12502616469975325,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": 0.423,
+"default_sim_direction": "LMDh faster",
+"best_default_wrong_sign": true,
+"median_default_wrong_sign": false,
+"matched_class_weather_sim_gap_s": 0.557,
+"matched_class_weather_sim_direction": "LMDh faster",
+"best_matched_class_weather_wrong_sign": true,
+"median_matched_class_weather_wrong_sign": false
+},
+{
+"series": "WEC",
+"track": "le-mans",
+"condition": "unknown",
+"session": "qualifying",
+"observed_events": 4,
+"paired_events": 4,
+"paired_event_keys": [
+{
+"season": 2023,
+"event": "LE MANS"
+},
+{
+"season": 2024,
+"event": "LE MANS"
+},
+{
+"season": 2025,
+"event": "LE MANS"
+},
+{
+"season": 2026,
+"event": "LE MANS"
+}
+],
+"best_gap_s": 0.455,
+"best_gap_pct": 0.2231028166160576,
+"best_direction": "LMDh faster",
+"median_gap_s": 0.33425,
+"median_gap_pct": 0.16368491710004696,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": 0.423,
+"default_sim_direction": "LMDh faster",
+"best_default_wrong_sign": null,
+"best_default_withheld_reason": "surface condition unresolved",
+"median_default_wrong_sign": null,
+"median_default_withheld_reason": "surface condition unresolved",
+"matched_class_weather_sim_gap_s": 0.557,
+"matched_class_weather_sim_direction": "LMDh faster",
+"best_matched_class_weather_wrong_sign": null,
+"best_matched_class_weather_withheld_reason": "surface condition unresolved",
+"median_matched_class_weather_wrong_sign": null,
+"median_matched_class_weather_withheld_reason": "surface condition unresolved"
+},
+{
+"series": "WEC",
+"track": "le-mans",
+"condition": "unknown",
+"session": "race",
+"observed_events": 2,
+"paired_events": 2,
+"paired_event_keys": [
+{
+"season": 2023,
+"event": "LE MANS"
+},
+{
+"season": 2024,
+"event": "LE MANS"
+}
+],
+"best_gap_s": -1.0137290069999998,
+"best_gap_pct": -0.4814638233493522,
+"best_direction": "LMH faster",
+"median_gap_s": 0.12149586499999998,
+"median_gap_pct": 0.05816386578353071,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": 0.423,
+"default_sim_direction": "LMDh faster",
+"best_default_wrong_sign": null,
+"best_default_withheld_reason": "surface condition unresolved",
+"median_default_wrong_sign": null,
+"median_default_withheld_reason": "surface condition unresolved",
+"matched_class_weather_sim_gap_s": 0.557,
+"matched_class_weather_sim_direction": "LMDh faster",
+"best_matched_class_weather_wrong_sign": null,
+"best_matched_class_weather_withheld_reason": "surface condition unresolved",
+"median_matched_class_weather_wrong_sign": null,
+"median_matched_class_weather_withheld_reason": "surface condition unresolved"
+},
+{
+"series": "WEC",
+"track": "le-mans",
+"condition": "wet",
+"session": "race",
+"observed_events": 2,
+"paired_events": 2,
+"paired_event_keys": [
+{
+"season": 2023,
+"event": "LE MANS"
+},
+{
+"season": 2024,
+"event": "LE MANS"
+}
+],
+"best_gap_s": 2.081625,
+"best_gap_pct": 0.9418883259577775,
+"best_direction": "LMDh faster",
+"median_gap_s": 1.6484041665000002,
+"median_gap_pct": 0.7147983016402621,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": 0.423,
+"default_sim_direction": "LMDh faster",
+"best_default_wrong_sign": null,
+"best_default_withheld_reason": "no matched wet simulator",
+"median_default_wrong_sign": null,
+"median_default_withheld_reason": "no matched wet simulator",
+"matched_class_weather_sim_gap_s": 0.557,
+"matched_class_weather_sim_direction": "LMDh faster",
+"best_matched_class_weather_wrong_sign": null,
+"best_matched_class_weather_withheld_reason": "no matched wet simulator",
+"median_matched_class_weather_wrong_sign": null,
+"median_matched_class_weather_withheld_reason": "no matched wet simulator"
+},
+{
+"series": "WEC",
+"track": "lusail",
+"condition": "dry",
+"session": "qualifying",
+"observed_events": 2,
+"paired_events": 2,
+"paired_event_keys": [
+{
+"season": 2024,
+"event": "LOSAIL"
+},
+{
+"season": 2025,
+"event": "LOSAIL"
+}
+],
+"best_gap_s": 0.22449999999999998,
+"best_gap_pct": 0.22672587285245097,
+"best_direction": "LMDh faster",
+"median_gap_s": -0.1725,
+"median_gap_pct": -0.1684883865656624,
+"median_direction": "LMH faster",
+"default_sim_gap_s": -0.136,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": true,
+"median_default_wrong_sign": false,
+"matched_class_weather_sim_gap_s": -0.136,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": true,
+"median_matched_class_weather_wrong_sign": false
+},
+{
+"series": "WEC",
+"track": "lusail",
+"condition": "dry",
+"session": "race",
+"observed_events": 2,
+"paired_events": 2,
+"paired_event_keys": [
+{
+"season": 2024,
+"event": "LOSAIL"
+},
+{
+"season": 2025,
+"event": "LOSAIL"
+}
+],
+"best_gap_s": 0.003818459000000024,
+"best_gap_pct": 0.004936301474701477,
+"best_direction": "LMDh faster",
+"median_gap_s": -0.121412076,
+"median_gap_pct": -0.11767143751341536,
+"median_direction": "LMH faster",
+"default_sim_gap_s": -0.136,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": true,
+"median_default_wrong_sign": false,
+"matched_class_weather_sim_gap_s": -0.136,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": true,
+"median_matched_class_weather_wrong_sign": false
+},
+{
+"series": "WEC",
+"track": "lusail",
+"condition": "unknown",
+"session": "qualifying",
+"observed_events": 1,
+"paired_events": 1,
+"paired_event_keys": [
+{
+"season": 2025,
+"event": "LOSAIL"
+}
+],
+"best_gap_s": -1.193,
+"best_gap_pct": -1.1983686917390026,
+"best_direction": "LMH faster",
+"median_gap_s": -0.3565,
+"median_gap_pct": -0.35810430729670034,
+"median_direction": "LMH faster",
+"default_sim_gap_s": -0.136,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": null,
+"best_default_withheld_reason": "surface condition unresolved",
+"median_default_wrong_sign": null,
+"median_default_withheld_reason": "surface condition unresolved",
+"matched_class_weather_sim_gap_s": -0.136,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": null,
+"best_matched_class_weather_withheld_reason": "surface condition unresolved",
+"median_matched_class_weather_wrong_sign": null,
+"median_matched_class_weather_withheld_reason": "surface condition unresolved"
+},
+{
+"series": "WEC",
+"track": "monza",
+"condition": "dry",
+"session": "qualifying",
+"observed_events": 2,
+"paired_events": 2,
+"paired_event_keys": [
+{
+"season": 2023,
+"event": "AUTODROMO NAZIONALE DI MONZA"
+},
+{
+"season": 2026,
+"event": "AUTODROMO NAZIONALE DI MONZA"
+}
+],
+"best_gap_s": -0.22899999999999998,
+"best_gap_pct": -0.24045205857120952,
+"best_direction": "LMH faster",
+"median_gap_s": 0.08524999999999999,
+"median_gap_pct": 0.09318772988020751,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": -0.096,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": false,
+"median_default_wrong_sign": true,
+"matched_class_weather_sim_gap_s": -0.096,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": false,
+"median_matched_class_weather_wrong_sign": true
+},
+{
+"series": "WEC",
+"track": "monza",
+"condition": "dry",
+"session": "race",
+"observed_events": 2,
+"paired_events": 2,
+"paired_event_keys": [
+{
+"season": 2023,
+"event": "AUTODROMO NAZIONALE DI MONZA"
+},
+{
+"season": 2026,
+"event": "AUTODROMO NAZIONALE DI MONZA"
+}
+],
+"best_gap_s": -0.2155868515,
+"best_gap_pct": -0.2190740432242592,
+"best_direction": "LMH faster",
+"median_gap_s": -0.0681489275,
+"median_gap_pct": -0.07017160137581396,
+"median_direction": "LMH faster",
+"default_sim_gap_s": -0.096,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": false,
+"median_default_wrong_sign": false,
+"matched_class_weather_sim_gap_s": -0.096,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": false,
+"median_matched_class_weather_wrong_sign": false
+},
+{
+"series": "WEC",
+"track": "portimao",
+"condition": "dry",
+"session": "qualifying",
+"observed_events": 1,
+"paired_events": 1,
+"paired_event_keys": [
+{
+"season": 2023,
+"event": "AUTODROMO DO ALGARVE"
+}
+],
+"best_gap_s": -2.233,
+"best_gap_pct": -2.416562053590743,
+"best_direction": "LMH faster",
+"median_gap_s": 0.024,
+"median_gap_pct": 0.02594790957153613,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": -2.233,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": false,
+"median_default_wrong_sign": true,
+"matched_class_weather_sim_gap_s": -2.233,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": false,
+"median_matched_class_weather_wrong_sign": true
+},
+{
+"series": "WEC",
+"track": "portimao",
+"condition": "dry",
+"session": "race",
+"observed_events": 1,
+"paired_events": 1,
+"paired_event_keys": [
+{
+"season": 2023,
+"event": "AUTODROMO DO ALGARVE"
+}
+],
+"best_gap_s": -0.687151757,
+"best_gap_pct": -0.7320478971115946,
+"best_direction": "LMH faster",
+"median_gap_s": 0.304696646,
+"median_gap_pct": 0.32392256137389236,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": -2.233,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": false,
+"median_default_wrong_sign": true,
+"matched_class_weather_sim_gap_s": -2.233,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": false,
+"median_matched_class_weather_wrong_sign": true
+},
+{
+"series": "WEC",
+"track": "sakhir",
+"condition": "dry",
+"session": "qualifying",
+"observed_events": 3,
+"paired_events": 3,
+"paired_event_keys": [
+{
+"season": 2023,
+"event": "BAHRAIN INTERNATIONAL CIRCUIT"
+},
+{
+"season": 2024,
+"event": "BAHRAIN INTERNATIONAL CIRCUIT"
+},
+{
+"season": 2025,
+"event": "BAHRAIN INTERNATIONAL CIRCUIT"
+}
+],
+"best_gap_s": -0.701,
+"best_gap_pct": -0.6535216519834127,
+"best_direction": "LMH faster",
+"median_gap_s": -0.643,
+"median_gap_pct": -0.5960823576308745,
+"median_direction": "LMH faster",
+"default_sim_gap_s": -0.52,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": false,
+"median_default_wrong_sign": false,
+"matched_class_weather_sim_gap_s": -0.52,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": false,
+"median_matched_class_weather_wrong_sign": false
+},
+{
+"series": "WEC",
+"track": "sakhir",
+"condition": "dry",
+"session": "race",
+"observed_events": 3,
+"paired_events": 3,
+"paired_event_keys": [
+{
+"season": 2023,
+"event": "BAHRAIN INTERNATIONAL CIRCUIT"
+},
+{
+"season": 2024,
+"event": "BAHRAIN INTERNATIONAL CIRCUIT"
+},
+{
+"season": 2025,
+"event": "BAHRAIN INTERNATIONAL CIRCUIT"
+}
+],
+"best_gap_s": -0.513228723,
+"best_gap_pct": -0.45627926994372137,
+"best_direction": "LMH faster",
+"median_gap_s": -0.025331753,
+"median_gap_pct": -0.022460230853733346,
+"median_direction": "LMH faster",
+"default_sim_gap_s": -0.52,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": false,
+"median_default_wrong_sign": false,
+"matched_class_weather_sim_gap_s": -0.52,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": false,
+"median_matched_class_weather_wrong_sign": false
+},
+{
+"series": "WEC",
+"track": "sakhir",
+"condition": "unknown",
+"session": "qualifying",
+"observed_events": 1,
+"paired_events": 0,
+"paired_event_keys": [],
+"best_gap_s": null,
+"best_gap_pct": null,
+"best_direction": null,
+"median_gap_s": null,
+"median_gap_pct": null,
+"median_direction": null,
+"default_sim_gap_s": -0.52,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": null,
+"best_default_withheld_reason": "both measured groups required",
+"median_default_wrong_sign": null,
+"median_default_withheld_reason": "both measured groups required",
+"matched_class_weather_sim_gap_s": -0.52,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": null,
+"best_matched_class_weather_withheld_reason": "both measured groups required",
+"median_matched_class_weather_wrong_sign": null,
+"median_matched_class_weather_withheld_reason": "both measured groups required"
+},
+{
+"series": "WEC",
+"track": "sebring",
+"condition": "dry",
+"session": "qualifying",
+"observed_events": 1,
+"paired_events": 1,
+"paired_event_keys": [
+{
+"season": 2023,
+"event": "SEBRING"
+}
+],
+"best_gap_s": -1.015,
+"best_gap_pct": -0.95680699835976,
+"best_direction": "LMH faster",
+"median_gap_s": 0.8175,
+"median_gap_pct": 0.7666158715273799,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": -0.769,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": false,
+"median_default_wrong_sign": true,
+"matched_class_weather_sim_gap_s": -0.349,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": false,
+"median_matched_class_weather_wrong_sign": true
+},
+{
+"series": "WEC",
+"track": "sebring",
+"condition": "dry",
+"session": "race",
+"observed_events": 1,
+"paired_events": 1,
+"paired_event_keys": [
+{
+"season": 2023,
+"event": "SEBRING"
+}
+],
+"best_gap_s": -0.52932439,
+"best_gap_pct": -0.4834794210972133,
+"best_direction": "LMH faster",
+"median_gap_s": 1.04384712,
+"median_gap_pct": 0.9506770848843918,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": -0.769,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": false,
+"median_default_wrong_sign": true,
+"matched_class_weather_sim_gap_s": -0.349,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": false,
+"median_matched_class_weather_wrong_sign": true
+},
+{
+"series": "WEC",
+"track": "spa-francorchamps",
+"condition": "dry",
+"session": "qualifying",
+"observed_events": 4,
+"paired_events": 4,
+"paired_event_keys": [
+{
+"season": 2023,
+"event": "SPA FRANCORCHAMPS"
+},
+{
+"season": 2024,
+"event": "SPA FRANCORCHAMPS"
+},
+{
+"season": 2025,
+"event": "SPA FRANCORCHAMPS"
+},
+{
+"season": 2026,
+"event": "SPA FRANCORCHAMPS"
+}
+],
+"best_gap_s": -0.222,
+"best_gap_pct": -0.18223539007432388,
+"best_direction": "LMH faster",
+"median_gap_s": 0.4175,
+"median_gap_pct": 0.34516914947926824,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": -0.629,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": false,
+"median_default_wrong_sign": true,
+"matched_class_weather_sim_gap_s": -0.629,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": false,
+"median_matched_class_weather_wrong_sign": true
+},
+{
+"series": "WEC",
+"track": "spa-francorchamps",
+"condition": "dry",
+"session": "race",
+"observed_events": 3,
+"paired_events": 3,
+"paired_event_keys": [
+{
+"season": 2024,
+"event": "SPA FRANCORCHAMPS"
+},
+{
+"season": 2025,
+"event": "SPA FRANCORCHAMPS"
+},
+{
+"season": 2026,
+"event": "SPA FRANCORCHAMPS"
+}
+],
+"best_gap_s": 0.321425556,
+"best_gap_pct": 0.25687633447239994,
+"best_direction": "LMDh faster",
+"median_gap_s": 0.099868244,
+"median_gap_pct": 0.07950642876227489,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": -0.629,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": true,
+"median_default_wrong_sign": true,
+"matched_class_weather_sim_gap_s": -0.629,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": true,
+"median_matched_class_weather_wrong_sign": true
+},
+{
+"series": "WEC",
+"track": "spa-francorchamps",
+"condition": "unknown",
+"session": "qualifying",
+"observed_events": 1,
+"paired_events": 1,
+"paired_event_keys": [
+{
+"season": 2026,
+"event": "SPA FRANCORCHAMPS"
+}
+],
+"best_gap_s": -0.218,
+"best_gap_pct": -0.17982199272462432,
+"best_direction": "LMH faster",
+"median_gap_s": -0.589,
+"median_gap_pct": -0.4843670334369489,
+"median_direction": "LMH faster",
+"default_sim_gap_s": -0.629,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": null,
+"best_default_withheld_reason": "surface condition unresolved",
+"median_default_wrong_sign": null,
+"median_default_withheld_reason": "surface condition unresolved",
+"matched_class_weather_sim_gap_s": -0.629,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": null,
+"best_matched_class_weather_withheld_reason": "surface condition unresolved",
+"median_matched_class_weather_wrong_sign": null,
+"median_matched_class_weather_withheld_reason": "surface condition unresolved"
+},
+{
+"series": "WEC",
+"track": "spa-francorchamps",
+"condition": "unknown",
+"session": "race",
+"observed_events": 1,
+"paired_events": 1,
+"paired_event_keys": [
+{
+"season": 2023,
+"event": "SPA FRANCORCHAMPS"
+}
+],
+"best_gap_s": -1.181130303,
+"best_gap_pct": -0.9296830212450131,
+"best_direction": "LMH faster",
+"median_gap_s": 0.654810606,
+"median_gap_pct": 0.5144303562416093,
+"median_direction": "LMDh faster",
+"default_sim_gap_s": -0.629,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": null,
+"best_default_withheld_reason": "surface condition unresolved",
+"median_default_wrong_sign": null,
+"median_default_withheld_reason": "surface condition unresolved",
+"matched_class_weather_sim_gap_s": -0.629,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": null,
+"best_matched_class_weather_withheld_reason": "surface condition unresolved",
+"median_matched_class_weather_wrong_sign": null,
+"median_matched_class_weather_withheld_reason": "surface condition unresolved"
+},
+{
+"series": "WEC",
+"track": "spa-francorchamps",
+"condition": "wet",
+"session": "race",
+"observed_events": 1,
+"paired_events": 1,
+"paired_event_keys": [
+{
+"season": 2023,
+"event": "SPA FRANCORCHAMPS"
+}
+],
+"best_gap_s": -6.852,
+"best_gap_pct": -4.834493390671781,
+"best_direction": "LMH faster",
+"median_gap_s": -1.26025,
+"median_gap_pct": -0.8738067710057602,
+"median_direction": "LMH faster",
+"default_sim_gap_s": -0.629,
+"default_sim_direction": "LMH faster",
+"best_default_wrong_sign": null,
+"best_default_withheld_reason": "no matched wet simulator",
+"median_default_wrong_sign": null,
+"median_default_withheld_reason": "no matched wet simulator",
+"matched_class_weather_sim_gap_s": -0.629,
+"matched_class_weather_sim_direction": "LMH faster",
+"best_matched_class_weather_wrong_sign": null,
+"best_matched_class_weather_withheld_reason": "no matched wet simulator",
+"median_matched_class_weather_wrong_sign": null,
+"median_matched_class_weather_withheld_reason": "no matched wet simulator"
+}
+]
+}
