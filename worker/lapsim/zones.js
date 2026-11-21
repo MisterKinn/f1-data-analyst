@@ -31,9 +31,13 @@ export function withZones(K, d, track, c) {
 }
 
 // Options (owner 2026-11-16, same rules as the /simulation page): SM 'normal' | 'alt' (low-grip activation of the FIA map, only partial
-// activation: front wing in Straight Mode, rear flap in Corner Mode, B7.1.2 b; 0.3 of the low-drag change is an estimate) | 'off',
+// activation: front wing in Straight Mode, rear flap in Corner Mode, B7.1.2 b; PARTIAL of the low-drag change, model) | 'off',
 // Overtake (2026, C5.2.8 ii power curve; the driver uses it on the whole lap, one straight or not at all, whichever is fastest), DRS (2025).
-export const PARTIAL = 0.3;
+// PARTIAL (model, 2026-11-21): share of the Straight Mode drag drop left in Low Grip. Fitted to top speeds of the two dry Low Grip races
+// with Overtake disabled (race leader's slick laps, no tow, vs the practice 90th percentile): Interlagos −9 km/h → 0.96, Sepang −20 km/h
+// → 0.66; each fit predicts the other track better than the earlier 0.3 guess (errors 6.4 vs 17.5 and 10.4 vs 15.9 km/h). The front
+// wing in Straight Mode carries most of the drop. Same value in simulation.js (browser copy).
+export const PARTIAL = 0.8;
 function zoneList(d, c, m) {
   const sl = slotOf(lapsimF1Zones?.tracks?.[d.id], c.year), z = lapsimF1Zones?.tracks?.[d.id]?.[sl], L = d.kappa.length * d.ds; if (!z) return null;
   if (sl === '2025' ? m.drs === false : m.sm === 'off') return [];

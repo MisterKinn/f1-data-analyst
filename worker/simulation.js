@@ -818,8 +818,9 @@ function computeView(K, data, state, R) {
   const zt = (tr, c) => { const t = zt0(tr, c), k = data.puQuali && !c.series && c.year && !kS && otWhole(c) ? data.otChoice : null; if (k == null || k === 'none') return t;
     if (k === 'all') return Object.assign({}, t, {otOn: true}); const zs = zl(c, {sm: 'normal', drs: true}) || [], z = zs[k]; if (!z) return t; const n = d.kappa.length, L = n * d.ds, o = new Uint8Array(n), i0 = Math.round(z[0] / d.ds), len = Math.round((((z[1] - z[0]) % L) + L) % L / d.ds); for (let q = 0; q <= len; q++) o[(i0 + q) % n] = 1; return Object.assign({}, t, {otOn: o}); };
   // Low Grip zones allow only partial activation (front wing in Straight Mode, rear flap in Corner Mode; B7.1.2 b). The front wing's share
-  // of the low-drag change is not published: 0.3 is an estimate (the rear flap carries most of the drag drop)
-  const PARTIAL = 0.3;
+  // of the low-drag change is not published: 0.8 is a model fitted to the top speeds of the Interlagos and Sepang 2026 Low Grip races
+  // (worker/lapsim/zones.js PARTIAL, same value)
+  const PARTIAL = 0.8;
   const lowOf = (tr, c, zs, frac) => { const key = 'low:' + c.year + ':' + (frac || 1) + ':' + JSON.stringify(zs);
     if (!computeView.cache[key]) { const a = zs.length ? K.trackFromData(Object.assign({}, d, {aeroZones: zs}), {aero: 'fia'}).aeroLow : new Uint8Array(d.kappa.length);
       computeView.cache[key] = frac && frac !== 1 ? Float32Array.from(a, x => x * frac) : a; }
