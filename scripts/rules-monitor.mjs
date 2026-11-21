@@ -212,7 +212,7 @@ async function processSource(source,status,report){
  let state={};try{state=DRY?{}:(await api('/api/rules/state?source='+source.id)).known||{};}catch(e){result.status='failed';result.error='state: '+e.message;return {result,docs,known};}
  let list;try{list=await candidates(source);}catch(e){result.status='failed';result.error=e.message;return {result,docs,known};}
  result.listed=list.length;
- if(!list.length){result.status='failed';result.error='Listing returned no documents (markup change or block?)';return {result,docs,known};}
+ if(!list.length){if(source.allow_empty){result.error=null;return {result,docs,known};}result.status='failed';result.error='Listing returned no documents (markup change or block?)';return {result,docs,known};}
  for(const c of list){
   if(Date.now()>DEADLINE||report.downloads>=MAX_DOWNLOADS){result.status='partial';result.error='Run budget reached; continues next run';break;}
   const k=state[c.url];

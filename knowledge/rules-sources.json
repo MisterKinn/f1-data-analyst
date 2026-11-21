@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated_on": "2026-11-06",
+  "updated_on": "2026-11-21",
   "policy": "Official sources only. The monitor stores an article index (number, heading, page, short excerpt, keywords) and links to the original; it does not republish documents. Notifications stay F1/WEC only; indexing covers every series listed here.",
   "phases": {
     "1": "Tier 1: public dated listings readable with a plain HTTP fetch (this file).",
@@ -289,7 +289,9 @@
       "adapter": "pdf_links",
       "url": "https://www.asianlemansseries.com/en/page/regulations",
       "calendar": "alms",
-      "tier": 2
+      "tier": 2,
+      "allow_empty": true,
+      "note": "2026-27 regulations page says \"coming soon\": an empty listing is the real state, not a failure"
     },
     {
       "id": "gtwc-europe-regs",
@@ -298,7 +300,9 @@
       "adapter": "pdf_links",
       "url": "https://europeregs.sporting.gt-world-challenge.com/",
       "calendar": "gtwc-europe",
-      "tier": 2
+      "tier": 2,
+      "exclude": "GTWCEuropeSportingRegulations",
+      "note": "The second \"complete PDF\" link on the page is dead (404); the 2026GTWCSportingRegulations.pdf link works"
     },
     {
       "id": "british-gt-regs",
@@ -315,11 +319,13 @@
       "id": "24h-series-regs",
       "series": "24h-series",
       "kind": "regulations",
-      "adapter": "pdf_links",
-      "url": "https://www.24hseries.com/gfx/TEAM%20INFO/01%20Regulations/2026/",
+      "adapter": "single_pdf",
+      "url": "https://www.24hseries.com/gfx/TEAM%20INFO/01%20Regulations/2026/2026_Michelin_24h_Series_Sporting_Regulations.pdf",
       "calendar": "24h-series",
       "reg_year": 2026,
-      "tier": 2
+      "tier": 2,
+      "title": "2026 Michelin 24H Series Sporting Regulations",
+      "note": "The 2026 folder does not list its files (404); the sporting regulations PDF is linked from the 2026 team information"
     },
     {
       "id": "dtm-regs",
@@ -372,7 +378,9 @@
       "kind": "regulations",
       "adapter": "pdf_links",
       "url": "https://www.super-race.com/inside/info_race",
-      "tier": 2
+      "tier": 2,
+      "enabled": false,
+      "note": "Regulations are only published as files on the Sportity app CDN; the site page has no document links"
     },
     {
       "id": "n-festival-regs",
@@ -386,11 +394,12 @@
       "id": "fim-documents",
       "series": "motogp",
       "kind": "regulations",
-      "adapter": "pdf_links",
-      "url": "https://www.fim-moto.com/en/documents",
-      "include": "motogp|moto2|moto3|superbike|worldsbk|supersport",
+      "adapter": "single_pdf",
+      "url": "https://www.fim-moto.com/fileadmin/FIM_2026_MotoGP__Moto2___Moto3_World_Championship_Regulations_Updates_28_April_26.pdf",
       "tier": 2,
-      "note": "MotoGP and WorldSBK regulations on the FIM document list"
+      "note": "The FIM document list is built in the browser (no links in the HTML); the current Grand Prix regulations PDF is listed by hand and needs a new URL after each update",
+      "title": "FIM 2026 MotoGP, Moto2 and Moto3 World Championship Regulations (update 28 April 2026)",
+      "reg_year": 2026
     },
     {
       "id": "gr-cup-regs",
@@ -398,7 +407,9 @@
       "kind": "regulations",
       "adapter": "pdf_links",
       "url": "https://www.grcupseries.com/about/regulations",
-      "tier": 2
+      "tier": 2,
+      "enabled": false,
+      "note": "The regulations page has no public PDF links"
     },
     {
       "id": "openalex-driving",
