@@ -7,7 +7,7 @@ import {calendarEvents} from '../worker/race-calendar-data.js';
 import {sessionSchedule} from '../worker/session-schedule.js';
 
 // typical session length (h) by kind; endurance races by series
-const RACE_H = {wec: 8, imsa: 8, elms: 4, alms: 4, 'gtwc-europe': 3, 'gtwc-america': 1, 'gtwc-asia': 1, 'gtwc-australia': 3, igtc: 12,
+const RACE_H = {wec: 8, imsa: 8, elms: 4, alms: 4, 'gtwc-europe': 3, 'gtwc-america': 3, 'gtwc-asia': 1, 'gtwc-australia': 3, igtc: 12,
   '24h-series': 24, 'super-taikyu': 5, f1: 2, 'formula-e': 1.5, nls: 6, 'super-gt': 3, 'british-gt': 2, nascar: 3.5, wrc: 4, dakar: 10, macau: 1};
 const kind = n => /race|grand prix ·|main/i.test(n) && !/qualif|practice|warm/i.test(n) ? 'race' : /qualif|hyperpole|pole|q[123]\b/i.test(n) ? 'qualifying' : 'practice';
 const hours = (series, k, name) => k === 'race' ? (/\b(\d+)\s*h(ours)?\b/i.exec(name)?.[1] * 1 || RACE_H[series] || 2) : 1;
@@ -17,6 +17,8 @@ const WIRED = {
   wec: {qualifying: ['bop-refresh.yml'], race: ['bop-refresh.yml', 'lapsim-track-laps.yml']},
   imsa: {race: ['bop-refresh.yml', 'lapsim-track-laps.yml']},
   elms: {race: ['bop-refresh.yml']},
+  'gtwc-america': {practice: ['alkamel-laps.yml'], qualifying: ['alkamel-laps.yml'], race: ['alkamel-laps.yml']},  // Al Kamel every lap
+  igtc: {race: ['alkamel-laps.yml']},  // Indianapolis 8 Hour is on Al Kamel; the other IGTC rounds have no source wired
 };
 const WINDOWS = [[45, 75], [165, 195], [345, 375]];
 
