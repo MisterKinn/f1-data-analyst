@@ -241,7 +241,7 @@ for (const entry of index) {
 // off unless LAPSIM_KAPPA_CAP_G is set (lapsim-data.yml sets it together with LAPSIM_FIA_ZONES)
 const CAP_G = Number(process.env.LAPSIM_KAPPA_CAP_G) || null;
 // banked corners (scripts/sim/data/banking.json) carry more than gMax; shortcut: the whole track is skipped, per corner when banking is modelled
-const BANKED = new Set(Object.keys((j => j.tracks || j)(JSON.parse(readFileSync('scripts/sim/data/banking.json', 'utf8')))));
+const BANKED = new Set(Object.keys((j => j.tracks || j)(JSON.parse(readFileSync(new URL('./data/banking.json', import.meta.url), 'utf8')))));
 if (CAP_G) for (const t of Object.values(tracks)) {
   if (BANKED.has(t.id)) continue;
   const dry = traces.filter(x => x.track === t.id && !x.weather.rain && x.position <= 3), own = dry.filter(x => x.year === t.year), laps = own.length ? own : dry;
