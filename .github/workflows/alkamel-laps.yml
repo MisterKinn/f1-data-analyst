@@ -1,4 +1,4 @@
-name: Al Kamel laps (GTWC America, IGTC Indianapolis, ELMS, Le Mans Cup)
+name: Al Kamel laps (GTWC America, IGTC Indianapolis, ELMS, Asian Le Mans, Le Mans Cup)
 
 # Owner 2026-11-21: GTWC reads Al Kamel too. GT World Challenge America and the IGTC Indianapolis 8 Hour publish every lap with
 # sectors on usac.alkamelsystems.com. scripts/sim/learn/fetch-alkamel-laps.mjs keeps one derived row per car and session
@@ -33,6 +33,6 @@ jobs:
       - name: Publish to main (checks first)
         env: {GH_TOKEN: '${{ github.token }}'}
         run: |
-          scripts/publish-refresh.sh -m "Al Kamel laps: GTWC America, IGTC Indianapolis, ELMS, Le Mans Cup (one row per car and session)" \
+          scripts/publish-refresh.sh -m "Al Kamel laps: GTWC America, IGTC Indianapolis, ELMS, Asian Le Mans, Le Mans Cup (one row per car and session)" \
             -g "node scripts/sim/learn/fetch-alkamel-laps.mjs" -b lapsim-learn/alkamel-laps \
             -c "node scripts/refresh-changed.mjs scripts/sim/data/learn/alkamel-laps.json.gz" -- scripts/sim/data/learn/alkamel-laps.json.gz
