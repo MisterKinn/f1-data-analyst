@@ -352,3 +352,29 @@ Moved with the line (same rule as earlier finish-line changes): corner names and
 corrections and wall gaps (rotated), the Valencia step repair (3400 → 3655 m), F1/FE zone estimates and the PU estimate
 (rebuilt). Still estimated: Estoril (grid boxes on both sides of every painted line), Mandalika (TSL map: pit entry 176.3 m before
 the line, pit exit 356.4 m after; only z18 imagery), Lime Rock, Yongin, and Buriram, Zhuhai, Inje, Autopolis (no geographic frame yet).
+
+## Kerb use on 25 tracks: two more whole-lap fits and fitting only the parts that match (2026-11-21, session C)
+
+Input: the owner's packed extract (`results/kerb_extract/packed`, `PACKED=` in `kerb_use.py`, same filtered rows as before; raw files
+stay on the PC). Bathurst and Brands Hatch had no OSM seed; the local origin is now the laps' mean (the fit starts from many poses,
+so the origin only has to be near the track). New option `SEGMENTS=1`: after the whole-lap fit, each ~400 m piece of our line gets a
+small rigid fit (from ±150 m around it) and is used only if it then lies within 2.2 m (median) of the laps and moved ≤ 8 m and ≤ 3°.
+Elsewhere on that lap there is no kerb data. Same gates on what is kept (fit median ≤ 2.2 m, drift p95 ≤ 8 m, ≥ 30k samples).
+Check on two tracks already kept: pieces vs the stored whole-lap values differ by p95 0.5 m (Fuji) and 0.9 m (Zolder; whole-lap rerun
+vs stored 0.8 m). Lap times cannot move: only the map (`lineData`) reads `kerb-use-data.js`.
+
+| Track | Whole-lap fit (m) | Pieces fit (m) | Lap kept | Drift p95 (m) | Samples | |
+|---|---|---|---|---|---|---|
+| brands-hatch | 0.87 | – | 100 % | 3.06 | 229,769 | kept (whole lap) |
+| bathurst | 1.37 | – | 100 % | 6.67 | 78,575 | kept (whole lap) |
+| misano | 2.26 | 0.85 | 71 % | 2.19 | 216,667 | kept (pieces) |
+| okayama | 2.38 | 0.53 | 56 % | 2.08 | 41,164 | kept (pieces) |
+| mugello | 3.72 | 1.73 | 61 % | 4.76 | 37,354 | kept (pieces) |
+| montreal | 2.09 | 0.42 | 81 % | 8.07 | 363,072 | ✗ drift |
+| sonoma | 2.50 | 1.24 | 56 % | 10.95 | 98,489 | ✗ drift ("nascarlong") |
+| daytona | 1.86 | 1.35 | 93 % | 1.56 | 25,523 | ✗ samples |
+| phillip-island | 2.43 | 1.45 | 82 % | 2.65 | 19,637 | ✗ samples |
+| road-america | 2.24 | 1.20 | 63 % | 0.88 | 12,851 | ✗ samples |
+
+Interlagos, Imola, VIR and Watkins Glen have only formula-car laps in the pack (no closed-wheel group). Old vs new edges with the laps
+were checked on plots (Misano, Mugello, Bathurst; sent to the owner, not committed).
