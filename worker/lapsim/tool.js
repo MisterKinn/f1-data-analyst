@@ -7,7 +7,7 @@ import {lapsimAllTracks as lapsimTracks} from './tracks.js';
 import {lapsimCalibration} from './calibration-data.js';
 import {RULE_CHANGES} from './cars.js';
 import {TRACK_NAMES, resolveTrack} from './names.js';
-import {carsFor, realConditions, latestChanges, fittedYear, SERIES_CARS, CAR_ORDER, raceRecords} from './scenario.js';
+import {carsFor, realConditions, latestChanges, fittedYear, SERIES_CARS, CAR_ORDER, HYPER_KEYS, raceRecords} from './scenario.js';
 import {rechargeLimitMJ} from './energy-limits.js';
 import {lapsimLearned} from './learned-data.js';
 import {evolutionCoeffs, evolutionDelta, evolutionCurve} from './evolution.js';
@@ -18,7 +18,7 @@ import {climatePreset} from './climate.js';
 
 const K = lapsimKernel();
 const SITE = 'https://kongboda-motorsports.vercel.app';
-const CARS = ['2019', '2025', '2026', '2027', '2028', 'wec-lmh', 'wec-lmdh', 'wec-lmgt3', ...Object.keys(SERIES_CARS), ...CAR_ORDER.filter(k => k.startsWith('gt3-') || k.startsWith('fe-'))];
+const CARS = ['2019', '2025', '2026', '2027', '2028', 'wec-lmh', 'wec-lmdh', ...HYPER_KEYS, 'wec-lmgt3', ...Object.keys(SERIES_CARS), ...CAR_ORDER.filter(k => k.startsWith('gt3-') || k.startsWith('fe-'))];
 const ro = {readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false};
 const num = (min, max, description) => ({type: 'number', minimum: min, maximum: max, description});
 
@@ -26,7 +26,7 @@ export const LAPSIM_TOOLS = [{name: 'lapsim_simulate',
   description: 'Kongboda lap simulator: a qualifying lap worked out by a quasi-steady-state model (TUM method) on the real driving line built from OpenF1 qualifying car positions. Cars: F1 2019 (TUM base), 2025 and 2026 (fitted to real pole laps), 2027 and 2028 (projected from the ratified power-unit changes and historical development); WEC Hypercar and LMGT3 class cars (fitted to Al Kamel lap times and speed traps). Every result carries a one-sigma error range and a confidence label from a holdout test. Inputs override the real qualifying weather: air and track temperature, humidity, pressure (or altitude), wind speed and direction; FIA "Changes to the circuit" (resurfacing, bumps, kerbs) can be switched on. Returns lap and sector times, top and lowest speed, corner minimum speeds, 2026 energy use, what limits the lap, air density and the model error against the real pole. Call without track to list tracks.',
   inputSchema: {type: 'object', properties: {
     track: {type: 'string', maxLength: 60, description: 'Track id, name or Grand Prix, e.g. "mexico-city", "Monza", "COTA", "멕시코시티".'},
-    car: {type: 'string', enum: CARS, description: 'F1 generation (2019 TUM base, 2025, 2026, 2027, 2028), WEC class car (wec-lmh, wec-lmdh, wec-lmgt3), a GT3 car model learned from real laps (gt3-...; base model and Evo kit are separate cars), a Formula E rule set (fe-gen4 prior, fe-gen3evo, fe-gen3, fe-gen2; learned from Al Kamel laps), or a provisional series car (imsa-gtp = LMDh car; imsa-gtd/gtdpro, elms-lmgt3, alms-gt3, gtwc-gt3, dtm-gt3, igtc-gt3, nur-gt3, macau-gt3 = LMGT3 car; raced sessions reproduce the real best lap). Default 2026.'},
+    car: {type: 'string', enum: CARS, description: 'F1 generation (2019 TUM base, 2025, 2026, 2027, 2028), WEC class car (wec-lmh, wec-lmdh, wec-lmgt3), a Hypercar maker (hyper-toyota, hyper-ferrari, hyper-cadillac, …: its regulation car with the BoP weight and power of that track and a learned maker residual; model), a GT3 car model learned from real laps (gt3-...; base model and Evo kit are separate cars), a Formula E rule set (fe-gen4 prior, fe-gen3evo, fe-gen3, fe-gen2; learned from Al Kamel laps), or a provisional series car (imsa-gtp = LMDh car; imsa-gtd/gtdpro, elms-lmgt3, alms-gt3, gtwc-gt3, dtm-gt3, igtc-gt3, nur-gt3, macau-gt3 = LMGT3 car; raced sessions reproduce the real best lap). Default 2026.'},
     compare_car: {type: 'string', enum: CARS, description: 'Second car on the same track and conditions.'},
     air_temp_c: num(-10, 50, 'Air temperature (°C).'),
     track_temp_c: num(0, 70, 'Track temperature (°C).'),

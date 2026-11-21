@@ -18,8 +18,16 @@ import {lapsimTrackChanges} from './track-changes-data.js';
 import {lapsimChangeEffects} from './change-effects-data.js';
 import {TUM_2019, PRIOR, applyRules, applyDevelopment} from './cars.js';
 import {SERIES} from './series.js';
+import {HYPERCARS, hypercarFor, hypercarRanking} from './hypercar-makers.js';
+import {lapsimKernel} from './kernel.js';
+import {lapsimAllTracks} from './tracks.js';
+import {lapsimHypercarMakers} from './hypercar-maker-data.js';
 
 // GT3 is shown per car model (base model + Evo tick box); F1, LMH and LMDh are shown per regulation (owner rule, 2026-11-14)
+// Hypercar per maker (owner 2026-11-21): one car per maker with that track's BoP and the learned residual (carsFor, the tool; the page menu
+// lists them once Session E adds them under Hypercar, ordered by bopRank)
+let HK = null;
+export const HYPER_KEYS = HYPERCARS.filter(m => m.make).map(m => 'hyper-' + m.key);
 export const CAR_ORDER = ['base2019', '2025', '2026', '2027', '2028', 'wec-lmh', 'wec-lmdh', 'wec-lmgt3', ...(lapsimLearned?.models || []).map(m => m.key), ...Object.keys(FE_GENS)];
 
 // grip: the per-track factor fitted with that season's car (absorbs asphalt and line differences)
@@ -90,6 +98,15 @@ export function carsFor(id) {
     out[k].fix = {lap: r.lap, weather: r.weather || {}, ref: k, session: `${r.series.toUpperCase()} ${r.year} ${r.event}${r.type === 'Q' ? '' : r.type === 'R' ? ' (race)' : ' (practice/test)'}`, year: r.year, model: r.model, entry: r.entry, type: r.type};
   // Extra circuit: a car that has a real qualifying lap here reproduces it (lap-level correction, as for the series cars)
   for (const [k, r] of Object.entries(lapsimExtraTracks[id]?.realLaps || {})) if (out[k] && !out[k].fix) out[k].fix = {lap: r.lap, weather: r.weather || {}, ref: k, session: r.event};
+  // Hypercar per maker: regulation car (LMH front motor / LMDh rear) with the BoP of this track (2026 estimate, else virtual, else the
+  // latest published table) and the maker residual learned from WEC qualifying (Gate G v2 pass: held-out 0.81 → 0.56 %, model)
+  const HT = lapsimHypercarMakers?.test;
+  for (const m of HYPERCARS) { if (!m.make) continue; const base = out['wec-' + m.cls], h = hypercarFor(id, m, base); if (!h || !h.bop) continue;
+    out['hyper-' + m.key] = {car: h.car, grip: base.grip, timeScale: h.timeScale, kind: h.residual ? 'learned' : 'bop', year: h.bop.season, series: 'wec', cls: m.cls,
+      label: m.name, maker: m.key, base: 'wec-' + m.cls, bop: h.bop, learned: h.residual ? {pct: HT?.rmsPct ?? null, events: h.residual.events, maker: true} : null}; }
+  // the maker the BoP makes fastest here leads the list on the page (owner: "the car most likely fastest as the reference, the others to choose")
+  if (lapsimAllTracks[id] && Object.keys(out).some(k => k.startsWith('hyper-'))) { const r = hypercarRanking(HK ||= lapsimKernel(), id, lapsimAllTracks[id], out);
+    r.forEach((x, i) => { out[x.key].bopRank = i + 1; }); if (r[0]) out[r[0].key].bopFastest = true; }
   for (const c of Object.values(out)) { c.car = withPowertrain(c.car, c); c.unc = uncertainty(c, id); } // engine curve and gears (powertrains.js)
   return out;
 }

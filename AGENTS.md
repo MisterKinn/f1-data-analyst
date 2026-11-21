@@ -36,6 +36,17 @@ all 67 rows, RMS 1.113 %, SE of the RMS 0.076; f1 34 rows, 0.865 %; wec 33 rows,
   may get worse beyond its own k paired SE.
 - **Fewer than 5 rows** in a group: "not enough data", not pass or fail. Label estimates "model / 모델" and show every ✗ with its numbers.
 
+### LapSim × BoPSim × SetupSim (owner 2026-11-21)
+
+The three tools share one Hypercar maker list and one BoP choice (`worker/lapsim/hypercar-makers.js`: 2026 estimate → virtual BoP →
+latest published table) and one set of maker residuals (`worker/lapsim/hypercar-maker-data.js`, built by
+`scripts/sim/learn/hypercar-makers.mjs`). Any change to the simulator (kernel, cars, calibration) or to its data (laps, BoP tables, BoP
+estimates, tracks) must leave all three in step in the same PR or refresh run:
+- rerun `node scripts/sim/learn/hypercar-makers.mjs --write` (the lapsim-data and bop-refresh workflows do it); `--check` fails when the
+  stored residuals are stale, and the test suite runs it;
+- never copy maker names, BoP values or residuals into another file: import them from these two modules;
+- the BoP-fastest maker per track (`bopRank`) is computed from these, so it follows by itself; report the held-out line of the builder.
+
 ## Lap simulator learning data (owner rules, 2026-11-14) — read before adding laps, tracks or cars
 
 Read `docs/lapsim-learn.md` first and follow it together with `docs/lapsim-physics-rules.md`. The rules, in short:
