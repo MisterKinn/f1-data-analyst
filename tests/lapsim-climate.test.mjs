@@ -38,9 +38,10 @@ test('no archive weather for a future, postponed or cancelled session: presets h
     assert.deepEqual(Object.keys(p).filter(k => /year|date|day|session/i.test(k)), [], id);
     assert.ok(p.air.length === 3 && Number.isFinite(p.air[1]));
   }
-  // F1 2026 at a track whose 2026 race has not run: typical weather, not the 2025 real session
-  const lv = view('las-vegas', '2026');
-  assert.equal(lv.d.conds['2026'], undefined); assert.match(lv.v.airHtml, /For reference, typical weather[^<]*typical 11\//); assert.doesNotMatch(lv.v.airHtml, /real session 20/);
+  // F1 2026 at a track whose 2026 race has not run: typical weather, not the 2025 real session (Abu Dhabi, the last round; Las Vegas
+  // was used here until its 2026 qualifying ran on 2026-11-21 and the refit added it)
+  const lv = view('yas-marina-circuit', '2026');
+  assert.equal(lv.d.conds['2026'], undefined); assert.match(lv.v.airHtml, /For reference, typical weather[^<]*typical 12\//); assert.doesNotMatch(lv.v.airHtml, /real session 20/);
 });
 
 test('past sessions keep the real session weather; KO/EN labels and the ERA5 error are shown', () => {
