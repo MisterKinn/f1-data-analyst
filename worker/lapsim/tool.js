@@ -14,6 +14,7 @@ import {evolutionCoeffs, evolutionDelta, evolutionCurve} from './evolution.js';
 import {wetGap} from './wet-gap.js';
 import {lapsimWetGap} from './wet-gap-data.js';
 import {driveEnergyJ} from './stint-energy.js';
+import {climatePreset} from './climate.js';
 
 const K = lapsimKernel();
 const SITE = 'https://kongboda-motorsports.vercel.app';
@@ -114,6 +115,10 @@ export function simulate(args = {}, opts = {}) {
   }
   // weather: the real qualifying session of the car's season (else the latest), overridden by inputs
   const own = sel.series ? selKey : String(sel.year);
+  // no real session of this car here (future round, projected car, series not raced here): typical weather of its series' slot (same as the page)
+  const clim = conds[own] ? null : climatePreset(id, sel);
+  // W10 Gate G (2026-11-21): the preset beats the old fallback on track temperature (and narrowly on air) but makes the lap worse
+  // (0.421 vs 0.276 s), so the lap keeps the old fallback and the preset is only reported (typical_weather)
   const realYear = conds[own] ? own : conds['2026'] ? '2026' : Object.keys(conds)[0];
   const real = realYear ? conds[realYear] : null;
   const realSrc = !real ? null : real.source && real.source !== 'timing71' && realYear === own ? `real ${real.year} ${real.event} (${real.source}, session mean weather)` // extra circuit: the source is stored with the lap
@@ -172,6 +177,8 @@ export function simulate(args = {}, opts = {}) {
       ...(xc ? {check: d.fit ? `passed (${xc.mode}): ${xc.mode === 'learned' ? `held-out error ${xc.learned.heldOut.rmsPct} % with a track factor learned from ${xc.learned.heldOut.n} real laps` : `error ${xc.rmsPct} % on ${xc.n} real lap(s), no value from this track used`}` : d.warn} : {}),
       ...(lt ? {learned: `lap times learned from ${lt.events} real qualifying events here (every car model); class-best error with one event hidden: ${Object.entries(lt.errPct).map(([g, v]) => `${g} ${v} %`).join(', ')}`} : {})},
     car: {series: sel.series || 'f1', class: sel.cls || null, year: sel.year, kind: sel.kind, mass_kg: sel.car.mass, track_grip_factor: r3(sel.grip || 1)},
+    ...(clim ? {typical_weather: {month: clim.m, local_hour: clim.h, air_temp_c: clim.air, track_temp_c: clim.w.trackTempC, humidity_pct: clim.w.humidityPct, rain_probability_pct: clim.rain, via_series: clim.via || null,
+      note: 'Typical weather of this series here (ERA5 2016-2025 median via Open-Meteo, CC BY 4.0, contains modified Copernicus Climate Change Service information). Shown for reference only: the lap uses another session\'s real weather, because in testing the typical weather made simulated laps worse (W10 Gate G: 0.421 vs 0.276 s).'}} : {}),
     conditions: {air_temp_c: r3(airTempC), track_temp_c: r3(trackTempC), humidity_pct: Math.round(humidityPct), pressure_hpa: Math.round(pressureHpa * 10) / 10,
       wind_speed_ms: r3(windSpeed), wind_from_deg: Math.round(windFromDeg),
       sources: {air_temp: airSrc, track_temp: trackSrc, humidity: humSrc, pressure: pressureSrc, wind_speed: windSrc, wind_direction: windDirSrc},
