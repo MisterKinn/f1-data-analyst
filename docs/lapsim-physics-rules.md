@@ -25,7 +25,7 @@ Planned outputs, in build order: optimal gear per corner, then a better car mode
 
 ## 2. Hard rules
 
-1. **Gate.** Keep a model change only if held-out error is lower beyond noise (`scripts/sim/gate.mjs`). "Worse" and "gain within noise" both mean: do not use.
+1. **Gate.** Keep a model change only if held-out error is lower beyond noise (`scripts/sim/gate.mjs`). "Worse" and "gain within noise" both mean: do not use. Exceptions and details (2026-11-21): AGENTS.md "Model changes: Gate G" — data fixes ship; rule or physics corrections use the non-inferiority margin; coupled stages are tested with downstream inputs frozen.
 2. **F1 must not get worse.** A change that helps WEC but hurts F1 is used for WEC only.
 3. **Never fit on the rows you test on.** Never choose settings by looking at held-out rows and then report those same rows as the result.
 4. **One change, one flag, off by default.** With the flag off, output must be byte-identical to before.
