@@ -69,6 +69,27 @@ test('Gate G: publish-refresh never publishes a model setting; data commits carr
     'Held-out RMS % before → after (same rows, calibration-data.js): all 1.113 → 1.12 (n 67), f1 0.865 → 0.865 (n 34)');
 });
 
+test('a Hypercar maker input change rebuilds hypercar-maker-data.js in the same commit, with its log lines', async () => {
+  const {mkdtempSync, writeFileSync, mkdirSync} = await import('node:fs'), {join} = await import('node:path'), {tmpdir} = await import('node:os');
+  const {execFileSync, spawnSync} = await import('node:child_process');
+  const root = mkdtempSync(join(tmpdir(), 'hm-')), origin = join(root, 'o.git'), work = join(root, 'w');
+  const git = (cwd, ...a) => execFileSync('git', a, {cwd, encoding: 'utf8'}).trim();
+  git(root, 'init', '-q', '--bare', '-b', 'main', origin); git(root, 'clone', '-q', origin, work);
+  git(work, 'config', 'user.email', 't@t'); git(work, 'config', 'user.name', 't');
+  mkdirSync(join(work, 'worker/lapsim'), {recursive: true}); mkdirSync(join(work, 'scripts/sim/learn'), {recursive: true});
+  writeFileSync(join(work, 'worker/lapsim/tracks-data.js'), 'a');
+  writeFileSync(join(work, 'scripts/sim/learn/hypercar-makers.mjs'), "import {writeFileSync} from 'node:fs'; writeFileSync('worker/lapsim/hypercar-maker-data.js', 'x');" +
+    " console.log('noise'); console.log('Held-out maker RMS 1 → 1'); console.log('BoP-fastest at Fuji: Toyota → Ferrari');");
+  git(work, 'add', '.'); git(work, 'commit', '-qm', 'init'); git(work, 'push', '-q', 'origin', 'HEAD:main');
+  writeFileSync(join(work, 'worker/lapsim/tracks-data.js'), 'b');
+  const r = spawnSync('bash', [new URL('../scripts/publish-refresh.sh', import.meta.url).pathname, '-m', 'tracks', '-g', 'true', '--', 'worker/lapsim/tracks-data.js'],
+    {cwd: work, env: {...process.env, PUBLISH_CHECKS: 'true', GITHUB_STEP_SUMMARY: '/dev/null', GH_TOKEN: ''}, encoding: 'utf8'});
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  assert.match(git(work, 'show', '--name-only', '--format=', 'HEAD'), /hypercar-maker-data\.js/);
+  const body = git(work, 'log', '-1', '--format=%B');
+  assert.match(body, /Held-out maker RMS 1 → 1/); assert.match(body, /BoP-fastest at Fuji: Toyota → Ferrari/); assert.doesNotMatch(body, /noise/);
+});
+
 test('publish-refresh -k: when main moves during the checks, the fetched files are kept (no refetch)', async () => {
   const {mkdtempSync, writeFileSync, readFileSync} = await import('node:fs'), {join} = await import('node:path'), {tmpdir} = await import('node:os');
   const {execFileSync, spawnSync} = await import('node:child_process');
