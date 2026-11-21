@@ -6,6 +6,8 @@
 import {readFile, writeFile} from 'node:fs/promises';
 import {readFileSync} from 'node:fs';
 import {join} from 'node:path';
+import {pathToFileURL} from 'node:url';
+import {chooseGeometrySources, LEGACY_PROJECTION, serializeGeometry, slug} from './geometry-sources.mjs';
 import {resampleClosed, projectOnto, kernelSmooth, headingCurvature, alignClosed, applyAlignment, lonLatToLocal, capCurvature} from '../../worker/lapsim/geometry.js';
 
 const CACHE = process.env.LAPSIM_CACHE || '.cache/lapsim';
@@ -15,12 +17,14 @@ const SIGMA = Number(process.env.LAPSIM_SIGMA || 7), CURV_SMOOTH = Number(proces
 const index = JSON.parse(await readFile(join(CACHE, 'index.json'), 'utf8'));
 const circuits = JSON.parse(await readFile(join(CACHE, 'circuits.json'), 'utf8').catch(() => '{}'));
 const geo = JSON.parse(await readFile(join(CACHE, 'f1-circuits.geojson'), 'utf8').catch(() => 'null'));
-// each track's shape comes from its latest season
-const latestYear = {};
-for (const x of index) latestYear[x.circuit] = Math.max(latestYear[x.circuit] || 0, x.year);
-const isGeometry = x => x.year === latestYear[x.circuit];
+const existingFile = 'worker/lapsim/tracks-data.js';
+const originalText = await readFile(existingFile, 'utf8').catch(e => { if (e.code === 'ENOENT') return ''; throw e; });
+const originalTracks = originalText ? (await import(pathToFileURL(existingFile).href)).lapsimTracks : {};
+const wet = JSON.parse(await readFile(new URL('./data/wet-sessions.json', import.meta.url), 'utf8'));
+const sessions = await Promise.all(index.map(async entry => ({...entry,
+  ...JSON.parse(await readFile(join(CACHE, 'sessions', entry.file), 'utf8'))})));
+const choices = chooseGeometrySources(sessions, originalTracks, wet);
 const ms = d => Date.parse(d);
-const slug = s => String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
 // Points of one lap in metres, time order, inside the lap window. OpenF1 positions are 1/10 m.
 function lapPoints(lap, scale = 10) {
@@ -70,7 +74,7 @@ function smoothBySpacing(kappa, grid, lap) {
   return out;
 }
 
-function buildCurve(laps) {
+function buildCurve(laps, {sigma = SIGMA, posK = POS_K, sigmaMin = SIGMA_MIN} = {}) {
   const pole = lapPoints(laps[0]);
   const inLap = pole.pts.filter(p => p.t >= pole.t0 && p.t < pole.t1); // no overlap at the seam
   let ref = resampleClosed(inLap.map(p => p.x), inLap.map(p => p.y), 4);
@@ -83,14 +87,14 @@ function buildCurve(laps) {
       l.pts.forEach((p, k) => { S.push(pr.s[k]); X.push(p.x); Y.push(p.y); Z.push(p.z); });
     }
     const L = ref.length;
-    const sig = iter === 0 ? 12 : SIGMA;
+    const sig = iter === 0 ? 12 : sigma;
     // local bandwidth from the gap between one lap's samples (slow corners: dense, fast: sparse)
     let sigmaAt = null;
-    if (iter > 0 && POS_K > 0) {
+    if (iter > 0 && posK > 0) {
       const pp = lapsPts[0], pr = projectOnto(ref, pp.pts.map(p => p.x), pp.pts.map(p => p.y)), su = unwrapS(pr.s, L);
-      const n = Math.ceil(L / 2), gap = new Float64Array(n).fill(SIGMA / POS_K);
+      const n = Math.ceil(L / 2), gap = new Float64Array(n).fill(sigma / posK);
       for (let k = 1; k < su.length; k++) { const d = su[k] - su[k - 1]; if (d > 0 && d < 80) for (let x = su[k - 1]; x <= su[k]; x += 2) gap[((Math.floor(x / 2) % n) + n) % n] = d; }
-      sigmaAt = c => Math.max(SIGMA_MIN, POS_K * gap[((Math.floor(c / 2) % n) + n) % n]);
+      sigmaAt = c => Math.max(sigmaMin, posK * gap[((Math.floor(c / 2) % n) + n) % n]);
     }
     const sx = kernelSmooth(S, X, L, sig, 2, {sigmaAt}), sy = kernelSmooth(S, Y, L, sig, 2, {sigmaAt}), sz = kernelSmooth(S, Z, L, 30, 2);
     curve = resampleClosed(sx.values, sy.values, 2, sz.values);
@@ -119,10 +123,12 @@ function geoFor(session) {
   return best?.f || null;
 }
 
-const tracks = {}, traces = [], buildCurveCache = {};
+const tracks = {...originalTracks}, traces = [], buildCurveCache = {};
 const report = [];
-for (const entry of index.filter(isGeometry)) {
-  const session = JSON.parse(await readFile(join(CACHE, 'sessions', entry.file), 'utf8'));
+for (const [id, choice] of Object.entries(choices)) {
+  if (choice.warning) console.warn(choice.warning);
+  if (choice.keep || !choice.source) continue;
+  const entry = choice.source, session = choice.source;
   const laps = session.laps.filter(l => l.location?.length > 50);
   if (laps.length < 3) { report.push(`${entry.circuit}: not enough laps with positions`); continue; }
   const c = buildCurve(laps);
@@ -156,9 +162,9 @@ for (const entry of index.filter(isGeometry)) {
     map = {x: [], y: []};
     for (let i = 0; i < n; i += step) { const px = (align.mirror ? -1 : 1) * grid.x[i], py = grid.y[i]; map.x.push(Math.round(ct * px - st * py)); map.y.push(Math.round(st * px + ct * py)); }
   }
-  const id = slug(session.circuit);
   tracks[id] = {
     id, name: session.location, circuit: session.circuit, circuitKey: entry.circuit_key, year: entry.year, sessionKey: session.session_key,
+    projectionSettings: {sigma: SIGMA, posK: POS_K, sigmaMin: SIGMA_MIN},
     ds: grid.ds, length: Math.round(grid.length), sectors, corners,
     kappa: Array.from(kappa, v => Math.round(v * 1e5)), grade: Array.from(grade, v => Math.round(v * 1e4)),
     heading: headingTrue ? headingTrue.map(v => Math.round(v * 1e3)) : null,
@@ -187,16 +193,21 @@ for (const entry of index) {
   const track = tracks[slug(session.circuit)];
   if (!track) continue;
   const grid = (() => { // rebuild the raw-frame line used for projection
-    const sameYear = index.find(x => isGeometry(x) && slug(x.circuit) === track.id);
+    const sameYear = index.find(x => x.session_key === track.sessionKey);
     return sameYear ? sameYear : null;
   })();
-  if (!grid) continue;
+  if (!grid) { report.push(`${track.id}: source session ${track.sessionKey} unavailable; traces skipped`); continue; }
   for (const lap of session.laps.filter(l => l.carData?.length > 50 && l.location?.length > 50)) {
     const pp = lapPoints(lap);
     const t0 = pp.t0, t1 = pp.t1;
     // align this lap's path to the geometry-year path, then measure distance by projection
     const geoSession = JSON.parse(await readFile(join(CACHE, 'sessions', grid.file), 'utf8'));
-    const base = buildCurveCache[track.id] ||= buildCurve(geoSession.laps.filter(l => l.location?.length > 50));
+    const sourceLaps = geoSession.laps.filter(l => l.location?.length > 50).slice(0, track.quality.laps);
+    if (sourceLaps.length < track.quality.laps) {
+      report.push(`${track.id}: source session ${track.sessionKey} has only ${sourceLaps.length}/${track.quality.laps} position laps; trace skipped`);
+      continue;
+    }
+    const base = buildCurveCache[track.id] ||= buildCurve(sourceLaps, track.projectionSettings || LEGACY_PROJECTION);
     const ref = resampleClosed(base.x, base.y, 2);
     let px = pp.pts.map(p => p.x), py = pp.pts.map(p => p.y);
     let pr = projectOnto(ref, px, py);
@@ -230,7 +241,7 @@ for (const entry of index) {
 // off unless LAPSIM_KAPPA_CAP_G is set (lapsim-data.yml sets it together with LAPSIM_FIA_ZONES)
 const CAP_G = Number(process.env.LAPSIM_KAPPA_CAP_G) || null;
 // banked corners (scripts/sim/data/banking.json) carry more than gMax; shortcut: the whole track is skipped, per corner when banking is modelled
-const BANKED = new Set(Object.keys((j => j.tracks || j)(JSON.parse(readFileSync('scripts/sim/data/banking.json', 'utf8')))));
+const BANKED = new Set(Object.keys((j => j.tracks || j)(JSON.parse(readFileSync(new URL('./data/banking.json', import.meta.url), 'utf8')))));
 if (CAP_G) for (const t of Object.values(tracks)) {
   if (BANKED.has(t.id)) continue;
   const dry = traces.filter(x => x.track === t.id && !x.weather.rain && x.position <= 3), own = dry.filter(x => x.year === t.year), laps = own.length ? own : dry;
@@ -239,7 +250,8 @@ if (CAP_G) for (const t of Object.values(tracks)) {
   if (r.points) report.push(`${t.id}: curvature capped at ${r.points} points (${CAP_G} g at the real speed)`);
 }
 
-await writeFile(OUT, `// Generated by scripts/sim/build-geometry.mjs from OpenF1 car positions (qualifying), MultiViewer\n// corner positions and bacinger/f1-circuits (MIT). Integers: kappa ×1e5 (1/m), grade ×1e4 (rad),\n// heading ×1e3 (rad, east = 0, counter-clockwise). Do not edit by hand.\nexport const lapsimTracks=${JSON.stringify(tracks)};\n`);
+const generatedText = `// Generated by scripts/sim/build-geometry.mjs from OpenF1 car positions (qualifying), MultiViewer\n// corner positions and bacinger/f1-circuits (MIT). Integers: kappa ×1e5 (1/m), grade ×1e4 (rad),\n// heading ×1e3 (rad, east = 0, counter-clockwise). Do not edit by hand.\nexport const lapsimTracks=${JSON.stringify(tracks)};\n`;
+await writeFile(OUT, serializeGeometry(tracks, originalTracks, originalText, generatedText));
 await writeFile(process.env.LAPSIM_TRACES_OUT || join(CACHE, 'traces.json'), JSON.stringify(traces));
 console.log(report.join('\n'));
 console.log(`tracks ${Object.keys(tracks).length}, traces ${traces.length}`);
