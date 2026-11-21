@@ -95,7 +95,17 @@ for id in ids:
         if os.environ.get('DUMP'): np.save(f"{os.environ['DUMP']}/{id}-{g}.npy", Q[::20].astype('float32'))   # check plots only, not committed
         # pose and shape drift: the median offset over ±150 m of lap is taken as zero (racing lines swap sides within that distance)
         med = np.array([np.median(lat[j == i]) if (j == i).sum() > 20 else 0.0 for i in range(n)])
-        bias = gaussian_filter1d(med, 150 / (D[id]['len'] / n), mode='wrap'); lat = lat - bias[j]; out.setdefault('biasM', {})[g] = round(float(np.percentile(np.abs(bias[good]) if good.any() else [99], 95)), 2)
+        bias = gaussian_filter1d(med, 150 / (D[id]['len'] / n), mode='wrap')
+        if os.environ.get('SEGMENTS') and os.environ.get('PIECE_DRIFT'):
+            # 2026-11-22: a piece is also dropped when the laps sit more than 8 m off our line there (p95 of the drift over the piece):
+            # the piece fit then matched the wrong part of the laps (Montreal start piece: laps 11 m to one side, fit 0.4 m). Judged on
+            # the closed-wheel group, used for both groups; the track then needs at least half of the lap kept.
+            if g == 'closed':
+                for k in range(seg.max() + 1):
+                    w = seg == k
+                    if np.percentile(np.abs(bias[w]), 95) > 8: good[w] = False
+                out['segKeptShare'] = round(float(good.mean()), 3); print(id, 'kept share after piece drift', out['segKeptShare'])
+        lat = lat - bias[j]; out.setdefault('biasM', {})[g] = round(float(np.percentile(np.abs(bias[good]) if good.any() else [99], 95)), 2)
         L = np.zeros(n); R = np.zeros(n); cnt = np.bincount(j, minlength=n)
         for i in np.flatnonzero(cnt > 20):
             v = lat[j == i]; L[i] = np.percentile(v, 97); R[i] = -np.percentile(v, 3)
