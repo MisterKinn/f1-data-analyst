@@ -7,6 +7,9 @@
 # - pushes to main; when main moved meanwhile it resets to the new main, runs -g again (generated files are rebuilt,
 #   never hand-merged) and retries, up to 3 times
 # - asks the stored-views workflow to rebuild (a push made with GITHUB_TOKEN starts no other workflow by itself)
+# Gate G (AGENTS.md): refreshes are data fixes and ship even if held-out error rises, but every commit carries one line with held-out
+# RMS before/after on the same rows (scripts/heldout-line.mjs). A model setting (lapsim-data.yml flags, calibrate.mjs, kernel.js,
+# cars.js) is a model change: never published here; it goes to a branch for Session C with the experiment numbers.
 set -uo pipefail
 msg=""; regen=""; changed=""; prefix="lapsim-learn/refresh"
 while [ $# -gt 0 ]; do case "$1" in -m) msg=$2; shift 2;; -g) regen=$2; shift 2;; -c) changed=$2; shift 2;; -b) prefix=$2; shift 2;; --) shift; break;; *) break;; esac; done
@@ -25,7 +28,15 @@ for attempt in 1 2 3; do
   git add -- "${paths[@]}"
   if git diff --cached --quiet -- "${paths[@]}"; then echo "No change" | tee -a "$summary"; exit 0; fi
   if [ -n "$changed" ] && ! bash -c "$changed"; then echo "Only build dates changed; nothing published" | tee -a "$summary"; git reset -q; exit 0; fi
-  git commit -q -m "$msg"
+  model=$(git diff --cached --name-only | grep -E '^(\.github/workflows/lapsim-data\.yml|scripts/sim/calibrate\.mjs|worker/lapsim/(kernel|cars)\.js)$' || true)
+  if [ -n "$model" ]; then
+    git commit -q -m "$msg (model change, not published)"; b="$prefix-model-$(date -u +%Y%m%d-%H%M)"; git push -q origin HEAD:"refs/heads/$b"
+    { echo "Model change, not published (Gate G): $model"; echo "Branch: $b — hand to Session C with the experiment numbers."; } | tee -a "$summary"; exit 3
+  fi
+  mkdir -p .gate-tmp && git show origin/main:worker/lapsim/calibration-data.js > .gate-tmp/before.js 2>/dev/null || rm -f .gate-tmp/before.js
+  held=$(node scripts/heldout-line.mjs .gate-tmp/before.js worker/lapsim/calibration-data.js 2>/dev/null || true); rm -rf .gate-tmp
+  git commit -q -m "$msg" ${held:+-m "$held"}
+  [ -n "$held" ] && echo "$held" >> "$summary"
   if ! ${PUBLISH_CHECKS:-checks}; then
     b="$prefix-$(date -u +%Y%m%d-%H%M)"; git push -q origin HEAD:"refs/heads/$b"
     { echo "Checks failed, not published. Branch: $b"; echo '```'; tail -40 /tmp/checks.log; echo '```'; } >> "$summary"; exit 1

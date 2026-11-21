@@ -43,3 +43,27 @@ test('refresh-changed: a .gz output whose only change is its date is not a chang
   put('2026-11-21', [1, 2, 3]); assert.equal(changed(), 0);  // a new row
 });
 
+
+test('Gate G: publish-refresh never publishes a model setting; data commits carry the held-out line', async () => {
+  const {mkdtempSync, writeFileSync, mkdirSync} = await import('node:fs'), {join} = await import('node:path'), {tmpdir} = await import('node:os');
+  const {execFileSync, spawnSync} = await import('node:child_process');
+  const root = mkdtempSync(join(tmpdir(), 'pr-')), origin = join(root, 'origin.git'), work = join(root, 'work');
+  const git = (cwd, ...a) => execFileSync('git', a, {cwd, encoding: 'utf8'}).trim();
+  git(root, 'init', '-q', '--bare', '-b', 'main', origin); git(root, 'clone', '-q', origin, work);
+  git(work, 'config', 'user.email', 't@t'); git(work, 'config', 'user.name', 't');
+  mkdirSync(join(work, 'worker/lapsim'), {recursive: true}); writeFileSync(join(work, 'worker/lapsim/kernel.js'), 'a'); writeFileSync(join(work, 'data.json'), '1');
+  git(work, 'add', '.'); git(work, 'commit', '-qm', 'init'); git(work, 'push', '-q', 'origin', 'HEAD:main');
+  const run = (...paths) => spawnSync('bash', [new URL('../scripts/publish-refresh.sh', import.meta.url).pathname, '-m', 'refresh', '-g', 'true', '--', ...paths],
+    {cwd: work, env: {...process.env, PUBLISH_CHECKS: 'true', GITHUB_STEP_SUMMARY: '/dev/null', GH_TOKEN: ''}, encoding: 'utf8'});
+  const head = () => git(work, 'ls-remote', origin, 'refs/heads/main').split('\t')[0];
+  const before = head();
+  writeFileSync(join(work, 'worker/lapsim/kernel.js'), 'b');
+  const r = run('worker/lapsim/kernel.js');
+  assert.equal(r.status, 3); assert.match(r.stdout, /Model change, not published/); assert.equal(head(), before);
+  assert.match(git(work, 'ls-remote', origin), /refs\/heads\/lapsim-learn\/refresh-model-/);
+  git(work, 'reset', '-q', '--hard', before); writeFileSync(join(work, 'data.json'), '2');
+  assert.equal(run('data.json').status, 0); assert.notEqual(head(), before);
+  const {line} = await import('../scripts/heldout-line.mjs');
+  assert.equal(line({all: {n: 67, base: 1.113, cand: 1.12}, f1: {n: 34, base: 0.865, cand: 0.865}}),
+    'Held-out RMS % before → after (same rows, calibration-data.js): all 1.113 → 1.12 (n 67), f1 0.865 → 0.865 (n 34)');
+});
