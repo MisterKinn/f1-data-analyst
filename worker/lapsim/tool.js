@@ -145,15 +145,17 @@ export function simulate(args = {}, opts = {}) {
   // sector correction on raced tracks (same rule as the /simulation page): real pole sectors minus the
   // reference car's simulated sectors in the real pole weather, added to every result for that car
   const secOf = r => { if (d.sectors?.length !== 2) return null; const i1 = Math.round(d.sectors[0] / d.ds), i2 = Math.round(d.sectors[1] / d.ds); return [r.time[i1], r.time[i2] - r.time[i1], r.lapTime - r.time[i2]]; };
+  // the fit's C5.12 setting (calibration.puRamp) also in the sector-correction reference lap, so a raced track still reproduces its pole
+  const rampEnv = e => PU_RAMP ? {...e, puRamp: puRampOf(d, id)} : e;
   const corrOf = c => {
     if (c.fix?.lap != null) { // lap-level correction (series whose sector lines may differ from these): spread by sector share
       const ref = cars[c.fix.ref], fw = Object.fromEntries(Object.entries(c.fix.weather || {}).filter(([, v]) => Number.isFinite(v)));
-      const r = K.simulateLap(withGrip(withZones(K, d, base, ref), ref.grip || 1), ref.car, K.conditionsFromWeather({pressureHpa: 1013.25, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0, ...fw}));
+      const r = K.simulateLap(withGrip(withZones(K, d, base, ref), ref.grip || 1), ref.car, rampEnv(K.conditionsFromWeather({pressureHpa: 1013.25, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0, ...fw})));
       const rs = scaled(r, ref.timeScale), ss = secOf(rs) || [rs.lapTime, 0, 0], dl = c.fix.lap - rs.lapTime; return ss.map(x => dl * x / rs.lapTime);
     }
     if (!c.fix || d.sectors?.length !== 2) return null;
     const ref = cars[c.fix.ref], fw = Object.fromEntries(Object.entries(c.fix.weather || {}).filter(([, v]) => Number.isFinite(v)));
-    const ss = secOf(K.simulateLap(withGrip(withZones(K, d, base, ref), ref.grip || 1), ref.car, K.conditionsFromWeather({pressureHpa: 1013.25, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0, ...fw, rechargeMJ: rechargeMJ ?? undefined})));
+    const ss = secOf(K.simulateLap(withGrip(withZones(K, d, base, ref), ref.grip || 1), ref.car, rampEnv(K.conditionsFromWeather({pressureHpa: 1013.25, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0, ...fw, rechargeMJ: rechargeMJ ?? undefined}))));
     return c.fix.real.map((x, i) => x - ss[i]);
   };
   // zone options (owner 2026-11-16); none given = the fitted lap, as before
