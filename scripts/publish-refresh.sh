@@ -40,10 +40,19 @@ for attempt in 1 2 3; do
     git commit -q -m "$msg (model change, not published)"; b="$prefix-model-$(date -u +%Y%m%d-%H%M)"; git push -q origin HEAD:"refs/heads/$b"
     { echo "Model change, not published (Gate G): $model"; echo "Branch: $b — hand to Session C with the experiment numbers."; } | tee -a "$summary"; exit 3
   fi
+  # LapSim × BoPSim × SetupSim (owner 2026-11-21): a change to a Hypercar maker input rebuilds the per-maker table in the same commit;
+  # the script's held-out and "BoP-fastest" lines (bopRank 1 of a track changed) go to the commit and run summary (the refresh log)
+  maker=""
+  if git diff --cached --name-only | grep -qE "^(scripts/sim/data/learn/endurance-cars\.csv\.gz|worker/lapsim/(wec-bop|bop-estimate|bop-virtual|calibration|learned|tracks)-data\.js)$"; then
+    if [ -f scripts/sim/learn/hypercar-makers.mjs ]; then
+      out=$(node scripts/sim/learn/hypercar-makers.mjs --write) || { echo "::error::hypercar-makers.mjs failed"; exit 1; }
+      git add -- worker/lapsim/hypercar-maker-data.js; maker=$(grep -iE 'held-out|BoP-fastest' <<<"$out" || true)
+    else echo "::warning::Hypercar maker input changed but scripts/sim/learn/hypercar-makers.mjs is not on main yet"; fi
+  fi
   mkdir -p .gate-tmp && git show origin/main:worker/lapsim/calibration-data.js > .gate-tmp/before.js 2>/dev/null || rm -f .gate-tmp/before.js
   held=$(node scripts/heldout-line.mjs .gate-tmp/before.js worker/lapsim/calibration-data.js 2>/dev/null || true); rm -rf .gate-tmp
-  git commit -q -m "$msg" ${held:+-m "$held"}
-  [ -n "$held" ] && echo "$held" >> "$summary"
+  git commit -q -m "$msg" ${held:+-m "$held"} ${maker:+-m "$maker"}
+  [ -n "$held" ] && echo "$held" >> "$summary"; [ -n "$maker" ] && echo "$maker" >> "$summary"
   if ! ${PUBLISH_CHECKS:-checks}; then
     b="$prefix-$(date -u +%Y%m%d-%H%M)"; git push -q origin HEAD:"refs/heads/$b"
     { echo "Checks failed, not published. Branch: $b"; echo '```'; tail -40 /tmp/checks.log; echo '```'; } >> "$summary"; exit 1
