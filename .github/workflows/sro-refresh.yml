@@ -37,6 +37,6 @@ jobs:
       - name: Publish to main (checks first)
         env: {GH_TOKEN: '${{ github.token }}'}
         run: |
-          scripts/publish-refresh.sh -m "SRO results: GTWC, British GT, IGTC (measured laps per car and session)" \
+          scripts/publish-refresh.sh -k -m "SRO results: GTWC, British GT, IGTC (measured laps per car and session)" \
             -g "node scripts/sim/learn/fetch-sro.mjs && node scripts/sim/learn/build-sro.mjs && node scripts/sim/learn/fetch-sro-pdf.mjs" -b lapsim-learn/sro-refresh \
             -c "node scripts/refresh-changed.mjs scripts/sim/data/learn/sro-gt3-cars.csv.gz scripts/sim/data/learn/sro-pdf-cars.csv.gz" -- scripts/sim/data/learn/sro-gt3-cars.csv.gz scripts/sim/data/learn/sro-pdf-cars.csv.gz

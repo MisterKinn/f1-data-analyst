@@ -1,18 +1,19 @@
 #!/usr/bin/env bash
 # Publish a data refresh straight to main (owner 2026-11-21: refreshed data goes live without hand work).
 # Run from a workflow job after the generators wrote their files:
-#   scripts/publish-refresh.sh -m "commit message" -g "regenerate command" [-c "real-change test"] [-b branch-prefix] -- path...
+#   scripts/publish-refresh.sh -m "commit message" -g "regenerate command" [-c "real-change test"] [-b branch-prefix] [-k] -- path...
 # - stages the paths; stops when nothing changed (-c: a command that exits 0 only on a real change, e.g. not just a timestamp)
 # - runs the CI checks (same as the `test` workflow); on failure pushes <prefix>-<time> and stops with the reason in the summary
 # - pushes to main; when main moved meanwhile it resets to the new main, runs -g again (generated files are rebuilt,
-#   never hand-merged) and retries, up to 3 times
+#   never hand-merged) and retries, up to 3 times. -k (fetched data that does not depend on main: lap tables read from the web):
+#   keep the files already written across the reset instead of fetching again (a 45 min refetch outlived the job limit)
 # - asks the stored-views workflow to rebuild (a push made with GITHUB_TOKEN starts no other workflow by itself)
 # Gate G (AGENTS.md): refreshes are data fixes and ship even if held-out error rises, but every commit carries one line with held-out
 # RMS before/after on the same rows (scripts/heldout-line.mjs). A model setting (lapsim-data.yml flags, calibrate.mjs, kernel.js,
 # cars.js) is a model change: never published here; it goes to a branch for Session C with the experiment numbers.
 set -uo pipefail
-msg=""; regen=""; changed=""; prefix="lapsim-learn/refresh"
-while [ $# -gt 0 ]; do case "$1" in -m) msg=$2; shift 2;; -g) regen=$2; shift 2;; -c) changed=$2; shift 2;; -b) prefix=$2; shift 2;; --) shift; break;; *) break;; esac; done
+msg=""; regen=""; changed=""; prefix="lapsim-learn/refresh"; keep=""
+while [ $# -gt 0 ]; do case "$1" in -m) msg=$2; shift 2;; -g) regen=$2; shift 2;; -c) changed=$2; shift 2;; -b) prefix=$2; shift 2;; -k) keep=1; shift;; --) shift; break;; *) break;; esac; done
 paths=("$@"); summary=${GITHUB_STEP_SUMMARY:-/dev/stdout}
 [ -n "$msg" ] && [ ${#paths[@]} -gt 0 ] || { echo "usage: publish-refresh.sh -m msg -g cmd [-c cmd] [-b prefix] -- paths..."; exit 2; }
 git config user.name "github-actions[bot]"; git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
@@ -22,8 +23,14 @@ checks() {
 }
 for attempt in 1 2 3; do
   if [ "$attempt" -gt 1 ]; then
-    git fetch -q origin main && git reset -q --hard origin/main || exit 1
-    echo "main moved: regenerating on $(git rev-parse --short HEAD)"; bash -c "$regen" || { echo "::error::regenerate failed"; exit 1; }
+    if [ -n "$keep" ]; then
+      saved=$(mktemp -d); for p in "${paths[@]}"; do [ -e "$p" ] && mkdir -p "$saved/$(dirname "$p")" && cp -a "$p" "$saved/$p"; done
+      git fetch -q origin main && git reset -q --hard origin/main || exit 1
+      cp -a "$saved/." . && rm -rf "$saved"; echo "main moved: kept the fetched files on $(git rev-parse --short HEAD)"
+    else
+      git fetch -q origin main && git reset -q --hard origin/main || exit 1
+      echo "main moved: regenerating on $(git rev-parse --short HEAD)"; bash -c "$regen" || { echo "::error::regenerate failed"; exit 1; }
+    fi
   fi
   git add -- "${paths[@]}"
   if git diff --cached --quiet -- "${paths[@]}"; then echo "No change" | tee -a "$summary"; exit 0; fi

@@ -33,6 +33,6 @@ jobs:
       - name: Publish to main (checks first)
         env: {GH_TOKEN: '${{ github.token }}'}
         run: |
-          scripts/publish-refresh.sh -m "NASCAR laps: Cup, Xfinity, Truck (one row per car and session)" \
+          scripts/publish-refresh.sh -k -m "NASCAR laps: Cup, Xfinity, Truck (one row per car and session)" \
             -g "node scripts/sim/learn/fetch-nascar.mjs" -b lapsim-learn/nascar-laps \
             -c "node scripts/refresh-changed.mjs scripts/sim/data/learn/nascar-laps.json.gz" -- scripts/sim/data/learn/nascar-laps.json.gz

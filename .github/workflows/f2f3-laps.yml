@@ -35,6 +35,6 @@ jobs:
       - name: Publish to main (checks first)
         env: {GH_TOKEN: '${{ github.token }}'}
         run: |
-          scripts/publish-refresh.sh -m "F2 and F3 best laps from FIA classifications (one row per car and session)" \
+          scripts/publish-refresh.sh -k -m "F2 and F3 best laps from FIA classifications (one row per car and session)" \
             -g "node scripts/sim/learn/fetch-f2f3.mjs" -b lapsim-learn/f2f3-laps \
             -c "node scripts/refresh-changed.mjs scripts/sim/data/learn/f2f3-laps.json.gz" -- scripts/sim/data/learn/f2f3-laps.json.gz

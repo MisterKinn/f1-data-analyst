@@ -32,6 +32,6 @@ jobs:
       - name: Publish to main (checks first)
         env: {GH_TOKEN: '${{ github.token }}'}
         run: |
-          scripts/publish-refresh.sh -m "SUPER GT best laps per car and session (one row per car and session)" \
+          scripts/publish-refresh.sh -k -m "SUPER GT best laps per car and session (one row per car and session)" \
             -g "node scripts/sim/learn/fetch-supergt.mjs" -b lapsim-learn/supergt-laps \
             -c "node scripts/refresh-changed.mjs scripts/sim/data/learn/supergt-laps.json.gz" -- scripts/sim/data/learn/supergt-laps.json.gz
