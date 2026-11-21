@@ -1,0 +1,280 @@
+{
+ "note": "W10 (ChatGPT compute 2026-11-19, reviewed by Claude 2026-11-21): month and local hour of the latest documented first qualifying/Hyperpole start where it differs from the rule slot. Key: site track id | W4 series.",
+ "slots": {
+  "austin|F1": {
+   "m": 10,
+   "h": 16,
+   "source": "https://raw.githubusercontent.com/TracingInsights/2026/f496d06e7fcef8d7c854710b709544d1f8462aa1/United%20States%20Grand%20Prix/Qualifying/session_info.json"
+  },
+  "austin|WEC": {
+   "m": 9,
+   "h": 15,
+   "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT%20OF%20THE%20AMERICAS/673_FIA%20WEC/202609051500_Qualifying%20LMGT3/23_Analysis_Qualifying%20LMGT3.CSV"
+  },
+  "baku|F1": {
+   "m": 9,
+   "h": 16,
+   "source": "https://raw.githubusercontent.com/TracingInsights/2026/f496d06e7fcef8d7c854710b709544d1f8462aa1/Azerbaijan%20Grand%20Prix/Qualifying/session_info.json"
+  },
+  "bathurst|IGTC": {
+   "m": 2,
+   "h": 13,
+   "source": "https://www.intercontinentalgtchallenge.com/event/149/bathurst-12-hour"
+  },
+  "brands-hatch|GTWC Europe": {
+   "m": 5,
+   "h": 16,
+   "source": "https://www.gt-world-challenge-europe.com/get_noticedocument?noticedocument_id=10445"
+  },
+  "catalunya|F1": {
+   "m": 6,
+   "h": 16,
+   "source": "https://raw.githubusercontent.com/TracingInsights/2026/f496d06e7fcef8d7c854710b709544d1f8462aa1/Barcelona%20Grand%20Prix/Qualifying/session_info.json"
+  },
+  "fe-berlin|FE": {
+   "m": 5,
+   "h": 11,
+   "source": "https://d112sbqg9gqc2x.cloudfront.net/formula-e/files/results/11_Season%2012%20-%202025-26/08_R08%20Berlin/ABB%20FIA%20Formula%20E%20World%20Championship/202605031140_Qualifying%20Group%20A/23_R08%20Analysis_Qualifying%20Group%20A.CSV"
+  },
+  "fe-london|FE": {
+   "m": 8,
+   "h": 10,
+   "source": "https://d112sbqg9gqc2x.cloudfront.net/formula-e/files/results/11_Season%2012%20-%202025-26/17_R17%20London/ABB%20FIA%20Formula%20E%20World%20Championship/202608161040_Qualifying%20Group%20A/23_R17%20Analysis_Qualifying%20Group%20A.CSV"
+  },
+  "fe-shanghai|FE": {
+   "m": 7,
+   "h": 8,
+   "source": "https://d112sbqg9gqc2x.cloudfront.net/formula-e/files/results/11_Season%2012%20-%202025-26/13_R13%20Shanghai/ABB%20FIA%20Formula%20E%20World%20Championship/202607050800_Qualifying%20Group%20A/23_R13%20Analysis_Qualifying%20Group%20A.CSV"
+  },
+  "fe-tokyo|FE": {
+   "m": 7,
+   "h": 15,
+   "source": "https://d112sbqg9gqc2x.cloudfront.net/formula-e/files/results/11_Season%2012%20-%202025-26/15_R15%20Tokyo/ABB%20FIA%20Formula%20E%20World%20Championship/202607261540_Qualifying%20Group%20A/23_R15%20Analysis_Qualifying%20Group%20A.CSV"
+  },
+  "fuji|WEC": {
+   "m": 9,
+   "h": 14,
+   "source": "https://files.alkamelcloud.com/wec/results/14_2025/07_FUJI%20SPEEDWAY/626_FIA%20WEC/202509271420_Qualifying%20LMGT3/23_Analysis_Qualifying%20LMGT3.CSV"
+  },
+  "hungaroring|F1": {
+   "m": 7,
+   "h": 16,
+   "source": "https://raw.githubusercontent.com/TracingInsights/2026/f496d06e7fcef8d7c854710b709544d1f8462aa1/Hungarian%20Grand%20Prix/Qualifying/session_info.json"
+  },
+  "imola|F1": {
+   "m": 5,
+   "h": 16,
+   "source": "https://raw.githubusercontent.com/TracingInsights/2025/dfb3ea3f50b69857fe8e40cabe5e899743c59f6a/Emilia%20Romagna%20Grand%20Prix/Qualifying/session_info.json"
+  },
+  "imola|WEC": {
+   "m": 4,
+   "h": 14,
+   "source": "https://files.alkamelcloud.com/wec/results/15_2026/01_IMOLA/645_FIA%20WEC/202604181430_Qualifying%20LMGT3/23_Analysis_Qualifying%20LMGT3.CSV"
+  },
+  "indianapolis|GTWC America": {
+   "m": 10,
+   "h": 15,
+   "source": "https://www.gt-world-challenge-america.com/event/117/indianpolis-8-hour"
+  },
+  "indianapolis|IGTC": {
+   "m": 10,
+   "h": 15,
+   "source": "https://www.intercontinentalgtchallenge.com/event/153/Indianapolis 8 Hour"
+  },
+  "indianapolis|IMSA": {
+   "m": 9,
+   "h": 17,
+   "source": "https://imsa.results.alkamelcloud.com/Results/26_2026/20_Indianapolis%20Motor%20Speedway%20RC/01_IMSA%20WeatherTech%20SportsCar%20Championship/202609191745_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  "interlagos|WEC": {
+   "m": 7,
+   "h": 14,
+   "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO%20PAULO/666_FIA%20WEC/202607111430_Qualifying%20LMGT3/23_Analysis_Qualifying%20LMGT3.CSV"
+  },
+  "jeddah|F1": {
+   "m": 4,
+   "h": 20,
+   "source": "https://raw.githubusercontent.com/TracingInsights/2025/dfb3ea3f50b69857fe8e40cabe5e899743c59f6a/Saudi%20Arabian%20Grand%20Prix/Qualifying/session_info.json"
+  },
+  "laguna-seca|IMSA": {
+   "m": 5,
+   "h": 15,
+   "source": "https://imsa.results.alkamelcloud.com/Results/26_2026/09_Weathertech%20Raceway%20Laguna%20Seca/01_IMSA%20WeatherTech%20SportsCar%20Championship/202605021515_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  "le-mans|WEC": {
+   "m": 6,
+   "h": 18,
+   "source": "https://files.alkamelcloud.com/wec/results/15_2026/03_LE%20MANS/657_FIA%20WEC/202606101845_Qualifying%20LMP2-LMGT3/23_Analysis_Qualifying%20LMP2-LMGT3.CSV"
+  },
+  "long-beach|IMSA": {
+   "m": 4,
+   "h": 17,
+   "source": "https://imsa.results.alkamelcloud.com/Results/26_2026/07_Long%20Beach%20Street%20Circuit/01_IMSA%20WeatherTech%20SportsCar%20Championship/202604171725_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  "lusail|WEC": {
+   "m": 2,
+   "h": 17,
+   "source": "https://files.alkamelcloud.com/wec/results/14_2025/01_LOSAIL/579_FIA%20WEC/202502271700_Qualifying%20LMGT3/23_Analysis_Qualifying%20LMGT3.CSV"
+  },
+  "madring|F1": {
+   "m": 9,
+   "h": 16,
+   "source": "https://raw.githubusercontent.com/TracingInsights/2026/f496d06e7fcef8d7c854710b709544d1f8462aa1/Spanish%20Grand%20Prix/Qualifying/session_info.json"
+  },
+  "magny-cours|GTWC Europe": {
+   "m": 8,
+   "h": 14,
+   "source": "https://www.gt-world-challenge-europe.com/get_noticedocument?noticedocument_id=10987"
+  },
+  "melbourne|F1": {
+   "m": 3,
+   "h": 16,
+   "source": "https://raw.githubusercontent.com/TracingInsights/2026/f496d06e7fcef8d7c854710b709544d1f8462aa1/Australian%20Grand%20Prix/Qualifying/session_info.json"
+  },
+  "miami|F1": {
+   "m": 5,
+   "h": 16,
+   "source": "https://raw.githubusercontent.com/TracingInsights/2026/f496d06e7fcef8d7c854710b709544d1f8462aa1/Miami%20Grand%20Prix/Qualifying/session_info.json"
+  },
+  "misano|GTWC Europe": {
+   "m": 7,
+   "h": 13,
+   "source": "https://www.gt-world-challenge-europe.com/get_noticedocument?noticedocument_id=10888"
+  },
+  "monte-carlo|F1": {
+   "m": 6,
+   "h": 16,
+   "source": "https://raw.githubusercontent.com/TracingInsights/2026/f496d06e7fcef8d7c854710b709544d1f8462aa1/Monaco%20Grand%20Prix/Qualifying/session_info.json"
+  },
+  "monte-carlo|FE": {
+   "m": 5,
+   "h": 10,
+   "source": "https://d112sbqg9gqc2x.cloudfront.net/formula-e/files/results/11_Season%2012%20-%202025-26/10_R10%20Monaco/ABB%20FIA%20Formula%20E%20World%20Championship/202605171040_Qualifying%20Group%20A/23_R10%20Analysis_Qualifying%20Group%20A.CSV"
+  },
+  "monza|F1": {
+   "m": 9,
+   "h": 16,
+   "source": "https://raw.githubusercontent.com/TracingInsights/2026/f496d06e7fcef8d7c854710b709544d1f8462aa1/Italian%20Grand%20Prix/Qualifying/session_info.json"
+  },
+  "mosport|IMSA": {
+   "m": 7,
+   "h": 16,
+   "source": "https://imsa.results.alkamelcloud.com/Results/26_2026/15_Canadian%20Tire%20Motorsport%20Park/01_IMSA%20WeatherTech%20SportsCar%20Championship/202607111600_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  "nurburgring-24h|IGTC": {
+   "m": 5,
+   "h": 13,
+   "source": "https://www.intercontinentalgtchallenge.com/event/150/adac-ravenol-24h-nuerburgring"
+  },
+  "nurburgring-24h|NLS": {
+   "m": 10,
+   "h": 8,
+   "source": "https://www.nuerburgring-langstrecken-serie.de/language/de/2026-2-nls-sportwarte-rennen/"
+  },
+  "portimao|GTWC Europe": {
+   "m": 10,
+   "h": 17,
+   "source": "https://www.gt-world-challenge-europe.com/get_noticedocument?noticedocument_id=11375"
+  },
+  "portimao|WEC": {
+   "m": 4,
+   "h": 15,
+   "source": "https://files.alkamelcloud.com/wec/results/12_2023/02_AUTODROMO%20DO%20ALGARVE/461_FIA%20WEC/202304151530_Qualifying%20LMGTE%20Am/23_Analysis_Qualifying%20LMGTE%20Am.CSV"
+  },
+  "road-america|IMSA": {
+   "m": 8,
+   "h": 15,
+   "source": "https://imsa.results.alkamelcloud.com/Results/26_2026/16_Road%20America/01_IMSA%20WeatherTech%20SportsCar%20Championship/202608011525_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  "road-atlanta|GTWC America": {
+   "m": 6,
+   "h": 17,
+   "source": "https://www.gt-world-challenge-america.com/event/114/road-atlanta"
+  },
+  "road-atlanta|IMSA": {
+   "m": 10,
+   "h": 14,
+   "source": "https://imsa.results.alkamelcloud.com/Results/26_2026/21_Road%20Atlanta/01_IMSA%20WeatherTech%20SportsCar%20Championship/202610021420_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  "sakhir|F1": {
+   "m": 4,
+   "h": 19,
+   "source": "https://raw.githubusercontent.com/TracingInsights/2025/dfb3ea3f50b69857fe8e40cabe5e899743c59f6a/Bahrain%20Grand%20Prix/Qualifying/session_info.json"
+  },
+  "sakhir|WEC": {
+   "m": 11,
+   "h": 16,
+   "source": "https://files.alkamelcloud.com/wec/results/14_2025/08_BAHRAIN%20INTERNATIONAL%20CIRCUIT/635_FIA%20WEC/202511071600_Qualifying%20LMGT3/23_Analysis_Qualifying%20LMGT3.CSV"
+  },
+  "sebring|IMSA": {
+   "m": 3,
+   "h": 11,
+   "source": "https://imsa.results.alkamelcloud.com/Results/26_2026/06_Sebring%20International%20Raceway/01_IMSA%20WeatherTech%20SportsCar%20Championship/202603201125_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  "sebring|WEC": {
+   "m": 3,
+   "h": 18,
+   "source": "https://files.alkamelcloud.com/wec/results/12_2023/01_SEBRING/460_FIA%20WEC/202303161830_Qualifying%20LMGTE%20Am/23_Analysis_Qualifying%20LMGTE%20Am.CSV"
+  },
+  "silverstone|F1": {
+   "m": 7,
+   "h": 16,
+   "source": "https://raw.githubusercontent.com/TracingInsights/2026/f496d06e7fcef8d7c854710b709544d1f8462aa1/British%20Grand%20Prix/Qualifying/session_info.json"
+  },
+  "singapore|F1": {
+   "m": 10,
+   "h": 21,
+   "source": "https://raw.githubusercontent.com/TracingInsights/2026/f496d06e7fcef8d7c854710b709544d1f8462aa1/Singapore%20Grand%20Prix/Qualifying/session_info.json"
+  },
+  "spa-francorchamps|F1": {
+   "m": 7,
+   "h": 16,
+   "source": "https://raw.githubusercontent.com/TracingInsights/2026/f496d06e7fcef8d7c854710b709544d1f8462aa1/Belgian%20Grand%20Prix/Qualifying/session_info.json"
+  },
+  "spa-francorchamps|GTWC Europe": {
+   "m": 6,
+   "h": 19,
+   "source": "https://www.gt-world-challenge-europe.com/get_noticedocument?noticedocument_id=10701"
+  },
+  "spa-francorchamps|IGTC": {
+   "m": 6,
+   "h": 19,
+   "source": "https://www.gt-world-challenge-europe.com/get_noticedocument?noticedocument_id=10701"
+  },
+  "spa-francorchamps|WEC": {
+   "m": 5,
+   "h": 14,
+   "source": "https://files.alkamelcloud.com/wec/results/15_2026/02_SPA%20FRANCORCHAMPS/653_FIA%20WEC/202605081430_Qualifying%20LMGT3/23_Analysis_Qualifying%20LMGT3.CSV"
+  },
+  "spielberg|F1": {
+   "m": 6,
+   "h": 16,
+   "source": "https://raw.githubusercontent.com/TracingInsights/2026/f496d06e7fcef8d7c854710b709544d1f8462aa1/Austrian%20Grand%20Prix/Qualifying/session_info.json"
+  },
+  "suzuka|F1": {
+   "m": 3,
+   "h": 15,
+   "source": "https://raw.githubusercontent.com/TracingInsights/2026/f496d06e7fcef8d7c854710b709544d1f8462aa1/Japanese%20Grand%20Prix/Qualifying/session_info.json"
+  },
+  "suzuka|IGTC": {
+   "m": 9,
+   "h": 17,
+   "source": "https://www.intercontinentalgtchallenge.com/event/152/suzuka-1000km"
+  },
+  "vir|IMSA": {
+   "m": 8,
+   "h": 16,
+   "source": "https://imsa.results.alkamelcloud.com/Results/26_2026/18_VIRginia%20International%20Raceway/01_IMSA%20WeatherTech%20SportsCar%20Championship/202608221650_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  "watkins-glen|IMSA": {
+   "m": 6,
+   "h": 18,
+   "source": "https://imsa.results.alkamelcloud.com/Results/26_2026/14_Watkins%20Glen%20International/01_IMSA%20WeatherTech%20SportsCar%20Championship/202606271820_Qualifying/23_Time%20Cards_Qualifying.CSV"
+  },
+  "zandvoort|F1": {
+   "m": 8,
+   "h": 16,
+   "source": "https://raw.githubusercontent.com/TracingInsights/2026/f496d06e7fcef8d7c854710b709544d1f8462aa1/Dutch%20Grand%20Prix/Qualifying/session_info.json"
+  }
+ }
+}
