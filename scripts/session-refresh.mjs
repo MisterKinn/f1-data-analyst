@@ -25,7 +25,8 @@ const WIRED = {
   'gtwc-australia': {qualifying: ['sro-refresh.yml'], race: ['sro-refresh.yml']},
   'british-gt': {qualifying: ['sro-refresh.yml'], race: ['sro-refresh.yml']},
   nascar: {qualifying: ['nascar-laps.yml'], race: ['nascar-laps.yml']},
-  '24h-series': {qualifying: ['24h-laps.yml'], race: ['24h-laps.yml']},  // Time Service PDFs, every lap  // public results feed, every lap
+  '24h-series': {qualifying: ['24h-laps.yml'], race: ['24h-laps.yml']},  // Time Service PDFs, every lap
+  nls: {qualifying: ['nls-laps.yml'], race: ['nls-laps.yml']},  // wige SOLUTIONS PDFs, every lap  // public results feed, every lap
   igtc: {race: ['alkamel-laps.yml', 'sro-refresh.yml']},  // Indianapolis 8 Hour on Al Kamel; every round as SRO PDFs
 };
 const WINDOWS = [[45, 75], [165, 195], [345, 375]];
