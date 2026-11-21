@@ -24,3 +24,10 @@ test('the simulator shows practice clipping next to the model for the 2026 car o
   assert.match(html, /<dt>Clipping \(measured from practice\)<\/dt><dd[^>]*>longest straight: \d+ m after full throttle \(\d+% of runs, FP1·SQ\) · model (\d+ m|no clip)</);
   assert.doesNotMatch(String(simulationPage({track: 'miami', car: '2025'}, 'en')), /<dt>Clipping \(measured from practice\)/);
 });
+
+// Low Grip partial activation: one value for the page (browser copy) and the tool/fit (zones.js), model fitted 2026-11-21
+test('Low Grip partial activation factor is the same on the page and in zones.js', async () => {
+  const {PARTIAL} = await import('../worker/lapsim/zones.js'), {readFileSync} = await import('node:fs');
+  assert.equal(PARTIAL, 0.8);
+  assert.match(readFileSync(new URL('../worker/simulation.js', import.meta.url), 'utf8'), new RegExp(`const PARTIAL = ${PARTIAL};`));
+});
