@@ -16,7 +16,7 @@ import {fitSeason, withGrip, holdout, fitJoint, holdoutJoint, addBanking} from '
 import {fitJointBCD, holdoutBCD, backtestBCD, poleMult} from './joint-bcd.mjs';
 import {SERIES} from '../../worker/lapsim/series.js';
 import {lapsimF1Zones} from '../../worker/lapsim/f1-zones-data.js';
-import {otWholeLap} from '../../worker/lapsim/zones.js';
+import {otWholeLap, PARTIAL} from '../../worker/lapsim/zones.js';
 import {lapsimPuDocs} from '../../worker/lapsim/pu-docs-data.js';
 import {capCurvature} from '../../worker/lapsim/geometry.js';
 import {lapsimWecBop} from '../../worker/lapsim/wec-bop-data.js';
@@ -53,7 +53,10 @@ const tracks = Object.fromEntries(Object.entries(lapsimTracks).map(([id, d]) => 
 // document the automatic straight finder stands in. LAPSIM_FIA_ZONES=on (2026-11-15: the finder gave Jeddah 880 m of DRS, the FIA 2025 m)
 // LAPSIM_PU_QUALI=on (owner 2026-11-16): a 2026 qualifying lap from round 4 on runs on the Base – Overtake ERS-K curve (FIA Power Unit
 // Information: "Any Practice Session incl. Qualifying Sessions: Base – Overtake"); rounds 1–3 on Base – Standard (worker/lapsim/zones.js)
-const PUQ = E.LAPSIM_PU_QUALI === 'on', puRule = (id, year) => PUQ && otWholeLap(id, year);
+// the real 2026 qualifying's race-control state (f1-zones-data.js real, from OpenF1 race control): Low Grip Conditions = Alt zones with
+// partial activation (B7.1.2 b, zones.js PARTIAL), Overtake disabled = no Overtake curve (Interlagos 2026: both)
+const real26 = (id, year) => year === 2026 ? lapsimF1Zones.tracks?.[id]?.['2026']?.real || null : null;
+const PUQ = E.LAPSIM_PU_QUALI === 'on', puRule = (id, year) => PUQ && otWholeLap(id, year) && real26(id, year)?.ot !== 'off';
 // the team's use of the higher curve is chosen once per track with the starting car (whole lap, one SM zone or none: the greedy deployment
 // of extra power can cost energy later), stored as otChoice so the page and the tool rebuild the same lap
 const OTC = {}, f1TrackZ = (id, year) => { const t = f1TrackZones(id, year); if (!t || !puRule(id, year)) return t; const k = OTC[id] ?? 'none'; if (k === 'none') return t; if (k === 'all') return {...t, otOn: true};
@@ -61,9 +64,11 @@ const OTC = {}, f1TrackZ = (id, year) => { const t = f1TrackZones(id, year); if 
 const chooseOt = (id, car, env) => { const zs = lapsimF1Zones.tracks?.[id]?.['2026']?.zones || []; let best = Infinity, bk = 'none'; for (const k of ['none', 'all', ...zs.map((_, i) => i)]) { OTC[id] = k; const r = simulateLap(f1TrackZ(id, 2026), car, env).lapTime; if (r < best) { best = r; bk = k; } } OTC[id] = bk; return bk; };
 const ZT = new Map(), f1TrackZones = (id, year) => {
   if (!['on', '2025'].includes(E.LAPSIM_FIA_ZONES) || !tracks[id] || (E.LAPSIM_FIA_ZONES === '2025' && year >= 2026)) return tracks[id]; // 2025: DRS zones only
-  const z = lapsimF1Zones.tracks?.[id]?.[year >= 2026 ? '2026' : '2025'], key = id + ':' + (year >= 2026 ? 2026 : 2025);
+  const z = lapsimF1Zones.tracks?.[id]?.[year >= 2026 ? '2026' : '2025'], lg = real26(id, year)?.grip === 'low', key = id + ':' + (year >= 2026 ? 2026 : 2025) + (lg ? ':low' : '');
   if (!z?.zones?.length) return tracks[id];
-  if (!ZT.has(key)) ZT.set(key, {...tracks[id], aeroLow: trackFromData({...lapsimTracks[id], aeroZones: z.zones.map(q => [q.from, q.to])}, {aero: 'fia'}).aeroLow});
+  const L = tracks[id].kappa.length * tracks[id].ds, zs = lg ? z.zones.filter(q => q.low !== null).map(q => [q.low != null ? q.low : (q.from + 50) % L, q.to]) : z.zones.map(q => [q.from, q.to]);
+  if (!ZT.has(key)) { const a = zs.length ? trackFromData({...lapsimTracks[id], aeroZones: zs}, {aero: 'fia'}).aeroLow : new Uint8Array(tracks[id].kappa.length);
+    ZT.set(key, {...tracks[id], aeroLow: lg ? Float32Array.from(a, x => x * PARTIAL) : a}); }
   return ZT.get(key);
 };
 // S3 candidate: axle-level car (load transfer, aero balance vs weight split, degressive tyre load law).
@@ -307,7 +312,7 @@ for (const [cls, def] of Object.entries(SERIES.wec.classes)) {
 }
 
 // aero 'fia': fitted with the FIA / estimated low-drag zones, so the page and the MCP tool use the same zones (worker/lapsim/zones.js)
-const out = {aero: E.LAPSIM_FIA_ZONES === 'on' ? 'fia' : E.LAPSIM_FIA_ZONES === '2025' ? 'fia2025' : 'auto', ...(PUQ ? {puQuali: true, otChoice: OTC} : {}), ...(PUR ? {puRamp: true} : {}), generatedAt: new Date().toISOString().slice(0, 10), method: 'Nelder–Mead fit of season car parameters plus a per-track grip factor to real pole laps (speed trace and lap time); WEC classes fitted to lap time and speed trap with F1 track factors.', seasons, projections: ONLY_WEC ? prevCal.projections : projections, series};
+const out = {aero: E.LAPSIM_FIA_ZONES === 'on' ? 'fia' : E.LAPSIM_FIA_ZONES === '2025' ? 'fia2025' : 'auto', realState: true, ...(PUQ ? {puQuali: true, otChoice: OTC} : {}), ...(PUR ? {puRamp: true} : {}), generatedAt: new Date().toISOString().slice(0, 10), method: 'Nelder–Mead fit of season car parameters plus a per-track grip factor to real pole laps (speed trace and lap time); WEC classes fitted to lap time and speed trap with F1 track factors.', seasons, projections: ONLY_WEC ? prevCal.projections : projections, series};
 await writeFile('worker/lapsim/calibration-data.js', `// Generated by scripts/sim/calibrate.mjs. Do not edit by hand.\nexport const lapsimCalibration=${JSON.stringify(out)};\n`);
 if (!ONLY_WEC) await writeFile('docs/lapsim-report.md', report.join('\n') + '\n');
 console.log(report.join('\n'));
