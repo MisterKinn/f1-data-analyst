@@ -60,7 +60,12 @@ jobs:
         timeout-minutes: 150
         env:
           LAPSIM_TRACE_DRIVERS: ${{ inputs.trace_drivers || '10' }}
-        run: node scripts/sim/fetch-openf1.mjs "${{ inputs.years || '2023,2024,2025,2026' }}"
+        # stop on any failed qualifying session: OpenF1 answers 401 to free use while an F1 session is live (run 44840216114 during Las
+        # Vegas FP3 calibrated on 230 of 885 traces, one season, and failed 9 tests); rerun when no session is live
+        run: |
+          set -o pipefail; mkdir -p .cache
+          node scripts/sim/fetch-openf1.mjs "${{ inputs.years || '2023,2024,2025,2026' }}" | tee .cache/fetch-openf1.log
+          if grep -E '^fail [0-9]{4} ' .cache/fetch-openf1.log; then echo "::error::OpenF1 fetch incomplete (401 = an F1 session is live)"; exit 1; fi
       # saved even when a later step fails, so a rerun does not fetch everything again
       - name: Save raw data cache
         if: always()
