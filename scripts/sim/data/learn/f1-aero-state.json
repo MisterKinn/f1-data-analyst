@@ -1,6 +1,6 @@
 {
  "source": "OpenF1 race control (copies of F1 race-control messages)",
- "generatedAt": "2026-11-20T21:47:11.804Z",
+ "generatedAt": "2026-11-21T03:06:08.085Z",
  "sessions": {
   "9684": {
    "year": 2025,
@@ -4030,6 +4030,30 @@
    "ot": {
     "start": "off",
     "end": "off"
+   }
+  },
+  "11415": {
+   "year": 2026,
+   "track": "las-vegas",
+   "circuit": "Las Vegas",
+   "session": "Practice 3",
+   "start": "2026-11-21T00:30:00+00:00",
+   "end": "2026-11-21T01:30:00+00:00",
+   "events": [
+    {
+     "t": "2026-11-21T01:34:37+00:00",
+     "kind": "ot",
+     "state": "off"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "on",
+    "end": "on"
    }
   },
   "11465": {
