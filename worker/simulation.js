@@ -897,6 +897,7 @@ function computeView(K, data, state, R) {
         const ref = data.cars[c.fix.ref], fw = {};
         for (const k of ['pressureHpa', 'airTempC', 'humidityPct', 'trackTempC', 'windSpeed', 'windFromDeg']) if (Number.isFinite(c.fix.weather && c.fix.weather[k])) fw[k] = c.fix.weather[k];
         const envR = K.conditionsFromWeather(Object.assign({pressureHpa: 1013.25, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0}, fw));
+        if (data.puRamp) envR.puRamp = envP.puRamp; // the fit's C5.12 setting, as in the shown lap (tool.js rampEnv)
         computeView.fixCache[keyL] = c.fix.lap - refSim(base, ref, envR).lapTime * (ref.timeScale || 1);
       }
       return computeView.fixCache[keyL];
@@ -907,6 +908,7 @@ function computeView(K, data, state, R) {
       const ref = data.cars[c.fix.ref], fw = {};
       for (const k of ['pressureHpa', 'airTempC', 'humidityPct', 'trackTempC', 'windSpeed', 'windFromDeg']) if (Number.isFinite(c.fix.weather && c.fix.weather[k])) fw[k] = c.fix.weather[k];
       const envR = K.conditionsFromWeather(Object.assign({pressureHpa: 1013.25, airTempC: 25, humidityPct: 50, trackTempC: 35, windSpeed: 0, windFromDeg: 0}, fw, {rechargeMJ: data.energy && data.energy.mj != null ? data.energy.mj : undefined}));
+      if (data.puRamp) envR.puRamp = envP.puRamp;
       const ss = secOf(refSim(base, ref, envR));
       computeView.fixCache[key] = c.fix.real.map((x, i) => x - ss[i]);
     }
