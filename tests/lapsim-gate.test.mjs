@@ -29,3 +29,11 @@ test('gateByGroup keeps the new model only where it helps', () => {
   const g = gateByGroup(rows, r => r.s, cur, nw, {minRows: 3});
   assert.equal(g.wec.accept, true); assert.equal(g.imsa.accept, false);
 });
+
+test('nonInferior: small loss inside the margin passes, a larger or noisy-beyond loss fails', async () => {
+  const {nonInferior} = await import('../scripts/sim/gate.mjs');
+  const cur = [1.0, 1.2, 0.8, 1.1, 0.9, 1.0];
+  assert.equal(nonInferior(cur, cur.map(x => x + 0.01)).accept, true);
+  assert.equal(nonInferior(cur, cur.map(x => x + 0.2)).accept, false);
+  assert.match(nonInferior(cur.slice(0, 3), cur.slice(0, 3)).reason, /not enough data/);
+});

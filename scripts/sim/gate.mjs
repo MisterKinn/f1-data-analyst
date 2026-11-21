@@ -19,3 +19,18 @@ export function gateByGroup(rows, group, errCur, errNew, opts) {
   rows.forEach((r, i) => (by[group(r)] ??= []).push(i));
   return Object.fromEntries(Object.entries(by).map(([g, ix]) => [g, gate(ix.map(i => errCur[i]), ix.map(i => errNew[i]), opts)]));
 }
+
+// Non-inferiority (rule or physics correctness, CLAUDE.md "Model changes"): accept when the upper bound of the RMS loss is within
+// `margin` (percentage points of lap error; default 5 % of the baseline RMS): the paired loss on squared error plus `k` standard errors, turned into RMS units
+// (delta method: d(RMS) = d(mean square) / (2 RMS)).
+export function nonInferior(errCur, errNew, {margin = null, rel = 0.05, k = 1, minRows = 5} = {}) {
+  const g0 = gate(errCur, errNew, {k: 0, minRows}); margin ??= rel * g0.rmsCur; const g = g0, upper = (-g.gain + k * g.se) / (2 * (g.rmsCur || 1e-9));
+  const accept = g.n >= minRows && upper <= margin;
+  const reason = g.n < minRows ? `not enough data: ${g.n} held-out rows` : accept ? `accepted: RMS loss at most ${upper.toFixed(3)} <= ${margin.toFixed(3)}`
+    : `rejected: RMS loss up to ${upper.toFixed(3)} > ${margin.toFixed(3)}`;
+  return {...g, accept, upper, reason};
+}
+
+// k for an accuracy claim when a run compares m variants with the same baseline (AGENTS.md "Model changes"; t quantile at
+// one-sided 0.16 / m, about 67 rows; checked with Wolfram 2026-11-21)
+export const kForVariants = m => (m <= 1 ? 1 : m === 2 ? 1.45 : m === 3 ? 1.65 : 1.9);

@@ -11,6 +11,31 @@ Normal ChatGPT editing must write to GitHub; it must not independently publish a
 
 Before any change to the lap simulator physics model or its calibration (`worker/lapsim/`, `scripts/sim/`, `docs/lapsim-*.md`, `tests/lapsim-*.test.mjs`), read `docs/lapsim-physics-rules.md` and follow it. It is the only source of rules for that work. A physics task must not change the website, accounts, collector or deployment.
 
+### Model changes: Gate G (owner 2026-11-21, data-engineering rules; these extend rule 1 of docs/lapsim-physics-rules.md)
+
+Decide before the run and write it in the PR or status note: the change type, the variants (m), the primary metric, the groups and the
+margin. Never pick them after seeing results. Numbers below were checked with Wolfram on the production held-out rows (2026-11-21:
+all 67 rows, RMS 1.113 %, SE of the RMS 0.076; f1 34 rows, 0.865 %; wec 33 rows, 1.321 %; class-seasons 5–6 rows each).
+- **Data fix** (measured data, a documented rule or zone, a corrected source): ships even if held-out error rises. Report before/after
+  on the same rows.
+- **Model change, accuracy claim:** a paired one-sided test on squared error, same rows, one vote per event (`scripts/sim/gate.mjs`
+  `gate`). Pass when the mean gain is larger than k paired SE in the decision groups **all**, **f1** and **wec**. k depends on how many
+  variants the run compares against the same baseline, so the chance of a false pass stays at about 16 % per run:
+  m = 1 → k = 1.0; m = 2 → k = 1.45; m = 3 → k = 1.65; m = 4–5 → k = 1.9 (with k = 1 for every variant, 3 variants give a 41 % chance
+  that one passes by luck, 5 give 58 %).
+- **Model change for rule or physics correctness** (a documented regulation such as C5.12, a measured physical law; name the source):
+  non-inferiority (`gate.mjs` `nonInferior`). Pass when, in all, f1 and wec, the upper bound of the RMS loss (paired loss + k paired
+  SE, turned into RMS units) is at most δ = 5 % of that group's baseline RMS (today: all 0.056, f1 0.043, wec 0.066 percentage points).
+  δ is smaller than the noise of the RMS itself (0.5–0.7 SE), so only a paired comparison on the same rows can show it.
+- **Class-season groups** (5–6 rows): too few rows to decide (one-sided chance of a false pass at k = 1 is 18–19 %). Report them; a group
+  whose RMS rises by more than 2 × δ blocks the change for that class only (it keeps the current model), it does not block the others.
+- **Coupled stages:** test a change in the stage it touches with the downstream inputs frozen (the WEC classes use the F1 track factors:
+  compare WEC with those factors fixed), then run the full chain as a second check. Say which stage moved the error. A change that helps
+  F1 and hurts WEC only through the shared factors is used for F1, and the WEC fit keeps its current factors (rule 2 of the physics rules).
+- **More than one metric:** lap time is primary. Also report top speed / trap, sectors and ERS clipping where the change touches them; none
+  may get worse beyond its own k paired SE.
+- **Fewer than 5 rows** in a group: "not enough data", not pass or fail. Label estimates "model / 모델" and show every ✗ with its numbers.
+
 ## Lap simulator learning data (owner rules, 2026-11-14) — read before adding laps, tracks or cars
 
 Read `docs/lapsim-learn.md` first and follow it together with `docs/lapsim-physics-rules.md`. The rules, in short:
