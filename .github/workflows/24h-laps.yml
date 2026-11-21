@@ -1,0 +1,38 @@
+name: 24H Series laps (Time Service PDFs)
+
+# Owner 2026-11-21: every series with a public source. Time Service publishes the 24H Series results on getraceresults.com as PDFs
+# (result + every lap per driver). scripts/sim/learn/fetch-24h.mjs reads them with pdftotext and keeps one derived row per car and
+# session; the PDFs are not stored. Weekly and after 24H Series qualifying and races.
+
+on:
+  schedule:
+    - cron: '19 7 * * 2'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write  # start the stored-views rebuild after publishing
+
+concurrency:
+  group: 24h-laps
+  cancel-in-progress: false
+
+jobs:
+  laps:
+    if: github.repository == 'MisterKinn/f1-data-analyst'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - run: npm ci --ignore-scripts
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
+      - name: Read the 24H Series result and lap-time PDFs
+        run: node scripts/sim/learn/fetch-24h.mjs | tail -40
+      - name: Publish to main (checks first)
+        env: {GH_TOKEN: '${{ github.token }}'}
+        run: |
+          scripts/publish-refresh.sh -m "24H Series laps (every lap per car, deleted laps dropped) (one row per car and session)" \
+            -g "node scripts/sim/learn/fetch-24h.mjs" -b lapsim-learn/24h-laps \
+            -c "node scripts/refresh-changed.mjs scripts/sim/data/learn/24h-laps.json.gz" -- scripts/sim/data/learn/24h-laps.json.gz
