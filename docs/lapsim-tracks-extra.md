@@ -77,7 +77,7 @@ Owner instruction (2026-11-14): where a real lap of a car type exists, use it. T
 | sydney-gardner | Gardner circuit 3.905 km | owner-2026-11-15 | 3835 (3905) | 51–75 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | inje | Full course 3.908 km | owner-2026-11-15 | 3840 (3908) | 290–364 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | sebring | IMSA layout 6.019 km | owner-2026-11-15 | 5949 (6019) | 18–20 m | 12 (2) | 2.11 | -1.29 | 0.9607 | 1.72 | – | pass (unseen) |
-| magny-cours | Grand Prix circuit 4.411 km | owner-2026-11-15 | 4398 (4411) | 208–236 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| magny-cours | Grand Prix circuit 4.411 km | owner-2026-11-15 | 4397 (4411) | 208–236 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | mandalika | Pertamina Mandalika circuit 4.300 km | owner-2026-11-15 | 4228 (4300) | 7–16 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | phillip-island | Grand Prix circuit 4.480 km | owner-2026-11-15 | 4398 (4480) | 31–55 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | aragon | Motorland circuit 5.346 km | owner-2026-11-15 | 5265 (5346) | 357–408 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
