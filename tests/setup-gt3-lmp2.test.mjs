@@ -74,3 +74,14 @@ test('Hypercar per maker: one list and one BoP for LapSim and SetupSim; maker da
   const {execFileSync} = await import('node:child_process');
   execFileSync('node', ['scripts/sim/learn/hypercar-makers.mjs', '--check']); // throws when the residuals are stale
 });
+
+test('Hypercar BoP ranking: makers entered at the event rank before "for fun" makers (Session E 21:07)', async () => {
+  const {carsFor} = await import('../worker/lapsim/scenario.js');
+  for (const id of ['spa-francorchamps', 'le-mans']) {
+    const h = Object.values(carsFor(id)).filter(c => c.bop && c.bopRank);
+    const entered = h.filter(c => !c.bop.fun), fun = h.filter(c => c.bop.fun);
+    assert.ok(entered.length && fun.length, id);
+    assert.ok(Math.max(...entered.map(c => c.bopRank)) < Math.min(...fun.map(c => c.bopRank)), id);
+    assert.ok(h.find(c => c.bopFastest && !c.bop.fun), id);
+  }
+});
