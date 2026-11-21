@@ -144,6 +144,17 @@ jobs:
       - name: Test
         if: inputs.calibrate != 'false'
         run: node --test tests/lapsim*.test.mjs
+      # keep the fit output even when Test fails (2026-11-21: run 44858524098 fitted 3.5 h, failed one test and lost its output)
+      - name: Upload calibration output (always)
+        if: always() && inputs.calibrate != 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: calibration-output
+          path: |
+            worker/lapsim/calibration-data.js
+            docs/lapsim-report.md
+          if-no-files-found: ignore
+          retention-days: 14
       - name: Commit derived data
         if: inputs.calibrate != 'false'
         run: |
