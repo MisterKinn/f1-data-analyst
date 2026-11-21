@@ -50,24 +50,34 @@ export function classificationRows(text, kind) {
 // the race documents also print the overall fastest lap: a parity check for the rows
 export const overallFastest = text => { const m = /OVERALL FASTEST LAP\n[^\n]*?\|\s*(\d{1,2}:\d{2}\.\d{3})/.exec(text); return m ? secs(m[1]) : null; };
 
-async function html(path) {
-  for (let i = 0; i < 3; i++) { try { const r = await fetch(new URL(path, ROOT), {headers: {'user-agent': 'Mozilla/5.0 (kongboda-motorsports lap simulator)'}, signal: AbortSignal.timeout(45000)}); if (r.ok) return await r.text(); } catch {} await new Promise(s => setTimeout(s, 3000)); }
-  return '';
+// fia.com throttles a burst (the first run lost every request after ~100 documents): one request per ~1.2 s, retries with backoff
+const wait = ms => new Promise(r => setTimeout(r, ms));
+let last = 0;
+async function paced(fn) {
+  let error;
+  for (const backoff of [0, 10000, 30000, 90000]) {
+    await wait(Math.max(backoff, last + 1200 - Date.now())); last = Date.now();
+    try { return await fn(); } catch (e) { error = e; }
+  }
+  throw error;
 }
+const html = path => paced(async () => { const r = await fetch(new URL(path, ROOT), {headers: {'user-agent': 'Mozilla/5.0 (kongboda-motorsports lap simulator)'}, signal: AbortSignal.timeout(45000)}); if (!r.ok) throw Error('HTTP ' + r.status + ' ' + path); return r.text(); });
 const opts = (h, re) => [...h.matchAll(/<option[^>]*value="([^"]*)"[^>]*>([^<]*)</g)].map(m => ({url: m[1].replace(/&amp;/g, '&'), label: m[2].trim()})).filter(o => re.test(o.url));
 
 if (process.argv[1]?.endsWith('fetch-f2f3.mjs')) {
   const years = (process.argv.find(a => a.startsWith('--years='))?.slice(8) || '2024,2025,2026').split(',');
   const out = [], log = [];
   for (const [series, path] of Object.entries(CHAMPS)) {
-    const seasons = opts(await html(path), /\/season\//).filter(o => years.some(y => o.label.endsWith(y)));
+    const seasons = opts(await html(path).catch(e => (log.push(`${series}: index failed (${e.message})`), '')), /\/season\//).filter(o => years.some(y => o.label.endsWith(y)));
     for (const season of seasons) {
-      const year = +season.label.slice(-4), events = opts(await html(season.url), /\/event\//);
+      const year = +season.label.slice(-4), events = opts(await html(season.url).catch(e => (log.push(`${series} ${year}: season failed (${e.message})`), '')), /\/event\//);
+      log.push(`${series} ${year}: ${events.length} events`);
       for (const ev of events) {
-        const docs = pickDocs(parseDocuments(await html(ev.url), ROOT + ev.url));
+        const page = await html(ev.url).catch(e => (log.push(`${series} ${year} ${ev.label}: event page failed (${e.message})`), ''));
+        const docs = pickDocs(parseDocuments(page, ROOT + ev.url));
         for (const d of docs) {
           const kind = kindOf(d.session); let text = '';
-          try { text = await fiaDocumentText(d.url, 4); } catch (e) { log.push(`${series} ${year} ${ev.label} ${d.session}: read failed`); continue; }
+          try { text = await paced(() => fiaDocumentText(d.url, 4)); } catch (e) { log.push(`${series} ${year} ${ev.label} ${d.session}: read failed (${String(e.message).slice(0, 80)})`); continue; }
           const rows = classificationRows(text, kind), fastest = kind === 'race' ? overallFastest(text) : null;
           const check = fastest == null ? '' : Math.abs(Math.min(...rows.map(r => r.best).filter(Number.isFinite)) - fastest) < 0.0005 ? ' fastest ok' : ' fastest ✗';
           for (const r of rows) out.push({series, season: year, event: ev.label, session: d.session, kind, version: d.version || 'plain', document: d.document_number, ...r});
