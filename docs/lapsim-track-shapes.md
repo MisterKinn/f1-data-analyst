@@ -378,3 +378,17 @@ vs stored 0.8 m). Lap times cannot move: only the map (`lineData`) reads `kerb-u
 
 Interlagos, Imola, VIR and Watkins Glen have only formula-car laps in the pack (no closed-wheel group). Old vs new edges with the laps
 were checked on plots (Misano, Mugello, Bathurst; sent to the owner, not committed).
+
+## Montreal kept by dropping drifting pieces (2026-11-22, iRacing analysis session)
+
+New piece rule `PIECE_DRIFT=1` (with `SEGMENTS=1`): a ~400 m piece is also dropped where the closed-wheel laps sit more than 8 m off our
+line (p95 of the smoothed lap offset over the piece). The start pieces at Montreal matched the wrong part of the laps (fit 0.4 m, laps
+11 m to one side). The track then needs at least half the lap kept. Misano rerun: unchanged (71 % kept, drift 2.19 m).
+
+| Track | Pieces fit (m) | Lap kept | Drift p95 (m) | Samples kept | |
+|---|---|---|---|---|---|
+| montreal | 0.42 | 63 % (was 81 %) | 3.39 (was 8.07) | 226,694 | kept (pieces) |
+| sonoma | 1.24 | 44 % | 1.65 | 79,350 | ✗ under half the lap ("nascarlong" layout) |
+
+Note: rerunning a track that is already in `kerb-use-data.js` reads `lineData` edges that already include its `wl/wr`, so its
+width values come out smaller (Misano wl differs at 120 points); remove the track's entry before a refit.
