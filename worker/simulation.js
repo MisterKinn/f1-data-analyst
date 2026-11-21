@@ -350,9 +350,14 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null, first
   // cascade: series → rules/class (the car models of that series); series without a model yet are listed as coming soon
   const seriesOf = k => cars[k].series || 'f1', curSeries = seriesOf(carId);
   const carOpts = (sel, only, noEvo) => only === 'gt3' && noEvo ? famOpts(fam, cars, cars[sel]?.base) : data.carOrder.filter(k => k !== 'wec-lmgt3' && (!only || seriesOf(k) === only) && !(noEvo && evoKeys.has(k))).map(k => `<option value="${k}"${k === sel ? ' selected' : ''}>${esc(cars[k].label)}</option>`).join('');
+  // one Hypercar/GTP entry (owner 2026-11-22: every car has its own engine layout anyway); the class car or the maker is picked inside it
+  const isHyper = k => k === 'wec-lmh' || k === 'wec-lmdh' || k.startsWith('hyper-');
   const menuKeys = SERIES_UI.flatMap(se => se === 'gt3' ? (data.carOrder.some(k => seriesOf(k) === 'gt3') ? ['gt3'] : []) : data.carOrder.filter(k => k !== 'wec-lmgt3' && seriesOf(k) === se && !evoKeys.has(k))
-    .sort((a, b) => se === 'fe' ? (a === 'fe-gen3evo' ? -1 : b === 'fe-gen3evo' ? 1 : 0) : 0)), curMenu = curSeries === 'gt3' || carId === 'wec-lmgt3' ? 'gt3' : baseId; // the WEC LMGT3 car sits under GT3
-  const menuLabel = k => k === 'gt3' ? 'GT3' : k.startsWith('hyper-') ? makerLabel(cars[k], t) : seriesOf(k) === 'f1' ? 'F1 ' + cars[k].label : k === 'wec-lmh' ? 'LMH' : k === 'wec-lmdh' ? 'LMDh' : seriesOf(k) === 'fe' ? t.seriesNames.fe + ' ' + (k === 'fe-gen4' ? 'Gen4' : 'Gen3 Evo') : cars[k].label;
+    .sort((a, b) => se === 'fe' ? (a === 'fe-gen3evo' ? -1 : b === 'fe-gen3evo' ? 1 : 0) : 0)).map(k => isHyper(k) ? 'hyper' : k).filter((k, i, a) => a.indexOf(k) === i);
+  const curMenu = curSeries === 'gt3' || carId === 'wec-lmgt3' ? 'gt3' : isHyper(baseId) ? 'hyper' : baseId; // the WEC LMGT3 car sits under GT3
+  const menuLabel = k => k === 'hyper' ? 'Hypercar/GTP' : k === 'gt3' ? 'GT3' : k.startsWith('hyper-') ? makerLabel(cars[k], t) : seriesOf(k) === 'f1' ? 'F1 ' + cars[k].label : k === 'wec-lmh' ? 'LMH' : k === 'wec-lmdh' ? 'LMDh' : seriesOf(k) === 'fe' ? t.seriesNames.fe + ' ' + (k === 'fe-gen4' ? 'Gen4' : 'Gen3 Evo') : cars[k].label;
+  // makers first (BoP-fastest entered maker first), then the LMH / LMDh class cars (class-best real laps) as the class reference
+  const hyperOpts = data.carOrder.filter(k => isHyper(k) && !evoKeys.has(k)).sort((a, b) => !a.startsWith('hyper-') - !b.startsWith('hyper-')).map(k => `<option value="${k}"${k === baseId ? ' selected' : ''}>${esc(menuLabel(k) + (k.startsWith('hyper-') ? '' : lang === 'en' ? ' (class reference)' : ' (클래스 기준)'))}</option>`).join('');
   const seriesOpts = menuKeys.map(k => `<option value="${k}"${k === curMenu ? ' selected' : ''}>${esc(menuLabel(k))}</option>`).join('');
   const cmpOpts = SERIES_UI.filter(se => data.carOrder.some(k => seriesOf(k) === se)).map(se => `<optgroup label="${esc(t.seriesNames[se])}">${carOpts('', se)}</optgroup>`).join('');
   const evoSlider = (key, label, min, max, step, unit) => `<label class="ls-slider"><span>${esc(label)}</span><input type="range" data-evo="${key}" min="${min}" max="${max}" step="${step}" value="${view.evo[key]}"><output data-evo-out="${key}">${view.evo[key]}</output><span class="ls-unit">${unit}</span></label>`;
@@ -368,8 +373,8 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null, first
 <section class="hero ls-hero"><h1>${esc(t.h1)}</h1><p class="lead">${esc(t.lead)}</p></section>
 <form class="ls-controls" method="get" action="/simulation">
  <label>${esc(t.track)}<select name="track" data-no-translate onchange="window.kbLapsimGo?kbLapsimGo(this.form):this.form.submit()">${options}</select></label>
- <label>${esc(t.series)}<select data-ls="series">${seriesOpts}</select></label>
- <label data-ls="carWrap"${curSeries === 'gt3' ? '' : ' hidden'}>${esc(t.model)}<select name="car" data-ls="car">${curSeries === 'gt3' ? carOpts(baseId, curSeries, true) : `<option value="${baseId}" selected>${esc(cars[baseId].label)}</option>`}</select></label>
+ <label>${esc(t.series)}<select data-ls="series">${seriesOpts}</select></label><template data-ls="hyperOpts">${hyperOpts}</template>
+ <label data-ls="carWrap"${curSeries === 'gt3' || curMenu === 'hyper' ? '' : ' hidden'}>${esc(t.model)}<select name="car" data-ls="car">${curSeries === 'gt3' ? carOpts(baseId, curSeries, true) : curMenu === 'hyper' ? hyperOpts : `<option value="${baseId}" selected>${esc(cars[baseId].label)}</option>`}</select></label>
  <label data-ls="specWrap"${fl ? '' : ' hidden'}>${esc(t.spec)}<select data-ls="spec">${fl ? specOpts(fam[cars[carId].base], cars[carId].cls) : ''}</select></label>
  <label class="ls-check"><input type="checkbox" name="evo" value="1" data-ls="evo"${fl ? (fl.length > 1 ? (carId === fl.at(-1) ? ' checked' : '') : ' disabled') : evoOf[baseId] ? (carId !== baseId ? ' checked' : '') : ' disabled'}><span data-no-translate>Evo</span><small data-no-translate data-ls="evoHint">${esc(evoOf[baseId] ? '' : t.evoNone)}</small></label>
  <label class="ls-cmp-only">${esc(UI[lang].cmp1)}<select data-ls="compare"><option value="">${esc(t.none)}</option>${cmpOpts}</select></label>
@@ -1487,7 +1492,8 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
   });
   q('series').addEventListener('change', e => {
     const se = e.target.value, ids = se === 'gt3' ? Object.keys(data.fam).sort((a, b) => a.localeCompare(b, 'en')).map(b => { const f = data.fam[b]; return f[GT3B.find(x => f[x])].at(-1); }) : [se];
-    q('carWrap').hidden = se !== 'gt3';
+    q('carWrap').hidden = se !== 'gt3' && se !== 'hyper';
+    if (se === 'hyper') { q('car').innerHTML = q('hyperOpts').innerHTML; q('car').selectedIndex = 0; q('car').dispatchEvent(new Event('change')); return; }
     q('car').innerHTML = ids.map(k => '<option value="' + k + '">' + (se === 'gt3' ? data.cars[k].base : data.cars[k].label) + '</option>').join('');
     q('car').value = ids[0]; q('car').dispatchEvent(new Event('change'));
   });
