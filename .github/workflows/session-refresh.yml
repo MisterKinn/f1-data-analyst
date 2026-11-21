@@ -1,0 +1,42 @@
+name: Refresh after sessions
+
+# Owner 2026-11-21: after every session of every series we can read, the data refreshes and goes live by itself.
+# Every 30 min: scripts/session-refresh.mjs reads the site's calendar and session times, finds sessions that ended
+# about 1 h, 3 h or 6 h ago (sources lag) and starts the matching refresh workflows. Those publish through
+# scripts/publish-refresh.sh (CI checks, then main). The fixed-clock schedules of those workflows stay as a safety net.
+on:
+  schedule:
+    - cron: '13,43 * * * *'
+  workflow_dispatch:
+    inputs:
+      now:
+        description: 'Pretend it is this time (ISO, for a test run with a past session)'
+        required: false
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: session-refresh
+  cancel-in-progress: false
+
+jobs:
+  dispatch:
+    if: github.repository == 'MisterKinn/f1-data-analyst'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Start the refreshes of sessions that just ended
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NOW: ${{ inputs.now }}
+        run: |
+          node scripts/session-refresh.mjs ${NOW:+--now=$NOW} > /tmp/plan.json
+          node -e "const p=require('/tmp/plan.json');for(const s of p.sessions)console.log('-', s.event, s.session, '('+s.kind+', ended '+s.endedMinAgo+' min ago):', s.run.join(', ')||'no source wired');if(p.unwired.length)console.log('No source wired yet:', p.unwired.join(', '))" | tee -a "$GITHUB_STEP_SUMMARY"
+          for wf in $(node -e "console.log(require('/tmp/plan.json').run.join(' '))"); do
+            gh workflow run "$wf" --ref main && echo "started $wf" | tee -a "$GITHUB_STEP_SUMMARY"
+          done
