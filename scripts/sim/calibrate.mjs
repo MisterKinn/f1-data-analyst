@@ -220,7 +220,9 @@ const wecYears = new Set(wec.map(w => +w.year));
 // factors from an F1 fit WITHOUT per-track drag, which transfer better to other cars (gate 2026-11-09, docs/lapsim-handoff-physics.md §5).
 // LAPSIM_WEC_GRIP=f1 forces the F1 fit's own grip.
 const TRANSFER = E.LAPSIM_WEC_GRIP === 'f1' ? null : await import('../../worker/lapsim/transfer-grip-data.js').then(m => m.lapsimTransferGrip).catch(() => null);
-const f1GripOwn = id => Object.keys(seasons).sort().reverse().map(y => seasons[y]?.tracks?.[id]?.grip).find(g => g != null) ?? null;
+// WEC uses its own frozen track grip (owner 2026-11-21: F1 model changes must not move WEC); LAPSIM_WEC_FROZEN_GRIP=off = the old shared F1 grip
+const WEC_FROZEN = process.env.LAPSIM_WEC_FROZEN_GRIP === 'off' ? null : (await import('../../worker/lapsim/wec-track-grip-data.js')).lapsimWecTrackGrip.grip;
+const f1GripOwn = id => WEC_FROZEN?.[id] ?? Object.keys(seasons).sort().reverse().map(y => seasons[y]?.tracks?.[id]?.grip).find(g => g != null) ?? null;
 const transferGrip = id => TRANSFER?.grip[id] ?? null;
 for (const [cls, def] of Object.entries(SERIES.wec.classes)) {
   for (const year of [...new Set(wec.map(w => w.year))].sort()) {

@@ -14,7 +14,8 @@ import {gate} from './gate.mjs';
 
 const K = lapsimKernel(), dir = process.argv[2] || 'scripts/sim/data/t71', ITERS = +(process.env.LAPSIM_HOLDOUT_ITERS || 40);
 const tracks = Object.fromEntries(Object.keys(lapsimTracks).map(id => [id, K.trackFromData(lapsimTracks[id])]));
-const f1Grip = id => Object.keys(cal.seasons).sort().reverse().map(y => cal.seasons[y]?.tracks?.[id]?.grip).find(g => g != null) ?? null;
+const WG = process.env.LAPSIM_WEC_FROZEN_GRIP === 'off' ? {} : (await import('../../worker/lapsim/wec-track-grip-data.js')).lapsimWecTrackGrip.grip; // WEC's own frozen grip (owner 2026-11-21)
+const f1Grip = id => WG[id] ?? Object.keys(cal.seasons).sort().reverse().map(y => cal.seasons[y]?.tracks?.[id]?.grip).find(g => g != null) ?? null;
 const sessions = mapSessions(JSON.parse(readFileSync(`${dir}/wec.json`, 'utf8')).sessions.map(s => ({...s, key: 'wec'})));
 const weatherOf = w => w ? {airTempC: w.air, trackTempC: w.track, humidityPct: w.hum, pressureHpa: w.press, windSpeed: w.wind ?? 0, windFromDeg: 0, rain: false} : {};
 const CLS = {lmh: c => /hyper/i.test(c.cls || '') && SERIES.wec.classes.lmh.manufacturers.test(c.make || ''),

@@ -51,3 +51,13 @@ test('exp-compare v2: k by variants, f1 scope, class-season block', async () => 
   assert.deepEqual(decideV2(cal(f1, wec), worseWec, {type: 'accuracy', m: 1}).blockedGroups, ['wec-lmh/2026']);
   assert.equal(decideV2(cal(f1, wec), better, {m: 5}).k, 1.9);
 });
+
+test('WEC track grip is frozen apart from F1 (owner 2026-11-21): carsFor uses the snapshot', async () => {
+  const {carsFor} = await import('../worker/lapsim/scenario.js');
+  const {lapsimWecTrackGrip} = await import('../worker/lapsim/wec-track-grip-data.js');
+  for (const id of ['spa-francorchamps', 'monza', 'interlagos']) {
+    const c = carsFor(id), g = lapsimWecTrackGrip.grip[id];
+    assert.ok(Number.isFinite(g), id);
+    for (const k of ['wec-lmh', 'wec-lmdh', 'wec-lmgt3']) assert.equal(c[k].grip, g, `${id} ${k}`);
+  }
+});

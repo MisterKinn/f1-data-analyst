@@ -19,6 +19,7 @@ import {lapsimChangeEffects} from './change-effects-data.js';
 import {TUM_2019, PRIOR, applyRules, applyDevelopment} from './cars.js';
 import {SERIES} from './series.js';
 import {HYPERCARS, hypercarFor, hypercarRanking} from './hypercar-makers.js';
+import {lapsimWecTrackGrip} from './wec-track-grip-data.js';
 import {lapsimKernel} from './kernel.js';
 import {lapsimAllTracks} from './tracks.js';
 import {lapsimHypercarMakers} from './hypercar-maker-data.js';
@@ -45,11 +46,12 @@ export function carsFor(id) {
     const c = applyDevelopment(applyRules(s[2026]?.car || PRIOR[2026], y), p[y]?.development ?? 0); c.label = String(y);
     out[y] = {car: s[2026]?.car ? withDrag(c) : c, grip: gripOf(2026), kind: 'projected', year: y};
   }
-  // WEC classes (latest calibrated season), on the same track factor as F1
+  // WEC classes (latest calibrated season), on WEC's own frozen track grip (owner 2026-11-21), else the F1 track factor
+  const wecGrip = lapsimWecTrackGrip.grip[id] ?? gripOf(2026);
   for (const [cls, def] of Object.entries(SERIES.wec.classes)) {
     const seasons = lapsimCalibration?.series?.wec?.[cls] || {}, y = Object.keys(seasons).sort().at(-1);
-    out['wec-' + cls] = y ? {car: seasons[y].car, grip: gripOf(2026), kind: 'calibrated', year: Number(y), series: 'wec', cls}
-      : {car: def.prior, grip: gripOf(2026), kind: 'prior', year: 2026, series: 'wec', cls};
+    out['wec-' + cls] = y ? {car: seasons[y].car, grip: wecGrip, kind: 'calibrated', year: Number(y), series: 'wec', cls}
+      : {car: def.prior, grip: wecGrip, kind: 'prior', year: 2026, series: 'wec', cls};
     // sector correction on tracks this class raced in its calibrated season (Al Kamel best lap, dry)
     const p = y && lapsimWecPoles?.[id]?.[y]?.[cls];
     if (p) out['wec-' + cls].fix = {real: p.sectors, weather: p.weather, ref: 'wec-' + cls};

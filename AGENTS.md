@@ -32,6 +32,8 @@ all 67 rows, RMS 1.113 %, SE of the RMS 0.076; f1 34 rows, 0.865 %; wec 33 rows,
 - **Coupled stages:** test a change in the stage it touches with the downstream inputs frozen (the WEC classes use the F1 track factors:
   compare WEC with those factors fixed), then run the full chain as a second check. Say which stage moved the error. A change that helps
   F1 and hurts WEC only through the shared factors is used for F1, and the WEC fit keeps its current factors (rule 2 of the physics rules).
+  Since 2026-11-21 (owner) WEC has its own frozen track grip (worker/lapsim/wec-track-grip-data.js, scripts/sim/wec-track-grip.mjs): the
+  WEC fit, the WEC pool and carsFor read it first, so an F1 refit no longer moves WEC. Re-freeze only on purpose, as a reviewed data change.
 - **More than one metric:** lap time is primary. Also report top speed / trap, sectors and ERS clipping where the change touches them; none
   may get worse beyond its own k paired SE.
 - **Fewer than 5 rows** in a group: "not enough data", not pass or fail. Label estimates "model / 모델" and show every ✗ with its numbers.
