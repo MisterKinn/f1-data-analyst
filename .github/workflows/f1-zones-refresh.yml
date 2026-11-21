@@ -43,6 +43,7 @@ jobs:
           done
           LAPSIM_TI_DIR=.cache/ti node scripts/sim/f1-poles.mjs
           LAPSIM_TI_DIR=.cache/ti node scripts/sim/f1-driver-quali.mjs
+          LAPSIM_TI_DIR=.cache/ti node scripts/sim/f1-real-telemetry.mjs
           GEN
           bash /tmp/gen.sh
       - name: Publish to main (checks first)
@@ -50,8 +51,8 @@ jobs:
         run: |
           scripts/publish-refresh.sh -m "F1 zones, session grip state and real poles (FIA circuit maps, race control, TracingInsights)" \
             -g "bash /tmp/gen.sh" -b lapsim-learn/zones-refresh \
-            -c "node scripts/refresh-changed.mjs worker/lapsim/f1-zones-data.js scripts/sim/data/learn/f1-aero-state.json worker/lapsim/f1-poles-data.js worker/lapsim/f1-driver-quali-data.js" \
-            -- scripts/sim/data/learn worker/lapsim/f1-zones-data.js worker/lapsim/f1-poles-data.js worker/lapsim/f1-driver-quali-data.js
+            -c "node scripts/refresh-changed.mjs worker/lapsim/f1-zones-data.js scripts/sim/data/learn/f1-aero-state.json worker/lapsim/f1-poles-data.js worker/lapsim/f1-driver-quali-data.js worker/lapsim/f1-real-telemetry-data.js" \
+            -- scripts/sim/data/learn worker/lapsim/f1-zones-data.js worker/lapsim/f1-poles-data.js worker/lapsim/f1-driver-quali-data.js worker/lapsim/f1-real-telemetry-data.js
       - name: Remove old refresh branches (main has newer data)
         if: success()
         run: |
