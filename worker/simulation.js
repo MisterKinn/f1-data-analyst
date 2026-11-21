@@ -35,6 +35,7 @@ import {lapsimCarLines} from './lapsim/car-lines-data.js';
 import {lapsimPuDocs} from './lapsim/pu-docs-data.js';
 import {lapsimPuEst} from './lapsim/pu-est-data.js';
 import {lapsimDriverLines} from './lapsim/driver-lines-data.js';
+import {lapsimF1DriverQuali} from './lapsim/f1-driver-quali-data.js';
 import {trackLabel, trackOrder, evoPairs, carEvent} from './simulator-controls.js';
 import {lapsimTrackNorth} from './lapsim/track-north-data.js';
 import {lapsimTrackView} from './lapsim/track-view-data.js';
@@ -336,7 +337,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null, first
   const changes = latestChanges(id);
   // 2026 ERS clipping measured in this event's dry practice before qualifying (field row; scripts/sim/energy-clip.mjs)
   const clipEv = lapsimEnergyClip?.events?.[id], clipFp = clipEv ? {refM: clipEv.refM, sessions: clipEv.sessions, rows: clipEv.teams['*'] || []} : null;
-  const data = {clipFp, startAlt: lapsimStartLines[id] || null, driverLines: lapsimDriverLines?.tracks?.[id] || null, pu: lapsimPuDocs?.events?.[id] || lapsimPuEst?.tracks?.[id] || null, lang, t, id, track: td, cars, carOrder: CAR_ORDER_P, carId, evoOf, fam, bodyLabel: BODY_LABEL, events, conds, raceRec: raceRecords(id), changes, energy: (liveEnergy && (query.track || 'monza') === id ? liveEnergy : energyLimit(id, 2026)),
+  const data = {clipFp, startAlt: lapsimStartLines[id] || null, driverLines: lapsimDriverLines?.tracks?.[id] || null, driverQuali: lapsimF1DriverQuali?.[id] || null, pu: lapsimPuDocs?.events?.[id] || lapsimPuEst?.tracks?.[id] || null, lang, t, id, track: td, cars, carOrder: CAR_ORDER_P, carId, evoOf, fam, bodyLabel: BODY_LABEL, events, conds, raceRec: raceRecords(id), changes, energy: (liveEnergy && (query.track || 'monza') === id ? liveEnergy : energyLimit(id, 2026)),
     compounds: lapsimCompounds?.[id] || {}, wecTyres: lapsimWecTyres?.[id] || {}, line: lineData(id), bumps: lapsimTrackBumps?.tracks?.[id] || null, pit: lapsimPitLanes?.tracks?.[id] || null, wallNear: wallNear(id, td.kappa.length), pitSpeed: {series: lapsimPitSpeed.series, event: lapsimPitSpeed.tracks[id] || {}}, pitLossF1: lapsimRace?.tracks?.[id]?.pitLoss ?? null, lineText: LT[lang], qsplit: lapsimQsplit ? {off: lapsimQsplit.offsetPct, test: lapsimQsplit.test, real: lapsimQsplit.tracks?.[id] || null} : null, brakes: lapsimBrakes ? {ramp: lapsimBrakes.rampS ?? 0, k: lapsimBrakes.pedalKgPerG, g: lapsimBrakes.gScale, t: lapsimBrakes.timeScale, test: lapsimBrakes.test, real: lapsimBrakes.races?.[id] || null, text: BT[lang]} : null, wetGap: wetGapPage(id), climate: climateFor(id), compoundGap: compoundGap(id), compoundTest: lapsimCompoundGap?.test?.rmsPct ?? null,
     evo: Object.fromEntries(['f1', 'wec'].map(se => [se, Object.fromEntries(['practice', 'qualifying'].map(ty => [ty, evolutionCoeffs(se, id, ty)]))])),
     zones: lapsimF1Zones?.tracks?.[id] || null, feZones: lapsimFeZones?.tracks?.[id] || null, zonesOn: ZONES_ON ? (DRS_ONLY ? 'drs' : 'all') : '', puQuali: PU_QUALI, realState: !!lapsimCalibration?.realState, puRamp: !!lapsimCalibration?.puRamp, otChoice: lapsimCalibration?.otChoice?.[id] ?? null, surface: surfaceOf(id, td, changes), mapRot0: (Number.isFinite(view0?.openDeg) ? view0.openDeg : landscapeRot(td.map, lapsimTrackNorth?.[id], VIEW[id], td.corners, td.length)) + (VIEW[id]?.flip ? 180 : 0), cornersEstimated: !!td.cornersEstimated, cornerNames: td.cornersEstimated ? lapsimCornerNames?.[id]?.names?.map(c => ({...c, name: /* 'Curva 1' is only a number */ /^(Turn|Curva|Corner)\s*\d+$/i.test(c.name) ? c.name.replace(/\D+/, '') : lang === 'en' ? c.name : lapsimNamesKo[c.name] || c.name})) || null : null, straights: straightsOf(id, td, lang), north: lapsimTrackNorth?.[id] || null, ui: UI[lang],
@@ -899,7 +900,7 @@ function computeView(K, data, state, R) {
     // lap-only correction (raced session with a real lap but no sector lines on this track: Le Mans, IMSA tracks, …):
     // real lap minus the reference car's lap in that session's weather, a number (same rule as the tool, tool.js corrOf)
     if (c.fix.lap != null) {
-      const keyL = data.id + '|lap|' + c.fix.ref; computeView.fixCache = computeView.fixCache || {};
+      const keyL = data.id + '|lap|' + c.fix.ref + (c.fix.key ? '|' + c.fix.key : ''); computeView.fixCache = computeView.fixCache || {};
       if (computeView.fixCache[keyL] == null) {
         const ref = data.cars[c.fix.ref], fw = {};
         for (const k of ['pressureHpa', 'airTempC', 'humidityPct', 'trackTempC', 'windSpeed', 'windFromDeg']) if (Number.isFinite(c.fix.weather && c.fix.weather[k])) fw[k] = c.fix.weather[k];
@@ -910,7 +911,7 @@ function computeView(K, data, state, R) {
       return computeView.fixCache[keyL];
     }
     if (!c.fix.real || !d.sectors || d.sectors.length !== 2) return null;
-    const key = data.id + '|' + c.fix.ref; computeView.fixCache = computeView.fixCache || {};
+    const key = data.id + '|' + c.fix.ref + (c.fix.key ? '|' + c.fix.key : ''); computeView.fixCache = computeView.fixCache || {};
     if (!computeView.fixCache[key]) {
       const ref = data.cars[c.fix.ref], fw = {};
       for (const k of ['pressureHpa', 'airTempC', 'humidityPct', 'trackTempC', 'windSpeed', 'windFromDeg']) if (Number.isFinite(c.fix.weather && c.fix.weather[k])) fw[k] = c.fix.weather[k];
@@ -924,7 +925,10 @@ function computeView(K, data, state, R) {
   const corrected = (c, r) => { const k = corrOf(c), sec = d.sectors && d.sectors.length === 2 ? secOf(r) : null;
     if (typeof k === 'number') return {lapTime: r.lapTime + k, sectors: sec ? sec.map(x => x + k * x / r.lapTime) : null, corr: [k]}; // lap correction spread by sector share
     return k && sec ? {lapTime: r.lapTime + k[0] + k[1] + k[2], sectors: sec.map((x, i) => x + k[i]), corr: k} : {lapTime: r.lapTime, sectors: sec, corr: null}; };
-  const raw = run(sel), fixd = corrected(sel, raw);
+  // F1 driver picked (owner 2026-11-22): that driver's real qualifying lap of this event in that session's weather (f1-driver-quali-data.js, read-only)
+  const dq = !sel.series && sel.year && sel.fix && state.driver ? data.driverQuali?.[String(sel.year)]?.[state.driver] : null;
+  const selC = !dq ? sel : {...sel, fix: sel.fix.lap != null || !dq.sectors ? {...sel.fix, real: null, lap: dq.lap, key: state.driver} : {...sel.fix, real: dq.sectors, key: state.driver}};
+  const raw = run(sel), fixd = corrected(selC, raw);
   const res = Object.assign({}, raw, {lapTime: fixd.lapTime});
   // compared cars (compare tab, owner 2026-11-15): up to two more cars overlaid on the selected one
   const cmpIds = (state.compareIds || (state.compareId ? [state.compareId] : [])).filter((k, j, a) => k && data.cars[k] && a.indexOf(k) === j).slice(0, 2);
@@ -935,8 +939,9 @@ function computeView(K, data, state, R) {
   const sectors = fixd.sectors;
   const real = data.conds[condKey];
   const sameConditions = state.mode !== 'manual' && !active.length;
-  const poleHtml = real && real.realLap && sameConditions && (sel.kind === 'calibrated' || sel.kind === 'learned')
-    ? (sel.series ? t.wecBest : real.position > 1 ? t.realLap + ' P' + real.position : t.vsPole) + ' <span data-no-translate>' + fmt(real.realLap) + '</span> · <span data-no-translate>' + ((res.lapTime - real.realLap) >= 0 ? '+' : '−') + Math.abs(res.lapTime - real.realLap).toFixed(3) + ' s</span>' + (sel.series && real.event ? ' · <span data-no-translate>' + real.event + (real.manufacturer ? ' · ' + real.manufacturer : '') + '</span>' : '')
+  const poleReal = dq && real ? {...real, realLap: dq.lap} : real;
+  const poleHtml = poleReal && poleReal.realLap && sameConditions && (sel.kind === 'calibrated' || sel.kind === 'learned')
+    ? (sel.series ? t.wecBest : dq ? t.realLap + ' ' + state.driver : real.position > 1 ? t.realLap + ' P' + real.position : t.vsPole) + ' <span data-no-translate>' + fmt(poleReal.realLap) + '</span> · <span data-no-translate>' + ((res.lapTime - poleReal.realLap) >= 0 ? '+' : '−') + Math.abs(res.lapTime - poleReal.realLap).toFixed(3) + ' s</span>' + (sel.series && real.event ? ' · <span data-no-translate>' + real.event + (real.manufacturer ? ' · ' + real.manufacturer : '') + '</span>' : '')
     : (cmp ? data.cars[cmpIds[0]].label + ' <span data-no-translate>' + fmt(cmp.lapTime) + ' · ' + ((res.lapTime - cmp.lapTime) >= 0 ? '+' : '−') + Math.abs(res.lapTime - cmp.lapTime).toFixed(3) + ' s</span>' : '');
   // fastest real race lap of this car here (a car + track that really raced shows it; owner rule 2026-11-14)
   const rr = data.raceRec && data.raceRec[condKey], raceHtml = rr ? '<br>' + t.raceBest + ' <span data-no-translate>' + fmt(rr.lap) + '</span> · <span data-no-translate>' + rr.year + ' ' + rr.who + '</span>' : '';
