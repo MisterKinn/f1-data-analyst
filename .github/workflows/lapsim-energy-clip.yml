@@ -12,6 +12,7 @@ on:
 
 permissions:
   contents: write
+  actions: write  # start the stored-views rebuild after publishing
 
 concurrency:
   group: lapsim-energy-clip
@@ -29,20 +30,18 @@ jobs:
       - uses: actions/setup-python@v5
         with: {python-version: '3.12'}
       - run: npm ci --ignore-scripts && pip install numpy==2.3.5 pandas==2.2.3 scipy==1.17.0 fastf1==3.9.2 && mkdir -p .cache/fastf1
-      - name: TracingInsights 2026 (session files only; practice of the events to build is added by the script)
-        run: |
-          git clone -q --depth 1 --filter=blob:none --sparse https://github.com/TracingInsights/2026 .cache/ti2026
-          git -C .cache/ti2026 sparse-checkout set --no-cone '/*Grand Prix/*/session_info.json'
       - name: Build the practice clipping maps
-        run: node scripts/sim/energy-clip.mjs .cache/ti2026 --auto
-      - name: Commit when the maps changed
         run: |
-          if git diff --quiet -- worker/lapsim/energy-clip-data.js; then echo "No change"; exit 0; fi
-          node --test tests/lapsim*.test.mjs
-          git config user.name "github-actions[bot]"
-          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
-          git add worker/lapsim/energy-clip-data.js
-          git commit -m "2026 ERS clipping measured from practice (TracingInsights, W17 practice plan)"
-          if git push origin HEAD:main; then echo "Pushed to main" >> "$GITHUB_STEP_SUMMARY"; else
-            B="lapsim-learn/energy-clip-$(date -u +%Y%m%d-%H%M)"; git push origin HEAD:"refs/heads/$B"
-            echo "main refused the push. Open and merge: https://github.com/${{ github.repository }}/compare/main...$B?expand=1" >> "$GITHUB_STEP_SUMMARY"; fi
+          cat > /tmp/gen.sh <<'GEN'
+          set -e
+          [ -d .cache/ti2026 ] || git clone -q --depth 1 --filter=blob:none --sparse https://github.com/TracingInsights/2026 .cache/ti2026
+          git -C .cache/ti2026 sparse-checkout set --no-cone '/*Grand Prix/*/session_info.json'
+          node scripts/sim/energy-clip.mjs .cache/ti2026 --auto
+          GEN
+          bash /tmp/gen.sh
+      - name: Publish to main (full checks first)
+        env: {GH_TOKEN: '${{ github.token }}'}
+        run: |
+          scripts/publish-refresh.sh -m "2026 ERS clipping measured from practice (TracingInsights, W17 practice plan)" \
+            -g "bash /tmp/gen.sh" -b lapsim-learn/energy-clip \
+            -c "node scripts/refresh-changed.mjs worker/lapsim/energy-clip-data.js" -- worker/lapsim/energy-clip-data.js

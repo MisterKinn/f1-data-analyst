@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: write
+  actions: write  # start the stored-views rebuild after publishing
 
 concurrency:
   group: lapsim-track-laps-${{ github.ref }}
@@ -24,8 +25,14 @@ jobs:
         with: {node-version: '22'}
       - run: npm ci --ignore-scripts
       - run: node scripts/sim/fetch-track-laps.mjs
-      - name: Commit the table
+      - name: Commit the table (branch push) or publish it to main (run by hand or after a session)
+        env: {GH_TOKEN: '${{ github.token }}'}
         run: |
+          if [ "${{ github.event_name }}" != "push" ]; then
+            scripts/publish-refresh.sh -m "Tracks: real laps per car type (Al Kamel)" -g "node scripts/sim/fetch-track-laps.mjs" \
+              -b lapsim-learn/track-laps -c "node scripts/refresh-changed.mjs scripts/sim/data/track-real-laps.json" -- scripts/sim/data/track-real-laps.json
+            exit $?
+          fi
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
           git add scripts/sim/data/track-real-laps.json
