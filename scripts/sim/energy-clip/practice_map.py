@@ -166,7 +166,8 @@ def main():
     ok = race_control_ok(laps[laps.session.isin(allowed)], src, event, aero)
     f = clean(frame, laps, allowed, ok)
     teams = sorted(t for t in frame.team.dropna().unique()) + ['*']
-    res = dict(event=event, sessions=allowed, windows=int(len(f)), lapsLowGripOrOtOff=int((~ok).sum()), ref_m=round(float(f.ref_m.iloc[0]), 1) if len(f) else None,
+    # sessions that gave dry windows (a wet session ended before qualifying but adds nothing)
+    res = dict(event=event, sessions=[x for x in allowed if x in set(f.session)] if len(f) else allowed, windows=int(len(f)), lapsLowGripOrOtOff=int((~ok).sum()), ref_m=round(float(f.ref_m.iloc[0]), 1) if len(f) else None,
                qualifying_start=str(sessions['Qualifying'][0]) if 'Qualifying' in sessions else None,
                teams=build(f, teams) if len(f) >= 35 else {})
     dest.write_text(json.dumps(res))
