@@ -1,4 +1,4 @@
-name: NLS laps (wige SOLUTIONS PDFs)
+name: NLS and Nürburgring 24h laps (wige SOLUTIONS PDFs)
 
 # Owner 2026-11-21: every series with a public source. The NLS posts wige SOLUTIONS timing PDFs in its results archive (result and
 # lap by lap for qualifying and race; robots.txt allows /wp-content/uploads). scripts/sim/learn/fetch-nls.mjs keeps one derived row

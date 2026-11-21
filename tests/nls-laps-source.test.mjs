@@ -37,3 +37,14 @@ test('NLS rows: official best is the authority, quicker listed laps are deleted 
   assert.equal(a.best, 472.393); assert.equal(a.deleted, 1); assert.equal(a.lapBest, 472.393); assert.equal(a.cls, 'SP9 PRO');
   assert.equal(b.best, 477.634); assert.equal(b.deleted, 0); assert.equal(b.officialBest, b.lapBest);
 });
+
+test('N24: pit in-laps are numbered after the lap before; entrant and sponsor columns are not the car', () => {
+  const [c] = lapByLap(`   1 ROWE RACING                                                  Farfus Augusto(1) / Marciello Raffaele(2)
+  8:32.481 1(1) 8:32.392           2(1)       8:29.070 pit(1) 10:54.224 4(2)`);
+  assert.deepEqual(c.laps.map(l => [l.lap, l.t, !!l.pit]), [[1, 512.481, false], [2, 512.392, false], [3, 509.07, true], [4, 654.224, false]]);
+  const r = results(`  1    80      SP 9   E: Winward Racing, E6091-I                            Mercedes-AMG GT3                   156 24:05:27.664                      8:13.213 128
+  2    34      SP 9   E: Walkenhorst Motorsport, 49465                      Aston Martin Vantage AMR GT3 EVO
+                                                                                                               156 24:07:56.414                      8:12.753 112`);
+  assert.deepEqual(r.get('80'), {pos: 1, cls: 'SP 9', model: 'Mercedes-AMG GT3', best: 493.213});
+  assert.deepEqual(r.get('34'), {pos: 2, cls: 'SP 9', model: 'Aston Martin Vantage AMR GT3 EVO', best: 492.753});
+});
