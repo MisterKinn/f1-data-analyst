@@ -31,7 +31,7 @@ Owner instruction (2026-11-14): where a real lap of a car type exists, use it. T
 | Track | Layout | Group | Length m (official) | Height | Rows (own class) | Unseen RMS % | Unseen bias % | Learned factor | Held-out RMS % | Sibling factor: RMS % | State |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | yeongam | Korea International Circuit, Grand Prix 5.615 km | korea | 5499 (5615) | 0–1 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
-| yongin | Everland Speedway, full course 4.346 km | korea | 4252 (4346) | 92–146 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| yongin | Everland Speedway, full course 4.346 km | korea | 4251 (4346) | 92–146 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | mugello | Grand Prix 5.245 km | europe-africa-asia | 5146 (5245) | 246–289 m | 1 (0) | 1.61 | -1.61 | – | – | – | pass (unseen) |
 | nurburgring-gp | Grand Prix 5.148 km | f1-history | 5084 (5148) | car positions | 6 (0) | 2.51 | 2.35 | 1.0581 | 1.04 | – | pass (learned) |
 | nurburgring-sprint | Sprint 3.629 km (DTM, ADAC GT Masters) | europe-africa-asia | 3559 (3629) | 588–621 m | 2 (0) | 0.72 | 0.72 | 1.0209 | 0.13 | – | pass (unseen) |
@@ -51,11 +51,11 @@ Owner instruction (2026-11-14): where a real lap of a car type exists, use it. T
 | mid-ohio | IMSA layout 3.634 km | imsa | 3566 (3634) | 398–437 m | 3 (0) | 3.87 | 3.8 | 1.1057 | 1.07 | – | pass (learned) |
 | lime-rock | IMSA layout 2.414 km | imsa | 2370 (2414) | 164–180 m | 1 (0) | 2.36 | 2.36 | – | – | – | pass (unseen) |
 | le-mans | Circuit des 24 Heures 13.626 km | owner-list-other | 13530 (13626) | 46–82 m | 12 (11) | 0.96 | -0.63 | 0.9741 | 0.74 | – | pass (unseen) |
-| portimao | Algarve 4.653 km | owner-list-other | 4539 (4653) | 95–124 m | 6 (2) | 3.41 | 3.32 | 1.0881 | 0.88 | – | pass (learned) |
+| portimao | Algarve 4.653 km | owner-list-other | 4534 (4653) | 95–124 m | 6 (2) | 1.85 | 1.7 | 1.0442 | 0.86 | – | pass (unseen) |
 | hockenheim | Grand Prix 4.574 km | owner-list-other | 4525 (4574) | 101–118 m | 3 (0) | 3.14 | 3.07 | 1.1008 | 0.97 | – | pass (learned) |
 | bathurst | Mount Panorama 6.213 km | owner-list-other | 6157 (6213) | 700–874 m | 2 (0) | 0.48 | 0.32 | 1.0113 | 0.72 | – | pass (unseen) |
 | paul-ricard-f1 | F1 layout with the Mistral chicane 5.842 km | f1-history | 5807 (5842) | car positions | 3 (0) | 1.17 | -1.05 | 0.9728 | 0.76 | – | ⚠️ curvature too high in fast corners: the pole lap implies 7.6 g against the 7.0 g limit |
-| rwanda | Provisional 5.302 km (owner diagram) | rwanda | 5196 (5302) | diagram labels | 0 (0) | – | – | – | – | – | ⚠️ provisional: hand-traced from a diagram that disagrees with the official October 2026 figures (about 6 km, 17 corners, anti-clockwise) |
+| rwanda | Provisional 5.302 km (owner diagram) | rwanda | 5192 (5302) | diagram labels | 0 (0) | – | – | – | – | – | ⚠️ provisional: hand-traced from a diagram that disagrees with the official October 2026 figures (about 6 km, 17 corners, anti-clockwise) |
 | paul-ricard-2021 | 1A-V2 5.791 km (FIA list 2024; ELMS timing states 5.771 km) | owner-2026-11-15 | 5772 (5791) | car positions | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | dubai | Grand Prix circuit 5.390 km | owner-2026-11-15 | 5295 (5390) | 17–37 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | ricardo-tormo | Ricardo Tormo 4.005 km | owner-2026-11-15 | 3939 (4005) | 145–164 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
@@ -83,12 +83,12 @@ Owner instruction (2026-11-14): where a real lap of a car type exists, use it. T
 | aragon | Motorland circuit 5.346 km | owner-2026-11-15 | 5265 (5346) | 357–408 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | autopolis | Full circuit 4.674 km | owner-2026-11-15 | 4544 (4674) | 771–822 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | snetterton | Snetterton 300 circuit 4.779 km | owner-2026-11-15 | 4722 (4779) | 40–47 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
-| lausitz | DTM circuit 3.478 km | owner-2026-11-15 | 3391 (3478) | 116–129 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| lausitz | DTM circuit 3.478 km | owner-2026-11-15 | 3390 (3478) | 116–129 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 | istanbul | Grand Prix 5.338 km | f1-history | 5263 (5338) | car positions | 7 (0) | 2.29 | 2.13 | 1.0576 | 0.95 | – | pass (learned) |
 | sochi | Grand Prix 5.848 km | f1-history | 5830 (5848) | car positions | 7 (0) | 1.48 | 1.34 | 1.0363 | 0.73 | – | pass (learned) |
 | long-beach | Street circuit 3.167 km | owner-2026-11-15 | 3093 (3167) | 1–5 m | 10 (0) | 3.26 | -3.03 | 0.9207 | 1.27 | – | pass (learned) |
-| detroit | Downtown street circuit 2.650 km (2023 on) | owner-2026-11-15 | 2631 (2650) | 177–184 m | 8 (0) | 3.69 | -3.03 | 0.9252 | 2.25 | – | pass (learned) |
-| macau | Guia Circuit 6.120 km | owner-2026-11-18 | 6041 (6120) | 0–28 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
+| detroit | Downtown street circuit 2.650 km (2023 on) | owner-2026-11-15 | 2627 (2650) | 177–184 m | 8 (0) | 3.77 | -3.13 | 0.9228 | 2.24 | – | pass (learned) |
+| macau | Guia Circuit 6.120 km | owner-2026-11-18 | 6039 (6120) | 0–28 m | 0 (0) | – | – | – | – | – | ⚠️ no real lap of a calibrated class |
 
 Length is the driven or least-curvature line; it is shorter than the official centre-line distance. "Own class" rows are WEC cars on WEC laps; the other rows use a borrowed car (IMSA GTP = LMDh car, every other GT3 series = LMGT3 car, an older F1 season = the 2023 F1 car times the season ratio).
 
@@ -224,12 +224,12 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 | le-mans | wec | 2026 | HYPERCAR | Cadillac #38 | lmdh 2026 | 202.559 | 201.122 | -0.71 |
 | le-mans | wec | 2026 | LMGT3 | Aston Martin #27 | lmgt3 2026 | 232.41 | 234.143 | 0.75 |
 | le-mans | wec | 2026 | HYPERCAR | Ferrari #51 | lmh 2026 | 203.406 | 201.257 | -1.06 |
-| portimao | elms | 2025 | LMGT3 | Corvette Z06 LMGT3.R | lmgt3 2025 (borrowed) | 103.446 | 106.89 | 3.33 |
-| portimao | elms | 2026 | LMGT3 | ? | lmgt3 2026 (borrowed) | 103.151 | 106.282 | 3.04 |
-| portimao | x-gtworldcheu-pwrd-by-aws-endurance-cup | 2026 | Pro | Porsche 911 GT3 R EVO | lmgt3 2026 (borrowed) | 102.445 | 106.03 | 3.5 |
-| portimao | x-le-mans-cup | 2024 | GT3 | Aston Martin Vantage GT3 EVO | lmgt3 2025 (borrowed) | 104.325 | 106.944 | 2.51 |
-| portimao | wec | 2023 | HYPERCAR | Porsche #6 | lmdh 2025 | 92.404 | 94.877 | 2.68 |
-| portimao | wec | 2023 | HYPERCAR | Toyota #8 | lmh 2025 | 90.171 | 94.571 | 4.88 |
+| portimao | elms | 2025 | LMGT3 | Corvette Z06 LMGT3.R | lmgt3 2025 (borrowed) | 103.446 | 105.259 | 1.75 |
+| portimao | elms | 2026 | LMGT3 | ? | lmgt3 2026 (borrowed) | 103.151 | 104.676 | 1.48 |
+| portimao | x-gtworldcheu-pwrd-by-aws-endurance-cup | 2026 | Pro | Porsche 911 GT3 R EVO | lmgt3 2026 (borrowed) | 102.445 | 104.436 | 1.94 |
+| portimao | x-le-mans-cup | 2024 | GT3 | Aston Martin Vantage GT3 EVO | lmgt3 2025 (borrowed) | 104.325 | 105.313 | 0.95 |
+| portimao | wec | 2023 | HYPERCAR | Porsche #6 | lmdh 2025 | 92.404 | 93.282 | 0.95 |
+| portimao | wec | 2023 | HYPERCAR | Toyota #8 | lmh 2025 | 90.171 | 92.972 | 3.11 |
 | hockenheim | dtm | 2024 | null | Lamborghini Huracan GT3 EVO 2 | lmgt3 2025 (borrowed) | 96.708 | 100.597 | 4.02 |
 | hockenheim | dtm | 2025 | PAM | Porsche 911 GT3 R 992 | lmgt3 2025 (borrowed) | 98.088 | 100.597 | 2.56 |
 | hockenheim | dtm | 2026 | Silver | Lamborghini Huracan GT3 EVO 2 | lmgt3 2026 (borrowed) | 97.456 | 100.006 | 2.62 |
@@ -274,14 +274,14 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 | long-beach | imsa | 2026 | GTD | Lexus #89 | lmgt3 2026 (borrowed) | 78.411 | 75.62 | -3.56 |
 | long-beach | imsa | 2026 | GTP | Acura #93 | lmdh 2026 (borrowed) | 71.626 | 69.436 | -3.06 |
 | long-beach | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 71.997 | 69.534 | -3.42 |
-| detroit | imsa | 2024 | GTDPRO | Chevrolet #3 | lmgt3 2025 (borrowed) | 69.092 | 69.278 | 0.27 |
-| detroit | imsa | 2024 | GTP | Porsche #6 | lmdh 2025 (borrowed) | 65.39 | 63.699 | -2.59 |
-| detroit | imsa | 2025 | GTDPRO | Ford #64 | lmgt3 2025 (borrowed) | 70.922 | 68.903 | -2.85 |
-| detroit | imsa | 2025 | GTP | Acura #93 | lmdh 2025 (borrowed) | 65.762 | 63.273 | -3.79 |
-| detroit | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 67.907 | 63.118 | -7.05 |
-| detroit | imsa | 2026 | GTDPRO | Chevrolet #3 | lmgt3 2026 (borrowed) | 69.354 | 68.534 | -1.18 |
-| detroit | imsa | 2026 | GTP | Cadillac #31 | lmdh 2026 (borrowed) | 65.313 | 63.888 | -2.18 |
-| detroit | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 67.27 | 63.998 | -4.86 |
+| detroit | imsa | 2024 | GTDPRO | Chevrolet #3 | lmgt3 2025 (borrowed) | 69.092 | 69.199 | 0.15 |
+| detroit | imsa | 2024 | GTP | Porsche #6 | lmdh 2025 (borrowed) | 65.39 | 63.635 | -2.68 |
+| detroit | imsa | 2025 | GTDPRO | Ford #64 | lmgt3 2025 (borrowed) | 70.922 | 68.825 | -2.96 |
+| detroit | imsa | 2025 | GTP | Acura #93 | lmdh 2025 (borrowed) | 65.762 | 63.211 | -3.88 |
+| detroit | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 67.907 | 63.057 | -7.14 |
+| detroit | imsa | 2026 | GTDPRO | Chevrolet #3 | lmgt3 2026 (borrowed) | 69.354 | 68.455 | -1.3 |
+| detroit | imsa | 2026 | GTP | Cadillac #31 | lmdh 2026 (borrowed) | 65.313 | 63.823 | -2.28 |
+| detroit | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 67.27 | 63.932 | -4.96 |
 
 ## Held-out rows with a learned or sibling track factor
 
@@ -390,12 +390,12 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 | le-mans | wec | 2026 | HYPERCAR | Cadillac #38 | lmdh 2026 | 202.559 | 202.511 | -0.02 |
 | le-mans | wec | 2026 | LMGT3 | Aston Martin #27 | lmgt3 2026 | 232.41 | 235.633 | 1.39 |
 | le-mans | wec | 2026 | HYPERCAR | Ferrari #51 | lmh 2026 | 203.406 | 202.567 | -0.41 |
-| portimao | elms | 2025 | LMGT3 | Corvette Z06 LMGT3.R | lmgt3 2025 (borrowed) | 103.446 | 103.535 | 0.09 |
-| portimao | elms | 2026 | LMGT3 | ? | lmgt3 2026 (borrowed) | 103.151 | 102.92 | -0.22 |
-| portimao | x-gtworldcheu-pwrd-by-aws-endurance-cup | 2026 | Pro | Porsche 911 GT3 R EVO | lmgt3 2026 (borrowed) | 102.445 | 102.774 | 0.32 |
-| portimao | x-le-mans-cup | 2024 | GT3 | Aston Martin Vantage GT3 EVO | lmgt3 2025 (borrowed) | 104.325 | 103.414 | -0.87 |
-| portimao | wec | 2023 | HYPERCAR | Porsche #6 | lmdh 2025 | 92.404 | 91.502 | -0.98 |
-| portimao | wec | 2023 | HYPERCAR | Toyota #8 | lmh 2025 | 90.171 | 91.678 | 1.67 |
+| portimao | elms | 2025 | LMGT3 | Corvette Z06 LMGT3.R | lmgt3 2025 (borrowed) | 103.446 | 103.59 | 0.14 |
+| portimao | elms | 2026 | LMGT3 | ? | lmgt3 2026 (borrowed) | 103.151 | 102.984 | -0.16 |
+| portimao | x-gtworldcheu-pwrd-by-aws-endurance-cup | 2026 | Pro | Porsche 911 GT3 R EVO | lmgt3 2026 (borrowed) | 102.445 | 102.841 | 0.39 |
+| portimao | x-le-mans-cup | 2024 | GT3 | Aston Martin Vantage GT3 EVO | lmgt3 2025 (borrowed) | 104.325 | 103.478 | -0.81 |
+| portimao | wec | 2023 | HYPERCAR | Porsche #6 | lmdh 2025 | 92.404 | 91.408 | -1.08 |
+| portimao | wec | 2023 | HYPERCAR | Toyota #8 | lmh 2025 | 90.171 | 91.556 | 1.54 |
 | hockenheim | dtm | 2024 | null | Lamborghini Huracan GT3 EVO 2 | lmgt3 2025 (borrowed) | 96.708 | 98.047 | 1.38 |
 | hockenheim | dtm | 2025 | PAM | Porsche 911 GT3 R 992 | lmgt3 2025 (borrowed) | 98.088 | 97.351 | -0.75 |
 | hockenheim | dtm | 2026 | Silver | Lamborghini Huracan GT3 EVO 2 | lmgt3 2026 (borrowed) | 97.456 | 96.857 | -0.61 |
@@ -440,14 +440,14 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 | long-beach | imsa | 2026 | GTD | Lexus #89 | lmgt3 2026 (borrowed) | 78.411 | 77.447 | -1.23 |
 | long-beach | imsa | 2026 | GTP | Acura #93 | lmdh 2026 (borrowed) | 71.626 | 71.932 | 0.43 |
 | long-beach | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 71.997 | 72.008 | 0.02 |
-| detroit | imsa | 2024 | GTDPRO | Chevrolet #3 | lmgt3 2025 (borrowed) | 69.092 | 71.41 | 3.36 |
-| detroit | imsa | 2024 | GTP | Porsche #6 | lmdh 2025 (borrowed) | 65.39 | 65.951 | 0.86 |
-| detroit | imsa | 2025 | GTDPRO | Ford #64 | lmgt3 2025 (borrowed) | 70.922 | 70.706 | -0.3 |
-| detroit | imsa | 2025 | GTP | Acura #93 | lmdh 2025 (borrowed) | 65.762 | 65.346 | -0.63 |
-| detroit | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 67.907 | 64.838 | -4.52 |
-| detroit | imsa | 2026 | GTDPRO | Chevrolet #3 | lmgt3 2026 (borrowed) | 69.354 | 70.427 | 1.55 |
-| detroit | imsa | 2026 | GTP | Cadillac #31 | lmdh 2026 (borrowed) | 65.313 | 66.229 | 1.4 |
-| detroit | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 67.27 | 66.059 | -1.8 |
+| detroit | imsa | 2024 | GTDPRO | Chevrolet #3 | lmgt3 2025 (borrowed) | 69.092 | 71.402 | 3.34 |
+| detroit | imsa | 2024 | GTP | Porsche #6 | lmdh 2025 (borrowed) | 65.39 | 65.96 | 0.87 |
+| detroit | imsa | 2025 | GTDPRO | Ford #64 | lmgt3 2025 (borrowed) | 70.922 | 70.694 | -0.32 |
+| detroit | imsa | 2025 | GTP | Acura #93 | lmdh 2025 (borrowed) | 65.762 | 65.354 | -0.62 |
+| detroit | imsa | 2025 | GTP | Aston Martin #23 | lmh 2025 (borrowed) | 67.907 | 64.847 | -4.51 |
+| detroit | imsa | 2026 | GTDPRO | Chevrolet #3 | lmgt3 2026 (borrowed) | 69.354 | 70.411 | 1.52 |
+| detroit | imsa | 2026 | GTP | Cadillac #31 | lmdh 2026 (borrowed) | 65.313 | 66.237 | 1.42 |
+| detroit | imsa | 2026 | GTP | Aston Martin #23 | lmh 2026 (borrowed) | 67.27 | 66.066 | -1.79 |
 
 ## Evidence layer per value
 
@@ -474,7 +474,7 @@ Length is the driven or least-curvature line; it is shorter than the official ce
 | mid-ohio | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 4 assumed 12 m | 2 measured, coarse (about 30 m ground grid) | 3 inferred (one factor fitted on real laps of this track) |
 | lime-rock | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 4 assumed 12 m | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | le-mans | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
-| portimao | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 3 inferred (one factor fitted on real laps of this track) |
+| portimao | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | hockenheim | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 3 inferred (one factor fitted on real laps of this track) |
 | bathurst | 1 fixed (official list) | 2 measured (map centre line) | 3 inferred (least-curvature line inside the width) | 1 fixed (FIA list) | 2 measured, coarse (about 30 m ground grid) | 4 borrowed (mean factor of the class's fitted tracks) |
 | paul-ricard-f1 | 1 fixed (official) and 2 measured (driven line) | 2 measured (F1 car positions, 8 qualifying laps, 2019) | 2 measured (mean of the fastest qualifying laps) | not used | 2 measured (F1 car positions) | 3 inferred (one factor fitted on real laps of this track) |

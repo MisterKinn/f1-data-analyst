@@ -60,7 +60,16 @@ export function buildTrack(id, spec, c) {
       sources: [...(c.sources || []), ...(spec.sources || [])]};
   }
   const t0 = K.trackFromData(c), n0 = t0.kappa.length, ax = new Array(n0), ay = new Array(n0);
-  for (let i = 0, h = 0, x = 0, y = 0; i < n0; i++) { ax[i] = x; ay[i] = y; h += t0.kappa[i] * c.ds; x += Math.cos(h) * c.ds; y += Math.sin(h) * c.ds; }
+  // 2026-11-21 (Macau onboard video: 117 km/h at the start line, real ~210): the integrated curvature does not close (heading error,
+  // end gap), and minCurvatureLine treats the line as closed, so the gap became an S-kink at the seam (Macau R 58 m at the start
+  // line). Spread the heading error and the end gap along the lap, as the driven branch above does for its map.
+  const turn0 = t0.kappa.reduce((a, k) => a + k * c.ds, 0), dh0 = (Math.round(turn0 / (2 * Math.PI)) * 2 * Math.PI - turn0) / n0; // nearest whole turn: Yongin is a figure eight (0°)
+  let ex = 0, ey = 0;
+  for (let i = 0, h = 0, x = 0, y = 0; i < n0; i++) { ax[i] = x; ay[i] = y; h += t0.kappa[i] * c.ds + dh0; x += Math.cos(h) * c.ds; y += Math.sin(h) * c.ds; if (i === n0 - 1) { ex = x; ey = y; } }
+  const close = Math.hypot(ex, ey) > 3 || Math.abs(dh0 * n0) > Math.PI / 180; // gaps over 3 m (2026-11-21: 2-3 m gaps at Dubai, Hockenheim, Vallelunga, Estoril, Yeongam, Nürburgring 24h wait for a zone rebuild by session B)
+  if (close) for (let i = 0; i < n0; i++) { ax[i] -= ex * i / n0; ay[i] -= ey * i / n0; }
+  else for (let i = 0, h = 0, x = 0, y = 0; i < n0; i++) { ax[i] = x; ay[i] = y; h += t0.kappa[i] * c.ds; x += Math.cos(h) * c.ds; y += Math.sin(h) * c.ds; }
+  if (close) console.error(`closed ${id}: gap ${Math.hypot(ex, ey).toFixed(1)} m, heading ${(dh0 * n0 * 180 / Math.PI).toFixed(2)}°`);
   // owner 2026-11-15: real direction and start line (map ways run either way and start at any node)
   const o = orient(c, spec, ax, ay, OSM[id], SF[id]), cx = o.order.map(i => ax[i]), cy = o.order.map(i => ay[i]);
   if (c.grade) c = {...c, grade: o.order.map(i => o.reversed ? -c.grade[i] : c.grade[i])};
