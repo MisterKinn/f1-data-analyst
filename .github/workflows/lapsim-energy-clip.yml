@@ -1,0 +1,47 @@
+name: Lap simulator ERS clipping from practice
+
+# Owner 2026-11-21: the 2026 clipping map measured in each weekend's dry practice (W17 practice plan) updates itself. Every two
+# hours: read TracingInsights/2026, build the map of events with practice in the last 5 days (or none yet), frozen at qualifying,
+# test, and commit worker/lapsim/energy-clip-data.js to main (the site deploys from main). If main refuses a bot push, a
+# lapsim-learn/energy-clip-* branch is pushed instead and its compare link is in the run summary.
+on:
+  schedule:
+    - cron: '23 */2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: lapsim-energy-clip
+  cancel-in-progress: false
+
+jobs:
+  clip:
+    if: github.event_name != 'schedule' || github.repository == 'MisterKinn/f1-data-analyst'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: npm ci --ignore-scripts && pip install numpy==2.3.5 pandas==2.2.3 scipy==1.17.0
+      - name: TracingInsights 2026 (session files only; practice of the events to build is added by the script)
+        run: |
+          git clone -q --depth 1 --filter=blob:none --sparse https://github.com/TracingInsights/2026 .cache/ti2026
+          git -C .cache/ti2026 sparse-checkout set --no-cone '/*Grand Prix/*/session_info.json'
+      - name: Build the practice clipping maps
+        run: node scripts/sim/energy-clip.mjs .cache/ti2026 --auto
+      - name: Commit when the maps changed
+        run: |
+          if git diff --quiet -- worker/lapsim/energy-clip-data.js; then echo "No change"; exit 0; fi
+          node --test tests/lapsim*.test.mjs
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add worker/lapsim/energy-clip-data.js
+          git commit -m "2026 ERS clipping measured from practice (TracingInsights, W17 practice plan)"
+          if git push origin HEAD:main; then echo "Pushed to main" >> "$GITHUB_STEP_SUMMARY"; else
+            B="lapsim-learn/energy-clip-$(date -u +%Y%m%d-%H%M)"; git push origin HEAD:"refs/heads/$B"
+            echo "main refused the push. Open and merge: https://github.com/${{ github.repository }}/compare/main...$B?expand=1" >> "$GITHUB_STEP_SUMMARY"; fi
