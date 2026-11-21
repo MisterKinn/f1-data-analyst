@@ -10,11 +10,29 @@ import {bopImsa as I} from './lapsim/bop-imsa-data.js';
 import {bopSensitivity as BS} from './lapsim/bop-sensitivity-data.js';
 import {bopPlatform as BP} from './lapsim/bop-platform-data.js';
 import {lapsimAllTracks} from './lapsim/tracks.js';
+import {HYPERCARS, hypercarRanking} from './lapsim/hypercar-makers.js';
+import {lapsimKernel} from './lapsim/kernel.js';
+import {carsFor} from './lapsim/scenario.js';
 import {trackLabel, trackOrder} from './simulator-controls.js';
 
 if (!Object.hasOwn(translations, 'BoP 시뮬레이터')) translations['BoP 시뮬레이터'] = 'BoP simulator';
 
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
+
+// Hypercar per maker (owner 2026-11-21): a BoPSim car row links to that maker's car in LapSim and SetupSim and shows its LapSim lap gap
+// to the fastest car of the table (hypercar-makers.js: one maker list and one BoP for the three tools; laps from hypercarRanking, not copied)
+// the car name first ("Alpine A480" is the grandfathered LMP1, not the Alpine maker car), then the make
+const makerOf = name => { const n = String(name).toLowerCase(), w = n.split(/\s+/)[0], byName = HYPERCARS.find(m => m.name.toLowerCase().startsWith(n));
+  return byName ? (byName.make ? byName : null) : HYPERCARS.find(m => m.make && m.make.toLowerCase().split(/\s+/)[0] === w) || null; };
+let KB = null;
+function makerLinks(trackId, names, t) {
+  if (!trackId || !lapsimAllTracks[trackId]) return () => '';
+  const cars = carsFor(trackId), lap = Object.fromEntries(hypercarRanking(KB ||= lapsimKernel(), trackId, lapsimAllTracks[trackId], cars).map(r => [r.key, r.lap]));
+  const own = names.map(makerOf).filter(Boolean).map(m => lap['hyper-' + m.key]).filter(Number.isFinite), best = own.length ? Math.min(...own) : null;
+  return name => { const m = makerOf(name), k = m && 'hyper-' + m.key; if (!k || !cars[k]) return '';
+    const g = best != null && Number.isFinite(lap[k]) ? Math.round((lap[k] - best) * 1000) / 1000 : null;
+    return ` <span class="bop-sd bop-links">${g == null ? '' : `${t('랩심', 'LapSim')} ${g === 0 ? t('최속', 'fastest') : (g > 0 ? '+' : '−') + Math.abs(g).toFixed(3) + ' s'} · `}<a href="/simulation?track=${encodeURIComponent(trackId)}&amp;car=${k}">${t('랩심', 'LapSim')}</a> · <a href="/setup?series=hypercar&amp;car=${m.key}&amp;track=${encodeURIComponent(trackId)}">${t('셋업', 'Setup')}</a></span>`; };
+}
 const NAMES = {IMOLA: ['이몰라 6시간', '6 Hours of Imola'], SPA: ['스파 6시간', '6 Hours of Spa'], LEMANS: ['르망 24시간', '24 Hours of Le Mans'], SAOPAULO: ['상파울루 6시간', '6 Hours of São Paulo'], COTA: ['론스타 르망 (COTA)', 'Lone Star Le Mans (COTA)'], FUJI: ['후지 6시간', '6 Hours of Fuji'], BARCELONA: ['바르셀로나 8시간', '8 Hours of Barcelona'], MONZA: ['몬자 6시간', '6 Hours of Monza'], LOSAIL: ['카타르 1812km', 'Qatar 1812km'], SILVERSTONE: ['실버스톤 6시간', '6 Hours of Silverstone'], BAHRAIN: ['바레인 8시간', '8 Hours of Bahrain']};
 // IMSA GTP 2026 BoP published nearest before each WEC round (docs/lapsim-wec-bop.md). Shown for reference only:
 // there is no season with both IMSA and WEC tables to learn the mapping, so it does not enter the estimate.
@@ -90,12 +108,13 @@ function hyperPage(o) {
   const carry = c => c.method?.kW === 'carry', tag = x => typeof x === 'string' ? `· ${x}` : x.method ? ` · ${t('모델', 'model')}` : '';
   // column heads, also the labels of the phone card view (owner 2026-11-15: no sideways scroll)
   const H = [t('차량', 'Car'), t('최소 무게 kg', 'Min weight kg'), t('최대 출력 kW', 'Max power kW'), t('파워 게인 (250 km/h 이상)', 'Power gain (above 250 km/h)'), t('스틴트 에너지 MJ', 'Stint energy MJ'), t('페이스 (필드 중앙값 대비)', 'Pace vs field median'), t('최고속 (필드 대비)', 'Top speed vs field'), t('최장 그린 스틴트', 'Longest green stint'), `IMSA 2026 (${esc(im.name)})`];
-  const rows = cars.map(([m, c]) => `<tr><td>${esc(m)}<span class="bop-cls">${c.cls.toUpperCase()}</span>${c.spec && c.spec !== 'base' ? ` <span class="bop-sd">${esc(c.spec)}</span>` : ''}${c.learned ? '' : ` <span class="bop-sd">${c.spec && c.spec !== 'base' ? t('새 사양: 2025 수준 + 학습한 에보 효과', 'new spec: 2025 level + learned Evo effect') : t('신규 차량', 'new car')}</span>`}</td>
+  const ml = makerLinks(o.track ?? WEC_TRACK_EVENT[ev.event], cars.map(([m]) => m), t);
+  const rows = cars.map(([m, c]) => `<tr><td>${esc(m)}<span class="bop-cls">${c.cls.toUpperCase()}</span>${ml(m)}${c.spec && c.spec !== 'base' ? ` <span class="bop-sd">${esc(c.spec)}</span>` : ''}${c.learned ? '' : ` <span class="bop-sd">${c.spec && c.spec !== 'base' ? t('새 사양: 2025 수준 + 학습한 에보 효과', 'new spec: 2025 level + learned Evo effect') : t('신규 차량', 'new car')}</span>`}</td>
 <td data-l="${H[1]}"><span>${c.kg} <span class="bop-sd">±${c.sd.kg}${tag(c)}</span></span></td><td data-l="${H[2]}"><span>${c.kW} <span class="bop-sd">${carry(c) ? tag(t('공개값 이월: 2025 바레인', 'carried: Bahrain 2025 published')) : '±' + c.sd.kW + tag(c)}</span></span></td><td data-l="${H[3]}"><span>${c.above250 > 0 ? '+' : ''}${c.above250}% <span class="bop-sd">${carry(c) ? tag(t('공개값 이월', 'carried')) : '±' + c.sd.above250}</span></span></td><td data-l="${H[4]}">${c.MJ}${c.method ? ` <span class="bop-sd">${tag(t('모델', 'model'))}</span>` : ''}</td>
 <td data-l="${H[5]}">${pct(c.evidence.pacePct)}</td><td data-l="${H[6]}">${pct(c.evidence.speedPct)}</td><td data-l="${H[7]}">${c.evidence.longestGreenStint ?? '–'}</td><td data-l="${H[8]}">${im.cars[m] ? `${im.cars[m][0]} kg · ${im.cars[m][1]} MJ` : '–'}</td></tr>`).join('');
   // owner 2026-11-16: the for-fun cars sit under the field in the same table, not in their own section
   const F = !proj && !o.virtual && (D.fun || []).find(x => x.event === ev.event), fr = F ? Object.entries(F.cars) : [];
-  const funRows = fr.length ? `<tr class="bop-fun-head"><td colspan="${H.length}">${t('재미로: 이 차들이 이 대회에 나온다면 (가상)', 'Just for fun: if these cars raced here (hypothetical)')}</td></tr>` + fr.map(([m, x]) => `<tr class="bop-fun"><td>${esc(m)}<span class="bop-cls">${x.cls.toUpperCase()}</span> <span class="bop-sd">${esc(x.from)}</span></td>
+  const funRows = fr.length ? `<tr class="bop-fun-head"><td colspan="${H.length}">${t('재미로: 이 차들이 이 대회에 나온다면 (가상)', 'Just for fun: if these cars raced here (hypothetical)')}</td></tr>` + fr.map(([m, x]) => `<tr class="bop-fun"><td>${esc(m)}<span class="bop-cls">${x.cls.toUpperCase()}</span> <span class="bop-sd">${esc(x.from)}</span>${ml(m)}</td>
 <td data-l="${H[1]}">${x.kg}</td><td data-l="${H[2]}">${x.kW}</td><td data-l="${H[3]}">${x.above250 > 0 ? '+' : ''}${x.above250}%</td><td data-l="${H[4]}">${x.MJ}</td><td data-l="${H[5]}">${x.levelPct > 0 ? '+' : ''}${x.levelPct}%${x.gapPct ? ` <span class="bop-sd">${t('한도에서도', 'at the limits still')} ${x.gapPct > 0 ? '+' : ''}${x.gapPct}%</span>` : ''}</td><td data-l="${H[6]}">–</td><td data-l="${H[7]}">–</td><td data-l="${H[8]}">–</td></tr>`).join('') : '';
   const csv = [['event', 'car', 'class', 'spec', 'kind', 'min_weight_kg', 'kg_sd', 'max_power_kW', 'kW_sd', 'power_gain_above_250_pct', 'gain_sd', 'stint_energy_MJ', 'pace_vs_median_pct', 'top_speed_vs_field_pct', 'longest_green_stint', 'imsa_2026', 'power_method']]
     .concat(cars.map(([m, c]) => [ev.event, m, c.cls.toUpperCase(), c.spec || 'base', 'estimate', c.kg, c.sd.kg, c.kW, c.sd.kW, c.above250, c.sd.above250, c.MJ, c.evidence.pacePct, c.evidence.speedPct, c.evidence.longestGreenStint, im.cars[m] ? `${im.cars[m][0]} kg ${im.cars[m][1]} MJ` : '', carry(c) ? 'carried: Bahrain 2025 published' : 'model']))
