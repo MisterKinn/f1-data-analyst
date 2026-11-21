@@ -247,3 +247,13 @@ Missing IMSA: all 2025 GTP rounds; 2026 Long Beach, Laguna Seca, Detroit, Indian
 - For fun: Porsche 963 (WEC 2025 level), Lamborghini SC63 (WEC 2024), Acura ARX-06 (IMSA pace vs the cars that race both series,
   scripts/sim/learn/fetch-imsa-gtp.mjs) get, at each 2026 event, the BoP that matches the field. Not part of any official table.
 - The setup simulator scales each Hypercar by its estimated BoP (weight and power vs the event's class average) and shows its spec.
+
+## BoP sensitivity (simulator, not measured) — W9, 2026-11-21
+
+`scripts/sim/bop-sensitivity.mjs` runs the lap tool in-process, one BoP lever at a time from the class default (mass −20…+40 kg,
+peak power −30…+30 kW; default, −10 °C and +10 °C track), for WEC LMH/LMDh/LMGT3 at 16 venues and IMSA GTP/GTD at 12 venues
+(72 car × track), and fits Δlap = a·Δx + b·Δx² → `worker/lapsim/bop-sensitivity-data.js`. `--check-w5` reproduces the 22 W5 MCP
+points. Gate G (W9, ChatGPT compute, real BoP changes, one vote per event): mass + power pass, 0.2716 vs 0.3112 pp (no change),
++0.0396 ± 0.0152 (100 rows, 12 event pairs); on 2024 alone it is narrow (+0.0201 ± 0.0198). The bundle sweep matches ours in 216/216 cases. Energy (fallback via the power that uses the same energy
+per race lap) rejects on the strict 24 rows, so the page hides it. The Hypercar calculator on /bop uses the simulator values where the
+sweep has the track and class, else the learned response; it is labelled "simulator sensitivity, not measured".
