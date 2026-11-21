@@ -159,6 +159,7 @@ if (seasons[2026]) {
   const car26 = joint.cars[2026], preds = {};
   for (const id of Object.keys(joint.grips)) {
     if (seasons[2026].tracks[id] || !tracks[id]) continue;
+    if (id === 'sakhir') continue; // the 2026 Bahrain GP ran at Sepang (kuala-lumpur, raced); Sakhir 11257 was cancelled (AGENTS.md)
     const last = [...traces].filter(t => t.track === id && t.position === 1 && !t.weather.rain).sort((a, b) => b.year - a.year)[0];
     if (!last) continue;
     const drag = joint.factors?.[id]?.drag ?? 1, c = drag !== 1 ? {...car26, cdA: car26.cdA * drag, cdALow: car26.cdALow * drag} : car26;
