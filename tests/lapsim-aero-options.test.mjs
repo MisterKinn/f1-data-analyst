@@ -63,7 +63,8 @@ test('C5.12 power-reduction rule removes sudden ERS-K cuts', async () => {
 // motor DC power map with the curve the lap uses
 test('estimated PU documents and the motor DC power map', async () => {
   const {lapsimPuEst} = await import('../worker/lapsim/pu-est-data.js'), {lapsimPuDocs} = await import('../worker/lapsim/pu-docs-data.js');
-  for (const id of ['inje', 'las-vegas', 'le-mans', 'daytona']) { const e = lapsimPuEst.tracks[id]; assert.ok(e && e.est && !lapsimPuDocs.events[id], id);
+  // an F1 circuit leaves this list once its real document is published (Las Vegas 2026: Doc 3)
+  for (const id of ['inje', 'las-vegas', 'le-mans', 'daytona'].filter(id => !lapsimPuDocs.events[id])) { const e = lapsimPuEst.tracks[id]; assert.ok(e && e.est, id);
     assert.ok(e.qualiMJ >= 5 && e.qualiMJ <= 9 && [7, 8, 8.5].includes(e.raceMJ) && e.rampKWs === (e.powerLimitedDistanceM > 3500 ? 50 : 100), id); }
   const map = track => lapOf(track, '2026', {view: 1}).traceSvg;
   assert.match(map('interlagos'), /ls-pu-map[\s\S]*Base – Overtake · this lap[\s\S]*Alt 1/);
