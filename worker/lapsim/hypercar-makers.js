@@ -58,6 +58,7 @@ export function hypercarRanking(K, id, trackData, cars) {
   if (RANK.has(id)) return RANK.get(id);
   const keys = Object.keys(cars).filter(k => k.startsWith('hyper-')), env = K.conditionsFromWeather({});
   const laps = keys.map(k => { const c = cars[k], tr = K.trackFromData(trackData), g = c.grip || 1;
-    const t = g === 1 ? tr : {...tr, mu: Float64Array.from(tr.mu, x => x * g)}; return [k, K.simulateLap(t, c.car, env).lapTime * (c.timeScale || 1)]; }).sort((a, b) => a[1] - b[1]);
-  const r = laps.map(([k, lap]) => ({key: k, lap: +lap.toFixed(3)})); RANK.set(id, r); return r;
+    const t = g === 1 ? tr : {...tr, mu: Float64Array.from(tr.mu, x => x * g)}; return [k, K.simulateLap(t, c.car, env).lapTime * (c.timeScale || 1), !!c.bop?.fun]; })
+    .sort((a, b) => a[2] - b[2] || a[1] - b[1]); // makers entered at the event first; "for fun" makers (not entered) rank after them
+  const r = laps.map(([k, lap, fun]) => ({key: k, lap: +lap.toFixed(3), ...(fun && {fun: true})})); RANK.set(id, r); return r;
 }
