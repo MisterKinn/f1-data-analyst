@@ -156,9 +156,9 @@ export function estimate(id, need, E = EST_P) {
     // an estimated zone starts clear of the bend before it
     const zoneOf = (q, off, n) => { let from = Math.round((q.from + Math.min(off, Math.max(0, q.len - 300))) % L); for (let k = 0; k < 40 && bendAt(id, from); k++) from = Math.round((from + T[id].ds) % L); return {n, from, to: Math.round(zoneEnd(id, from, true))}; };
     const order = P => [...new Set(P)].sort((a, b) => a.from - b.from), mark = (rb2) => (rb2 !== 300 ? {bendR: rb2} : {});
-    if (need.includes('2025') && !got['2025']?.zones.length) { let P = byLen.filter((q, i) => i === 0 || q.len >= 500); if (st && !P.includes(st)) P = [st, ...P]; P = order(P.slice(0, 3));
-      const zones = P.map(q => zoneOf(q, 145, 0)).filter(z => ((z.to - z.from) % L + L) % L >= 300).map((z, i) => ({...z, n: i + 1}));
-      got['2025'] = {kind: 'drs', year: 2025, est: true, ...mark(RB), zones, marks: zones.map(z => ({s: Math.round(((z.from - 340) % L + L) % L), kind: 'det', label: 'D' + z.n})), doc: EST, url: ''}; }
+    if (need.includes('2025') && !got['2025']?.zones.length) { let P = byLen.filter((q, i) => i === 0 || q.len >= (E.drsRun ?? 500)); if (st && !P.includes(st)) P = [st, ...P]; P = order(P.slice(0, 3));
+      const zones = P.map(q => zoneOf(q, E.drsOff ?? 145, 0)).filter(z => ((z.to - z.from) % L + L) % L >= 300).map((z, i) => ({...z, n: i + 1}));
+      got['2025'] = {kind: 'drs', year: 2025, est: true, ...mark(RB), zones, marks: zones.map(z => ({s: Math.round(((z.from - (E.drsDet ?? 340)) % L + L) % L), kind: 'det', label: 'D' + z.n})), doc: EST, url: ''}; }
     if (need.includes('2026') && !got['2026']?.zones.length) { const P = order(byLen.filter((q, i) => i === 0 || q.len >= 300).slice(0, 4)), zones = P.map(q => zoneOf(q, E.smOff, 0)).filter(z => ((z.to - z.from) % L + L) % L >= 300).map((z, i) => ({...z, n: i + 1})), marks = [];
       // overtake: activation otZone after the start of the zone over the line (else the zone nearest it), detection otDet before it
       const zl = zones.find(z => ((0 - z.from) % L + L) % L <= ((z.to - z.from) % L + L) % L) || [...zones].sort((a, b) => gap({from: a.from, len: ((a.to - a.from) % L + L) % L}) - gap({from: b.from, len: ((b.to - b.from) % L + L) % L}))[0];
@@ -169,7 +169,7 @@ export function estimate(id, need, E = EST_P) {
     // two runs split by a lift with no bend end at the same braking point (Las Vegas Strip, owner 2026-11-16): keep the longer, no overlap
     for (const y of need) { const g = got[y]; if (!g) continue; const len = z => ((z.to - z.from) % L + L) % L;
       g.zones = g.zones.filter(z => !g.zones.some(o => o !== z && o.to === z.to && len(o) > len(z))); noOverlap(id, g.zones); g.zones = g.zones.filter(z => len(z) >= 300).map((z, i) => ({...z, n: i + 1}));
-      if (y === '2025') g.marks = g.zones.map(z => ({s: Math.round(((z.from - 340) % L + L) % L), kind: 'det', label: 'D' + z.n})); }
+      if (y === '2025') g.marks = g.zones.map(z => ({s: Math.round(((z.from - (E.drsDet ?? 340)) % L + L) % L), kind: 'det', label: 'D' + z.n})); }
     if (need.every(y => got[y]?.zones.length)) break; }
   RB = 300;
   return got;
