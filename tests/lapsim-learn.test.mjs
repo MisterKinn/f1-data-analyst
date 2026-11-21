@@ -133,3 +133,15 @@ test('Formula E: every raced layout and rule set shows its fastest real lap (pag
   for (const [k, h] of Object.entries(lapsimFe.heldOutPct)) assert.ok(h.event < h.before, `${k}: event hidden ${h.event} % not below the bare car ${h.before} %`);
   assert.ok(simulationPage({track: 'fe-london', car: 'fe-gen4'}, 'en').includes('Gen4'));
 });
+
+test('qualifying with rain: the 2026 car shows that session\'s real pole in its weather, and a dry pole estimate (model) beside it (owner 2026-11-22)', async () => {
+  const {lapsimF1WetQuali: W} = await import('../worker/lapsim/f1-wet-quali-data.js');
+  const {simulate} = await import('../worker/lapsim/tool.js');
+  for (const [id, ys] of Object.entries(W)) { if (id[0] === '_') continue; const w = ys['2026'];
+    const r = simulate({track: id, car: '2026'});
+    assert.ok(Math.abs(r.result.lap_seconds - w.lap) < 0.0015, `${id}: ${r.result.lap_seconds} vs real ${w.lap}`);
+    assert.equal(r.conditions.air_temp_c, +w.weather.airTempC.toFixed(3), id);
+    assert.ok(r.wet_qualifying?.dry_pole_estimate?.lap_s > 0 && /model/.test(r.wet_qualifying.dry_pole_estimate.method), id);
+  }
+  assert.ok(W._test['2026'].blendPct < W._test['2026'].modelPct, 'the blend beats the simulator alone on held-out rows');
+});

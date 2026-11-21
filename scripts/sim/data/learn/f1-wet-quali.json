@@ -1,0 +1,11 @@
+{
+  "note": "F1 qualifying sessions the dry fit leaves out because rain fell (calibrate: any rain minute). Real pole and session weather from OpenF1 (f1_result, f1_weather; session means). Real laps are never changed.",
+  "events": {
+    "montreal": {"2026": {"session": 11287, "driver": "RUS", "lap": 72.578, "tyre": "slick", "rainMinutes": 1,
+      "weather": {"airTempC": 21.3, "trackTempC": 30.8, "humidityPct": 24.5, "pressureHpa": 1028.7, "windSpeed": 1.1}}},
+    "zandvoort": {"2026": {"session": 11349, "driver": "NOR", "lap": 71.163, "tyre": "slick", "rainMinutes": 5,
+      "weather": {"airTempC": 18.1, "trackTempC": 32.5, "humidityPct": 57.6, "pressureHpa": 1020.9, "windSpeed": 2.5}}},
+    "interlagos": {"2026": {"session": 11408, "driver": "NOR", "lap": 87.470, "tyre": "intermediate", "rainMinutes": 112,
+      "weather": {"airTempC": 20.5, "trackTempC": 30.6, "humidityPct": 91.9, "pressureHpa": 922.5, "windSpeed": 1.4}}}
+  }
+}
