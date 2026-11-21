@@ -209,3 +209,13 @@ console.log('rules noticeboards ok');
   assert.equal(res.status,503);assert.deepEqual(await res.json(),{error:'Storage unavailable'});
  }
 }
+
+import {siteError,runFailed} from '../scripts/rules-monitor.mjs';
+// rules monitor: name a paused Vercel site; fail only when nothing was posted
+{
+ assert.match(siteError('/api/rules/state',402,'DEPLOYMENT_DISABLED'),/paused by Vercel/);
+ assert.equal(siteError('/api/rules/ingest',500,null,'boom'),'/api/rules/ingest: HTTP 500 boom');
+ assert.equal(runFailed(5,0),true);
+ assert.equal(runFailed(5,1),false); // one bad source degrades, the job stays green
+ assert.equal(runFailed(0,0),false); // nothing due
+}

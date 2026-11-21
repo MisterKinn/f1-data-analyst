@@ -36,11 +36,18 @@ const text=b=>new TextDecoder().decode(b);
 const sha=b=>createHash('sha256').update(b).digest('hex');
 const idFor=(url,hash)=>sha(Buffer.from(url)).slice(0,16)+'-'+hash.slice(0,10);
 
+// A paused Vercel deployment answers every route with 402 DEPLOYMENT_DISABLED: say so plainly.
+export function siteError(path,status,vercelError,detail=''){
+ if(status===402&&vercelError==='DEPLOYMENT_DISABLED')return `${path}: site paused by Vercel (HTTP 402 DEPLOYMENT_DISABLED); the Vercel plan or usage limit must be fixed by the project owner`;
+ return `${path}: HTTP ${status} ${detail}`.trim();
+}
+// The job fails only when sources were due and nothing at all could be posted.
+export const runFailed=(due,posted)=>due>0&&posted===0;
 async function api(path,body){
  const headers={'content-type':'application/json','user-agent':UA};
  if(body){const tok=await oidc();if(tok)headers.authorization='Bearer '+tok;}
  const r=await fetch(SITE+path,{method:body?'POST':'GET',headers,body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(60_000)});
- const out=await r.json().catch(()=>({}));if(!r.ok)throw Error(`${path}: HTTP ${r.status} ${out.error||''}`);return out;
+ const out=await r.json().catch(()=>({}));if(!r.ok)throw Error(siteError(path,r.status,r.headers.get('x-vercel-error'),out.error||''));return out;
 }
 async function oidc(){
  const u=process.env.ACTIONS_ID_TOKEN_REQUEST_URL,t=process.env.ACTIONS_ID_TOKEN_REQUEST_TOKEN;if(!u||!t)return null;
@@ -234,14 +241,14 @@ async function processSource(source,status,report){
 async function main(){
  const started=new Date().toISOString(),report={downloads:0};
  const sources=registry.sources.filter(s=>s.enabled!==false&&(!ONLY||s.id===ONLY));
- let status={sources:{}};if(!DRY){try{status=(await api('/api/rules/state')).status||status;}catch(e){console.error('State unavailable:',e.message);process.exitCode=1;return;}}
+ let status={sources:{}};if(!DRY){try{status=(await api('/api/rules/state')).status||status;}catch(e){console.error(`::error title=Rules monitor::State unavailable: ${e.message}`);process.exitCode=1;return;}}
  const todo=sources.filter(s=>due(s,status.sources?.[s.id])).sort((a,b)=>priority(a)-priority(b));
  console.log(`${todo.length}/${sources.length} sources due`);
- let failures=0;
+ let failures=0,posted=0;
  for(const source of todo){
   if(Date.now()>DEADLINE||report.downloads>=MAX_DOWNLOADS){console.log('Run budget reached; remaining sources wait for the next run');break;}
-  if(source.kind==='patent_watch'){const {result,patents}=await processPatentWatch(source,report);console.log(`[${result.status}] ${source.id}: ${patents.length} patents${result.error?' — '+result.error:''}`);if(!DRY){try{for(let i=0;i<patents.length||i===0;i+=500)await api('/api/patents/ingest',{patents:patents.slice(i,i+500),watch:{status:result.status,error:result.error,found:patents.length}});await api('/api/rules/ingest',{documents:[],sources:[result]});}catch(e){failures++;console.error('   ingest failed: '+e.message);}}continue;}
-  if(source.kind==='research_watch'){const {result,candidates}=await processResearchWatch(source,report);console.log(`[${result.status}] ${source.id}: ${candidates.length} new open-access candidates`);if(!DRY){try{await api('/api/rules/ingest',{documents:[],sources:[result],research_candidates:candidates});}catch(e){failures++;console.error('   ingest failed: '+e.message);}}continue;}
+  if(source.kind==='patent_watch'){const {result,patents}=await processPatentWatch(source,report);console.log(`[${result.status}] ${source.id}: ${patents.length} patents${result.error?' — '+result.error:''}`);if(!DRY){try{for(let i=0;i<patents.length||i===0;i+=500)await api('/api/patents/ingest',{patents:patents.slice(i,i+500),watch:{status:result.status,error:result.error,found:patents.length}});await api('/api/rules/ingest',{documents:[],sources:[result]});posted++;}catch(e){failures++;console.error('   ingest failed: '+e.message);}}continue;}
+  if(source.kind==='research_watch'){const {result,candidates}=await processResearchWatch(source,report);console.log(`[${result.status}] ${source.id}: ${candidates.length} new open-access candidates`);if(!DRY){try{await api('/api/rules/ingest',{documents:[],sources:[result],research_candidates:candidates});posted++;}catch(e){failures++;console.error('   ingest failed: '+e.message);}}continue;}
   const {result,docs,known}=await processSource(source,status.sources?.[source.id],report);
   if(result.status==='failed')failures++;
   console.log(`[${result.status}] ${source.id}: listed ${result.listed}, new ${result.new}${result.error?' — '+result.error:''}`);
@@ -249,10 +256,10 @@ async function main(){
   // Post in small batches; the source status goes with the last batch.
   const batches=[];let cur=[],size=0;for(const d of docs){const s=JSON.stringify(d).length;if(cur.length&&(size+s>3_000_000||cur.length>=10)){batches.push(cur);cur=[];size=0;}cur.push(d);size+=s;}batches.push(cur);
   for(let i=0;i<batches.length;i++){const last=i===batches.length-1;
-   try{await api('/api/rules/ingest',{documents:batches[i],...(last?{sources:[result],known:{[source.id]:known},run:{started_at:started,url:process.env.GITHUB_RUN_ID?`https://github.com/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`:''}}:{})});}
+   try{await api('/api/rules/ingest',{documents:batches[i],...(last?{sources:[result],known:{[source.id]:known},run:{started_at:started,url:process.env.GITHUB_RUN_ID?`https://github.com/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`:''}}:{})});if(last)posted++;}
    catch(e){failures++;console.error(`   ingest failed for ${source.id}: ${e.message}`);break;}}
  }
- console.log(`Done: ${report.downloads} downloads, ${failures} failed sources`);
- if(failures&&failures===todo.length)process.exitCode=1;
+ console.log(`Done: ${report.downloads} downloads, ${failures} failed sources, ${posted}/${todo.length} sources posted`);
+ if(!DRY&&runFailed(todo.length,posted))process.exitCode=1;
 }
 if(import.meta.url===`file://${process.argv[1]}`)await main();
