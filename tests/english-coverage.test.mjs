@@ -68,3 +68,11 @@ test('page scripts are content-versioned so a deploy is never hidden by a cached
  for(const url of urls){const r=websiteRoute(new Request('https://example.test'+url));assert.equal(r.status,200);assert.match(r.headers.get('cache-control'),/immutable/);}
  const stale=websiteRoute(new Request('https://example.test/assets/examples.js?v=old'));assert.doesNotMatch(stale.headers.get('cache-control'),/immutable/);
 });
+
+test('assets are kept at the Vercel edge; pages never are',async()=>{
+ const html=await websiteRoute(new Request('https://example.test/')).text();
+ const assets=[...new Set([...html.matchAll(/(?:src|href)="(\/assets\/[^"]+)"/g)].map(m=>m[1]))];
+ assert.ok(assets.length>=5);
+ for(const a of assets){const r=websiteRoute(new Request('https://example.test'+a));if(r?.status!==200)continue;assert.match(r.headers.get('cache-control'),/s-maxage=\d+/,a);assert.doesNotMatch(r.headers.get('cache-control'),/private|no-store/,a);}
+ for(const p of ['/','/simulation','/bop','/nope']){const r=websiteRoute(new Request('https://example.test'+p));assert.equal(r.headers.get('cache-control'),'private, no-store',p);}
+});
