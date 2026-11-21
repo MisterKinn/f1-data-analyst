@@ -1,0 +1,42 @@
+name: SRO results refresh (GTWC, British GT, IGTC)
+
+# Owner 2026-11-21: every series with a public source refreshes itself. The SRO chain already exists but ran only by hand
+# (sro-gt3-cars last rebuilt 15 Nov): fetch-sro.mjs (every session table on the GTWC Europe/America/Asia/Australia and British GT
+# sites) -> build-sro.mjs -> sro-gt3-cars.csv.gz, and fetch-sro-pdf.mjs (IGTC and GTWC Australia PDFs) -> sro-pdf-cars.csv.gz.
+# Measured tables only; the GT3 fit that reads them keeps its own gate. Started by "Refresh after sessions" about 1, 3 and 6 h after
+# a GTWC / British GT / IGTC session; weekly as a safety net. Publishes through scripts/publish-refresh.sh (CI checks, then main).
+on:
+  schedule:
+    - cron: '37 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write  # start the stored-views rebuild after publishing
+
+concurrency:
+  group: sro-refresh
+  cancel-in-progress: false
+
+jobs:
+  sro:
+    if: github.repository == 'MisterKinn/f1-data-analyst'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - run: npm ci --ignore-scripts
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
+      - name: Read the SRO results (pages and PDFs)
+        run: |
+          node scripts/sim/learn/fetch-sro.mjs | tail -20
+          node scripts/sim/learn/build-sro.mjs | tail -10
+          node scripts/sim/learn/fetch-sro-pdf.mjs | tail -20
+      - name: Publish to main (checks first)
+        env: {GH_TOKEN: '${{ github.token }}'}
+        run: |
+          scripts/publish-refresh.sh -m "SRO results: GTWC, British GT, IGTC (measured laps per car and session)" \
+            -g "node scripts/sim/learn/fetch-sro.mjs && node scripts/sim/learn/build-sro.mjs && node scripts/sim/learn/fetch-sro-pdf.mjs" -b lapsim-learn/sro-refresh \
+            -c "node scripts/refresh-changed.mjs scripts/sim/data/learn/sro-gt3-cars.csv.gz scripts/sim/data/learn/sro-pdf-cars.csv.gz" -- scripts/sim/data/learn/sro-gt3-cars.csv.gz scripts/sim/data/learn/sro-pdf-cars.csv.gz
