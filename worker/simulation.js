@@ -36,6 +36,7 @@ import {lapsimPuDocs} from './lapsim/pu-docs-data.js';
 import {lapsimPuEst} from './lapsim/pu-est-data.js';
 import {lapsimDriverLines} from './lapsim/driver-lines-data.js';
 import {lapsimF1DriverQuali} from './lapsim/f1-driver-quali-data.js';
+import {lapsimF1RealTel} from './lapsim/f1-real-telemetry-data.js';
 import {trackLabel, trackOrder, evoPairs, carEvent} from './simulator-controls.js';
 import {lapsimTrackNorth} from './lapsim/track-north-data.js';
 import {lapsimTrackView} from './lapsim/track-view-data.js';
@@ -337,7 +338,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null, first
   const changes = latestChanges(id);
   // 2026 ERS clipping measured in this event's dry practice before qualifying (field row; scripts/sim/energy-clip.mjs)
   const clipEv = lapsimEnergyClip?.events?.[id], clipFp = clipEv ? {refM: clipEv.refM, sessions: clipEv.sessions, rows: clipEv.teams['*'] || []} : null;
-  const data = {clipFp, startAlt: lapsimStartLines[id] || null, driverLines: lapsimDriverLines?.tracks?.[id] || null, driverQuali: lapsimF1DriverQuali?.[id] || null, pu: lapsimPuDocs?.events?.[id] || lapsimPuEst?.tracks?.[id] || null, lang, t, id, track: td, cars, carOrder: CAR_ORDER_P, carId, evoOf, fam, bodyLabel: BODY_LABEL, events, conds, raceRec: raceRecords(id), changes, energy: (liveEnergy && (query.track || 'monza') === id ? liveEnergy : energyLimit(id, 2026)),
+  const data = {clipFp, startAlt: lapsimStartLines[id] || null, driverLines: lapsimDriverLines?.tracks?.[id] || null, driverQuali: lapsimF1DriverQuali?.[id] || null, realTel: lapsimF1RealTel?.[id] || null, pu: lapsimPuDocs?.events?.[id] || lapsimPuEst?.tracks?.[id] || null, lang, t, id, track: td, cars, carOrder: CAR_ORDER_P, carId, evoOf, fam, bodyLabel: BODY_LABEL, events, conds, raceRec: raceRecords(id), changes, energy: (liveEnergy && (query.track || 'monza') === id ? liveEnergy : energyLimit(id, 2026)),
     compounds: lapsimCompounds?.[id] || {}, wecTyres: lapsimWecTyres?.[id] || {}, line: lineData(id), bumps: lapsimTrackBumps?.tracks?.[id] || null, pit: lapsimPitLanes?.tracks?.[id] || null, wallNear: wallNear(id, td.kappa.length), pitSpeed: {series: lapsimPitSpeed.series, event: lapsimPitSpeed.tracks[id] || {}}, pitLossF1: lapsimRace?.tracks?.[id]?.pitLoss ?? null, lineText: LT[lang], qsplit: lapsimQsplit ? {off: lapsimQsplit.offsetPct, test: lapsimQsplit.test, real: lapsimQsplit.tracks?.[id] || null} : null, brakes: lapsimBrakes ? {ramp: lapsimBrakes.rampS ?? 0, k: lapsimBrakes.pedalKgPerG, g: lapsimBrakes.gScale, t: lapsimBrakes.timeScale, test: lapsimBrakes.test, real: lapsimBrakes.races?.[id] || null, text: BT[lang]} : null, wetGap: wetGapPage(id), climate: climateFor(id), compoundGap: compoundGap(id), compoundTest: lapsimCompoundGap?.test?.rmsPct ?? null,
     evo: Object.fromEntries(['f1', 'wec'].map(se => [se, Object.fromEntries(['practice', 'qualifying'].map(ty => [ty, evolutionCoeffs(se, id, ty)]))])),
     zones: lapsimF1Zones?.tracks?.[id] || null, feZones: lapsimFeZones?.tracks?.[id] || null, zonesOn: ZONES_ON ? (DRS_ONLY ? 'drs' : 'all') : '', puQuali: PU_QUALI, realState: !!lapsimCalibration?.realState, puRamp: !!lapsimCalibration?.puRamp, otChoice: lapsimCalibration?.otChoice?.[id] ?? null, surface: surfaceOf(id, td, changes), mapRot0: (Number.isFinite(view0?.openDeg) ? view0.openDeg : landscapeRot(td.map, lapsimTrackNorth?.[id], VIEW[id], td.corners, td.length)) + (VIEW[id]?.flip ? 180 : 0), cornersEstimated: !!td.cornersEstimated, cornerNames: td.cornersEstimated ? lapsimCornerNames?.[id]?.names?.map(c => ({...c, name: /* 'Curva 1' is only a number */ /^(Turn|Curva|Corner)\s*\d+$/i.test(c.name) ? c.name.replace(/\D+/, '') : lang === 'en' ? c.name : lapsimNamesKo[c.name] || c.name})) || null : null, straights: straightsOf(id, td, lang), north: lapsimTrackNorth?.[id] || null, ui: UI[lang],
@@ -1091,7 +1092,15 @@ function computeView(K, data, state, R) {
   const chartCorners = (d.corners || []).map(c => ({number: mapOpts.renumber ? mapOpts.renumber(c.number) : c.number, letter: c.letter, s: c.s}));
   const TL = t.tel, cOpt = (unit, step, h, lo, more) => Object.assign({sectors: d.sectors || [], corners: chartCorners, label: unit, km: t.km, unit, step, h, lo}, more);
   const bands = []; ch[0].risk.forEach((x, i) => { if (x >= 0.2) { const last = bands[bands.length - 1]; if (last && i * d.ds - last[1] <= d.ds * 1.5) last[1] = (i + 1) * d.ds; else bands.push([i * d.ds, (i + 1) * d.ds]); } });
-  const series = tag([res.v].concat(cmps.map(c => c.v)).map(v => v.map(x => x * 3.6)));
+  // measured telemetry (owner 2026-11-22, AGENTS.md "Measured telemetry is always shown"): a raced F1 car in its real session shows the
+  // real pole lap's speed, throttle, brake (on/off), gear and rpm as measured (f1-real-telemetry-data.js, position = share of the lap);
+  // the model fills only channels that were not measured (motor, battery, steering). Compared cars stay model.
+  const RT0 = !sel.series && sel.year && sameConditions && data.realTel ? data.realTel[String(sel.year)] : null, RT = RT0 && (!state.driver || state.driver === RT0.driver) ? RT0 : null;
+  const realAt = (key, n, step) => { const F = RT.f, A = RT[key]; let j = 0; return Array.from({length: n}, (_, i) => { const x = i / n * 1e4; while (j < F.length - 1 && F[j + 1] <= x) j++;
+    if (step || j >= F.length - 1 || F[j + 1] === F[j]) return A[j]; const w = Math.min(1, Math.max(0, (x - F[j]) / (F[j + 1] - F[j]))); return +(A[j] + w * (A[j + 1] - A[j])).toFixed(1); }); };
+  const mk = (title, real) => RT ? title + (real ? (data.lang === 'en' ? ' · measured' : ' · 실측') : (data.lang === 'en' ? ' · model' : ' · 모델')) : title;
+  const real1 = (arr, v) => RT ? [v].concat(arr.slice(1)) : arr; // the selected car's lane replaced by the measured channel
+  const series = tag([RT ? realAt('speed', nP) : res.v.map(x => x * 3.6)].concat(cmps.map(c => c.v.map(x => x * 3.6))));
   // battery energy along the lap (J; recovery capped at the per-lap limit, no clamping, so a profile the battery window cannot hold
   // is shown, not hidden). F1 qualifying lap: starts full; Hypercar (charge-sustaining race lap): lowest point at 0
   const socOf = F => { const cap = F.recharge ?? Infinity; let cum = 0, got = 0, mn = 0, mx = 0; const c = [];
@@ -1122,13 +1131,16 @@ function computeView(K, data, state, R) {
     const key = curves.map(([k, lab, , col, dash]) => '<span class="ls-pu-key"><svg width="26" height="8"><line x1="0" y1="4" x2="26" y2="4" stroke="' + col + '" stroke-width="' + (k === used ? 3 : 1.5) + '"' + (dash ? ' stroke-dasharray="' + dash + '"' : '') + '/></svg>' + lab + (k === used ? ' · ' + C.thisLap : '') + '</span>').join(' ');
     return '<h3 class="ls-ch-h">' + C.h + '</h3><svg class="ls-pu-map" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + C.h + '">' + grid + lines + '<text x="' + ((L0 + W) / 2) + '" y="' + (H - 2) + '" font-size="11" text-anchor="middle" fill="currentColor">' + C.x + '</text></svg><p class="fine">' + key + '</p><p class="fine">' + (early ? C.early : PU.est ? C.est : C.late) + '</p>'; })();
   const delta = cmpRaws.length ? cmpRaws.map((r, j) => ({v: raw.time.map((x, i) => +(x - r.time[i]).toFixed(3)), cls: 'ls-line-' + (j + 1)})) : null;
-  const lanes = [['speed', TL.speed, 'km/h', d.ds, series.map(x => x.v), cOpt('km/h', 50, 230, null, {bands})]]
+  const rGear = RT ? realAt('gear', nP, true) : null, rShifts = rGear ? rGear.filter((g, i) => i && g !== rGear[i - 1]).length : 0;
+  const lanes = [['speed', mk(TL.speed, true), 'km/h', d.ds, series.map(x => x.v), cOpt('km/h', 50, 230, null, {bands})]]
     .concat(delta ? [['delta', TL.delta.replace('{car}', sel.label), 's', d.ds, delta, cOpt('s', 0.5, 140)]] : [])
-    .concat(motorLane.length ? [['motor', TL.motor, 'kW', d.ds, motorLane, cOpt('kW', 50, 160, null, {bands: altBands, bandCls: 'ls-alt'})]] : [])
-    .concat(socLane.length ? [['soc', TL.soc, 'MJ', d.ds, socLane, cOpt('MJ', 0.5, 140, 0)]] : [])
-    .concat([['throttle', TL.throttle, '%', d.ds / 2, tag(ch.map(c => c.throttleHuman)), cOpt('%', 25, 130, 0)], ['brake', TL.brake, 'bar', d.ds / 2, tag(ch.map(c => c.brakeHuman)), cOpt('bar', 25, 150, 0)]])
-    .concat(ch[0].gear ? [['gear', TL.gear + ' · ' + TL.shifts.replace('{n}', ch[0].shifts.length), '', d.ds, tag(ch.map(c => c.gear)), cOpt('', 1, 130, 0)], ['rpm', TL.rpm, 'rpm', d.ds, tag(ch.map(c => c.rpm)), cOpt('rpm', 2000, 150)]] : [])
-    .concat([['steer', TL.steer, '°', d.ds, tag(ch.map(c => c.steerDeg)), cOpt('°', 45, 170)]])
+    .concat(motorLane.length ? [['motor', mk(TL.motor), 'kW', d.ds, motorLane, cOpt('kW', 50, 160, null, {bands: altBands, bandCls: 'ls-alt'})]] : [])
+    .concat(socLane.length ? [['soc', mk(TL.soc), 'MJ', d.ds, socLane, cOpt('MJ', 0.5, 140, 0)]] : [])
+    .concat([['throttle', mk(TL.throttle, true), '%', d.ds / 2, tag(real1(ch.map(c => c.throttleHuman), RT && realAt('throttle', ch[0].throttleHuman.length))), cOpt('%', 25, 130, 0)],
+      RT ? ['brake', mk(data.lang === 'en' ? 'Brake (on / off, %)' : '브레이크 (on / off, %)', true), '%', d.ds / 2, tag(real1(ch.map(c => c.brakeHuman), realAt('brake', ch[0].brakeHuman.length, true).map(x => x * 100))), cOpt('%', 25, 130, 0)]
+        : ['brake', TL.brake, 'bar', d.ds / 2, tag(ch.map(c => c.brakeHuman)), cOpt('bar', 25, 150, 0)]])
+    .concat(ch[0].gear || RT ? [['gear', mk(TL.gear + ' · ' + TL.shifts.replace('{n}', RT ? rShifts : ch[0].shifts.length), true), '', d.ds, tag(real1(ch.map(c => c.gear), rGear)), cOpt('', 1, 130, 0)], ['rpm', mk(TL.rpm, true), 'rpm', d.ds, tag(real1(ch.map(c => c.rpm), RT && realAt('rpm', nP))), cOpt('rpm', 2000, 150)]] : [])
+    .concat([['steer', mk(TL.steer), '°', d.ds, tag(ch.map(c => c.steerDeg)), cOpt('°', 45, 170)]])
     // elevation (owner 2026-11-17: "show the height you learned on the telemetry"): the track's stored grade (×1e4 rad) summed along the
     // lap, the small closing error spread over the lap, lowest point = 0 m. Same distance axis and corner marks as the other lanes.
     .concat(d.grade ? [['elev', TL.elev, 'm', d.ds, [(() => { const g = d.grade, n = g.length, h = [0]; for (let i = 0; i < n - 1; i++) h.push(h[i] + Math.tan(g[i] / 1e4) * d.ds);
