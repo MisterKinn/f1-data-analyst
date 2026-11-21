@@ -18,6 +18,11 @@ export const feKeyOf = season => season >= 2027 ? 'fe-gen4' : season >= 2025 ? '
 // Season 8 (2021-22, Gen2, first year of the duels) groups 220 kW, duels 250 kW. Seasons 5-7 (Gen2): 250 kW in every qualifying
 // session (groups and Super Pole). The `car` of each rule set is the full-power car; a group lap is simulated at the group power.
 export const FE_QUALI_KW = season => season >= 2027 ? null : season >= 2023 ? {group: 300, duel: 350} : season >= 2022 ? {group: 220, duel: 250} : {group: 250, duel: 250};
+// W12 (Gate G pass in all three hold-outs, 2026-11-21): a real driver gains only part of the simulated 300 → 350 kW full-lap gain.
+// Group lap = duel-power lap + f × (simulated 300 kW lap − simulated 350 kW lap); f = training median of observed / simulated gain,
+// shrunk to the all-generation median (W12 indirect/refit.json, through Season 12). Held-out error 0.333 → 0.226 s (race out),
+// 0.359 → 0.241 s (venue out), 0.396 → 0.204 s (Season 12 out). A full-lap time factor only: never apply it to a speed.
+export const FE_QUALI_REALIZATION = {'fe-gen3': 0.6925, 'fe-gen3evo': 0.7737};
 export const feIsGroup = session => /qualifying[ -]group/i.test(session || '');
 // power of the session a lap was set in (kW), or null when it is the full power of the rule-set car
 export function feSessionKW(season, session, type) { const q = FE_QUALI_KW(season); if (!q || type !== 'Q') return null; return feIsGroup(session) ? q.group : q.duel; }

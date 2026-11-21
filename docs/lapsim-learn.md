@@ -688,3 +688,9 @@ Gaps and what was checked (2026-11-16):
 - The cup of an SRO car (PRO/GOLD/SILVER/BRONZE) is never used as a rating (a Bronze Cup car can be B+S+P).
 - **Data found for the main session:** WEC 2026 Imola and Spa LMP2 #46 (learned as Oreca 07) is an Oreca 05 of a historic support
   race filed in the same Al Kamel folder (one-driver files, "Bronze FIA"). Not changed here.
+
+### Formula E qualifying group power (W12, 2026-11-21)
+A group lap (300 kW) is fitted as the full-power (350 kW) lap plus `f ×` the simulated 300 → 350 kW lap difference, `f` = realised share
+(Gen3 0.6925, Gen3 Evo 0.7737; W12 `indirect/refit.json`, through Season 12). W12 Gate G on 56 events / 425 driver pairs, median group −
+quarter-final time: race out 0.333 → 0.226 s (+0.107 ± 0.026), venue out 0.359 → 0.241 s, Season 12 out 0.396 → 0.204 s, all pass; the
+uncalibrated simulation (f = 1) rejects. Site fit: Gen3 Evo event-hidden 2.49 → 2.46 %, layout-hidden 4.07 → 4.00 %; records unchanged.

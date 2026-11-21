@@ -11,7 +11,7 @@ import {existsSync, readFileSync, writeFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
 import {lapsimKernel} from '../../../worker/lapsim/kernel.js';
 import {lapsimTracks, lapsimExtraTracks} from '../../../worker/lapsim/tracks-data.js';
-import {FE_GENS, feKeyOf, feCarFor} from '../../../worker/lapsim/fe-cars.js';
+import {FE_GENS, FE_FIT_ONLY, FE_QUALI_REALIZATION, feKeyOf, feCarFor} from '../../../worker/lapsim/fe-cars.js';
 import {buildTrack} from '../build-geometry-extra.mjs';
 import {parseCsv} from './build-endurance.mjs';
 import {lineOf, lengthOf, metres, orientLine} from './fe-lines.mjs';
@@ -88,9 +88,13 @@ for (const r of used.filter(r => FE_GENS[r.key])) { const a = (real[r.layout] ||
 
 // 5. Fit rows: best qualifying lap per layout, season and rule set
 const simCache = new Map(), trk = id => trk[id] ||= K.trackFromData(tracks[id] || lapsimAllTracks[id]);
-const simLap = (id, key, r) => { const car = feCarFor(key, r.season, r.session, r.type), k = [id, key, car.pIce, Math.round(+r.airC || 25), Math.round(+r.trackC || 35)].join('|'); if (simCache.has(k)) return simCache.get(k);
+const simAt = (id, key, car, r) => { const k = [id, key, car.pIce, Math.round(+r.airC || 25), Math.round(+r.trackC || 35)].join('|'); if (simCache.has(k)) return simCache.get(k);
   const env = K.conditionsFromWeather({pressureHpa: +r.hpa || 1013.25, airTempC: +r.airC || 25, humidityPct: +r.hum || 50, trackTempC: +r.trackC || 35, windSpeed: 0, windFromDeg: 0});
   const v = K.simulateLap(trk(id), car, env).lapTime; simCache.set(k, v); return v; };
+// a lap below full power (qualifying group): full-power lap + the realised share of the simulated power gain (W12, FE_QUALI_REALIZATION)
+const simLap = (id, key, r) => { const car = feCarFor(key, r.season, r.session, r.type), full = (FE_GENS[key] || FE_FIT_ONLY[key]).car, f = FE_QUALI_REALIZATION[key];
+  if (car === full || f == null) return simAt(id, key, car, r);
+  const a = simAt(id, key, full, r); return a + f * (simAt(id, key, car, r) - a); };
 const qb = new Map();
 for (const r of used.filter(r => r.type === 'Q' && r.key !== 'fe-gen4')) { const k = `${r.layout}|${r.season}|${r.key}`; if (!qb.has(k) || r.best < qb.get(k).best) qb.set(k, r); }
 const fitRows = [...qb.values()].map(r => ({layout: r.layout, season: r.season, key: r.key, real: r.best, sim: simLap(r.layout, r.key, r), kW: feCarFor(r.key, r.season, r.session, r.type).pIce / 1e3, session: r.session.replace(/^\d+_/, ''), event: r.event}));
