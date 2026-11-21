@@ -25,6 +25,10 @@ let names = auto ? [] : process.argv.length > 3 ? process.argv.slice(3) : all;
 if (auto) { for (const ev of all) { const id = trackOf(ev), end = await practiceEnd(ev);
     if (id && end && (!events[id] || Date.now() - end < 5 * 864e5)) names.push(ev); }
   if (names.length) execFileSync('git', ['-C', root, 'sparse-checkout', 'add', ...names.flatMap(ev => [`/${ev}/Practice */`, `/${ev}/Sprint Qualifying/`, `/${ev}/*/drivers.json`])], {stdio: 'inherit'});
+  // a session TracingInsights has not published yet (it can lag many hours) comes from the F1 timing archive through FastF1
+  for (const ev of names) for (const se of ['Practice 1', 'Practice 2', 'Practice 3', 'Sprint Qualifying'])
+    if (!existsSync(join(root, ev, se, 'session_laptimes.json'))) try { execFileSync('python3', ['scripts/sim/energy-clip/fastf1_session.py', root, '2026', ev, se], {stdio: 'inherit'}); }
+    catch (e) { console.log(ev, se, 'FastF1 failed:', e.message.split('\n')[0]); }
   console.log('events to build:', names.join(', ') || 'none'); }
 await mkdir(det, {recursive: true});
 for (const ev of names) {
