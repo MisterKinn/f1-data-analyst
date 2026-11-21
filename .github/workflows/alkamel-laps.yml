@@ -1,0 +1,38 @@
+name: Al Kamel laps (GTWC America, IGTC Indianapolis)
+
+# Owner 2026-11-21: GTWC reads Al Kamel too. GT World Challenge America and the IGTC Indianapolis 8 Hour publish every lap with
+# sectors on usac.alkamelsystems.com. scripts/sim/learn/fetch-alkamel-laps.mjs keeps one derived row per car and session
+# (best lap = official classification, best clean lap with sectors and top speed, weather); raw files are not stored.
+# Started by "Refresh after sessions" about 1, 3 and 6 h after a session; weekly as a safety net. Publishes through
+# scripts/publish-refresh.sh (CI checks, then main).
+on:
+  schedule:
+    - cron: '29 5 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write  # start the stored-views rebuild after publishing
+
+concurrency:
+  group: alkamel-laps
+  cancel-in-progress: false
+
+jobs:
+  laps:
+    if: github.repository == 'MisterKinn/f1-data-analyst'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - run: npm ci --ignore-scripts
+      - name: Read the Al Kamel results trees
+        run: node scripts/sim/learn/fetch-alkamel-laps.mjs | tail -40
+      - name: Publish to main (checks first)
+        env: {GH_TOKEN: '${{ github.token }}'}
+        run: |
+          scripts/publish-refresh.sh -m "Al Kamel laps: GTWC America and IGTC Indianapolis (one row per car and session)" \
+            -g "node scripts/sim/learn/fetch-alkamel-laps.mjs" -b lapsim-learn/alkamel-laps \
+            -c "node scripts/refresh-changed.mjs scripts/sim/data/learn/alkamel-laps.json.gz" -- scripts/sim/data/learn/alkamel-laps.json.gz
