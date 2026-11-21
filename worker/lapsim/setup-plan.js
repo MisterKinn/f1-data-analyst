@@ -95,7 +95,15 @@ export const HYPERCARS = [
 // BoP-body variants share the model's car). Engine position sets the static weight split (layer 4, assumed from the layout:
 // front 50 %, front-mid 52 %, mid 57 %, rear 61 % on the rear axle) until homologation data is read.
 const LAYOUT = [[/911/, 'rear', 0.61], [/296|488|458|720s|650s|12c|huracan|temerario|r8|nsx|z06|corvette-c8|c7/, 'mid', 0.57], [/amg|sls|vantage|v12|m4|m6|z4|mustang|rc-f|continental|gt-r/, 'front-mid', 0.52]];
-const layoutOf = key => { const l = LAYOUT.find(([re]) => re.test(key)); return l ? {layout: l[1], rear: l[2]} : {layout: 'front', rear: 0.50}; };
+// Static rear weight share measured in iRacing (model (iRacing), 2026-11-21): rear corner weights / all four in the CarSetup of the SRS
+// 26S4 pro setups, median over sessions (scripts/sim/learn/iracing/setup_weight.py on the owner's PC; raw files stay there). Same chassis
+// generation only (an Evo kit keeps it). Gate G, one vote per car, leave one track out: 11 of 11 cars nearer than the layout guess
+// (mean error 0.0189 lower, SE 0.0058; largest: McLaren 720S 0.57 → 0.512, Porsche 992 0.61 → 0.565, Ferrari 296 0.57 → 0.531).
+const IR_REAR = [[/acura-nsx-gt3-evo/, 0.5634, 15], [/aston-martin-vantage-gt3/, 0.5105, 17], [/audi-r8-lms-gt3-evo/, 0.5600, 9], [/bmw-m4-gt3/, 0.5282, 16],
+  [/corvette-z06-gt3-r/, 0.5567, 15], [/ferrari-296-gt3/, 0.5309, 16], [/ford-mustang-gt3/, 0.5310, 17], [/huracan-gt3-evo/, 0.5612, 16], [/mclaren-720s-gt3/, 0.5119, 16],
+  [/mercedes-amg-gt3/, 0.5198, 17], [/porsche-911-gt3-r-992/, 0.5647, 17]];
+const layoutOf = key => { const l = LAYOUT.find(([re]) => re.test(key)), base = l ? {layout: l[1], rear: l[2]} : {layout: 'front', rear: 0.50}, ir = IR_REAR.find(([re]) => re.test(key));
+  return ir ? {...base, rear: ir[1], rearSource: 'iracing', rearN: ir[2]} : {...base, rearSource: 'layout'}; };
 export const GT3_MODELS = (lapsimLearned?.models || []).filter(m => !/^gt3-(imsa|aco|dtm)-/.test(m.key)).sort((a, b) => a.name.localeCompare(b.name))
   .map(m => ({key: m.key.slice(4), car: m.key, name: m.name, season: m.season, ...layoutOf(m.key)}));
 // LMP2 (owner 2026-11-16): the Oreca 07 Gibson only. No calibrated LMP2 car yet: the LMDh class car without its hybrid, at the LMP2
@@ -246,7 +254,7 @@ export function setupPlan(trackId, carId, {wet = false, sm = null, ot = true, ph
   const w = aeroWindow(car, kind), aero = aeroSweep(track, car, env, w);
   const set = withSetup(car, aero.s, w), r = K.simulateLap(track, set, env), d = trackDemands(track, set, env, r);
   const low = aero.pts[0], high = aero.pts.at(-1);
-  const ev = kind === 'gt3' ? {bop: gt3BopFor(trackId, model), layout: model.layout, learned: c.learned || null} : kind === 'lmp2' ? {} : kind === 'f1' ? {pirelli: PIRELLI_2026[trackId] || null, brembo: BREMBO[trackId] || null, sm: z26 ? z26.zones.length : null, smEstimated: !!z26?.est, smMode, overtake: otUse ? otUse.name : 'off', press: F1_PRESS[trackId] || null} : {bop};
+  const ev = kind === 'gt3' ? {bop: gt3BopFor(trackId, model), layout: model.layout, rear: {share: model.rear, source: model.rearSource, n: model.rearN || 0}, learned: c.learned || null} : kind === 'lmp2' ? {} : kind === 'f1' ? {pirelli: PIRELLI_2026[trackId] || null, brembo: BREMBO[trackId] || null, sm: z26 ? z26.zones.length : null, smEstimated: !!z26?.est, smMode, overtake: otUse ? otUse.name : 'off', press: F1_PRESS[trackId] || null} : {bop};
   return {trackId, carId, wet, source, kind, cls, model, vCapKph: car.vMax * 3.6, carLabel: car.label, kindLabel: c.kind, basis: {kind: kind === 'lmp2' ? 'prior' : c.kind, year: c.year, events: c.learned?.events ?? null, session: c.fix?.session ?? null}, weather, energy, demands: d, aero: {...aero, low, high, lap: r.lapTime, vMax: r.vMaxKph}, window: w,
     phase: race ? 'race' : 'quali', live: live ? {session: live.session, at: live.at, lap: live.lap ?? null, cls: live.cls ?? null} : null,
     knobs: raceShift(wetShift(placeKnobs(kind, d, aero, surfaceOf(trackId), ev), wet), race), surface: surfaceOf(trackId) || null, evidence: ev};

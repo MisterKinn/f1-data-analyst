@@ -50,3 +50,13 @@ test('F1 live weather: the latest session of this circuit within 4 days (OpenF1)
   const r = await f1Live('monza', now, {fetchImpl, now});
   assert.equal(r.session, 'Practice 3'); assert.equal(r.weather.trackTempC, 44);
 });
+
+// owner 2026-11-21: GT3 static rear weight share from the iRacing setups (model (iRacing)), the layout guess elsewhere
+test('GT3 rear weight share: iRacing value with its session count, else the labelled layout guess', () => {
+  const m = k => GT3_MODELS.find(x => x.key === k);
+  assert.deepEqual([m('mclaren-720s-gt3-evo').rear, m('mclaren-720s-gt3-evo').rearSource, m('mclaren-720s-gt3-evo').rearN], [0.5119, 'iracing', 16]);
+  assert.equal(m('porsche-911-gt3-r-992').rear, 0.5647);
+  assert.deepEqual([m('ferrari-488-gt3').rear, m('ferrari-488-gt3').rearSource], [0.57, 'layout']);
+  assert.match(strip(setupPage({series: 'gt3', car: 'mclaren-720s-gt3-evo', track: 'spa-francorchamps'}, 'en')), /51\.2%<\/b><span>rear weight share · model \(iRacing\), 16 sessions/);
+  assert.match(strip(setupPage({series: 'gt3', car: 'ferrari-488-gt3', track: 'spa-francorchamps'}, 'en')), /57%<\/b><span>rear weight share · assumed \(engine layout\)/);
+});
