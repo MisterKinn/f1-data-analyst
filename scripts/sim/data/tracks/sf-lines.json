@@ -71,6 +71,25 @@
    "lon": 13.927569,
    "source": "start/finish mark on the DTM track map (DTM Track Facts), fitted onto the OpenStreetMap raceways (median 2.3 m)"
   },
-  "macau": {"lat": 22.199055, "lon": 113.559813, "source": "TCR Macau 2023 track map (Hyundai Motorsport, web.archive.org copy): chequered start/finish flag, map fitted onto the OSM line (median 2.5 m), about +-20 m"}
+  "macau": {
+   "lat": 22.199055,
+   "lon": 113.559813,
+   "source": "TCR Macau 2023 track map (Hyundai Motorsport, web.archive.org copy): chequered start/finish flag, map fitted onto the OSM line (median 2.5 m), about +-20 m"
+  },
+  "jerez": {
+   "lat": 36.709677,
+   "lon": -6.03251,
+   "source": "finish (timing) line in front of the race tower (GT4 Winter Series Jerez 2024 briefing: start and finish not the same), placed on Esri World Imagery z20"
+  },
+  "magny-cours": {
+   "lat": 46.86302,
+   "lon": 3.16172,
+   "source": "finish line after T17 (SRO GT4 France Magny-Cours briefing map; start line 186 m after it), chequered strip on Esri World Imagery z19"
+  },
+  "ricardo-tormo": {
+   "lat": 39.483827,
+   "lon": -0.630612,
+   "source": "start/finish line at the start lights (Valencia 2026 drivers briefing: START/FINISH LINE - LIGHTS), gantry on Esri World Imagery z19"
+  }
  }
 }
