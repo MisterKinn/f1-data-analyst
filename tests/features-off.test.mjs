@@ -15,10 +15,10 @@ test('switched off: home shows only this week in motorsport, menu Home, LapSim, 
   assert.match(home.html,/data-race-calendar="week"/);
   const main=home.html.match(/<main[\s\S]*?<\/main>/)[0];
   assert.doesNotMatch(main,/id="championships"|connect-section|id="ci"/);
-  assert.match(main,/라이트팬과 코어팬 사이의 그 계단을/);assert.match(main,/꽁보다, 무슨 뜻인가요/);
+  assert.match(main,/계산된 답/);assert.match(main,/ChatGPT·Claude에 그냥 물어보면 안 되나요/);assert.match(main,/꽁보다, 무슨 뜻인가요/);
   const nav=home.html.match(/<nav id="navigation"[\s\S]*?<\/nav>/)[0];
   assert.deepEqual([...nav.matchAll(/href="([^"]+)"/g)].map(m=>m[1]),['/','/simulation','/setup','/bop','/ai']);
-  assert.ok(main.indexOf('class="sim-entry"')>main.indexOf('라이트팬과 코어팬')&&main.indexOf('class="sim-entry"')<main.indexOf('data-race-calendar="week"'));
+  assert.ok(main.indexOf('class="sim-entry"')>main.indexOf('계산된 답')&&main.indexOf('class="sim-entry"')<main.indexOf('data-race-calendar="week"'));
   assert.equal((await page('/about')).status,301);
   assert.equal((await page('/guide')).status,404);
   for(const slug of ['f1','wec'])assert.doesNotMatch((await page('/championships/'+slug)).html,/href="\/guide"|연결 방법 보기/);
