@@ -1108,13 +1108,20 @@ function computeView(K, data, state, R) {
   const telNeed = !RT && sameConditions && !sel.series && dq && dq.lapNo != null && dq.ev ? {driver: state.driver, year: String(sel.year), url: 'https://raw.githubusercontent.com/TracingInsights/' + sel.year + '/main/' + [dq.ev, 'Qualifying', state.driver, dq.lapNo + '_tel.json'].map(encodeURIComponent).join('/')} : null;
   // broken stretches of the measured file (real-tel-gaps.js: repeated samples, invalid 104 % throttle) show the model instead (owner 2026-11-22)
   const gapsRT = RT && RT.gaps || [], inGap = x => gapsRT.some(g => x >= g[0] && x < g[1]);
+  // broken stretches (Gate G v3.3 re-judge of claude/gate-ti-gaps-siteC-prereg-2026-11-22.md §3, ledger): the straight line between the
+  // measured samples on each side met the pre-registered bounds on the 2026 hold-out for speed, gear and rpm (speed 1.2 km/h ≤ 8, gear 1.00
+  // ≥ 0.85; Session D's independent test: 3.4 km/h), so short stretches (up to 5.3 % of the lap, the longest window tested) are filled that
+  // way and labelled estimate (provisional); brake (recall 0.69 < 0.8), longer stretches and a stretch at the line stay a gap
+  const FILL_MAX = 530, gapFill = (key, x) => { const g = gapsRT.find(q => x >= q[0] && x < q[1]); if (!g || g[1] - g[0] > FILL_MAX || !['speed', 'rpm', 'gear', 'throttle'].includes(key)) return null;
+    const F = RT.f, A = RT[key]; let a = -1, b = -1; for (let k = 0; k < F.length; k++) { if (F[k] < g[0]) a = k; else if (F[k] >= g[1]) { b = k; break; } }
+    if (a < 0 || b < 0 || F[b] === F[a]) return null; const v = A[a] + (x - F[a]) / (F[b] - F[a]) * (A[b] - A[a]); return key === 'gear' ? Math.round(v) : +v.toFixed(1); };
+  const filled = gapsRT.some(g => g[1] - g[0] <= FILL_MAX && g[0] > (RT && RT.f ? RT.f[0] : 0));
   const realAt = (key, n, step, model) => { const F = RT.f, A = RT[key]; let j = 0; return Array.from({length: n}, (_, i) => { const x = i / n * 1e4; while (j < F.length - 1 && F[j + 1] <= x) j++;
-    // until the fill passes its check (claude/gate-ti-gaps-siteC-prereg-2026-11-22.md §3) a broken stretch is a gap in the line
-    if (model && inGap(x)) return null;
+    if (model && inGap(x)) return gapFill(key, x);
     if (step || j >= F.length - 1 || F[j + 1] === F[j]) return A[j]; const w = Math.min(1, Math.max(0, (x - F[j]) / (F[j + 1] - F[j]))); return +(A[j] + w * (A[j + 1] - A[j])).toFixed(1); }); };
   // GT3 / Hypercar shifts and pedals come from the owner's iRacing laps (channels.js DRV, #403): those lanes say so (AGENTS.md, iRacing scope)
   const IR = !RT && (clsOf(sel) === 'gt3' || clsOf(sel) === 'hyper'), irL = data.lang === 'en' ? ' · model (iRacing)' : ' · 모델(아이레이싱)';
-  const gapNote = RT && RT.gaps && RT.gaps.length ? (data.lang === 'en' ? ' (broken stretches left out)' : ' (깨진 구간 제외)') : '';
+  const gapNote = RT && RT.gaps && RT.gaps.length ? (filled ? (data.lang === 'en' ? ' (short broken stretches: straight-line fill, model / estimate (provisional); brake and longer ones left out)' : ' (짧은 깨진 구간: 직선 보간, 모델 추정(보간)·잠정; 브레이크와 긴 구간은 제외)') : (data.lang === 'en' ? ' (broken stretches left out)' : ' (깨진 구간 제외)')) : '';
   const mk = (title, real) => RT ? title + (real ? (data.lang === 'en' ? ' · measured' : ' · 실측') + gapNote : (data.lang === 'en' ? ' · model' : ' · 모델')) : title;
   const real1 = (arr, v) => RT ? [v].concat(arr.slice(1)) : arr; // the selected car's lane replaced by the measured channel
   const series = tag([RT ? realAt('speed', nP, false, res.v.map(x => x * 3.6)) : res.v.map(x => x * 3.6)].concat(cmps.map(c => c.v.map(x => x * 3.6))));
@@ -1156,9 +1163,12 @@ function computeView(K, data, state, R) {
   // brake pressure"): the same pad / caliper / regen physics as the model lap's brake lane (channels.js brakeBar, class priors, nothing fitted
   // toward pressure) on the measured speed, the model speed inside broken stretches, which stay a gap. Not checked against any truth (none is
   // public); a lap whose value leaves 0–150 bar is not shown (plausibility: the 2026 rules set the caliper torque at a maximum caliper pressure
-  // of 150 bar; 5 of the 44 measured pole laps exceed it and get no lane).
+  // of 150 bar). With the 40 m smoothing all 44 measured pole laps stay inside (max 116 bar; unsmoothed 5 spiked above, max 194).
+  const SMOOTH_M = 40; // about 0.5 s at 290 km/h, the window of the pre-registered speed derivative (M-BP); the samples are ~0.13 s apart
   const gm = RT && RT.len ? 150 / RT.len * 1e4 : 300, nearGap = x => gapsRT.some(g => [x, x - 1e4, x + 1e4].some(y => y >= g[0] - gm && y < g[1] + gm)); // AGENTS: 150 m around a broken stretch
-  const rPress = RT ? (() => { const vm = series[0].v.map((x, i) => (x == null ? raw.v[i] * 3.6 : x) / 3.6);
+  const rPress = RT ? (() => { const v0 = series[0].v.map((x, i) => (x == null ? raw.v[i] * 3.6 : x) / 3.6), w = Math.max(1, Math.round(SMOOTH_M / 2 / d.ds));
+    // the ~7.5 Hz samples, read linearly, make the speed slope jump at every sample: smooth over SMOOTH_M metres before the deceleration
+    const vm = v0.map((_, i) => { let s = 0; for (let k = -w; k <= w; k++) s += v0[(i + k + v0.length) % v0.length]; return s / (2 * w + 1); });
     const b = R.lapChannels(raw.trk || track, sel.car, env, {...raw, v: vm}, {cls: clsOf(sel), seed: data.id + '|press'}).brakeBar.map((x, i) => nearGap(i / nP * 1e4) ? null : x);
     return Math.max(...b.filter(x => x != null)) <= 150 ? b : null; })() : null;
   const rGear = RT ? realAt('gear', nP, true, ch[0].gear) : null, rShifts = rGear ? rGear.filter((g, i) => i && g != null && rGear[i - 1] != null && g !== rGear[i - 1]).length : 0;
