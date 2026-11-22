@@ -9,6 +9,7 @@ import {simulationPage, lapsimScript} from '../../worker/simulation.js';
 import {lapsimCalibration as CAL} from '../../worker/lapsim/calibration-data.js';
 import {lapsimWecTrackGrip} from '../../worker/lapsim/wec-track-grip-data.js';
 import {carStartOptions} from '../../worker/lapsim/view-keys.js';
+import {isLockedF1, isLockedSeason} from './locked-set.mjs';
 
 const jsonOut = process.argv.includes('--json') ? process.argv[process.argv.indexOf('--json') + 1] : null;
 const js = lapsimScript(), body = js.slice('(()=>{'.length, js.lastIndexOf(';('));
@@ -30,7 +31,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   // F1: every calibrated season; the hidden track gets the season's mean grip and mean drag factor of the other tracks
   for (const y of ['2025', '2026']) {
     const T = CAL.seasons?.[y]?.tracks || {}, ids = Object.keys(T).filter(id => T[id].grip != null), car = CAL.seasons[y].car;
-    for (const id of ids) {
+    for (const id of ids.filter(x => !isLockedF1(x, y))) { // locked set (AGENTS.md v3.1): never held out
       const o = ids.filter(x => x !== id), g = gmean(o.map(x => T[x].grip)), dr = gmean(o.map(x => T[x].drag ?? 1));
       const p = predict(id, y, {grip: g, car: {...car, cdA: car.cdA * dr, cdALow: (car.cdALow ?? car.cdA) * dr}}); if (!p) continue;
       (rows['f1-' + y] ||= []).push({track: id, ...p}); console.log('f1-' + y, id, p.errPct.toFixed(3));
@@ -39,7 +40,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   // WEC classes (latest calibrated season, as the page): the hidden track gets the mean of the other tracks' frozen WEC grip
   const WG = lapsimWecTrackGrip.grip;
   for (const [cls, seasons] of Object.entries(CAL.series?.wec || {})) {
-    const y = Object.keys(seasons).sort().at(-1), ids = Object.keys(seasons[y].tracks || {});
+    const y = Object.keys(seasons).sort().at(-1), ids = isLockedSeason(y) ? [] : Object.keys(seasons[y].tracks || {});
     for (const id of ids) {
       const o = Object.keys(WG).filter(x => x !== id), p = predict(id, 'wec-' + cls, {grip: gmean(o.map(x => WG[x]))}); if (!p) continue;
       (rows['wec-' + cls] ||= []).push({track: id, ...p}); console.log('wec-' + cls, id, p.errPct.toFixed(3));
