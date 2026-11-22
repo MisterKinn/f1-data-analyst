@@ -125,7 +125,7 @@ export const raceFeatureCss=`
 [data-race-calendar="week"] .session-time abbr{text-decoration:none;cursor:help}
 /* Events without session times (date only): the note spans the card like a session list (2026-11-22). */
 [data-race-calendar="week"] .week-event-info>p,[data-race-calendar="week"] .week-event-info>.week-actions,[data-race-calendar="week"] .week-event-info>details{grid-column:1/-1}
-[data-race-calendar="week"] .race-series-name{overflow-wrap:anywhere;word-break:normal;font-size:12px;line-height:1.25}
+[data-race-calendar="week"] .race-series-name{overflow-wrap:normal;word-break:keep-all;hyphens:auto;font-size:11px;line-height:1.25;letter-spacing:-.01em}
 [data-race-calendar="week"] .race-card .youtube-link{min-width:28px;min-height:28px;padding:3px}
 [data-race-calendar="week"] .week-scroll-controls:not([hidden]){display:flex;justify-content:flex-end;gap:8px;margin:0 0 8px}
 [data-race-calendar="week"] .week-scroll-controls button{display:flex;align-items:center;justify-content:center;width:44px;min-height:44px;padding:8px;border-radius:8px}
