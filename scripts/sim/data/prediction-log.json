@@ -1,0 +1,67 @@
+{
+ "about": "Kongboda prediction log: production qualifying predictions stored before each event, real results added after. Stored predictions are never changed (AGENTS.md Gate G v3.1).",
+ "entries": [
+  {
+   "key": "f1-2026-11-27-lusail|2026",
+   "event": {
+    "id": "f1-2026-11-27-lusail",
+    "name": "Qatar Grand Prix",
+    "series": "f1",
+    "start": "2026-11-27",
+    "end": "2026-11-29",
+    "track": "lusail"
+   },
+   "car": "2026",
+   "predictedAt": "2026-11-22T02:08:21.388Z",
+   "model": {
+    "sha": "c55bc878c3a42b7de8cc93bb8ce4104b11f8562b",
+    "calibrationHash": "13701595e929",
+    "calibrationGeneratedAt": "2026-11-21",
+    "carKind": "calibrated"
+   },
+   "prediction": {
+    "lap": 85.582,
+    "sigma": 0.847,
+    "sigmaPct": 0.99,
+    "sectors": [
+     30.839,
+     28.763,
+     25.98
+    ],
+    "topSpeedKph": 322
+   },
+   "result": null
+  },
+  {
+   "key": "f1-2026-12-04-yas-marina|2026",
+   "event": {
+    "id": "f1-2026-12-04-yas-marina",
+    "name": "Abu Dhabi Grand Prix",
+    "series": "f1",
+    "start": "2026-12-04",
+    "end": "2026-12-06",
+    "track": "yas-marina-circuit"
+   },
+   "car": "2026",
+   "predictedAt": "2026-11-22T02:08:21.388Z",
+   "model": {
+    "sha": "c55bc878c3a42b7de8cc93bb8ce4104b11f8562b",
+    "calibrationHash": "13701595e929",
+    "calibrationGeneratedAt": "2026-11-21",
+    "carKind": "calibrated"
+   },
+   "prediction": {
+    "lap": 84.013,
+    "sigma": 0.832,
+    "sigmaPct": 0.99,
+    "sectors": [
+     17.814,
+     34.858,
+     31.341
+    ],
+    "topSpeedKph": 311
+   },
+   "result": null
+  }
+ ]
+}
