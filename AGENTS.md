@@ -87,6 +87,18 @@ Judging
 - **Minimum useful effect.** A pass must also be larger than the measurement floor of the quantity (display channels) or 0.02
   percentage points of lap error (lap fits). A gain below that is "within noise" even if the test passes.
 
+Unraced tracks
+- **Track-unseen test (level C, physics rule 3.2).** Every lap-time model change also reports level C. Hide one track from every season,
+  class and series at once: its track factor and every per-track term (drag factor, track grip snapshot, kerbs, bumps, learned
+  terms). Predict it from the other tracks the way a new track would be predicted (class mean factor, or a factor from track features),
+  and report RMS per class over all tracks. This is the accuracy behind every unraced-track prediction and the ⚠️ limit (3 %).
+- **Level C decides too.** A change may not make level C worse beyond its non-inferiority margin (δ = 5 % of the level C baseline RMS),
+  even when levels A and B improve. A change that targets unraced tracks (track features, geometry from maps) uses level C as its
+  primary metric.
+- **Script and baseline.** Session C builds `scripts/sim/holdout-track.mjs` (one fold per track, same rounds as the main fit, inputs
+  pinned). Its first run on production is the level C baseline: write it in `docs/lapsim-learn.md` and the ledger. Until it exists,
+  a lap-time change says "level C not tested" in its PR.
+
 Physics and frozen stages
 - **Component metrics for physics.** A physics change pre-registers one component metric with the most direct data (corner minimum
   speed, end-of-straight speed or trap at the trap position, braking point, sector) as co-primary. It ships when the component gains
