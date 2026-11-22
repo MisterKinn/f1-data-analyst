@@ -3,14 +3,15 @@
 import {writeFileSync} from 'node:fs';
 import {simulationPage, lapsimScript} from '../../../worker/simulation.js';
 import {lapsimF1RealTel} from '../../../worker/lapsim/f1-real-telemetry-data.js';
+import {cleanTel} from '../../../worker/lapsim/real-tel-gaps.js';
 const jsonOut = process.argv.includes('--json') ? process.argv[process.argv.indexOf('--json') + 1] : null, K = 1.45;
 const med = a => { const s = a.filter(Number.isFinite).sort((x, y) => x - y); return s.length ? (s[(s.length - 1) >> 1] + s[s.length >> 1]) / 2 : NaN; };
 const js = lapsimScript(), body = js.slice('(()=>{'.length, js.lastIndexOf(';('));
 const V = new Function(body + ';return {K,computeView,R:{renderMap,renderTrace,evolutionDelta,evolutionCurve,lineTrack,brakeZones,lapChannels,blendLine,blendOff}};')();
 // shifts of one lap: x (m), v (m/s), gear, rpm; rpm before an upshift = max over the 0.5 s before it; landing rpm of a downshift
-const shiftsOf = (x, v, G, P, top) => { const n = v.length, t = [0]; for (let i = 1; i < n; i++) t.push(t[i - 1] + Math.max(0, x[i] - x[i - 1]) / Math.max(1, (v[i] + v[i - 1]) / 2));
+const shiftsOf = (x, v, G, P, top, near = () => false) => { const n = v.length, t = [0]; for (let i = 1; i < n; i++) t.push(t[i - 1] + Math.max(0, x[i] - x[i - 1]) / Math.max(1, (v[i] + v[i - 1]) / 2));
   const up = [], down = [];
-  for (let i = 1; i < n; i++) { if (G[i] > G[i - 1] && G[i - 1] > 0) { let m = P[i - 1]; for (let j = i - 1; j >= 0 && t[i - 1] - t[j] <= 0.5; j--) m = Math.max(m, P[j]); up.push(m / top); }
+  for (let i = 1; i < n; i++) { if (near(x[i])) continue; if (G[i] > G[i - 1] && G[i - 1] > 0) { let m = P[i - 1]; for (let j = i - 1; j >= 0 && t[i - 1] - t[j] <= 0.5; j--) m = Math.max(m, P[j]); up.push(m / top); }
     if (G[i] < G[i - 1] && G[i] > 0) down.push(P[i] / top); }
   return {up, down}; };
 const page = (track, car, drv) => {
@@ -24,7 +25,7 @@ const page = (track, car, drv) => {
 const result = {};
 for (const year of ['2025', '2026']) {
   const tracks = Object.keys(lapsimF1RealTel).filter(tr => lapsimF1RealTel[tr][year]), top = page(tracks[0], year, null).top;
-  const M = Object.fromEntries(tracks.map(tr => { const r = lapsimF1RealTel[tr][year]; return [tr, shiftsOf(r.f.map(f => f / 1e4 * r.len), r.speed.map(s => s / 3.6), r.gear, r.rpm, top)]; }));
+  const M = Object.fromEntries(tracks.map(tr => { const c = cleanTel(lapsimF1RealTel[tr][year]); return [tr, shiftsOf(c.x, c.speed.map(s => s / 3.6), c.gear, c.rpm, top, c.near)]; // broken stretches out }));
   const g = {up: [], down: []}, rows = [];
   for (const tr of tracks) {
     const D = {up: med(tracks.filter(x => x !== tr).flatMap(x => M[x].up)), down: med(tracks.filter(x => x !== tr).flatMap(x => M[x].down))};

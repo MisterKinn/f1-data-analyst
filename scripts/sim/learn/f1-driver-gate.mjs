@@ -3,6 +3,7 @@
 import {writeFileSync} from 'node:fs';
 import {simulationPage, lapsimScript} from '../../../worker/simulation.js';
 import {lapsimF1RealTel} from '../../../worker/lapsim/f1-real-telemetry-data.js';
+import {cleanTel} from '../../../worker/lapsim/real-tel-gaps.js';
 
 const jsonOut = process.argv.includes('--json') ? process.argv[process.argv.indexOf('--json') + 1] : null, K = 1.45, Q = ['rise', 'pick', 'off'];
 const binOf = kph => kph < 90 ? 0 : kph < 160 ? 1 : 2, med = a => { const s = a.filter(Number.isFinite).sort((x, y) => x - y); return s.length ? (s[(s.length - 1) >> 1] + s[s.length >> 1]) / 2 : NaN; };
@@ -14,7 +15,7 @@ export function corners(x, vs, th, br) {
   for (let i = 1; i < n - 1; i++) {
     const a = idx(i, -2), b = idx(i, 2); let mn = Infinity; for (let j = a; j <= b; j++) mn = Math.min(mn, vs[j]); if (vs[i] !== mn || vs[i - 1] === vs[i]) continue;
     const p0 = idx(i, -8); let vin = 0; for (let j = p0; j < i; j++) vin = Math.max(vin, vs[j]); if (vin - vs[i] < 5) continue;
-    const c = {bin: binOf(vs[i] * 3.6), rise: NaN, pick: NaN, off: NaN};
+    const c = {bin: binOf(vs[i] * 3.6), rise: NaN, pick: NaN, off: NaN, x: x[i]};
     let pk = 0; for (let j = p0; j <= i; j++) pk = Math.max(pk, br[j]);
     if (pk > 0) { let j = i; while (j > p0 && !(br[j] > 0.05 * pk)) j--; if (br[j] > 0.05 * pk) c.off = t[j] - t[i]; }
     const w0 = idx(i, -3), w1 = idx(i, 1); let tm = Infinity; for (let j = w0; j <= w1; j++) tm = Math.min(tm, th[j]);
@@ -25,7 +26,8 @@ export function corners(x, vs, th, br) {
   }
   return out;
 }
-const measured = r => corners(r.f.map(f => f / 1e4 * r.len), r.speed.map(s => s / 3.6), r.throttle.map(x => x / 100), r.brake);
+// broken stretches of the file (real-tel-gaps.js) are left out, and so are corners within 150 m of one (owner 2026-11-22)
+const measured = r => { const c = cleanTel(r); return corners(c.x, c.speed.map(s => s / 3.6), c.throttle.map(x => x / 100), c.brake).filter(e => !c.near(e.x)); };
 const js = lapsimScript(), body = js.slice('(()=>{'.length, js.lastIndexOf(';('));
 const V = new Function(body + ';return {K,computeView,R:{renderMap,renderTrace,evolutionDelta,evolutionCurve,lineTrack,brakeZones,lapChannels,blendLine,blendOff}};')();
 const pageCorners = (track, car, drv) => {
