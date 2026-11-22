@@ -47,7 +47,10 @@ export function lapChannels(track, car, env, res, {cls = 'f1', seed = '', surfac
   // the lower gear lands at 0.675 / 0.727 (measured pole laps, 2025 / 2026 rules).
   // throttle (scripts/sim/learn/f1-throttle-gate.mjs, pre-registered, calibrated on the page's own timing): pick-up starts 0.3 s before the
   // demand (both seasons ✓), squeeze τ 0.35 s (2025 ✓; 2026 ✗, stays 0.10 s).
-  const DRV = {f1: {off: -0.598, up: 0.771, down: 0.675, tau: 0.35, pick: -0.3}, 'f1-2026': {off: -0.625, up: 0.778, down: 0.727, pick: -0.3}};
+  // Hypercar shift points, model (iRacing) (scripts/sim/learn/iracing/shift_gate_page.mjs, pre-registered, GTP laps on 8 tracks): up at 0.981
+  // of the rev limit, down landing at 0.878 (both ✓). GT3 upshift failed, so GT3 keeps the max-power rule.
+  const DRV = {f1: {off: -0.598, up: 0.771, down: 0.675, tau: 0.35, pick: -0.3}, 'f1-2026': {off: -0.625, up: 0.778, down: 0.727, pick: -0.3},
+    hyper: {up: 0.981, down: 0.878}};
   const D = drv === undefined ? DRV[cls === 'f1' && (car.ers || {}).rule === 'f1-2026' ? 'f1-2026' : cls] || null : drv;
   // gear and rpm: the gear with the most engine power at this speed (same rule as kernel powertrain()); a gear within 1 % of the
   // best is kept, so the trace does not hunt on the flat top of the curve
