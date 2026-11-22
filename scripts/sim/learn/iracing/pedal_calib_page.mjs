@@ -55,7 +55,7 @@ for (const [cls, car, base] of CLS) {
   for (const [p, g] of Object.entries(GRID)) { const q = METRIC[p], mean = (j, set) => set.reduce((s, x) => s + (E[x][p][j] ?? 0), 0) / set.length;
     let bj = 0; for (let j = 1; j < g.length; j++) if (mean(j, T) < mean(bj, T)) bj = j;
     const gains = T.map(tr => { const o = T.filter(x => x !== tr); let k = 0; for (let j = 1; j < g.length; j++) if (mean(j, o) < mean(k, o)) k = j; return E[tr].base[q] - E[tr][p][k]; }).filter(Number.isFinite);
-    r[p] = {value: g[bj], errBase: +mean(-1, T).toFixed?.(3), errAt: +mean(bj, T).toFixed(3), loto: stat(gains)}; }
+    r[p] = {value: g[bj], errAt: +mean(bj, T).toFixed(3), loto: stat(gains), gains: gains.map(x => +x.toFixed(4))}; }
   result[cls] = r; console.log(cls, JSON.stringify(r));
 }
 if (jsonOut) writeFileSync(jsonOut, JSON.stringify(result, null, 1));
