@@ -285,7 +285,10 @@ function renderTrace(ds, series, opts) {
   let lines = '';
   series.forEach((s, j) => {
     let d = '';
-    for (let i = 0; i < n; i++) if (!i || i === n - 1 || s.v[i] !== s.v[i - 1] || s.v[i] !== s.v[i + 1]) d += (i ? 'L' : 'M') + x(i * ds) + ' ' + y(s.v[i]); // flat runs: ends only
+    // flat runs: ends only; a missing value (null: a broken stretch of a measured lap) lifts the pen, so the line has a gap there
+    let pen = false;
+    for (let i = 0; i < n; i++) { const v = s.v[i]; if (v == null || !Number.isFinite(v)) { pen = false; continue; }
+      if (!pen || i === n - 1 || v !== s.v[i - 1] || v !== s.v[i + 1]) { d += (pen ? 'L' : 'M') + x(i * ds) + ' ' + y(v); pen = true; } }
     lines += '<path d="' + d + '" class="ls-line ' + (s.cls || 'ls-line-' + j) + '"/>';
   });
   return '<svg class="ls-trace" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + opts.label + '">' + grid + lines + '<line class="ls-cursor" x1="-9" x2="-9" y1="' + top + '" y2="' + (H - B) + '"/>' + '<text x="' + (W - 8) + '" y="' + (H - 8) + '" text-anchor="end" class="ls-axis">' + opts.km + '</text><text x="' + (L + 6) + '" y="' + (top + 14) + '" class="ls-axis">' + (opts.unit ?? 'km/h') + '</text></svg>';
@@ -1106,11 +1109,12 @@ function computeView(K, data, state, R) {
   // broken stretches of the measured file (real-tel-gaps.js: repeated samples, invalid 104 % throttle) show the model instead (owner 2026-11-22)
   const gapsRT = RT && RT.gaps || [], inGap = x => gapsRT.some(g => x >= g[0] && x < g[1]);
   const realAt = (key, n, step, model) => { const F = RT.f, A = RT[key]; let j = 0; return Array.from({length: n}, (_, i) => { const x = i / n * 1e4; while (j < F.length - 1 && F[j + 1] <= x) j++;
-    if (model && model.length && inGap(x)) { const v = model[Math.min(model.length - 1, Math.floor(i * model.length / n))]; if (v != null) return v; }
+    // until the fill passes its check (claude/gate-ti-gaps-siteC-prereg-2026-11-22.md §3) a broken stretch is a gap in the line
+    if (model && inGap(x)) return null;
     if (step || j >= F.length - 1 || F[j + 1] === F[j]) return A[j]; const w = Math.min(1, Math.max(0, (x - F[j]) / (F[j + 1] - F[j]))); return +(A[j] + w * (A[j + 1] - A[j])).toFixed(1); }); };
   // GT3 / Hypercar shifts and pedals come from the owner's iRacing laps (channels.js DRV, #403): those lanes say so (AGENTS.md, iRacing scope)
   const IR = !RT && (clsOf(sel) === 'gt3' || clsOf(sel) === 'hyper'), irL = data.lang === 'en' ? ' · model (iRacing)' : ' · 모델(아이레이싱)';
-  const gapNote = RT && RT.gaps && RT.gaps.length ? (data.lang === 'en' ? ' (broken stretches: model / filled estimate)' : ' (깨진 구간: 모델 추정(보간))') : '';
+  const gapNote = RT && RT.gaps && RT.gaps.length ? (data.lang === 'en' ? ' (broken stretches left out)' : ' (깨진 구간 제외)') : '';
   const mk = (title, real) => RT ? title + (real ? (data.lang === 'en' ? ' · measured' : ' · 실측') + gapNote : (data.lang === 'en' ? ' · model' : ' · 모델')) : title;
   const real1 = (arr, v) => RT ? [v].concat(arr.slice(1)) : arr; // the selected car's lane replaced by the measured channel
   const series = tag([RT ? realAt('speed', nP, false, res.v.map(x => x * 3.6)) : res.v.map(x => x * 3.6)].concat(cmps.map(c => c.v.map(x => x * 3.6))));
@@ -1148,14 +1152,14 @@ function computeView(K, data, state, R) {
     const key = curves.map(([k, lab, , col, dash]) => '<span class="ls-pu-key"><svg width="26" height="8"><line x1="0" y1="4" x2="26" y2="4" stroke="' + col + '" stroke-width="' + (k === used ? 3 : 1.5) + '"' + (dash ? ' stroke-dasharray="' + dash + '"' : '') + '/></svg>' + lab + (k === used ? ' · ' + C.thisLap : '') + '</span>').join(' ');
     return '<h3 class="ls-ch-h">' + C.h + '</h3><svg class="ls-pu-map" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + C.h + '">' + grid + lines + '<text x="' + ((L0 + W) / 2) + '" y="' + (H - 2) + '" font-size="11" text-anchor="middle" fill="currentColor">' + C.x + '</text></svg><p class="fine">' + key + '</p><p class="fine">' + (early ? C.early : PU.est ? C.est : C.late) + '</p>'; })();
   const delta = cmpRaws.length ? cmpRaws.map((r, j) => ({v: raw.time.map((x, i) => +(x - r.time[i]).toFixed(3)), cls: 'ls-line-' + (j + 1)})) : null;
-  const rGear = RT ? realAt('gear', nP, true, ch[0].gear) : null, rShifts = rGear ? rGear.filter((g, i) => i && g !== rGear[i - 1]).length : 0;
+  const rGear = RT ? realAt('gear', nP, true, ch[0].gear) : null, rShifts = rGear ? rGear.filter((g, i) => i && g != null && rGear[i - 1] != null && g !== rGear[i - 1]).length : 0;
   const lanes = [['speed', mk(TL.speed, true), 'km/h', d.ds, series.map(x => x.v), cOpt('km/h', 50, 230, null, {bands})]]
     .concat(delta ? [['delta', TL.delta.replace('{car}', sel.label), 's', d.ds, delta, cOpt('s', 0.5, 140)]] : [])
     .concat(motorLane.length ? [['motor', mk(TL.motor), 'kW', d.ds, motorLane, cOpt('kW', 50, 160, null, {bands: altBands, bandCls: 'ls-alt'})]] : [])
     .concat(socLane.length ? [['soc', mk(TL.soc), 'MJ', d.ds, socLane, cOpt('MJ', 0.5, 140, 0)]] : [])
     .concat([['throttle', mk(TL.throttle, true), '%', d.ds / 2, tag(real1(ch.map(c => c.throttleHuman), RT && realAt('throttle', ch[0].throttleHuman.length, false, ch[0].throttleHuman))), cOpt('%', 25, 130, 0)],
       // the measured brake is an on / off flag: only its timing is measured, its height is not a pressure (AGENTS.md, owner 2026-11-22)
-      RT ? ['brake', mk(data.lang === 'en' ? 'Brake on / off (timing only, not pressure)' : '브레이크 on / off (타이밍만, 압력 아님)', true), 'on/off', d.ds / 2, tag(real1(ch.map(c => c.brakeHuman), realAt('brake', ch[0].brakeHuman.length, true, ch[0].brakeHuman.map(x => x / 100)).map(x => x * 100))), cOpt('%', 25, 130, 0)]
+      RT ? ['brake', mk(data.lang === 'en' ? 'Brake on / off (timing only, not pressure)' : '브레이크 on / off (타이밍만, 압력 아님)', true), 'on/off', d.ds / 2, tag(real1(ch.map(c => c.brakeHuman), realAt('brake', ch[0].brakeHuman.length, true, ch[0].brakeHuman.map(x => x / 100)).map(x => x == null ? null : x * 100))), cOpt('%', 25, 130, 0)]
         : ['brake', TL.brake, 'bar', d.ds / 2, tag(ch.map(c => c.brakeHuman)), cOpt('bar', 25, 150, 0)]])
     .concat(ch[0].gear || RT ? [['gear', mk(TL.gear + ' · ' + TL.shifts.replace('{n}', RT ? rShifts : ch[0].shifts.length), true), '', d.ds, tag(real1(ch.map(c => c.gear), rGear)), cOpt('', 1, 130, 0)], ['rpm', mk(TL.rpm, true), 'rpm', d.ds, tag(real1(ch.map(c => c.rpm), RT && realAt('rpm', nP, false, ch[0].rpm))), cOpt('rpm', 2000, 150)]] : [])
     .concat([['steer', mk(TL.steer), '°', d.ds, tag(ch.map(c => c.steerDeg)), cOpt('°', 45, 170)]])
