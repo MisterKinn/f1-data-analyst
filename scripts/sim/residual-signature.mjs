@@ -11,6 +11,7 @@
 import {writeFileSync} from 'node:fs';
 import {lapsimF1RealTel} from '../../worker/lapsim/f1-real-telemetry-data.js';
 import {lapsimF1WetQuali} from '../../worker/lapsim/f1-wet-quali-data.js';
+import {isLockedF1} from './locked-set.mjs';
 
 const arg = k => process.argv.includes(k) ? process.argv[process.argv.indexOf(k) + 1] : null;
 const med = a => { const s = a.filter(Number.isFinite).sort((x, y) => x - y); return s.length ? (s[(s.length - 1) >> 1] + s[s.length >> 1]) / 2 : NaN; };
@@ -65,7 +66,7 @@ async function main() {
   for (const y of years) {
     const rows = [];
     // wet or damp qualifying (f1-wet-quali-data.js: the sessions the dry fit leaves out) is not compared with the dry model
-    for (const tr of Object.keys(lapsimF1RealTel).filter(t => lapsimF1RealTel[t][y] && !lapsimF1WetQuali[t]?.[y])) {
+    for (const tr of Object.keys(lapsimF1RealTel).filter(t => lapsimF1RealTel[t][y] && !lapsimF1WetQuali[t]?.[y] && !isLockedF1(t, y))) {
       const r = lapsimF1RealTel[tr][y], L = r.len, x = r.f.map(f => f / 1e4 * L), P = page(tr, y);
       if (!P) continue;
       const M = lapEvents(x, r.speed.map(s => s / 3.6), r.brake.map(Number), L), sig = trackSignature(M, P.ev, L);

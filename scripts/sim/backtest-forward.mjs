@@ -8,18 +8,20 @@
 import {writeFileSync} from 'node:fs';
 import {lapsimCalibration as CAL} from '../../worker/lapsim/calibration-data.js';
 import {predict, gmean, stats} from './holdout-track.mjs';
+import {isLockedF1, isLockedSeason} from './locked-set.mjs';
 
 const jsonOut = process.argv.includes('--json') ? process.argv[process.argv.indexOf('--json') + 1] : null, rows = {}, out = {};
 const F = []; for (const y of ['2025', '2026']) for (const [id, t] of Object.entries(CAL.seasons?.[y]?.tracks || {})) if (t.grip != null && t.sessionKey) F.push({y, id, sk: t.sessionKey, grip: t.grip, drag: t.drag ?? 1});
 F.sort((a, b) => a.sk - b.sk);
 for (const e of F) {
+  if (isLockedF1(e.id, e.y)) continue; // locked set (AGENTS.md v3.1): never a forecast target of a gate
   const before = F.filter(x => x.sk < e.sk), same = before.filter(x => x.id === e.id).at(-1);
   const g = same ? same.grip : before.length ? gmean(before.map(x => x.grip)) : 1, dr = same ? same.drag : before.length ? gmean(before.map(x => x.drag)) : 1;
   const car = CAL.seasons[e.y].car, p = predict(e.id, e.y, {grip: g, car: {...car, cdA: car.cdA * dr, cdALow: (car.cdALow ?? car.cdA) * dr}}); if (!p) continue;
   (rows['f1-' + e.y] ||= []).push({track: e.id, sessionKey: e.sk, from: same ? 'same track, earlier' : 'mean of earlier events', ...p}); console.log('f1-' + e.y, e.id, p.errPct.toFixed(3));
 }
 for (const [cls, seasons] of Object.entries(CAL.series?.wec || {})) {
-  const ys = Object.keys(seasons).sort(), y = ys.at(-1), prev = ys.at(-2); if (!prev) continue;
+  const ys = Object.keys(seasons).sort(), y = ys.at(-1), prev = ys.at(-2); if (!prev || isLockedSeason(y)) continue;
   const P = seasons[prev].tracks || {}, mean = gmean(Object.values(P).map(t => t.grip).filter(Number.isFinite));
   for (const id of Object.keys(seasons[y].tracks || {})) {
     const p = predict(id, 'wec-' + cls, {grip: P[id]?.grip ?? mean}); if (!p) continue;

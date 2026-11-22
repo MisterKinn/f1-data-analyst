@@ -5,13 +5,15 @@ import {pathToFileURL} from 'node:url';
 import {gate, nonInferior, kForVariants} from './gate.mjs';
 import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
+import {isLockedF1, isLockedSeason} from './locked-set.mjs';
 
 export function heldOut(c) {
   const rows = {};
-  const add = (g, s) => { const real = Object.fromEntries(Object.entries(s.tracks || {}).map(([id, t]) => [id, t.realLap]));
-    for (const r of s.holdout?.tracks || []) if (real[r.track] > 0) rows[`${g}|${r.track}`] = r.errorSec / real[r.track] * 100; };
-  for (const [y, s] of Object.entries(c.seasons || {})) add(`f1/${y}`, s);
-  for (const [cls, ys] of Object.entries(c.series?.wec || {})) for (const [y, s] of Object.entries(ys)) add(`wec-${cls}/${y}`, s);
+  // locked confirmation set (AGENTS.md v3.1): never a held-out row of a gate
+  const add = (g, s, locked) => { const real = Object.fromEntries(Object.entries(s.tracks || {}).map(([id, t]) => [id, t.realLap]));
+    for (const r of s.holdout?.tracks || []) if (real[r.track] > 0 && !locked(r.track)) rows[`${g}|${r.track}`] = r.errorSec / real[r.track] * 100; };
+  for (const [y, s] of Object.entries(c.seasons || {})) add(`f1/${y}`, s, t => isLockedF1(t, y));
+  for (const [cls, ys] of Object.entries(c.series?.wec || {})) for (const [y, s] of Object.entries(ys)) add(`wec-${cls}/${y}`, s, () => isLockedSeason(y));
   return rows;
 }
 export function compare(base, cand) {
