@@ -67,3 +67,16 @@ test('Monza and both Motegi rounds expose complete sourced sessions with explici
  assert.equal(motegi.sessions.filter(s=>/Race/.test(s.nameEn)).length,2);
  for(const e of [monza,motegi])for(const s of e.sessions){assert.ok(Date.parse(s.end)>Date.parse(s.start));assert.ok(s.source.startsWith('https://'));assert.equal(sessionState(s,e,Date.parse(s.end)).phase,'finished');}
 });
+
+test('weekly box rolls to next week once this week has nothing left (Sunday night, 2026-11-22)',async()=>{
+ const {sessionState}=await import('../worker/session-state.js');
+ const data=await websiteRoute(new Request('https://test/api/race-calendar')).json();
+ const nextWeekBounds=d=>weekBounds(new Date(+weekBounds(d).end+1));
+ const sunday=new Date('2026-11-22T21:00:00+09:00');
+ const thisWeek=data.events.filter(e=>weeklyEventVisible(e,sunday,weekBounds,sessionState));
+ const nextWeek=data.events.filter(e=>weeklyEventVisible(e,sunday,nextWeekBounds,sessionState));
+ assert.ok(nextWeek.some(e=>e.id==='f1-2026-11-27-lusail'),'Qatar GP shows on Sunday night');
+ for(const e of thisWeek)assert.ok(e.sessions?.some(s=>sessionState(s,e,+sunday).phase!=='finished'));
+ const src=await websiteRoute(new Request('https://test/assets/race-features.js')).text();
+ assert.match(src,/다음 주의 모터스포츠/);
+});
