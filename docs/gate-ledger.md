@@ -43,6 +43,8 @@ No line, no ship.
 | 2026-11-22 | D | claude/gate-video-sound-freshB-prereg-2026-11-22.md | acc (display) | braking onset from sound, attempt 3: braking4 (QSTAY 0.65), tuned on 28 tuning pole laps, judged on fresh set B | 3 | 43 | 5 tracks / 8 laps | P 1.00 [0.80, 1.00], R 0.80 [0.57, 1.00] | track median P/R, 90 % bootstrap | point pass, recall lower bound < 0.7 | no |
 | 2026-11-22 | D | claude/gate-video-sound-freshB-prereg-2026-11-22.md | acc (display) | upshift time from sound, frozen, confirmation on fresh set B | 3 | 3 | 5 tracks / 8 laps | P 0.92 [0.82, 1.00], R 0.70 [0.42, 0.96] | track median P/R, 90 % bootstrap | point pass (at the line), recall lower bound < 0.7 | no |
 | 2026-11-22 | D | claude/gate-video-corners-attempt2-prereg-2026-11-22.md | acc (geometry check) | corner order from video yaw, attempt 2: 12 video-side settings on the 91 attempt-1 laps | 2 | 13 | 7 tracks reserved, not opened | tuning best S 0.800 (= line) | S and count error, 90 % bootstrap | not judged (closed before hold-out) | no |
+
+| 2026-11-22 | D | claude/gate-video-lifts-prereg-2026-11-22.md | acc (display) | throttle lifts per lap from sound (off ≥ 0.5 s, merge < 1 s) | 1 | 12 | 5 tracks / 11 laps | median rel. \|e\| 18.8 % [0, 66.7 %] | per-track median relative \|e\|, 90 % bootstrap | rejected (median > 10 %; over-counts, Sepang +44–89 %) | no |
 ## Re-judging under v3
 - #402 and #403 were merged before the v3 rules. Re-judged 2026-11-22 (Session C, rows above): #402 removed (below the floor); #403 GTP
   shifts, GT3 pick-up and GTP brake off kept; GTP squeeze τ provisional; GT3 shifts and GTP pick-up removed.
