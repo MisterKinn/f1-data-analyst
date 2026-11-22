@@ -48,3 +48,12 @@ export function cleanTel(r, margin = 150) {
     share: gaps.reduce((s, [a, b]) => s + b - a, 0) / L,
     near: s => gaps.some(([a, b]) => s >= a - margin && s < b + margin)};
 }
+// OpenF1 speed trace ({s: metres, v: km/h}, calibration traces): rule A+ on speed alone (no rpm or brake, so the decel-step test is off).
+// Returns broken stretches in metres [[from, to], ...] and the broken share of the trace.
+export function traceGaps(t) {
+  const ix = t.s.map((_, i) => i).filter(i => Number.isFinite(t.s[i])).sort((a, b) => t.s[a] - t.s[b]);
+  if (ix.length < 2) return {gaps: [], share: 0};
+  const s0 = t.s[ix[0]], len = Math.max(1, t.s[ix.at(-1)] - s0);
+  const g = telGaps({len, f: ix.map(i => Math.round((t.s[i] - s0) / len * 1e4)), speed: ix.map(i => t.v[i]), brake: ix.map(() => 1)});
+  return {gaps: g.map(([a, b]) => [s0 + a / 1e4 * len, s0 + b / 1e4 * len]), share: Math.min(1, g.reduce((x, [a, b]) => x + Math.max(0, b - a), 0) / 1e4)};
+}
