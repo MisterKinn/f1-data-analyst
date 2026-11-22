@@ -46,6 +46,7 @@ No line, no ship.
 
 | 2026-11-22 | D | claude/gate-video-lifts-prereg-2026-11-22.md | acc (display) | throttle lifts per lap from sound (off ≥ 0.5 s, merge < 1 s) | 1 | 12 | 5 tracks / 11 laps | median rel. \|e\| 18.8 % [0, 66.7 %] | per-track median relative \|e\|, 90 % bootstrap | rejected (median > 10 %; over-counts, Sepang +44–89 %) | no |
 | 2026-11-22 | D | claude/gate-video-lifts-attempt2-prereg-2026-11-22.md | acc (display) | same idea as lifts per lap: 3-class sound model (off / part / full), lift = off segment ≥ 0.5 s | 2 | 16 | — (closed before hold-out) | CV on tuning 14.3 % | lap-grouped CV | closed before hold-out (no better than attempt 1); 6-track FastF1 throttle set stays unopened | no |
+| 2026-11-22 | D | claude/gate-video-upcount-prereg-2026-11-22.md | acc (display) | upshifts per lap from sound (frozen learn.py shifts), Qatar 2026 locked set | 1 | 1 | Qatar 2026 laps (time hold-out, 1 track) | — | per-lap relative \|e\|, 90 % bootstrap over laps | pending (run once on or after 2026-11-30) | no |
 ## Re-judging under v3
 - #402 and #403 were merged before the v3 rules. Re-judged 2026-11-22 (Session C, rows above): #402 removed (below the floor); #403 GTP
   shifts, GT3 pick-up and GTP brake off kept; GTP squeeze τ provisional; GT3 shifts and GTP pick-up removed.
