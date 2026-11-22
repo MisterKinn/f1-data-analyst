@@ -216,6 +216,12 @@ estimates, tracks) must leave all three in step in the same PR or refresh run:
   predicted data in place of a measured channel. The model fills only channels that were not measured (e.g. ERS deploy / harvest,
   battery SoC) and tracks or cars that never ran, labelled model / 모델. Predictions for unraced tracks are learned from the measured
   data and shipped only after Gate G.
+- Brake: only the timing is measured (owner 2026-11-22). The F1 brake channel in the public telemetry (TracingInsights / FastF1 /
+  OpenF1) is an on / off flag: its on and off moments are measured data, its height is not a pressure. Never show, label or learn the
+  flag height as brake pressure or effort; the page labels the lane "on / off (timing only, not pressure)". A pressure / pedal-load
+  estimate (Session C, model M-BP from the measured deceleration, pre-registered in Project claude/gate-brake-pressure-prereg-2026-11-22.md,
+  gate BP-1 against Brembo's per-GP figures, which are Brembo estimates, not measured data) ships only after its gate, labelled model.
+  Learning may use the timing (onset, release), not the height.
 - Qualifying with rain: the dry fit leaves the session out, but the page and tool still default to that session's real pole in its own
   weather (scripts/sim/learn/wet-quali.mjs → worker/lapsim/f1-wet-quali-data.js, input scripts/sim/data/learn/f1-wet-quali.json from
   OpenF1). Next to it they show a dry pole estimate labelled model: the simulator prediction and that weekend's fastest dry race lap ×

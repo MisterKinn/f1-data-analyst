@@ -1149,7 +1149,8 @@ function computeView(K, data, state, R) {
     .concat(motorLane.length ? [['motor', mk(TL.motor), 'kW', d.ds, motorLane, cOpt('kW', 50, 160, null, {bands: altBands, bandCls: 'ls-alt'})]] : [])
     .concat(socLane.length ? [['soc', mk(TL.soc), 'MJ', d.ds, socLane, cOpt('MJ', 0.5, 140, 0)]] : [])
     .concat([['throttle', mk(TL.throttle, true), '%', d.ds / 2, tag(real1(ch.map(c => c.throttleHuman), RT && realAt('throttle', ch[0].throttleHuman.length))), cOpt('%', 25, 130, 0)],
-      RT ? ['brake', mk(data.lang === 'en' ? 'Brake (on / off, %)' : '브레이크 (on / off, %)', true), '%', d.ds / 2, tag(real1(ch.map(c => c.brakeHuman), realAt('brake', ch[0].brakeHuman.length, true).map(x => x * 100))), cOpt('%', 25, 130, 0)]
+      // the measured brake is an on / off flag: only its timing is measured, its height is not a pressure (AGENTS.md, owner 2026-11-22)
+      RT ? ['brake', mk(data.lang === 'en' ? 'Brake on / off (timing only, not pressure)' : '브레이크 on / off (타이밍만, 압력 아님)', true), 'on/off', d.ds / 2, tag(real1(ch.map(c => c.brakeHuman), realAt('brake', ch[0].brakeHuman.length, true).map(x => x * 100))), cOpt('%', 25, 130, 0)]
         : ['brake', TL.brake, 'bar', d.ds / 2, tag(ch.map(c => c.brakeHuman)), cOpt('bar', 25, 150, 0)]])
     .concat(ch[0].gear || RT ? [['gear', mk(TL.gear + ' · ' + TL.shifts.replace('{n}', RT ? rShifts : ch[0].shifts.length), true), '', d.ds, tag(real1(ch.map(c => c.gear), rGear)), cOpt('', 1, 130, 0)], ['rpm', mk(TL.rpm, true), 'rpm', d.ds, tag(real1(ch.map(c => c.rpm), RT && realAt('rpm', nP))), cOpt('rpm', 2000, 150)]] : [])
     .concat([['steer', mk(TL.steer), '°', d.ds, tag(ch.map(c => c.steerDeg)), cOpt('°', 45, 170)]])
