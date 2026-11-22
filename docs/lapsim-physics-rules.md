@@ -25,7 +25,7 @@ Planned outputs, in build order: optimal gear per corner, then a better car mode
 
 ## 2. Hard rules
 
-1. **Gate.** Keep a model change only if held-out error is lower beyond noise (`scripts/sim/gate.mjs`). "Worse" and "gain within noise" both mean: do not use. Exceptions and details (2026-11-21): AGENTS.md "Model changes: Gate G" — data fixes ship; rule or physics corrections use the non-inferiority margin; coupled stages are tested with downstream inputs frozen.
+1. **Gate.** Keep a model change only if held-out error is lower beyond noise (`scripts/sim/gate.mjs`). "Worse" and "gain within noise" both mean: do not use. Exceptions and details (2026-11-21): AGENTS.md "Model changes: Gate G" — data fixes ship; rule or physics corrections use the non-inferiority margin; coupled stages are tested with downstream inputs frozen. Since 2026-11-22 also AGENTS.md "Gate G v3 additions": pre-registration fields, production output as the baseline of every gate, the gate ledger `docs/gate-ledger.md`, attempts at one idea counted in m and a daily budget, the track as the held-out unit with seasons on shared tracks pooled, k from m and n (`kForVariants(m, n)`), a measurement floor per source, a minimum useful effect, component metrics co-primary for physics, a rule for leaving a freeze, and what iRacing and video may give.
 2. **F1 must not get worse.** A change that helps WEC but hurts F1 is used for WEC only.
 3. **Never fit on the rows you test on.** Never choose settings by looking at held-out rows and then report those same rows as the result.
 4. **One change, one flag, off by default.** With the flag off, output must be byte-identical to before.
@@ -240,7 +240,7 @@ Stop and ask before you continue when:
 
 ### 5.4 What these rules can and cannot do
 
-The rules stop wrong changes from shipping and stop time being spent on runs that cannot give an answer. They do not make the error fall by themselves. Error falls only when missing physics or missing data is added (sections 4.3, 4.4 and 6). If three experiments in a row are rejected on the same idea, stop that idea, write why, and move to the next item in sections 4.3 and 4.4.
+The rules stop wrong changes from shipping and stop time being spent on runs that cannot give an answer. They do not make the error fall by themselves. Error falls only when missing physics or missing data is added (sections 4.3, 4.4 and 6). If three experiments in a row are rejected on the same idea, stop that idea, write why, and move to the next item in sections 4.3 and 4.4. Count them in `docs/gate-ledger.md`.
 
 ## 6. Build order: gears, car model, racing line
 
