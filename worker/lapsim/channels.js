@@ -47,7 +47,12 @@ export function lapChannels(track, car, env, res, {cls = 'f1', seed = '', surfac
   // the lower gear lands at 0.675 / 0.727 (measured pole laps, 2025 / 2026 rules).
   // throttle (scripts/sim/learn/f1-throttle-gate.mjs, pre-registered, calibrated on the page's own timing): pick-up starts 0.3 s before the
   // demand (both seasons ✓), squeeze τ 0.35 s (2025 ✓; 2026 ✗, stays 0.10 s).
-  const DRV = {f1: {off: -0.598, up: 0.771, down: 0.675, tau: 0.35, pick: -0.3}, 'f1-2026': {off: -0.625, up: 0.778, down: 0.727, pick: -0.3}};
+  // GT3 / Hypercar, model (iRacing) (owner 2026-11-22 10:05: no real telemetry, so the owner's iRacing laps are the reference):
+  // shift points = iRacing class medians (scripts/sim/learn/iracing/shift_gate_page.mjs: GTP ✓; GT3 upshift ✗ −0.004, shipped by owner
+  // decision); pedals = the grid value whose page output matches iRacing best (scripts/sim/learn/iracing/pedal_calib_page.mjs; LOTO:
+  // GT3 pick-up ✓, Hypercar pick-up ✓, brake off ✓, τ +0.08 ± 0.06 not significant). GT3 squeeze and brake release already match best.
+  const DRV = {f1: {off: -0.598, up: 0.771, down: 0.675, tau: 0.35, pick: -0.3}, 'f1-2026': {off: -0.625, up: 0.778, down: 0.727, pick: -0.3},
+    gt3: {up: 0.969, down: 0.871, pick: -0.5}, hyper: {up: 0.981, down: 0.878, tau: 0.35, pick: -0.3, off: -0.3}};
   const D = drv === undefined ? DRV[cls === 'f1' && (car.ers || {}).rule === 'f1-2026' ? 'f1-2026' : cls] || null : drv;
   // gear and rpm: the gear with the most engine power at this speed (same rule as kernel powertrain()); a gear within 1 % of the
   // best is kept, so the trace does not hunt on the flat top of the curve
