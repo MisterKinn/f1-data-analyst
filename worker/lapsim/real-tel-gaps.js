@@ -10,8 +10,9 @@
 // Time comes from the samples' positions and speeds (the site file has no time column). Returns ranges in the file's position units
 // (f, share of the lap × 1e4), from the first repeated sample to the next good one. Measured values are never changed; the page shows
 // the model inside these ranges and learning scripts skip them.
-const CH = ['speed', 'rpm', 'gear', 'throttle', 'brake'], G = 9.81, P = 800e3, M = 798, RHO = 1.2, CDA = 1.5, CR = 0.012;
+// Self-contained: the page's browser script carries it as text (the picked driver's lap is loaded in the browser).
 export function telGaps(r, {minS = 1.5, minKph = 5, minRun = 4, k = 1.5} = {}) {
+  const CH = ['speed', 'rpm', 'gear', 'throttle', 'brake'], G = 9.81, P = 800e3, M = 798, RHO = 1.2, CDA = 1.5, CR = 0.012;
   if (!r || !r.f || !r.speed) return [];
   const n = r.f.length, L = r.len || 1e4, x = r.f.map(f => f / 1e4 * L), t = [0], bad = new Uint8Array(n);
   for (let i = 1; i < n; i++) t.push(t[i - 1] + Math.max(0, x[i] - x[i - 1]) / Math.max(1, (r.speed[i] + r.speed[i - 1]) / 7.2));
