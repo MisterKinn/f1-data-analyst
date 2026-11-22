@@ -53,6 +53,11 @@ estimates, tracks) must leave all three in step in the same PR or refresh run:
 - Measured data (real lap and sector times, official weather) is read-only. No fit, rule change or new physics may rewrite or move it; a
   raced track shows its real lap exactly (tests: "every car that raced on a track reproduces its real lap exactly", "F1 sector
   correction"). A model change that breaks this is a bug in the model path, fixed there, never by editing the real lap.
+- Measured data is never touched (owner 2026-11-22): data that is certainly measured — F1 lap and sector times, speed, throttle, brake,
+  gear, rpm and DRS from the timing / telemetry feed, WEC and other series' official lap times (Al Kamel, Timing71, series archives),
+  official weather — is never edited, rescaled, smoothed, filtered, re-timed, dropped or replaced, by hand, by a script, by a fit or to
+  make a test or a model pass. Generated data files only copy it (resampling to show it on a chart is the only allowed step, and the
+  stored samples stay as measured). A model, a fit or a display change that disagrees with it is changed instead.
 - Measured telemetry is always shown (owner 2026-11-22): where a real lap exists (F1 speed, throttle, brake, gear / shifts, rpm, DRS,
   sector and lap times, …), every measured channel is shown from that real lap, labelled measured / 실측. Never show model or
   predicted data in place of a measured channel. The model fills only channels that were not measured (e.g. ERS deploy / harvest,
