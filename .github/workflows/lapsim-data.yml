@@ -197,6 +197,18 @@ jobs:
         if: inputs.calibrate != 'false'
         continue-on-error: true
         run: node scripts/sim/change-effects.mjs
+      # Gate G v3.2 item 8 (owner 2026-11-22): every refit reruns the diagnostics and reports level C and forward-chaining
+      - name: Refit reports (residual signature, conditions, level C, forward-chaining)
+        if: inputs.calibrate != 'false'
+        continue-on-error: true
+        run: |
+          node scripts/sim/residual-signature.mjs --md docs/lapsim-signature.md
+          node scripts/sim/condition-report.mjs --md docs/lapsim-conditions.md
+          node scripts/sim/holdout-track.mjs --json docs/lapsim-level-c.json
+          node scripts/sim/backtest-forward.mjs --json docs/lapsim-forward.json
+          for f in docs/lapsim-level-c.json docs/lapsim-forward.json; do
+            node -e "const s=require('./'+process.argv[1]).summary;console.log('### '+process.argv[1]+'\n\n| group | n | RMS % |\n|---|---|---|\n'+Object.entries(s).map(([k,v])=>'| '+k+' | '+v.n+' | '+v.rmsPct+' |').join('\n'))" "$f" >> "$GITHUB_STEP_SUMMARY"
+          done
       - name: Test
         if: inputs.calibrate != 'false'
         run: node --test tests/lapsim*.test.mjs
@@ -221,7 +233,8 @@ jobs:
           for f in worker/lapsim/tracks-data.js worker/lapsim/f1-zones-data.js worker/lapsim/calibration-data.js worker/lapsim/track-changes-data.js docs/lapsim-report.md docs/lapsim-geometry.md \
             worker/lapsim/race-data.js docs/lapsim-race.md worker/lapsim/change-effects-data.js worker/lapsim/energy-docs-data.js worker/lapsim/rules-data.js docs/lapsim-rules.md \
             worker/lapsim/racing-lines-data.js docs/lapsim-racing-lines.md \
-            worker/lapsim/stint-data.js worker/lapsim/f1-wet-quali-data.js worker/lapsim/hypercar-maker-data.js scripts/sim/data/wec-stints.json worker/lapsim/brake-data.js worker/lapsim/wec-poles-data.js; do
+            worker/lapsim/stint-data.js worker/lapsim/f1-wet-quali-data.js worker/lapsim/hypercar-maker-data.js scripts/sim/data/wec-stints.json worker/lapsim/brake-data.js worker/lapsim/wec-poles-data.js \
+            docs/lapsim-signature.md docs/lapsim-conditions.md docs/lapsim-level-c.json docs/lapsim-forward.json; do
             [ -e "$f" ] && git add "$f"
           done
           if git diff --cached --quiet; then echo "No changes"; exit 0; fi
