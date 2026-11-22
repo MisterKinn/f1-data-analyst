@@ -80,3 +80,64 @@ export const uiSystemClientCss = `
 .kb-track-search::placeholder{color:var(--muted)}
 .kb-track-note{display:block;margin-top:4px;font-size:12px;color:var(--muted);font-weight:400}
 `;
+
+// Home hero entrance (UI P4) with anime.js (waapi + splitText + stagger), once on load.
+// Plan: h1 words rise out of a clip mask (100%→0, 70 ms stagger, 700 ms outExpo); at 350 ms the lead and
+// buttons rise 12 px and fade in (80 ms stagger, 500 ms); at 600 ms the Kongboda column of the comparison
+// table brightens row by row (90 ms stagger, 450 ms). Transforms and opacity only; nothing runs under
+// prefers-reduced-motion, and CSS shows everything after 1.6 s if the script never runs.
+export function heroMotionClient() {
+ const hero = document.querySelector('.kb-hero');
+ if (!hero || hero.dataset.kbEntered) return;
+ hero.dataset.kbEntered = '1';
+ const A = window.kbAnime, reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+ const show = () => hero.classList.add('kb-hero-in');
+ if (!A || reduce) { show(); return; }
+ try {
+  const h1 = hero.querySelector('h1');
+  const { words } = A.splitText(h1, { words: { wrap: 'clip' }, accessible: true });
+  show();
+  A.waapi.animate(words, { translateY: ['100%', '0%'], delay: A.stagger(70), duration: 700, ease: 'outExpo' });
+  A.waapi.animate(hero.querySelectorAll('.lead, .hero-actions > *'), { opacity: [0, 1], translateY: [12, 0], delay: A.stagger(80, { start: 350 }), duration: 500, ease: 'outCubic' });
+  const cells = document.querySelectorAll('.kb-why-table tbody td:last-child');
+  if (cells.length) A.waapi.animate(cells, { opacity: [0.35, 1], delay: A.stagger(90, { start: 600 }), duration: 450, ease: 'outQuad' });
+ } catch { show(); }
+}
+
+// Next-session countdown under "This/Next week in motorsport" (UI P4). Reads the calendar the week box
+// already loaded (window.kbCalendarEvents); updates every 30 s; shows nothing if no session is ahead.
+export function nextSessionClient() {
+ const status = document.querySelector('[data-race-calendar="week"] .race-status-row');
+ if (!status || status.dataset.kbNext) return;
+ status.dataset.kbNext = '1';
+ const en = document.documentElement.lang === 'en';
+ const line = document.createElement('p'); line.className = 'kb-next-session'; line.setAttribute('aria-live', 'off');
+ status.after(line);
+ const fmt = ms => {
+  const m = Math.max(0, Math.round(ms / 60000)), d = Math.floor(m / 1440), h = Math.floor(m % 1440 / 60), mm = m % 60;
+  if (en) return d ? `${d}d ${h}h` : h ? `${h}h ${mm}m` : `${mm}m`;
+  return d ? `${d}일 ${h}시간` : h ? `${h}시간 ${mm}분` : `${mm}분`;
+ };
+ const tick = () => {
+  const now = Date.now(); let best = null;
+  for (const e of window.kbCalendarEvents || []) for (const s of e.sessions || []) {
+   const t = Date.parse(s.start); if (t > now && (!best || t < best.t)) best = { t, e, s };
+  }
+  if (!best) { line.hidden = true; return; }
+  line.hidden = false;
+  const ev = en ? (best.e.nameEn || best.e.name) : best.e.name, ss = en ? (best.s.nameEn || best.s.name) : (best.s.name || best.s.nameEn);
+  const when = new Date(best.t).toLocaleString(en ? 'en-GB' : 'ko-KR', { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
+  line.innerHTML = '';
+  const strong = document.createElement('strong'); strong.textContent = en ? `Next: ${fmt(best.t - now)}` : `다음 세션까지 ${fmt(best.t - now)}`;
+  line.append(strong, document.createTextNode(` · ${best.e.seriesLabel || String(best.e.series).toUpperCase()} ${ev} ${ss} · ${when}`));
+ };
+ const start = () => { tick(); setInterval(() => { if (document.visibilityState !== 'hidden') tick(); }, 30000); };
+ if (window.kbCalendarEvents) start(); else { let n = 0; const wait = setInterval(() => { if (window.kbCalendarEvents || ++n > 40) { clearInterval(wait); start(); } }, 250); }
+}
+
+export const heroMotionCss = `
+@media(prefers-reduced-motion:no-preference){.kb-hero:not(.kb-hero-in) h1,.kb-hero:not(.kb-hero-in) .lead,.kb-hero:not(.kb-hero-in) .hero-actions{opacity:0;animation:kb-hero-fallback 0s 1.6s forwards}}
+@keyframes kb-hero-fallback{to{opacity:1}}
+.kb-next-session{margin:4px 0 12px;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.kb-next-session strong{color:var(--mint);font-weight:750;margin-right:2px}
+`;
