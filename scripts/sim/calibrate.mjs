@@ -2,6 +2,7 @@
 // 2027 and 2028. Reads worker/lapsim/tracks-data.js and .cache/lapsim/traces.json (from
 // build-geometry.mjs); writes worker/lapsim/calibration-data.js and docs/lapsim-report.md.
 import {readFile, writeFile} from 'node:fs/promises';
+import {medianKappa} from './kappa-median.mjs';
 import {existsSync} from 'node:fs';
 import {gate} from './gate.mjs';
 import {join} from 'node:path';
@@ -57,6 +58,12 @@ if (E.LAPSIM_TRACE_MASK === '1') { let cut = 0, gone = 0;
 if (E.LAPSIM_KAPPA_CAP_G && !ONLY_WEC) for (const [id, d] of Object.entries(lapsimTracks)) { if (d.quality?.kappaCap || id === 'zandvoort') continue;
   const dry = traces.filter(x => x.track === id && !x.weather?.rain && x.position <= 3), own = dry.filter(x => x.year === d.year), laps = own.length ? own : dry;
   if (laps.length) d.kappa = capCurvature(d.kappa, d.ds, laps, Number(E.LAPSIM_KAPPA_CAP_G)).kappa; }
+// LAPSIM_KAPPA_MED_M=35: the stored line curvature replaced by its rolling median over that many metres, every track (corner-speed
+// attempt 3, claude/gate-kappa-median-prereg-2026-11-23.md: narrow spikes such as Suzuka 130R at 99 m against the named 130 m);
+// LAPSIM_KAPPA_MED_WRITE=on writes the filtered tracks so the page and tool use the line the cars were fitted on. Off: byte-identical.
+if (Number(E.LAPSIM_KAPPA_MED_M) > 0 && !ONLY_WEC) {
+  for (const d of Object.values(lapsimTracks)) if (d.kappa?.length) d.kappa = medianKappa(d.kappa, d.ds, Number(E.LAPSIM_KAPPA_MED_M));
+  if (E.LAPSIM_KAPPA_MED_WRITE === 'on') await writeFile('worker/lapsim/tracks-data.js', (await readFile('worker/lapsim/tracks-data.js', 'utf8')).replace(/export const lapsimTracks=[\s\S]*?;\n/, () => `export const lapsimTracks=${JSON.stringify(lapsimTracks)};\n`)); }
 const tracks = Object.fromEntries(Object.entries(lapsimTracks).map(([id, d]) => [id, trackFromData(d)]));
 // F1 cars open DRS (to 2025) or Straight Mode (2026) only in the FIA zones of the event notes (f1-zones-data.js); without a
 // document the automatic straight finder stands in. LAPSIM_FIA_ZONES=on (2026-11-15: the finder gave Jeddah 880 m of DRS, the FIA 2025 m)
