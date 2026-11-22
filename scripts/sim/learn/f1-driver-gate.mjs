@@ -44,7 +44,7 @@ for (const year of ['2025', '2026']) {
   const g = Object.fromEntries(Q.map(q => [q, []])), rows = [];
   for (const tr of tracks) {
     const D = tableOf(tracks.filter(x => x !== tr).flatMap(x => M[x]));
-    if (process.env.SHIP) { for (const q of Q) if (!(SHIP[year] || []).includes(q)) D[q] = null; } // confirmatory run: only the shipped quantities
+    if (process.env.SHIP) { for (const q of Q) if (!(SHIP[year] || []).includes(q)) D[q] = null; Object.assign(D, year === '2025' ? {up: 0.771, down: 0.675} : {up: 0.778, down: 0.727}); } // confirmatory run: the shipped table
     const base = pageCorners(tr, year, null); if (!base) continue; const cand = pageCorners(tr, year, D), row = {track: tr, n: M[tr].length};
     for (const q of Q) { const eb = err(M[tr], base, q), ec = err(M[tr], cand, q); row[q] = [+eb.toFixed(3), +ec.toFixed(3)]; if (Number.isFinite(eb) && Number.isFinite(ec)) g[q].push(eb - ec); }
     rows.push(row); console.log(year, JSON.stringify(row));
