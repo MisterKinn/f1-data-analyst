@@ -721,3 +721,52 @@ both classes (already the same season). Measured lookup: all 56 paired laps repl
 W16 sign check on the page gap, dry qualifying (22 tracks): median-over-makers measure 14 same / 7 wrong → 17 / 4; best measure 18 / 3 → 19 / 2.
 Remaining wrong: Austin, Monza (calibrated 2025/26 laps), Portimão (only 2023 data: class-best gap −2.23 s vs maker median +0.02 s), Spa.
 Gaps in the inputs: no Monza Hypercar qualifying after 2023 in `endurance-cars.csv.gz`.
+
+## 14. Level C: unseen-track test (2026-11-22)
+
+`scripts/sim/holdout-track.mjs` hides one raced track at once from every season, class and series: its F1 track grip and drag factor,
+its WEC track grip (frozen snapshot), any learned time scale and the correction to the real lap are removed (kerbs and bumps change only
+the map). The track is predicted as a new track: the production car (inputs pinned, no refit) on the class-mean factor of the other
+tracks (geometric mean, same season or class), through the page's own lap path in the real session weather. Wet sessions are left out.
+Baseline on production (upstream main c96b7f4, 2026-11-22), lap error % = (sim − real) / real:
+
+| Group | n | RMS % | median abs % |
+|---|---|---|---|
+| f1-2025 | 22 | 3.15 | 2.772 |
+| f1-2026 | 18 | 2.804 | 1.905 |
+| wec-lmh | 6 | 1.934 | 1.214 |
+| wec-lmdh | 6 | 1.693 | 0.988 |
+| wec-lmgt3 | 6 | 1.874 | 1.3 |
+| f1 | 40 | 2.999 | 2.363 |
+| wec | 18 | 1.836 | 1.006 |
+| all | 58 | 2.692 | 1.84 |
+
+δ for level C = 5 % of the baseline RMS (all: 0.135 percentage points). Sanity check: with the track's own factors the same path gives
+Monza 2026 −0.18 %, Suzuka 2025 +0.50 % (hidden: +0.92 %, +5.21 %). Limit of v1: no refit with the track removed (the pinned car saw it).
+
+## 15. Forward-chaining backtest (2026-11-22)
+
+`scripts/sim/backtest-forward.mjs`: events in time order (OpenF1 session key), each predicted only from earlier events — F1: the latest
+earlier fitted grip and drag of that track (2025 for a 2026 event), else the mean of earlier events (1 for the first ones); WEC: the
+class's previous-season grip at that track (2025 rows have no earlier season and are left out). Same lap path as level C. Baseline:
+
+| Group | n | RMS % | median abs % |
+|---|---|---|---|
+| f1-2025 | 22 | 3.202 | 2.25 |
+| f1-2026 | 18 | 1.336 | 0.733 |
+| wec-lmh | 6 | 0.933 | 0.532 |
+| wec-lmdh | 6 | 0.71 | 0.241 |
+| wec-lmgt3 | 6 | 0.94 | 0.746 |
+| f1 | 40 | 2.538 | 1.382 |
+| wec | 18 | 0.868 | 0.473 |
+| all | 58 | 2.162 | 0.971 |
+
+δ = 5 % of the baseline RMS (all: 0.108 percentage points). Limit of v1: the car is the production car, not refitted per origin.
+
+## 16. Coverage of the shown ± (2026-11-22)
+
+`coverage()` on the production held-out rows (calibration holdout, σ = the class-season holdout RMS the page and tool show): F1 2025
+n 20, ±1σ 70 %, ±2σ 95 %; F1 2026 n 15, 87 % / 93 %; F1 pooled n 35, 77 % / 94 %; WEC per class n 11 each, 64–73 % / 100 %; WEC pooled n 33,
+67 % / 100 %; all n 68, 72 % / 97 %. Every group with n ≥ 20 is inside 55–80 %, so the ± is not rescaled. The prediction log adds logged
+rows from 2026-11-27 (Qatar).
+
