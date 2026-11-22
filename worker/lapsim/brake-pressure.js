@@ -2,7 +2,8 @@
 // scripts/sim/learn/f1-brake-pressure-gate.mjs). Brake on/off in the public data is measured only for its timing, so the amount comes
 // from the speed trace: friction force = m|a| − drag − rolling − regen (fixed priors per season), pedal load = k × force / g0.
 // Gate BP-1 failed twice (a constant per season matched Brembo's peak better: 7.5 % against 16 %; idea stopped after 3 attempts), so the
-// page shows it only as "estimate (provisional)" with ± 16 % (AGENTS.md provisional values), attempt-2 settings: 1.0 s smoothing, k fitted
+// page shows it only as "estimate (provisional)" with ± 30 % (the median error over all 112 Brembo 2026 card corners; ± 16 % was the
+// hardest-corner hold-out) (AGENTS.md provisional values), attempt-2 settings: 1.0 s smoothing, k fitted
 // on the tuning rounds to Brembo's zone figures. 2027 and 2028 use the 2026 car (the fitted 2026 car x rules x development).
 const G0 = 9.81;
 // M-BP on one lap: 10 Hz series of time, position (m), speed, a_x, friction force (N) and pedal load (kg). Self-contained: the page's
@@ -26,7 +27,7 @@ export function mbpSeries(x, kph, year, w = {}, {win = 11} = {}) {
   for (let i = 0; i < n; i++) if (A[i] < -0.5 * G0) { let j = i; while (j + 1 < n && A[j + 1] < -0.5 * G0) j++;
     if (T[j] - T[i] >= 0.3) { const fs = F.slice(i, j + 1).sort((a, b) => a - b), kg = +(P.k * fs[Math.floor(0.8 * (fs.length - 1))] / G0).toFixed(0); for (let q = i; q <= j; q++) zoneKg[q] = kg; }
     i = j; }
-  return {T, X, V, A, F, zoneKg, rho, P, err: 0.16};
+  return {T, X, V, A, F, zoneKg, rho, P, err: 0.30};
 }
 // braking zones: a_x below −0.5 g for at least 0.3 s
 export function zones(s) {

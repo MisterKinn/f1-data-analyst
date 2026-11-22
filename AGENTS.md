@@ -167,6 +167,13 @@ The owner has no team data: no full-rate telemetry, no setup sheets, no tyre dat
   | GT3 / other series | lap (some sectors), official results | lap | every channel |
   | Formula E | Al Kamel lap and sectors | lap, sectors | every channel, energy |
   | Owner's own sources | iRacing (60 Hz, simulator), onboard video and sound | only what the v3 scope rules allow | anything absolute (grip, speed, lap) |
+- **Broken telemetry is not measured data (owner 2026-11-22).** A stretch of a measured lap where the channels freeze (speed, rpm,
+  gear, throttle and brake all repeat one value, e.g. 2026 Suzuka pole flat from 4.1 km to the line) or hold impossible values (throttle
+  > 100 %) is not truth. Detect it (`worker/lapsim/real-tel-gaps.js`; Session D detector in Project
+  `claude/gate-ti-frozen-telemetry-prereg-2026-11-22.md`), and then: never fit, tune, align or score on it (drop events inside it and
+  within 150 m of it); a lap mostly broken (> 50 % of its time) is dropped and counted; charts show it as a gap or as a model fill
+  labelled "model / 모델 추정(보간)", never as "measured". The raw file is never edited. 2026 is worst (China, Japan, Monza); check
+  every season.
 - **Weak sources add up only when independent.** Two weak sources that agree (for example iRacing and onboard sound on the same upshift
   ratio, or OpenStreetMap and a satellite image on a kerb line) beat one; agreement is reported with both errors. Two values from the same
   source are one source.
@@ -220,7 +227,8 @@ estimates, tracks) must leave all three in step in the same PR or refresh run:
   OpenF1) is an on / off flag: its on and off moments are measured data, its height is not a pressure. Never show, label or learn the
   flag height as brake pressure or effort; the page labels the lane "on / off (timing only, not pressure)". A pressure / pedal-load
   estimate (Session C, model M-BP from the measured deceleration, pre-registered in Project claude/gate-brake-pressure-prereg-2026-11-22.md,
-  gate BP-1 against Brembo's per-GP figures, which are Brembo estimates, not measured data) ships only after its gate, labelled model.
+  gate BP-1 against Brembo's per-GP figures, which are Brembo estimates, not measured data) is shown only as a model: BP-1 failed
+  (2026-11-22), so the lane is "estimate (provisional)", one value per braking zone, ± 30 % (all 112 Brembo 2026 card corners).
   Learning may use the timing (onset, release), not the height.
 - Qualifying with rain: the dry fit leaves the session out, but the page and tool still default to that session's real pole in its own
   weather (scripts/sim/learn/wet-quali.mjs → worker/lapsim/f1-wet-quali-data.js, input scripts/sim/data/learn/f1-wet-quali.json from
