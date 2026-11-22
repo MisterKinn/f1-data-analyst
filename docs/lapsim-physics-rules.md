@@ -79,7 +79,7 @@ The current "held-out" number is weaker than it sounds. Say which level a number
 |---|---|---|
 | A. Season-unseen | This season's lap on a track. The track factor comes from another season. | F1 (`holdoutBCD`, 4 folds) |
 | B. Class-unseen | This class's lap on a track. The track factor comes from F1. | WEC (`holdout`, leave one track out) |
-| C. Track-unseen | A track with no factor from anyone | **Not tested.** New circuits have no measured accuracy. |
+| C. Track-unseen | A track with no factor from anyone | **Required since 2026-11-22** (AGENTS.md "Gate G v3 additions", Unraced tracks): `scripts/sim/holdout-track.mjs`, to be built by Session C. Until it runs, say "level C not tested". |
 
 Level C needs its own test: hide a track from every season and class, predict it with factor 1 or with a factor from track features.
 
