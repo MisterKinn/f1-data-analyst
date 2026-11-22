@@ -56,7 +56,7 @@ test('human pedals: stab, overshoot, ripple and trail-off; throttle; grip-loss z
     const z = ch.brakeHuman.slice(best[0], best[1] + 1), m = z.length, hold = z.slice(Math.floor(0.4 * m), Math.floor(0.8 * m)).sort((x, y) => x - y)[Math.floor(0.2 * m)];
     assert.ok(Math.max(...z.slice(0, Math.floor(0.4 * m))) > 1.02 * hold, 'overshoot'); }
   let turns = 0; for (let k = 2; k < 2 * n; k++) if (ch.brakeHuman[k - 1] > 20 && (ch.brakeHuman[k] - ch.brakeHuman[k - 1]) * (ch.brakeHuman[k - 1] - ch.brakeHuman[k - 2]) < 0) turns++;
-  assert.ok(turns > 10, 'ripple ' + turns); // fewer since 2026-11-18: the learned release (last 70 % of an open-wheel zone) falls faster than the ripple
+  assert.ok(turns > 5, 'ripple ' + turns); // fewer since 2026-11-18 (learned release) and 2026-11-22 (F1 brake off before the apex: shorter zones)
   // brake only in braking zones and their short tails; no throttle while braking; flat out on the straights
   ch.brakeHuman.forEach((b, k) => { if (b > 0) { const i = k >> 1; assert.ok([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].some(o => ch.brakeBar[(i - o + n) % n] > 0), 'brake at ' + k); } });
   ch.throttleHuman.forEach((x, k) => { if (ch.brakeHuman[k] > 2) assert.equal(x, 0); });

@@ -2,7 +2,7 @@
 // angle. Self-contained (the /simulation page sends its source to the browser). Per-class values are engineering estimates; their
 // basis and the Wolfram checks are in docs/lapsim-physics-rules.md, "Telemetry channels".
 // track: kernel track (ds, kappa, mu), res: simulateLap result (v, time, limit), cls: 'f1' | 'hyper' | 'gt3' | 'fe', seed: any string.
-export function lapChannels(track, car, env, res, {cls = 'f1', seed = '', surface = null, walls = null, wet = false} = {}) {
+export function lapChannels(track, car, env, res, {cls = 'f1', seed = '', surface = null, walls = null, wet = false, drv} = {}) {
   const G = 9.81, v = res.v, n = v.length, ds = track.ds, rho = env.rho ?? 1.2, m = car.mass, Rt = car.tyreRadius ?? 0.34;
   // bal: front share of the brake force; mu: pad friction; rf, rr: effective disc radius (m); af, ar: piston area on one side of the
   // caliper (mm²; the two pads each press with p·A); ratio: steering ratio; kus: understeer gradient (deg/g at the road wheels)
@@ -101,7 +101,16 @@ export function lapChannels(track, car, env, res, {cls = 'f1', seed = '', surfac
     const a2 = v[(i + 2) % n], b2 = v[(i - 2 + n) % n], q = 0.5 * rho * vi * vi, F = m * (a2 * a2 - b2 * b2) / (8 * ds) + q * cdI(i) + (car.cRoll ?? 0.012) * (m * G + q * clI(i));
     return Math.max(0, Math.min(1, F * vi / ((powerW ? powerW[i] : car.pIce) * eta + ersW)));
   });
-  const ped = humanPedals(brakeBar, throttle, risk, res.time, res.lapTime ?? res.time[n - 1], String(seed) + '|pedals', C.h || OW);
+  // driver timing learned from iRacing per class (owner 2026-11-22, scripts/sim/learn/iracing/driver_gate.py, model (iRacing)): throttle rise
+  // 10 → 90 % per apex-speed bin (slow < 90, medium 90–160, fast > 160 km/h), throttle pick-up start and brake off vs the apex (s, < 0 =
+  // before). Used only where the page-output gate passed (DRV below); drv = a table to test (gate script), null = off.
+  // F1 from the measured real pole laps (scripts/sim/learn/f1-driver-gate.mjs, pre-registered; Project claude/gate-f1-driver-timing-prereg-
+  // 2026-11-22.md): brake off before the apex passed in both seasons (held-out error −0.16 / −0.17 s, and rise and pick-up also improve);
+  // throttle rise (2025 passed alone but worsened pick-up), pick-up and 2026 rise failed and stay the physics. iRacing timing failed against
+  // the page (driver_gate_page.mjs), so GT3 / Hypercar keep theirs. 2026 rules (f1-2026) cars take the 2026 row.
+  const DRV = {f1: {off: -0.598}, 'f1-2026': {off: -0.625}};
+  const D = drv === undefined ? DRV[cls === 'f1' && ers.rule === 'f1-2026' ? 'f1-2026' : cls] || null : drv;
+  const ped = humanPedals(brakeBar, throttle, risk, res.time, res.lapTime ?? res.time[n - 1], String(seed) + '|pedals', C.h || OW, D);
   return {brakeBar, gear, rpm, shifts, steerDeg, steerMeanDeg: mean.map(d => +d.toFixed(1)), throttle, risk: risk.map(x => +x.toFixed(2)), ...ped};
 
   // A human foot on the pedals (owner 2026-11-15: "the trace is too honest"), on a grid twice as fine as the lap (half a point
@@ -114,7 +123,7 @@ export function lapChannels(track, car, env, res, {cls = 'f1', seed = '', surfac
   // throttle: squeezed on (time constant 0.10 s), snapped off (0.025 s), with a 2.5–4 Hz traction ripple while it is part-open and
   //   sometimes a short lift on the way up; off whenever the brake is on.
   // Seeded per track and car, so the page is stable. Values checked with Wolfram (docs/lapsim-physics-rules.md).
-  function humanPedals(pb, th, rk, time, lapT, sd, H) {
+  function humanPedals(pb, th, rk, time, lapT, sd, H, D) {
     let hh = 2166136261; for (const c of sd) { hh ^= c.charCodeAt(0); hh = Math.imul(hh, 16777619); }
     const r = () => { hh = Math.imul(hh ^ (hh >>> 15), 2246822507) ^ Math.imul(hh ^ (hh >>> 13), 3266489909); return ((hh ^= hh >>> 16) >>> 0) / 4294967296; };
     const N = 2 * n, tAt = k => { const i = k >> 1; return k & 1 ? (time[i] + (i + 1 < n ? time[i + 1] : lapT)) / 2 : time[i]; };
@@ -135,6 +144,9 @@ export function lapChannels(track, car, env, res, {cls = 'f1', seed = '', surfac
       // `rel` of the zone as p = 0.9 · u^k, u = speed left to lose (1 at release start, 0 at the end); not the physics need, whose
       // grip-limited fall with downforce drew a spike. The impulse is still the physics one (rescaled below). k is refitted (2026-11-18) so the
       // zone's mean/peak pressure equals iRacing's (heavy zones: open wheel 0.565, GTP 0.562, GT3 0.660; docs/lapsim-physics-rules.md)
+      // learned brake-off (D.off < 0: before the apex): the zone's pressure is released by apex + D.off, no tail after it; same impulse
+      let eOrig = e; if (D && D.off != null) { let qa = e; for (let q = e; q < Math.min(N - 1, e + 40); q++) if (up(v, q + 1) < up(v, qa)) qa = q + 1; else if (q > e + 2 && up(v, q + 1) > up(v, qa)) break;
+        const tOff = t[qa] + D.off; let ee = e; while (ee > k + 1 && t[ee] > tOff) ee--; e = ee; }
       const tRel = t0 + (t[e] - t0) * (1 - H.rel * (0.85 + 0.3 * r())), vE = up(v, e);
       let qr = k; while (qr < e && t[qr + 1] <= tRel) qr++;
       const vR = up(v, qr), shape = q => t[q] <= tRel ? 1 - 0.1 * (t[q] - t0) / Math.max(1e-3, tRel - t0) : 0.9 * Math.max(0, Math.min(1, (up(v, q) - vE) / Math.max(0.1, vR - vE))) ** H.k;
@@ -145,20 +157,26 @@ export function lapChannels(track, car, env, res, {cls = 'f1', seed = '', surfac
         const d = dipAt > 0 ? dip * P * shape(q) * Math.exp(-(((t[q] - dipAt) / 0.04) ** 2)) : 0;
         brake[q] = Math.max(0, P * shape(q) * rise + os * P * g + rip - d); sumB += base[q]; sumH += brake[q];
       }
+      for (let q = e + 1; q <= eOrig; q++) sumB += base[q];
       for (let q = k; q <= e; q++) brake[q] *= sumB / Math.max(1e-9, sumH); // same impulse as the physics
       const pEnd = Math.max(0.06 * P, brake[e]);
-      for (let q = e + 1; q < N && t[q] - t[e] < 2.5 * tauOff && !(base[q] > 0.5); q++) { const y = pEnd * Math.exp(-(t[q] - t[e]) / tauOff); if (y < 0.5) break; brake[q] = y; }
-      k = e;
+      if (!(D && D.off != null)) for (let q = e + 1; q < N && t[q] - t[e] < 2.5 * tauOff && !(base[q] > 0.5); q++) { const y = pEnd * Math.exp(-(t[q] - t[e]) / tauOff); if (y < 0.5) break; brake[q] = y; }
+      k = eOrig;
     }
     const thr = new Array(N), fT = 2.5 + 1.5 * r(), phT = 6.28 * r();
     let y = up(th, N - 1), lift = -1;
+    const binOf = k => { const kph = up(v, k) * 3.6; return kph < 90 ? 0 : kph < 160 ? 1 : 2; };
+    let kk = 0, vPick = 0;
     for (let k = 0; k < N; k++) {
-      const want = up(th, k), dt = Math.max(1e-3, (t[k] - t[(k - 1 + N) % N] + lapT) % lapT);
+      // learned pick-up lead: the demand a moment later (|D.pick| s), while the brake is off: the foot starts before the apex
+      let want = up(th, k); if (D && D.pick != null && D.pick < 0 && !(brake[k] > 2)) { if (kk < k) kk = k; while (kk + 1 < N && t[kk + 1] - t[k] <= -D.pick) kk++; want = Math.max(want, up(th, kk)); }
+      const dt = Math.max(1e-3, (t[k] - t[(k - 1 + N) % N] + lapT) % lapT);
       if (want > y && y < 0.05 && want > 0.2) { // start of a pick-up: maybe a short lift on the way up, likelier where grip is easy to lose
         let rm = 0; for (let q = k; q < Math.min(N, k + 24); q++) rm = Math.max(rm, R[q]);
         lift = r() < 0.2 + 0.6 * rm ? t[k] + 0.15 + 0.2 * r() : -1;
       }
-      y += (want - y) * (1 - Math.exp(-dt / (want > y ? 0.1 : 0.025)));
+      if (want > y && y < 0.05) vPick = binOf(k);
+      y += (want - y) * (1 - Math.exp(-dt / (want > y ? (D && D.rise ? D.rise[vPick] / Math.log(9) : 0.1) : 0.025)));
       const lowV = Math.max(0, Math.min(1, (70 - up(v, k)) / 30)); // traction ripple below about 250 km/h, full below 145 km/h
       let o = y + (y > 0.05 && y < 0.97 ? 0.04 * (1 + 2 * R[k]) * lowV * Math.sin(2 * Math.PI * Math.min(fT, fmax(k)) * t[k] + phT) * Math.min(y, 1 - y) * 4 : 0);
       if (lift > 0 && Math.abs(t[k] - lift) < 0.06) o *= 0.85;
