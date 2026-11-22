@@ -7,8 +7,10 @@ import {telGaps} from '../../worker/lapsim/real-tel-gaps.js';
 const traces = JSON.parse(readFileSync(process.argv[2] || '.cache/lapsim/traces.json', 'utf8')), by = {};
 for (const t of traces) {
   if (!t.s?.length || !t.v?.length) continue;
-  const len = t.s.at(-1) || 1, r = {len, f: t.s.map(s => Math.round(s / len * 1e4)), speed: t.v, brake: t.v.map(() => 1)};
-  const g = telGaps(r), share = g.reduce((s, [a, b]) => s + b - a, 0) / 1e4, k = t.year;
+  // positions as share of the lap, in order (a trace can start before the line or hold repeated positions)
+  const ix = t.s.map((_, i) => i).filter(i => Number.isFinite(t.s[i])).sort((a, b) => t.s[a] - t.s[b]), s0 = t.s[ix[0]], len = Math.max(1, t.s[ix.at(-1)] - s0);
+  const r = {len, f: ix.map(i => Math.round((t.s[i] - s0) / len * 1e4)), speed: ix.map(i => t.v[i]), brake: ix.map(() => 1)};
+  const g = telGaps(r), share = Math.min(1, g.reduce((s, [a, b]) => s + Math.max(0, b - a), 0) / 1e4), k = t.year;
   const o = by[k] ||= {laps: 0, broken: 0, share: 0, worst: []}; o.laps++; if (g.length) { o.broken++; o.share += share; o.worst.push([share, t.track, t.position]); }
 }
 console.log('### OpenF1 traces: broken stretches (rule A+, speed only; report only)\n\n| season | laps | laps with a broken stretch | mean broken share | worst |\n|---|---|---|---|---|');
