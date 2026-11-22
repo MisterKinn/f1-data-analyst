@@ -128,6 +128,16 @@ Physics and frozen stages
   speed, end-of-straight speed or trap at the trap position, braking point, sector) as co-primary. It ships when the component gains
   beyond k SE and lap time is non-inferior (δ = 5 % of the baseline RMS). So a fix of a known bias (corner speeds 10–15 % slow) can ship
   when lap time moves only within noise. The other components may not get worse beyond their own k SE.
+- **Residual signature (v3.1, item 6).** `scripts/sim/residual-signature.mjs` compares the page's model lap with the measured F1 pole lap
+  on every raced track, by part of the lap: corner minimum speed by speed band, end-of-straight speed by straight length, braking onset,
+  peak deceleration by entry speed (baseline in `docs/lapsim-signature.md`; 2026-11-22: medium and fast corners 0.83–0.88 of measured,
+  brake onset within ±5 m). A physics change reports the table before and after; its targeted part must improve (sign-flip over
+  tracks) and no other part may get worse beyond its own noise. The measured side is only read.
+- **Conditions (v3.1, item 7).** `scripts/sim/condition-report.mjs` joins every production held-out row to its session weather and
+  reports the error slope per condition with a 90 % bootstrap interval (`docs/lapsim-conditions.md`; 2026-11-22: WEC error falls with air
+  temperature, R² 0.31; F1 shows no clear condition effect). Tyre age, tow, fuel and rubber are not recorded and are listed as such.
+  A condition whose interval excludes 0 is a candidate model term, added only through a pre-registered gate; no lap, weather value or
+  error is ever adjusted by hand. Every refit reruns both reports.
 - **Leaving a freeze.** A frozen stage (WEC track grip, #381) is refitted only when (a) a pre-registered physics change passed on F1 under
   the component rule, and (b) the WEC refit with it is non-inferior on WEC lap time with WEC traps or corner speeds as co-primary. The
   owner approves each unfreeze; the new freeze is a reviewed data change.
