@@ -84,3 +84,23 @@ export function coverage(rows) {
   const in1 = ok.filter(r => Math.abs(r.err) <= r.sigma).length, in2 = ok.filter(r => Math.abs(r.err) <= 2 * r.sigma).length;
   return {n, c1: n ? in1 / n : NaN, c2: n ? in2 / n : NaN, target: {c1: 0.683, c2: 0.954}};
 }
+
+// Gate G v3.3 (AGENTS.md, 2026-11-23): tools for small public-data hold-outs.
+// Power check before a run: minimum detectable effect at n units (one-sided 16 %, 80 % power: z 1.0 + 0.84), from the SD of per-unit gains
+// seen on tuning units or an earlier attempt. Also the smallest p an exact sign-flip test can reach (1 / 2^n): with one losing unit it needs
+// about n ≥ 9 to get below 0.05.
+export function mde(sdGain, n) { return n > 0 ? (1.0 + 0.84) * sdGain / Math.sqrt(n) : Infinity; }
+export const minSignFlipP = n => 1 / 2 ** n;
+// Cluster bootstrap: units (zones, laps) grouped by circuit; resample circuits, then units inside each. Returns the mean gain and its 90 %
+// interval; a pass needs the lower bound above 0.
+export function clusterBootstrap(rows, {group = r => r.circuit, value = r => r.gain, iters = 4000, seed = 1} = {}) {
+  const by = new Map(); for (const r of rows) { const v = value(r); if (!Number.isFinite(v)) continue; const g = group(r); if (!by.has(g)) by.set(g, []); by.get(g).push(v); }
+  const G = [...by.values()], all = G.flat(), mean = a => a.reduce((s, x) => s + x, 0) / (a.length || 1);
+  let s = seed >>> 0 || 1; const rand = () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296), b = [];
+  for (let k = 0; k < iters && G.length; k++) { const pick = []; for (let i = 0; i < G.length; i++) { const g = G[Math.floor(rand() * G.length)]; for (let j = 0; j < g.length; j++) pick.push(g[Math.floor(rand() * g.length)]); } b.push(mean(pick)); }
+  b.sort((x, y) => x - y);
+  const ci90 = b.length ? [b[Math.floor(0.05 * b.length)], b[Math.floor(0.95 * b.length) - 1]] : [NaN, NaN];
+  return {n: all.length, clusters: G.length, gain: mean(all), ci90, pass: G.length >= 5 && ci90[0] > 0};
+}
+// Skill score against a baseline the hold-out cannot fit by luck (production, previous-season value, simple physics): 1 − error / baseline error.
+export function skill(errModel, errBase) { const m = errModel.reduce((s, x) => s + Math.abs(x), 0), b = errBase.reduce((s, x) => s + Math.abs(x), 0); return b > 0 ? 1 - m / b : NaN; }
