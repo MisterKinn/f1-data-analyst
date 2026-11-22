@@ -10,6 +10,7 @@
 // Usage: node scripts/sim/residual-signature.mjs [--json out.json] [--md docs/lapsim-signature.md] [--years 2025,2026]
 import {writeFileSync} from 'node:fs';
 import {lapsimF1RealTel} from '../../worker/lapsim/f1-real-telemetry-data.js';
+import {lapsimF1WetQuali} from '../../worker/lapsim/f1-wet-quali-data.js';
 
 const arg = k => process.argv.includes(k) ? process.argv[process.argv.indexOf(k) + 1] : null;
 const med = a => { const s = a.filter(Number.isFinite).sort((x, y) => x - y); return s.length ? (s[(s.length - 1) >> 1] + s[s.length >> 1]) / 2 : NaN; };
@@ -63,7 +64,8 @@ async function main() {
   const years = (arg('--years') || '2025,2026').split(','), res = {};
   for (const y of years) {
     const rows = [];
-    for (const tr of Object.keys(lapsimF1RealTel).filter(t => lapsimF1RealTel[t][y])) {
+    // wet or damp qualifying (f1-wet-quali-data.js: the sessions the dry fit leaves out) is not compared with the dry model
+    for (const tr of Object.keys(lapsimF1RealTel).filter(t => lapsimF1RealTel[t][y] && !lapsimF1WetQuali[t]?.[y])) {
       const r = lapsimF1RealTel[tr][y], L = r.len, x = r.f.map(f => f / 1e4 * L), P = page(tr, y);
       if (!P) continue;
       const M = lapEvents(x, r.speed.map(s => s / 3.6), r.brake.map(Number), L), sig = trackSignature(M, P.ev, L);
