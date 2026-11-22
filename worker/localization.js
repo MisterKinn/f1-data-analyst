@@ -145,6 +145,7 @@ export const translations = {
  '로그인 오류·서버 연결 실패·자료 조회 오류는 세션이 없는 정상 대기 상태와 다릅니다. 오류가 계속되면 화면의 메시지와 조회한 대회·세션을 운영자에게 알려주세요.':'Sign-in, server and data errors differ from normal waiting between sessions. If an error persists, report its message and the event and session to the operator.',
  '순위만 보던 눈이,':'Eyes that once saw only the standings,','전략과 셋업까지 보이도록.':'now see strategy and setup too.','F1에 입문하기는 쉬워졌지만, 한 걸음 더 들어가려면 알아야 할 게 너무 많아졌어요. 라이트팬과 코어팬 사이의 그 계단을, 꽁보다가 한 칸씩 함께 오릅니다.':'Getting into F1 has never been easier, but going one step deeper now takes a lot to learn. Kongboda climbs the stairs between casual and core fan with you, one step at a time.','레이스 잘 아는 친구가':'Like having a racing-savvy friend','곁에 있는 것처럼.':'right beside you.',
  '숫자는 우리가 함께 읽을게요. 여러분은 레이스를 즐기세요.':'We’ll help read the numbers. You enjoy the racing.',
+ '© 꽁보다 모터스포츠':'© Kongboda Motorsports','개인정보 처리방침':'Privacy notice','FIA·F1·WEC와 관련 없는 독립 분석 서비스':'An independent analysis service, not affiliated with the FIA, F1 or WEC',
  '꽁보다, 무슨 뜻인가요?':'What does Kongboda mean?', '꽁 — 인사이트를 ‘꽁’으로 얻다':'Kong — insights, effortlessly',
  '기록을 찾고, 용어를 익히고, 숫자를 비교하는 일.':'Finding records, learning terminology, comparing numbers.',
  '그 수고는 우리가 덜어드릴게요.':'We take some of that work off your hands.',

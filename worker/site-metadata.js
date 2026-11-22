@@ -2,8 +2,8 @@ const SITE_NAMES = { ko: '꽁보다 모터스포츠', en: 'Kongboda Motorsports'
 
 const PAGES = {
   '/': {
-    ko: ['모터스포츠 테크니컬, 쉽게', '규정, 공력, 타이어, 에너지, 전략. 모터스포츠의 기술을 쉽게 풀어 라이트팬이 코어팬이 되도록 돕습니다. F1·WEC 공식 기록과 AI 해설.'],
-    en: ['Motorsport engineering, made easy', 'Regulations, aero, tyres, energy and strategy, explained simply so casual fans become core fans. F1 and WEC official records with AI explanations.'],
+    ko: ['그럴듯한 답 말고, 계산된 답', 'F1·WEC 랩타임, 셋업, 하이퍼카 BoP를 실제 랩으로 보정한 물리 모델로 계산하고 FIA 문서와 공식 타이밍을 근거로 보여 줍니다.'],
+    en: ['Not a plausible answer. A calculated one', 'F1 and WEC lap times, set-ups and Hypercar BoP, calculated with a physics model calibrated on real laps and backed by FIA documents and official timing.'],
   },
   '/about': {
     ko: ['꽁보다 소개', '레이스 기록을 이해하는 수고를 덜어주는 꽁보다 모터스포츠를 소개합니다. 공식 주최 기관과 구분되는 독립 분석 서비스입니다.'],
@@ -29,6 +29,14 @@ const PAGES = {
     ko: ['하이퍼카 BoP 시뮬레이터', '2026 WEC 하이퍼카 BoP는 비공개입니다. 알카멜 공식 타이밍의 모든 랩과 2024~2025 공개 BoP로 대회별 무게·출력·에너지를 추정합니다.'],
     en: ['Hypercar BoP simulator', 'The 2026 WEC Hypercar BoP is not published. Every Al Kamel lap and the 2024–2025 tables estimate weight, power and energy per event.'],
   },
+  '/ai': {
+    ko: ['꽁보다 인텔리전스', '쓰던 Claude·ChatGPT에 꽁보다를 연결하면 FIA 문서, 공식 타이밍, 랩 시뮬레이터로 근거를 찾아 답합니다.'],
+    en: ['Kongboda Intelligence', 'Connect Kongboda to the Claude or ChatGPT you use, and it answers from FIA documents, official timing and the lap simulator.'],
+  },
+  '/privacy': {
+    ko: ['개인정보 처리방침', '꽁보다가 로그인 때 저장하는 정보와 쿠키, 삭제 방법을 안내합니다.'],
+    en: ['Privacy notice', 'What Kongboda stores when you sign in, which cookies it uses, and how to delete your data.'],
+  },
   '/account': {
     ko: ['계정', '꽁보다 계정에 로그인하고 연결 정보를 확인하세요.'],
     en: ['Account', 'Sign in to your Kongboda account and review your connections.'],
@@ -52,7 +60,7 @@ const SERIES = {
 };
 
 export const publicSitePaths = Object.freeze([
-  '/', '/about', '/guide', '/resources', '/simulation', '/setup', '/bop',
+  '/', '/about', '/guide', '/resources', '/simulation', '/setup', '/bop', '/ai', '/privacy',
   ...Object.keys(SERIES).map(slug => `/championships/${slug}`),
 ]);
 
@@ -115,7 +123,10 @@ export function applySiteMetadata(html, { origin, pathname = '/', language } = {
     meta('og:description', metadata.description, true),
     meta('og:url', canonical, true),
     meta('og:locale', metadata.language === 'en' ? 'en_US' : 'ko_KR', true),
-    meta('twitter:card', 'summary'),
+    meta('og:image', `${siteOrigin(origin)}/assets/og${metadata.language === 'en' ? '-en' : ''}.png`, true),
+    meta('og:image:width', '1200', true),
+    meta('og:image:height', '630', true),
+    meta('twitter:card', 'summary_large_image'),
     meta('twitter:title', metadata.title),
     meta('twitter:description', metadata.description),
   ].join('\n');
