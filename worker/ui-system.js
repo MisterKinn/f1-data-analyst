@@ -41,3 +41,42 @@ main :is(a,button,select,input,summary,textarea):focus-visible{outline:2px solid
  main .sim-entry-card:hover{transform:translateY(-2px)}
 }
 `;
+
+// Track search (UI P3): a type-to-find box for the ~100-circuit select on /simulation.
+// Progressive enhancement only: the select stays, and choosing a match runs the select's own onchange.
+export function uiSystemClient() {
+ // The lap simulator re-renders its form in place (kbLapsimGo), so re-attach when a fresh select appears.
+ if (!window.kbTrackSearchObserver && document.querySelector('select[name="track"]')) { window.kbTrackSearchObserver = new MutationObserver(() => uiSystemClient()); window.kbTrackSearchObserver.observe(document.body, { childList: true, subtree: true }); }
+ const sel = document.querySelector('select[name="track"]');
+ if (!sel || sel.dataset.kbSearch) return;
+ sel.dataset.kbSearch = '1';
+ const en = document.documentElement.lang === 'en';
+ const norm = s => String(s).replace(/[\u{1F1E6}-\u{1F1FF}⚠️️]/gu, '').replace(/\s+/g, ' ').trim().toLowerCase();
+ const opts = [...sel.options].map(o => ({ value: o.value, text: o.textContent.trim(), key: norm(o.textContent) }));
+ const id = 'kb-track-list';
+ const list = document.createElement('datalist'); list.id = id;
+ for (const o of opts) { const x = document.createElement('option'); x.value = o.text; list.append(x); }
+ const box = document.createElement('input');
+ box.type = 'search'; box.className = 'kb-track-search'; box.setAttribute('list', id);
+ box.placeholder = en ? 'Find a circuit (e.g. Spa, Suzuka, KOR)' : '서킷 찾기 (예: 스파, Suzuka, KOR)';
+ box.setAttribute('aria-label', en ? 'Find a circuit' : '서킷 찾기');
+ box.autocomplete = 'off';
+ const pick = () => {
+  const q = norm(box.value); if (!q) return;
+  const hit = opts.find(o => o.key === q) || (opts.filter(o => o.key.includes(q)).length === 1 ? opts.find(o => o.key.includes(q)) : null);
+  if (!hit || hit.value === sel.value) return;
+  sel.value = hit.value; sel.dispatchEvent(new Event('change', { bubbles: true }));
+ };
+ box.addEventListener('change', pick);
+ box.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); pick(); } });
+ const note = document.createElement('span'); note.className = 'kb-track-note';
+ note.textContent = (en ? `${opts.length} circuits · ⚠️ not built yet, no real lap to check, or large error` : `서킷 ${opts.length}곳 · ⚠️ 미완공, 비교할 실제 랩 없음, 또는 오차가 큰 곳`);
+ const wrap = document.createElement('div'); wrap.className = 'kb-track-find'; wrap.append(box, list, note);
+ const label = sel.closest('label') || sel; label.before(wrap);
+}
+
+export const uiSystemClientCss = `
+.kb-track-find{grid-column:1/-1;flex:1 1 100%;max-width:560px;margin:0 0 4px}.kb-track-search{width:100%;min-height:44px;margin:0;padding:8px 12px;border:1px solid var(--kb-control-edge);border-radius:8px;background:var(--surface);color:var(--text);font:inherit;font-size:15px}
+.kb-track-search::placeholder{color:var(--muted)}
+.kb-track-note{display:block;margin-top:4px;font-size:12px;color:var(--muted);font-weight:400}
+`;
