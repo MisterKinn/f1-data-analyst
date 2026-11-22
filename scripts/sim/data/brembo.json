@@ -1,7 +1,8 @@
 {
  "_meta": {
   "collected": "2026-11-08",
-  "note": "Values as stated by Brembo (brembo.com '5 facts' pages) or mirrors quoting Brembo. Upper/lower bounds ('<13 s', 'over 17 s') stored as the number with the qualifier in notes. powerKW = Brembo braking power at that corner. 2026 pages are pre-race simulations."
+  "note": "Values as stated by Brembo (brembo.com '5 facts' pages) or mirrors quoting Brembo. Upper/lower bounds ('<13 s', 'over 17 s') stored as the number with the qualifier in notes. powerKW = Brembo braking power at that corner. 2026 pages are pre-race simulations.",
+  "cards2026": "2026-11-22: all 21 Brembo 2026 F1 Brake Circuit Identity Cards (brembogroup.com/en/media/media-library, F1 brake circuits) added as card + corners; hardest = the corner Brembo names (5-facts page) or, where none is named (Spanish, Las Vegas), the card corner with the highest braking power. Brembo estimates (pre-race simulations), not measured. Bahrain Grand Prix 2026 = held at Sepang."
  },
  "f1": {
   "2024": {
@@ -787,15 +788,59 @@
     "hardest": [
      {
       "turn": 11,
-      "vFrom": null,
-      "vTo": null,
+      "vFrom": 288,
+      "vTo": 138,
       "distM": 116,
       "timeS": 2.16,
       "decelG": 3.3,
-      "pedalKg": 88
+      "pedalKg": 88,
+      "powerKW": 1187
      }
     ],
-    "notes": "Brembo pre-season simulation reported by a mirror (brembo.com 2026 Australia page not reachable). 2025 T11: 4.8 g, 96 m, 1.80 s, 153 kg; 7 braking points in 2025 vs 4 expected in 2026."
+    "notes": "Brembo pre-season simulation reported by a mirror (brembo.com 2026 Australia page not reachable). 2025 T11: 4.8 g, 96 m, 1.80 s, 153 kg; 7 braking points in 2025 vs 4 expected in 2026.",
+    "card": "https://brem-p-001.sitecorecontenthub.cloud/api/public/content/37e04d3cc72b4865a4aeb867241ac97c?v=98175ba5",
+    "corners": [
+     {
+      "turn": 11,
+      "vFrom": 288,
+      "vTo": 138,
+      "distM": 116,
+      "timeS": 2.16,
+      "decelG": 3.3,
+      "pedalKg": 88,
+      "powerKW": 1187
+     },
+     {
+      "turn": 3,
+      "vFrom": 281,
+      "vTo": 114,
+      "distM": 129,
+      "timeS": 2.58,
+      "decelG": 3.2,
+      "pedalKg": 88,
+      "powerKW": 1179
+     },
+     {
+      "turn": 1,
+      "vFrom": 286,
+      "vTo": 217,
+      "distM": 61,
+      "timeS": 0.89,
+      "decelG": 3.2,
+      "pedalKg": 87,
+      "powerKW": 1172
+     },
+     {
+      "turn": 13,
+      "vFrom": 227,
+      "vTo": 107,
+      "distM": 99,
+      "timeS": 2.29,
+      "decelG": 2.3,
+      "pedalKg": 59,
+      "powerKW": 521
+     }
+    ]
    },
    "Chinese Grand Prix": {
     "source": "https://www.brembo.com/en/motorsport/formula1/2026/facts-2026-china",
@@ -803,8 +848,8 @@
     "zones": 7,
     "brakingTimeS": 16.3,
     "brakingPct": 18,
-    "maxDecelG": null,
-    "maxPedalKg": null,
+    "maxDecelG": 4.0,
+    "maxPedalKg": 105,
     "totalDecelG": null,
     "raceLoadT": null,
     "energyKWh": null,
@@ -820,7 +865,80 @@
       "powerKW": 1665
      }
     ],
-    "zonesBreakdown": "3 hard, 1 medium, 3 light"
+    "zonesBreakdown": "3 hard, 1 medium, 3 light",
+    "card": "https://brem-p-001.sitecorecontenthub.cloud/api/public/content/3d693c62493d492092ea04f4ce9e0e88?v=9af5368f",
+    "corners": [
+     {
+      "turn": 1,
+      "vFrom": 309,
+      "vTo": 120,
+      "distM": 262,
+      "timeS": 4.77,
+      "decelG": 2.1,
+      "pedalKg": 41,
+      "powerKW": 474
+     },
+     {
+      "turn": 6,
+      "vFrom": 285,
+      "vTo": 95,
+      "distM": 126,
+      "timeS": 2.71,
+      "decelG": 4.0,
+      "pedalKg": 110,
+      "powerKW": 1623
+     },
+     {
+      "turn": 8,
+      "vFrom": 262,
+      "vTo": 226,
+      "distM": 57,
+      "timeS": 0.85,
+      "decelG": 1.5,
+      "pedalKg": 30,
+      "powerKW": 295
+     },
+     {
+      "turn": 9,
+      "vFrom": 202,
+      "vTo": 150,
+      "distM": 58,
+      "timeS": 1.26,
+      "decelG": 2.1,
+      "pedalKg": 63,
+      "powerKW": 486
+     },
+     {
+      "turn": 11,
+      "vFrom": 284,
+      "vTo": 114,
+      "distM": 118,
+      "timeS": 2.45,
+      "decelG": 3.8,
+      "pedalKg": 105,
+      "powerKW": 1471
+     },
+     {
+      "turn": 14,
+      "vFrom": 314,
+      "vTo": 77,
+      "distM": 158,
+      "timeS": 3.51,
+      "decelG": 3.9,
+      "pedalKg": 105,
+      "powerKW": 1665
+     },
+     {
+      "turn": 16,
+      "vFrom": 257,
+      "vTo": 205,
+      "distM": 49,
+      "timeS": 0.79,
+      "decelG": 2.9,
+      "pedalKg": 80,
+      "powerKW": 857
+     }
+    ]
    },
    "Japanese Grand Prix": {
     "source": "https://www.brembo.com/en/motorsport/formula1/2026/facts-2026-japan",
@@ -828,8 +946,8 @@
     "zones": 4,
     "brakingTimeS": 9,
     "brakingPct": 10,
-    "maxDecelG": null,
-    "maxPedalKg": null,
+    "maxDecelG": 3.7,
+    "maxPedalKg": 99,
     "totalDecelG": null,
     "raceLoadT": null,
     "energyKWh": null,
@@ -846,7 +964,50 @@
      }
     ],
     "zonesBreakdown": "1 hard, 2 medium, 1 light",
-    "notes": "'just over 9 seconds per lap', 'about 10 percent'"
+    "notes": "'just over 9 seconds per lap', 'about 10 percent'",
+    "card": "https://brem-p-001.sitecorecontenthub.cloud/api/public/content/64d26c2994f04a728af83b9ab5902260?v=e05c257d",
+    "corners": [
+     {
+      "turn": 2,
+      "vFrom": 264,
+      "vTo": 176,
+      "distM": 104,
+      "timeS": 1.7,
+      "decelG": 2.2,
+      "pedalKg": 45,
+      "powerKW": 467
+     },
+     {
+      "turn": 9,
+      "vFrom": 248,
+      "vTo": 170,
+      "distM": 70,
+      "timeS": 1.25,
+      "decelG": 2.9,
+      "pedalKg": 80,
+      "powerKW": 864
+     },
+     {
+      "turn": 11,
+      "vFrom": 242,
+      "vTo": 86,
+      "distM": 127,
+      "timeS": 3.3,
+      "decelG": 2.5,
+      "pedalKg": 65,
+      "powerKW": 573
+     },
+     {
+      "turn": 16,
+      "vFrom": 283,
+      "vTo": 104,
+      "distM": 135,
+      "timeS": 2.81,
+      "decelG": 3.7,
+      "pedalKg": 99,
+      "powerKW": 1413
+     }
+    ]
    },
    "Bahrain Grand Prix": {
     "source": "https://www.brembo.com/en/motorsport/formula1/2026/facts-bahrein-2026",
@@ -872,7 +1033,70 @@
      }
     ],
     "zonesBreakdown": "3 hard, 1 medium, 2 light",
-    "notes": "Page published before the event; 189 kg is far above every other 2026 figure (check)."
+    "notes": "Page published before the event; 189 kg is far above every other 2026 figure (check).",
+    "card": "https://brem-p-001.sitecorecontenthub.cloud/api/public/content/a40db8184e3c42ab8c2d40493f736b71?v=ef8fa3f1",
+    "corners": [
+     {
+      "turn": 1,
+      "vFrom": 314,
+      "vTo": 91,
+      "distM": 155,
+      "timeS": 3.36,
+      "decelG": 4.2,
+      "pedalKg": 164,
+      "powerKW": 1849
+     },
+     {
+      "turn": 4,
+      "vFrom": 286,
+      "vTo": 131,
+      "distM": 107,
+      "timeS": 2.06,
+      "decelG": 4.2,
+      "pedalKg": 166,
+      "powerKW": 1720
+     },
+     {
+      "turn": 7,
+      "vFrom": 263,
+      "vTo": 231,
+      "distM": 42,
+      "timeS": 0.62,
+      "decelG": 1.8,
+      "pedalKg": 42,
+      "powerKW": 411
+     },
+     {
+      "turn": 9,
+      "vFrom": 278,
+      "vTo": 95,
+      "distM": 112,
+      "timeS": 2.52,
+      "decelG": 3.9,
+      "pedalKg": 150,
+      "powerKW": 1488
+     },
+     {
+      "turn": 14,
+      "vFrom": 256,
+      "vTo": 138,
+      "distM": 103,
+      "timeS": 2.07,
+      "decelG": 3.0,
+      "pedalKg": 102,
+      "powerKW": 924
+     },
+     {
+      "turn": 15,
+      "vFrom": 307,
+      "vTo": 93,
+      "distM": 121,
+      "timeS": 2.58,
+      "decelG": 4.7,
+      "pedalKg": 189,
+      "powerKW": 2177
+     }
+    ]
    },
    "Miami Grand Prix": {
     "source": "https://www.brembo.com/en/motorsport/formula1/2026/facts-miami-2026",
@@ -895,21 +1119,43 @@
       "decelG": 4.0,
       "pedalKg": 114,
       "powerKW": 1734
-     },
-     {
-      "turn": 1,
-      "vFrom": null,
-      "vTo": null,
-      "distM": 136,
-      "timeS": 2.94,
-      "decelG": null,
-      "pedalKg": 120,
-      "powerKW": 1660,
-      "label": "first corner, 2026"
      }
     ],
     "zonesBreakdown": "3 hard",
-    "notes": "'just under 10 s'; 2025 first corner per this page: 2,426 kW, 169 kg, 2.60 s, 117 m."
+    "notes": "'just under 10 s'; 2025 first corner per this page: 2,426 kW, 169 kg, 2.60 s, 117 m.",
+    "card": "https://brem-p-001.sitecorecontenthub.cloud/api/public/content/ff3134f0a0064511aa3f7146bb39fc65?v=567b690d",
+    "corners": [
+     {
+      "turn": 1,
+      "vFrom": 300,
+      "vTo": 102,
+      "distM": 136,
+      "timeS": 2.94,
+      "decelG": 4.0,
+      "pedalKg": 120,
+      "powerKW": 1660
+     },
+     {
+      "turn": 11,
+      "vFrom": 315,
+      "vTo": 97,
+      "distM": 155,
+      "timeS": 3.15,
+      "decelG": 3.8,
+      "pedalKg": 109,
+      "powerKW": 1545
+     },
+     {
+      "turn": 17,
+      "vFrom": 320,
+      "vTo": 78,
+      "distM": 165,
+      "timeS": 3.66,
+      "decelG": 4.0,
+      "pedalKg": 114,
+      "powerKW": 1734
+     }
+    ]
    },
    "Canadian Grand Prix": {
     "source": "https://scuderiafans.com/f1-canadian-gp-2026-brembo-analysis-reveals-montreals-biggest-technical-challenge/",
@@ -918,7 +1164,7 @@
     "brakingTimeS": 14,
     "brakingPct": null,
     "maxDecelG": 3.7,
-    "maxPedalKg": null,
+    "maxPedalKg": 101,
     "totalDecelG": null,
     "raceLoadT": null,
     "energyKWh": null,
@@ -932,18 +1178,72 @@
       "decelG": 3.7,
       "pedalKg": 101,
       "powerKW": 1561
+     }
+    ],
+    "notes": "Mirror of Brembo preview; 'exceeding 14 s'. 2025 T10: 107 m, 2.82 s, 168 kg, 5 g.",
+    "card": "https://brem-p-001.sitecorecontenthub.cloud/api/public/content/eb38aa3b0bc34296a035f8680a7e82db?v=ed48baec",
+    "corners": [
+     {
+      "turn": 1,
+      "vFrom": 305,
+      "vTo": 141,
+      "distM": 135,
+      "timeS": 2.34,
+      "decelG": 3.4,
+      "pedalKg": 94,
+      "powerKW": 1308
+     },
+     {
+      "turn": 3,
+      "vFrom": 251,
+      "vTo": 150,
+      "distM": 94,
+      "timeS": 1.7,
+      "decelG": 3.1,
+      "pedalKg": 89,
+      "powerKW": 965
+     },
+     {
+      "turn": 6,
+      "vFrom": 256,
+      "vTo": 106,
+      "distM": 108,
+      "timeS": 2.29,
+      "decelG": 3.3,
+      "pedalKg": 94,
+      "powerKW": 1092
+     },
+     {
+      "turn": 8,
+      "vFrom": 283,
+      "vTo": 137,
+      "distM": 104,
+      "timeS": 1.9,
+      "decelG": 3.6,
+      "pedalKg": 99,
+      "powerKW": 1364
      },
      {
       "turn": 10,
-      "vFrom": null,
-      "vTo": null,
+      "vFrom": 280,
+      "vTo": 69,
       "distM": 158,
       "timeS": 3.94,
       "decelG": 3.1,
-      "pedalKg": 87
+      "pedalKg": 87,
+      "powerKW": 1098
+     },
+     {
+      "turn": 13,
+      "vFrom": 306,
+      "vTo": 147,
+      "distM": 114,
+      "timeS": 1.93,
+      "decelG": 3.7,
+      "pedalKg": 101,
+      "powerKW": 1561
      }
-    ],
-    "notes": "Mirror of Brembo preview; 'exceeding 14 s'. 2025 T10: 107 m, 2.82 s, 168 kg, 5 g."
+    ]
    },
    "Monaco Grand Prix": {
     "source": "https://www.brembo.com/en/motorsport/formula1/2026/facts-monaco-2026",
@@ -965,22 +1265,104 @@
       "timeS": 1.67,
       "decelG": 4.0,
       "pedalKg": 114,
-      "powerKW": 1463,
-      "label": "Sainte Devote"
+      "powerKW": 1463
+     }
+    ],
+    "zonesBreakdown": "2 high, 3 medium, 4 light",
+    "notes": "23% stated as share of the race.",
+    "card": "https://brem-p-001.sitecorecontenthub.cloud/api/public/content/a82c845d1bf849188fd281f41e15e043?v=20b98b11",
+    "corners": [
+     {
+      "turn": 1,
+      "vFrom": 276,
+      "vTo": 132,
+      "distM": 91,
+      "timeS": 1.67,
+      "decelG": 4.0,
+      "pedalKg": 114,
+      "powerKW": 1463
+     },
+     {
+      "turn": 3,
+      "vFrom": 274,
+      "vTo": 184,
+      "distM": 105,
+      "timeS": 1.71,
+      "decelG": 2.2,
+      "pedalKg": 47,
+      "powerKW": 490
+     },
+     {
+      "turn": 5,
+      "vFrom": 211,
+      "vTo": 89,
+      "distM": 90,
+      "timeS": 2.41,
+      "decelG": 2.7,
+      "pedalKg": 84,
+      "powerKW": 693
+     },
+     {
+      "turn": 6,
+      "vFrom": 135,
+      "vTo": 57,
+      "distM": 57,
+      "timeS": 2.31,
+      "decelG": 1.5,
+      "pedalKg": 46,
+      "powerKW": 239
      },
      {
       "turn": 10,
-      "vFrom": null,
-      "vTo": null,
+      "vFrom": 285,
+      "vTo": 94,
       "distM": 136,
       "timeS": 2.87,
       "decelG": 3.0,
       "pedalKg": 86,
-      "label": "chicane after tunnel"
+      "powerKW": 1009
+     },
+     {
+      "turn": 12,
+      "vFrom": 235,
+      "vTo": 194,
+      "distM": 40,
+      "timeS": 0.68,
+      "decelG": 2.7,
+      "pedalKg": 78,
+      "powerKW": 728
+     },
+     {
+      "turn": 15,
+      "vFrom": 244,
+      "vTo": 153,
+      "distM": 81,
+      "timeS": 1.53,
+      "decelG": 2.7,
+      "pedalKg": 79,
+      "powerKW": 739
+     },
+     {
+      "turn": 16,
+      "vFrom": 148,
+      "vTo": 132,
+      "distM": 15,
+      "timeS": 0.38,
+      "decelG": 1.6,
+      "pedalKg": 47,
+      "powerKW": 282
+     },
+     {
+      "turn": 18,
+      "vFrom": 189,
+      "vTo": 67,
+      "distM": 89,
+      "timeS": 2.73,
+      "decelG": 2.1,
+      "pedalKg": 61,
+      "powerKW": 417
      }
-    ],
-    "zonesBreakdown": "2 high, 3 medium, 4 light",
-    "notes": "23% stated as share of the race."
+    ]
    },
    "Barcelona-Catalunya Grand Prix": {
     "source": "https://www.brembo.com/en/motorsport/formula1/2026/facts-spain-2026",
@@ -1003,19 +1385,63 @@
       "decelG": 3.6,
       "pedalKg": 96,
       "powerKW": 1393
-     },
-     {
-      "turn": 10,
-      "vFrom": null,
-      "vTo": null,
-      "distM": 151,
-      "timeS": 2.96,
-      "decelG": 3.3,
-      "pedalKg": 88
      }
     ],
     "zonesBreakdown": "2 high, 2 medium, 1 light",
-    "notes": "'less than 11.5 s'"
+    "notes": "'less than 11.5 s'",
+    "card": "https://brem-p-001.sitecorecontenthub.cloud/api/public/content/203c1e62d37d49ec9d8bbc5707c6062e?v=7b9ba61d",
+    "corners": [
+     {
+      "turn": 1,
+      "vFrom": 304,
+      "vTo": 164,
+      "distM": 121,
+      "timeS": 1.95,
+      "decelG": 3.6,
+      "pedalKg": 96,
+      "powerKW": 1393
+     },
+     {
+      "turn": 4,
+      "vFrom": 265,
+      "vTo": 158,
+      "distM": 112,
+      "timeS": 1.97,
+      "decelG": 2.6,
+      "pedalKg": 69,
+      "powerKW": 708
+     },
+     {
+      "turn": 5,
+      "vFrom": 226,
+      "vTo": 111,
+      "distM": 122,
+      "timeS": 2.96,
+      "decelG": 2.1,
+      "pedalKg": 60,
+      "powerKW": 513
+     },
+     {
+      "turn": 7,
+      "vFrom": 265,
+      "vTo": 179,
+      "distM": 93,
+      "timeS": 1.53,
+      "decelG": 2.8,
+      "pedalKg": 77,
+      "powerKW": 794
+     },
+     {
+      "turn": 10,
+      "vFrom": 299,
+      "vTo": 124,
+      "distM": 151,
+      "timeS": 2.96,
+      "decelG": 3.3,
+      "pedalKg": 88,
+      "powerKW": 1215
+     }
+    ]
    },
    "Austrian Grand Prix": {
     "source": "https://www.brembo.com/en/motorsport/formula1/2026/facts-austria-2026",
@@ -1038,19 +1464,73 @@
       "decelG": 3.8,
       "pedalKg": 110,
       "powerKW": 1533
-     },
-     {
-      "turn": 3,
-      "vFrom": null,
-      "vTo": null,
-      "distM": 135,
-      "timeS": 3.0,
-      "decelG": 3.8,
-      "pedalKg": 110
      }
     ],
     "zonesBreakdown": "3 hard, 2 medium, 1 light",
-    "notes": "'at no point does deceleration reach 4 g'. 2025 T3: 112 m, 2.58 s, 4.6 g, 142 kg."
+    "notes": "'at no point does deceleration reach 4 g'. 2025 T3: 112 m, 2.58 s, 4.6 g, 142 kg.",
+    "card": "https://brem-p-001.sitecorecontenthub.cloud/api/public/content/c389da8dcbc3412394d823e45b6b4282?v=193fc79d",
+    "corners": [
+     {
+      "turn": 1,
+      "vFrom": 306,
+      "vTo": 149,
+      "distM": 109,
+      "timeS": 1.93,
+      "decelG": 3.8,
+      "pedalKg": 110,
+      "powerKW": 1533
+     },
+     {
+      "turn": 3,
+      "vFrom": 299,
+      "vTo": 83,
+      "distM": 135,
+      "timeS": 3.0,
+      "decelG": 3.8,
+      "pedalKg": 110,
+      "powerKW": 1488
+     },
+     {
+      "turn": 4,
+      "vFrom": 301,
+      "vTo": 114,
+      "distM": 145,
+      "timeS": 2.9,
+      "decelG": 3.6,
+      "pedalKg": 107,
+      "powerKW": 1478
+     },
+     {
+      "turn": 6,
+      "vFrom": 257,
+      "vTo": 211,
+      "distM": 50,
+      "timeS": 0.78,
+      "decelG": 2.6,
+      "pedalKg": 73,
+      "powerKW": 741
+     },
+     {
+      "turn": 8,
+      "vFrom": 313,
+      "vTo": 253,
+      "distM": 97,
+      "timeS": 1.26,
+      "decelG": 2.1,
+      "pedalKg": 41,
+      "powerKW": 510
+     },
+     {
+      "turn": 9,
+      "vFrom": 242,
+      "vTo": 207,
+      "distM": 42,
+      "timeS": 0.68,
+      "decelG": 2.2,
+      "pedalKg": 63,
+      "powerKW": 593
+     }
+    ]
    },
    "British Grand Prix": {
     "source": "https://www.brembo.com/en/motorsport/formula1/2026/facts-uk-2026",
@@ -1076,7 +1556,40 @@
      }
     ],
     "zonesBreakdown": "1 hard, 2 medium",
-    "notes": "'just over 6.5 s'. T3 2025 vs 2026: 4.5 vs 2.9 g, 152 vs 78 kg."
+    "notes": "'just over 6.5 s'. T3 2025 vs 2026: 4.5 vs 2.9 g, 152 vs 78 kg.",
+    "card": "https://brem-p-001.sitecorecontenthub.cloud/api/public/content/2b2ed9a05bb340a1b4743d7f77cc7ce6?v=9dea2efb",
+    "corners": [
+     {
+      "turn": 3,
+      "vFrom": 249,
+      "vTo": 118,
+      "distM": 110,
+      "timeS": 2.28,
+      "decelG": 2.9,
+      "pedalKg": 78,
+      "powerKW": 869
+     },
+     {
+      "turn": 6,
+      "vFrom": 286,
+      "vTo": 169,
+      "distM": 116,
+      "timeS": 1.91,
+      "decelG": 2.7,
+      "pedalKg": 64,
+      "powerKW": 802
+     },
+     {
+      "turn": 16,
+      "vFrom": 268,
+      "vTo": 116,
+      "distM": 125,
+      "timeS": 2.45,
+      "decelG": 3.1,
+      "pedalKg": 86,
+      "powerKW": 1081
+     }
+    ]
    },
    "Belgian Grand Prix": {
     "source": "https://www.brembo.com/en/motorsport/formula1/2026/facts-belgium-2026",
@@ -1099,19 +1612,73 @@
       "decelG": 3.6,
       "pedalKg": 111,
       "powerKW": 1367
-     },
-     {
-      "turn": 18,
-      "vFrom": null,
-      "vTo": null,
-      "distM": null,
-      "timeS": null,
-      "decelG": 3.3,
-      "pedalKg": 96
      }
     ],
     "zonesBreakdown": "3 hard, 2 medium, 1 light",
-    "notes": "'less than 13 s'. 2025 T18: 4.7 g, 160 kg, 2.51 s."
+    "notes": "'less than 13 s'. 2025 T18: 4.7 g, 160 kg, 2.51 s.",
+    "card": "https://brem-p-001.sitecorecontenthub.cloud/api/public/content/092ef1920f99402491bc97a113e7f149?v=7e9b7dee",
+    "corners": [
+     {
+      "turn": 1,
+      "vFrom": 285,
+      "vTo": 86,
+      "distM": 145,
+      "timeS": 3.32,
+      "decelG": 3.6,
+      "pedalKg": 111,
+      "powerKW": 1367
+     },
+     {
+      "turn": 5,
+      "vFrom": 286,
+      "vTo": 173,
+      "distM": 91,
+      "timeS": 1.48,
+      "decelG": 3.5,
+      "pedalKg": 106,
+      "powerKW": 1366
+     },
+     {
+      "turn": 8,
+      "vFrom": 240,
+      "vTo": 126,
+      "distM": 116,
+      "timeS": 2.48,
+      "decelG": 2.8,
+      "pedalKg": 84,
+      "powerKW": 845
+     },
+     {
+      "turn": 12,
+      "vFrom": 272,
+      "vTo": 198,
+      "distM": 71,
+      "timeS": 1.12,
+      "decelG": 2.9,
+      "pedalKg": 84,
+      "powerKW": 1005
+     },
+     {
+      "turn": 14,
+      "vFrom": 221,
+      "vTo": 169,
+      "distM": 56,
+      "timeS": 1.07,
+      "decelG": 2.1,
+      "pedalKg": 55,
+      "powerKW": 524
+     },
+     {
+      "turn": 18,
+      "vFrom": 301,
+      "vTo": 89,
+      "distM": 154,
+      "timeS": 3.28,
+      "decelG": 3.3,
+      "pedalKg": 96,
+      "powerKW": 1284
+     }
+    ]
    },
    "Hungarian Grand Prix": {
     "source": "https://www.brembo.com/en/motorsport/formula1/2026/facts-hungary-2026",
@@ -1119,8 +1686,8 @@
     "zones": 8,
     "brakingTimeS": 16.7,
     "brakingPct": 22,
-    "maxDecelG": null,
-    "maxPedalKg": null,
+    "maxDecelG": 4.0,
+    "maxPedalKg": 119,
     "totalDecelG": null,
     "raceLoadT": null,
     "energyKWh": null,
@@ -1134,19 +1701,93 @@
       "decelG": 4.0,
       "pedalKg": 119,
       "powerKW": 1760
-     },
-     {
-      "turn": 2,
-      "vFrom": null,
-      "vTo": null,
-      "distM": 143,
-      "timeS": 2.85,
-      "decelG": 3.7,
-      "pedalKg": 110
      }
     ],
     "zonesBreakdown": "3 hard, 1 medium, 4 light",
-    "notes": "22% stated as share of the race; index 4 vs 3 in 2025."
+    "notes": "22% stated as share of the race; index 4 vs 3 in 2025.",
+    "card": "https://brem-p-001.sitecorecontenthub.cloud/api/public/content/d5345bc76bf848d18d3138613bd0efa7?v=47e47236",
+    "corners": [
+     {
+      "turn": 1,
+      "vFrom": 332,
+      "vTo": 99,
+      "distM": 172,
+      "timeS": 3.58,
+      "decelG": 4.0,
+      "pedalKg": 119,
+      "powerKW": 1760
+     },
+     {
+      "turn": 2,
+      "vFrom": 283,
+      "vTo": 127,
+      "distM": 143,
+      "timeS": 2.85,
+      "decelG": 3.7,
+      "pedalKg": 110,
+      "powerKW": 1387
+     },
+     {
+      "turn": 5,
+      "vFrom": 309,
+      "vTo": 277,
+      "distM": 45,
+      "timeS": 0.54,
+      "decelG": 2.1,
+      "pedalKg": 40,
+      "powerKW": 507
+     },
+     {
+      "turn": 6,
+      "vFrom": 258,
+      "vTo": 157,
+      "distM": 111,
+      "timeS": 2.05,
+      "decelG": 2.3,
+      "pedalKg": 58,
+      "powerKW": 571
+     },
+     {
+      "turn": 8,
+      "vFrom": 236,
+      "vTo": 113,
+      "distM": 94,
+      "timeS": 2.01,
+      "decelG": 2.9,
+      "pedalKg": 87,
+      "powerKW": 829
+     },
+     {
+      "turn": 9,
+      "vFrom": 215,
+      "vTo": 190,
+      "distM": 33,
+      "timeS": 0.6,
+      "decelG": 1.9,
+      "pedalKg": 50,
+      "powerKW": 425
+     },
+     {
+      "turn": 12,
+      "vFrom": 288,
+      "vTo": 118,
+      "distM": 132,
+      "timeS": 2.55,
+      "decelG": 3.7,
+      "pedalKg": 108,
+      "powerKW": 1462
+     },
+     {
+      "turn": 13,
+      "vFrom": 210,
+      "vTo": 107,
+      "distM": 105,
+      "timeS": 2.54,
+      "decelG": 2.3,
+      "pedalKg": 66,
+      "powerKW": 539
+     }
+    ]
    },
    "Italian Grand Prix": {
     "source": "https://www.automoto.it/formula1/f1-gp-italia-2026-monza-staccate-frenate-brembo-analisi.html",
@@ -1169,20 +1810,63 @@
       "decelG": 3.8,
       "pedalKg": 111,
       "powerKW": 1637
+     }
+    ],
+    "zonesBreakdown": "4 hard, 1 light",
+    "notes": "Italian mirror of Brembo data; '<8.5 s'. Index 3 vs 5 in 2025.",
+    "card": "https://brem-p-001.sitecorecontenthub.cloud/api/public/content/8a8efe0fb25046bfbfb7ab73a522109c?v=30d63646",
+    "corners": [
+     {
+      "turn": 1,
+      "vFrom": 318,
+      "vTo": 87,
+      "distM": 153,
+      "timeS": 3.22,
+      "decelG": 3.8,
+      "pedalKg": 111,
+      "powerKW": 1637
      },
      {
       "turn": 4,
-      "vFrom": null,
-      "vTo": null,
+      "vFrom": 305,
+      "vTo": 126,
       "distM": 121,
       "timeS": 2.29,
       "decelG": 3.7,
       "pedalKg": 108,
-      "label": "Variante della Roggia"
+      "powerKW": 1542
+     },
+     {
+      "turn": 6,
+      "vFrom": 243,
+      "vTo": 201,
+      "distM": 43,
+      "timeS": 0.71,
+      "decelG": 2.3,
+      "pedalKg": 51,
+      "powerKW": 554
+     },
+     {
+      "turn": 8,
+      "vFrom": 307,
+      "vTo": 212,
+      "distM": 77,
+      "timeS": 1.11,
+      "decelG": 3.6,
+      "pedalKg": 104,
+      "powerKW": 1516
+     },
+     {
+      "turn": 11,
+      "vFrom": 307,
+      "vTo": 225,
+      "distM": 80,
+      "timeS": 1.1,
+      "decelG": 3.2,
+      "pedalKg": 82,
+      "powerKW": 1226
      }
-    ],
-    "zonesBreakdown": "4 hard, 1 light",
-    "notes": "Italian mirror of Brembo data; '<8.5 s'. Index 3 vs 5 in 2025."
+    ]
    },
    "Azerbaijan Grand Prix": {
     "source": "https://www.brembo.com/en/motorsport/formula1/2026/facts-baku-2026",
@@ -1190,8 +1874,8 @@
     "zones": 10,
     "brakingTimeS": 18.5,
     "brakingPct": null,
-    "maxDecelG": null,
-    "maxPedalKg": null,
+    "maxDecelG": 3.9,
+    "maxPedalKg": 115,
     "totalDecelG": null,
     "raceLoadT": null,
     "energyKWh": null,
@@ -1207,7 +1891,110 @@
       "powerKW": 1652
      }
     ],
-    "zonesBreakdown": "2 hard, 6 medium, 2 light"
+    "zonesBreakdown": "2 hard, 6 medium, 2 light",
+    "card": "https://brem-p-001.sitecorecontenthub.cloud/api/public/content/211cdb808146486a8dd9eade28296313?v=493fa2b7",
+    "corners": [
+     {
+      "turn": 1,
+      "vFrom": 313,
+      "vTo": 140,
+      "distM": 123,
+      "timeS": 2.13,
+      "decelG": 3.9,
+      "pedalKg": 115,
+      "powerKW": 1652
+     },
+     {
+      "turn": 2,
+      "vFrom": 231,
+      "vTo": 119,
+      "distM": 80,
+      "timeS": 1.69,
+      "decelG": 3.0,
+      "pedalKg": 91,
+      "powerKW": 844
+     },
+     {
+      "turn": 3,
+      "vFrom": 318,
+      "vTo": 119,
+      "distM": 139,
+      "timeS": 2.46,
+      "decelG": 3.8,
+      "pedalKg": 113,
+      "powerKW": 1659
+     },
+     {
+      "turn": 4,
+      "vFrom": 195,
+      "vTo": 109,
+      "distM": 68,
+      "timeS": 1.63,
+      "decelG": 2.4,
+      "pedalKg": 69,
+      "powerKW": 533
+     },
+     {
+      "turn": 5,
+      "vFrom": 234,
+      "vTo": 119,
+      "distM": 94,
+      "timeS": 2.06,
+      "decelG": 2.8,
+      "pedalKg": 84,
+      "powerKW": 855
+     },
+     {
+      "turn": 7,
+      "vFrom": 246,
+      "vTo": 90,
+      "distM": 109,
+      "timeS": 2.58,
+      "decelG": 3.0,
+      "pedalKg": 92,
+      "powerKW": 1031
+     },
+     {
+      "turn": 8,
+      "vFrom": 185,
+      "vTo": 127,
+      "distM": 50,
+      "timeS": 1.13,
+      "decelG": 2.2,
+      "pedalKg": 60,
+      "powerKW": 460
+     },
+     {
+      "turn": 11,
+      "vFrom": 143,
+      "vTo": 101,
+      "distM": 37,
+      "timeS": 1.09,
+      "decelG": 1.6,
+      "pedalKg": 37,
+      "powerKW": 216
+     },
+     {
+      "turn": 15,
+      "vFrom": 269,
+      "vTo": 109,
+      "distM": 118,
+      "timeS": 2.45,
+      "decelG": 3.0,
+      "pedalKg": 87,
+      "powerKW": 1015
+     },
+     {
+      "turn": 16,
+      "vFrom": 225,
+      "vTo": 141,
+      "distM": 63,
+      "timeS": 1.26,
+      "decelG": 2.7,
+      "pedalKg": 82,
+      "powerKW": 750
+     }
+    ]
    },
    "Singapore Grand Prix": {
     "source": "https://www.brembo.com/en/motorsport/formula1/2026/facts-singapore-2026",
@@ -1215,8 +2002,8 @@
     "zones": 11,
     "brakingTimeS": 21.6,
     "brakingPct": 24,
-    "maxDecelG": null,
-    "maxPedalKg": null,
+    "maxDecelG": 4.0,
+    "maxPedalKg": 110,
     "totalDecelG": null,
     "raceLoadT": null,
     "energyKWh": null,
@@ -1230,20 +2017,123 @@
       "decelG": 4.0,
       "pedalKg": 110,
       "powerKW": 1660
+     }
+    ],
+    "zonesBreakdown": "6 hard, 1 medium, 4 light",
+    "notes": "24% stated as share of the race.",
+    "card": "https://brem-p-001.sitecorecontenthub.cloud/api/public/content/aaee0c84bf8d44308f8dbd26e5c53e74?v=5fd62789",
+    "corners": [
+     {
+      "turn": 1,
+      "vFrom": 298,
+      "vTo": 144,
+      "distM": 107,
+      "timeS": 1.9,
+      "decelG": 4.0,
+      "pedalKg": 110,
+      "powerKW": 1660
+     },
+     {
+      "turn": 3,
+      "vFrom": 159,
+      "vTo": 87,
+      "distM": 77,
+      "timeS": 2.23,
+      "decelG": 1.7,
+      "pedalKg": 49,
+      "powerKW": 280
+     },
+     {
+      "turn": 5,
+      "vFrom": 256,
+      "vTo": 152,
+      "distM": 89,
+      "timeS": 1.62,
+      "decelG": 3.1,
+      "pedalKg": 87,
+      "powerKW": 1022
      },
      {
       "turn": 7,
-      "vFrom": null,
-      "vTo": null,
+      "vFrom": 298,
+      "vTo": 124,
       "distM": 117,
       "timeS": 2.15,
       "decelG": 3.8,
       "pedalKg": 107,
-      "label": "Memorial"
+      "powerKW": 1572
+     },
+     {
+      "turn": 8,
+      "vFrom": 203,
+      "vTo": 87,
+      "distM": 85,
+      "timeS": 2.3,
+      "decelG": 2.4,
+      "pedalKg": 71,
+      "powerKW": 586
+     },
+     {
+      "turn": 9,
+      "vFrom": 276,
+      "vTo": 150,
+      "distM": 92,
+      "timeS": 1.64,
+      "decelG": 3.5,
+      "pedalKg": 98,
+      "powerKW": 1284
+     },
+     {
+      "turn": 10,
+      "vFrom": 168,
+      "vTo": 122,
+      "distM": 37,
+      "timeS": 0.92,
+      "decelG": 1.8,
+      "pedalKg": 49,
+      "powerKW": 333
+     },
+     {
+      "turn": 11,
+      "vFrom": 197,
+      "vTo": 67,
+      "distM": 105,
+      "timeS": 2.97,
+      "decelG": 1.9,
+      "pedalKg": 53,
+      "powerKW": 338
+     },
+     {
+      "turn": 13,
+      "vFrom": 284,
+      "vTo": 95,
+      "distM": 128,
+      "timeS": 2.73,
+      "decelG": 3.7,
+      "pedalKg": 103,
+      "powerKW": 1450
+     },
+     {
+      "turn": 14,
+      "vFrom": 304,
+      "vTo": 119,
+      "distM": 128,
+      "timeS": 2.48,
+      "decelG": 3.9,
+      "pedalKg": 110,
+      "powerKW": 1604
+     },
+     {
+      "turn": 16,
+      "vFrom": 249,
+      "vTo": 212,
+      "distM": 44,
+      "timeS": 0.68,
+      "decelG": 2.3,
+      "pedalKg": 55,
+      "powerKW": 553
      }
-    ],
-    "zonesBreakdown": "6 hard, 1 medium, 4 light",
-    "notes": "24% stated as share of the race."
+    ]
    },
    "United States Grand Prix": {
     "source": "https://www.brembo.com/en/motorsport/formula1/2026/facts-austin-2026",
@@ -1266,19 +2156,73 @@
       "decelG": 4.3,
       "pedalKg": 123,
       "powerKW": 1760
-     },
-     {
-      "turn": 12,
-      "vFrom": null,
-      "vTo": null,
-      "distM": 166,
-      "timeS": 3.42,
-      "decelG": 4.0,
-      "pedalKg": 110
      }
     ],
     "zonesBreakdown": "4 hard, 1 medium, 1 light",
-    "notes": "'less than 15 s'. T12 2025: 4.2 g, 130 kg, 126 m, 2.72 s."
+    "notes": "'less than 15 s'. T12 2025: 4.2 g, 130 kg, 126 m, 2.72 s.",
+    "card": "https://brem-p-001.sitecorecontenthub.cloud/api/public/content/3b3d7c4ac26e47ceab60f0d2e1f1c3bd?v=bed3a8ef",
+    "corners": [
+     {
+      "turn": 1,
+      "vFrom": 305,
+      "vTo": 93,
+      "distM": 144,
+      "timeS": 3.11,
+      "decelG": 4.3,
+      "pedalKg": 123,
+      "powerKW": 1760
+     },
+     {
+      "turn": 11,
+      "vFrom": 296,
+      "vTo": 92,
+      "distM": 138,
+      "timeS": 3.07,
+      "decelG": 4.0,
+      "pedalKg": 115,
+      "powerKW": 1607
+     },
+     {
+      "turn": 12,
+      "vFrom": 324,
+      "vTo": 93,
+      "distM": 166,
+      "timeS": 3.42,
+      "decelG": 4.0,
+      "pedalKg": 110,
+      "powerKW": 1771
+     },
+     {
+      "turn": 15,
+      "vFrom": 192,
+      "vTo": 113,
+      "distM": 83,
+      "timeS": 2.1,
+      "decelG": 1.6,
+      "pedalKg": 42,
+      "powerKW": 293
+     },
+     {
+      "turn": 19,
+      "vFrom": 285,
+      "vTo": 233,
+      "distM": 53,
+      "timeS": 0.75,
+      "decelG": 3.0,
+      "pedalKg": 82,
+      "powerKW": 1016
+     },
+     {
+      "turn": 20,
+      "vFrom": 255,
+      "vTo": 114,
+      "distM": 108,
+      "timeS": 2.35,
+      "decelG": 3.4,
+      "pedalKg": 99,
+      "powerKW": 1136
+     }
+    ]
    },
    "Mexico City Grand Prix": {
     "source": "https://scuderiafans.com/2026-f1-mexico-gp-why-longer-braking-zones-and-energy-limits-could-change-everything/",
@@ -1286,7 +2230,7 @@
     "zones": 7,
     "brakingTimeS": 16,
     "brakingPct": null,
-    "maxDecelG": null,
+    "maxDecelG": 3.6,
     "maxPedalKg": 107,
     "totalDecelG": null,
     "raceLoadT": null,
@@ -1301,19 +2245,83 @@
       "decelG": 3.6,
       "pedalKg": 107,
       "powerKW": 1668
-     },
-     {
-      "turn": 4,
-      "vFrom": null,
-      "vTo": null,
-      "distM": 175,
-      "timeS": 3.33,
-      "decelG": 3.5,
-      "pedalKg": 102
      }
     ],
     "zonesBreakdown": "3 hard, 1 medium, 3 light",
-    "notes": "Mirror; 'slightly less than 16 s'; max decel 'below 3.7 g'. 2025 T4: 4.1 g, 131 kg, 129 m, 2.76 s."
+    "notes": "Mirror; 'slightly less than 16 s'; max decel 'below 3.7 g'. 2025 T4: 4.1 g, 131 kg, 129 m, 2.76 s.",
+    "card": "https://brem-p-001.sitecorecontenthub.cloud/api/public/content/cf1124f1d04942dd9f5f325972480290?v=611a59bd",
+    "corners": [
+     {
+      "turn": 1,
+      "vFrom": 340,
+      "vTo": 114,
+      "distM": 193,
+      "timeS": 3.51,
+      "decelG": 3.6,
+      "pedalKg": 107,
+      "powerKW": 1668
+     },
+     {
+      "turn": 4,
+      "vFrom": 327,
+      "vTo": 104,
+      "distM": 175,
+      "timeS": 3.33,
+      "decelG": 3.5,
+      "pedalKg": 102,
+      "powerKW": 1542
+     },
+     {
+      "turn": 6,
+      "vFrom": 141,
+      "vTo": 88,
+      "distM": 55,
+      "timeS": 1.76,
+      "decelG": 1.5,
+      "pedalKg": 45,
+      "powerKW": 261
+     },
+     {
+      "turn": 7,
+      "vFrom": 254,
+      "vTo": 195,
+      "distM": 60,
+      "timeS": 0.97,
+      "decelG": 2.7,
+      "pedalKg": 83,
+      "powerKW": 845
+     },
+     {
+      "turn": 10,
+      "vFrom": 226,
+      "vTo": 184,
+      "distM": 61,
+      "timeS": 1.07,
+      "decelG": 1.9,
+      "pedalKg": 49,
+      "powerKW": 454
+     },
+     {
+      "turn": 12,
+      "vFrom": 316,
+      "vTo": 135,
+      "distM": 150,
+      "timeS": 2.56,
+      "decelG": 3.4,
+      "pedalKg": 100,
+      "powerKW": 1438
+     },
+     {
+      "turn": 13,
+      "vFrom": 170,
+      "vTo": 71,
+      "distM": 85,
+      "timeS": 2.68,
+      "decelG": 2.0,
+      "pedalKg": 62,
+      "powerKW": 422
+     }
+    ]
    },
    "São Paulo Grand Prix": {
     "source": "https://scuderiafans.com/brembo-reveals-major-f1-braking-changes-for-2026-brazilian-gp-compared-to-2025/",
@@ -1336,19 +2344,73 @@
       "decelG": 3.7,
       "pedalKg": 104,
       "powerKW": 1538
-     },
-     {
-      "turn": 12,
-      "vFrom": null,
-      "vTo": null,
-      "distM": 98,
-      "timeS": 2.01,
-      "decelG": 3.0,
-      "pedalKg": 89
      }
     ],
     "zonesBreakdown": "2 hard, 1 medium, 3 light",
-    "notes": "Mirror; 'more than 14 s', '~20%'. 2025 T12: 4.7 g, 148 kg, 84 m, 1.73 s."
+    "notes": "Mirror; 'more than 14 s', '~20%'. 2025 T12: 4.7 g, 148 kg, 84 m, 1.73 s.",
+    "card": "https://brem-p-001.sitecorecontenthub.cloud/api/public/content/72d2770e77e146839a2c0e911b195e1f?v=81027059",
+    "corners": [
+     {
+      "turn": 1,
+      "vFrom": 312,
+      "vTo": 115,
+      "distM": 156,
+      "timeS": 2.93,
+      "decelG": 3.7,
+      "pedalKg": 104,
+      "powerKW": 1538
+     },
+     {
+      "turn": 4,
+      "vFrom": 324,
+      "vTo": 166,
+      "distM": 142,
+      "timeS": 2.27,
+      "decelG": 3.6,
+      "pedalKg": 103,
+      "powerKW": 1558
+     },
+     {
+      "turn": 7,
+      "vFrom": 298,
+      "vTo": 221,
+      "distM": 116,
+      "timeS": 1.6,
+      "decelG": 1.7,
+      "pedalKg": 29,
+      "powerKW": 319
+     },
+     {
+      "turn": 8,
+      "vFrom": 213,
+      "vTo": 97,
+      "distM": 103,
+      "timeS": 2.61,
+      "decelG": 2.1,
+      "pedalKg": 58,
+      "powerKW": 466
+     },
+     {
+      "turn": 10,
+      "vFrom": 218,
+      "vTo": 99,
+      "distM": 108,
+      "timeS": 2.69,
+      "decelG": 2.1,
+      "pedalKg": 57,
+      "powerKW": 462
+     },
+     {
+      "turn": 12,
+      "vFrom": 250,
+      "vTo": 131,
+      "distM": 98,
+      "timeS": 2.01,
+      "decelG": 3.0,
+      "pedalKg": 89,
+      "powerKW": 970
+     }
+    ]
    },
    "Spanish Grand Prix": {
     "source": "https://www.f1-fansite.com/f1-news/brembo-now-puts-a-number-on-the-madrings-braking-load/",
@@ -1356,13 +2418,281 @@
     "zones": 8,
     "brakingTimeS": 14.2,
     "brakingPct": 15,
-    "maxDecelG": null,
-    "maxPedalKg": null,
+    "maxDecelG": 4.3,
+    "maxPedalKg": 135,
     "totalDecelG": null,
     "raceLoadT": null,
     "energyKWh": null,
-    "hardest": [],
-    "notes": "Madring. zones and 14.2 s are from the f1-fansite headline only (page not fetchable); 15% from scuderiafans.com/2026-f1-madrid-gp-preview-why-the-madring-could-make-mercedes-vulnerable-again/."
+    "hardest": [
+     {
+      "turn": 1,
+      "vFrom": 294,
+      "vTo": 137,
+      "distM": 99,
+      "timeS": 1.8,
+      "decelG": 4.3,
+      "pedalKg": 135,
+      "powerKW": 1782
+     }
+    ],
+    "notes": "Madring. zones and 14.2 s are from the f1-fansite headline only (page not fetchable); 15% from scuderiafans.com/2026-f1-madrid-gp-preview-why-the-madring-could-make-mercedes-vulnerable-again/.",
+    "card": "https://brem-p-001.sitecorecontenthub.cloud/api/public/content/894bcb606e97460790cd249c3f43b65c?v=608dcb7a",
+    "corners": [
+     {
+      "turn": 1,
+      "vFrom": 294,
+      "vTo": 137,
+      "distM": 99,
+      "timeS": 1.8,
+      "decelG": 4.3,
+      "pedalKg": 135,
+      "powerKW": 1782
+     },
+     {
+      "turn": 5,
+      "vFrom": 309,
+      "vTo": 110,
+      "distM": 130,
+      "timeS": 2.45,
+      "decelG": 3.4,
+      "pedalKg": 100,
+      "powerKW": 1297
+     },
+     {
+      "turn": 8,
+      "vFrom": 236,
+      "vTo": 111,
+      "distM": 85,
+      "timeS": 1.84,
+      "decelG": 3.2,
+      "pedalKg": 94,
+      "powerKW": 928
+     },
+     {
+      "turn": 13,
+      "vFrom": 280,
+      "vTo": 172,
+      "distM": 87,
+      "timeS": 1.43,
+      "decelG": 3.2,
+      "pedalKg": 90,
+      "powerKW": 1159
+     },
+     {
+      "turn": 17,
+      "vFrom": 266,
+      "vTo": 129,
+      "distM": 106,
+      "timeS": 2.07,
+      "decelG": 2.6,
+      "pedalKg": 65,
+      "powerKW": 753
+     },
+     {
+      "turn": 20,
+      "vFrom": 259,
+      "vTo": 95,
+      "distM": 118,
+      "timeS": 2.67,
+      "decelG": 3.2,
+      "pedalKg": 99,
+      "powerKW": 1083
+     },
+     {
+      "turn": 21,
+      "vFrom": 157,
+      "vTo": 132,
+      "distM": 26,
+      "timeS": 0.64,
+      "decelG": 1.6,
+      "pedalKg": 36,
+      "powerKW": 254
+     },
+     {
+      "turn": 22,
+      "vFrom": 236,
+      "vTo": 146,
+      "distM": 69,
+      "timeS": 1.32,
+      "decelG": 3.0,
+      "pedalKg": 88,
+      "powerKW": 868
+     }
+    ]
+   },
+   "Dutch Grand Prix": {
+    "source": "https://brem-p-001.sitecorecontenthub.cloud/api/public/content/880fbc61233243bdaef1258c85b5cfc0?v=2a99e759",
+    "index": null,
+    "zones": null,
+    "brakingTimeS": null,
+    "brakingPct": null,
+    "maxDecelG": 4.0,
+    "maxPedalKg": 114,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 1,
+      "vFrom": 323,
+      "vTo": 126,
+      "distM": 171,
+      "timeS": 2.97,
+      "decelG": 4.0,
+      "pedalKg": 114,
+      "powerKW": 1659
+     }
+    ],
+    "card": "https://brem-p-001.sitecorecontenthub.cloud/api/public/content/880fbc61233243bdaef1258c85b5cfc0?v=2a99e759",
+    "corners": [
+     {
+      "turn": 1,
+      "vFrom": 323,
+      "vTo": 126,
+      "distM": 171,
+      "timeS": 2.97,
+      "decelG": 4.0,
+      "pedalKg": 114,
+      "powerKW": 1659
+     },
+     {
+      "turn": 2,
+      "vFrom": 237,
+      "vTo": 205,
+      "distM": 42,
+      "timeS": 0.69,
+      "decelG": 1.8,
+      "pedalKg": 40,
+      "powerKW": 366
+     },
+     {
+      "turn": 3,
+      "vFrom": 192,
+      "vTo": 140,
+      "distM": 55,
+      "timeS": 1.2,
+      "decelG": 1.9,
+      "pedalKg": 51,
+      "powerKW": 389
+     },
+     {
+      "turn": 9,
+      "vFrom": 223,
+      "vTo": 127,
+      "distM": 97,
+      "timeS": 2.16,
+      "decelG": 2.4,
+      "pedalKg": 69,
+      "powerKW": 564
+     },
+     {
+      "turn": 10,
+      "vFrom": 187,
+      "vTo": 136,
+      "distM": 63,
+      "timeS": 1.46,
+      "decelG": 1.6,
+      "pedalKg": 38,
+      "powerKW": 275
+     },
+     {
+      "turn": 11,
+      "vFrom": 297,
+      "vTo": 125,
+      "distM": 146,
+      "timeS": 2.68,
+      "decelG": 3.2,
+      "pedalKg": 91,
+      "powerKW": 1160
+     },
+     {
+      "turn": 13,
+      "vFrom": 244,
+      "vTo": 193,
+      "distM": 59,
+      "timeS": 0.96,
+      "decelG": 2.2,
+      "pedalKg": 54,
+      "powerKW": 517
+     }
+    ]
+   },
+   "Las Vegas Grand Prix": {
+    "source": "https://brem-p-001.sitecorecontenthub.cloud/api/public/content/fff9f1932a6348e5aade2383ff586f28?v=a7a45afc",
+    "index": null,
+    "zones": null,
+    "brakingTimeS": null,
+    "brakingPct": null,
+    "maxDecelG": 3.5,
+    "maxPedalKg": 104,
+    "totalDecelG": null,
+    "raceLoadT": null,
+    "energyKWh": null,
+    "hardest": [
+     {
+      "turn": 5,
+      "vFrom": 324,
+      "vTo": 123,
+      "distM": 150,
+      "timeS": 2.69,
+      "decelG": 3.5,
+      "pedalKg": 104,
+      "powerKW": 1478
+     }
+    ],
+    "card": "https://brem-p-001.sitecorecontenthub.cloud/api/public/content/fff9f1932a6348e5aade2383ff586f28?v=a7a45afc",
+    "corners": [
+     {
+      "turn": 1,
+      "vFrom": 279,
+      "vTo": 126,
+      "distM": 116,
+      "timeS": 2.2,
+      "decelG": 3.4,
+      "pedalKg": 104,
+      "powerKW": 1248
+     },
+     {
+      "turn": 5,
+      "vFrom": 324,
+      "vTo": 123,
+      "distM": 150,
+      "timeS": 2.69,
+      "decelG": 3.5,
+      "pedalKg": 104,
+      "powerKW": 1478
+     },
+     {
+      "turn": 7,
+      "vFrom": 257,
+      "vTo": 122,
+      "distM": 127,
+      "timeS": 2.59,
+      "decelG": 1.9,
+      "pedalKg": 44,
+      "powerKW": 430
+     },
+     {
+      "turn": 12,
+      "vFrom": 244,
+      "vTo": 114,
+      "distM": 109,
+      "timeS": 2.43,
+      "decelG": 2.3,
+      "pedalKg": 57,
+      "powerKW": 578
+     },
+     {
+      "turn": 14,
+      "vFrom": 280,
+      "vTo": 120,
+      "distM": 120,
+      "timeS": 2.4,
+      "decelG": 3.1,
+      "pedalKg": 95,
+      "powerKW": 1111
+     }
+    ]
    }
   }
  },
