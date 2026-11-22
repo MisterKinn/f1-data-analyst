@@ -6,6 +6,8 @@ No line, no ship.
 - **Type:** acc (accuracy claim), corr (rule or physics correctness, non-inferiority), data (data fix, no gate).
 - **Idea:** one quantity on one set of held-out rows. **Attempt:** the n-th try at that idea; m counts every candidate of every attempt.
 - **n:** held-out units (tracks or events; seasons sharing tracks are pooled). **k:** `kForVariants(m, n)` in `scripts/sim/gate.mjs`.
+- **Decision (v3.1):** `signFlip(gains, {m})` on per-unit gains (p < 0.16 / m, n ≥ 5), with the 90 % bootstrap interval of the gain.
+- **Milestones:** one line per opening of the locked confirmation set (month end or release), with the prediction-log and forward-chaining RMS and the ± coverage.
 - **Day count:** accuracy gates on the same rows that day (from the 6th, add 5 to m).
 
 | Date (KST) | Session | Pre-registration | Type | Idea | Attempt | m | n | k | Metric | Result | Shipped |

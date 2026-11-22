@@ -54,3 +54,33 @@ export function normInv(p) {
   const r = (p - 0.5), t = r * r;
   return (((((a[0] * t + a[1]) * t + a[2]) * t + a[3]) * t + a[4]) * t + a[5]) * r / (((((b[0] * t + b[1]) * t + b[2]) * t + b[3]) * t + b[4]) * t + 1);
 }
+
+// Gate G v3.1 (2026-11-22): decide accuracy gates on per-unit gains (one gain per held-out track or event, + = better) with a
+// one-sided sign-flip randomization test (no normal assumption; exact for n ≤ 16, else 20 000 seeded flips) and report the mean gain
+// with a 90 % bootstrap interval. Pass when p < 0.16 / m (same false-pass risk per run as k = 1 for m = 1) and n ≥ 5.
+export function signFlip(gains, {m = 1, minRows = 5, iters = 20000, seed = 1} = {}) {
+  const g = gains.filter(Number.isFinite), n = g.length, mean = a => a.reduce((s, x) => s + x, 0) / (a.length || 1);
+  const obs = mean(g), abs = g.map(Math.abs);
+  let rng = seed >>> 0 || 1; const rand = () => ((rng = (rng * 1664525 + 1013904223) >>> 0) / 4294967296);
+  let ge = 0, tot = 0;
+  if (n <= 16) {
+    for (let mask = 0; mask < 1 << n; mask++) { let s = 0; for (let i = 0; i < n; i++) s += mask >> i & 1 ? -abs[i] : abs[i]; ge += s / n >= obs - 1e-12; tot++; }
+  } else {
+    for (let r = 0; r < iters; r++) { let s = 0; for (let i = 0; i < n; i++) s += rand() < 0.5 ? -abs[i] : abs[i]; ge += s / n >= obs - 1e-12; tot++; }
+  }
+  const p = n ? ge / tot : 1, boots = [];
+  for (let r = 0; r < 4000 && n; r++) { let s = 0; for (let i = 0; i < n; i++) s += g[Math.floor(rand() * n)]; boots.push(s / n); }
+  boots.sort((a, b) => a - b);
+  const ci = n ? [boots[Math.floor(0.05 * boots.length)], boots[Math.floor(0.95 * boots.length) - 1]] : [NaN, NaN];
+  const alpha = 0.16 / Math.max(1, m), accept = n >= minRows && obs > 0 && p < alpha;
+  const reason = n < minRows ? `not enough data: ${n} held-out units` : accept ? `accepted: p ${p.toFixed(3)} < ${alpha.toFixed(3)}`
+    : obs <= 0 ? 'rejected: worse on held-out units' : `rejected: p ${p.toFixed(3)} ≥ ${alpha.toFixed(3)}`;
+  return {accept, n, gain: obs, p, alpha, ci90: ci, reason};
+}
+
+// Coverage of a shown ± (Gate G v3.1): share of held-out or logged predictions whose real value is inside ±1σ and ±2σ.
+export function coverage(rows) {
+  const ok = rows.filter(r => Number.isFinite(r.err) && r.sigma > 0), n = ok.length;
+  const in1 = ok.filter(r => Math.abs(r.err) <= r.sigma).length, in2 = ok.filter(r => Math.abs(r.err) <= 2 * r.sigma).length;
+  return {n, c1: n ? in1 / n : NaN, c2: n ? in2 / n : NaN, target: {c1: 0.683, c2: 0.954}};
+}

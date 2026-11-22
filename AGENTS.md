@@ -99,6 +99,30 @@ Unraced tracks
   pinned). Its first run on production is the level C baseline: write it in `docs/lapsim-learn.md` and the ledger. Until it exists,
   a lap-time change says "level C not tested" in its PR.
 
+Validation that matches the product (v3.1, owner 2026-11-22)
+- **Locked confirmation set.** Every event that starts after 2026-11-23 00:00 KST, and every 2027 event, is locked: no gate may use it
+  as held-out data. It is opened only at a milestone (end of each month, or before a release that changes lap predictions), once per
+  milestone, by one script run, with the result written in the ledger. Production fits still learn from these events as usual; only the
+  judging is locked.
+- **Prediction log (forward test).** Before each qualifying session the production prediction (lap time, ±, sectors, top speed, model
+  version and calibration hash) is stored in `scripts/sim/data/prediction-log.json` by the refresh workflow, before the session starts;
+  after the session the real result is added next to it, never changing the stored prediction. This is the honest "next event" error; it
+  is what the page shows as accuracy for upcoming events, and it is the locked set's first score. Session C builds it
+  (`scripts/sim/prediction-log.mjs`, run from the f1-zones-refresh and WEC refresh schedules); until then, say "not logged".
+- **Forward-chaining backtest.** Besides leave-one-track-out, every lap-time change reports a rolling-origin test: events in date order;
+  each event predicted from a fit on earlier events only (same settings as production). Report RMS per class. It may not get worse
+  beyond δ (non-inferiority), like level C.
+- **Decide with a randomization test.** Accuracy gates decide with `signFlip(gains, {m})` in `scripts/sim/gate.mjs`: one gain per held-out
+  unit (track or event, + = better), one-sided sign-flip test (exact for n ≤ 16), pass when p < 0.16 / m and n ≥ 5; it does not assume
+  normal gains, so one outlier track cannot carry a pass. Report the mean gain with its 90 % bootstrap interval. `gate` /
+  `kForVariants` stay for scripts not yet moved; a new gate script uses `signFlip`.
+- **Coverage of the shown ±.** Every refit and every milestone reports `coverage()` on held-out and logged predictions: the share inside
+  ±1σ (target 68 %) and ±2σ (target 95 %), per class. With n ≥ 20 and ±1σ coverage outside 55–80 %, the shown ± is rescaled by the
+  ratio that brings it to 68 % on those rows (a declared data fix of the uncertainty, noted in the ledger), never by hand.
+- **CI check.** `.github/workflows/gate-ledger-check.yml` fails a PR that changes `worker/lapsim/` or `scripts/sim/` unless its
+  description has a line "Ledger: …" (the ledger line or pre-registration), "Data fix: <named source>" or "No model change: <why>".
+  Bot refresh and experiment branches are exempt.
+
 Physics and frozen stages
 - **Component metrics for physics.** A physics change pre-registers one component metric with the most direct data (corner minimum
   speed, end-of-straight speed or trap at the trap position, braking point, sector) as co-primary. It ships when the component gains
@@ -122,6 +146,8 @@ What may be learned from where
   Qualifying (pole-lap) timing is not used for race simulation, and iRacing offline-testing laps count as qualifying-style laps.
 - **Per-car values.** Class value first; a car's own value only as a shrunk difference from the class (as the M terms in
   `docs/lapsim-learn.md` section 3), with its own n. Fewer than 5 sessions or tracks for that car: the class value.
+- **Cloud or PC.** Every rule above runs in the cloud (GitHub Actions or a cloud session): fits, telemetry, weather and lap data are
+  in the repo or fetched in Actions. Only work that reads the owner's iRacing files or videos needs the owner's PC.
 - **Already shipped before v3.** Gates shipped before 2026-11-22 10:00 KST stay; open ones are re-judged under v3 before merging
   (see `docs/gate-ledger.md`).
 
