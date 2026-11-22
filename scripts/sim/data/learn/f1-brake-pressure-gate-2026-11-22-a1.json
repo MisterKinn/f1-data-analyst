@@ -1,0 +1,1233 @@
+{
+ "gate": "BP-1",
+ "run": "2026-11-22T12:01:46.216Z",
+ "k": {
+  "2025": 0.04264522624165548,
+  "2026": 0.03908782146590156
+ },
+ "kBaseline": {
+  "2025": 149,
+  "2026": 105.5
+ },
+ "headline": {
+  "n": 21,
+  "medAbsE": 0.189,
+  "upper90": 0.293,
+  "baseMedAbsE": 0.075,
+  "gain": -0.174,
+  "p": 0.9993,
+  "medAbsEG": 0.13,
+  "byYear": {
+   "2025": 0.099,
+   "2026": 0.276
+  },
+  "pass": false
+ },
+ "withoutSepang2026": {
+  "n": 20,
+  "medAbsE": 0.185,
+  "upper90": 0.26,
+  "baseMedAbsE": 0.075,
+  "gain": -0.185,
+  "p": 0.9997,
+  "medAbsEG": 0.137,
+  "byYear": {
+   "2025": 0.099,
+   "2026": 0.26
+  },
+  "pass": false
+ },
+ "rows": [
+  {
+   "year": 2025,
+   "round": 1,
+   "ev": "Australian Grand Prix",
+   "id": "melbourne",
+   "turn": 11,
+   "brembo": {
+    "kg": 153,
+    "g": 4.8,
+    "vFrom": 317,
+    "vTo": 133
+   },
+   "split": "tune",
+   "by": "corner",
+   "distM": 24,
+   "model": {
+    "Fn": 34884,
+    "fg": 3555.9,
+    "g": 5.13,
+    "vFrom": 322,
+    "vTo": 135,
+    "kg": 151.6
+   },
+   "e": -0.0091503267973857,
+   "eBase": -0.02614379084967322,
+   "eG": 0.06875000000000009
+  },
+  {
+   "year": 2025,
+   "round": 2,
+   "ev": "Chinese Grand Prix",
+   "id": "shanghai",
+   "turn": 14,
+   "brembo": {
+    "kg": 174,
+    "g": 4.7,
+    "vFrom": 318,
+    "vTo": 72
+   },
+   "split": "holdout",
+   "by": "corner",
+   "distM": 34,
+   "model": {
+    "Fn": 37361,
+    "fg": 3808.4,
+    "g": 5.55,
+    "vFrom": 326,
+    "vTo": 76,
+    "kg": 162.4
+   },
+   "e": -0.06666666666666665,
+   "eBase": -0.14367816091954022,
+   "eG": 0.1808510638297871
+  },
+  {
+   "year": 2025,
+   "round": 3,
+   "ev": "Japanese Grand Prix",
+   "id": "suzuka",
+   "turn": 16,
+   "brembo": {
+    "kg": 166,
+    "g": 4.5,
+    "vFrom": 303,
+    "vTo": 103
+   },
+   "split": "tune",
+   "by": "corner",
+   "distM": 5,
+   "model": {
+    "Fn": 32573,
+    "fg": 3320.4,
+    "g": 4.91,
+    "vFrom": 300,
+    "vTo": 95,
+    "kg": 141.6
+   },
+   "e": -0.1469879518072289,
+   "eBase": -0.10240963855421692,
+   "eG": 0.09111111111111114
+  },
+  {
+   "year": 2025,
+   "round": 4,
+   "ev": "Bahrain Grand Prix",
+   "id": "sakhir",
+   "turn": 1,
+   "brembo": {
+    "kg": 133,
+    "g": 4.2,
+    "vFrom": 313,
+    "vTo": 66
+   },
+   "split": "holdout",
+   "by": "speeds",
+   "distM": 10,
+   "model": {
+    "Fn": 31963,
+    "fg": 3258.2,
+    "g": 4.85,
+    "vFrom": 311,
+    "vTo": 74,
+    "kg": 138.9
+   },
+   "e": 0.044360902255639045,
+   "eBase": 0.12030075187969924,
+   "eG": 0.15476190476190466
+  },
+  {
+   "year": 2025,
+   "round": 5,
+   "ev": "Saudi Arabian Grand Prix",
+   "id": "jeddah",
+   "turn": 1,
+   "brembo": {
+    "kg": 159,
+    "g": 4.4,
+    "vFrom": 317,
+    "vTo": 110
+   },
+   "split": "tune",
+   "by": "speeds",
+   "distM": 12,
+   "model": {
+    "Fn": 26785,
+    "fg": 2730.4,
+    "g": 4.1,
+    "vFrom": 327,
+    "vTo": 113,
+    "kg": 116.4
+   },
+   "e": -0.26792452830188673,
+   "eBase": -0.06289308176100628,
+   "eG": -0.06818181818181834
+  },
+  {
+   "year": 2025,
+   "round": 6,
+   "ev": "Miami Grand Prix",
+   "id": "miami",
+   "turn": 17,
+   "brembo": {
+    "kg": 169,
+    "g": 4.6,
+    "vFrom": 319,
+    "vTo": 76
+   },
+   "split": "holdout",
+   "by": "corner",
+   "distM": 6,
+   "model": {
+    "Fn": 34859,
+    "fg": 3553.4,
+    "g": 5.09,
+    "vFrom": 340,
+    "vTo": 83,
+    "kg": 151.5
+   },
+   "e": -0.10355029585798814,
+   "eBase": -0.11834319526627224,
+   "eG": 0.10652173913043494
+  },
+  {
+   "year": 2025,
+   "round": 7,
+   "ev": "Emilia Romagna Grand Prix",
+   "id": "imola",
+   "turn": 17,
+   "brembo": {
+    "kg": 145,
+    "g": 4.1,
+    "vFrom": 292,
+    "vTo": 122
+   },
+   "split": "tune",
+   "by": "corner",
+   "distM": 14,
+   "model": {
+    "Fn": 36873,
+    "fg": 3758.7,
+    "g": 5.34,
+    "vFrom": 303,
+    "vTo": 134,
+    "kg": 160.3
+   },
+   "e": 0.1055172413793104,
+   "eBase": 0.02758620689655178,
+   "eG": 0.30243902439024395
+  },
+  {
+   "year": 2025,
+   "round": 8,
+   "ev": "Monaco Grand Prix",
+   "id": "monte-carlo",
+   "turn": 10,
+   "brembo": {
+    "kg": 145,
+    "g": 4.5,
+    "vFrom": 290,
+    "vTo": 96
+   },
+   "split": "holdout",
+   "by": "corner",
+   "distM": 11,
+   "model": {
+    "Fn": 45963,
+    "fg": 4685.3,
+    "g": 6.51,
+    "vFrom": 286,
+    "vTo": 79,
+    "kg": 199.8
+   },
+   "e": 0.37793103448275867,
+   "eBase": 0.02758620689655178,
+   "eG": 0.44666666666666655
+  },
+  {
+   "year": 2025,
+   "round": 9,
+   "ev": "Spanish Grand Prix",
+   "id": "catalunya",
+   "turn": 10,
+   "brembo": {
+    "kg": 133,
+    "g": 4,
+    "vFrom": 310,
+    "vTo": 106
+   },
+   "split": "tune",
+   "by": "corner",
+   "distM": 21,
+   "model": {
+    "Fn": 36127,
+    "fg": 3682.6,
+    "g": 5.32,
+    "vFrom": 311,
+    "vTo": 131,
+    "kg": 157
+   },
+   "e": 0.18045112781954886,
+   "eBase": 0.12030075187969924,
+   "eG": 0.33000000000000007
+  },
+  {
+   "year": 2025,
+   "round": 10,
+   "ev": "Canadian Grand Prix",
+   "id": "montreal",
+   "turn": 10,
+   "brembo": {
+    "kg": 168,
+    "g": 5,
+    "vFrom": 292,
+    "vTo": 69
+   },
+   "split": "holdout",
+   "by": "corner",
+   "distM": 2,
+   "model": {
+    "Fn": 35501,
+    "fg": 3618.9,
+    "g": 5.23,
+    "vFrom": 286,
+    "vTo": 79,
+    "kg": 154.3
+   },
+   "e": -0.08154761904761898,
+   "eBase": -0.11309523809523814,
+   "eG": 0.04600000000000004
+  },
+  {
+   "year": 2025,
+   "round": 11,
+   "ev": "Austrian Grand Prix",
+   "id": "spielberg",
+   "turn": 3,
+   "brembo": {
+    "kg": 142,
+    "g": 4.6,
+    "vFrom": 306,
+    "vTo": 78
+   },
+   "split": "tune",
+   "by": "corner",
+   "distM": 7,
+   "model": {
+    "Fn": 40813,
+    "fg": 4160.4,
+    "g": 5.91,
+    "vFrom": 317,
+    "vTo": 76,
+    "kg": 177.4
+   },
+   "e": 0.24929577464788744,
+   "eBase": 0.04929577464788726,
+   "eG": 0.2847826086956522
+  },
+  {
+   "year": 2025,
+   "round": 12,
+   "ev": "British Grand Prix",
+   "id": "silverstone",
+   "turn": 3,
+   "brembo": {
+    "kg": 152,
+    "g": 4.5,
+    "vFrom": 295,
+    "vTo": 130
+   },
+   "split": "holdout",
+   "by": "corner",
+   "distM": 25,
+   "model": {
+    "Fn": 31491,
+    "fg": 3210.1,
+    "g": 4.64,
+    "vFrom": 307,
+    "vTo": 113,
+    "kg": 136.9
+   },
+   "e": -0.0993421052631579,
+   "eBase": -0.019736842105263164,
+   "eG": 0.03111111111111109
+  },
+  {
+   "year": 2025,
+   "round": 13,
+   "ev": "Belgian Grand Prix",
+   "id": "spa-francorchamps",
+   "turn": 5,
+   "brembo": {
+    "kg": 157,
+    "g": 4.7,
+    "vFrom": 327,
+    "vTo": 176
+   },
+   "split": "tune",
+   "by": "corner",
+   "distM": 14,
+   "model": {
+    "Fn": 37029,
+    "fg": 3774.6,
+    "g": 5.53,
+    "vFrom": 335,
+    "vTo": 179,
+    "kg": 161
+   },
+   "e": 0.02547770700636942,
+   "eBase": -0.05095541401273884,
+   "eG": 0.17659574468085104
+  },
+  {
+   "year": 2025,
+   "round": 14,
+   "ev": "Hungarian Grand Prix",
+   "id": "hungaroring",
+   "turn": 1,
+   "brembo": {
+    "kg": 156,
+    "g": 4.4,
+    "vFrom": 307,
+    "vTo": 95
+   },
+   "split": "holdout",
+   "by": "corner",
+   "distM": 13,
+   "model": {
+    "Fn": 35073,
+    "fg": 3575.2,
+    "g": 5.23,
+    "vFrom": 315,
+    "vTo": 100,
+    "kg": 152.5
+   },
+   "e": -0.022435897435897467,
+   "eBase": -0.04487179487179482,
+   "eG": 0.1886363636363637
+  },
+  {
+   "year": 2025,
+   "round": 15,
+   "ev": "Dutch Grand Prix",
+   "id": "zandvoort",
+   "turn": 1,
+   "brembo": {
+    "kg": 157,
+    "g": 4.7,
+    "vFrom": 315,
+    "vTo": 124
+   },
+   "split": "tune",
+   "by": "corner",
+   "distM": 7,
+   "model": {
+    "Fn": 32444,
+    "fg": 3307.2,
+    "g": 4.91,
+    "vFrom": 325,
+    "vTo": 135,
+    "kg": 141
+   },
+   "e": -0.10191082802547768,
+   "eBase": -0.05095541401273884,
+   "eG": 0.044680851063829685
+  },
+  {
+   "year": 2025,
+   "round": 16,
+   "ev": "Italian Grand Prix",
+   "id": "monza",
+   "turn": 1,
+   "brembo": {
+    "kg": 162,
+    "g": 4.7,
+    "vFrom": 337,
+    "vTo": 89
+   },
+   "split": "holdout",
+   "by": "corner",
+   "distM": 36,
+   "model": {
+    "Fn": 31870,
+    "fg": 3248.7,
+    "g": 4.93,
+    "vFrom": 347,
+    "vTo": 82,
+    "kg": 138.5
+   },
+   "e": -0.1450617283950617,
+   "eBase": -0.08024691358024694,
+   "eG": 0.04893617021276575
+  },
+  {
+   "year": 2025,
+   "round": 17,
+   "ev": "Azerbaijan Grand Prix",
+   "id": "baku",
+   "turn": 1,
+   "brembo": {
+    "kg": 176,
+    "g": 5,
+    "vFrom": 329,
+    "vTo": 119
+   },
+   "split": "tune",
+   "by": "corner",
+   "distM": 1,
+   "model": {
+    "Fn": 30054,
+    "fg": 3063.6,
+    "g": 4.52,
+    "vFrom": 338,
+    "vTo": 129,
+    "kg": 130.6
+   },
+   "e": -0.25795454545454544,
+   "eBase": -0.15340909090909094,
+   "eG": -0.09600000000000009
+  },
+  {
+   "year": 2025,
+   "round": 18,
+   "ev": "Singapore Grand Prix",
+   "id": "singapore",
+   "turn": 7,
+   "brembo": {
+    "kg": 151,
+    "g": 4.9,
+    "vFrom": 308,
+    "vTo": 128
+   },
+   "split": "holdout",
+   "by": "corner",
+   "distM": 13,
+   "model": {
+    "Fn": 45886,
+    "fg": 4677.4,
+    "g": 6.53,
+    "vFrom": 316,
+    "vTo": 132,
+    "kg": 199.5
+   },
+   "e": 0.3211920529801324,
+   "eBase": -0.013245033112582738,
+   "eG": 0.3326530612244898
+  },
+  {
+   "year": 2025,
+   "round": 19,
+   "ev": "United States Grand Prix",
+   "id": "austin",
+   "turn": 12,
+   "brembo": {
+    "kg": 130,
+    "g": 4.2,
+    "vFrom": 312,
+    "vTo": 92
+   },
+   "split": "tune",
+   "by": "corner",
+   "distM": 10,
+   "model": {
+    "Fn": 35504,
+    "fg": 3619.2,
+    "g": 5.29,
+    "vFrom": 322,
+    "vTo": 101,
+    "kg": 154.3
+   },
+   "e": 0.18692307692307697,
+   "eBase": 0.14615384615384608,
+   "eG": 0.2595238095238095
+  },
+  {
+   "year": 2025,
+   "round": 20,
+   "ev": "Mexico City Grand Prix",
+   "id": "mexico-city",
+   "turn": 1,
+   "brembo": {
+    "kg": 126,
+    "g": 4.1,
+    "vFrom": 342,
+    "vTo": 112
+   },
+   "split": "holdout",
+   "by": "corner",
+   "distM": 5,
+   "model": {
+    "Fn": 51838,
+    "fg": 5284.2,
+    "g": 7.32,
+    "vFrom": 348,
+    "vTo": 118,
+    "kg": 225.3
+   },
+   "e": 0.7880952380952382,
+   "eBase": 0.18253968253968256,
+   "eG": 0.7853658536585368
+  },
+  {
+   "year": 2025,
+   "round": 21,
+   "ev": "São Paulo Grand Prix",
+   "id": "interlagos",
+   "turn": 1,
+   "brembo": {
+    "kg": 139,
+    "g": 4.6,
+    "vFrom": 325,
+    "vTo": 123
+   },
+   "split": "tune",
+   "by": "corner",
+   "distM": 4,
+   "model": {
+    "Fn": 32264,
+    "fg": 3288.9,
+    "g": 4.89,
+    "vFrom": 336,
+    "vTo": 124,
+    "kg": 140.3
+   },
+   "e": 0.009352517985611541,
+   "eBase": 0.07194244604316546,
+   "eG": 0.06304347826086953
+  },
+  {
+   "year": 2025,
+   "round": 22,
+   "ev": "Las Vegas Grand Prix",
+   "id": "las-vegas",
+   "turn": 14,
+   "brembo": {
+    "kg": 127,
+    "g": 4.2,
+    "vFrom": 350,
+    "vTo": 102
+   },
+   "split": "holdout",
+   "drop": "no measured lap"
+  },
+  {
+   "year": 2025,
+   "round": 23,
+   "ev": "Qatar Grand Prix",
+   "id": "lusail",
+   "turn": 1,
+   "brembo": {
+    "kg": 119,
+    "g": 4.8,
+    "vFrom": 310,
+    "vTo": 169
+   },
+   "split": "tune",
+   "by": "corner",
+   "distM": 16,
+   "model": {
+    "Fn": 22222,
+    "fg": 2265.2,
+    "g": 3.71,
+    "vFrom": 324,
+    "vTo": 180,
+    "kg": 96.6
+   },
+   "e": -0.18823529411764706,
+   "eBase": 0.25210084033613445,
+   "eG": -0.2270833333333333
+  },
+  {
+   "year": 2025,
+   "round": 24,
+   "ev": "Abu Dhabi Grand Prix",
+   "id": "yas-marina-circuit",
+   "turn": 6,
+   "brembo": {
+    "kg": 148,
+    "g": 4.7,
+    "vFrom": 321,
+    "vTo": 78
+   },
+   "split": "holdout",
+   "by": "corner",
+   "distM": 6,
+   "model": {
+    "Fn": 35861,
+    "fg": 3655.6,
+    "g": 5.31,
+    "vFrom": 331,
+    "vTo": 74,
+    "kg": 155.9
+   },
+   "e": 0.05337837837837833,
+   "eBase": 0.006756756756756799,
+   "eG": 0.129787234042553
+  },
+  {
+   "year": 2026,
+   "round": 1,
+   "ev": "Australian Grand Prix",
+   "id": "melbourne",
+   "turn": 11,
+   "brembo": {
+    "kg": 88,
+    "g": 3.3,
+    "vFrom": 288,
+    "vTo": 138
+   },
+   "split": "tune",
+   "by": "corner",
+   "distM": 6,
+   "model": {
+    "Fn": 22480,
+    "fg": 2291.6,
+    "g": 4.12,
+    "vFrom": 293,
+    "vTo": 127,
+    "kg": 89.6
+   },
+   "e": 0.018181818181818077,
+   "eBase": 0.19886363636363646,
+   "eG": 0.24848484848484853
+  },
+  {
+   "year": 2026,
+   "round": 2,
+   "ev": "Chinese Grand Prix",
+   "id": "shanghai",
+   "turn": 14,
+   "brembo": {
+    "kg": 105,
+    "g": 3.9,
+    "vFrom": 314,
+    "vTo": 77
+   },
+   "split": "holdout",
+   "by": "corner",
+   "distM": 32,
+   "model": {
+    "Fn": 0,
+    "fg": 0,
+    "g": 1.46,
+    "vFrom": 99,
+    "vTo": 81,
+    "kg": 0
+   },
+   "e": -1,
+   "eBase": 0.004761904761904745,
+   "eG": -0.6256410256410256
+  },
+  {
+   "year": 2026,
+   "round": 3,
+   "ev": "Japanese Grand Prix",
+   "id": "suzuka",
+   "turn": 16,
+   "brembo": {
+    "kg": 99,
+    "g": 3.7,
+    "vFrom": 283,
+    "vTo": 104
+   },
+   "split": "tune",
+   "drop": "Brembo corner at broken telemetry"
+  },
+  {
+   "year": 2026,
+   "round": 16,
+   "ev": "Bahrain Grand Prix",
+   "id": "kuala-lumpur",
+   "turn": 15,
+   "brembo": {
+    "kg": 189,
+    "g": 4.7,
+    "vFrom": 307,
+    "vTo": 93
+   },
+   "split": "holdout",
+   "by": "speeds",
+   "distM": 13,
+   "model": {
+    "Fn": 28573,
+    "fg": 2912.6,
+    "g": 4.91,
+    "vFrom": 302,
+    "vTo": 85,
+    "kg": 113.8
+   },
+   "e": -0.39788359788359795,
+   "eBase": -0.44179894179894175,
+   "eG": 0.044680851063829685
+  },
+  {
+   "year": 2026,
+   "round": 4,
+   "ev": "Miami Grand Prix",
+   "id": "miami",
+   "turn": 17,
+   "brembo": {
+    "kg": 114,
+    "g": 4,
+    "vFrom": 320,
+    "vTo": 78
+   },
+   "split": "holdout",
+   "by": "corner",
+   "distM": 5,
+   "model": {
+    "Fn": 23439,
+    "fg": 2389.3,
+    "g": 4.23,
+    "vFrom": 323,
+    "vTo": 79,
+    "kg": 93.4
+   },
+   "e": -0.1807017543859648,
+   "eBase": -0.07456140350877194,
+   "eG": 0.05750000000000011
+  },
+  {
+   "year": 2026,
+   "round": 5,
+   "ev": "Canadian Grand Prix",
+   "id": "montreal",
+   "turn": 13,
+   "brembo": {
+    "kg": 101,
+    "g": 3.7,
+    "vFrom": 306,
+    "vTo": 147
+   },
+   "split": "tune",
+   "by": "corner",
+   "distM": 2,
+   "model": {
+    "Fn": 25540,
+    "fg": 2603.4,
+    "g": 4.53,
+    "vFrom": 312,
+    "vTo": 145,
+    "kg": 101.8
+   },
+   "e": 0.007920792079207928,
+   "eBase": 0.044554455445544594,
+   "eG": 0.22432432432432425
+  },
+  {
+   "year": 2026,
+   "round": 6,
+   "ev": "Monaco Grand Prix",
+   "id": "monte-carlo",
+   "turn": 1,
+   "brembo": {
+    "kg": 114,
+    "g": 4,
+    "vFrom": 276,
+    "vTo": 132
+   },
+   "split": "holdout",
+   "by": "corner",
+   "distM": 10,
+   "model": {
+    "Fn": 20232,
+    "fg": 2062.4,
+    "g": 3.82,
+    "vFrom": 271,
+    "vTo": 119,
+    "kg": 80.6
+   },
+   "e": -0.2929824561403509,
+   "eBase": -0.07456140350877194,
+   "eG": -0.04500000000000004
+  },
+  {
+   "year": 2026,
+   "round": 7,
+   "ev": "Barcelona-Catalunya Grand Prix",
+   "id": "catalunya",
+   "turn": 1,
+   "brembo": {
+    "kg": 96,
+    "g": 3.6,
+    "vFrom": 304,
+    "vTo": 164
+   },
+   "split": "tune",
+   "by": "corner",
+   "distM": 16,
+   "model": {
+    "Fn": 21709,
+    "fg": 2212.9,
+    "g": 4.02,
+    "vFrom": 317,
+    "vTo": 153,
+    "kg": 86.5
+   },
+   "e": -0.09895833333333337,
+   "eBase": 0.09895833333333326,
+   "eG": 0.11666666666666647
+  },
+  {
+   "year": 2026,
+   "round": 8,
+   "ev": "Austrian Grand Prix",
+   "id": "spielberg",
+   "turn": 1,
+   "brembo": {
+    "kg": 110,
+    "g": 3.8,
+    "vFrom": 306,
+    "vTo": 149
+   },
+   "split": "holdout",
+   "by": "corner",
+   "distM": 1,
+   "model": {
+    "Fn": 24845,
+    "fg": 2532.6,
+    "g": 4.39,
+    "vFrom": 306,
+    "vTo": 139,
+    "kg": 99
+   },
+   "e": -0.09999999999999998,
+   "eBase": -0.040909090909090895,
+   "eG": 0.15526315789473677
+  },
+  {
+   "year": 2026,
+   "round": 9,
+   "ev": "British Grand Prix",
+   "id": "silverstone",
+   "turn": 16,
+   "brembo": {
+    "kg": 86,
+    "g": 3.1,
+    "vFrom": 268,
+    "vTo": 116
+   },
+   "split": "tune",
+   "by": "corner",
+   "distM": 23,
+   "model": {
+    "Fn": 26284,
+    "fg": 2679.3,
+    "g": 4.61,
+    "vFrom": 258,
+    "vTo": 106,
+    "kg": 104.7
+   },
+   "e": 0.21744186046511627,
+   "eBase": 0.2267441860465116,
+   "eG": 0.48709677419354835
+  },
+  {
+   "year": 2026,
+   "round": 10,
+   "ev": "Belgian Grand Prix",
+   "id": "spa-francorchamps",
+   "turn": 1,
+   "brembo": {
+    "kg": 111,
+    "g": 3.6,
+    "vFrom": 285,
+    "vTo": 86
+   },
+   "split": "holdout",
+   "by": "corner",
+   "distM": 10,
+   "model": {
+    "Fn": 22586,
+    "fg": 2302.3,
+    "g": 4.12,
+    "vFrom": 282,
+    "vTo": 93,
+    "kg": 90
+   },
+   "e": -0.18918918918918914,
+   "eBase": -0.0495495495495496,
+   "eG": 0.14444444444444438
+  },
+  {
+   "year": 2026,
+   "round": 11,
+   "ev": "Hungarian Grand Prix",
+   "id": "hungaroring",
+   "turn": 1,
+   "brembo": {
+    "kg": 119,
+    "g": 4,
+    "vFrom": 332,
+    "vTo": 99
+   },
+   "split": "tune",
+   "by": "corner",
+   "distM": 27,
+   "model": {
+    "Fn": 23344,
+    "fg": 2379.7,
+    "g": 4.22,
+    "vFrom": 327,
+    "vTo": 110,
+    "kg": 93
+   },
+   "e": -0.2184873949579832,
+   "eBase": -0.11344537815126055,
+   "eG": 0.05499999999999994
+  },
+  {
+   "year": 2026,
+   "round": 13,
+   "ev": "Italian Grand Prix",
+   "id": "monza",
+   "turn": 1,
+   "brembo": {
+    "kg": 111,
+    "g": 3.8,
+    "vFrom": 318,
+    "vTo": 87
+   },
+   "split": "tune",
+   "by": "corner",
+   "distM": 17,
+   "model": {
+    "Fn": 27309,
+    "fg": 2783.8,
+    "g": 4.73,
+    "vFrom": 333,
+    "vTo": 97,
+    "kg": 108.8
+   },
+   "e": -0.01981981981981984,
+   "eBase": -0.0495495495495496,
+   "eG": 0.24473684210526336
+  },
+  {
+   "year": 2026,
+   "round": 15,
+   "ev": "Azerbaijan Grand Prix",
+   "id": "baku",
+   "turn": 1,
+   "brembo": {
+    "kg": 115,
+    "g": 3.9,
+    "vFrom": 313,
+    "vTo": 140
+   },
+   "split": "tune",
+   "by": "corner",
+   "distM": 3,
+   "model": {
+    "Fn": 25212,
+    "fg": 2570,
+    "g": 4.48,
+    "vFrom": 298,
+    "vTo": 125,
+    "kg": 100.5
+   },
+   "e": -0.12608695652173918,
+   "eBase": -0.08260869565217388,
+   "eG": 0.14871794871794886
+  },
+  {
+   "year": 2026,
+   "round": 17,
+   "ev": "Singapore Grand Prix",
+   "id": "singapore",
+   "turn": 1,
+   "brembo": {
+    "kg": 110,
+    "g": 4,
+    "vFrom": 298,
+    "vTo": 144
+   },
+   "split": "tune",
+   "by": "corner",
+   "distM": 16,
+   "model": {
+    "Fn": 28140,
+    "fg": 2868.5,
+    "g": 4.87,
+    "vFrom": 306,
+    "vTo": 137,
+    "kg": 112.1
+   },
+   "e": 0.019090909090909047,
+   "eBase": -0.040909090909090895,
+   "eG": 0.21750000000000003
+  },
+  {
+   "year": 2026,
+   "round": 18,
+   "ev": "United States Grand Prix",
+   "id": "austin",
+   "turn": 1,
+   "brembo": {
+    "kg": 123,
+    "g": 4.3,
+    "vFrom": 305,
+    "vTo": 93
+   },
+   "split": "holdout",
+   "by": "corner",
+   "distM": 9,
+   "model": {
+    "Fn": 21433,
+    "fg": 2184.8,
+    "g": 3.97,
+    "vFrom": 298,
+    "vTo": 95,
+    "kg": 85.4
+   },
+   "e": -0.3056910569105691,
+   "eBase": -0.1422764227642277,
+   "eG": -0.07674418604651156
+  },
+  {
+   "year": 2026,
+   "round": 19,
+   "ev": "Mexico City Grand Prix",
+   "id": "mexico-city",
+   "turn": 1,
+   "brembo": {
+    "kg": 107,
+    "g": 3.6,
+    "vFrom": 340,
+    "vTo": 114
+   },
+   "split": "tune",
+   "by": "corner",
+   "distM": 10,
+   "model": {
+    "Fn": 26655,
+    "fg": 2717.1,
+    "g": 4.59,
+    "vFrom": 344,
+    "vTo": 107,
+    "kg": 106.2
+   },
+   "e": -0.00747663551401867,
+   "eBase": -0.014018691588784993,
+   "eG": 0.2749999999999999
+  },
+  {
+   "year": 2026,
+   "round": 20,
+   "ev": "São Paulo Grand Prix",
+   "id": "interlagos",
+   "turn": 1,
+   "brembo": {
+    "kg": 104,
+    "g": 3.7,
+    "vFrom": 312,
+    "vTo": 115
+   },
+   "split": "holdout",
+   "by": "corner",
+   "distM": 13,
+   "model": {
+    "Fn": 9997,
+    "fg": 1019.1,
+    "g": 2.45,
+    "vFrom": 290,
+    "vTo": 90,
+    "kg": 39.8
+   },
+   "e": -0.6173076923076923,
+   "eBase": 0.014423076923076872,
+   "eG": -0.33783783783783783
+  },
+  {
+   "year": 2026,
+   "round": 14,
+   "ev": "Spanish Grand Prix",
+   "id": "madring",
+   "turn": 1,
+   "brembo": {
+    "kg": 135,
+    "g": 4.3,
+    "vFrom": 294,
+    "vTo": 137
+   },
+   "split": "holdout",
+   "by": "speeds",
+   "distM": 19,
+   "model": {
+    "Fn": 25072,
+    "fg": 2555.7,
+    "g": 4.43,
+    "vFrom": 291,
+    "vTo": 121,
+    "kg": 99.9
+   },
+   "e": -0.26,
+   "eBase": -0.21851851851851856,
+   "eG": 0.03023255813953485
+  },
+  {
+   "year": 2026,
+   "round": 12,
+   "ev": "Dutch Grand Prix",
+   "id": "zandvoort",
+   "turn": 1,
+   "brembo": {
+    "kg": 114,
+    "g": 4,
+    "vFrom": 323,
+    "vTo": 126
+   },
+   "split": "holdout",
+   "by": "corner",
+   "distM": 3,
+   "model": {
+    "Fn": 22580,
+    "fg": 2301.7,
+    "g": 4.16,
+    "vFrom": 309,
+    "vTo": 125,
+    "kg": 90
+   },
+   "e": -0.21052631578947367,
+   "eBase": -0.07456140350877194,
+   "eG": 0.040000000000000036
+  },
+  {
+   "year": 2026,
+   "round": 21,
+   "ev": "Las Vegas Grand Prix",
+   "id": "las-vegas",
+   "turn": 5,
+   "brembo": {
+    "kg": 104,
+    "g": 3.5,
+    "vFrom": 324,
+    "vTo": 123
+   },
+   "split": "tune",
+   "by": "corner",
+   "distM": 11,
+   "model": {
+    "Fn": 28156,
+    "fg": 2870.1,
+    "g": 4.86,
+    "vFrom": 327,
+    "vTo": 114,
+    "kg": 112.2
+   },
+   "e": 0.07884615384615379,
+   "eBase": 0.014423076923076872,
+   "eG": 0.38857142857142857
+  }
+ ]
+}
