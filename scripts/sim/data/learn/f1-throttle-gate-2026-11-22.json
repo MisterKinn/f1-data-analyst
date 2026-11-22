@@ -1,0 +1,48 @@
+{
+ "2025": {
+  "tau": {
+   "tracks": 23,
+   "gain": 0.209,
+   "se": 0.0478,
+   "pass": true,
+   "chosenOnAll": 0.35,
+   "chosenPerFold": [
+    0.35,
+    0.5
+   ]
+  },
+  "lead": {
+   "tracks": 23,
+   "gain": 0.212,
+   "se": 0.013,
+   "pass": true,
+   "chosenOnAll": -0.3,
+   "chosenPerFold": [
+    -0.3
+   ]
+  }
+ },
+ "2026": {
+  "tau": {
+   "tracks": 20,
+   "gain": 0,
+   "se": 0,
+   "pass": false,
+   "chosenOnAll": 0.1,
+   "chosenPerFold": [
+    0.1,
+    0.5
+   ]
+  },
+  "lead": {
+   "tracks": 21,
+   "gain": 0.2135,
+   "se": 0.0238,
+   "pass": true,
+   "chosenOnAll": -0.3,
+   "chosenPerFold": [
+    -0.3
+   ]
+  }
+ }
+}

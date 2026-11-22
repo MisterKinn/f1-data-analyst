@@ -1,0 +1,42 @@
+{
+ "2025": {
+  "rise": {
+   "tracks": 23,
+   "gain": 0.2497,
+   "se": 0.0275,
+   "pass": true
+  },
+  "pick": {
+   "tracks": 23,
+   "gain": 0.1428,
+   "se": 0.0135,
+   "pass": true
+  },
+  "off": {
+   "tracks": 23,
+   "gain": 0,
+   "se": 0,
+   "pass": false
+  }
+ },
+ "2026": {
+  "rise": {
+   "tracks": 20,
+   "gain": -0.0062,
+   "se": 0.016,
+   "pass": false
+  },
+  "pick": {
+   "tracks": 21,
+   "gain": 0.2135,
+   "se": 0.0238,
+   "pass": true
+  },
+  "off": {
+   "tracks": 21,
+   "gain": 0,
+   "se": 0,
+   "pass": false
+  }
+ }
+}
