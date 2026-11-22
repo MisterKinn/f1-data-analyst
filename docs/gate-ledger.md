@@ -34,6 +34,7 @@ No line, no ship.
 | 2026-11-22 | C | docs/lapsim-learn.md section 14 | baseline | Level C unseen-track test on production (scripts/sim/holdout-track.mjs) | – | – | 58 rows (F1 40, WEC 18) | – | lap RMS % / median abs % | all 2.692 / 1.84; f1 2.999; wec 1.836 | baseline, no ship |
 | 2026-11-22 | C | docs/lapsim-learn.md section 15 | baseline | Forward-chaining backtest on production (scripts/sim/backtest-forward.mjs) | – | – | 58 rows (F1 40, WEC 18) | – | lap RMS % / median abs % | all 2.162 / 0.971; f1 2.538; wec 0.868 | baseline, no ship |
 | 2026-11-22 | C | docs/lapsim-learn.md section 16 | data (check) | Coverage of the shown ± on production held-out rows | – | – | 68 rows | – | share in ±1σ / ±2σ | F1 pooled 77 % / 94 % (n 35); WEC pooled 67 % / 100 % (n 33); all 72 % / 97 % — inside 55–80 % | no rescale |
+| 2026-11-22 | C | AGENTS.md Gate G v3.1 locked set | locked set | Events from 2026-11-23 00:00 KST and all of 2027 are not used for fitting or gate choices; opened once on 2026-11-30 with one run, result written here | – | – | – | – | lap RMS % (level C and forward) | – | locked until 2026-11-30 |
 ## Re-judging under v3
 - #402 and #403 were merged before the v3 rules. Re-judged 2026-11-22 (Session C, rows above): #402 removed (below the floor); #403 GTP
   shifts, GT3 pick-up and GTP brake off kept; GTP squeeze τ provisional; GT3 shifts and GTP pick-up removed.
