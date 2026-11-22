@@ -167,6 +167,9 @@ jobs:
           # Hypercar (LMH/LMDh) peak braking capped at the iRacing GTP envelope 8.63 + 0.003234 v^2 m/s^2 (owner rule 14: learned from
           # iRacing, "model"). Experiment 44043761033: hypercar holdout mean 1.24 -> 1.16 % (BE0 -> BE1; 1.15x envelope BE2: 1.20 %)
           LAPSIM_BRAKE_ENV_HYPER: '8.63,0.003234'
+          # broken stretches in the OpenF1 traces are not measured data (AGENTS.md): dropped before the fit. Run 45025282535 vs base
+          # 44982191480 (same build): F1 lap RMS 0.920 -> 0.920 %, level C 2.704 -> 2.675 %, WEC 1.299 unchanged; 594 samples dropped
+          LAPSIM_TRACE_MASK: '1'
         run: node scripts/sim/calibrate.mjs
       # TracingInsights race laps 2018 on; reference = mean of the best 8 qualifying laps (script defaults)
       # Hypercar per maker (LapSim × BoPSim × SetupSim, owner 2026-11-21): the residuals are learned on the class cars just fitted

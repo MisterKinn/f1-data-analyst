@@ -50,8 +50,8 @@ const traces = ONLY_WEC ? [] : JSON.parse(await readFile(join(CACHE, 'traces.jso
 if (E.LAPSIM_TRACE_MASK === '1') { let cut = 0, gone = 0;
   for (let k = traces.length - 1; k >= 0; k--) { const t = traces[k], {gaps, share} = traceGaps(t); if (!gaps.length) continue;
     if (share > 0.5) { traces.splice(k, 1); gone++; continue; }
-    const keep = t.s.map((s, i) => !gaps.some(([a, b]) => s >= a && s < b)); cut += keep.filter(x => !x).length;
-    for (const key of Object.keys(t)) if (Array.isArray(t[key]) && t[key].length === t.s.length) t[key] = t[key].filter((_, i) => keep[i]); }
+    const n = t.s.length, keep = t.s.map(s => !gaps.some(([a, b]) => s >= a && s < b)); cut += keep.filter(x => !x).length;
+    for (const key of Object.keys(t)) if (Array.isArray(t[key]) && t[key].length === n) t[key] = t[key].filter((_, i) => keep[i]); }
   console.log(`trace mask: ${cut} samples dropped, ${gone} laps dropped`); }
 // LAPSIM_KAPPA_CAP_G=6.5: the speed-implied curvature cap (geometry.js) on tracks whose stored data predates it (experiment inputs)
 if (E.LAPSIM_KAPPA_CAP_G && !ONLY_WEC) for (const [id, d] of Object.entries(lapsimTracks)) { if (d.quality?.kappaCap || id === 'zandvoort') continue;
