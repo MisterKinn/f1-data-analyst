@@ -53,8 +53,8 @@ jobs:
         run: |
           scripts/publish-refresh.sh -m "F1 zones, session grip state and real poles (FIA circuit maps, race control, TracingInsights)" \
             -g "bash /tmp/gen.sh" -b lapsim-learn/zones-refresh \
-            -c "node scripts/refresh-changed.mjs worker/lapsim/f1-zones-data.js scripts/sim/data/learn/f1-aero-state.json worker/lapsim/f1-poles-data.js worker/lapsim/f1-driver-quali-data.js worker/lapsim/f1-real-telemetry-data.js scripts/sim/data/prediction-log.json" \
-            -- scripts/sim/data/learn worker/lapsim/f1-zones-data.js worker/lapsim/f1-poles-data.js worker/lapsim/f1-driver-quali-data.js worker/lapsim/f1-real-telemetry-data.js scripts/sim/data/prediction-log.json
+            -c "node scripts/refresh-changed.mjs worker/lapsim/f1-zones-data.js scripts/sim/data/learn/f1-aero-state.json worker/lapsim/f1-poles-data.js worker/lapsim/f1-driver-quali-data.js worker/lapsim/f1-real-telemetry-data.js scripts/sim/data/prediction-log.json worker/lapsim/prediction-log-data.js" \
+            -- scripts/sim/data/learn worker/lapsim/f1-zones-data.js worker/lapsim/f1-poles-data.js worker/lapsim/f1-driver-quali-data.js worker/lapsim/f1-real-telemetry-data.js scripts/sim/data/prediction-log.json worker/lapsim/prediction-log-data.js
       - name: Remove old refresh branches (main has newer data)
         if: success()
         run: |
