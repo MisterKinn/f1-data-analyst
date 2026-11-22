@@ -165,7 +165,7 @@ export const translations = {
  'IMSA 대회별 공식 타이밍과 세션 결과 자료. 시즌과 이벤트를 선택해 확인하세요.':'Official IMSA timing and session results. Select the season and event.',
  '원문 사이트 열기 ↗':'Open source website ↗','공식 로고':'official logo','공식 자료 사이트':'Official resources',
  '라이브 분석 지원 대회':'Live analysis championships','사후 분석 지원 대회':'Post-race analysis championships',
- '사용할 계정으로 로그인하세요.':'Choose an account to sign in.',' 계정으로 로그인되어 있습니다.':' — signed in.',
+ '사용할 계정으로 로그인하세요.':'Choose an account to sign in.','BoP 시뮬레이터':'BoP simulator','로그인하지 않아도 모든 시뮬레이터와 일정을 쓸 수 있습니다. 로그인하면 좋아하는 팀·드라이버와 AI 답변 지침을 저장하고, 쓰던 Claude·ChatGPT에 꽁보다를 연결할 수 있습니다.':'Every simulator and schedule works without signing in. Sign in to save your favourite team, drivers and AI answer instructions, and to connect Kongboda to the Claude or ChatGPT you use.','로그인하지 않아도 모든 시뮬레이터와 일정을 쓸 수 있습니다.':'Every simulator and schedule works without signing in.','로그인하면 좋아하는 팀·드라이버와 AI 답변 지침을 저장하고, 쓰던 Claude·ChatGPT에 꽁보다를 연결할 수 있습니다.':'Sign in to save your favourite team, drivers and AI answer instructions, and to connect Kongboda to the Claude or ChatGPT you use.','저장하는 정보':'What we store',' 계정으로 로그인되어 있습니다.':' — signed in.',
  'Google 로그인 · 준비 중':'Google sign-in · coming later','Google로 로그인':'Sign in with Google','Google 로그아웃':'Sign out of Google',
  'ChatGPT로 로그인':'Sign in with ChatGPT','ChatGPT 로그아웃':'Sign out of ChatGPT','사이트로 돌아가기':'Return to site',
  'Google 로그인은 운영자 설정을 마친 후 사용할 수 있습니다. 지금은 ChatGPT 로그인을 이용해 주세요.':'Google sign-in will be available after configuration. Please use ChatGPT sign-in for now.',
