@@ -36,6 +36,17 @@ export function lapChannels(track, car, env, res, {cls = 'f1', seed = '', surfac
     // with a learned gain the front line pressure follows the whole stopping need, as in the iRacing fit (bias and regen inside k)
     brakeBar[i] = +(C.k ? Math.max(0, need) / (m * C.k) : Math.max(0, front) / perBar).toFixed(1);
   }
+  // driver timing learned from iRacing per class (owner 2026-11-22, scripts/sim/learn/iracing/driver_gate.py, model (iRacing)): throttle rise
+  // 10 → 90 % per apex-speed bin (slow < 90, medium 90–160, fast > 160 km/h), throttle pick-up start and brake off vs the apex (s, < 0 =
+  // before). Used only where the page-output gate passed (DRV below); drv = a table to test (gate script), null = off.
+  // F1 from the measured real pole laps (scripts/sim/learn/f1-driver-gate.mjs, pre-registered; Project claude/gate-f1-driver-timing-prereg-
+  // 2026-11-22.md): brake off before the apex passed in both seasons (held-out error −0.16 / −0.17 s, and rise and pick-up also improve);
+  // throttle rise (2025 passed alone but worsened pick-up), pick-up and 2026 rise failed and stay the physics. iRacing timing failed against
+  // the page (driver_gate_page.mjs), so GT3 / Hypercar keep theirs. 2026 rules (f1-2026) cars take the 2026 row.
+  // shift points (scripts/sim/learn/f1-shift-gate.mjs, pre-registered, passed both seasons): up at 0.771 / 0.778 of the rev limit, down where
+  // the lower gear lands at 0.675 / 0.727 (measured pole laps, 2025 / 2026 rules).
+  const DRV = {f1: {off: -0.598, up: 0.771, down: 0.675}, 'f1-2026': {off: -0.625, up: 0.778, down: 0.727}};
+  const D = drv === undefined ? DRV[cls === 'f1' && (car.ers || {}).rule === 'f1-2026' ? 'f1-2026' : cls] || null : drv;
   // gear and rpm: the gear with the most engine power at this speed (same rule as kernel powertrain()); a gear within 1 % of the
   // best is kept, so the trace does not hunt on the flat top of the curve
   const e = car.engine, g = car.gears;
@@ -49,7 +60,9 @@ export function lapChannels(track, car, env, res, {cls = 'f1', seed = '', surfac
       let best = 0, bp = -1;
       for (let a = 0; a < g.length; a++) { const x = v[i] * g[a] * k; if (x > top * 1.0001) continue; const p = at(x); if (p > bp * 1.01) { bp = p; best = a; } }
       const xc = v[i] * g[cur] * k;
-      if (i === 0 || xc > top * 1.0001 || at(xc) < bp * 0.99) cur = best;
+      // learned shift points (D.up, D.down: share of the rev limit): up at D.up, down when the lower gear lands at or below D.down
+      if (D && D.up != null && i > 0) { if (xc >= D.up * top && cur + 1 < g.length) cur++; else if (cur > 0 && v[i] * g[cur - 1] * k <= D.down * top) cur--; }
+      else if (i === 0 || xc > top * 1.0001 || at(xc) < bp * 0.99) cur = best;
       gear[i] = cur + 1; rpm[i] = Math.round(Math.min(top, v[i] * g[cur] * k)); powerW[i] = Math.min(car.pIce, at(v[i] * g[cur] * k));
       if (i && gear[i] !== gear[i - 1]) shifts.push({i, from: gear[i - 1], to: gear[i]});
     }
@@ -101,15 +114,6 @@ export function lapChannels(track, car, env, res, {cls = 'f1', seed = '', surfac
     const a2 = v[(i + 2) % n], b2 = v[(i - 2 + n) % n], q = 0.5 * rho * vi * vi, F = m * (a2 * a2 - b2 * b2) / (8 * ds) + q * cdI(i) + (car.cRoll ?? 0.012) * (m * G + q * clI(i));
     return Math.max(0, Math.min(1, F * vi / ((powerW ? powerW[i] : car.pIce) * eta + ersW)));
   });
-  // driver timing learned from iRacing per class (owner 2026-11-22, scripts/sim/learn/iracing/driver_gate.py, model (iRacing)): throttle rise
-  // 10 → 90 % per apex-speed bin (slow < 90, medium 90–160, fast > 160 km/h), throttle pick-up start and brake off vs the apex (s, < 0 =
-  // before). Used only where the page-output gate passed (DRV below); drv = a table to test (gate script), null = off.
-  // F1 from the measured real pole laps (scripts/sim/learn/f1-driver-gate.mjs, pre-registered; Project claude/gate-f1-driver-timing-prereg-
-  // 2026-11-22.md): brake off before the apex passed in both seasons (held-out error −0.16 / −0.17 s, and rise and pick-up also improve);
-  // throttle rise (2025 passed alone but worsened pick-up), pick-up and 2026 rise failed and stay the physics. iRacing timing failed against
-  // the page (driver_gate_page.mjs), so GT3 / Hypercar keep theirs. 2026 rules (f1-2026) cars take the 2026 row.
-  const DRV = {f1: {off: -0.598}, 'f1-2026': {off: -0.625}};
-  const D = drv === undefined ? DRV[cls === 'f1' && ers.rule === 'f1-2026' ? 'f1-2026' : cls] || null : drv;
   const ped = humanPedals(brakeBar, throttle, risk, res.time, res.lapTime ?? res.time[n - 1], String(seed) + '|pedals', C.h || OW, D);
   return {brakeBar, gear, rpm, shifts, steerDeg, steerMeanDeg: mean.map(d => +d.toFixed(1)), throttle, risk: risk.map(x => +x.toFixed(2)), ...ped};
 
