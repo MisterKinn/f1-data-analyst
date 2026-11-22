@@ -24,7 +24,7 @@ No line, no ship.
 | 2026-11-22 | D | claude/gate-video-sound-prereg-2026-11-22.md | acc (display) | F1 upshift time from onboard sound (±0.6 s; P and R ≥ 0.7 on ≥ 5 laps) | 1 | 3 (incl. tolerance 0.3 → 0.6 s chosen after results) | same 19 laps | – | precision / recall, 90 % bootstrap | ✗ P 0.84 [0.80, 0.88], R 0.68 [0.57, 0.78]; step ratio 0.893 vs telemetry speed/rpm 0.867 (2025) / 0.859 (2026) | no |
 | 2026-11-22 | D | claude/gate-video-sound-prereg-2026-11-22.md | acc (display) | same two ideas on fresh tracks: Suzuka, Melbourne, Sepang, Las Vegas (+ a 5th) | 2 | braking 30, upshift 3 | 4 tracks reserved | – | precision / recall, 90 % bootstrap | pending: waits for a 5th fresh track; events after 2026-11-23 are locked until 2026-11-30 | no |
 | 2026-11-22 | D | claude/handoff-D-to-model-onboard-learning-2026-11-22.md | acc | F1 racing line from video yaw × telemetry speed vs telemetry x/y | 1 | 1 | 17 laps (diagnostic, tuning tracks) | – | RMS position error | ✗ median RMS 188 m, closure 503 m; not pursued (needs frames) | no |
-
+| 2026-11-22 | D | claude/gate-video-corners-prereg-2026-11-22.md | acc (display, geometry check) | corner count and L/R order from onboard video yaw vs F1 telemetry x/y (S ≥ 0.8, count error ≤ 2) | 1 | 1 | about 25 tracks (47 laps, detector never tuned) | – | sequence similarity, count error, 90 % bootstrap | pending | no |
 ## Re-judging under v3
 - #402 and #403 were merged before the v3 rules. Re-judge them now with `signFlip` (pool 2025 + 2026 per track, m = all candidates of all
   attempts at the idea). A part that fails is reverted, or kept as provisional (v3.2) if it passes the plausibility check.
