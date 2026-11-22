@@ -38,6 +38,81 @@ all 67 rows, RMS 1.113 %, SE of the RMS 0.076; f1 34 rows, 0.865 %; wec 33 rows,
   may get worse beyond its own k paired SE.
 - **Fewer than 5 rows** in a group: "not enough data", not pass or fail. Label estimates "model / 모델" and show every ✗ with its numbers.
 
+### Gate G v3 additions (owner 2026-11-22, data-science and performance-engineering review)
+
+Why: on 2026-11-22 a gate passed against hand-set baselines and failed against the real page output; about 15 gates ran on the same
+rows in one day (at about 16 % false-pass risk each, about 2 pass by luck when nothing helps); a failed idea was retried as a new run;
+"passes in both seasons" counted the same tracks twice; and lap time stayed right while corner speeds were 10–15 % low. These rules
+apply to every gate: lap-time fits, physics, setup values and display channels (telemetry shapes, shifts, kerbs).
+
+Before the run
+- **Pre-registration.** Write it in the Project or the PR before any number is seen: the idea (the quantity changed and why), type
+  (accuracy / correctness / data fix), the baseline (below), candidates and m, the held-out unit and n per group, the source and its
+  sample interval, the primary metric, any co-primary component metric, the groups that decide, k, and the stop rule. A choice made after
+  seeing results needs a new pre-registration and counts as a new attempt.
+- **Baseline = production output.** The baseline is what the page, tool or fit produces today on the same rows, computed by the same
+  script in the same run (physics rule 2.6, now for every gate). Hand-set or proxy baselines are diagnostics only and never decide.
+- **Gate ledger.** Every gate gets one line in `docs/gate-ledger.md` before it runs (result "pending") and its result after (numbers,
+  shipped or not). No ledger line, no ship. The ledger is how attempts and the daily count below are counted.
+
+Counting attempts
+- **One idea, one family.** An idea is one quantity on one set of held-out rows (for example "F1 throttle rise on the 2025 + 2026 pole
+  laps"). Every attempt at it counts: the second attempt uses k for m = all candidates tried so far (first attempt's included).
+  A clean restart needs new rows (a new season, new tracks or events) that no attempt has seen.
+- **Stop rule.** Three rejected attempts at one idea: stop it, write why in the ledger, move on (physics rule 5.4).
+- **Daily budget.** From the 6th accuracy gate of a day on the same rows (any idea), add 5 to m. Correctness (non-inferiority) gates and
+  data fixes do not count.
+
+Judging
+- **The held-out unit is the track (or event).** Corners, laps or samples inside one track are not independent: take one value per
+  track first. Seasons or classes that share tracks are one group: average the seasons per track, judge the pooled group, report each
+  season. "Passes in both seasons" alone is not a pass.
+- **k from m and n.** k = the t-quantile at one-sided 1 − 0.16 / m with n − 1 degrees of freedom (`kForVariants(m, n)` in
+  `scripts/sim/gate.mjs`; the table above is the n ≈ 67 case). Small groups need a larger k:
+
+  | m \ n | 5 | 6 | 7 | 8 | 9 | 10 | ≈ 67 |
+  |---|---|---|---|---|---|---|---|
+  | 1 | 1.13 | 1.10 | 1.08 | 1.07 | 1.06 | 1.05 | 1.0 |
+  | 2 | 1.72 | 1.65 | 1.60 | 1.57 | 1.55 | 1.53 | 1.45 |
+  | 3 | 2.07 | 1.96 | 1.90 | 1.85 | 1.82 | 1.79 | 1.65 |
+  | 5 | 2.54 | 2.37 | 2.27 | 2.20 | 2.15 | 2.11 | 1.9 |
+
+  n < 5 stays "not enough data". Checked with SciPy 2026-11-22.
+- **Measurement floor.** Learn a quantity from a source only if it is at least 2 × the source's sample interval: F1 TracingInsights pole
+  telemetry about 0.13 s → 0.26 s; FastF1 / OpenF1 car data about 0.25 s → 0.5 s; iRacing 60 Hz → 0.035 s; broadcast video: measure
+  the overlay's own update interval on the clip (often slower than the frame rate) and use 2 × that. Corner minimum speeds also need
+  the sample spacing in metres (physics rule 3.3.3). Below the floor: report it, do not fit it.
+- **Two lap metrics.** Decide on squared error (as above); also report the median absolute error. If they disagree in sign, say so; the
+  owner decides.
+- **Minimum useful effect.** A pass must also be larger than the measurement floor of the quantity (display channels) or 0.02
+  percentage points of lap error (lap fits). A gain below that is "within noise" even if the test passes.
+
+Physics and frozen stages
+- **Component metrics for physics.** A physics change pre-registers one component metric with the most direct data (corner minimum
+  speed, end-of-straight speed or trap at the trap position, braking point, sector) as co-primary. It ships when the component gains
+  beyond k SE and lap time is non-inferior (δ = 5 % of the baseline RMS). So a fix of a known bias (corner speeds 10–15 % slow) can ship
+  when lap time moves only within noise. The other components may not get worse beyond their own k SE.
+- **Leaving a freeze.** A frozen stage (WEC track grip, #381) is refitted only when (a) a pre-registered physics change passed on F1 under
+  the component rule, and (b) the WEC refit with it is non-inferior on WEC lap time with WEC traps or corner speeds as co-primary. The
+  owner approves each unfreeze; the new freeze is a reviewed data change.
+
+What may be learned from where
+- **What a data fix is.** A data fix changes an input so it agrees with a named source (regulation, FIA document, measured file,
+  official map) and lists the source and every changed value in the PR. A fix chosen because it lowers the error is a model change.
+- **Simulator data (iRacing).** It may give driver timing and shapes (pedals, shifts, steering), ratios (setup relations, weight share,
+  kerb use, bumpiness) and track checks. It never gives absolute grip, corner speeds, top speeds or lap times. Each iRacing value is
+  checked once against real measured data where both exist (for example GTP shift points against Hypercar onboard video, kerb edges
+  against satellite images) and the check is in the PR. Label "model (iRacing) / 모델(아이레이싱)".
+- **Video data.** Values read from an onboard overlay (speed, gear, throttle and brake bars) are measured for that lap only; anything
+  inferred from the picture (line, braking point without an overlay) is model. Label "model / learned from video" unless it is an
+  overlay reading.
+- **Context.** A learned driver channel names its context (qualifying, race, practice, simulator test) and is used only there.
+  Qualifying (pole-lap) timing is not used for race simulation, and iRacing offline-testing laps count as qualifying-style laps.
+- **Per-car values.** Class value first; a car's own value only as a shrunk difference from the class (as the M terms in
+  `docs/lapsim-learn.md` section 3), with its own n. Fewer than 5 sessions or tracks for that car: the class value.
+- **Already shipped before v3.** Gates shipped before 2026-11-22 10:00 KST stay; open ones are re-judged under v3 before merging
+  (see `docs/gate-ledger.md`).
+
 ### LapSim × BoPSim × SetupSim (owner 2026-11-21)
 
 The three tools share one Hypercar maker list and one BoP choice (`worker/lapsim/hypercar-makers.js`: 2026 estimate → virtual BoP →

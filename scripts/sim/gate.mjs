@@ -33,4 +33,24 @@ export function nonInferior(errCur, errNew, {margin = null, rel = 0.05, k = 1, m
 
 // k for an accuracy claim when a run compares m variants with the same baseline (AGENTS.md "Model changes"; t quantile at
 // one-sided 0.16 / m, about 67 rows; checked with Wolfram 2026-11-21)
-export const kForVariants = m => (m <= 1 ? 1 : m === 2 ? 1.45 : m === 3 ? 1.65 : 1.9);
+// Gate G v3 (2026-11-22): with the number of held-out units n, k is the t-quantile at one-sided 1 − 0.16 / m with n − 1 degrees of
+// freedom (Cornish-Fisher expansion of the normal quantile; within 0.01 of SciPy for m 1–5, n 5–67). Without n: the table above.
+export function kForVariants(m, n) {
+  if (!(n >= 2)) return m <= 1 ? 1 : m === 2 ? 1.45 : m === 3 ? 1.65 : 1.9;
+  const z = normInv(1 - 0.16 / Math.max(1, m)), v = n - 1;
+  return z + (z ** 3 + z) / (4 * v) + (5 * z ** 5 + 16 * z ** 3 + 3 * z) / (96 * v ** 2)
+    + (3 * z ** 7 + 19 * z ** 5 + 17 * z ** 3 - 15 * z) / (384 * v ** 3);
+}
+
+// Inverse standard normal CDF (Acklam's rational approximation, relative error < 1.2e-9).
+export function normInv(p) {
+  const a = [-39.69683028665376, 220.9460984245205, -275.9285104469687, 138.357751867269, -30.66479806614716, 2.506628277459239];
+  const b = [-54.47609879822406, 161.5858368580409, -155.6989798598866, 66.80131188771972, -13.28068155288572];
+  const c = [-0.007784894002430293, -0.3223964580411365, -2.400758277161838, -2.549732539343734, 4.374664141464968, 2.938163982698783];
+  const d = [0.007784695709041462, 0.3224671290700398, 2.445134137142996, 3.754408661907416];
+  const lo = 0.02425, q = p < lo ? Math.sqrt(-2 * Math.log(p)) : p > 1 - lo ? Math.sqrt(-2 * Math.log(1 - p)) : 0;
+  if (p < lo) return (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1);
+  if (p > 1 - lo) return -(((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1);
+  const r = (p - 0.5), t = r * r;
+  return (((((a[0] * t + a[1]) * t + a[2]) * t + a[3]) * t + a[4]) * t + a[5]) * r / (((((b[0] * t + b[1]) * t + b[2]) * t + b[3]) * t + b[4]) * t + 1);
+}
