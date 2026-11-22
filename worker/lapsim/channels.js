@@ -145,6 +145,13 @@ export function lapChannels(track, car, env, res, {cls = 'f1', seed = '', surfac
     for (let k = 0; k < N; k++) {
       if (!(base[k] > 0.5) || base[(k - 1 + N) % N] > 0.5) continue;
       let e = k; while (e + 1 < N && base[e + 1] > 0.5) e++;
+      // a physics zone shorter than 0.5 s is a short lift a driver makes off the throttle, not a brake stab (owner 2026-11-23: the
+      // stab shape and the impulse rescale turned 5–15 m zones into 150–280 bar spikes); it keeps the physics impulse, spread smoothly
+      if (t[e] - t[k] < 0.5) { // spread the same impulse as a smooth press (raised cosine, at least 0.3 s and 1.5 x the zone): a dab, not a spike
+        let imp = 0; for (let q = k; q <= e; q++) imp += base[q] * Math.max(1e-3, (t[(q + 1) % N] - t[q] + lapT) % lapT);
+        const tc = (t[k] + t[e]) / 2, W = Math.max(0.3, 1.5 * (t[e] - t[k])); let q0 = k, q1 = e; while (q0 > 0 && tc - t[q0 - 1] < W / 2) q0--; while (q1 < N - 1 && t[q1 + 1] - tc < W / 2) q1++;
+        for (let q = q0; q <= q1; q++) brake[q] = Math.max(brake[q], imp * (2 / W) * Math.cos(Math.PI * (t[q] - tc) / W) ** 2);
+        k = q1; continue; }
       const t0 = t[k], P = Math.max(...base.slice(k, e + 1)), os = H.os * (0.6 + 0.8 * r()), f1 = 4 + 3 * r(), f2 = 1 + r(), a1 = H.rip * (0.7 + 0.6 * r()), ph1 = 6.28 * r(), ph2 = 6.28 * r();
       const tr = H.t90 / 2.303 * (0.8 + 0.4 * r()), tg = Math.max(0.09, 0.9 * H.t90); // rise: 90 % of the pressure after t90 (learned per class)
       // the riskiest point of the zone (crest, tailwind, bumps, ...) is where a lock-up is most likely: the relief goes there. Not for
@@ -158,19 +165,26 @@ export function lapChannels(track, car, env, res, {cls = 'f1', seed = '', surfac
       // zone's mean/peak pressure equals iRacing's (heavy zones: open wheel 0.565, GTP 0.562, GT3 0.660; docs/lapsim-physics-rules.md)
       // learned brake-off (D.off < 0: before the apex): the zone's pressure is released by apex + D.off, no tail after it; same impulse
       let eOrig = e; if (D && D.off != null) { let qa = e; for (let q = e; q < Math.min(N - 1, e + 40); q++) if (up(v, q + 1) < up(v, qa)) qa = q + 1; else if (q > e + 2 && up(v, q + 1) > up(v, qa)) break;
-        const tOff = t[qa] + D.off; let ee = e; while (ee > k + 1 && t[ee] > tOff) ee--; e = ee; }
-      const tRel = t0 + (t[e] - t0) * (1 - H.rel * (0.85 + 0.3 * r())), vE = up(v, e);
-      let qr = k; while (qr < e && t[qr + 1] <= tRel) qr++;
-      const vR = up(v, qr), shape = q => t[q] <= tRel ? 1 - 0.1 * (t[q] - t0) / Math.max(1e-3, tRel - t0) : 0.9 * Math.max(0, Math.min(1, (up(v, q) - vE) / Math.max(0.1, vR - vE))) ** H.k;
-      let sumB = 0, sumH = 0;
-      for (let q = k; q <= e; q++) {
-        const x = t[q] - t0, rise = 1 - Math.exp(-x / tr), hold = Math.min(1, x / 0.15), g = x / tg * Math.exp(1 - x / tg);
-        const rip = P * hold * (1 + 2 * R[q]) * (a1 * Math.sin(2 * Math.PI * Math.min(f1, fmax(q)) * x + ph1) + 0.012 * Math.sin(2 * Math.PI * f2 * x + ph2));
-        const d = dipAt > 0 ? dip * P * shape(q) * Math.exp(-(((t[q] - dipAt) / 0.04) ** 2)) : 0;
-        brake[q] = Math.max(0, P * shape(q) * rise + os * P * g + rip - d); sumB += base[q]; sumH += brake[q];
+        const tOff = t[qa] + D.off, eMin = k + Math.ceil((e - k) / 2); let ee = e; while (ee > eMin && t[ee] > tOff) ee--; e = ee; } // the cut keeps at least half the zone, so the same impulse is not squeezed into a spike
+      // the learned brake-off cut may squeeze the zone's impulse into a peak no foot makes: move the end back toward the physics end until
+      // the peak stays within the physics peak plus twice the learned overshoot (owner 2026-11-23, Suzuka spikes)
+      const relJ = 0.85 + 0.3 * r(), cap = P * (1 + 2 * H.os);
+      for (;;) {
+        const tRel = t0 + (t[e] - t0) * (1 - H.rel * relJ), vE = up(v, e);
+        let qr = k; while (qr < e && t[qr + 1] <= tRel) qr++;
+        const vR = up(v, qr), shape = q => t[q] <= tRel ? 1 - 0.1 * (t[q] - t0) / Math.max(1e-3, tRel - t0) : 0.9 * Math.max(0, Math.min(1, (up(v, q) - vE) / Math.max(0.1, vR - vE))) ** H.k;
+        let sumB = 0, sumH = 0, pk = 0;
+        for (let q = k; q <= e; q++) {
+          const x = t[q] - t0, rise = 1 - Math.exp(-x / tr), hold = Math.min(1, x / 0.15), g = x / tg * Math.exp(1 - x / tg);
+          const rip = P * hold * (1 + 2 * R[q]) * (a1 * Math.sin(2 * Math.PI * Math.min(f1, fmax(q)) * x + ph1) + 0.012 * Math.sin(2 * Math.PI * f2 * x + ph2));
+          const d = dipAt > 0 ? dip * P * shape(q) * Math.exp(-(((t[q] - dipAt) / 0.04) ** 2)) : 0;
+          brake[q] = Math.max(0, P * shape(q) * rise + os * P * g + rip - d); sumB += base[q]; sumH += brake[q];
+        }
+        for (let q = e + 1; q <= eOrig; q++) sumB += base[q];
+        for (let q = k; q <= e; q++) { brake[q] *= sumB / Math.max(1e-9, sumH); pk = Math.max(pk, brake[q]); } // same impulse as the physics
+        if (pk <= cap || e >= eOrig) break;
+        for (let q = k; q <= e; q++) brake[q] = 0; e++;
       }
-      for (let q = e + 1; q <= eOrig; q++) sumB += base[q];
-      for (let q = k; q <= e; q++) brake[q] *= sumB / Math.max(1e-9, sumH); // same impulse as the physics
       const pEnd = Math.max(0.06 * P, brake[e]);
       if (!(D && D.off != null)) for (let q = e + 1; q < N && t[q] - t[e] < 2.5 * tauOff && !(base[q] > 0.5); q++) { const y = pEnd * Math.exp(-(t[q] - t[e]) / tauOff); if (y < 0.5) break; brake[q] = y; }
       k = eOrig;
