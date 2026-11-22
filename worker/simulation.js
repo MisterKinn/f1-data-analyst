@@ -1101,6 +1101,8 @@ function computeView(K, data, state, R) {
   const telNeed = !RT && sameConditions && !sel.series && dq && dq.lapNo != null && dq.ev ? {driver: state.driver, year: String(sel.year), url: 'https://raw.githubusercontent.com/TracingInsights/' + sel.year + '/main/' + [dq.ev, 'Qualifying', state.driver, dq.lapNo + '_tel.json'].map(encodeURIComponent).join('/')} : null;
   const realAt = (key, n, step) => { const F = RT.f, A = RT[key]; let j = 0; return Array.from({length: n}, (_, i) => { const x = i / n * 1e4; while (j < F.length - 1 && F[j + 1] <= x) j++;
     if (step || j >= F.length - 1 || F[j + 1] === F[j]) return A[j]; const w = Math.min(1, Math.max(0, (x - F[j]) / (F[j + 1] - F[j]))); return +(A[j] + w * (A[j + 1] - A[j])).toFixed(1); }); };
+  // GT3 / Hypercar shifts and pedals come from the owner's iRacing laps (channels.js DRV, #403): those lanes say so (AGENTS.md, iRacing scope)
+  const IR = !RT && (clsOf(sel) === 'gt3' || clsOf(sel) === 'hyper'), irL = data.lang === 'en' ? ' · model (iRacing)' : ' · 모델(아이레이싱)';
   const mk = (title, real) => RT ? title + (real ? (data.lang === 'en' ? ' · measured' : ' · 실측') : (data.lang === 'en' ? ' · model' : ' · 모델')) : title;
   const real1 = (arr, v) => RT ? [v].concat(arr.slice(1)) : arr; // the selected car's lane replaced by the measured channel
   const series = tag([RT ? realAt('speed', nP) : res.v.map(x => x * 3.6)].concat(cmps.map(c => c.v.map(x => x * 3.6))));
@@ -1154,6 +1156,7 @@ function computeView(K, data, state, R) {
       const e = h[n - 1] + Math.tan(g[n - 1] / 1e4) * d.ds, z = h.map((v, i) => v - e * i / n), lo = Math.min(...z); return z.map(v => +(v - lo).toFixed(1)); })()], cOpt('m', 5, 120, 0)]] : [])
     // surface bumps (owner 2026-11-17): learned from iRacing laps of this track (vertical acceleration above ~2 Hz), 1 = typical
     .concat(data.bumps ? [['bump', TL.bump, '', d.ds, [Array.from({length: nP}, (_, i) => data.bumps.idx[Math.min(data.bumps.bins - 1, Math.floor(i / nP * data.bumps.bins))] / 10)], cOpt('', 1, 110, 0)]] : []);
+  if (IR) for (const l of lanes) if (['throttle', 'gear', 'rpm'].includes(l[0]) || (l[0] === 'brake' && clsOf(sel) === 'hyper')) l[1] += irL;
   // each lane in its own box, so the channel tick boxes can hide it (owner 2026-11-15)
   const traceSvg = '<div class="ls-cursor-read" data-ls="cursor">' + TL.hover + '</div>' + lanes.map(([key, title, , ds, ser, o]) => '<div class="ls-lane" data-lane="' + key + '"><h3 class="ls-ch-h">' + title + '</h3>' + R.renderTrace(ds, ser.map(v => Array.isArray(v) ? {v} : v), o) + '</div>').join('')
     + (puNote ? '<p class="fine">' + puNote + '</p>' : '') + puChart + '<p class="fine">' + TL.note + ' ' + TL.risk + '</p>';

@@ -40,3 +40,9 @@ test('a picked driver: the page asks for that lap\'s measured telemetry, then sh
   assert.equal(v1.telNeed, null); assert.match(lane(v1, 'speed').title, /· measured$/); assert.equal(lane(v1, 'speed').ser[0].v[0], 310);
   assert.equal(view(d).telNeed, null, 'the pole lap is in the page data');
 });
+
+test('GT3 / Hypercar: lanes from iRacing-learned values say model (iRacing); speed stays unlabelled', () => {
+  const d = JSON.parse(simulationPage({track: 'spa-francorchamps', car: 'hyper-ferrari'}, 'en').match(/id="lapsim-data">([\s\S]*?)<\/script>/)[1]), v = view(d);
+  for (const k of ['throttle', 'brake', 'gear', 'rpm']) assert.match(lane(v, k).title, /· model \(iRacing\)$/, k);
+  assert.doesNotMatch(lane(v, 'speed').title, /iRacing/);
+});
