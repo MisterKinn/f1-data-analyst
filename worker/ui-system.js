@@ -40,6 +40,10 @@ html main :is([role="tab"]:not([aria-selected="true"]),button[aria-pressed="fals
 html main .su-conds label{flex:0 0 auto;min-width:96px;justify-content:center;border-color:var(--kb-control-edge);color:var(--text)}
 html main #su-dry:checked~.su-conds label[for=su-dry],html main #su-wet:checked~.su-conds label[for=su-wet]{background:var(--text);border-color:var(--text);color:var(--bg);box-shadow:none}
 
+/* LapSim map (UI P7, display only): straight-mode zones in light mode were #fce500 = 1.2:1 on the page.
+   Wolfram: #b7860b = 3.1:1 (WCAG 1.4.11). Dark mode keeps the yellow (15:1). Drawing code untouched. */
+:root[data-theme="light"] svg.ls-map :is(.ls-zone-sm,.ls-zone-m-act){stroke:#b7860b}
+
 /* Focus: visible ring everywhere */
 main :is(a,button,select,input,summary,textarea):focus-visible{outline:2px solid var(--mint);outline-offset:2px}
 
