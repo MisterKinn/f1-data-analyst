@@ -1,6 +1,6 @@
 {
  "source": "OpenF1 race control (copies of F1 race-control messages)",
- "generatedAt": "2026-11-21T22:22:12.549Z",
+ "generatedAt": "2026-11-22T07:08:21.683Z",
  "sessions": {
   "9684": {
    "year": 2025,
@@ -4053,6 +4053,49 @@
    },
    "ot": {
     "start": "on",
+    "end": "on"
+   }
+  },
+  "11420": {
+   "year": 2026,
+   "track": "las-vegas",
+   "circuit": "Las Vegas",
+   "session": "Race",
+   "start": "2026-11-22T04:00:00+00:00",
+   "end": "2026-11-22T06:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-11-22T03:57:03+00:00",
+     "kind": "ot",
+     "state": "off",
+     "lap": 1
+    },
+    {
+     "t": "2026-11-22T04:04:55+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 1
+    },
+    {
+     "t": "2026-11-22T04:34:26+00:00",
+     "kind": "ot",
+     "state": "off",
+     "lap": 19
+    },
+    {
+     "t": "2026-11-22T04:51:34+00:00",
+     "kind": "ot",
+     "state": "on",
+     "lap": 26
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "off",
     "end": "on"
    }
   },
