@@ -19,7 +19,7 @@ const ROUNDS = {
 };
 const median = a => { const s = [...a].sort((x, y) => x - y), n = s.length; return n ? (s[(n - 1) >> 1] + s[n >> 1]) / 2 : NaN; };
 
-const STAT = process.env.BP_STAT === 'p80' ? z => z.p80F : z => z.peakF;
+const STAT = process.env.BP_STAT === 'p80' ? z => z.p80F : process.env.BP_STAT === 'a80' ? z => z.p80A * 800 : z => z.peakF; // a80: pedal load ∝ deceleration (attempt 3)
 const rows = [];
 for (const year of [2025, 2026]) for (const [ev, ref] of Object.entries(B[year] || {})) {
   const h = ref.hardest?.[0], round = ROUNDS[year].indexOf(ev.replace(/ Grand Prix$/, '')) + 1; if (!h?.pedalKg || !round) continue;
@@ -27,7 +27,7 @@ for (const year of [2025, 2026]) for (const [ev, ref] of Object.entries(B[year] 
   const base = {year, round, ev, id, turn: h.turn, brembo: {kg: h.pedalKg, g: h.decelG, vFrom: h.vFrom, vTo: h.vTo}, split: round % 2 ? 'tune' : 'holdout'};
   if (!lap) { rows.push({...base, drop: 'no measured lap'}); continue; }
   const c = cleanTel(lap); if (c.share > 0.5) { rows.push({...base, drop: 'lap more than half broken'}); continue; }
-  const s = mbpSeries(c.x, c.speed, year, realConditions(id)?.[year], {win: +(process.env.BP_WIN || 5)}), Z = zones(s), L = lap.len;
+  const s = mbpSeries(c.x, c.speed, year, realConditions(id)?.[year], {win: +(process.env.BP_WIN || 11)}), Z = zones(s), L = lap.len;
   const corner = td?.corners?.find(k => String(k.number) === String(h.turn) && !k.letter) || td?.corners?.find(k => String(k.number) === String(h.turn));
   const d = z => corner ? (q => Math.min(q, L - q))(Math.abs(z.xMin / L - corner.s / td.length) * L) : Math.abs(z.vFrom - h.vFrom) + Math.abs(z.vTo - h.vTo);
   if (corner && c.near(corner.s / td.length * L)) { rows.push({...base, drop: 'Brembo corner at broken telemetry'}); continue; }

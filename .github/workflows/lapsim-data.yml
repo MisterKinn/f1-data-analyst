@@ -92,6 +92,10 @@ jobs:
       - name: Rebuild F1 zones on the new tracks
         if: (inputs.tracks || 'keep') == 'rebuild'
         run: node scripts/sim/f1-zones.mjs > /dev/null
+      # broken stretches in the OpenF1 speed traces (rule A+, real-tel-gaps.js), report only (claude/gate-ti-gaps-siteC-prereg-2026-11-22.md §5)
+      - name: Scan OpenF1 traces for broken stretches
+        continue-on-error: true
+        run: node scripts/sim/trace-gaps-scan.mjs >> "$GITHUB_STEP_SUMMARY"
       - name: Fetch WEC timing (Al Kamel)
         run: node scripts/sim/fetch-wec.mjs && node scripts/sim/wec-poles.mjs
       # derived speed traces and tracks for local calibration experiments (not committed)
