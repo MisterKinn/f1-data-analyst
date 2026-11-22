@@ -18,6 +18,7 @@ main>section>h2,main .section-head h2,main .panel>h2,main .sim-entry>h2,main .kb
 main .sim-entry-card h3,main .meanings h3{font-size:var(--kb-fs-21);line-height:1.35}
 main .hero .lead{font-size:var(--kb-fs-16);line-height:1.7;max-width:62ch}
 main .fine{font-size:var(--kb-fs-12)}
+@media(max-width:700px){main .kb-why-table td,main .kb-why-table tbody th{width:auto!important}}
 
 /* Surfaces: one card edge, soft lift in light mode */
 main .panel,main .sim-entry-card,main .kb-why-wrap,main .ai-abilities li{border-color:var(--kb-edge);box-shadow:var(--kb-shadow)}
@@ -31,6 +32,14 @@ main .sim-entry-card:first-child:not(.is-soon)>.button{background:var(--mint);bo
 main .sim-entry-card:not(:first-child):not(.is-soon)>.button{background:transparent;border-color:var(--kb-control-edge);color:var(--text)}
 main .sim-entry-card:not(:first-child):not(.is-soon)>.button:hover{background:color-mix(in oklab,var(--text) 5%,transparent);border-color:var(--text)}
 
+/* Segmented controls (UI P6): one look for tabs, view toggles and line-mode pills. Selected = ink fill, others = outline.
+   Brand colours untouched; the line-mode pills on LapSim had no visible selected state at all. */
+html main :is([role="tab"],button[aria-pressed],.pill){background:transparent!important;border:1px solid var(--kb-control-edge)!important;color:var(--text)!important;box-shadow:none!important;font-weight:650}
+html main :is([role="tab"][aria-selected="true"],button[aria-pressed="true"],.pill.active){background:var(--text)!important;border-color:var(--text)!important;color:var(--bg)!important}
+html main :is([role="tab"]:not([aria-selected="true"]),button[aria-pressed="false"],.pill:not(.active)):hover{background:color-mix(in oklab,var(--text) 6%,transparent)!important;border-color:var(--text)!important}
+html main .su-conds label{flex:0 0 auto;min-width:96px;justify-content:center;border-color:var(--kb-control-edge);color:var(--text)}
+html main #su-dry:checked~.su-conds label[for=su-dry],html main #su-wet:checked~.su-conds label[for=su-wet]{background:var(--text);border-color:var(--text);color:var(--bg);box-shadow:none}
+
 /* Focus: visible ring everywhere */
 main :is(a,button,select,input,summary,textarea):focus-visible{outline:2px solid var(--mint);outline-offset:2px}
 
@@ -39,6 +48,8 @@ main :is(a,button,select,input,summary,textarea):focus-visible{outline:2px solid
  main .button:hover{transform:translateY(-1px)}main .button:active{transform:translateY(0) scale(.98)}
  main .sim-entry-card,main .panel.kb-lift{transition:transform 220ms cubic-bezier(.2,.7,.2,1),box-shadow 220ms ease,border-color 220ms ease}
  main .sim-entry-card:hover{transform:translateY(-2px)}
+ html main :is([role="tab"],button[aria-pressed],.pill),html main .su-conds label{transition:background-color 160ms ease,color 160ms ease,border-color 160ms ease,transform 140ms cubic-bezier(.2,.7,.2,1)}
+ html main :is([role="tab"],button[aria-pressed],.pill):active,html main .su-conds label:active{transform:scale(.97)}
 }
 `;
 
@@ -76,7 +87,7 @@ export function uiSystemClient() {
 }
 
 export const uiSystemClientCss = `
-.kb-track-find{grid-column:1/-1;flex:1 1 100%;max-width:560px;margin:0 0 4px}.kb-track-search{width:100%;min-height:44px;margin:0;padding:8px 12px;border:1px solid var(--kb-control-edge);border-radius:8px;background:var(--surface);color:var(--text);font:inherit;font-size:15px}
+.kb-track-find{grid-column:1/-1;flex:1 1 100%;max-width:560px;margin:0 0 4px;order:-1}.kb-track-search{width:100%;min-height:44px;margin:0;padding:8px 12px;border:1px solid var(--kb-control-edge);border-radius:8px;background:var(--surface);color:var(--text);font:inherit;font-size:15px}
 .kb-track-search::placeholder{color:var(--muted)}
 .kb-track-note{display:block;margin-top:4px;font-size:12px;color:var(--muted);font-weight:400}
 `;
