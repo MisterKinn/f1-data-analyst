@@ -770,3 +770,6 @@ n 20, ±1σ 70 %, ±2σ 95 %; F1 2026 n 15, 87 % / 93 %; F1 pooled n 35, 77 % / 
 67 % / 100 %; all n 68, 72 % / 97 %. Every group with n ≥ 20 is inside 55–80 %, so the ± is not rescaled. The prediction log adds logged
 rows from 2026-11-27 (Qatar).
 
+Level C v2 check (2026-11-22, fork run 44982189234): the refit version (test tracks removed from every season's rows before the
+fit, 4 folds, class-mean factor) gives F1 2025 3.13 % and 2026 2.77 % RMS, against 3.15 % and 2.80 % for v1 with the pinned car. The
+pinned car leaks almost nothing, so v1 (seconds instead of hours) stays the report every refit runs.
