@@ -25,7 +25,7 @@ const page = (track, car, drv) => {
 const result = {};
 for (const year of ['2025', '2026']) {
   const tracks = Object.keys(lapsimF1RealTel).filter(tr => lapsimF1RealTel[tr][year]), top = page(tracks[0], year, null).top;
-  const M = Object.fromEntries(tracks.map(tr => { const c = cleanTel(lapsimF1RealTel[tr][year]); return [tr, shiftsOf(c.x, c.speed.map(s => s / 3.6), c.gear, c.rpm, top, c.near)]; // broken stretches out }));
+  const M = Object.fromEntries(tracks.map(tr => { const c = cleanTel(lapsimF1RealTel[tr][year]); if (c.share > 0.5) { console.log('dropped (more than half broken):', tr, year); return [tr, {up: [], down: []}]; } return [tr, shiftsOf(c.x, c.speed.map(s => s / 3.6), c.gear, c.rpm, top, c.near)]; })); // broken stretches out
   const g = {up: [], down: []}, rows = [];
   for (const tr of tracks) {
     const D = {up: med(tracks.filter(x => x !== tr).flatMap(x => M[x].up)), down: med(tracks.filter(x => x !== tr).flatMap(x => M[x].down))};

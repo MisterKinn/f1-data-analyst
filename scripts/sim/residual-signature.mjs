@@ -71,7 +71,8 @@ async function main() {
       const r = lapsimF1RealTel[tr][y], L = r.len, x = r.f.map(f => f / 1e4 * L), P = page(tr, y);
       if (!P) continue;
       // broken stretches of the file are left out, and events within 150 m of one (real-tel-gaps.js, owner 2026-11-22)
-      const c = cleanTel(r), M = lapEvents(c.x, c.speed.map(s => s / 3.6), c.brake.map(Number), L).filter(e => !c.near(e.x)), sig = trackSignature(M, P.ev, L);
+      const c = cleanTel(r); if (c.share > 0.5) { console.log('dropped (more than half broken):', y, tr); continue; }
+      const M = lapEvents(c.x, c.speed.map(s => s / 3.6), c.brake.map(Number), L).filter(e => !c.near(e.x)), sig = trackSignature(M, P.ev, L);
       rows.push({track: tr, ...sig}); console.log(y, tr, JSON.stringify(sig));
     }
     const over = k => (i => med(rows.map(r => i == null ? r[k] : r[k][i])));

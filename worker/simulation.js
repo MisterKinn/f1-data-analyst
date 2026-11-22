@@ -1110,7 +1110,7 @@ function computeView(K, data, state, R) {
     if (step || j >= F.length - 1 || F[j + 1] === F[j]) return A[j]; const w = Math.min(1, Math.max(0, (x - F[j]) / (F[j + 1] - F[j]))); return +(A[j] + w * (A[j + 1] - A[j])).toFixed(1); }); };
   // GT3 / Hypercar shifts and pedals come from the owner's iRacing laps (channels.js DRV, #403): those lanes say so (AGENTS.md, iRacing scope)
   const IR = !RT && (clsOf(sel) === 'gt3' || clsOf(sel) === 'hyper'), irL = data.lang === 'en' ? ' · model (iRacing)' : ' · 모델(아이레이싱)';
-  const gapNote = RT && RT.gaps && RT.gaps.length ? (data.lang === 'en' ? ' (gaps in the file: model)' : ' (파일 결측 구간: 모델)') : '';
+  const gapNote = RT && RT.gaps && RT.gaps.length ? (data.lang === 'en' ? ' (broken stretches: model / filled estimate)' : ' (깨진 구간: 모델 추정(보간))') : '';
   const mk = (title, real) => RT ? title + (real ? (data.lang === 'en' ? ' · measured' : ' · 실측') + gapNote : (data.lang === 'en' ? ' · model' : ' · 모델')) : title;
   const real1 = (arr, v) => RT ? [v].concat(arr.slice(1)) : arr; // the selected car's lane replaced by the measured channel
   const series = tag([RT ? realAt('speed', nP, false, res.v.map(x => x * 3.6)) : res.v.map(x => x * 3.6)].concat(cmps.map(c => c.v.map(x => x * 3.6))));

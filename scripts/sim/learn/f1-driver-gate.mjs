@@ -27,7 +27,7 @@ export function corners(x, vs, th, br) {
   return out;
 }
 // broken stretches of the file (real-tel-gaps.js) are left out, and so are corners within 150 m of one (owner 2026-11-22)
-const measured = r => { const c = cleanTel(r); return corners(c.x, c.speed.map(s => s / 3.6), c.throttle.map(x => x / 100), c.brake).filter(e => !c.near(e.x)); };
+const measured = r => { const c = cleanTel(r); if (c.share > 0.5) { console.log('dropped (more than half broken):', r.src); return []; } return corners(c.x, c.speed.map(s => s / 3.6), c.throttle.map(x => x / 100), c.brake).filter(e => !c.near(e.x)); };
 const js = lapsimScript(), body = js.slice('(()=>{'.length, js.lastIndexOf(';('));
 const V = new Function(body + ';return {K,computeView,R:{renderMap,renderTrace,evolutionDelta,evolutionCurve,lineTrack,brakeZones,lapChannels,blendLine,blendOff}};')();
 const pageCorners = (track, car, drv) => {
