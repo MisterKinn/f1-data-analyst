@@ -1,29 +1,30 @@
 # Race pace model
 
-Generated 2026-11-21T01:42:50.290Z. Season 2026; race-ratio change vs earlier seasons ×0.9836, slope change ×0.862.
+Generated 2026-11-22T06:48:31.721Z. Season 2026; race-ratio change vs earlier seasons ×0.9836, slope change ×0.860.
 
-Leave-out test (leading race pace, earlier seasons + real pole): 0.67% RMS over 16 races.
+Leave-out test (leading race pace, earlier seasons + real pole): 0.64% RMS over 17 races.
 
-Races already run (all seasons), reproduced from the stored factors: largest error 0.000% over 143 races.
+Races already run (all seasons), reproduced from the stored factors: largest error 0.000% over 144 races.
 
 | Track | Season | Fitted from | Error % |
 |---|---|---|---|
-| melbourne | 2026 | 2018+2019+2022+2023+2024 | -0.44 |
-| spielberg | 2026 | 2018+2019+2020+2021+2022+2023+2024+2025 | -0.73 |
+| melbourne | 2026 | 2018+2019+2022+2023+2024 | -0.39 |
+| spielberg | 2026 | 2018+2019+2020+2021+2022+2023+2024+2025 | -0.68 |
 | baku | 2026 | 2018+2019+2021+2022+2023+2024+2025 | 0.36 |
-| spa-francorchamps | 2026 | 2018+2019+2020+2022+2024+2025 | -0.03 |
+| spa-francorchamps | 2026 | 2018+2019+2020+2022+2024+2025 | 0.02 |
 | silverstone | 2026 | 2018+2019+2020+2021+2022+2023 | 0.22 |
 | shanghai | 2026 | 2018+2019+2024+2025 | 0.47 |
-| hungaroring | 2026 | 2018+2019+2020+2023+2024+2025 | -1.47 |
+| hungaroring | 2026 | 2018+2019+2020+2023+2024+2025 | -1.43 |
 | suzuka | 2026 | 2018+2019+2023+2024+2025 | 0.75 |
 | singapore | 2026 | 2018+2019+2022+2023+2024+2025 | 0.41 |
-| austin | 2026 | 2018+2019+2021+2022+2023+2024+2025 | -0.25 |
-| montreal | 2026 | 2019+2022+2023+2025 | -0.70 |
+| austin | 2026 | 2018+2019+2021+2022+2023+2024+2025 | -0.21 |
+| montreal | 2026 | 2019+2022+2023+2025 | -0.65 |
 | monza | 2026 | 2019+2020+2021+2022+2023+2024+2025 | 0.19 |
-| mexico-city | 2026 | 2019+2021+2022+2023+2024+2025 | -0.08 |
+| mexico-city | 2026 | 2019+2021+2022+2023+2024+2025 | -0.03 |
 | catalunya | 2026 | 2019+2020+2021+2022+2023+2024+2025 | 0.31 |
 | monte-carlo | 2026 | 2021+2024+2025 | 0.57 |
-| miami | 2026 | 2022+2023+2024+2025 | -1.47 |
+| miami | 2026 | 2022+2023+2024+2025 | -1.42 |
+| las-vegas | 2026 | 2023+2024+2025 | -0.46 |
 
 ## Track factors
 
@@ -34,7 +35,7 @@ Races already run (all seasons), reproduced from the stored factors: largest err
 | baku | 1.0549 (2026) | -0.065 | 23.1 | -0.010 / 0.006 / 0.023 | -0.05 / 0.00 |
 | sakhir | 1.0687 (mid-pace) | -0.058 | 24.0 | 0.113 / 0.106 / 0.117 | -0.10 / -0.02 |
 | spa-francorchamps | 1.0611 (2026) | -0.062 | 22.8 | 0.066 / 0.064 / 0.046 | 0.00 / 0.29 |
-| interlagos | 1.0648 (mid-pace) | -0.050 | 23.0 | 0.025 / 0.055 / 0.076 | -0.00 / -0.11 |
+| interlagos | 1.0647 (mid-pace) | -0.050 | 23.0 | 0.025 / 0.055 / 0.076 | -0.00 / -0.11 |
 | silverstone | 1.0714 (2026) | -0.066 | 20.9 | 0.079 / 0.054 / 0.068 | -0.32 / 0.05 |
 | shanghai | 1.0614 (2026) | -0.066 | 33.2 | 0.077 / 0.116 / 0.026 | 0.18 / 0.52 |
 | french | 1.0757 (mid-pace) | -0.059 | 26.3 | 0.017 / 0.048 / 0.047 | 0.12 / 0.17 |
@@ -56,42 +57,42 @@ Races already run (all seasons), reproduced from the stored factors: largest err
 | tuscan | 1.0996 (mid-pace) | -0.065 | 25.4 | 0.014 / 0.059 / 0.091 | 0.44 / 0.18 |
 | zandvoort | 1.0760 (mid-pace) | -0.034 | 20.9 | 0.047 / 0.042 / 0.035 | -0.27 / -0.08 |
 | monte-carlo | 1.0733 (2026) | -0.020 | 22.3 | 0.021 / 0.033 / 0.044 | -0.25 / 0.11 |
-| lusail | 1.0719 (mid-pace) | -0.067 | 27.9 | 0.077 / 0.008 / 0.015 | 0.04 / -0.12 |
+| lusail | 1.0718 (mid-pace) | -0.067 | 27.9 | 0.077 / 0.008 / 0.015 | 0.04 / -0.12 |
 | jeddah | 1.0658 (mid-pace) | -0.065 | 21.3 | 0.058 / 0.028 / 0.014 | -0.03 / 0.32 |
 | miami | 1.0613 (2026) | -0.009 | 19.8 | -0.020 / 0.020 / 0.021 | -0.34 / -0.54 |
-| las-vegas | 1.0534 (mid-pace) | -0.071 | 22.2 | 0.073 / 0.072 / 0.040 | 0.29 / 0.19 |
+| las-vegas | 1.0527 (2026) | -0.032 | 22.2 | -0.039 / -0.042 / 0.040 | -0.04 / 0.19 |
 | kuala-lumpur | 1.0800 (2026) | -0.078 | 27.0 | 0.053 / 0.068 / 0.112 | 0.21 / -0.20 |
 | madring | 1.0915 (2026) | -0.075 | 26.5 | 0.020 / 0.052 / 0.008 | 0.45 / 0.01 |
 
-## las-vegas: pole 1:32.840, 50 laps
+## las-vegas: pole 1:34.387, 50 laps
 
 | Strategy | Race time | Gap |
 |---|---|---|
-| H30-M20 | 81:45.668 | +0.0 s |
-| M20-H30 | 81:45.668 | +0.0 s |
-| H33-S17 | 81:51.029 | +5.4 s |
+| S42-M8 | 82:28.982 | +0.0 s |
+| M8-S42 | 82:28.982 | +0.0 s |
+| S42-H8 | 82:31.633 | +2.7 s |
 
-Lap times (best strategy): L1 98.87, L6 98.72, L11 98.56, L16 98.40, L21 98.24, L26 98.08, L31 118.70, L36 96.55, L41 96.55, L46 96.56, L50 96.56
+Lap times (best strategy): L1 99.32, L6 99.15, L11 98.99, L16 98.83, L21 98.67, L26 98.51, L31 98.35, L36 98.19, L41 98.03, L46 97.92, L50 97.79
 
-## lusail: pole 1:24.082, 57 laps
-
-| Strategy | Race time | Gap |
-|---|---|---|
-| M32-H25 | 85:01.181 | +0.0 s |
-| H25-M32 | 85:01.181 | +0.0 s |
-| M49-S8 | 85:07.421 | +6.2 s |
-
-Lap times (best strategy): L1 90.79, L6 90.50, L11 90.20, L16 89.90, L21 89.60, L26 89.31, L31 89.01, L36 88.37, L41 88.11, L46 87.84, L51 87.58, L56 87.32, L57 87.27
-
-## yas-marina-circuit: pole 1:24.339, 58 laps
+## lusail: pole 1:26.575, 57 laps
 
 | Strategy | Race time | Gap |
 |---|---|---|
-| H34-M24 | 87:25.913 | +0.0 s |
-| M24-H34 | 87:25.913 | +0.0 s |
-| S22-H36 | 87:28.919 | +3.0 s |
+| M32-H25 | 87:33.924 | +0.0 s |
+| H25-M32 | 87:33.924 | +0.0 s |
+| M49-S8 | 87:40.164 | +6.2 s |
 
-Lap times (best strategy): L1 90.73, L6 90.72, L11 90.71, L16 90.70, L21 90.70, L26 90.69, L31 90.68, L36 88.82, L41 88.97, L46 89.12, L51 89.27, L56 89.42, L58 89.48
+Lap times (best strategy): L1 93.47, L6 93.17, L11 92.87, L16 92.58, L21 92.28, L26 91.99, L31 91.69, L36 91.05, L41 90.79, L46 90.53, L51 90.27, L56 90.01, L57 89.95
+
+## yas-marina-circuit: pole 1:24.678, 58 laps
+
+| Strategy | Race time | Gap |
+|---|---|---|
+| H34-M24 | 87:49.141 | +0.0 s |
+| M24-H34 | 87:49.141 | +0.0 s |
+| S22-H36 | 87:52.146 | +3.0 s |
+
+Lap times (best strategy): L1 91.12, L6 91.12, L11 91.11, L16 91.10, L21 91.10, L26 91.09, L31 91.08, L36 89.22, L41 89.37, L46 89.53, L51 89.68, L56 89.83, L58 89.89
 
 ## Fit log
 
@@ -281,6 +282,7 @@ Lap times (best strategy): L1 90.73, L6 90.72, L11 90.71, L16 90.70, L21 90.70, 
 - 2026 hungaroring: 1218 clean laps, ratio 1.1059, slope -0.051 s/lap, fit RMS 0.69 s
 - 2026 monza: 871 clean laps, ratio 1.0556, slope -0.036 s/lap, fit RMS 0.57 s
 - 2026 suzuka: 913 clean laps, ratio 1.0683, slope -0.067 s/lap, fit RMS 0.48 s
+- 2026 las-vegas: 751 clean laps, ratio 1.0527, slope -0.032 s/lap, fit RMS 0.72 s
 - 2026 mexico-city: 1057 clean laps, ratio 1.0644, slope -0.027 s/lap, fit RMS 0.47 s
 - 2026 miami: 783 clean laps, ratio 1.0613, slope -0.009 s/lap, fit RMS 0.61 s
 - 2026 monte-carlo: 1135 clean laps, ratio 1.0733, slope -0.020 s/lap, fit RMS 1.14 s
