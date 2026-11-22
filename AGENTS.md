@@ -60,8 +60,8 @@ Counting attempts
   laps"). Every attempt at it counts: the second attempt uses k for m = all candidates tried so far (first attempt's included).
   A clean restart needs new rows (a new season, new tracks or events) that no attempt has seen.
 - **Stop rule.** Three rejected attempts at one idea: stop it, write why in the ledger, move on (physics rule 5.4).
-- **Daily budget.** From the 6th accuracy gate of a day on the same rows (any idea), add 5 to m. Correctness (non-inferiority) gates and
-  data fixes do not count.
+- **Daily budget.** From the 6th accuracy gate of a day on the same rows (any idea), add 5 to m. Correctness (non-inferiority) gates,
+  data fixes, display-channel gates and provisional values do not count (v3.2).
 
 Judging
 - **The held-out unit is the track (or event).** Corners, laps or samples inside one track are not independent: take one value per
@@ -99,11 +99,45 @@ Unraced tracks
   pinned). Its first run on production is the level C baseline: write it in `docs/lapsim-learn.md` and the ledger. Until it exists,
   a lap-time change says "level C not tested" in its PR.
 
+Validation that matches the product (v3.1, owner 2026-11-22)
+- **Locked confirmation set.** Every event that starts after 2026-11-23 00:00 KST, and every 2027 event, is locked: no lap-time or physics
+  gate may use it as held-out data. It is opened only at a milestone (end of each month, or before a release that changes lap predictions), once per
+  milestone, by one script run, with the result written in the ledger. Production fits still learn from these events as usual; only the
+  judging is locked.
+- **Prediction log (forward test).** Before each qualifying session the production prediction (lap time, ±, sectors, top speed, model
+  version and calibration hash) is stored in `scripts/sim/data/prediction-log.json` by the refresh workflow, before the session starts;
+  after the session the real result is added next to it, never changing the stored prediction. This is the honest "next event" error; it
+  is what the page shows as accuracy for upcoming events, and it is the locked set's first score. Session C builds it
+  (`scripts/sim/prediction-log.mjs`, run from the f1-zones-refresh and WEC refresh schedules); until then, say "not logged".
+- **Forward-chaining backtest.** Besides leave-one-track-out, every lap-time change reports a rolling-origin test: events in date order;
+  each event predicted from a fit on earlier events only (same settings as production). Report RMS per class. It may not get worse
+  beyond δ (non-inferiority), like level C.
+- **Decide with a randomization test.** Accuracy gates decide with `signFlip(gains, {m})` in `scripts/sim/gate.mjs`: one gain per held-out
+  unit (track or event, + = better), one-sided sign-flip test (exact for n ≤ 16), pass when p < 0.16 / m and n ≥ 5; it does not assume
+  normal gains, so one outlier track cannot carry a pass. Report the mean gain with its 90 % bootstrap interval. `gate` /
+  `kForVariants` stay for scripts not yet moved; a new gate script uses `signFlip`.
+- **Coverage of the shown ±.** Every refit and every milestone reports `coverage()` on held-out and logged predictions: the share inside
+  ±1σ (target 68 %) and ±2σ (target 95 %), per class. With n ≥ 20 and ±1σ coverage outside 55–80 %, the shown ± is rescaled by the
+  ratio that brings it to 68 % on those rows (a declared data fix of the uncertainty, noted in the ledger), never by hand.
+- **CI check.** `.github/workflows/gate-ledger-check.yml` fails a PR that changes `worker/lapsim/` or `scripts/sim/` unless its
+  description has a line "Ledger: …" (the ledger line or pre-registration), "Data fix: <named source>" or "No model change: <why>".
+  Bot refresh and experiment branches are exempt.
+
 Physics and frozen stages
 - **Component metrics for physics.** A physics change pre-registers one component metric with the most direct data (corner minimum
   speed, end-of-straight speed or trap at the trap position, braking point, sector) as co-primary. It ships when the component gains
   beyond k SE and lap time is non-inferior (δ = 5 % of the baseline RMS). So a fix of a known bias (corner speeds 10–15 % slow) can ship
   when lap time moves only within noise. The other components may not get worse beyond their own k SE.
+- **Residual signature (v3.1, item 6).** `scripts/sim/residual-signature.mjs` compares the page's model lap with the measured F1 pole lap
+  on every raced track, by part of the lap: corner minimum speed by speed band, end-of-straight speed by straight length, braking onset,
+  peak deceleration by entry speed (baseline in `docs/lapsim-signature.md`; 2026-11-22: medium and fast corners 0.83–0.88 of measured,
+  brake onset within ±5 m). A physics change reports the table before and after; its targeted part must improve (sign-flip over
+  tracks) and no other part may get worse beyond its own noise. The measured side is only read.
+- **Conditions (v3.1, item 7).** `scripts/sim/condition-report.mjs` joins every production held-out row to its session weather and
+  reports the error slope per condition with a 90 % bootstrap interval (`docs/lapsim-conditions.md`; 2026-11-22: WEC error falls with air
+  temperature, R² 0.31; F1 shows no clear condition effect). Tyre age, tow, fuel and rubber are not recorded and are listed as such.
+  A condition whose interval excludes 0 is a candidate model term, added only through a pre-registered gate; no lap, weather value or
+  error is ever adjusted by hand. Every refit reruns both reports.
 - **Leaving a freeze.** A frozen stage (WEC track grip, #381) is refitted only when (a) a pre-registered physics change passed on F1 under
   the component rule, and (b) the WEC refit with it is non-inferior on WEC lap time with WEC traps or corner speeds as co-primary. The
   owner approves each unfreeze; the new freeze is a reviewed data change.
@@ -122,6 +156,38 @@ What may be learned from where
   Qualifying (pole-lap) timing is not used for race simulation, and iRacing offline-testing laps count as qualifying-style laps.
 - **Per-car values.** Class value first; a car's own value only as a shrunk difference from the class (as the M terms in
   `docs/lapsim-learn.md` section 3), with its own n. Fewer than 5 sessions or tracks for that car: the class value.
+Working with the data the owner can get (v3.2, owner 2026-11-22)
+The owner has no team data: no full-rate telemetry, no setup sheets, no tyre data. The rules must still let the model improve.
+- **What counts as truth, per series.** Decide only against what exists; never claim accuracy beyond it.
+
+  | Series | Measured truth available | Judge on | Not judgeable (label "model") |
+  |---|---|---|---|
+  | F1 | lap and sector times, speed trap, public pole telemetry (~7.5 Hz: speed, throttle, brake on/off, gear, rpm), weather | lap, sectors, trap, corner minima ≥ 0.26 s apart, shift points | brake pressure, steering, tyre, energy flow inside the lap |
+  | WEC / IMSA | Al Kamel lap, sectors, trap, weather, BoP tables | lap, sectors, trap | every channel, corner speeds |
+  | GT3 / other series | lap (some sectors), official results | lap | every channel |
+  | Formula E | Al Kamel lap and sectors | lap, sectors | every channel, energy |
+  | Owner's own sources | iRacing (60 Hz, simulator), onboard video and sound | only what the v3 scope rules allow | anything absolute (grip, speed, lap) |
+- **Weak sources add up only when independent.** Two weak sources that agree (for example iRacing and onboard sound on the same upshift
+  ratio, or OpenStreetMap and a satellite image on a kerb line) beat one; agreement is reported with both errors. Two values from the same
+  source are one source.
+- **Provisional values instead of nothing.** When a group is too small to decide (n < 5, or a sign-flip p above the bar) and the value is
+  a display or unraced-track estimate, it may ship as **provisional** if all of these hold: it is pre-registered and in the ledger; it
+  never touches measured data or a raced track's real lap; it passes a plausibility check (inside the regulation or physical range, sign of
+  every effect right); it is labelled "estimate (provisional) / 추정(잠정)" with a ± at least as wide as the spread of its sources; and it
+  is re-judged automatically when the prediction log or new data brings the group to n ≥ 5 (then confirmed or removed). Lap-time fits and
+  physics changes are never provisional.
+- **The prediction log is the main source of new truth.** Every real session gives free, official ground truth (lap, sectors, trap,
+  weather) for a prediction made before it. Keep it running for every series the site predicts (F1, WEC, IMSA, GT3, FE). Over a season
+  it turns "not enough data" groups into judgeable ones without any paid data.
+- **Priors from rules, not from guesses.** Where no data exists, start from layer 1 (regulations, BoP, homologation) and layer 4 (similar
+  cars) with a wide ±, and say so. A fitted value may move away from its prior only as far as the data's own error allows.
+- **Cost of rigour.** The locked set and the daily budget apply to lap-time and physics gates only. Display channels and provisional
+  values use the hold-out of their own source and the plausibility check, so the small data sets are not split further.
+- **Free and official first.** Use public, official sources (FIA, series timing, OpenF1, f1db, TracingInsights, Al Kamel, OpenStreetMap)
+  and the owner's own recordings. No paid data, no logins the owner did not set up, no scraping against a site's terms.
+
+- **Cloud or PC.** Every rule above runs in the cloud (GitHub Actions or a cloud session): fits, telemetry, weather and lap data are
+  in the repo or fetched in Actions. Only work that reads the owner's iRacing files or videos needs the owner's PC.
 - **Already shipped before v3.** Gates shipped before 2026-11-22 10:00 KST stay; open ones are re-judged under v3 before merging
   (see `docs/gate-ledger.md`).
 
