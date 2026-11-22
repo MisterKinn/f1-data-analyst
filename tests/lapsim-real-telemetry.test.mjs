@@ -43,6 +43,9 @@ test('a picked driver: the page asks for that lap\'s measured telemetry, then sh
 
 test('GT3 / Hypercar: lanes from iRacing-learned values say model (iRacing); speed stays unlabelled', () => {
   const d = JSON.parse(simulationPage({track: 'spa-francorchamps', car: 'hyper-ferrari'}, 'en').match(/id="lapsim-data">([\s\S]*?)<\/script>/)[1]), v = view(d);
-  for (const k of ['throttle', 'brake', 'gear', 'rpm']) assert.match(lane(v, k).title, /· model \(iRacing\)$/, k);
+  for (const k of ['brake', 'gear', 'rpm']) assert.match(lane(v, k).title, /· model \(iRacing\)$/, k);
+  assert.match(lane(v, 'throttle').title, /· model \(iRacing\) · estimate \(provisional\)$/);
+  const g = JSON.parse(simulationPage({track: 'spa-francorchamps', car: 'wec-lmgt3'}, 'en').match(/id="lapsim-data">([\s\S]*?)<\/script>/)[1]), w = view(g);
+  assert.match(lane(w, 'throttle').title, /· model \(iRacing\)$/); for (const k of ['brake', 'gear', 'rpm']) assert.doesNotMatch(lane(w, k).title, /iRacing/, k);
   assert.doesNotMatch(lane(v, 'speed').title, /iRacing/);
 });

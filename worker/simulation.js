@@ -1156,7 +1156,9 @@ function computeView(K, data, state, R) {
       const e = h[n - 1] + Math.tan(g[n - 1] / 1e4) * d.ds, z = h.map((v, i) => v - e * i / n), lo = Math.min(...z); return z.map(v => +(v - lo).toFixed(1)); })()], cOpt('m', 5, 120, 0)]] : [])
     // surface bumps (owner 2026-11-17): learned from iRacing laps of this track (vertical acceleration above ~2 Hz), 1 = typical
     .concat(data.bumps ? [['bump', TL.bump, '', d.ds, [Array.from({length: nP}, (_, i) => data.bumps.idx[Math.min(data.bumps.bins - 1, Math.floor(i / nP * data.bumps.bins))] / 10)], cOpt('', 1, 110, 0)]] : []);
-  if (IR) for (const l of lanes) if (['throttle', 'gear', 'rpm'].includes(l[0]) || (l[0] === 'brake' && clsOf(sel) === 'hyper')) l[1] += irL;
+  // what comes from iRacing after the v3.2 re-judge (channels.js DRV): GT3 throttle; Hypercar throttle (squeeze provisional), brake, gear, rpm
+  const prov = data.lang === 'en' ? ' · estimate (provisional)' : ' · 추정(잠정)', hy = clsOf(sel) === 'hyper';
+  if (IR) for (const l of lanes) if (l[0] === 'throttle' || (hy && ['brake', 'gear', 'rpm'].includes(l[0]))) l[1] += irL + (hy && l[0] === 'throttle' ? prov : '');
   // each lane in its own box, so the channel tick boxes can hide it (owner 2026-11-15)
   const traceSvg = '<div class="ls-cursor-read" data-ls="cursor">' + TL.hover + '</div>' + lanes.map(([key, title, , ds, ser, o]) => '<div class="ls-lane" data-lane="' + key + '"><h3 class="ls-ch-h">' + title + '</h3>' + R.renderTrace(ds, ser.map(v => Array.isArray(v) ? {v} : v), o) + '</div>').join('')
     + (puNote ? '<p class="fine">' + puNote + '</p>' : '') + puChart + '<p class="fine">' + TL.note + ' ' + TL.risk + '</p>';
