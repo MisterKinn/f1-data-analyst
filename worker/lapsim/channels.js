@@ -45,7 +45,9 @@ export function lapChannels(track, car, env, res, {cls = 'f1', seed = '', surfac
   // the page (driver_gate_page.mjs), so GT3 / Hypercar keep theirs. 2026 rules (f1-2026) cars take the 2026 row.
   // shift points (scripts/sim/learn/f1-shift-gate.mjs, pre-registered, passed both seasons): up at 0.771 / 0.778 of the rev limit, down where
   // the lower gear lands at 0.675 / 0.727 (measured pole laps, 2025 / 2026 rules).
-  const DRV = {f1: {off: -0.598, up: 0.771, down: 0.675}, 'f1-2026': {off: -0.625, up: 0.778, down: 0.727}};
+  // throttle (scripts/sim/learn/f1-throttle-gate.mjs, pre-registered, calibrated on the page's own timing): pick-up starts 0.3 s before the
+  // demand (both seasons ✓), squeeze τ 0.35 s (2025 ✓; 2026 ✗, stays 0.10 s).
+  const DRV = {f1: {off: -0.598, up: 0.771, down: 0.675, tau: 0.35, pick: -0.3}, 'f1-2026': {off: -0.625, up: 0.778, down: 0.727, pick: -0.3}};
   const D = drv === undefined ? DRV[cls === 'f1' && (car.ers || {}).rule === 'f1-2026' ? 'f1-2026' : cls] || null : drv;
   // gear and rpm: the gear with the most engine power at this speed (same rule as kernel powertrain()); a gear within 1 % of the
   // best is kept, so the trace does not hunt on the flat top of the curve
@@ -180,7 +182,7 @@ export function lapChannels(track, car, env, res, {cls = 'f1', seed = '', surfac
         lift = r() < 0.2 + 0.6 * rm ? t[k] + 0.15 + 0.2 * r() : -1;
       }
       if (want > y && y < 0.05) vPick = binOf(k);
-      y += (want - y) * (1 - Math.exp(-dt / (want > y ? (D && D.rise ? D.rise[vPick] / Math.log(9) : 0.1) : 0.025)));
+      y += (want - y) * (1 - Math.exp(-dt / (want > y ? (D && D.tau ? D.tau : D && D.rise ? D.rise[vPick] / Math.log(9) : 0.1) : 0.025)));
       const lowV = Math.max(0, Math.min(1, (70 - up(v, k)) / 30)); // traction ripple below about 250 km/h, full below 145 km/h
       let o = y + (y > 0.05 && y < 0.97 ? 0.04 * (1 + 2 * R[k]) * lowV * Math.sin(2 * Math.PI * Math.min(fT, fmax(k)) * t[k] + phT) * Math.min(y, 1 - y) * 4 : 0);
       if (lift > 0 && Math.abs(t[k] - lift) < 0.06) o *= 0.85;
