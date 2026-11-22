@@ -45,6 +45,7 @@ No line, no ship.
 | 2026-11-22 | D | claude/gate-video-corners-attempt2-prereg-2026-11-22.md | acc (geometry check) | corner order from video yaw, attempt 2: 12 video-side settings on the 91 attempt-1 laps | 2 | 13 | 7 tracks reserved, not opened | tuning best S 0.800 (= line) | S and count error, 90 % bootstrap | not judged (closed before hold-out) | no |
 
 | 2026-11-22 | D | claude/gate-video-lifts-prereg-2026-11-22.md | acc (display) | throttle lifts per lap from sound (off ≥ 0.5 s, merge < 1 s) | 1 | 12 | 5 tracks / 11 laps | median rel. \|e\| 18.8 % [0, 66.7 %] | per-track median relative \|e\|, 90 % bootstrap | rejected (median > 10 %; over-counts, Sepang +44–89 %) | no |
+| 2026-11-22 | D | claude/gate-video-lifts-attempt2-prereg-2026-11-22.md | acc (display) | same idea as lifts per lap: 3-class sound model (off / part / full), lift = off segment ≥ 0.5 s | 2 | 16 | — (closed before hold-out) | CV on tuning 14.3 % | lap-grouped CV | closed before hold-out (no better than attempt 1); 6-track FastF1 throttle set stays unopened | no |
 ## Re-judging under v3
 - #402 and #403 were merged before the v3 rules. Re-judged 2026-11-22 (Session C, rows above): #402 removed (below the floor); #403 GTP
   shifts, GT3 pick-up and GTP brake off kept; GTP squeeze τ provisional; GT3 shifts and GTP pick-up removed.
