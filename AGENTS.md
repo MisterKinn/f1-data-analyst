@@ -60,8 +60,8 @@ Counting attempts
   laps"). Every attempt at it counts: the second attempt uses k for m = all candidates tried so far (first attempt's included).
   A clean restart needs new rows (a new season, new tracks or events) that no attempt has seen.
 - **Stop rule.** Three rejected attempts at one idea: stop it, write why in the ledger, move on (physics rule 5.4).
-- **Daily budget.** From the 6th accuracy gate of a day on the same rows (any idea), add 5 to m. Correctness (non-inferiority) gates and
-  data fixes do not count.
+- **Daily budget.** From the 6th accuracy gate of a day on the same rows (any idea), add 5 to m. Correctness (non-inferiority) gates,
+  data fixes, display-channel gates and provisional values do not count (v3.2).
 
 Judging
 - **The held-out unit is the track (or event).** Corners, laps or samples inside one track are not independent: take one value per
@@ -100,8 +100,8 @@ Unraced tracks
   a lap-time change says "level C not tested" in its PR.
 
 Validation that matches the product (v3.1, owner 2026-11-22)
-- **Locked confirmation set.** Every event that starts after 2026-11-23 00:00 KST, and every 2027 event, is locked: no gate may use it
-  as held-out data. It is opened only at a milestone (end of each month, or before a release that changes lap predictions), once per
+- **Locked confirmation set.** Every event that starts after 2026-11-23 00:00 KST, and every 2027 event, is locked: no lap-time or physics
+  gate may use it as held-out data. It is opened only at a milestone (end of each month, or before a release that changes lap predictions), once per
   milestone, by one script run, with the result written in the ledger. Production fits still learn from these events as usual; only the
   judging is locked.
 - **Prediction log (forward test).** Before each qualifying session the production prediction (lap time, ±, sectors, top speed, model
@@ -156,6 +156,36 @@ What may be learned from where
   Qualifying (pole-lap) timing is not used for race simulation, and iRacing offline-testing laps count as qualifying-style laps.
 - **Per-car values.** Class value first; a car's own value only as a shrunk difference from the class (as the M terms in
   `docs/lapsim-learn.md` section 3), with its own n. Fewer than 5 sessions or tracks for that car: the class value.
+Working with the data the owner can get (v3.2, owner 2026-11-22)
+The owner has no team data: no full-rate telemetry, no setup sheets, no tyre data. The rules must still let the model improve.
+- **What counts as truth, per series.** Decide only against what exists; never claim accuracy beyond it.
+
+  | Series | Measured truth available | Judge on | Not judgeable (label "model") |
+  |---|---|---|---|
+  | F1 | lap and sector times, speed trap, public pole telemetry (~7.5 Hz: speed, throttle, brake on/off, gear, rpm), weather | lap, sectors, trap, corner minima ≥ 0.26 s apart, shift points | brake pressure, steering, tyre, energy flow inside the lap |
+  | WEC / IMSA | Al Kamel lap, sectors, trap, weather, BoP tables | lap, sectors, trap | every channel, corner speeds |
+  | GT3 / other series | lap (some sectors), official results | lap | every channel |
+  | Formula E | Al Kamel lap and sectors | lap, sectors | every channel, energy |
+  | Owner's own sources | iRacing (60 Hz, simulator), onboard video and sound | only what the v3 scope rules allow | anything absolute (grip, speed, lap) |
+- **Weak sources add up only when independent.** Two weak sources that agree (for example iRacing and onboard sound on the same upshift
+  ratio, or OpenStreetMap and a satellite image on a kerb line) beat one; agreement is reported with both errors. Two values from the same
+  source are one source.
+- **Provisional values instead of nothing.** When a group is too small to decide (n < 5, or a sign-flip p above the bar) and the value is
+  a display or unraced-track estimate, it may ship as **provisional** if all of these hold: it is pre-registered and in the ledger; it
+  never touches measured data or a raced track's real lap; it passes a plausibility check (inside the regulation or physical range, sign of
+  every effect right); it is labelled "estimate (provisional) / 추정(잠정)" with a ± at least as wide as the spread of its sources; and it
+  is re-judged automatically when the prediction log or new data brings the group to n ≥ 5 (then confirmed or removed). Lap-time fits and
+  physics changes are never provisional.
+- **The prediction log is the main source of new truth.** Every real session gives free, official ground truth (lap, sectors, trap,
+  weather) for a prediction made before it. Keep it running for every series the site predicts (F1, WEC, IMSA, GT3, FE). Over a season
+  it turns "not enough data" groups into judgeable ones without any paid data.
+- **Priors from rules, not from guesses.** Where no data exists, start from layer 1 (regulations, BoP, homologation) and layer 4 (similar
+  cars) with a wide ±, and say so. A fitted value may move away from its prior only as far as the data's own error allows.
+- **Cost of rigour.** The locked set and the daily budget apply to lap-time and physics gates only. Display channels and provisional
+  values use the hold-out of their own source and the plausibility check, so the small data sets are not split further.
+- **Free and official first.** Use public, official sources (FIA, series timing, OpenF1, f1db, TracingInsights, Al Kamel, OpenStreetMap)
+  and the owner's own recordings. No paid data, no logins the owner did not set up, no scraping against a site's terms.
+
 - **Cloud or PC.** Every rule above runs in the cloud (GitHub Actions or a cloud session): fits, telemetry, weather and lap data are
   in the repo or fetched in Actions. Only work that reads the owner's iRacing files or videos needs the owner's PC.
 - **Already shipped before v3.** Gates shipped before 2026-11-22 10:00 KST stay; open ones are re-judged under v3 before merging
