@@ -156,6 +156,39 @@ What may be learned from where
   Qualifying (pole-lap) timing is not used for race simulation, and iRacing offline-testing laps count as qualifying-style laps.
 - **Per-car values.** Class value first; a car's own value only as a shrunk difference from the class (as the M terms in
   `docs/lapsim-learn.md` section 3), with its own n. Fewer than 5 sessions or tracks for that car: the class value.
+Gate G v3.3 (owner 2026-11-23: "almost every analysis is blocked at Gate G; check the criteria against what I can measure")
+Review (Session C, data-science and performance-engineering view). Most rejections on 2026-11-22 were real, but several gates could
+not have passed whatever the model did:
+- BP-1 used a reference that is itself an estimate (Brembo pre-race figures). Its own error is likely about ±10 %, the same as the
+  10 % bound.
+- The judged quantity, the hardest-corner pedal peak, barely varies between tracks, so a constant wins by construction.
+- Some judgements used hand-set baselines (constant, linear, hold-last) instead of production.
+- Several ran at an n where no useful effect was detectable.
+
+The rules below fix the test design. They do not lower the bar for a claim.
+
+- **Power check before the run.** The pre-registration states the minimum detectable effect (MDE) at its n:
+  - MDE = (1.0 + 0.84) × SD of the per-unit gains / √n, with the SD taken from the tuning units or an earlier attempt. That is one-sided 16 % and 80 % power.
+  - If the MDE is larger than the useful effect (the measurement floor, the reference floor below, or 0.02 pp of lap error), the run is "not judgeable at this n". It does not spend an attempt.
+  - The value then waits for the prediction log or the locked set, or ships as provisional (below).
+- **Reference floor.** When the truth is an estimate or a noisy reading (Brembo or Pirelli figures, FIA estimates, values aligned from video, anything outside the "Measured truth" column below), state the reference's own error. Use its spread against a second independent source, or across its repeats; if neither exists, it is ≥ 10 %.
+  - No absolute bound may be tighter than that error.
+  - The decision is relative: the candidate must beat production on the same rows by more than the floor.
+- **Judge what the reader uses.** A display channel pre-registers, as primary, the property the page shows:
+  - timing or position (P/R, ±s);
+  - shape across units (rank correlation per lap, pooled per track);
+  - magnitude with its ± (coverage of the shown ± on held-out units, 55–80 % at 1σ).
+  A single extreme point (one corner per track) is co-primary only if its spread across units is larger than the reference floor.
+- **Baselines.** Constant, hold-last, linear and other hand-set predictors are reported as diagnostics; they never decide (v3.2 rule restated). The deciding baseline is what production shows for the same quantity at the same point. Where production shows nothing, the decision is coverage of the shown ±, the plausibility check, and the guard below.
+- **Guard: never contradict a better value already on the page.** A new channel may not show, at a point where the page already gives the same quantity, a value further from the truth than that page value. Example: the pedal load at the Brembo hardest corner, where the Brakes section already shows a Brembo-fitted figure.
+- **Provisional means undecided.** A group is undecided when n < 5 or when the 90 % interval of the gain against production includes 0. A value decided worse than production (interval below 0) is not provisional; it is removed.
+- **Physics-only channels where nothing is judgeable.** For a quantity in the "Not judgeable" column (brake pressure, steering, tyre, energy flow inside the lap), a channel computed by physics may be shown as "model (physics, not checked) / 모델(물리, 미검증)" with its assumptions listed. Its inputs must be measured channels or regulation priors, and no parameter may be fitted toward the shown quantity. It must also pass plausibility and the guard above. It makes no accuracy claim and is never called measured.
+- **Unchanged by v3.3.** The measured-data rules stay exactly as written, and v3.3 adds no exception to them:
+  - measured telemetry is always shown and never edited;
+  - brake on/off is measured only for its timing; its height is never pressure;
+  - broken telemetry is not measured data;
+  - the locked set, the stop rule after three attempts, pre-registration and the ledger.
+
 Working with the data the owner can get (v3.2, owner 2026-11-22)
 The owner has no team data: no full-rate telemetry, no setup sheets, no tyre data. The rules must still let the model improve.
 - **What counts as truth, per series.** Decide only against what exists; never claim accuracy beyond it.
@@ -227,8 +260,9 @@ estimates, tracks) must leave all three in step in the same PR or refresh run:
   OpenF1) is an on / off flag: its on and off moments are measured data, its height is not a pressure. Never show, label or learn the
   flag height as brake pressure or effort; the page labels the lane "on / off (timing only, not pressure)". A pressure / pedal-load
   estimate (Session C, model M-BP from the measured deceleration, pre-registered in Project claude/gate-brake-pressure-prereg-2026-11-22.md,
-  gate BP-1 against Brembo's per-GP figures, which are Brembo estimates, not measured data) is shown only as a model: BP-1 failed
-  (2026-11-22), so the lane is "estimate (provisional)", one value per braking zone, ± 30 % (all 112 Brembo 2026 card corners).
+  gate BP-1 against Brembo's per-GP figures, which are Brembo estimates, not measured data) is not shown: BP-1 failed (2026-11-22)
+  and, re-judged under v3.2 (pooled per track, production baseline), it is worse than the page's existing Brembo-fitted pedal estimate.
+  A failed value that loses to production is not provisional (provisional is for groups too small to decide).
   Learning may use the timing (onset, release), not the height.
 - Qualifying with rain: the dry fit leaves the session out, but the page and tool still default to that session's real pole in its own
   weather (scripts/sim/learn/wet-quali.mjs → worker/lapsim/f1-wet-quali-data.js, input scripts/sim/data/learn/f1-wet-quali.json from
