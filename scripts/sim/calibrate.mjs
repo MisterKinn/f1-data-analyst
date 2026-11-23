@@ -22,6 +22,7 @@ import {lapsimPuDocs} from '../../worker/lapsim/pu-docs-data.js';
 import {capCurvature} from '../../worker/lapsim/geometry.js';
 import {traceGaps} from '../../worker/lapsim/real-tel-gaps.js';
 import {lapsimWecBop} from '../../worker/lapsim/wec-bop-data.js';
+import {lapsimCarMeasured} from '../../worker/lapsim/car-measured-data.js';
 
 const CACHE = process.env.LAPSIM_CACHE || '.cache/lapsim';
 const ITERS = Number(process.env.LAPSIM_ITERS || 70), HOLDOUT_ITERS = Number(process.env.LAPSIM_HOLDOUT_ITERS || 25);
@@ -39,6 +40,12 @@ const fitAll = gs => FITTER === 'bcd' ? fitJointBCD(gs, BCD) : fitJoint(gs, {ite
 const holdoutOf = (gs, key) => FITTER === 'bcd' ? holdoutBCD(gs, key, {...BCD, rounds: Math.max(2, BCD.rounds - 1)}) : holdoutJoint(gs, key, {iters: HOLDOUT_ITERS, wTime: WTIME});
 const GRIP_LIMITS = E.LAPSIM_GRIP_LO ? [Number(E.LAPSIM_GRIP_LO), Number(E.LAPSIM_GRIP_HI)] : FITTER === 'bcd' ? [0.7, 1.3] : [0.85, 1.15];
 BCD.lo = GRIP_LIMITS[0]; BCD.hi = GRIP_LIMITS[1];
+// LAPSIM_CDA_MEASURED=on (step 2a, claude/gate-cda-measured-prereg-2026-11-23.md; off by default): drag measured from TracingInsights
+// qualifying telemetry (worker/lapsim/car-measured-data.js, scripts/sim/measure-car.mjs) replaces the free per-track drag factor: the
+// factor of a measured track is fixed to its measured wing-level ratio, and the 2023-25 season CdA and DRS CdA are fixed to the measured
+// values. Unmeasured tracks keep the free factor; 2026 keeps its fitted drag level.
+const CDA_MEASURED = E.LAPSIM_CDA_MEASURED === 'on' ? lapsimCarMeasured : null;
+if (CDA_MEASURED) BCD.fixedDrag = Object.fromEntries(Object.entries(CDA_MEASURED.dragRatio).map(([id, r]) => [id, r.ratio]));
 // season progress 0 (1 March) … 1 (15 December), for in-season development
 const tauOf = (date, year) => { if (!date) return 0.5; const a = Date.UTC(year, 2, 1), b = Date.UTC(year, 11, 15); return Math.max(0, Math.min(1.1, (Date.parse(date) - a) / (b - a))); };
 const ONLY_YEARS = process.env.LAPSIM_SEASONS ? process.env.LAPSIM_SEASONS.split(',').map(Number) : null;
@@ -126,7 +133,9 @@ for (const year of [...new Set(traces.map(t => t.year))].sort()) {
   if (laps.length < 4) { report.push(`${year}: not enough laps (${laps.length})`); continue; }
   const base = {...structuredClone(prior), linkMu: true, ...AXLE(1.55)};
   if (process.env.LAPSIM_THROTTLE_HARVEST === 'off' && base.ers) base.ers.throttleHarvest = false;
-  const params = PARAMS.map(k => {
+  const cdM = CDA_MEASURED?.seasons?.[year]?.cdA?.value;
+  if (cdM) { base.cdA = cdM; base.cdALow = cdM * CDA_MEASURED.seasons[year].drsRatio.value; }
+  const params = PARAMS.filter(k => !(cdM && (k === 'cdA' || k === 'cdALow'))).map(k => {
     const [lo, hi] = BOUNDS[k], rel = k === 'pIce';
     return {key: k, path: k, base: base[k], step: 0.08, min: rel ? lo * base[k] : lo, max: rel ? hi * base[k] : hi};
   });
