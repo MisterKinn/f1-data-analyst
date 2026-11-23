@@ -1,0 +1,55 @@
+name: Al Kamel full lap files (WEC, ELMS, IMSA Daytona; raw, not published)
+
+# Step 16 (2026-11-23): every lap with sectors, pit lane, driver and flag, plus weather, for the tyre warm-up (step 15) and later
+# lap-level work (step 17). The workspace cannot reach Al Kamel and the connector reads 200 rows per call, so this runs here.
+# scripts/sim/learn/fetch-alkamel-full-laps.mjs reads robots.txt, one request at a time (ALKAMEL_GAP_MS apart), and skips files it
+# already has. Raw files stay out of git (physics rule 9): the folder goes to the DRAFT release data-alkamel-full-laps (visible to
+# collaborators only, never on the site). Committed: the manifest and the coverage table in docs/lapsim-alkamel-laps.md.
+# Use in another job:  gh release download data-alkamel-full-laps -p alkamel-full-laps.tar -D .cache && tar -xf .cache/alkamel-full-laps.tar -C .cache
+on:
+  schedule:
+    - cron: '43 4 3 * *'   # monthly: new events of the season
+  workflow_dispatch:
+    inputs:
+      years: {description: 'Seasons', default: '2023,2024,2025'}
+      series: {description: 'wec, imsa (Daytona 24), elms', default: 'wec,imsa,elms'}
+
+permissions:
+  contents: write   # draft release asset + manifest commit
+  actions: write
+
+concurrency:
+  group: alkamel-full-laps
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    if: github.repository == 'MisterKinn/f1-data-analyst'
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    env: {GH_TOKEN: '${{ github.token }}', TAG: data-alkamel-full-laps}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - run: npm ci --ignore-scripts
+      - name: Restore the stored files
+        run: |
+          mkdir -p .cache
+          if gh release download "$TAG" -p alkamel-full-laps.tar -D .cache 2>/dev/null; then tar -xf .cache/alkamel-full-laps.tar -C .cache; else echo "no stored archive yet"; fi
+      - name: Fetch the missing lap and weather files
+        env: {YEARS: "${{ inputs.years || '2023,2024,2025' }}", SERIES: "${{ inputs.series || 'wec,imsa,elms' }}"}
+        run: node scripts/sim/learn/fetch-alkamel-full-laps.mjs "--years=$YEARS" "--series=$SERIES" | tee .cache/alkamel-full.log | tail -60
+      - name: Store the files as a draft release asset
+        run: |
+          tar -cf .cache/alkamel-full-laps.tar -C .cache alkamel-full-laps
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --draft --title "Al Kamel full lap files (raw, internal)" \
+            --notes "Raw Al Kamel timing files for internal analysis. Do not publish or redistribute (ASSET_SOURCES.md). Manifest: scripts/sim/data/learn/alkamel-full-laps-manifest.json"
+          gh release upload "$TAG" .cache/alkamel-full-laps.tar --clobber
+          { echo "### Al Kamel full laps"; tail -1 .cache/alkamel-full.log; du -h .cache/alkamel-full-laps.tar; } >> "$GITHUB_STEP_SUMMARY"
+      - name: Publish the manifest and coverage table (checks first)
+        run: |
+          scripts/publish-refresh.sh -k -m "Al Kamel full lap files: manifest and coverage (raw files in the draft release)" \
+            -g "node scripts/sim/learn/fetch-alkamel-full-laps.mjs" -b lapsim-learn/alkamel-full-laps \
+            -c "node scripts/refresh-changed.mjs scripts/sim/data/learn/alkamel-full-laps-manifest.json" \
+            -- scripts/sim/data/learn/alkamel-full-laps-manifest.json docs/lapsim-alkamel-laps.md

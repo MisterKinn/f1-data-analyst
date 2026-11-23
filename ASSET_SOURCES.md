@@ -59,3 +59,14 @@ geometry committed. Pre-registration: claude.ai Project `claude/gate-independent
   2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA. Imola: the Regione
   Emilia-Romagna "DTM 5x5" WCS (CC BY 4.0) was tried first but serves a 4-band picture, not heights, so the 30 m model is used.
 - Widths: worker/lapsim/track-widths.js (Jeddah, Imola); FIA list of licensed circuits 2025-12-01 (Shanghai, Suzuka).
+
+## Al Kamel full lap files, step 16 (scripts/sim/learn/fetch-alkamel-full-laps.mjs)
+
+Fetched by `.github/workflows/alkamel-full-laps.yml` from Al Kamel Systems' public results sites: FIA WEC
+(files.alkamelcloud.com), ELMS (elms.alkamelsystems.com) and IMSA (imsa.results.alkamelcloud.com). The timing data belongs to
+Al Kamel Systems and the championship organisers (ACO / FIA WEC, ELMS, IMSA); no licence for redistribution is published.
+- Use: internal analysis only (lap simulator calibration and gates). The raw files are **not** in git and **not** on the site:
+  they live in the draft release `data-alkamel-full-laps` (repository collaborators only).
+- Committed: `scripts/sim/data/learn/alkamel-full-laps-manifest.json` (source URL, fetch date, Last-Modified, SHA-256, rows,
+  columns, laps per car per file) and derived tables with a source line.
+- Fetching: robots.txt is read per host; one request at a time, 1.5 s apart; files already stored are not fetched again.
