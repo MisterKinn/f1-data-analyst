@@ -1,0 +1,916 @@
+{
+ "prereg": "Project claude/gate-i4-covariates-prereg-2026-11-23.md (attempt 1)",
+ "run": "2026-11-23T00:51:04.727Z",
+ "calibration": "2026-11-21",
+ "testA": {
+  "nTracks": 26,
+  "nRows": 40,
+  "base": {
+   "n": 40,
+   "rmsPct": 2.999,
+   "medAbsPct": 2.363
+  },
+  "model": {
+   "n": 40,
+   "rmsPct": 3.05,
+   "medAbsPct": 2.719
+  },
+  "gripOne": {
+   "n": 40,
+   "rmsPct": 2.902,
+   "medAbsPct": 2.344
+  },
+  "meanGainPct2": -0.496,
+  "ci90": [
+   -2.923,
+   1.521
+  ],
+  "p": 0.6103,
+  "rmsGainPp": -0.051,
+  "pass": false
+ },
+ "testB": {
+  "nTracks": 26,
+  "nRows": 39,
+  "base": {
+   "n": 39,
+   "rmsPct": 3.003,
+   "medAbsPct": 2.272
+  },
+  "model": {
+   "n": 39,
+   "rmsPct": 3.108,
+   "medAbsPct": 2.833
+  },
+  "meanGainPct2": -1.219,
+  "ci90": [
+   -3.508,
+   0.528
+  ],
+  "p": 0.7803,
+  "rmsGainPp": -0.105,
+  "pass": false
+ },
+ "fullFit": {
+  "nTracks": 26,
+  "tau": 0.06500000000000002,
+  "sdLnGrip": 0.0692,
+  "residSd": 0.0614,
+  "beta": {
+   "surfaceAge": {
+    "per1sd": -0.02119284034261756,
+    "lo90": -0.042150787509937615,
+    "hi90": -0.00023489317529750559
+   },
+   "street": {
+    "per1sd": -0.0010368945484465705,
+    "lo90": -0.022474240169527152,
+    "hi90": 0.020400451072634013
+   },
+   "softness": {
+    "per1sd": 0.009408789182052596,
+    "lo90": -0.012515538131832902,
+    "hi90": 0.03133311649593809
+   },
+   "evolution60": {
+    "per1sd": -0.018532869586998145,
+    "lo90": -0.038383631859011474,
+    "hi90": 0.0013178926850151845
+   }
+  }
+ },
+ "rowsA": [
+  {
+   "track": "melbourne",
+   "season": 2025,
+   "grip": 1.0836,
+   "gripBase": 1.0053,
+   "gripModel": 1.0265,
+   "eBase": 3.2411846170235394,
+   "eModel": 2.4994673484606307,
+   "eOne": 3.4302759134973813
+  },
+  {
+   "track": "shanghai",
+   "season": 2025,
+   "grip": 1.0582,
+   "gripBase": 1.0064,
+   "gripModel": 1.0122,
+   "eBase": 4.552023918535751,
+   "eModel": 4.308204896238994,
+   "eOne": 4.842179587603839
+  },
+  {
+   "track": "suzuka",
+   "season": 2025,
+   "grip": 1.0242,
+   "gripBase": 1.008,
+   "gripModel": 1.0017,
+   "eBase": 2.0969614752307897,
+   "eModel": 2.3521837600450572,
+   "eOne": 2.424611705735597
+  },
+  {
+   "track": "sakhir",
+   "season": 2025,
+   "grip": 0.9145,
+   "gripBase": 1.0135,
+   "gripModel": 0.9742,
+   "eBase": -4.002626863013535,
+   "eModel": -2.6825168909517894,
+   "eOne": -3.5640743090571103
+  },
+  {
+   "track": "jeddah",
+   "season": 2025,
+   "grip": 1.1889,
+   "gripBase": 1.0009,
+   "gripModel": 1.0274,
+   "eBase": 6.588081655096575,
+   "eModel": 5.665910600957697,
+   "eOne": 6.620157170023153
+  },
+  {
+   "track": "miami",
+   "season": 2025,
+   "grip": 0.9402,
+   "gripBase": 1.0121,
+   "gripModel": 1.0478,
+   "eBase": -1.8583824416500279,
+   "eModel": -2.8745765857732755,
+   "eOne": -1.4836898519790225
+  },
+  {
+   "track": "imola",
+   "season": 2025,
+   "grip": 1.1505,
+   "gripBase": 1.0024,
+   "gripModel": 1.0235,
+   "eBase": 4.428820141957951,
+   "eModel": 3.73108343377528,
+   "eOne": 4.511852149457614
+  },
+  {
+   "track": "monte-carlo",
+   "season": 2025,
+   "grip": 0.9431,
+   "gripBase": 1.012,
+   "gripModel": 1.0206,
+   "eBase": -2.9748120193269707,
+   "eModel": -3.3650684735683436,
+   "eOne": -2.4130142665179806
+  },
+  {
+   "track": "catalunya",
+   "season": 2025,
+   "grip": 1.0039,
+   "gripBase": 1.009,
+   "gripModel": 0.9914,
+   "eBase": -0.7393844519609909,
+   "eModel": 0.009783915243327076,
+   "eOne": -0.3592094596483451
+  },
+  {
+   "track": "montreal",
+   "season": 2025,
+   "grip": 0.9956,
+   "gripBase": 1.0094,
+   "gripModel": 1.0369,
+   "eBase": -0.41608485310089244,
+   "eModel": -1.2524859306901441,
+   "eOne": -0.11847839884907146
+  },
+  {
+   "track": "spielberg",
+   "season": 2025,
+   "grip": 1.0325,
+   "gripBase": 1.0076,
+   "gripModel": 0.9833,
+   "eBase": 0.017195291616518088,
+   "eModel": 0.9144768723327772,
+   "eOne": 0.29231995748074086
+  },
+  {
+   "track": "silverstone",
+   "season": 2025,
+   "grip": 0.9262,
+   "gripBase": 1.0129,
+   "gripModel": 1.0411,
+   "eBase": -2.868350374593604,
+   "eModel": -3.687037647834891,
+   "eOne": -2.4701974273194107
+  },
+  {
+   "track": "spa-francorchamps",
+   "season": 2025,
+   "grip": 1.0167,
+   "gripBase": 1.0084,
+   "gripModel": 0.9976,
+   "eBase": 1.2101986833992948,
+   "eModel": 1.526421511107586,
+   "eOne": 1.4528350669238863
+  },
+  {
+   "track": "hungaroring",
+   "season": 2025,
+   "grip": 0.9498,
+   "gripBase": 1.0116,
+   "gripModel": 1.0136,
+   "eBase": -4.350421907339591,
+   "eModel": -4.437987581595286,
+   "eOne": -3.8130870880432988
+  },
+  {
+   "track": "zandvoort",
+   "season": 2025,
+   "grip": 1.062,
+   "gripBase": 1.0063,
+   "gripModel": 0.934,
+   "eBase": 1.9282863883953247,
+   "eModel": 5.656695115201983,
+   "eOne": 2.2253939588127225
+  },
+  {
+   "track": "monza",
+   "season": 2025,
+   "grip": 1.0162,
+   "gripBase": 1.0084,
+   "gripModel": 1.0609,
+   "eBase": 0.8706467661691631,
+   "eModel": -0.44293836937760656,
+   "eOne": 1.0864047111381796
+  },
+  {
+   "track": "singapore",
+   "season": 2025,
+   "grip": 0.9439,
+   "gripBase": 1.0119,
+   "gripModel": 1.0121,
+   "eBase": -3.226855694385243,
+   "eModel": -3.2324637160995144,
+   "eOne": -2.75802507907311
+  },
+  {
+   "track": "austin",
+   "season": 2025,
+   "grip": 0.9851,
+   "gripBase": 1.0099,
+   "gripModel": 0.969,
+   "eBase": -1.1641984650308208,
+   "eModel": 0.509134147659701,
+   "eOne": -0.7847800237812272
+  },
+  {
+   "track": "mexico-city",
+   "season": 2025,
+   "grip": 0.9098,
+   "gripBase": 1.0137,
+   "gripModel": 1.0004,
+   "eBase": -4.811737623369408,
+   "eModel": -4.287831079829598,
+   "eOne": -4.26930913132062
+  },
+  {
+   "track": "interlagos",
+   "season": 2025,
+   "grip": 0.9479,
+   "gripBase": 1.0117,
+   "gripModel": 1.0477,
+   "eBase": -2.6758354792766608,
+   "eModel": -3.8885931723036684,
+   "eOne": -2.261512566356408
+  },
+  {
+   "track": "lusail",
+   "season": 2025,
+   "grip": 1.0796,
+   "gripBase": 1.0055,
+   "gripModel": 1.0109,
+   "eBase": 3.3292604582614294,
+   "eModel": 3.064733520601601,
+   "eOne": 3.598826004257623
+  },
+  {
+   "track": "yas-marina-circuit",
+   "season": 2025,
+   "grip": 1.0782,
+   "gripBase": 1.0056,
+   "gripModel": 0.9709,
+   "eBase": 2.080114832070272,
+   "eModel": 3.352512559757685,
+   "eOne": 2.275961901054666
+  },
+  {
+   "track": "melbourne",
+   "season": 2026,
+   "grip": 1.0836,
+   "gripBase": 0.9897,
+   "gripModel": 1.0225,
+   "eBase": 3.32535214855193,
+   "eModel": 2.447846353702332,
+   "eOne": 3.153417050867316
+  },
+  {
+   "track": "shanghai",
+   "season": 2026,
+   "grip": 1.0582,
+   "gripBase": 0.9911,
+   "gripModel": 1.0084,
+   "eBase": 4.783628779979156,
+   "eModel": 4.151459854014602,
+   "eOne": 4.431699687174154
+  },
+  {
+   "track": "suzuka",
+   "season": 2026,
+   "grip": 1.0242,
+   "gripBase": 0.993,
+   "gripModel": 1.0302,
+   "eBase": 5.212402891912525,
+   "eModel": 3.923615788764656,
+   "eOne": 4.980017064080119
+  },
+  {
+   "track": "miami",
+   "season": 2026,
+   "grip": 0.9402,
+   "gripBase": 0.998,
+   "gripModel": 1.0429,
+   "eBase": -0.7050274493724228,
+   "eModel": -1.954486434770733,
+   "eOne": -0.7642543110321494
+  },
+  {
+   "track": "monte-carlo",
+   "season": 2026,
+   "grip": 0.9431,
+   "gripBase": 0.9978,
+   "gripModel": 1.007,
+   "eBase": -3.891687832229951,
+   "eModel": -4.2747498299815385,
+   "eOne": -3.9819017085120256
+  },
+  {
+   "track": "catalunya",
+   "season": 2026,
+   "grip": 1.0039,
+   "gripBase": 0.9942,
+   "gripModel": 0.9981,
+   "eBase": 0.435195972093899,
+   "eModel": 0.218267518311703,
+   "eOne": 0.21023313113458464
+  },
+  {
+   "track": "spielberg",
+   "season": 2026,
+   "grip": 1.0325,
+   "gripBase": 0.9925,
+   "gripModel": 0.979,
+   "eBase": 0.5672106847367386,
+   "eModel": 1.011903861570337,
+   "eOne": 0.37662789466518726
+  },
+  {
+   "track": "silverstone",
+   "season": 2026,
+   "grip": 0.9262,
+   "gripBase": 0.9989,
+   "gripModel": 1.0304,
+   "eBase": -2.6296376161886794,
+   "eModel": -3.4887811964453905,
+   "eOne": -2.6296376161886794
+  },
+  {
+   "track": "spa-francorchamps",
+   "season": 2026,
+   "grip": 1.0167,
+   "gripBase": 0.9934,
+   "gripModel": 1.0012,
+   "eBase": 1.7266986709594505,
+   "eModel": 1.619378886748879,
+   "eOne": 1.5312233497187637
+  },
+  {
+   "track": "hungaroring",
+   "season": 2026,
+   "grip": 0.9498,
+   "gripBase": 0.9974,
+   "gripModel": 1.0096,
+   "eBase": -2.0723509526338213,
+   "eModel": -2.6500187806804987,
+   "eOne": -2.2355485901537415
+  },
+  {
+   "track": "monza",
+   "season": 2026,
+   "grip": 1.0162,
+   "gripBase": 0.9934,
+   "gripModel": 1.0561,
+   "eBase": 0.9145819577922755,
+   "eModel": -0.3668109456386144,
+   "eOne": 0.7054997187782728
+  },
+  {
+   "track": "madring",
+   "season": 2026,
+   "grip": 1.0878,
+   "gripBase": 0.9895,
+   "gripModel": 0.9979,
+   "eBase": 3.0602021258058922,
+   "eModel": 2.7552709531277237,
+   "eOne": 2.5832026485450426
+  },
+  {
+   "track": "baku",
+   "season": 2026,
+   "grip": 1.0599,
+   "gripBase": 0.991,
+   "gripModel": 1.0187,
+   "eBase": 1.738095702553495,
+   "eModel": 0.8329594444336064,
+   "eOne": 1.4035464174941061
+  },
+  {
+   "track": "kuala-lumpur",
+   "season": 2026,
+   "grip": 0.9758,
+   "gripBase": 0.9958,
+   "gripModel": 0.9981,
+   "eBase": -1.7365710080941732,
+   "eModel": -1.8721749185325407,
+   "eOne": -1.8805844633659072
+  },
+  {
+   "track": "singapore",
+   "season": 2026,
+   "grip": 0.9439,
+   "gripBase": 0.9978,
+   "gripModel": 1.0121,
+   "eBase": -2.997603230713673,
+   "eModel": -3.4463134624013665,
+   "eOne": -3.05122957547634
+  },
+  {
+   "track": "austin",
+   "season": 2026,
+   "grip": 0.9851,
+   "gripBase": 0.9953,
+   "gripModel": 0.9683,
+   "eBase": 0.16908597862498648,
+   "eModel": 1.1559525708512823,
+   "eOne": -0.022332110384417063
+  },
+  {
+   "track": "mexico-city",
+   "season": 2026,
+   "grip": 0.9098,
+   "gripBase": 0.9999,
+   "gripModel": 1.0012,
+   "eBase": -4.972946127506068,
+   "eModel": -5.022610241263042,
+   "eOne": -4.975560028230131
+  },
+  {
+   "track": "las-vegas",
+   "season": 2026,
+   "grip": 0.9731,
+   "gripBase": 0.996,
+   "gripModel": 1.0039,
+   "eBase": 0.25454506725741466,
+   "eModel": 0.0351463900397274,
+   "eOne": 0.21620355085043927
+  }
+ ],
+ "rowsB": [
+  {
+   "track": "shanghai",
+   "season": 2025,
+   "date": "2025-03-21",
+   "nTrain": 1,
+   "grip": 1.0582,
+   "gripBase": 1.0836,
+   "gripModel": 1.0836,
+   "eBase": 1.8545691243476985,
+   "eModel": 1.8545691243476985
+  },
+  {
+   "track": "suzuka",
+   "season": 2025,
+   "date": "2025-04-04",
+   "nTrain": 2,
+   "grip": 1.0242,
+   "gripBase": 1.0708,
+   "gripModel": 1.0708,
+   "eBase": -0.6392053619672943,
+   "eModel": -0.6392053619672943
+  },
+  {
+   "track": "sakhir",
+   "season": 2025,
+   "date": "2025-04-11",
+   "nTrain": 3,
+   "grip": 0.9145,
+   "gripBase": 1.0551,
+   "gripModel": 1.0551,
+   "eBase": -5.58319698133368,
+   "eModel": -5.58319698133368
+  },
+  {
+   "track": "jeddah",
+   "season": 2025,
+   "date": "2025-04-18",
+   "nTrain": 4,
+   "grip": 1.1889,
+   "gripBase": 1.018,
+   "gripModel": 1.018,
+   "eBase": 5.77473824088713,
+   "eModel": 5.77473824088713
+  },
+  {
+   "track": "miami",
+   "season": 2025,
+   "date": "2025-05-02",
+   "nTrain": 5,
+   "grip": 0.9402,
+   "gripBase": 1.0501,
+   "gripModel": 1.0501,
+   "eBase": -3.1785067978284016,
+   "eModel": -3.1785067978284016
+  },
+  {
+   "track": "imola",
+   "season": 2025,
+   "date": "2025-05-16",
+   "nTrain": 6,
+   "grip": 1.1505,
+   "gripBase": 1.0309,
+   "gripModel": 1.0309,
+   "eBase": 3.2944957814383202,
+   "eModel": 3.2944957814383202
+  },
+  {
+   "track": "monte-carlo",
+   "season": 2025,
+   "date": "2025-05-23",
+   "nTrain": 7,
+   "grip": 0.9431,
+   "gripBase": 1.0472,
+   "gripModel": 1.0472,
+   "eBase": -4.580152671755716,
+   "eModel": -4.580152671755716
+  },
+  {
+   "track": "catalunya",
+   "season": 2025,
+   "date": "2025-05-30",
+   "nTrain": 8,
+   "grip": 1.0039,
+   "gripBase": 1.0336,
+   "gripModel": 0.9991,
+   "eBase": -1.812819724373146,
+   "eModel": -0.374584183602159
+  },
+  {
+   "track": "montreal",
+   "season": 2025,
+   "date": "2025-06-13",
+   "nTrain": 9,
+   "grip": 0.9956,
+   "gripBase": 1.0303,
+   "gripModel": 0.9799,
+   "eBase": -1.0663055896416032,
+   "eModel": 0.5204586806584011
+  },
+  {
+   "track": "spielberg",
+   "season": 2025,
+   "date": "2025-06-27",
+   "nTrain": 10,
+   "grip": 1.0325,
+   "gripBase": 1.0267,
+   "gripModel": 0.9645,
+   "eBase": -0.6440418314548766,
+   "eModel": 1.649184786856544
+  },
+  {
+   "track": "silverstone",
+   "season": 2025,
+   "date": "2025-07-04",
+   "nTrain": 11,
+   "grip": 0.9262,
+   "gripBase": 1.0273,
+   "gripModel": 1.0758,
+   "eBase": -3.218206662583046,
+   "eModel": -4.545775809263529
+  },
+  {
+   "track": "spa-francorchamps",
+   "season": 2025,
+   "date": "2025-07-25",
+   "nTrain": 12,
+   "grip": 1.0167,
+   "gripBase": 1.0184,
+   "gripModel": 1.0001,
+   "eBase": 0.969551122690488,
+   "eModel": 1.4906227004236285
+  },
+  {
+   "track": "hungaroring",
+   "season": 2025,
+   "date": "2025-08-01",
+   "nTrain": 13,
+   "grip": 0.9498,
+   "gripBase": 1.0183,
+   "gripModel": 1.0137,
+   "eBase": -4.626386456509041,
+   "eModel": -4.426046807833146
+  },
+  {
+   "track": "zandvoort",
+   "season": 2025,
+   "date": "2025-08-29",
+   "nTrain": 14,
+   "grip": 1.062,
+   "gripBase": 1.0132,
+   "gripModel": 0.9351,
+   "eBase": 1.6588506014971829,
+   "eModel": 5.623197693047085
+  },
+  {
+   "track": "monza",
+   "season": 2025,
+   "date": "2025-09-05",
+   "nTrain": 15,
+   "grip": 1.0162,
+   "gripBase": 1.0164,
+   "gripModel": 1.0683,
+   "eBase": 0.7158087115443102,
+   "eModel": -0.5571631637729629
+  },
+  {
+   "track": "singapore",
+   "season": 2025,
+   "date": "2025-10-03",
+   "nTrain": 16,
+   "grip": 0.9439,
+   "gripBase": 1.0164,
+   "gripModel": 0.9804,
+   "eBase": -3.37715067632743,
+   "eModel": -1.9515915565625015
+  },
+  {
+   "track": "austin",
+   "season": 2025,
+   "date": "2025-10-17",
+   "nTrain": 17,
+   "grip": 0.9851,
+   "gripBase": 1.012,
+   "gripModel": 0.9682,
+   "eBase": -1.2344611393362988,
+   "eModel": 0.5512917522430063
+  },
+  {
+   "track": "mexico-city",
+   "season": 2025,
+   "date": "2025-10-24",
+   "nTrain": 18,
+   "grip": 0.9098,
+   "gripBase": 1.0105,
+   "gripModel": 0.9934,
+   "eBase": -4.6754690021961824,
+   "eModel": -3.9967718889741497
+  },
+  {
+   "track": "interlagos",
+   "season": 2025,
+   "date": "2025-11-07",
+   "nTrain": 19,
+   "grip": 0.9479,
+   "gripBase": 1.0049,
+   "gripModel": 1.0441,
+   "eBase": -2.4255153860539957,
+   "eModel": -3.761994504466912
+  },
+  {
+   "track": "lusail",
+   "season": 2025,
+   "date": "2025-11-28",
+   "nTrain": 20,
+   "grip": 1.0796,
+   "gripBase": 1.002,
+   "gripModel": 1.0189,
+   "eBase": 3.516948618791492,
+   "eModel": 2.7082519808029093
+  },
+  {
+   "track": "yas-marina-circuit",
+   "season": 2025,
+   "date": "2025-12-05",
+   "nTrain": 21,
+   "grip": 1.0782,
+   "gripBase": 1.0056,
+   "gripModel": 0.9708,
+   "eBase": 2.080114832070272,
+   "eModel": 3.356161884024493
+  },
+  {
+   "track": "melbourne",
+   "season": 2026,
+   "date": "2026-03-06",
+   "nTrain": 21,
+   "grip": 1.0836,
+   "gripBase": 1.0053,
+   "gripModel": 1.0046,
+   "eBase": 3.1368603377569393,
+   "eModel": 3.105020504852394
+  },
+  {
+   "track": "shanghai",
+   "season": 2026,
+   "date": "2026-03-13",
+   "nTrain": 21,
+   "grip": 1.0582,
+   "gripBase": 1.0064,
+   "gripModel": 1.0057,
+   "eBase": 4.277459158846039,
+   "eModel": 4.28832116788322
+  },
+  {
+   "track": "suzuka",
+   "season": 2026,
+   "date": "2026-03-27",
+   "nTrain": 21,
+   "grip": 1.0242,
+   "gripBase": 1.008,
+   "gripModel": 1.0252,
+   "eBase": 4.807130989267605,
+   "eModel": 4.268265301540266
+  },
+  {
+   "track": "miami",
+   "season": 2026,
+   "date": "2026-05-01",
+   "nTrain": 21,
+   "grip": 0.9402,
+   "gripBase": 1.0121,
+   "gripModel": 1.0323,
+   "eBase": -0.8417048224333177,
+   "eModel": -1.4373903733570246
+  },
+  {
+   "track": "monte-carlo",
+   "season": 2026,
+   "date": "2026-06-05",
+   "nTrain": 21,
+   "grip": 0.9431,
+   "gripBase": 1.012,
+   "gripModel": 0.9999,
+   "eBase": -4.428807372555554,
+   "eModel": -3.9166701364311427
+  },
+  {
+   "track": "catalunya",
+   "season": 2026,
+   "date": "2026-06-12",
+   "nTrain": 21,
+   "grip": 1.0039,
+   "gripBase": 1.009,
+   "gripModel": 0.9987,
+   "eBase": -0.0977517106549465,
+   "eModel": 0.34949584220463004
+  },
+  {
+   "track": "spielberg",
+   "season": 2026,
+   "date": "2026-06-26",
+   "nTrain": 21,
+   "grip": 1.0325,
+   "gripBase": 1.0076,
+   "gripModel": 0.9828,
+   "eBase": 0.14218081164066687,
+   "eModel": 0.9468637030538695
+  },
+  {
+   "track": "silverstone",
+   "season": 2026,
+   "date": "2026-07-03",
+   "nTrain": 21,
+   "grip": 0.9262,
+   "gripBase": 1.0129,
+   "gripModel": 1.0255,
+   "eBase": -2.853219234828791,
+   "eModel": -3.157381030745306
+  },
+  {
+   "track": "spa-francorchamps",
+   "season": 2026,
+   "date": "2026-07-17",
+   "nTrain": 21,
+   "grip": 1.0167,
+   "gripBase": 1.0084,
+   "gripModel": 1.0004,
+   "eBase": 1.3213748430927308,
+   "eModel": 1.775567501269626
+  },
+  {
+   "track": "hungaroring",
+   "season": 2026,
+   "date": "2026-07-24",
+   "nTrain": 21,
+   "grip": 0.9498,
+   "gripBase": 1.0116,
+   "gripModel": 1.0162,
+   "eBase": -2.6422474646081215,
+   "eModel": -2.8326447083813617
+  },
+  {
+   "track": "monza",
+   "season": 2026,
+   "date": "2026-09-04",
+   "nTrain": 21,
+   "grip": 1.0162,
+   "gripBase": 1.0084,
+   "gripModel": 1.0572,
+   "eBase": 0.7935343457315444,
+   "eModel": -0.1919643948842057
+  },
+  {
+   "track": "madring",
+   "season": 2026,
+   "date": "2026-09-11",
+   "nTrain": 22,
+   "grip": 1.0878,
+   "gripBase": 1.0087,
+   "gripModel": 0.997,
+   "eBase": 2.271737236452342,
+   "eModel": 2.8859557414183565
+  },
+  {
+   "track": "baku",
+   "season": 2026,
+   "date": "2026-09-24",
+   "nTrain": 23,
+   "grip": 1.0599,
+   "gripBase": 1.0121,
+   "gripModel": 1.0208,
+   "eBase": 1.2494391666504165,
+   "eModel": 0.9148898815910134
+  },
+  {
+   "track": "kuala-lumpur",
+   "season": 2026,
+   "date": "2026-10-02",
+   "nTrain": 24,
+   "grip": 0.9758,
+   "gripBase": 1.014,
+   "gripModel": 0.9992,
+   "eBase": -2.261116367076628,
+   "eModel": -1.7418269736150496
+  },
+  {
+   "track": "singapore",
+   "season": 2026,
+   "date": "2026-10-09",
+   "nTrain": 24,
+   "grip": 0.9439,
+   "gripBase": 1.0154,
+   "gripModel": 1.0153,
+   "eBase": -3.45397436879604,
+   "eModel": -3.474768257581558
+  },
+  {
+   "track": "austin",
+   "season": 2026,
+   "date": "2026-10-23",
+   "nTrain": 24,
+   "grip": 0.9851,
+   "gripBase": 1.0136,
+   "gripModel": 0.9689,
+   "eBase": -0.22651140532779696,
+   "eModel": 1.1548891370234622
+  },
+  {
+   "track": "mexico-city",
+   "season": 2026,
+   "date": "2026-10-30",
+   "nTrain": 24,
+   "grip": 0.9098,
+   "gripBase": 1.017,
+   "gripModel": 1.0014,
+   "eBase": -5.506181875212372,
+   "eModel": -4.959876623885828
+  },
+  {
+   "track": "las-vegas",
+   "season": 2026,
+   "date": "2026-11-19",
+   "nTrain": 25,
+   "grip": 0.9731,
+   "gripBase": 1.0125,
+   "gripModel": 1.0039,
+   "eBase": -0.11715463346575296,
+   "eModel": 0.1405855601589096
+  }
+ ],
+ "verdict": "these covariates do not explain the grip factor beyond noise"
+}
