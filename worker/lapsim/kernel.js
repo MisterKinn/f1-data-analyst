@@ -170,8 +170,9 @@ export function lapsimKernel() {
   }
   // Kernel step (pre-registration claude/gate-kernel-step1-prereg-2026-11-23.md): 1 = one explicit step per point (today);
   // 2 = Heun on v², substeps where the rate changes fast, event points inside a step, exact per-step energy and time account.
-  // opts.kernelStep, else env LAPSIM_KERNEL_STEP (Node), else 1.
-  const STEP_DEFAULT = 1, stepOf = opts => opts.kernelStep ?? (+(globalThis.process?.env?.LAPSIM_KERNEL_STEP) || STEP_DEFAULT);
+  // opts.kernelStep, else env LAPSIM_KERNEL_STEP (Node), else 2 (step-1 gate attempt 2 passed, 2026-11-23). Until step 10b (strategy B)
+  // merges, the 2026 cut-off / super-clip search does not start with exact accounting.
+  const STEP_DEFAULT = 2, stepOf = opts => opts.kernelStep ?? (+(globalThis.process?.env?.LAPSIM_KERNEL_STEP) || STEP_DEFAULT);
   function simulateLapRaw(track, car, env = {}, opts = {}, prev = null) {
     const n = track.kappa.length, ds = track.ds, STEP = stepOf(opts);
     const rho = env.rho ?? RHO_REF;
@@ -460,8 +461,8 @@ export function lapsimKernel() {
       return (fDrive - drag - roll) / (t.m * t.inertia) - G * sinG[i];
     };
     // braking power at the wheels from w0 to w1 over len metres, and the DC power recovered (the step-1 formula)
-    const regenP = (w0, w1, len) => { const vm = 0.5 * (Math.sqrt(w0) + Math.sqrt(w1)), pB = t.m * (w0 - w1) / (2 * len) * vm;
-      return law && law.regen ? regenLaw(pB, vm, 0) : Math.min(ers.regenMax, (ers.regenShare ?? 0.6) * pB * etaRegen); };
+    const regenP = (w0, w1, len, i) => { const vm = 0.5 * (Math.sqrt(w0) + Math.sqrt(w1)), pB = t.m * (w0 - w1) / (2 * len) * vm;
+      return law && law.regen ? regenLaw(pB, vm, i) : Math.min(ers.regenMax, (ers.regenShare ?? 0.6) * pB * etaRegen); };
     // step state read by the rate functions below (one set of closures for the whole lap, no allocation per step)
     let sI = 0, sJ = 0, sMode = 0, sAl = 0, sHy = false, sVi = 0, sVH = Infinity, sCd = -1;
     const clipOf = () => { if (sCd < 0) sCd = sVi > sVH ? (sVi < vhHi && (vhHi = sVi), 1) : (sVi > vhLo && (vhLo = sVi), 0); return sCd === 1; };
@@ -533,7 +534,7 @@ export function lapsimKernel() {
               dt += tq;
               if (vB > vA + 1e-6 * (fb - fa)) dep += (e1 + (e2 - e1) * fm) * tq;
               if (vB >= vA - 1e-6 * (fb - fa)) thr += (h1 + (h2 - h1) * fm) * tq;
-              else if (ers.regenMax) brk += regenP(wA, wB, len) * tq;
+              else if (ers.regenMax) brk += regenP(wA, wB, len, i) * tq;
               wA = wB; fa = fb;
             }
           } else {
@@ -557,7 +558,7 @@ export function lapsimKernel() {
               if (vj > vi + 1e-6) dep = 0.5 * (e1 + e2) * dt;
               if (throttleHarvest && vj >= vi - 1e-6) thr = 0.5 * (h1 + h2) * dt;
             }
-            if (vj < vi - 1e-6 && ers.regenMax) brk = regenP(wi, vj * vj, ds) * dt;
+            if (vj < vi - 1e-6 && ers.regenMax) brk = regenP(wi, vj * vj, ds, i) * dt;
           }
           if (!throttleHarvest) thr = 0;
           let rpNew = null;

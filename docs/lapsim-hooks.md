@@ -10,7 +10,7 @@ A lap with `env.gripHook`, `env.windAt` or `car.ers.law` is never taken from the
 
 | Setting | Values | Default |
 |---|---|---|
-| `opts.kernelStep` (4th argument of `simulateLap`), else env `LAPSIM_KERNEL_STEP` (Node only) | `1` one explicit step per track point (until 2026-11-23); `2` converged step | `1` until the step-1 gate passes |
+| `opts.kernelStep` (4th argument of `simulateLap`), else env `LAPSIM_KERNEL_STEP` (Node only) | `1` one explicit step per track point (until 2026-11-23); `2` converged step | `2` since the step-1 gate passed (attempt 2, 2026-11-23); `LAPSIM_KERNEL_STEP=1` gives the old kernel |
 
 Step 2 (`simulateLapRaw`, `forward2`, backward pass with `heun`):
 - Heun (second order) on w = v² in both passes, the rate at both ends of each track step; up to 8 substeps where the rate changes by
@@ -23,7 +23,8 @@ Step 2 (`simulateLapRaw`, `forward2`, backward pass with `heun`):
   open, or any throttle-harvest step).
 - Per-step time and energy are stored; the lap account, the flow arrays and the battery tracking are the same numbers.
 - A C5.12 cut is a drop of more than 200 W per metre (1 kW per 5 m step, the step-1 threshold at the production grid).
-- A causal 2026 lap overspends only by rounding: 1 J is not an overspend (see "Report to step 10a" in the status doc).
+- A causal 2026 lap overspends only by rounding: 1 J is not an overspend. So the 2026 cut-off/super-clip search does not start with
+  exact accounting until step 10b (strategy B) merges; the page does not claim a super-clip plan meanwhile.
 
 Pass checks (`tests/lapsim-mesh.test.mjs`): the lap changes by less than 0.03 % when ds halves (8 tracks × 8 rule sets); skidpad
 v = √(μgR) within 1e-4; terminal speed on a 20 km straight within 1e-3; energy ledger closes per lap.

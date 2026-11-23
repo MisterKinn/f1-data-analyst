@@ -1,20 +1,7 @@
 # Regulation values used by the lap simulator
 
-Checked 2026-11-07 18:07 UTC.
-Changes in this check:
-- f1-2027 fuelFlowMJh: none → 3150 (C5.2.3, FIA 2027 F1 Regulations - Section C [Technical] - Iss 04 - 2026-10-19)
-- f1-2027 ersAbsKW: none → 375 (C5.2.7, FIA 2027 F1 Regulations - Section C [Technical] - Iss 04 - 2026-10-19)
-- f1-2027 qualiDeployKW: none → 300 (C5.2.8, FIA 2027 F1 Regulations - Section C [Technical] - Iss 04 - 2026-10-19)
-- f1-2027 socMJ: none → 4.5 (C5.2.9, FIA 2027 F1 Regulations - Section C [Technical] - Iss 04 - 2026-10-19)
-- f1-2027 rechargeMJ: none → 8.5 (C5.2.10, FIA 2027 F1 Regulations - Section C [Technical] - Iss 04 - 2026-10-19)
-- f1-2028 fuelFlowMJh: 3150 → 3400 (C5.2.3, FIA 2027 F1 Regulations - Section C [Technical] - Iss 04 - 2026-10-19)
-- f1-2028 ersAbsKW: 375 → 400 (C5.2.7, FIA 2027 F1 Regulations - Section C [Technical] - Iss 04 - 2026-10-19)
-- f1-2028 socMJ: 4.5 → 5 (C5.2.9, FIA 2027 F1 Regulations - Section C [Technical] - Iss 04 - 2026-10-19)
-- fe-gen4 dischargeKW: none → 600 (7.5, FIA Formula E World Championship - Technical Regulations 2026-2027 V4)
-- fe-gen4 rearDischargeKW: none → 350 (7.5, FIA Formula E World Championship - Technical Regulations 2026-2027 V4)
-- fe-gen4 frontDischargeKW: none → 250 (7.5, FIA Formula E World Championship - Technical Regulations 2026-2027 V4)
-- fe-gen4 regenKW: none → 700 (7.5, FIA Formula E World Championship - Technical Regulations 2026-2027 V4)
-- fe-gen4 minMassKg: none → 1046 (5.1, FIA Formula E World Championship - Technical Regulations 2026-2027 V4)
+Checked 2026-11-23 10:02 UTC.
+No value changed in this check.
 
 
 ## f1-2027

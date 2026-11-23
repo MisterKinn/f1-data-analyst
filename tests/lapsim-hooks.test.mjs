@@ -29,6 +29,8 @@ for (const kernelStep of [1, 2]) {
     const base = K.simulateLap(track, car26, {}, o), withLaw = K.simulateLap(track, {...car26, ers: {...car26.ers, law}}, {}, o);
     assert.ok(Math.abs(withLaw.lapTime - base.lapTime) < 1e-6 * base.lapTime, `${withLaw.lapTime} vs ${base.lapTime}`);
     assert.ok(Math.abs(withLaw.energy.regenJ - base.energy.regenJ) < 1e-6 * base.energy.regenJ);
+    const seen = new Set(); K.simulateLap(track, {...car26, ers: {...car26.ers, law: {regen: c => { seen.add(c.i); return law.regen(c); }}}}, {}, o);
+    assert.ok(seen.size > 10 && Math.max(...seen) > 0, 'regen law sees the step\'s point');
     const none = K.simulateLap(track, {...car26, ers: {...car26.ers, law: {deploy: () => 0}}}, {}, o);
     assert.equal(none.energy.deployJ, 0); assert.ok(none.lapTime > base.lapTime);
   });
