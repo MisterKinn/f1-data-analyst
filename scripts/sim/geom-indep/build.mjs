@@ -17,6 +17,11 @@ export const SEEDS = {jeddah: [21.6319, 39.1044], shanghai: [31.3389, 121.2197],
 // FIA list of licensed circuits (2025-12-01 / 2026-03-31, scripts/sim/data/tracks/fia-circuits.json): official length and width
 export const FIA = {jeddah: {lengthM: 6176, widthM: 12}, shanghai: {lengthM: 5451, widthM: 13}, imola: {lengthM: 4909, widthM: 10}, suzuka: {lengthM: 5807, widthM: 10}};
 export const SET = {sigmaM: 8, ds: 5, carM: 1.2, matchM: 30, matchDeg: 40}; // declared in the pre-registration, never tuned
+// attempt 2 (claude/gate-independent-geometry-attempt2-prereg-2026-11-23.md): spline OSM, σ 3 m, TUM widths, 0.2 m kerb margin inside
+// corners, line at 2.5 m with a radius-scaled circle curvature. VARIANT=g1 rebuilds attempt 1 exactly.
+export const G2 = {sigmaM: 3, lineDs: 2.5, kerbM: 0.2, insideK: 1 / 150, tumM: 15};
+export const TUM = {shanghai: 'Shanghai', suzuka: 'Suzuka'};
+let VARIANT = 'g2'; export const setVariant = v => { VARIANT = v; };
 
 // ---- coordinates -------------------------------------------------------------------------------------------------------
 const A = 6378137, F = 1 / 298.257223563, E2 = F * (2 - F);
@@ -78,6 +83,14 @@ export function osmPoints(osm, P) {
     : osm.ways.map((w, k) => ({id: k, tags: w.tags || {}, g: w.g}));
   const pts = [];
   ways.forEach((w, wi) => { const q = w.g.map(([la, lo]) => P.fwd(la, lo));
+    if (VARIANT !== 'g1' && q.length > 2) { // centripetal Catmull-Rom through the nodes (G2 change 1)
+      const closed = Math.hypot(q[0][0] - q.at(-1)[0], q[0][1] - q.at(-1)[1]) < 0.5, at = j => closed ? q[((j % (q.length - 1)) + q.length - 1) % (q.length - 1)] : q[Math.max(0, Math.min(q.length - 1, j))];
+      for (let j = 0; j + 1 < q.length; j++) { const P0 = at(j - 1), P1 = q[j], P2 = q[j + 1], P3 = at(j + 2), d = (a, b) => Math.max(1e-3, Math.hypot(b[0] - a[0], b[1] - a[1]) ** 0.5);
+        const t1 = d(P0, P1), t2 = t1 + d(P1, P2), t3 = t2 + d(P2, P3), L = Math.hypot(P2[0] - P1[0], P2[1] - P1[1]), m = Math.max(1, Math.ceil(L / 0.5)), pt = [];
+        for (let k = 0; k <= m; k++) { const t = t1 + (t2 - t1) * k / m, lerp = (A, B, ta, tb) => [0, 1].map(c => ((tb - t) * A[c] + (t - ta) * B[c]) / (tb - ta));
+          const A1 = lerp(P0, P1, 0, t1), A2 = lerp(P1, P2, t1, t2), A3 = lerp(P2, P3, t2, t3), B1 = lerp(A1, A2, 0, t2), B2 = lerp(A2, A3, t1, t3); pt.push(lerp(B1, B2, t1, t2)); }
+        for (let k = 0; k < m; k++) pts.push({x: pt[k][0], y: pt[k][1], h: Math.atan2(pt[k + 1][1] - pt[k][1], pt[k + 1][0] - pt[k][0]), w: wi, seg: j, k}); }
+      return; }
     for (let j = 0; j + 1 < q.length; j++) { const [ax, ay] = q[j], [bx, by] = q[j + 1], L = Math.hypot(bx - ax, by - ay), m = Math.max(1, Math.ceil(L / 0.5)), h = Math.atan2(by - ay, bx - ax);
       for (let k = 0; k < m; k++) pts.push({x: ax + (bx - ax) * k / m, y: ay + (by - ay) * k / m, h, w: wi, seg: j, k}); } });
   return {ways, pts};
@@ -141,25 +154,54 @@ export function distanceMap(rx, ry, lx, ly, dsNew, dsOld) {
 export const mapDist = (sOld, dsOld, tbl, Lnew) => { const n = tbl.length, Lold = n * dsOld, s = wrap(sOld, Lold), f = s / dsOld, i = Math.floor(f), u = f - i, a = tbl[i % n], b = i + 1 < n ? tbl[i + 1] : tbl[0] + Lnew; return wrap(a + (b - a) * u, Lnew); };
 
 // ---- one track ------------------------------------------------------------------------------------------------------------
+// G2 change 4: curvature resolved on the 1 m line (see amendment B1 inside), one value per 5 m kernel station
+export function circleKappa(lt) {
+  // amendment B1 (before any lap number): the radius-scaled three-point circle over-counts the turn where the line bends sharply
+  // (Shanghai T14: lap −388° instead of −360°). The 5 m value is now the exact change of the 1 m tangent angle across the cell (the lap
+  // turn is kept to the degree), then 1-2-1 smoothed: no chord, so tight corners are not widened either.
+  const l1 = resampleClosed(lt.x, lt.y, 1), n = l1.x.length, X = l1.x, Y = l1.y, m = lt.kappa.length, f = n / m;
+  const th = new Float64Array(n + 1); for (let i = 0; i <= n; i++) { const a = Math.atan2(Y[(i + 1) % n] - Y[i % n], X[(i + 1) % n] - X[i % n]); th[i] = i ? th[i - 1] + Math.atan2(Math.sin(a - th[i - 1]), Math.cos(a - th[i - 1])) : a; }
+  const k = Float64Array.from({length: m}, (_, j) => { const a = Math.round((j - 0.5) * f), b = Math.round((j + 0.5) * f), T = i => th[wrap(i, n)] + Math.floor(i / n) * (th[n] - th[0]); return (T(b) - T(a)) / ((b - a) * l1.step); });
+  return Float64Array.from(k, (v, j) => (k[wrap(j - 1, m)] + 2 * v + k[(j + 1) % m]) / 4);
+}
 export const BAC = {jeddah: 'sa-2021', shanghai: 'cn-2004', imola: 'it-1953', suzuka: 'jp-1962'};
 // amendment A1 (before any lap number): the production line is registered on the bacinger/f1-circuits loop (MIT, traced from imagery,
 // one clean loop per circuit), not on all OSM ways: at Jeddah the karting, Formula E and pit-lane ways pulled the OSM fit 0.4–0.7° off
 // (residual 4–13 m, OSM ↔ bacinger agree to 1–3 m). Only correspondence and branch choice use it; no curvature comes from it.
-export function buildOne(id, osm, dem, dem30, bac) {
+export function buildOne(id, osm, dem, dem30, bac, tum = null) {
   const d = lapsimTracks[id], P = enu(SEEDS[id]), {ways, pts} = osmPoints(osm, P), n0 = d.kappa.length;
   const bf = bac.features.find(f => f.properties.id === BAC[id]), bp = osmPoints({ways: [{g: bf.geometry.coordinates.map(([lo, la]) => [la, lo])}]}, P).pts;
   const reg = register(d.map.x, d.map.y, bp);
   const c = centreFromOsm(reg.x, reg.y, pts);
   // centre line: 1 m, closed Gaussian σ 8 m, 5 m
-  const r1 = resampleClosed(c.x, c.y, 1), sx = gaussClosed(r1.x, SET.sigmaM / r1.step), sy = gaussClosed(r1.y, SET.sigmaM / r1.step), cl = resampleClosed(sx, sy, SET.ds);
-  const W = lapsimTrackWidths[id]?.m ?? FIA[id].widthM, half = new Array(cl.x.length).fill(W / 2 - SET.carM);
-  const mc = minCurvatureLine([...cl.x], [...cl.y], half);
+  const g2 = VARIANT !== 'g1', sig = g2 ? G2.sigmaM : SET.sigmaM;
+  const r1 = resampleClosed(c.x, c.y, 1), sx = gaussClosed(r1.x, sig / r1.step), sy = gaussClosed(r1.y, sig / r1.step), cl = resampleClosed(sx, sy, SET.ds);
+  const W = lapsimTrackWidths[id]?.m ?? FIA[id].widthM;
+  let half = new Array(cl.x.length).fill(W / 2 - SET.carM), right = null, widthNote = {source: lapsimTrackWidths[id] ? 'track-widths.js' : 'FIA list', widthM: W};
+  if (g2) { // G2 changes 2 and 3: per-station widths (TUM where it exists) and the kerb margin inside corners, on a 2.5 m centre line
+    const c2 = resampleClosed(sx, sy, G2.lineDs), n2 = c2.x.length, wl = new Array(n2).fill(W / 2), wr = new Array(n2).fill(W / 2);
+    if (tum) { const tr = register(tum.x, tum.y, [...c2.x].map((x, i) => ({x, y: c2.y[i]}))), near = grid2([...tr.x].map((x, i) => [x, tr.y[i]]), 10); let hit = 0, flip = 0, cnt = 0;
+      for (let i = 0; i < n2; i++) { let b = G2.tumM ** 2, bj = -1; for (const j of near(c2.x[i], c2.y[i], G2.tumM)) { const q = (tr.x[j] - c2.x[i]) ** 2 + (tr.y[j] - c2.y[i]) ** 2; if (q < b) { b = q; bj = j; } }
+        if (bj < 0) continue; const nt = tum.x.length, tx = tr.x[(bj + 1) % nt] - tr.x[bj], ty = tr.y[(bj + 1) % nt] - tr.y[bj], cx = c2.x[(i + 1) % n2] - c2.x[i], cy = c2.y[(i + 1) % n2] - c2.y[i];
+        // TUM columns are right / left of its own direction; a mirrored fit or a reversed direction swaps them
+        const same = (tx * cx + ty * cy > 0) !== tr.mirror; cnt++; if (!same) flip++; wl[i] = same ? tum.wl[bj] : tum.wr[bj]; wr[i] = same ? tum.wr[bj] : tum.wl[bj]; hit++; }
+      widthNote = {source: 'TUM racetrack-database (LGPL-3.0), per station', matched: +(hit / n2).toFixed(3), reversed: flip > cnt / 2, icpM: tr.trimmedMeanM, medianWidthM: +[...wl.map((v, i) => v + wr[i])].sort((a, b) => a - b)[n2 >> 1].toFixed(2)}; }
+    const kc = Float64Array.from({length: n2}, (_, i) => { const a = wrap(i - 4, n2), b = (i + 4) % n2, ax = c2.x[i] - c2.x[a], ay = c2.y[i] - c2.y[a], bx = c2.x[b] - c2.x[i], by = c2.y[b] - c2.y[i];
+      return 2 * (ax * by - ay * bx) / (Math.hypot(ax, ay) * Math.hypot(bx, by) * Math.hypot(c2.x[b] - c2.x[a], c2.y[b] - c2.y[a]) || 1); });
+    const ks = Float64Array.from(kc, (_, i) => { let t = 0; for (let k = -8; k <= 8; k++) t += kc[wrap(i + k, n2)]; return t / 17; }); // ±20 m
+    half = wl.map((v, i) => Math.max(0.5, v - (ks[i] > G2.insideK ? G2.kerbM : SET.carM))); right = wr.map((v, i) => Math.max(0.5, v - (ks[i] < -G2.insideK ? G2.kerbM : SET.carM)));
+    // amendment B2 (before any lap number): an offset larger than the centre-line radius folds the line into a cusp (Shanghai T14,
+    // lap turn −388°): the inside bound is kept under 0.8 × the local centre radius (±10 m curvature, not the ±20 m mean)
+    for (let i = 0; i < n2; i++) { const R = 1 / Math.max(1e-6, Math.abs(kc[i])); if (kc[i] > 0) half[i] = Math.min(half[i], 0.8 * R); else right[i] = Math.min(right[i], 0.8 * R); }
+    widthNote.kerbInsideShare = +(ks.filter(v => Math.abs(v) > G2.insideK).length / n2).toFixed(3);
+    cl.x2 = c2.x; cl.y2 = c2.y; }
+  const mc = g2 ? minCurvatureLine([...cl.x2], [...cl.y2], half, {right}) : minCurvatureLine([...cl.x], [...cl.y], half);
   // start line: the production start (station 0) projected on the least-curvature line
   let j0 = 0, bd = Infinity; mc.x.forEach((x, j) => { const q = (x - reg.x[0]) ** 2 + (mc.y[j] - reg.y[0]) ** 2; if (q < bd) { bd = q; j0 = j; } });
   const rot = a => [...a.slice(j0), ...a.slice(0, j0)], lx0 = rot(mc.x), ly0 = rot(mc.y);
   const lt = lineTrack(K, lx0, ly0, SET.ds), m = lt.kappa.length;
   // the production frame may be mirrored relative to ENU: kappa sign follows the production convention (counter-clockwise +)
-  const sgn = reg.mirror ? -1 : 1, kappa = Float64Array.from(lt.kappa, v => v * sgn);
+  const sgn = reg.mirror ? -1 : 1, kappa = Float64Array.from(g2 ? circleKappa(lt) : lt.kappa, v => v * sgn);
   // centre-line point and normal for every line station (for edges and the offset report)
   const cn = cl.x.length, cnear = grid2([...cl.x].map((x, j) => [x, cl.y[j]]), 10);
   const centreOf = (x, y) => { let best = Infinity, bj = 0; for (const j of cnear(x, y, 30)) { const q = (cl.x[j] - x) ** 2 + (cl.y[j] - y) ** 2; if (q < best) { best = q; bj = j; } } return bj; };
@@ -194,7 +236,7 @@ export function buildOne(id, osm, dem, dem30, bac) {
   const report = {id, seed: SEEDS[id], osmWays: ways.length, waysUsed: c.ways.length, registration: {rotDeg: reg.rotDeg, mirror: reg.mirror, trimmedMeanM: reg.trimmedMeanM},
     matchedShare: c.matchedShare, bridgedShare: c.bridgedShare, sourceIncomplete: c.bridgedShare > 0.05, backSteps: c.backSteps,
     centreLengthM: +cl.length.toFixed(1), officialLengthM: FIA[id].lengthM, centreVsOfficialPct: +((cl.length / FIA[id].lengthM - 1) * 100).toFixed(2), suspect: Math.abs(cl.length / FIA[id].lengthM - 1) > 0.015,
-    lineLengthM: +Lnew.toFixed(1), prodLengthM: +(n0 * d.ds).toFixed(1), widthM: W, widthSource: lapsimTrackWidths[id] ? 'track-widths.js' : 'FIA list',
+    lineLengthM: +Lnew.toFixed(1), prodLengthM: +(n0 * d.ds).toFixed(1), widthM: W, widthSource: lapsimTrackWidths[id] ? 'track-widths.js' : 'FIA list', variant: VARIANT, width: widthNote,
     lineOffsetMaxM: +Math.max(...offs).toFixed(2), turnDeg: +(kappa.reduce((a, v) => a + v, 0) * lt.ds * 180 / Math.PI).toFixed(1),
     elevation: ev && {source: ev.source, url: ev.url, licence: ev.licence, gridM: ev.gridM, validShare: ev.validShare, crossoverBlankM: ev.crossoverBlankM, spikeBlankM: ev.spikeBlankM, rangeM: ev.rangeM, bankingFromSurface: !!ev.bank,
       gradeMaxPct: +(Math.max(...[...ev.grade].map(Math.abs)) * 100).toFixed(1), kvMax: +Math.max(...[...ev.kv].map(Math.abs)).toFixed(4), bankMaxDeg: ev.bank ? +(Math.max(...[...ev.bank].map(Math.abs)) * 180 / Math.PI).toFixed(1) : null},
@@ -205,11 +247,14 @@ export function buildOne(id, osm, dem, dem30, bac) {
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
+  if (process.argv.includes('--variant')) setVariant(process.argv[process.argv.indexOf('--variant') + 1]);
   const raw = process.argv[2], outDir = process.argv.includes('--out') ? process.argv[process.argv.indexOf('--out') + 1] : 'scripts/sim/data/geom-indep';
   const committed = JSON.parse(readFileSync('scripts/sim/data/tracks/osm-raceways-all.json', 'utf8'));
   const J = f => existsSync(f) ? JSON.parse(readFileSync(f, 'utf8')) : null, tracks = {}, report = {};
   for (const id of IDS) {
-    const osm = J(`${raw}/${id}-osm.json`) || committed.tracks[id], b = buildOne(id, osm, J(`${raw}/${id}-dem.json`), J(`${raw}/${id}-dem30.json`), J(`${raw}/f1-circuits.geojson`));
+    const tf = TUM[id] && `${raw}/tum-${TUM[id]}.csv`, tum = tf && existsSync(tf) ? (() => { const r = readFileSync(tf, 'utf8').split('\n').filter(l => l && !l.startsWith('#')).map(l => l.split(',').map(Number));
+      return {x: r.map(q => q[0]), y: r.map(q => q[1]), wr: r.map(q => q[2]), wl: r.map(q => q[3])}; })() : null;
+    const osm = J(`${raw}/${id}-osm.json`) || committed.tracks[id], b = buildOne(id, osm, J(`${raw}/${id}-dem.json`), J(`${raw}/${id}-dem30.json`), J(`${raw}/f1-circuits.geojson`), tum);
     b.report.osmSource = J(`${raw}/${id}-osm.json`)?._source || {licence: committed.source, note: 'committed fallback'};
     tracks[id] = {layout: lapsimTracks[id].name, eras: [{from: null, to: null, note: 'one era until the step 5a track-state registry lands', row: b.row, extra: b.extra}]};
     report[id] = b.report; console.log(JSON.stringify(b.report));
