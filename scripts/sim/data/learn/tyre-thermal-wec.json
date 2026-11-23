@@ -1,0 +1,157 @@
+{
+ "generatedAt": "2026-11-23",
+ "prereg": "claude/gate-tyre-thermal-wec-warmup-prereg-2026-11-23.md",
+ "fit": {
+  "tauS": 70.4861111111111,
+  "tcH": 98.88888888888889,
+  "tcG": 140
+ },
+ "ident": {
+  "tauS": {
+   "value": 70.4861,
+   "ci90": [
+    5,
+    120
+   ],
+   "identified": false
+  },
+  "tcH": {
+   "value": 98.8889,
+   "ci90": [
+    60,
+    140
+   ],
+   "identified": false
+  },
+  "tcG": {
+   "value": 140,
+   "ci90": [
+    77.7778,
+    140
+   ],
+   "identified": false
+  }
+ },
+ "power": {
+  "nHoldTracks": 6,
+  "usefulGainPp2": 0.0074,
+  "loo": {
+   "production": {
+    "meanGain": -0.0767,
+    "sd": 0.1578,
+    "mde": 0.1185,
+    "n": 6
+   },
+   "constant": {
+    "meanGain": -0.0781,
+    "sd": 0.1572,
+    "mde": 0.1181,
+    "n": 6
+   }
+  },
+  "judgeable": false
+ },
+ "tuning": {
+  "units": 12,
+  "tracks": 6,
+  "rms": {
+   "constant": 0.183,
+   "production": 0.1856,
+   "thermal": 0.1933
+  },
+  "meanY": {
+   "hypercar": 1.2477,
+   "lmgt3": 0.5691
+  },
+  "predicted": [
+   {
+    "track": "austin",
+    "cls": "hypercar",
+    "y": 1.25393,
+    "thermal": 1.0005,
+    "trackTempC": 55.19
+   },
+   {
+    "track": "austin",
+    "cls": "lmgt3",
+    "y": 0.63728,
+    "thermal": 0.4705,
+    "trackTempC": 54.3888888888889
+   },
+   {
+    "track": "imola",
+    "cls": "hypercar",
+    "y": 1.31112,
+    "thermal": 0.9175,
+    "trackTempC": 36.91000000000001
+   },
+   {
+    "track": "imola",
+    "cls": "lmgt3",
+    "y": 0.82257,
+    "thermal": 0.0786,
+    "trackTempC": 37.27
+   },
+   {
+    "track": "interlagos",
+    "cls": "hypercar",
+    "y": 1.20415,
+    "thermal": 0.9021,
+    "trackTempC": 25.860000000000003
+   },
+   {
+    "track": "interlagos",
+    "cls": "lmgt3",
+    "y": 0.42573,
+    "thermal": 0.0457,
+    "trackTempC": 27.639999999999997
+   },
+   {
+    "track": "lusail",
+    "cls": "hypercar",
+    "y": 1.05398,
+    "thermal": 0.8836,
+    "trackTempC": 17.490000000000002
+   },
+   {
+    "track": "lusail",
+    "cls": "lmgt3",
+    "y": 0.56179,
+    "thermal": 0.0272,
+    "trackTempC": 17.98
+   },
+   {
+    "track": "sakhir",
+    "cls": "hypercar",
+    "y": 1.14414,
+    "thermal": 1.1252,
+    "trackTempC": 32.42
+   },
+   {
+    "track": "sakhir",
+    "cls": "lmgt3",
+    "y": 0.19216,
+    "thermal": 0.1195,
+    "trackTempC": 35.970000000000006
+   },
+   {
+    "track": "spa-francorchamps",
+    "cls": "hypercar",
+    "y": 1.51894,
+    "thermal": 1.207,
+    "trackTempC": 38.93333333333334
+   },
+   {
+    "track": "spa-francorchamps",
+    "cls": "lmgt3",
+    "y": 0.77492,
+    "thermal": 0.115,
+    "trackTempC": 37.641666666666666
+   }
+  ]
+ },
+ "plausibility": {
+  "10C": 0.5187,
+  "40C": 1.3244
+ }
+}
