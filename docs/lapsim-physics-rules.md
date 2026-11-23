@@ -219,7 +219,7 @@ The fit is deterministic (no random numbers in `calibrate.mjs`), so one run per 
 | One calibration | `LAPSIM_...=... node scripts/sim/calibrate.mjs` (needs `.cache/lapsim/` inputs from the pinned archive in `scripts/sim/experiments.json`) |
 | F1 only / WEC only | `LAPSIM_SKIP_WEC=1` / `LAPSIM_ONLY=wec` |
 | Fit length | `LAPSIM_ROUNDS`, `LAPSIM_BCD_ITERS` |
-| Model flags | `LAPSIM_TRACK_DRAG`, `LAPSIM_AXLE`, `LAPSIM_LOADEXP`, `LAPSIM_ROLLFRONT`, `LAPSIM_KV`, `LAPSIM_BANK`, `LAPSIM_GRIP_LO`, `LAPSIM_GRIP_HI`, `LAPSIM_WEC_GRIP` |
+| Model flags | `LAPSIM_TRACK_DRAG`, `LAPSIM_AXLE`, `LAPSIM_LOADEXP`, `LAPSIM_ROLLFRONT`, `LAPSIM_KV`, `LAPSIM_BANK`, `LAPSIM_GRIP_LO`, `LAPSIM_GRIP_HI`, `LAPSIM_WEC_GRIP`, `LAPSIM_CDA_MEASURED` (per-track drag and 2023–25 CdA from `worker/lapsim/car-measured-data.js`, made by `scripts/sim/measure-car.mjs`, instead of the free drag factor) |
 | Parallel experiment | Edit `scripts/sim/experiments.json` (common settings and one entry per variant), push to a `lapsim-exp/<name>` branch. Workflow `lapsim-experiment.yml` runs every variant and a compare job. Do not open a PR from that branch to `main`. |
 | Compare | `node scripts/sim/exp-compare.mjs base.js cand1.js cand2.js` |
 | Corner, trap and braking check | `node scripts/sim/validate.mjs <name>` writes `probe-out/validate-<name>.json` |
