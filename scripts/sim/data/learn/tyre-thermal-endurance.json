@@ -1,0 +1,126 @@
+{
+ "generatedAt": "2026-11-23",
+ "prereg": "claude/gate-tyre-thermal-endurance-prereg-2026-11-23.md",
+ "sens": {
+  "GT3": {
+   "a015": 0.0097,
+   "aMeas": 0.049,
+   "Sg": -34.9739
+  },
+  "LMP2": {
+   "a015": 0.0358,
+   "aMeas": 0.0767,
+   "Sg": -41.9007
+  },
+  "LMP3": {
+   "a015": 0.0375,
+   "aMeas": 0.0775,
+   "Sg": -43.0534
+  }
+ },
+ "tsCoef": {
+  "GT3": {
+   "c0": 100,
+   "ct": 0.4052,
+   "ca": 0.5948
+  },
+  "LMP2": {
+   "c0": 100,
+   "ct": 0.3877,
+   "ca": 0.6123
+  },
+  "LMP3": {
+   "c0": 100,
+   "ct": 0.3877,
+   "ca": 0.6123
+  }
+ },
+ "tc": {
+  "GT3": {
+   "tc": 90,
+   "ci90": [
+    80,
+    94
+   ],
+   "identified": true
+  },
+  "LMP2": {
+   "tc": 102,
+   "ci90": [
+    86,
+    106
+   ],
+   "identified": true
+  },
+  "LMP3": {
+   "tc": 98,
+   "ci90": [
+    88,
+    140
+   ],
+   "identified": false
+  }
+ },
+ "power": {
+  "nHoldTracks": 15,
+  "usefulGainPp2": 0.0362,
+  "loo": {
+   "production": {
+    "meanGain": -0.0098,
+    "sd": 0.0891,
+    "mde": 0.0423,
+    "n": 7
+   },
+   "engine": {
+    "meanGain": -0.0219,
+    "sd": 0.0726,
+    "mde": 0.0345,
+    "n": 7
+   },
+   "constant": {
+    "meanGain": 0.0075,
+    "sd": 0.0479,
+    "mde": 0.0227,
+    "n": 7
+   }
+  },
+  "judgeable": false
+ },
+ "tuning": {
+  "rows": 3081,
+  "tracks": 7,
+  "rms": {
+   "constant": 0.911,
+   "production": 0.9038,
+   "engine": 0.8943,
+   "thermal": 0.8949
+  },
+  "medAbs": {
+   "constant": 0.5691,
+   "production": 0.5643,
+   "engine": 0.5615,
+   "thermal": 0.5592
+  }
+ },
+ "slope7b": {
+  "engineOnly": {
+   "n": 33,
+   "slope": -0.053,
+   "ci90": [
+    -0.1172,
+    -0.0159
+   ],
+   "includes0": false
+  },
+  "engineAndThermal": {
+   "n": 33,
+   "slope": -0.0445,
+   "ci90": [
+    -0.1057,
+    -0.0087
+   ],
+   "includes0": false
+  },
+  "note": "no refit; the thermal grip replaces the parabola, normalised at the reference conditions"
+ }
+}
