@@ -37,3 +37,36 @@ test('data file: one era per track, consistent arrays, positions inside the lap'
     assert.ok(mapDist(0, 5, d, L) >= 0 && mapDist(1234, 5, d, L) < L);
   }
 });
+
+// attempt 3 (claude/gate-independent-geometry-attempt3-prereg-2026-11-23.md)
+import {erasOf, limitRules, fiaRow, widthsFor, A3} from '../scripts/sim/geom-indep/build-a3.mjs';
+import {lapsimAllTracks} from '../worker/lapsim/tracks.js';
+
+test('a3: layout eras from the 5a registry, OSM dated inside each older era', () => {
+  assert.deepEqual(erasOf('catalunya'), [{from: null, to: 2020, date: '2020-06-01'}, {from: 2021, to: 2022, date: '2022-06-01'}, {from: 2023, to: null, date: null}]);
+  assert.deepEqual(erasOf('suzuka'), [{from: null, to: null, date: null}]);
+});
+
+test('a3: 4a rules are named F1 corners of the latest event in the era', () => {
+  const r = limitRules('montreal', {from: null, to: null});
+  assert.ok(r && r.year >= 2025 && r.corners.every(c => ['line', 'kerb', 'loop'].includes(c.rule)));
+  assert.equal(limitRules('le-mans', {from: null, to: null}), null); // WEC: no source, no limits
+});
+
+test('a3: FIA list row by name and length', () => {
+  assert.equal(fiaRow('suzuka', lapsimAllTracks.suzuka)?.lengthM, 5807);
+});
+
+test('a3: width from an OSM area polygon, fallback elsewhere, no kerb without a source', () => {
+  // a straight 200 m centre line inside a 14 m wide raceway area on the first half only
+  const P = {fwd: (la, lo) => [lo, la], inv: (x, y) => [y, x]}, x = Array.from({length: 80}, (_, i) => i * 5), y = x.map(() => 0);
+  const poly = [[0, -7], [200, -7], [200, 7], [0, 7], [0, -7]].map(([e, n]) => ({lat: n, lon: e}));
+  const osm = {elements: [{type: 'way', tags: {'area:highway': 'raceway'}, geometry: poly}]};
+  const w = widthsFor('test-track', {from: null, to: null}, osm, {corners: []})({cl: {x, y}, P, reg: {x, y, apply: (a, b) => [a, b]}, W: 10});
+  assert.ok(Math.abs(w.half[20] - (7 - 1.2)) < 1e-9 && Math.abs(w.right[20] - (7 - 1.2)) < 1e-9);
+  assert.ok(Math.abs(w.half[60] - (10 / 2 - 1.2)) < 1e-9); // FIA-list fallback width 10 m
+  assert.equal(w.usableWidth, null);
+  assert.equal(w.note.kerb, 'none');
+  assert.ok(w.note.sources['osm-area'] > 0.4 && w.note.sources['osm-area'] < 0.6);
+  assert.equal(A3.kerbM, 1.0);
+});
