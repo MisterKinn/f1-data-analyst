@@ -91,13 +91,15 @@ def emilia(id_, bb):
         say(id_, 'emilia WCS coverages', names[:10])
     except Exception as e: say(id_, 'emilia caps error', e); return None
     (xa, ya), (xb, yb) = utm32(bb[0], bb[2]), utm32(bb[1], bb[3])
-    for cov in [n for n in names if 'DTM' in n.upper()] or names:
-        p = {'service': 'WCS', 'version': '1.0.0', 'request': 'GetCoverage', 'coverage': cov, 'CRS': 'EPSG:32632',
-             'BBOX': f'{min(xa,xb)},{min(ya,yb)},{max(xa,xb)},{max(ya,yb)}', 'RESX': 5, 'RESY': 5, 'FORMAT': 'GeoTIFF'}
+    # the capabilities list the service title first; the coverage itself is named '1' (DTM10K_2014_WGS84_UTM32_RMD_1)
+    tries = [(c, f) for c in sorted(set(names), key=lambda n: (not n.isdigit(), n)) for f in ('GeoTIFF', 'image/tiff', 'TIFF')]
+    for cov, fmt in tries:
+        p = {'service': 'WCS', 'version': '1.0.0', 'request': 'GetCoverage', 'coverage': cov, 'CRS': 'EPSG:32632', 'RESPONSE_CRS': 'EPSG:32632',
+             'BBOX': f'{min(xa,xb)},{min(ya,yb)},{max(xa,xb)},{max(ya,yb)}', 'RESX': 5, 'RESY': 5, 'FORMAT': fmt}
         try:
             r = requests.get(base, params=p, headers=UA, timeout=180)
             ct = r.headers.get('content-type', '')
-            say(id_, 'emilia', cov, r.status_code, ct, len(r.content))
+            say(id_, 'emilia', cov, fmt, r.status_code, ct, len(r.content), r.text[:200] if 'xml' in ct or 'html' in ct else '')
             if r.status_code == 200 and 'xml' not in ct and len(r.content) > 10000:
                 g = tif_grid(r.content, {'source': f'Regione Emilia-Romagna DTM 5x5 ed. 2014 (WCS coverage {cov})', 'url': base, 'gridM': 5,
                                           'licence': 'CC BY 4.0, © Regione Emilia-Romagna'})
