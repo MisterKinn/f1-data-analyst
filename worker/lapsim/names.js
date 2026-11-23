@@ -25,6 +25,12 @@ export const TRACK_EVENTS = {
 export function eventFor(id, year) {
   if (id === 'kuala-lumpur') return year === 2026 ? TRACK_EVENTS[id] : null;
   if (id === 'sakhir' && year === 2026) return null;
+  // the Spanish GP was at Barcelona until 2025 and is at Madring from 2026 (Barcelona then hosts the Barcelona-Catalunya GP)
+  if (id === 'madring') return year >= 2026 ? TRACK_EVENTS.madring : null;
+  if (id === 'catalunya') return year >= 2026 ? TRACK_EVENTS.catalunya : 'Spanish Grand Prix';
+  // FIA archive names before 2021
+  if (id === 'mexico-city' && year < 2021) return 'Mexican Grand Prix';
+  if (id === 'interlagos' && year < 2021) return 'Brazilian Grand Prix';
   return TRACK_EVENTS[id] || null;
 }
 

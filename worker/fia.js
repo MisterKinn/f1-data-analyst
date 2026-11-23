@@ -32,7 +32,8 @@ async function source(url){
 }
 const decode=s=>s.replace(/&#(x[\da-f]+|\d+);/gi,(_,n)=>String.fromCodePoint(n[0].toLowerCase()==='x'?parseInt(n.slice(1),16):Number(n))).replace(/&(amp|quot|apos|lt|gt|nbsp);/g,(_,k)=>({amp:'&',quot:'"',apos:"'",lt:'<',gt:'>',nbsp:' '})[k]);
 const text=s=>decode(s.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,'').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,'').replace(/<[^>]+>/g,' ')).replace(/\s+/g,' ').trim();
-const attr=(s,name)=>decode(s.match(new RegExp('\\b'+name+'=["\']([^"\']*)["\']','i'))?.[1]??'');
+// value up to the matching quote: a file name with an apostrophe inside a double-quoted href ("Race Directors' Event Notes") stays whole
+const attr=(s,name)=>decode(s.match(new RegExp('\\b'+name+'=(["\'])(.*?)\\1','i'))?.[2]??'');
 function divBody(html,className){const start=new RegExp('<div\\b[^>]*class=["\'][^"\']*\\b'+className+'\\b[^"\']*["\'][^>]*>','i').exec(html);if(!start)return null;const from=start.index+start[0].length;let depth=1;const tags=/<\/?div\b[^>]*>/gi;tags.lastIndex=from;let m;while((m=tags.exec(html))){depth+=m[0].startsWith('</')?-1:1;if(depth===0)return html.slice(from,m.index);}return null;}
 const field=(s,name)=>text(s.match(new RegExp('<div[^>]+class=["\'][^"\']*\\b'+name+'\\b[^"\']*["\'][^>]*>([\\s\\S]*?)<\\/div>','i'))?.[1]??'');
 function links(html,base){const out=[];for(const m of html.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/gi)){const href=attr(m[1],'href');if(!href)continue;try{const url=officialUrl(href,base);out.push({url,title:field(m[2],'title')||text(m[2]),published:field(m[2],'published')||null});}catch{}}return out;}
