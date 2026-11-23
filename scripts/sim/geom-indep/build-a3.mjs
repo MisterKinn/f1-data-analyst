@@ -19,6 +19,7 @@ import {lapsimTrackLimits} from '../../../worker/lapsim/track-limits-data.js';
 import {lapsimTrackState} from '../../../worker/lapsim/track-state-data.js';
 import {lapsimKerbUse} from '../../../worker/lapsim/kerb-use-data.js';
 import {buildOne, SET} from './build.mjs';
+import {lapsimTrackNorth} from '../../../worker/lapsim/track-north-data.js';
 
 export const A3 = {kerbM: 1.0, cornerWinM: 40, defaultWidthM: 12, polyRayM: 25, kerbMaxM: 1.5, cuspR: 0.8, sourceIncomplete: {bridged: 0.05, lengthPct: 1.5, turnDeg: 5}};
 const ROOT = new URL('../../../', import.meta.url).pathname, J = f => existsSync(f) ? JSON.parse(readFileSync(f, 'utf8')) : null;
@@ -108,7 +109,7 @@ function buildTrack(id, raw, bac) {
     const osm = J(era.date ? `${raw}/${id}-osm-${era.date}.json` : `${raw}/${id}-osm.json`);
     if (!osm?.elements?.some(e => e.tags?.highway === 'raceway')) { out.report.push({era, status: 'no OSM loop'}); continue; }
     try {
-      const b = buildOne(id, osm, J(`${raw}/${id}-dem.json`), null, null, null, {row: d, seed, fia, bacFeature: bf, widthM: fia.widthM, widths: widthsFor(id, era, osm, d)});
+      const b = buildOne(id, osm, J(`${raw}/${id}-dem.json`), null, null, null, {row: d, seed, fia, bacFeature: bf, widthM: fia.widthM, northDeg: bf ? null : lapsimTrackNorth[id]?.deg ?? null, widths: widthsFor(id, era, osm, d)});
       const turn = Math.abs(b.report.turnDeg), closes = Math.min(Math.abs(turn - 360), turn) <= A3.sourceIncomplete.turnDeg;
       const incomplete = b.report.bridgedShare > A3.sourceIncomplete.bridged || (b.report.centreVsOfficialPct != null && Math.abs(b.report.centreVsOfficialPct) > A3.sourceIncomplete.lengthPct) || !closes;
       out.eras.push({from: era.from, to: era.to, osmDate: era.date || 'current', sourceIncomplete: incomplete, row: {...b.row, map: undefined}, extra: b.extra});

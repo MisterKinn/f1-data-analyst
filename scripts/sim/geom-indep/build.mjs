@@ -97,7 +97,7 @@ export function osmPoints(osm, P) {
 }
 
 // ---- rigid trimmed ICP: production map line (own frame) onto the OSM points ---------------------------------------------
-export function register(px, py, op) {
+export function register(px, py, op, {byMatch = false, northDeg = null} = {}) {
   const near = grid2(op.map(p => [p.x, p.y]), 10);
   const nn = (x, y) => { let best = Infinity, bi = -1; for (const r of [10, 30, 80, 200, 500]) { for (const i of near(x, y, r)) { const d = (op[i].x - x) ** 2 + (op[i].y - y) ** 2; if (d < best) { best = d; bi = i; } } if (bi >= 0 && best <= r * r) break; } return [bi, Math.sqrt(best)]; };
   const n = px.length, mx = px.reduce((a, b) => a + b) / n, my = py.reduce((a, b) => a + b) / n, ox = op.reduce((a, p) => a + p.x, 0) / op.length, oy = op.reduce((a, p) => a + p.y, 0) / op.length;
@@ -114,7 +114,16 @@ export function register(px, py, op) {
     }
     return {c, s, tx, ty, score, mir}; };
   let best = null;
-  for (const mir of [false, true]) for (let d = 0; d < 360; d += 5) { const r = run(d * Math.PI / 180, mir, 6, sub); if (!best || r.score < best.score) best = r; }
+  // attempt 3 (amendment C1, byMatch): a map projection keeps handedness, so no mirror; candidates are ranked by the share of stations
+  // with an OSM point within 30 m and heading within 40° (other layouts near the circuit win a trimmed-distance ranking), then distance
+  const cosMax = Math.cos(40 * Math.PI / 180), share = r => { const sg = r.mir ? -1 : 1; let k = 0; for (const i of sub) { const u = px[i] - mx, v = sg * (py[i] - my), x = r.c * u - r.s * v + r.tx, y = r.s * u + r.c * v + r.ty;
+    const j = (i + 1) % n, du = px[j] - px[i], dv = sg * (py[j] - py[i]), hx = r.c * du - r.s * dv, hy = r.s * du + r.c * dv, hl = Math.hypot(hx, hy) || 1;
+    if (near(x, y, 30).some(q => (op[q].x - x) ** 2 + (op[q].y - y) ** 2 < 900 && Math.abs(Math.cos(op[q].h) * hx / hl + Math.sin(op[q].h) * hy / hl) >= cosMax)) k++; } return k / sub.length; };
+  // with a checked north (track-north-data.js), its rotation is also tried from a grid of start shifts (±400 m), beside the sweep
+  const starts = [...Array.from({length: 72}, (_, k) => [k * 5 * Math.PI / 180, null]),
+    ...(northDeg != null ? [-4, 0, 4].flatMap(dd => [-400, -200, 0, 200, 400].flatMap(a => [-400, -200, 0, 200, 400].map(b => [(northDeg + dd) * Math.PI / 180, {tx: ox + a, ty: oy + b}]))) : [])];
+  for (const mir of byMatch ? [false] : [false, true]) for (const [th, t0] of starts) { const r = run(th, mir, 6, sub, 0.8, t0); if (byMatch) r.share = share(r);
+    if (!best || (byMatch ? r.share > best.share + 1e-9 || (Math.abs(r.share - best.share) <= 1e-9 && r.score < best.score) : r.score < best.score)) best = r; }
   // refine: 80 % trim, then 50 % (other ways near the circuit, such as Jeddah's karting and Formula E loops, pull an 80 % fit by 0.7°)
   const mid = run(Math.atan2(best.s, best.c), best.mir, 20, [...Array(n).keys()], 0.8, best), fin = run(Math.atan2(mid.s, mid.c), best.mir, 30, [...Array(n).keys()], 0.5, mid);
   const sg = fin.mir ? -1 : 1, x = new Float64Array(n), y = new Float64Array(n);
@@ -174,12 +183,12 @@ export const BAC = {jeddah: 'sa-2021', shanghai: 'cn-2004', imola: 'it-1953', su
 export function buildOne(id, osm, dem, dem30, bac, tum = null, opts = null) {
   const d = opts?.row ?? lapsimTracks[id], P = enu(opts?.seed ?? SEEDS[id]), {ways, pts} = osmPoints(osm, P), n0 = d.kappa.length, fia = opts?.fia ?? FIA[id];
   const bf = opts ? opts.bacFeature : bac.features.find(f => f.properties.id === BAC[id]), bp = bf ? osmPoints({ways: [{g: bf.geometry.coordinates.map(([lo, la]) => [la, lo])}]}, P).pts : pts;
-  const reg = register(d.map.x, d.map.y, bp);
+  const reg = register(d.map.x, d.map.y, bp, {byMatch: !!opts, northDeg: opts?.northDeg ?? null});
   const c = centreFromOsm(reg.x, reg.y, pts);
   // centre line: 1 m, closed Gaussian σ 8 m, 5 m
   const g2 = VARIANT !== 'g1', sig = g2 ? G2.sigmaM : SET.sigmaM;
   const r1 = resampleClosed(c.x, c.y, 1), sx = gaussClosed(r1.x, sig / r1.step), sy = gaussClosed(r1.y, sig / r1.step), cl = resampleClosed(sx, sy, SET.ds);
-  const W = opts?.widthM ?? lapsimTrackWidths[id]?.m ?? FIA[id].widthM;
+  const W = opts?.widthM ?? lapsimTrackWidths[id]?.m ?? FIA[id]?.widthM ?? 12;
   let half = new Array(cl.x.length).fill(W / 2 - SET.carM), right = null, widthNote = {source: lapsimTrackWidths[id] ? 'track-widths.js' : 'FIA list', widthM: W}, usableWidth = null;
   if (opts?.widths) ({half, right, usableWidth, note: widthNote} = opts.widths({cl, P, reg, d, W}));
   if (g2) { // G2 changes 2 and 3: per-station widths (TUM where it exists) and the kerb margin inside corners, on a 2.5 m centre line

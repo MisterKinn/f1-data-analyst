@@ -31,7 +31,7 @@ def overpass(id_, lat, lon, date=None):
     head = f'[out:json][timeout:120]' + (f'[date:"{date}T00:00:00Z"]' if date else '') + ';'
     q = head + (f'(way["highway"="raceway"](around:3000,{lat},{lon});way["area:highway"="raceway"](around:3000,{lat},{lon});'
                 f'way["area"="yes"]["highway"="raceway"](around:3000,{lat},{lon});relation["area:highway"="raceway"](around:3000,{lat},{lon}););out tags geom;')
-    for url in F.OVERPASS:
+    for url in F.OVERPASS + ['https://maps.mail.ru/osm/tools/overpass/api/interpreter', 'https://overpass-api.de/api/interpreter']:
         for k in range(3):
             try:
                 r = requests.post(url, data={'data': q}, headers=F.UA, timeout=180)
@@ -101,7 +101,10 @@ def glo30m(id_, bb):  # Copernicus GLO-30 over any bbox (several 1° tiles if ne
             t = f'Copernicus_DSM_COG_10_{"N" if la >= 0 else "S"}{abs(la):02d}_00_{"E" if lo >= 0 else "W"}{abs(lo):03d}_00_DEM'
             tiles.append(f'https://copernicus-dem-30m.s3.amazonaws.com/{t}/{t}.tif')
     try:
-        ds = [rasterio.open(u) for u in tiles]
+        ds = []
+        for u in tiles:  # a sea tile does not exist (Baku: 404): skip it
+            try: ds.append(rasterio.open(u))
+            except Exception as e: say(id_, 'GLO-30 tile missing', u.split('/')[-1], str(e)[:60])
         a, tr = merge(ds, bounds=(bb[2], bb[0], bb[3], bb[1])); a = a[0].astype('float64'); a[a < -500] = np.nan
         say(id_, 'GLO-30', len(tiles), 'tile(s)', a.shape)
         return {'crs': 'EPSG:4326', 'x0': tr.c, 'dx': tr.a, 'y0': tr.f, 'dy': tr.e, 'nx': a.shape[1], 'ny': a.shape[0], 'gridM': 30,
@@ -129,6 +132,9 @@ def main():
     from concurrent.futures import ThreadPoolExecutor
     with ThreadPoolExecutor(2) as ex:  # Overpass allows about two slots per address
         list(ex.map(one, [(k, v) for k, v in SEEDS.items() if not ONLY or k in ONLY]))
+    # one more pass, one at a time, for tracks whose Overpass calls all timed out
+    for k, v in SEEDS.items():
+        if (not ONLY or k in ONLY) and not os.path.exists(f'{OUT}/{k}-osm.json'): time.sleep(30); one((k, v))
     json.dump({'log': F.log, 'fetched': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())}, open(f'{OUT}/fetch-log.json', 'w'), indent=1)
 
 if __name__ == '__main__':
