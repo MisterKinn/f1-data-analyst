@@ -49,7 +49,7 @@ Data sources (not images) for scripts/sim/i4-covariates.mjs → scripts/sim/data
 
 ## Car-independent track geometry, step 3 (scripts/sim/geom-indep/, scripts/sim/data/geom-indep/tracks.json)
 
-Fetched by `.github/workflows/lapsim-geom-indep.yml` (run 45095673109); raw crops on branch `probe/geom-indep-raw` only, derived
+Fetched by `.github/workflows/lapsim-geom-indep.yml` (runs 45095673109 and 45102817213; the second rebuilds tracks.json byte for byte); raw crops on branch `probe/geom-indep-raw` only, derived
 geometry committed. Pre-registration: claude.ai Project `claude/gate-independent-geometry-prereg-2026-11-23.md`.
 - Centre lines: OpenStreetMap `highway=raceway` ways (Overpass, 2026-11-23) — © OpenStreetMap contributors, ODbL 1.0.
 - Registration loop (correspondence only, no curvature): bacinger/f1-circuits `f1-circuits.geojson` — MIT.
