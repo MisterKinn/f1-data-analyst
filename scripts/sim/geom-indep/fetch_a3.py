@@ -113,10 +113,10 @@ def glo30m(id_, bb):  # Copernicus GLO-30 over any bbox (several 1° tiles if ne
 def main():
     r = requests.get('https://raw.githubusercontent.com/bacinger/f1-circuits/master/f1-circuits.geojson', headers=F.UA, timeout=60)
     open(f'{OUT}/f1-circuits.geojson', 'wb').write(r.content); say('bacinger/f1-circuits (MIT)', r.status_code, len(r.content))
-    for id_, (lat, lon) in SEEDS.items():
-        if ONLY and id_ not in ONLY: continue
+    def one(item):
+        id_, (lat, lon) = item
         j = overpass(id_, lat, lon)
-        if not j: say(id_, 'NO OSM'); continue
+        if not j: say(id_, 'NO OSM'); return
         json.dump(j, open(f'{OUT}/{id_}-osm.json', 'w'))
         for e in ERAS.get(id_, []):
             h = overpass(id_, lat, lon, e['date'])
@@ -126,7 +126,9 @@ def main():
         if dem is None or dem.get('validShare', 0) < 0.6: dem = glo30m(id_, bb)
         if dem: json.dump(dem, open(f'{OUT}/{id_}-dem.json', 'w'))
         else: say(id_, 'NO ELEVATION')
-        time.sleep(3)
+    from concurrent.futures import ThreadPoolExecutor
+    with ThreadPoolExecutor(2) as ex:  # Overpass allows about two slots per address
+        list(ex.map(one, [(k, v) for k, v in SEEDS.items() if not ONLY or k in ONLY]))
     json.dump({'log': F.log, 'fetched': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())}, open(f'{OUT}/fetch-log.json', 'w'), indent=1)
 
 if __name__ == '__main__':
