@@ -102,3 +102,20 @@ artefact: with grip near 1, slow corners are 7–8 % slow.
 
 This attempt changed four things at once, so the widths and kerbs were not tested on their own. One attempt is left under the stop
 rule.
+
+## Attempt 3 (prepared 2026-11-23/24, not run): every track with an OSM loop
+Pre-registration: Project `claude/gate-independent-geometry-attempt3-prereg-2026-11-23.md`. This is the last attempt (m = 3), and
+it runs on the wave-3 base after step 20.
+
+**Method.** Attempt 1's method is unchanged: `build.mjs` default, σ 8 m, linear OSM, least-curvature line, `lineTrack` 5 m and
+A1–A4. On top of it come four parts only, in `build-a3.mjs`:
+- (a) width per station: OSM area polygon, else OSM width tag, else track-widths.js, else the FIA list, else 12 m;
+- (b) kerb allowance from kerb-use-data.js (iRacing) or 4a `kerb`/`loop` corners (1.0 m, ±40 m);
+- (c) 4a `line` corners through the `usableWidth` hook (F1); WEC has no limits, and its curvature is stored where it differs;
+- (d) one geometry per layout era (5a registry, OSM attic data).
+
+**Build.** `.github/workflows/lapsim-geom-a3.yml` builds every track in GitHub Actions. The output is
+`scripts/sim/data/geom-indep/tracks-a3.json` and `build-report-a3.json`.
+
+**Flag.** `LAPSIM_GEOM_INDEP=a3` applies the era that holds 2026 to every track that has a G3 row and is not "source incomplete".
+Formula E rows stay. The per-track source table is in the status doc `claude/status-2026-11-24-step3-attempt3.md`.
