@@ -106,7 +106,8 @@ export function clusterBootstrap(rows, {group = r => r.circuit, value = r => r.g
 export function skill(errModel, errBase) { const m = errModel.reduce((s, x) => s + Math.abs(x), 0), b = errBase.reduce((s, x) => s + Math.abs(x), 0); return b > 0 ? 1 - m / b : NaN; }
 
 // WEC held-out rule (central decision 2026-11-23; AGENTS.md Gate G "WEC held-out"). `wec` = calibration series.wec of the BASE run
-// (calibrate.mjs stores, per class-season, holdout.tracks from the first start and holdout.noise.tracks from the second start).
+// (calibrate.mjs stores, per class-season, holdout.tracks and holdout.noise.tracks: under rule v2 the best of three starts and the best
+// of {0.08, 0.05}; under v1 the first and a second start).
 // Returns the held-out RMS (%) of each start per class-season and for the WEC group, the spreads (pp), and judgeable = the WEC-group
 // spread is below delta / 3 (delta = 5 % of the base WEC held-out RMS unless given). No noise data (a run before the rule): not judgeable.
 export function wecNoiseCheck(wec, {delta = null} = {}) {

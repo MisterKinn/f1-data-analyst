@@ -200,20 +200,25 @@ The rules below fix the test design. They do not lower the bar for a claim.
   - broken telemetry is not measured data;
   - the locked set, the stop rule after three attempts, pre-registration and the ledger.
 
-WEC held-out (central decision 2026-11-23, `claude/decision-central-wec-holdout-rule-2026-11-23.md`; test-design change, not a model change)
+WEC held-out (central decisions 2026-11-23: `claude/decision-central-wec-holdout-rule-2026-11-23.md` = v1, #473;
+`claude/decision-central-wec-holdout-rule-v2-2026-11-23.md` = v2; test-design changes, not model changes)
 Why: the WEC leave-one-track-out refits stopped after 25 Nelder–Mead iterations; with 4–5 tracks grip and ClA are not identified, so
 the fold cars stopped at random points (about 0.5 pp of held-out RMS on one class-season, 8 × the WEC δ). Step 1 failed WEC by that noise.
-- **Convergence.** Every WEC fold fit runs Nelder–Mead until the relative simplex spread of the objective is < 1e-6, or 400 iterations,
-  whichever comes first (`scripts/sim/calibrate.mjs` `WEC_HO`; `nelderMead({relTol})`). Base and candidate always use the same setting.
-  `LAPSIM_WEC_HOLDOUT=legacy` reproduces runs before the rule only.
-- **Noise check.** Every run re-runs the final WEC held-out with a second start step (0.05) and stores it (`holdout.noise`). A gate that
-  reads WEC held-out calls `wecNoiseCheck(base.series.wec)` (`scripts/sim/gate.mjs`) on the BASE run: judgeable only if the WEC-group
-  spread is < δ / 3; otherwise the verdict is "not judgeable" and the attempt is not spent.
-- **Bound hits.** Fold-car parameters on a bound are stored (`holdout.boundHits`) and reported. A WEC held-out gain where the candidate's
-  fold cars hit more bounds than the base (`boundHitCount`) is marked "gain on an unidentified parameter": it counts, but is shown.
+v2 because one converged start is not independent of the start: with kernel 2 the wave-2 base had a second-start spread of 0.028 pp
+(> δ/3 0.016), so every WEC gate would stop.
+- **Best of 3 starts (v2).** Every WEC fold fit runs Nelder–Mead from three start steps (0.08, 0.05, 0.12), each until the relative
+  simplex spread of the objective is < 1e-6 or 400 iterations (`scripts/sim/calibrate.mjs` `WEC_HO`, `WEC_STARTS`; `holdout({starts})`),
+  and keeps the start with the lowest objective. Base and candidate always use the same setting. `LAPSIM_WEC_HOLDOUT=v1` reproduces
+  rule v1, `=legacy` runs before any rule.
+- **Noise check.** Every run stores, next to the held-out, the same held-out from the best of {0.08, 0.05} (`holdout.noise`). A gate
+  that reads WEC held-out calls `wecNoiseCheck(base.series.wec)` (`scripts/sim/gate.mjs`) on the BASE run: judgeable only if the
+  WEC-group |RMS best-of-2 − RMS best-of-3| is < δ / 3; otherwise the verdict is "not judgeable" and the attempt is not spent.
+- **Bound hits.** Fold-car parameters on a bound (of the chosen start) are stored (`holdout.boundHits`) and reported. A WEC held-out
+  gain where the candidate's fold cars hit more bounds than the base (`boundHitCount`) is marked "gain on an unidentified parameter":
+  it counts, but is shown.
 - **F1.** The F1 held-out rule is unchanged; F1 gates also report a second-start spread for information (`LAPSIM_F1_NOISE=on`, step 0.04).
-- **Baseline.** The first production run under the rule is the new WEC baseline (ledger: test-design change). Old WEC held-out numbers
-  are not compared with new ones.
+- **Baseline.** Wave 2 uses one shared base run under v2 (`lapsim/gate-w2-base-2026-11-24`, unmerged). Held-out numbers from
+  different rule versions are not compared.
 
 Working with the data the owner can get (v3.2, owner 2026-11-22)
 The owner has no team data: no full-rate telemetry, no setup sheets, no tyre data. The rules must still let the model improve.

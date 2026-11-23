@@ -26,11 +26,14 @@ import {lapsimCarMeasured} from '../../worker/lapsim/car-measured-data.js';
 
 const CACHE = process.env.LAPSIM_CACHE || '.cache/lapsim';
 const ITERS = Number(process.env.LAPSIM_ITERS || 70), HOLDOUT_ITERS = Number(process.env.LAPSIM_HOLDOUT_ITERS || 25);
-// WEC held-out rule (central decision 2026-11-23, claude/decision-central-wec-holdout-rule-2026-11-23.md; AGENTS.md Gate G): every
-// WEC leave-one-track-out fold fit runs Nelder–Mead until the relative simplex spread of the objective is < 1e-6 or 400 iterations;
-// the final held-out is re-run with a second start step (0.05) and the spread is stored; fold-car bound hits are stored.
-// LAPSIM_WEC_HOLDOUT=legacy: the old 25-iteration fold fits (to reproduce runs before the rule).
-const WEC_HO = process.env.LAPSIM_WEC_HOLDOUT === 'legacy' ? {iters: HOLDOUT_ITERS} : {iters: 400, nm: {relTol: 1e-6}};
+// WEC held-out rule v2 (central decision 2026-11-23, claude/decision-central-wec-holdout-rule-v2-2026-11-23.md; AGENTS.md Gate G):
+// every WEC leave-one-track-out fold fit runs Nelder–Mead from three start steps (0.08, 0.05, 0.12), each until the relative simplex
+// spread of the objective is < 1e-6 or 400 iterations, and keeps the start with the lowest objective. Noise check: the same held-out
+// from the best of {0.08, 0.05} is stored next to it (holdout.noise); fold-car bound hits are stored.
+// LAPSIM_WEC_HOLDOUT=legacy: the old 25-iteration fold fits; =v1: rule v1 (one start, second-start re-run at 0.05).
+const WEC_RULE = process.env.LAPSIM_WEC_HOLDOUT || 'v2';
+const WEC_STARTS = [0.08, 0.05, 0.12];
+const WEC_HO = WEC_RULE === 'legacy' ? {iters: HOLDOUT_ITERS} : {iters: 400, nm: {relTol: 1e-6}, ...(WEC_RULE === 'v1' ? {} : {starts: WEC_STARTS})};
 const WEC_START2 = 0.05;
 // F1 second-start spread (information only, rule item 4): LAPSIM_F1_NOISE=on re-runs the F1 held-out with Nelder–Mead step 0.04
 const F1_NOISE = process.env.LAPSIM_F1_NOISE === 'on';
@@ -333,9 +336,10 @@ for (const [cls, def] of Object.entries(SERIES.wec.classes)) {
       report.push(`WEC ${cls} ${year}: per-event BoP — holdout ${g.rmsCur.toFixed(2)}% → ${g.rmsNew.toFixed(2)}%, ${g.reason}`);
       if (g.accept) { laps.splice(0, laps.length, ...cand); h = h2; }
     }
-    // second start of the final WEC held-out (rule item 2): same laps, same setting, start step 0.05
-    const h05 = WEC_HO.nm && h.n ? holdout(laps, base, params, {...WEC_HO, step0: WEC_START2, folds: 99, gripFor: l => l.grip}) : null;
-    if (h05) report.push(`WEC ${cls} ${year}: held-out second start ${h05.rmsPct.toFixed(3)} % vs ${h.rmsPct.toFixed(3)} % (spread ${Math.abs(h05.rmsPct - h.rmsPct).toFixed(3)} pp); fold iterations ${h.fits.map(f => f.iters).join(', ')}; fold bound hits ${boundHits(h.fits).map(b => `${b.key} at ${b.bound} (${b.folds.length})`).join(', ') || 'none'}`);
+    // noise of the final WEC held-out: v2 = best of {0.08, 0.05} (stored by holdout itself); v1 = a re-run from start step 0.05
+    const h05 = h.noise ? h.noise : WEC_HO.nm && h.n ? holdout(laps, base, params, {...WEC_HO, step0: WEC_START2, folds: 99, gripFor: l => l.grip}) : null;
+    const noiseLabel = h.noise ? `best of ${h.noise.starts.join('/')}` : `start ${WEC_START2}`;
+    if (h05) report.push(`WEC ${cls} ${year}: held-out ${noiseLabel} ${h05.rmsPct.toFixed(3)} % vs ${h.rmsPct.toFixed(3)} % (spread ${Math.abs(h05.rmsPct - h.rmsPct).toFixed(3)} pp); fold iterations ${h.fits.map(f => f.iters).join(', ')}; fold bound hits ${boundHits(h.fits).map(b => `${b.key} at ${b.bound} (${b.folds.length})`).join(', ') || 'none'}`);
     const fit = fitSeason(laps, base, params, {iters: ITERS});
     const car = fit.car; delete car.linkMu;
     const perTrack = {};
@@ -346,8 +350,8 @@ for (const [cls, def] of Object.entries(SERIES.wec.classes)) {
     }
     ((series.wec ||= {})[cls] ||= {})[year] = {car, tracks: perTrack, pooled, bop, gripSource, score: +fit.score.toFixed(3), laps: laps.length,
       holdout: {rmsPct: h.rmsPct != null ? +h.rmsPct.toFixed(2) : null, n: h.n, tracks: h.errors.map(e => ({track: e.name, errorSec: +e.dt.toFixed(3)})),
-        ...(h05 ? {rule: 'converged', iters: h.fits.map(f => f.iters), boundHits: boundHits(h.fits),
-          noise: {step: WEC_START2, rmsPct: +h05.rmsPct.toFixed(3), spreadPp: +Math.abs(h05.rmsPct - h.rmsPct).toFixed(3), tracks: h05.errors.map(e => ({track: e.name, errorSec: +e.dt.toFixed(3)})), boundHits: boundHits(h05.fits)}} : {})}};
+        ...(h05 ? {rule: h.noise ? 'best-of-starts' : 'converged', iters: h.fits.map(f => f.iters), boundHits: boundHits(h.fits), ...(h.noise ? {starts: WEC_STARTS, chosenStarts: h.fits.map(f => f.step)} : {}),
+          noise: {...(h.noise ? {starts: h.noise.starts} : {step: WEC_START2}), rmsPct: +h05.rmsPct.toFixed(3), spreadPp: +Math.abs(h05.rmsPct - h.rmsPct).toFixed(3), tracks: h05.errors.map(e => ({track: e.name, errorSec: +e.dt.toFixed(3)})), boundHits: boundHits(h05.fits)}} : {})}};
     report.push(`## WEC ${def.label.en} ${year}`, '', `${laps.length} laps on ${Object.keys(perTrack).length} tracks, fit score ${fit.score.toFixed(3)}. Holdout (one track left out at a time): ${h.rmsPct?.toFixed(2) ?? '–'}% RMS over ${h.n} laps.`, '',
       `Car: grip μy ${car.muY.toFixed(3)}, downforce ClA ${car.clA.toFixed(2)} m², drag CdA ${car.cdA.toFixed(3)} m² (mass ${car.mass} kg and ${(car.pIce / 1e3).toFixed(0)} kW fixed).`, '',
       '| Track | Real | Sim | Error | Trap | Sim top | Track factor (F1) |', '|---|---|---|---|---|---|---|',

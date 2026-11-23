@@ -201,23 +201,28 @@ export function fitSeason(laps, base, params, {iters = 120, wTime = 2, wGrip = 5
 // Holdout test, common to all series: refit without some tracks (folds by track name), then predict
 // the main lap (weight 1) on each left-out track. gripFor(lap) gives the track factor to use for a
 // left-out lap (from another season or series); null skips that lap.
-export function holdout(laps, base, params, {folds = 4, iters = 40, gripFor, ...opts} = {}) {
+// starts: [step, ...] (WEC held-out rule v2): each fold is fitted from every start step and keeps the start with the lowest
+// objective; `noise` = the same held-out from the best of all starts but the last (rule v2 item 2: best-of-{0.08, 0.05} vs all three).
+export function holdout(laps, base, params, {folds = 4, iters = 40, gripFor, starts = null, ...opts} = {}) {
   const names = [...new Set(laps.map(l => l.name))].sort();
-  const k = Math.min(folds, names.length), errors = [], fits = [];
+  const k = Math.min(folds, names.length), errors = [], fits = [], errors2 = [], fits2 = [];
+  const rms = e => e.length ? Math.sqrt(e.reduce((a, x) => a + x.pct ** 2, 0) / e.length) : null;
+  const best = fs => fs.reduce((a, b) => b.score < a.score ? b : a);
+  const predict = (fit, test, out) => { for (const l of laps.filter(x => test.has(x.name) && (x.weight ?? 1) >= 1)) {
+    const g = gripFor(l); if (g == null) continue;
+    const res = simulateLap(withGrip(l.track, g), l.patch ? l.patch(fit.car) : fit.car, conditionsFromWeather(l.weather || {}));
+    out.push({name: l.name, dt: res.lapTime - l.lapSeconds, pct: (res.lapTime / l.lapSeconds - 1) * 100});
+  } };
   for (let f = 0; f < k; f++) {
     const test = new Set(names.filter((_, i) => i % k === f));
     const train = laps.filter(l => !test.has(l.name));
     if (new Set(train.map(l => l.name)).size < 2) continue;
-    const fit = fitSeason(train, base, params, {...opts, iters});
-    fits.push({test: [...test], iters: fit.iters, bounds: fit.bounds});
-    for (const l of laps.filter(x => test.has(x.name) && (x.weight ?? 1) >= 1)) {
-      const g = gripFor(l); if (g == null) continue;
-      const res = simulateLap(withGrip(l.track, g), l.patch ? l.patch(fit.car) : fit.car, conditionsFromWeather(l.weather || {}));
-      errors.push({name: l.name, dt: res.lapTime - l.lapSeconds, pct: (res.lapTime / l.lapSeconds - 1) * 100});
-    }
+    const all = (starts || [opts.step0 ?? null]).map(s => ({step: s, ...fitSeason(train, base, params, {...opts, iters, step0: s})}));
+    const fit = best(all), row = r => ({test: [...test], iters: r.iters, bounds: r.bounds, ...(starts ? {step: r.step, scores: all.map(a => a.score)} : {})});
+    fits.push(row(fit)); predict(fit, test, errors);
+    if (starts?.length > 1) { const f2 = best(all.slice(0, -1)); fits2.push(row(f2)); predict(f2, test, errors2); }
   }
-  const rmsPct = errors.length ? Math.sqrt(errors.reduce((a, e) => a + e.pct ** 2, 0) / errors.length) : null;
-  return {errors, rmsPct, n: errors.length, fits};
+  return {errors, rmsPct: rms(errors), n: errors.length, fits, ...(fits2.length ? {noise: {errors: errors2, rmsPct: rms(errors2), fits: fits2, starts: starts.slice(0, -1)}} : {})};
 }
 
 // Joint fit of several seasons (common rule): each season has its own car, but a track keeps ONE
