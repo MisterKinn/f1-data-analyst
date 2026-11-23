@@ -104,3 +104,24 @@ export function clusterBootstrap(rows, {group = r => r.circuit, value = r => r.g
 }
 // Skill score against a baseline the hold-out cannot fit by luck (production, previous-season value, simple physics): 1 − error / baseline error.
 export function skill(errModel, errBase) { const m = errModel.reduce((s, x) => s + Math.abs(x), 0), b = errBase.reduce((s, x) => s + Math.abs(x), 0); return b > 0 ? 1 - m / b : NaN; }
+
+// WEC held-out rule (central decision 2026-11-23; AGENTS.md Gate G "WEC held-out"). `wec` = calibration series.wec of the BASE run
+// (calibrate.mjs stores, per class-season, holdout.tracks from the first start and holdout.noise.tracks from the second start).
+// Returns the held-out RMS (%) of each start per class-season and for the WEC group, the spreads (pp), and judgeable = the WEC-group
+// spread is below delta / 3 (delta = 5 % of the base WEC held-out RMS unless given). No noise data (a run before the rule): not judgeable.
+export function wecNoiseCheck(wec, {delta = null} = {}) {
+  const rms = a => Math.sqrt(a.reduce((s, x) => s + x * x, 0) / (a.length || 1));
+  const pct = (s, rows) => rows.map(r => s.tracks?.[r.track]?.realLap ? 100 * r.errorSec / s.tracks[r.track].realLap : null).filter(x => x != null);
+  const groups = [], A = [], B = [];
+  for (const [cls, ys] of Object.entries(wec || {})) for (const [year, s] of Object.entries(ys)) {
+    const a = pct(s, s.holdout?.tracks || []), b = s.holdout?.noise ? pct(s, s.holdout.noise.tracks) : null;
+    groups.push({group: `${cls} ${year}`, rmsPct: rms(a), rms2Pct: b ? rms(b) : null, spreadPp: b ? Math.abs(rms(a) - rms(b)) : null, boundHits: s.holdout?.boundHits || []});
+    A.push(...a); if (b) B.push(...b);
+  }
+  const complete = groups.length > 0 && groups.every(g => g.spreadPp != null), d = delta ?? 0.05 * rms(A);
+  const spreadPp = complete ? Math.abs(rms(A) - rms(B)) : null;
+  return {groups, rmsPct: rms(A), rms2Pct: complete ? rms(B) : null, spreadPp, delta: d, judgeable: complete && spreadPp < d / 3,
+    reason: !complete ? 'not judgeable: no second-start held-out stored (run before the WEC held-out rule)' : spreadPp < d / 3 ? `judgeable: WEC spread ${spreadPp.toFixed(3)} < δ/3 ${(d / 3).toFixed(3)} pp` : `not judgeable: WEC spread ${spreadPp.toFixed(3)} ≥ δ/3 ${(d / 3).toFixed(3)} pp`};
+}
+// Fold-car bound hits of base vs candidate (rule item 3): a WEC gain where the candidate hits more bounds is a "gain on an unidentified parameter".
+export function boundHitCount(wec) { let n = 0; for (const ys of Object.values(wec || {})) for (const s of Object.values(ys)) for (const b of s.holdout?.boundHits || []) n += b.folds.length; return n; }

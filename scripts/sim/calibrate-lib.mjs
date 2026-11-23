@@ -106,15 +106,18 @@ export function fitGrip(track, car, env, obs, lapTime, lo = 0.85, hi = 1.15, opt
 }
 
 // Nelder–Mead on a parameter vector (minimisation)
-export function nelderMead(f, x0, {step = 0.05, iters = 200, tol = 1e-6} = {}) {
+// relTol (WEC held-out rule, central decision 2026-11-23): stop when the simplex spread of the objective is below relTol × |best|;
+// unset = the absolute tol, as before. it = iterations used (reported with the fit).
+export function nelderMead(f, x0, {step = 0.05, iters = 200, tol = 1e-6, relTol = null} = {}) {
   const n = x0.length;
   let pts = [x0.slice()];
   for (let i = 0; i < n; i++) { const p = x0.slice(); p[i] = p[i] + (Array.isArray(step) ? step[i] : step); pts.push(p); }
-  let vals = pts.map(f);
+  let vals = pts.map(f), used = 0;
   for (let it = 0; it < iters; it++) {
     const order = vals.map((v, i) => i).sort((a, b) => vals[a] - vals[b]);
     pts = order.map(i => pts[i]); vals = order.map(i => vals[i]);
-    if (Math.abs(vals[n] - vals[0]) < tol) break;
+    if (relTol != null ? Math.abs(vals[n] - vals[0]) < relTol * Math.max(Math.abs(vals[0]), 1e-12) : Math.abs(vals[n] - vals[0]) < tol) { used = it; break; }
+    used = it + 1;
     const c = new Array(n).fill(0);
     for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) c[j] += pts[i][j] / n;
     const xr = c.map((cj, j) => cj + (cj - pts[n][j])), fr = f(xr);
@@ -129,14 +132,15 @@ export function nelderMead(f, x0, {step = 0.05, iters = 200, tol = 1e-6} = {}) {
     }
   }
   const best = vals.indexOf(Math.min(...vals));
-  return {x: pts[best], value: vals[best]};
+  return {x: pts[best], value: vals[best], it: used};
 }
 
 // Fit a season. laps: [{name, track, trace, weather}] ; base: car object ; params: [{key, path, scale}]
 // The car parameters are optimised in log space around the base values.
 // A lap with a fixed track factor (l.grip, e.g. shared from F1) is not given its own grip fit;
 // a lap with l.trapKph is also scored on top speed.
-export function fitSeason(laps, base, params, {iters = 120, wTime = 2, wGrip = 50, log = () => {}} = {}) {
+// nm: extra Nelder–Mead options (relTol); step0: start step for every parameter without its own (second-start noise check)
+export function fitSeason(laps, base, params, {iters = 120, wTime = 2, wGrip = 50, log = () => {}, nm = {}, step0 = null} = {}) {
   const prepared = laps.map(l => {
     const env = conditionsFromWeather(l.weather || {}, l.conditionOptions);
     const lapSeconds = l.lapSeconds ?? l.trace.lap_seconds;
@@ -180,7 +184,7 @@ export function fitSeason(laps, base, params, {iters = 120, wTime = 2, wGrip = 5
     ? {grip: l.grip, ...lapError(withGrip(l.track, l.grip), car, l.env, l.obs, l.lapSeconds, {wTime, trapKph: l.trapKph})}
     : fitGrip(l.track, car, l.env, l.obs, l.lapSeconds, 0.85, 1.15, {wTime, trapKph: l.trapKph}));
   const x0 = params.map(() => 0);
-  const result = nelderMead(objective, x0, {step: params.map(p => p.step ?? 0.08), iters});
+  const result = nelderMead(objective, x0, {step: params.map(p => step0 ?? p.step ?? 0.08), iters, ...nm});
   const car = build(result.x);
   const perTrack = prepared.map(l => {
     const r = evalLap(l, car);
@@ -188,7 +192,10 @@ export function fitSeason(laps, base, params, {iters = 120, wTime = 2, wGrip = 5
       shift: l.shift, rho: l.env.rho, vMaxSim: r.res.vMaxKph, vMaxReal: l.obs ? Math.max(...l.obs.v) * 3.6 : l.trapKph ?? null, meta: l.meta};
   });
   log({score: result.value});
-  return {car, perTrack, score: result.value, x: result.x};
+  // parameters on a bound (rule 3.4: a value at its bound is a finding)
+  const bounds = params.flatMap(p => { const v = p.path.split('.').reduce((o, k) => o[k], car);
+    return p.min != null && v <= p.min * (1 + 1e-9) ? [{key: p.key, bound: 'min', value: v}] : p.max != null && v >= p.max * (1 - 1e-9) ? [{key: p.key, bound: 'max', value: v}] : []; });
+  return {car, perTrack, score: result.value, x: result.x, iters: result.it, bounds};
 }
 
 // Holdout test, common to all series: refit without some tracks (folds by track name), then predict
@@ -196,12 +203,13 @@ export function fitSeason(laps, base, params, {iters = 120, wTime = 2, wGrip = 5
 // left-out lap (from another season or series); null skips that lap.
 export function holdout(laps, base, params, {folds = 4, iters = 40, gripFor, ...opts} = {}) {
   const names = [...new Set(laps.map(l => l.name))].sort();
-  const k = Math.min(folds, names.length), errors = [];
+  const k = Math.min(folds, names.length), errors = [], fits = [];
   for (let f = 0; f < k; f++) {
     const test = new Set(names.filter((_, i) => i % k === f));
     const train = laps.filter(l => !test.has(l.name));
     if (new Set(train.map(l => l.name)).size < 2) continue;
     const fit = fitSeason(train, base, params, {...opts, iters});
+    fits.push({test: [...test], iters: fit.iters, bounds: fit.bounds});
     for (const l of laps.filter(x => test.has(x.name) && (x.weight ?? 1) >= 1)) {
       const g = gripFor(l); if (g == null) continue;
       const res = simulateLap(withGrip(l.track, g), l.patch ? l.patch(fit.car) : fit.car, conditionsFromWeather(l.weather || {}));
@@ -209,7 +217,7 @@ export function holdout(laps, base, params, {folds = 4, iters = 40, gripFor, ...
     }
   }
   const rmsPct = errors.length ? Math.sqrt(errors.reduce((a, e) => a + e.pct ** 2, 0) / errors.length) : null;
-  return {errors, rmsPct, n: errors.length};
+  return {errors, rmsPct, n: errors.length, fits};
 }
 
 // Joint fit of several seasons (common rule): each season has its own car, but a track keeps ONE
