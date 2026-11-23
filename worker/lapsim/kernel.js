@@ -155,7 +155,12 @@ export function lapsimKernel() {
   const lapSize = r => { let b = 1e3; for (const x of Object.values(r)) b += ArrayBuffer.isView(x) ? x.byteLength : Array.isArray(x) ? 8 * x.length : 0; return b; };
   const lapKey = (track, car, env, opts) => JSON.stringify([track.kappa, track.ds, track.mu, track.vScale, track.aeroLow, track.grade, track.heading, track.otOn, track.ersCap, track.kv, track.bank, track.sectors, car, env, opts],
     (k, v) => ArrayBuffer.isView(v) ? Array.from(v) : typeof v === 'number' && !Number.isFinite(v) ? String(v) : v === undefined ? '__u' : v);
+  // Plug-in hooks (docs/lapsim-hooks.md): env.gripHook, env.windAt, car.ers.law. Unset = today's lap, byte for byte. Functions do not
+  // survive the cache key, so a lap with a hook is never cached. env.hookPasses (default 1): with more, the lap is run again and the
+  // hooks see the previous run's speed and time (state.v, state.t).
+  const hooked = (car, env) => !!(env.gripHook || env.windAt || car.ers?.law);
   function simulateLap(track, car, env = {}, opts = {}) {
+    if (hooked(car, env)) { let r = null; for (let p = 0; p < Math.max(1, env.hookPasses || 1); p++) r = simulateLapRaw(track, car, env, opts, r); return r; }
     const key = lapKey(track, car, env, opts), hit = lapCache.get(key);
     if (hit) { lapCache.delete(key); lapCache.set(key, hit); return structuredClone(hit.r); }
     const r = simulateLapRaw(track, car, env, opts), e = {r: structuredClone(r), b: lapSize(r)};
@@ -163,8 +168,12 @@ export function lapsimKernel() {
     for (const [k, x] of lapCache) { if ((lapCache.size <= LAP_CACHE_MAX && lapBytes <= LAP_CACHE_BYTES) || k === key) break; lapCache.delete(k); lapBytes -= x.b; }
     return r;
   }
-  function simulateLapRaw(track, car, env = {}, opts = {}) {
-    const n = track.kappa.length, ds = track.ds;
+  // Kernel step (pre-registration claude/gate-kernel-step1-prereg-2026-11-23.md): 1 = one explicit step per point (today);
+  // 2 = Heun on v², substeps where the rate changes fast, event points inside a step, exact per-step energy and time account.
+  // opts.kernelStep, else env LAPSIM_KERNEL_STEP (Node), else 1.
+  const STEP_DEFAULT = 1, stepOf = opts => opts.kernelStep ?? (+(globalThis.process?.env?.LAPSIM_KERNEL_STEP) || STEP_DEFAULT);
+  function simulateLapRaw(track, car, env = {}, opts = {}, prev = null) {
+    const n = track.kappa.length, ds = track.ds, STEP = stepOf(opts);
     const rho = env.rho ?? RHO_REF;
     const grip = env.grip ?? 1;
     const iceFactor = env.iceFactor ?? 1;
@@ -187,36 +196,44 @@ export function lapsimKernel() {
     const aeroFactor = 0.5 * rho;
 
     // Per-point constants
-    const tail = new Float64Array(n), sinG = new Float64Array(n), cosG = new Float64Array(n);
+    // every per-point array has one more slot, n: a point inside a step (step 2 substeps, virt())
+    const N1 = n + 1, tail = new Float64Array(N1), sinG = new Float64Array(N1), cosG = new Float64Array(N1);
+    const kapX = new Float64Array(N1); kapX.set(track.kappa);
+    // hooks: env.windAt(s, t) → {speed m/s, fromDeg} replaces the session wind; env.gripHook(i, state) → grip multiplier per point
+    const hs = i => ({s: i * ds, ds, n, v: prev ? prev.v[i] : null, t: prev ? prev.time[i] : null});
+    const windAt = env.windAt, gh = env.gripHook ? Float64Array.from({length: n}, (_, i) => env.gripHook(i, hs(i))) : null;
+    const law = car.ers?.law || null;
     for (let i = 0; i < n; i++) {
+      if (windAt) { const w = windAt(i * ds, prev ? prev.time[i] : null) || {}; tail[i] = heading ? tailwind(heading[i], w.speed || 0, w.fromDeg || 0) : 0; } else
       tail[i] = heading && windSpeed ? tailwind(heading[i], windSpeed, windFrom) : 0;
       const g = grade ? grade[i] : 0; sinG[i] = Math.sin(g); cosG[i] = Math.cos(g);
     }
     // Vertical curvature (1/m, + = dip/compression, − = crest): adds m·v²·kv to the normal load
-    const kv = track.kv || null;
+    const kv = track.kv ? Float64Array.from({length: N1}, (_, i) => i < n ? track.kv[i] : 0) : null;
     // Banking (rad, tilted towards the corner centre): part of gravity holds the car in the corner and the
     // centripetal force adds load. bankLat(v, i): lateral force still needed from the tyres; bankN: extra load.
-    const bank = track.bank || null;
-    const bankLat = (v, i) => { const ay = v * v * Math.abs(track.kappa[i]); if (!bank || !bank[i]) return t.m * ay; const c = Math.cos(bank[i]), s = Math.sin(bank[i]); return Math.max(0, t.m * (ay * c - G * s)); };
-    const bankN = (v, i) => { if (!bank || !bank[i]) return 0; const ay = v * v * Math.abs(track.kappa[i]), c = Math.cos(bank[i]), s = Math.sin(bank[i]); return mg * cosG[i] * (c - 1) + t.m * ay * s; };
+    const bank = track.bank ? Float64Array.from({length: N1}, (_, i) => i < n ? track.bank[i] : 0) : null;
+    const bankLat = (v, i) => { const ay = v * v * Math.abs(kapX[i]); if (!bank || !bank[i]) return t.m * ay; const c = Math.cos(bank[i]), s = Math.sin(bank[i]); return Math.max(0, t.m * (ay * c - G * s)); };
+    const bankN = (v, i) => { if (!bank || !bank[i]) return 0; const ay = v * v * Math.abs(kapX[i]), c = Math.cos(bank[i]), s = Math.sin(bank[i]); return mg * cosG[i] * (c - 1) + t.m * ay * s; };
     const normalAt = (v, i, L) => Math.max(0.1 * mg, mg * cosG[i] + L + (kv ? t.m * v * v * kv[i] : 0) + (bank ? bankN(v, i) : 0));
     // Lateral capacity (N) at speed v on point i with aero load L (axle model or point mass)
     const latCap = (v, i, L) => {
       const N = normalAt(v, i, L);
       if (!t.axle) return capacity(t.muY0, t.dmu, t.fz0, N);
       const W = N - L; // weight part (incl. grade and vertical curvature)
-      return axleLateral(t, t.muY0, W * (1 - t.rearStatic) + L * (1 - t.rearAero), W * t.rearStatic + L * t.rearAero, v * v * Math.abs(track.kappa[i]));
+      return axleLateral(t, t.muY0, W * (1 - t.rearStatic) + L * (1 - t.rearAero), W * t.rearStatic + L * t.rearAero, v * v * Math.abs(kapX[i]));
     };
     const pureCap = (i, N) => t.axle ? tyreSum(t, t.muY0, N) : capacity(t.muY0, t.dmu, t.fz0, N);
     // aeroLow[i]: share of the low-drag change (1 = full activation; a fraction = partial activation, 2026 Low Grip zones, B7.1.2 b)
     const lowAt = i => aeroLow ? Math.min(1, Math.max(0, Number(aeroLow[i]) || 0)) : 0;
     const clAt = (i, low) => car.clA + low * ((car.clALow ?? car.clA) - car.clA);
     const cdAt = (i, low) => car.cdA + low * ((car.cdALow ?? car.cdA) - car.cdA);
-    const muAt = i => grip * (mu ? mu[i] : 1);
+    const muP = new Float64Array(N1); for (let i = 0; i < n; i++) muP[i] = gh ? grip * (mu ? mu[i] : 1) * gh[i] : grip * (mu ? mu[i] : 1);
+    const muAt = i => muP[i];
     const vAir = (v, i) => Math.max(0, v - tail[i]);
 
     // 1) Lateral limit per point (aero in corner mode; the driver closes Straight Mode for corners)
-    const vLat = new Float64Array(n);
+    const vLat = new Float64Array(N1);
     for (let i = 0; i < n; i++) {
       const kap = Math.abs(track.kappa[i]);
       if (kap < 1e-5) { vLat[i] = vMaxCar; continue; }
@@ -233,7 +250,7 @@ export function lapsimKernel() {
 
     // Combined-slip reduction: remaining longitudinal share of the friction ellipse
     const ellipse = (v, i, lat) => {
-      const kap = Math.abs(track.kappa[i]);
+      const kap = Math.abs(kapX[i]);
       if (kap < 1e-6) return 1;
       const ay = bank ? bankLat(v, i) / t.m : v * v * kap;
       const va = vAir(v, i), L = aeroFactor * car.clA * va * va;
@@ -242,6 +259,9 @@ export function lapsimKernel() {
       return Math.pow(Math.max(0, 1 - Math.pow(r, k)), 1 / k);
     };
 
+    // per-point values of the passes that do not depend on speed (step 1: forward(), worked out once with the same operations)
+    const clF = new Float64Array(N1), cdF = new Float64Array(N1), muXF = new Float64Array(N1);
+    for (let i = 0; i < n; i++) { const low = lowAt(i); clF[i] = clAt(i, low); cdF[i] = cdAt(i, low); muXF[i] = muAt(i) * (t.muXTrac / t.muY0); }
     // 2) Backward pass (braking): independent of the ERS strategy, so computed once.
     //    Straight Mode is closed under braking: corner-mode aero.
     const brakeAcc = (v, i) => {
@@ -254,10 +274,54 @@ export function lapsimKernel() {
       if (car.brakeEnv) a = Math.min(a, car.brakeEnv[0] + car.brakeEnv[1] * v * v);
       return a;
     };
+    // step 2: the same friction ellipse with the aero load and normal load already worked out (corner-mode aero: L from car.clA)
+    const ellN = (v, i, L, N) => {
+      const kap = Math.abs(kapX[i]); if (kap < 1e-6) return 1;
+      const ay = bank ? bankLat(v, i) / t.m : v * v * kap, W = N - L;
+      const lc = !t.axle ? capacity(t.muY0, t.dmu, t.fz0, N) : axleLateral(t, t.muY0, W * (1 - t.rearStatic) + L * (1 - t.rearAero), W * t.rearStatic + L * t.rearAero, v * v * kap);
+      const r = Math.min(1, ay / (muAt(i) * lc / t.m));
+      return k === 2 ? Math.sqrt(Math.max(0, 1 - r * r)) : Math.pow(Math.max(0, 1 - Math.pow(r, k)), 1 / k);
+    };
+    const brakeAcc2 = (v, i) => {
+      const va = vAir(v, i), L = aeroFactor * car.clA * va * va, N = normalAt(v, i, L);
+      const fx = muAt(i) * (t.muX0 / t.muY0) * pureCap(i, N) * ellN(v, i, L, N);
+      const drag = aeroFactor * car.cdA * va * va, roll = cRoll * N;
+      let a = (fx + drag + roll) / t.m + G * sinG[i];
+      if (car.brakeDecelMax) a = Math.min(a, car.brakeDecelMax);
+      if (car.brakeEnv) a = Math.min(a, car.brakeEnv[0] + car.brakeEnv[1] * v * v);
+      return a;
+    };
     const vBack = new Float64Array(n);
     // start backward integration from the slowest point (its speed is set by the lateral limit)
     let iMin = 0; for (let i = 1; i < n; i++) if (vLat[i] < vLat[iMin]) iMin = i;
-    for (let pass = 0; pass < 2; pass++) {
+    // step 2: Heun on w = v² over one track step of length len; k1 = rate (m/s²) at the start, R(v, f) = rate at fraction f of the
+    // step. Where the rate changes by more than TOL_A across the step, up to 8 substeps with the rate interpolated along the step.
+    let hk2 = 0; // rate at the predicted end of the last heun() step
+    const TOL_A = 2, heun = (w0, k1, R, len, force) => {
+      const k2 = hk2 = R(Math.sqrt(Math.max(1, w0 + 2 * k1 * len)), 1), d = Math.abs(k2 - k1);
+      if (!(d > TOL_A) && !force) return w0 + len * (k1 + k2);
+      const m = Math.max(force ? 4 : 1, Math.min(8, Math.ceil(d / TOL_A))), h = len / m; let w = w0;
+      for (let q = 0; q < m; q++) { const a1 = q ? R(Math.sqrt(Math.max(1, w)), q / m) : k1, a2 = R(Math.sqrt(Math.max(1, w + 2 * a1 * h)), (q + 1) / m); w += h * (a1 + a2); }
+      return w;
+    };
+    // virtual point n at fraction f from point a to point b: every per-point value interpolated linearly (as the geometry is)
+    let vSrc = 0; const lin = (x, a, b, f) => { x[n] = (1 - f) * x[a] + f * x[b]; };
+    // the lateral limit between two points: 1/v² is close to linear in the curvature (v² = μg / (κ − μ·ClA·ρ/2m) for a point mass)
+    const latMid = (a, b, f) => 1 / Math.sqrt((1 - f) / (vLat[a] * vLat[a]) + f / (vLat[b] * vLat[b]));
+    const VA = [kapX, tail, sinG, cosG, muP], virt = (a, b, f) => { for (const x of VA) lin(x, a, b, f); vLat[n] = latMid(a, b, f); lin(clF, a, b, f); lin(cdF, a, b, f); lin(muXF, a, b, f); if (bank) lin(bank, a, b, f); if (kv) lin(kv, a, b, f); vSrc = a; };
+    // step 2: braking curve v² before the lateral cap (bw, for the meeting point) and at mid-step (bm, for the step time)
+    const bw = STEP === 2 ? new Float64Array(n) : null, bm = STEP === 2 ? new Float64Array(n) : null;
+    if (STEP === 2) for (let pass = 0; pass < 2; pass++) {
+      if (pass === 0) vBack[iMin] = vLat[iMin];
+      for (let c = 1; c <= n; c++) {
+        const i = (iMin - c + 2 * n) % n, j = (i + 1) % n, vj = vBack[j];
+        const Rj = x => brakeAcc2(Math.min(x, vLat[j]), j), Ri = x => brakeAcc2(Math.min(x, vLat[i]), i);
+        const R = (x, f) => f === 0 ? Rj(x) : f === 1 ? Ri(x) : (virt(j, i, f), brakeAcc2(Math.min(x, vLat[n]), n));
+        const k1 = Rj(vj), w = heun(vj * vj, k1, R, ds, kapX[i] * kapX[j] < 0);
+        bw[i] = w; bm[i] = vj * vj + ds * (3 * k1 + hk2) / 4; vBack[i] = Math.min(Math.sqrt(w), vLat[i]);
+      }
+    }
+    else for (let pass = 0; pass < 2; pass++) {
       if (pass === 0) vBack[iMin] = vLat[iMin];
       for (let c = 1; c <= n; c++) {
         const i = (iMin - c + 2 * n) % n, j = (i + 1) % n;
@@ -273,6 +337,8 @@ export function lapsimKernel() {
     // (spare ICE power), and by "super-clipping" (harvesting at full throttle above vH, which costs speed).
     const throttleHarvest = ers.rule === 'f1-2026' && ers.throttleHarvest !== false;
     const clipMax = env.clipMax ?? ers.clipMax ?? 350e3, etaRegen = ers.etaRegen ?? 0.9;
+    // ers.law.regen({pBrake W at the wheels, v m/s, i, s m, regenMax, share, eta}) → DC power recovered, W (default: the formula below)
+    const regenLaw = (pBrake, vm, i) => law.regen({pBrake, v: vm, i, s: i * ds, regenMax: ers.regenMax, share: ers.regenShare ?? 0.6, eta: etaRegen});
     // 2026+ F1: the battery is tracked point by point on the final pass (qualifying lap from a full
     // battery): no deploy when it is empty, recovery stops at the per-lap recharge limit, and charge above
     // the usable window is lost. Earlier passes only warm up the speed profile.
@@ -281,11 +347,9 @@ export function lapsimKernel() {
     let vhLo = -Infinity, vhHi = Infinity; // after forward(): every vH in [vhLo, vhHi) takes the same branches, so gives the same run
     let cLo = -Infinity, cHi = Infinity; // likewise every vCut in (cLo, cHi]
     // per-point values of forward() that do not depend on speed, worked out once with the same operations
-    const clF = new Float64Array(n), cdF = new Float64Array(n), muXF = new Float64Array(n);
     const maxOf = a => { let m = -Infinity; for (let i = 0; i < a.length; i++) { const x = a[i]; if (x !== x) return NaN; if (x > m) m = x; } return m; }; // Math.max(...a) for the speeds (no ±0 case)
-    for (let i = 0; i < n; i++) { const low = lowAt(i); clF[i] = clAt(i, low); cdF[i] = cdAt(i, low); muXF[i] = muAt(i) * (t.muXTrac / t.muY0); }
     const below = (vi, vCut) => vi < vCut ? (vi > cLo && (cLo = vi), true) : (vi < cHi && (cHi = vi), false);
-    const forward = (vCut, vH = Infinity) => {
+    const forward1 = (vCut, vH = Infinity) => {
       const v = fwd; vhLo = -Infinity; vhHi = Infinity; cLo = -Infinity; cHi = Infinity;
       v[iMin] = Math.min(vLat[iMin], vBack[iMin]);
       let soc = socMax, got = 0;
@@ -308,6 +372,7 @@ export function lapsimKernel() {
               if (P1 > HOLD_MIN && ((pErs < pPrev - 1e3 && vi >= rampVMin(i)) || (track && soc <= eR))) rp = {P1, t: 0}; }
             if (rp) { const al = rp.t < 1 ? rp.P1 : rp.P1 - ramp.R * (rp.t - 1); if (rp.t >= 1 && al <= 100e3) rp = null; else if (!track || soc > 0) pErs = Math.min(lim, al); }
           }
+          if (law && law.deploy) pErs = law.deploy({i, s: i * ds, v: vi, lim, pErs, soc: track ? soc : null});
           const pI = pAt(vi), fPow = (pI * etaD + pErs * etaK * etaD) / vi;
           const nRear = t.rearStatic * (kv ? N - L : mg * cosG[i]) + t.rearAero * L;
           const muX = muXF[i] * pureCap(i, N) / N;
@@ -336,7 +401,7 @@ export function lapsimKernel() {
             // same energy terms as account(): deploy while accelerating, throttle harvest, braking regen
             const vm = 0.5 * (vi + v[j]), dt = ds / Math.max(vm, 1);
             let rec = v[j] >= vi - 1e-6 ? harv[i] * dt : 0;
-            if (v[j] < vi - 1e-6 && ers.regenMax) rec += Math.min(ers.regenMax, (ers.regenShare ?? 0.6) * t.m * (vi * vi - v[j] * v[j]) / (2 * ds) * vm * etaRegen) * dt;
+            if (v[j] < vi - 1e-6 && ers.regenMax) rec += (law && law.regen ? regenLaw(t.m * (vi * vi - v[j] * v[j]) / (2 * ds) * vm, vm, i) : Math.min(ers.regenMax, (ers.regenShare ?? 0.6) * t.m * (vi * vi - v[j] * v[j]) / (2 * ds) * vm * etaRegen)) * dt;
             rec = Math.max(0, Math.min(rec, recMax - got)); got += rec;
             if (v[j] > vi + 1e-6) { const use = Math.min(ersUsed[i] * dt, Math.max(0, soc)); if (use < ersUsed[i] * dt) ersUsed[i] = use / dt; soc -= use; }
             else ersUsed[i] = 0;
@@ -348,7 +413,7 @@ export function lapsimKernel() {
     };
 
     // Energy accounting on the final profile
-    const account = (v) => {
+    const account1 = (v) => {
       let eDeploy = 0, eRegen = 0, eHarv = 0, time = 0;
       for (let i = 0; i < n; i++) {
         const j = (i + 1) % n, vm = 0.5 * (v[i] + v[j]), dt = ds / Math.max(vm, 1);
@@ -358,11 +423,183 @@ export function lapsimKernel() {
         if (v[j] < v[i] - 1e-6 && ers.regenMax) {
           // braking power at the wheels; the rear axle share can be recovered by the MGU-K
           const pBrake = t.m * (v[i] * v[i] - v[j] * v[j]) / (2 * ds) * vm;
-          eRegen += Math.min(ers.regenMax, (ers.regenShare ?? 0.6) * pBrake * (ers.etaRegen ?? 0.9)) * dt; // regenMax is a DC limit
+          eRegen += (law && law.regen ? regenLaw(pBrake, vm, i) : Math.min(ers.regenMax, (ers.regenShare ?? 0.6) * pBrake * (ers.etaRegen ?? 0.9))) * dt; // regenMax is a DC limit
         }
       }
       return {eDeploy, eRegen: eRegen + eHarv, eBrake: eRegen, eHarv, time};
     };
+
+    // Step 2 forward pass. The strategy decisions of a step (deploy on or off at the cut-off, the C5.12 ramp, super-clipping above vH,
+    // battery not empty) are taken at the step's start, as in step 1, so the cut-off bands stay exact. Inside the step: Heun with the
+    // drive force at both ends, the meeting point of the accelerating and braking curves, and the point where the battery empties.
+    // Per-step time and energy (sDt, sDep, sBrk, sThr) are stored; the lap account and the flow arrays are their sums.
+    const sDt = STEP === 2 ? new Float64Array(n) : null, sDep = STEP === 2 ? new Float64Array(n) : null;
+    const sBrk = STEP === 2 ? new Float64Array(n) : null, sThr = STEP === 2 ? new Float64Array(n) : null;
+    let dErs = 0, dHarv = 0, dPl = 0, dEl = 1; // outputs of drv(): DC deploy power (W), power recovered on throttle (W), power-limited flag, friction-ellipse share left
+    // drive rate (m/s²) at speed vv on point i with the step's decisions: mode 0 no deploy, 1 deploy to the limit, 2 ramp ceiling al
+    const drv = (vv, i, mode, al, hyOn, clipOf) => {
+      const va = vAir(vv, i), L = aeroFactor * clF[i] * va * va, N = normalAt(vv, i, L);
+      let pErs = 0;
+      const q = i === n ? vSrc : i, ot = otOn === true || !!(otOn && otOn[q]);
+      if (mode) { const lim = erskLimitW(ers.rule, vv, ers.pMax || 0, ot); pErs = mode === 2 ? Math.min(lim, al) : Math.min(lim, ersCap ? ersCap[q] : Infinity); }
+      if (law && law.deploy) pErs = law.deploy({i: q, s: i * ds, v: vv, lim: erskLimitW(ers.rule, vv, ers.pMax || 0, ot), pErs, soc: null});
+      const pI = pAt(vv), fPow = (pI * etaD + pErs * etaK * etaD) / vv;
+      const nRear = t.rearStatic * (kv ? N - L : mg * cosG[i]) + t.rearAero * L;
+      const muX = muXF[i] * pureCap(i, N) / N;
+      const awd = t.awdAbove != null && vv > t.awdAbove;
+      dEl = clF[i] === car.clA ? ellN(vv, i, L, N) : ellipse(vv, i); const fTrac = (awd ? muX * N : muX * nRear / Math.max(0.2, 1 - muX * t.hOverWb)) * dEl;
+      let fDrive = Math.min(fPow, fTrac); dPl = fPow <= fTrac ? 1 : 0; dHarv = 0;
+      if (throttleHarvest) {
+        const spare = pI * etaD - fDrive * vv;
+        if (spare > 0) dHarv = Math.min(clipMax, spare / etaD) * etaRegen;
+        else if (pErs === 0 && clipOf()) { const pc = Math.min(clipMax, pI); fDrive -= pc * etaD / vv; dHarv = pc * etaRegen; }
+      }
+      dErs = pErs > 0 ? Math.min(pErs, Math.max(0, fDrive * vv - pI * etaD) / (etaK * etaD)) : 0;
+      if (ers.rule === 'hypercar') dErs = hyOn ? Math.min(ers.eMax || 0, fDrive * vv / etaD) : 0;
+      const drag = aeroFactor * cdF[i] * va * va, roll = cRoll * N;
+      return (fDrive - drag - roll) / (t.m * t.inertia) - G * sinG[i];
+    };
+    // braking power at the wheels from w0 to w1 over len metres, and the DC power recovered (the step-1 formula)
+    const regenP = (w0, w1, len) => { const vm = 0.5 * (Math.sqrt(w0) + Math.sqrt(w1)), pB = t.m * (w0 - w1) / (2 * len) * vm;
+      return law && law.regen ? regenLaw(pB, vm, 0) : Math.min(ers.regenMax, (ers.regenShare ?? 0.6) * pB * etaRegen); };
+    // step state read by the rate functions below (one set of closures for the whole lap, no allocation per step)
+    let sI = 0, sJ = 0, sMode = 0, sAl = 0, sHy = false, sVi = 0, sVH = Infinity, sCd = -1;
+    const clipOf = () => { if (sCd < 0) sCd = sVi > sVH ? (sVi < vhHi && (vhHi = sVi), 1) : (sVi > vhLo && (vhLo = sVi), 0); return sCd === 1; };
+    const Ri = x => drv(Math.min(x, vLat[sI]), sI, sMode, sAl, sHy, clipOf), Rj = x => drv(Math.min(x, vLat[sJ]), sJ, sMode, sAl, sHy, clipOf);
+    const Rf = (x, f) => f === 0 ? Ri(x) : f === 1 ? Rj(x) : (virt(sI, sJ, f), drv(Math.min(x, vLat[n]), n, sMode, sAl, sHy, clipOf));
+    const A0 = new Float64Array(3), A1 = new Float64Array(3), cuts = new Float64Array(5);
+    const lineLow = f => { let q = 0, m = Infinity; for (let p = 0; p < 3; p++) { const w = A0[p] + (A1[p] - A0[p]) * f; if (w < m) { m = w; q = p; } } return q; };
+    // q is the lowest line over the whole step (lines are straight: lowest at both ends)
+    const lowAll = q => { for (let p = 0; p < 3; p++) if (p !== q && (A0[q] > A0[p] + 1e-9 || A1[q] > A1[p] + 1e-9)) return false; return true; };
+    // C5.12 in step 2: a cut is a drop of more than 200 W per metre of track (1 kW per 5 m step, as step 1 at the production grid),
+    // so a smooth taper is not read as a cut on a finer grid
+    const forward2 = (vCut, vH = Infinity) => {
+      const v = fwd; vhLo = -Infinity; vhHi = Infinity; cLo = -Infinity; cHi = Infinity; sVH = vH;
+      v[iMin] = Math.min(vLat[iMin], vBack[iMin]);
+      let soc = socMax, got = 0;
+      const vc = vMaxCar * vMaxCar;
+      for (let pass = 0; pass < 2; pass++) {
+        const track = causal && pass === 1, start = track ? 0 : iMin; let pPrev = 0, rp = null, prevDt = 0, prevLim = 0, prevPhi = -1;
+        // the rate at a step's predicted end is the next step's start rate when the step was not capped and the next step takes the
+        // same decisions (its speed differs from the predicted one by O(ds²), so the method stays second order)
+        let nK = NaN, nE = 0, nH = 0, nPl = 0, nEl = 1, nMode = -1, nAl = 0, nHy = false;
+        // a rule without battery tracking repeats the first pass exactly unless the lap came back to iMin at another speed
+        if (pass === 1 && !causal && v[iMin] === Math.min(vLat[iMin], vBack[iMin])) break;
+        for (let c = 0; c < n; c++) {
+          const i = (start + c) % n, j = (i + 1) % n;
+          const vi = Math.max(v[i], 1), wi = vi * vi;
+          // decisions at the step start (same rules and order as step 1)
+          const lim = erskLimitW(ers.rule, vi, ers.pMax || 0, otOn === true || !!(otOn && otOn[i]));
+          let mode = below(vi, vCut) && (!track || soc > 0) ? 1 : 0, al = 0;
+          const pErs = mode ? Math.min(lim, ersCap ? ersCap[i] : Infinity) : 0;
+          if (ramp) {
+            if (!rp && pPrev > 100e3) { const P1 = pPrev - rampStep(i), lo = Math.min(P1, 100e3), eR = P1 + 0.5 * (P1 - lo) * (P1 + lo) / ramp.R;
+              const cut = pErs < pPrev - 200 * ds && vi >= rampVMin(i);
+              // event point: the cut happened inside the previous step (where the battery emptied, or where the limit crossed the
+              // threshold), so the hold clock starts with the time since then
+              if (P1 > HOLD_MIN && (cut || (track && soc <= eR))) { const th = pPrev - 200 * ds;
+                rp = {P1, t: !cut ? 0 : prevPhi >= 0 ? (1 - prevPhi) * prevDt : prevLim > th && prevLim > pErs ? (1 - Math.min(1, Math.max(0, (prevLim - th) / (prevLim - pErs)))) * prevDt : 0}; } }
+            if (rp) { const a0 = rp.t < 1 ? rp.P1 : rp.P1 - ramp.R * (rp.t - 1), tm = rp.t + 0.5 * ds / vi; // ceiling at mid-step time
+              if (rp.t >= 1 && a0 <= 100e3) rp = null; else if (!track || soc > 0) { mode = 2; al = Math.max(Math.min(a0, 100e3), tm < 1 ? rp.P1 : rp.P1 - ramp.R * (tm - 1)); } }
+          }
+          sI = i; sJ = j; sMode = mode; sAl = al; sVi = vi; sCd = -1;
+          sHy = ers.rule === 'hypercar' && vi > (ers.deployFrom || 0) && below(vi, vCut);
+          // Heun step; rate speeds capped at the lateral limit of their end
+          const reuse = nK === nK && nMode === mode && nAl === al && nHy === sHy;
+          const k1 = reuse ? nK : Ri(vi), e1 = reuse ? nE : dErs, h1 = reuse ? nH : dHarv; powerLimited[i] = reuse ? nPl : dPl; harv[i] = h1; ersUsed[i] = e1; const el1 = reuse ? nEl : dEl;
+          const wP = wi + 2 * k1 * ds, vP = Math.sqrt(Math.max(1, wP)), cdBefore = sCd;
+          const k2 = Rj(Math.min(vP, vLat[j])), e2 = dErs, h2 = dHarv, pl2 = dPl, el2 = dEl; nK = NaN;
+          const sub = kapX[i] * kapX[j] < 0;
+          const stiff = Math.abs(k2 - k1) > TOL_A || sub;
+          let wn = stiff ? heun(wi, k1, Rf, ds, sub) : wi + ds * (k1 + k2);
+          const wm = wi + ds * (3 * k1 + k2) / 4;
+          let vj = Math.min(Math.sqrt(Math.max(1, wn)), vLat[j], vMaxCar, vBack[j]);
+          // energy and time of the step
+          let dt = 0, dep = 0, thr = 0, brk = 0;
+          // the step's profile is the lowest of three curves, each a straight line in v² over the step: accelerating (wi → wn),
+          // braking (bw[i] → vBack[j]²) and the lateral limit (vLat², at most vMaxCar²). Where the lowest one changes inside the
+          // step (event points: braking meets accelerating, the limit takes over), the step is split and each part booked by itself.
+          A0[0] = wi; A0[1] = Math.min(bw[i], vc); A0[2] = Math.min(vLat[i] * vLat[i], vc);
+          A1[0] = wn; A1[1] = Math.min(vBack[j] * vBack[j], vc); A1[2] = Math.min(vLat[j] * vLat[j], vc);
+          if (!(wn <= A1[1] && wn <= A1[2] && wi <= A0[1] && wi <= A0[2]) && !lowAll(0) && !lowAll(1) && !lowAll(2)) {
+            let nc = 0; cuts[nc++] = 0;
+            for (let p = 0; p < 3; p++) for (let q = p + 1; q < 3; q++) { const d = (A1[p] - A0[p]) - (A1[q] - A0[q]), f = d ? (A0[q] - A0[p]) / d : -1; if (f > 1e-9 && f < 1 - 1e-9) cuts[nc++] = f; }
+            cuts[nc++] = 1; const cs = Array.from(cuts.subarray(0, nc)).sort((x, y) => x - y);
+            let wA = wi, fa = 0;
+            for (let c2 = 0; c2 + 1 < cs.length; c2++) {
+              const q = lineLow(0.5 * (cs[c2] + cs[c2 + 1])), fb = cs[c2 + 1];
+              if (c2 + 2 < cs.length && lineLow(0.5 * (cs[c2 + 1] + cs[c2 + 2])) === q) continue; // same line goes on
+              const wB = fb === 1 ? vj * vj : A0[q] + (A1[q] - A0[q]) * fb, len = (fb - fa) * ds, vA = Math.sqrt(Math.max(1, wA)), vB = Math.sqrt(Math.max(1, wB)), tq = 2 * len / (vA + vB), fm = 0.5 * (fa + fb);
+              dt += tq;
+              if (vB > vA + 1e-6 * (fb - fa)) dep += (e1 + (e2 - e1) * fm) * tq;
+              if (vB >= vA - 1e-6 * (fb - fa)) thr += (h1 + (h2 - h1) * fm) * tq;
+              else if (ers.regenMax) brk += regenP(wA, wB, len) * tq;
+              wA = wB; fa = fb;
+            }
+          } else {
+            // Simpson: the speed at mid-step is the lowest of the accelerating curve, the braking curve and the lateral limit
+            const vl = latMid(i, j, 0.5), vm = Math.max(1, Math.min(Math.sqrt(Math.max(1, Math.min(wm, bm[i]))), vl, vMaxCar));
+            dt = ds / 6 * (1 / vi + 4 / vm + 1 / Math.max(vj, 1));
+            // deploy and throttle-harvest power along the step; where either changes fast (corner exits: the friction ellipse
+            // opens like a square root: less than 60 % of it left at an end; every step with throttle harvest) it is read at up to 7 points inside the step on the profile
+            const me = vj >= vi - 1e-6 && (throttleHarvest || Math.min(el1, el2) < 0.6) ? Math.min(8, Math.ceil(Math.max(Math.abs(e1 - e2), Math.abs(h1 - h2)) / 25e3)) : 1;
+            if (me > 1) {
+              let eS = 0, hS = 0, tS = 0, vA = vi, eA = e1, hA = h1;
+              for (let q = 1; q <= me; q++) {
+                const f = q / me, wq = Math.min(wi + ds * f * (2 * k1 + (k2 - k1) * f), A0[1] + (A1[1] - A0[1]) * f, A0[2] + (A1[2] - A0[2]) * f);
+                const vB = q === me ? Math.max(vj, 1) : Math.sqrt(Math.max(1, wq)); let eB = e2, hB = h2;
+                if (q < me) { virt(i, j, f); drv(Math.min(vB, vLat[n]), n, mode, al, sHy, clipOf); eB = dErs; hB = dHarv; }
+                const tq = 2 * ds / me / (vA + vB); eS += 0.5 * (eA + eB) * tq; hS += 0.5 * (hA + hB) * tq; tS += tq; vA = vB; eA = eB; hA = hB;
+              }
+              if (vj > vi + 1e-6) dep = eS * dt / tS;
+              if (throttleHarvest) thr = hS * dt / tS;
+            } else {
+              if (vj > vi + 1e-6) dep = 0.5 * (e1 + e2) * dt;
+              if (throttleHarvest && vj >= vi - 1e-6) thr = 0.5 * (h1 + h2) * dt;
+            }
+            if (vj < vi - 1e-6 && ers.regenMax) brk = regenP(wi, vj * vj, ds) * dt;
+          }
+          if (!throttleHarvest) thr = 0;
+          let rpNew = null;
+          if (ramp && track && !rp && mode === 1 && e1 > 100e3 && dep > 0) {
+            // C5.12 event point: the charge left reaches the ramp's own energy inside this step, so the hold starts there
+            const eRof = P1 => { const lo = Math.min(P1, 100e3); return P1 + 0.5 * (P1 - lo) * (P1 + lo) / ramp.R; };
+            let P1 = e1 - rampStep(i), eR = eRof(P1);
+            if (P1 > HOLD_MIN && soc > eR && soc - dep < eR) {
+              // the cut is taken from the deploy power at the event point
+              for (let it = 0; it < 2; it++) { const f = Math.min(1, Math.max(0, (soc - eR) / dep)); P1 = e1 + (e2 - e1) * f - rampStep(i); eR = eRof(P1); }
+              const phi = Math.min(1, Math.max(0, (soc - eR) / dep)); sMode = 2; sAl = P1;
+              const q1 = Ri(vi), qe1 = dErs, q2 = Rj(Math.min(Math.sqrt(Math.max(1, wi + 2 * q1 * ds)), vLat[j])), qe2 = dErs;
+              wn = wi + ds * (phi * (k1 + k2) + (1 - phi) * (q1 + q2));
+              vj = Math.min(Math.sqrt(Math.max(1, wn)), vLat[j], vMaxCar, vBack[j]);
+              dt = 2 * ds / Math.max(vi + vj, 2); dep = phi * dep + (1 - phi) * 0.5 * (qe1 + qe2) * dt;
+              rpNew = {P1, t: -phi * dt}; // the hold clock starts at the event point (t advances by dt below)
+            }
+          }
+          if (ramp) { if (vj > vi + 1e-6) { pPrev = rpNew ? sAl : e2; if (rpNew) rp = rpNew; if (rp) rp.t += dt; } else { pPrev = 0; rp = null; } prevLim = pErs; prevPhi = -1; }
+          if (track) {
+            if (dep > Math.max(0, soc)) {
+              // the battery empties inside the step: deploy for the share phi of the step, then none (event point)
+              const phi = Math.max(0, soc) / dep;
+              sMode = 0; sHy = false;
+              const q1 = Ri(vi), q2 = Rj(Math.min(Math.sqrt(Math.max(1, wi + 2 * q1 * ds)), vLat[j]));
+              wn = wi + ds * (phi * (k1 + k2) + (1 - phi) * (q1 + q2));
+              vj = Math.min(Math.sqrt(Math.max(1, wn)), vLat[j], vMaxCar, vBack[j]);
+              dt = 2 * ds / Math.max(vi + vj, 2); dep = Math.max(0, soc); prevPhi = phi;
+            }
+            const rec = Math.max(0, Math.min(thr + brk, recMax - got)); got += rec;
+            soc -= dep; soc = Math.min(socMax, soc + rec);
+          }
+          prevDt = dt; v[j] = vj; sDt[i] = dt; sDep[i] = dep; sThr[i] = thr; sBrk[i] = brk;
+          if (!stiff && vP <= vLat[j] && vj === Math.sqrt(Math.max(1, wn)) && sCd < 0 && cdBefore < 0 && sMode === mode) { nK = k2; nE = e2; nH = h2; nPl = pl2; nEl = el2; nMode = mode; nAl = al; nHy = sHy; }
+        }
+      }
+      return v;
+    };
+    const account2 = () => { let eDeploy = 0, eRegen = 0, eHarv = 0, time = 0;
+      for (let i = 0; i < n; i++) { time += sDt[i]; eDeploy += sDep[i]; eRegen += sBrk[i]; eHarv += sThr[i]; }
+      return {eDeploy, eRegen: eRegen + eHarv, eBrake: eRegen, eHarv, time}; };
+    const forward = STEP === 2 ? forward2 : forward1, account = STEP === 2 ? account2 : account1;
 
     // 4) Choose the deployment cut-off speed so the lap stays inside the energy budget.
     //    Deploying at lower speed gains more time per joule, so a speed threshold is a good
@@ -388,7 +625,8 @@ export function lapsimKernel() {
       return lo;
     };
     let vCut = vMaxCar + 1, vH = Infinity, v = forward(vCut), acc = account(v);
-    if ((ers.pMax || ers.rule === 'hypercar') && acc.eDeploy > budget(acc.eRegen)) {
+    // step 2 tracks the battery exactly, so a causal lap overspends only by rounding: 1 J is not an overspend
+    if ((ers.pMax || ers.rule === 'hypercar') && acc.eDeploy > budget(acc.eRegen) + (STEP === 2 ? 1 : 0)) {
       vCut = fitCut(Infinity); v = forward(vCut); acc = account(v);
       // super-clipping: if the lap is short of the recharge limit, harvest at full throttle at the top of
       // the straights (above vH) and spend the energy lower down, when that is faster
@@ -416,7 +654,8 @@ export function lapsimKernel() {
 
     // Results
     const time = new Float64Array(n + 1);
-    for (let i = 0; i < n; i++) { const j = (i + 1) % n; time[i + 1] = time[i] + 2 * ds / Math.max(v[i] + v[j], 2); }
+    if (STEP === 2) for (let i = 0; i < n; i++) time[i + 1] = time[i] + sDt[i];
+    else for (let i = 0; i < n; i++) { const j = (i + 1) % n; time[i + 1] = time[i] + 2 * ds / Math.max(v[i] + v[j], 2); }
     const limit = new Uint8Array(n); // 0 lateral, 1 traction, 2 power, 3 braking
     for (let i = 0; i < n; i++) {
       const j = (i + 1) % n;
@@ -429,11 +668,12 @@ export function lapsimKernel() {
     let flow = null;
     if (ers.pMax || ers.rule === 'hypercar') {
       const dep = new Array(n).fill(0), brk = new Array(n).fill(0), thr = new Array(n).fill(0);
-      for (let i = 0; i < n; i++) {
+      if (STEP === 2) for (let i = 0; i < n; i++) { dep[i] = sDep[i]; brk[i] = sBrk[i]; thr[i] = sThr[i]; }
+      else for (let i = 0; i < n; i++) {
         const j = (i + 1) % n, vm = 0.5 * (v[i] + v[j]), dt = ds / Math.max(vm, 1);
         if (throttleHarvest && v[j] >= v[i] - 1e-6) thr[i] = harv[i] * dt;
         if (v[j] > v[i] + 1e-6) dep[i] = ersUsed[i] * dt;
-        if (v[j] < v[i] - 1e-6 && ers.regenMax) brk[i] = Math.min(ers.regenMax, (ers.regenShare ?? 0.6) * t.m * (v[i] * v[i] - v[j] * v[j]) / (2 * ds) * vm * (ers.etaRegen ?? 0.9)) * dt;
+        if (v[j] < v[i] - 1e-6 && ers.regenMax) brk[i] = (law && law.regen ? regenLaw(t.m * (v[i] * v[i] - v[j] * v[j]) / (2 * ds) * vm, vm, i) : Math.min(ers.regenMax, (ers.regenShare ?? 0.6) * t.m * (v[i] * v[i] - v[j] * v[j]) / (2 * ds) * vm * (ers.etaRegen ?? 0.9))) * dt;
       }
       flow = {dep, brk, thr, soc: ers.socWindow ?? (ers.rule === 'hypercar' ? 0.5e6 : 4e6), recharge: ers.rule === 'f1-2026' ? env.rechargeMax ?? ers.rechargeMax ?? 8.5e6 : null, rule: ers.rule || 'ers'};
     }
@@ -521,13 +761,16 @@ export function lapsimKernel() {
 
   // Apply parsed changes to a track (mu / vScale arrays). corners: [{number, letter, s}] with s in metres.
   // strength scales every scenario effect (0 = ignore, 1 = default, 2 = double).
+  // Hook (docs/lapsim-hooks.md): track.changeFactors(change) → {kind: 'grip' | 'cornerSpeed', factor} or null (no effect) replaces
+  // change.effect; unset = change.effect, as before.
   function applyTrackChanges(track, changes, corners, {strength = 1} = {}) {
     const n = track.kappa.length, L = n * track.ds;
     const mu = Float64Array.from(track.mu || new Float64Array(n).fill(1));
     const vScale = Float64Array.from(track.vScale || new Float64Array(n).fill(1));
     const applied = [];
     for (const ch of changes) {
-      if (!ch.affectsLap || !ch.effect || !corners?.length) continue;
+      const eff = track.changeFactors ? track.changeFactors(ch) : ch.effect;
+      if (!ch.affectsLap || !eff || !corners?.length) continue;
       // spans in metres: one stretch (from..to), one corner, or several separate corners (list)
       const spans = [];
       if (ch.range.list) for (const r of ch.range.list) { const w = windowFor(r, corners); if (w) spans.push(w); }
@@ -540,8 +783,8 @@ export function lapsimKernel() {
         }
       }
       if (!spans.length) { applied.push({...ch, applied: false, reason: 'corner not found'}); continue; }
-      const factor = 1 + (ch.effect.factor - 1) * strength;
-      const target = ch.effect.kind === 'grip' ? mu : vScale;
+      const factor = 1 + (eff.factor - 1) * strength;
+      const target = eff.kind === 'grip' ? mu : vScale;
       const hit = new Uint8Array(n);
       for (const [a0, a1] of spans) {
         const s0 = ((a0 % L) + L) % L, s1 = ((a1 % L) + L) % L;
