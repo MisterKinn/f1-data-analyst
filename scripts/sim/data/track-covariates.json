@@ -15,7 +15,7 @@
    "altitudeM": 154,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "austin",
@@ -29,7 +29,7 @@
    "altitudeM": 154,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "austin",
@@ -43,7 +43,7 @@
    "altitudeM": 154,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "austin",
@@ -57,7 +57,7 @@
    "altitudeM": 154,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "austin",
@@ -71,7 +71,7 @@
    "altitudeM": 154,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "austin",
@@ -211,7 +211,7 @@
    "altitudeM": 121,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "catalunya",
@@ -225,7 +225,7 @@
    "altitudeM": 121,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "catalunya",
@@ -239,7 +239,7 @@
    "altitudeM": 121,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": 2021,
-   "coverage": "hand-entered"
+   "coverage": "fia-documented"
   },
   {
    "track": "catalunya",
@@ -253,7 +253,7 @@
    "altitudeM": 121,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": 2021,
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "catalunya",
@@ -267,7 +267,7 @@
    "altitudeM": 121,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": 2023,
-   "coverage": "hand-entered"
+   "coverage": "fia-documented"
   },
   {
    "track": "catalunya",
@@ -281,7 +281,7 @@
    "altitudeM": 121,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": 2023,
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "catalunya",
@@ -295,20 +295,6 @@
    "altitudeM": 121,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": 2023,
-   "coverage": "no-history"
-  },
-  {
-   "track": "catalunya",
-   "season": 2026,
-   "lastFullResurfacing": 2018,
-   "surfaceAgeYears": 8,
-   "firstYearOnNewSurface": false,
-   "surfaceSrc": "https://www.formula1.com/en/latest/article/re-laid-surface-brings-unknown-factor-to-silverstone-weekend.28wPQFNnViY78S1PZarW9j",
-   "street": 0,
-   "streetSrc": "https://www.williamsf1.com/articles/b0625f34-0ae6-4aec-a00a-34d327bce4b6/explained-why-f1-has-more-street-circuits-than-ever-before",
-   "altitudeM": 121,
-   "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
-   "layoutEra": 2023,
    "coverage": "fia-documented"
   },
   {
@@ -323,7 +309,7 @@
    "altitudeM": 240,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "hungaroring",
@@ -337,7 +323,7 @@
    "altitudeM": 240,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "hungaroring",
@@ -351,7 +337,7 @@
    "altitudeM": 240,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "hungaroring",
@@ -365,7 +351,7 @@
    "altitudeM": 240,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "hungaroring",
@@ -379,7 +365,7 @@
    "altitudeM": 240,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "hungaroring",
@@ -393,7 +379,7 @@
    "altitudeM": 240,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "hungaroring",
@@ -435,7 +421,7 @@
    "altitudeM": 39,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "imola",
@@ -449,7 +435,7 @@
    "altitudeM": 39,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "imola",
@@ -463,7 +449,7 @@
    "altitudeM": 39,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "imola",
@@ -477,7 +463,7 @@
    "altitudeM": 39,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "imola",
@@ -505,7 +491,7 @@
    "altitudeM": 779,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "interlagos",
@@ -547,7 +533,7 @@
    "altitudeM": 779,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "interlagos",
@@ -564,20 +550,6 @@
    "coverage": "fia-documented"
   },
   {
-   "track": "interlagos",
-   "season": 2026,
-   "lastFullResurfacing": "unknown",
-   "surfaceAgeYears": "unknown",
-   "firstYearOnNewSurface": "unknown",
-   "surfaceSrc": null,
-   "street": 0,
-   "streetSrc": "https://www.williamsf1.com/articles/b0625f34-0ae6-4aec-a00a-34d327bce4b6/explained-why-f1-has-more-street-circuits-than-ever-before",
-   "altitudeM": 779,
-   "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
-   "layoutEra": "first in range",
-   "coverage": "fia-documented"
-  },
-  {
    "track": "jeddah",
    "season": 2021,
    "lastFullResurfacing": "unknown",
@@ -589,7 +561,7 @@
    "altitudeM": 2,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "jeddah",
@@ -617,7 +589,7 @@
    "altitudeM": 2,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "jeddah",
@@ -631,7 +603,7 @@
    "altitudeM": 2,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "jeddah",
@@ -645,7 +617,7 @@
    "altitudeM": 2,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "kuala-lumpur",
@@ -673,7 +645,7 @@
    "altitudeM": 644,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "las-vegas",
@@ -691,20 +663,6 @@
   },
   {
    "track": "las-vegas",
-   "season": 2025,
-   "lastFullResurfacing": "unknown",
-   "surfaceAgeYears": "unknown",
-   "firstYearOnNewSurface": "unknown",
-   "surfaceSrc": null,
-   "street": 1,
-   "streetSrc": "https://www.williamsf1.com/articles/b0625f34-0ae6-4aec-a00a-34d327bce4b6/explained-why-f1-has-more-street-circuits-than-ever-before",
-   "altitudeM": 644,
-   "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
-   "layoutEra": "first in range",
-   "coverage": "fia-documented"
-  },
-  {
-   "track": "las-vegas",
    "season": 2026,
    "lastFullResurfacing": "unknown",
    "surfaceAgeYears": "unknown",
@@ -715,7 +673,7 @@
    "altitudeM": 644,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "lusail",
@@ -729,7 +687,7 @@
    "altitudeM": 12,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "lusail",
@@ -743,7 +701,7 @@
    "altitudeM": 12,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "hand-entered"
+   "coverage": "fia-documented"
   },
   {
    "track": "lusail",
@@ -775,41 +733,13 @@
   },
   {
    "track": "madring",
-   "season": 2023,
-   "lastFullResurfacing": "unknown",
-   "surfaceAgeYears": "unknown",
-   "firstYearOnNewSurface": "unknown",
-   "surfaceSrc": null,
-   "street": 0,
-   "streetSrc": "https://www.williamsf1.com/articles/b0625f34-0ae6-4aec-a00a-34d327bce4b6/explained-why-f1-has-more-street-circuits-than-ever-before",
-   "altitudeM": 672,
-   "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
-   "layoutEra": "first in range",
-   "coverage": "no-history"
-  },
-  {
-   "track": "madring",
-   "season": 2025,
-   "lastFullResurfacing": "unknown",
-   "surfaceAgeYears": "unknown",
-   "firstYearOnNewSurface": "unknown",
-   "surfaceSrc": null,
-   "street": 0,
-   "streetSrc": "https://www.williamsf1.com/articles/b0625f34-0ae6-4aec-a00a-34d327bce4b6/explained-why-f1-has-more-street-circuits-than-ever-before",
-   "altitudeM": 672,
-   "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
-   "layoutEra": "first in range",
-   "coverage": "no-history"
-  },
-  {
-   "track": "madring",
    "season": 2026,
    "lastFullResurfacing": "unknown",
    "surfaceAgeYears": "unknown",
    "firstYearOnNewSurface": "unknown",
    "surfaceSrc": null,
-   "street": 0,
-   "streetSrc": "https://www.williamsf1.com/articles/b0625f34-0ae6-4aec-a00a-34d327bce4b6/explained-why-f1-has-more-street-circuits-than-ever-before",
+   "street": "unknown",
+   "streetSrc": null,
    "altitudeM": 672,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
@@ -841,7 +771,7 @@
    "altitudeM": 2,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": 2022,
-   "coverage": "hand-entered"
+   "coverage": "fia-documented"
   },
   {
    "track": "melbourne",
@@ -855,7 +785,7 @@
    "altitudeM": 2,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": 2022,
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "melbourne",
@@ -869,7 +799,7 @@
    "altitudeM": 2,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": 2022,
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "melbourne",
@@ -883,7 +813,7 @@
    "altitudeM": 2,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": 2022,
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "melbourne",
@@ -911,7 +841,7 @@
    "altitudeM": 2234,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "mexico-city",
@@ -953,7 +883,7 @@
    "altitudeM": 2234,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "mexico-city",
@@ -967,7 +897,7 @@
    "altitudeM": 2234,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "mexico-city",
@@ -1009,7 +939,7 @@
    "altitudeM": 5,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "miami",
@@ -1023,7 +953,7 @@
    "altitudeM": 5,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "hand-entered"
+   "coverage": "fia-documented"
   },
   {
    "track": "miami",
@@ -1037,7 +967,7 @@
    "altitudeM": 5,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "miami",
@@ -1261,7 +1191,7 @@
    "altitudeM": 182,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "monza",
@@ -1275,7 +1205,7 @@
    "altitudeM": 182,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "monza",
@@ -1289,7 +1219,7 @@
    "altitudeM": 182,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "monza",
@@ -1303,7 +1233,7 @@
    "altitudeM": 182,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "monza",
@@ -1317,7 +1247,7 @@
    "altitudeM": 182,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "monza",
@@ -1331,7 +1261,7 @@
    "altitudeM": 182,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "hand-entered"
+   "coverage": "fia-documented"
   },
   {
    "track": "monza",
@@ -1345,7 +1275,7 @@
    "altitudeM": 182,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "monza",
@@ -1373,7 +1303,7 @@
    "altitudeM": 8,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "sakhir",
@@ -1387,7 +1317,7 @@
    "altitudeM": 8,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "sakhir",
@@ -1401,7 +1331,7 @@
    "altitudeM": 8,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "sakhir",
@@ -1429,7 +1359,7 @@
    "altitudeM": 8,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "sakhir",
@@ -1443,7 +1373,7 @@
    "altitudeM": 8,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "sakhir",
@@ -1457,7 +1387,7 @@
    "altitudeM": 8,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "shanghai",
@@ -1471,7 +1401,7 @@
    "altitudeM": 4,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "shanghai",
@@ -1485,7 +1415,7 @@
    "altitudeM": 4,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "shanghai",
@@ -1499,7 +1429,7 @@
    "altitudeM": 4,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "hand-entered"
+   "coverage": "fia-documented"
   },
   {
    "track": "shanghai",
@@ -1527,7 +1457,7 @@
    "altitudeM": 152,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "hand-entered"
+   "coverage": "fia-documented"
   },
   {
    "track": "silverstone",
@@ -1541,7 +1471,7 @@
    "altitudeM": 152,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "silverstone",
@@ -1555,7 +1485,7 @@
    "altitudeM": 152,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "silverstone",
@@ -1569,7 +1499,7 @@
    "altitudeM": 152,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "silverstone",
@@ -1583,7 +1513,7 @@
    "altitudeM": 152,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "silverstone",
@@ -1611,7 +1541,7 @@
    "altitudeM": 152,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "singapore",
@@ -1709,7 +1639,7 @@
    "altitudeM": 391,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "spa-francorchamps",
@@ -1723,7 +1653,7 @@
    "altitudeM": 391,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "spa-francorchamps",
@@ -1737,7 +1667,7 @@
    "altitudeM": 391,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "spa-francorchamps",
@@ -1751,21 +1681,7 @@
    "altitudeM": 391,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
-  },
-  {
-   "track": "spa-francorchamps",
-   "season": 2024,
-   "lastFullResurfacing": "unknown",
-   "surfaceAgeYears": "unknown",
-   "firstYearOnNewSurface": "unknown",
-   "surfaceSrc": null,
-   "street": 0,
-   "streetSrc": "https://www.williamsf1.com/articles/b0625f34-0ae6-4aec-a00a-34d327bce4b6/explained-why-f1-has-more-street-circuits-than-ever-before",
-   "altitudeM": 391,
-   "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
-   "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "spa-francorchamps",
@@ -1793,7 +1709,7 @@
    "altitudeM": 391,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "spielberg",
@@ -1807,7 +1723,7 @@
    "altitudeM": 681,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "spielberg",
@@ -1821,7 +1737,7 @@
    "altitudeM": 681,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "spielberg",
@@ -1835,7 +1751,7 @@
    "altitudeM": 681,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "spielberg",
@@ -1849,7 +1765,7 @@
    "altitudeM": 681,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "spielberg",
@@ -1863,7 +1779,7 @@
    "altitudeM": 681,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "spielberg",
@@ -1877,7 +1793,7 @@
    "altitudeM": 681,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "spielberg",
@@ -1905,7 +1821,7 @@
    "altitudeM": 681,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "suzuka",
@@ -1919,7 +1835,7 @@
    "altitudeM": 36,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "suzuka",
@@ -1933,7 +1849,7 @@
    "altitudeM": 36,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "suzuka",
@@ -1947,7 +1863,7 @@
    "altitudeM": 36,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "suzuka",
@@ -1961,7 +1877,7 @@
    "altitudeM": 36,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "suzuka",
@@ -1975,7 +1891,7 @@
    "altitudeM": 36,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "suzuka",
@@ -1989,7 +1905,7 @@
    "altitudeM": 36,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "yas-marina-circuit",
@@ -2003,7 +1919,7 @@
    "altitudeM": 7,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "yas-marina-circuit",
@@ -2017,7 +1933,7 @@
    "altitudeM": 7,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "yas-marina-circuit",
@@ -2031,7 +1947,7 @@
    "altitudeM": 7,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": 2021,
-   "coverage": "hand-entered"
+   "coverage": "fia-documented"
   },
   {
    "track": "yas-marina-circuit",
@@ -2045,7 +1961,7 @@
    "altitudeM": 7,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": 2021,
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "yas-marina-circuit",
@@ -2059,7 +1975,7 @@
    "altitudeM": 7,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": 2021,
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "yas-marina-circuit",
@@ -2101,7 +2017,7 @@
    "altitudeM": 5,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "zandvoort",
@@ -2115,7 +2031,7 @@
    "altitudeM": 5,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "zandvoort",
@@ -2129,7 +2045,7 @@
    "altitudeM": 5,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "zandvoort",
@@ -2143,7 +2059,7 @@
    "altitudeM": 5,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "zandvoort",
@@ -2157,7 +2073,7 @@
    "altitudeM": 5,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   },
   {
    "track": "zandvoort",
@@ -2171,7 +2087,7 @@
    "altitudeM": 5,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
    "layoutEra": "first in range",
-   "coverage": "no-history"
+   "coverage": "fia-documented"
   }
  ]
 }

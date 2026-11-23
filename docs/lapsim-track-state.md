@@ -14,11 +14,11 @@ Pre-registration: Project `claude/gate-track-state-prereg-2026-11-23.md` (ledger
 
 | Label | All tracks | F1 tracks (raced 2019–2026) |
 |---|---|---|
-| fia-documented | 20 | 20 |
+| fia-documented | 25 | 25 |
 | hand-entered | 3 | 0 |
-| no-history | 77 | 6 |
+| no-history | 72 | 1 |
 
-Per track: austin (fia-documented), baku (fia-documented), catalunya (fia-documented), hungaroring (fia-documented), interlagos (fia-documented), laguna-seca (hand-entered), las-vegas (fia-documented), lusail (fia-documented), madring (fia-documented), melbourne (fia-documented), mexico-city (fia-documented), miami (fia-documented), mid-ohio (hand-entered), monte-carlo (fia-documented), montreal (fia-documented), monza (fia-documented), road-america (hand-entered), shanghai (fia-documented), silverstone (fia-documented), singapore (fia-documented), spa-francorchamps (fia-documented), spielberg (fia-documented), yas-marina-circuit (fia-documented). Every other track: no-history.
+Per track: austin (fia-documented), baku (fia-documented), catalunya (fia-documented), hungaroring (fia-documented), imola (fia-documented), interlagos (fia-documented), jeddah (fia-documented), laguna-seca (hand-entered), las-vegas (fia-documented), lusail (fia-documented), madring (fia-documented), melbourne (fia-documented), mexico-city (fia-documented), miami (fia-documented), mid-ohio (hand-entered), monte-carlo (fia-documented), montreal (fia-documented), monza (fia-documented), road-america (hand-entered), sakhir (fia-documented), shanghai (fia-documented), silverstone (fia-documented), singapore (fia-documented), spa-francorchamps (fia-documented), spielberg (fia-documented), suzuka (fia-documented), yas-marina-circuit (fia-documented), zandvoort (fia-documented). Every other track: no-history.
 
 ## Year pairs worth a year selector
 
@@ -39,20 +39,20 @@ A pair is selectable only with a layout change or a full resurfacing that has a 
 | singapore | 2022 | 2023 | layout | [link](https://www.formula1.com/en/latest/article/singapore-grand-prix-set-to-feature-revised-track-layout-in-2023.6KsrU6hQw3hxrVJ6zKeJ74) |
 | yas-marina-circuit | 2020 | 2021 | layout | [link](https://www.formula1.com/en/latest/article/revealed-the-track-changes-aimed-at-improving-overtaking-at-abu-dhabis-yas.rejS8Xxbgoom5yPUInsek) |
 
-Information only: every other pair (121 pairs, 25 with partial FIA changes: kerbs, patches, run-off). They are listed in `track-state-data.js` (`tracks.<id>.years`).
+Information only: every other pair (115 pairs, 82 with partial FIA changes: kerbs, patches, run-off). They are listed in `track-state-data.js` (`tracks.<id>.years`).
 
 ## Change effects with 2019–2026 (descriptive, prereg section 2 rule)
 
-27 cases on 8 circuits; 10 change-years skipped (|r − 1| ≥ 0.1 6, wet or < 2 clean laps 3, no TI session 1).
+100 cases on 17 circuits; 24 change-years skipped (|r − 1| ≥ 0.1 9, wet or < 2 clean laps 12, layout change between years 1, no earlier TI session 2).
 Corner-speed effect = median over cases of v_min(changed)/v_min(prev) ÷ control corners; 90 % interval: cluster bootstrap by circuit (4000 draws, seed 1). Floor = median absolute deviation of the control corners.
 
 | Type | n | Circuits | Median corner speed | 90 % interval | Floor | Default (as corner speed) | Default sign wrong | Rule |
 |---|---|---|---|---|---|---|---|---|
-| kerb_raised | 1 | 1 | -1.15 % | -1.15 % … -1.15 % | ±0.35 % | -0.50 % | no | strength 0 (n < 10) |
-| kerb_lowered | 7 | 4 | -1.56 % | -4.22 % … +0.90 % | ±2.74 % | +0.50 % | yes | strength 0 (n < 10) |
-| kerb_changed | 4 | 2 | -2.28 % | -6.01 % … +2.64 % | ±3.45 % | – | – | strength 0 (n < 10) |
-| resurfacing | 11 | 8 | +0.06 % | -4.17 % … +2.71 % | ±2.46 % | +1.00 % | no | strength 0 (interval includes 0) |
-| bump_removal | 4 | 4 | -3.31 % | -5.14 % … +4.86 % | ±2.39 % | +0.50 % | yes | strength 0 (n < 10) |
+| kerb_raised | 18 | 11 | +0.25 % | -1.15 % … +2.67 % | ±1.62 % | -0.50 % | yes | strength 0 (interval includes 0) |
+| kerb_lowered | 17 | 7 | +0.64 % | -1.95 % … +1.22 % | ±1.63 % | +0.50 % | no | strength 0 (interval includes 0) |
+| kerb_changed | 19 | 10 | +0.97 % | -0.69 % … +2.72 % | ±1.30 % | – | – | strength 0 (interval includes 0) |
+| resurfacing | 33 | 9 | +0.06 % | -1.76 % … +2.71 % | ±1.66 % | +1.00 % | no | strength 0 (interval includes 0) |
+| bump_removal | 13 | 8 | +0.06 % | -4.24 % … +2.81 % | ±1.92 % | +0.50 % | no | strength 0 (interval includes 0) |
 
 These numbers decide nothing: the gate (candidates C1–C3 against strength 0, leave-one-track-out) runs in step 5b after step 1 merges.
 
