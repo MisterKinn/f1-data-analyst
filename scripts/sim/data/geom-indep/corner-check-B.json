@@ -1,0 +1,316 @@
+{
+ "shanghai": {
+  "bands": [
+   0.829575,
+   0.7354,
+   null,
+   null
+  ],
+  "seasons": [
+   {
+    "year": "2025",
+    "delta": 28,
+    "corr": 0.743,
+    "corners": [
+     {
+      "x": 786,
+      "vMeas": 98,
+      "vModel": 98.4,
+      "rMin": 29,
+      "ratio": 1.0043
+     },
+     {
+      "x": 897,
+      "vMeas": 97,
+      "vModel": 98.7,
+      "rMin": 29,
+      "ratio": 1.0171
+     },
+     {
+      "x": 1580,
+      "vMeas": 82,
+      "vModel": 72.4,
+      "rMin": 19,
+      "ratio": 0.8834
+     },
+     {
+      "x": 2535,
+      "vMeas": 122,
+      "vModel": 89.7,
+      "rMin": 26,
+      "ratio": 0.7354
+     },
+     {
+      "x": 3130,
+      "vMeas": 99,
+      "vModel": 70.2,
+      "rMin": 16,
+      "ratio": 0.7092
+     },
+     {
+      "x": 4781,
+      "vMeas": 65,
+      "vModel": 54.1,
+      "rMin": 11,
+      "ratio": 0.8331
+     }
+    ],
+    "rejected": {
+     "edge": 0,
+     "radius": 1
+    },
+    "bands": [
+     0.8834,
+     0.7354,
+     null,
+     null
+    ]
+   },
+   {
+    "year": "2026",
+    "delta": 13,
+    "corr": 0.699,
+    "corners": [
+     {
+      "x": 1607,
+      "vMeas": 81,
+      "vModel": 75.2,
+      "rMin": 19,
+      "ratio": 0.9278
+     },
+     {
+      "x": 2548,
+      "vMeas": 119,
+      "vModel": 90.5,
+      "rMin": 26,
+      "ratio": 0.7605
+     },
+     {
+      "x": 3137,
+      "vMeas": 94,
+      "vModel": 68.3,
+      "rMin": 16,
+      "ratio": 0.7271
+     },
+     {
+      "x": 4786,
+      "vMeas": 68,
+      "vModel": 53.8,
+      "rMin": 11,
+      "ratio": 0.791
+     }
+    ],
+    "rejected": {
+     "edge": 0,
+     "radius": 1
+    },
+    "bands": [
+     0.7757499999999999,
+     null,
+     null,
+     null
+    ]
+   }
+  ]
+ },
+ "imola": {
+  "bands": [
+   0.988,
+   0.90655,
+   0.7362,
+   null
+  ],
+  "seasons": [
+   {
+    "year": "2025",
+    "delta": -14,
+    "corr": 0.746,
+    "corners": [
+     {
+      "x": 910,
+      "vMeas": 183,
+      "vModel": 112.5,
+      "rMin": 31,
+      "ratio": 0.615
+     },
+     {
+      "x": 1598,
+      "vMeas": 197,
+      "vModel": 145,
+      "rMin": 43,
+      "ratio": 0.7362
+     },
+     {
+      "x": 1908,
+      "vMeas": 108,
+      "vModel": 106.4,
+      "rMin": 30,
+      "ratio": 0.9849
+     },
+     {
+      "x": 2537,
+      "vMeas": 232,
+      "vModel": 195.1,
+      "rMin": 59,
+      "ratio": 0.841
+     },
+     {
+      "x": 3045,
+      "vMeas": 143,
+      "vModel": 120.4,
+      "rMin": 35,
+      "ratio": 0.8418
+     },
+     {
+      "x": 3556,
+      "vMeas": 104,
+      "vModel": 103.1,
+      "rMin": 29,
+      "ratio": 0.9911
+     },
+     {
+      "x": 4309,
+      "vMeas": 123,
+      "vModel": 119.5,
+      "rMin": 34,
+      "ratio": 0.9713
+     }
+    ],
+    "rejected": {
+     "edge": 0,
+     "radius": 0
+    },
+    "bands": [
+     0.988,
+     0.90655,
+     0.7362,
+     null
+    ]
+   }
+  ]
+ },
+ "suzuka": {
+  "bands": [
+   1.10925,
+   0.9427,
+   0.9216,
+   null
+  ],
+  "seasons": [
+   {
+    "year": "2025",
+    "delta": -8,
+    "corr": 0.776,
+    "corners": [
+     {
+      "x": 1557,
+      "vMeas": 199,
+      "vModel": 185.4,
+      "rMin": 63,
+      "ratio": 0.9317
+     },
+     {
+      "x": 2431,
+      "vMeas": 141,
+      "vModel": 132.9,
+      "rMin": 46,
+      "ratio": 0.9427
+     },
+     {
+      "x": 2889,
+      "vMeas": 77,
+      "vModel": 78.2,
+      "rMin": 22,
+      "ratio": 1.0157
+     },
+     {
+      "x": 3932,
+      "vMeas": 186,
+      "vModel": 169.5,
+      "rMin": 54,
+      "ratio": 0.9115
+     },
+     {
+      "x": 5361,
+      "vMeas": 91,
+      "vModel": 109.5,
+      "rMin": 32,
+      "ratio": 1.2028
+     }
+    ],
+    "rejected": {
+     "edge": 1,
+     "radius": 0
+    },
+    "bands": [
+     1.10925,
+     0.9427,
+     0.9216,
+     null
+    ]
+   }
+  ]
+ },
+ "jeddah": {
+  "bands": [
+   1.07005,
+   0.78,
+   0.7985500000000001,
+   null
+  ],
+  "seasons": [
+   {
+    "year": "2025",
+    "delta": -29,
+    "corr": 0.772,
+    "corners": [
+     {
+      "x": 544,
+      "vMeas": 88,
+      "vModel": 84.5,
+      "rMin": 20,
+      "ratio": 0.9597
+     },
+     {
+      "x": 2418,
+      "vMeas": 158,
+      "vModel": 123.2,
+      "rMin": 35,
+      "ratio": 0.78
+     },
+     {
+      "x": 3067,
+      "vMeas": 198,
+      "vModel": 145.7,
+      "rMin": 43,
+      "ratio": 0.7357
+     },
+     {
+      "x": 4255,
+      "vMeas": 195,
+      "vModel": 168,
+      "rMin": 49,
+      "ratio": 0.8614
+     },
+     {
+      "x": 5510,
+      "vMeas": 107,
+      "vModel": 126.3,
+      "rMin": 36,
+      "ratio": 1.1804
+     }
+    ],
+    "rejected": {
+     "edge": 2,
+     "radius": 0
+    },
+    "bands": [
+     1.07005,
+     0.78,
+     0.7985500000000001,
+     null
+    ]
+   }
+  ]
+ }
+}

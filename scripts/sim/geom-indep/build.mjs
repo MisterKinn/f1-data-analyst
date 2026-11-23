@@ -18,10 +18,10 @@ export const SEEDS = {jeddah: [21.6319, 39.1044], shanghai: [31.3389, 121.2197],
 export const FIA = {jeddah: {lengthM: 6176, widthM: 12}, shanghai: {lengthM: 5451, widthM: 13}, imola: {lengthM: 4909, widthM: 10}, suzuka: {lengthM: 5807, widthM: 10}};
 export const SET = {sigmaM: 8, ds: 5, carM: 1.2, matchM: 30, matchDeg: 40}; // declared in the pre-registration, never tuned
 // attempt 2 (claude/gate-independent-geometry-attempt2-prereg-2026-11-23.md): spline OSM, σ 3 m, TUM widths, 0.2 m kerb margin inside
-// corners, line at 2.5 m with a radius-scaled circle curvature. VARIANT=g1 rebuilds attempt 1 exactly.
+// corners, line at 2.5 m, curvature per 5 m cell. --variant g2 rebuilds attempt 2 (rejected; scripts/sim/data/geom-indep/tracks-g2.json).
 export const G2 = {sigmaM: 3, lineDs: 2.5, kerbM: 0.2, insideK: 1 / 150, tumM: 15};
 export const TUM = {shanghai: 'Shanghai', suzuka: 'Suzuka'};
-let VARIANT = 'g2'; export const setVariant = v => { VARIANT = v; };
+let VARIANT = 'g1'; export const setVariant = v => { VARIANT = v; }; // attempt 2 (g2) was rejected; tracks-g2.json keeps its output
 
 // ---- coordinates -------------------------------------------------------------------------------------------------------
 const A = 6378137, F = 1 / 298.257223563, E2 = F * (2 - F);
