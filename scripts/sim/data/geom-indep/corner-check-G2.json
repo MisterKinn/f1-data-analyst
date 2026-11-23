@@ -1,0 +1,330 @@
+{
+ "shanghai": {
+  "bands": [
+   0.707075,
+   0.5587,
+   null,
+   null
+  ],
+  "seasons": [
+   {
+    "year": "2025",
+    "delta": 11,
+    "corr": 0.701,
+    "corners": [
+     {
+      "x": 769,
+      "vMeas": 98,
+      "vModel": 92.3,
+      "rMin": 27,
+      "ratio": 0.9413
+     },
+     {
+      "x": 878,
+      "vMeas": 97,
+      "vModel": 85.8,
+      "rMin": 25,
+      "ratio": 0.8845
+     },
+     {
+      "x": 1547,
+      "vMeas": 82,
+      "vModel": 62.3,
+      "rMin": 15,
+      "ratio": 0.7596
+     },
+     {
+      "x": 2481,
+      "vMeas": 122,
+      "vModel": 66.5,
+      "rMin": 16,
+      "ratio": 0.5448
+     },
+     {
+      "x": 3064,
+      "vMeas": 99,
+      "vModel": 66.7,
+      "rMin": 15,
+      "ratio": 0.6738
+     },
+     {
+      "x": 4680,
+      "vMeas": 65,
+      "vModel": 41.1,
+      "rMin": 7,
+      "ratio": 0.6329
+     }
+    ],
+    "rejected": {
+     "edge": 0,
+     "radius": 1
+    },
+    "bands": [
+     0.7596,
+     0.5448,
+     null,
+     null
+    ]
+   },
+   {
+    "year": "2026",
+    "delta": 0,
+    "corr": 0.658,
+    "corners": [
+     {
+      "x": 1572,
+      "vMeas": 81,
+      "vModel": 65.2,
+      "rMin": 15,
+      "ratio": 0.8049
+     },
+     {
+      "x": 2494,
+      "vMeas": 119,
+      "vModel": 68.9,
+      "rMin": 16,
+      "ratio": 0.5792
+     },
+     {
+      "x": 3071,
+      "vMeas": 94,
+      "vModel": 65.4,
+      "rMin": 15,
+      "ratio": 0.6956
+     },
+     {
+      "x": 4685,
+      "vMeas": 68,
+      "vModel": 41.7,
+      "rMin": 7,
+      "ratio": 0.6135
+     },
+     {
+      "x": 5060,
+      "vMeas": 159,
+      "vModel": 91,
+      "rMin": 27,
+      "ratio": 0.5726
+     }
+    ],
+    "rejected": {
+     "edge": 0,
+     "radius": 0
+    },
+    "bands": [
+     0.65455,
+     0.5726,
+     null,
+     null
+    ]
+   }
+  ]
+ },
+ "imola": {
+  "bands": [
+   0.9461999999999999,
+   0.8354999999999999,
+   0.8451,
+   null
+  ],
+  "seasons": [
+   {
+    "year": "2025",
+    "delta": -16,
+    "corr": 0.678,
+    "corners": [
+     {
+      "x": 908,
+      "vMeas": 183,
+      "vModel": 154.7,
+      "rMin": 40,
+      "ratio": 0.8451
+     },
+     {
+      "x": 1594,
+      "vMeas": 197,
+      "vModel": 153.5,
+      "rMin": 40,
+      "ratio": 0.7792
+     },
+     {
+      "x": 1903,
+      "vMeas": 108,
+      "vModel": 125,
+      "rMin": 32,
+      "ratio": 1.1576
+     },
+     {
+      "x": 2530,
+      "vMeas": 232,
+      "vModel": 226.2,
+      "rMin": 59,
+      "ratio": 0.9752
+     },
+     {
+      "x": 3037,
+      "vMeas": 143,
+      "vModel": 103.1,
+      "rMin": 25,
+      "ratio": 0.7212
+     },
+     {
+      "x": 3547,
+      "vMeas": 104,
+      "vModel": 76.4,
+      "rMin": 16,
+      "ratio": 0.7348
+     },
+     {
+      "x": 4298,
+      "vMeas": 123,
+      "vModel": 116.8,
+      "rMin": 29,
+      "ratio": 0.9498
+     }
+    ],
+    "rejected": {
+     "edge": 0,
+     "radius": 0
+    },
+    "bands": [
+     0.9461999999999999,
+     0.8354999999999999,
+     0.8451,
+     null
+    ]
+   }
+  ]
+ },
+ "suzuka": {
+  "bands": [
+   0.88375,
+   0.8046,
+   0.9795499999999999,
+   null
+  ],
+  "seasons": [
+   {
+    "year": "2025",
+    "delta": -25,
+    "corr": 0.715,
+    "corners": [
+     {
+      "x": 842,
+      "vMeas": 178,
+      "vModel": 163.8,
+      "rMin": 54,
+      "ratio": 0.9205
+     },
+     {
+      "x": 1545,
+      "vMeas": 199,
+      "vModel": 200.8,
+      "rMin": 68,
+      "ratio": 1.009
+     },
+     {
+      "x": 2413,
+      "vMeas": 141,
+      "vModel": 97.1,
+      "rMin": 30,
+      "ratio": 0.6887
+     },
+     {
+      "x": 2868,
+      "vMeas": 77,
+      "vModel": 64,
+      "rMin": 16,
+      "ratio": 0.8317
+     },
+     {
+      "x": 3903,
+      "vMeas": 186,
+      "vModel": 176.7,
+      "rMin": 57,
+      "ratio": 0.9501
+     },
+     {
+      "x": 5321,
+      "vMeas": 91,
+      "vModel": 85.2,
+      "rMin": 22,
+      "ratio": 0.9358
+     }
+    ],
+    "rejected": {
+     "edge": 0,
+     "radius": 0
+    },
+    "bands": [
+     0.88375,
+     0.8046,
+     0.9795499999999999,
+     null
+    ]
+   }
+  ]
+ },
+ "jeddah": {
+  "bands": [
+   1.0071,
+   0.9204,
+   1.0657,
+   1.0791
+  ],
+  "seasons": [
+   {
+    "year": "2025",
+    "delta": -28,
+    "corr": 0.77,
+    "corners": [
+     {
+      "x": 1595,
+      "vMeas": 241,
+      "vModel": 260.1,
+      "rMin": 85,
+      "ratio": 1.0791
+     },
+     {
+      "x": 2395,
+      "vMeas": 158,
+      "vModel": 145.4,
+      "rMin": 49,
+      "ratio": 0.9204
+     },
+     {
+      "x": 3038,
+      "vMeas": 198,
+      "vModel": 205.3,
+      "rMin": 69,
+      "ratio": 1.0367
+     },
+     {
+      "x": 4215,
+      "vMeas": 195,
+      "vModel": 213.5,
+      "rMin": 72,
+      "ratio": 1.0947
+     },
+     {
+      "x": 5458,
+      "vMeas": 107,
+      "vModel": 107.8,
+      "rMin": 33,
+      "ratio": 1.0071
+     }
+    ],
+    "rejected": {
+     "edge": 1,
+     "radius": 1
+    },
+    "bands": [
+     1.0071,
+     0.9204,
+     1.0657,
+     1.0791
+    ]
+   }
+  ]
+ }
+}

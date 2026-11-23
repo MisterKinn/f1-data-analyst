@@ -61,3 +61,44 @@ slow-corner deficit shows (the −12 km/h corner bias of docs/lapsim-geometry-fi
 - kv and banking, production car, not fitted: kv −0.32 % (Imola) to +0.32 % (Suzuka) of the lap; Suzuka banking from the 5 m model
   −2.17 % (edges at W/2 sit on the verge in a 5 m cell: not trusted).
 - Level A hold-out not run (6 h on 2 cores); signature brake: Shanghai +29/+27 → +5/+3 m, Jeddah −3 → −17 m.
+
+## Attempt 2 (2026-11-23 13:00–13:45 KST): real widths, kerb margin, tight-corner curvature — rejected
+Pre-registration: Project `claude/gate-independent-geometry-attempt2-prereg-2026-11-23.md` (after the owner's review
+`claude/review-step3-corner-speeds-2026-11-23.md`). G2 = G1 plus:
+- OSM densified by a centripetal Catmull-Rom spline, centre σ 8 → 3 m;
+- TUM racetrack-database widths per station (Shanghai, Suzuka);
+- a 0.2 m car margin on the inside of corners (kerbs), 1.2 m elsewhere;
+- the line solved at 2.5 m, with curvature as the exact tangent change per 5 m cell (amendment B1: the circle estimator broke lap
+  closure).
+
+`build.mjs --variant g2` rebuilds it; its output is kept in `tracks-g2.json`. The flag still applies G1 (`tracks.json`).
+Baseline B2 = B on the current main: its calibration is byte-identical to attempt 1's B, so G1 stays comparable.
+
+**Clean-window corner check** (`corner-check.mjs`):
+- Corners are the measured local minima.
+- Each lap is aligned to the model line's curvature, not its speed.
+- The Suzuka 2026 file fails alignment (δ on the ±150 m bound) and is dropped (amendment B3).
+
+| Median of the four, model / measured | < 120 km/h | 120–180 | 180–240 |
+|---|---|---|---|
+| B (production geometry) | 1.029 | 0.843 | 0.799 |
+| G1 (attempt 1) | 0.930 | 0.809 | 0.862 |
+| G2 (attempt 2) | 0.915 | 0.820 | 0.980 |
+
+The clean windows give almost the same B ratios as residual-signature. Attempt 1's P3 failure was therefore not an input
+artefact: with grip near 1, slow corners are 7–8 % slow.
+
+| | Jeddah | Shanghai | Imola | Suzuka |
+|---|---|---|---|---|
+| Grip B → G2 | 1.184 → 1.019 | 1.058 → 1.034 | 1.143 → **1.300** (bound) | 1.024 → 1.030 |
+| Level C F1 2025 (%) | +6.55 → +1.84 | +4.65 → +3.35 | +4.35 → **+13.62** | +1.98 → +2.18 |
+
+**Result.**
+- P1 ✗ (2 of 4).
+- P2 ✗: the four tracks went 4.48 → 8.65 % RMS (p 0.56). Overall level C 2.70 → 4.09 %.
+- P3 ✗.
+- Cause: the spline passes exactly through noisy OSM nodes, and with σ 3 m that noise stays in the line. Imola's total turning
+  rose 1047° → 1188° (G1) with no corner added.
+
+This attempt changed four things at once, so the widths and kerbs were not tested on their own. One attempt is left under the stop
+rule.

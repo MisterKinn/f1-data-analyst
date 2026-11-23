@@ -130,6 +130,9 @@ def glo30(id_, bb):
 
 r = requests.get('https://raw.githubusercontent.com/bacinger/f1-circuits/master/f1-circuits.geojson', headers=UA, timeout=60)
 open(f'{OUT}/f1-circuits.geojson', 'wb').write(r.content); say('bacinger/f1-circuits (MIT)', r.status_code, len(r.content))
+for name in ('Shanghai', 'Suzuka'):  # attempt 2: TUM racetrack-database widths (LGPL-3.0)
+    r = requests.get(f'https://raw.githubusercontent.com/TUMFTM/racetrack-database/master/tracks/{name}.csv', headers=UA, timeout=60)
+    open(f'{OUT}/tum-{name}.csv', 'wb').write(r.content); say('TUM racetrack-database', name, r.status_code, len(r.content))
 for id_, (lat, lon) in SEEDS.items():
     j = osm(id_, lat, lon)
     if j: json.dump(j, open(f'{OUT}/{id_}-osm.json', 'w'))

@@ -1,0 +1,242 @@
+{
+ "jeddah": {
+  "id": "jeddah",
+  "seed": [
+   21.6319,
+   39.1044
+  ],
+  "osmWays": 17,
+  "waysUsed": 12,
+  "registration": {
+   "rotDeg": 0,
+   "mirror": false,
+   "trimmedMeanM": 1.3
+  },
+  "matchedShare": 1,
+  "bridgedShare": 0,
+  "sourceIncomplete": false,
+  "backSteps": 0,
+  "centreLengthM": 6169.8,
+  "officialLengthM": 6176,
+  "centreVsOfficialPct": -0.1,
+  "suspect": false,
+  "lineLengthM": 6051.6,
+  "prodLengthM": 6109.5,
+  "widthM": 13,
+  "widthSource": "track-widths.js",
+  "variant": "g2",
+  "width": {
+   "source": "track-widths.js",
+   "widthM": 13,
+   "kerbInsideShare": 0.233
+  },
+  "lineOffsetMaxM": 6.68,
+  "turnDeg": 360.1,
+  "elevation": {
+   "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+   "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N21_00_E039_00_DEM/Copernicus_DSM_COG_10_N21_00_E039_00_DEM.tif",
+   "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+   "gridM": 30,
+   "validShare": 0.988,
+   "crossoverBlankM": 0,
+   "spikeBlankM": 75,
+   "rangeM": 5.5,
+   "bankingFromSurface": false,
+   "gradeMaxPct": 2.9,
+   "kvMax": 0.0006,
+   "bankMaxDeg": null
+  },
+  "elevation30": null,
+  "prodGradeRangeM": null,
+  "osmSource": {
+   "url": "https://overpass-api.de/api/interpreter",
+   "query": "[out:json][timeout:90];way[\"highway\"=\"raceway\"](around:3000,21.6319,39.1044);out tags geom;",
+   "fetched": "2026-11-23T02:55:10Z",
+   "licence": "© OpenStreetMap contributors, ODbL 1.0"
+  }
+ },
+ "shanghai": {
+  "id": "shanghai",
+  "seed": [
+   31.3389,
+   121.2197
+  ],
+  "osmWays": 17,
+  "waysUsed": 7,
+  "registration": {
+   "rotDeg": 0.36,
+   "mirror": false,
+   "trimmedMeanM": 0.35
+  },
+  "matchedShare": 1,
+  "bridgedShare": 0,
+  "sourceIncomplete": false,
+  "backSteps": 0,
+  "centreLengthM": 5455.8,
+  "officialLengthM": 5451,
+  "centreVsOfficialPct": 0.09,
+  "suspect": false,
+  "lineLengthM": 5325.1,
+  "prodLengthM": 5440.4,
+  "widthM": 13,
+  "widthSource": "FIA list",
+  "variant": "g2",
+  "width": {
+   "source": "TUM racetrack-database (LGPL-3.0), per station",
+   "matched": 1,
+   "reversed": false,
+   "icpM": 0.8,
+   "medianWidthM": 12.73,
+   "kerbInsideShare": 0.34
+  },
+  "lineOffsetMaxM": 6.49,
+  "turnDeg": -360.2,
+  "elevation": {
+   "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+   "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N31_00_E121_00_DEM/Copernicus_DSM_COG_10_N31_00_E121_00_DEM.tif",
+   "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+   "gridM": 30,
+   "validShare": 0.987,
+   "crossoverBlankM": 0,
+   "spikeBlankM": 70,
+   "rangeM": 5.3,
+   "bankingFromSurface": false,
+   "gradeMaxPct": 3.3,
+   "kvMax": 0.0005,
+   "bankMaxDeg": null
+  },
+  "elevation30": null,
+  "prodGradeRangeM": null,
+  "osmSource": {
+   "url": "https://overpass-api.de/api/interpreter",
+   "query": "[out:json][timeout:90];way[\"highway\"=\"raceway\"](around:3000,31.3389,121.2197);out tags geom;",
+   "fetched": "2026-11-23T02:55:46Z",
+   "licence": "© OpenStreetMap contributors, ODbL 1.0"
+  }
+ },
+ "imola": {
+  "id": "imola",
+  "seed": [
+   44.338,
+   11.708
+  ],
+  "osmWays": 37,
+  "waysUsed": 35,
+  "registration": {
+   "rotDeg": -0.35,
+   "mirror": false,
+   "trimmedMeanM": 0.75
+  },
+  "matchedShare": 1,
+  "bridgedShare": 0,
+  "sourceIncomplete": false,
+  "backSteps": 0,
+  "centreLengthM": 4917.3,
+  "officialLengthM": 4909,
+  "centreVsOfficialPct": 0.17,
+  "suspect": false,
+  "lineLengthM": 4854.5,
+  "prodLengthM": 4866.8,
+  "widthM": 12.5,
+  "widthSource": "track-widths.js",
+  "variant": "g2",
+  "width": {
+   "source": "track-widths.js",
+   "widthM": 12.5,
+   "kerbInsideShare": 0.181
+  },
+  "lineOffsetMaxM": 6.49,
+  "turnDeg": 359.9,
+  "elevation": {
+   "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+   "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N44_00_E011_00_DEM/Copernicus_DSM_COG_10_N44_00_E011_00_DEM.tif",
+   "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+   "gridM": 30,
+   "validShare": 0.992,
+   "crossoverBlankM": 0,
+   "spikeBlankM": 40,
+   "rangeM": 35.7,
+   "bankingFromSurface": false,
+   "gradeMaxPct": 8.4,
+   "kvMax": 0.0009,
+   "bankMaxDeg": null
+  },
+  "elevation30": {
+   "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+   "gridM": 30,
+   "rangeM": 35.7,
+   "gradeRmsVsBestPct": 0
+  },
+  "prodGradeRangeM": null,
+  "osmSource": {
+   "url": "https://overpass-api.de/api/interpreter",
+   "query": "[out:json][timeout:90];way[\"highway\"=\"raceway\"](around:3000,44.338,11.708);out tags geom;",
+   "fetched": "2026-11-23T02:56:35Z",
+   "licence": "© OpenStreetMap contributors, ODbL 1.0"
+  }
+ },
+ "suzuka": {
+  "id": "suzuka",
+  "seed": [
+   34.8431,
+   136.541
+  ],
+  "osmWays": 62,
+  "waysUsed": 45,
+  "registration": {
+   "rotDeg": 0.28,
+   "mirror": false,
+   "trimmedMeanM": 0.59
+  },
+  "matchedShare": 1,
+  "bridgedShare": 0,
+  "sourceIncomplete": false,
+  "backSteps": 0,
+  "centreLengthM": 5806.7,
+  "officialLengthM": 5807,
+  "centreVsOfficialPct": -0.01,
+  "suspect": false,
+  "lineLengthM": 5727.5,
+  "prodLengthM": 5770.5,
+  "widthM": 10,
+  "widthSource": "FIA list",
+  "variant": "g2",
+  "width": {
+   "source": "TUM racetrack-database (LGPL-3.0), per station",
+   "matched": 1,
+   "reversed": false,
+   "icpM": 0.47,
+   "medianWidthM": 9.17,
+   "kerbInsideShare": 0.264
+  },
+  "lineOffsetMaxM": 6.31,
+  "turnDeg": 0.9,
+  "elevation": {
+   "source": "GSI dem5a_png (Geospatial Information Authority of Japan)",
+   "url": "https://cyberjapandata.gsi.go.jp/xyz/dem5a_png/{z}/{x}/{y}.png",
+   "licence": "GSI Content Terms of Use (compatible with CC BY 4.0); credit: 国土地理院 / GSI Japan",
+   "gridM": 5,
+   "validShare": 0.947,
+   "crossoverBlankM": 250,
+   "spikeBlankM": 55,
+   "rangeM": 40.5,
+   "bankingFromSurface": true,
+   "gradeMaxPct": 7.9,
+   "kvMax": 0.0043,
+   "bankMaxDeg": 11.1
+  },
+  "elevation30": {
+   "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+   "gridM": 30,
+   "rangeM": 39,
+   "gradeRmsVsBestPct": 1.56
+  },
+  "prodGradeRangeM": null,
+  "osmSource": {
+   "url": "https://overpass-api.de/api/interpreter",
+   "query": "[out:json][timeout:90];way[\"highway\"=\"raceway\"](around:3000,34.8431,136.541);out tags geom;",
+   "fetched": "2026-11-23T02:57:27Z",
+   "licence": "© OpenStreetMap contributors, ODbL 1.0"
+  }
+ }
+}
