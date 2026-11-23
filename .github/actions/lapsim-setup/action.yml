@@ -1,0 +1,37 @@
+name: LapSim job setup
+description: Node, raw-data cache, the lapsim-prep build (this run's, or a pinned run's) and npm packages
+inputs:
+  prep-run:
+    description: 'Run id whose lapsim-prep artifact to use (empty: this run)'
+    required: false
+    default: ''
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+    - name: Restore raw data cache
+      uses: actions/cache/restore@v4
+      with:
+        path: .cache/lapsim/raw
+        key: lapsim-raw-v1-${{ github.run_id }}
+        restore-keys: lapsim-raw-v1-
+    - if: inputs.prep-run == ''
+      uses: actions/download-artifact@v4
+      with:
+        name: lapsim-prep
+        path: /tmp
+    - if: inputs.prep-run != ''
+      uses: actions/download-artifact@v4
+      with:
+        name: lapsim-prep
+        path: /tmp
+        run-id: ${{ inputs.prep-run }}
+        repository: ${{ github.repository }}
+        github-token: ${{ github.token }}
+    - name: Unpack the build
+      shell: bash
+      run: tar xzf /tmp/lapsim-prep.tgz
+    - shell: bash
+      run: npm ci --omit=dev --ignore-scripts

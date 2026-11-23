@@ -30,19 +30,41 @@ on:
         description: 'keep: calibrate on the committed track shapes (traces scaled to them); rebuild: new shapes from the data'
         required: false
         default: 'keep'
+      prep_run:
+        description: 'Calibrate on the lapsim-prep build of this run id and skip the fetch (empty: .github/lapsim-prep-run, else fetch)'
+        required: false
+        default: ''
 
 permissions:
   contents: write
+  actions: read
 
 concurrency:
   group: lapsim-data-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
-  # Two jobs, each under the 340-minute limit (2026-11-18: the 2 h track build plus the A6 calibration, 3.5 h and still running,
-  # hit the limit in run 44112257363): `prepare` fetches and builds the tracks, `rebuild` calibrates and commits.
-  prepare:
+  # Every job stays well under GitHub's 6 h job limit (run 45191678721: one calibration job ran over 4 h). `prepare` fetches and builds
+  # the tracks (about 2 h); the calibration is split (LAPSIM_PART in scripts/sim/calibrate.mjs; same code and order as one process,
+  # tests/lapsim-split.test.mjs): `f1-joint` (full F1 fit, ~25 min), then in parallel `f1-holdout` per held-out season (~75 min) and
+  # `wec` per class (~20-40 min); `rebuild` merges the parts (no refit), runs the reports and tests and commits.
+  # Calibrate on an earlier build (gates: base and candidate on one build): put its run id in .github/lapsim-prep-run (or the
+  # prep_run input); `prepare` is then skipped and every job downloads that run's lapsim-prep. Gate settings for every part go in
+  # the workflow-level env (one place), fit settings in .github/lapsim-fit.env.
+  plan:
     if: github.event_name != 'schedule' || github.repository == 'MisterKinn/f1-data-analyst'
+    runs-on: ubuntu-latest
+    outputs:
+      prep_run: ${{ steps.p.outputs.prep_run }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: p
+        run: |
+          r="${{ inputs.prep_run }}"; [ -n "$r" ] || r=$(tr -d '[:space:]' < .github/lapsim-prep-run 2>/dev/null || true)
+          echo "prep_run=$r" >> "$GITHUB_OUTPUT"; echo "lapsim-prep: ${r:-this run}"
+  prepare:
+    needs: plan
+    if: needs.plan.outputs.prep_run == ''
     runs-on: ubuntu-latest
     timeout-minutes: 340
     steps:
@@ -122,55 +144,90 @@ jobs:
           name: lapsim-prep
           path: /tmp/lapsim-prep.tgz
           retention-days: 2
-  rebuild:
-    needs: prepare
+  f1-joint:
+    needs: [plan, prepare]
+    if: ${{ !cancelled() && needs.plan.result == 'success' && needs.prepare.result != 'failure' && inputs.calibrate != 'false' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 340
+    timeout-minutes: 150
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: ./.github/actions/lapsim-setup
         with:
-          node-version: '22'
-      - name: Restore raw data cache
-        uses: actions/cache/restore@v4
-        with:
-          path: .cache/lapsim/raw
-          key: lapsim-raw-v1-${{ github.run_id }}
-          restore-keys: lapsim-raw-v1-
-      - uses: actions/download-artifact@v4
-        with:
-          name: lapsim-prep
-          path: /tmp
-      - name: Unpack the build
-        run: tar xzf /tmp/lapsim-prep.tgz
-      - run: npm ci --omit=dev --ignore-scripts
-      # official recharge limits (FIA PU documents) and 2027/28 + FE Gen4 rule values feed the fit
+          prep-run: ${{ needs.plan.outputs.prep_run }}
+      # official recharge limits (FIA PU documents) and 2027/28 + FE Gen4 rule values feed the fit; read once here and passed on, so
+      # every part fits on the same documents
       - name: Read FIA energy documents and regulation values
         continue-on-error: true
         run: node scripts/sim/energy-docs.mjs && node scripts/sim/rule-params.mjs
-      # settings chosen from the calibration experiments (scripts/sim/experiments.json rounds 1–2):
-      # best of experiment round 3: joint fit, lap time ×20, sectors ×2, per-track drag, team pace and
-      # development, prior weight 8 (holdout 0.81% / 0.85%)
-      - name: Calibrate cars (F1 and WEC)
+      - name: Calibrate (F1 joint fit)
+        run: set -a; . .github/lapsim-fit.env; set +a; LAPSIM_PART=f1-joint node scripts/sim/calibrate.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lapsim-stage
+          path: |
+            .cache/lapsim/parts/f1-joint.json
+            worker/lapsim/energy-docs-data.js
+            worker/lapsim/rules-data.js
+            docs/lapsim-rules.md
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 3
+  # one job per held-out season (HOLDOUT_YEARS in calibrate.mjs) and per WEC class (SERIES.wec.classes): the merge fails if one is missing
+  parts:
+    needs: [plan, prepare, f1-joint]
+    if: ${{ !cancelled() && needs.plan.result == 'success' && needs.prepare.result != 'failure' && needs.f1-joint.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      matrix:
+        part: [f1-ho-2025, f1-ho-2026, wec-lmh, wec-lmdh, wec-lmgt3]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/lapsim-setup
+        with:
+          prep-run: ${{ needs.plan.outputs.prep_run }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: lapsim-stage
+      - name: Calibrate (${{ matrix.part }})
+        run: set -a; . .github/lapsim-fit.env; set +a; LAPSIM_PART=${{ matrix.part }} node scripts/sim/calibrate.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lapsim-part-${{ matrix.part }}
+          path: .cache/lapsim/parts/${{ matrix.part }}.json
+          include-hidden-files: true
+          retention-days: 3
+  rebuild:
+    needs: [plan, prepare, f1-joint, parts]
+    if: ${{ !cancelled() && needs.plan.result == 'success' && needs.prepare.result != 'failure' && (inputs.calibrate == 'false' || (needs.f1-joint.result == 'success' && needs.parts.result == 'success')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/lapsim-setup
+        with:
+          prep-run: ${{ needs.plan.outputs.prep_run }}
+      - name: Read FIA energy documents and regulation values
+        if: inputs.calibrate == 'false'
+        continue-on-error: true
+        run: node scripts/sim/energy-docs.mjs && node scripts/sim/rule-params.mjs
+      - if: inputs.calibrate != 'false'
+        uses: actions/download-artifact@v4
+        with:
+          name: lapsim-stage
+      - if: inputs.calibrate != 'false'
+        uses: actions/download-artifact@v4
+        with:
+          pattern: lapsim-part-*
+          path: .cache/lapsim/parts
+          merge-multiple: true
+      # settings chosen from the calibration experiments (scripts/sim/experiments.json rounds 1–2): joint fit, lap time ×20, sectors ×2,
+      # per-track drag, team pace and development, prior weight 8; fit settings in .github/lapsim-fit.env. Merge = no refit: every
+      # piece comes from the part jobs
+      - name: Calibrate cars (F1 and WEC; merge of the parts)
         if: inputs.calibrate != 'false'
-        env:
-          # fit settings: the script defaults = the published fit (5 rounds x 200 steps, all four seasons). G1 2026-11-18: 3 x 100
-          # raised the held-out error on all 34 poles (1.014 -> 1.205 %, Gate G reject). The calibration job is separate from the
-          # 2 h build since run 44259689110 (3 x 100 took 40 min, so 5 x 200 is about 2 h 15 min, under the 340-minute limit)
-          # A6 (owner 2026-11-17): FIA zones + 2026 PU qualifying curve (experiment run 43775148422, variant zq: all 1.235 -> 1.144 %,
-          # WEC 1.432 -> 1.210 %, F1 1.008 -> 1.075 %; the owner accepts the F1 cost of following the real 2026 PU rules)
-          LAPSIM_FIA_ZONES: 'on'
-          LAPSIM_PU_QUALI: 'on'
-          # C5.12 power-reduction ramp in the fit (run 44886079566, Gate G v2 correctness, m = 2, k = 1.45): F1 1.070 -> 0.983 %, RMS loss
-          # bound 0.019 <= 0.054 (pass). WEC moved only through the shared F1 track grip, which is frozen for WEC since #381
-          LAPSIM_PU_RAMP: 'on'
-          # Hypercar (LMH/LMDh) peak braking capped at the iRacing GTP envelope 8.63 + 0.003234 v^2 m/s^2 (owner rule 14: learned from
-          # iRacing, "model"). Experiment 44043761033: hypercar holdout mean 1.24 -> 1.16 % (BE0 -> BE1; 1.15x envelope BE2: 1.20 %)
-          LAPSIM_BRAKE_ENV_HYPER: '8.63,0.003234'
-          # broken stretches in the OpenF1 traces are not measured data (AGENTS.md): dropped before the fit. Run 45025282535 vs base
-          # 44982191480 (same build): F1 lap RMS 0.920 -> 0.920 %, level C 2.704 -> 2.675 %, WEC 1.299 unchanged; 594 samples dropped
-          LAPSIM_TRACE_MASK: '1'
-        run: node scripts/sim/calibrate.mjs
+        run: set -a; . .github/lapsim-fit.env; set +a; LAPSIM_PART=merge node scripts/sim/calibrate.mjs
       # TracingInsights race laps 2018 on; reference = mean of the best 8 qualifying laps (script defaults)
       # Hypercar per maker (LapSim × BoPSim × SetupSim, owner 2026-11-21): the residuals are learned on the class cars just fitted
       - name: Hypercar per maker

@@ -1,7 +1,7 @@
 // Fits 2023–2026 car parameters to real qualifying laps on the built tracks, then projects
 // 2027 and 2028. Reads worker/lapsim/tracks-data.js and .cache/lapsim/traces.json (from
 // build-geometry.mjs); writes worker/lapsim/calibration-data.js and docs/lapsim-report.md.
-import {readFile, writeFile} from 'node:fs/promises';
+import {readFile, writeFile, mkdir} from 'node:fs/promises';
 import {medianKappa} from './kappa-median.mjs';
 import {existsSync} from 'node:fs';
 import {gate} from './gate.mjs';
@@ -64,6 +64,18 @@ const tauOf = (date, year) => { if (!date) return 0.5; const a = Date.UTC(year, 
 const ONLY_YEARS = process.env.LAPSIM_SEASONS ? process.env.LAPSIM_SEASONS.split(',').map(Number) : null;
 // LAPSIM_ONLY=wec: refit the WEC classes only; F1 seasons and projections are kept from the current calibration
 const ONLY_WEC = E.LAPSIM_ONLY === 'wec';
+// Split CI run (GitHub jobs stop at 6 h): LAPSIM_PART=f1-joint | f1-ho-<year> | wec-<class> computes that one piece (loading the
+// pieces it needs from LAPSIM_PARTS_DIR), writes it and exits; LAPSIM_PART=merge loads every piece and writes the calibration.
+// Unset = one process, as before. Same code and order either way, so the output is the same (tests/lapsim-split.test.mjs).
+const PART = E.LAPSIM_PART || null, PARTS_DIR = E.LAPSIM_PARTS_DIR || '.cache/lapsim/parts';
+const piece = async (key, compute, placeholder) => {
+  if (!PART) return compute();
+  const f = join(PARTS_DIR, key + '.json');
+  if (existsSync(f)) return JSON.parse(await readFile(f, 'utf8'));
+  if (PART === key) { const v = await compute(); await mkdir(PARTS_DIR, {recursive: true}); await writeFile(f, JSON.stringify(v)); console.log(`LapSim part ${key} written`); process.exit(0); }
+  if (PART === 'merge' || placeholder === undefined) throw new Error(`LapSim part ${key} missing in ${PARTS_DIR}`);
+  return placeholder; // a piece this part does not need
+};
 const prevCal = ONLY_WEC ? (await import('../../worker/lapsim/calibration-data.js')).lapsimCalibration : null;
 const traces = ONLY_WEC ? [] : JSON.parse(await readFile(join(CACHE, 'traces.json'), 'utf8'));
 // LAPSIM_TRACE_MASK=1: samples inside broken stretches (rule A+, speed only; AGENTS.md "broken telemetry is not measured data") are
@@ -155,17 +167,24 @@ for (const year of [...new Set(traces.map(t => t.year))].sort()) {
   groups.push({key: year, laps, base, params});
 }
 if (!ONLY_WEC) {
-const t0 = Date.now();
-let joint = await fitAll(groups);
-// clean data (common rule): a lap more than 4% off after the fit is not a normal dry lap
-// (wet track, red flag, wrong lap); drop that season's laps on that track and fit again
-const bad = joint.perLap.filter(p => Math.abs(p.dt / p.realLap) > 0.04);
-if (bad.length) {
-  for (const g of groups) { const drop = new Set(bad.filter(p => p.group === g.key).map(p => p.name)); g.laps = g.laps.filter(l => !drop.has(l.name)); }
-  report.push(`Dropped (lap more than 4% off after the first fit): ${[...new Set(bad.map(p => p.group + ' ' + p.name))].join(', ')}`, '');
-  joint = await fitAll(groups);
-}
-report.push(`F1 joint fit of ${groups.map(g => g.key).join(' and ')}: ${((Date.now() - t0) / 1000).toFixed(0)} s, score ${joint.score.toFixed(3)}.`, '');
+const J = await piece('f1-joint', async () => {
+  const r0 = report.length, t0 = Date.now();
+  let joint = await fitAll(groups), drop = [];
+  // clean data (common rule): a lap more than 4% off after the fit is not a normal dry lap
+  // (wet track, red flag, wrong lap); drop that season's laps on that track and fit again
+  const bad = joint.perLap.filter(p => Math.abs(p.dt / p.realLap) > 0.04);
+  if (bad.length) {
+    drop = bad.map(p => [p.group, p.name]);
+    for (const g of groups) { const d = new Set(bad.filter(p => p.group === g.key).map(p => p.name)); g.laps = g.laps.filter(l => !d.has(l.name)); }
+    report.push(`Dropped (lap more than 4% off after the first fit): ${[...new Set(bad.map(p => p.group + ' ' + p.name))].join(', ')}`, '');
+    joint = await fitAll(groups);
+  }
+  report.push(`F1 joint fit of ${groups.map(g => g.key).join(' and ')}: ${((Date.now() - t0) / 1000).toFixed(0)} s, score ${joint.score.toFixed(3)}.`, '');
+  return {joint, drop, report: report.splice(r0)};
+});
+const joint = J.joint;
+for (const g of groups) { const d = new Set(J.drop.filter(([k]) => k === g.key).map(([, n]) => n)); if (d.size) g.laps = g.laps.filter(l => !d.has(l.name)); }
+report.push(...J.report);
 for (const g of groups) {
   const year = g.key, car = joint.cars[year]; delete car.linkMu;
   const perTrack = {};
@@ -178,8 +197,11 @@ for (const g of groups) {
   }
   // holdout: this season's laps on a quarter of the tracks left out, predicted with the factor the
   // other season gives that track
-  const h = HOLDOUT_YEARS.includes(year) ? await holdoutOf(groups, year) : {n: 0, errors: [], rmsPct: null};
-  const hF1b = F1_NOISE && h.n && FITTER === 'bcd' ? await holdoutBCD(groups, year, {...BCD, rounds: Math.max(2, BCD.rounds - 1), nmStep: 0.04}) : null;
+  const none = {h: {n: 0, errors: [], rmsPct: null}, hF1b: null};
+  const {h, hF1b} = HOLDOUT_YEARS.includes(year) ? await piece('f1-ho-' + year, async () => {
+    const h = await holdoutOf(groups, year);
+    return {h, hF1b: F1_NOISE && h.n && FITTER === 'bcd' ? await holdoutBCD(groups, year, {...BCD, rounds: Math.max(2, BCD.rounds - 1), nmStep: 0.04}) : null};
+  }, none) : none;
   if (hF1b) report.push(`F1 ${year}: held-out second start (step 0.04) ${hF1b.rmsPct.toFixed(3)} % vs ${h.rmsPct.toFixed(3)} % (spread ${Math.abs(hF1b.rmsPct - h.rmsPct).toFixed(3)} pp, information only)`);
   const adj = joint.adj?.[year];
   if (adj) report.push(`### ${year} team pace and development`, '', `Development over the season: ${(adj.dev * 100).toFixed(2)}% lap time from March to December.`, '',
@@ -262,7 +284,9 @@ if (s26 && !ONLY_WEC) {
 // WEC classes, same rules: BoP values fixed; drag, downforce and tyre grip fitted to the best
 // qualifying/Hyperpole laps (lap time + speed trap). Track factors are shared from the F1 fit.
 const series = {};
-const wec = process.env.LAPSIM_SKIP_WEC ? [] : JSON.parse(await readFile(join(CACHE, 'wec.json'), 'utf8').catch(() => '[]'));
+// LAPSIM_WEC_SEL=lmgt3:2025,... keeps only those class-seasons (small checks, e.g. the split-run equality check)
+const WEC_SEL = E.LAPSIM_WEC_SEL ? new Set(E.LAPSIM_WEC_SEL.split(',')) : null;
+const wec = process.env.LAPSIM_SKIP_WEC ? [] : JSON.parse(await readFile(join(CACHE, 'wec.json'), 'utf8').catch(() => '[]')).filter(w => !WEC_SEL || WEC_SEL.has(`${w.cls}:${w.year}`));
 const t71Extra = existsSync('scripts/sim/data/t71-wec-extra.json') ? JSON.parse(await readFile('scripts/sim/data/t71-wec-extra.json', 'utf8')).rows : [];
 const wecYears = new Set(wec.map(w => +w.year));
 // Track factors for WEC: by default the F1 fit's own grip. worker/lapsim/transfer-grip-data.js (if present) holds
@@ -274,6 +298,8 @@ const WEC_FROZEN = process.env.LAPSIM_WEC_FROZEN_GRIP === 'off' ? null : (await 
 const f1GripOwn = id => WEC_FROZEN?.[id] ?? Object.keys(seasons).sort().reverse().map(y => seasons[y]?.tracks?.[id]?.grip).find(g => g != null) ?? null;
 const transferGrip = id => TRANSFER?.grip[id] ?? null;
 for (const [cls, def] of Object.entries(SERIES.wec.classes)) {
+  const W = await piece('wec-' + cls, async () => {
+  const r0 = report.length;
   for (const year of [...new Set(wec.map(w => w.year))].sort()) {
     const sessions = wec.filter(w => w.cls === cls && w.year === year && tracks[w.track] && !w.weather?.rain && f1GripOwn(w.track) != null);
     let f1Grip = f1GripOwn;
@@ -357,7 +383,13 @@ for (const [cls, def] of Object.entries(SERIES.wec.classes)) {
       '| Track | Real | Sim | Error | Trap | Sim top | Track factor (F1) |', '|---|---|---|---|---|---|---|',
       ...Object.entries(perTrack).map(([id, r]) => `| ${id} | ${r.realLap.toFixed(3)} | ${r.simLap.toFixed(3)} | ${r.errorSec > 0 ? '+' : ''}${r.errorSec.toFixed(3)} | ${r.trapKph ?? '–'} | ${r.simTopKph} | ${r.grip} |`), '');
   }
+  return {wec: series.wec?.[cls] ?? null, report: report.splice(r0)};
+  }, null);
+  if (!W) continue;
+  report.push(...W.report);
+  if (W.wec) (series.wec ||= {})[cls] = W.wec;
 }
+if (PART && PART !== 'merge') throw new Error(`LapSim part ${PART} is not a piece of this run`);
 
 // aero 'fia': fitted with the FIA / estimated low-drag zones, so the page and the MCP tool use the same zones (worker/lapsim/zones.js)
 const out = {aero: E.LAPSIM_FIA_ZONES === 'on' ? 'fia' : E.LAPSIM_FIA_ZONES === '2025' ? 'fia2025' : 'auto', realState: true, ...(PUQ ? {puQuali: true, otChoice: OTC} : {}), ...(PUR ? {puRamp: true} : {}), generatedAt: new Date().toISOString().slice(0, 10), method: 'Nelder–Mead fit of season car parameters plus a per-track grip factor to real pole laps (speed trace and lap time); WEC classes fitted to lap time and speed trap with F1 track factors.', seasons, projections: ONLY_WEC ? prevCal.projections : projections, series};

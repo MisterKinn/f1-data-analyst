@@ -1,0 +1,50 @@
+name: Lap simulator split-run check
+
+# Proof that the split calibration (LAPSIM_PART pieces + merge, lapsim-data.yml) gives the same output as one process: both on the
+# same build and runner, small settings (2 seasons, 2 BCD rounds x 15 steps, held-out 2026, WEC LMGT3 2025 only). Push a
+# lapsim-check/** branch to run it (no data commit).
+on:
+  push:
+    branches: ['lapsim-check/**']
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      PREP_RUN: '45191678721'
+      LAPSIM_SEASONS: '2025,2026'
+      LAPSIM_ROUNDS: '2'
+      LAPSIM_BCD_ITERS: '15'
+      LAPSIM_HOLDOUT_YEARS: '2026'
+      LAPSIM_WEC_SEL: 'lmgt3:2025'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/lapsim-setup
+        with:
+          prep-run: ${{ env.PREP_RUN }}
+      - run: node scripts/sim/energy-docs.mjs && node scripts/sim/rule-params.mjs
+        continue-on-error: true
+      - name: One process
+        run: |
+          set -a; . .github/lapsim-fit.env; set +a
+          node scripts/sim/calibrate.mjs > /tmp/one.log
+          mkdir -p /tmp/one && cp worker/lapsim/calibration-data.js docs/lapsim-report.md /tmp/one/
+          git checkout -- worker/lapsim/calibration-data.js docs/lapsim-report.md
+      - name: Split (one process per piece, then merge)
+        run: |
+          set -a; . .github/lapsim-fit.env; set +a
+          export LAPSIM_PARTS_DIR=/tmp/parts
+          for p in f1-joint f1-ho-2026 wec-lmh wec-lmdh wec-lmgt3 merge; do echo "== $p"; LAPSIM_PART=$p node scripts/sim/calibrate.mjs > /tmp/$p.log; done
+          ls -la /tmp/parts
+      - name: Compare
+        run: |
+          mask() { sed -E 's/(F1 joint fit of [^:]*): [0-9]+ s,/\1: N s,/' "$1"; }
+          cmp /tmp/one/calibration-data.js worker/lapsim/calibration-data.js && echo "calibration-data.js: byte-identical"
+          diff <(mask /tmp/one/lapsim-report.md) <(mask docs/lapsim-report.md) && echo "lapsim-report.md: identical (fit time masked)"
+          node -e "const c=require('fs').readFileSync('worker/lapsim/calibration-data.js','utf8');const j=JSON.parse(c.slice(c.indexOf('=')+1).replace(/;\s*$/,''));const w=j.series.wec?.lmgt3?.[2025];console.log('lmgt3 2025 held-out', w?.holdout?.rmsPct, 'noise', w?.holdout?.noise?.rmsPct, 'rule', w?.holdout?.rule, '| F1 2026 held-out', j.seasons?.[2026]?.holdout?.rmsPct)" | tee -a "$GITHUB_STEP_SUMMARY"
+          sha256sum /tmp/one/calibration-data.js worker/lapsim/calibration-data.js | tee -a "$GITHUB_STEP_SUMMARY"
