@@ -2,8 +2,8 @@
 // resurfacing, bump removal) changes corner speed, from real qualifying speed traces of the same
 // track in the season before and the season of the change. Each changed corner is compared with the
 // unchanged corners of the same track and lap (removes the new car, the weather and the driver).
-// Writes worker/lapsim/change-effects-data.js; the kernel then uses the learned factor instead of
-// its assumed one when a type has enough cases.
+// Writes worker/lapsim/change-effects-data.js: descriptive only since step 5b. No lap reads it; a change type moves the lap only
+// through the gate in scripts/sim/change-gate.mjs (worker/lapsim/change-gate-data.js). A rebuild that fails the gate is not shipped.
 import {readFile, writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {lapsimTracks} from '../../worker/lapsim/tracks-data.js';
