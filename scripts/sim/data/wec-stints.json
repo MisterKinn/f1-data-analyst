@@ -6527,6 +6527,308 @@
      ]
     }
    }
+  },
+  "monza": {
+   "event": "AUTODROMO NAZIONALE DI MONZA",
+   "file": "Analysis_Race_Hour 6.CSV",
+   "cars": {
+    "7": {
+     "manufacturer": "Toyota",
+     "team": "Toyota Racing",
+     "stints": [
+      9,
+      28
+     ],
+     "allStints": [
+      26,
+      22,
+      17,
+      30,
+      9,
+      32,
+      28
+     ]
+    },
+    "8": {
+     "manufacturer": "Toyota",
+     "team": "Toyota Racing",
+     "stints": [
+      9,
+      28
+     ],
+     "allStints": [
+      26,
+      23,
+      17,
+      30,
+      9,
+      30,
+      28
+     ]
+    },
+    "12": {
+     "manufacturer": "Cadillac",
+     "team": "Cadillac Hertz Team Jota",
+     "stints": [
+      10,
+      27
+     ],
+     "allStints": [
+      26,
+      23,
+      17,
+      29,
+      10,
+      31,
+      27
+     ]
+    },
+    "15": {
+     "manufacturer": "BMW",
+     "team": "BMW M Team WRT",
+     "stints": [
+      10,
+      11,
+      28
+     ],
+     "allStints": [
+      25,
+      23,
+      8,
+      10,
+      27,
+      11,
+      31,
+      28
+     ]
+    },
+    "17": {
+     "manufacturer": "Genesis",
+     "team": "Genesis Magma Racing",
+     "stints": [
+      8,
+      25,
+      7,
+      17,
+      1
+     ],
+     "allStints": [
+      26,
+      22,
+      18,
+      9,
+      21,
+      8,
+      25,
+      25,
+      7,
+      17,
+      1
+     ]
+    },
+    "19": {
+     "manufacturer": "Genesis",
+     "team": "Genesis Magma Racing",
+     "stints": [],
+     "allStints": [
+      27,
+      22
+     ]
+    },
+    "20": {
+     "manufacturer": "BMW",
+     "team": "BMW M Team WRT",
+     "stints": [
+      9
+     ],
+     "allStints": [
+      26,
+      23,
+      17,
+      30,
+      9,
+      31,
+      28
+     ]
+    },
+    "35": {
+     "manufacturer": "Alpine",
+     "team": "Alpine Endurance Team",
+     "stints": [
+      3
+     ],
+     "allStints": [
+      23,
+      3,
+      22,
+      18,
+      29
+     ]
+    },
+    "36": {
+     "manufacturer": "Alpine",
+     "team": "Alpine Endurance Team",
+     "stints": [
+      9
+     ],
+     "allStints": [
+      26,
+      23,
+      17,
+      30,
+      9,
+      31,
+      28
+     ]
+    },
+    "38": {
+     "manufacturer": "Cadillac",
+     "team": "Cadillac Hertz Team Jota",
+     "stints": [
+      10
+     ],
+     "allStints": [
+      26,
+      23,
+      18,
+      28,
+      10,
+      31,
+      27
+     ]
+    },
+    "50": {
+     "manufacturer": "Ferrari",
+     "team": "Ferrari AF Corse",
+     "stints": [
+      8,
+      2,
+      9,
+      27
+     ],
+     "allStints": [
+      18,
+      8,
+      22,
+      16,
+      2,
+      30,
+      9,
+      30,
+      27
+     ]
+    },
+    "51": {
+     "manufacturer": "Ferrari",
+     "team": "Ferrari AF Corse",
+     "stints": [
+      10
+     ],
+     "allStints": [
+      26,
+      23,
+      17,
+      29,
+      10,
+      31,
+      27
+     ]
+    },
+    "83": {
+     "manufacturer": "Ferrari",
+     "team": "AF Corse",
+     "stints": [
+      3,
+      19,
+      2,
+      27,
+      27
+     ],
+     "allStints": [
+      23,
+      3,
+      23,
+      17,
+      19,
+      19,
+      2,
+      4,
+      27,
+      27
+     ]
+    },
+    "93": {
+     "manufacturer": "Peugeot",
+     "team": "Peugeot Totalenergies",
+     "stints": [
+      9,
+      27
+     ],
+     "allStints": [
+      26,
+      22,
+      18,
+      30,
+      9,
+      30,
+      27
+     ]
+    },
+    "94": {
+     "manufacturer": "Peugeot",
+     "team": "Peugeot Totalenergies",
+     "stints": [
+      10
+     ],
+     "allStints": [
+      26,
+      23,
+      18,
+      28,
+      10,
+      31,
+      27
+     ]
+    },
+    "007": {
+     "manufacturer": "Aston Martin",
+     "team": "Aston Martin Thor Team",
+     "stints": [
+      11,
+      17,
+      28
+     ],
+     "allStints": [
+      15,
+      11,
+      14,
+      26,
+      22,
+      17,
+      30,
+      28
+     ]
+    },
+    "009": {
+     "manufacturer": "Aston Martin",
+     "team": "Aston Martin Thor Team",
+     "stints": [
+      18,
+      25
+     ],
+     "allStints": [
+      26,
+      23,
+      17,
+      14,
+      5,
+      18,
+      30,
+      26,
+      25
+     ]
+    }
+   }
   }
  }
 }
