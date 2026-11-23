@@ -24,6 +24,8 @@ const G = 9.81, K = lapsimKernel();
 export const PRE = {mass: 806, meFactor: 1.06, cRoll: 0.012, vLo: 180, vHi: 345, vRef: 270, win: 5, thr: 99,
   dPkernel: 120e3 * 0.95 * 0.96, minSlopeKW100: 20, boot: 2000, seed: 20261123,
   regenTracks: ['melbourne', 'shanghai', 'suzuka', 'miami', 'monte-carlo', 'silverstone', 'monza', 'singapore'], clipX: 100};
+// amendment 2026-11-23 13:50 (hand-off 2a, claude/handoff-2a-10a-pwheel-definition-2026-11-23.md): straight running only
+export const AMEND = {latMax: 6};
 // I2 wet list (status-2026-11-23-I2.md): dropped whole
 const WET = new Set(['2023 silverstone', '2023 montreal', '2023 zandvoort', '2023 catalunya', '2024 spa-francorchamps', '2024 hungaroring', '2024 interlagos', '2025 las-vegas', '2026 interlagos']);
 
@@ -73,7 +75,7 @@ function fastestLaps(ti, year) {
 const telOf = f => { const r = readJ(f); return r?.tel || r; };
 
 // samples of the pre-registered filter; y = wheel power minus the modelled drag (left to the fit), in W
-export function powerSamples(t, gradeAt, o = PRE) {
+export function powerSamples(t, gradeAt, o = PRE, kappaAt = null) {
   const n = t.speed?.length || 0, idx = []; for (let i = 0; i < n; i++) if (Number.isInteger(+t.speed[i])) idx.push(i); // measured car samples only
   const drsMax = Math.max(...t.drs.map(Number)), open = x => drsMax <= 1 ? +x === 1 : +x >= 10;
   const out = [], h = o.win >> 1, m = o.mass, me = m * o.meFactor;
@@ -81,11 +83,13 @@ export function powerSamples(t, gradeAt, o = PRE) {
     const w = idx.slice(k - h, k + h + 1), i = idx[k];
     const kph = +t.speed[i]; if (kph < o.vLo || kph > o.vHi) continue;
     if (![idx[k - 1], i, idx[k + 1]].every(j => +t.throttle[j] >= o.thr && !(t.brake[j] === true || +t.brake[j] > 0))) continue;
-    const g0 = +(t.gear ?? t.nGear)[w[0]]; if (!w.every(j => +(t.gear ?? t.nGear)[j] === g0)) continue;
+    const g0 = +(t.gear ?? t.nGear)[w[0]]; if (!o.noSameGear && !w.every(j => +(t.gear ?? t.nGear)[j] === g0)) continue;
     const tt = w.map(j => +t.time[j]), vv = w.map(j => +t.speed[j] / 3.6), tm = mean(tt), vm = mean(vv);
     let sxy = 0, sxx = 0; for (let q = 0; q < w.length; q++) { sxy += (tt[q] - tm) * (vv[q] - vm); sxx += (tt[q] - tm) ** 2; }
     if (!(sxx > 0)) continue; const a = sxy / sxx, v = kph / 3.6, rel = Number.isFinite(+t.rel_distance?.[i]) ? +t.rel_distance[i] : +t.distance[i] / +t.distance[n - 1];
     const sinT = gradeAt ? Math.sin(gradeAt(rel)) : 0;
+    // amendment 2026-11-23 (hand-off 2a): straight running only, |v²κ| < latMax on the kernel track (cornering drag is not engine power)
+    if (o.latMax && kappaAt && v * v * kappaAt(rel) >= o.latMax) continue;
     out.push({v, a, open: open(t.drs[i]), y: me * a * v + o.cRoll * m * G * v + m * G * sinT * v, rel});
   }
   return out;
@@ -128,20 +132,23 @@ export function kernelLap(id, year) {
   const e2 = PU_RAMP && year >= 2026 ? {...env, puRamp: puRampOf(d, id)} : env;
   return {d, car: sc.car, env: e2, track: t2, res: K.simulateLap(t2, sc.car, e2)};
 }
+// |κ| at a lap fraction: max over ±10 m of the kernel track (the TI lap fraction and the kernel line differ by a few metres)
+const kappaFn = tr => rel => { const n = tr.kappa.length, i = Math.round(rel * n), h = Math.max(1, Math.round(10 / tr.ds)); let m = 0;
+  for (let j = i - h; j <= i + h; j++) m = Math.max(m, Math.abs(tr.kappa[((j % n) + n) % n])); return m; };
 const gradeFn = d => d?.grade ? rel => d.grade[Math.min(d.grade.length - 1, Math.max(0, Math.round(rel * d.grade.length)))] / 1e4 : null;
 
 // ---------- 1. deploy law, 2023–25 ----------
-function deployLaw(ti, sysPatch = null) {
+export function deployLaw(ti, sysPatch = null) {
   const o = {...PRE, ...(sysPatch || {})}, rows = [];
   for (const year of [2023, 2024, 2025]) for (const ev of fastestLaps(ti, year)) {
     const kl = kernelLap(ev.track, year); if (!kl) continue;
     const vcK = kl.res.energy.cutoffKph; const vc = vcK ? vcK / 3.6 : Infinity, gf = o.noGrade ? null : gradeFn(kl.d);
-    const S = []; for (const p of ev.picks) { const t = telOf(p.file); if (!t?.speed) continue; for (const s of powerSamples(t, gf, o)) S.push({...s, lap: p.drv}); }
+    const S = []; for (const p of ev.picks) { const t = telOf(p.file); if (!t?.speed) continue; for (const s of powerSamples(t, gf, o, kappaFn(kl.track))) S.push({...s, lap: p.drv}); }
     if (S.length < 100 || !S.some(s => s.v < vc) || !S.some(s => s.v >= vc)) { rows.push({year, track: ev.track, n: S.length, skipped: 'too few samples on one side of the cut-off'}); continue; }
     const fb = fitLaw(S, 'b'), fc = fitLaw(S, 'c'), fs = fitLaw(S, 'step', vc), fa = fitLaw(S, 'a', vc);
     const row = {year, track: ev.track, laps: ev.picks.length, n: S.length, nBelowCut: S.filter(s => s.v < vc).length, cutoffKph: vcK ? Math.round(vcK) : null,
       P0kW: fb[0] / 1e3, slopeKWper100: fc[3] * (100 / 3.6) / 1e3, stepKW: fs[3] / 1e3, rhoCdA: fb[1], rhoCdAopen: fb[2], cdA: fb[1] / kl.env.rho, aP0kW: fa[0] / 1e3};
-    if (!sysPatch) Object.assign(row, {rmsN: {a: looRms(S, 'a', vc), b: looRms(S, 'b'), c: looRms(S, 'c')},
+    if (!o.sys) Object.assign(row, {rmsN: {a: looRms(S, 'a', vc), b: looRms(S, 'b'), c: looRms(S, 'c')},
       bins: [180, 220, 260, 300, 345].slice(0, -1).map((lo, i, A) => { const hi = [220, 260, 300, 345][i], B = S.filter(s => s.v * 3.6 >= lo && s.v * 3.6 < hi);
         // residual wheel power in the band from the flat fit's drag (P(v) reading per band, kW)
         return {kph: `${lo}-${hi}`, n: B.length, PkW: B.length ? mean(B.map(s => s.y + (s.open ? fb[2] ?? fb[1] : fb[1]) * s.v ** 3 / 2)) / 1e3 : null}; })});
@@ -149,9 +156,9 @@ function deployLaw(ti, sysPatch = null) {
   }
   return rows;
 }
-function pooled(rows, key) { // one value per track (seasons averaged), then mean over tracks
+export function pooled(rows, key) { // one value per track (seasons averaged), then mean over tracks
   const by = {}; for (const r of rows) if (!r.skipped && Number.isFinite(r[key])) (by[r.track] ||= []).push(r[key]);
-  const v = Object.values(by).map(mean); return {n: v.length, mean: mean(v), ci90: bootCI(v), jackSE: jackSE(v), perTrack: Object.fromEntries(Object.entries(by).map(([k, a]) => [k, +mean(a).toFixed(1)]))}; }
+  const v = Object.values(by).map(mean); return {n: v.length, mean: mean(v), ci90: bootCI(v), jackSE: jackSE(v), perTrack: Object.fromEntries(Object.entries(by).map(([k, a]) => [k, +mean(a).toPrecision(4)]))}; }
 
 // ---------- 2. 2026 clipping ----------
 function csvRows(f) { const [h, ...L] = readFileSync(f, 'utf8').trim().split('\n'), H = h.split(',');
@@ -250,24 +257,26 @@ if (process.argv[1]?.endsWith('ers-evidence.mjs')) {
   const [ti, det] = process.argv.slice(2);
   if (!ti || !det) throw new Error('usage: node scripts/sim/ers-evidence.mjs <TracingInsights dir> <detect.py output dir>');
   const r4 = x => x == null || !Number.isFinite(x) ? x : Math.abs(x) >= 100 ? Math.round(x * 10) / 10 : Math.round(x * 1e3) / 1e3, round = o => JSON.parse(JSON.stringify(o, (k, v) => typeof v === 'number' ? r4(v) : v));
-  const rows = deployLaw(ti);
-  const P = {stepKW: pooled(rows, 'stepKW'), slopeKWper100: pooled(rows, 'slopeKWper100'), P0kW: pooled(rows, 'P0kW')};
+  const rowsPrereg = deployLaw(ti); // as pre-registered (no curvature filter), kept for the record
+  const rows = deployLaw(ti, AMEND);
+  const P = {stepKW: pooled(rows, 'stepKW'), slopeKWper100: pooled(rows, 'slopeKWper100'), P0kW: pooled(rows, 'P0kW'), cdA: pooled(rows, 'cdA')};
   const SYS = {'mass +10 kg': {mass: PRE.mass + 10}, 'mass −10 kg': {mass: PRE.mass - 10}, 'C_rr 0.010': {cRoll: 0.010}, 'C_rr 0.015': {cRoll: 0.015},
     'm_e 1.03': {meFactor: 1.03}, 'm_e 1.09': {meFactor: 1.09}, 'grade off': {noGrade: true}};
-  const sys = {}; for (const [k, p] of Object.entries(SYS)) { const r = deployLaw(ti, p); sys[k] = {stepKW: pooled(r, 'stepKW').mean - P.stepKW.mean, slopeKWper100: pooled(r, 'slopeKWper100').mean - P.slopeKWper100.mean, P0kW: pooled(r, 'P0kW').mean - P.P0kW.mean}; }
+  const sys = {}; for (const [k, p] of Object.entries(SYS)) { const r = deployLaw(ti, {...AMEND, ...p, sys: true}); sys[k] = {stepKW: pooled(r, 'stepKW').mean - P.stepKW.mean, slopeKWper100: pooled(r, 'slopeKWper100').mean - P.slopeKWper100.mean, P0kW: pooled(r, 'P0kW').mean - P.P0kW.mean}; }
   const sysTot = q => Math.sqrt(['mass', 'C_rr', 'm_e'].reduce((s, g) => s + Math.max(...Object.entries(sys).filter(([k]) => k.startsWith(g)).map(([, v]) => Math.abs(v[q]))) ** 2, 0) + sys['grade off'][q] ** 2);
   // out-of-sample RMS gains per track (seasons pooled): b vs a, c vs b (+ = better)
   const gain = (x, y) => { const by = {}; for (const r of rows) if (r.rmsN?.[x] != null && r.rmsN?.[y] != null) (by[r.track] ||= []).push(r.rmsN[x] - r.rmsN[y]); return Object.values(by).map(mean); };
   const gBA = gain('a', 'b'), gCB = gain('b', 'c');
   const dec = {
     cutoffRejected: !(P.stepKW.ci90[0] <= PRE.dPkernel / 1e3 && PRE.dPkernel / 1e3 <= P.stepKW.ci90[1]),
-    taperBeatsFlat: (P.slopeKWper100.ci90[0] > 0 || P.slopeKWper100.ci90[1] < 0) && Math.abs(P.slopeKWper100.mean) > PRE.minSlopeKW100,
+    // rule 2 as amended 2026-11-23 11:06 (prereg §7): a slope is an ERS taper only if negative
+    taperBeatsFlat: P.slopeKWper100.ci90[1] < 0 && -P.slopeKWper100.mean > PRE.minSlopeKW100,
     oos: {flatVsCutoff: {n: gBA.length, meanGainN: mean(gBA), ci90: bootCI(gBA), p: signFlipP(gBA), passAt: 0.16 / 2},
       taperVsFlat: {n: gCB.length, meanGainN: mean(gCB), ci90: bootCI(gCB), p: signFlipP(gCB), passAt: 0.16 / 2}}};
   dec.winner = dec.cutoffRejected ? (dec.taperBeatsFlat ? 'c taper' : 'b flat') : 'a kernel cut-off';
   const clips = clipping(ti, det), errs = {}; for (const c of clips) if (c.kernelErrM != null) (errs[c.track] ||= []).push(Math.abs(c.kernelErrM));
   const out = {generatedBy: 'scripts/sim/ers-evidence.mjs', prereg: 'claude/gate-ers-law-prereg-2026-11-23.md', source: 'TracingInsights 2023–2026 Qualifying, each driver\'s fastest dry lap (FastF1 / Formula 1 timing); kernel = production calibration',
-    pre: PRE, deploy: {rows, pooled: P, sys, sysTotal: {stepKW: sysTot('stepKW'), slopeKWper100: sysTot('slopeKWper100'), P0kW: sysTot('P0kW')}, decision: dec},
+    pre: PRE, amend: AMEND, deployPrereg: {pooled: {stepKW: pooled(rowsPrereg, 'stepKW'), slopeKWper100: pooled(rowsPrereg, 'slopeKWper100'), P0kW: pooled(rowsPrereg, 'P0kW'), cdA: pooled(rowsPrereg, 'cdA')}}, deploy: {rows, pooled: P, sys, sysTotal: {stepKW: sysTot('stepKW'), slopeKWper100: sysTot('slopeKWper100'), P0kW: sysTot('P0kW')}, decision: dec},
     clipping: {cannotShow: ['Straight Mode state', 'Overtake use', 'battery state', 'MGU-K power or torque', 'ICE power', 'cause of the drop (clip, super-clip, C5.12 ramp)'],
       rows: clips, kernelMedianAbsErrPerTrackM: Object.fromEntries(Object.entries(errs).map(([k, a]) => [k, median(a)])), kernelMedianAbsErrM: median(Object.values(errs).map(median))},
     regen: regen(ti)};
