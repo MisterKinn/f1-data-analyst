@@ -237,7 +237,8 @@ export function buildRegistry({fetched = {}, stored = {}, ti = {}, ids, years = 
   for (const id of ids) {
     const tr = {years: {}, coverage: 'no-history', layoutEras: [], fullResurfacings: FULL[id] || []};
     for (const y of years) {
-      const notes = notesFor(id, y, fetched, stored), raced = !!(notes || ti[id]?.[y]);
+      // raced = a TI qualifying exists; notes alone only for tracks TI never covers (2020 Melbourne notes were issued, the event was cancelled)
+      const notes = notesFor(id, y, fetched, stored), raced = ti[id] ? !!ti[id][y] : !!notes;
       const lay = (LAYOUT[id] || []).find(e => e.year === y), full = (FULL[id] || []).find(e => e.year === y);
       const fiaFull = (notes?.changes || []).find(isFullResurfacing);
       if (!raced && !lay && !full) continue;
