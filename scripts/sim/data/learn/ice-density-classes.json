@@ -787,13 +787,36 @@
    ],
    "source": "prior (not identified): torque-sensor power cap, mostly turbo fleet"
   },
+  "LMGT3_WEC": {
+   "value": 0,
+   "ci90": [
+    0,
+    0.5
+   ],
+   "source": "prior (amendment 1): WEC LMGT3 BoP is wheel power with torque sensors (TR art. 5.2)",
+   "measuredCheck": {
+    "value": -0.1033,
+    "ci90": [
+     -1.3748,
+     0.3602
+    ]
+   }
+  },
   "F1": {
-   "value": -0.0968,
+   "value": 0,
    "ci90": [
     -0.2413,
     0.296
    ],
-   "source": "measured (TI per-track wheel power vs ρ, 2023–25)",
+   "source": "prior (amendment 1): 2014–25 fuel-flow limit; ± = measured interval",
+   "measured": {
+    "value": -0.0968,
+    "ci90": [
+     -0.2413,
+     0.296
+    ],
+    "identified": true
+   },
    "y2026": 0.15
   }
  },
@@ -824,7 +847,113 @@
     ]
    }
   },
-  "perClass": {
+  "amendment1": {
+   "wec": {
+    "n": 33,
+    "slope": -0.0988,
+    "ci90": [
+     -0.164,
+     -0.0606
+    ]
+   },
+   "lmgt3": {
+    "n": 11,
+    "slope": -0.139,
+    "ci90": [
+     -0.3015,
+     -0.0707
+    ]
+   },
+   "hypercar": {
+    "n": 22,
+    "slope": -0.0777,
+    "ci90": [
+     -0.1588,
+     -0.0363
+    ]
+   }
+  },
+  "amendment1Edges": {
+   "lmgt3At05": {
+    "wec": {
+     "n": 33,
+     "slope": -0.0885,
+     "ci90": [
+      -0.1539,
+      -0.0514
+     ]
+    },
+    "lmgt3": {
+     "n": 11,
+     "slope": -0.1099,
+     "ci90": [
+      -0.2737,
+      -0.0414
+     ]
+    },
+    "hypercar": {
+     "n": 22,
+     "slope": -0.0777,
+     "ci90": [
+      -0.1588,
+      -0.0363
+     ]
+    }
+   },
+   "hypercar0": {
+    "wec": {
+     "n": 33,
+     "slope": -0.1071,
+     "ci90": [
+      -0.1728,
+      -0.0692
+     ]
+    },
+    "lmgt3": {
+     "n": 11,
+     "slope": -0.139,
+     "ci90": [
+      -0.3015,
+      -0.0707
+     ]
+    },
+    "hypercar": {
+     "n": 22,
+     "slope": -0.0906,
+     "ci90": [
+      -0.1735,
+      -0.0486
+     ]
+    }
+   },
+   "hypercar1": {
+    "wec": {
+     "n": 33,
+     "slope": -0.0735,
+     "ci90": [
+      -0.1393,
+      -0.0332
+     ]
+    },
+    "lmgt3": {
+     "n": 11,
+     "slope": -0.139,
+     "ci90": [
+      -0.3015,
+      -0.0707
+     ]
+    },
+    "hypercar": {
+     "n": 22,
+     "slope": -0.0386,
+     "ci90": [
+      -0.1164,
+      0.0017
+     ]
+    }
+   }
+  },
+  "asPreregistered": {
    "wec": {
     "n": 33,
     "slope": -0.08,

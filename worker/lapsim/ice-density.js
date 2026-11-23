@@ -7,7 +7,8 @@ export const iceBetaOn = () => globalThis.process?.env?.LAPSIM_ICE_BETA === 'mea
 // car key (carsFor) → class in ice-density-data.js; null = keep the kernel value
 export function iceClassOf(key, entry = {}) {
   if (/^(wec-lmh|wec-lmdh|imsa-gtp|hyper-)/.test(key)) return 'hypercar';
-  if (key === 'wec-lmgt3' || /^gt3-/.test(key) || entry.proxyOf === 'wec-lmgt3') return 'gt3';
+  if (key === 'wec-lmgt3') return 'lmgt3Wec'; // amendment 1: WEC BoP is wheel power (torque sensors)
+  if (/^gt3-/.test(key) || entry.proxyOf === 'wec-lmgt3') return 'gt3';
   if (/^\d{4}$/.test(key) && D.f1Seasons?.includes(Number(key))) return 'f1';
   return null;
 }
