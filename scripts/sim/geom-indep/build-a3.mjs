@@ -124,16 +124,28 @@ function buildTrack(id, raw, bac) {
 const [cmd, a1] = process.argv.slice(2), arg = k => process.argv.includes(k) ? process.argv[process.argv.indexOf(k) + 1] : null;
 if (cmd === 'eras') { const E = {}; for (const id of Object.keys(OSM_SEEDS)) { const e = erasOf(id).filter(x => x.date); if (e.length) E[id] = e; } mkdirSync(a1.replace(/\/[^/]*$/, ''), {recursive: true}); writeFileSync(a1, JSON.stringify(E, null, 1)); console.log(E); }
 if (cmd === 'one') { const r = buildTrack(a1, arg('--raw'), J(`${arg('--raw')}/f1-circuits.geojson`)); writeFileSync(arg('--to'), JSON.stringify(r)); }
-if (cmd === 'build') {
-  const raw = a1, outDir = arg('--out') || 'scripts/sim/data/geom-indep', jobs = +(arg('--jobs') || 2), only = arg('--only')?.split(',');
-  const ids = Object.keys(OSM_SEEDS).filter(id => lapsimAllTracks[id] && (!only || only.includes(id)) && existsSync(`${raw}/${id}-osm.json`)), tmp = `${raw}/a3-parts`; mkdirSync(tmp, {recursive: true});
+// The build runs in groups (GitHub jobs stop at 6 h): `parts` builds the tracks of one group into per-track files plus ids.json (the
+// tracks it tried); `merge` writes the outputs from any number of part folders in the canonical track order. `build` is parts + merge
+// in one job, so a split build and a single build write the same bytes from the same sources (checked in the workflow's split-check).
+export const canonicalIds = () => Object.keys(OSM_SEEDS).filter(id => lapsimAllTracks[id]);
+export const groupIds = (k, N) => canonicalIds().filter((_, i) => i % N === k - 1);
+async function parts(raw, tmp, {jobs = 2, only = null} = {}) {
+  const ids = canonicalIds().filter(id => (!only || only.includes(id)) && existsSync(`${raw}/${id}-osm.json`)); mkdirSync(tmp, {recursive: true});
   const queue = [...ids]; let live = 0;
   await new Promise(done => { const next = () => { if (!queue.length && !live) return done(); while (live < jobs && queue.length) { const id = queue.shift(); live++;
     const p = spawn('node', [new URL(import.meta.url).pathname, 'one', id, '--raw', raw, '--to', `${tmp}/${id}.json`], {stdio: 'inherit'}); p.on('exit', c => { live--; console.log(id, c === 0 ? 'built' : 'FAILED ' + c); next(); }); } }; next(); });
-  const tracks = {}, report = {};
-  for (const id of ids) { const r = J(`${tmp}/${id}.json`); if (!r) { report[id] = [{status: 'failed (no output)'}]; continue; } report[id] = r.report; if (r.eras.length) tracks[id] = {layout: lapsimAllTracks[id].name, eras: r.eras}; }
+  writeFileSync(`${tmp}/ids.json`, JSON.stringify(ids));
+}
+export function merge(partDirs, outDir) {
+  const tried = new Set(partDirs.flatMap(d => J(`${d}/ids.json`) || [])), ids = canonicalIds().filter(id => tried.has(id)), tracks = {}, report = {};
+  for (const id of ids) { const f = partDirs.map(d => `${d}/${id}.json`).find(existsSync), r = f && J(f);
+    if (!r) { report[id] = [{status: 'failed (no output)'}]; continue; } report[id] = r.report; if (r.eras.length) tracks[id] = {layout: lapsimAllTracks[id].name, eras: r.eras}; }
   mkdirSync(outDir, {recursive: true});
   writeFileSync(`${outDir}/tracks-a3.json`, JSON.stringify({generatedBy: 'scripts/sim/geom-indep/build-a3.mjs', prereg: 'claude/gate-independent-geometry-attempt3-prereg-2026-11-23.md', settings: {...SET, ...A3}, tracks}));
   writeFileSync(`${outDir}/build-report-a3.json`, JSON.stringify(report, null, 1));
   console.log('tracks built:', Object.keys(tracks).length, 'of', ids.length);
 }
+if (cmd === 'ids') console.log(arg('--group') ? groupIds(...arg('--group').split('/').map(Number)).join(',') : canonicalIds().join(','));
+if (cmd === 'parts') await parts(a1, arg('--to'), {jobs: +(arg('--jobs') || 2), only: arg('--only')?.split(',')});
+if (cmd === 'merge') merge(process.argv.slice(3).filter((x, i, a) => !x.startsWith('--') && a[i - 1] !== '--out'), arg('--out'));
+if (cmd === 'build') { const tmp = `${a1}/a3-parts`; await parts(a1, tmp, {jobs: +(arg('--jobs') || 2), only: arg('--only')?.split(',')}); merge([tmp], arg('--out') || 'scripts/sim/data/geom-indep'); }

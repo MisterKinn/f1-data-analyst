@@ -70,3 +70,14 @@ test('a3: width from an OSM area polygon, fallback elsewhere, no kerb without a 
   assert.ok(w.note.sources['osm-area'] > 0.4 && w.note.sources['osm-area'] < 0.6);
   assert.equal(A3.kerbM, 1.0);
 });
+
+test('a3: a split build merges to the same bytes as one job (canonical order, any part order)', async () => {
+  const {merge, canonicalIds, groupIds} = await import('../scripts/sim/geom-indep/build-a3.mjs');
+  const {mkdtempSync, mkdirSync, writeFileSync, readFileSync} = await import('node:fs'), {tmpdir} = await import('node:os');
+  const d = mkdtempSync(tmpdir() + '/a3-'), [a, b] = canonicalIds().slice(0, 2), part = id => ({id, eras: [{from: null, to: null, row: {id}}], report: [{status: 'ok'}]});
+  for (const [dir, ids] of [['one', [a, b]], ['p1', [b]], ['p2', [a]]]) { mkdirSync(`${d}/${dir}`); ids.forEach(id => writeFileSync(`${d}/${dir}/${id}.json`, JSON.stringify(part(id)))); writeFileSync(`${d}/${dir}/ids.json`, JSON.stringify(ids)); }
+  merge([`${d}/one`], `${d}/single`); merge([`${d}/p1`, `${d}/p2`], `${d}/split`);
+  for (const f of ['tracks-a3.json', 'build-report-a3.json']) assert.equal(readFileSync(`${d}/split/${f}`, 'utf8'), readFileSync(`${d}/single/${f}`, 'utf8'));
+  // the groups cover every track once
+  const all = [1, 2, 3, 4, 5, 6].flatMap(k => groupIds(k, 6)); assert.equal(all.length, canonicalIds().length); assert.equal(new Set(all).size, all.length);
+});
