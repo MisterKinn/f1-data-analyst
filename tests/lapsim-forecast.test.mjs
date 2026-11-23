@@ -77,26 +77,26 @@ test('page: no browser call to Open-Meteo; attribution; forecast block next to t
   assert.doesNotMatch(js, /api\.open-meteo\.com/); assert.match(js, /\/api\/lapsim\/forecast\?track=/);
   const d = pageData('lusail', '2026'); assert.equal(d.conds['2026'], undefined);
   const base = V.computeView(V.K, d, st(d), V.R);
-  d.forecast = await buildForecast('lusail', {now: NOW, fetchFn: fakeApi()});
-  const v = V.computeView(V.K, d, st(d), V.R), q = d.forecast.sessions.find(s => s.name === 'Qualifying');
+  const fc = await buildForecast('lusail', {now: NOW, fetchFn: fakeApi()});
+  const v = V.computeView(V.K, d, st(d, {fc}), V.R), q = fc.sessions.find(s => s.name === 'Qualifying');
   assert.equal(v.lap, base.lap, 'the default lap does not use the forecast');
   assert.match(v.airHtml, /For reference, typical weather/); // the ERA5 preset stays
   assert.match(v.airHtml, /Race-week forecast<\/dt>.*<option value="3" selected>F1 Qualifying 11-28 21:00 local/);
   assert.match(v.airHtml, /global models \(ECMWF IFS, GFS, ICON\), Open-Meteo best match · issued 2026-11-23 00:00 UTC · hourly values interpolated/);
   assert.match(v.airHtml, /ERA5 typical air p10–p90: [\d.-]+–[\d.-]+ °C/); assert.match(v.airHtml, /air -1\.02 °C bias, RMS 2\.25 °C\. Forecast error not measured yet/);
   assert.match(v.airHtml, /track [\d.]+ °C \(estimated, ±3\.97 °C\)/); assert.match(v.airHtml, /data-fc-run="3">Run on forecast<\/button>/); assert.match(v.airHtml, /Open-Meteo\.com \(CC BY 4\.0\)/);
-  const r = V.computeView(V.K, d, st(d, {mode: 'forecast', fcIdx: 3}), V.R);
+  const r = V.computeView(V.K, d, st(d, {fc, mode: 'forecast', fcIdx: 3}), V.R);
   assert.match(r.airHtml, new RegExp(`Air temperature</dt><dd data-no-translate>${q.w.airTempC.toFixed(1)} °C`)); assert.match(r.airHtml, /forecast F1 Qualifying 11-28 21:00/);
   assert.notEqual(r.lap, base.lap);
 });
 
 test('page: a past session keeps its real weather (no forecast block); API down shows the climate preset, labelled', () => {
   const d = pageData('lusail', '2025'); assert.ok(d.conds['2025']);
-  d.forecast = {status: 'ok', model: 'x', issued: null, trackTempErrC: 3.97, sessions: [{event: 'e', series: 'f1', name: 'Qualifying', start: '2026-11-28T21:00:00+03:00', step: 'hourly', rainProb: 0, w: {airTempC: 1, humidityPct: 1, pressureHpa: 1000, windSpeed: 0, windFromDeg: 0, trackTempC: 1}}]};
-  const v = V.computeView(V.K, d, st(d), V.R); assert.match(v.airHtml, /real session 2025/); assert.doesNotMatch(v.airHtml, /Race-week forecast/);
-  const u = pageData('lusail', '2026'); u.forecast = {status: 'unavailable', sessions: []};
-  const w = V.computeView(V.K, u, st(u), V.R); assert.match(w.airHtml, /forecast not available: the typical \(climate\) weather is shown/); assert.match(w.airHtml, /For reference, typical weather/);
-  const ko = pageData('lusail', '2026'); assert.match(simulationPage({track: 'lusail', car: '2026'}, 'ko'), /<option value="forecast">레이스 위크 예보<\/option>/); assert.equal(ko.forecast, undefined);
+  const fc = {status: 'ok', model: 'x', issued: null, trackTempErrC: 3.97, sessions: [{event: 'e', series: 'f1', name: 'Qualifying', start: '2026-11-28T21:00:00+03:00', step: 'hourly', rainProb: 0, w: {airTempC: 1, humidityPct: 1, pressureHpa: 1000, windSpeed: 0, windFromDeg: 0, trackTempC: 1}}]};
+  const v = V.computeView(V.K, d, st(d, {fc}), V.R); assert.match(v.airHtml, /real session 2025/); assert.doesNotMatch(v.airHtml, /Race-week forecast/);
+  const u = pageData('lusail', '2026'); 
+  const w = V.computeView(V.K, u, st(u, {fc: {status: 'unavailable', sessions: []}}), V.R); assert.match(w.airHtml, /forecast not available: the typical \(climate\) weather is shown/); assert.match(w.airHtml, /For reference, typical weather/);
+  const ko = pageData('lusail', '2026'); assert.match(simulationPage({track: 'lusail', car: '2026'}, 'ko'), /<option value="forecast">레이스 위크 예보<\/option>/); assert.equal(ko.forecast, undefined); assert.match(js, /state\.fc = j; update\(\)/); // the forecast reaches the worker in the state
 });
 
 test('verification log: stored once before the session, never changed; sensor added after; per-model summary needs n ≥ 5', async () => {

@@ -881,7 +881,7 @@ function computeView(K, data, state, R) {
   const clim = !data.conds[condKey] && data.climate ? data.climate.presets[serKey] || data.climate.presets[data.climate.main] || null : null;
   const yearKey = data.conds[condKey] ? condKey : (data.conds['2026'] ? '2026' : Object.keys(data.conds)[0]);
   // race-week forecast (step 8): sessions of the next 7 days at this track, from /api/lapsim/forecast; this car's series first, its qualifying first
-  const fcAll = data.forecast && data.forecast.status === 'ok' ? data.forecast.sessions : [];
+  const fcAll = state.fc && state.fc.status === 'ok' ? state.fc.sessions : [];
   const fcSer = {f1: ['f1'], wec: ['wec'], imsa: ['imsa'], fe: ['formula-e'], elms: ['elms'], alms: ['alms'], gtwc: ['gtwc-europe', 'gtwc-america', 'gtwc-asia', 'gtwc-australia'], nur: ['nls', '24h-series'], macau: ['macau'], igtc: ['igtc']}[serKey] || [];
   const fcMine = fcAll.filter(x => fcSer.includes(x.series)), fcPool = fcMine.length ? fcMine : fcAll;
   const fcSel = fcAll[state.fcIdx] || fcPool.find(x => /qualif|hyperpole/i.test(x.name) && !/sprint/i.test(x.name)) || fcPool[0] || null;
@@ -981,7 +981,7 @@ function computeView(K, data, state, R) {
   const pct = x => (x >= 1 ? '+' : '−') + Math.abs((x - 1) * 100).toFixed(1) + '%';
   const own = data.conds[condKey], C = data.climate;
   const fcT = x => x.start.slice(5, 16).replace('T', ' '), fcIss = G => G.issued ? G.issued.slice(0, 16).replace('T', ' ') : t.fcIssueNone;
-  const FC = data.forecast, band = C && (C.presets[serKey] || C.presets[C.main]);
+  const FC = state.fc, band = C && (C.presets[serKey] || C.presets[C.main]);
   // shown only for a car with no real session here (a past session keeps its real weather, never a forecast)
   const fcHtml = own || state.mode === 'manual' || !FC ? '' : FC.status === 'unavailable' ? fact(t.fcH, t.fcFail) : !fcSel ? ''
     : '<div class="ls-fc"><dt>' + t.fcH + '</dt><dd data-no-translate>' + (fcAll.length > 1 ? '<select data-fc-pick>' + fcAll.map((x, i) => '<option value="' + i + '"' + (x === fcSel ? ' selected' : '') + '>' + t.fcFor.replace('{s}', x.series.toUpperCase() + ' ' + x.name).replace('{d}', fcT(x)) + '</option>').join('') + '</select>' : t.fcFor.replace('{s}', fcSel.series.toUpperCase() + ' ' + fcSel.name).replace('{d}', fcT(fcSel)))
@@ -1602,10 +1602,11 @@ function lapsimClient(K, computeView, renderMap, renderTrace, evolutionDelta, ev
   if (q('compare2')) q('compare2').addEventListener('change', () => { state.compareIds = cmpSel(); update(); });
   // race-week forecast (step 8): read from our server (cached per track and hour), never from Open-Meteo in the browser; loaded after the
   // first view, only for a car without a real session here. "Run on forecast" puts the session's values into the weather input.
-  const fc = q('forecast');
-  const loadForecast = () => { if (!fc || !fc.dataset.track || data.forecast !== undefined) return; const c = data.cars[state.carId]; if (data.conds[c.series ? state.carId : String(c.year)]) return;
-    data.forecast = null; fetch('/api/lapsim/forecast?track=' + encodeURIComponent(fc.dataset.track)).then(r => r.ok ? r.json() : {status: 'unavailable'}).catch(() => ({status: 'unavailable'}))
-      .then(j => { data.forecast = j; if (j && (j.status === 'ok' || j.status === 'unavailable')) update(); }); };
+  // the forecast travels in the state, not the page data: the worker gets each state, and stored first views (keyed by state) stay exact
+  const fc = q('forecast'); let fcTried = false;
+  const loadForecast = () => { if (!fc || !fc.dataset.track || fcTried) return; const c = data.cars[state.carId]; if (data.conds[c.series ? state.carId : String(c.year)]) return;
+    fcTried = true; fetch('/api/lapsim/forecast?track=' + encodeURIComponent(fc.dataset.track)).then(r => r.ok ? r.json() : {status: 'unavailable'}).catch(() => ({status: 'unavailable'}))
+      .then(j => { if (j && (j.status === 'ok' || j.status === 'unavailable')) { state.fc = j; update(); } }); };
   q('air').addEventListener('click', e => { const b = e.target.closest('[data-fc-run]'); if (!b) return; state.fcIdx = +b.dataset.fcRun; state.mode = 'forecast'; q('mode').value = 'forecast'; q('manual').hidden = true; update(); });
   q('air').addEventListener('change', e => { if (e.target.matches('[data-fc-pick]')) { state.fcIdx = +e.target.value; update(); } });
   q('mode').addEventListener('change', e => { state.mode = e.target.value; if (state.mode === 'forecast') { q('manual').hidden = true; loadForecast(); update(); return; } q('manual').hidden = state.mode !== 'manual'; if (state.mode === 'manual') { const c = data.cars[state.carId], real = data.conds[c.series ? state.carId : String(c.year)]; if (real) Object.assign(state.manual, real); syncSliders(); } update(); });
