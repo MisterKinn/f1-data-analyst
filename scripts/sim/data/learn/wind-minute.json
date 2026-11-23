@@ -1,0 +1,692 @@
+{
+ "generatedAt": "2026-11-23",
+ "prereg": "claude/gate-wind-minute-prereg-2026-11-23.md",
+ "draws": 2000,
+ "dropped": [
+  "2023 Australian Grand Prix: rain",
+  "2023 Belgian Grand Prix: rain",
+  "2023 British Grand Prix: rain",
+  "2023 Canadian Grand Prix: rain",
+  "2023 Dutch Grand Prix: rain",
+  "2023 Spanish Grand Prix: rain",
+  "2023 São Paulo Grand Prix: rain",
+  "2024 Australian Grand Prix: rain",
+  "2024 Belgian Grand Prix: rain",
+  "2024 British Grand Prix: rain",
+  "2024 Canadian Grand Prix: rain",
+  "2024 Hungarian Grand Prix: rain",
+  "2024 São Paulo Grand Prix: rain",
+  "2025 Azerbaijan Grand Prix: rain",
+  "2025 Las Vegas Grand Prix: rain",
+  "2026 Canadian Grand Prix: rain",
+  "2026 Dutch Grand Prix: rain",
+  "2026 São Paulo Grand Prix: rain"
+ ],
+ "groups": {
+  "held": {
+   "n": 824,
+   "sessions": 40,
+   "beta": -0.03276,
+   "ci90": [
+    -0.25979,
+    0.17611
+   ],
+   "r2phys": -0.10503,
+   "r2beta": 0.00010578,
+   "sdResidPct": 0.3662,
+   "sdDeltaPct": 0.11497,
+   "pRand": 0.63568,
+   "permCi90": [
+    -0.17086,
+    0.1662
+   ]
+  },
+  "explore": {
+   "n": 652,
+   "sessions": 33,
+   "beta": 0.048854,
+   "ci90": [
+    -0.18749,
+    0.2124
+   ],
+   "r2phys": -0.10205,
+   "r2beta": 0.00026995,
+   "sdResidPct": 0.31496,
+   "sdDeltaPct": 0.10592,
+   "pRand": 0.4018,
+   "permCi90": [
+    -0.24838,
+    0.23745
+   ]
+  },
+  "all": {
+   "n": 1476,
+   "sessions": 73,
+   "beta": 0.000032152,
+   "ci90": [
+    -0.16357,
+    0.14112
+   ],
+   "r2phys": -0.10393,
+   "r2beta": 1.0744e-10,
+   "sdResidPct": 0.34451,
+   "sdDeltaPct": 0.11106,
+   "pRand": 0.50825,
+   "permCi90": [
+    -0.14532,
+    0.14551
+   ]
+  }
+ },
+ "sensitivity": {
+  "held": {
+   "n": 824,
+   "sessions": 40,
+   "beta": 0.039673,
+   "ci90": [
+    -0.25502,
+    0.33036
+   ],
+   "r2phys": -0.050386,
+   "r2beta": 0.00008614,
+   "sdResidPct": 0.3662,
+   "sdDeltaPct": 0.085668,
+   "pRand": null,
+   "permCi90": null
+  },
+  "explore": {
+   "n": 652,
+   "sessions": 33,
+   "beta": -0.11715,
+   "ci90": [
+    -0.34233,
+    0.12347
+   ],
+   "r2phys": -0.077903,
+   "r2beta": 0.00086616,
+   "sdResidPct": 0.31496,
+   "sdDeltaPct": 0.079127,
+   "pRand": null,
+   "permCi90": null
+  },
+  "all": {
+   "n": 1476,
+   "sessions": 73,
+   "beta": -0.023525,
+   "ci90": [
+    -0.2169,
+    0.15912
+   ],
+   "r2phys": -0.060546,
+   "r2beta": 0.000032003,
+   "sdResidPct": 0.34451,
+   "sdDeltaPct": 0.082842,
+   "pRand": null,
+   "permCi90": null
+  }
+ },
+ "tracks": {
+  "austin": {
+   "laps": 81,
+   "sessions": 4,
+   "sdDeltaMs": 41.242,
+   "sdDeltaMsCi90": [
+    33.901,
+    48.428
+   ],
+   "meanWind": 2.1481,
+   "beta": -0.4874,
+   "betaCi90": [
+    -1.8797,
+    0.8654
+   ]
+  },
+  "baku": {
+   "laps": 61,
+   "sessions": 3,
+   "sdDeltaMs": 145.82,
+   "sdDeltaMsCi90": [
+    123.66,
+    166.39
+   ],
+   "meanWind": 1.2246,
+   "beta": 0.12471,
+   "betaCi90": [
+    -0.42635,
+    0.74689
+   ]
+  },
+  "catalunya": {
+   "laps": 62,
+   "sessions": 3,
+   "sdDeltaMs": 101.09,
+   "sdDeltaMsCi90": [
+    89.358,
+    112.13
+   ],
+   "meanWind": 1.7516,
+   "beta": 0.36546,
+   "betaCi90": [
+    -0.33216,
+    1.1463
+   ]
+  },
+  "hungaroring": {
+   "laps": 62,
+   "sessions": 3,
+   "sdDeltaMs": 97.98,
+   "sdDeltaMsCi90": [
+    74.753,
+    120.2
+   ],
+   "meanWind": 1.8371,
+   "beta": 0.54848,
+   "betaCi90": [
+    0.11603,
+    0.96756
+   ]
+  },
+  "imola": {
+   "laps": 38,
+   "sessions": 2,
+   "sdDeltaMs": 96.065,
+   "sdDeltaMsCi90": [
+    78.153,
+    112.87
+   ],
+   "meanWind": 2.6026,
+   "beta": 1.1109,
+   "betaCi90": [
+    0.31358,
+    1.9522
+   ]
+  },
+  "interlagos": {
+   "laps": 19,
+   "sessions": 1,
+   "sdDeltaMs": 153.54,
+   "sdDeltaMsCi90": [
+    110.63,
+    196.32
+   ],
+   "meanWind": 1.4263,
+   "beta": -0.56364,
+   "betaCi90": [
+    -1.2126,
+    -0.23973
+   ]
+  },
+  "jeddah": {
+   "laps": 58,
+   "sessions": 3,
+   "sdDeltaMs": 143.52,
+   "sdDeltaMsCi90": [
+    113.28,
+    170.43
+   ],
+   "meanWind": 1.1776,
+   "beta": -0.1323,
+   "betaCi90": [
+    -0.49278,
+    0.22958
+   ]
+  },
+  "kuala-lumpur": {
+   "laps": 22,
+   "sessions": 1,
+   "sdDeltaMs": 71.904,
+   "sdDeltaMsCi90": [
+    54.06,
+    87.253
+   ],
+   "meanWind": 0.81364,
+   "beta": 2.2087,
+   "betaCi90": [
+    -0.015403,
+    5.0521
+   ]
+  },
+  "las-vegas": {
+   "laps": 61,
+   "sessions": 3,
+   "sdDeltaMs": 57.326,
+   "sdDeltaMsCi90": [
+    47.21,
+    67.39
+   ],
+   "meanWind": 1.1066,
+   "beta": -1.2047,
+   "betaCi90": [
+    -2.6431,
+    0.10233
+   ]
+  },
+  "lusail": {
+   "laps": 60,
+   "sessions": 3,
+   "sdDeltaMs": 91.152,
+   "sdDeltaMsCi90": [
+    66.656,
+    113.64
+   ],
+   "meanWind": 1.9717,
+   "beta": -0.65133,
+   "betaCi90": [
+    -1.3511,
+    -0.12152
+   ]
+  },
+  "madring": {
+   "laps": 20,
+   "sessions": 1,
+   "sdDeltaMs": 139.64,
+   "sdDeltaMsCi90": [
+    113.24,
+    163.57
+   ],
+   "meanWind": 1.07,
+   "beta": 0.1288,
+   "betaCi90": [
+    -0.59109,
+    1.188
+   ]
+  },
+  "melbourne": {
+   "laps": 38,
+   "sessions": 2,
+   "sdDeltaMs": 90.647,
+   "sdDeltaMsCi90": [
+    36.979,
+    144
+   ],
+   "meanWind": 1.5816,
+   "beta": 0.46737,
+   "betaCi90": [
+    -1.1558,
+    0.85481
+   ]
+  },
+  "mexico-city": {
+   "laps": 81,
+   "sessions": 4,
+   "sdDeltaMs": 183.94,
+   "sdDeltaMsCi90": [
+    158.91,
+    209.97
+   ],
+   "meanWind": 1.7827,
+   "beta": 0.19087,
+   "betaCi90": [
+    -0.15648,
+    0.54471
+   ]
+  },
+  "miami": {
+   "laps": 82,
+   "sessions": 4,
+   "sdDeltaMs": 75.953,
+   "sdDeltaMsCi90": [
+    63.935,
+    87.241
+   ],
+   "meanWind": 3.0902,
+   "beta": -1.6959,
+   "betaCi90": [
+    -3.3196,
+    -0.53501
+   ]
+  },
+  "monte-carlo": {
+   "laps": 82,
+   "sessions": 4,
+   "sdDeltaMs": 9.7891,
+   "sdDeltaMsCi90": [
+    7.2903,
+    12.447
+   ],
+   "meanWind": 0.79634,
+   "beta": 1.4764,
+   "betaCi90": [
+    -1.0137,
+    4.2448
+   ]
+  },
+  "montreal": {
+   "laps": 20,
+   "sessions": 1,
+   "sdDeltaMs": 19.075,
+   "sdDeltaMsCi90": [
+    16.006,
+    22.031
+   ],
+   "meanWind": 2.03,
+   "beta": -2.4583,
+   "betaCi90": [
+    -5.9389,
+    2.4478
+   ]
+  },
+  "monza": {
+   "laps": 82,
+   "sessions": 4,
+   "sdDeltaMs": 70.605,
+   "sdDeltaMsCi90": [
+    57.702,
+    82.327
+   ],
+   "meanWind": 1.1939,
+   "beta": -0.12546,
+   "betaCi90": [
+    -0.7599,
+    0.58257
+   ]
+  },
+  "sakhir": {
+   "laps": 60,
+   "sessions": 3,
+   "sdDeltaMs": 99.599,
+   "sdDeltaMsCi90": [
+    83.236,
+    116.38
+   ],
+   "meanWind": 1.9033,
+   "beta": -0.61112,
+   "betaCi90": [
+    -1.113,
+    -0.036706
+   ]
+  },
+  "shanghai": {
+   "laps": 62,
+   "sessions": 3,
+   "sdDeltaMs": 115.9,
+   "sdDeltaMsCi90": [
+    99.042,
+    131.79
+   ],
+   "meanWind": 2.1629,
+   "beta": 0.18837,
+   "betaCi90": [
+    -0.55962,
+    0.8025
+   ]
+  },
+  "silverstone": {
+   "laps": 42,
+   "sessions": 2,
+   "sdDeltaMs": 151.67,
+   "sdDeltaMsCi90": [
+    115.35,
+    182.22
+   ],
+   "meanWind": 3.0786,
+   "beta": 0.25979,
+   "betaCi90": [
+    0.0065306,
+    0.52968
+   ]
+  },
+  "singapore": {
+   "laps": 81,
+   "sessions": 4,
+   "sdDeltaMs": 44.104,
+   "sdDeltaMsCi90": [
+    39.616,
+    48.726
+   ],
+   "meanWind": 1.5877,
+   "beta": -1.9221,
+   "betaCi90": [
+    -2.878,
+    -0.94516
+   ]
+  },
+  "spa-francorchamps": {
+   "laps": 42,
+   "sessions": 2,
+   "sdDeltaMs": 74.857,
+   "sdDeltaMsCi90": [
+    62.635,
+    85.703
+   ],
+   "meanWind": 1.8786,
+   "beta": -0.83435,
+   "betaCi90": [
+    -2.1033,
+    0.34336
+   ]
+  },
+  "spielberg": {
+   "laps": 82,
+   "sessions": 4,
+   "sdDeltaMs": 89.9,
+   "sdDeltaMsCi90": [
+    70.7,
+    108.36
+   ],
+   "meanWind": 1.0183,
+   "beta": 0.015305,
+   "betaCi90": [
+    -0.43994,
+    0.4465
+   ]
+  },
+  "suzuka": {
+   "laps": 81,
+   "sessions": 4,
+   "sdDeltaMs": 129.35,
+   "sdDeltaMsCi90": [
+    104.61,
+    154.38
+   ],
+   "meanWind": 2.458,
+   "beta": -0.38665,
+   "betaCi90": [
+    -0.83727,
+    0.13658
+   ]
+  },
+  "yas-marina-circuit": {
+   "laps": 59,
+   "sessions": 3,
+   "sdDeltaMs": 125.37,
+   "sdDeltaMsCi90": [
+    94.381,
+    153.74
+   ],
+   "meanWind": 1.2966,
+   "beta": 0.12144,
+   "betaCi90": [
+    -0.31695,
+    0.57523
+   ]
+  },
+  "zandvoort": {
+   "laps": 38,
+   "sessions": 2,
+   "sdDeltaMs": 97.238,
+   "sdDeltaMsCi90": [
+    84.081,
+    108.9
+   ],
+   "meanWind": 3.9237,
+   "beta": -0.052111,
+   "betaCi90": [
+    -0.78529,
+    0.73169
+   ]
+  }
+ },
+ "seasons": {
+  "2023": {
+   "n": 295,
+   "sessions": 15,
+   "beta": 0.19699,
+   "ci90": [
+    -0.16152,
+    0.37848
+   ],
+   "r2phys": -0.071596,
+   "r2beta": 0.0045845,
+   "sdResidPct": 0.34562,
+   "sdDeltaPct": 0.1188,
+   "pRand": 0.27473,
+   "permCi90": [
+    -0.44562,
+    0.48828
+   ]
+  },
+  "2024": {
+   "n": 357,
+   "sessions": 18,
+   "beta": -0.14678,
+   "ci90": [
+    -0.41185,
+    0.066967
+   ],
+   "r2phys": -0.13851,
+   "r2beta": 0.002307,
+   "sdResidPct": 0.28717,
+   "sdDeltaPct": 0.093968,
+   "pRand": 0.85514,
+   "permCi90": [
+    -0.22812,
+    0.23159
+   ]
+  },
+  "2025": {
+   "n": 435,
+   "sessions": 22,
+   "beta": -0.043491,
+   "ci90": [
+    -0.3626,
+    0.17777
+   ],
+   "r2phys": -0.26089,
+   "r2beta": 0.00045398,
+   "sdResidPct": 0.2468,
+   "sdDeltaPct": 0.12091,
+   "pRand": 0.68032,
+   "permCi90": [
+    -0.15276,
+    0.13882
+   ]
+  },
+  "2026": {
+   "n": 389,
+   "sessions": 18,
+   "beta": -0.017701,
+   "ci90": [
+    -0.46284,
+    0.34817
+   ],
+   "r2phys": -0.05586,
+   "r2beta": 0.000016904,
+   "sdResidPct": 0.4647,
+   "sdDeltaPct": 0.10794,
+   "pRand": 0.53447,
+   "permCi90": [
+    -0.40457,
+    0.3826
+   ]
+  }
+ },
+ "flip180": {
+  "held": {
+   "n": 824,
+   "sessions": 40,
+   "beta": -0.099878,
+   "ci90": [
+    -0.31015,
+    0.088206
+   ],
+   "r2phys": -0.11643,
+   "r2beta": 0.00096809,
+   "sdResidPct": 0.3662,
+   "sdDeltaPct": 0.11408,
+   "pRand": null,
+   "permCi90": null
+  },
+  "explore": {
+   "n": 652,
+   "sessions": 33,
+   "beta": -0.045688,
+   "ci90": [
+    -0.22137,
+    0.22221
+   ],
+   "r2phys": -0.12461,
+   "r2beta": 0.00023833,
+   "sdResidPct": 0.31496,
+   "sdDeltaPct": 0.10642,
+   "pRand": null,
+   "permCi90": null
+  },
+  "all": {
+   "n": 1476,
+   "sessions": 73,
+   "beta": -0.077779,
+   "ci90": [
+    -0.21132,
+    0.064481
+   ],
+   "r2phys": -0.11945,
+   "r2beta": 0.00062534,
+   "sdResidPct": 0.34451,
+   "sdDeltaPct": 0.11076,
+   "pRand": null,
+   "permCi90": null
+  }
+ },
+ "steady": {
+  "held": {
+   "n": 290,
+   "sessions": 14,
+   "beta": -0.19602,
+   "ci90": [
+    -0.56106,
+    0.099698
+   ],
+   "r2phys": -0.16081,
+   "r2beta": 0.0044389,
+   "sdResidPct": 0.40709,
+   "sdDeltaPct": 0.13837,
+   "pRand": null,
+   "permCi90": null
+  },
+  "explore": {
+   "n": 157,
+   "sessions": 8,
+   "beta": -0.92842,
+   "ci90": [
+    -1.4026,
+    -0.50782
+   ],
+   "r2phys": -0.14236,
+   "r2beta": 0.042953,
+   "sdResidPct": 0.26335,
+   "sdDeltaPct": 0.058788,
+   "pRand": null,
+   "permCi90": null
+  },
+  "all": {
+   "n": 447,
+   "sessions": 22,
+   "beta": -0.26122,
+   "ci90": [
+    -0.62109,
+    -0.014077
+   ],
+   "r2phys": -0.15741,
+   "r2beta": 0.0070551,
+   "sdResidPct": 0.36314,
+   "sdDeltaPct": 0.11677,
+   "pRand": null,
+   "permCi90": null
+  }
+ },
+ "decision": {
+  "go": false,
+  "rule": "held-out 2025–26: β 90 % CI excludes 0, randomization p < 0.05, R²phys > 0"
+ }
+}
