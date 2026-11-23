@@ -72,6 +72,8 @@ def gsi(id_, bb):
 def tif_grid(raw, meta):
     import rasterio
     with rasterio.MemoryFile(raw) as m, m.open() as ds:
+        # the Emilia-Romagna "DTM 5x5" WCS serves a 4-band 8-bit picture (DescribeCoverage: bands 1-4), not heights: reject it
+        if ds.count > 1 or ds.dtypes[0] == 'uint8': say('rejected: picture, not heights', ds.count, ds.dtypes[0]); return {'validShare': 0}
         a = ds.read(1).astype('float64'); nd = ds.nodata
         if nd is not None: a[a == nd] = np.nan
         a[a < -500] = np.nan; t = ds.transform
@@ -126,6 +128,8 @@ def glo30(id_, bb):
                     'validShare': round(float(np.isfinite(a).mean()), 3), 'cm': pack(a)}
     except Exception as e: say(id_, 'GLO-30 error', e); return None
 
+r = requests.get('https://raw.githubusercontent.com/bacinger/f1-circuits/master/f1-circuits.geojson', headers=UA, timeout=60)
+open(f'{OUT}/f1-circuits.geojson', 'wb').write(r.content); say('bacinger/f1-circuits (MIT)', r.status_code, len(r.content))
 for id_, (lat, lon) in SEEDS.items():
     j = osm(id_, lat, lon)
     if j: json.dump(j, open(f'{OUT}/{id_}-osm.json', 'w'))

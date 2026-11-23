@@ -1,0 +1,212 @@
+{
+ "jeddah": {
+  "id": "jeddah",
+  "seed": [
+   21.6319,
+   39.1044
+  ],
+  "osmWays": 17,
+  "waysUsed": 12,
+  "registration": {
+   "rotDeg": 0.01,
+   "mirror": false,
+   "trimmedMeanM": 1.21
+  },
+  "matchedShare": 1,
+  "bridgedShare": 0,
+  "sourceIncomplete": false,
+  "backSteps": 0,
+  "centreLengthM": 6150.8,
+  "officialLengthM": 6176,
+  "centreVsOfficialPct": -0.41,
+  "suspect": false,
+  "lineLengthM": 6050.9,
+  "prodLengthM": 6109.5,
+  "widthM": 13,
+  "widthSource": "track-widths.js",
+  "lineOffsetMaxM": 5.79,
+  "turnDeg": 360.1,
+  "elevation": {
+   "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+   "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N21_00_E039_00_DEM/Copernicus_DSM_COG_10_N21_00_E039_00_DEM.tif",
+   "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+   "gridM": 30,
+   "validShare": 0.986,
+   "crossoverBlankM": 0,
+   "spikeBlankM": 83,
+   "rangeM": 5.6,
+   "bankingFromSurface": false,
+   "gradeMaxPct": 2.9,
+   "kvMax": 0.0006,
+   "bankMaxDeg": null
+  },
+  "elevation30": null,
+  "prodGradeRangeM": null,
+  "osmSource": {
+   "url": "https://overpass-api.de/api/interpreter",
+   "query": "[out:json][timeout:90];way[\"highway\"=\"raceway\"](around:3000,21.6319,39.1044);out tags geom;",
+   "fetched": "2026-11-23T01:39:09Z",
+   "licence": "© OpenStreetMap contributors, ODbL 1.0"
+  }
+ },
+ "shanghai": {
+  "id": "shanghai",
+  "seed": [
+   31.3389,
+   121.2197
+  ],
+  "osmWays": 17,
+  "waysUsed": 6,
+  "registration": {
+   "rotDeg": 0.38,
+   "mirror": false,
+   "trimmedMeanM": 0.32
+  },
+  "matchedShare": 1,
+  "bridgedShare": 0,
+  "sourceIncomplete": false,
+  "backSteps": 0,
+  "centreLengthM": 5429.2,
+  "officialLengthM": 5451,
+  "centreVsOfficialPct": -0.4,
+  "suspect": false,
+  "lineLengthM": 5303.2,
+  "prodLengthM": 5440.4,
+  "widthM": 13,
+  "widthSource": "FIA list",
+  "lineOffsetMaxM": 5.84,
+  "turnDeg": -361,
+  "elevation": {
+   "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+   "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N31_00_E121_00_DEM/Copernicus_DSM_COG_10_N31_00_E121_00_DEM.tif",
+   "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+   "gridM": 30,
+   "validShare": 0.985,
+   "crossoverBlankM": 0,
+   "spikeBlankM": 79,
+   "rangeM": 5.3,
+   "bankingFromSurface": false,
+   "gradeMaxPct": 3.3,
+   "kvMax": 0.0005,
+   "bankMaxDeg": null
+  },
+  "elevation30": null,
+  "prodGradeRangeM": null,
+  "osmSource": {
+   "url": "https://overpass-api.de/api/interpreter",
+   "query": "[out:json][timeout:90];way[\"highway\"=\"raceway\"](around:3000,31.3389,121.2197);out tags geom;",
+   "fetched": "2026-11-23T01:39:41Z",
+   "licence": "© OpenStreetMap contributors, ODbL 1.0"
+  }
+ },
+ "imola": {
+  "id": "imola",
+  "seed": [
+   44.338,
+   11.708
+  ],
+  "osmWays": 37,
+  "waysUsed": 35,
+  "registration": {
+   "rotDeg": -0.35,
+   "mirror": false,
+   "trimmedMeanM": 0.85
+  },
+  "matchedShare": 1,
+  "bridgedShare": 0,
+  "sourceIncomplete": false,
+  "backSteps": 0,
+  "centreLengthM": 4898.3,
+  "officialLengthM": 4909,
+  "centreVsOfficialPct": -0.22,
+  "suspect": false,
+  "lineLengthM": 4846.3,
+  "prodLengthM": 4866.8,
+  "widthM": 12.5,
+  "widthSource": "track-widths.js",
+  "lineOffsetMaxM": 5.62,
+  "turnDeg": 360.1,
+  "elevation": {
+   "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+   "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N44_00_E011_00_DEM/Copernicus_DSM_COG_10_N44_00_E011_00_DEM.tif",
+   "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+   "gridM": 30,
+   "validShare": 0.993,
+   "crossoverBlankM": 0,
+   "spikeBlankM": 35,
+   "rangeM": 35.7,
+   "bankingFromSurface": false,
+   "gradeMaxPct": 8.4,
+   "kvMax": 0.0009,
+   "bankMaxDeg": null
+  },
+  "elevation30": {
+   "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+   "gridM": 30,
+   "rangeM": 35.7,
+   "gradeRmsVsBestPct": 0
+  },
+  "prodGradeRangeM": null,
+  "osmSource": {
+   "url": "https://overpass-api.de/api/interpreter",
+   "query": "[out:json][timeout:90];way[\"highway\"=\"raceway\"](around:3000,44.338,11.708);out tags geom;",
+   "fetched": "2026-11-23T01:40:23Z",
+   "licence": "© OpenStreetMap contributors, ODbL 1.0"
+  }
+ },
+ "suzuka": {
+  "id": "suzuka",
+  "seed": [
+   34.8431,
+   136.541
+  ],
+  "osmWays": 62,
+  "waysUsed": 44,
+  "registration": {
+   "rotDeg": 0.25,
+   "mirror": false,
+   "trimmedMeanM": 0.55
+  },
+  "matchedShare": 1,
+  "bridgedShare": 0,
+  "sourceIncomplete": false,
+  "backSteps": 0,
+  "centreLengthM": 5788.7,
+  "officialLengthM": 5807,
+  "centreVsOfficialPct": -0.31,
+  "suspect": false,
+  "lineLengthM": 5722,
+  "prodLengthM": 5770.5,
+  "widthM": 10,
+  "widthSource": "FIA list",
+  "lineOffsetMaxM": 4.54,
+  "turnDeg": 0.2,
+  "elevation": {
+   "source": "GSI dem5a_png (Geospatial Information Authority of Japan)",
+   "url": "https://cyberjapandata.gsi.go.jp/xyz/dem5a_png/{z}/{x}/{y}.png",
+   "licence": "GSI Content Terms of Use (compatible with CC BY 4.0); credit: 国土地理院 / GSI Japan",
+   "gridM": 5,
+   "validShare": 0.946,
+   "crossoverBlankM": 252,
+   "spikeBlankM": 55,
+   "rangeM": 40.5,
+   "bankingFromSurface": true,
+   "gradeMaxPct": 7.9,
+   "kvMax": 0.0051,
+   "bankMaxDeg": 7.6
+  },
+  "elevation30": {
+   "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+   "gridM": 30,
+   "rangeM": 39,
+   "gradeRmsVsBestPct": 1.59
+  },
+  "prodGradeRangeM": null,
+  "osmSource": {
+   "url": "https://overpass-api.de/api/interpreter",
+   "query": "[out:json][timeout:90];way[\"highway\"=\"raceway\"](around:3000,34.8431,136.541);out tags geom;",
+   "fetched": "2026-11-23T01:41:09Z",
+   "licence": "© OpenStreetMap contributors, ODbL 1.0"
+  }
+ }
+}
