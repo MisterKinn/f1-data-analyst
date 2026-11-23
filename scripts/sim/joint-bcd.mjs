@@ -70,10 +70,12 @@ export function fitTrack(laps, cars, prev, o, adj) {
     for (let it = 0; it < iters; it++) { if (fc < fd) { b = d; d = c; fd = fc; c = b - phi * (b - a); fc = fn(c); } else { a = c; c = d; fc = fd; d = a + phi * (b - a); fd = fn(d); } }
     return fc < fd ? c : d;
   };
-  let f = {grip: prev?.grip ?? 1, drag: prev?.drag ?? 1};
-  for (let pass = 0; pass < (o.trackDrag ? 2 : 1); pass++) {
+  // o.fixedDrag[name] (LAPSIM_CDA_MEASURED, step 2a): the drag factor is measured, not fitted
+  const fixed = o.fixedDrag?.[laps[0]?.name], fitDrag = o.trackDrag && fixed == null;
+  let f = {grip: prev?.grip ?? 1, drag: fixed ?? prev?.drag ?? 1};
+  for (let pass = 0; pass < (fitDrag ? 2 : 1); pass++) {
     f.grip = golden(g => score({...f, grip: g}), o.lo, o.hi, 16);
-    if (o.trackDrag) f.drag = golden(d => score({...f, drag: d}), o.dragLo, o.dragHi, 12);
+    if (fitDrag) f.drag = golden(d => score({...f, drag: d}), o.dragLo, o.dragHi, 12);
   }
   return {...f, score: score(f)};
 }
@@ -118,6 +120,7 @@ export async function fitJointBCD(groups, opts = {}) {
     const names = [...new Set(prep.flatMap(g => g.laps.map(l => l.name)))].sort();
     let factors = o.startFactors ? structuredClone(o.startFactors) : Object.fromEntries(names.map(n => [n, {grip: 1, drag: 1}]));
     for (const n of names) factors[n] ||= {grip: 1, drag: 1};
+    if (o.fixedDrag) for (const n of names) if (o.fixedDrag[n] != null) factors[n].drag = o.fixedDrag[n];
     let xs = Object.fromEntries(prep.map(g => [g.key, o.startX?.[g.key] || g.params.map(() => 0)]));
     let score = Infinity, adj = o.teams ? (o.startAdj ? structuredClone(o.startAdj) : {}) : null;
     for (let r = 0; r < o.rounds; r++) {

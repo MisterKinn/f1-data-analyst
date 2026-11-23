@@ -27,6 +27,7 @@ import {alertsRoute,alertsPageBody} from './doc-alerts-web.js';
 import {GATEWAY_TOOLS,GATEWAY_LIST,GATEWAY_CALL,callableThroughGateway,gatewayList,UNKNOWN_TOOL} from './gateway.js';
 import {websiteRoute} from './website.js';
 import {simulationFirstView} from './simulation-cache.js';
+import {forecastFor} from './lapsim/forecast.js';
 import {chooseLanguage} from './localization.js';
 import {aiConnectionStatus} from './ai-connections.js';
 import {standingsRoute,STANDINGS_TOOLS,standingsCall} from './standings.js';
@@ -129,6 +130,8 @@ export default{async fetch(request,env,ctx){
  const linkCode=path==='/account'&&request.method==='GET'?new URL(request.url).searchParams.get('host_link'):null;
  const hostLink=linkCode?{code:linkCode,host:await findLinkCode(env,linkCode.toUpperCase()).catch(()=>null)}:null;
  const website=websiteRoute(request,{setupLive:path==='/setup'&&request.method==='GET'?await setupLive(Object.fromEntries(new URL(request.url).searchParams),env).catch(()=>null):undefined,...(path==='/simulation'&&request.method==='GET'?await simulationStart(request):{}),alertsBody:path==='/alerts'&&request.method==='GET'&&alertsOwner?await alertsPageBody(env,{google,owner:alertsOwner}):undefined,hostLink,hostLinked:path==='/account'?new URL(request.url).searchParams.get('host_linked'):null,aiConnections,google,googleReady,firebaseConfig,firebaseCsrf:request.headers.get('x-kongboda-firebase-csrf'),accountInfo,crewRegistered:hasCrewAccess(accountInfo?.account,env),isOwner:path==='/account'&&google?await isOwner(env,google):false});if(website)return website;
+ // race-week forecast for /simulation (step 8, docs/lapsim-forecast.md): Open-Meteo read here and cached per track and hour, never from the browser
+ if(path==='/api/lapsim/forecast'&&request.method==='GET')return new Response(JSON.stringify(await forecastFor(new URL(request.url).searchParams.get('track')||'',env)),{headers:{'content-type':'application/json; charset=utf-8','cache-control':'public, max-age=300'}});
  if(path==='/api/status'&&request.method==='GET'){if(!request.headers.get('oai-authenticated-user-id'))return json({error:'Authentication required'},401);return json({tools:FIA_TOOLS.length+LIVE_TOOLS.length+OPENF1_TOOLS.length+WEC_TOOLS.length+WEC_LIVE_TOOLS.length+RESEARCH_TOOLS.length+OFFICIAL_TOOLS.length+STANDINGS_TOOLS.length+PREFERENCE_TOOLS.length+CREW_TOOLS.length+COLLECTOR_SETUP_TOOLS.length+1,provider:'FastF1 + FIA + Al Kamel',live_storage_configured:!!env.BUCKET,live_feed_connected:null,telemetry:true,telemetry_mode:'session_accumulation_and_fastf1_historical_reload',source_policy:{...SOURCE_POLICY,requires_local_collector:!cloudConfigured(env),cloud_configured:cloudConfigured(env)}});}
  if(path!=='/mcp')return json({error:'Not found'},404);
  if(request.method==='GET'){
