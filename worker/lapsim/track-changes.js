@@ -4,8 +4,9 @@ import {lapsimKernel} from './kernel.js';
 // Effects on grip or corner speed are scenario estimates, never measurements: the FIA notes
 // say what changed, not how much faster it is. Every applied effect keeps the original line.
 
-const HEADING = /^\s*(?:\d{1,2}(?:\.\d+)?\.?\s*\|?\s*)?((?:changes?|modifications?|alterations?)\s+(?:to\s+the\s+|since\s+(?:the\s+)?(?:last|previous)\s+\w+\s*|of\s+the\s+)?(?:circuit|track)[^\n|]*|(?:circuit|track)\s+(?:changes|modifications)[^\n|]*)$/i;
-const NEXT_HEADING = /^\s*(\d{1,2})\.\s*\|?\s*[A-Z][^\n]{2,80}$/;
+const HEADING = /^\s*(?:\d{1,2}(?:\.\d+)?[.)]?\s*\|?\s*)?((?:changes?|modifications?|alterations?)\s+(?:to\s+the\s+|since\s+(?:the\s+)?(?:last|previous)\s+\w+\s*|of\s+the\s+)?(?:circuit|track)[^\n|]*|(?:circuit|track)\s+(?:changes|modifications)[^\n|]*)$/i;
+// "20. Heading" (2025 on) or "20) | Heading" (2019–2024 notes)
+const NEXT_HEADING = /^\s*(\d{1,2})[.)]\s*\|?\s*[A-Z][^\n]{2,80}$/;
 const BULLET = /^\s*(?:[-–•▪◦*]|\d{1,2}[).]|[a-z]\))\s*\|?\s*/;
 
 // order matters: run-off/apron work and kerb work are matched before surface work, so "resurfaced
@@ -69,7 +70,7 @@ export function extractCircuitChanges(text) {
   if (start < 0) return {sectionFound: false, items: []};
   // the section's own number ("19. Changes to the circuit"): only a higher number ends it, so
   // items numbered "1.", "2." inside the section stay items
-  const own = Number(lines[start].match(/^\s*(\d{1,2})\./)?.[1] || 0);
+  const own = Number(lines[start].match(/^\s*(\d{1,2})[.)]/)?.[1] || 0);
   const items = [];
   for (let i = start + 1; i < lines.length; i++) {
     const line = lines[i], next = line.match(NEXT_HEADING);
