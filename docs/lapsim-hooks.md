@@ -4,7 +4,8 @@ Step 1 of `claude/physics-critique-skills-2026-11-23.md` (pre-registration `clau
 Later steps add physics as modules behind these hooks and do not edit the body of `worker/lapsim/kernel.js`.
 
 Every hook is optional. **Unset, the lap is byte-identical to the kernel without hooks** (tests: `tests/lapsim-hooks.test.mjs`).
-A lap with `env.gripHook`, `env.windAt` or `car.ers.law` is never taken from the lap cache (functions are not part of the cache key).
+A lap with `env.gripHook`, `env.windAt` or function hooks in `car.ers.law` is never taken from the lap cache (functions are not part
+of the cache key). Settings given as data (`car.ers.law = 'b'`, `car.lateralCap`) are part of the car, so those laps are cached.
 
 ## Kernel step
 
@@ -23,8 +24,8 @@ Step 2 (`simulateLapRaw`, `forward2`, backward pass with `heun`):
   open, or any throttle-harvest step).
 - Per-step time and energy are stored; the lap account, the flow arrays and the battery tracking are the same numbers.
 - A C5.12 cut is a drop of more than 200 W per metre (1 kW per 5 m step, the step-1 threshold at the production grid).
-- A causal 2026 lap overspends only by rounding: 1 J is not an overspend. So the 2026 cut-off/super-clip search does not start with
-  exact accounting until step 10b (strategy B) merges; the page does not claim a super-clip plan meanwhile.
+- A causal 2026 lap overspends only by rounding: 1 J is not an overspend. So with exact accounting the 2026 cut-off/super-clip
+  search starts only for cars with `car.ers.law = 'b'` (strategy B, step 10b).
 
 Pass checks (`tests/lapsim-mesh.test.mjs`): the lap changes by less than 0.03 % when ds halves (8 tracks × 8 rule sets); skidpad
 v = √(μgR) within 1e-4; terminal speed on a 20 km straight within 1e-3; energy ledger closes per lap.
@@ -54,6 +55,22 @@ Number of runs of the lap (default 1). Run k sees run k − 1 in `state.v`, `sta
   kinetic-energy drop (W), mean speed of the step (m/s), point, distance (m), the car's DC limit (W), braking share and efficiency.
   Default: `min(regenMax, share · pBrake · eta)` (the step-1 formula; step 10b replaces it).
 - Either may be omitted. The energy strategy (cut-off search, super-clipping, budgets) is unchanged.
+- **`car.ers.law = 'b'`** (data, step 10b; `withErsLaw(car)` in `worker/lapsim/ers-law.js`): law (b) built into the kernel.
+  Regen from the tyres' braking force above drag and rolling resistance: `min(regenMax, share·max(0, m·a − D − R)·v·η)`,
+  D = ½ρ·CdA·v², R = c_roll·(m·g + ½ρ·ClA·v²) (corner-mode aero). 2014–25: the lap deploy budget does not bind (MGU-H → MGU-K is not
+  limited), so the MGU-K gives its limit at every full-throttle point. 2026: deploy unchanged (FIA taper TR 2026 5.4.8 and the event
+  PU documents), and causal laps always search a cut-off / super-clip plan and keep the fastest legal one (strategy B).
+  `ersLaw(car, env)` gives the same law as `deploy` / `regen` functions (tests: `tests/lapsim-ers-law.test.mjs`).
+
+### `car.lateralCap` — measured lateral capacity (step 14, spec `claude/handoff-14a-to-10b-lateralcap-hook-2026-11-23.md`)
+- Data: `{kind: 'quad', a0, k, rhoRef, braking}` with a_y = a0 + k·ve² (a0 m/s², k 1/m), or `{kind: 'table', kph: [...], ay: [...],
+  rhoRef, braking}` (non-decreasing m/s², PCHIP between knots, flat outside). `rhoRef` default 1.2 kg/m³.
+- Speed: air speed scaled to density, ve = va·√(ρ/ρref). Lateral force capacity (N): m·(a_w·N_w/(m·g) + a_y(ve) − a_w) with
+  a_w = a_y(0) and N_w the normal load without aero (grade, vertical curvature and banking stay on the weight part). Replaces the
+  tyre-load and axle model in the lateral limit, the friction ellipse (both kernel steps) and, with `braking: true`, the braking
+  capacity (× μX0/μY0). Still × grip (`env.grip` × `track.mu` × `gripHook`).
+- Unchanged: traction, drag, rolling resistance and normal load (`car.clA`), ERS, `vScale`, `vSubtractCorner`.
+- Default: unset (today's capacity). Tests: `tests/lapsim-lateral-cap.test.mjs` (100 m circle, quad and table, density).
 
 ### `track.changeFactors(change)` — circuit-change factors (step 5b)
 - In: one parsed change (`worker/lapsim/track-changes.js`; `change.effect` is today's default).
