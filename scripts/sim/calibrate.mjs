@@ -26,6 +26,16 @@ import {lapsimCarMeasured} from '../../worker/lapsim/car-measured-data.js';
 
 const CACHE = process.env.LAPSIM_CACHE || '.cache/lapsim';
 const ITERS = Number(process.env.LAPSIM_ITERS || 70), HOLDOUT_ITERS = Number(process.env.LAPSIM_HOLDOUT_ITERS || 25);
+// WEC held-out rule (central decision 2026-11-23, claude/decision-central-wec-holdout-rule-2026-11-23.md; AGENTS.md Gate G): every
+// WEC leave-one-track-out fold fit runs Nelder–Mead until the relative simplex spread of the objective is < 1e-6 or 400 iterations;
+// the final held-out is re-run with a second start step (0.05) and the spread is stored; fold-car bound hits are stored.
+// LAPSIM_WEC_HOLDOUT=legacy: the old 25-iteration fold fits (to reproduce runs before the rule).
+const WEC_HO = process.env.LAPSIM_WEC_HOLDOUT === 'legacy' ? {iters: HOLDOUT_ITERS} : {iters: 400, nm: {relTol: 1e-6}};
+const WEC_START2 = 0.05;
+// F1 second-start spread (information only, rule item 4): LAPSIM_F1_NOISE=on re-runs the F1 held-out with Nelder–Mead step 0.04
+const F1_NOISE = process.env.LAPSIM_F1_NOISE === 'on';
+// fold-car bound hits, grouped: [{key, bound, tracks}]
+const boundHits = fits => { const m = new Map(); for (const f of fits || []) for (const b of f.bounds || []) { const k = b.key + ' ' + b.bound; (m.get(k) ?? m.set(k, {key: b.key, bound: b.bound, folds: []}).get(k)).folds.push(f.test.join('+')); } return [...m.values()]; };
 // experiment knobs. Defaults = the published F1 fit (CI run 42398451242, 2026-11-07): joint BCD fit over all four seasons
 // 2023–2026, 5 rounds x 200 steps, lap time x20, sectors x2, track drag, team pace, prior weight 8. G1 (2026-11-18): 3 rounds
 // instead of 5 raised the held-out error on all 34 poles 1.014 -> 1.205 % (Gate G reject)
@@ -166,11 +176,14 @@ for (const g of groups) {
   // holdout: this season's laps on a quarter of the tracks left out, predicted with the factor the
   // other season gives that track
   const h = HOLDOUT_YEARS.includes(year) ? await holdoutOf(groups, year) : {n: 0, errors: [], rmsPct: null};
+  const hF1b = F1_NOISE && h.n && FITTER === 'bcd' ? await holdoutBCD(groups, year, {...BCD, rounds: Math.max(2, BCD.rounds - 1), nmStep: 0.04}) : null;
+  if (hF1b) report.push(`F1 ${year}: held-out second start (step 0.04) ${hF1b.rmsPct.toFixed(3)} % vs ${h.rmsPct.toFixed(3)} % (spread ${Math.abs(hF1b.rmsPct - h.rmsPct).toFixed(3)} pp, information only)`);
   const adj = joint.adj?.[year];
   if (adj) report.push(`### ${year} team pace and development`, '', `Development over the season: ${(adj.dev * 100).toFixed(2)}% lap time from March to December.`, '',
     ...Object.entries(adj.teams).sort((a, b) => a[1] - b[1]).map(([t, v]) => `- ${t}: ${v > 0 ? '+' : ''}${(v * 100).toFixed(2)}%`), '');
   seasons[year] = {car, tracks: perTrack, laps: g.laps.length, adj: adj || undefined,
-    holdout: {rmsPct: h.rmsPct != null ? +h.rmsPct.toFixed(2) : null, n: h.n, tracks: h.errors.map(e => ({track: e.name, errorSec: +e.dt.toFixed(3)}))}};
+    holdout: {rmsPct: h.rmsPct != null ? +h.rmsPct.toFixed(2) : null, n: h.n, tracks: h.errors.map(e => ({track: e.name, errorSec: +e.dt.toFixed(3)})),
+      ...(hF1b ? {noise: {step: 0.04, rmsPct: +hF1b.rmsPct.toFixed(3), spreadPp: +Math.abs(hF1b.rmsPct - h.rmsPct).toFixed(3), tracks: hF1b.errors.map(e => ({track: e.name, errorSec: +e.dt.toFixed(3)}))}} : {})}};
   report.push(`## ${year}`, '', `${g.laps.length} laps. Holdout: ${h.n ? `predicted ${h.n} unseen pole laps, typical error ${h.rmsPct.toFixed(2)}% (RMS)` : 'no track had a factor from another season'}.`, '',
     `Car: grip μy ${car.muY.toFixed(3)}, downforce ClA ${car.clA.toFixed(2)} m², drag CdA ${car.cdA.toFixed(3)} m², low-drag CdA ${car.cdALow.toFixed(3)} m², ICE ${(car.pIce / 1e3).toFixed(0)} kW.`, '',
     '| Track | Real | Sim | Error | Corner/straight speed error | Track grip (shared) |', '|---|---|---|---|---|---|',
@@ -280,12 +293,12 @@ for (const [cls, def] of Object.entries(SERIES.wec.classes)) {
     // experiment 44043761033 BE1, hypercar holdout mean 1.24 -> 1.16 %)
     if (cls !== 'lmgt3' && E.LAPSIM_BRAKE_ENV_HYPER) base.brakeEnv = E.LAPSIM_BRAKE_ENV_HYPER.split(',').map(Number);
     const params = Object.entries(def.bounds).map(([k, [lo, hi]]) => ({key: k, path: k, base: base[k], step: 0.08, min: lo, max: hi}));
-    let h = holdout(laps, base, params, {iters: HOLDOUT_ITERS, folds: 99, gripFor: l => l.grip});
+    let h = holdout(laps, base, params, {...WEC_HO, folds: 99, gripFor: l => l.grip});
     // Transfer track factors (F1 fit without per-track drag): used for this class-season only when its
     // leave-one-track-out error is not higher than with the F1 fit's own factors (never worse); gate verdict recorded.
     let gripSource = {used: 'f1'};
     if (TRANSFER && sessions.every(w => transferGrip(w.track) != null)) {
-      const lt = lapsWith(transferGrip), ht = holdout(lt, base, params, {iters: HOLDOUT_ITERS, folds: 99, gripFor: l => l.grip});
+      const lt = lapsWith(transferGrip), ht = holdout(lt, base, params, {...WEC_HO, folds: 99, gripFor: l => l.grip});
       const a = Object.fromEntries(h.errors.map(e => [e.name, e.pct])), b = Object.fromEntries(ht.errors.map(e => [e.name, e.pct])), names = Object.keys(a).filter(n => n in b);
       const g = gate(names.map(n => a[n]), names.map(n => b[n]), {minRows: 4});
       const use = g.rmsNew <= g.rmsCur;
@@ -299,7 +312,7 @@ for (const [cls, def] of Object.entries(SERIES.wec.classes)) {
       .map(r => ({name: r.track, track: tracks[r.track], lapSeconds: r.lap, trapKph: r.trapKph, weight: 0.5, grip: f1Grip(r.track), weather: r.weather || {}, meta: {event: 'Timing71', car: '', manufacturer: '', session: ''}}));
     let pooled = null;
     if (extra.length) {
-      const h2 = holdout([...laps, ...extra], base, params, {iters: HOLDOUT_ITERS, folds: 99, gripFor: l => l.grip});
+      const h2 = holdout([...laps, ...extra], base, params, {...WEC_HO, folds: 99, gripFor: l => l.grip});
       const a = Object.fromEntries(h.errors.map(e => [e.name, e.pct])), b = Object.fromEntries(h2.errors.map(e => [e.name, e.pct])), names = Object.keys(a).filter(n => n in b);
       const g = gate(names.map(n => a[n]), names.map(n => b[n]), {minRows: 4});
       pooled = {extraRows: extra.length, previousRmsPct: +g.rmsCur.toFixed(2), candidateRmsPct: +g.rmsNew.toFixed(2), reason: g.reason, used: g.accept};
@@ -313,13 +326,16 @@ for (const [cls, def] of Object.entries(SERIES.wec.classes)) {
     if (cls !== 'lmgt3' && withBop.length >= laps.length * 0.8) {
       const kg0 = withBop.reduce((a, l) => a + bopOf(l).kg, 0) / withBop.length, kw0 = withBop.reduce((a, l) => a + bopOf(l).kW, 0) / withBop.length;
       const cand = laps.map(l => { const b = bopOf(l); return b?.kg ? {...l, patch: car => ({...car, mass: car.mass + b.kg - kg0, pIce: car.pIce * b.kW / kw0})} : l; });
-      const h2 = holdout(cand, base, params, {iters: HOLDOUT_ITERS, folds: 99, gripFor: l => l.grip});
+      const h2 = holdout(cand, base, params, {...WEC_HO, folds: 99, gripFor: l => l.grip});
       const a = Object.fromEntries(h.errors.map(e => [e.name, e.pct])), b = Object.fromEntries(h2.errors.map(e => [e.name, e.pct])), names = Object.keys(a).filter(n => n in b);
       const g = gate(names.map(n => a[n]), names.map(n => b[n]), {minRows: 4});
       bop = {laps: withBop.length, refKg: +kg0.toFixed(1), refKW: +kw0.toFixed(1), previousRmsPct: +g.rmsCur.toFixed(2), candidateRmsPct: +g.rmsNew.toFixed(2), reason: g.reason, used: g.accept};
       report.push(`WEC ${cls} ${year}: per-event BoP — holdout ${g.rmsCur.toFixed(2)}% → ${g.rmsNew.toFixed(2)}%, ${g.reason}`);
       if (g.accept) { laps.splice(0, laps.length, ...cand); h = h2; }
     }
+    // second start of the final WEC held-out (rule item 2): same laps, same setting, start step 0.05
+    const h05 = WEC_HO.nm && h.n ? holdout(laps, base, params, {...WEC_HO, step0: WEC_START2, folds: 99, gripFor: l => l.grip}) : null;
+    if (h05) report.push(`WEC ${cls} ${year}: held-out second start ${h05.rmsPct.toFixed(3)} % vs ${h.rmsPct.toFixed(3)} % (spread ${Math.abs(h05.rmsPct - h.rmsPct).toFixed(3)} pp); fold iterations ${h.fits.map(f => f.iters).join(', ')}; fold bound hits ${boundHits(h.fits).map(b => `${b.key} at ${b.bound} (${b.folds.length})`).join(', ') || 'none'}`);
     const fit = fitSeason(laps, base, params, {iters: ITERS});
     const car = fit.car; delete car.linkMu;
     const perTrack = {};
@@ -329,7 +345,9 @@ for (const [cls, def] of Object.entries(SERIES.wec.classes)) {
         trapKph: p.vMaxReal, simTopKph: +p.vMaxSim.toFixed(1), event: p.meta.event, car: p.meta.car, manufacturer: p.meta.manufacturer, weather: w?.weather || null};
     }
     ((series.wec ||= {})[cls] ||= {})[year] = {car, tracks: perTrack, pooled, bop, gripSource, score: +fit.score.toFixed(3), laps: laps.length,
-      holdout: {rmsPct: h.rmsPct != null ? +h.rmsPct.toFixed(2) : null, n: h.n, tracks: h.errors.map(e => ({track: e.name, errorSec: +e.dt.toFixed(3)}))}};
+      holdout: {rmsPct: h.rmsPct != null ? +h.rmsPct.toFixed(2) : null, n: h.n, tracks: h.errors.map(e => ({track: e.name, errorSec: +e.dt.toFixed(3)})),
+        ...(h05 ? {rule: 'converged', iters: h.fits.map(f => f.iters), boundHits: boundHits(h.fits),
+          noise: {step: WEC_START2, rmsPct: +h05.rmsPct.toFixed(3), spreadPp: +Math.abs(h05.rmsPct - h.rmsPct).toFixed(3), tracks: h05.errors.map(e => ({track: e.name, errorSec: +e.dt.toFixed(3)})), boundHits: boundHits(h05.fits)}} : {})}};
     report.push(`## WEC ${def.label.en} ${year}`, '', `${laps.length} laps on ${Object.keys(perTrack).length} tracks, fit score ${fit.score.toFixed(3)}. Holdout (one track left out at a time): ${h.rmsPct?.toFixed(2) ?? '–'}% RMS over ${h.n} laps.`, '',
       `Car: grip μy ${car.muY.toFixed(3)}, downforce ClA ${car.clA.toFixed(2)} m², drag CdA ${car.cdA.toFixed(3)} m² (mass ${car.mass} kg and ${(car.pIce / 1e3).toFixed(0)} kW fixed).`, '',
       '| Track | Real | Sim | Error | Trap | Sim top | Track factor (F1) |', '|---|---|---|---|---|---|---|',

@@ -200,6 +200,21 @@ The rules below fix the test design. They do not lower the bar for a claim.
   - broken telemetry is not measured data;
   - the locked set, the stop rule after three attempts, pre-registration and the ledger.
 
+WEC held-out (central decision 2026-11-23, `claude/decision-central-wec-holdout-rule-2026-11-23.md`; test-design change, not a model change)
+Why: the WEC leave-one-track-out refits stopped after 25 Nelder–Mead iterations; with 4–5 tracks grip and ClA are not identified, so
+the fold cars stopped at random points (about 0.5 pp of held-out RMS on one class-season, 8 × the WEC δ). Step 1 failed WEC by that noise.
+- **Convergence.** Every WEC fold fit runs Nelder–Mead until the relative simplex spread of the objective is < 1e-6, or 400 iterations,
+  whichever comes first (`scripts/sim/calibrate.mjs` `WEC_HO`; `nelderMead({relTol})`). Base and candidate always use the same setting.
+  `LAPSIM_WEC_HOLDOUT=legacy` reproduces runs before the rule only.
+- **Noise check.** Every run re-runs the final WEC held-out with a second start step (0.05) and stores it (`holdout.noise`). A gate that
+  reads WEC held-out calls `wecNoiseCheck(base.series.wec)` (`scripts/sim/gate.mjs`) on the BASE run: judgeable only if the WEC-group
+  spread is < δ / 3; otherwise the verdict is "not judgeable" and the attempt is not spent.
+- **Bound hits.** Fold-car parameters on a bound are stored (`holdout.boundHits`) and reported. A WEC held-out gain where the candidate's
+  fold cars hit more bounds than the base (`boundHitCount`) is marked "gain on an unidentified parameter": it counts, but is shown.
+- **F1.** The F1 held-out rule is unchanged; F1 gates also report a second-start spread for information (`LAPSIM_F1_NOISE=on`, step 0.04).
+- **Baseline.** The first production run under the rule is the new WEC baseline (ledger: test-design change). Old WEC held-out numbers
+  are not compared with new ones.
+
 Working with the data the owner can get (v3.2, owner 2026-11-22)
 The owner has no team data: no full-rate telemetry, no setup sheets, no tyre data. The rules must still let the model improve.
 - **What counts as truth, per series.** Decide only against what exists; never claim accuracy beyond it.

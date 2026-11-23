@@ -57,7 +57,7 @@ export function fitGroup(g, factors, x0, o, adj) {
     let s = 0; for (const l of laps) s += (l.weight ?? 1) * lapScore(l, car, fOf(factors, l.name), o, lapMult(l, adj)).score;
     return s / wsum + 100 * outside;
   };
-  const r = nelderMead(objective, x0 || g.params.map(() => 0), {step: 0.06, iters: o.iters});
+  const r = nelderMead(objective, x0 || g.params.map(() => 0), {step: o.nmStep ?? 0.06, iters: o.iters}); // nmStep: second-start noise check (LAPSIM_F1_NOISE)
   return {x: r.x, value: r.value};
 }
 
