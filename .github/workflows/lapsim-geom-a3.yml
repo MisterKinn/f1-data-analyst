@@ -1,7 +1,7 @@
 name: Lap simulator car-free geometry, attempt 3 (all tracks)
 
 # Step 3 attempt 3 (claude/gate-independent-geometry-attempt3-prereg-2026-11-23.md). GitHub-hosted jobs stop at 6 h, so the build is
-# split: GROUPS jobs, each fetches and builds every GROUPS-th track (OSM raceway ways and areas, today and per older layout era, the
+# split (well under that): GROUPS jobs, each fetches and builds every GROUPS-th track (OSM raceway ways and areas, today and per older layout era, the
 # best open elevation model) and uploads its per-track parts; `merge` writes tracks-a3.json in the canonical order and pushes it to
 # probe/geom-a3-out. `split-check` builds two tracks once in one job and once in two parts from the same sources and fails unless the
 # merged output is byte-identical. Raw sources stay on the runners (artifacts only).
@@ -19,16 +19,16 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  GROUPS: 6
+  GROUPS: 12
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 170
     strategy:
       fail-fast: false
       matrix:
-        group: [1, 2, 3, 4, 5, 6]
+        group: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

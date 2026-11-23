@@ -31,8 +31,10 @@ def overpass(id_, lat, lon, date=None):
     head = f'[out:json][timeout:120]' + (f'[date:"{date}T00:00:00Z"]' if date else '') + ';'
     q = head + (f'(way["highway"="raceway"](around:3000,{lat},{lon});way["area:highway"="raceway"](around:3000,{lat},{lon});'
                 f'way["area"="yes"]["highway"="raceway"](around:3000,{lat},{lon});relation["area:highway"="raceway"](around:3000,{lat},{lon}););out tags geom;')
+    t0 = time.time()  # at most 15 min per query, so one slow track cannot use up a job (it is then reported as NO OSM)
     for url in F.OVERPASS + ['https://maps.mail.ru/osm/tools/overpass/api/interpreter', 'https://overpass-api.de/api/interpreter']:
         for k in range(3):
+            if time.time() - t0 > 900: say(id_, 'osm gave up after 15 min'); return None
             try:
                 r = requests.post(url, data={'data': q}, headers=F.UA, timeout=180)
                 if r.status_code == 200:
