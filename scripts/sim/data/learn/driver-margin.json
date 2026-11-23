@@ -1,0 +1,884 @@
+{
+ "note": "Driver margin to the best-driver envelope (NOT the car limit), F1 qualifying 2023-26, TracingInsights best dry lap per driver, frozen samples masked (rules C+D). scripts/sim/driver-margin.mjs; pre-registration claude/gate-driver-margin-prereg-2026-11-23.md. Evidence layer 2 (measured speed); margins are measured ratios, not model values.",
+ "counts": {
+  "sessions": 80,
+  "picked": 1619,
+  "withTel": 1617,
+  "droppedMasked": 2,
+  "cornersDroppedPos": 12
+ },
+ "dropped": {
+  "layout": [
+   "2026 kuala-lumpur (site 15, session 0)",
+   "2026 madring (site 22, session 0)"
+  ],
+  "wet": [
+   "2023 silverstone",
+   "2023 montreal",
+   "2023 zandvoort",
+   "2023 catalunya",
+   "2024 spa-francorchamps",
+   "2024 hungaroring",
+   "2024 interlagos",
+   "2025 las-vegas",
+   "2026 interlagos"
+  ],
+  "noCorners": []
+ },
+ "sampling": {
+  "dtMedianS": 0.129,
+  "dsMedianM": 6.8406,
+  "driversPerCornerMedian": 19,
+  "eMaxNormal": 1.8441
+ },
+ "noise": {
+  "slow|brake": {
+   "n": 4592,
+   "sigmaHalf": 0.5116
+  },
+  "slow|apex": {
+   "n": 5457,
+   "sigmaHalf": 0.0066
+  },
+  "slow|exit": {
+   "n": 5538,
+   "sigmaHalf": 0.0168
+  },
+  "medium|brake": {
+   "n": 2619,
+   "sigmaHalf": 0.5034
+  },
+  "medium|apex": {
+   "n": 3631,
+   "sigmaHalf": 0.0043
+  },
+  "medium|exit": {
+   "n": 3679,
+   "sigmaHalf": 0.0132
+  },
+  "fast|brake": {
+   "n": 724,
+   "sigmaHalf": 0.5258
+  },
+  "fast|apex": {
+   "n": 1507,
+   "sigmaHalf": 0.0022
+  },
+  "fast|exit": {
+   "n": 1528,
+   "sigmaHalf": 0.0078
+  }
+ },
+ "cells": {
+  "slow|brake|pole": {
+   "type": "slow",
+   "phase": "brake",
+   "group": "pole",
+   "tracks": 24,
+   "n": 293,
+   "median": 0.6693,
+   "p10": 0.4602,
+   "p90": 0.9109,
+   "ci90": [
+    0.6486,
+    0.6874
+   ],
+   "stat": 0.0194,
+   "sys": {
+    "env": 0.0625,
+    "exitM": 0,
+    "win": 0.0535,
+    "type": 0
+   },
+   "sysTotal": 0.0823,
+   "total": 0.0845,
+   "floor": {
+    "b1": null,
+    "noise": 0.9434,
+    "cell": 0.9434
+   },
+   "shortfall": 0.3307,
+   "status": "not resolved"
+  },
+  "slow|brake|top5": {
+   "type": "slow",
+   "phase": "brake",
+   "group": "top5",
+   "tracks": 24,
+   "n": 1465,
+   "median": 0.6874,
+   "p10": 0.4693,
+   "p90": 0.9071,
+   "ci90": [
+    0.6714,
+    0.7019
+   ],
+   "stat": 0.0153,
+   "sys": {
+    "env": 0.0679,
+    "exitM": 0,
+    "win": 0.0572,
+    "type": 0.0043
+   },
+   "sysTotal": 0.0889,
+   "total": 0.0902,
+   "floor": {
+    "b1": null,
+    "noise": 0.9434,
+    "cell": 0.9434
+   },
+   "shortfall": 0.3126,
+   "status": "not resolved"
+  },
+  "slow|brake|field": {
+   "type": "slow",
+   "phase": "brake",
+   "group": "field",
+   "tracks": 24,
+   "n": 5881,
+   "median": 0.6834,
+   "p10": 0.4629,
+   "p90": 0.9164,
+   "ci90": [
+    0.6706,
+    0.6958
+   ],
+   "stat": 0.0126,
+   "sys": {
+    "env": 0.0646,
+    "exitM": 0,
+    "win": 0.0576,
+    "type": 0.0023
+   },
+   "sysTotal": 0.0866,
+   "total": 0.0875,
+   "floor": {
+    "b1": null,
+    "noise": 0.9434,
+    "cell": 0.9434
+   },
+   "shortfall": 0.3166,
+   "status": "not resolved"
+  },
+  "slow|apex|pole": {
+   "type": "slow",
+   "phase": "apex",
+   "group": "pole",
+   "tracks": 24,
+   "n": 293,
+   "median": 0.9612,
+   "p10": 0.9266,
+   "p90": 1,
+   "ci90": [
+    0.9587,
+    0.9677
+   ],
+   "stat": 0.0045,
+   "sys": {
+    "env": 0.0112,
+    "exitM": 0,
+    "win": 0,
+    "type": 0.0018
+   },
+   "sysTotal": 0.0113,
+   "total": 0.0122,
+   "floor": {
+    "b1": 0.0143,
+    "noise": 0.0121,
+    "cell": 0.0143
+   },
+   "shortfall": 0.0388,
+   "status": "resolved"
+  },
+  "slow|apex|top5": {
+   "type": "slow",
+   "phase": "apex",
+   "group": "top5",
+   "tracks": 24,
+   "n": 1465,
+   "median": 0.9626,
+   "p10": 0.9208,
+   "p90": 1,
+   "ci90": [
+    0.961,
+    0.9647
+   ],
+   "stat": 0.0018,
+   "sys": {
+    "env": 0.0112,
+    "exitM": 0,
+    "win": 0,
+    "type": 0.0008
+   },
+   "sysTotal": 0.0112,
+   "total": 0.0113,
+   "floor": {
+    "b1": 0.0143,
+    "noise": 0.0121,
+    "cell": 0.0143
+   },
+   "shortfall": 0.0374,
+   "status": "resolved"
+  },
+  "slow|apex|field": {
+   "type": "slow",
+   "phase": "apex",
+   "group": "field",
+   "tracks": 24,
+   "n": 5889,
+   "median": 0.9494,
+   "p10": 0.9022,
+   "p90": 0.9907,
+   "ci90": [
+    0.9478,
+    0.951
+   ],
+   "stat": 0.0016,
+   "sys": {
+    "env": 0.0103,
+    "exitM": 0,
+    "win": 0,
+    "type": 0.0001
+   },
+   "sysTotal": 0.0103,
+   "total": 0.0104,
+   "floor": {
+    "b1": 0.0143,
+    "noise": 0.0121,
+    "cell": 0.0143
+   },
+   "shortfall": 0.0506,
+   "status": "resolved"
+  },
+  "slow|exit|pole": {
+   "type": "slow",
+   "phase": "exit",
+   "group": "pole",
+   "tracks": 24,
+   "n": 295,
+   "median": 0.9575,
+   "p10": 0.9105,
+   "p90": 1,
+   "ci90": [
+    0.9529,
+    0.9621
+   ],
+   "stat": 0.0046,
+   "sys": {
+    "env": 0.0114,
+    "exitM": 0.0109,
+    "win": 0,
+    "type": 0.0003
+   },
+   "sysTotal": 0.0158,
+   "total": 0.0165,
+   "floor": {
+    "b1": 0.0088,
+    "noise": 0.031,
+    "cell": 0.031
+   },
+   "shortfall": 0.0425,
+   "status": "resolved"
+  },
+  "slow|exit|top5": {
+   "type": "slow",
+   "phase": "exit",
+   "group": "top5",
+   "tracks": 24,
+   "n": 1482,
+   "median": 0.9535,
+   "p10": 0.9035,
+   "p90": 0.9963,
+   "ci90": [
+    0.9506,
+    0.9566
+   ],
+   "stat": 0.003,
+   "sys": {
+    "env": 0.0121,
+    "exitM": 0.011,
+    "win": 0,
+    "type": 0.0005
+   },
+   "sysTotal": 0.0163,
+   "total": 0.0166,
+   "floor": {
+    "b1": 0.0088,
+    "noise": 0.031,
+    "cell": 0.031
+   },
+   "shortfall": 0.0465,
+   "status": "resolved"
+  },
+  "slow|exit|field": {
+   "type": "slow",
+   "phase": "exit",
+   "group": "field",
+   "tracks": 24,
+   "n": 5975,
+   "median": 0.9436,
+   "p10": 0.8871,
+   "p90": 0.9901,
+   "ci90": [
+    0.9415,
+    0.9456
+   ],
+   "stat": 0.002,
+   "sys": {
+    "env": 0.0117,
+    "exitM": 0.0112,
+    "win": 0,
+    "type": 0
+   },
+   "sysTotal": 0.0162,
+   "total": 0.0163,
+   "floor": {
+    "b1": 0.0088,
+    "noise": 0.031,
+    "cell": 0.031
+   },
+   "shortfall": 0.0564,
+   "status": "resolved"
+  },
+  "medium|brake|pole": {
+   "type": "medium",
+   "phase": "brake",
+   "group": "pole",
+   "tracks": 23,
+   "n": 194,
+   "median": 0.6614,
+   "p10": 0.4104,
+   "p90": 0.8629,
+   "ci90": [
+    0.6246,
+    0.6842
+   ],
+   "stat": 0.0298,
+   "sys": {
+    "env": 0.0695,
+    "exitM": 0,
+    "win": 0.0758,
+    "type": 0.0177
+   },
+   "sysTotal": 0.1044,
+   "total": 0.1085,
+   "floor": {
+    "b1": null,
+    "noise": 0.9283,
+    "cell": 0.9283
+   },
+   "shortfall": 0.3386,
+   "status": "not resolved"
+  },
+  "medium|brake|top5": {
+   "type": "medium",
+   "phase": "brake",
+   "group": "top5",
+   "tracks": 23,
+   "n": 967,
+   "median": 0.6614,
+   "p10": 0.4432,
+   "p90": 0.8725,
+   "ci90": [
+    0.6396,
+    0.6774
+   ],
+   "stat": 0.0189,
+   "sys": {
+    "env": 0.0666,
+    "exitM": 0,
+    "win": 0.0669,
+    "type": 0.0164
+   },
+   "sysTotal": 0.0958,
+   "total": 0.0977,
+   "floor": {
+    "b1": null,
+    "noise": 0.9283,
+    "cell": 0.9283
+   },
+   "shortfall": 0.3386,
+   "status": "not resolved"
+  },
+  "medium|brake|field": {
+   "type": "medium",
+   "phase": "brake",
+   "group": "field",
+   "tracks": 23,
+   "n": 3895,
+   "median": 0.6692,
+   "p10": 0.4511,
+   "p90": 0.9241,
+   "ci90": [
+    0.655,
+    0.6853
+   ],
+   "stat": 0.0152,
+   "sys": {
+    "env": 0.0699,
+    "exitM": 0,
+    "win": 0.0611,
+    "type": 0.0134
+   },
+   "sysTotal": 0.0938,
+   "total": 0.095,
+   "floor": {
+    "b1": null,
+    "noise": 0.9283,
+    "cell": 0.9283
+   },
+   "shortfall": 0.3308,
+   "status": "not resolved"
+  },
+  "medium|apex|pole": {
+   "type": "medium",
+   "phase": "apex",
+   "group": "pole",
+   "tracks": 23,
+   "n": 200,
+   "median": 0.9848,
+   "p10": 0.9438,
+   "p90": 1,
+   "ci90": [
+    0.9789,
+    0.9882
+   ],
+   "stat": 0.0046,
+   "sys": {
+    "env": 0.0074,
+    "exitM": 0,
+    "win": 0,
+    "type": 0.0036
+   },
+   "sysTotal": 0.0082,
+   "total": 0.0094,
+   "floor": {
+    "b1": 0.0083,
+    "noise": 0.0079,
+    "cell": 0.0083
+   },
+   "shortfall": 0.0152,
+   "status": "resolved"
+  },
+  "medium|apex|top5": {
+   "type": "medium",
+   "phase": "apex",
+   "group": "top5",
+   "tracks": 23,
+   "n": 995,
+   "median": 0.9769,
+   "p10": 0.9436,
+   "p90": 1,
+   "ci90": [
+    0.975,
+    0.9784
+   ],
+   "stat": 0.0017,
+   "sys": {
+    "env": 0.0103,
+    "exitM": 0,
+    "win": 0,
+    "type": 0.0022
+   },
+   "sysTotal": 0.0105,
+   "total": 0.0107,
+   "floor": {
+    "b1": 0.0083,
+    "noise": 0.0079,
+    "cell": 0.0083
+   },
+   "shortfall": 0.0231,
+   "status": "resolved"
+  },
+  "medium|apex|field": {
+   "type": "medium",
+   "phase": "apex",
+   "group": "field",
+   "tracks": 24,
+   "n": 3977,
+   "median": 0.9489,
+   "p10": 0.9016,
+   "p90": 0.9922,
+   "ci90": [
+    0.9463,
+    0.9517
+   ],
+   "stat": 0.0027,
+   "sys": {
+    "env": 0.0117,
+    "exitM": 0,
+    "win": 0,
+    "type": 0.0002
+   },
+   "sysTotal": 0.0117,
+   "total": 0.012,
+   "floor": {
+    "b1": 0.0083,
+    "noise": 0.0079,
+    "cell": 0.0083
+   },
+   "shortfall": 0.0511,
+   "status": "resolved"
+  },
+  "medium|exit|pole": {
+   "type": "medium",
+   "phase": "exit",
+   "group": "pole",
+   "tracks": 23,
+   "n": 200,
+   "median": 0.9718,
+   "p10": 0.9358,
+   "p90": 1,
+   "ci90": [
+    0.9652,
+    0.977
+   ],
+   "stat": 0.0059,
+   "sys": {
+    "env": 0.0107,
+    "exitM": 0.0013,
+    "win": 0,
+    "type": 0.0005
+   },
+   "sysTotal": 0.0108,
+   "total": 0.0123,
+   "floor": {
+    "b1": 0.007,
+    "noise": 0.0244,
+    "cell": 0.0244
+   },
+   "shortfall": 0.0282,
+   "status": "resolved"
+  },
+  "medium|exit|top5": {
+   "type": "medium",
+   "phase": "exit",
+   "group": "top5",
+   "tracks": 23,
+   "n": 1003,
+   "median": 0.9704,
+   "p10": 0.9283,
+   "p90": 1,
+   "ci90": [
+    0.9672,
+    0.9725
+   ],
+   "stat": 0.0027,
+   "sys": {
+    "env": 0.0099,
+    "exitM": 0.003,
+    "win": 0,
+    "type": 0.0029
+   },
+   "sysTotal": 0.0107,
+   "total": 0.011,
+   "floor": {
+    "b1": 0.007,
+    "noise": 0.0244,
+    "cell": 0.0244
+   },
+   "shortfall": 0.0296,
+   "status": "resolved"
+  },
+  "medium|exit|field": {
+   "type": "medium",
+   "phase": "exit",
+   "group": "field",
+   "tracks": 24,
+   "n": 4031,
+   "median": 0.955,
+   "p10": 0.908,
+   "p90": 0.992,
+   "ci90": [
+    0.9524,
+    0.9572
+   ],
+   "stat": 0.0024,
+   "sys": {
+    "env": 0.0097,
+    "exitM": 0.0053,
+    "win": 0,
+    "type": 0.0023
+   },
+   "sysTotal": 0.0113,
+   "total": 0.0115,
+   "floor": {
+    "b1": 0.007,
+    "noise": 0.0244,
+    "cell": 0.0244
+   },
+   "shortfall": 0.045,
+   "status": "resolved"
+  },
+  "fast|brake|pole": {
+   "type": "fast",
+   "phase": "brake",
+   "group": "pole",
+   "tracks": 12,
+   "n": 48,
+   "median": 0.5996,
+   "p10": 0.4499,
+   "p90": 0.8261,
+   "ci90": [
+    0.5457,
+    0.641
+   ],
+   "stat": 0.0476,
+   "sys": {
+    "env": 0.061,
+    "exitM": 0,
+    "win": 0.0711,
+    "type": 0.0437
+   },
+   "sysTotal": 0.1034,
+   "total": 0.1138,
+   "floor": {
+    "b1": null,
+    "noise": 0.9695,
+    "cell": 0.9695
+   },
+   "shortfall": 0.4004,
+   "status": "not resolved"
+  },
+  "fast|brake|top5": {
+   "type": "fast",
+   "phase": "brake",
+   "group": "top5",
+   "tracks": 15,
+   "n": 268,
+   "median": 0.5786,
+   "p10": 0.3703,
+   "p90": 0.8889,
+   "ci90": [
+    0.5457,
+    0.6306
+   ],
+   "stat": 0.0424,
+   "sys": {
+    "env": 0.0889,
+    "exitM": 0,
+    "win": 0.0827,
+    "type": 0.0017
+   },
+   "sysTotal": 0.1214,
+   "total": 0.1286,
+   "floor": {
+    "b1": null,
+    "noise": 0.9695,
+    "cell": 0.9695
+   },
+   "shortfall": 0.4214,
+   "status": "not resolved"
+  },
+  "fast|brake|field": {
+   "type": "fast",
+   "phase": "brake",
+   "group": "field",
+   "tracks": 16,
+   "n": 1233,
+   "median": 0.6564,
+   "p10": 0.3784,
+   "p90": 0.9778,
+   "ci90": [
+    0.624,
+    0.6843
+   ],
+   "stat": 0.0301,
+   "sys": {
+    "env": 0.0764,
+    "exitM": 0,
+    "win": 0.0719,
+    "type": 0.0238
+   },
+   "sysTotal": 0.1076,
+   "total": 0.1117,
+   "floor": {
+    "b1": null,
+    "noise": 0.9695,
+    "cell": 0.9695
+   },
+   "shortfall": 0.3436,
+   "status": "not resolved"
+  },
+  "fast|apex|pole": {
+   "type": "fast",
+   "phase": "apex",
+   "group": "pole",
+   "tracks": 14,
+   "n": 82,
+   "median": 0.9889,
+   "p10": 0.9665,
+   "p90": 1,
+   "ci90": [
+    0.9869,
+    0.9918
+   ],
+   "stat": 0.0025,
+   "sys": {
+    "env": 0.0079,
+    "exitM": 0,
+    "win": 0,
+    "type": 0.0006
+   },
+   "sysTotal": 0.008,
+   "total": 0.0083,
+   "floor": {
+    "b1": 0.0057,
+    "noise": 0.0041,
+    "cell": 0.0057
+   },
+   "shortfall": 0.0111,
+   "status": "resolved"
+  },
+  "fast|apex|top5": {
+   "type": "fast",
+   "phase": "apex",
+   "group": "top5",
+   "tracks": 17,
+   "n": 423,
+   "median": 0.9838,
+   "p10": 0.9541,
+   "p90": 1,
+   "ci90": [
+    0.9803,
+    0.9872
+   ],
+   "stat": 0.0035,
+   "sys": {
+    "env": 0.0074,
+    "exitM": 0,
+    "win": 0,
+    "type": 0.0001
+   },
+   "sysTotal": 0.0074,
+   "total": 0.0081,
+   "floor": {
+    "b1": 0.0057,
+    "noise": 0.0041,
+    "cell": 0.0057
+   },
+   "shortfall": 0.0162,
+   "status": "resolved"
+  },
+  "fast|apex|field": {
+   "type": "fast",
+   "phase": "apex",
+   "group": "field",
+   "tracks": 17,
+   "n": 1740,
+   "median": 0.962,
+   "p10": 0.9167,
+   "p90": 0.9958,
+   "ci90": [
+    0.9596,
+    0.9665
+   ],
+   "stat": 0.0034,
+   "sys": {
+    "env": 0.0073,
+    "exitM": 0,
+    "win": 0,
+    "type": 0.0029
+   },
+   "sysTotal": 0.0078,
+   "total": 0.0086,
+   "floor": {
+    "b1": 0.0057,
+    "noise": 0.0041,
+    "cell": 0.0057
+   },
+   "shortfall": 0.038,
+   "status": "resolved"
+  },
+  "fast|exit|pole": {
+   "type": "fast",
+   "phase": "exit",
+   "group": "pole",
+   "tracks": 14,
+   "n": 84,
+   "median": 0.995,
+   "p10": 0.9713,
+   "p90": 1,
+   "ci90": [
+    0.9888,
+    0.9998
+   ],
+   "stat": 0.0055,
+   "sys": {
+    "env": 0.0048,
+    "exitM": 0.0002,
+    "win": 0,
+    "type": 0.0028
+   },
+   "sysTotal": 0.0055,
+   "total": 0.0078,
+   "floor": {
+    "b1": 0.0055,
+    "noise": 0.0144,
+    "cell": 0.0144
+   },
+   "shortfall": 0.005,
+   "status": "not resolved"
+  },
+  "fast|exit|top5": {
+   "type": "fast",
+   "phase": "exit",
+   "group": "top5",
+   "tracks": 17,
+   "n": 427,
+   "median": 0.9818,
+   "p10": 0.9536,
+   "p90": 1,
+   "ci90": [
+    0.9784,
+    0.9852
+   ],
+   "stat": 0.0034,
+   "sys": {
+    "env": 0.007,
+    "exitM": 0.0003,
+    "win": 0,
+    "type": 0.0014
+   },
+   "sysTotal": 0.0071,
+   "total": 0.0079,
+   "floor": {
+    "b1": 0.0055,
+    "noise": 0.0144,
+    "cell": 0.0144
+   },
+   "shortfall": 0.0182,
+   "status": "resolved"
+  },
+  "fast|exit|field": {
+   "type": "fast",
+   "phase": "exit",
+   "group": "field",
+   "tracks": 17,
+   "n": 1757,
+   "median": 0.9685,
+   "p10": 0.9273,
+   "p90": 0.9949,
+   "ci90": [
+    0.9652,
+    0.9707
+   ],
+   "stat": 0.0027,
+   "sys": {
+    "env": 0.007,
+    "exitM": 0.0015,
+    "win": 0,
+    "type": 0.0018
+   },
+   "sysTotal": 0.0074,
+   "total": 0.0078,
+   "floor": {
+    "b1": 0.0055,
+    "noise": 0.0144,
+    "cell": 0.0144
+   },
+   "shortfall": 0.0315,
+   "status": "resolved"
+  }
+ }
+}
