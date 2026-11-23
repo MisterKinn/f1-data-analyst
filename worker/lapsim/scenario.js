@@ -24,6 +24,7 @@ import {lapsimF1WetQuali} from './f1-wet-quali-data.js';
 import {lapsimKernel} from './kernel.js';
 import {lapsimAllTracks} from './tracks.js';
 import {lapsimHypercarMakers} from './hypercar-maker-data.js';
+import {withIceDensity} from './ice-density.js';
 
 // GT3 is shown per car model (base model + Evo tick box); F1, LMH and LMDh are shown per regulation (owner rule, 2026-11-14)
 // Hypercar per maker (owner 2026-11-21): one car per maker with that track's BoP and the learned residual (carsFor, the tool; the page menu
@@ -115,7 +116,7 @@ export function carsFor(id) {
   if (lapsimAllTracks[id] && Object.keys(out).some(k => k.startsWith('hyper-'))) { const r = hypercarRanking(HK ||= lapsimKernel(), id, lapsimAllTracks[id], out);
     r.forEach((x, i) => { out[x.key].bopRank = i + 1; }); if (r[0]) out[r[0].key].bopFastest = true; }
   for (const c of Object.values(out)) { c.car = withPowertrain(c.car, c); c.unc = uncertainty(c, id); } // engine curve and gears (powertrains.js)
-  return out;
+  return withIceDensity(out); // LAPSIM_ICE_BETA=measured only (step 13-prep)
 }
 
 // Error range (1 sigma, % of lap time) and confidence label (common rule).

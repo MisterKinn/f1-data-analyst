@@ -1,0 +1,908 @@
+{
+ "generatedAt": "2026-11-23",
+ "prereg": "claude/gate-ice-density-prereg-2026-11-23.md",
+ "wec": {
+  "LMP2": {
+   "rows": 773,
+   "carWeekends": 162,
+   "events": 11,
+   "sdAirC": 4.7901,
+   "b": 0.2111,
+   "bCi90": [
+    -0.0145,
+    0.4007
+   ],
+   "kernel": {
+    "perTrackCar": {
+     "spa-francorchamps|wec-lmdh": {
+      "n": 59,
+      "k0": -0.23,
+      "k1": 0.1058,
+      "k2": 0.441
+     },
+     "monza|wec-lmdh": {
+      "n": 2,
+      "k0": -0.2279,
+      "k1": 0.1066,
+      "k2": 0.432
+     }
+    },
+    "dropped": [],
+    "k0": -0.2299,
+    "k1": 0.1058,
+    "linearityGap": -0.0009
+   },
+   "beta": 1.3136,
+   "betaCi90": [
+    0.6417,
+    1.8783
+   ]
+  },
+  "HYPERCAR": {
+   "rows": 557,
+   "carWeekends": 149,
+   "events": 17,
+   "sdAirC": 3.7033,
+   "b": -0.0016,
+   "bCi90": [
+    -0.2003,
+    0.1512
+   ],
+   "kernel": {
+    "perTrackCar": {
+     "spa-francorchamps|wec-lmdh": {
+      "n": 7,
+      "k0": -0.23,
+      "k1": 0.1058,
+      "k2": 0.441
+     },
+     "spa-francorchamps|wec-lmh": {
+      "n": 9,
+      "k0": -0.2359,
+      "k1": 0.1038,
+      "k2": 0.4394
+     },
+     "monza|wec-lmh": {
+      "n": 6,
+      "k0": -0.2272,
+      "k1": 0.1049,
+      "k2": 0.4306
+     },
+     "lusail|wec-lmh": {
+      "n": 47,
+      "k0": -0.1859,
+      "k1": 0.1349,
+      "k2": 0.455
+     },
+     "lusail|wec-lmdh": {
+      "n": 57,
+      "k0": -0.1839,
+      "k1": 0.1365,
+      "k2": 0.4564
+     },
+     "imola|wec-lmh": {
+      "n": 29,
+      "k0": -0.2064,
+      "k1": 0.1211,
+      "k2": 0.4424
+     },
+     "imola|wec-lmdh": {
+      "n": 25,
+      "k0": -0.2045,
+      "k1": 0.1228,
+      "k2": 0.4507
+     }
+    },
+    "dropped": [],
+    "k0": -0.1967,
+    "k1": 0.1278,
+    "linearityGap": -0.0017
+   },
+   "beta": 0.6013,
+   "betaCi90": [
+    -0.0109,
+    1.0721
+   ]
+  },
+  "LMGT3": {
+   "rows": 553,
+   "carWeekends": 123,
+   "events": 7,
+   "sdAirC": 3.4317,
+   "b": -0.2387,
+   "bCi90": [
+    -0.6483,
+    -0.0894
+   ],
+   "kernel": {
+    "perTrackCar": {
+     "lusail|wec-lmgt3": {
+      "n": 136,
+      "k0": -0.1997,
+      "k1": 0.1193,
+      "k2": 0.4375
+     },
+     "imola|wec-lmgt3": {
+      "n": 39,
+      "k0": -0.2259,
+      "k1": 0.1078,
+      "k2": 0.4406
+     },
+     "catalunya|wec-lmgt3": {
+      "n": 2,
+      "k0": -0.1975,
+      "k1": 0.1137,
+      "k2": 0.424
+     }
+    },
+    "dropped": [],
+    "k0": -0.2054,
+    "k1": 0.1167,
+    "linearityGap": -0.0008
+   },
+   "beta": -0.1033,
+   "betaCi90": [
+    -1.3748,
+    0.3602
+   ]
+  }
+ },
+ "wecSecondary": {
+  "LMP2": {
+   "allTypesWithTypeEffects": {
+    "rows": 864,
+    "carWeekends": 177,
+    "events": 14,
+    "sdAirC": 4.93,
+    "b": 0.191,
+    "bCi90": [
+     -0.0386,
+     0.3734
+    ],
+    "kernel": {
+     "perTrackCar": {
+      "spa-francorchamps|wec-lmdh": {
+       "n": 59,
+       "k0": -0.23,
+       "k1": 0.1058,
+       "k2": 0.441
+      },
+      "monza|wec-lmdh": {
+       "n": 2,
+       "k0": -0.2279,
+       "k1": 0.1066,
+       "k2": 0.432
+      },
+      "sakhir|wec-lmdh": {
+       "n": 30,
+       "k0": -0.1786,
+       "k1": 0.1344,
+       "k2": 0.4653
+      }
+     },
+     "dropped": [],
+     "k0": -0.213,
+     "k1": 0.1152,
+     "linearityGap": 0.0053
+    },
+    "beta": 1.2309,
+    "betaCi90": [
+     0.5315,
+     1.7864
+    ]
+   },
+   "coveredTracksOnly": {
+    "rows": 61,
+    "carWeekends": 29,
+    "events": 3,
+    "sdAirC": 6.1798,
+    "b": 0.1318,
+    "bCi90": [
+     0.0692,
+     0.2443
+    ],
+    "kernel": {
+     "perTrackCar": {
+      "spa-francorchamps|wec-lmdh": {
+       "n": 59,
+       "k0": -0.23,
+       "k1": 0.1058,
+       "k2": 0.441
+      },
+      "monza|wec-lmdh": {
+       "n": 2,
+       "k0": -0.2279,
+       "k1": 0.1066,
+       "k2": 0.432
+      }
+     },
+     "dropped": [],
+     "k0": -0.2299,
+     "k1": 0.1058,
+     "linearityGap": -0.0009
+    },
+    "beta": 1.0774,
+    "betaCi90": [
+     0.8908,
+     1.4123
+    ]
+   }
+  },
+  "HYPERCAR": {
+   "allTypesWithTypeEffects": {
+    "rows": 675,
+    "carWeekends": 195,
+    "events": 23,
+    "sdAirC": 4.6374,
+    "b": -0.0793,
+    "bCi90": [
+     -0.3062,
+     0.0393
+    ],
+    "kernel": {
+     "perTrackCar": {
+      "spa-francorchamps|wec-lmdh": {
+       "n": 8,
+       "k0": -0.23,
+       "k1": 0.1058,
+       "k2": 0.441
+      },
+      "spa-francorchamps|wec-lmh": {
+       "n": 9,
+       "k0": -0.2359,
+       "k1": 0.1038,
+       "k2": 0.4394
+      },
+      "monza|wec-lmh": {
+       "n": 6,
+       "k0": -0.2272,
+       "k1": 0.1049,
+       "k2": 0.4306
+      },
+      "sakhir|wec-lmdh": {
+       "n": 36,
+       "k0": -0.1786,
+       "k1": 0.1344,
+       "k2": 0.4653
+      },
+      "sakhir|wec-lmh": {
+       "n": 48,
+       "k0": -0.1805,
+       "k1": 0.1413,
+       "k2": 0.4551
+      },
+      "monza|wec-lmdh": {
+       "n": 2,
+       "k0": -0.2279,
+       "k1": 0.1066,
+       "k2": 0.432
+      },
+      "lusail|wec-lmh": {
+       "n": 47,
+       "k0": -0.1859,
+       "k1": 0.1349,
+       "k2": 0.455
+      },
+      "lusail|wec-lmdh": {
+       "n": 57,
+       "k0": -0.1839,
+       "k1": 0.1365,
+       "k2": 0.4564
+      },
+      "imola|wec-lmh": {
+       "n": 37,
+       "k0": -0.2064,
+       "k1": 0.1211,
+       "k2": 0.4424
+      },
+      "imola|wec-lmdh": {
+       "n": 33,
+       "k0": -0.2045,
+       "k1": 0.1228,
+       "k2": 0.4507
+      }
+     },
+     "dropped": [],
+     "k0": -0.1925,
+     "k1": 0.1304,
+     "linearityGap": -0.0004
+    },
+    "beta": 0.3505,
+    "betaCi90": [
+     -0.352,
+     0.7178
+    ]
+   },
+   "coveredTracksOnly": {
+    "rows": 180,
+    "carWeekends": 56,
+    "events": 8,
+    "sdAirC": 2.8291,
+    "b": -0.2406,
+    "bCi90": [
+     -0.3998,
+     0.3914
+    ],
+    "kernel": {
+     "perTrackCar": {
+      "spa-francorchamps|wec-lmdh": {
+       "n": 7,
+       "k0": -0.23,
+       "k1": 0.1058,
+       "k2": 0.441
+      },
+      "spa-francorchamps|wec-lmh": {
+       "n": 9,
+       "k0": -0.2359,
+       "k1": 0.1038,
+       "k2": 0.4394
+      },
+      "monza|wec-lmh": {
+       "n": 6,
+       "k0": -0.2272,
+       "k1": 0.1049,
+       "k2": 0.4306
+      },
+      "lusail|wec-lmh": {
+       "n": 47,
+       "k0": -0.1859,
+       "k1": 0.1349,
+       "k2": 0.455
+      },
+      "lusail|wec-lmdh": {
+       "n": 57,
+       "k0": -0.1839,
+       "k1": 0.1365,
+       "k2": 0.4564
+      },
+      "imola|wec-lmh": {
+       "n": 29,
+       "k0": -0.2064,
+       "k1": 0.1211,
+       "k2": 0.4424
+      },
+      "imola|wec-lmdh": {
+       "n": 25,
+       "k0": -0.2045,
+       "k1": 0.1228,
+       "k2": 0.4507
+      }
+     },
+     "dropped": [],
+     "k0": -0.1967,
+     "k1": 0.1278,
+     "linearityGap": -0.0017
+    },
+    "beta": -0.1352,
+    "betaCi90": [
+     -0.6256,
+     1.8121
+    ]
+   }
+  },
+  "LMGT3": {
+   "allTypesWithTypeEffects": {
+    "rows": 629,
+    "carWeekends": 149,
+    "events": 9,
+    "sdAirC": 4.3661,
+    "b": -0.1327,
+    "bCi90": [
+     -0.3859,
+     -0.0095
+    ],
+    "kernel": {
+     "perTrackCar": {
+      "lusail|wec-lmgt3": {
+       "n": 136,
+       "k0": -0.1997,
+       "k1": 0.1193,
+       "k2": 0.4375
+      },
+      "sakhir|wec-lmgt3": {
+       "n": 54,
+       "k0": -0.1961,
+       "k1": 0.1252,
+       "k2": 0.4446
+      },
+      "imola|wec-lmgt3": {
+       "n": 49,
+       "k0": -0.2259,
+       "k1": 0.1078,
+       "k2": 0.4406
+      },
+      "catalunya|wec-lmgt3": {
+       "n": 2,
+       "k0": -0.1975,
+       "k1": 0.1137,
+       "k2": 0.424
+      }
+     },
+     "dropped": [],
+     "k0": -0.2042,
+     "k1": 0.1182,
+     "linearityGap": -0.0011
+    },
+    "beta": 0.2219,
+    "betaCi90": [
+     -0.5635,
+     0.6039
+    ]
+   },
+   "coveredTracksOnly": {
+    "rows": 177,
+    "carWeekends": 51,
+    "events": 4,
+    "sdAirC": 1.72,
+    "b": -0.7316,
+    "bCi90": [
+     -0.8225,
+     0.3047
+    ],
+    "kernel": {
+     "perTrackCar": {
+      "lusail|wec-lmgt3": {
+       "n": 136,
+       "k0": -0.1997,
+       "k1": 0.1193,
+       "k2": 0.4375
+      },
+      "imola|wec-lmgt3": {
+       "n": 39,
+       "k0": -0.2259,
+       "k1": 0.1078,
+       "k2": 0.4406
+      },
+      "catalunya|wec-lmgt3": {
+       "n": 2,
+       "k0": -0.1975,
+       "k1": 0.1137,
+       "k2": 0.424
+      }
+     },
+     "dropped": [],
+     "k0": -0.2054,
+     "k1": 0.1167,
+     "linearityGap": -0.0008
+    },
+    "beta": -1.6332,
+    "betaCi90": [
+     -1.9153,
+     1.5835
+    ]
+   }
+  }
+ },
+ "wecReport": {
+  "LMH": {
+   "rows": 262,
+   "carWeekends": 77,
+   "events": 16,
+   "sdAirC": 3.7085,
+   "b": 0.0679,
+   "bCi90": [
+    -0.1986,
+    0.3108
+   ],
+   "kernel": {
+    "perTrackCar": {
+     "spa-francorchamps|wec-lmh": {
+      "n": 9,
+      "k0": -0.2359,
+      "k1": 0.1038,
+      "k2": 0.4394
+     },
+     "monza|wec-lmh": {
+      "n": 6,
+      "k0": -0.2272,
+      "k1": 0.1049,
+      "k2": 0.4306
+     },
+     "lusail|wec-lmh": {
+      "n": 47,
+      "k0": -0.1859,
+      "k1": 0.1349,
+      "k2": 0.455
+     },
+     "imola|wec-lmh": {
+      "n": 29,
+      "k0": -0.2064,
+      "k1": 0.1211,
+      "k2": 0.4424
+     }
+    },
+    "dropped": [],
+    "k0": -0.2001,
+    "k1": 0.1254,
+    "linearityGap": -0.0032
+   },
+   "beta": 0.8233,
+   "betaCi90": [
+    0.0047,
+    1.5693
+   ]
+  },
+  "LMDh": {
+   "rows": 282,
+   "carWeekends": 67,
+   "events": 8,
+   "sdAirC": 3.6169,
+   "b": -0.0683,
+   "bCi90": [
+    -0.2818,
+    0.0279
+   ],
+   "kernel": {
+    "perTrackCar": {
+     "spa-francorchamps|wec-lmdh": {
+      "n": 2,
+      "k0": -0.23,
+      "k1": 0.1058,
+      "k2": 0.441
+     },
+     "lusail|wec-lmdh": {
+      "n": 57,
+      "k0": -0.1839,
+      "k1": 0.1365,
+      "k2": 0.4564
+     },
+     "imola|wec-lmdh": {
+      "n": 25,
+      "k0": -0.2045,
+      "k1": 0.1228,
+      "k2": 0.4507
+     }
+    },
+    "dropped": [],
+    "k0": -0.1911,
+    "k1": 0.1317,
+    "linearityGap": -0.0002
+   },
+   "beta": 0.3806,
+   "betaCi90": [
+    -0.2808,
+    0.6784
+   ]
+  },
+  "naturallyAspirated": {
+   "rows": 122,
+   "carWeekends": 25,
+   "events": 8,
+   "sdAirC": 3.7774,
+   "b": -0.0181,
+   "bCi90": [
+    -0.2766,
+    0.079
+   ],
+   "kernel": {
+    "perTrackCar": {
+     "spa-francorchamps|wec-lmdh": {
+      "n": 2,
+      "k0": -0.23,
+      "k1": 0.1058,
+      "k2": 0.441
+     },
+     "lusail|wec-lmdh": {
+      "n": 13,
+      "k0": -0.1839,
+      "k1": 0.1365,
+      "k2": 0.4564
+     },
+     "imola|wec-lmh": {
+      "n": 7,
+      "k0": -0.2064,
+      "k1": 0.1211,
+      "k2": 0.4424
+     },
+     "imola|wec-lmdh": {
+      "n": 6,
+      "k0": -0.2045,
+      "k1": 0.1228,
+      "k2": 0.4507
+     }
+    },
+    "dropped": [],
+    "k0": -0.1972,
+    "k1": 0.1275,
+    "linearityGap": -0.0017
+   },
+   "beta": 0.5515,
+   "betaCi90": [
+    -0.2443,
+    0.8506
+   ]
+  },
+  "turbo": {
+   "rows": 422,
+   "carWeekends": 119,
+   "events": 16,
+   "sdAirC": 3.623,
+   "b": -0.0144,
+   "bCi90": [
+    -0.2263,
+    0.1464
+   ],
+   "kernel": {
+    "perTrackCar": {
+     "spa-francorchamps|wec-lmh": {
+      "n": 9,
+      "k0": -0.2359,
+      "k1": 0.1038,
+      "k2": 0.4394
+     },
+     "monza|wec-lmh": {
+      "n": 6,
+      "k0": -0.2272,
+      "k1": 0.1049,
+      "k2": 0.4306
+     },
+     "lusail|wec-lmh": {
+      "n": 47,
+      "k0": -0.1859,
+      "k1": 0.1349,
+      "k2": 0.455
+     },
+     "lusail|wec-lmdh": {
+      "n": 44,
+      "k0": -0.1839,
+      "k1": 0.1365,
+      "k2": 0.4564
+     },
+     "imola|wec-lmdh": {
+      "n": 19,
+      "k0": -0.2045,
+      "k1": 0.1228,
+      "k2": 0.4507
+     },
+     "imola|wec-lmh": {
+      "n": 22,
+      "k0": -0.2064,
+      "k1": 0.1211,
+      "k2": 0.4424
+     }
+    },
+    "dropped": [],
+    "k0": -0.1955,
+    "k1": 0.1286,
+    "linearityGap": -0.0017
+   },
+   "beta": 0.5586,
+   "betaCi90": [
+    -0.0948,
+    1.0548
+   ]
+  }
+ },
+ "methodCheck": {
+  "lmp2BetaCi90": [
+   0.6417,
+   1.8783
+  ],
+  "includes1": true,
+  "excludes015": true,
+  "trusted": true
+ },
+ "hypercar": {
+  "value": 0.25,
+  "ci90": [
+   0,
+   1
+  ],
+  "source": "prior (not identified): torque-sensor power cap, mostly turbo fleet"
+ },
+ "f1": {
+  "all": {
+   "rows": 55,
+   "tracks": 24,
+   "lnRhoRange": [
+    -0.1006,
+    0.201
+   ],
+   "betaWheel": -0.0884,
+   "betaWheelCi90": [
+    -0.2119,
+    0.2618
+   ],
+   "wheelToIce": {
+    "pWheelKW": 628.3909,
+    "scaleMid": 1.095,
+    "scaleRange": [
+     1,
+     1.2099
+    ]
+   },
+   "beta": -0.0968,
+   "ci90": [
+    -0.2413,
+    0.296
+   ],
+   "sys": 0.0093
+  },
+  "withoutMexico": {
+   "rows": 52,
+   "tracks": 23,
+   "lnRhoRange": [
+    0.0588,
+    0.201
+   ],
+   "betaWheel": 0.0388,
+   "betaWheelCi90": [
+    -0.3076,
+    0.3862
+   ],
+   "wheelToIce": {
+    "pWheelKW": 628.3904,
+    "scaleMid": 1.095,
+    "scaleRange": [
+     1,
+     1.2099
+    ]
+   },
+   "beta": 0.0424,
+   "ci90": [
+    -0.3409,
+    0.4269
+   ],
+   "sys": 0.0041
+  },
+  "identified": true,
+  "verdict": "measured"
+ },
+ "table": {
+  "LMP2": {
+   "value": 1.0459,
+   "ci90": [
+    0.7415,
+    1.3412
+   ],
+   "source": "measured (ELMS/Asian LMS trap, trap-density.json)",
+   "wecCheck": {
+    "value": 1.3136,
+    "ci90": [
+     0.6417,
+     1.8783
+    ]
+   }
+  },
+  "GT3": {
+   "value": 0.9112,
+   "ci90": [
+    0.6475,
+    1.1396
+   ],
+   "source": "measured (Al Kamel GT3 trap, trap-density.json)",
+   "wecLmgt3Check": {
+    "value": -0.1033,
+    "ci90": [
+     -1.3748,
+     0.3602
+    ]
+   }
+  },
+  "HYPERCAR": {
+   "value": 0.25,
+   "ci90": [
+    0,
+    1
+   ],
+   "source": "prior (not identified): torque-sensor power cap, mostly turbo fleet"
+  },
+  "F1": {
+   "value": -0.0968,
+   "ci90": [
+    -0.2413,
+    0.296
+   ],
+   "source": "measured (TI per-track wheel power vs ρ, 2023–25)",
+   "y2026": 0.15
+  }
+ },
+ "wecSlopePreview": {
+  "production": {
+   "wec": {
+    "n": 33,
+    "slope": -0.099,
+    "ci90": [
+     -0.1644,
+     -0.0614
+    ]
+   },
+   "lmgt3": {
+    "n": 11,
+    "slope": -0.1303,
+    "ci90": [
+     -0.2933,
+     -0.0622
+    ]
+   },
+   "hypercar": {
+    "n": 22,
+    "slope": -0.0829,
+    "ci90": [
+     -0.1646,
+     -0.0412
+    ]
+   }
+  },
+  "perClass": {
+   "wec": {
+    "n": 33,
+    "slope": -0.08,
+    "ci90": [
+     -0.1448,
+     -0.0427
+    ]
+   },
+   "lmgt3": {
+    "n": 11,
+    "slope": -0.0858,
+    "ci90": [
+     -0.2513,
+     -0.0164
+    ]
+   },
+   "hypercar": {
+    "n": 22,
+    "slope": -0.0777,
+    "ci90": [
+     -0.1588,
+     -0.0363
+    ]
+   }
+  },
+  "hypercarPriorEdges": {
+   "beta0": {
+    "wec": {
+     "n": 33,
+     "slope": -0.0884,
+     "ci90": [
+      -0.1534,
+      -0.0503
+     ]
+    },
+    "lmgt3": {
+     "n": 11,
+     "slope": -0.0858,
+     "ci90": [
+      -0.2513,
+      -0.0164
+     ]
+    },
+    "hypercar": {
+     "n": 22,
+     "slope": -0.0906,
+     "ci90": [
+      -0.1735,
+      -0.0486
+     ]
+    }
+   },
+   "beta1": {
+    "wec": {
+     "n": 33,
+     "slope": -0.0547,
+     "ci90": [
+      -0.119,
+      -0.0176
+     ]
+    },
+    "lmgt3": {
+     "n": 11,
+     "slope": -0.0858,
+     "ci90": [
+      -0.2513,
+      -0.0164
+     ]
+    },
+    "hypercar": {
+     "n": 22,
+     "slope": -0.0386,
+     "ci90": [
+      -0.1164,
+      0.0017
+     ]
+    }
+   }
+  }
+ }
+}
