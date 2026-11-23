@@ -1,0 +1,40 @@
+name: Lap simulator car-independent geometry sources
+
+# Step 3 (claude/gate-independent-geometry-prereg-2026-11-23.md): OpenStreetMap raceway ways and the best open elevation model for
+# Jeddah, Shanghai, Imola and Suzuka. Raw crops are pushed to the probe/geom-indep-raw branch (never to main, physics rules 2.9);
+# the derived geometry is built from them by scripts/sim/geom-indep/build.mjs and committed on the experiment branch.
+on:
+  push:
+    branches: ['probe/geom-indep-fetch']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: lapsim-geom-indep
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install numpy requests pillow rasterio pyproj
+      - name: Fetch OSM and elevation
+        run: python scripts/sim/geom-indep/fetch.py /tmp/geom-indep
+      - name: Push raw crops to the probe branch
+        run: |
+          cd /tmp/geom-indep && ls -la
+          git init -q -b probe/geom-indep-raw && git add -A
+          git -c user.name="kongboda-lapsim[bot]" -c user.email="lapsim@users.noreply.github.com" commit -qm "Raw geometry sources (OSM ODbL, GSI, Emilia-Romagna CC BY, Copernicus GLO-30), run ${{ github.run_id }}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" HEAD:refs/heads/probe/geom-indep-raw
+      - uses: actions/upload-artifact@v4
+        with:
+          name: geom-indep-raw
+          path: /tmp/geom-indep
+          retention-days: 14

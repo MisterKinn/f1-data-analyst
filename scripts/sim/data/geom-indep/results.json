@@ -1,0 +1,427 @@
+{
+ "prereg": "claude/gate-independent-geometry-prereg-2026-11-23.md",
+ "runs": "session workspace 2026-11-23, main 58d0b5a + step-3 files, pinned inputs 268039a6, production env, BCD 3x100, LAPSIM_HOLDOUT_YEARS=1999",
+ "levelC": {
+  "B": {
+   "summary": {
+    "f1-2025": {
+     "n": 22,
+     "rmsPct": 3.116,
+     "medAbsPct": 2.735
+    },
+    "f1-2026": {
+     "n": 17,
+     "rmsPct": 2.892,
+     "medAbsPct": 2.012
+    },
+    "wec-lmh": {
+     "n": 6,
+     "rmsPct": 1.934,
+     "medAbsPct": 1.214
+    },
+    "wec-lmdh": {
+     "n": 6,
+     "rmsPct": 1.693,
+     "medAbsPct": 0.988
+    },
+    "wec-lmgt3": {
+     "n": 6,
+     "rmsPct": 1.874,
+     "medAbsPct": 1.3
+    },
+    "f1": {
+     "n": 39,
+     "rmsPct": 3.021,
+     "medAbsPct": 2.609
+    },
+    "wec": {
+     "n": 18,
+     "rmsPct": 1.836,
+     "medAbsPct": 1.006
+    },
+    "all": {
+     "n": 57,
+     "rmsPct": 2.703,
+     "medAbsPct": 1.982
+    }
+   },
+   "rows": [
+    {
+     "group": "f1-2025",
+     "track": "shanghai",
+     "errPct": 4.646
+    },
+    {
+     "group": "f1-2025",
+     "track": "suzuka",
+     "errPct": 1.982
+    },
+    {
+     "group": "f1-2025",
+     "track": "jeddah",
+     "errPct": 6.546
+    },
+    {
+     "group": "f1-2025",
+     "track": "imola",
+     "errPct": 4.35
+    },
+    {
+     "group": "f1-2026",
+     "track": "shanghai",
+     "errPct": 5.099
+    },
+    {
+     "group": "f1-2026",
+     "track": "suzuka",
+     "errPct": 5.183
+    },
+    {
+     "group": "wec-lmh",
+     "track": "imola",
+     "errPct": 4.078
+    },
+    {
+     "group": "wec-lmdh",
+     "track": "imola",
+     "errPct": 3.634
+    },
+    {
+     "group": "wec-lmgt3",
+     "track": "imola",
+     "errPct": 3.286
+    }
+   ]
+  },
+  "G1": {
+   "summary": {
+    "f1-2025": {
+     "n": 22,
+     "rmsPct": 2.317,
+     "medAbsPct": 1.793
+    },
+    "f1-2026": {
+     "n": 17,
+     "rmsPct": 2.386,
+     "medAbsPct": 1.677
+    },
+    "wec-lmh": {
+     "n": 6,
+     "rmsPct": 0.968,
+     "medAbsPct": 0.931
+    },
+    "wec-lmdh": {
+     "n": 6,
+     "rmsPct": 0.776,
+     "medAbsPct": 0.63
+    },
+    "wec-lmgt3": {
+     "n": 6,
+     "rmsPct": 1.341,
+     "medAbsPct": 0.774
+    },
+    "f1": {
+     "n": 39,
+     "rmsPct": 2.348,
+     "medAbsPct": 1.677
+    },
+    "wec": {
+     "n": 18,
+     "rmsPct": 1.055,
+     "medAbsPct": 0.715
+    },
+    "all": {
+     "n": 57,
+     "rmsPct": 2.03,
+     "medAbsPct": 1.265
+    }
+   },
+   "rows": [
+    {
+     "group": "f1-2025",
+     "track": "shanghai",
+     "errPct": 0.38
+    },
+    {
+     "group": "f1-2025",
+     "track": "suzuka",
+     "errPct": 0.473
+    },
+    {
+     "group": "f1-2025",
+     "track": "jeddah",
+     "errPct": 0.596
+    },
+    {
+     "group": "f1-2025",
+     "track": "imola",
+     "errPct": 1.661
+    },
+    {
+     "group": "f1-2026",
+     "track": "shanghai",
+     "errPct": -0.002
+    },
+    {
+     "group": "f1-2026",
+     "track": "suzuka",
+     "errPct": 2.405
+    },
+    {
+     "group": "wec-lmh",
+     "track": "imola",
+     "errPct": 0.665
+    },
+    {
+     "group": "wec-lmdh",
+     "track": "imola",
+     "errPct": 0.236
+    },
+    {
+     "group": "wec-lmgt3",
+     "track": "imola",
+     "errPct": 1.075
+    }
+   ]
+  },
+  "productionCarsB": {
+   "summary": {
+    "f1-2025": {
+     "n": 22,
+     "rmsPct": 3.15,
+     "medAbsPct": 2.772
+    },
+    "f1-2026": {
+     "n": 18,
+     "rmsPct": 2.804,
+     "medAbsPct": 1.905
+    },
+    "wec-lmh": {
+     "n": 6,
+     "rmsPct": 1.934,
+     "medAbsPct": 1.214
+    },
+    "wec-lmdh": {
+     "n": 6,
+     "rmsPct": 1.693,
+     "medAbsPct": 0.988
+    },
+    "wec-lmgt3": {
+     "n": 6,
+     "rmsPct": 1.874,
+     "medAbsPct": 1.3
+    },
+    "f1": {
+     "n": 40,
+     "rmsPct": 2.999,
+     "medAbsPct": 2.363
+    },
+    "wec": {
+     "n": 18,
+     "rmsPct": 1.836,
+     "medAbsPct": 1.006
+    },
+    "all": {
+     "n": 58,
+     "rmsPct": 2.692,
+     "medAbsPct": 1.84
+    }
+   },
+   "rows": [
+    {
+     "group": "f1-2025",
+     "track": "shanghai",
+     "errPct": 4.552
+    },
+    {
+     "group": "f1-2025",
+     "track": "suzuka",
+     "errPct": 2.097
+    },
+    {
+     "group": "f1-2025",
+     "track": "jeddah",
+     "errPct": 6.588
+    },
+    {
+     "group": "f1-2025",
+     "track": "imola",
+     "errPct": 4.429
+    },
+    {
+     "group": "f1-2026",
+     "track": "shanghai",
+     "errPct": 4.784
+    },
+    {
+     "group": "f1-2026",
+     "track": "suzuka",
+     "errPct": 5.212
+    },
+    {
+     "group": "wec-lmh",
+     "track": "imola",
+     "errPct": 4.078
+    },
+    {
+     "group": "wec-lmdh",
+     "track": "imola",
+     "errPct": 3.634
+    },
+    {
+     "group": "wec-lmgt3",
+     "track": "imola",
+     "errPct": 3.286
+    }
+   ]
+  },
+  "productionCarsG1": {
+   "summary": {
+    "f1-2025": {
+     "n": 22,
+     "rmsPct": 2.448,
+     "medAbsPct": 1.893
+    },
+    "f1-2026": {
+     "n": 18,
+     "rmsPct": 2.294,
+     "medAbsPct": 1.737
+    },
+    "wec-lmh": {
+     "n": 6,
+     "rmsPct": 0.996,
+     "medAbsPct": 0.664
+    },
+    "wec-lmdh": {
+     "n": 6,
+     "rmsPct": 0.816,
+     "medAbsPct": 0.536
+    },
+    "wec-lmgt3": {
+     "n": 6,
+     "rmsPct": 1.35,
+     "medAbsPct": 0.798
+    },
+    "f1": {
+     "n": 40,
+     "rmsPct": 2.38,
+     "medAbsPct": 1.745
+    },
+    "wec": {
+     "n": 18,
+     "rmsPct": 1.077,
+     "medAbsPct": 0.798
+    },
+    "all": {
+     "n": 58,
+     "rmsPct": 2.065,
+     "medAbsPct": 1.224
+    }
+   },
+   "rows": [
+    {
+     "group": "f1-2025",
+     "track": "shanghai",
+     "errPct": -0.292
+    },
+    {
+     "group": "f1-2025",
+     "track": "suzuka",
+     "errPct": -0.12
+    },
+    {
+     "group": "f1-2025",
+     "track": "jeddah",
+     "errPct": 0.205
+    },
+    {
+     "group": "f1-2025",
+     "track": "imola",
+     "errPct": 1.239
+    },
+    {
+     "group": "f1-2026",
+     "track": "shanghai",
+     "errPct": -0.477
+    },
+    {
+     "group": "f1-2026",
+     "track": "suzuka",
+     "errPct": 1.751
+    },
+    {
+     "group": "wec-lmh",
+     "track": "imola",
+     "errPct": 0.381
+    },
+    {
+     "group": "wec-lmdh",
+     "track": "imola",
+     "errPct": -0.046
+    },
+    {
+     "group": "wec-lmgt3",
+     "track": "imola",
+     "errPct": 0.818
+    }
+   ]
+  }
+ },
+ "exploratoryNotPreregistered": {
+  "note": "same pipeline, production cars, production grade (no DEM), tracks where level C is too fast",
+  "before": [
+   {
+    "group": "f1-2025",
+    "track": "sakhir",
+    "errPct": -4.003
+   },
+   {
+    "group": "f1-2025",
+    "track": "hungaroring",
+    "errPct": -4.35
+   },
+   {
+    "group": "f1-2025",
+    "track": "mexico-city",
+    "errPct": -4.812
+   },
+   {
+    "group": "f1-2026",
+    "track": "hungaroring",
+    "errPct": -2.072
+   },
+   {
+    "group": "f1-2026",
+    "track": "mexico-city",
+    "errPct": -4.973
+   }
+  ],
+  "after": [
+   {
+    "group": "f1-2025",
+    "track": "sakhir",
+    "errPct": 1.333
+   },
+   {
+    "group": "f1-2025",
+    "track": "hungaroring",
+    "errPct": -1.308
+   },
+   {
+    "group": "f1-2025",
+    "track": "mexico-city",
+    "errPct": -1.158
+   },
+   {
+    "group": "f1-2026",
+    "track": "hungaroring",
+    "errPct": 0.088
+   },
+   {
+    "group": "f1-2026",
+    "track": "mexico-city",
+    "errPct": -2.703
+   }
+  ]
+ }
+}

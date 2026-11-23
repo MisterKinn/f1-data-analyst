@@ -1,0 +1,292 @@
+[
+ {
+  "track": "shanghai",
+  "corner": "T2",
+  "rProdM": 31,
+  "rIndepM": 27,
+  "vMinKph": {
+   "2025": 98,
+   "2026": 101
+  },
+  "ayProdG": 2.47,
+  "ayIndepG": 2.84
+ },
+ {
+  "track": "shanghai",
+  "corner": "T3",
+  "rProdM": 29,
+  "rIndepM": 25,
+  "vMinKph": {
+   "2025": 97,
+   "2026": 95
+  },
+  "ayProdG": 2.41,
+  "ayIndepG": 2.81
+ },
+ {
+  "track": "shanghai",
+  "corner": "T6",
+  "rProdM": 19,
+  "rIndepM": 15,
+  "vMinKph": {
+   "2025": 82,
+   "2026": 81
+  },
+  "ayProdG": 2.78,
+  "ayIndepG": 3.43
+ },
+ {
+  "track": "shanghai",
+  "corner": "T9",
+  "rProdM": 26,
+  "rIndepM": 23,
+  "vMinKph": {
+   "2025": 122,
+   "2026": 119
+  },
+  "ayProdG": 4.37,
+  "ayIndepG": 4.8
+ },
+ {
+  "track": "shanghai",
+  "corner": "T10",
+  "rProdM": 25,
+  "rIndepM": 51,
+  "vMinKph": {
+   "2025": 164,
+   "2026": 151
+  },
+  "ayProdG": 7.12,
+  "ayIndepG": 3.51
+ },
+ {
+  "track": "shanghai",
+  "corner": "T11",
+  "rProdM": 16,
+  "rIndepM": 19,
+  "vMinKph": {
+   "2025": 99,
+   "2026": 94
+  },
+  "ayProdG": 4.24,
+  "ayIndepG": 3.75
+ },
+ {
+  "track": "shanghai",
+  "corner": "T12",
+  "rProdM": 34,
+  "rIndepM": 29,
+  "vMinKph": {
+   "2025": 117,
+   "2026": 111
+  },
+  "ayProdG": 2.86,
+  "ayIndepG": 3.32
+ },
+ {
+  "track": "shanghai",
+  "corner": "T14",
+  "rProdM": 11,
+  "rIndepM": 8,
+  "vMinKph": {
+   "2025": 65,
+   "2026": 68
+  },
+  "ayProdG": 3.12,
+  "ayIndepG": 4.17
+ },
+ {
+  "track": "shanghai",
+  "corner": "T16",
+  "rProdM": 21,
+  "rIndepM": 39,
+  "vMinKph": {
+   "2025": 183,
+   "2026": 159
+  },
+  "ayProdG": 9.49,
+  "ayIndepG": 5.04
+ },
+ {
+  "track": "imola",
+  "corner": "T2",
+  "rProdM": 31,
+  "rIndepM": 48,
+  "vMinKph": {
+   "2025": 183
+  },
+  "ayProdG": 8.44,
+  "ayIndepG": 5.45
+ },
+ {
+  "track": "imola",
+  "corner": "T3",
+  "rProdM": 59,
+  "rIndepM": 54,
+  "vMinKph": {
+   "2025": 183
+  },
+  "ayProdG": 4.43,
+  "ayIndepG": 4.89
+ },
+ {
+  "track": "imola",
+  "corner": "T6",
+  "rProdM": 43,
+  "rIndepM": 50,
+  "vMinKph": {
+   "2025": 197
+  },
+  "ayProdG": 7.17,
+  "ayIndepG": 6.05
+ },
+ {
+  "track": "imola",
+  "corner": "T7",
+  "rProdM": 30,
+  "rIndepM": 33,
+  "vMinKph": {
+   "2025": 108
+  },
+  "ayProdG": 3.07,
+  "ayIndepG": 2.81
+ },
+ {
+  "track": "imola",
+  "corner": "T9",
+  "rProdM": 59,
+  "rIndepM": 70,
+  "vMinKph": {
+   "2025": 232
+  },
+  "ayProdG": 7.13,
+  "ayIndepG": 6.04
+ },
+ {
+  "track": "imola",
+  "corner": "T12",
+  "rProdM": 35,
+  "rIndepM": 33,
+  "vMinKph": {
+   "2025": 143
+  },
+  "ayProdG": 4.54,
+  "ayIndepG": 4.89
+ },
+ {
+  "track": "imola",
+  "corner": "T14",
+  "rProdM": 29,
+  "rIndepM": 29,
+  "vMinKph": {
+   "2025": 104
+  },
+  "ayProdG": 2.92,
+  "ayIndepG": 2.94
+ },
+ {
+  "track": "imola",
+  "corner": "T15",
+  "rProdM": 30,
+  "rIndepM": 24,
+  "vMinKph": {
+   "2025": 104
+  },
+  "ayProdG": 2.88,
+  "ayIndepG": 3.51
+ },
+ {
+  "track": "imola",
+  "corner": "T17",
+  "rProdM": 34,
+  "rIndepM": 34,
+  "vMinKph": {
+   "2025": 123
+  },
+  "ayProdG": 3.47,
+  "ayIndepG": 3.48
+ },
+ {
+  "track": "imola",
+  "corner": "T18",
+  "rProdM": 54,
+  "rIndepM": 46,
+  "vMinKph": {
+   "2025": 159
+  },
+  "ayProdG": 3.71,
+  "ayIndepG": 4.29
+ },
+ {
+  "track": "suzuka",
+  "corner": "T2",
+  "rProdM": 56,
+  "rIndepM": 55,
+  "vMinKph": {
+   "2025": 178,
+   "2026": 188
+  },
+  "ayProdG": 4.48,
+  "ayIndepG": 4.56
+ },
+ {
+  "track": "suzuka",
+  "corner": "T9",
+  "rProdM": 46,
+  "rIndepM": 32,
+  "vMinKph": {
+   "2025": 141,
+   "2026": 245
+  },
+  "ayProdG": 3.43,
+  "ayIndepG": 4.86
+ },
+ {
+  "track": "suzuka",
+  "corner": "T11",
+  "rProdM": 22,
+  "rIndepM": 17,
+  "vMinKph": {
+   "2025": 77,
+   "2026": 243
+  },
+  "ayProdG": 2.14,
+  "ayIndepG": 2.77
+ },
+ {
+  "track": "suzuka",
+  "corner": "T14",
+  "rProdM": 54,
+  "rIndepM": 57,
+  "vMinKph": {
+   "2025": 186,
+   "2026": 278
+  },
+  "ayProdG": 5.01,
+  "ayIndepG": 4.79
+ },
+ {
+  "track": "suzuka",
+  "corner": "T16",
+  "rProdM": 32,
+  "rIndepM": 29,
+  "vMinKph": {
+   "2025": 91,
+   "2026": 189
+  },
+  "ayProdG": 2.03,
+  "ayIndepG": 2.21
+ },
+ {
+  "track": "suzuka",
+  "corner": "T17",
+  "rProdM": 32,
+  "rIndepM": 29,
+  "vMinKph": {
+   "2025": 91,
+   "2026": 189
+  },
+  "ayProdG": 2.03,
+  "ayIndepG": 2.21
+ }
+]

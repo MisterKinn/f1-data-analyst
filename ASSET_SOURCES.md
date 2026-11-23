@@ -46,3 +46,16 @@ Data sources (not images) for scripts/sim/i4-covariates.mjs → scripts/sim/data
 - lusail: 2023 (full) — https://pirelli.com/global/en-ww/race/racingspot/formula-1/f1gp-five-fast-facts-about-the-qatar-gp-98804
 - yas-marina-circuit: 2009 (opening (three sections relaid 2021)) — https://www.arabnews.pk/node/1963761/sport
 - 2025 event dates: FIA 2025 F1 calendar (Friday of each event); 2026: worker/race-calendar-data.js
+
+## Car-independent track geometry, step 3 (scripts/sim/geom-indep/, scripts/sim/data/geom-indep/tracks.json)
+
+Fetched by `.github/workflows/lapsim-geom-indep.yml` (runs 45095673109 and 45102817213; the second rebuilds tracks.json byte for byte); raw crops on branch `probe/geom-indep-raw` only, derived
+geometry committed. Pre-registration: claude.ai Project `claude/gate-independent-geometry-prereg-2026-11-23.md`.
+- Centre lines: OpenStreetMap `highway=raceway` ways (Overpass, 2026-11-23) — © OpenStreetMap contributors, ODbL 1.0.
+- Registration loop (correspondence only, no curvature): bacinger/f1-circuits `f1-circuits.geojson` — MIT.
+- Suzuka elevation: GSI DEM5A (airborne laser, 5 m), https://cyberjapandata.gsi.go.jp/xyz/dem5a_png/ — GSI Content Terms of Use
+  (compatible with CC BY 4.0), credit 国土地理院 / Geospatial Information Authority of Japan.
+- Jeddah, Shanghai, Imola elevation: Copernicus DEM GLO-30 (30 m DSM), https://copernicus-dem-30m.s3.amazonaws.com/ — © DLR e.V.
+  2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA. Imola: the Regione
+  Emilia-Romagna "DTM 5x5" WCS (CC BY 4.0) was tried first but serves a 4-band picture, not heights, so the 30 m model is used.
+- Widths: worker/lapsim/track-widths.js (Jeddah, Imola); FIA list of licensed circuits 2025-12-01 (Shanghai, Suzuka).
