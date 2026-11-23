@@ -1,0 +1,35 @@
+name: Forecast verification log
+
+# Step 8 (docs/lapsim-forecast.md): before each session the race-week forecast for its start is stored once; after it the trackside
+# sensor is added (F1: OpenF1). Diagnostic only: it never changes a lap, the fit or a gate. Published by scripts/publish-refresh.sh.
+on:
+  schedule:
+    - cron: '23 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: forecast-log
+  cancel-in-progress: false
+
+jobs:
+  log:
+    if: github.repository == 'MisterKinn/f1-data-analyst'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - run: npm ci --ignore-scripts
+      - name: Store forecasts, add sensors
+        run: node scripts/sim/forecast-log.mjs
+      - name: Publish to main (checks first)
+        env: {GH_TOKEN: '${{ github.token }}'}
+        run: |
+          scripts/publish-refresh.sh -m "Forecast verification log (Open-Meteo forecast vs trackside sensor, diagnostic)" \
+            -g "node scripts/sim/forecast-log.mjs" -b lapsim-learn/forecast-log -k \
+            -- scripts/sim/data/forecast-log.json docs/lapsim-forecast.md
