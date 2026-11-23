@@ -1,0 +1,319 @@
+{
+ "generatedAt": "2026-11-23",
+ "prereg": "claude/gate-tyre-thermal-7a-prereg-2026-11-23.md",
+ "counts": {
+  "tuneSessions": 139,
+  "T1bUnits": 76,
+  "T1bRuns": 699,
+  "T2Units": 72,
+  "nightT2": 17
+ },
+ "fit": {
+  "tauS": 7.12962962962963,
+  "tauB": 146.66666666666669,
+  "tcS": 100,
+  "tcM": 140,
+  "tcH": 60,
+  "wS": 23.333333333333336,
+  "wM": 10,
+  "wH": 18.148148148148145
+ },
+ "intervals": {
+  "tauS": {
+   "value": 7.1296,
+   "ci90": [
+    5,
+    7.1296
+   ],
+   "identified": false,
+   "note": "at a search bound"
+  },
+  "tauB": {
+   "value": 146.6667,
+   "ci90": [
+    60,
+    146.6667
+   ],
+   "identified": false,
+   "note": "at a search bound"
+  },
+  "tcS": {
+   "value": 100,
+   "ci90": [
+    100,
+    100
+   ],
+   "identified": true
+  },
+  "tcM": {
+   "value": 140,
+   "ci90": [
+    100,
+    140
+   ],
+   "identified": false,
+   "note": "at a search bound"
+  },
+  "tcH": {
+   "value": 60,
+   "ci90": [
+    60,
+    100
+   ],
+   "identified": false,
+   "note": "at a search bound"
+  },
+  "wS": {
+   "value": 23.3333,
+   "ci90": [
+    10,
+    23.3333
+   ],
+   "identified": false,
+   "note": "at a search bound"
+  },
+  "wM": {
+   "value": 10,
+   "ci90": [
+    10,
+    27.5
+   ],
+   "identified": false,
+   "note": "at a search bound"
+  },
+  "wH": {
+   "value": 18.1481,
+   "ci90": [
+    10,
+    53.1481
+   ],
+   "identified": false,
+   "note": "at a search bound"
+  }
+ },
+ "power": {
+  "T1b": {
+   "m": 2,
+   "nHoldTracks": 26,
+   "usefulGainPp2": 0.0114,
+   "loo": {
+    "production": {
+     "meanGain": 0.0003,
+     "sd": 0.0226,
+     "mde": 0.0082,
+     "n": 23
+    },
+    "constant": {
+     "meanGain": 0.0002,
+     "sd": 0.0226,
+     "mde": 0.0081,
+     "n": 23
+    }
+   },
+   "judgeable": true
+  },
+  "T2": {
+   "m": 1,
+   "nHoldTracks": 26,
+   "usefulGainPp2": 0.1177,
+   "loo": {
+    "production": {
+     "meanGain": 0.08,
+     "sd": 0.6978,
+     "mde": 0.2518,
+     "n": 18
+    },
+    "constant": {
+     "meanGain": 0.0273,
+     "sd": 0.308,
+     "mde": 0.1112,
+     "n": 18
+    }
+   },
+   "judgeable": false
+  }
+ },
+ "tuning": {
+  "T1b": {
+   "target": "T1b",
+   "n": 23,
+   "rms": {
+    "constant": 0.2838,
+    "production": 0.284,
+    "parabola": 0.2838,
+    "thermal": 0.2784
+   },
+   "medAbs": {
+    "constant": 0.2264,
+    "production": 0.2265,
+    "parabola": 0.2264,
+    "thermal": 0.2146
+   },
+   "vs_production": {
+    "meanGain": 0.0034,
+    "ci90": [
+     -0.0033,
+     0.0106
+    ],
+    "p": 0.2179,
+    "pass": false,
+    "reason": "rejected: p 0.218 ≥ 0.080",
+    "rmsGain": 0.0056
+   },
+   "vs_constant": {
+    "meanGain": 0.0033,
+    "ci90": [
+     -0.0034,
+     0.0104
+    ],
+    "p": 0.2246,
+    "pass": false,
+    "reason": "rejected: p 0.225 ≥ 0.080",
+    "rmsGain": 0.0054
+   },
+   "pass": false
+  },
+  "T2": {
+   "target": "T2",
+   "n": 18,
+   "rms": {
+    "constant": 2.9373,
+    "production": 2.943,
+    "parabola": 2.9391,
+    "thermal": 2.9233
+   },
+   "medAbs": {
+    "constant": 0.3992,
+    "production": 0.3751,
+    "parabola": 0.4335,
+    "thermal": 0.51
+   },
+   "vs_production": {
+    "meanGain": 0.2264,
+    "ci90": [
+     -0.1128,
+     0.8087
+    ],
+    "p": 0.4723,
+    "pass": false,
+    "reason": "rejected: p 0.472 ≥ 0.160",
+    "rmsGain": 0.0196
+   },
+   "vs_constant": {
+    "meanGain": 0.1779,
+    "ci90": [
+     -0.0691,
+     0.5464
+    ],
+    "p": 0.2915,
+    "pass": false,
+    "reason": "rejected: p 0.291 ≥ 0.160",
+    "rmsGain": 0.014
+   },
+   "pass": false
+  }
+ },
+ "holdout": {
+  "T1b": {
+   "target": "T1b",
+   "n": 24,
+   "rms": {
+    "constant": 0.3141,
+    "production": 0.3145,
+    "parabola": 0.3141,
+    "thermal": 0.3023
+   },
+   "medAbs": {
+    "constant": 0.1943,
+    "production": 0.1915,
+    "parabola": 0.1943,
+    "thermal": 0.1735
+   },
+   "vs_production": {
+    "meanGain": 0.0075,
+    "ci90": [
+     -0.0018,
+     0.0166
+    ],
+    "p": 0.1014,
+    "pass": false,
+    "reason": "rejected: p 0.101 ≥ 0.080",
+    "rmsGain": 0.0122
+   },
+   "vs_constant": {
+    "meanGain": 0.0072,
+    "ci90": [
+     -0.0023,
+     0.0163
+    ],
+    "p": 0.1118,
+    "pass": false,
+    "reason": "rejected: p 0.112 ≥ 0.080",
+    "rmsGain": 0.0119
+   },
+   "pass": false
+  },
+  "T2": "not judgeable at this n: not opened"
+ },
+ "reported": {
+  "T3tuning": {
+   "units": 70,
+   "rms": {
+    "constant": 0.1658,
+    "production": 0.1658,
+    "thermal": 0.1661
+   },
+   "meanSlopeMeasured": 0.1884,
+   "meanSlopeThermal": -0.0032
+  },
+  "T4tuning": {
+   "2023-2024": {
+    "n": 15,
+    "rms": {
+     "constant": 1.1511,
+     "production": 1.0099,
+     "thermal": 1.2318
+    }
+   }
+  },
+  "slope7b": {
+   "note": "no refit (track factors fixed): indicative only; WEC rows not identified (no WEC tyre fit)",
+   "f1Production": {
+    "n": 35,
+    "slope": -0.0236,
+    "ci90": [
+     -0.0555,
+     0.0107
+    ],
+    "r2": 0.0197
+   },
+   "f1WithThermal": {
+    "n": 35,
+    "slope": -0.0846,
+    "ci90": [
+     -0.124,
+     -0.0486
+    ],
+    "r2": 0.1946
+   }
+  },
+  "T3holdout": {
+   "units": 71,
+   "rms": {
+    "constant": 0.1474,
+    "production": 0.1474,
+    "thermal": 0.1507
+   }
+  },
+  "T4holdout": {
+   "2024-2025": {
+    "n": 20,
+    "rms": {
+     "constant": 0.8333,
+     "production": 0.7829,
+     "thermal": 0.8058
+    }
+   }
+  }
+ }
+}
