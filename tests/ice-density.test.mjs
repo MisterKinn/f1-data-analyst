@@ -18,11 +18,11 @@ test('flag off: no car carries iceDensityExp', () => withFlag(null, () => {
 
 test('flag on: class values from the data file; unmeasured cars untouched', () => withFlag('measured', () => {
   const c = carsFor(ID);
-  assert.equal(c['wec-lmgt3'].car.iceDensityExp, D.classes.gt3.beta);
+  assert.equal(c['wec-lmgt3'].car.iceDensityExp, D.classes.lmgt3Wec.beta); // amendment 1: 0
   assert.equal(c['wec-lmh'].car.iceDensityExp, D.classes.hypercar.beta);
   assert.equal(c['wec-lmdh'].car.iceDensityExp, D.classes.hypercar.beta);
   assert.equal(c['elms-lmgt3'].car.iceDensityExp, D.classes.gt3.beta);
-  assert.equal(c['2025'].car.iceDensityExp, D.classes.f1?.beta);
+  assert.equal(c['2025'].car.iceDensityExp, 0); // amendment 1: fuel-flow limit
   for (const k of ['2026', '2027', '2028', 'base2019']) assert.equal(c[k].car.iceDensityExp, undefined, k);
   for (const k of Object.keys(c).filter(k => k.startsWith('fe-'))) assert.equal(c[k].car.iceDensityExp, undefined, k);
 }));
@@ -41,6 +41,8 @@ test('class mapping', () => {
   assert.equal(iceClassOf('imsa-gtp'), 'hypercar');
   assert.equal(iceClassOf('gt3-ferrari-296-gt3'), 'gt3');
   assert.equal(iceClassOf('gtwc-gt3', {proxyOf: 'wec-lmgt3'}), 'gt3');
+  assert.equal(iceClassOf('elms-lmgt3', {proxyOf: 'wec-lmgt3'}), 'gt3');
+  assert.equal(iceClassOf('wec-lmgt3'), 'lmgt3Wec');
   assert.equal(iceClassOf('2026'), null);
   assert.equal(iceClassOf('fe-gen3'), null);
 });
@@ -49,6 +51,8 @@ test('data file matches the measurement output; values physical', () => {
   const o = JSON.parse(readFileSync('scripts/sim/data/learn/ice-density-classes.json'));
   assert.equal(D.classes.gt3.beta, o.table.GT3.value);
   assert.equal(D.classes.hypercar.beta, o.table.HYPERCAR.value);
+  assert.equal(D.classes.lmgt3Wec.beta, 0);
+  assert.equal(D.classes.f1.beta, 0);
   assert.equal(o.methodCheck.trusted, true); // WEC LMP2 positive control: interval includes 1, excludes 0.15
   for (const v of Object.values(D.classes)) { assert.ok(v.beta > -0.5 && v.beta < 1.5); assert.ok(v.ci90[0] <= v.beta && v.beta <= v.ci90[1]); }
 });
