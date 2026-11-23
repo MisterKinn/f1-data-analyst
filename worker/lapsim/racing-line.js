@@ -6,7 +6,10 @@
 // this converges to the least-curvature path the corridor allows (the classic geometric racing line).
 // order 2 instead of 4: each point toward the midpoint of its neighbours, i.e. the shortest path inside the corridor.
 // right: optional half width on the right side (default: the same as half, which is then the left side); owner 2026-11-17 kerbs per side
-export function minCurvatureLine(x, y, half, {iters = 4000, rate = 0.5, init = null, order = 4, right = null} = {}) {
+// usableWidth (hook, docs/lapsim-hooks.md): (i, side 'left' | 'right', halfWidth m) → usable half width m, e.g. asphalt the track-limit
+// rules allow (step 4b); unset = the half widths as given
+export function minCurvatureLine(x, y, half, {iters = 4000, rate = 0.5, init = null, order = 4, right = null, usableWidth = null} = {}) {
+  if (usableWidth) { const r0 = right || half; right = Array.from(r0, (w, i) => usableWidth(i, 'right', w)); half = Array.from(half, (w, i) => usableWidth(i, 'left', w)); }
   const n = x.length, nx = new Float64Array(n), ny = new Float64Array(n), o = new Float64Array(n);
   // coarse to fine: the curvature smoothing travels one point per step, so solve on every 4th point
   // first (global shape), then refine from there
