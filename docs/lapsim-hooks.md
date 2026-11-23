@@ -59,6 +59,8 @@ Number of runs of the lap (default 1). Run k sees run k − 1 in `state.v`, `sta
 - In: one parsed change (`worker/lapsim/track-changes.js`; `change.effect` is today's default).
 - Out: `{kind: 'grip' | 'cornerSpeed', factor}` or `null` (the change has no lap effect). Used by `applyTrackChanges`.
 - Default: unset (`change.effect`).
+- Step 5b: the tool sets it to `gatedChangeFactors` (`worker/lapsim/scenario.js`, data `change-gate-data.js`); the page and the tool
+  also drop the effect of every change type at strength 0 (`gateChange`), so those changes are information only.
 
 ### `usableWidth(i, side, halfWidth)` — usable width for the racing line (step 4b)
 - Option of `minCurvatureLine(x, y, half, {usableWidth})` in `worker/lapsim/racing-line.js`.
