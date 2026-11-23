@@ -109,7 +109,9 @@ function buildTrack(id, raw, bac) {
     const osm = J(era.date ? `${raw}/${id}-osm-${era.date}.json` : `${raw}/${id}-osm.json`);
     if (!osm?.elements?.some(e => e.tags?.highway === 'raceway')) { out.report.push({era, status: 'no OSM loop'}); continue; }
     try {
-      const b = buildOne(id, osm, J(`${raw}/${id}-dem.json`), null, null, null, {row: d, seed, fia, bacFeature: bf, widthM: fia.widthM, northDeg: bf ? null : lapsimTrackNorth[id]?.deg ?? null, widths: widthsFor(id, era, osm, d)});
+      // the centre line uses raceway ways only; area outlines (the asphalt edge) would pull the registration and the foot points
+      const centreOsm = {...osm, elements: osm.elements.filter(e => e.type === 'way' && e.tags?.highway === 'raceway' && e.tags?.area !== 'yes' && !e.tags?.['area:highway'])};
+      const b = buildOne(id, centreOsm, J(`${raw}/${id}-dem.json`), null, null, null, {row: d, seed, fia, bacFeature: bf, widthM: fia.widthM, northDeg: bf ? null : lapsimTrackNorth[id]?.deg ?? null, widths: widthsFor(id, era, osm, d)});
       const turn = Math.abs(b.report.turnDeg), closes = Math.min(Math.abs(turn - 360), turn) <= A3.sourceIncomplete.turnDeg;
       const incomplete = b.report.bridgedShare > A3.sourceIncomplete.bridged || (b.report.centreVsOfficialPct != null && Math.abs(b.report.centreVsOfficialPct) > A3.sourceIncomplete.lengthPct) || !closes;
       out.eras.push({from: era.from, to: era.to, osmDate: era.date || 'current', sourceIncomplete: incomplete, row: {...b.row, map: undefined}, extra: b.extra});
