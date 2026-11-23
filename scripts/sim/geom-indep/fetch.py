@@ -8,8 +8,8 @@ never to main (physics rules 2.9); only derived geometry is committed.
 import base64, io, json, math, os, sys, time
 import numpy as np, requests
 
-OUT = sys.argv[1] if len(sys.argv) > 1 else 'probe-out/geom-indep'
-os.makedirs(OUT, exist_ok=True)
+OUT = sys.argv[1] if len(sys.argv) > 1 and __name__ == '__main__' else 'probe-out/geom-indep'
+if __name__ == '__main__': os.makedirs(OUT, exist_ok=True)
 SEEDS = {'jeddah': (21.6319, 39.1044), 'shanghai': (31.3389, 121.2197), 'imola': (44.338, 11.708), 'suzuka': (34.8431, 136.541)}
 UA = {'User-Agent': 'kongboda-lapsim geometry fetch (github.com/MisterKinn/f1-data-analyst)'}
 OVERPASS = ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter', 'https://overpass.private.coffee/api/interpreter']
@@ -128,20 +128,24 @@ def glo30(id_, bb):
                     'validShare': round(float(np.isfinite(a).mean()), 3), 'cm': pack(a)}
     except Exception as e: say(id_, 'GLO-30 error', e); return None
 
-r = requests.get('https://raw.githubusercontent.com/bacinger/f1-circuits/master/f1-circuits.geojson', headers=UA, timeout=60)
-open(f'{OUT}/f1-circuits.geojson', 'wb').write(r.content); say('bacinger/f1-circuits (MIT)', r.status_code, len(r.content))
-for name in ('Shanghai', 'Suzuka'):  # attempt 2: TUM racetrack-database widths (LGPL-3.0)
-    r = requests.get(f'https://raw.githubusercontent.com/TUMFTM/racetrack-database/master/tracks/{name}.csv', headers=UA, timeout=60)
-    open(f'{OUT}/tum-{name}.csv', 'wb').write(r.content); say('TUM racetrack-database', name, r.status_code, len(r.content))
-for id_, (lat, lon) in SEEDS.items():
-    j = osm(id_, lat, lon)
-    if j: json.dump(j, open(f'{OUT}/{id_}-osm.json', 'w'))
-    bb = bbox(j, lat, lon)
-    dem = gsi(id_, bb) if id_ == 'suzuka' else emilia(id_, bb) if id_ == 'imola' else None
-    if dem is None: dem = glo30(id_, bb)
-    if id_ in ('suzuka', 'imola'):  # always keep the 30 m model too, for the cross-check
-        g = glo30(id_, bb)
-        if g: json.dump(g, open(f'{OUT}/{id_}-dem30.json', 'w'))
-    if dem: json.dump(dem, open(f'{OUT}/{id_}-dem.json', 'w'))
-    else: say(id_, 'NO ELEVATION')
-json.dump({'log': log, 'fetched': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())}, open(f'{OUT}/fetch-log.json', 'w'), indent=1)
+def main():
+    r = requests.get('https://raw.githubusercontent.com/bacinger/f1-circuits/master/f1-circuits.geojson', headers=UA, timeout=60)
+    open(f'{OUT}/f1-circuits.geojson', 'wb').write(r.content); say('bacinger/f1-circuits (MIT)', r.status_code, len(r.content))
+    for name in ('Shanghai', 'Suzuka'):  # attempt 2: TUM racetrack-database widths (LGPL-3.0)
+        r = requests.get(f'https://raw.githubusercontent.com/TUMFTM/racetrack-database/master/tracks/{name}.csv', headers=UA, timeout=60)
+        open(f'{OUT}/tum-{name}.csv', 'wb').write(r.content); say('TUM racetrack-database', name, r.status_code, len(r.content))
+    for id_, (lat, lon) in SEEDS.items():
+        j = osm(id_, lat, lon)
+        if j: json.dump(j, open(f'{OUT}/{id_}-osm.json', 'w'))
+        bb = bbox(j, lat, lon)
+        dem = gsi(id_, bb) if id_ == 'suzuka' else emilia(id_, bb) if id_ == 'imola' else None
+        if dem is None: dem = glo30(id_, bb)
+        if id_ in ('suzuka', 'imola'):  # always keep the 30 m model too, for the cross-check
+            g = glo30(id_, bb)
+            if g: json.dump(g, open(f'{OUT}/{id_}-dem30.json', 'w'))
+        if dem: json.dump(dem, open(f'{OUT}/{id_}-dem.json', 'w'))
+        else: say(id_, 'NO ELEVATION')
+    json.dump({'log': log, 'fetched': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())}, open(f'{OUT}/fetch-log.json', 'w'), indent=1)
+
+if __name__ == '__main__':
+    main()

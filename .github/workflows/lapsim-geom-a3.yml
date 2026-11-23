@@ -1,0 +1,49 @@
+name: Lap simulator car-free geometry, attempt 3 (all tracks)
+
+# Step 3 attempt 3 (claude/gate-independent-geometry-attempt3-prereg-2026-11-23.md): OSM raceway ways and area polygons (today and per
+# older layout era), the best open elevation model per place, then scripts/sim/geom-indep/build-a3.mjs on the runner. Elevation and OSM
+# stay on the runner (artifact only); the derived geometry is pushed to probe/geom-a3-out and committed from there by the session.
+# TRACKS in .github/geom-a3-tracks.txt: "all" or comma-separated ids (a short list for a quick check).
+on:
+  push:
+    branches: ['probe/geom-a3-fetch']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: lapsim-geom-a3
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: pip install numpy requests pillow rasterio pyproj && npm ci --ignore-scripts
+      - name: Era dates
+        run: node scripts/sim/geom-indep/build-a3.mjs eras /tmp/raw/eras.json
+      - name: Fetch OSM and elevation
+        run: python scripts/sim/geom-indep/fetch_a3.py /tmp/raw "$(cat .github/geom-a3-tracks.txt 2>/dev/null || echo all)"
+      - name: Build geometry
+        run: node scripts/sim/geom-indep/build-a3.mjs build /tmp/raw --jobs 4 --out /tmp/out && cp /tmp/raw/fetch-log.json /tmp/out/
+      - name: Push derived geometry to the probe branch
+        run: |
+          cd /tmp/out && ls -la
+          git init -q -b probe/geom-a3-out && git add -A
+          git -c user.name="kongboda-lapsim[bot]" -c user.email="lapsim@users.noreply.github.com" commit -qm "Car-free geometry attempt 3, run ${{ github.run_id }}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" HEAD:refs/heads/probe/geom-a3-out
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: geom-a3-raw
+          path: /tmp/raw
+          retention-days: 7
