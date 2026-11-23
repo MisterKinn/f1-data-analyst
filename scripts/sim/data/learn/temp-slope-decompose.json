@@ -1,0 +1,1715 @@
+{
+ "generatedAt": "2026-11-23",
+ "prereg": "claude/gate-wec-temp-slope-prereg-2026-11-23.md",
+ "groups": {
+  "all": {
+   "production": {
+    "n": 68,
+    "slope": -0.0736,
+    "ci90": [
+     -0.1034,
+     -0.0458
+    ],
+    "r2": 0.1917,
+    "includes0": false
+   },
+   "without_density": {
+    "n": 68,
+    "slope": -0.0827,
+    "ci90": [
+     -0.1142,
+     -0.0539
+    ],
+    "r2": 0.2216,
+    "includes0": false
+   },
+   "without_ice": {
+    "n": 68,
+    "slope": -0.0815,
+    "ci90": [
+     -0.111,
+     -0.0538
+    ],
+    "r2": 0.2242,
+    "includes0": false
+   },
+   "without_grip": {
+    "n": 68,
+    "slope": -0.0701,
+    "ci90": [
+     -0.0976,
+     -0.0453
+    ],
+    "r2": 0.1936,
+    "includes0": false
+   },
+   "without_all": {
+    "n": 68,
+    "slope": -0.0877,
+    "ci90": [
+     -0.1171,
+     -0.0607
+    ],
+    "r2": 0.2599,
+    "includes0": false
+   },
+   "modelResponse": {
+    "n": 68,
+    "slope": 0.0141,
+    "ci90": [
+     -0.0007,
+     0.0299
+    ],
+    "r2": 0.09,
+    "includes0": true
+   },
+   "trackTemp": {
+    "n": 68,
+    "slope": -0.0335,
+    "ci90": [
+     -0.0514,
+     -0.015
+    ],
+    "r2": 0.0958,
+    "includes0": false
+   },
+   "airGivenTrackTemp": {
+    "n": 68,
+    "air": -0.1022,
+    "ci90": [
+     -0.1486,
+     -0.0466
+    ],
+    "coef": [
+     1.5698,
+     -0.1022,
+     0.0219
+    ]
+   }
+  },
+  "f1": {
+   "production": {
+    "n": 35,
+    "slope": -0.0236,
+    "ci90": [
+     -0.0555,
+     0.0107
+    ],
+    "r2": 0.0197,
+    "includes0": true
+   },
+   "without_density": {
+    "n": 35,
+    "slope": -0.0328,
+    "ci90": [
+     -0.07,
+     0.0046
+    ],
+    "r2": 0.0345,
+    "includes0": true
+   },
+   "without_ice": {
+    "n": 35,
+    "slope": -0.0314,
+    "ci90": [
+     -0.0635,
+     0.0025
+    ],
+    "r2": 0.0337,
+    "includes0": true
+   },
+   "without_grip": {
+    "n": 35,
+    "slope": -0.0302,
+    "ci90": [
+     -0.0658,
+     0.0031
+    ],
+    "r2": 0.031,
+    "includes0": true
+   },
+   "without_all": {
+    "n": 35,
+    "slope": -0.0489,
+    "ci90": [
+     -0.0903,
+     -0.0116
+    ],
+    "r2": 0.0712,
+    "includes0": false
+   },
+   "modelResponse": {
+    "n": 35,
+    "slope": 0.0253,
+    "ci90": [
+     0.0067,
+     0.0457
+    ],
+    "r2": 0.2609,
+    "includes0": false
+   },
+   "trackTemp": {
+    "n": 35,
+    "slope": -0.0104,
+    "ci90": [
+     -0.0351,
+     0.0157
+    ],
+    "r2": 0.0085,
+    "includes0": true
+   },
+   "airGivenTrackTemp": {
+    "n": 35,
+    "air": -0.0325,
+    "ci90": [
+     -0.0878,
+     0.03
+    ],
+    "coef": [
+     0.3052,
+     -0.0325,
+     0.0074
+    ]
+   }
+  },
+  "wec": {
+   "production": {
+    "n": 33,
+    "slope": -0.099,
+    "ci90": [
+     -0.1644,
+     -0.0614
+    ],
+    "r2": 0.3124,
+    "includes0": false
+   },
+   "without_density": {
+    "n": 33,
+    "slope": -0.1086,
+    "ci90": [
+     -0.1742,
+     -0.0714
+    ],
+    "r2": 0.3453,
+    "includes0": false
+   },
+   "without_ice": {
+    "n": 33,
+    "slope": -0.1071,
+    "ci90": [
+     -0.1729,
+     -0.0692
+    ],
+    "r2": 0.3472,
+    "includes0": false
+   },
+   "without_grip": {
+    "n": 33,
+    "slope": -0.0955,
+    "ci90": [
+     -0.1458,
+     -0.0639
+    ],
+    "r2": 0.3408,
+    "includes0": false
+   },
+   "without_all": {
+    "n": 33,
+    "slope": -0.1129,
+    "ci90": [
+     -0.1648,
+     -0.0804
+    ],
+    "r2": 0.4068,
+    "includes0": false
+   },
+   "modelResponse": {
+    "n": 33,
+    "slope": 0.0139,
+    "ci90": [
+     -0.013,
+     0.0341
+    ],
+    "r2": 0.0825,
+    "includes0": true
+   },
+   "trackTemp": {
+    "n": 33,
+    "slope": -0.0418,
+    "ci90": [
+     -0.071,
+     -0.0186
+    ],
+    "r2": 0.1384,
+    "includes0": false
+   },
+   "airGivenTrackTemp": {
+    "n": 33,
+    "air": -0.1437,
+    "ci90": [
+     -0.208,
+     -0.071
+    ],
+    "coef": [
+     2.1196,
+     -0.1437,
+     0.034
+    ]
+   }
+  },
+  "lmh": {
+   "production": {
+    "n": 11,
+    "slope": -0.091,
+    "ci90": [
+     -0.2383,
+     -0.0316
+    ],
+    "r2": 0.2904,
+    "includes0": false
+   },
+   "without_density": {
+    "n": 11,
+    "slope": -0.1079,
+    "ci90": [
+     -0.2614,
+     -0.0496
+    ],
+    "r2": 0.3537,
+    "includes0": false
+   },
+   "without_ice": {
+    "n": 11,
+    "slope": -0.0988,
+    "ci90": [
+     -0.2468,
+     -0.0388
+    ],
+    "r2": 0.325,
+    "includes0": false
+   },
+   "without_grip": {
+    "n": 11,
+    "slope": -0.0874,
+    "ci90": [
+     -0.2079,
+     -0.043
+    ],
+    "r2": 0.3214,
+    "includes0": false
+   },
+   "without_all": {
+    "n": 11,
+    "slope": -0.1118,
+    "ci90": [
+     -0.236,
+     -0.0641
+    ],
+    "r2": 0.4184,
+    "includes0": false
+   },
+   "modelResponse": {
+    "n": 11,
+    "slope": 0.0208,
+    "ci90": [
+     -0.0289,
+     0.0566
+    ],
+    "r2": 0.1596,
+    "includes0": true
+   },
+   "trackTemp": {
+    "n": 11,
+    "slope": -0.0297,
+    "ci90": [
+     -0.0919,
+     0.0299
+    ],
+    "r2": 0.0774,
+    "includes0": true
+   },
+   "airGivenTrackTemp": {
+    "n": 11,
+    "air": -0.1652,
+    "ci90": [
+     -0.2979,
+     0.0102
+    ],
+    "coef": [
+     2.0436,
+     -0.1652,
+     0.0567
+    ]
+   }
+  },
+  "lmdh": {
+   "production": {
+    "n": 11,
+    "slope": -0.0747,
+    "ci90": [
+     -0.1916,
+     -0.0197
+    ],
+    "r2": 0.2915,
+    "includes0": false
+   },
+   "without_density": {
+    "n": 11,
+    "slope": -0.092,
+    "ci90": [
+     -0.2141,
+     -0.0394
+    ],
+    "r2": 0.3737,
+    "includes0": false
+   },
+   "without_ice": {
+    "n": 11,
+    "slope": -0.0824,
+    "ci90": [
+     -0.1996,
+     -0.027
+    ],
+    "r2": 0.3327,
+    "includes0": false
+   },
+   "without_grip": {
+    "n": 11,
+    "slope": -0.0711,
+    "ci90": [
+     -0.1628,
+     -0.0335
+    ],
+    "r2": 0.3483,
+    "includes0": false
+   },
+   "without_all": {
+    "n": 11,
+    "slope": -0.0958,
+    "ci90": [
+     -0.1932,
+     -0.0565
+    ],
+    "r2": 0.4698,
+    "includes0": false
+   },
+   "modelResponse": {
+    "n": 11,
+    "slope": 0.0212,
+    "ci90": [
+     -0.029,
+     0.0575
+    ],
+    "r2": 0.1611,
+    "includes0": true
+   },
+   "trackTemp": {
+    "n": 11,
+    "slope": -0.0326,
+    "ci90": [
+     -0.091,
+     0.0105
+    ],
+    "r2": 0.138,
+    "includes0": true
+   },
+   "airGivenTrackTemp": {
+    "n": 11,
+    "air": -0.1029,
+    "ci90": [
+     -0.2125,
+     0.0178
+    ],
+    "coef": [
+     1.6323,
+     -0.1029,
+     0.0216
+    ]
+   }
+  },
+  "lmgt3": {
+   "production": {
+    "n": 11,
+    "slope": -0.1303,
+    "ci90": [
+     -0.2933,
+     -0.0622
+    ],
+    "r2": 0.3797,
+    "includes0": false
+   },
+   "without_density": {
+    "n": 11,
+    "slope": -0.126,
+    "ci90": [
+     -0.2919,
+     -0.0564
+    ],
+    "r2": 0.3548,
+    "includes0": false
+   },
+   "without_ice": {
+    "n": 11,
+    "slope": -0.139,
+    "ci90": [
+     -0.3015,
+     -0.0707
+    ],
+    "r2": 0.4121,
+    "includes0": false
+   },
+   "without_grip": {
+    "n": 11,
+    "slope": -0.1267,
+    "ci90": [
+     -0.2758,
+     -0.0627
+    ],
+    "r2": 0.3991,
+    "includes0": false
+   },
+   "without_all": {
+    "n": 11,
+    "slope": -0.131,
+    "ci90": [
+     -0.2836,
+     -0.0646
+    ],
+    "r2": 0.4031,
+    "includes0": false
+   },
+   "modelResponse": {
+    "n": 11,
+    "slope": 0.0007,
+    "ci90": [
+     -0.0389,
+     0.0284
+    ],
+    "r2": 0.0003,
+    "includes0": true
+   },
+   "trackTemp": {
+    "n": 11,
+    "slope": -0.0619,
+    "ci90": [
+     -0.1353,
+     -0.0161
+    ],
+    "r2": 0.2135,
+    "includes0": false
+   },
+   "airGivenTrackTemp": {
+    "n": 11,
+    "air": -0.1635,
+    "ci90": [
+     -0.3052,
+     0.0553
+    ],
+    "coef": [
+     2.6441,
+     -0.1635,
+     0.0251
+    ]
+   }
+  }
+ },
+ "bop": {
+  "rows": 10,
+  "note": "Hypercar rows only (LMGT3 BoP is a power curve, no single kW)",
+  "airOnly": {
+   "n": 10,
+   "slope": -0.1846,
+   "ci90": [
+    -0.4421,
+    -0.0872
+   ],
+   "r2": 0.4476,
+   "includes0": false
+  },
+  "airPlusKW": {
+   "n": 10,
+   "air": -0.2228,
+   "ci90": [
+    -0.4767,
+    -0.104
+   ],
+   "coef": [
+    42.0166,
+    -0.2228,
+    -0.0737
+   ]
+  },
+  "airPlusKWKg": {
+   "n": 10,
+   "air": -0.1469,
+   "ci90": [
+    -0.3853,
+    -0.0378
+   ],
+   "coef": [
+    365.7662,
+    -0.1469,
+    -0.2179,
+    -0.2409
+   ]
+  }
+ },
+ "rows": [
+  {
+   "group": "f1 2025",
+   "series": "f1",
+   "cls": "f1",
+   "track": "monza",
+   "air": 26.770588235294124,
+   "trackT": 41.76470588235294,
+   "err": -0.25,
+   "terms": {
+    "density": -0.002,
+    "ice": 0.0245,
+    "grip": 0.0639,
+    "all": 0.0773
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "f1 2025",
+   "series": "f1",
+   "cls": "f1",
+   "track": "singapore",
+   "air": 29.65882352941177,
+   "trackT": 34.60588235294117,
+   "err": -0.4778,
+   "terms": {
+    "density": 0.1551,
+    "ice": 0.0384,
+    "grip": 0.0003,
+    "all": 0.1978
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "f1 2025",
+   "series": "f1",
+   "cls": "f1",
+   "track": "austin",
+   "air": 34.035294117647055,
+   "trackT": 44.39411764705882,
+   "err": -0.774,
+   "terms": {
+    "density": 0.2957,
+    "ice": 0.0735,
+    "grip": 0.1855,
+    "all": 0.5437
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "f1 2025",
+   "series": "f1",
+   "cls": "f1",
+   "track": "mexico-city",
+   "air": 26.15294117647059,
+   "trackT": 43.505882352941185,
+   "err": -0.3837,
+   "terms": {
+    "density": 0.0345,
+    "ice": 0.0116,
+    "grip": 0.1475,
+    "all": 0.189
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "f1 2025",
+   "series": "f1",
+   "cls": "f1",
+   "track": "yas-marina-circuit",
+   "air": 24.982352941176465,
+   "trackT": 28.588235294117652,
+   "err": -0.4245,
+   "terms": {
+    "density": -0.0003,
+    "ice": -0.0002,
+    "grip": 0.0712,
+    "all": 0.0706
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "f1 2025",
+   "series": "f1",
+   "cls": "f1",
+   "track": "sakhir",
+   "air": 26.400000000000002,
+   "trackT": 30.6,
+   "err": -1.2099,
+   "terms": {
+    "density": 0.0224,
+    "ice": 0.0121,
+    "grip": 0.0362,
+    "all": 0.0706
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "f1 2025",
+   "series": "f1",
+   "cls": "f1",
+   "track": "jeddah",
+   "air": 30.441176470588236,
+   "trackT": 36.60588235294117,
+   "err": -0.3276,
+   "terms": {
+    "density": -0.0179,
+    "ice": 0.0622,
+    "grip": 0.0036,
+    "all": 0.0484
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "f1 2025",
+   "series": "f1",
+   "cls": "f1",
+   "track": "miami",
+   "air": 27.60588235294118,
+   "trackT": 39.09411764705882,
+   "err": -0.3411,
+   "terms": {
+    "density": 0.0138,
+    "ice": 0.0302,
+    "grip": 0.0302,
+    "all": 0.0676
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "f1 2025",
+   "series": "f1",
+   "cls": "f1",
+   "track": "catalunya",
+   "air": 28.847058823529412,
+   "trackT": 44.2235294117647,
+   "err": -1.0748,
+   "terms": {
+    "density": 0.1123,
+    "ice": 0.0313,
+    "grip": 0.1699,
+    "all": 0.3305
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "f1 2025",
+   "series": "f1",
+   "cls": "f1",
+   "track": "spa-francorchamps",
+   "air": 22.935294117647057,
+   "trackT": 38.51764705882354,
+   "err": 0.5231,
+   "terms": {
+    "density": -0.014,
+    "ice": -0.0251,
+    "grip": 0.0174,
+    "all": -0.0148
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "f1 2025",
+   "series": "f1",
+   "cls": "f1",
+   "track": "zandvoort",
+   "air": 20.6235294117647,
+   "trackT": 34.22352941176471,
+   "err": 0.1019,
+   "terms": {
+    "density": -0.1575,
+    "ice": -0.0359,
+    "grip": 0.0013,
+    "all": -0.1928
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "f1 2025",
+   "series": "f1",
+   "cls": "f1",
+   "track": "shanghai",
+   "air": 26.017647058823535,
+   "trackT": 36.900000000000006,
+   "err": 1.667,
+   "terms": {
+    "density": 0.0273,
+    "ice": 0.0076,
+    "grip": 0.0074,
+    "all": 0.0423
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "f1 2025",
+   "series": "f1",
+   "cls": "f1",
+   "track": "monte-carlo",
+   "air": 21.01764705882353,
+   "trackT": 38.86470588235294,
+   "err": 0.4017,
+   "terms": {
+    "density": -0.1739,
+    "ice": -0.0202,
+    "grip": 0.0376,
+    "all": -0.1563
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "f1 2025",
+   "series": "f1",
+   "cls": "f1",
+   "track": "spielberg",
+   "air": 28.005882352941182,
+   "trackT": 46.511764705882364,
+   "err": -0.9379,
+   "terms": {
+    "density": 0.0741,
+    "ice": 0.0382,
+    "grip": 0.234,
+    "all": 0.3395
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "f1 2025",
+   "series": "f1",
+   "cls": "f1",
+   "track": "hungaroring",
+   "air": 27.170588235294115,
+   "trackT": 37.97058823529412,
+   "err": -2.0313,
+   "terms": {
+    "density": 0.1199,
+    "ice": 0.0136,
+    "grip": 0.023,
+    "all": 0.1568
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "f1 2025",
+   "series": "f1",
+   "cls": "f1",
+   "track": "lusail",
+   "air": 20.241176470588236,
+   "trackT": 24.852941176470587,
+   "err": 1.1173,
+   "terms": {
+    "density": -0.2477,
+    "ice": -0.044,
+    "grip": 0.2426,
+    "all": -0.054
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "f1 2025",
+   "series": "f1",
+   "cls": "f1",
+   "track": "melbourne",
+   "air": 30.329411764705885,
+   "trackT": 41.04705882352942,
+   "err": 0.2264,
+   "terms": {
+    "density": 0.0436,
+    "ice": 0.0573,
+    "grip": 0.0586,
+    "all": 0.1659
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "f1 2025",
+   "series": "f1",
+   "cls": "f1",
+   "track": "suzuka",
+   "air": 14.4764705882353,
+   "trackT": 29.347058823529416,
+   "err": -0.0954,
+   "terms": {
+    "density": -0.3943,
+    "ice": -0.1049,
+    "grip": 0.068,
+    "all": -0.4296
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "f1 2025",
+   "series": "f1",
+   "cls": "f1",
+   "track": "imola",
+   "air": 23.117647058823533,
+   "trackT": 38.576470588235296,
+   "err": -0.5156,
+   "terms": {
+    "density": -0.0091,
+    "ice": -0.0186,
+    "grip": 0.0198,
+    "all": -0.0135
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "f1 2025",
+   "series": "f1",
+   "cls": "f1",
+   "track": "silverstone",
+   "air": 21.38823529411765,
+   "trackT": 30.04705882352942,
+   "err": -0.3298,
+   "terms": {
+    "density": -0.0029,
+    "ice": -0.037,
+    "grip": 0.0413,
+    "all": -0.0036
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "f1 2026",
+   "series": "f1",
+   "cls": "f1",
+   "track": "shanghai",
+   "air": 17.67058823529412,
+   "trackT": 29.82941176470588,
+   "err": 0.6419,
+   "terms": {
+    "density": 0.0243,
+    "ice": 0.1316,
+    "grip": 0.2147,
+    "all": 0.0615
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "f1 2026",
+   "series": "f1",
+   "cls": "f1",
+   "track": "spielberg",
+   "air": 33.423529411764704,
+   "trackT": 51.20588235294117,
+   "err": -0.6277,
+   "terms": {
+    "density": -0.0137,
+    "ice": 0.0475,
+    "grip": 0.4207,
+    "all": 0.4039
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "f1 2026",
+   "series": "f1",
+   "cls": "f1",
+   "track": "austin",
+   "air": 29.858823529411765,
+   "trackT": 37.98823529411764,
+   "err": 1.258,
+   "terms": {
+    "density": 0.059,
+    "ice": 0.1026,
+    "grip": -0.0207,
+    "all": 0.11
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "f1 2026",
+   "series": "f1",
+   "cls": "f1",
+   "track": "mexico-city",
+   "air": 26.241176470588233,
+   "trackT": 40.17058823529412,
+   "err": 0.579,
+   "terms": {
+    "density": 0.0311,
+    "ice": 0.0062,
+    "grip": 0.0621,
+    "all": 0.092
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "f1 2026",
+   "series": "f1",
+   "cls": "f1",
+   "track": "miami",
+   "air": 33.96470588235293,
+   "trackT": 51.32941176470588,
+   "err": 0.1902,
+   "terms": {
+    "density": -0.0534,
+    "ice": 0.0697,
+    "grip": 0.461,
+    "all": 0.5827
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "f1 2026",
+   "series": "f1",
+   "cls": "f1",
+   "track": "silverstone",
+   "air": 25.12941176470588,
+   "trackT": 39.98235294117648,
+   "err": -0.3677,
+   "terms": {
+    "density": 0.0319,
+    "ice": -0.1244,
+    "grip": 0.0809,
+    "all": 0.0004
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "f1 2026",
+   "series": "f1",
+   "cls": "f1",
+   "track": "baku",
+   "air": 24.082352941176474,
+   "trackT": 35.75882352941176,
+   "err": -0.0156,
+   "terms": {
+    "density": -0.0677,
+    "ice": -0.507,
+    "grip": -0.0547,
+    "all": -0.5502
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "f1 2026",
+   "series": "f1",
+   "cls": "f1",
+   "track": "las-vegas",
+   "air": 12.682352941176468,
+   "trackT": 15.182352941176468,
+   "err": -0.0213,
+   "terms": {
+    "density": 0.2139,
+    "ice": -0.0895,
+    "grip": 0.4504,
+    "all": 0.5553
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "f1 2026",
+   "series": "f1",
+   "cls": "f1",
+   "track": "monte-carlo",
+   "air": 23.17647058823529,
+   "trackT": 33.05294117647059,
+   "err": -3.163,
+   "terms": {
+    "density": -0.0477,
+    "ice": -0.0088,
+    "grip": 0.0054,
+    "all": -0.0465
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "f1 2026",
+   "series": "f1",
+   "cls": "f1",
+   "track": "catalunya",
+   "air": 30.694117647058828,
+   "trackT": 49.376470588235286,
+   "err": -0.9119,
+   "terms": {
+    "density": 0.158,
+    "ice": 0.0218,
+    "grip": 0.3944,
+    "all": 0.6172
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "f1 2026",
+   "series": "f1",
+   "cls": "f1",
+   "track": "singapore",
+   "air": 29.87647058823529,
+   "trackT": 39.964705882352945,
+   "err": -0.638,
+   "terms": {
+    "density": 0.0889,
+    "ice": 0.0514,
+    "grip": 0.067,
+    "all": 0.1871
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "f1 2026",
+   "series": "f1",
+   "cls": "f1",
+   "track": "melbourne",
+   "air": 20.458823529411763,
+   "trackT": 31.8,
+   "err": -0.7998,
+   "terms": {
+    "density": 0.1552,
+    "ice": 0.1805,
+    "grip": 0.1376,
+    "all": 0.2188
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "f1 2026",
+   "series": "f1",
+   "cls": "f1",
+   "track": "spa-francorchamps",
+   "air": 20.711764705882352,
+   "trackT": 34.77058823529412,
+   "err": 0.0307,
+   "terms": {
+    "density": -0.1857,
+    "ice": -0.2371,
+    "grip": -0.4121,
+    "all": -0.3032
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "f1 2026",
+   "series": "f1",
+   "cls": "f1",
+   "track": "hungaroring",
+   "air": 26.64705882352941,
+   "trackT": 42.71764705882353,
+   "err": 0.1995,
+   "terms": {
+    "density": 0.0608,
+    "ice": 0.0309,
+    "grip": 0.1416,
+    "all": 0.2398
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "f1 2026",
+   "series": "f1",
+   "cls": "f1",
+   "track": "monza",
+   "air": 33.90588235294117,
+   "trackT": 52.305882352941175,
+   "err": -0.0049,
+   "terms": {
+    "density": -0.1329,
+    "ice": 0.0845,
+    "grip": 0.2947,
+    "all": 0.2375
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "lmh 2025",
+   "series": "wec",
+   "cls": "lmh",
+   "track": "imola",
+   "air": 22.119999999999997,
+   "trackT": 36.91000000000001,
+   "err": -0.4588,
+   "terms": {
+    "density": -0.0272,
+    "ice": -0.0259,
+    "grip": 0.0055,
+    "all": -0.0476
+   },
+   "kW": 508.25,
+   "kg": 1047.75
+  },
+  {
+   "group": "lmh 2025",
+   "series": "wec",
+   "cls": "lmh",
+   "track": "interlagos",
+   "air": 18.989999999999995,
+   "trackT": 25.860000000000003,
+   "err": -0.6377,
+   "terms": {
+    "density": -0.0943,
+    "ice": -0.0443,
+    "grip": 0.1577,
+    "all": 0.023
+   },
+   "kW": 501.25,
+   "kg": 1049.5
+  },
+  {
+   "group": "lmh 2025",
+   "series": "wec",
+   "cls": "lmh",
+   "track": "lusail",
+   "air": 15.65,
+   "trackT": 17.490000000000002,
+   "err": 2.252,
+   "terms": {
+    "density": -0.3164,
+    "ice": -0.0642,
+    "grip": 0.6785,
+    "all": 0.2971
+   },
+   "kW": 507,
+   "kg": 1043.5
+  },
+  {
+   "group": "lmh 2025",
+   "series": "wec",
+   "cls": "lmh",
+   "track": "sakhir",
+   "air": 27.609999999999996,
+   "trackT": 32.42,
+   "err": -0.1704,
+   "terms": {
+    "density": 0.0417,
+    "ice": 0.0173,
+    "grip": 0.0128,
+    "all": 0.0719
+   },
+   "kW": 502.75,
+   "kg": 1047.5
+  },
+  {
+   "group": "lmh 2025",
+   "series": "wec",
+   "cls": "lmh",
+   "track": "spa-francorchamps",
+   "air": 16.683333333333334,
+   "trackT": 38.93333333333334,
+   "err": 2.0741,
+   "terms": {
+    "density": -0.1712,
+    "ice": -0.0631,
+    "grip": 0.0301,
+    "all": -0.2038
+   },
+   "kW": 502.25,
+   "kg": 1047.75
+  },
+  {
+   "group": "lmh 2026",
+   "series": "wec",
+   "cls": "lmh",
+   "track": "austin",
+   "air": 37.42,
+   "trackT": 55.19,
+   "err": 0.1785,
+   "terms": {
+    "density": 0.2811,
+    "ice": 0.0717,
+    "grip": 0.844,
+    "all": 1.1934
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "lmh 2026",
+   "series": "wec",
+   "cls": "lmh",
+   "track": "catalunya",
+   "air": 25.325,
+   "trackT": 31.5125,
+   "err": -0.2889,
+   "terms": {
+    "density": 0.0258,
+    "ice": 0.0019,
+    "grip": 0.0421,
+    "all": 0.0562
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "lmh 2026",
+   "series": "wec",
+   "cls": "lmh",
+   "track": "imola",
+   "air": 24.875,
+   "trackT": 42.65833333333333,
+   "err": -0.3907,
+   "terms": {
+    "density": -0.0018,
+    "ice": -0.0011,
+    "grip": 0.094,
+    "all": 0.0914
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "lmh 2026",
+   "series": "wec",
+   "cls": "lmh",
+   "track": "interlagos",
+   "air": 26.32222222222222,
+   "trackT": 30.811111111111106,
+   "err": -2.131,
+   "terms": {
+    "density": 0.0264,
+    "ice": 0.009,
+    "grip": 0.0334,
+    "all": 0.0687
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "lmh 2026",
+   "series": "wec",
+   "cls": "lmh",
+   "track": "monza",
+   "air": 9.777777777777779,
+   "trackT": 11.522222222222222,
+   "err": 1.1107,
+   "terms": {
+    "density": -0.049,
+    "ice": -0.1597,
+    "grip": 0.8162,
+    "all": 0.6111
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "lmh 2026",
+   "series": "wec",
+   "cls": "lmh",
+   "track": "spa-francorchamps",
+   "air": 15.545454545454549,
+   "trackT": 24.9,
+   "err": 0.9689,
+   "terms": {
+    "density": -0.193,
+    "ice": -0.0734,
+    "grip": 0.1979,
+    "all": -0.0686
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "lmdh 2025",
+   "series": "wec",
+   "cls": "lmdh",
+   "track": "imola",
+   "air": 22.119999999999997,
+   "trackT": 36.91000000000001,
+   "err": -0.7532,
+   "terms": {
+    "density": -0.0311,
+    "ice": -0.0255,
+    "grip": 0.0056,
+    "all": -0.051
+   },
+   "kW": 511.25,
+   "kg": 1044.5
+  },
+  {
+   "group": "lmdh 2025",
+   "series": "wec",
+   "cls": "lmdh",
+   "track": "interlagos",
+   "air": 18.989999999999995,
+   "trackT": 25.860000000000003,
+   "err": -0.8671,
+   "terms": {
+    "density": -0.0994,
+    "ice": -0.0433,
+    "grip": 0.1609,
+    "all": 0.0198
+   },
+   "kW": 508.5,
+   "kg": 1050.5
+  },
+  {
+   "group": "lmdh 2025",
+   "series": "wec",
+   "cls": "lmdh",
+   "track": "lusail",
+   "air": 15.65,
+   "trackT": 17.490000000000002,
+   "err": 1.7047,
+   "terms": {
+    "density": -0.3164,
+    "ice": -0.0641,
+    "grip": 0.6783,
+    "all": 0.2968
+   },
+   "kW": 506,
+   "kg": 1043.75
+  },
+  {
+   "group": "lmdh 2025",
+   "series": "wec",
+   "cls": "lmdh",
+   "track": "sakhir",
+   "air": 27.609999999999996,
+   "trackT": 32.42,
+   "err": -0.5105,
+   "terms": {
+    "density": 0.0436,
+    "ice": 0.0171,
+    "grip": 0.0129,
+    "all": 0.0737
+   },
+   "kW": 492,
+   "kg": 1060
+  },
+  {
+   "group": "lmdh 2025",
+   "series": "wec",
+   "cls": "lmdh",
+   "track": "spa-francorchamps",
+   "air": 16.683333333333334,
+   "trackT": 38.93333333333334,
+   "err": 0.9921,
+   "terms": {
+    "density": -0.1663,
+    "ice": -0.0628,
+    "grip": 0.0302,
+    "all": -0.1984
+   },
+   "kW": 504.5,
+   "kg": 1047.25
+  },
+  {
+   "group": "lmdh 2026",
+   "series": "wec",
+   "cls": "lmdh",
+   "track": "austin",
+   "air": 37.42,
+   "trackT": 55.19,
+   "err": 0.1642,
+   "terms": {
+    "density": 0.2937,
+    "ice": 0.0705,
+    "grip": 0.8555,
+    "all": 1.2137
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "lmdh 2026",
+   "series": "wec",
+   "cls": "lmdh",
+   "track": "catalunya",
+   "air": 25.325,
+   "trackT": 31.5125,
+   "err": -0.0555,
+   "terms": {
+    "density": 0.0125,
+    "ice": 0.0018,
+    "grip": 0.0288,
+    "all": 0.0432
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "lmdh 2026",
+   "series": "wec",
+   "cls": "lmdh",
+   "track": "imola",
+   "air": 25.04,
+   "trackT": 42.16000000000001,
+   "err": -0.7122,
+   "terms": {
+    "density": 0.0005,
+    "ice": 0.0003,
+    "grip": 0.08,
+    "all": 0.0809
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "lmdh 2026",
+   "series": "wec",
+   "cls": "lmdh",
+   "track": "interlagos",
+   "air": 26.32222222222222,
+   "trackT": 30.811111111111106,
+   "err": -1.5402,
+   "terms": {
+    "density": 0.0232,
+    "ice": 0.0088,
+    "grip": 0.0337,
+    "all": 0.0658
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "lmdh 2026",
+   "series": "wec",
+   "cls": "lmdh",
+   "track": "monza",
+   "air": 9.777777777777779,
+   "trackT": 11.522222222222222,
+   "err": 0.948,
+   "terms": {
+    "density": -0.0553,
+    "ice": -0.1592,
+    "grip": 0.8179,
+    "all": 0.6086
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "lmdh 2026",
+   "series": "wec",
+   "cls": "lmdh",
+   "track": "spa-francorchamps",
+   "air": 15.545454545454549,
+   "trackT": 24.9,
+   "err": 1.343,
+   "terms": {
+    "density": -0.1948,
+    "ice": -0.073,
+    "grip": 0.1985,
+    "all": -0.069
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "lmgt3 2025",
+   "series": "wec",
+   "cls": "lmgt3",
+   "track": "imola",
+   "air": 21.130000000000003,
+   "trackT": 37.27,
+   "err": -1.3799,
+   "terms": {
+    "density": 0.0274,
+    "ice": -0.0394,
+    "grip": 0.0069,
+    "all": -0.0051
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "lmgt3 2025",
+   "series": "wec",
+   "cls": "lmgt3",
+   "track": "interlagos",
+   "air": 19.59,
+   "trackT": 27.639999999999997,
+   "err": -1.6601,
+   "terms": {
+    "density": 0.0163,
+    "ice": -0.0447,
+    "grip": 0.0921,
+    "all": 0.0641
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "lmgt3 2025",
+   "series": "wec",
+   "cls": "lmgt3",
+   "track": "lusail",
+   "air": 15.73,
+   "trackT": 17.98,
+   "err": 2.3204,
+   "terms": {
+    "density": -0.0265,
+    "ice": -0.0728,
+    "grip": 0.5145,
+    "all": 0.4169
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "lmgt3 2025",
+   "series": "wec",
+   "cls": "lmgt3",
+   "track": "sakhir",
+   "air": 29.660000000000004,
+   "trackT": 35.970000000000006,
+   "err": -1.7047,
+   "terms": {
+    "density": -0.0107,
+    "ice": 0.0366,
+    "grip": 0.0016,
+    "all": 0.0279
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "lmgt3 2025",
+   "series": "wec",
+   "cls": "lmgt3",
+   "track": "spa-francorchamps",
+   "air": 15.841666666666667,
+   "trackT": 37.641666666666666,
+   "err": 1.8921,
+   "terms": {
+    "density": 0.012,
+    "ice": -0.0746,
+    "grip": 0.0118,
+    "all": -0.0502
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "lmgt3 2026",
+   "series": "wec",
+   "cls": "lmgt3",
+   "track": "austin",
+   "air": 37.388888888888886,
+   "trackT": 54.3888888888889,
+   "err": -0.7674,
+   "terms": {
+    "density": 0.0435,
+    "ice": 0.086,
+    "grip": 0.6798,
+    "all": 0.8103
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "lmgt3 2026",
+   "series": "wec",
+   "cls": "lmgt3",
+   "track": "catalunya",
+   "air": 21.188888888888886,
+   "trackT": 22.599999999999998,
+   "err": 0.4161,
+   "terms": {
+    "density": -0.0238,
+    "ice": -0.0258,
+    "grip": 0.3011,
+    "all": 0.2516
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "lmgt3 2026",
+   "series": "wec",
+   "cls": "lmgt3",
+   "track": "imola",
+   "air": 25.04,
+   "trackT": 43.13000000000001,
+   "err": -0.5189,
+   "terms": {
+    "density": -0.0003,
+    "ice": 0.0004,
+    "grip": 0.0881,
+    "all": 0.0882
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "lmgt3 2026",
+   "series": "wec",
+   "cls": "lmgt3",
+   "track": "interlagos",
+   "air": 27.062499999999996,
+   "trackT": 36,
+   "err": -2.2196,
+   "terms": {
+    "density": -0.0029,
+    "ice": 0.016,
+    "grip": 0.0017,
+    "all": 0.0149
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "lmgt3 2026",
+   "series": "wec",
+   "cls": "lmgt3",
+   "track": "monza",
+   "air": 9.7125,
+   "trackT": 11.612499999999999,
+   "err": 0.3895,
+   "terms": {
+    "density": 0.2738,
+    "ice": -0.1761,
+    "grip": 0.6773,
+    "all": 0.7814
+   },
+   "kW": null,
+   "kg": null
+  },
+  {
+   "group": "lmgt3 2026",
+   "series": "wec",
+   "cls": "lmgt3",
+   "track": "spa-francorchamps",
+   "air": 14.872727272727273,
+   "trackT": 22.14545454545454,
+   "err": 2.2187,
+   "terms": {
+    "density": 0.0067,
+    "ice": -0.0845,
+    "grip": 0.2811,
+    "all": 0.2038
+   },
+   "kW": null,
+   "kg": null
+  }
+ ]
+}
