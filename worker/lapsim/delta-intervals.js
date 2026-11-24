@@ -1,5 +1,5 @@
 // Step 29b: a ± range and a check status for every LapSim Δ answer (rule docs/prereg/step29b-delta-intervals-2026-11-25.md).
-// Flag LAPSIM_DELTA_PM=on (off by default): without it nothing is added to the connector output or the page.
+// On by default (central 2026-11-25: honest ranges beat hidden ones); LAPSIM_DELTA_PM=off removes them from the connector and page.
 import {lapsimDeltaIntervals as D} from './delta-intervals-data.js';
 import {lapsimCalibration} from './calibration-data.js';
 
@@ -12,7 +12,7 @@ export function calFingerprint(c) {
 export const deltaStale = (c = lapsimCalibration) => !D.calibration || calFingerprint(c) !== D.calibration.fingerprint;
 const STALE = {status: 'stale', reason: 'the calibration changed after these ranges were built; rebuild them (scripts/sim/delta-intervals.mjs after a new Δ bench run)'};
 
-export const deltaPmOn = () => globalThis.process?.env?.LAPSIM_DELTA_PM === 'on';
+export const deltaPmOn = () => globalThis.process?.env?.LAPSIM_DELTA_PM !== 'off';
 const r2 = x => Math.round(x * 100) / 100;
 const CHECK = `90 % empirical range (no normal assumption); rule sha256 ${D.rule?.sha256.slice(0, 8)}…`;
 
