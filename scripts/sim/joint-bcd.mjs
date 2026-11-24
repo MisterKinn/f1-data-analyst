@@ -111,6 +111,22 @@ class Pool {
   close() { return Promise.all(this.workers.map(w => w.terminate())); }
 }
 
+// LAPSIM_TRACK_CENTRE=on (wave 3 (b), claude/gate-wave3-fit-restructure-prereg-2026-11-24.md; off by default): Σ ln G_t = Σ ln D_t = 0
+// over the fitted tracks. The removed mean goes into every group's μy (grip) and CdA, CdA-low (drag): drag folds exactly (lapScore
+// scales CdA and CdA-low); grip folds up to the kernel's load term on the car μ (about 1 % of the shift: 0.04 % of a lap for 4.8 %), which the next
+// group step absorbs.
+// A measured (fixed) drag factor is not moved, so drag is centred only when no factor is fixed.
+export function centreFactors(prep, names, factors, xs, o = {}) {
+  const lg = names.reduce((a, n) => a + Math.log(factors[n].grip), 0) / names.length;
+  const ld = o.fixedDrag ? 0 : names.reduce((a, n) => a + Math.log(factors[n].drag), 0) / names.length;
+  for (const n of names) { factors[n].grip /= Math.exp(lg); if (ld) factors[n].drag /= Math.exp(ld); }
+  for (const g of prep) g.params.forEach((p, i) => {
+    const d = p.key === 'muY' ? lg : (p.key === 'cdA' || p.key === 'cdALow') ? ld : 0;
+    if (d) xs[g.key][i] = (xs[g.key][i] ?? 0) + d;
+  });
+  return {lg, ld};
+}
+
 export async function fitJointBCD(groups, opts = {}) {
   const o = {...DEFAULTS, ...opts};
   const prep = prepGroups(groups);
@@ -133,6 +149,7 @@ export async function fitJointBCD(groups, opts = {}) {
       }
       const tf = await Promise.all(names.map(n => pool.run({type: 'track', name: n, xs, prev: factors[n], adj})));
       factors = Object.fromEntries(names.map((n, k) => [n, {grip: tf[k].grip, drag: tf[k].drag}]));
+      if (o.centre) centreFactors(prep, names, factors, xs, o);
       score = tf.reduce((a, t) => a + t.score, 0) / prep.reduce((a, g) => a + g.laps.length, 0);
       o.log?.(`round ${r + 1}: score ${score.toFixed(4)}`);
     }
