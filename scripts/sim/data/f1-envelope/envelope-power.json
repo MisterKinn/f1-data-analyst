@@ -1,0 +1,253 @@
+{
+ "z_total": 3.2356010333914247,
+ "speed": {
+  "n_tracks": 23,
+  "baseline_median_kph": 18.503333333333334,
+  "sd_between_tracks": 6.0432056728666295,
+  "sd_within_track_season": 1.9249153870525915,
+  "mde_conservative_kph": 4.077166269305824,
+  "mde_within_kph": 1.2986816124091556,
+  "effect_of_interest_kph": 3.0
+ },
+ "lap_guard": {
+  "n_tracks": 24,
+  "baseline_median_abs_pct": 0.7737499999999999,
+  "sd": 0.5509987767433108,
+  "mde_pct": 0.36391501876680377,
+  "delta_5pct_of_median": 0.0386875
+ },
+ "drs": {
+  "n_cases": 125,
+  "n_tracks": 23,
+  "baseline_pass": 0.008,
+  "mde_pass_cases": 0.054,
+  "mde_pass_tracks_worst": 0.125,
+  "effect_of_interest_pp": 20
+ },
+ "tracks": {
+  "austin": {
+   "n_events": 2,
+   "rms_bin_kph": 16.14,
+   "abs_lap_err_pct": 1.8905,
+   "season_rms": {
+    "2023": 15.64,
+    "2025": 16.64
+   }
+  },
+  "baku": {
+   "n_events": 3,
+   "rms_bin_kph": 22.786666666666665,
+   "abs_lap_err_pct": 0.7113333333333334,
+   "season_rms": {
+    "2023": 20.11,
+    "2024": 22.5,
+    "2025": 25.75
+   }
+  },
+  "catalunya": {
+   "n_events": 3,
+   "rms_bin_kph": 18.49,
+   "abs_lap_err_pct": 0.5636666666666666,
+   "season_rms": {
+    "2023": 16.97,
+    "2024": 18.76,
+    "2025": 19.74
+   }
+  },
+  "hungaroring": {
+   "n_events": 3,
+   "rms_bin_kph": 12.8,
+   "abs_lap_err_pct": 1.047,
+   "season_rms": {
+    "2023": 14.15,
+    "2024": 12.22,
+    "2025": 12.03
+   }
+  },
+  "imola": {
+   "n_events": 1,
+   "rms_bin_kph": 21.02,
+   "abs_lap_err_pct": 0.081,
+   "season_rms": {
+    "2024": 21.02
+   }
+  },
+  "interlagos": {
+   "n_events": 2,
+   "rms_bin_kph": 15.31,
+   "abs_lap_err_pct": 0.716,
+   "season_rms": {
+    "2023": 17.64,
+    "2025": 12.98
+   }
+  },
+  "jeddah": {
+   "n_events": 2,
+   "rms_bin_kph": 20.549999999999997,
+   "abs_lap_err_pct": 0.6165,
+   "season_rms": {
+    "2024": 20.29,
+    "2025": 20.81
+   }
+  },
+  "las-vegas": {
+   "n_events": 2,
+   "rms_bin_kph": null,
+   "abs_lap_err_pct": 1.326,
+   "season_rms": {
+    "2023": null,
+    "2024": null
+   }
+  },
+  "lusail": {
+   "n_events": 3,
+   "rms_bin_kph": 22.25,
+   "abs_lap_err_pct": 2.2676666666666665,
+   "season_rms": {
+    "2023": 27.07,
+    "2024": 20.24,
+    "2025": 19.44
+   }
+  },
+  "melbourne": {
+   "n_events": 3,
+   "rms_bin_kph": 25.613333333333333,
+   "abs_lap_err_pct": 0.927,
+   "season_rms": {
+    "2023": 27.03,
+    "2024": 24.1,
+    "2025": 25.71
+   }
+  },
+  "mexico-city": {
+   "n_events": 2,
+   "rms_bin_kph": 13.295,
+   "abs_lap_err_pct": 1.7810000000000001,
+   "season_rms": {
+    "2023": 14.04,
+    "2024": 12.55
+   }
+  },
+  "miami": {
+   "n_events": 3,
+   "rms_bin_kph": 19.69666666666667,
+   "abs_lap_err_pct": 0.555,
+   "season_rms": {
+    "2023": 18.94,
+    "2024": 19.23,
+    "2025": 20.92
+   }
+  },
+  "monte-carlo": {
+   "n_events": 3,
+   "rms_bin_kph": 18.503333333333334,
+   "abs_lap_err_pct": 0.7293333333333334,
+   "season_rms": {
+    "2023": 17.69,
+    "2024": 16.93,
+    "2025": 20.89
+   }
+  },
+  "montreal": {
+   "n_events": 2,
+   "rms_bin_kph": 17.695,
+   "abs_lap_err_pct": 0.589,
+   "season_rms": {
+    "2024": 19.08,
+    "2025": 16.31
+   }
+  },
+  "monza": {
+   "n_events": 3,
+   "rms_bin_kph": 19.653333333333332,
+   "abs_lap_err_pct": 1.06,
+   "season_rms": {
+    "2023": 22.91,
+    "2024": 18.41,
+    "2025": 17.64
+   }
+  },
+  "sakhir": {
+   "n_events": 2,
+   "rms_bin_kph": 16.39,
+   "abs_lap_err_pct": 0.498,
+   "season_rms": {
+    "2023": 17.13,
+    "2024": 15.65
+   }
+  },
+  "shanghai": {
+   "n_events": 2,
+   "rms_bin_kph": 44.025,
+   "abs_lap_err_pct": 1.5955,
+   "season_rms": {
+    "2024": 43.16,
+    "2025": 44.89
+   }
+  },
+  "silverstone": {
+   "n_events": 1,
+   "rms_bin_kph": 18.67,
+   "abs_lap_err_pct": 0.284,
+   "season_rms": {
+    "2025": 18.67
+   }
+  },
+  "singapore": {
+   "n_events": 3,
+   "rms_bin_kph": 17.916666666666668,
+   "abs_lap_err_pct": 1.0066666666666666,
+   "season_rms": {
+    "2023": 16.67,
+    "2024": 20.04,
+    "2025": 17.04
+   }
+  },
+  "spa-francorchamps": {
+   "n_events": 1,
+   "rms_bin_kph": 17.78,
+   "abs_lap_err_pct": 0.08,
+   "season_rms": {
+    "2025": 17.78
+   }
+  },
+  "spielberg": {
+   "n_events": 2,
+   "rms_bin_kph": 17.68,
+   "abs_lap_err_pct": 0.7875,
+   "season_rms": {
+    "2024": 17.68,
+    "2025": 17.68
+   }
+  },
+  "suzuka": {
+   "n_events": 3,
+   "rms_bin_kph": 19.55666666666667,
+   "abs_lap_err_pct": 0.9463333333333334,
+   "season_rms": {
+    "2023": 21.25,
+    "2024": 19.51,
+    "2025": 17.91
+   }
+  },
+  "yas-marina-circuit": {
+   "n_events": 3,
+   "rms_bin_kph": 19.743333333333332,
+   "abs_lap_err_pct": 1.3673333333333333,
+   "season_rms": {
+    "2023": 18.91,
+    "2024": 20.84,
+    "2025": 19.48
+   }
+  },
+  "zandvoort": {
+   "n_events": 2,
+   "rms_bin_kph": 16.905,
+   "abs_lap_err_pct": 0.76,
+   "season_rms": {
+    "2024": 14.1,
+    "2025": 19.71
+   }
+  }
+ }
+}
