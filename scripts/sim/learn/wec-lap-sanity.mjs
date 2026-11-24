@@ -12,6 +12,13 @@ const TRACK = [[/sebring/i, 'sebring'], [/portim|algarve/i, 'portimao'], [/spa/i
   [/fuji/i, 'fuji'], [/bahrain|sakhir/i, 'sakhir'], [/qatar|losail|lusail/i, 'lusail'], [/imola/i, 'imola'], [/sao.?paulo|interlagos/i, 'interlagos'],
   [/lone.?star|americas|austin/i, 'austin'], [/barcelona|catalunya/i, 'catalunya']];
 export const trackOf = e => TRACK.find(([re]) => re.test(String(e)))?.[1] ?? null;
+// Al Kamel WEC event names -> short track id (venue column, else the name), so keys match the other tables. Kept raw when two events of
+// one season would share an id (2021: Bahrain 6 h and 8 h, Spa prologue and race). rows: {season, event, venue}; returns the new events.
+export function wecEventIds(rows) {
+  const id = r => r.venue || trackOf(r.event) || r.event, owners = new Map();
+  for (const r of rows) { const k = r.season + '|' + id(r); (owners.get(k) || owners.set(k, new Set()).get(k)).add(r.event); }
+  return rows.map(r => owners.get(r.season + '|' + id(r)).size === 1 ? id(r) : r.event);
+}
 const GROUP = {lmh: 'HYPERCAR', lmdh: 'HYPERCAR', HYPERCAR: 'HYPERCAR', lmgt3: 'LMGT3', LMGT3: 'LMGT3'};
 
 // official best per "season|track|HYPERCAR|LMGT3"
