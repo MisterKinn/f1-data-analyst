@@ -1,0 +1,268 @@
+{
+ "noise": {
+  "B": 0.015,
+  "G3": 0.003
+ },
+ "A": {
+  "n": 9,
+  "rmsB": 1.083,
+  "rmsG3": 1.162,
+  "medB": 0.882,
+  "medG3": 1.185,
+  "accept": false,
+  "reason": "rejected: RMS loss up to 0.142 > 0.054",
+  "rows": {
+   "sakhir": [
+    0.882,
+    1.217
+   ],
+   "jeddah": [
+    1.917,
+    1.905
+   ],
+   "yas-marina-circuit": [
+    0.093,
+    -0.074
+   ],
+   "suzuka": [
+    -0.118,
+    0.048
+   ],
+   "miami": [
+    -1.431,
+    -1.44
+   ],
+   "spielberg": [
+    -1.365,
+    -1.185
+   ],
+   "monza": [
+    1.141,
+    1.453
+   ],
+   "austin": [
+    0.686,
+    0.823
+   ],
+   "mexico-city": [
+    -0.633,
+    -0.873
+   ]
+  }
+ },
+ "Bc": {
+  "rows": 9,
+  "rowsB": 9,
+  "tracks": 9,
+  "rmsB": 3.553,
+  "rmsG3": 2.751,
+  "fall": 0.802,
+  "need": 0.16,
+  "p": 0.3242,
+  "medB": 2.11,
+  "medG3": 2.456,
+  "gains": {
+   "sakhir": 10.343,
+   "jeddah": 61.146,
+   "yas-marina-circuit": -27.711,
+   "suzuka": -8.851,
+   "miami": -4.123,
+   "spielberg": -0.553,
+   "monza": -4.967,
+   "austin": 1.404,
+   "mexico-city": 18.825
+  },
+  "pass": false
+ },
+ "median": {
+  "heldOut": false,
+  "levelC": false
+ },
+ "P1": [
+  {
+   "t": "sakhir",
+   "gB": 0.9531,
+   "gG": 1.0494,
+   "dB": 1.1491,
+   "dG": 1.0865
+  },
+  {
+   "t": "jeddah",
+   "gB": 1.2657,
+   "gG": 1.003,
+   "dB": 1.1267,
+   "dG": 1.0561
+  },
+  {
+   "t": "yas-marina-circuit",
+   "gB": 1.0611,
+   "gG": 1.1621,
+   "dB": 1.0856,
+   "dG": 0.9685
+  },
+  {
+   "t": "suzuka",
+   "gB": 1.0251,
+   "gG": 0.9542,
+   "dB": 1.1496,
+   "dG": 1.0858
+  },
+  {
+   "t": "miami",
+   "gB": 0.9639,
+   "gG": 0.941,
+   "dB": 1.0625,
+   "dG": 1.0662
+  },
+  {
+   "t": "spielberg",
+   "gB": 1.0557,
+   "gG": 1.0744,
+   "dB": 1.1496,
+   "dG": 1.1282
+  },
+  {
+   "t": "monza",
+   "gB": 1.008,
+   "gG": 1.0164,
+   "dB": 1.047,
+   "dG": 0.9197
+  },
+  {
+   "t": "austin",
+   "gB": 0.9898,
+   "gG": 1.0338,
+   "dB": 1.1496,
+   "dG": 1.1445
+  },
+  {
+   "t": "mexico-city",
+   "gB": 0.9098,
+   "gG": 0.96,
+   "dB": 1.1344,
+   "dG": 1.1077
+  }
+ ],
+ "P1closer": 2,
+ "sdLnGrip": {
+  "B": 0.0944,
+  "G3": 0.0667
+ },
+ "bounds": {
+  "gripB": [],
+  "gripG3": [],
+  "dragB": [
+   "sakhir",
+   "suzuka",
+   "spielberg",
+   "austin"
+  ],
+  "dragG3": []
+ },
+ "R41": [
+  {
+   "t": "sakhir",
+   "vMean": 212,
+   "B": -0.121,
+   "G3": 0.01
+  },
+  {
+   "t": "jeddah",
+   "vMean": 249,
+   "B": 0.719,
+   "G3": 0.6
+  },
+  {
+   "t": "yas-marina-circuit",
+   "vMean": 225,
+   "B": -0.333,
+   "G3": -0.514
+  },
+  {
+   "t": "suzuka",
+   "vMean": 233,
+   "B": -0.081,
+   "G3": 0.008
+  },
+  {
+   "t": "miami",
+   "vMean": 217,
+   "B": -1.128,
+   "G3": -1.054
+  },
+  {
+   "t": "spielberg",
+   "vMean": 238,
+   "B": -0.543,
+   "G3": -0.704
+  },
+  {
+   "t": "monza",
+   "vMean": 259,
+   "B": 0.763,
+   "G3": 0.776
+  },
+  {
+   "t": "austin",
+   "vMean": 207,
+   "B": 0.582,
+   "G3": 0.642
+  },
+  {
+   "t": "mexico-city",
+   "vMean": 196,
+   "B": -0.349,
+   "G3": -0.224
+  }
+ ],
+ "cornerBands": [
+  {
+   "band": "<120",
+   "B": 0.952,
+   "nB": 9,
+   "G3": 0.867,
+   "nG3": 9,
+   "absChange": 0.085,
+   "limit": 0.082,
+   "ok": false
+  },
+  {
+   "band": "120-180",
+   "B": 0.958,
+   "nB": 8,
+   "G3": 0.845,
+   "nG3": 8,
+   "absChange": 0.114,
+   "limit": 0.068,
+   "ok": false
+  },
+  {
+   "band": "180-240",
+   "B": 0.844,
+   "nB": 7,
+   "G3": 0.942,
+   "nG3": 7,
+   "absChange": -0.098,
+   "limit": 0.056,
+   "ok": true
+  },
+  {
+   "band": ">=240",
+   "nB": 0,
+   "nG3": 0
+  }
+ ],
+ "forward": {
+  "B": {
+   "n": 9,
+   "rmsPct": 4.199,
+   "medAbsPct": 2.11
+  },
+  "G": {
+   "n": 9,
+   "rmsPct": 2.677,
+   "medAbsPct": 2.242
+  }
+ },
+ "flagOff": "run 45358894933: calibration-data.js byte-identical (sha256 d2d410c4\u2026) on 85fb462 and 8b96891; lapsim-report.md differs only in the wall-clock seconds of the joint fit (33 s vs 31 s)"
+}

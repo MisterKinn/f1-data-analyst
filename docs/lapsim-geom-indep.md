@@ -140,3 +140,18 @@ Reported: F1 median |error| level C 2.62 → 1.37 %, forward-chaining 1.32 → 0
 bound hits none in either run (BCD bracket 0.7–1.3); drag at its 1.15 bound on 4 → 3 tracks; WEC fold bound hits 30 → 25. Not run: KERB_M ±0.5 m sensitivity, level A.
 Numbers: `scripts/sim/data/geom-indep/results-a3.json`. Third rejection: the idea stops; the flag data stays as a record.
 
+## Unseen-season test, 2022 (one shot, rejected: the idea stops for good)
+Pre-registration `claude/gate-geometry-f1-unseen-seasons-prereg-2026-11-24.md` rev 4. The frozen G3 (`a3f1`, F1 rows only) was judged on F1 2022
+pole laps (TracingInsights), which no earlier step used. The 2022 laps sit in the 2025 slot (`apply-2022.mjs`, prior = PRIOR[2023]), and 2023 is
+fitted beside them (`LAPSIM_F1_2022_WITH=2023`) so a held-out 2022 track takes its factor from 2023. n = 9 tracks.
+
+| Check | B → G3 | Result |
+|---|---|---|
+| Held-out 2022 RMS (non-inferior, δ 5 %) | 1.083 → 1.162 % | ✗ |
+| Level C 2022 (sign-flip p < 0.16; RMS fall > 0.16 pp) | 3.553 → 2.751 %, p 0.32 | ✗ (5 of 9 tracks worse) |
+| 120–180 km/h band (\|1 − r\| +0.068 at most) | 0.958 → 0.845 (+0.114) | ✗ |
+| F1 median (+5 % at most) | held-out 0.88 → 1.19 %; level C 2.11 → 2.46 % | ✗ |
+
+The pattern of attempt 3 repeats on unseen data: G3 lowers the spread of the track factors and the level C RMS (driven by Jeddah and Mexico City),
+but more tracks get worse than better, and the 120–180 km/h corners get slower in the model. Numbers: `scripts/sim/data/geom-indep/results-u22.json`.
+

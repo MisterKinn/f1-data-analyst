@@ -15,9 +15,14 @@ if (process.env.LAPSIM_F1_2022 !== 'on') { console.log('LAPSIM_F1_2022 not on: n
 const D = JSON.parse(readFileSync(process.argv[2], 'utf8')), CACHE = process.argv[3] || '.cache/lapsim', SLOT = '2025';
 const noLabel = p => JSON.stringify({...p, label: undefined});
 if (noLabel(PRIOR[2023]) !== noLabel(PRIOR[2025])) throw new Error('PRIOR[2023] differs from PRIOR[2025]: the 2025 slot is not PRIOR[2022]');
-const ok = new Set(D.eligible), shift = d => d && `${+d.slice(0, 4) + 3}${d.slice(4)}`;
+// LAPSIM_F1_2022_WITH=2023 (rev 4, owner 2026-11-24 16:30): that season's own OpenF1 traces stay as fit inputs, so a held-out 2022 track
+// takes its grip factor from it; a 2022 track without a dry 2023 pole row is dropped (and reported)
+const WITH = (process.env.LAPSIM_F1_2022_WITH || '').split(',').filter(Boolean).map(Number), keep = JSON.parse(readFileSync(`${CACHE}/traces.json`, 'utf8')).filter(t => WITH.includes(t.year));
+const ok = new Set(D.eligible.filter(id => WITH.every(y => keep.some(t => t.year === y && t.track === id && t.position === 1 && !t.weather?.rain))));
+const dropped = D.eligible.filter(id => !ok.has(id)); if (dropped.length) console.log(`dropped (no dry ${WITH.join('/')} pole row): ${dropped.join(', ')}`);
+const shift = d => d && `${+d.slice(0, 4) + 3}${d.slice(4)}`;
 const traces = D.traces.filter(t => ok.has(t.track)).map(t => ({...t, year: +SLOT, date: shift(t.date), srcYear: t.year}));
-writeFileSync(`${CACHE}/traces.json`, JSON.stringify(traces));
+writeFileSync(`${CACHE}/traces.json`, JSON.stringify([...keep, ...traces]));
 const rewrite = (f, name, fn) => { const s = readFileSync(f, 'utf8'), re = new RegExp(`(export const ${name} ?= ?)([\\s\\S]*?);\\n`), m = re.exec(s);
   const v = fn(JSON.parse(m[2])); writeFileSync(f, s.replace(re, () => `${m[1]}${JSON.stringify(v)};\n`)); };
 // the 2025 race-control state ('real': low grip, DRS off) is not carried to 2022 (no 2022 state is read: DRS on, normal grip)
@@ -27,4 +32,5 @@ rewrite('worker/lapsim/f1-poles-data.js', 'lapsimF1Poles', P => { for (const id 
   for (const t of traces.filter(t => t.position === 1)) (P[t.track] ||= {})[SLOT] = {driver: t.src.split(' ').at(-3), number: String(t.driver_number), lap: t.lap_seconds, sectors: t.sectors, seg: 'Q3', srcYear: 2022}; return P; });
 rewrite('worker/lapsim/f1-real-telemetry-data.js', 'lapsimF1RealTel', () => Object.fromEntries([...ok].map(id => [id, {[SLOT]: D.realTel[id]}])));
 rewrite('worker/lapsim/f1-wet-quali-data.js', 'lapsimF1WetQuali', w => { for (const id of Object.keys(w)) { delete w[id]['2025']; delete w[id]['2026']; } return w; });
-console.log(`2022 laps in the ${SLOT} slot: ${traces.length} traces on ${ok.size} tracks (${[...ok].join(', ')})`);
+console.log(`2022 laps in the ${SLOT} slot: ${traces.length} traces on ${ok.size} tracks (${[...ok].join(', ')}); kept as fit inputs: ${keep.length} traces of ${WITH.join(', ') || 'no other season'}`);
+console.log(`n = ${ok.size}`);
