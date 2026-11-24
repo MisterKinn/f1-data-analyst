@@ -63,6 +63,16 @@ test('layout eras in the data match the hand-entered layout years (step 25: Jedd
   for (const id of Object.keys(S.tracks)) if (!LAYOUT[id]) assert.deepEqual(S.tracks[id].layoutEras, [], id);
 });
 
+test('full resurfacings in the data match the hand-entered list (step 25: Montreal 2024, Interlagos 2024)', () => {
+  for (const [id, list] of Object.entries(FULL)) for (const e of list) {
+    const y = S.tracks[id]?.years[e.year];
+    if (!y) continue; // tracks the registry does not carry (no FIA history in range)
+    assert.equal(y.fullResurfacing, true, `${id} ${e.year}`);
+    assert.equal(y.fullSrc, e.url, `${id} ${e.year}`);
+  }
+  for (const id of ['montreal', 'interlagos']) assert.ok(S.selectablePairs.some(p => p.track === id && p.to === 2024), id);
+});
+
 test('full resurfacing in FIA notes needs the whole circuit and no corner', () => {
   assert.ok(isFullResurfacing({type: 'resurfacing', corners: [], text: 'The entire circuit has been resurfaced.'}));
   assert.ok(!isFullResurfacing({type: 'resurfacing', corners: [], text: 'Resurfaced the main straight'}));
