@@ -18,6 +18,10 @@ on:
         description: 'yes: fit and report; no: only make/check the snapshots'
         required: false
         default: 'yes'
+      score_locked:
+        description: 'Score the 2022 LOCKED Δ set: the approved step-28 final run named in delta.locked2022.approved_run (empty: never)'
+        required: false
+        default: ''
   release:
     types: [published]
   push:
@@ -153,11 +157,22 @@ jobs:
         continue-on-error: true
         with: {name: track-state-check, path: ts}
       # the run's fit becomes the working calibration, so the Δ benchmark and level C / forward read this run's numbers
+      # frozen case CSVs (pinned by sha256) → model Δ on this run's calibration (the shipped one when the fit was skipped); seconds, not hours
       - name: Δ benchmarks on this run's calibration
+        env:
+          F1_DELTA_LOCKED_APPROVED: ${{ inputs.score_locked }}
         run: |
+          set -euo pipefail
           [ -f fit/worker/lapsim/calibration-data.js ] && cp fit/worker/lapsim/calibration-data.js worker/lapsim/ && cp fit/docs/lapsim-level-c.json fit/docs/lapsim-forward.json docs/ 2>/dev/null || true
-          mkdir -p dl && cp scripts/sim/data/f1-delta/zone-mapping-table.csv dl/zones.csv && cp scripts/sim/data/f1-delta/f1-delta-cases-2026-11-24.csv dl/
-          node scripts/sim/f1-delta-bench.mjs model dl
+          P=.github/lapsim-snapshot.json
+          jq -r '.delta | (.v1, .v2pooled, .locked2022) | "\(.sha256)  \(.path)"' $P | sha256sum --check
+          pip install -q numpy
+          mkdir -p dl && node scripts/sim/f1-delta-bench.mjs zones > dl/zones.csv
+          echo "$(jq -r .delta.zones_sha256 $P)  dl/zones.csv" | sha256sum --check || echo "::warning::zone table differs from the pinned build (zone code or FIA zone CSV changed)"
+          for k in v1 v2pooled; do mkdir -p dl/$k && cp dl/zones.csv dl/$k/ && cp "$(jq -r .delta.$k.path $P)" dl/$k/f1-delta-cases-2026-11-24.csv && node scripts/sim/f1-delta-bench.mjs model dl/$k; done
+          python3 -I scripts/sim/f1-delta-report.py dl/v2pooled/baseline.csv dl/v2pooled/f1-delta-cases-2026-11-24.csv dl/v2pooled/report.json > /dev/null
+          if [ -n "${F1_DELTA_LOCKED_APPROVED}" ]; then mkdir -p dl/locked2022 && cp dl/zones.csv dl/locked2022/ && cp "$(jq -r .delta.locked2022.path $P)" dl/locked2022/f1-delta-cases-2026-11-24.csv \
+            && node scripts/sim/f1-delta-bench.mjs model dl/locked2022 && python3 -I scripts/sim/f1-delta-report.py dl/locked2022/baseline.csv dl/locked2022/f1-delta-cases-2026-11-24.csv dl/locked2022/report.json > /dev/null; fi
       - name: Report
         env:
           SHIPPED_DIR: /tmp/shipped
@@ -169,7 +184,7 @@ jobs:
           TRACK_STATE_DIFF: ts/track-state-diff.json
         run: |
           node scripts/sim/pipeline-report.mjs fit/worker/lapsim/calibration-data.js /tmp/shipped/calibration-data.js out > /dev/null
-          cp dl/baseline.csv out/delta-drs-v1.csv 2>/dev/null || true
+          cp -r dl out/delta
           cat out/pipeline-report.md >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         with: {name: pipeline-report, path: out/, retention-days: 90}

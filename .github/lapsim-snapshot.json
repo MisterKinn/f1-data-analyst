@@ -15,5 +15,23 @@
     "tag": "track-state-inputs-2026-11-24",
     "source": "scripts/sim/track-state.mjs ti 2018-2026 at one TracingInsights commit per season (ti-refs.json) + fia 2019-2026 (fia.com; missing years in fia-missing.json)",
     "sha256": ""
+  },
+  "delta": {
+    "note": "Frozen Δ case CSVs (central 2026-11-24, step 24 close): the pinned source of the Δ benchmarks; a rebuild from TracingInsights is a check, not the source. Provenance: Project claude/status-2026-11-24-step24-close.md.",
+    "v1": {
+      "path": "scripts/sim/data/f1-delta/f1-delta-cases-2026-11-24.csv",
+      "sha256": "7b2c16ff4d87baf7f9215ef4c3f9fdfdb13b408e5b90c5a5e97c831b19f900ff"
+    },
+    "v2pooled": {
+      "path": "scripts/sim/data/f1-delta/f1-delta-cases-pooled-2026-11-24.csv",
+      "sha256": "5a153cf140a7888ae32ee775a2cab53f740f1cebfb8d096b0eb70297d2edcc97"
+    },
+    "locked2022": {
+      "path": "scripts/sim/data/f1-delta/f1-delta-cases-2022-LOCKED.csv",
+      "sha256": "92a9f5423a7717753dd2961ca06ca2eecf08be73efb81d3cb35a7bfcc764cd95",
+      "approved_run": "",
+      "rule": "never scored by default; scored only when approved_run is set (central approval of the step-28 final run) and the workflow input score_locked names the same value"
+    },
+    "zones_sha256": "d0da4748d887a929442498cb3ab9118d97ff418cbca296553c3b0799440dd3a5"
   }
 }

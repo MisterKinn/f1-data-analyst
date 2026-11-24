@@ -4,6 +4,7 @@
 // Env: GITHUB_RUN_ID, GITHUB_SHA, SHIPPED_DIR, FIT_RESULT, TRACK_STATE_DIFF (track-state-diff.mjs JSON), SNAPSHOT_TAG, SNAPSHOT_SHA256, SNAPSHOT_SUMS (path of SHA256SUMS), DELTA_DIR (Δ benchmark output dir).
 import {readFileSync, writeFileSync, existsSync} from 'node:fs';
 import {pathToFileURL} from 'node:url';
+import {createHash} from 'node:crypto';
 import {heldOut, compare} from './exp-compare.mjs';
 
 const CAR_KEYS = ['muX', 'muY', 'muXTrac', 'clA', 'cdA', 'cdALow', 'pIce'];
@@ -44,8 +45,11 @@ if (process.argv[1]?.endsWith('pipeline-report.mjs')) {
   const [newF, shippedF, out] = process.argv.slice(2), E = process.env;
   const load = async f => (await import(pathToFileURL(f).href)).lapsimCalibration;
   const settings = Object.fromEntries(readFileSync('.github/lapsim-fit.env', 'utf8').split('\n').filter(l => /^[A-Z_]+=/.test(l)).map(l => l.split(/=(.*)/s).slice(0, 2)));
-  const dd = E.DELTA_DIR || '', drs = sum('scripts/sim/data/f1-delta/cases-summary.json') || {};
-  const nModel = existsSync(dd + '/baseline.csv') ? readFileSync(dd + '/baseline.csv', 'utf8').trim().split('\n').length - 1 : null;
+  const dd = E.DELTA_DIR || '', rows = k => existsSync(`${dd}/${k}/baseline.csv`) ? readFileSync(`${dd}/${k}/baseline.csv`, 'utf8').trim().split('\n').length - 1 : null;
+  const pooled = k => existsSync(`${dd}/${k}/report.json`) ? JSON.parse(readFileSync(`${dd}/${k}/report.json`, 'utf8')).pooled : null;
+  const sha = f => existsSync(f) ? createHash('sha256').update(readFileSync(f)).digest('hex') : null;
+  const dPin = JSON.parse(readFileSync('.github/lapsim-snapshot.json', 'utf8')).delta, v2 = pooled('v2pooled'), lk = pooled('locked2022');
+  const v2same = sha(`${dd}/v2pooled/baseline.csv`) === sha('scripts/sim/data/f1-delta/baseline-pooled-2026-11-24.csv');
   const r = {
     generatedAt: new Date().toISOString(),
     run: {id: E.GITHUB_RUN_ID || 'local', commit: E.GITHUB_SHA || 'local', url: E.GITHUB_RUN_ID ? `${E.GITHUB_SERVER_URL}/${E.GITHUB_REPOSITORY}/actions/runs/${E.GITHUB_RUN_ID}` : null},
@@ -58,8 +62,9 @@ if (process.argv[1]?.endsWith('pipeline-report.mjs')) {
     levelC: {shipped: sum(`${E.SHIPPED_DIR}/lapsim-level-c.json`), new: sum('docs/lapsim-level-c.json')},
     forward: {shipped: sum(`${E.SHIPPED_DIR}/lapsim-forward.json`), new: sum('docs/lapsim-forward.json')},
     delta: [
-      {name: 'F1 DRS Δ v1 (step 24, f1-delta-bench.mjs model, committed case list)', result: nModel == null ? 'not run' : `${nModel} model rows on kept cases; noise stop: ${Object.entries(drs).map(([u, s]) => `${u} ${s.stop ? 'stop' : 'kept ' + s.n_kept}`).join(', ')}`},
-      {name: 'F1 pooled DRS Δ v2 (step 24 v2)', result: 'not on main (branch step24-v2, pre-registration pending)'},
+      {name: `F1 DRS Δ v1 per stint (cases sha256 ${dPin.v1.sha256.slice(0, 8)}…)`, result: rows('v1') == null ? 'not run' : `${rows('v1')} model rows (every case stopped on noise in step 24: no kept case)`},
+      {name: `F1 pooled DRS Δ v2 (cases sha256 ${dPin.v2pooled.sha256.slice(0, 8)}…)`, result: v2 ? `n ${v2.n}, pass rate ${v2.pass_rate}, bias ${v2.bias_s} s [${v2.bias_ci95_s.join(', ')}], sign errors ${v2.sign_errors}, median pred ${v2.median_pred_s} s vs meas ${v2.median_meas_s} s; baseline CSV ${v2same ? 'identical to' : 'differs from'} the shipped baseline-pooled-2026-11-24.csv` : 'not run'},
+      {name: `F1 2022 LOCKED (cases sha256 ${dPin.locked2022.sha256.slice(0, 8)}…)`, result: lk ? `SCORED for approved run ${dPin.locked2022.approved_run}: n ${lk.n}, pass rate ${lk.pass_rate}, bias ${lk.bias_s} s` : 'locked, not scored'},
       {name: 'WEC BoP Δ v2 (step 21)', result: 'not on main; report-only after the σ_meas stop (0.82 s > 0.1 s)'},
     ],
   };
