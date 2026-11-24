@@ -15,6 +15,7 @@ elig = [l for laps in units.values() for med in [st.median(x['time'] for x in la
 # events left out: wet / poor frame match (offset corr < 0.93)
 bad = {k for k, v in off.items() if v['corr'] < 0.93}
 cases = {}
+TRACK = {(r['year'], r['event']): r['track'] for r in rows}
 for l in elig:
     if f"{l['year']}|{l['event']}" in bad: continue
     for n, z in l['z'].items():
@@ -45,14 +46,16 @@ for k, us in sorted(cases.items()):
     bs = [fit([full[i] for i in rng.integers(0, len(full), len(full))]) for _ in range(400)]
     bs = [b for b in bs if b]
     sd = float(np.std([b[0] for b in bs], ddof=1))
-    res.append({'year': k[0], 'event': k[1], 'zone': k[2], 'units': len(full), 'units_both': len(both), 'drs_laps': sum(x[3] for u in full for x in u),
+    res.append({'case_id': f'pooled-{len(res):03d}', 'use': 'drs_zone_pooled', 'year': k[0], 'event': k[1], 'track': TRACK[(k[0], k[1])], 'driver': 'pooled', 'stint': '', 'zone': k[2], 'units': len(full), 'units_both': len(both), 'drs_laps': sum(x[3] for u in full for x in u),
                 'nodrs_laps': sum(1 - x[3] for u in full for x in u), 'sigma_meas_s': round(sd, 4),
                 **({} if POWER else {'meas_delta_s': round(f0[0], 4), 'tow_slope_s_per_s': round(f0[1], 4), 'sigma_sys_tow_s': round(abs(f0[1]) * 0.5, 4)})})
 sig = [r['sigma_meas_s'] for r in res]
 rms = math.sqrt(sum(s * s for s in sig) / len(sig))
+stop = st.median(sig) > 0.1 or 2.486 * rms / math.sqrt(len(res)) > 0.1  # pre-reg v2 (c): σ_meas or MDE > 0.1 s → stop
+for r in res: r['kept'] = int(not stop and r['sigma_meas_s'] <= 0.1)
 summary = {'n_cases': len(res), 'n_events': len({(r['year'], r['event']) for r in res}), 'sigma_meas_median_s': st.median(sig),
            'sigma_meas_p25_p75_p90': [float(np.percentile(sig, q)) for q in (25, 75, 90)], 'share_sigma_le_0.1': sum(s <= 0.1 for s in sig) / len(sig),
-           'mde_s': 2.486 * rms / math.sqrt(len(res)), 'excluded_events': sorted(bad)}
+           'mde_s': 2.486 * rms / math.sqrt(len(res)), 'stop': stop, 'excluded_events': sorted(bad)}
 with open(out, 'w', newline='') as f:
     w = csv.DictWriter(f, list(res[0])); w.writeheader(); w.writerows(res)
 print(json.dumps(summary, indent=1))

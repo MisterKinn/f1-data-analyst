@@ -1,10 +1,12 @@
 # Step 24 fetch stage (pre-reg sections 1-2): per lap and zone features from TracingInsights, 2023-2025 Grand Prix races.
-# usage: python3 -I scripts/sim/f1-delta-fetch.py <dir>/zones.csv <dir>/feat   (zones.csv from f1-delta-bench.mjs zones)
+# usage: python3 -I scripts/sim/f1-delta-fetch.py <dir>/zones.csv <dir>/feat [<dir>/offset.json]   (zones.csv from f1-delta-bench.mjs zones)
 import csv, json, sys, os, math, requests, numpy as np
 from concurrent.futures import ThreadPoolExecutor
 from urllib.parse import quote
 
 zones_csv, out = sys.argv[1], sys.argv[2]
+# v2 A1: optional offset.json (f1-delta-offset.py): telemetry position s = rel_distance × L − lag of that race
+LAG = {k: v['lag_m'] for k, v in json.load(open(sys.argv[3])).items()} if len(sys.argv) > 3 else {}
 os.makedirs(out, exist_ok=True)
 S = requests.Session()
 RAW = 'https://raw.githubusercontent.com/TracingInsights/{y}/main/{p}'
@@ -33,9 +35,9 @@ def num(v):
         v = float(v); return v if math.isfinite(v) else None
     except Exception: return None
 
-def feats(tel, nxt, laptime, Ltr, zones):
+def feats(tel, nxt, laptime, Ltr, zones, lag=0.0):
     t = tel['tel']; tm = np.array([num(x) if num(x) is not None else np.nan for x in t['time']])
-    s = np.array([num(x) if num(x) is not None else np.nan for x in t['rel_distance']]) * Ltr
+    s = np.array([num(x) if num(x) is not None else np.nan for x in t['rel_distance']]) * Ltr - lag
     v = np.array([num(x) if num(x) is not None else np.nan for x in t['speed']])
     drs = np.array([num(x) if num(x) is not None else np.nan for x in t['drs']])
     dah = np.array([num(x) if num(x) is not None else np.nan for x in t.get('DistanceToDriverAhead', [None] * len(tm))])
@@ -44,7 +46,7 @@ def feats(tel, nxt, laptime, Ltr, zones):
     if len(tm) < 50: return None
     # continuation into the next lap (zones that cross the line)
     if nxt is not None:
-        n2 = nxt['tel']; tm2 = np.array([num(x) if num(x) is not None else np.nan for x in n2['time']]); s2 = np.array([num(x) if num(x) is not None else np.nan for x in n2['rel_distance']]) * Ltr
+        n2 = nxt['tel']; tm2 = np.array([num(x) if num(x) is not None else np.nan for x in n2['time']]); s2 = np.array([num(x) if num(x) is not None else np.nan for x in n2['rel_distance']]) * Ltr - lag
         ok2 = np.isfinite(tm2) & np.isfinite(s2); tm2, s2 = tm2[ok2], np.maximum.accumulate(s2[ok2])
         d2 = np.array([num(x) if num(x) is not None else np.nan for x in n2['drs']])[ok2]
         tmA, sA, drsA = np.concatenate([tm, laptime + tm2]), np.concatenate([s, Ltr + s2]), np.concatenate([drs, d2])
@@ -86,7 +88,7 @@ def driver_job(y, ev, info, lt, drv):
         tel = tels.get(ln)
         row['tel'] = tel is not None
         if tel is not None and lt_:
-            try: row['z'] = feats(tel, tels.get(ln + 1), lt_, info['L'], info['zones'])
+            try: row['z'] = feats(tel, tels.get(ln + 1), lt_, info['L'], info['zones'], LAG.get(f'{y}|{ev}', 0.0))
             except Exception as ex: row['err'] = str(ex)[:80]
         rows.append(row)
     return rows
