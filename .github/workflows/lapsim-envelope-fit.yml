@@ -1,0 +1,56 @@
+name: Lap simulator envelope fit (step 28, research)
+
+# Step 28 (docs/prereg/step28-envelope-2026-11-25.md + A1): leave-one-track-out envelope + DRS fit on committed 2023-25 quali
+# traces. Manual only (workflow_dispatch, research mode). Never reads the 2022 LOCKED set. Writes nothing back to the repo.
+on:
+  workflow_dispatch:
+    inputs:
+      variant: {description: 'V1 (V2/V3 only after V1 fails)', required: true, default: 'V1'}
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      tracks: ${{ steps.t.outputs.tracks }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - run: npm ci --ignore-scripts
+      - name: Baseline check (node scoring = python rows; DRS = step 24 baseline)
+        run: node scripts/sim/learn/f1-envelope-fit.mjs --baseline-check baseline-check.json
+      - id: t
+        run: echo "tracks=$(jq -c '[.events[].track] | unique' scripts/sim/data/f1-envelope/traces.json)" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@v4
+        with: {name: baseline-check, path: baseline-check.json, retention-days: 90}
+  fold:
+    needs: check
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        track: ${{ fromJson(needs.check.outputs.tracks) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - run: npm ci --ignore-scripts
+      - run: node scripts/sim/learn/f1-envelope-fit.mjs '${{ matrix.track }}' '${{ inputs.variant }}' 'fold-${{ matrix.track }}.json'
+      - uses: actions/upload-artifact@v4
+        with: {name: 'fold-${{ matrix.track }}', path: 'fold-${{ matrix.track }}.json', retention-days: 90}
+  verdict:
+    needs: fold
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: {pattern: 'fold-*', path: folds, merge-multiple: true}
+      - run: pip install --quiet scipy numpy
+      - run: python3 -I scripts/sim/learn/f1-envelope-loto.py folds verdict.json | tee verdict.txt
+      - uses: actions/upload-artifact@v4
+        with: {name: verdict, path: 'verdict.*', retention-days: 90}

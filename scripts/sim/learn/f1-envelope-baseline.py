@@ -2,7 +2,8 @@
 # plus lap error, per event and per track. Feeds the power check of the step-28 pre-registration. 2022 is never read (assert).
 # Data: TracingInsights (FastF1 car data) at one pinned commit per season (TI_REFS). Distance = speed integrated over time, scaled to
 # the simulator track length. Frame lag vs the sim: step 24 v2 method (lag_of from f1-delta-offset.py, +-200 m); drop corr < 0.93.
-# usage: python3 -I scripts/sim/learn/f1-envelope-baseline.py <zone-mapping-table.csv> <out.json>
+# usage: python3 -I scripts/sim/learn/f1-envelope-baseline.py <zone-mapping-table.csv> <out.json> [<traces.json>]
+# traces.json (fitter input, A1): measured speed on the sim grid, frame shift, corner and straight-end segment centres per kept event
 import csv, json, sys, os, subprocess, requests, numpy as np
 from concurrent.futures import ThreadPoolExecutor
 from urllib.parse import quote
@@ -11,6 +12,7 @@ TI_REFS = {2023: '737c84d3ae14b9883a671ca248d015b69cf1cb58', 2024: 'd1543a71370d
 SLICK = {'SOFT', 'MEDIUM', 'HARD'}
 SEG_M, PROM_KPH, BIN = 150.0, 10.0, (120.0, 240.0)
 zcsv, out = sys.argv[1:3]
+traces_out = sys.argv[3] if len(sys.argv) > 3 else None
 here = os.path.dirname(os.path.abspath(__file__))
 ev = sorted({(int(r['year']), r['event'], r['track']) for r in csv.DictReader(open(zcsv)) if 2023 <= int(r['year']) <= 2025 and r['track']})
 assert ev and all(y in TI_REFS for y, _, _ in ev)  # 2022 LOCKED: never requested
@@ -73,13 +75,19 @@ def one(e):
             idx = np.arange(k - w, k + w + 1) % n; d = (vm[idx] - a[idx])[np.isfinite(a[idx])]
             segs.append({'i': k, 'apex_meas': round(float(a[k]), 1), 'apex_model': round(float(vm[k]), 1),
                          'rms': round(float(np.sqrt(np.mean(d ** 2))), 2), 'bias': round(float(np.mean(d)), 2), 'pts': int(len(d))})
+    ap = [g['i'] for g in segs]  # straight end: measured maximum between consecutive apexes (circular)
+    st_i = [int((ap[j - 1] + np.nanargmax(a[np.arange(ap[j - 1], ap[j] + (n if ap[j] <= ap[j - 1] else 0)) % n])) % n) for j in range(len(ap))] if len(ap) > 1 else []
+    trace = {'n': n, 'ds': ds, 'shift': int(round(lag / ds)), 'w': w, 'a': [None if not np.isfinite(x) else round(float(x), 2) for x in a],
+             'corners': [[g['i'], g['apex_meas']] for g in segs], 'straights': st_i, 'zones': Z.get(f'{y}|{name}', [])}
     inb = [g for g in segs if BIN[0] <= g['apex_meas'] < BIN[1]]
     rms_b = float(np.sqrt(sum(g['rms'] ** 2 * g['pts'] for g in inb) / sum(g['pts'] for g in inb))) if inb else None
     return {**base, 'drv': lt['drv'][i], 'lap_no': lt['lap'][i], 'compound': comp, 'lag_m': lag, 'corr': round(float(corr), 3),
             'lap_meas_s': float(t[i]), 'lap_model_s': sim['lap'], 'lap_err_pct': round(100 * (sim['lap'] - t[i]) / t[i], 3),
             'n_seg': len(segs), 'n_seg_bin': len(inb), 'rms_bin_kph': None if rms_b is None else round(rms_b, 2),
-            'bias_bin_kph': None if not inb else round(float(np.mean([g['bias'] for g in inb])), 2), 'segments': segs}
+            'bias_bin_kph': None if not inb else round(float(np.mean([g['bias'] for g in inb])), 2), 'segments': segs, '_trace': trace}
 rows = list(ThreadPoolExecutor(12).map(one, ev))
+if traces_out: json.dump({'ti_refs': {str(k): v for k, v in TI_REFS.items()}, 'events': {f"{r['year']}|{r['event']}": {'year': r['year'], 'event': r['event'], 'track': r['track'], 'lap_meas_s': r['lap_meas_s'], **r['_trace']} for r in rows if '_trace' in r}}, open(traces_out, 'w'))
+for r in rows: r.pop('_trace', None)
 json.dump({'ti_refs': {str(k): v for k, v in TI_REFS.items()}, 'seg_m': SEG_M, 'prom_kph': PROM_KPH, 'bin_kph': BIN, 'rows': rows}, open(out, 'w'), indent=1)
 ok = [r for r in rows if 'drop' not in r]
 print('events', len(rows), 'kept', len(ok), 'tracks', len({r['track'] for r in ok}))
