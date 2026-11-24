@@ -46,7 +46,7 @@ const WTIME = Number(process.env.LAPSIM_WTIME || 20);
 const E = process.env;
 const FITTER = E.LAPSIM_FITTER || 'bcd';
 const BCD = {rounds: Number(E.LAPSIM_ROUNDS || 5), iters: Number(E.LAPSIM_BCD_ITERS || 200), wTime: WTIME, wSector: Number(E.LAPSIM_WSECTOR || 2),
-  trackDrag: E.LAPSIM_TRACK_DRAG !== 'off', teams: E.LAPSIM_TEAMS !== 'off', residual: E.LAPSIM_RESIDUAL === 'on', residualLambda: Number(E.LAPSIM_RESIDUAL_LAMBDA || 1), wPrior: Number(E.LAPSIM_WPRIOR || 8), log: m => console.log(m)};
+  trackDrag: E.LAPSIM_TRACK_DRAG !== 'off', centre: E.LAPSIM_TRACK_CENTRE === 'on', teams: E.LAPSIM_TEAMS !== 'off', residual: E.LAPSIM_RESIDUAL === 'on', residualLambda: Number(E.LAPSIM_RESIDUAL_LAMBDA || 1), wPrior: Number(E.LAPSIM_WPRIOR || 8), log: m => console.log(m)};
 const MAX_POS = Number(E.LAPSIM_MAX_POS || 3);
 const HOLDOUT_YEARS = (E.LAPSIM_HOLDOUT_YEARS || '2025,2026').split(',').map(Number);
 const fitAll = gs => FITTER === 'bcd' ? fitJointBCD(gs, BCD) : fitJoint(gs, {iters: ITERS, wTime: WTIME});
@@ -163,9 +163,13 @@ for (const year of [...new Set(traces.map(t => t.year))].sort()) {
   // car.ers.law = 'b': brake-force regen, 2014–25 deploy at every full-throttle point, 2026 strategy B) and the 2023–25 pIce prior
   // 540 kW (P_wheel 628 ± 21 kW measured, §8; the relative bounds move with it)
   if (E.LAPSIM_ERS_LAW === 'b' && base.ers) { base.ers = {...base.ers, law: 'b'}; if (year <= 2025) base.pIce = 540e3; }
+  // LAPSIM_PICE_FIXED=<kW> (wave 3 (a), claude/gate-wave3-fit-restructure-prereg-2026-11-24.md; off by default): 2023–25 pIce fixed to
+  // the measured value and not fitted (the laps do not identify power: claude/status-2026-11-24-pice-profile.md)
+  const piceFixed = E.LAPSIM_PICE_FIXED && year <= 2025;
+  if (piceFixed) base.pIce = Number(E.LAPSIM_PICE_FIXED) * 1e3;
   const cdM = CDA_MEASURED?.seasons?.[year]?.cdA?.value;
   if (cdM) { base.cdA = cdM; base.cdALow = cdM * CDA_MEASURED.seasons[year].drsRatio.value; }
-  const params = PARAMS.filter(k => !(cdM && (k === 'cdA' || k === 'cdALow'))).map(k => {
+  const params = PARAMS.filter(k => !(cdM && (k === 'cdA' || k === 'cdALow')) && !(piceFixed && k === 'pIce')).map(k => {
     const [lo, hi] = BOUNDS[k], rel = k === 'pIce';
     return {key: k, path: k, base: base[k], step: 0.08, min: rel ? lo * base[k] : lo, max: rel ? hi * base[k] : hi};
   });
