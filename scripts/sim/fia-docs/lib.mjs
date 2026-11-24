@@ -83,9 +83,17 @@ export function writeCsv(file, head, rows, {bom = false} = {}) {
 
 // row-level diff on a key; reports added, removed and changed fields (used to compare a rebuild with the committed CSV)
 export function diffRows(oldRows, newRows, keyOf, fields) {
-  const a = new Map(oldRows.map(r => [keyOf(r), r])), b = new Map(newRows.map(r => [keyOf(r), r])), out = [];
+  const keyed = rows => { const n = {}; return new Map(rows.map(r => { const k = keyOf(r); n[k] = (n[k] || 0) + 1; return [n[k] > 1 ? `${k}#${n[k]}` : k, r]; })); };
+  const a = keyed(oldRows), b = keyed(newRows), out = [];
   for (const [k, r] of a) if (!b.has(k)) out.push({kind: 'missing in rebuild', key: k});
   for (const [k, r] of b) if (!a.has(k)) out.push({kind: 'new in rebuild', key: k});
   for (const [k, r] of a) { const n = b.get(k); if (!n) continue; const d = fields.filter(f => String(r[f] ?? '') !== String(n[f] ?? '')); if (d.length) out.push({kind: 'changed', key: k, fields: Object.fromEntries(d.map(f => [f, [r[f], n[f]]]))}); }
   return out;
+}
+
+// print a diff (from diffRows), one line per row; returns the number of differing rows
+export function report(name, diffs) {
+  console.log(`${name}: ${diffs.length} row(s) differ from the committed CSV`);
+  for (const d of diffs) console.log(`  ${d.kind}: ${d.key}${d.fields ? '  ' + Object.entries(d.fields).map(([f, [o, n]]) => `${f}: ${JSON.stringify(o)} -> ${JSON.stringify(n)}`).join('; ') : ''}`);
+  return diffs.length;
 }
