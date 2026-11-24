@@ -38,6 +38,11 @@ on:
         description: 'Reuse the calibration parts of this run id (same code and build); only missing parts are computed (empty: .github/lapsim-parts-run)'
         required: false
         default: ''
+      pinned:
+        description: 'true: research / reproduction fit on prep_run (no network reads, no commit); see lapsim-pipeline.yml'
+        type: boolean
+        required: false
+        default: false
   # step 27 pipeline (lapsim-pipeline.yml): the same fit on a pinned input snapshot. pinned = this run already holds the lapsim-prep
   # artifact (from the snapshot release), and nothing reads the network (FIA documents, circuit changes) or commits
   workflow_call:
