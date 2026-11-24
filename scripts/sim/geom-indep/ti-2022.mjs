@@ -10,8 +10,8 @@
 // scaled to the track length; shortcut: assumes lap start = timing line as in the OpenF1 traces), 2022 pole telemetry in the
 // f1-real-telemetry-data.js record format, the zones chosen per track and their source.
 // Usage: LAPSIM_TI_DIR=<dir with 2022/> [F1_ZONES_RAW=<2022 zone raw>] node scripts/sim/geom-indep/ti-2022.mjs <out.json>
-import {existsSync, readdirSync, readFileSync, writeFileSync} from 'node:fs';
-import {join} from 'node:path';
+import {existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync} from 'node:fs';
+import {dirname, join} from 'node:path';
 import {execFileSync} from 'node:child_process';
 import {lapsimTracks} from '../../../worker/lapsim/tracks-data.js';
 import {lapsimTrackState} from '../../../worker/lapsim/track-state-data.js';
@@ -25,7 +25,8 @@ const doc22 = process.env.F1_ZONES_RAW ? (process.env.F1_ZONES_NO_WRITE = '1', (
 const J = f => JSON.parse(readFileSync(f, 'utf8'));
 // a file of the sparse TI checkout; fetched from the repository on first use (git, so the raw input is the commit's blob)
 // (no silent drops: a file that cannot be read is listed and the run stops at the end)
-const failed = [], file = p => { const f = join(ROOT, p); if (!existsSync(f)) try { execFileSync('git', ['-C', ROOT, 'checkout', 'HEAD', '--', p], {stdio: 'ignore'}); } catch { failed.push(p); return null; } return existsSync(f) ? J(f) : (failed.push(p), null); };
+// git show works outside the sparse-checkout patterns (a checkout of such a path fails in CI)
+const failed = [], file = p => { const f = join(ROOT, p); if (!existsSync(f)) try { mkdirSync(dirname(f), {recursive: true}); writeFileSync(f, execFileSync('git', ['-C', ROOT, 'show', `HEAD:${p}`], {maxBuffer: 1 << 28, stdio: ['ignore', 'pipe', 'ignore']})); } catch { failed.push(p); return null; } return J(f); };
 const num = v => v === 'None' || v == null || !Number.isFinite(+v) ? null : +v;
 const eraOf = (id, y) => (lapsimTrackState.tracks[id]?.layoutEras || []).filter(s => s <= y).length;
 const len = id => lapsimTracks[id].kappa.length * lapsimTracks[id].ds;
