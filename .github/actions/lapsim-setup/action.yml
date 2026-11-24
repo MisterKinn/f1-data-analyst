@@ -35,3 +35,7 @@ runs:
       run: tar xzf /tmp/lapsim-prep.tgz
     - shell: bash
       run: npm ci --omit=dev --ignore-scripts
+    # gate flag for geometry candidates (step 3): .github/lapsim-geom-indep holds the LAPSIM_GEOM_INDEP value; absent = no change
+    - name: Apply the candidate geometry (gate branches only)
+      shell: bash
+      run: m=$(tr -d '[:space:]' < .github/lapsim-geom-indep 2>/dev/null || true); [ -z "$m" ] || LAPSIM_GEOM_INDEP=$m node scripts/sim/geom-indep/apply.mjs
