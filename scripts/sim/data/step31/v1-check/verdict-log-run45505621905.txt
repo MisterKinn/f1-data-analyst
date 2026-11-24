@@ -1,0 +1,402 @@
+##[group]Run set -o pipefail
+[36;1mset -o pipefail[0m
+[36;1msha256sum folds/*.json[0m
+[36;1mpython3 scripts/sim/learn/step31_verdict.py folds scripts/sim/data/f1-envelope/traces.json verdict.json | tee verdict.txt[0m
+shell: /usr/bin/bash -e {0}
+##[endgroup]
+ac5ff05a59e0535e750905fe1b7c498b7b2378f8374f269c8375866ae970b22e  folds/fold-austin.json
+f6339943679ba3c2bb5ce3a4404254583d1b5494352a0851a4350d45c2328ea9  folds/fold-baku.json
+8f9b4fca3fcda9e9569ad4b6c7810956d22ffa1bead669bac70c35a0e9e043a7  folds/fold-catalunya.json
+fc18ed019e37ddb37244381f3544b85280fd0e3a25e6a90a62e4f20c8d8f9e4d  folds/fold-hungaroring.json
+f08e0b6b99ddb1705c7ae30f4dc114cafb9ae1b86354cfc19256c2e3caae994c  folds/fold-imola.json
+acaeb2f970076cfcf44f63b67bff3a922fbc78f207fb3f4f7503bb782fb2e1da  folds/fold-interlagos.json
+351b6a6e64e45d52076117379276aaf937d06b51e5f961b6699d099451934fe7  folds/fold-jeddah.json
+6ba4695ee18892b8378e3bcc3c3460bcddb59b853c5caf753122b23984a2aa91  folds/fold-las-vegas.json
+b7270ae7085aaa6d36838d210cb5a977a6244073c4571b94ab32db58bbe9b1bd  folds/fold-lusail.json
+1b3214ee77942bc3be4358c538976ed62469c3acf0c29111ab89495aea8f1c0b  folds/fold-melbourne.json
+e898f4b3cc0a989e1a6ce93ec9c64f31fb51f3d278cc57e4130d8ce3dd898b15  folds/fold-mexico-city.json
+af308ac43927d93c95dd93a61ed3a758b7738ae231eab2a8528acd74d191743d  folds/fold-miami.json
+6874353c13f3e4b54b243fdfaaccf43185e540c2b985f42d2f015d06690533e5  folds/fold-monte-carlo.json
+acf06676bb891bf6a46b4905988f8bf4e288ca646cfe115d955edcfdef092ec4  folds/fold-montreal.json
+c202272d37f869c279beddc612e6cf01aa0a68f822cdd4d2293ceb2a4e4770a0  folds/fold-monza.json
+eb89e894637c55b75f5285d31e5a2af782e8e2b8bf095179ffabda76008ef66f  folds/fold-sakhir.json
+4788efcb636db764b9238f8eeab876a462bdc3c685b9aeb5566a6bb4ded5eb93  folds/fold-shanghai.json
+bd197cc449e206695261412f35751c33e67ba43963910655f6754f906c831f71  folds/fold-silverstone.json
+098fdb1e9293254b173b2a82c77c9b88b72cd5e4f91c79b31cee673c9153e894  folds/fold-singapore.json
+331ccd4a3df4f73b4db0ef463b6e72bf0fbac3f2a57740dfd5ebd3675f7ddcd7  folds/fold-spa-francorchamps.json
+63660023130892dec60ca9b4533313cc1a309939a6eb6d253038a07e03063210  folds/fold-spielberg.json
+86f87eb933a3c69a60c5dce10ca307e2f4bb0dfc9ebef311dc922108e9917ba5  folds/fold-suzuka.json
+895254010bb3556ee11a8d18ac271dc6c881cf8e9079ef947387e99941026032  folds/fold-yas-marina-circuit.json
+4d0305b444494b2601f15ded823aacab258f076ef536bcd1274a32b9fe0ea1cb  folds/fold-zandvoort.json
+{
+ "variant": "V1",
+ "folds": 24,
+ "primary_apex_120_240": {
+  "n_tracks": 23,
+  "mean_gain_kph": 4.410259770673514,
+  "ci95": [
+   2.285297228837223,
+   6.550025264478822
+  ],
+  "ci90": [
+   2.618884054885923,
+   6.1873999226487095
+  ],
+  "p_signflip_one_sided": 0.000335,
+  "alpha": 0.025,
+  "useful_kph": 3.0,
+  "pass_": true
+ },
+ "report_apex_120_180": {
+  "n_tracks": 21,
+  "mean_gain_kph": 5.135637858133102,
+  "ci95": [
+   2.5014532670634777,
+   7.641740748952051
+  ],
+  "p_signflip_one_sided": 0.000595
+ },
+ "secondary_guards": {
+  "entry": {
+   "n_tracks": 24,
+   "mean_harm_s": 0.024722648418509473,
+   "ci95": [
+    -0.0026659927352198783,
+    0.054240962712804854
+   ],
+   "p_harm_one_sided": 0.05609,
+   "pass_": true
+  },
+  "exit": {
+   "n_tracks": 24,
+   "mean_harm_s": -0.02316467251504742,
+   "ci95": [
+    -0.06354274643703531,
+    0.01960810304761339
+   ],
+   "p_harm_one_sided": 0.851595,
+   "pass_": true
+  }
+ },
+ "guard_lap": {
+  "n_tracks": 24,
+  "mean_harm_pp": 0.22678897285885716,
+  "upper95_one_sided_pp": 0.6504683626677168,
+  "ci95": [
+   -0.2706419233610865,
+   0.6838411183082868
+  ],
+  "pass_": false
+ },
+ "guard_drs": {
+  "n_cases": 125,
+  "pass_rate_cand": 0.0,
+  "pass_rate_base": 0.0,
+  "pass_": true,
+  "bias_cand_s": -0.24683310805400738
+ },
+ "guard_braking": {
+  "bins": [
+   {
+    "bin": 80,
+    "meas": 1.0567783611443684,
+    "cand": 1.118500015839853,
+    "base": 1.4346210593672786,
+    "ok": true
+   },
+   {
+    "bin": 100,
+    "meas": 1.51416904100857,
+    "cand": 1.5048842610194257,
+    "base": 2.0928227006195086,
+    "ok": true
+   },
+   {
+    "bin": 120,
+    "meas": 2.046154705553021,
+    "cand": 1.914103415948607,
+    "base": 2.6872847819690935,
+    "ok": true
+   },
+   {
+    "bin": 140,
+    "meas": 2.5301053571239382,
+    "cand": 2.277798736313204,
+    "base": 3.233519533197544,
+    "ok": true
+   },
+   {
+    "bin": 160,
+    "meas": 3.0151919990919493,
+    "cand": 2.642463692266081,
+    "base": 3.7351092670320756,
+    "ok": true
+   },
+   {
+    "bin": 180,
+    "meas": 3.4358683164198385,
+    "cand": 3.034720443732195,
+    "base": 4.220925758021718,
+    "ok": true
+   },
+   {
+    "bin": 200,
+    "meas": 3.8938169963280314,
+    "cand": 3.4701181156936385,
+    "base": 4.781717586978623,
+    "ok": true
+   },
+   {
+    "bin": 220,
+    "meas": 4.136281208178804,
+    "cand": 3.948189420578401,
+    "base": 5.270477068322977,
+    "ok": true
+   },
+   {
+    "bin": 240,
+    "meas": 4.394425366401505,
+    "cand": 4.425566547483234,
+    "base": 5.729016624650098,
+    "ok": true
+   },
+   {
+    "bin": 260,
+    "meas": 4.458645903099324,
+    "cand": 4.9359584136116075,
+    "base": 6.080467515583407,
+    "ok": false
+   }
+  ],
+  "pass_": false
+ },
+ "f_kerb": {
+  "median": 0.0005931206448211128,
+  "min": 0.0005931206448211128,
+  "max": 0.0005931206448211128,
+  "jackknife_se": 0.0,
+  "profile90_by_fold": [
+   {
+    "held": "austin",
+    "fk": 0.0005931206448211128,
+    "profile90": [
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "held": "baku",
+    "fk": 0.0005931206448211128,
+    "profile90": [
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "held": "catalunya",
+    "fk": 0.0005931206448211128,
+    "profile90": [
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "held": "hungaroring",
+    "fk": 0.0005931206448211128,
+    "profile90": [
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "held": "imola",
+    "fk": 0.0005931206448211128,
+    "profile90": [
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "held": "interlagos",
+    "fk": 0.0005931206448211128,
+    "profile90": [
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "held": "jeddah",
+    "fk": 0.0005931206448211128,
+    "profile90": [
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "held": "las-vegas",
+    "fk": 0.0005931206448211128,
+    "profile90": [
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "held": "lusail",
+    "fk": 0.0005931206448211128,
+    "profile90": [
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "held": "melbourne",
+    "fk": 0.0005931206448211128,
+    "profile90": [
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "held": "mexico-city",
+    "fk": 0.0005931206448211128,
+    "profile90": [
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "held": "miami",
+    "fk": 0.0005931206448211128,
+    "profile90": [
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "held": "monte-carlo",
+    "fk": 0.0005931206448211128,
+    "profile90": [
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "held": "montreal",
+    "fk": 0.0005931206448211128,
+    "profile90": [
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "held": "monza",
+    "fk": 0.0005931206448211128,
+    "profile90": [
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "held": "sakhir",
+    "fk": 0.0005931206448211128,
+    "profile90": [
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "held": "shanghai",
+    "fk": 0.0005931206448211128,
+    "profile90": [
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "held": "silverstone",
+    "fk": 0.0005931206448211128,
+    "profile90": [
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "held": "singapore",
+    "fk": 0.0005931206448211128,
+    "profile90": [
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "held": "spa-francorchamps",
+    "fk": 0.0005931206448211128,
+    "profile90": [
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "held": "spielberg",
+    "fk": 0.0005931206448211128,
+    "profile90": [
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "held": "suzuka",
+    "fk": 0.0005931206448211128,
+    "profile90": [
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "held": "yas-marina-circuit",
+    "fk": 0.0005931206448211128,
+    "profile90": [
+     0.0,
+     0.0
+    ]
+   },
+   {
+    "held": "zandvoort",
+    "fk": 0.0005931206448211128,
+    "profile90": [
+     0.0,
+     0.0
+    ]
+   }
+  ]
+ },
+ "apex_by_group": {
+  "corridor": {
+   "n": 13,
+   "mean_gain_kph": 4.588489300863021
+  },
+  "old_path": {
+   "n": 10,
+   "mean_gain_kph": 4.178561381427157
+  }
+ },
+ "params_off_prior_2sigma": [],
+ "verdict": "FAIL"
+}
+param 2023.aTr {"median": 1.15463, "min": 1.13165, "max": 1.17304, "z_median": -0.92687, "z_maxabs": 1.04173}
+param 2023.b0 {"median": 1.21747, "min": 1.16782, "max": 1.27186, "z_median": 0.22491, "z_maxabs": 0.40619}
+param 2023.b2 {"median": 0.00518, "min": 0.0049, "max": 0.00555, "z_median": -0.43077, "z_maxabs": 0.61808}
+param 2023.ka {"median": 0.00595, "min": 0.00553, "max": 0.00638, "z_median": 0.93392, "z_maxabs": 1.26376}
+param 2023.mu0 {"median": 2.57576, "min": 2.53867, "max": 2.7074, "z_median": -1.09832, "z_maxabs": 1.18073}
+param 2024.aTr {"median": 1.14887, "min": 1.12971, "max": 1.16506, "z_median": -0.95566, "z_maxabs": 1.05143}
+param 2024.b0 {"median": 1.15472, "min": 1.10839, "max": 1.20326, "z_median": 0.01572, "z_maxabs": 0.17755}
+param 2024.b2 {"median": 0.00525, "min": 0.00479, "max": 0.00553, "z_median": -0.3877, "z_maxabs": 0.69027}
+param 2024.ka {"median": 0.0064, "min": 0.00587, "max": 0.00668, "z_median": 1.27634, "z_maxabs": 1.49163}
+param 2024.mu0 {"median": 2.71677, "min": 2.63391, "max": 2.83844, "z_median": -0.78496, "z_maxabs": 0.96909}
+param 2025.aTr {"median": 1.16337, "min": 1.14812, "max": 1.17935, "z_median": -0.88317, "z_maxabs": 0.95938}
+param 2025.b0 {"median": 1.10905, "min": 1.0214, "max": 1.2022, "z_median": -0.13651, "z_maxabs": 0.42866}
+param 2025.b2 {"median": 0.00573, "min": 0.00544, "max": 0.00595, "z_median": -0.06703, "z_maxabs": 0.26304}
+param 2025.ka {"median": 0.00605, "min": 0.00579, "max": 0.0067, "z_median": 1.00938, "z_maxabs": 1.50569}
+param 2025.mu0 {"median": 2.76074, "min": 2.682, "max": 2.81784, "z_median": -0.68725, "z_maxabs": 0.86223}
+per_track {"austin": {"corridor": true, "apex120_240_gain": 5.73, "apex120_180_gain": 0.022, "entry_harm": 0.163, "exit_harm": -0.074, "lap_harm_pp": -0.545, "fk": 0.001, "u_mean": 0.004}, "baku": {"corridor": false, "apex120_240_gain": -0.382, "apex120_180_gain": -0.382, "entry_harm": 0.033, "exit_harm": -0.034, "lap_harm_pp": 0.899, "fk": 0.001, "u_mean": 0.002}, "catalunya": {"corridor": false, "apex120_240_gain": 6.872, "apex120_180_gain": 6.872, "entry_harm": 0.001, "exit_harm": 0.174, "lap_harm_pp": 1.478, "fk": 0.001, "u_mean": 0.002}, "hungaroring": {"corridor": true, "apex120_240_gain": 2.867, "apex120_180_gain": 1.408, "entry_harm": -0.01, "exit_harm": -0.098, "lap_harm_pp": -2.072, "fk": 0.001, "u_mean": -0.001}, "imola": {"corridor": false, "apex120_240_gain": 8.347, "apex120_180_gain": 9.791, "entry_harm": -0.015, "exit_harm": 0.172, "lap_harm_pp": 1.037, "fk": 0.001, "u_mean": 0.002}, "interlagos": {"corridor": true, "apex120_240_gain": 8.723, "apex120_180_gain": 8.881, "entry_harm": -0.004, "exit_harm": -0.063, "lap_harm_pp": 0.313, "fk": 0.001, "u_mean": 0.0}, "jeddah": {"corridor": false, "apex120_240_gain": 8.785, "apex120_180_gain": 10.781, "entry_harm": -0.045, "exit_harm": -0.007, "lap_harm_pp": 0.033, "fk": 0.001, "u_mean": 0.001}, "las-vegas": {"corridor": false, "apex120_240_gain": null, "apex120_180_gain": null, "entry_harm": -0.031, "exit_harm": -0.171, "lap_harm_pp": -0.089, "fk": 0.001, "u_mean": 0.002}, "lusail": {"corridor": false, "apex120_240_gain": -1.357, "apex120_180_gain": 2.775, "entry_harm": -0.0, "exit_harm": 0.092, "lap_harm_pp": 0.878, "fk": 0.001, "u_mean": 0.001}, "melbourne": {"corridor": false, "apex120_240_gain": 5.094, "apex120_180_gain": 12.473, "entry_harm": 0.02, "exit_harm": -0.155, "lap_harm_pp": 1.021, "fk": 0.001, "u_mean": 0.0}, "mexico-city": {"corridor": true, "apex120_240_gain": -0.03, "apex120_180_gain": -0.386, "entry_harm": 0.123, "exit_harm": -0.014, "lap_harm_pp": 0.314, "fk": 0.001, "u_mean": 0.004}, "miami": {"corridor": false, "apex120_240_gain": -2.606, "apex120_180_gain": 1.7, "entry_harm": -0.115, "exit_harm": -0.139, "lap_harm_pp": -0.961, "fk": 0.001, "u_mean": 0.001}, "monte-carlo": {"corridor": false, "apex120_240_gain": 8.358, "apex120_180_gain": 8.358, "entry_harm": -0.05, "exit_harm": -0.012, "lap_harm_pp": -2.135, "fk": 0.001, "u_mean": 0.002}, "montreal": {"corridor": true, "apex120_240_gain": 9.911, "apex120_180_gain": 9.911, "entry_harm": 0.008, "exit_harm": 0.074, "lap_harm_pp": 0.758, "fk": 0.001, "u_mean": 0.002}, "monza": {"corridor": true, "apex120_240_gain": 4.655, "apex120_180_gain": null, "entry_harm": 0.095, "exit_harm": -0.141, "lap_harm_pp": 1.431, "fk": 0.001, "u_mean": 0.0}, "sakhir": {"corridor": true, "apex120_240_gain": 3.554, "apex120_180_gain": 6.191, "entry_harm": 0.027, "exit_harm": -0.121, "lap_harm_pp": -1.36, "fk": 0.001, "u_mean": 0.001}, "shanghai": {"corridor": true, "apex120_240_gain": 16.964, "apex120_180_gain": 16.185, "entry_harm": 0.035, "exit_harm": 0.036, "lap_harm_pp": 0.999, "fk": 0.001, "u_mean": 0.001}, "silverstone": {"corridor": true, "apex120_240_gain": 4.809, "apex120_180_gain": null, "entry_harm": 0.144, "exit_harm": -0.022, "lap_harm_pp": 0.704, "fk": 0.001, "u_mean": -0.001}, "singapore": {"corridor": false, "apex120_240_gain": 0.311, "apex120_180_gain": 2.004, "entry_harm": -0.034, "exit_harm": -0.176, "lap_harm_pp": -2.156, "fk": 0.001, "u_mean": 0.0}, "spa-francorchamps": {"corridor": true, "apex120_240_gain": 2.928, "apex120_180_gain": 2.999, "entry_harm": -0.003, "exit_harm": -0.031, "lap_harm_pp": -0.038, "fk": 0.001, "u_mean": -0.001}, "spielberg": {"corridor": true, "apex120_240_gain": 3.071, "apex120_180_gain": -1.149, "entry_harm": -0.018, "exit_harm": -0.122, "lap_harm_pp": 0.093, "fk": 0.001, "u_mean": 0.002}, "suzuka": {"corridor": true, "apex120_240_gain": -9.09, "apex120_180_gain": -10.38, "entry_harm": 0.194, "exit_harm": 0.114, "lap_harm_pp": 1.112, "fk": 0.001, "u_mean": -0.003}, "yas-marina-circuit": {"corridor": false, "apex120_240_gain": 8.363, "apex120_180_gain": 9.786, "entry_harm": 0.023, "exit_harm": 0.103, "lap_harm_pp": 1.864, "fk": 0.001, "u_mean": 0.001}, "zandvoort": {"corridor": true, "apex120_240_gain": 5.556, "apex120_180_gain": 10.007, "entry_harm": 0.054, "exit_harm": 0.058, "lap_harm_pp": 1.864, "fk": 0.001, "u_mean": 0.003}}
+##[group]Run actions/upload-artifact@v4
