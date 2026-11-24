@@ -16,7 +16,7 @@ test('official best: Hypercar takes the faster of lmh / lmdh; IMSA rows ignored'
 });
 
 test('lap check: 3 % band both ways, event names mapped to track ids', () => {
-  assert.equal(trackOf('LOSAIL'), 'lusail'); assert.equal(trackOf('24 Hours of Le Mans'), 'le-mans'); assert.equal(trackOf('SAO PAULO'), 'interlagos');
+  assert.equal(trackOf('LOSAIL'), 'lusail'); assert.equal(trackOf('24 Hours of Le Mans'), 'le-mans'); assert.equal(trackOf('SAO PAULO'), 'interlagos'); assert.equal(trackOf('Lone Star Le Mans'), 'austin');
   assert.equal(lapCheck({event: 'LOSAIL', season: '2025', cls: 'LMGT3', best: 115}, bests), 'ok');
   assert.equal(lapCheck({event: 'LOSAIL', season: '2025', cls: 'LMGT3', best: 95.3}, bests), 'off -16.3 %'); // the merged-events bug
   assert.equal(lapCheck({event: 'LE MANS', season: '2024', cls: 'HYPERCAR', best: 212}, bests), 'off +3.7 %');

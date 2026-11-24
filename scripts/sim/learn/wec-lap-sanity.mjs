@@ -8,9 +8,10 @@ import {gunzipSync} from 'node:zlib';
 import {fileURLToPath} from 'node:url';
 
 export const TOL = 0.03;
-const TRACK = [[/sebring/i, 'sebring'], [/portim|algarve/i, 'portimao'], [/spa/i, 'spa-francorchamps'], [/le.?mans/i, 'le-mans'], [/monza/i, 'monza'],
+// Lone Star Le Mans (COTA) before Le Mans
+const TRACK = [[/lone.?star|americas|austin/i, 'austin'], [/sebring/i, 'sebring'], [/portim|algarve/i, 'portimao'], [/spa/i, 'spa-francorchamps'], [/le.?mans/i, 'le-mans'], [/monza/i, 'monza'],
   [/fuji/i, 'fuji'], [/bahrain|sakhir/i, 'sakhir'], [/qatar|losail|lusail/i, 'lusail'], [/imola/i, 'imola'], [/sao.?paulo|interlagos/i, 'interlagos'],
-  [/lone.?star|americas|austin/i, 'austin'], [/barcelona|catalunya/i, 'catalunya']];
+  [/barcelona|catalunya/i, 'catalunya']];
 export const trackOf = e => TRACK.find(([re]) => re.test(String(e)))?.[1] ?? null;
 // Al Kamel WEC event names -> short track id (venue column, else the name), so keys match the other tables. Kept raw when two events of
 // one season would share an id (2021: Bahrain 6 h and 8 h, Spa prologue and race). rows: {season, event, venue}; returns the new events.

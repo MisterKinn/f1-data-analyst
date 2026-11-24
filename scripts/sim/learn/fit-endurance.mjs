@@ -16,6 +16,7 @@ import {lapsimFeTracks} from '../../../worker/lapsim/fe-tracks-data.js';
 import {SERIES} from '../../../worker/lapsim/series.js';
 import {resolveTrack, registry} from './track-registry.mjs';
 import {modelOf} from './models.mjs';
+import {bopTable, bopFor} from './wec-bop-input.mjs';
 
 const K = lapsimKernel(), WEC = lapsimCalibration.series.wec, ALL = {...lapsimTracks, ...lapsimExtraTracks, ...lapsimFeTracks};
 export const WIDTH = {S: 0.02, SS: 0.10, SY: 0.05, T: 0.05, TG: 0.015, M: 0.015, MB: 0.010, MY: 0.007, B: 0.010, F: 1, F2: 0.05, AGE: 0.01, HOT: 0.02, TR: 0.01}, SIGMA = 0.005, HUBER = 2;
@@ -42,10 +43,11 @@ const simCache = new Map(), trk = new Map();
 // row: the 2025 and 2026 class cars differ by several percent on one track, so a layout term learned on one does not fit the other.
 // Season differences go to S. Only the "before" column uses the season's own car, as the page did.
 const LATEST = Object.fromEntries(Object.entries(WEC).map(([c, s]) => [c, Object.keys(s).sort().at(-1)]));
-export function simLap(simId, group, season, w, grip = 1, own = false) {
-  const cs = own ? calSeason(season) : LATEST[CAR[group]], k = [simId, group, cs, Math.round(w.airC ?? 25), Math.round(w.trackC ?? 35), Math.round((w.hpa ?? 1013) / 5), Math.round((w.hum ?? 50) / 10), grip].join('|'); if (simCache.has(k)) return simCache.get(k);
+// bop (optional, LAPSIM_WEC_BOP=1): {dMass, pScale} of the event's BoP against the class reference (wec-bop-input.mjs)
+export function simLap(simId, group, season, w, grip = 1, own = false, bop = null) {
+  const cs = own ? calSeason(season) : LATEST[CAR[group]], k = [simId, group, cs, Math.round(w.airC ?? 25), Math.round(w.trackC ?? 35), Math.round((w.hpa ?? 1013) / 5), Math.round((w.hum ?? 50) / 10), grip, bop ? bop.dMass + ':' + bop.pScale : ''].join('|'); if (simCache.has(k)) return simCache.get(k);
   const t = trk.get(simId) || trk.set(simId, K.trackFromData(ALL[simId])).get(simId), env = K.conditionsFromWeather({pressureHpa: w.hpa ?? 1013.25, airTempC: w.airC ?? 25, humidityPct: w.hum ?? 50, trackTempC: w.trackC ?? 35, windSpeed: 0, windFromDeg: 0});
-  const lap = K.simulateLap(grip === 1 ? t : {...t, mu: Float64Array.from(t.mu, m => m * grip)}, WEC[CAR[group]][cs].car, env).lapTime; simCache.set(k, lap); return lap;
+  const lap = K.simulateLap(grip === 1 ? t : {...t, mu: Float64Array.from(t.mu, m => m * grip)}, bop ? (c => ({...c, mass: c.mass + bop.dMass, pIce: c.pIce * bop.pScale}))(WEC[CAR[group]][cs].car) : WEC[CAR[group]][cs].car, env).lapTime; simCache.set(k, lap); return lap;
 }
 // what the page predicts today for a car that has no real lap here (worker/lapsim/scenario.js gripOf)
 const prodGrip = (simId, group, season) => { const s = WEC[CAR[group]]; return [calSeason(season), ...Object.keys(s).sort().reverse()].map(k => s[k]?.tracks?.[simId]?.grip).find(g => g != null) ?? lapsimExtraTracks[simId]?.trackFactor?.grip ?? 1; };
@@ -140,7 +142,9 @@ export function loadRows(files = SOURCES) {
   // a best lap more than 10 % off the class best of its event is not a push lap (traffic, incomplete timing, Code 60): not fitted
   const top = new Map(); for (const r of best.values()) { const k = r.eventKey + '|' + r.group; top.set(k, Math.min(top.get(k) ?? Infinity, r.real)); }
   for (const [k, r] of best) if (r.real > 1.10 * top.get(r.eventKey + '|' + r.group)) { best.delete(k); skip('not a push lap (>10 % off the event class best)'); }
-  const rows = [...best.values()]; for (const r of rows) { r.sim0 = simLap(r.sim, r.group, r.season, r.w); r.y = Math.log(r.real / r.sim0); r.prod = simLap(r.sim, r.group, r.season, r.w, prodGrip(r.sim, r.group, r.season), true); }
+  // WEC season level, candidate A (flag, off by default): the event's BoP mass / power as physical inputs; no fitted parameter
+  const BOP = process.env.LAPSIM_WEC_BOP === '1' ? bopTable() : null;
+  const rows = [...best.values()]; for (const r of rows) { if (BOP) r.bop = bopFor(BOP, r); r.sim0 = simLap(r.sim, r.group, r.season, r.w, 1, false, r.bop); r.y = Math.log(r.real / r.sim0); r.prod = simLap(r.sim, r.group, r.season, r.w, prodGrip(r.sim, r.group, r.season), true); }
   const zStat = {};
   // z: how fast the layout is (class car mean speed, standard weather), standardised per group
   for (const g of new Set(rows.map(r => r.group))) { const R = rows.filter(r => r.group === g), v = r => Math.log(ALL[r.sim].length / simLap(r.sim, g, 2026, {})), m = R.reduce((a, r) => a + v(r), 0) / R.length, sd = Math.sqrt(R.reduce((a, r) => a + (v(r) - m) ** 2, 0) / R.length) || 1; for (const r of R) r.z = (v(r) - m) / sd; zStat[g] = {m, sd}; }
@@ -178,16 +182,20 @@ function table(rows, preds, by) { // preds: {name: [per row]}
   return out;
 }
 
-if (process.argv[1]?.endsWith('fit-endurance.mjs')) {
-  const loaded = loadRows(process.argv.length > 3 ? process.argv.slice(2, -1) : SOURCES), skipped = loaded.skipped, OUT = process.argv.length > 3 ? process.argv.at(-1) : 'scripts/sim/data/learn/endurance-fit.json'; let rows = loaded.rows;
   // Wet or disrupted qualifying that the rain column missed (rule 3.3.1): the whole class of an event is more than 4 % slower than
   // the fit predicts from every OTHER event. Slow side only. The sessions are listed, not fitted and not scored.
   // Repeated until no new session is found (at most 3 passes): a wet session left in the data pulls the prediction of the others.
+export function slowSessions(rows) {
   const slow = []; for (let pass = 0; pass < 3; pass++) { const g = new Map(), found = slow.length; for (const ev of new Set(rows.map(r => r.eventKey))) { const f = fit(rows.filter(r => r.eventKey !== ev)); for (const r of rows.filter(r => r.eventKey === ev)) { const k = ev + '|' + r.group; (g.get(k) || g.set(k, []).get(k)).push(Math.log(r.real / f.predict(r))); } }
     const mean = new Map([...g].map(([k, e]) => [k, e.reduce((a, x) => a + x, 0) / e.length])), wetEv = new Set([...mean].filter(([, m]) => m > 0.04).map(([k]) => k.split('|').slice(0, -1).join('|')));
     // another class of an event with a wet class is dropped from 2 % slow (same weekend weather, e.g. WEC 2025 COTA GT3 at 3.9 %)
     for (const [k, m] of mean) if (m > 0.04 || m > 0.02 && wetEv.has(k.split('|').slice(0, -1).join('|'))) slow.push({session: k, cars: g.get(k).length, slowerPct: +(m * 100).toFixed(1)});
     const bad = new Set(slow.map(s => s.session)); rows = rows.filter(r => !bad.has(r.eventKey + '|' + r.group)); if (slow.length === found) break; }
+  return {slow, rows};
+}
+if (process.argv[1]?.endsWith('fit-endurance.mjs')) {
+  const loaded = loadRows(process.argv.length > 3 ? process.argv.slice(2, -1) : SOURCES), skipped = loaded.skipped, OUT = process.argv.length > 3 ? process.argv.at(-1) : 'scripts/sim/data/learn/endurance-fit.json'; let rows = loaded.rows;
+  const sl = slowSessions(rows), slow = sl.slow; rows = sl.rows;
   skipped['slow session (wet or disrupted), listed'] = loaded.rows.length - rows.length;
   const full = fit(rows);
   const groups = k => [...new Set(rows.map(r => r[k]))], hold = (key, drop = () => false) => { const p = new Array(rows.length); for (const g of groups(key)) { const f = fit(rows.filter(r => r[key] !== g)); rows.forEach((r, i) => { if (r[key] === g) p[i] = f.predict(r); }); } return p; };
