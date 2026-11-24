@@ -23,6 +23,7 @@ const refine = (t, f) => {
 const rampOf = id => { const p = lapsimPuDocs.events[id], d = lapsimTracks[id], k = p?.centrelineKm ? d.kappa.length * d.ds / (p.centrelineKm * 1000) : 1, sc = z => ({...z, from: z.from * k, to: z.to * k});
   return {rateKWs: p?.rampKWs || 100, bigCut: (p?.bigCut || []).map(sc), speed: (p?.speed || []).map(sc)}; };
 const car26 = C.seasons['2026'].car;
+const car26b = {...car26, clA: 5.969180809129887, cdA: 1.2945351785963244, cdALow: 0.9476271230188951, muX: 1.5708229173677148, muY: 1.7612256952304683, muXTrac: 1.8564270841618449, pIce: 403306.39983400214, ers: {...car26.ers, law: 'b'}};
 const RULES = {
   'f1-2014': {car: C.seasons['2025'].car},
   'f1-2026': {car: car26},
@@ -30,6 +31,10 @@ const RULES = {
   'f1-2026 Overtake': {car: car26, ot: true},
   'f1-2026 puRamp+Overtake': {car: car26, env: id => ({puRamp: rampOf(id)}), ot: true},
   '2027 car': {car: applyRules(car26, 2027)},
+  // ERS law (b) on the 2026 car of the step 10b gate fit (run 45315925439): the cut-off search moved the lap 0.13 % with the step
+  'law (b) puRamp': {car: car26b, env: id => ({puRamp: rampOf(id)})},
+  'law (b) puRamp+Overtake': {car: car26b, env: id => ({puRamp: rampOf(id)}), ot: true},
+  'law (b) 2027 car': {car: applyRules(car26b, 2027)},
   'hypercar (LMH)': {car: C.series.wec.lmh['2025'].car},
   'FE Gen3 Evo': {car: FE_GENS['fe-gen3evo'].car},
 };

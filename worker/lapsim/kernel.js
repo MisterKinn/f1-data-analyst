@@ -649,7 +649,9 @@ export function lapsimKernel() {
         const mid = 0.5 * (lo + hi); let r = null; for (const b of list) if (mid > b.lo && mid <= b.hi) { r = b; break; }
         if (!r) { const fv = forward(mid, vH); r = {lo: cLo, hi: cHi, a: account(fv), top: maxOf(fv)}; list.push(r); }
         const a = r.a; lastTop = r.top;
-        if (a.eDeploy > (fixedBudget ?? budget(a.eRegen))) hi = mid; else lo = mid;
+        // law (b) on a causal lap: the battery caps deploy, so deploy equals the budget to rounding; 1 J is not an overspend (a strict
+        // test flipped the plan on 1e-8 J noise and the lap moved 0.13 % with the track step, mesh test 2026-11-24)
+        if (a.eDeploy > (fixedBudget ?? budget(a.eRegen)) + (lawB && causal ? 1 : 0)) hi = mid; else lo = mid;
       }
       return lo;
     };
@@ -670,7 +672,12 @@ export function lapsimKernel() {
           for (const b of list) if (vh >= b.lo && vh < b.hi) return b.a;
           const a = account(forward(cut, vh)); list.push({lo: vhLo, hi: vhHi, a}); return a; };
         const vTopA = lastTop; // cut-offs from the top speed down (the full-recharge cut-off is often above it: no cut-off at all)
-        for (const cut of [cutB, ...[1, 0.98, 0.96, 0.94, 0.92, 0.9, 0.87, 0.84].map(f => Math.min(cutB, vTopA) * f)]) {
+        // law (b): the same cut-offs on every track step (2 % steps down from the car's top speed, the 8 below the lap's top speed).
+        // Fractions of the lap's top speed moved with the step (0.8 % under the C5.12 ramp) and so did the plan: 0.13 % lap change
+        // when ds halved (mesh test 2026-11-24). shortcut: a 2 % grid can miss a narrow optimum (Silverstone ramp: 0.07 s); refine
+        // around the best point if law (b) ships
+        const fixed = []; for (let c = vMaxCar; fixed.length < 8 && c > 0.5 * vMaxCar; c *= 0.98) if (c <= Math.min(cutB, vTopA)) fixed.push(c);
+        for (const cut of [cutB, ...(lawB ? fixed : [1, 0.98, 0.96, 0.94, 0.92, 0.9, 0.87, 0.84].map(f => Math.min(cutB, vTopA) * f))]) {
           for (const tol of [0, 1.5e3]) { let lo = 5, hi = vMaxCar + 1; // strict search (the earlier plan) and the tolerant one; the faster legal plan wins
           for (let it = 0; it < 20; it++) { const mid = 0.5 * (lo + hi), a = runAt(cut, mid); if (a.eDeploy > budget(a.eRegen) + tol) hi = mid; else lo = mid; }
           const b = runAt(cut, lo);

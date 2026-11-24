@@ -7,7 +7,9 @@ import {lapsimTracks} from '../worker/lapsim/tracks-data.js';
 import {lapsimCalibration as C} from '../worker/lapsim/calibration-data.js';
 import {ersLaw, withErsLaw, regenIdentity} from '../worker/lapsim/ers-law.js';
 
-const K = lapsimKernel(), track = K.trackFromData(lapsimTracks.suzuka), car25 = C.seasons['2025'].car, car26 = C.seasons['2026'].car;
+// flag-off cars: a refit with LAPSIM_ERS_LAW=b stores law 'b' on the calibrated cars, and these tests start from the default
+const off = c => ({...c, ers: {...c.ers, law: undefined}});
+const K = lapsimKernel(), track = K.trackFromData(lapsimTracks.suzuka), car25 = off(C.seasons['2025'].car), car26 = off(C.seasons['2026'].car);
 const same = (a, b) => assert.equal(JSON.stringify(a), JSON.stringify(b));
 
 test('default off: the module does not change the input car; other rule sets come back as they are', () => {
