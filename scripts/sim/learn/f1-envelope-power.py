@@ -1,11 +1,12 @@
 # Step 28 power check from the baseline run's own rows (no candidate is read).
 # usage: python3 -I scripts/sim/learn/f1-envelope-power.py <envelope-baseline.json> <baseline-pooled-2026-11-24.csv> <out.json>
+#        python3 -I scripts/sim/learn/f1-envelope-power.py <a2-baseline.json> - <out.json>   (A2: rows and DRS from the A2 file)
 import json, sys, csv, math, statistics as st
 from collections import defaultdict
 from scipy.stats import binom, norm
 env, drs, out = sys.argv[1:4]
 Z = norm.ppf(1 - 0.05 / 3 / 2) + norm.ppf(0.8)  # α 0.05 split over 3 variants, two-sided, power 0.8
-rows = [r for r in json.load(open(env))['rows'] if 'drop' not in r]
+J = json.load(open(env)); rows = [r for r in J['rows'] if 'drop' not in r]
 by = defaultdict(list)
 for r in rows: by[r['track']].append(r)
 trk = {}
@@ -18,13 +19,16 @@ lp = [v['abs_lap_err_pct'] for v in trk.values()]
 # within-track season-to-season change of the baseline RMS (noise + car change): a candidate gain varies at most about this much per track
 dif = [b - a for v in trk.values() for a, b in zip(sorted(v['season_rms'].items()), sorted(v['season_rms'].items())[1:]) for a, b in [(a[1], b[1])] if a is not None and b is not None]
 sd_within = st.stdev(dif) / math.sqrt(2) if len(dif) > 2 else None
+difl = [abs(b['lap_err_pct']) - abs(a['lap_err_pct']) for rs in by.values() for a, b in zip(sorted(rs, key=lambda r: r['year']), sorted(rs, key=lambda r: r['year'])[1:])]
+sd_lap_within = st.stdev(difl) / math.sqrt(2) if len(difl) > 2 else None
 n = len(sp)
 res = {'z_total': Z, 'speed': {'n_tracks': n, 'baseline_median_kph': st.median(sp), 'sd_between_tracks': st.stdev(sp), 'sd_within_track_season': sd_within,
                              'mde_conservative_kph': Z * st.stdev(sp) / math.sqrt(n), 'mde_within_kph': None if sd_within is None else Z * sd_within / math.sqrt(n),
                              'effect_of_interest_kph': 3.0},
        'lap_guard': {'n_tracks': len(lp), 'baseline_median_abs_pct': st.median(lp), 'sd': st.stdev(lp), 'mde_pct': Z * st.stdev(lp) / math.sqrt(len(lp)),
-                     'delta_5pct_of_median': 0.05 * st.median(lp)}}
-c = [r for r in csv.DictReader(open(drs))]
+                     'delta_5pct_of_median': 0.05 * st.median(lp), 'sd_within_track_season': sd_lap_within,
+                     'paired_mde_planning_pp': None if sd_lap_within is None else Z * sd_lap_within / math.sqrt(len(lp)), 'limit_pp': 0.10}}
+c = [{'meas_delta_s': x['meas'], 'pred_delta_s': x['pred'], 'track': x['track']} for x in J['drs']] if drs == '-' else [r for r in csv.DictReader(open(drs))]
 def ok(r):
     m, p = float(r['meas_delta_s']), float(r['pred_delta_s'])
     return abs(p - m) <= max(0.25 * abs(m), 0.05) and (m == 0 or p * m > 0)

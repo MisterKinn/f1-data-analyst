@@ -5,13 +5,16 @@ name: Lap simulator envelope fit (step 28, research)
 on:
   workflow_dispatch:
     inputs:
-      variant: {description: 'V1 (V2/V3 only after V1 fails)', required: true, default: 'V1'}
+      variant: {description: "V1-A3 (attempt 2) or V2-A3 (attempt 3, only if attempt 2 fails)", required: true, default: "V1-A3"}
+      folds_from_run: {description: 'verdict only: run id whose fold artifacts are scored (no fit)', required: false, default: ''}
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
   check:
+    if: ${{ inputs.folds_from_run == '' }}
     runs-on: ubuntu-latest
     outputs:
       tracks: ${{ steps.t.outputs.tracks }}
@@ -26,6 +29,22 @@ jobs:
         run: echo "tracks=$(jq -c '[.events[].track] | unique' scripts/sim/data/f1-envelope/traces.json)" >> "$GITHUB_OUTPUT"
       - uses: actions/upload-artifact@v4
         with: {name: baseline-check, path: baseline-check.json, retention-days: 90}
+  a2base:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - run: npm ci --ignore-scripts
+      - name: A2 baseline rows (shipped car, held-out grip = geometric mean of the other tracks) and A2 power check
+        run: |
+          set -o pipefail
+          node scripts/sim/learn/f1-envelope-fit.mjs --a2-baseline a2-baseline.json
+          python3 -m pip install --quiet --break-system-packages scipy numpy
+          sha256sum a2-baseline.json
+          python3 scripts/sim/learn/f1-envelope-power.py a2-baseline.json - a2-power.json | tee a2-power.txt
+      - uses: actions/upload-artifact@v4
+        with: {name: a2-baseline, path: 'a2-*', retention-days: 90}
   fold:
     needs: check
     runs-on: ubuntu-latest
@@ -43,14 +62,25 @@ jobs:
       - uses: actions/upload-artifact@v4
         with: {name: 'fold-${{ matrix.track }}', path: 'fold-${{ matrix.track }}.json', retention-days: 90}
   verdict:
-    needs: fold
+    needs: [fold, a2base]
     if: always()
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
-        with: {pattern: 'fold-*', path: folds, merge-multiple: true}
-      - run: pip install --quiet scipy numpy
-      - run: python3 -I scripts/sim/learn/f1-envelope-loto.py folds verdict.json | tee verdict.txt
+        with:
+          pattern: 'fold-*'
+          path: folds
+          merge-multiple: true
+          run-id: ${{ inputs.folds_from_run || github.run_id }}
+          github-token: ${{ github.token }}
+      - uses: actions/download-artifact@v4
+        with: {name: a2-baseline, path: a2}
+      - run: python3 -m pip install --quiet --break-system-packages scipy numpy
+      - name: Verdict (fold files hashed first)
+        run: |
+          set -o pipefail
+          sha256sum folds/*.json
+          python3 scripts/sim/learn/f1-envelope-loto.py folds verdict.json a2/a2-baseline.json | tee verdict.txt
       - uses: actions/upload-artifact@v4
         with: {name: verdict, path: 'verdict.*', retention-days: 90}
