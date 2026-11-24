@@ -1,0 +1,6058 @@
+{
+ "aragon": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "source incomplete",
+   "registration": {
+    "rotDeg": 11.9,
+    "mirror": false,
+    "trimmedMeanM": 12.77
+   },
+   "id": "aragon",
+   "osmWays": 33,
+   "waysUsed": 12,
+   "matchedShare": 0.3647,
+   "bridgedShare": 0.6353,
+   "sourceIncomplete": true,
+   "backSteps": 9,
+   "centreLengthM": 4563.3,
+   "officialLengthM": 5346,
+   "centreVsOfficialPct": -14.64,
+   "suspect": true,
+   "lineLengthM": 4472.7,
+   "prodLengthM": 5265.3,
+   "widthM": 12,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0.047,
+     "fia-list": 0.953
+    },
+    "medianWidthM": 12,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 2
+   },
+   "lineOffsetMaxM": 5.34,
+   "turnDeg": 351.8,
+   "elevation": {
+    "source": "IGN MDT05 (5 m)",
+    "url": "https://servicios.idee.es/wcs-inspire/mdt",
+    "licence": "CC BY 4.0, © Instituto Geográfico Nacional",
+    "gridM": 5,
+    "validShare": 0.985,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 68,
+    "rangeM": 31.1,
+    "bankingFromSurface": true,
+    "gradeMaxPct": 17.5,
+    "kvMax": 0.0093,
+    "bankMaxDeg": 7.4
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "austin": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": 0.23,
+    "mirror": false,
+    "trimmedMeanM": 0.85
+   },
+   "id": "austin",
+   "osmWays": 40,
+   "waysUsed": 32,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 5472.3,
+   "officialLengthM": 5513,
+   "centreVsOfficialPct": -0.74,
+   "suspect": false,
+   "lineLengthM": 5368.7,
+   "prodLengthM": 5422.8,
+   "widthM": 13,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 1,
+     "osm-width-tag": 0,
+     "fia-list": 0
+    },
+    "medianWidthM": 13.95,
+    "kerb": "kerb-use-data.js (iRacing)",
+    "kerbShare": 0.135,
+    "limits": {
+     "year": 2026,
+     "doc": {
+      "title": "Doc 27 - Race Director's Competition Notes V3",
+      "url": "https://www.fia.com/system/files/decision-document/2026_united_states_grand_prix_-_race_directors_competition_notes_v3.pdf",
+      "published": "Published on 25.10.26 14:35 CET"
+     },
+     "corners": []
+    },
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 8.59,
+   "turnDeg": 361.1,
+   "elevation": {
+    "source": "USGS 3DEP dynamic elevation (best available: 1 m lidar where flown, else 1/3 arc-second)",
+    "url": "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer",
+    "licence": "US public domain (USGS)",
+    "gridM": 3,
+    "validShare": 1,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 0,
+    "rangeM": 30.6,
+    "bankingFromSurface": true,
+    "gradeMaxPct": 13.3,
+    "kvMax": 0.0058,
+    "bankMaxDeg": 4.4
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "autopolis": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": 0.11,
+    "mirror": false,
+    "trimmedMeanM": 0.25
+   },
+   "id": "autopolis",
+   "osmWays": 6,
+   "waysUsed": 3,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 4615.2,
+   "officialLengthM": 4674,
+   "centreVsOfficialPct": -1.26,
+   "suspect": false,
+   "lineLengthM": 4518.5,
+   "prodLengthM": 4543.8,
+   "widthM": 12,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 12,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.36,
+   "turnDeg": -360.1,
+   "elevation": {
+    "source": "GSI dem5a_png (Geospatial Information Authority of Japan)",
+    "url": "https://cyberjapandata.gsi.go.jp/xyz/dem5a_png/{z}/{x}/{y}.png",
+    "licence": "GSI Content Terms of Use (compatible with CC BY 4.0); credit: 国土地理院 / GSI Japan",
+    "gridM": 5,
+    "validShare": 0.99,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 45,
+    "rangeM": 51.1,
+    "bankingFromSurface": true,
+    "gradeMaxPct": 15.9,
+    "kvMax": 0.0083,
+    "bankMaxDeg": 1.7
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "baku": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "source incomplete",
+   "registration": {
+    "rotDeg": -0.26,
+    "mirror": false,
+    "trimmedMeanM": 0.72
+   },
+   "id": "baku",
+   "osmWays": 9,
+   "waysUsed": 9,
+   "matchedShare": 0.3023,
+   "bridgedShare": 0.6977,
+   "sourceIncomplete": true,
+   "backSteps": 0,
+   "centreLengthM": 5524.5,
+   "officialLengthM": 6003,
+   "centreVsOfficialPct": -7.97,
+   "suspect": true,
+   "lineLengthM": 5491.9,
+   "prodLengthM": 5956.8,
+   "widthM": 9,
+   "widthSource": "track-widths.js",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "track-widths.js": 1
+    },
+    "medianWidthM": 10.3,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": {
+     "year": 2025,
+     "doc": {
+      "title": "Doc 38 - Race Director's Event Notes V4",
+      "url": "https://www.fia.com/system/files/decision-document/2025_azerbaijan_grand_prix_-_race_directors_event_notes_v4.pdf",
+      "published": "Published on 21.09.25 08:53 CET"
+     },
+     "corners": []
+    },
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 4.66,
+   "turnDeg": 360.4,
+   "elevation": null,
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "buriram": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": -0.02,
+    "mirror": false,
+    "trimmedMeanM": 0.23
+   },
+   "id": "buriram",
+   "osmWays": 13,
+   "waysUsed": 1,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 4537.6,
+   "officialLengthM": 4554,
+   "centreVsOfficialPct": -0.36,
+   "suspect": false,
+   "lineLengthM": 4472.7,
+   "prodLengthM": 4503,
+   "widthM": 13,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 13,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.84,
+   "turnDeg": -360.2,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N14_00_E103_00_DEM/Copernicus_DSM_COG_10_N14_00_E103_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.992,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 37,
+    "rangeM": 13,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 2.5,
+    "kvMax": 0.0004,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "catalunya": [
+  {
+   "era": {
+    "from": null,
+    "to": 2020,
+    "date": "2020-06-01"
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": -0.62,
+    "mirror": false,
+    "trimmedMeanM": 0.79
+   },
+   "id": "catalunya",
+   "osmWays": 42,
+   "waysUsed": 16,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 4681.3,
+   "officialLengthM": 4657,
+   "centreVsOfficialPct": 0.52,
+   "suspect": false,
+   "lineLengthM": 4597,
+   "prodLengthM": 4610.8,
+   "widthM": 11,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 11,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": {
+     "year": 2020,
+     "doc": {
+      "title": "Race Directors' Event Notes Version 2",
+      "url": "https://www.fia.com/sites/default/files/decision-document/2020%20Spanish%20Grand%20Prix%20-%20Race%20Directors'%20Event%20Notes%20Version%202.pdf",
+      "published": "Published on 15.08.20 13:14 CET"
+     },
+     "corners": []
+    },
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 4.95,
+   "turnDeg": -359.6,
+   "elevation": {
+    "source": "IGN MDT05 (5 m)",
+    "url": "https://servicios.idee.es/wcs-inspire/mdt",
+    "licence": "CC BY 4.0, © Instituto Geográfico Nacional",
+    "gridM": 5,
+    "validShare": 1,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 0,
+    "rangeM": 29.7,
+    "bankingFromSurface": true,
+    "gradeMaxPct": 6.8,
+    "kvMax": 0.0027,
+    "bankMaxDeg": 5.2
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  },
+  {
+   "era": {
+    "from": 2021,
+    "to": 2022,
+    "date": "2022-06-01"
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": -0.62,
+    "mirror": false,
+    "trimmedMeanM": 0.79
+   },
+   "id": "catalunya",
+   "osmWays": 41,
+   "waysUsed": 9,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 4652.1,
+   "officialLengthM": 4657,
+   "centreVsOfficialPct": -0.1,
+   "suspect": false,
+   "lineLengthM": 4578.2,
+   "prodLengthM": 4610.8,
+   "widthM": 11,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 11,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": {
+     "year": 2022,
+     "doc": {
+      "title": "Race Director's Event Notes V3",
+      "url": "https://www.fia.com/sites/default/files/decision-document/2022%20Spanish%20Grand%20Prix%20-%20Race%20Director's%20Event%20Notes%20V3.pdf",
+      "published": "Published on 21.05.22 15:49 CET"
+     },
+     "corners": []
+    },
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 4.96,
+   "turnDeg": -359.9,
+   "elevation": {
+    "source": "IGN MDT05 (5 m)",
+    "url": "https://servicios.idee.es/wcs-inspire/mdt",
+    "licence": "CC BY 4.0, © Instituto Geográfico Nacional",
+    "gridM": 5,
+    "validShare": 1,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 0,
+    "rangeM": 29.7,
+    "bankingFromSurface": true,
+    "gradeMaxPct": 6.8,
+    "kvMax": 0.0039,
+    "bankMaxDeg": 5.2
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  },
+  {
+   "era": {
+    "from": 2023,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": -0.62,
+    "mirror": false,
+    "trimmedMeanM": 0.79
+   },
+   "id": "catalunya",
+   "osmWays": 45,
+   "waysUsed": 15,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 4646.8,
+   "officialLengthM": 4657,
+   "centreVsOfficialPct": -0.22,
+   "suspect": false,
+   "lineLengthM": 4571.6,
+   "prodLengthM": 4610.8,
+   "widthM": 11,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 11,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": {
+     "year": 2026,
+     "doc": {
+      "title": "Doc 51 - Race Director's Competition Notes V3",
+      "url": "https://www.fia.com/system/files/decision-document/2026_barcelona-catalunya_grand_prix_-_race_directors_competition_notes_v3.pdf",
+      "published": "Published on 14.06.26 11:44 CET"
+     },
+     "corners": []
+    },
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 4.95,
+   "turnDeg": -359.9,
+   "elevation": {
+    "source": "IGN MDT05 (5 m)",
+    "url": "https://servicios.idee.es/wcs-inspire/mdt",
+    "licence": "CC BY 4.0, © Instituto Geográfico Nacional",
+    "gridM": 5,
+    "validShare": 1,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 0,
+    "rangeM": 29.7,
+    "bankingFromSurface": true,
+    "gradeMaxPct": 6.9,
+    "kvMax": 0.0036,
+    "bankMaxDeg": 5.2
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "daytona": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": -0.69,
+    "mirror": false,
+    "trimmedMeanM": 0.82
+   },
+   "id": "daytona",
+   "osmWays": 26,
+   "waysUsed": 21,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 1,
+   "centreLengthM": 5734.7,
+   "officialLengthM": 5729,
+   "centreVsOfficialPct": 0.1,
+   "suspect": false,
+   "lineLengthM": 5672.3,
+   "prodLengthM": 5665.6,
+   "widthM": 12.2,
+   "widthSource": "track-widths.js",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "track-widths.js": 1
+    },
+    "medianWidthM": 12.2,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.49,
+   "turnDeg": 359.9,
+   "elevation": {
+    "source": "USGS 3DEP dynamic elevation (best available: 1 m lidar where flown, else 1/3 arc-second)",
+    "url": "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer",
+    "licence": "US public domain (USGS)",
+    "gridM": 3,
+    "validShare": 1,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 0,
+    "rangeM": 6.6,
+    "bankingFromSurface": true,
+    "gradeMaxPct": 4.3,
+    "kvMax": 0.0022,
+    "bankMaxDeg": 26.6
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "donington": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": 0.04,
+    "mirror": false,
+    "trimmedMeanM": 0.44
+   },
+   "id": "donington",
+   "osmWays": 20,
+   "waysUsed": 19,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 3991.5,
+   "officialLengthM": 4003,
+   "centreVsOfficialPct": -0.29,
+   "suspect": false,
+   "lineLengthM": 3933.7,
+   "prodLengthM": 3949.8,
+   "widthM": 12,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 12,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.41,
+   "turnDeg": -360.1,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N52_00_W002_00_DEM/Copernicus_DSM_COG_10_N52_00_W002_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 1,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 0,
+    "rangeM": 33.7,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 6.7,
+    "kvMax": 0.0006,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "dubai": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": 0.14,
+    "mirror": false,
+    "trimmedMeanM": 0.47
+   },
+   "id": "dubai",
+   "osmWays": 10,
+   "waysUsed": 5,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 5387.2,
+   "officialLengthM": 5390,
+   "centreVsOfficialPct": -0.05,
+   "suspect": false,
+   "lineLengthM": 5272.4,
+   "prodLengthM": 5295.4,
+   "widthM": 14,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 14,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 6.29,
+   "turnDeg": -360.2,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N25_00_E055_00_DEM/Copernicus_DSM_COG_10_N25_00_E055_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.982,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 94,
+    "rangeM": 17.8,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 4.8,
+    "kvMax": 0.0005,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "estoril": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": -0.12,
+    "mirror": false,
+    "trimmedMeanM": 0.25
+   },
+   "id": "estoril",
+   "osmWays": 23,
+   "waysUsed": 20,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 4168.6,
+   "officialLengthM": 4182,
+   "centreVsOfficialPct": -0.32,
+   "suspect": false,
+   "lineLengthM": 4094,
+   "prodLengthM": 4114.3,
+   "widthM": 10,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 10,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 4.54,
+   "turnDeg": -360,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N38_00_W010_00_DEM/Copernicus_DSM_COG_10_N38_00_W010_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.991,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 35,
+    "rangeM": 22.3,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 6.2,
+    "kvMax": 0.0005,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "fe-jakarta": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "source incomplete",
+   "registration": {
+    "rotDeg": -176.98,
+    "mirror": false,
+    "trimmedMeanM": 0.5
+   },
+   "id": "fe-jakarta",
+   "osmWays": 2,
+   "waysUsed": 1,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 2333.9,
+   "officialLengthM": 2370,
+   "centreVsOfficialPct": -1.52,
+   "suspect": true,
+   "lineLengthM": 2282.5,
+   "prodLengthM": 2307.4,
+   "widthM": 10,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 10,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 4.43,
+   "turnDeg": -360.6,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_S07_00_E106_00_DEM/Copernicus_DSM_COG_10_S07_00_E106_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.765,
+    "crossoverBlankM": 506,
+    "spikeBlankM": 30,
+    "rangeM": 2.6,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 1.3,
+    "kvMax": 0.0002,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "fe-jeddah": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "source incomplete",
+   "registration": {
+    "rotDeg": -74.89,
+    "mirror": false,
+    "trimmedMeanM": 10.59
+   },
+   "id": "fe-jeddah",
+   "osmWays": 17,
+   "waysUsed": 8,
+   "matchedShare": 0.5495,
+   "bridgedShare": 0.4505,
+   "sourceIncomplete": true,
+   "backSteps": 6,
+   "centreLengthM": 2891.2,
+   "officialLengthM": 3001,
+   "centreVsOfficialPct": -3.66,
+   "suspect": true,
+   "lineLengthM": 2816.8,
+   "prodLengthM": 2931.2,
+   "widthM": 12,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 12,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 8
+   },
+   "lineOffsetMaxM": 5.39,
+   "turnDeg": 364.7,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N21_00_E039_00_DEM/Copernicus_DSM_COG_10_N21_00_E039_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.8,
+    "crossoverBlankM": 556,
+    "spikeBlankM": 5,
+    "rangeM": 1.5,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 0.9,
+    "kvMax": 0.0001,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "fe-mexico-2023": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "source incomplete",
+   "registration": {
+    "rotDeg": -26.44,
+    "mirror": false,
+    "trimmedMeanM": 15.99
+   },
+   "id": "fe-mexico-2023",
+   "osmWays": 23,
+   "waysUsed": 11,
+   "matchedShare": 0.468,
+   "bridgedShare": 0.532,
+   "sourceIncomplete": true,
+   "backSteps": 12,
+   "centreLengthM": 1981.5,
+   "officialLengthM": 2630,
+   "centreVsOfficialPct": -24.66,
+   "suspect": true,
+   "lineLengthM": 1947.4,
+   "prodLengthM": 2573.7,
+   "widthM": 10,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0.056,
+     "osm-width-tag": 0,
+     "fia-list": 0.944
+    },
+    "medianWidthM": 10,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 4.9,
+   "turnDeg": -206.2,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N19_00_W100_00_DEM/Copernicus_DSM_COG_10_N19_00_W100_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.695,
+    "crossoverBlankM": 549,
+    "spikeBlankM": 43,
+    "rangeM": 2.7,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 2.1,
+    "kvMax": 0.0003,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "fe-mexico": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "source incomplete",
+   "registration": {
+    "rotDeg": -28.63,
+    "mirror": false,
+    "trimmedMeanM": 14.59
+   },
+   "id": "fe-mexico",
+   "osmWays": 23,
+   "waysUsed": 10,
+   "matchedShare": 0.5176,
+   "bridgedShare": 0.4824,
+   "sourceIncomplete": true,
+   "backSteps": 7,
+   "centreLengthM": 2443,
+   "officialLengthM": 2608,
+   "centreVsOfficialPct": -6.33,
+   "suspect": true,
+   "lineLengthM": 2388.5,
+   "prodLengthM": 2558.9,
+   "widthM": 10,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0.16,
+     "osm-width-tag": 0,
+     "fia-list": 0.84
+    },
+    "medianWidthM": 10,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 3
+   },
+   "lineOffsetMaxM": 7.81,
+   "turnDeg": -519.3,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N19_00_W100_00_DEM/Copernicus_DSM_COG_10_N19_00_W100_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.46,
+    "crossoverBlankM": 1284,
+    "spikeBlankM": 0,
+    "rangeM": 5,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 2.6,
+    "kvMax": 0.0004,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "fe-sao-paulo": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": -178.33,
+    "mirror": false,
+    "trimmedMeanM": 1.39
+   },
+   "id": "fe-sao-paulo",
+   "osmWays": 4,
+   "waysUsed": 3,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 2901.3,
+   "officialLengthM": 2933,
+   "centreVsOfficialPct": -1.08,
+   "suspect": false,
+   "lineLengthM": 2860,
+   "prodLengthM": 2884.5,
+   "widthM": 10,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 10,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 4.43,
+   "turnDeg": -360.1,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_S24_00_W047_00_DEM/Copernicus_DSM_COG_10_S24_00_W047_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.793,
+    "crossoverBlankM": 568,
+    "spikeBlankM": 23,
+    "rangeM": 3.2,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 1.6,
+    "kvMax": 0.0002,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "fe-shanghai": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "source incomplete",
+   "registration": {
+    "rotDeg": -163.35,
+    "mirror": false,
+    "trimmedMeanM": 7.73
+   },
+   "id": "fe-shanghai",
+   "osmWays": 17,
+   "waysUsed": 7,
+   "matchedShare": 0.5351,
+   "bridgedShare": 0.4649,
+   "sourceIncomplete": true,
+   "backSteps": 4,
+   "centreLengthM": 3102.6,
+   "officialLengthM": 3051,
+   "centreVsOfficialPct": 1.69,
+   "suspect": true,
+   "lineLengthM": 3042.9,
+   "prodLengthM": 2989.1,
+   "widthM": 12,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 12,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 5
+   },
+   "lineOffsetMaxM": 5.38,
+   "turnDeg": -539.7,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N31_00_E121_00_DEM/Copernicus_DSM_COG_10_N31_00_E121_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.958,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 127,
+    "rangeM": 3.3,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 2.3,
+    "kvMax": 0.0005,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "fe-tokyo": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "source incomplete",
+   "registration": {
+    "rotDeg": -92.64,
+    "mirror": false,
+    "trimmedMeanM": 78.49
+   },
+   "id": "fe-tokyo",
+   "osmWays": 1,
+   "waysUsed": 1,
+   "matchedShare": 0.07,
+   "bridgedShare": 0.93,
+   "sourceIncomplete": true,
+   "backSteps": 2,
+   "centreLengthM": 322.6,
+   "officialLengthM": 2575,
+   "centreVsOfficialPct": -87.47,
+   "suspect": true,
+   "lineLengthM": 251.8,
+   "prodLengthM": 2499.7,
+   "widthM": 10,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 10,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 1
+   },
+   "lineOffsetMaxM": 4.07,
+   "turnDeg": 352.2,
+   "elevation": {
+    "source": "GSI dem5a_png (Geospatial Information Authority of Japan)",
+    "url": "https://cyberjapandata.gsi.go.jp/xyz/dem5a_png/{z}/{x}/{y}.png",
+    "licence": "GSI Content Terms of Use (compatible with CC BY 4.0); credit: 国土地理院 / GSI Japan",
+    "gridM": 5,
+    "validShare": 1,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 0,
+    "rangeM": 0.3,
+    "bankingFromSurface": true,
+    "gradeMaxPct": 1.1,
+    "kvMax": 0.0008,
+    "bankMaxDeg": 0.7
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "fe-valencia": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "source incomplete",
+   "registration": {
+    "rotDeg": 33.26,
+    "mirror": false,
+    "trimmedMeanM": 4.85
+   },
+   "id": "fe-valencia",
+   "osmWays": 24,
+   "waysUsed": 13,
+   "matchedShare": 0.5301,
+   "bridgedShare": 0.4699,
+   "sourceIncomplete": true,
+   "backSteps": 6,
+   "centreLengthM": 3019.6,
+   "officialLengthM": 3376,
+   "centreVsOfficialPct": -10.56,
+   "suspect": true,
+   "lineLengthM": 2945.5,
+   "prodLengthM": 3321.7,
+   "widthM": 12,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 12,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 5
+   },
+   "lineOffsetMaxM": 5.17,
+   "turnDeg": 362.1,
+   "elevation": {
+    "source": "IGN MDT05 (5 m)",
+    "url": "https://servicios.idee.es/wcs-inspire/mdt",
+    "licence": "CC BY 4.0, © Instituto Geográfico Nacional",
+    "gridM": 5,
+    "validShare": 0.986,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 40,
+    "rangeM": 16.4,
+    "bankingFromSurface": true,
+    "gradeMaxPct": 9.7,
+    "kvMax": 0.0051,
+    "bankMaxDeg": 6.1
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "fuji": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "source incomplete",
+   "registration": {
+    "rotDeg": -1.36,
+    "mirror": false,
+    "trimmedMeanM": 11.04
+   },
+   "id": "fuji",
+   "osmWays": 20,
+   "waysUsed": 5,
+   "matchedShare": 0.3746,
+   "bridgedShare": 0.6254,
+   "sourceIncomplete": true,
+   "backSteps": 3,
+   "centreLengthM": 3810.3,
+   "officialLengthM": 4549,
+   "centreVsOfficialPct": -16.24,
+   "suspect": true,
+   "lineLengthM": 3787.6,
+   "prodLengthM": 4444.5,
+   "widthM": 15,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 15,
+    "kerb": "kerb-use-data.js (iRacing)",
+    "kerbShare": 0.031,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 6
+   },
+   "lineOffsetMaxM": 6.69,
+   "turnDeg": -360.9,
+   "elevation": {
+    "source": "GSI dem5a_png (Geospatial Information Authority of Japan)",
+    "url": "https://cyberjapandata.gsi.go.jp/xyz/dem5a_png/{z}/{x}/{y}.png",
+    "licence": "GSI Content Terms of Use (compatible with CC BY 4.0); credit: 国土地理院 / GSI Japan",
+    "gridM": 5,
+    "validShare": 0.985,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 55,
+    "rangeM": 46.7,
+    "bankingFromSurface": true,
+    "gradeMaxPct": 35.7,
+    "kvMax": 0.0135,
+    "bankMaxDeg": 23.7
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "hockenheim": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": 0.06,
+    "mirror": false,
+    "trimmedMeanM": 0.3
+   },
+   "id": "hockenheim",
+   "osmWays": 26,
+   "waysUsed": 19,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 4554,
+   "officialLengthM": 4574,
+   "centreVsOfficialPct": -0.44,
+   "suspect": false,
+   "lineLengthM": 4514,
+   "prodLengthM": 4524.6,
+   "widthM": 9,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 9,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 4.07,
+   "turnDeg": -360.5,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N49_00_E008_00_DEM/Copernicus_DSM_COG_10_N49_00_E008_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.996,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 19,
+    "rangeM": 3.9,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 1.7,
+    "kvMax": 0.0003,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "hungaroring": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": -0.48,
+    "mirror": false,
+    "trimmedMeanM": 0.93
+   },
+   "id": "hungaroring",
+   "osmWays": 11,
+   "waysUsed": 3,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 4353.6,
+   "officialLengthM": 4381,
+   "centreVsOfficialPct": -0.63,
+   "suspect": false,
+   "lineLengthM": 4286.5,
+   "prodLengthM": 4325.8,
+   "widthM": 10,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0.028,
+     "fia-list": 0.972
+    },
+    "medianWidthM": 10,
+    "kerb": "kerb-use-data.js (iRacing)",
+    "kerbShare": 0.193,
+    "limits": {
+     "year": 2026,
+     "doc": {
+      "title": "Doc 42 - Race Director's Competition Notes V2",
+      "url": "https://www.fia.com/system/files/decision-document/2026_hungarian_grand_prix_-_race_directors_competition_notes_v2.pdf",
+      "published": "Published on 25.07.26 19:32 CET"
+     },
+     "corners": []
+    },
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 4.56,
+   "turnDeg": -360.1,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N47_00_E019_00_DEM/Copernicus_DSM_COG_10_N47_00_E019_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.995,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 20,
+    "rangeM": 33.7,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 6.9,
+    "kvMax": 0.0007,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "imola": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": -0.35,
+    "mirror": false,
+    "trimmedMeanM": 0.85
+   },
+   "id": "imola",
+   "seed": [
+    44.338,
+    11.708
+   ],
+   "osmWays": 37,
+   "waysUsed": 35,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 4898.3,
+   "officialLengthM": 4909,
+   "centreVsOfficialPct": -0.22,
+   "suspect": false,
+   "lineLengthM": 4846.3,
+   "prodLengthM": 4866.8,
+   "widthM": 10,
+   "widthSource": "track-widths.js",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "track-widths.js": 1
+    },
+    "medianWidthM": 12.5,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": {
+     "year": 2025,
+     "doc": {
+      "title": "Doc 4 - Race Director's Event Notes",
+      "url": "https://www.fia.com/system/files/decision-document/2025_emilia_romagna_grand_prix_-_race_directors_event_notes_.pdf",
+      "published": "Published on 15.05.25 18:44 CET"
+     },
+     "corners": []
+    },
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.62,
+   "turnDeg": 360.1,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N44_00_E011_00_DEM/Copernicus_DSM_COG_10_N44_00_E011_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.999,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 5,
+    "rangeM": 35.1,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 8.6,
+    "kvMax": 0.0009,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "indianapolis": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": -0.01,
+    "mirror": false,
+    "trimmedMeanM": 0.66
+   },
+   "id": "indianapolis",
+   "osmWays": 44,
+   "waysUsed": 15,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 3892.8,
+   "officialLengthM": 3925,
+   "centreVsOfficialPct": -0.82,
+   "suspect": false,
+   "lineLengthM": 3816.9,
+   "prodLengthM": 3839.8,
+   "widthM": 12,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 12,
+    "kerb": "kerb-use-data.js (iRacing)",
+    "kerbShare": 0.157,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 6.75,
+   "turnDeg": -360,
+   "elevation": {
+    "source": "USGS 3DEP dynamic elevation (best available: 1 m lidar where flown, else 1/3 arc-second)",
+    "url": "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer",
+    "licence": "US public domain (USGS)",
+    "gridM": 3,
+    "validShare": 1,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 0,
+    "rangeM": 3.7,
+    "bankingFromSurface": true,
+    "gradeMaxPct": 4.4,
+    "kvMax": 0.0027,
+    "bankMaxDeg": 3.1
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "inje": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": -0.02,
+    "mirror": false,
+    "trimmedMeanM": 0.22
+   },
+   "id": "inje",
+   "osmWays": 5,
+   "waysUsed": 4,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 3921,
+   "officialLengthM": 3908,
+   "centreVsOfficialPct": 0.33,
+   "suspect": false,
+   "lineLengthM": 3813.8,
+   "prodLengthM": 3839.6,
+   "widthM": 14,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 14,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 6.29,
+   "turnDeg": -360.3,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N37_00_E128_00_DEM/Copernicus_DSM_COG_10_N37_00_E128_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.971,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 110,
+    "rangeM": 42.3,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 10.7,
+    "kvMax": 0.0012,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "interlagos": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": 0.56,
+    "mirror": false,
+    "trimmedMeanM": 1.11
+   },
+   "id": "interlagos",
+   "osmWays": 45,
+   "waysUsed": 27,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 4284.5,
+   "officialLengthM": 4309,
+   "centreVsOfficialPct": -0.57,
+   "suspect": false,
+   "lineLengthM": 4225.1,
+   "prodLengthM": 4230.4,
+   "widthM": 10,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 10,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": {
+     "year": 2025,
+     "doc": {
+      "title": "Doc 6 - Race Director's Event Notes",
+      "url": "https://www.fia.com/system/files/decision-document/2025_sao_paulo_grand_prix_-_race_directors_event_notes_.pdf",
+      "published": "Published on 06.11.25 22:31 CET"
+     },
+     "corners": []
+    },
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 4.54,
+   "turnDeg": 359.9,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_S24_00_W047_00_DEM/Copernicus_DSM_COG_10_S24_00_W047_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.979,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 87,
+    "rangeM": 43.4,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 9.4,
+    "kvMax": 0.0008,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "istanbul": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": 11.49,
+    "mirror": false,
+    "trimmedMeanM": 1.34
+   },
+   "id": "istanbul",
+   "osmWays": 4,
+   "waysUsed": 2,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 5330.8,
+   "officialLengthM": 5338,
+   "centreVsOfficialPct": -0.14,
+   "suspect": false,
+   "lineLengthM": 5222.9,
+   "prodLengthM": 5262.8,
+   "widthM": 11,
+   "widthSource": "track-widths.js",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "track-widths.js": 1
+    },
+    "medianWidthM": 15,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 6.73,
+   "turnDeg": 360.1,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N40_00_E029_00_DEM/Copernicus_DSM_COG_10_N40_00_E029_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.981,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 98,
+    "rangeM": 38.5,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 7.3,
+    "kvMax": 0.0007,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "jarama-2025": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": 95.07,
+    "mirror": false,
+    "trimmedMeanM": 0.97
+   },
+   "id": "jarama-2025",
+   "osmWays": 9,
+   "waysUsed": 3,
+   "matchedShare": 0.9974,
+   "bridgedShare": 0.0026,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 3888.8,
+   "officialLengthM": 3915,
+   "centreVsOfficialPct": -0.67,
+   "suspect": false,
+   "lineLengthM": 3812.6,
+   "prodLengthM": 3842.3,
+   "widthM": 12,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 12,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.38,
+   "turnDeg": -360.2,
+   "elevation": {
+    "source": "IGN MDT05 (5 m)",
+    "url": "https://servicios.idee.es/wcs-inspire/mdt",
+    "licence": "CC BY 4.0, © Instituto Geográfico Nacional",
+    "gridM": 5,
+    "validShare": 0.99,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 39,
+    "rangeM": 28,
+    "bankingFromSurface": true,
+    "gradeMaxPct": 11.8,
+    "kvMax": 0.0077,
+    "bankMaxDeg": 11.3
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "jarama": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": -72.73,
+    "mirror": false,
+    "trimmedMeanM": 0.65
+   },
+   "id": "jarama",
+   "osmWays": 9,
+   "waysUsed": 3,
+   "matchedShare": 0.9896,
+   "bridgedShare": 0.0104,
+   "sourceIncomplete": false,
+   "backSteps": 1,
+   "centreLengthM": 3892.7,
+   "officialLengthM": 3934,
+   "centreVsOfficialPct": -1.05,
+   "suspect": false,
+   "lineLengthM": 3812.8,
+   "prodLengthM": 3858.9,
+   "widthM": 12,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 12,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.4,
+   "turnDeg": -360.2,
+   "elevation": {
+    "source": "IGN MDT05 (5 m)",
+    "url": "https://servicios.idee.es/wcs-inspire/mdt",
+    "licence": "CC BY 4.0, © Instituto Geográfico Nacional",
+    "gridM": 5,
+    "validShare": 0.99,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 39,
+    "rangeM": 28,
+    "bankingFromSurface": true,
+    "gradeMaxPct": 11.8,
+    "kvMax": 0.0079,
+    "bankMaxDeg": 11.4
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "jeddah": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": 0.01,
+    "mirror": false,
+    "trimmedMeanM": 1.21
+   },
+   "id": "jeddah",
+   "seed": [
+    21.6319,
+    39.1044
+   ],
+   "osmWays": 17,
+   "waysUsed": 12,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 6150.8,
+   "officialLengthM": 6176,
+   "centreVsOfficialPct": -0.41,
+   "suspect": false,
+   "lineLengthM": 6050.9,
+   "prodLengthM": 6109.5,
+   "widthM": 12,
+   "widthSource": "track-widths.js",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "track-widths.js": 1
+    },
+    "medianWidthM": 13,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": {
+     "year": 2025,
+     "doc": {
+      "title": "Doc 8 - Race Director's Event Notes V2",
+      "url": "https://www.fia.com/system/files/decision-document/2025_saudi_arabian_grand_prix_-_race_directors_event_notes_v2.pdf",
+      "published": "Published on 18.04.25 13:26 CET"
+     },
+     "corners": []
+    },
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.79,
+   "turnDeg": 360.1,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N21_00_E039_00_DEM/Copernicus_DSM_COG_10_N21_00_E039_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.986,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 83,
+    "rangeM": 5.6,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 2.9,
+    "kvMax": 0.0006,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "jerez": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": -0.08,
+    "mirror": false,
+    "trimmedMeanM": 0.24
+   },
+   "id": "jerez",
+   "osmWays": 29,
+   "waysUsed": 22,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 4409.2,
+   "officialLengthM": 4428,
+   "centreVsOfficialPct": -0.42,
+   "suspect": false,
+   "lineLengthM": 4337,
+   "prodLengthM": 4358.2,
+   "widthM": 11,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 11,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 4.96,
+   "turnDeg": -360.2,
+   "elevation": {
+    "source": "IGN MDT05 (5 m)",
+    "url": "https://servicios.idee.es/wcs-inspire/mdt",
+    "licence": "CC BY 4.0, © Instituto Geográfico Nacional",
+    "gridM": 5,
+    "validShare": 1,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 0,
+    "rangeM": 20,
+    "bankingFromSurface": true,
+    "gradeMaxPct": 6.1,
+    "kvMax": 0.003,
+    "bankMaxDeg": 5.2
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "kuala-lumpur": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": -0.1,
+    "mirror": false,
+    "trimmedMeanM": 0.96
+   },
+   "id": "kuala-lumpur",
+   "osmWays": 30,
+   "waysUsed": 22,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 5521.1,
+   "officialLengthM": null,
+   "centreVsOfficialPct": null,
+   "suspect": null,
+   "lineLengthM": 5375.6,
+   "prodLengthM": 5493.3,
+   "widthM": 16,
+   "widthSource": "track-widths.js",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "track-widths.js": 1
+    },
+    "medianWidthM": 16,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": {
+     "year": 2026,
+     "doc": {
+      "title": "Doc 33 - Race Director's Competition Notes V3",
+      "url": "https://www.fia.com/system/files/decision-document/2026_bahrain_grand_prix_in_malaysia_-_race_directors_competition_notes_v3.pdf",
+      "published": "Published on 03.10.26 09:22 CET"
+     },
+     "corners": []
+    },
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 7.2,
+   "turnDeg": -359.9,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N02_00_E101_00_DEM/Copernicus_DSM_COG_10_N02_00_E101_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 1,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 0,
+    "rangeM": 21.2,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 5.1,
+    "kvMax": 0.0004,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "kyalami": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": -0.18,
+    "mirror": false,
+    "trimmedMeanM": 0.35
+   },
+   "id": "kyalami",
+   "osmWays": 27,
+   "waysUsed": 25,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 4502.9,
+   "officialLengthM": 4522,
+   "centreVsOfficialPct": -0.42,
+   "suspect": false,
+   "lineLengthM": 4441.9,
+   "prodLengthM": 4457.2,
+   "widthM": 11,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 11,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 4.92,
+   "turnDeg": 360.2,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_S27_00_E028_00_DEM/Copernicus_DSM_COG_10_S27_00_E028_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.996,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 19,
+    "rangeM": 41.9,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 9,
+    "kvMax": 0.0009,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "laguna-seca": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": 0.04,
+    "mirror": false,
+    "trimmedMeanM": 0.32
+   },
+   "id": "laguna-seca",
+   "osmWays": 9,
+   "waysUsed": 9,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 3582.8,
+   "officialLengthM": 3602,
+   "centreVsOfficialPct": -0.53,
+   "suspect": false,
+   "lineLengthM": 3527.5,
+   "prodLengthM": 3537,
+   "widthM": 12,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 12,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.41,
+   "turnDeg": 360.3,
+   "elevation": {
+    "source": "USGS 3DEP dynamic elevation (best available: 1 m lidar where flown, else 1/3 arc-second)",
+    "url": "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer",
+    "licence": "US public domain (USGS)",
+    "gridM": 3,
+    "validShare": 1,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 0,
+    "rangeM": 54.9,
+    "bankingFromSurface": true,
+    "gradeMaxPct": 20.9,
+    "kvMax": 0.0047,
+    "bankMaxDeg": 6.6
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "las-vegas": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "source incomplete",
+   "registration": {
+    "rotDeg": 1.05,
+    "mirror": false,
+    "trimmedMeanM": 0.93
+   },
+   "id": "las-vegas",
+   "osmWays": 8,
+   "waysUsed": 7,
+   "matchedShare": 0.1488,
+   "bridgedShare": 0.8512,
+   "sourceIncomplete": true,
+   "backSteps": 1,
+   "centreLengthM": 1192.2,
+   "officialLengthM": 6200,
+   "centreVsOfficialPct": -80.77,
+   "suspect": true,
+   "lineLengthM": 1175.6,
+   "prodLengthM": 6150.6,
+   "widthM": 13,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 13,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": {
+     "year": 2026,
+     "doc": {
+      "title": "Doc 12 - Race Director's Competition Notes V2",
+      "url": "https://www.fia.com/system/files/decision-document/2026_las_vegas_grand_prix_-_race_directors_competition_notes_v2.pdf",
+      "published": "Published on 20.11.26 03:43 CET"
+     },
+     "corners": []
+    },
+    "lineEnforcedShare": 0,
+    "cuspCapped": 2
+   },
+   "lineOffsetMaxM": 5.81,
+   "turnDeg": 365.5,
+   "elevation": {
+    "source": "USGS 3DEP dynamic elevation (best available: 1 m lidar where flown, else 1/3 arc-second)",
+    "url": "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer",
+    "licence": "US public domain (USGS)",
+    "gridM": 3,
+    "validShare": 1,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 0,
+    "rangeM": 7.5,
+    "bankingFromSurface": true,
+    "gradeMaxPct": 9.2,
+    "kvMax": 0.0075,
+    "bankMaxDeg": 4.2
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "lausitz": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "source incomplete",
+   "registration": {
+    "rotDeg": 0.03,
+    "mirror": false,
+    "trimmedMeanM": 0.24
+   },
+   "id": "lausitz",
+   "osmWays": 36,
+   "waysUsed": 11,
+   "matchedShare": 0.9971,
+   "bridgedShare": 0.0029,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 3369.9,
+   "officialLengthM": 3478,
+   "centreVsOfficialPct": -3.11,
+   "suspect": true,
+   "lineLengthM": 3234.5,
+   "prodLengthM": 3389.7,
+   "widthM": 12,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0.341,
+     "osm-width-tag": 0.451,
+     "fia-list": 0.208
+    },
+    "medianWidthM": 18.98,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 9.12,
+   "turnDeg": 360.2,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N51_00_E013_00_DEM/Copernicus_DSM_COG_10_N51_00_E013_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 1,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 0,
+    "rangeM": 6.8,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 4.1,
+    "kvMax": 0.0004,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "le-mans": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "source incomplete",
+   "registration": {
+    "rotDeg": -169.84,
+    "mirror": false,
+    "trimmedMeanM": 64.28
+   },
+   "id": "le-mans",
+   "osmWays": 83,
+   "waysUsed": 10,
+   "matchedShare": 0.071,
+   "bridgedShare": 0.929,
+   "sourceIncomplete": true,
+   "backSteps": 4,
+   "centreLengthM": 7936,
+   "officialLengthM": 13626,
+   "centreVsOfficialPct": -41.76,
+   "suspect": true,
+   "lineLengthM": 7867.7,
+   "prodLengthM": 13530.4,
+   "widthM": 8,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 8,
+    "kerb": "kerb-use-data.js (iRacing)",
+    "kerbShare": 0.003,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 3.97,
+   "turnDeg": -337.5,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N47_00_E000_00_DEM/Copernicus_DSM_COG_10_N47_00_E000_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.923,
+    "crossoverBlankM": 387,
+    "spikeBlankM": 220,
+    "rangeM": 17.3,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 4.7,
+    "kvMax": 0.001,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "lime-rock": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": 0.14,
+    "mirror": false,
+    "trimmedMeanM": 0.24
+   },
+   "id": "lime-rock",
+   "osmWays": 28,
+   "waysUsed": 13,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 2403.3,
+   "officialLengthM": 2414,
+   "centreVsOfficialPct": -0.44,
+   "suspect": false,
+   "lineLengthM": 2374.6,
+   "prodLengthM": 2370.2,
+   "widthM": 9,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 9,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 4.08,
+   "turnDeg": -360.1,
+   "elevation": {
+    "source": "USGS 3DEP dynamic elevation (best available: 1 m lidar where flown, else 1/3 arc-second)",
+    "url": "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer",
+    "licence": "US public domain (USGS)",
+    "gridM": 3,
+    "validShare": 1,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 0,
+    "rangeM": 16.5,
+    "bankingFromSurface": true,
+    "gradeMaxPct": 15.4,
+    "kvMax": 0.0044,
+    "bankMaxDeg": 3.8
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "long-beach": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "source incomplete",
+   "registration": {
+    "rotDeg": -61.78,
+    "mirror": false,
+    "trimmedMeanM": 66.38
+   },
+   "id": "long-beach",
+   "osmWays": 2,
+   "waysUsed": 1,
+   "matchedShare": 0.1002,
+   "bridgedShare": 0.8998,
+   "sourceIncomplete": true,
+   "backSteps": 1,
+   "centreLengthM": 253.6,
+   "officialLengthM": 3167,
+   "centreVsOfficialPct": -91.99,
+   "suspect": true,
+   "lineLengthM": 243.4,
+   "prodLengthM": 3092.8,
+   "widthM": 12.5,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 12.5,
+    "kerb": "kerb-use-data.js (iRacing)",
+    "kerbShare": 0.069,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 1
+   },
+   "lineOffsetMaxM": 5.55,
+   "turnDeg": 171.7,
+   "elevation": {
+    "source": "USGS 3DEP dynamic elevation (best available: 1 m lidar where flown, else 1/3 arc-second)",
+    "url": "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer",
+    "licence": "US public domain (USGS)",
+    "gridM": 3,
+    "validShare": 0,
+    "crossoverBlankM": 238,
+    "spikeBlankM": 0,
+    "rangeM": null,
+    "bankingFromSurface": true,
+    "gradeMaxPct": null,
+    "kvMax": null,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "lusail": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": -0.1,
+    "mirror": false,
+    "trimmedMeanM": 0.76
+   },
+   "id": "lusail",
+   "osmWays": 11,
+   "waysUsed": 4,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 5405.9,
+   "officialLengthM": 5418,
+   "centreVsOfficialPct": -0.22,
+   "suspect": false,
+   "lineLengthM": 5328,
+   "prodLengthM": 5387.5,
+   "widthM": 12,
+   "widthSource": "track-widths.js",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "track-widths.js": 1
+    },
+    "medianWidthM": 12,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": {
+     "year": 2025,
+     "doc": {
+      "title": "Doc 56 - Race Director's Event Notes V3",
+      "url": "https://www.fia.com/system/files/decision-document/2025_qatar_grand_prix_-_race_directors_event_notes_v3.pdf",
+      "published": "Published on 30.11.25 15:04 CET"
+     },
+     "corners": [
+      {
+       "turn": 16,
+       "rule": "line",
+       "placed": true
+      }
+     ]
+    },
+    "lineEnforcedShare": 0.016,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.4,
+   "turnDeg": -360,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N25_00_E051_00_DEM/Copernicus_DSM_COG_10_N25_00_E051_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 1,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 0,
+    "rangeM": 4.4,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 1.2,
+    "kvMax": 0.0001,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "madring": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "source incomplete",
+   "registration": {
+    "rotDeg": -0.21,
+    "mirror": false,
+    "trimmedMeanM": 0.66
+   },
+   "id": "madring",
+   "osmWays": 8,
+   "waysUsed": 8,
+   "matchedShare": 0.7659,
+   "bridgedShare": 0.2341,
+   "sourceIncomplete": true,
+   "backSteps": 1,
+   "centreLengthM": 5241.4,
+   "officialLengthM": null,
+   "centreVsOfficialPct": null,
+   "suspect": null,
+   "lineLengthM": 5163.5,
+   "prodLengthM": 5337.8,
+   "widthM": 12,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 12,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": {
+     "year": 2026,
+     "doc": {
+      "title": "Doc 61 - Race Director's Competition Notes V3",
+      "url": "https://www.fia.com/system/files/decision-document/2026_spanish_grand_prix_-_race_directors_competition_notes_v3.pdf",
+      "published": "Published on 13.09.26 11:46 CET"
+     },
+     "corners": []
+    },
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.41,
+   "turnDeg": -360.1,
+   "elevation": {
+    "source": "IGN MDT05 (5 m)",
+    "url": "https://servicios.idee.es/wcs-inspire/mdt",
+    "licence": "CC BY 4.0, © Instituto Geográfico Nacional",
+    "gridM": 5,
+    "validShare": 0.985,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 76,
+    "rangeM": 26.5,
+    "bankingFromSurface": true,
+    "gradeMaxPct": 24,
+    "kvMax": 0.0129,
+    "bankMaxDeg": 26.6
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "magny-cours": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": -0.01,
+    "mirror": false,
+    "trimmedMeanM": 0.25
+   },
+   "id": "magny-cours",
+   "osmWays": 12,
+   "waysUsed": 1,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 4436,
+   "officialLengthM": 4411,
+   "centreVsOfficialPct": 0.57,
+   "suspect": false,
+   "lineLengthM": 4373.8,
+   "prodLengthM": 4397.4,
+   "widthM": 11,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 11,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 4.97,
+   "turnDeg": -360.6,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N46_00_E003_00_DEM/Copernicus_DSM_COG_10_N46_00_E003_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.997,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 15,
+    "rangeM": 28.5,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 5,
+    "kvMax": 0.0004,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "mandalika": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": -0.06,
+    "mirror": false,
+    "trimmedMeanM": 0.46
+   },
+   "id": "mandalika",
+   "osmWays": 2,
+   "waysUsed": 2,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 4287.4,
+   "officialLengthM": 4300,
+   "centreVsOfficialPct": -0.29,
+   "suspect": false,
+   "lineLengthM": 4206.3,
+   "prodLengthM": 4228.3,
+   "widthM": 15,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 15,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 6.75,
+   "turnDeg": -360.1,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_S09_00_E116_00_DEM/Copernicus_DSM_COG_10_S09_00_E116_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.975,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 105,
+    "rangeM": 5.3,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 3.8,
+    "kvMax": 0.0008,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "mexico-city": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": -0.18,
+    "mirror": false,
+    "trimmedMeanM": 0.99
+   },
+   "id": "mexico-city",
+   "osmWays": 23,
+   "waysUsed": 13,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 4280.2,
+   "officialLengthM": null,
+   "centreVsOfficialPct": null,
+   "suspect": null,
+   "lineLengthM": 4205.2,
+   "prodLengthM": 4242.7,
+   "widthM": 12,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 12,
+    "kerb": "kerb-use-data.js (iRacing)",
+    "kerbShare": 0.167,
+    "limits": {
+     "year": 2026,
+     "doc": {
+      "title": "Doc 63 - Race Director's Competition Notes V2",
+      "url": "https://www.fia.com/system/files/decision-document/2026_mexico_city_grand_prix_-_race_directors_competition_notes_v2.pdf",
+      "published": "Published on 01.11.26 17:25 CET"
+     },
+     "corners": [
+      {
+       "turn": 11,
+       "rule": "kerb",
+       "placed": true
+      }
+     ]
+    },
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.98,
+   "turnDeg": -360.1,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N19_00_W100_00_DEM/Copernicus_DSM_COG_10_N19_00_W100_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.987,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 56,
+    "rangeM": 3.3,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 2.1,
+    "kvMax": 0.0003,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "miami": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": 0.15,
+    "mirror": false,
+    "trimmedMeanM": 0.9
+   },
+   "id": "miami",
+   "osmWays": 11,
+   "waysUsed": 9,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 5386.5,
+   "officialLengthM": 5412,
+   "centreVsOfficialPct": -0.47,
+   "suspect": false,
+   "lineLengthM": 5290.1,
+   "prodLengthM": 5345.6,
+   "widthM": 12,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 12,
+    "kerb": "kerb-use-data.js (iRacing)",
+    "kerbShare": 0.113,
+    "limits": {
+     "year": 2026,
+     "doc": {
+      "title": "Doc 36 - Race Director's Competition Notes V3",
+      "url": "https://www.fia.com/system/files/decision-document/2026_miami_grand_prix_-_race_directors_competition_notes_v3.pdf",
+      "published": "Published on 02.05.26 12:54 CET"
+     },
+     "corners": []
+    },
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.39,
+   "turnDeg": 360.4,
+   "elevation": {
+    "source": "USGS 3DEP dynamic elevation (best available: 1 m lidar where flown, else 1/3 arc-second)",
+    "url": "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer",
+    "licence": "US public domain (USGS)",
+    "gridM": 3,
+    "validShare": 0.997,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 14,
+    "rangeM": 1.5,
+    "bankingFromSurface": true,
+    "gradeMaxPct": 8.3,
+    "kvMax": 0.0077,
+    "bankMaxDeg": 17.2
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "mid-ohio": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": -0.01,
+    "mirror": false,
+    "trimmedMeanM": 0.37
+   },
+   "id": "mid-ohio",
+   "osmWays": 10,
+   "waysUsed": 8,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 3630.5,
+   "officialLengthM": 3634,
+   "centreVsOfficialPct": -0.1,
+   "suspect": false,
+   "lineLengthM": 3547.6,
+   "prodLengthM": 3565.8,
+   "widthM": 12,
+   "widthSource": "track-widths.js",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "track-widths.js": 1
+    },
+    "medianWidthM": 12.2,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.47,
+   "turnDeg": -360.1,
+   "elevation": {
+    "source": "USGS 3DEP dynamic elevation (best available: 1 m lidar where flown, else 1/3 arc-second)",
+    "url": "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer",
+    "licence": "US public domain (USGS)",
+    "gridM": 3,
+    "validShare": 0.992,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 28,
+    "rangeM": 41.7,
+    "bankingFromSurface": true,
+    "gradeMaxPct": 12,
+    "kvMax": 0.0076,
+    "bankMaxDeg": 5.4
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "misano": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "source incomplete",
+   "registration": {
+    "rotDeg": 4.99,
+    "mirror": false,
+    "trimmedMeanM": 4.34
+   },
+   "id": "misano",
+   "osmWays": 37,
+   "waysUsed": 24,
+   "matchedShare": 0.75,
+   "bridgedShare": 0.25,
+   "sourceIncomplete": true,
+   "backSteps": 8,
+   "centreLengthM": 4245.2,
+   "officialLengthM": 4226,
+   "centreVsOfficialPct": 0.45,
+   "suspect": false,
+   "lineLengthM": 4148.9,
+   "prodLengthM": 4157.8,
+   "widthM": 12,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 12,
+    "kerb": "kerb-use-data.js (iRacing)",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 1
+   },
+   "lineOffsetMaxM": 5.31,
+   "turnDeg": -329.5,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N43_00_E012_00_DEM/Copernicus_DSM_COG_10_N43_00_E012_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.78,
+    "crossoverBlankM": 896,
+    "spikeBlankM": 14,
+    "rangeM": 8,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 1.9,
+    "kvMax": 0.0002,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "monte-carlo": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "source incomplete",
+   "registration": {
+    "rotDeg": -0.25,
+    "mirror": false,
+    "trimmedMeanM": 0.56
+   },
+   "id": "monte-carlo",
+   "osmWays": 11,
+   "waysUsed": 10,
+   "matchedShare": 0.3737,
+   "bridgedShare": 0.6263,
+   "sourceIncomplete": true,
+   "backSteps": 3,
+   "centreLengthM": 2785.5,
+   "officialLengthM": null,
+   "centreVsOfficialPct": null,
+   "suspect": null,
+   "lineLengthM": 2739.9,
+   "prodLengthM": 3267.5,
+   "widthM": 12,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 12,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": {
+     "year": 2025,
+     "doc": {
+      "title": "Doc 42 - Race Director's Event Notes V2",
+      "url": "https://www.fia.com/system/files/decision-document/2025_monaco_grand_prix_-_race_directors_event_notes_v2.pdf",
+      "published": "Published on 24.05.25 20:38 CET"
+     },
+     "corners": []
+    },
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.17,
+   "turnDeg": -360.9,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N43_00_E007_00_DEM/Copernicus_DSM_COG_10_N43_00_E007_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.935,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 178,
+    "rangeM": 58.1,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 23.7,
+    "kvMax": 0.0022,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "montreal": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": -0.05,
+    "mirror": false,
+    "trimmedMeanM": 0.59
+   },
+   "id": "montreal",
+   "osmWays": 2,
+   "waysUsed": 1,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 4342,
+   "officialLengthM": 4361,
+   "centreVsOfficialPct": -0.44,
+   "suspect": false,
+   "lineLengthM": 4305.4,
+   "prodLengthM": 4311.4,
+   "widthM": 10,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0.687,
+     "fia-list": 0.313
+    },
+    "medianWidthM": 8,
+    "kerb": "kerb-use-data.js (iRacing)",
+    "kerbShare": 0.089,
+    "limits": {
+     "year": 2026,
+     "doc": {
+      "title": "Doc 6 - Race Director's Competition Notes",
+      "url": "https://www.fia.com/system/files/decision-document/2026_canadian_grand_prix_-_race_directors_competition_notes_.pdf",
+      "published": "Published on 21.05.26 23:31 CET"
+     },
+     "corners": [
+      {
+       "turn": 9,
+       "rule": "kerb",
+       "placed": true
+      },
+      {
+       "turn": 13,
+       "rule": "kerb",
+       "placed": true
+      }
+     ]
+    },
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 4.02,
+   "turnDeg": -360.4,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N45_00_W074_00_DEM/Copernicus_DSM_COG_10_N45_00_W074_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.965,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 149,
+    "rangeM": 5.7,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 2.8,
+    "kvMax": 0.0003,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "monza": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": 0.5,
+    "mirror": false,
+    "trimmedMeanM": 0.75
+   },
+   "id": "monza",
+   "osmWays": 50,
+   "waysUsed": 23,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 5785.8,
+   "officialLengthM": 5793,
+   "centreVsOfficialPct": -0.12,
+   "suspect": false,
+   "lineLengthM": 5740.3,
+   "prodLengthM": 5759.5,
+   "widthM": 10,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 10,
+    "kerb": "kerb-use-data.js (iRacing)",
+    "kerbShare": 0.062,
+    "limits": {
+     "year": 2026,
+     "doc": {
+      "title": "Doc 48 - Race Director's Competition Notes V2",
+      "url": "https://www.fia.com/system/files/decision-document/2026_italian_grand_prix_-_race_directors_competition_notes_v2.pdf",
+      "published": "Published on 05.09.26 19:34 CET"
+     },
+     "corners": []
+    },
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 4.52,
+   "turnDeg": -360,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N45_00_E009_00_DEM/Copernicus_DSM_COG_10_N45_00_E009_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.963,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 215,
+    "rangeM": 18.7,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 6.6,
+    "kvMax": 0.001,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "mosport": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "source incomplete",
+   "registration": {
+    "rotDeg": -119.98,
+    "mirror": false,
+    "trimmedMeanM": 10.1
+   },
+   "id": "mosport",
+   "osmWays": 21,
+   "waysUsed": 10,
+   "matchedShare": 0.3969,
+   "bridgedShare": 0.6031,
+   "sourceIncomplete": true,
+   "backSteps": 3,
+   "centreLengthM": 3481.5,
+   "officialLengthM": 3957,
+   "centreVsOfficialPct": -12.02,
+   "suspect": true,
+   "lineLengthM": 3426.5,
+   "prodLengthM": 3903.5,
+   "widthM": 12,
+   "widthSource": "track-widths.js",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "track-widths.js": 1
+    },
+    "medianWidthM": 12,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 2
+   },
+   "lineOffsetMaxM": 5.28,
+   "turnDeg": -355.8,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N44_00_W079_00_DEM/Copernicus_DSM_COG_10_N44_00_W079_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.979,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 73,
+    "rangeM": 29.8,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 13.6,
+    "kvMax": 0.0021,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "motegi": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "source incomplete",
+   "registration": {
+    "rotDeg": 0.41,
+    "mirror": false,
+    "trimmedMeanM": 12.57
+   },
+   "id": "motegi",
+   "osmWays": 28,
+   "waysUsed": 7,
+   "matchedShare": 0.4013,
+   "bridgedShare": 0.5987,
+   "sourceIncomplete": true,
+   "backSteps": 3,
+   "centreLengthM": 3529.2,
+   "officialLengthM": 4801,
+   "centreVsOfficialPct": -26.49,
+   "suspect": true,
+   "lineLengthM": 3490.4,
+   "prodLengthM": 4736.1,
+   "widthM": 12,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 12,
+    "kerb": "kerb-use-data.js (iRacing)",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.34,
+   "turnDeg": -363.4,
+   "elevation": {
+    "source": "GSI dem5a_png (Geospatial Information Authority of Japan)",
+    "url": "https://cyberjapandata.gsi.go.jp/xyz/dem5a_png/{z}/{x}/{y}.png",
+    "licence": "GSI Content Terms of Use (compatible with CC BY 4.0); credit: 国土地理院 / GSI Japan",
+    "gridM": 5,
+    "validShare": 1,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 0,
+    "rangeM": 28.2,
+    "bankingFromSurface": true,
+    "gradeMaxPct": 39.3,
+    "kvMax": 0.019,
+    "bankMaxDeg": 16.6
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "mugello": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": -0.09,
+    "mirror": false,
+    "trimmedMeanM": 0.27
+   },
+   "id": "mugello",
+   "osmWays": 49,
+   "waysUsed": 42,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 5234.9,
+   "officialLengthM": 5245,
+   "centreVsOfficialPct": -0.19,
+   "suspect": false,
+   "lineLengthM": 5169.6,
+   "prodLengthM": 5146.5,
+   "widthM": 9.6,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 9.6,
+    "kerb": "kerb-use-data.js (iRacing)",
+    "kerbShare": 0.047,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.66,
+   "turnDeg": -360.1,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N43_00_E011_00_DEM/Copernicus_DSM_COG_10_N43_00_E011_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 1,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 0,
+    "rangeM": 42,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 8.3,
+    "kvMax": 0.0009,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "nurburgring-24h": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "source incomplete",
+   "registration": {
+    "rotDeg": 0,
+    "mirror": false,
+    "trimmedMeanM": null
+   },
+   "id": "nurburgring-24h",
+   "osmWays": 66,
+   "waysUsed": 4,
+   "matchedShare": 0.0166,
+   "bridgedShare": 0.9834,
+   "sourceIncomplete": true,
+   "backSteps": 1,
+   "centreLengthM": 1324.5,
+   "officialLengthM": 25378,
+   "centreVsOfficialPct": -94.78,
+   "suspect": true,
+   "lineLengthM": 1314.1,
+   "prodLengthM": 25017.5,
+   "widthM": 8,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0.136,
+     "fia-list": 0.864
+    },
+    "medianWidthM": 8,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 3.52,
+   "turnDeg": -177.8,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N50_00_E006_00_DEM/Copernicus_DSM_COG_10_N50_00_E006_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0,
+    "crossoverBlankM": 1309,
+    "spikeBlankM": 0,
+    "rangeM": null,
+    "bankingFromSurface": false,
+    "gradeMaxPct": null,
+    "kvMax": null,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "nurburgring-gp": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": -131.67,
+    "mirror": false,
+    "trimmedMeanM": 1.84
+   },
+   "id": "nurburgring-gp",
+   "osmWays": 66,
+   "waysUsed": 25,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 5097.8,
+   "officialLengthM": 5148,
+   "centreVsOfficialPct": -0.98,
+   "suspect": false,
+   "lineLengthM": 5025.5,
+   "prodLengthM": 5083.5,
+   "widthM": 10,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 10,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 4.52,
+   "turnDeg": -360.3,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N50_00_E006_00_DEM/Copernicus_DSM_COG_10_N50_00_E006_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 1,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 0,
+    "rangeM": 55,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 7.8,
+    "kvMax": 0.0005,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "nurburgring-sprint": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "source incomplete",
+   "registration": {
+    "rotDeg": -147.08,
+    "mirror": false,
+    "trimmedMeanM": 13.87
+   },
+   "id": "nurburgring-sprint",
+   "osmWays": 66,
+   "waysUsed": 15,
+   "matchedShare": 0.3216,
+   "bridgedShare": 0.6784,
+   "sourceIncomplete": true,
+   "backSteps": 3,
+   "centreLengthM": 2611.2,
+   "officialLengthM": 3629,
+   "centreVsOfficialPct": -28.05,
+   "suspect": true,
+   "lineLengthM": 2556.8,
+   "prodLengthM": 3559.3,
+   "widthM": 10,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 10,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 4.29,
+   "turnDeg": 56.9,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N50_00_E006_00_DEM/Copernicus_DSM_COG_10_N50_00_E006_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.978,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 55,
+    "rangeM": 43.2,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 8.9,
+    "kvMax": 0.0013,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "okayama": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": -1.27,
+    "mirror": false,
+    "trimmedMeanM": 2.12
+   },
+   "id": "okayama",
+   "osmWays": 5,
+   "waysUsed": 3,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 3693.7,
+   "officialLengthM": 3703,
+   "centreVsOfficialPct": -0.25,
+   "suspect": false,
+   "lineLengthM": 3603.4,
+   "prodLengthM": 3620.3,
+   "widthM": 12,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 12,
+    "kerb": "kerb-use-data.js (iRacing)",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.35,
+   "turnDeg": -360.2,
+   "elevation": {
+    "source": "GSI dem5a_png (Geospatial Information Authority of Japan)",
+    "url": "https://cyberjapandata.gsi.go.jp/xyz/dem5a_png/{z}/{x}/{y}.png",
+    "licence": "GSI Content Terms of Use (compatible with CC BY 4.0); credit: 国土地理院 / GSI Japan",
+    "gridM": 5,
+    "validShare": 1,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 0,
+    "rangeM": 29.3,
+    "bankingFromSurface": true,
+    "gradeMaxPct": 8.9,
+    "kvMax": 0.0025,
+    "bankMaxDeg": 15.5
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "oschersleben": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "source incomplete",
+   "registration": {
+    "rotDeg": -16.64,
+    "mirror": false,
+    "trimmedMeanM": 8.97
+   },
+   "id": "oschersleben",
+   "osmWays": 17,
+   "waysUsed": 13,
+   "matchedShare": 0.5975,
+   "bridgedShare": 0.4025,
+   "sourceIncomplete": true,
+   "backSteps": 10,
+   "centreLengthM": 3703.7,
+   "officialLengthM": 3696,
+   "centreVsOfficialPct": 0.21,
+   "suspect": false,
+   "lineLengthM": 3608,
+   "prodLengthM": 3615.7,
+   "widthM": 11,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 11,
+    "kerb": "kerb-use-data.js (iRacing)",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 4.92,
+   "turnDeg": -377.8,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N52_00_E011_00_DEM/Copernicus_DSM_COG_10_N52_00_E011_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.852,
+    "crossoverBlankM": 514,
+    "spikeBlankM": 20,
+    "rangeM": 11.1,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 5.3,
+    "kvMax": 0.0008,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "oulton-park": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": -0.1,
+    "mirror": false,
+    "trimmedMeanM": 0.3
+   },
+   "id": "oulton-park",
+   "osmWays": 32,
+   "waysUsed": 25,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 4308.6,
+   "officialLengthM": 4332,
+   "centreVsOfficialPct": -0.54,
+   "suspect": false,
+   "lineLengthM": 4269.3,
+   "prodLengthM": 4278.6,
+   "widthM": 9,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 9,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 4.14,
+   "turnDeg": -360.2,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N53_00_W003_00_DEM/Copernicus_DSM_COG_10_N53_00_W003_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.995,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 20,
+    "rangeM": 19.8,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 6.3,
+    "kvMax": 0.0006,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "paul-ricard-2021": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "source incomplete",
+   "registration": {
+    "rotDeg": 146.68,
+    "mirror": false,
+    "trimmedMeanM": 12.15
+   },
+   "id": "paul-ricard-2021",
+   "osmWays": 84,
+   "waysUsed": 20,
+   "matchedShare": 0.7288,
+   "bridgedShare": 0.2712,
+   "sourceIncomplete": true,
+   "backSteps": 1,
+   "centreLengthM": 5630.8,
+   "officialLengthM": 5791,
+   "centreVsOfficialPct": -2.77,
+   "suspect": true,
+   "lineLengthM": 5540.4,
+   "prodLengthM": 5771.7,
+   "widthM": 12,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 12,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.4,
+   "turnDeg": -360.4,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N43_00_E005_00_DEM/Copernicus_DSM_COG_10_N43_00_E005_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 1,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 0,
+    "rangeM": 29.4,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 3.5,
+    "kvMax": 0.0004,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "paul-ricard-f1": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "source incomplete",
+   "registration": {
+    "rotDeg": 145.01,
+    "mirror": false,
+    "trimmedMeanM": 11.56
+   },
+   "id": "paul-ricard-f1",
+   "osmWays": 84,
+   "waysUsed": 25,
+   "matchedShare": 0.6339,
+   "bridgedShare": 0.3661,
+   "sourceIncomplete": true,
+   "backSteps": 8,
+   "centreLengthM": 5557.1,
+   "officialLengthM": 5842,
+   "centreVsOfficialPct": -4.88,
+   "suspect": true,
+   "lineLengthM": 5478.1,
+   "prodLengthM": 5806.7,
+   "widthM": 12,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 12,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 2
+   },
+   "lineOffsetMaxM": 5.38,
+   "turnDeg": -3.8,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N43_00_E005_00_DEM/Copernicus_DSM_COG_10_N43_00_E005_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.93,
+    "crossoverBlankM": 365,
+    "spikeBlankM": 20,
+    "rangeM": 27.8,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 3.8,
+    "kvMax": 0.0006,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "phillip-island": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": 0.02,
+    "mirror": false,
+    "trimmedMeanM": 0.3
+   },
+   "id": "phillip-island",
+   "osmWays": 8,
+   "waysUsed": 2,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 4440.4,
+   "officialLengthM": 4480,
+   "centreVsOfficialPct": -0.88,
+   "suspect": false,
+   "lineLengthM": 4383.3,
+   "prodLengthM": 4397.9,
+   "widthM": 10,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 10,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 4.52,
+   "turnDeg": 359.9,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_S39_00_E145_00_DEM/Copernicus_DSM_COG_10_S39_00_E145_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 1,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 0,
+    "rangeM": 23.7,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 4.4,
+    "kvMax": 0.0006,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "portimao": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": 0.09,
+    "mirror": false,
+    "trimmedMeanM": 0.25
+   },
+   "id": "portimao",
+   "osmWays": 62,
+   "waysUsed": 41,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 4652,
+   "officialLengthM": 4653,
+   "centreVsOfficialPct": -0.02,
+   "suspect": false,
+   "lineLengthM": 4534,
+   "prodLengthM": 4533.5,
+   "widthM": 12,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0.505,
+     "fia-list": 0.495
+    },
+    "medianWidthM": 14,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 6.29,
+   "turnDeg": -360.1,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N37_00_W009_00_DEM/Copernicus_DSM_COG_10_N37_00_W009_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.999,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 5,
+    "rangeM": 25.7,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 7.4,
+    "kvMax": 0.0008,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "ricardo-tormo": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "source incomplete",
+   "registration": {
+    "rotDeg": 8.19,
+    "mirror": false,
+    "trimmedMeanM": 9.71
+   },
+   "id": "ricardo-tormo",
+   "osmWays": 24,
+   "waysUsed": 8,
+   "matchedShare": 0.5216,
+   "bridgedShare": 0.4784,
+   "sourceIncomplete": true,
+   "backSteps": 4,
+   "centreLengthM": 3809.1,
+   "officialLengthM": 4005,
+   "centreVsOfficialPct": -4.89,
+   "suspect": true,
+   "lineLengthM": 3730.3,
+   "prodLengthM": 3938.9,
+   "widthM": 12,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 12,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.39,
+   "turnDeg": 530.8,
+   "elevation": {
+    "source": "IGN MDT05 (5 m)",
+    "url": "https://servicios.idee.es/wcs-inspire/mdt",
+    "licence": "CC BY 4.0, © Instituto Geográfico Nacional",
+    "gridM": 5,
+    "validShare": 0.896,
+    "crossoverBlankM": 341,
+    "spikeBlankM": 45,
+    "rangeM": 15,
+    "bankingFromSurface": true,
+    "gradeMaxPct": 12.1,
+    "kvMax": 0.0078,
+    "bankMaxDeg": 12.7
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "road-america": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": -0.01,
+    "mirror": false,
+    "trimmedMeanM": 0.33
+   },
+   "id": "road-america",
+   "osmWays": 37,
+   "waysUsed": 28,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 6429.6,
+   "officialLengthM": 6514,
+   "centreVsOfficialPct": -1.3,
+   "suspect": false,
+   "lineLengthM": 6377.3,
+   "prodLengthM": 6460.5,
+   "widthM": 12,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 12,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.38,
+   "turnDeg": -360,
+   "elevation": {
+    "source": "USGS 3DEP dynamic elevation (best available: 1 m lidar where flown, else 1/3 arc-second)",
+    "url": "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer",
+    "licence": "US public domain (USGS)",
+    "gridM": 3,
+    "validShare": 1,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 0,
+    "rangeM": 53.4,
+    "bankingFromSurface": true,
+    "gradeMaxPct": 12.2,
+    "kvMax": 0.0019,
+    "bankMaxDeg": 3.2
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "road-atlanta": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "source incomplete",
+   "registration": {
+    "rotDeg": -4.58,
+    "mirror": false,
+    "trimmedMeanM": 13.51
+   },
+   "id": "road-atlanta",
+   "osmWays": 13,
+   "waysUsed": 9,
+   "matchedShare": 0.4715,
+   "bridgedShare": 0.5285,
+   "sourceIncomplete": true,
+   "backSteps": 4,
+   "centreLengthM": 3676.3,
+   "officialLengthM": 4088,
+   "centreVsOfficialPct": -10.07,
+   "suspect": true,
+   "lineLengthM": 3651,
+   "prodLengthM": 4041.4,
+   "widthM": 12,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 12,
+    "kerb": "kerb-use-data.js (iRacing)",
+    "kerbShare": 0.022,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.19,
+   "turnDeg": -361.5,
+   "elevation": {
+    "source": "USGS 3DEP dynamic elevation (best available: 1 m lidar where flown, else 1/3 arc-second)",
+    "url": "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer",
+    "licence": "US public domain (USGS)",
+    "gridM": 3,
+    "validShare": 0.992,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 30,
+    "rangeM": 37.2,
+    "bankingFromSurface": true,
+    "gradeMaxPct": 15.4,
+    "kvMax": 0.0094,
+    "bankMaxDeg": 18.8
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "sachsenring": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": -0.04,
+    "mirror": false,
+    "trimmedMeanM": 0.27
+   },
+   "id": "sachsenring",
+   "osmWays": 2,
+   "waysUsed": 1,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 3643.8,
+   "officialLengthM": 3645,
+   "centreVsOfficialPct": -0.03,
+   "suspect": false,
+   "lineLengthM": 3573.9,
+   "prodLengthM": 3578.5,
+   "widthM": 12,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 12,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.4,
+   "turnDeg": 359.9,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N50_00_E012_00_DEM/Copernicus_DSM_COG_10_N50_00_E012_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 1,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 0,
+    "rangeM": 33,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 10.7,
+    "kvMax": 0.0011,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "sakhir-outer": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": 89.15,
+    "mirror": false,
+    "trimmedMeanM": 1.74
+   },
+   "id": "sakhir-outer",
+   "osmWays": 27,
+   "waysUsed": 7,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 3546.2,
+   "officialLengthM": 3543,
+   "centreVsOfficialPct": 0.09,
+   "suspect": false,
+   "lineLengthM": 3490.1,
+   "prodLengthM": 3498.6,
+   "widthM": 13,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 13,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.83,
+   "turnDeg": -360.4,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N26_00_E050_00_DEM/Copernicus_DSM_COG_10_N26_00_E050_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.994,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 20,
+    "rangeM": 17.3,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 2.9,
+    "kvMax": 0.0004,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "sakhir": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": 0.73,
+    "mirror": false,
+    "trimmedMeanM": 0.89
+   },
+   "id": "sakhir",
+   "osmWays": 27,
+   "waysUsed": 7,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 5399.4,
+   "officialLengthM": null,
+   "centreVsOfficialPct": null,
+   "suspect": null,
+   "lineLengthM": 5327.4,
+   "prodLengthM": 5337.5,
+   "widthM": 12,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 12,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": {
+     "year": 2025,
+     "doc": {
+      "title": "Doc 23 - Race Director's Event Notes V2",
+      "url": "https://www.fia.com/system/files/decision-document/2025_bahrain_grand_prix_-_race_directors_event_notes_v2.pdf",
+      "published": "Published on 12.04.25 11:00 CET"
+     },
+     "corners": [
+      {
+       "turn": 15,
+       "rule": "line",
+       "placed": false
+      }
+     ]
+    },
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.39,
+   "turnDeg": -360.2,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N26_00_E050_00_DEM/Copernicus_DSM_COG_10_N26_00_E050_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.997,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 15,
+    "rangeM": 15.5,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 4.3,
+    "kvMax": 0.0003,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "sebring": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "source incomplete",
+   "registration": {
+    "rotDeg": 0,
+    "mirror": false,
+    "trimmedMeanM": 0.32
+   },
+   "id": "sebring",
+   "osmWays": 27,
+   "waysUsed": 24,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 5871,
+   "officialLengthM": 6019,
+   "centreVsOfficialPct": -2.46,
+   "suspect": true,
+   "lineLengthM": 5785.8,
+   "prodLengthM": 5948.5,
+   "widthM": 12,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 12,
+    "kerb": "kerb-use-data.js (iRacing)",
+    "kerbShare": 0.106,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 6.7,
+   "turnDeg": -360.1,
+   "elevation": {
+    "source": "USGS 3DEP dynamic elevation (best available: 1 m lidar where flown, else 1/3 arc-second)",
+    "url": "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer",
+    "licence": "US public domain (USGS)",
+    "gridM": 3,
+    "validShare": 1,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 0,
+    "rangeM": 2.5,
+    "bankingFromSurface": true,
+    "gradeMaxPct": 1.3,
+    "kvMax": 0.0011,
+    "bankMaxDeg": 1.1
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "shanghai": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": 0.38,
+    "mirror": false,
+    "trimmedMeanM": 0.32
+   },
+   "id": "shanghai",
+   "seed": [
+    31.3389,
+    121.2197
+   ],
+   "osmWays": 17,
+   "waysUsed": 6,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 5429.2,
+   "officialLengthM": 5451,
+   "centreVsOfficialPct": -0.4,
+   "suspect": false,
+   "lineLengthM": 5303.2,
+   "prodLengthM": 5440.4,
+   "widthM": 13,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 13,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": {
+     "year": 2025,
+     "doc": {
+      "title": "Doc 59 - Race Director's Event Notes V3",
+      "url": "https://www.fia.com/system/files/decision-document/2025_chinese_grand_prix_-_race_directors_event_notes_v3.pdf",
+      "published": "Published on 22.03.25 10:51 CET"
+     },
+     "corners": []
+    },
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.84,
+   "turnDeg": -361,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N31_00_E121_00_DEM/Copernicus_DSM_COG_10_N31_00_E121_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.985,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 79,
+    "rangeM": 5.3,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 3.3,
+    "kvMax": 0.0005,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "silverstone": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": 0.47,
+    "mirror": false,
+    "trimmedMeanM": 1.12
+   },
+   "id": "silverstone",
+   "osmWays": 95,
+   "waysUsed": 30,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 5880.6,
+   "officialLengthM": 5857,
+   "centreVsOfficialPct": 0.4,
+   "suspect": false,
+   "lineLengthM": 5787,
+   "prodLengthM": 5826.2,
+   "widthM": 12,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0.105,
+     "fia-list": 0.895
+    },
+    "medianWidthM": 12,
+    "kerb": "kerb-use-data.js (iRacing)",
+    "kerbShare": 0.11,
+    "limits": {
+     "year": 2026,
+     "doc": {
+      "title": "Doc 5 - Race Director's Competition Notes",
+      "url": "https://www.fia.com/system/files/decision-document/2026_british_grand_prix_-_race_directors_competition_notes.pdf",
+      "published": "Published on 02.07.26 17:37 CET"
+     },
+     "corners": []
+    },
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 6.78,
+   "turnDeg": -360,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N52_00_W002_00_DEM/Copernicus_DSM_COG_10_N52_00_W002_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.997,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 20,
+    "rangeM": 11.1,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 2.1,
+    "kvMax": 0.0002,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "singapore": [
+  {
+   "era": {
+    "from": null,
+    "to": 2022,
+    "date": "2022-06-01"
+   },
+   "status": "source incomplete",
+   "registration": {
+    "rotDeg": -0.66,
+    "mirror": false,
+    "trimmedMeanM": 1.25
+   },
+   "id": "singapore",
+   "osmWays": 10,
+   "waysUsed": 8,
+   "matchedShare": 0.2901,
+   "bridgedShare": 0.7099,
+   "sourceIncomplete": true,
+   "backSteps": 0,
+   "centreLengthM": 3039.6,
+   "officialLengthM": 4927,
+   "centreVsOfficialPct": -38.31,
+   "suspect": true,
+   "lineLengthM": 3016.1,
+   "prodLengthM": 4859.5,
+   "widthM": 9,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 9,
+    "kerb": "none",
+    "kerbShare": 0.028,
+    "limits": {
+     "year": 2022,
+     "doc": {
+      "title": "Race Director's Event Notes",
+      "url": "https://www.fia.com/sites/default/files/decision-document/2022%20Singapore%20Grand%20Prix%20-%20Race%20Director's%20Event%20Notes.pdf",
+      "published": "Published on 29.09.22 15:56 CET"
+     },
+     "corners": [
+      {
+       "turn": 2,
+       "rule": "kerb",
+       "placed": true
+      }
+     ]
+    },
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 4.47,
+   "turnDeg": -3.3,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N01_00_E103_00_DEM/Copernicus_DSM_COG_10_N01_00_E103_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.841,
+    "crossoverBlankM": 399,
+    "spikeBlankM": 80,
+    "rangeM": 17.5,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 11.4,
+    "kvMax": 0.0019,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  },
+  {
+   "era": {
+    "from": 2023,
+    "to": null,
+    "date": null
+   },
+   "status": "source incomplete",
+   "registration": {
+    "rotDeg": -0.66,
+    "mirror": false,
+    "trimmedMeanM": 1.25
+   },
+   "id": "singapore",
+   "osmWays": 6,
+   "waysUsed": 6,
+   "matchedShare": 0.2953,
+   "bridgedShare": 0.7047,
+   "sourceIncomplete": true,
+   "backSteps": 0,
+   "centreLengthM": 3113.1,
+   "officialLengthM": 4927,
+   "centreVsOfficialPct": -36.82,
+   "suspect": true,
+   "lineLengthM": 3089.2,
+   "prodLengthM": 4859.5,
+   "widthM": 9,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 9,
+    "kerb": "none",
+    "kerbShare": 0.027,
+    "limits": {
+     "year": 2026,
+     "doc": {
+      "title": "Doc 13 - Race Director's Competition Notes V2",
+      "url": "https://www.fia.com/system/files/decision-document/2026_singapore_grand_prix_-_race_directors_competition_notes_v2.pdf",
+      "published": "Published on 09.10.26 10:09 CET"
+     },
+     "corners": [
+      {
+       "turn": 2,
+       "rule": "kerb",
+       "placed": true
+      }
+     ]
+    },
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 4.51,
+   "turnDeg": -4.2,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N01_00_E103_00_DEM/Copernicus_DSM_COG_10_N01_00_E103_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.825,
+    "crossoverBlankM": 470,
+    "spikeBlankM": 70,
+    "rangeM": 16.1,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 10.8,
+    "kvMax": 0.0021,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "snetterton": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": 0.01,
+    "mirror": false,
+    "trimmedMeanM": 0.24
+   },
+   "id": "snetterton",
+   "osmWays": 27,
+   "waysUsed": 24,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 4780.3,
+   "officialLengthM": 4779,
+   "centreVsOfficialPct": 0.03,
+   "suspect": false,
+   "lineLengthM": 4710.9,
+   "prodLengthM": 4722.1,
+   "widthM": 12,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 12,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.4,
+   "turnDeg": -360.1,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N52_00_E000_00_DEM/Copernicus_DSM_COG_10_N52_00_E000_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.997,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 16,
+    "rangeM": 5.7,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 1.3,
+    "kvMax": 0.0001,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "sochi": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "source incomplete",
+   "registration": {
+    "rotDeg": -125.46,
+    "mirror": false,
+    "trimmedMeanM": 1.99
+   },
+   "id": "sochi",
+   "osmWays": 6,
+   "waysUsed": 2,
+   "matchedShare": 0.3619,
+   "bridgedShare": 0.6381,
+   "sourceIncomplete": true,
+   "backSteps": 0,
+   "centreLengthM": 2215.3,
+   "officialLengthM": 5848,
+   "centreVsOfficialPct": -62.12,
+   "suspect": true,
+   "lineLengthM": 2183.1,
+   "prodLengthM": 5829.7,
+   "widthM": 12,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 12,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.41,
+   "turnDeg": -360.9,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N43_00_E039_00_DEM/Copernicus_DSM_COG_10_N43_00_E039_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.986,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 30,
+    "rangeM": 3.3,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 1.2,
+    "kvMax": 0.0001,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "sonoma": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "source incomplete",
+   "registration": {
+    "rotDeg": -10.3,
+    "mirror": false,
+    "trimmedMeanM": 10.42
+   },
+   "id": "sonoma",
+   "osmWays": 21,
+   "waysUsed": 6,
+   "matchedShare": 0.4606,
+   "bridgedShare": 0.5394,
+   "sourceIncomplete": true,
+   "backSteps": 10,
+   "centreLengthM": 3093,
+   "officialLengthM": 3685,
+   "centreVsOfficialPct": -16.07,
+   "suspect": true,
+   "lineLengthM": 3018.9,
+   "prodLengthM": 3616,
+   "widthM": 10,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 10,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 2
+   },
+   "lineOffsetMaxM": 4.53,
+   "turnDeg": -192.8,
+   "elevation": {
+    "source": "USGS 3DEP dynamic elevation (best available: 1 m lidar where flown, else 1/3 arc-second)",
+    "url": "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer",
+    "licence": "US public domain (USGS)",
+    "gridM": 3,
+    "validShare": 0.859,
+    "crossoverBlankM": 345,
+    "spikeBlankM": 80,
+    "rangeM": 38.6,
+    "bankingFromSurface": true,
+    "gradeMaxPct": 36.8,
+    "kvMax": 0.0196,
+    "bankMaxDeg": 17.2
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "spa-francorchamps": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": 0.2,
+    "mirror": false,
+    "trimmedMeanM": 0.6
+   },
+   "id": "spa-francorchamps",
+   "osmWays": 35,
+   "waysUsed": 31,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 6981.5,
+   "officialLengthM": 7004,
+   "centreVsOfficialPct": -0.32,
+   "suspect": false,
+   "lineLengthM": 6911.4,
+   "prodLengthM": 6947.3,
+   "widthM": 10,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 10,
+    "kerb": "kerb-use-data.js (iRacing)",
+    "kerbShare": 0.118,
+    "limits": {
+     "year": 2026,
+     "doc": {
+      "title": "Doc 6 - Race Director's Competition Notes",
+      "url": "https://www.fia.com/system/files/decision-document/2026_belgian_grand_prix_-_race_directors_competition_notes.pdf",
+      "published": "Published on 16.07.26 17:50 CET"
+     },
+     "corners": []
+    },
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 4.58,
+   "turnDeg": -360.3,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N50_00_E005_00_DEM/Copernicus_DSM_COG_10_N50_00_E005_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.988,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 85,
+    "rangeM": 101.2,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 11.4,
+    "kvMax": 0.0011,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "spielberg": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": -0.38,
+    "mirror": false,
+    "trimmedMeanM": 0.94
+   },
+   "id": "spielberg",
+   "osmWays": 35,
+   "waysUsed": 15,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 4295.7,
+   "officialLengthM": 4326,
+   "centreVsOfficialPct": -0.7,
+   "suspect": false,
+   "lineLengthM": 4253.3,
+   "prodLengthM": 4290.4,
+   "widthM": 12,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 12,
+    "kerb": "kerb-use-data.js (iRacing)",
+    "kerbShare": 0.109,
+    "limits": {
+     "year": 2026,
+     "doc": {
+      "title": "Doc 6 - Race Director's Competition Notes",
+      "url": "https://www.fia.com/system/files/decision-document/2026_austrian_grand_prix_-_race_directors_competition_notes.pdf",
+      "published": "Published on 25.06.26 17:21 CET"
+     },
+     "corners": []
+    },
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.57,
+   "turnDeg": -360.3,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N47_00_E014_00_DEM/Copernicus_DSM_COG_10_N47_00_E014_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 1,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 0,
+    "rangeM": 61.5,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 11.6,
+    "kvMax": 0.001,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "suzuka": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": 0.25,
+    "mirror": false,
+    "trimmedMeanM": 0.55
+   },
+   "id": "suzuka",
+   "seed": [
+    34.8431,
+    136.541
+   ],
+   "osmWays": 62,
+   "waysUsed": 44,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 5788.7,
+   "officialLengthM": 5807,
+   "centreVsOfficialPct": -0.31,
+   "suspect": false,
+   "lineLengthM": 5696.1,
+   "prodLengthM": 5770.5,
+   "widthM": 10,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0.717,
+     "fia-list": 0.283
+    },
+    "medianWidthM": 11,
+    "kerb": "kerb-use-data.js (iRacing)",
+    "kerbShare": 0.109,
+    "limits": {
+     "year": 2026,
+     "doc": {
+      "title": "Doc 21 - Race Director's Competition Notes V2",
+      "url": "https://www.fia.com/system/files/decision-document/2026_japanese_grand_prix_-_race_directors_competition_notes_v2.pdf",
+      "published": "Published on 27.03.26 05:17 CET"
+     },
+     "corners": []
+    },
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 6.29,
+   "turnDeg": 0.2,
+   "elevation": {
+    "source": "GSI dem5a_png (Geospatial Information Authority of Japan)",
+    "url": "https://cyberjapandata.gsi.go.jp/xyz/dem5a_png/{z}/{x}/{y}.png",
+    "licence": "GSI Content Terms of Use (compatible with CC BY 4.0); credit: 国土地理院 / GSI Japan",
+    "gridM": 5,
+    "validShare": 0.947,
+    "crossoverBlankM": 250,
+    "spikeBlankM": 54,
+    "rangeM": 40.5,
+    "bankingFromSurface": true,
+    "gradeMaxPct": 7.9,
+    "kvMax": 0.0051,
+    "bankMaxDeg": 7.8
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "sydney-gardner": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": 0.1,
+    "mirror": false,
+    "trimmedMeanM": 0.9
+   },
+   "id": "sydney-gardner",
+   "osmWays": 23,
+   "waysUsed": 9,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 3895.4,
+   "officialLengthM": 3905,
+   "centreVsOfficialPct": -0.25,
+   "suspect": false,
+   "lineLengthM": 3832.4,
+   "prodLengthM": 3835.3,
+   "widthM": 11,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 11,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 4.95,
+   "turnDeg": 360.1,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_S34_00_E150_00_DEM/Copernicus_DSM_COG_10_S34_00_E150_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 1,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 0,
+    "rangeM": 24,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 5.3,
+    "kvMax": 0.0005,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "sydney": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "source incomplete",
+   "registration": {
+    "rotDeg": -8.22,
+    "mirror": false,
+    "trimmedMeanM": 6.13
+   },
+   "id": "sydney",
+   "osmWays": 23,
+   "waysUsed": 11,
+   "matchedShare": 0.6198,
+   "bridgedShare": 0.3802,
+   "sourceIncomplete": true,
+   "backSteps": 7,
+   "centreLengthM": 4342.2,
+   "officialLengthM": 4500,
+   "centreVsOfficialPct": -3.51,
+   "suspect": true,
+   "lineLengthM": 4263.9,
+   "prodLengthM": 4406,
+   "widthM": 9,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 9,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 4.11,
+   "turnDeg": 607.7,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_S34_00_E150_00_DEM/Copernicus_DSM_COG_10_S34_00_E150_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.777,
+    "crossoverBlankM": 922,
+    "spikeBlankM": 30,
+    "rangeM": 26.7,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 5,
+    "kvMax": 0.0008,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "vallelunga": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": 0.29,
+    "mirror": false,
+    "trimmedMeanM": 0.69
+   },
+   "id": "vallelunga",
+   "osmWays": 42,
+   "waysUsed": 26,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 1,
+   "centreLengthM": 4067.6,
+   "officialLengthM": 4085,
+   "centreVsOfficialPct": -0.43,
+   "suspect": false,
+   "lineLengthM": 3998.1,
+   "prodLengthM": 4009.2,
+   "widthM": 11.5,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 11.5,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.17,
+   "turnDeg": -359.7,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N42_00_E012_00_DEM/Copernicus_DSM_COG_10_N42_00_E012_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 1,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 0,
+    "rangeM": 15.1,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 4.2,
+    "kvMax": 0.0007,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "vir": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "source incomplete",
+   "registration": {
+    "rotDeg": -64.23,
+    "mirror": false,
+    "trimmedMeanM": 22.01
+   },
+   "id": "vir",
+   "osmWays": 39,
+   "waysUsed": 12,
+   "matchedShare": 0.2538,
+   "bridgedShare": 0.7462,
+   "sourceIncomplete": true,
+   "backSteps": 4,
+   "centreLengthM": 4341.4,
+   "officialLengthM": 5262,
+   "centreVsOfficialPct": -17.5,
+   "suspect": true,
+   "lineLengthM": 4247.6,
+   "prodLengthM": 5202.3,
+   "widthM": 12.2,
+   "widthSource": "track-widths.js",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "track-widths.js": 1
+    },
+    "medianWidthM": 12.2,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.46,
+   "turnDeg": -353.7,
+   "elevation": {
+    "source": "USGS 3DEP dynamic elevation (best available: 1 m lidar where flown, else 1/3 arc-second)",
+    "url": "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer",
+    "licence": "US public domain (USGS)",
+    "gridM": 3,
+    "validShare": 0.918,
+    "crossoverBlankM": 302,
+    "spikeBlankM": 44,
+    "rangeM": 39.4,
+    "bankingFromSurface": true,
+    "gradeMaxPct": 21.3,
+    "kvMax": 0.0109,
+    "bankMaxDeg": 9.9
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "watkins-glen": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": -0.02,
+    "mirror": false,
+    "trimmedMeanM": 0.42
+   },
+   "id": "watkins-glen",
+   "osmWays": 23,
+   "waysUsed": 19,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 5459.6,
+   "officialLengthM": 5472,
+   "centreVsOfficialPct": -0.23,
+   "suspect": false,
+   "lineLengthM": 5389,
+   "prodLengthM": 5400.7,
+   "widthM": 11.6,
+   "widthSource": "track-widths.js",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "track-widths.js": 1
+    },
+    "medianWidthM": 11.6,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.21,
+   "turnDeg": -360,
+   "elevation": {
+    "source": "USGS 3DEP dynamic elevation (best available: 1 m lidar where flown, else 1/3 arc-second)",
+    "url": "https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer",
+    "licence": "US public domain (USGS)",
+    "gridM": 3,
+    "validShare": 0.994,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 35,
+    "rangeM": 44.5,
+    "bankingFromSurface": true,
+    "gradeMaxPct": 10.7,
+    "kvMax": 0.008,
+    "bankMaxDeg": 6.6
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "yas-marina-circuit": [
+  {
+   "era": {
+    "from": null,
+    "to": 2020,
+    "date": "2020-06-01"
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": 0.25,
+    "mirror": false,
+    "trimmedMeanM": 0.9
+   },
+   "id": "yas-marina-circuit",
+   "osmWays": 18,
+   "waysUsed": 8,
+   "matchedShare": 0.9637,
+   "bridgedShare": 0.0363,
+   "sourceIncomplete": false,
+   "backSteps": 2,
+   "centreLengthM": 5328.9,
+   "officialLengthM": 5281,
+   "centreVsOfficialPct": 0.91,
+   "suspect": false,
+   "lineLengthM": 5244.7,
+   "prodLengthM": 5229.5,
+   "widthM": 12,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 12,
+    "kerb": "none",
+    "kerbShare": 0.048,
+    "limits": {
+     "year": 2020,
+     "doc": {
+      "title": "Race Directors' Event Notes Version 3",
+      "url": "https://www.fia.com/sites/default/files/decision-document/2020%20Abu%20Dhabi%20Grand%20Prix%20-%20Race%20Directors'%20Event%20Notes%20Version%203.pdf",
+      "published": "Published on 11.12.20 17:33 CET"
+     },
+     "corners": [
+      {
+       "turn": 11,
+       "rule": "kerb",
+       "placed": true
+      },
+      {
+       "turn": 12,
+       "rule": "kerb",
+       "placed": true
+      },
+      {
+       "turn": 13,
+       "rule": "kerb",
+       "placed": true
+      }
+     ]
+    },
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.36,
+   "turnDeg": 360.2,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N24_00_E054_00_DEM/Copernicus_DSM_COG_10_N24_00_E054_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.982,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 96,
+    "rangeM": 10.1,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 5.4,
+    "kvMax": 0.0011,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  },
+  {
+   "era": {
+    "from": 2021,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": 0.25,
+    "mirror": false,
+    "trimmedMeanM": 0.9
+   },
+   "id": "yas-marina-circuit",
+   "osmWays": 32,
+   "waysUsed": 10,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 5285,
+   "officialLengthM": 5281,
+   "centreVsOfficialPct": 0.08,
+   "suspect": false,
+   "lineLengthM": 5198.7,
+   "prodLengthM": 5229.5,
+   "widthM": 12,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 12,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": {
+     "year": 2025,
+     "doc": {
+      "title": "Doc 19 - Race Director's Event Notes V2",
+      "url": "https://www.fia.com/system/files/decision-document/2025_abu_dhabi_grand_prix_-_race_directors_event_notes_v2.pdf",
+      "published": "Published on 06.12.25 10:29 CET"
+     },
+     "corners": [
+      {
+       "turn": 16,
+       "rule": "line",
+       "placed": true
+      }
+     ]
+    },
+    "lineEnforcedShare": 0.016,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.37,
+   "turnDeg": 360.3,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N24_00_E054_00_DEM/Copernicus_DSM_COG_10_N24_00_E054_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.986,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 74,
+    "rangeM": 10,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 5,
+    "kvMax": 0.001,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "yeongam": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": -0.06,
+    "mirror": false,
+    "trimmedMeanM": 0.35
+   },
+   "id": "yeongam",
+   "osmWays": 18,
+   "waysUsed": 6,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 5565.7,
+   "officialLengthM": 5615,
+   "centreVsOfficialPct": -0.88,
+   "suspect": false,
+   "lineLengthM": 5471.3,
+   "prodLengthM": 5499,
+   "widthM": 12,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0.011,
+     "fia-list": 0.989
+    },
+    "medianWidthM": 12,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.39,
+   "turnDeg": 359.9,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N34_00_E126_00_DEM/Copernicus_DSM_COG_10_N34_00_E126_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.98,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 111,
+    "rangeM": 4.9,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 2,
+    "kvMax": 0.0003,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "yongin": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": -0.39,
+    "mirror": false,
+    "trimmedMeanM": 0.52
+   },
+   "id": "yongin",
+   "osmWays": 8,
+   "waysUsed": 6,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 4326.3,
+   "officialLengthM": 4346,
+   "centreVsOfficialPct": -0.45,
+   "suspect": false,
+   "lineLengthM": 4224.9,
+   "prodLengthM": 4251,
+   "widthM": 12,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 12,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.39,
+   "turnDeg": 0,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N37_00_E127_00_DEM/Copernicus_DSM_COG_10_N37_00_E127_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.892,
+    "crossoverBlankM": 458,
+    "spikeBlankM": 0,
+    "rangeM": 52.1,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 9.2,
+    "kvMax": 0.0014,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "zandvoort": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": 0.27,
+    "mirror": false,
+    "trimmedMeanM": 0.76
+   },
+   "id": "zandvoort",
+   "osmWays": 28,
+   "waysUsed": 27,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 4244.1,
+   "officialLengthM": 4259,
+   "centreVsOfficialPct": -0.35,
+   "suspect": false,
+   "lineLengthM": 4173.2,
+   "prodLengthM": 4211.4,
+   "widthM": 10,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0.792,
+     "fia-list": 0.208
+    },
+    "medianWidthM": 10,
+    "kerb": "kerb-use-data.js (iRacing)",
+    "kerbShare": 0.134,
+    "limits": {
+     "year": 2025,
+     "doc": {
+      "title": "Doc 5 - Race Director's Event Notes",
+      "url": "https://www.fia.com/system/files/decision-document/2025_dutch_grand_prix_-_race_directors_event_notes_.pdf",
+      "published": "Published on 28.08.25 18:15 CET"
+     },
+     "corners": []
+    },
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 4.53,
+   "turnDeg": -360,
+   "elevation": {
+    "source": "AHN4 DTM (0.5 m, resampled to 2 m)",
+    "url": "https://service.pdok.nl/rws/ahn/wcs/v1_0",
+    "licence": "CC0 (Rijkswaterstaat / PDOK)",
+    "gridM": 2,
+    "validShare": 0.998,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 0,
+    "rangeM": 8.7,
+    "bankingFromSurface": true,
+    "gradeMaxPct": 8.1,
+    "kvMax": 0.0037,
+    "bankMaxDeg": 16.7
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "zhuhai": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": -0.87,
+    "mirror": false,
+    "trimmedMeanM": 1.72
+   },
+   "id": "zhuhai",
+   "osmWays": 4,
+   "waysUsed": 2,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 4296.3,
+   "officialLengthM": 4318,
+   "centreVsOfficialPct": -0.5,
+   "suspect": false,
+   "lineLengthM": 4247.6,
+   "prodLengthM": 4265.2,
+   "widthM": 12,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 12,
+    "kerb": "none",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 5.28,
+   "turnDeg": -360.2,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N22_00_E113_00_DEM/Copernicus_DSM_COG_10_N22_00_E113_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 1,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 0,
+    "rangeM": 4.9,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 1.3,
+    "kvMax": 0.0002,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ],
+ "zolder": [
+  {
+   "era": {
+    "from": null,
+    "to": null,
+    "date": null
+   },
+   "status": "ok",
+   "registration": {
+    "rotDeg": -0.08,
+    "mirror": false,
+    "trimmedMeanM": 0.25
+   },
+   "id": "zolder",
+   "osmWays": 25,
+   "waysUsed": 22,
+   "matchedShare": 1,
+   "bridgedShare": 0,
+   "sourceIncomplete": false,
+   "backSteps": 0,
+   "centreLengthM": 3988.7,
+   "officialLengthM": 4000,
+   "centreVsOfficialPct": -0.28,
+   "suspect": false,
+   "lineLengthM": 3944.9,
+   "prodLengthM": 3957,
+   "widthM": 10,
+   "widthSource": "FIA list",
+   "variant": "g1",
+   "width": {
+    "sources": {
+     "osm-area": 0,
+     "osm-width-tag": 0,
+     "fia-list": 1
+    },
+    "medianWidthM": 10,
+    "kerb": "kerb-use-data.js (iRacing)",
+    "kerbShare": 0,
+    "limits": null,
+    "lineEnforcedShare": 0,
+    "cuspCapped": 0
+   },
+   "lineOffsetMaxM": 4.53,
+   "turnDeg": -360.1,
+   "elevation": {
+    "source": "Copernicus DEM GLO-30 (DSM, 1 arc-second)",
+    "url": "https://copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N50_00_E005_00_DEM/Copernicus_DSM_COG_10_N50_00_E005_00_DEM.tif",
+    "licence": "Copernicus DEM licence (free, attribution): © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA",
+    "gridM": 30,
+    "validShare": 0.992,
+    "crossoverBlankM": 0,
+    "spikeBlankM": 30,
+    "rangeM": 14.4,
+    "bankingFromSurface": false,
+    "gradeMaxPct": 6.7,
+    "kvMax": 0.0012,
+    "bankMaxDeg": null
+   },
+   "elevation30": null,
+   "prodGradeRangeM": null
+  }
+ ]
+}

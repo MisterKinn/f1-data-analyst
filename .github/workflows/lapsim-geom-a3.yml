@@ -1,0 +1,143 @@
+name: Lap simulator car-free geometry, attempt 3 (all tracks)
+
+# Step 3 attempt 3 (claude/gate-independent-geometry-attempt3-prereg-2026-11-23.md). GitHub-hosted jobs stop at 6 h, so the build is
+# split (well under that): GROUPS jobs, each fetches and builds every GROUPS-th track (OSM raceway ways and areas, today and per older layout era, the
+# best open elevation model) and uploads its per-track parts; `merge` writes tracks-a3.json in the canonical order and pushes it to
+# probe/geom-a3-out. `split-check` builds two tracks once in one job and once in two parts from the same sources and fails unless the
+# merged output is byte-identical. Raw sources are saved per group as artifacts geom-raw-a3-k (30 days) with sha256 lists; `raw_run` reuses them.
+# TRACKS in .github/geom-a3-tracks.txt: "all" or comma-separated ids (a short list for a quick check).
+on:
+  push:
+    branches: ['probe/geom-a3-fetch']
+  workflow_dispatch:
+    inputs:
+      raw_run:
+        description: 'Run id whose saved raw inputs (geom-raw-a3-*) to reuse; tracks found there are not fetched again'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+concurrency:
+  group: lapsim-geom-a3
+  cancel-in-progress: true
+
+env:
+  GROUPS: 12
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 170
+    strategy:
+      fail-fast: false
+      matrix:
+        group: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: pip install numpy requests pillow rasterio pyproj && npm ci --ignore-scripts
+      - name: Track ids of this group
+        run: |
+          node scripts/sim/geom-indep/build-a3.mjs eras /tmp/raw/eras.json > /dev/null
+          ALL=$(node scripts/sim/geom-indep/build-a3.mjs ids --group ${{ matrix.group }}/$GROUPS)
+          SEL=$(cat .github/geom-a3-tracks.txt 2>/dev/null || echo all)
+          if [ "$SEL" = all ]; then IDS="$ALL"; else IDS=$(echo "$ALL" | tr ',' '\n' | grep -x -F -f <(echo "$SEL" | tr ',' '\n') | paste -sd, - || true); fi
+          echo "IDS=$IDS" >> "$GITHUB_ENV"; echo "group ${{ matrix.group }}: $IDS"
+      # raw inputs saved by an earlier run: reused, never fetched again (owner 2026-11-24 10:55)
+      - uses: actions/download-artifact@v4
+        if: env.IDS != '' && inputs.raw_run != ''
+        continue-on-error: true
+        with:
+          name: geom-raw-a3-${{ matrix.group }}
+          path: /tmp/raw
+          run-id: ${{ inputs.raw_run }}
+          github-token: ${{ github.token }}
+      - name: Fetch OSM and elevation
+        if: env.IDS != ''
+        run: python scripts/sim/geom-indep/fetch_a3.py /tmp/raw "$IDS"
+      - name: Build this group's tracks
+        if: env.IDS != ''
+        run: |
+          node scripts/sim/geom-indep/build-a3.mjs parts /tmp/raw --only "$IDS" --jobs 4 --to /tmp/parts && cp /tmp/raw/fetch-log.json /tmp/parts/fetch-log-${{ matrix.group }}.json
+          cp /tmp/raw/fetch-status.json /tmp/parts/fetch-status-${{ matrix.group }}.json
+          (cd /tmp/raw && sha256sum $(ls | grep -v -e '^fetch-' -e '^eras.json$' | sort)) > /tmp/parts/raw-sha256-${{ matrix.group }}.txt
+      - uses: actions/upload-artifact@v4
+        if: env.IDS != ''
+        with:
+          name: geom-raw-a3-${{ matrix.group }}
+          path: /tmp/raw
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        if: env.IDS != ''
+        with:
+          name: geom-a3-parts-${{ matrix.group }}
+          path: /tmp/parts
+          retention-days: 7
+
+  split-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: pip install numpy requests pillow rasterio pyproj && npm ci --ignore-scripts
+      - name: One job vs two parts on the same sources (suzuka, zandvoort)
+        run: |
+          B=scripts/sim/geom-indep/build-a3.mjs
+          node $B eras /tmp/raw/eras.json > /dev/null
+          python scripts/sim/geom-indep/fetch_a3.py /tmp/raw suzuka,zandvoort
+          node $B build /tmp/raw --only suzuka,zandvoort --out /tmp/single
+          node $B parts /tmp/raw --only suzuka --to /tmp/p1 && node $B parts /tmp/raw --only zandvoort --to /tmp/p2
+          node $B merge /tmp/p2 /tmp/p1 --out /tmp/split
+          mkdir -p /tmp/check
+          if cmp /tmp/single/tracks-a3.json /tmp/split/tracks-a3.json && cmp /tmp/single/build-report-a3.json /tmp/split/build-report-a3.json; then
+            echo "split-check: byte-identical (suzuka, zandvoort; tracks-a3.json sha256 $(sha256sum /tmp/single/tracks-a3.json | cut -c1-16))" | tee /tmp/check/split-check.txt
+          else echo "split-check: DIFFERENT" | tee /tmp/check/split-check.txt; exit 1; fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: geom-a3-split-check
+          path: /tmp/check
+
+  merge:
+    needs: [build, split-check]
+    if: always() && needs.split-check.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci --ignore-scripts
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: geom-a3-*
+          path: /tmp/art
+      - name: Merge the group parts
+        run: |
+          # no silent drops: every group must be there and every track fetched completely, else stop and list them
+          n=$(ls -d /tmp/art/geom-a3-parts-* | wc -l); [ "$n" = "$GROUPS" ] || { echo "::error::only $n of $GROUPS groups"; exit 1; }
+          python3 -c "import json,glob,sys; s={k:v for f in glob.glob('/tmp/art/geom-a3-parts-*/fetch-status-*.json') for k,v in json.load(open(f)).items()}; bad={k:v for k,v in s.items() if not v.startswith('ok')}; print(len(s),'tracks fetched'); bad and sys.exit('::error::fetch incomplete: '+json.dumps(bad))"
+          node scripts/sim/geom-indep/build-a3.mjs merge $(ls -d /tmp/art/geom-a3-parts-*) --out /tmp/out
+          cat /tmp/art/geom-a3-parts-*/raw-sha256-*.txt | sort -k2 > /tmp/out/inputs-sha256.txt
+          echo "raw inputs: $(wc -l < /tmp/out/inputs-sha256.txt) files, manifest sha256 $(sha256sum /tmp/out/inputs-sha256.txt | cut -c1-16)" >> /tmp/out/split-check.txt
+          cp /tmp/art/geom-a3-parts-*/fetch-log-*.json /tmp/art/geom-a3-split-check/split-check.txt /tmp/out/
+          echo "groups merged: $(ls -d /tmp/art/geom-a3-parts-* | wc -l) of $GROUPS; build job results: ${{ needs.build.result }}" >> /tmp/out/split-check.txt
+      - name: Push derived geometry to the probe branch
+        run: |
+          cd /tmp/out && ls -la
+          git init -q -b probe/geom-a3-out && git add -A
+          git -c user.name="kongboda-lapsim[bot]" -c user.email="lapsim@users.noreply.github.com" commit -qm "Car-free geometry attempt 3, run ${{ github.run_id }}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" HEAD:refs/heads/probe/geom-a3-out

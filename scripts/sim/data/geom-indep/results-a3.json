@@ -1,0 +1,830 @@
+{
+ "g3Tracks": 54,
+ "noise": {
+  "judgeable": true,
+  "reason": "judgeable: WEC spread 0.005 < \u03b4/3 0.016 pp",
+  "wecSpreadPp": 0.004830628396307213,
+  "delta": 0.04932157102746234,
+  "f1SpreadsPp": {}
+ },
+ "P1": {
+  "n": 20,
+  "closer": 9,
+  "signP": 0.7483,
+  "pass": false,
+  "rows": [
+   {
+    "id": "sakhir",
+    "gB": 0.9208,
+    "gG": 1.0603,
+    "dragB": 1.1479,
+    "dragG": 1.1123,
+    "closer": true,
+    "boundB": false,
+    "boundG": false
+   },
+   {
+    "id": "jeddah",
+    "gB": 1.1932,
+    "gG": 0.9708,
+    "dragB": 1.0457,
+    "dragG": 1.0044,
+    "closer": true,
+    "boundB": true,
+    "boundG": false
+   },
+   {
+    "id": "miami",
+    "gB": 0.9483,
+    "gG": 0.937,
+    "dragB": 1.0597,
+    "dragG": 1.0127,
+    "closer": false,
+    "boundB": false,
+    "boundG": false
+   },
+   {
+    "id": "spielberg",
+    "gB": 1.0414,
+    "gG": 1.0777,
+    "dragB": 1.1496,
+    "dragG": 1.1466,
+    "closer": false,
+    "boundB": false,
+    "boundG": false
+   },
+   {
+    "id": "hungaroring",
+    "gB": 0.9508,
+    "gG": 0.9975,
+    "dragB": 1.1496,
+    "dragG": 1.1496,
+    "closer": true,
+    "boundB": false,
+    "boundG": false
+   },
+   {
+    "id": "monza",
+    "gB": 1.014,
+    "gG": 1.023,
+    "dragB": 1.0311,
+    "dragG": 0.9792,
+    "closer": false,
+    "boundB": false,
+    "boundG": false
+   },
+   {
+    "id": "suzuka",
+    "gB": 1.0341,
+    "gG": 0.9683,
+    "dragB": 1.033,
+    "dragG": 1.0351,
+    "closer": true,
+    "boundB": false,
+    "boundG": false
+   },
+   {
+    "id": "lusail",
+    "gB": 1.0805,
+    "gG": 1.0232,
+    "dragB": 1.1004,
+    "dragG": 1.0767,
+    "closer": true,
+    "boundB": false,
+    "boundG": false
+   },
+   {
+    "id": "austin",
+    "gB": 0.9819,
+    "gG": 1.0361,
+    "dragB": 0.9586,
+    "dragG": 1.0236,
+    "closer": false,
+    "boundB": false,
+    "boundG": false
+   },
+   {
+    "id": "mexico-city",
+    "gB": 0.9196,
+    "gG": 0.9811,
+    "dragB": 1.1363,
+    "dragG": 1.0394,
+    "closer": true,
+    "boundB": false,
+    "boundG": false
+   },
+   {
+    "id": "yas-marina-circuit",
+    "gB": 1.0821,
+    "gG": 1.181,
+    "dragB": 1.0606,
+    "dragG": 1.0057,
+    "closer": false,
+    "boundB": false,
+    "boundG": true
+   },
+   {
+    "id": "shanghai",
+    "gB": 1.0616,
+    "gG": 0.9395,
+    "dragB": 0.9962,
+    "dragG": 0.9954,
+    "closer": false,
+    "boundB": false,
+    "boundG": false
+   },
+   {
+    "id": "imola",
+    "gB": 1.1508,
+    "gG": 1.0399,
+    "dragB": 1.0846,
+    "dragG": 1.0938,
+    "closer": true,
+    "boundB": true,
+    "boundG": false
+   },
+   {
+    "id": "catalunya",
+    "gB": 1.0006,
+    "gG": 0.9755,
+    "dragB": 1.1496,
+    "dragG": 1.1496,
+    "closer": false,
+    "boundB": false,
+    "boundG": false
+   },
+   {
+    "id": "zandvoort",
+    "gB": 1.0651,
+    "gG": 1.0387,
+    "dragB": 1.1496,
+    "dragG": 1.1496,
+    "closer": true,
+    "boundB": false,
+    "boundG": false
+   },
+   {
+    "id": "montreal",
+    "gB": 1.0005,
+    "gG": 1.0007,
+    "dragB": 1.1278,
+    "dragG": 1.0683,
+    "closer": false,
+    "boundB": false,
+    "boundG": false
+   },
+   {
+    "id": "silverstone",
+    "gB": 0.92,
+    "gG": 1.0669,
+    "dragB": 1.0931,
+    "dragG": 0.8971,
+    "closer": true,
+    "boundB": false,
+    "boundG": false
+   },
+   {
+    "id": "spa-francorchamps",
+    "gB": 1.017,
+    "gG": 1.0357,
+    "dragB": 1.0254,
+    "dragG": 1.0266,
+    "closer": false,
+    "boundB": false,
+    "boundG": false
+   },
+   {
+    "id": "interlagos",
+    "gB": 0.9566,
+    "gG": 0.9537,
+    "dragB": 1.1017,
+    "dragG": 1.0516,
+    "closer": false,
+    "boundB": false,
+    "boundG": false
+   },
+   {
+    "id": "kuala-lumpur",
+    "gB": 0.9674,
+    "gG": 0.9589,
+    "dragB": 1.1387,
+    "dragG": 1.0889,
+    "closer": false,
+    "boundB": false,
+    "boundG": false
+   }
+  ],
+  "sdLnGrip": {
+   "B": 0.0727,
+   "G3": 0.0561
+  },
+  "sdLnGripAllF1": {
+   "B": 0.0699,
+   "G3": 0.0566
+  },
+  "boundHits": {
+   "B": [
+    "jeddah",
+    "imola"
+   ],
+   "G3": [
+    "yas-marina-circuit"
+   ]
+  }
+ },
+ "P2": {
+  "tracks": 20,
+  "rows": 49,
+  "signFlipP": 0.0885,
+  "rmsB": 2.575,
+  "rmsG3": 1.952,
+  "fallPp": 0.623,
+  "needPp": 0.16,
+  "othersRows": 9,
+  "othersB": 2.874,
+  "othersG3": 2.976,
+  "othersGuard": true,
+  "f1": [
+   2.918,
+   2.247
+  ],
+  "wec": [
+   1.805,
+   1.891
+  ],
+  "seriesGuard": true,
+  "gains": {
+   "shanghai": 19.482,
+   "suzuka": 10.214,
+   "sakhir": 14.455,
+   "jeddah": 41.814,
+   "miami": -1.046,
+   "imola": 14.327,
+   "catalunya": -4.108,
+   "montreal": 0.114,
+   "spielberg": -1.597,
+   "silverstone": -9.588,
+   "spa-francorchamps": -0.328,
+   "hungaroring": 11.378,
+   "zandvoort": 3.633,
+   "monza": -4.079,
+   "austin": -0.953,
+   "mexico-city": 19.698,
+   "interlagos": -2.137,
+   "lusail": 9.763,
+   "yas-marina-circuit": -29.87,
+   "kuala-lumpur": -0.14
+  },
+  "pass": true
+ },
+ "levelC": {
+  "B": {
+   "f1-2025": {
+    "n": 22,
+    "rmsPct": 3.093,
+    "medAbsPct": 2.735
+   },
+   "f1-2026": {
+    "n": 18,
+    "rmsPct": 2.689,
+    "medAbsPct": 2.621
+   },
+   "wec-lmh": {
+    "n": 6,
+    "rmsPct": 1.889,
+    "medAbsPct": 1.21
+   },
+   "wec-lmdh": {
+    "n": 6,
+    "rmsPct": 1.658,
+    "medAbsPct": 0.945
+   },
+   "wec-lmgt3": {
+    "n": 6,
+    "rmsPct": 1.858,
+    "medAbsPct": 1.232
+   },
+   "f1": {
+    "n": 40,
+    "rmsPct": 2.918,
+    "medAbsPct": 2.621
+   },
+   "wec": {
+    "n": 18,
+    "rmsPct": 1.805,
+    "medAbsPct": 0.976
+   },
+   "all": {
+    "n": 58,
+    "rmsPct": 2.624,
+    "medAbsPct": 1.974
+   }
+  },
+  "G3": {
+   "f1-2025": {
+    "n": 22,
+    "rmsPct": 2.26,
+    "medAbsPct": 1.294
+   },
+   "f1-2026": {
+    "n": 18,
+    "rmsPct": 2.232,
+    "medAbsPct": 1.585
+   },
+   "wec-lmh": {
+    "n": 6,
+    "rmsPct": 2.026,
+    "medAbsPct": 1.833
+   },
+   "wec-lmdh": {
+    "n": 6,
+    "rmsPct": 1.866,
+    "medAbsPct": 1.686
+   },
+   "wec-lmgt3": {
+    "n": 6,
+    "rmsPct": 1.771,
+    "medAbsPct": 1.715
+   },
+   "f1": {
+    "n": 40,
+    "rmsPct": 2.247,
+    "medAbsPct": 1.368
+   },
+   "wec": {
+    "n": 18,
+    "rmsPct": 1.891,
+    "medAbsPct": 1.715
+   },
+   "all": {
+    "n": 58,
+    "rmsPct": 2.143,
+    "medAbsPct": 1.444
+   }
+  }
+ },
+ "forward": {
+  "B": {
+   "f1-2025": {
+    "n": 22,
+    "rmsPct": 3.169,
+    "medAbsPct": 2.157
+   },
+   "f1-2026": {
+    "n": 18,
+    "rmsPct": 1.246,
+    "medAbsPct": 0.57
+   },
+   "wec-lmh": {
+    "n": 6,
+    "rmsPct": 0.917,
+    "medAbsPct": 0.568
+   },
+   "wec-lmdh": {
+    "n": 6,
+    "rmsPct": 0.699,
+    "medAbsPct": 0.233
+   },
+   "wec-lmgt3": {
+    "n": 6,
+    "rmsPct": 0.882,
+    "medAbsPct": 0.667
+   },
+   "f1": {
+    "n": 40,
+    "rmsPct": 2.494,
+    "medAbsPct": 1.324
+   },
+   "wec": {
+    "n": 18,
+    "rmsPct": 0.838,
+    "medAbsPct": 0.476
+   },
+   "all": {
+    "n": 58,
+    "rmsPct": 2.123,
+    "medAbsPct": 0.875
+   }
+  },
+  "G3": {
+   "f1-2025": {
+    "n": 22,
+    "rmsPct": 2.506,
+    "medAbsPct": 1.885
+   },
+   "f1-2026": {
+    "n": 18,
+    "rmsPct": 1.038,
+    "medAbsPct": 0.49
+   },
+   "wec-lmh": {
+    "n": 6,
+    "rmsPct": 2.464,
+    "medAbsPct": 1.86
+   },
+   "wec-lmdh": {
+    "n": 6,
+    "rmsPct": 2.54,
+    "medAbsPct": 1.768
+   },
+   "wec-lmgt3": {
+    "n": 6,
+    "rmsPct": 1.846,
+    "medAbsPct": 1.862
+   },
+   "f1": {
+    "n": 40,
+    "rmsPct": 1.985,
+    "medAbsPct": 0.906
+   },
+   "wec": {
+    "n": 18,
+    "rmsPct": 2.304,
+    "medAbsPct": 1.862
+   },
+   "all": {
+    "n": 58,
+    "rmsPct": 2.089,
+    "medAbsPct": 1.118
+   }
+  }
+ },
+ "wecBoundHits": {
+  "B": 30,
+  "G3": 25
+ },
+ "cornerBands": {
+  "pass": false,
+  "bands": [
+   {
+    "band": "<120",
+    "B": 0.971,
+    "nB": 20,
+    "G3": 0.892,
+    "nG3": 20,
+    "absChange": 0.079,
+    "limit": 0.082,
+    "ok": true
+   },
+   {
+    "band": "120-180",
+    "B": 0.862,
+    "nB": 18,
+    "G3": 0.784,
+    "nG3": 18,
+    "absChange": 0.079,
+    "limit": 0.068,
+    "ok": false
+   },
+   {
+    "band": "180-240",
+    "B": 0.906,
+    "nB": 15,
+    "G3": 0.891,
+    "nG3": 17,
+    "absChange": 0.015,
+    "limit": 0.056,
+    "ok": true
+   },
+   {
+    "band": ">=240",
+    "B": 0.978,
+    "nB": 4,
+    "G3": 0.969,
+    "nG3": 6,
+    "absChange": 0.009,
+    "limit": 0.056,
+    "ok": true
+   }
+  ],
+  "perTrack": {
+   "B": {
+    "yas-marina-circuit": [
+     0.9797,
+     0.7642500000000001,
+     1.0156,
+     null
+    ],
+    "melbourne": [
+     0.93755,
+     0.7981,
+     0.8229,
+     0.979
+    ],
+    "spielberg": [
+     0.989325,
+     0.9945,
+     0.8371999999999999,
+     null
+    ],
+    "baku": [
+     0.94475,
+     0.93805,
+     null,
+     null
+    ],
+    "sakhir": [
+     0.934,
+     0.85155,
+     0.8329,
+     null
+    ],
+    "spa-francorchamps": [
+     0.9392,
+     0.964075,
+     1.0598,
+     null
+    ],
+    "silverstone": [
+     0.966125,
+     null,
+     0.9861,
+     null
+    ],
+    "montreal": [
+     1.0199,
+     0.8313,
+     null,
+     null
+    ],
+    "shanghai": [
+     0.819625,
+     0.7382,
+     null,
+     null
+    ],
+    "zandvoort": [
+     1.009,
+     0.829,
+     null,
+     1.0694
+    ],
+    "imola": [
+     0.99455,
+     0.91315,
+     0.7422,
+     null
+    ],
+    "hungaroring": [
+     0.9257500000000001,
+     0.9555499999999999,
+     0.9417,
+     0.9823
+    ],
+    "monza": [
+     1.0071,
+     null,
+     0.99335,
+     null
+    ],
+    "suzuka": [
+     1.1188,
+     0.9526,
+     0.93345,
+     null
+    ],
+    "mexico-city": [
+     0.980425,
+     0.98465,
+     0.8918999999999999,
+     null
+    ],
+    "miami": [
+     0.9252,
+     0.8450500000000001,
+     0.8626,
+     0.8633
+    ],
+    "monte-carlo": [
+     1.03725,
+     0.77965,
+     0.785,
+     null
+    ],
+    "lusail": [
+     0.8881,
+     0.9672,
+     0.947,
+     0.9739
+    ],
+    "jeddah": [
+     1.0781999999999998,
+     0.7864,
+     0.80635,
+     null
+    ],
+    "singapore": [
+     0.90825,
+     0.897425,
+     0.7627999999999999,
+     null
+    ],
+    "catalunya": [
+     0.9120250000000001,
+     0.862275,
+     null,
+     null
+    ],
+    "interlagos": [
+     0.9185000000000001,
+     0.8626,
+     null,
+     null
+    ],
+    "austin": [
+     0.91995,
+     0.90755,
+     0.7908,
+     null
+    ],
+    "kuala-lumpur": [
+     0.97655,
+     0.8004,
+     0.906,
+     null
+    ],
+    "las-vegas": [
+     0.9979499999999999,
+     null,
+     null,
+     null
+    ],
+    "madring": [
+     0.8691,
+     0.8646,
+     0.8773,
+     null
+    ]
+   },
+   "G3": {
+    "yas-marina-circuit": [
+     0.919,
+     0.8464,
+     1.0632,
+     null
+    ],
+    "melbourne": [
+     0.92245,
+     0.8015,
+     0.8289,
+     0.9712
+    ],
+    "spielberg": [
+     0.7907500000000001,
+     0.7432000000000001,
+     0.93025,
+     null
+    ],
+    "baku": [
+     0.941075,
+     0.9393,
+     null,
+     null
+    ],
+    "sakhir": [
+     0.8736,
+     0.78115,
+     0.8679,
+     null
+    ],
+    "spa-francorchamps": [
+     0.77805,
+     0.9729,
+     1.1046,
+     1.0055
+    ],
+    "silverstone": [
+     0.8613999999999999,
+     null,
+     0.98305,
+     null
+    ],
+    "montreal": [
+     0.9612,
+     0.8741,
+     null,
+     null
+    ],
+    "shanghai": [
+     0.703125,
+     0.6615,
+     0.6556,
+     null
+    ],
+    "zandvoort": [
+     1.07345,
+     0.7662,
+     0.8917,
+     1.0845
+    ],
+    "imola": [
+     0.9108499999999999,
+     0.83375,
+     0.8365,
+     null
+    ],
+    "hungaroring": [
+     0.91945,
+     0.955325,
+     0.8522,
+     0.8389
+    ],
+    "monza": [
+     0.964375,
+     null,
+     0.993375,
+     null
+    ],
+    "suzuka": [
+     0.97055,
+     0.77,
+     0.9390000000000001,
+     null
+    ],
+    "mexico-city": [
+     0.8672500000000001,
+     0.7171000000000001,
+     0.7283,
+     null
+    ],
+    "miami": [
+     0.8442500000000001,
+     0.755,
+     0.8263,
+     0.792
+    ],
+    "monte-carlo": [
+     1.02655,
+     0.78115,
+     0.7909,
+     null
+    ],
+    "lusail": [
+     0.9234,
+     0.98205,
+     0.91635,
+     0.9324
+    ],
+    "jeddah": [
+     0.9499500000000001,
+     0.9275,
+     0.8911,
+     1.0493
+    ],
+    "singapore": [
+     0.8978999999999999,
+     0.897275,
+     0.7665,
+     null
+    ],
+    "catalunya": [
+     0.8181,
+     0.786125,
+     null,
+     null
+    ],
+    "interlagos": [
+     0.9439,
+     0.7581,
+     null,
+     null
+    ],
+    "austin": [
+     0.6964250000000001,
+     1.04725,
+     0.7335,
+     null
+    ],
+    "kuala-lumpur": [
+     0.83415,
+     0.776,
+     0.6378,
+     null
+    ],
+    "las-vegas": [
+     0.9799,
+     null,
+     null,
+     null
+    ],
+    "madring": [
+     0.8517,
+     0.8507,
+     0.8957,
+     null
+    ]
+   }
+  }
+ },
+ "runs": {
+  "B": 45296179722,
+  "G3": 45321410249,
+  "geometry": 45320691822,
+  "prepArtifactSha256": "e89fa1c9768277c8feb7ecee19e207081354516702e5755902d6dae2ebb6e8e5"
+ },
+ "tests": {
+  "B": "1 fail: mesh lap changes < 0.03 % when ds halves (f1-2026)",
+  "G3": "2 fail: human pedals; zones through a bend < 300 m (geometry-bound, not deciding)"
+ },
+ "verdict": "rejected: P1 fails (9/20, p 0.75) and the 120-180 km/h band guard fails; P2 passes. Third rejection: the idea stops."
+}

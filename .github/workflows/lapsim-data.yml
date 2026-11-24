@@ -317,6 +317,10 @@ jobs:
           path: |
             worker/lapsim/calibration-data.js
             docs/lapsim-report.md
+            docs/lapsim-level-c.json
+            docs/lapsim-forward.json
+            docs/lapsim-signature.md
+            docs/lapsim-conditions.md
           if-no-files-found: ignore
           retention-days: 14
       - name: Commit derived data

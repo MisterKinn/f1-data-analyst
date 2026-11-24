@@ -70,3 +70,19 @@ Al Kamel Systems and the championship organisers (ACO / FIA WEC, ELMS, IMSA); no
 - Committed: `scripts/sim/data/learn/alkamel-full-laps-manifest.json` (source URL, fetch date, Last-Modified, SHA-256, rows,
   columns, laps per car per file) and derived tables with a source line.
 - Fetching: robots.txt is read per host; one request at a time, 1.5 s apart; files already stored are not fetched again.
+
+### Step 3 attempt 3: every track with an OSM loop (scripts/sim/geom-indep/build-a3.mjs, scripts/sim/data/geom-indep/tracks-a3.json)
+
+Fetched and built in `.github/workflows/lapsim-geom-a3.yml`. Raw sources stay on the runner (artifact only); the derived geometry
+is committed. Pre-registration: Project `claude/gate-independent-geometry-attempt3-prereg-2026-11-23.md`.
+- OpenStreetMap raceway ways and raceway area polygons via Overpass, both current and historical (attic) for older layout eras:
+  © OpenStreetMap contributors, ODbL 1.0.
+- Elevation:
+  - USGS 3DEP dynamic elevation (US tracks): US public domain;
+  - AHN4 DTM (Zandvoort, PDOK): CC0;
+  - IGN MDT05 (Spanish tracks): CC BY 4.0, © Instituto Geográfico Nacional;
+  - GSI elevation tiles (Japanese tracks): GSI Content Terms of Use, credit 国土地理院;
+  - Copernicus DEM GLO-30 elsewhere, with the attribution above.
+- Kerb use: `worker/lapsim/kerb-use-data.js` (own iRacing telemetry, as documented there).
+- Track-limit corners: `worker/lapsim/track-limits-data.js` (FIA Race Director's notes, step 4a).
+- Layout eras: `worker/lapsim/track-state-data.js` (step 5a).
