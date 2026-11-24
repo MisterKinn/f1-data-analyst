@@ -1,0 +1,233 @@
+{
+ "2022|Abu Dhabi Grand Prix": {
+  "track": "yas-marina-circuit",
+  "laps": 59,
+  "lag_m": 0.0,
+  "corr": 0.966,
+  "lag_thirds_m": [
+   4.9995034582863545,
+   0.0,
+   -4.9995034582863545
+  ]
+ },
+ "2022|Australian Grand Prix": {
+  "track": "melbourne",
+  "laps": 56,
+  "lag_m": -14.999066764697178,
+  "corr": 0.94,
+  "lag_thirds_m": [
+   -14.999066764697178,
+   -24.99844460782863,
+   -14.999066764697178
+  ]
+ },
+ "2022|Austrian Grand Prix": {
+  "track": "spielberg",
+  "laps": 59,
+  "lag_m": -20.00208837947774,
+  "corr": 0.954,
+  "lag_thirds_m": [
+   -15.001566284608305,
+   -20.00208837947774,
+   -35.00365466408604
+  ]
+ },
+ "2022|Azerbaijan Grand Prix": {
+  "track": "baku",
+  "laps": 55,
+  "lag_m": 0.0,
+  "corr": 0.97,
+  "lag_thirds_m": [
+   0.0,
+   0.0,
+   -10.003035566760978
+  ]
+ },
+ "2022|Bahrain Grand Prix": {
+  "track": "sakhir",
+  "laps": 60,
+  "lag_m": 5.00230055790896,
+  "corr": 0.967,
+  "lag_thirds_m": [
+   5.00230055790896,
+   10.00460111581792,
+   -10.00460111581792
+  ]
+ },
+ "2022|Belgian Grand Prix": {
+  "track": "spa-francorchamps",
+  "laps": 54,
+  "lag_m": -5.001645717207083,
+  "corr": 0.926,
+  "lag_thirds_m": [
+   0.0,
+   0.0,
+   -5.001645717207083
+  ]
+ },
+ "2022|British Grand Prix": {
+  "track": "silverstone",
+  "laps": 49,
+  "lag_m": -5.001030313941138,
+  "corr": 0.949,
+  "lag_thirds_m": [
+   0.0,
+   10.002060627882276,
+   -10.002060627882276
+  ]
+ },
+ "2022|Canadian Grand Prix": {
+  "track": "montreal",
+  "laps": 55,
+  "lag_m": 5.001601062720641,
+  "corr": 0.907,
+  "lag_thirds_m": [
+   15.004803188161922,
+   5.001601062720641,
+   -5.001601062720641
+  ]
+ },
+ "2022|Dutch Grand Prix": {
+  "track": "zandvoort",
+  "laps": 60,
+  "lag_m": 20.006788249789082,
+  "corr": 0.961,
+  "lag_thirds_m": [
+   20.006788249789082,
+   30.010182374683623,
+   15.005091187341812
+  ]
+ },
+ "2022|Emilia Romagna Grand Prix": {
+  "track": "imola",
+  "laps": 54,
+  "lag_m": -5.001806493532864,
+  "corr": 0.937,
+  "lag_thirds_m": [
+   -20.007225974131455,
+   0.0,
+   0.0
+  ]
+ },
+ "2022|Hungarian Grand Prix": {
+  "track": "hungaroring",
+  "laps": 60,
+  "lag_m": 5.000891127240799,
+  "corr": 0.952,
+  "lag_thirds_m": [
+   5.000891127240799,
+   5.000891127240799,
+   5.000891127240799
+  ]
+ },
+ "2022|Italian Grand Prix": {
+  "track": "monza",
+  "laps": 58,
+  "lag_m": -9.999129568248716,
+  "corr": 0.945,
+  "lag_thirds_m": [
+   -4.999564784124358,
+   -9.999129568248716,
+   -14.998694352373073
+  ]
+ },
+ "2022|Japanese Grand Prix": {
+  "track": "suzuka",
+  "laps": 34,
+  "lag_m": -10.000925933201374,
+  "corr": 0.941,
+  "lag_thirds_m": [
+   -30.002777799604125,
+   -5.000462966600687,
+   -5.000462966600687
+  ]
+ },
+ "2022|Mexico City Grand Prix": {
+  "track": "mexico-city",
+  "laps": 60,
+  "lag_m": -9.994601627135257,
+  "corr": 0.96,
+  "lag_thirds_m": [
+   -19.989203254270514,
+   -4.9973008135676285,
+   -4.9973008135676285
+  ]
+ },
+ "2022|Miami Grand Prix": {
+  "track": "miami",
+  "laps": 57,
+  "lag_m": 5.000554196265649,
+  "corr": 0.961,
+  "lag_thirds_m": [
+   10.001108392531298,
+   10.001108392531298,
+   0.0
+  ]
+ },
+ "2022|Monaco Grand Prix": {
+  "track": "monte-carlo",
+  "laps": 58,
+  "lag_m": -5.003801061583754,
+  "corr": 0.916,
+  "lag_thirds_m": [
+   -15.011403184751263,
+   5.003801061583754,
+   -5.003801061583754
+  ]
+ },
+ "2022|Saudi Arabian Grand Prix": {
+  "track": "jeddah",
+  "laps": 52,
+  "lag_m": 9.999194174744314,
+  "corr": 0.921,
+  "lag_thirds_m": [
+   24.997985436860787,
+   0.0,
+   4.999597087372157
+  ]
+ },
+ "2022|Singapore Grand Prix": {
+  "track": "singapore",
+  "laps": 51,
+  "lag_m": -44.99569353985764,
+  "corr": 0.708,
+  "lag_thirds_m": [
+   -9.999043008857253,
+   -49.99521504428627,
+   -89.99138707971528
+  ]
+ },
+ "2022|Spanish Grand Prix": {
+  "track": "catalunya",
+  "laps": 58,
+  "lag_m": 5.000876568298475,
+  "corr": 0.815,
+  "lag_thirds_m": [
+   -5.000876568298475,
+   5.000876568298475,
+   15.002629704895424
+  ]
+ },
+ "2022|S\u00e3o Paulo Grand Prix": {
+  "track": "interlagos",
+  "laps": 54,
+  "lag_m": -5.000419160848654,
+  "corr": 0.949,
+  "lag_thirds_m": [
+   -10.000838321697309,
+   0.0,
+   -5.000419160848654
+  ]
+ },
+ "2022|United States Grand Prix": {
+  "track": "austin",
+  "laps": 54,
+  "lag_m": -4.997966908963683,
+  "corr": 0.961,
+  "lag_thirds_m": [
+   9.995933817927366,
+   -4.997966908963683,
+   -4.997966908963683
+  ]
+ }
+}

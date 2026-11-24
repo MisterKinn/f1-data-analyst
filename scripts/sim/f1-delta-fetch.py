@@ -19,12 +19,13 @@ def get(y, *parts):
         except Exception: pass
     return None
 
+ys = os.environ.get('F1_DELTA_YEARS', '2023-2025').split('-'); Y0, Y1 = int(ys[0]), int(ys[-1])  # F1_DELTA_YEARS=2022: locked 2022 set
 L = {}  # (year, event) -> {'id', 'L', zones:[{n, from, to}]}
 import subprocess
 lens = json.loads(subprocess.check_output(['node', '-e', "import('"+os.path.join(os.path.dirname(os.path.abspath(__file__)),'../../worker/lapsim/tracks.js')+"').then(m=>{const o={};for(const[k,t] of Object.entries(m.lapsimAllTracks))o[k]=t.kappa.length*t.ds;console.log(JSON.stringify(o))})"]))
 for r in csv.DictReader(open(zones_csv)):
     y = int(r['year'])
-    if not (2023 <= y <= 2025): continue
+    if not (Y0 <= y <= Y1) or not r['track']: continue  # no simulator track (2022 French GP): dropped by the zone rule
     e = L.setdefault((y, r['event']), {'id': r['track'], 'zones': [], 'dropped': []})
     if r['sim_from_m']: e['zones'].append({'n': int(r['zone']), 'from': float(r['sim_from_m']), 'to': float(r['sim_to_m'])})
     else: e['dropped'].append(int(r['zone']))

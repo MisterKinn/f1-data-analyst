@@ -1,0 +1,33 @@
+case_id,use,year,event,track,driver,stint,zone,units,units_both,drs_laps,nodrs_laps,sigma_meas_s,meas_delta_s,tow_slope_s_per_s,sigma_sys_tow_s,kept
+pooled-000,drs_zone_pooled,2022,Abu Dhabi Grand Prix,yas-marina-circuit,pooled,,1,51,37,114,735,0.0709,-0.2683,-0.2176,0.1088,1
+pooled-001,drs_zone_pooled,2022,Abu Dhabi Grand Prix,yas-marina-circuit,pooled,,2,51,35,135,741,0.045,-0.2121,0.1254,0.0627,1
+pooled-002,drs_zone_pooled,2022,Australian Grand Prix,melbourne,pooled,,1,38,26,191,419,0.0335,-0.1286,0.2047,0.1023,1
+pooled-003,drs_zone_pooled,2022,Australian Grand Prix,melbourne,pooled,,2,37,26,161,438,0.0513,-0.2833,-0.1623,0.0811,1
+pooled-004,drs_zone_pooled,2022,Australian Grand Prix,melbourne,pooled,,3,38,25,191,412,0.0239,-0.0333,0.1867,0.0934,1
+pooled-005,drs_zone_pooled,2022,Austrian Grand Prix,spielberg,pooled,,1,48,31,202,498,0.0665,-0.3189,-0.0697,0.0349,1
+pooled-006,drs_zone_pooled,2022,Austrian Grand Prix,spielberg,pooled,,2,48,30,201,508,0.0334,-0.0765,0.1842,0.0921,1
+pooled-007,drs_zone_pooled,2022,Austrian Grand Prix,spielberg,pooled,,3,48,30,177,481,0.0461,-0.1858,0.111,0.0555,1
+pooled-008,drs_zone_pooled,2022,Azerbaijan Grand Prix,baku,pooled,,1,46,21,69,583,0.0471,0.0277,0.0257,0.0129,1
+pooled-009,drs_zone_pooled,2022,Azerbaijan Grand Prix,baku,pooled,,2,46,17,70,541,0.0629,-0.1592,-0.1412,0.0706,1
+pooled-010,drs_zone_pooled,2022,Bahrain Grand Prix,sakhir,pooled,,1,78,32,110,609,0.0456,-0.0915,0.2458,0.1229,1
+pooled-011,drs_zone_pooled,2022,Bahrain Grand Prix,sakhir,pooled,,2,77,28,63,628,0.0407,-0.0586,0.1694,0.0847,1
+pooled-012,drs_zone_pooled,2022,Bahrain Grand Prix,sakhir,pooled,,3,77,29,89,615,0.0908,-0.2918,-0.1776,0.0888,1
+pooled-013,drs_zone_pooled,2022,British Grand Prix,silverstone,pooled,,1,46,25,149,365,0.0205,-0.1673,0.1101,0.055,1
+pooled-014,drs_zone_pooled,2022,British Grand Prix,silverstone,pooled,,2,46,26,151,370,0.0208,-0.2569,-0.021,0.0105,1
+pooled-015,drs_zone_pooled,2022,Dutch Grand Prix,zandvoort,pooled,,1,79,30,96,726,0.026,-0.0101,0.3099,0.1549,1
+pooled-016,drs_zone_pooled,2022,Dutch Grand Prix,zandvoort,pooled,,2,78,31,113,706,0.0547,-0.3963,-0.0033,0.0017,1
+pooled-017,drs_zone_pooled,2022,Emilia Romagna Grand Prix,imola,pooled,,1,24,5,65,507,0.1079,-0.3729,0.1594,0.0797,0
+pooled-018,drs_zone_pooled,2022,Hungarian Grand Prix,hungaroring,pooled,,1,60,33,88,841,0.0292,-0.2914,0.1186,0.0593,1
+pooled-019,drs_zone_pooled,2022,Hungarian Grand Prix,hungaroring,pooled,,2,60,36,133,793,0.0445,-0.015,0.0367,0.0183,1
+pooled-020,drs_zone_pooled,2022,Italian Grand Prix,monza,pooled,,1,40,20,191,452,0.0243,-0.1615,0.1159,0.058,1
+pooled-021,drs_zone_pooled,2022,Italian Grand Prix,monza,pooled,,2,40,23,191,417,0.045,-0.0598,0.1159,0.0579,1
+pooled-022,drs_zone_pooled,2022,Mexico City Grand Prix,mexico-city,pooled,,1,43,28,113,1018,0.0295,-0.0333,0.2677,0.1339,1
+pooled-023,drs_zone_pooled,2022,Mexico City Grand Prix,mexico-city,pooled,,2,42,26,91,964,0.052,-0.2895,-0.2268,0.1134,1
+pooled-024,drs_zone_pooled,2022,Mexico City Grand Prix,mexico-city,pooled,,3,42,24,98,982,0.0423,0.0178,0.0908,0.0454,1
+pooled-025,drs_zone_pooled,2022,Miami Grand Prix,miami,pooled,,1,44,27,142,514,0.0502,-0.3558,0.4407,0.2203,1
+pooled-026,drs_zone_pooled,2022,Miami Grand Prix,miami,pooled,,2,44,31,149,518,0.0437,-0.2608,0.2888,0.1444,1
+pooled-027,drs_zone_pooled,2022,Miami Grand Prix,miami,pooled,,3,43,28,145,494,0.1076,0.0146,-0.064,0.032,0
+pooled-028,drs_zone_pooled,2022,São Paulo Grand Prix,interlagos,pooled,,1,59,44,136,606,0.0287,-0.1288,0.2684,0.1342,1
+pooled-029,drs_zone_pooled,2022,São Paulo Grand Prix,interlagos,pooled,,2,59,34,112,590,0.0519,-0.1638,-0.1038,0.0519,1
+pooled-030,drs_zone_pooled,2022,United States Grand Prix,austin,pooled,,1,54,27,157,440,0.0439,-0.4302,-0.063,0.0315,1
+pooled-031,drs_zone_pooled,2022,United States Grand Prix,austin,pooled,,2,52,27,102,454,0.0719,-0.1043,-0.0879,0.044,1

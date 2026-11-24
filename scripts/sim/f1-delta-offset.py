@@ -7,7 +7,8 @@ from concurrent.futures import ThreadPoolExecutor
 from urllib.parse import quote
 zones_csv, out = sys.argv[1:3]
 here = os.path.dirname(os.path.abspath(__file__))
-ev = sorted({(int(r['year']), r['event'], r['track']) for r in csv.DictReader(open(zones_csv)) if 2023 <= int(r['year']) <= 2025 and r['track']})
+ys = os.environ.get('F1_DELTA_YEARS', '2023-2025').split('-'); Y0, Y1 = int(ys[0]), int(ys[-1])  # F1_DELTA_YEARS=2022: locked 2022 set
+ev = sorted({(int(r['year']), r['event'], r['track']) for r in csv.DictReader(open(zones_csv)) if Y0 <= int(r['year']) <= Y1 and r['track']})
 ids = sorted({t for _, _, t in ev})
 js = "import('" + os.path.join(here, '../../worker/lapsim/kernel.js') + "').then(async K=>{const {lapsimAllTracks:T}=await import('" + os.path.join(here, '../../worker/lapsim/tracks.js') + "');const {carsFor}=await import('" + os.path.join(here, '../../worker/lapsim/scenario.js') + "');const k=K.lapsimKernel(),env=k.conditionsFromWeather({pressureHpa:1013.25,airTempC:25,humidityPct:50,trackTempC:35,windSpeed:0,windFromDeg:0}),o={};for(const id of " + json.dumps(ids) + "){const t=T[id];o[id]={ds:t.ds,v:k.simulateLap(k.trackFromData(t),carsFor(id)['2025'].car,env).v.map(x=>x*3.6)}}console.log(JSON.stringify(o))})"
 SIM = json.loads(subprocess.check_output(['node', '-e', js]))
