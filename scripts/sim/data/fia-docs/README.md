@@ -18,4 +18,13 @@ Notes
 - Positions are as printed (e.g. "250 m after Turn 5" or FIA lap-distance windows). Do not convert or clip them here.
 - Values marked approximate/plotted (2026 Rev 1 and Alt 2 curves) or `estimated` must not be used as measured data.
 - Collected by an external assistant on 2026-11-24 and reviewed by the central session
-  (`claude/review-external-inputs-2026-11-24.md` in the claude.ai Project). Re-collection scripts are in the handoffs.
+  (`claude/review-external-inputs-2026-11-24.md` in the claude.ai Project).
+
+Collectors (`scripts/sim/fia-docs/`, one per handoff; PDFs cached in `.cache/fia-docs`, `FIA_DOCS_CACHE` to move it)
+- `node scripts/sim/fia-docs/<pu-info|low-drag-zones|circuit-changes|wec-bop>.mjs --check` rebuilds the rows of the documents
+  already in the CSV and lists every row that differs. It never writes the CSV.
+- Without `--check` a script adds rows for new documents only; rows already in a CSV are not rewritten.
+  `.github/workflows/fia-docs-refresh.yml` runs this weekly and opens a pull request only when a CSV changed.
+- Not rebuilt from the PDFs: map pages that are pictures (2022–25 DRS legends, checked by eye), "grip declared" session tags
+  (Race Control Messages), curated prose (circuit-change descriptions, notes) and the WEC entry-list / map / track-limit records.
+  `dump.mjs <csv>...` caches every PDF a CSV cites.
