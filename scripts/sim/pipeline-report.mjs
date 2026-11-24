@@ -23,7 +23,7 @@ export function diff(shipped, cand) {
 const sum = f => existsSync(f) ? JSON.parse(readFileSync(f, 'utf8')).summary ?? null : null;
 const md = r => [
   `# LapSim pipeline report — run ${r.run.id}`, '',
-  `Commit \`${r.run.commit}\` · snapshot \`${r.inputs.tag}\` (sha256 \`${r.inputs.sha256}\`) · generated ${r.generatedAt}`, '',
+  `Mode: **${r.run.mode}**${r.run.mode === 'production' ? '' : ' (not a production number)'} · repo ${r.run.repo} · commit \`${r.run.commit}\` · snapshot \`${r.inputs.tag}\` (sha256 \`${r.inputs.sha256}\`) · generated ${r.generatedAt}`, '',
   `Fit settings (.github/lapsim-fit.env): ${Object.entries(r.settings).map(([k, v]) => `${k}=${v}`).join(', ') || 'none'}. Seeds: ${r.seeds}.`, '',
   `Fit job: ${r.fit}.`, '',
   ...(r.diff ? fitMd(r) : ['No fit output in this run.', '']),
@@ -52,7 +52,7 @@ if (process.argv[1]?.endsWith('pipeline-report.mjs')) {
   const v2same = sha(`${dd}/v2pooled/baseline.csv`) === sha('scripts/sim/data/f1-delta/baseline-pooled-2026-11-24.csv');
   const r = {
     generatedAt: new Date().toISOString(),
-    run: {id: E.GITHUB_RUN_ID || 'local', commit: E.GITHUB_SHA || 'local', url: E.GITHUB_RUN_ID ? `${E.GITHUB_SERVER_URL}/${E.GITHUB_REPOSITORY}/actions/runs/${E.GITHUB_RUN_ID}` : null},
+    run: {mode: E.PIPELINE_MODE || 'local', repo: E.GITHUB_REPOSITORY || 'local', id: E.GITHUB_RUN_ID || 'local', commit: E.GITHUB_SHA || 'local', url: E.GITHUB_RUN_ID ? `${E.GITHUB_SERVER_URL}/${E.GITHUB_REPOSITORY}/actions/runs/${E.GITHUB_RUN_ID}` : null},
     inputs: {tag: E.SNAPSHOT_TAG || '', sha256: E.SNAPSHOT_SHA256 || '', sums: E.SNAPSHOT_SUMS && existsSync(E.SNAPSHOT_SUMS) ? readFileSync(E.SNAPSHOT_SUMS, 'utf8') : ''},
     settings, seeds: 'fit: none (deterministic Nelder–Mead / BCD); condition-report bootstrap seed 7; gate.mjs sign-flip / bootstrap seed 1',
     fit: E.FIT_RESULT || 'local',

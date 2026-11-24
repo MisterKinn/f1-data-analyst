@@ -9,6 +9,8 @@ name: Lap simulator pipeline (pinned inputs → fit → report)
 # - push to lapsim-pipeline/** (any repo): only the short jobs (snapshot check, track-state check on an existing pin, tests, Δ benchmarks
 #   on the committed calibration, report), minutes not hours. The 3 h fit and the long snapshot builds (TI / fia.com fetch) run only
 #   on workflow_dispatch or a release (central 2026-11-24).
+# - mode research (dispatch on the fork): the same jobs for steps 22 / 28; the report is labelled research. Production snapshots and
+#   production numbers come only from upstream (production mode or a release).
 on:
   workflow_dispatch:
     inputs:
@@ -16,6 +18,10 @@ on:
         description: 'Make a new LapSim snapshot from this lapsim-data run id (empty: the pinned snapshot)'
         required: false
         default: ''
+      mode:
+        description: 'production (upstream only) or research (any repo, e.g. the fork: candidate settings from .github/lapsim-fit.env on the dispatched branch; never a production number)'
+        required: false
+        default: 'production'
       fit:
         description: 'yes: fit and report; no: only make/check the snapshots'
         required: false
@@ -41,7 +47,7 @@ concurrency:
 jobs:
   # LapSim build (tracks, traces, WEC timing): release asset → this run's lapsim-prep artifact, which lapsim-data.yml reads
   snapshot:
-    if: github.event_name == 'push' || github.repository == 'MisterKinn/f1-data-analyst'
+    if: github.event_name == 'push' || github.repository == 'MisterKinn/f1-data-analyst' || inputs.mode == 'research'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     outputs:
@@ -85,7 +91,7 @@ jobs:
 
   # change-effects inputs (TracingInsights corner minima, FIA notes): pinned release asset, or made once (TI at one commit per season)
   track-state:
-    if: github.event_name == 'push' || github.repository == 'MisterKinn/f1-data-analyst'
+    if: github.event_name == 'push' || github.repository == 'MisterKinn/f1-data-analyst' || inputs.mode == 'research'
     runs-on: ubuntu-latest
     timeout-minutes: 300
     env:
@@ -187,6 +193,7 @@ jobs:
       - name: Report
         env:
           SHIPPED_DIR: /tmp/shipped
+          PIPELINE_MODE: ${{ github.event_name == 'push' && 'push check' || inputs.mode || 'production' }}
           FIT_RESULT: ${{ needs.fit.result }}
           SNAPSHOT_TAG: ${{ needs.snapshot.outputs.tag }}
           SNAPSHOT_SHA256: ${{ needs.snapshot.outputs.sha256 }}
