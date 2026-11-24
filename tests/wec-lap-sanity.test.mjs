@@ -22,3 +22,11 @@ test('lap check: 3 % band both ways, event names mapped to track ids', () => {
   assert.equal(lapCheck({event: 'LE MANS', season: '2024', cls: 'HYPERCAR', best: 212}, bests), 'off +3.7 %');
   assert.equal(lapCheck({event: 'IMOLA', season: '2025', cls: 'HYPERCAR', best: 90}, bests), 'no reference');
 });
+
+test('WEC event ids: short track ids, raw name kept when two events of a season would share one', async () => {
+  const {wecEventIds} = await import('../scripts/sim/learn/wec-lap-sanity.mjs');
+  assert.deepEqual(wecEventIds([
+    {season: '2026', event: 'AUTODROMO NAZIONALE DI MONZA', venue: 'monza'}, {season: '2026', event: 'FUJI SPEEDWAY', venue: ''},
+    {season: '2021', event: 'BAHRAIN INTERNATIONAL CIRCUIT 6 HOURS', venue: ''}, {season: '2021', event: 'BAHRAIN INTERNATIONAL CIRCUIT 8 HOURS', venue: ''},
+  ]), ['monza', 'fuji', 'BAHRAIN INTERNATIONAL CIRCUIT 6 HOURS', 'BAHRAIN INTERNATIONAL CIRCUIT 8 HOURS']);
+});
