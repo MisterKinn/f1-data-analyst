@@ -178,16 +178,20 @@ function table(rows, preds, by) { // preds: {name: [per row]}
   return out;
 }
 
-if (process.argv[1]?.endsWith('fit-endurance.mjs')) {
-  const loaded = loadRows(process.argv.length > 3 ? process.argv.slice(2, -1) : SOURCES), skipped = loaded.skipped, OUT = process.argv.length > 3 ? process.argv.at(-1) : 'scripts/sim/data/learn/endurance-fit.json'; let rows = loaded.rows;
   // Wet or disrupted qualifying that the rain column missed (rule 3.3.1): the whole class of an event is more than 4 % slower than
   // the fit predicts from every OTHER event. Slow side only. The sessions are listed, not fitted and not scored.
   // Repeated until no new session is found (at most 3 passes): a wet session left in the data pulls the prediction of the others.
+export function slowSessions(rows) {
   const slow = []; for (let pass = 0; pass < 3; pass++) { const g = new Map(), found = slow.length; for (const ev of new Set(rows.map(r => r.eventKey))) { const f = fit(rows.filter(r => r.eventKey !== ev)); for (const r of rows.filter(r => r.eventKey === ev)) { const k = ev + '|' + r.group; (g.get(k) || g.set(k, []).get(k)).push(Math.log(r.real / f.predict(r))); } }
     const mean = new Map([...g].map(([k, e]) => [k, e.reduce((a, x) => a + x, 0) / e.length])), wetEv = new Set([...mean].filter(([, m]) => m > 0.04).map(([k]) => k.split('|').slice(0, -1).join('|')));
     // another class of an event with a wet class is dropped from 2 % slow (same weekend weather, e.g. WEC 2025 COTA GT3 at 3.9 %)
     for (const [k, m] of mean) if (m > 0.04 || m > 0.02 && wetEv.has(k.split('|').slice(0, -1).join('|'))) slow.push({session: k, cars: g.get(k).length, slowerPct: +(m * 100).toFixed(1)});
     const bad = new Set(slow.map(s => s.session)); rows = rows.filter(r => !bad.has(r.eventKey + '|' + r.group)); if (slow.length === found) break; }
+  return {slow, rows};
+}
+if (process.argv[1]?.endsWith('fit-endurance.mjs')) {
+  const loaded = loadRows(process.argv.length > 3 ? process.argv.slice(2, -1) : SOURCES), skipped = loaded.skipped, OUT = process.argv.length > 3 ? process.argv.at(-1) : 'scripts/sim/data/learn/endurance-fit.json'; let rows = loaded.rows;
+  const sl = slowSessions(rows), slow = sl.slow; rows = sl.rows;
   skipped['slow session (wet or disrupted), listed'] = loaded.rows.length - rows.length;
   const full = fit(rows);
   const groups = k => [...new Set(rows.map(r => r[k]))], hold = (key, drop = () => false) => { const p = new Array(rows.length); for (const g of groups(key)) { const f = fit(rows.filter(r => r[key] !== g)); rows.forEach((r, i) => { if (r[key] === g) p[i] = f.predict(r); }); } return p; };
