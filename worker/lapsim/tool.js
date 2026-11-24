@@ -10,7 +10,7 @@ import {TRACK_NAMES, resolveTrack} from './names.js';
 import {carsFor, realConditions, latestChanges, gatedChangeFactors, fittedYear, SERIES_CARS, CAR_ORDER, HYPER_KEYS, raceRecords} from './scenario.js';
 import {rechargeLimitMJ} from './energy-limits.js';
 import {lapsimLearned} from './learned-data.js';
-import {evolutionCoeffs, evolutionDelta, evolutionCurve} from './evolution.js';
+import {evolutionCoeffs, evolutionDelta, evolutionCurve, warmupClassOf} from './evolution.js';
 import {wetGap} from './wet-gap.js';
 import {lapsimWetGap} from './wet-gap-data.js';
 import {driveEnergyJ} from './stint-energy.js';
@@ -210,7 +210,7 @@ export function simulate(args = {}, opts = {}) {
     r3(bare(plus(k, 1.1)) - b0)]));
   // track evolution: only when asked, so the default output is unchanged
   if (['session_type', 'session_minute', 'rubber_gain_pct', 'saturation_min', 'track_wetness_start', 'drying_time_min', 'tyre', 'tyre_warmup_laps', 'car_model', 'wet_season', 'wet_session'].some(k => args[k] !== undefined)) {
-    const se = sel.series === 'wec' ? 'wec' : 'f1', type = args.session_type || 'qualifying', c = evolutionCoeffs(se, id, type), qc = evolutionCoeffs(se, id, 'qualifying');
+    const se = sel.series === 'wec' ? 'wec' : 'f1', type = args.session_type || 'qualifying', c = evolutionCoeffs(se, id, type, {cls: se === 'wec' ? warmupClassOf(sel.cls) : null}), qc = evolutionCoeffs(se, id, 'qualifying');
     const endOf = x => x.curve ? x.curve.at(-1)[0] : se === 'wec' ? (type === 'qualifying' ? 20 : 90) : 60;
     const formula = Number.isFinite(args.rubber_gain_pct) || Number.isFinite(args.saturation_min);
     const P = {...c, session: type, tyre: se === 'wec' && args.tyre === 'inter' ? 'wet' : args.tyre || 'slick', useCurve: !formula && !!c.curve, wetStart: args.track_wetness_start ?? 0, dryMin: args.drying_time_min ?? 20,

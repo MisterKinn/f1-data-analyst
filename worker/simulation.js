@@ -25,6 +25,7 @@ import {climateFor} from './lapsim/climate.js';
 import {lapsimWecTyres} from './lapsim/wec-tyres-data.js';
 import {raceLaps, strategies} from './lapsim/race-pace.js';
 import {evolutionCoeffs, evolutionDelta, evolutionCurve} from './lapsim/evolution.js';
+import {EVOLUTION_WARMUP_MEASURED} from './lapsim/evolution-warmup-data.js';
 import {lineTrack, blendLine, blendOff, minCurvatureLine} from './lapsim/racing-line.js';
 import {TRACK_LL} from './lapsim/track-coords.js';
 import {brakeZones} from './lapsim/brakes.js';
@@ -345,6 +346,8 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null, first
   const data = {clipFp, startAlt: lapsimStartLines[id] || null, driverLines: lapsimDriverLines?.tracks?.[id] || null, driverQuali: lapsimF1DriverQuali?.[id] || null, realTel: lapsimF1RealTel?.[id] ? Object.fromEntries(Object.entries(lapsimF1RealTel[id]).map(([y, r]) => [y, {...r, gaps: telGaps(r)}])) : null, fwdLog: lapsimPredictionLog?.cars || null, pu: lapsimPuDocs?.events?.[id] || lapsimPuEst?.tracks?.[id] || null, lang, t, id, track: td, cars, carOrder: CAR_ORDER_P, carId, evoOf, fam, bodyLabel: BODY_LABEL, events, conds, raceRec: raceRecords(id), changes, energy: (liveEnergy && (query.track || 'monza') === id ? liveEnergy : energyLimit(id, 2026)),
     compounds: lapsimCompounds?.[id] || {}, wecTyres: lapsimWecTyres?.[id] || {}, line: lineData(id), bumps: lapsimTrackBumps?.tracks?.[id] || null, pit: lapsimPitLanes?.tracks?.[id] || null, wallNear: wallNear(id, td.kappa.length), pitSpeed: {series: lapsimPitSpeed.series, event: lapsimPitSpeed.tracks[id] || {}}, pitLossF1: lapsimRace?.tracks?.[id]?.pitLoss ?? null, lineText: LT[lang], qsplit: lapsimQsplit ? {off: lapsimQsplit.offsetPct, test: lapsimQsplit.test, real: lapsimQsplit.tracks?.[id] || null} : null, brakes: lapsimBrakes ? {ramp: lapsimBrakes.rampS ?? 0, k: lapsimBrakes.pedalKgPerG, g: lapsimBrakes.gScale, t: lapsimBrakes.timeScale, test: lapsimBrakes.test, real: lapsimBrakes.races?.[id] || null, text: BT[lang]} : null, wetGap: wetGapPage(id), climate: climateFor(id), compoundGap: compoundGap(id), compoundTest: lapsimCompoundGap?.test?.rmsPct ?? null,
     evo: Object.fromEntries(['f1', 'wec'].map(se => [se, Object.fromEntries(['practice', 'qualifying'].map(ty => [ty, evolutionCoeffs(se, id, ty)]))])),
+    // measured WEC warm-up per class (step 15); only sent with the flag on, so the page data is unchanged with it off
+    ...(EVOLUTION_WARMUP_MEASURED ? {evoCls: Object.fromEntries(['hypercar', 'lmgt3'].map(c => [c, Object.fromEntries(['practice', 'qualifying'].map(ty => [ty, evolutionCoeffs('wec', id, ty, {cls: c})]))]))} : {}),
     zones: lapsimF1Zones?.tracks?.[id] || null, feZones: lapsimFeZones?.tracks?.[id] || null, zonesOn: ZONES_ON ? (DRS_ONLY ? 'drs' : 'all') : '', puQuali: PU_QUALI, realState: !!lapsimCalibration?.realState, puRamp: !!lapsimCalibration?.puRamp, otChoice: lapsimCalibration?.otChoice?.[id] ?? null, surface: surfaceOf(id, td, changes), mapRot0: (Number.isFinite(view0?.openDeg) ? view0.openDeg : landscapeRot(td.map, lapsimTrackNorth?.[id], VIEW[id], td.corners, td.length)) + (VIEW[id]?.flip ? 180 : 0), cornersEstimated: !!td.cornersEstimated, cornerNames: td.cornersEstimated ? lapsimCornerNames?.[id]?.names?.map(c => ({...c, name: /* 'Curva 1' is only a number */ /^(Turn|Curva|Corner)\s*\d+$/i.test(c.name) ? c.name.replace(/\D+/, '') : lang === 'en' ? c.name : lapsimNamesKo[c.name] || c.name})) || null : null, straights: straightsOf(id, td, lang), north: lapsimTrackNorth?.[id] || null, ui: UI[lang],
     calibration: {generatedAt: lapsimCalibration?.generatedAt || null, seasons: Object.fromEntries(Object.entries(lapsimCalibration?.seasons || {}).map(([y, s]) => [y, s.tracks?.[id] || null]))}};
   // first render on the server with the same code the browser uses
@@ -1269,7 +1272,8 @@ function computeView(K, data, state, R) {
   const tyreHtml = Object.keys(tyres).map(k => '<option value="' + k + '"' + (k === ev.tyre ? ' selected' : '') + '>' + tyres[k].replace(/\{([SMH])\}/, (_, c) => cs ? ' ' + cs[cn[c]] + (String(cy) !== String(sel.year) ? ' (' + cy + ')' : '') : '') + '</option>').join('');
   // dry compound: the simulated lap is a soft-tyre pole lap; F1 adds the gap fitted on this track's real race laps
   const dry = ev.tyre !== 'inter' && ev.tyre !== 'wet', cg = ts === 'f1' && dry ? data.compoundGap?.[cy]?.[ev.tyre] : null, gapS = cg ? res.lapTime * cg.pct / 100 : null;
-  const coef = data.evo[se][ev.type], qc = data.evo[se].qualifying;
+  const wcls = sel.cls === 'lmh' || sel.cls === 'lmdh' ? 'hypercar' : sel.cls === 'lmgt3' || sel.cls === 'gt3-aco' ? 'lmgt3' : null; // = warmupClassOf (evolution.js)
+  const coef = (data.evoCls && wcls && data.evoCls[wcls] || data.evo[se])[ev.type], qc = data.evo[se].qualifying;
   const endOf = c => c.curve ? c.curve[c.curve.length - 1][0] : (se === 'wec' ? (c === qc ? 20 : 90) : 60);
   const P = Object.assign({}, coef, {session: ev.type, tyre: dry ? 'slick' : ev.tyre, useCurve: ev.useCurve && !!coef.curve, wetStart: 0, dryMin: 20, warmupLaps: 0}, ev.over || {});
   const evo = {end: ev.over && Number.isFinite(ev.over.end) ? ev.over.end : endOf(coef), gainPct: +(+P.gainPct).toFixed(2), tauMin: Math.round(P.tauMin), wetStart: P.wetStart, dryMin: P.dryMin, warmupLaps: P.warmupLaps};

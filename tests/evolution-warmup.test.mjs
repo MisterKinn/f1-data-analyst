@@ -44,3 +44,13 @@ test('evolution warm-up data: measured WEC coefficients are present and plausibl
   if (!w) return;
   for (const cls of Object.keys(w)) for (const v of Object.values(w[cls])) assert.ok(v.pct > 0 && v.pct < 5 && v.n >= 30, `${cls} ${JSON.stringify(v)}`);
 });
+
+test('evolution warm-up callers: class map, and with the flag off the page and tool get the same coefficients as before', async () => {
+  const {warmupClassOf} = await import('../worker/lapsim/evolution.js');
+  assert.deepEqual(['lmh', 'lmdh', 'lmgt3', 'gt3-aco', 'lmp2', 'gt3-sro', 'gen3', null].map(warmupClassOf), ['hypercar', 'hypercar', 'lmgt3', 'lmgt3', 'lmp2', null, null, null]);
+  const {simulationPage} = await import('../worker/simulation.js');
+  assert.ok(!/"evoCls"/.test(String(simulationPage({track: 'monza', car: 'wec-lmh'}, 'en'))));   // flag off → no per-class data on the page
+  const {simulate} = await import('../worker/lapsim/tool.js');
+  const r = simulate({car: 'wec-lmh', track: 'monza', session_type: 'practice', tyre_warmup_laps: 1});
+  assert.ok(r.evolution && Number.isFinite(r.evolution.lap_at_minute_s));
+});

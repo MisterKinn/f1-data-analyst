@@ -32,6 +32,8 @@ export function evolutionCoeffs(series = 'f1', track = null, session = 'qualifyi
   const c = baseCoeffs(series, track, session), m = measuredWarmup && cls ? table?.[series]?.[cls] : null, w = m?.[session] ?? m?.all;
   return w ? {...c, warmupPct: w.pct, warmupLaps: 1, warmupBasis: 'measured'} : c;
 }
+// Car class → measured warm-up class (WEC Hypercar LMH/LMDH, WEC LMGT3 also as the ACO GT3 car); others none
+export const warmupClassOf = cls => cls === 'lmh' || cls === 'lmdh' ? 'hypercar' : cls === 'lmgt3' || cls === 'gt3-aco' ? 'lmgt3' : cls === 'lmp2' ? 'lmp2' : null;
 function baseCoeffs(series, track, session) {
   const fit = lapsimEvolution?.series?.[series], def = EVOLUTION_DEFAULTS[series] || EVOLUTION_DEFAULTS.f1;
   // a pooled fit that does worse than "no change" on held-out sessions is not used
