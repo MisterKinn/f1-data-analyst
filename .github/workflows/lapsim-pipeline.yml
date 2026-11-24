@@ -217,3 +217,48 @@ jobs:
           id=${{ github.run_id }}; cp out/pipeline-report.json "pipeline-report-$id.json"; cp out/pipeline-report.md "pipeline-report-$id.md"
           gh release upload "${{ needs.snapshot.outputs.tag }}" -R ${{ github.repository }} "pipeline-report-$id.json" "pipeline-report-$id.md" --clobber
           [ "${{ github.event_name }}" != release ] || gh release upload "${{ github.event.release.tag_name }}" "pipeline-report-$id.json" "pipeline-report-$id.md" --clobber
+
+  # step 29b: Δ ranges (± on lapsim_simulate / the page) rebuilt from this run: held-out rows of the run's calibration and the Δ bench
+  # on the pinned pooled DRS cases. Always an artifact + release asset; written to main only by a production run on main whose
+  # calibration is main's (a research or push run never touches the production ranges: delta-intervals.mjs refuses, test in
+  # tests/lapsim-delta-intervals.test.mjs). A refit that is not on main yet carries its ranges in the same commit (lapsim-data.yml).
+  delta-ranges:
+    needs: [snapshot, fit, report]
+    if: ${{ !cancelled() && needs.report.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write
+      actions: write  # publish-refresh.sh starts the stored-views rebuild
+    env:
+      GH_TOKEN: ${{ github.token }}
+      MODE: ${{ github.event_name == 'push' && 'research' || inputs.mode || 'production' }}
+      RUN: ${{ github.run_id }}
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with: {name: calibration-output, path: fit}
+      - name: Build the ranges from this run
+        run: |
+          [ -f fit/worker/lapsim/calibration-data.js ] && cp fit/worker/lapsim/calibration-data.js worker/lapsim/ || true
+          node scripts/sim/delta-intervals.mjs --run "$RUN" --mode "$MODE" --out "ranges/delta-intervals-data-$RUN.js" | tee -a "$GITHUB_STEP_SUMMARY"
+          sha256sum worker/lapsim/calibration-data.js | cut -c1-64 > ranges/calibration.sha256
+      - uses: actions/upload-artifact@v4
+        with: {name: delta-ranges, path: ranges/, retention-days: 90}
+      - name: Attach to the snapshot release
+        run: gh release upload "${{ needs.snapshot.outputs.tag }}" -R ${{ github.repository }} "ranges/delta-intervals-data-$RUN.js" --clobber
+      - name: Publish to main (production run on main, calibration = main's)
+        if: github.repository == 'MisterKinn/f1-data-analyst' && github.event_name != 'push' && github.ref == 'refs/heads/main' && env.MODE == 'production'
+        run: |
+          git fetch -q origin main && git checkout -q --detach origin/main
+          if [ "$(sha256sum worker/lapsim/calibration-data.js | cut -c1-64)" != "$(cat ranges/calibration.sha256)" ]; then
+            echo "Calibration of run $RUN is not on main: ranges kept in the artifact and release (commit them with the calibration)" | tee -a "$GITHUB_STEP_SUMMARY"; exit 0; fi
+          cp "ranges/delta-intervals-data-$RUN.js" worker/lapsim/delta-intervals-data.js
+          # main moved: rebuild on the new main only if its calibration is still this run's
+          scripts/publish-refresh.sh -m "LapSim Δ ranges from lapsim-pipeline run $RUN (step 29b)" -b lapsim-learn/delta-ranges \
+            -g "[ \"\$(sha256sum worker/lapsim/calibration-data.js | cut -c1-64)\" = $(cat ranges/calibration.sha256) ] && node scripts/sim/delta-intervals.mjs --run $RUN --mode production" \
+            -- worker/lapsim/delta-intervals-data.js

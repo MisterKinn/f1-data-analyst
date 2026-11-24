@@ -49,6 +49,11 @@ for attempt in 1 2 3; do
       git add -- worker/lapsim/hypercar-maker-data.js; maker=$(grep -iE 'held-out|BoP-fastest' <<<"$out" || true)
     else echo "::warning::Hypercar maker input changed but scripts/sim/learn/hypercar-makers.mjs is not on main yet"; fi
   fi
+  # step 29b: a changed calibration rebuilds the Δ ranges (±) in the same commit
+  if git diff --cached --name-only | grep -qx worker/lapsim/calibration-data.js && [ -f scripts/sim/delta-intervals.mjs ]; then
+    node scripts/sim/delta-intervals.mjs --run "${GITHUB_RUN_ID:-local}" --mode refit || { echo "::error::delta-intervals.mjs failed"; exit 1; }
+    git add -- worker/lapsim/delta-intervals-data.js
+  fi
   mkdir -p .gate-tmp && git show origin/main:worker/lapsim/calibration-data.js > .gate-tmp/before.js 2>/dev/null || rm -f .gate-tmp/before.js
   held=$(node scripts/heldout-line.mjs .gate-tmp/before.js worker/lapsim/calibration-data.js 2>/dev/null || true); rm -rf .gate-tmp
   git commit -q -m "$msg" ${held:+-m "$held"} ${maker:+-m "$maker"}

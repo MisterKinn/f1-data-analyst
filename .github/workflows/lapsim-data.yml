@@ -326,6 +326,10 @@ jobs:
           for f in docs/lapsim-level-c.json docs/lapsim-forward.json; do
             node -e "const s=require('./'+process.argv[1]).summary;console.log('### '+process.argv[1]+'\n\n| group | n | RMS % |\n|---|---|---|\n'+Object.entries(s).map(([k,v])=>'| '+k+' | '+v.n+' | '+v.rmsPct+' |').join('\n'))" "$f" >> "$GITHUB_STEP_SUMMARY"
           done
+      # step 29b: the Δ ranges (±) of this calibration go into the same commit, so they are never stale after a refit
+      - name: Rebuild the Δ ranges on this calibration
+        if: inputs.calibrate != 'false'
+        run: node scripts/sim/delta-intervals.mjs --run ${{ github.run_id }} --mode refit
       - name: Test
         if: inputs.calibrate != 'false'
         run: node --test tests/lapsim*.test.mjs
@@ -355,7 +359,7 @@ jobs:
             worker/lapsim/race-data.js docs/lapsim-race.md worker/lapsim/change-effects-data.js worker/lapsim/energy-docs-data.js worker/lapsim/rules-data.js docs/lapsim-rules.md \
             worker/lapsim/racing-lines-data.js docs/lapsim-racing-lines.md \
             worker/lapsim/stint-data.js worker/lapsim/f1-wet-quali-data.js worker/lapsim/hypercar-maker-data.js scripts/sim/data/wec-stints.json worker/lapsim/brake-data.js worker/lapsim/wec-poles-data.js \
-            docs/lapsim-signature.md docs/lapsim-conditions.md docs/lapsim-level-c.json docs/lapsim-forward.json; do
+            docs/lapsim-signature.md docs/lapsim-conditions.md docs/lapsim-level-c.json docs/lapsim-forward.json worker/lapsim/delta-intervals-data.js; do
             [ -e "$f" ] && git add "$f"
           done
           if git diff --cached --quiet; then echo "No changes"; exit 0; fi

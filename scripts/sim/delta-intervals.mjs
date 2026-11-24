@@ -1,17 +1,23 @@
 // Step 29b: ± ranges for LapSim Δ answers (rule: docs/prereg/step29b-delta-intervals-2026-11-25.md).
-// Reads the shipped calibration and the pooled DRS baseline, writes worker/lapsim/delta-intervals-data.js.
-// node scripts/sim/delta-intervals.mjs [--check]   (--check: exit 1 if the committed data file differs)
-import {readFileSync, writeFileSync} from 'node:fs';
+// DRS: runs the Δ bench (f1-delta-bench.mjs model, ~4 s) on the pinned pooled cases with the working calibration;
+// lap: the held-out rows of the working calibration. Writes worker/lapsim/delta-intervals-data.js.
+//   node scripts/sim/delta-intervals.mjs [--run <id> --mode production|refit|research] [--out <path>] [--check]
+// --run is required for any calibration other than the step-29b one (every number cites a run id, AGENTS.md).
+// --mode research never writes the production file (worker/lapsim/delta-intervals-data.js): give --out.
+import {readFileSync, writeFileSync, mkdtempSync, copyFileSync, rmSync} from 'node:fs';
 import {createHash} from 'node:crypto';
+import {spawnSync} from 'node:child_process';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {calFingerprint} from '../../worker/lapsim/delta-intervals.js';
 
 const root = fileURLToPath(new URL('../../', import.meta.url));
-const sha = p => createHash('sha256').update(readFileSync(root + p)).digest('hex');
-const CAL = 'worker/lapsim/calibration-data.js', DRS = 'scripts/sim/data/f1-delta/baseline-pooled-2026-11-24.csv';
+const sha = p => createHash('sha256').update(readFileSync(p.startsWith('/') ? p : root + p)).digest('hex');
+const CAL = 'worker/lapsim/calibration-data.js', CASES = 'scripts/sim/data/f1-delta/f1-delta-cases-pooled-2026-11-24.csv';
 const RULE = 'docs/prereg/step29b-delta-intervals-2026-11-25.md', OUT = 'worker/lapsim/delta-intervals-data.js';
-// run 45402981435 report diff.heldOut.*.base (shipped held-out RMS %, R3 tie)
-const TIE = {all: 0.901, f1: 0.823, wec: 0.977};
+// the step-29b calibration and its sources (PR #519): bench baseline = run 45487971969, held-out RMS = run 45402981435 base
+const CAL29B = 'b5cc83df9aab550a2934691a9976a11f1d71d8350b2d331754ce21baff135861', TIE = {all: 0.901, f1: 0.823, wec: 0.977};
 
 // Hyndman–Fan type 7 (numpy default)
 export function quantile(xs, p) {
@@ -20,10 +26,27 @@ export function quantile(xs, p) {
 }
 const r4 = x => Math.round(x * 1e4) / 1e4;
 
-export async function build() {
+// research ranges never replace the production file; any other mode may
+export function mayWrite(mode, out) { return mode !== 'research' || (out !== OUT && !out.endsWith('/' + OUT)); }
+
+function bench() {
+  const pin = JSON.parse(readFileSync(root + '.github/lapsim-snapshot.json', 'utf8')).delta.v2pooled;
+  if (pin.path !== CASES || sha(CASES) !== pin.sha256) throw Error('pooled DRS cases differ from the pin');
+  const dir = mkdtempSync(join(tmpdir(), 'delta-')), node = (...a) => spawnSync(process.execPath, [root + 'scripts/sim/f1-delta-bench.mjs', ...a], {encoding: 'utf8', cwd: root, maxBuffer: 1 << 26});
+  try {
+    const z = node('zones'); if (z.status) throw Error(z.stderr);
+    writeFileSync(join(dir, 'zones.csv'), z.stdout); copyFileSync(root + CASES, join(dir, 'f1-delta-cases-2026-11-24.csv'));
+    const m = node('model', dir); if (m.status) throw Error(m.stderr);
+    return {text: readFileSync(join(dir, 'baseline.csv'), 'utf8'), sha256: sha(join(dir, 'baseline.csv'))};
+  } finally { rmSync(dir, {recursive: true, force: true}); }
+}
+
+export async function build({run, mode} = {}) {
+  const calSha = sha(CAL), own = calSha === CAL29B;
+  if (!own && !run) throw Error('another calibration than step 29b: give --run <pipeline or lapsim-data run id>');
   const {lapsimCalibration: c} = await import(root + CAL);
   // R2 DRS: ρ = measured / model per pooled event × zone case
-  const [head, ...rows] = readFileSync(root + DRS, 'utf8').trim().split(/\r?\n/);
+  const b = bench(), [head, ...rows] = b.text.trim().split(/\r?\n/);
   const col = head.split(','), im = col.indexOf('meas_delta_s'), ip = col.indexOf('pred_delta_s');
   const rho = rows.map(l => l.split(',')).map(f => +f[im] / +f[ip]);
   if (rho.length !== 125 || rho.some(x => !Number.isFinite(x))) throw Error(`DRS cases: expected 125 finite ratios, got ${rho.length}`);
@@ -33,23 +56,29 @@ export async function build() {
   for (const cls of ['lmh', 'lmdh', 'lmgt3']) for (const y of ['2025', '2026']) { const s = c.series.wec[cls][y]; for (const t of s.holdout.tracks) e.wec.push(t.errorSec / s.tracks[t.track].realLap); }
   e.all = [...e.f1, ...e.wec];
   const rms = xs => Math.sqrt(xs.reduce((a, x) => a + x * x, 0) / xs.length) * 100;
-  for (const g of ['all', 'f1', 'wec']) if (Math.abs(rms(e[g]) - TIE[g]) > 0.001 + 5e-4) throw Error(`R3 tie failed: ${g} RMS ${rms(e[g]).toFixed(4)} % vs run 45402981435 ${TIE[g]} %`);
+  if (own) for (const g of ['all', 'f1', 'wec']) if (Math.abs(rms(e[g]) - TIE[g]) > 0.001 + 5e-4) throw Error(`R3 tie failed: ${g} RMS ${rms(e[g]).toFixed(4)} % vs run 45402981435 ${TIE[g]} %`);
   const lap = g => ({n: e[g].length, q05: r4(quantile(e[g], 0.05)), q50: r4(quantile(e[g], 0.5)), q95: r4(quantile(e[g], 0.95)), rmsPct: r4(rms(e[g]))});
+  const drsRun = run || '45487971969', lapRun = run || '45402981435';
   return {
     rule: {path: RULE, sha256: sha(RULE)}, level: 0.9, quantile: 'empirical, type 7 (numpy default); no normal assumption',
-    calibration: {path: CAL, sha256: sha(CAL), generatedAt: c.generatedAt, fingerprint: calFingerprint(c)},
+    built: {run: run || null, mode: run ? mode || 'production' : 'step 29b PR #519'},
+    calibration: {path: CAL, sha256: calSha, generatedAt: c.generatedAt, fingerprint: calFingerprint(c)},
     drs: {status: 'checked', n: rho.length, q05: r4(quantile(rho, 0.05)), q50: r4(quantile(rho, 0.5)), q95: r4(quantile(rho, 0.95)),
-      source: {path: DRS, sha256: sha(DRS), run: '45487971969', note: 'lapsim-pipeline run 45487971969 (a42c1a7, shipped calibration) rebuilt this baseline; its report says identical'},
+      source: {path: CASES, sha256: sha(CASES), baselineSha256: b.sha256, run: drsRun, note: `Δ bench (f1-delta-bench.mjs model) on this calibration, run ${drsRun}`},
       unit: 'ratio measured Δ / model Δ per pooled event × zone case, 2023–25 races'},
-    lap: {status: 'checked', f1: lap('f1'), wec: lap('wec'), source: {run: '45402981435', note: 'held-out rows of the shipped calibration; RMS per group equals run 45402981435 report diff.heldOut base'},
+    lap: {status: 'checked', f1: lap('f1'), wec: lap('wec'), source: {run: lapRun, note: `held-out rows of this calibration (run ${lapRun})`},
       unit: 'e = simulated / real − 1 per held-out row'},
   };
 }
 
 const isMain = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
 if (isMain) {
-  const d = await build();
+  const arg = k => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : undefined; };
+  const mode = arg('--mode'), out = arg('--out') || OUT;
+  if (!mayWrite(mode, out)) { console.error(`research ranges never overwrite ${OUT}: give --out`); process.exit(2); }
+  const d = await build({run: arg('--run'), mode});
   const text = `// generated by scripts/sim/delta-intervals.mjs (step 29b); do not edit by hand\nexport const lapsimDeltaIntervals = ${JSON.stringify(d)};\n`;
-  if (process.argv.includes('--check')) { const same = readFileSync(root + OUT, 'utf8') === text; console.log(same ? 'delta intervals up to date' : 'delta intervals stale: run node scripts/sim/delta-intervals.mjs'); process.exit(same ? 0 : 1); }
-  writeFileSync(root + OUT, text); console.log(JSON.stringify(d, null, 1));
+  if (process.argv.includes('--check')) { const same = readFileSync(root + OUT, 'utf8') === text; console.log(same ? 'delta intervals up to date' : 'delta intervals stale: rebuild with node scripts/sim/delta-intervals.mjs'); process.exit(same ? 0 : 1); }
+  writeFileSync(out.startsWith('/') ? out : root + out, text);
+  console.log(`wrote ${out}: DRS ρ 90 % ${d.drs.q05}…${d.drs.q95}, lap F1 ${d.lap.f1.q05}…${d.lap.f1.q95}, WEC ${d.lap.wec.q05}…${d.lap.wec.q95} (run ${d.built.run ?? '–'}, ${d.built.mode})`);
 }
