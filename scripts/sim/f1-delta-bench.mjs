@@ -4,6 +4,7 @@
 //   python3 -I scripts/sim/f1-delta-cases.py <dir>/feat <dir>/zones.csv <dir> → Δ cases, σ_meas (bootstrap), MDE
 //   node scripts/sim/f1-delta-bench.mjs model <dir>      → production-model Δ on the kept cases (only for uses that passed the noise check)
 import {readFileSync, writeFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
 import {lapsimAllTracks as T} from '../../worker/lapsim/tracks.js';
 import {eventFor} from '../../worker/lapsim/names.js';
 import {lapsimTrackView} from '../../worker/lapsim/track-view-data.js';
@@ -64,6 +65,11 @@ if (mode === 'zones') {
 
 // model stage: production 2025 car (grip, timeScale, production weather), the case's own season zone set (pre-reg "Model")
 if (mode === 'model') {
+  // 2022 LOCKED final set (central 2026-11-24): scored only for the approved step-28 final run. Checked by content (sha256), so a
+  // renamed copy is refused too. F1_DELTA_LOCKED_APPROVED must equal delta.locked2022.approved_run in .github/lapsim-snapshot.json.
+  const L = JSON.parse(readFileSync(new URL('../../.github/lapsim-snapshot.json', import.meta.url), 'utf8')).delta.locked2022;
+  if (createHash('sha256').update(readFileSync(dir + '/f1-delta-cases-2026-11-24.csv')).digest('hex') === L.sha256 && !(L.approved_run && process.env.F1_DELTA_LOCKED_APPROVED === L.approved_run)) {
+    console.error('f1-delta-bench: the 2022 LOCKED set is not scored without central approval (delta.locked2022.approved_run)'); process.exit(1); }
   const rd = f => readFileSync(f, 'utf8').trim().split(/\r?\n/).map(splitCsv), [zh, ...zr] = rd(dir + '/zones.csv'), [ch, ...cr] = rd(dir + '/f1-delta-cases-2026-11-24.csv');
   const obj = (h, r) => Object.fromEntries(h.map((k, i) => [k, r[i]])), zones = zr.map(r => obj(zh, r)), cases = cr.map(r => obj(ch, r)).filter(c => c.kept === '1');
   const withGrip = (tr, g) => ({...tr, mu: Float64Array.from(tr.mu, m => m * g)}), memo = new Map();

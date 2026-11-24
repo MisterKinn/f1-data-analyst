@@ -1,0 +1,44 @@
+{
+  "note": "Pinned LapSim inputs (step 27, lapsim-pipeline.yml). Each entry is a release asset checked by sha256 and SHA256SUMS. sha256 empty = the pipeline makes the snapshot (release) on its first run and prints the value to pin here; changing a pin is a reviewed data change. pin_runs: other lapsim-prep builds saved as releases (lapsim-inputs-r<run>) before their artifact expires; 45191678721 = the wave-2/3 gate build.",
+  "lapsim": {
+    "repo": "kangjeongmin1229/f1-data-analyst-deploy",
+    "tag": "lapsim-inputs-r45123509702",
+    "source_run": 45123509702,
+    "source": "lapsim-prep of Lap simulator data run 45123509702 (branch lapsim/step1a2-base-2026-11-23, c4792765): the build of the shipped fit, run 45152363645",
+    "sha256": "88fbb3bceb4519c73371941e0faa2f8aee85b4f27f15109b5a13f5a0863823ca",
+    "pin_runs": [
+      45191678721
+    ]
+  },
+  "trackState": {
+    "repo": "kangjeongmin1229/f1-data-analyst-deploy",
+    "tag": "track-state-inputs-2026-11-24",
+    "source": "scripts/sim/track-state.mjs ti 2018-2026 at one TracingInsights commit per season (ti-refs.json) + fia 2019-2026 (fia.com; missing years in fia-missing.json)",
+    "sha256": "763c100601ed577bdb354e9b7feb77ab5da898ced513dafefe8df71a771a9c22",
+    "made_by_run": 45402981435,
+    "fia_missing": "fia-missing.json in the asset: fia.com errors (rate limit) for 2021 yas-marina-circuit, imola, lusail; 2024 mexico-city, interlagos, yas-marina-circuit, imola, lusail, las-vegas; 2025 melbourne, shanghai, suzuka, sakhir, jeddah. No archive failed. Stored notes (track-changes-data.js) cover these where they have the section."
+  },
+  "delta": {
+    "note": "Frozen Δ case CSVs (central 2026-11-24, step 24 close): the pinned source of the Δ benchmarks; a rebuild from TracingInsights is a check, not the source. Provenance: Project claude/status-2026-11-24-step24-close.md.",
+    "v1": {
+      "path": "scripts/sim/data/f1-delta/f1-delta-cases-2026-11-24.csv",
+      "sha256": "7b2c16ff4d87baf7f9215ef4c3f9fdfdb13b408e5b90c5a5e97c831b19f900ff"
+    },
+    "v2pooled": {
+      "path": "scripts/sim/data/f1-delta/f1-delta-cases-pooled-2026-11-24.csv",
+      "sha256": "5a153cf140a7888ae32ee775a2cab53f740f1cebfb8d096b0eb70297d2edcc97"
+    },
+    "locked2022": {
+      "path": "scripts/sim/data/f1-delta/f1-delta-cases-2022-LOCKED.csv",
+      "sha256": "92a9f5423a7717753dd2961ca06ca2eecf08be73efb81d3cb35a7bfcc764cd95",
+      "approved_run": "",
+      "rule": "never scored by default; scored only when approved_run is set (central approval of the step-28 final run) and the workflow input score_locked names the same value"
+    },
+    "zones_sha256": "d0da4748d887a929442498cb3ab9118d97ff418cbca296553c3b0799440dd3a5",
+    "stint29a": {
+      "path": "scripts/sim/data/f1-stint-cases-2023-2025.csv",
+      "sha256": "59adb10aae47e35887e2ad4971e1376795ee820b0fd9152c8d3f56456d17dfa9",
+      "note": "step 29a F1 race stint cases 2023-25 (report-only, PR #511); pinned by central 2026-11-25"
+    }
+  }
+}

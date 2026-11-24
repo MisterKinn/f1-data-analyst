@@ -38,6 +38,18 @@ on:
         description: 'Reuse the calibration parts of this run id (same code and build); only missing parts are computed (empty: .github/lapsim-parts-run)'
         required: false
         default: ''
+      pinned:
+        description: 'true: research / reproduction fit on prep_run (no network reads, no commit); see lapsim-pipeline.yml'
+        type: boolean
+        required: false
+        default: false
+  # step 27 pipeline (lapsim-pipeline.yml): the same fit on a pinned input snapshot. pinned = this run already holds the lapsim-prep
+  # artifact (from the snapshot release), and nothing reads the network (FIA documents, circuit changes) or commits
+  workflow_call:
+    inputs:
+      pinned:
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -72,7 +84,7 @@ jobs:
           echo "parts_run=$q" >> "$GITHUB_OUTPUT"; echo "reused parts: ${q:-none}"
   prepare:
     needs: plan
-    if: needs.plan.outputs.prep_run == ''
+    if: needs.plan.outputs.prep_run == '' && !inputs.pinned
     runs-on: ubuntu-latest
     timeout-minutes: 300 # rule 4d.2: every job <= 300 min
     steps:
@@ -165,7 +177,7 @@ jobs:
       # official recharge limits (FIA PU documents) and 2027/28 + FE Gen4 rule values feed the fit; read once here and passed on, so
       # every part fits on the same documents
       - name: Read FIA energy documents and regulation values
-        if: needs.plan.outputs.parts_run == ''
+        if: needs.plan.outputs.parts_run == '' && !inputs.pinned
         continue-on-error: true
         run: node scripts/sim/energy-docs.mjs && node scripts/sim/rule-params.mjs
       - name: Calibrate (F1 joint fit)
@@ -283,7 +295,7 @@ jobs:
         continue-on-error: true
         run: node scripts/sim/brake-fit.mjs
       - name: Read FIA circuit changes
-        if: inputs.calibrate != 'false'
+        if: inputs.calibrate != 'false' && !inputs.pinned
         run: node scripts/sim/fia-changes.mjs
         env:
           LAPSIM_CHANGE_YEARS: '2023,2024,2025,2026'
@@ -324,7 +336,7 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
       - name: Commit derived data
-        if: inputs.calibrate != 'false'
+        if: inputs.calibrate != 'false' && !inputs.pinned
         run: |
           git config user.name "kongboda-lapsim[bot]"
           git config user.email "lapsim@users.noreply.github.com"
