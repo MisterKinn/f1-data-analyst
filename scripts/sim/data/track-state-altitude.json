@@ -1,0 +1,85 @@
+{
+ "source": "Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js",
+ "url": "https://open-meteo.com/en/docs/elevation-api",
+ "retrieved": "2026-11-23",
+ "tracks": {
+  "austin": {
+   "m": 154
+  },
+  "baku": {
+   "m": -18
+  },
+  "catalunya": {
+   "m": 121
+  },
+  "hungaroring": {
+   "m": 240
+  },
+  "imola": {
+   "m": 39
+  },
+  "interlagos": {
+   "m": 779
+  },
+  "jeddah": {
+   "m": 2
+  },
+  "kuala-lumpur": {
+   "m": 43
+  },
+  "las-vegas": {
+   "m": 644
+  },
+  "lusail": {
+   "m": 12
+  },
+  "madring": {
+   "m": 672
+  },
+  "melbourne": {
+   "m": 2
+  },
+  "mexico-city": {
+   "m": 2234
+  },
+  "miami": {
+   "m": 5
+  },
+  "monte-carlo": {
+   "m": 16
+  },
+  "montreal": {
+   "m": 11
+  },
+  "monza": {
+   "m": 182
+  },
+  "sakhir": {
+   "m": 8
+  },
+  "shanghai": {
+   "m": 4
+  },
+  "silverstone": {
+   "m": 152
+  },
+  "singapore": {
+   "m": 7
+  },
+  "spa-francorchamps": {
+   "m": 391
+  },
+  "spielberg": {
+   "m": 681
+  },
+  "suzuka": {
+   "m": 36
+  },
+  "yas-marina-circuit": {
+   "m": 7
+  },
+  "zandvoort": {
+   "m": 5
+  }
+ }
+}

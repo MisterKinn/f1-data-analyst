@@ -348,7 +348,7 @@ async function build() {
   const {lapsimAllTracks} = await import('../../worker/lapsim/tracks.js');
   const {lapsimTrackChanges: stored} = await import('../../worker/lapsim/track-changes-data.js');
   const rd = (f, d) => existsSync(f) ? JSON.parse(readFileSync(f, 'utf8')) : d;
-  const fetched = rd(process.env.TRACK_STATE_FIA || join(CACHE, 'fia-notes.json'), {}), ti = rd(join(CACHE, 'corners.json'), {}), alt = rd(process.env.TRACK_STATE_ALT || join(CACHE, 'altitude.json'), null);
+  const fetched = rd(process.env.TRACK_STATE_FIA || join(CACHE, 'fia-notes.json'), {}), ti = rd(join(CACHE, 'corners.json'), {}), alt = rd(process.env.TRACK_STATE_ALT || join(CACHE, 'altitude.json'), null) ?? rd('scripts/sim/data/track-state-altitude.json', null); // committed copy (step 27): a build without the cache kept altitude 'unknown'
   // guard (step 27): without the TI cache every effect comes out empty and would overwrite the shipped table
   if (!Object.values(ti).some(ys => Object.keys(ys || {}).length)) { console.error(`track-state build: ${join(CACHE, 'corners.json')} is missing or empty; nothing written (get the pinned snapshot, .github/track-state-snapshot.json)`); process.exit(1); }
   const ids = [...new Set([...Object.keys(lapsimAllTracks), ...Object.keys(FULL), ...Object.keys(LAYOUT)])].sort();

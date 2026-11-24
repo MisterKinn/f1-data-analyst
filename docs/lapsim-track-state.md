@@ -42,20 +42,20 @@ A pair is selectable only with a layout change or a full resurfacing that has a 
 | singapore | 2022 | 2023 | layout | [link](https://www.formula1.com/en/latest/article/singapore-grand-prix-set-to-feature-revised-track-layout-in-2023.6KsrU6hQw3hxrVJ6zKeJ74) |
 | yas-marina-circuit | 2020 | 2021 | layout | [link](https://www.formula1.com/en/latest/article/revealed-the-track-changes-aimed-at-improving-overtaking-at-abu-dhabis-yas.rejS8Xxbgoom5yPUInsek) |
 
-Information only: every other pair (113 pairs, 81 with partial FIA changes: kerbs, patches, run-off). They are listed in `track-state-data.js` (`tracks.<id>.years`).
+Information only: every other pair (113 pairs, 101 with partial FIA changes: kerbs, patches, run-off). They are listed in `track-state-data.js` (`tracks.<id>.years`).
 
 ## Change effects with 2019–2026 (descriptive, prereg section 2 rule)
 
-100 cases on 17 circuits; 24 change-years skipped (|r − 1| ≥ 0.1 9, wet or < 2 clean laps 12, layout change between years 1, no earlier TI session 2).
+121 cases on 18 circuits; 33 change-years skipped (|r − 1| ≥ 0.1 11, wet or < 2 clean laps 16, layout change between years 3, no earlier TI session 2, corner map from another layout 1).
 Corner-speed effect = median over cases of v_min(changed)/v_min(prev) ÷ control corners; 90 % interval: cluster bootstrap by circuit (4000 draws, seed 1). Floor = median absolute deviation of the control corners.
 
 | Type | n | Circuits | Median corner speed | 90 % interval | Floor | Default (as corner speed) | Default sign wrong | Rule |
 |---|---|---|---|---|---|---|---|---|
-| kerb_raised | 18 | 11 | +0.25 % | -1.15 % … +2.67 % | ±1.62 % | -0.50 % | yes | strength 0 (interval includes 0) |
-| kerb_lowered | 17 | 7 | +0.64 % | -1.95 % … +1.22 % | ±1.63 % | +0.50 % | no | strength 0 (interval includes 0) |
-| kerb_changed | 19 | 10 | +0.97 % | -0.69 % … +2.72 % | ±1.30 % | – | – | strength 0 (interval includes 0) |
-| resurfacing | 33 | 9 | +0.06 % | -1.76 % … +2.71 % | ±1.66 % | +1.00 % | no | strength 0 (interval includes 0) |
-| bump_removal | 13 | 8 | +0.06 % | -4.24 % … +2.81 % | ±1.92 % | +0.50 % | no | strength 0 (interval includes 0) |
+| kerb_raised | 19 | 12 | -0.03 % | -1.52 % … +2.47 % | ±1.62 % | -0.50 % | no | strength 0 (interval includes 0) |
+| kerb_lowered | 20 | 9 | +0.61 % | -1.95 % … +1.06 % | ±1.46 % | +0.50 % | no | strength 0 (interval includes 0) |
+| kerb_changed | 15 | 9 | +0.78 % | -1.04 % … +2.05 % | ±1.59 % | – | – | strength 0 (interval includes 0) |
+| resurfacing | 53 | 11 | +0.24 % | -0.37 % … +1.32 % | ±1.72 % | +1.00 % | no | strength 0 (interval includes 0) |
+| bump_removal | 14 | 9 | -0.06 % | -4.22 % … +2.65 % | ±1.98 % | +0.50 % | yes | strength 0 (interval includes 0) |
 
 These numbers decide nothing: the gate (candidates C1–C3 against strength 0, leave-one-track-out) runs in step 5b after step 1 merges.
 
