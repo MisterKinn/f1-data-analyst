@@ -103,7 +103,7 @@ artefact: with grip near 1, slow corners are 7–8 % slow.
 This attempt changed four things at once, so the widths and kerbs were not tested on their own. One attempt is left under the stop
 rule.
 
-## Attempt 3 (prepared 2026-11-23/24, not run): every track with an OSM loop
+## Attempt 3 (run 2026-11-24, rejected: the idea stops): every track with an OSM loop
 Pre-registration: Project `claude/gate-independent-geometry-attempt3-prereg-2026-11-23.md`. This is the last attempt (m = 3), and
 it runs on the wave-3 base after step 20.
 
@@ -119,3 +119,24 @@ A1–A4. On top of it come four parts only, in `build-a3.mjs`:
 
 **Flag.** `LAPSIM_GEOM_INDEP=a3` applies the era that holds 2026 to every track that has a G3 row and is not "source incomplete".
 Formula E rows stay. The per-track source table is in the status doc `claude/status-2026-11-24-step3-attempt3.md`.
+
+**Raw inputs.** Each group saves its raw OSM and elevation files as artifact `geom-raw-a3-k` (30 days); `inputs-sha256.txt` lists them.
+`raw_run=<run id>` reuses them. The merge stops if any track's fetch is incomplete (no silent drops). Baku is not fetched for
+elevation (no GLO-30 tiles for Azerbaijan); it is "source incomplete" for its OSM anyway, so it keeps production geometry.
+
+**Result (m = 3, rejected).** B = flag off (run 45296179722, own build); G3 = flag a3 (run 45321410249, same build artifact). The
+13 fit, kernel and geometry-consumer files are identical by hash; the geometry comes from run 45320691822. Gate jobs set the flag
+through `.github/lapsim-geom-indep` (read in `lapsim-setup`); no such file = no change.
+
+| Check | B → G3 | Verdict |
+|---|---|---|
+| Noise (WEC held-out rule) | spread 0.005 < δ/3 0.016 pp | judgeable |
+| P1 grip closer to 1 | 9 of 20 F1 tracks, sign p 0.75; SD ln grip 0.073 → 0.056 | **✗** |
+| P2 level C, G3 tracks | 20 tracks, 49 rows; RMS 2.575 → 1.952 %; sign-flip p 0.089 | ✓ |
+| Guards | other tracks 2.874 → 2.976 (+3.5 %); F1 2.918 → 2.247; WEC 1.805 → 1.891 (+4.8 %) | ✓ |
+| Corner bands (median r) | <120 0.971 → 0.892; 120–180 0.862 → 0.784 (+0.079 > 0.068); 180–240 0.906 → 0.891; ≥240 0.978 → 0.969 | **✗** (120–180) |
+
+Reported: F1 median |error| level C 2.62 → 1.37 %, forward-chaining 1.32 → 0.91 %; WEC forward-chaining RMS 0.84 → 2.30 %; grip
+bound hits B Jeddah, Imola → G3 Yas Marina; WEC fold bound hits 30 → 25. Not run: KERB_M ±0.5 m sensitivity, level A.
+Numbers: `scripts/sim/data/geom-indep/results-a3.json`. Third rejection: the idea stops; the flag data stays as a record.
+
