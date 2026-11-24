@@ -12,7 +12,8 @@ import {carsFor, realConditions} from '../../worker/lapsim/scenario.js';
 import {lapsimF1Zones} from '../../worker/lapsim/f1-zones-data.js';
 import {slotOf} from '../../worker/lapsim/zones.js';
 
-const K = lapsimKernel(), DOCS = new URL('./data/fia-docs/', import.meta.url);
+// F1_DELTA_YEARS=2022 builds the locked 2022 set (step 24 close); default the 2023–2025 benchmark seasons
+const ys = (process.env.F1_DELTA_YEARS || '2023-2025').split('-').map(Number), Y0 = ys[0], Y1 = ys.at(-1), K = lapsimKernel(), DOCS = new URL('./data/fia-docs/', import.meta.url);
 const csv = f => { const [h, ...rows] = readFileSync(new URL(f, DOCS), 'utf8').replace(/^﻿/, '').trim().split('\n').map(splitCsv); return rows.map(r => Object.fromEntries(h.map((k, i) => [k, r[i]]))); };
 function splitCsv(l) { const o = []; let cur = '', q = false; for (const ch of l) { if (ch === '"') q = !q; else if (ch === ',' && !q) { o.push(cur); cur = ''; } else cur += ch; } o.push(cur); return o; }
 const idOf = (event, year) => event === 'Bahrain Grand Prix in Malaysia' ? 'kuala-lumpur' : Object.keys(T).find(id => eventFor(id, year) === event) || null;
@@ -43,7 +44,7 @@ function noOverlap(id, zs) { const L = lenOf(id), ah = (a, b) => wrap(b - a, L);
 // season zone set per (year, event): DRS rows for 2023–2025, normal-grip Straight Mode rows for 2026
 export function zoneSets() {
   const out = {}, add = (year, event, n, text) => { const id = idOf(event, +year); const k = year + '|' + event; const e = out[k] ??= {year: +year, event, id, zones: [], dropped: []}; if ([...e.zones, ...e.dropped].some(z => z.n === n)) return; if (!id) { e.dropped.push({n, text, why: 'no simulator track'}); return; } const s = at(id, text); if (s == null) e.dropped.push({n, text, why: cornersOf(id).length ? 'unreadable' : 'no corner positions on the track file'}); else e.zones.push({n, text, from: Math.round(s)}); };
-  for (const r of csv('f1-drs-zones-2022-2025.csv')) if (+r.year >= 2023) add(r.year, r.event, +r.zone, r.activation_point);
+  for (const r of csv('f1-drs-zones-2022-2025.csv')) if (+r.year >= Y0 && +r.year <= Y1) add(r.year, r.event, +r.zone, r.activation_point);
   for (const r of csv('f1-low-drag-zones-2022-2026.csv')) if (r.year === '2026' && /straight_mode/i.test(r.kind) && /normal grip/i.test(r.session_scope) && /^A\d/.test(r.zone)) add(r.year, r.event, +(/A(\d+)/.exec(r.zone)?.[1]), r.start_or_detection);
   for (const e of Object.values(out)) { if (!e.id) continue; e.zones.sort((a, b) => a.n - b.n); for (const z of e.zones) z.to = zoneEnd(e.id, z.from); noOverlap(e.id, e.zones); }
   return out;
