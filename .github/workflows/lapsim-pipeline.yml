@@ -6,7 +6,9 @@ name: Lap simulator pipeline (pinned inputs → fit → report)
 # snapshot's release, so it does not expire. AGENTS.md: a model number in a status doc cites this workflow's run id.
 # - release published / manual run (upstream only): the pinned snapshot; manual input prep_run makes a new snapshot from that run's
 #   lapsim-prep artifact (2-day retention: pin it before it expires)
-# - push to lapsim-pipeline/** (any repo, like the other lapsim experiment branches): reproduction runs on the fork
+# - push to lapsim-pipeline/** (any repo): only the short jobs (snapshot check, track-state check on an existing pin, tests, Δ benchmarks
+#   on the committed calibration, report), minutes not hours. The 3 h fit and the long snapshot builds (TI / fia.com fetch) run only
+#   on workflow_dispatch or a release (central 2026-11-24).
 on:
   workflow_dispatch:
     inputs:
@@ -31,8 +33,9 @@ permissions:
   contents: write
   actions: read
 
+# a push run never queues behind a running fit (separate group per commit); fits on one ref run one at a time
 concurrency:
-  group: lapsim-pipeline-${{ github.ref }}
+  group: lapsim-pipeline-${{ github.ref }}-${{ github.event_name == 'push' && github.sha || 'fit' }}
   cancel-in-progress: false
 
 jobs:
@@ -98,6 +101,7 @@ jobs:
           P=.github/lapsim-snapshot.json; here=${{ github.repository }}; mkdir -p snap ts
           repo=$(jq -r .trackState.repo $P); tag=$(jq -r .trackState.tag $P); pin=$(jq -r '.trackState.sha256 // ""' $P)
           if gh release view "$tag" -R "$repo" >/dev/null 2>&1; then gh release download "$tag" -R "$repo" -p track-state-inputs.tgz -p SHA256SUMS -D snap
+          elif [ "${{ github.event_name }}" = push ]; then echo "::notice::$tag not made yet; the TI / fia.com build runs only on dispatch or release"; echo "ok=false" >> "$GITHUB_OUTPUT"; exit 0
           elif [ "$repo" = "$here" ]; then
             for y in 2018 2019 2020 2021 2022 2023 2024 2025 2026; do echo "$y $(git ls-remote "https://github.com/TracingInsights/$y" refs/heads/main | cut -c1-40)"; done \
               | jq -R -n '[inputs | split(" ") | {(.[0]): .[1]}] | add' > ts/ti-refs.json; cat ts/ti-refs.json
@@ -117,9 +121,10 @@ jobs:
           [ -z "$pin" ] || [ "$pin" = "$sha" ] || { echo "::error::$tag sha256 $sha differs from the pinned $pin"; exit 1; }
           rm -rf tsx && mkdir tsx && tar xzf snap/track-state-inputs.tgz -C tsx
           (cd snap && grep ' track-state-inputs.tgz$' SHA256SUMS | sha256sum --check --quiet); (cd tsx && grep -v '\.tgz$' ../snap/SHA256SUMS | sha256sum --check --quiet)
-          echo "Track-state inputs \`$tag\` sha256 \`$sha\`" >> "$GITHUB_STEP_SUMMARY"; cat tsx/fia-missing.json >> "$GITHUB_STEP_SUMMARY"
+          echo "Track-state inputs \`$tag\` sha256 \`$sha\`" >> "$GITHUB_STEP_SUMMARY"; cat tsx/fia-missing.json >> "$GITHUB_STEP_SUMMARY"; echo "ok=true" >> "$GITHUB_OUTPUT"
       # reproduction check: build on the pinned inputs, compare with the shipped table; nothing is committed
       - name: Build the change-effects table on the pinned inputs
+        if: steps.s.outputs.ok == 'true'
         run: |
           mkdir -p out && git show HEAD:worker/lapsim/track-state-data.js > /tmp/track-state-shipped.js
           TRACK_STATE_CACHE=tsx TRACK_STATE_CASES=out/track-state-cases.json node scripts/sim/track-state.mjs build
@@ -127,11 +132,12 @@ jobs:
           git diff --stat > out/track-state-files.txt; cp worker/lapsim/track-state-data.js docs/lapsim-track-state.md scripts/sim/data/track-covariates.json snap/SHA256SUMS out/
           cat out/track-state-diff.json out/track-state-files.txt
       - uses: actions/upload-artifact@v4
+        if: steps.s.outputs.ok == 'true'
         with: {name: track-state-check, path: out/, retention-days: 90}
 
   fit:
     needs: snapshot
-    if: needs.snapshot.result == 'success' && inputs.fit != 'no'
+    if: needs.snapshot.result == 'success' && github.event_name != 'push' && inputs.fit != 'no'
     uses: ./.github/workflows/lapsim-data.yml
     with:
       pinned: true
@@ -147,6 +153,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: {node-version: '22'}
+      - name: Pipeline tests (report, track-state guard, Δ pins and the LOCKED guard)
+        run: node --test tests/lapsim-pipeline-report.test.mjs tests/lapsim-track-state-guard.test.mjs tests/lapsim-delta-locked.test.mjs
       - run: mkdir -p /tmp/shipped out && cp worker/lapsim/calibration-data.js docs/lapsim-level-c.json docs/lapsim-forward.json /tmp/shipped/
       - uses: actions/download-artifact@v4
         continue-on-error: true
