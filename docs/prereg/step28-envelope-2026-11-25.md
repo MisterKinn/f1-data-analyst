@@ -15,7 +15,7 @@ Skills (Skill tool): meta-discipline-physics:experimental-method-and-error-analy
 - Drop rules (all applied in the baseline): fastest lap not on SOFT/MEDIUM/HARD (3); any INTERMEDIATE/WET lap in the session (mixed conditions); telemetry hole > 1.0 s or non-monotonic time (7; holes of 1.08–1.22 s seen); frame corr < 0.93 (Jeddah 2024, 2025).
   - **Disclosure:** the mixed-session rule was added after the first baseline pass showed Montreal 2023 at −9.7 % lap error (drying session). It was fixed before any candidate exists and is applied identically to every variant.
 - Distance = speed integrated over time, scaled to the sim track length. Alignment = step 24 v2 `lag_of` (±200 m) vs the shipped car; kept laps: corr median 0.975, lag −30…+35 m. σ_align ≈ 10 m (step 24 thirds spread; p90 20 m) — carried as a systematic, not fitted.
-- Segments: apex = measured-speed minimum within ±150 m with ≥ 10 km/h prominence; segment = apex ±150 m. **Straight-end segments**: measured-speed maximum ±150 m before each braking point (see §3, flagged item).
+- Segments: apex = measured-speed minimum within ±150 m with ≥ 10 km/h prominence; segment = apex ±150 m. **Straight-end segments**: measured-speed maximum ±150 m before each braking point (see §4, flagged item).
 - DRS cases: `f1-delta-cases-pooled-2026-11-24.csv` (5a153cf1…, 125 cases, 23 tracks) — seen at baseline; selection only.
 
 ## 2. Baseline (shipped calibration, production path of f1-delta-bench.mjs: 2025 car, its grip, production weather, event DRS zones open)
@@ -43,7 +43,7 @@ Per training event e: J_e = RMS_corner,e / 5 km/h + RMS_straight,e / 5 km/h + |l
 - DRS Δ cases are **not** in the objective (validation only).
 - Optimiser: block coordinate descent — Nelder–Mead on the 12 season parameters (best of 3 starts, seed 28, ≤ 2,000 evaluations), inner 1-D golden search per u_t; deterministic. One GitHub Actions matrix job per fold.
 
-## 5. Variants (multiplicity: at most 3; fixed order; a later one runs only if the earlier fails §7)
+## 5. Variants (multiplicity: at most 3; fixed order; a later one runs only if the earlier fails §8)
 - **V1**: §3 as written.
 - **V2**: V1 + lateral speed term decoupled from ClA: a_y,max = μ_y,s (1+u_t) g + k_y,s v², k_y,s ~ N(μ_y ρ ClA_s/2m, (0.5 × that)²); drag and normal load still from ClA_s. (+3 params.)
 - **V3**: V2 + speed-dependent braking: a_x,max(v) = b0,s + b2,s v², weak priors N(shipped value at 100 and 300 km/h, 20 %²). (+6 params.) Kernel hooks behind a flag, default off, byte-identical off.
