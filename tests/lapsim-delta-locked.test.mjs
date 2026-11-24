@@ -11,7 +11,7 @@ const pin = JSON.parse(readFileSync('.github/lapsim-snapshot.json', 'utf8')).del
 const sha = f => createHash('sha256').update(readFileSync(f)).digest('hex');
 
 test('frozen Δ case CSVs match their pinned sha256', () => {
-  for (const k of ['v1', 'v2pooled', 'locked2022']) assert.equal(sha(pin[k].path), pin[k].sha256, k);
+  for (const k of ['v1', 'v2pooled', 'locked2022', 'stint29a']) assert.equal(sha(pin[k].path), pin[k].sha256, k);
 });
 
 test('the 2022 LOCKED set is not scored, even renamed and with a flag, while no run is approved', () => {

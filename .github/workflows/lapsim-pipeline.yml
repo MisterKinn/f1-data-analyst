@@ -182,7 +182,7 @@ jobs:
           set -euo pipefail
           [ -f fit/worker/lapsim/calibration-data.js ] && cp fit/worker/lapsim/calibration-data.js worker/lapsim/ && cp fit/docs/lapsim-level-c.json fit/docs/lapsim-forward.json docs/ 2>/dev/null || true
           P=.github/lapsim-snapshot.json
-          jq -r '.delta | (.v1, .v2pooled, .locked2022) | "\(.sha256)  \(.path)"' $P | sha256sum --check
+          jq -r '.delta | (.v1, .v2pooled, .locked2022, .stint29a) | "\(.sha256)  \(.path)"' $P | sha256sum --check
           python -m pip install -q numpy
           mkdir -p dl && node scripts/sim/f1-delta-bench.mjs zones > dl/zones.csv
           echo "$(jq -r .delta.zones_sha256 $P)  dl/zones.csv" | sha256sum --check || echo "::warning::zone table differs from the pinned build (zone code or FIA zone CSV changed)"

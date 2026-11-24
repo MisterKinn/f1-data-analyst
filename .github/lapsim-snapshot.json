@@ -34,6 +34,11 @@
       "approved_run": "",
       "rule": "never scored by default; scored only when approved_run is set (central approval of the step-28 final run) and the workflow input score_locked names the same value"
     },
-    "zones_sha256": "d0da4748d887a929442498cb3ab9118d97ff418cbca296553c3b0799440dd3a5"
+    "zones_sha256": "d0da4748d887a929442498cb3ab9118d97ff418cbca296553c3b0799440dd3a5",
+    "stint29a": {
+      "path": "scripts/sim/data/f1-stint-cases-2023-2025.csv",
+      "sha256": "59adb10aae47e35887e2ad4971e1376795ee820b0fd9152c8d3f56456d17dfa9",
+      "note": "step 29a F1 race stint cases 2023-25 (report-only, PR #511); pinned by central 2026-11-25"
+    }
   }
 }
