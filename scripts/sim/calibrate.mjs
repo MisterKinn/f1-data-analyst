@@ -50,7 +50,8 @@ const BCD = {rounds: Number(E.LAPSIM_ROUNDS || 5), iters: Number(E.LAPSIM_BCD_IT
 const MAX_POS = Number(E.LAPSIM_MAX_POS || 3);
 const HOLDOUT_YEARS = (E.LAPSIM_HOLDOUT_YEARS || '2025,2026').split(',').map(Number);
 const fitAll = gs => FITTER === 'bcd' ? fitJointBCD(gs, BCD) : fitJoint(gs, {iters: ITERS, wTime: WTIME});
-const holdoutOf = (gs, key) => FITTER === 'bcd' ? holdoutBCD(gs, key, {...BCD, rounds: Math.max(2, BCD.rounds - 1)}) : holdoutJoint(gs, key, {iters: HOLDOUT_ITERS, wTime: WTIME});
+const holdoutOf = (gs, key, extra = {}) => FITTER === 'bcd' ? holdoutBCD(gs, key, {...BCD, rounds: Math.max(2, BCD.rounds - 1), ...extra}) : holdoutJoint(gs, key, {iters: HOLDOUT_ITERS, wTime: WTIME});
+const HO_FOLDS = 4; // holdoutBCD default; the split run has one piece per (season, fold)
 const GRIP_LIMITS = E.LAPSIM_GRIP_LO ? [Number(E.LAPSIM_GRIP_LO), Number(E.LAPSIM_GRIP_HI)] : FITTER === 'bcd' ? [0.7, 1.3] : [0.85, 1.15];
 BCD.lo = GRIP_LIMITS[0]; BCD.hi = GRIP_LIMITS[1];
 // LAPSIM_CDA_MEASURED=on (step 2a, claude/gate-cda-measured-prereg-2026-11-23.md; off by default): drag measured from TracingInsights
@@ -198,10 +199,17 @@ for (const g of groups) {
   // holdout: this season's laps on a quarter of the tracks left out, predicted with the factor the
   // other season gives that track
   const none = {h: {n: 0, errors: [], rmsPct: null}, hF1b: null};
-  const {h, hF1b} = HOLDOUT_YEARS.includes(year) ? await piece('f1-ho-' + year, async () => {
-    const h = await holdoutOf(groups, year);
-    return {h, hF1b: F1_NOISE && h.n && FITTER === 'bcd' ? await holdoutBCD(groups, year, {...BCD, rounds: Math.max(2, BCD.rounds - 1), nmStep: 0.04}) : null};
-  }, none) : none;
+  // split run: one piece per fold (f1-ho-<year>-<fold>); the errors joined in fold order are the one-process result
+  const heldOut = async () => {
+    if (!PART || FITTER !== 'bcd') return holdoutOf(groups, year);
+    const fs = [];
+    for (let f = 0; f < HO_FOLDS; f++) fs.push(await piece(`f1-ho-${year}-${f}`, () => holdoutOf(groups, year, {fold: f}), null));
+    if (fs.some(x => !x)) return null;
+    const errors = fs.flatMap(x => x.errors);
+    return {errors, rmsPct: errors.length ? Math.sqrt(errors.reduce((a, e) => a + e.pct ** 2, 0) / errors.length) : null, n: errors.length};
+  };
+  const h = HOLDOUT_YEARS.includes(year) ? await heldOut() ?? none.h : none.h;
+  const hF1b = F1_NOISE && h.n && FITTER === 'bcd' ? await piece('f1-noise-' + year, () => holdoutBCD(groups, year, {...BCD, rounds: Math.max(2, BCD.rounds - 1), nmStep: 0.04}), null) : null;
   if (hF1b) report.push(`F1 ${year}: held-out second start (step 0.04) ${hF1b.rmsPct.toFixed(3)} % vs ${h.rmsPct.toFixed(3)} % (spread ${Math.abs(hF1b.rmsPct - h.rmsPct).toFixed(3)} pp, information only)`);
   const adj = joint.adj?.[year];
   if (adj) report.push(`### ${year} team pace and development`, '', `Development over the season: ${(adj.dev * 100).toFixed(2)}% lap time from March to December.`, '',
