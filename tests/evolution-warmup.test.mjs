@@ -12,10 +12,10 @@ const combos = () => {
 };
 const laps = c => { const P = {...c, session: c.session, useCurve: !!c.curve}; return [0, 15, 60].map(m => [1, 2, 3, Infinity].map(k => evolutionDelta(P, m, k))); };
 
-test('evolution warm-up flag: off by default, and off leaves every coefficient and lap byte-identical', () => {
-  assert.equal(EVOLUTION_WARMUP_MEASURED, false);
+test('evolution warm-up flag: on (step 15 gate passed); switched off, every coefficient and lap is byte-identical', () => {
+  assert.equal(EVOLUTION_WARMUP_MEASURED, true);
   for (const [s, t, ses, cls] of combos()) {
-    const a = evolutionCoeffs(s, t, ses), b = evolutionCoeffs(s, t, ses, {cls});
+    const a = evolutionCoeffs(s, t, ses), b = evolutionCoeffs(s, t, ses, {cls, measuredWarmup: false});
     assert.equal(JSON.stringify(b), JSON.stringify(a));
     assert.equal(JSON.stringify(laps({...b, session: ses})), JSON.stringify(laps({...a, session: ses})));
   }
@@ -45,11 +45,12 @@ test('evolution warm-up data: measured WEC coefficients are present and plausibl
   for (const cls of Object.keys(w)) for (const v of Object.values(w[cls])) assert.ok(v.pct > 0 && v.pct < 5 && v.n >= 30, `${cls} ${JSON.stringify(v)}`);
 });
 
-test('evolution warm-up callers: class map, and with the flag off the page and tool get the same coefficients as before', async () => {
+test('evolution warm-up callers: class map; with the flag on the page sends the measured class term', async () => {
   const {warmupClassOf} = await import('../worker/lapsim/evolution.js');
   assert.deepEqual(['lmh', 'lmdh', 'lmgt3', 'gt3-aco', 'lmp2', 'gt3-sro', 'gen3', null].map(warmupClassOf), ['hypercar', 'hypercar', 'lmgt3', 'lmgt3', 'lmp2', null, null, null]);
   const {simulationPage} = await import('../worker/simulation.js');
-  assert.ok(!/"evoCls"/.test(String(simulationPage({track: 'monza', car: 'wec-lmh'}, 'en'))));   // flag off → no per-class data on the page
+  const d = JSON.parse(String(simulationPage({track: 'monza', car: 'wec-lmh'}, 'en')).match(/<script type="application\/json" id="lapsim-data">([\s\S]*?)<\/script>/)[1]);
+  assert.equal(d.evoCls.hypercar.practice.warmupPct, 1.059); assert.equal(d.evoCls.lmgt3.practice.warmupPct, 0.506);
   const {simulate} = await import('../worker/lapsim/tool.js');
   const r = simulate({car: 'wec-lmh', track: 'monza', session_type: 'practice', tyre_warmup_laps: 1});
   assert.ok(r.evolution && Number.isFinite(r.evolution.lap_at_minute_s));
