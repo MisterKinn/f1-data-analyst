@@ -34,6 +34,10 @@ on:
         description: 'Calibrate on the lapsim-prep build of this run id and skip the fetch (empty: .github/lapsim-prep-run, else fetch)'
         required: false
         default: ''
+      parts_run:
+        description: 'Reuse the calibration parts of this run id (same code and build); only missing parts are computed (empty: .github/lapsim-parts-run)'
+        required: false
+        default: ''
 
 permissions:
   contents: write
@@ -46,8 +50,9 @@ concurrency:
 jobs:
   # Every job stays well under GitHub's 6 h job limit (run 45191678721: one calibration job ran over 4 h). `prepare` fetches and builds
   # the tracks (about 2 h); the calibration is split (LAPSIM_PART in scripts/sim/calibrate.mjs; same code and order as one process,
-  # tests/lapsim-split.test.mjs): `f1-joint` (full F1 fit, ~25 min), then in parallel `f1-holdout` per held-out season (~75 min) and
-  # `wec` per class (~20-40 min); `rebuild` merges the parts (no refit), runs the reports and tests and commits.
+  # lapsim-split-check.yml): `f1-joint` (full F1 fit; 81 min in run 45270501140), then in parallel `parts`: one job per (held-out
+  # season, fold) and per WEC class (14-24 min there); `rebuild` merges the parts (no refit), runs the reports and tests and commits.
+  # A part that times out: rerun with the earlier run id in .github/lapsim-parts-run (or parts_run); finished parts are reused.
   # Calibrate on an earlier build (gates: base and candidate on one build): put its run id in .github/lapsim-prep-run (or the
   # prep_run input); `prepare` is then skipped and every job downloads that run's lapsim-prep. Gate settings for every part go in
   # the workflow-level env (one place), fit settings in .github/lapsim-fit.env.
@@ -56,17 +61,20 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       prep_run: ${{ steps.p.outputs.prep_run }}
+      parts_run: ${{ steps.p.outputs.parts_run }}
     steps:
       - uses: actions/checkout@v4
       - id: p
         run: |
           r="${{ inputs.prep_run }}"; [ -n "$r" ] || r=$(tr -d '[:space:]' < .github/lapsim-prep-run 2>/dev/null || true)
           echo "prep_run=$r" >> "$GITHUB_OUTPUT"; echo "lapsim-prep: ${r:-this run}"
+          q="${{ inputs.parts_run }}"; [ -n "$q" ] || q=$(tr -d '[:space:]' < .github/lapsim-parts-run 2>/dev/null || true)
+          echo "parts_run=$q" >> "$GITHUB_OUTPUT"; echo "reused parts: ${q:-none}"
   prepare:
     needs: plan
     if: needs.plan.outputs.prep_run == ''
     runs-on: ubuntu-latest
-    timeout-minutes: 340
+    timeout-minutes: 300 # rule 4d.2: every job <= 300 min
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -157,10 +165,20 @@ jobs:
       # official recharge limits (FIA PU documents) and 2027/28 + FE Gen4 rule values feed the fit; read once here and passed on, so
       # every part fits on the same documents
       - name: Read FIA energy documents and regulation values
+        if: needs.plan.outputs.parts_run == ''
         continue-on-error: true
         run: node scripts/sim/energy-docs.mjs && node scripts/sim/rule-params.mjs
       - name: Calibrate (F1 joint fit)
+        if: needs.plan.outputs.parts_run == ''
         run: set -a; . .github/lapsim-fit.env; set +a; LAPSIM_PART=f1-joint node scripts/sim/calibrate.mjs
+      # reuse (a part job timed out, rerun the rest): the joint fit and documents of the earlier run on the same code and build
+      - if: needs.plan.outputs.parts_run != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: lapsim-stage
+          run-id: ${{ needs.plan.outputs.parts_run }}
+          repository: ${{ github.repository }}
+          github-token: ${{ github.token }}
       - uses: actions/upload-artifact@v4
         with:
           name: lapsim-stage
@@ -181,7 +199,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        part: [f1-ho-2025, f1-ho-2026, wec-lmh, wec-lmdh, wec-lmgt3]
+        # F1 held-out: one job per (season, fold) of holdoutBCD (4 folds; ~30-60 min each with production settings)
+        part: [f1-ho-2025-0, f1-ho-2025-1, f1-ho-2025-2, f1-ho-2025-3, f1-ho-2026-0, f1-ho-2026-1, f1-ho-2026-2, f1-ho-2026-3, wec-lmh, wec-lmdh, wec-lmgt3]
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/lapsim-setup
@@ -190,8 +209,19 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: lapsim-stage
+      - if: needs.plan.outputs.parts_run != ''
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: lapsim-part-${{ matrix.part }}
+          path: .cache/lapsim/parts
+          run-id: ${{ needs.plan.outputs.parts_run }}
+          repository: ${{ github.repository }}
+          github-token: ${{ github.token }}
       - name: Calibrate (${{ matrix.part }})
-        run: set -a; . .github/lapsim-fit.env; set +a; LAPSIM_PART=${{ matrix.part }} node scripts/sim/calibrate.mjs
+        run: |
+          if [ -f .cache/lapsim/parts/${{ matrix.part }}.json ]; then echo "reused from run ${{ needs.plan.outputs.parts_run }}"; exit 0; fi
+          set -a; . .github/lapsim-fit.env; set +a; LAPSIM_PART=${{ matrix.part }} node scripts/sim/calibrate.mjs
       - uses: actions/upload-artifact@v4
         with:
           name: lapsim-part-${{ matrix.part }}
