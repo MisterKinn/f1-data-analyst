@@ -1,0 +1,181 @@
+name: Lap simulator pipeline (pinned inputs → fit → report)
+
+# Step 27 (Project claude/review-wave3-direction-2026-11-24.md): one reproducible run. Inputs come only from release assets pinned in
+# .github/lapsim-snapshot.json (sha256 + SHA256SUMS); the fit is lapsim-data.yml in pinned mode (same code path as production, no
+# network, no commit); the report (JSON + markdown) carries the run id, input hashes, commit and seeds, and is attached to the
+# snapshot's release, so it does not expire. AGENTS.md: a model number in a status doc cites this workflow's run id.
+# - release published / manual run (upstream only): the pinned snapshot; manual input prep_run makes a new snapshot from that run's
+#   lapsim-prep artifact (2-day retention: pin it before it expires)
+# - push to lapsim-pipeline/** (any repo, like the other lapsim experiment branches): reproduction runs on the fork
+on:
+  workflow_dispatch:
+    inputs:
+      prep_run:
+        description: 'Make a new LapSim snapshot from this lapsim-data run id (empty: the pinned snapshot)'
+        required: false
+        default: ''
+      fit:
+        description: 'yes: fit and report; no: only make/check the snapshots'
+        required: false
+        default: 'yes'
+  release:
+    types: [published]
+  push:
+    branches: ['lapsim-pipeline/**']
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: lapsim-pipeline-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  # LapSim build (tracks, traces, WEC timing): release asset → this run's lapsim-prep artifact, which lapsim-data.yml reads
+  snapshot:
+    if: github.event_name == 'push' || github.repository == 'MisterKinn/f1-data-analyst'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      tag: ${{ steps.s.outputs.tag }}
+      sha256: ${{ steps.s.outputs.sha256 }}
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: s
+        run: |
+          set -euo pipefail
+          P=.github/lapsim-snapshot.json; here=${{ github.repository }}; mkdir -p snap
+          # lapsim-prep artifact of run $1 → release $2 in this repo with SHA256SUMS (archive first, then every file inside)
+          make() { gh run download "$1" -R "$here" -n lapsim-prep -D "mk$1"; mkdir "x$1"; tar xzf "mk$1/lapsim-prep.tgz" -C "x$1"
+            (cd "mk$1" && sha256sum lapsim-prep.tgz) > "mk$1/SHA256SUMS"; (cd "x$1" && find . -type f -print0 | sort -z | xargs -0 sha256sum) >> "mk$1/SHA256SUMS"
+            gh release create "$2" -R "$here" --prerelease --title "LapSim inputs: lapsim-prep of run $1" \
+              --notes "Input snapshot for lapsim-pipeline.yml (step 27): lapsim-prep artifact of Lap simulator data run $1. Check: SHA256SUMS." \
+              "mk$1/lapsim-prep.tgz" "mk$1/SHA256SUMS"; rm -rf "x$1"; }
+          # pin_runs: builds to save before their artifact expires (no fit on them here)
+          for r in $(jq -r '.lapsim.pin_runs[]? // empty' $P); do gh release view "lapsim-inputs-r$r" -R "$here" >/dev/null 2>&1 || make "$r" "lapsim-inputs-r$r"; done
+          run='${{ inputs.prep_run }}'
+          if [ -n "$run" ]; then repo=$here; tag=lapsim-inputs-r$run; pin=''
+          else repo=$(jq -r .lapsim.repo $P); tag=$(jq -r .lapsim.tag $P); run=$(jq -r .lapsim.source_run $P); pin=$(jq -r '.lapsim.sha256 // ""' $P); fi
+          if gh release view "$tag" -R "$repo" >/dev/null 2>&1; then gh release download "$tag" -R "$repo" -p lapsim-prep.tgz -p SHA256SUMS -D snap
+          elif [ "$repo" = "$here" ]; then make "$run" "$tag"; cp "mk$run/lapsim-prep.tgz" "mk$run/SHA256SUMS" snap/
+          else echo "::error::release $tag not found in $repo"; exit 1; fi
+          sha=$(sha256sum snap/lapsim-prep.tgz | cut -c1-64)
+          [ -z "$pin" ] || [ "$pin" = "$sha" ] || { echo "::error::$tag sha256 $sha differs from the pinned $pin"; exit 1; }
+          head -1 snap/SHA256SUMS | grep -q "^$sha " || { echo "::error::SHA256SUMS does not match the archive"; exit 1; }
+          mkdir chk && tar xzf snap/lapsim-prep.tgz -C chk && (cd chk && tail -n +2 ../snap/SHA256SUMS | sha256sum --check --quiet) && rm -rf chk
+          # a pin from another repo (the fork) is mirrored here, so this repo's reports sit next to their inputs
+          if [ "$repo" != "$here" ] && ! gh release view "$tag" -R "$here" >/dev/null 2>&1; then
+            gh release create "$tag" -R "$here" --prerelease --title "LapSim inputs (mirror of $repo $tag)" --notes "Mirror of $repo release $tag, sha256 $sha." snap/lapsim-prep.tgz snap/SHA256SUMS; fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"; echo "sha256=$sha" >> "$GITHUB_OUTPUT"
+          echo "LapSim inputs \`$tag\` sha256 \`$sha\` ($(($(wc -l < snap/SHA256SUMS) - 1)) files)" >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with: {name: lapsim-prep, path: snap/lapsim-prep.tgz, retention-days: 3}
+      - uses: actions/upload-artifact@v4
+        with: {name: snapshot-sums, path: snap/SHA256SUMS, retention-days: 90}
+
+  # change-effects inputs (TracingInsights corner minima, FIA notes): pinned release asset, or made once (TI at one commit per season)
+  track-state:
+    if: github.event_name == 'push' || github.repository == 'MisterKinn/f1-data-analyst'
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - run: npm ci --omit=dev --ignore-scripts
+      - id: s
+        run: |
+          set -euo pipefail
+          P=.github/lapsim-snapshot.json; here=${{ github.repository }}; mkdir -p snap ts
+          repo=$(jq -r .trackState.repo $P); tag=$(jq -r .trackState.tag $P); pin=$(jq -r '.trackState.sha256 // ""' $P)
+          if gh release view "$tag" -R "$repo" >/dev/null 2>&1; then gh release download "$tag" -R "$repo" -p track-state-inputs.tgz -p SHA256SUMS -D snap
+          elif [ "$repo" = "$here" ]; then
+            for y in 2018 2019 2020 2021 2022 2023 2024 2025 2026; do echo "$y $(git ls-remote "https://github.com/TracingInsights/$y" refs/heads/main | cut -c1-40)"; done \
+              | jq -R -n '[inputs | split(" ") | {(.[0]): .[1]}] | add' > ts/ti-refs.json; cat ts/ti-refs.json
+            TRACK_STATE_CACHE=ts TRACK_STATE_TI_REFS=ts/ti-refs.json node scripts/sim/track-state.mjs ti 2018,2019,2020,2021,2022,2023,2024,2025,2026 2>&1 | tee ts/ti.log
+            # fia.com rate-limits: a failed year stays failed and is listed, never filled by hand
+            TRACK_STATE_CACHE=ts node scripts/sim/track-state.mjs fia 2019,2020,2021,2022,2023,2024,2025,2026 2>&1 | tee ts/fia.log || true
+            [ -f ts/fia-notes.json ] || echo '{}' > ts/fia-notes.json
+            node -e "const n=require('./ts/fia-notes.json'),log=require('fs').readFileSync('ts/fia.log','utf8'),o={};for(let y=2019;y<=2026;y++){const ids=Object.keys(n).filter(id=>n[id][y]);o[y]={archiveFailed:new RegExp('^'+y+': archive','m').test(log),tracks:ids.length,withError:ids.filter(id=>n[id][y].some(x=>x.error))}}console.log(JSON.stringify(o,null,1))" > ts/fia-missing.json
+            tar czf snap/ti-raw.tgz -C ts ti
+            tar czf snap/track-state-inputs.tgz -C ts corners.json fia-notes.json ti-refs.json fia-missing.json ti.log fia.log
+            (cd snap && sha256sum track-state-inputs.tgz ti-raw.tgz) > snap/SHA256SUMS; (cd ts && sha256sum corners.json fia-notes.json ti-refs.json fia-missing.json) >> snap/SHA256SUMS
+            gh release create "$tag" -R "$here" --prerelease --title "Track-state inputs ($tag)" \
+              --notes "corners.json (TracingInsights at the commits in ti-refs.json), fia-notes.json (fia.com; gaps in fia-missing.json), raw TI files in ti-raw.tgz. Check: SHA256SUMS." \
+              snap/track-state-inputs.tgz snap/ti-raw.tgz snap/SHA256SUMS
+          else echo "::error::release $tag not found in $repo"; exit 1; fi
+          sha=$(sha256sum snap/track-state-inputs.tgz | cut -c1-64)
+          [ -z "$pin" ] || [ "$pin" = "$sha" ] || { echo "::error::$tag sha256 $sha differs from the pinned $pin"; exit 1; }
+          rm -rf tsx && mkdir tsx && tar xzf snap/track-state-inputs.tgz -C tsx
+          (cd snap && grep ' track-state-inputs.tgz$' SHA256SUMS | sha256sum --check --quiet); (cd tsx && grep -v '\.tgz$' ../snap/SHA256SUMS | sha256sum --check --quiet)
+          echo "Track-state inputs \`$tag\` sha256 \`$sha\`" >> "$GITHUB_STEP_SUMMARY"; cat tsx/fia-missing.json >> "$GITHUB_STEP_SUMMARY"
+      # reproduction check: build on the pinned inputs, compare with the shipped table; nothing is committed
+      - name: Build the change-effects table on the pinned inputs
+        run: |
+          mkdir -p out && git show HEAD:worker/lapsim/track-state-data.js > /tmp/track-state-shipped.js
+          TRACK_STATE_CACHE=tsx TRACK_STATE_CASES=out/track-state-cases.json node scripts/sim/track-state.mjs build
+          node scripts/sim/track-state-diff.mjs /tmp/track-state-shipped.js worker/lapsim/track-state-data.js out/track-state-cases.json > out/track-state-diff.json
+          git diff --stat > out/track-state-files.txt; cp worker/lapsim/track-state-data.js docs/lapsim-track-state.md scripts/sim/data/track-covariates.json snap/SHA256SUMS out/
+          cat out/track-state-diff.json out/track-state-files.txt
+      - uses: actions/upload-artifact@v4
+        with: {name: track-state-check, path: out/, retention-days: 90}
+
+  fit:
+    needs: snapshot
+    if: needs.snapshot.result == 'success' && inputs.fit != 'no'
+    uses: ./.github/workflows/lapsim-data.yml
+    with:
+      pinned: true
+
+  report:
+    needs: [snapshot, track-state, fit]
+    if: ${{ !cancelled() && needs.snapshot.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - run: mkdir -p /tmp/shipped out && cp worker/lapsim/calibration-data.js docs/lapsim-level-c.json docs/lapsim-forward.json /tmp/shipped/
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with: {name: calibration-output, path: fit}
+      - uses: actions/download-artifact@v4
+        with: {name: snapshot-sums, path: snap}
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with: {name: track-state-check, path: ts}
+      # the run's fit becomes the working calibration, so the Δ benchmark and level C / forward read this run's numbers
+      - name: Δ benchmarks on this run's calibration
+        run: |
+          [ -f fit/worker/lapsim/calibration-data.js ] && cp fit/worker/lapsim/calibration-data.js worker/lapsim/ && cp fit/docs/lapsim-level-c.json fit/docs/lapsim-forward.json docs/ 2>/dev/null || true
+          mkdir -p dl && cp scripts/sim/data/f1-delta/zone-mapping-table.csv dl/zones.csv && cp scripts/sim/data/f1-delta/f1-delta-cases-2026-11-24.csv dl/
+          node scripts/sim/f1-delta-bench.mjs model dl
+      - name: Report
+        env:
+          SHIPPED_DIR: /tmp/shipped
+          FIT_RESULT: ${{ needs.fit.result }}
+          SNAPSHOT_TAG: ${{ needs.snapshot.outputs.tag }}
+          SNAPSHOT_SHA256: ${{ needs.snapshot.outputs.sha256 }}
+          SNAPSHOT_SUMS: snap/SHA256SUMS
+          DELTA_DIR: dl
+          TRACK_STATE_DIFF: ts/track-state-diff.json
+        run: |
+          node scripts/sim/pipeline-report.mjs fit/worker/lapsim/calibration-data.js /tmp/shipped/calibration-data.js out > /dev/null
+          cp dl/baseline.csv out/delta-drs-v1.csv 2>/dev/null || true
+          cat out/pipeline-report.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with: {name: pipeline-report, path: out/, retention-days: 90}
+      # durable copy next to the inputs (and on the release that triggered the run)
+      - name: Attach the report to the releases
+        run: |
+          id=${{ github.run_id }}; cp out/pipeline-report.json "pipeline-report-$id.json"; cp out/pipeline-report.md "pipeline-report-$id.md"
+          gh release upload "${{ needs.snapshot.outputs.tag }}" -R ${{ github.repository }} "pipeline-report-$id.json" "pipeline-report-$id.md" --clobber
+          [ "${{ github.event_name }}" != release ] || gh release upload "${{ github.event.release.tag_name }}" "pipeline-report-$id.json" "pipeline-report-$id.md" --clobber

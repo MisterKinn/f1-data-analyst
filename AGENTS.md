@@ -11,6 +11,17 @@ Normal ChatGPT editing must write to GitHub; it must not independently publish a
 
 Before any change to the lap simulator physics model or its calibration (`worker/lapsim/`, `scripts/sim/`, `docs/lapsim-*.md`, `tests/lapsim-*.test.mjs`), read `docs/lapsim-physics-rules.md` and follow it. It is the only source of rules for that work. A physics task must not change the website, accounts, collector or deployment.
 
+### Reproducible runs (owner 2026-11-24, step 27)
+
+- **A model number in a status doc, PR or ledger line cites a pipeline run id** of `.github/workflows/lapsim-pipeline.yml`
+  ("run 4xxxxxxxxxx"), and that run's report (`pipeline-report-<run id>.json/.md`, attached to the input snapshot's release) holds
+  the number. A number without a run id is a draft: say "not reproduced" next to it.
+- Inputs come only from the release assets pinned in `.github/lapsim-snapshot.json` (sha256 + SHA256SUMS). A local workspace, a
+  patch or an Actions artifact is not an input; a build that is still only an artifact (2-day `lapsim-prep`) is pinned with the
+  workflow's `prep_run` input or `pin_runs` before it expires. Changing a pin is a reviewed data change.
+- The fit in the pipeline is `lapsim-data.yml` in pinned mode (same code path as production, no network reads, no commit). Gate
+  branches may still use `lapsim-data.yml` directly; their numbers are diagnostics until a pipeline run reproduces them.
+
 ### Model changes: Gate G (owner 2026-11-21, data-engineering rules; these extend rule 1 of docs/lapsim-physics-rules.md)
 
 Decide before the run and write it in the PR or status note: the change type, the variants (m), the primary metric, the groups and the

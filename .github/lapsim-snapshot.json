@@ -1,0 +1,19 @@
+{
+  "note": "Pinned LapSim inputs (step 27, lapsim-pipeline.yml). Each entry is a release asset checked by sha256 and SHA256SUMS. sha256 empty = the pipeline makes the snapshot (release) on its first run and prints the value to pin here; changing a pin is a reviewed data change. pin_runs: other lapsim-prep builds saved as releases (lapsim-inputs-r<run>) before their artifact expires; 45191678721 = the wave-2/3 gate build.",
+  "lapsim": {
+    "repo": "kangjeongmin1229/f1-data-analyst-deploy",
+    "tag": "lapsim-inputs-r45123509702",
+    "source_run": 45123509702,
+    "source": "lapsim-prep of Lap simulator data run 45123509702 (branch lapsim/step1a2-base-2026-11-23, c4792765): the build of the shipped fit, run 45152363645",
+    "sha256": "",
+    "pin_runs": [
+      45191678721
+    ]
+  },
+  "trackState": {
+    "repo": "kangjeongmin1229/f1-data-analyst-deploy",
+    "tag": "track-state-inputs-2026-11-24",
+    "source": "scripts/sim/track-state.mjs ti 2018-2026 at one TracingInsights commit per season (ti-refs.json) + fia 2019-2026 (fia.com; missing years in fia-missing.json)",
+    "sha256": ""
+  }
+}

@@ -2,6 +2,7 @@
 // Read-only use of the FIA parser (worker/lapsim/track-changes.js) and of the stored notes (track-changes-data.js).
 //   node scripts/sim/track-state.mjs fia 2019,2020,2021,2022   FIA notes → .cache/track-state/fia-notes.json (needs fia.com)
 //   node scripts/sim/track-state.mjs ti 2018,...,2026          TI qualifying corner minima → .cache/track-state/corners.json
+//                                                              (each season read at the commit pinned in TRACK_STATE_TI_REFS, step 27)
 //   node scripts/sim/track-state.mjs build                     registry, effects, docs (no network)
 import {mkdirSync, readFileSync, writeFileSync, existsSync} from 'node:fs';
 import {join, dirname} from 'node:path';
@@ -111,12 +112,15 @@ if (cmd === 'fia') await fetchFia(String(arg || '2019,2020,2021,2022').split(','
 const TI_RAW = join(CACHE, 'ti');
 const num = v => v === 'None' || v == null || !Number.isFinite(+v) ? null : +v;
 const median = a => { const s = a.filter(Number.isFinite).sort((x, y) => x - y); return s.length ? (s[(s.length - 1) >> 1] + s[s.length >> 1]) / 2 : NaN; };
+// step 27: one fixed TracingInsights commit per season ({"2024": "<sha>", …}); a later push to TI no longer changes corners.json
+const tiRef = year => { const f = process.env.TRACK_STATE_TI_REFS || 'scripts/sim/data/track-state-ti-refs.json', ref = existsSync(f) && JSON.parse(readFileSync(f, 'utf8'))[year];
+  if (!/^[0-9a-f]{40}$/.test(ref || '')) throw new Error(`no pinned TracingInsights commit for ${year} in ${f}`); return ref; };
 async function tiGet(year, path) {
   const f = join(TI_RAW, String(year), path);
   if (existsSync(f)) return JSON.parse(readFileSync(f, 'utf8'));
   for (let k = 0; k < 3; k++) {
     try {
-      const r = await fetch(`https://raw.githubusercontent.com/TracingInsights/${year}/main/${path.split('/').map(encodeURIComponent).join('/')}`, {signal: AbortSignal.timeout(60000)});
+      const r = await fetch(`https://raw.githubusercontent.com/TracingInsights/${year}/${tiRef(year)}/${path.split('/').map(encodeURIComponent).join('/')}`, {signal: AbortSignal.timeout(60000)});
       if (r.status === 404) return null;
       if (!r.ok) throw new Error('HTTP ' + r.status);
       const t = await r.text(); mkdirSync(dirname(f), {recursive: true}); writeFileSync(f, t); return JSON.parse(t);
@@ -157,6 +161,7 @@ async function tiSession(year, event) {
     corners: Object.fromEntries(Object.entries(per).map(([k, a]) => [k, {v: median(a), n: a.length, spread: median(a.map(x => Math.abs(x - median(a))))}]))};
 }
 async function fetchTi(years) {
+  years.forEach(tiRef); // fail before any fetch when a season has no pinned commit
   const f = join(CACHE, 'corners.json'), out = existsSync(f) ? JSON.parse(readFileSync(f, 'utf8')) : {};
   for (const year of years) {
     for (const id of Object.keys(FIA_EVENTS)) {
@@ -344,9 +349,12 @@ async function build() {
   const {lapsimTrackChanges: stored} = await import('../../worker/lapsim/track-changes-data.js');
   const rd = (f, d) => existsSync(f) ? JSON.parse(readFileSync(f, 'utf8')) : d;
   const fetched = rd(process.env.TRACK_STATE_FIA || join(CACHE, 'fia-notes.json'), {}), ti = rd(join(CACHE, 'corners.json'), {}), alt = rd(process.env.TRACK_STATE_ALT || join(CACHE, 'altitude.json'), null);
+  // guard (step 27): without the TI cache every effect comes out empty and would overwrite the shipped table
+  if (!Object.values(ti).some(ys => Object.keys(ys || {}).length)) { console.error(`track-state build: ${join(CACHE, 'corners.json')} is missing or empty; nothing written (get the pinned snapshot, .github/track-state-snapshot.json)`); process.exit(1); }
   const ids = [...new Set([...Object.keys(lapsimAllTracks), ...Object.keys(FULL), ...Object.keys(LAYOUT)])].sort();
   const reg = buildRegistry({fetched, stored, ti, ids}), pairs = yearPairs(reg);
   const {cases, skipped} = changeCases(reg, ti), effects = effectTable(cases);
+  if (process.env.TRACK_STATE_CASES) save(process.env.TRACK_STATE_CASES, {cases, skipped}); // per-case list for reproduction diffs
   // covariates: one row per F1 track and raced season
   const rows = [];
   for (const [id, tr] of Object.entries(reg)) for (const [y, e] of Object.entries(tr.years)) {
