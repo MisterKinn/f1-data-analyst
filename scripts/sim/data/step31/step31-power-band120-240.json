@@ -1,0 +1,1050 @@
+{
+ "meta": {
+  "n_events": 56,
+  "n_tracks": 24,
+  "lap_err_median_abs": 2.340519187378871,
+  "car_2025": {
+   "cdA": [
+    1.069,
+    1.1358,
+    1.1756,
+    1.1832,
+    1.2025,
+    1.2053,
+    1.2265,
+    1.2316,
+    1.2433,
+    1.2451,
+    1.2748,
+    1.2801,
+    1.2839,
+    1.2978,
+    1.3157,
+    1.3306,
+    1.3542
+   ],
+   "clA": [
+    8
+   ],
+   "muX": 1.5830213845893455,
+   "muY": 1.7749027645395694,
+   "muXTrac": 1.870843454514681,
+   "pIce": 476000
+  },
+  "z_decision": 2.8015852181129683,
+  "z_gateG": 1.8399999999999999,
+  "tracks": [
+   "austin",
+   "baku",
+   "catalunya",
+   "hungaroring",
+   "imola",
+   "interlagos",
+   "jeddah",
+   "las-vegas",
+   "lusail",
+   "melbourne",
+   "mexico-city",
+   "miami",
+   "monte-carlo",
+   "montreal",
+   "monza",
+   "sakhir",
+   "shanghai",
+   "silverstone",
+   "singapore",
+   "spa-francorchamps",
+   "spielberg",
+   "suzuka",
+   "yas-marina-circuit",
+   "zandvoort"
+  ]
+ },
+ "power": {
+  "apex_120_180": {
+   "metric": "apex speed RMS, measured v_min 120\u2013180 km/h",
+   "unit": "km/h",
+   "n_tracks": 23,
+   "baseline_median": 24.667697742378838,
+   "sd_between": 18.287355761281784,
+   "sd_within_season": 4.121296239738147,
+   "n_pairs": 31,
+   "mde_within": 2.407541334300135,
+   "mde_between": 10.68294107708573,
+   "mde_within_gateG": 1.5812033938757104,
+   "useful": 3.0,
+   "judgeable_within": true,
+   "judgeable_between": false
+  },
+  "entry": {
+   "metric": "entry-phase \u0394t RMS per corner",
+   "unit": "s",
+   "n_tracks": 24,
+   "baseline_median": 0.1928903058128206,
+   "sd_between": 0.08862879846697394,
+   "sd_within_season": 0.04040820212194619,
+   "n_pairs": 32,
+   "mde_within": 0.023108286550066668,
+   "mde_between": 0.05068425626515604,
+   "mde_within_gateG": 0.015176853082042554,
+   "useful": 0.026,
+   "judgeable_within": true,
+   "judgeable_between": false
+  },
+  "exit": {
+   "metric": "exit-phase \u0394t RMS per corner",
+   "unit": "s",
+   "n_tracks": 24,
+   "baseline_median": 0.34711879165491805,
+   "sd_between": 0.1330094467126292,
+   "sd_within_season": 0.0480727275276507,
+   "n_pairs": 32,
+   "mde_within": 0.02749140779883643,
+   "mde_between": 0.07606427029902273,
+   "mde_within_gateG": 0.018055560124610605,
+   "useful": 0.026,
+   "judgeable_within": false,
+   "judgeable_between": false
+  },
+  "lap_guard": {
+   "n_tracks": 24,
+   "baseline_median_abs_pct": 2.568179332949801,
+   "sd_within_season": 0.8530301251974981,
+   "ub_halfwidth_planning_pp": 0.2864085672258666,
+   "limit_pp": 0.1
+  }
+ },
+ "braking": [
+  {
+   "bin": 80,
+   "meas_p95": [
+    1.057,
+    0.921,
+    1.211
+   ],
+   "model_p95": [
+    1.435,
+    1.244,
+    1.534
+   ],
+   "model_drag_g_at_top": 0.065,
+   "drag_g_cda_shipped": 0.061,
+   "drag_g_cda_prior_1_35": 0.064,
+   "excess_g": 0.378,
+   "drag_share_of_model": 0.045,
+   "excess_explained_by_cda_gap_g": -0.003,
+   "tyre_part_model_g": 1.37
+  },
+  {
+   "bin": 100,
+   "meas_p95": [
+    1.514,
+    1.365,
+    1.748
+   ],
+   "model_p95": [
+    2.093,
+    1.901,
+    2.166
+   ],
+   "model_drag_g_at_top": 0.098,
+   "drag_g_cda_shipped": 0.091,
+   "drag_g_cda_prior_1_35": 0.096,
+   "excess_g": 0.579,
+   "drag_share_of_model": 0.047,
+   "excess_explained_by_cda_gap_g": -0.005,
+   "tyre_part_model_g": 1.995
+  },
+  {
+   "bin": 120,
+   "meas_p95": [
+    2.046,
+    1.864,
+    2.115
+   ],
+   "model_p95": [
+    2.687,
+    2.505,
+    2.802
+   ],
+   "model_drag_g_at_top": 0.131,
+   "drag_g_cda_shipped": 0.127,
+   "drag_g_cda_prior_1_35": 0.134,
+   "excess_g": 0.641,
+   "drag_share_of_model": 0.049,
+   "excess_explained_by_cda_gap_g": -0.007,
+   "tyre_part_model_g": 2.556
+  },
+  {
+   "bin": 140,
+   "meas_p95": [
+    2.53,
+    2.405,
+    2.62
+   ],
+   "model_p95": [
+    3.234,
+    3.077,
+    3.274
+   ],
+   "model_drag_g_at_top": 0.17,
+   "drag_g_cda_shipped": 0.169,
+   "drag_g_cda_prior_1_35": 0.178,
+   "excess_g": 0.704,
+   "drag_share_of_model": 0.053,
+   "excess_explained_by_cda_gap_g": -0.009,
+   "tyre_part_model_g": 3.064
+  },
+  {
+   "bin": 160,
+   "meas_p95": [
+    3.015,
+    2.847,
+    3.088
+   ],
+   "model_p95": [
+    3.735,
+    3.566,
+    3.825
+   ],
+   "model_drag_g_at_top": 0.221,
+   "drag_g_cda_shipped": 0.217,
+   "drag_g_cda_prior_1_35": 0.228,
+   "excess_g": 0.72,
+   "drag_share_of_model": 0.059,
+   "excess_explained_by_cda_gap_g": -0.011,
+   "tyre_part_model_g": 3.514
+  },
+  {
+   "bin": 180,
+   "meas_p95": [
+    3.436,
+    3.269,
+    3.514
+   ],
+   "model_p95": [
+    4.221,
+    4.084,
+    4.359
+   ],
+   "model_drag_g_at_top": 0.275,
+   "drag_g_cda_shipped": 0.271,
+   "drag_g_cda_prior_1_35": 0.285,
+   "excess_g": 0.785,
+   "drag_share_of_model": 0.065,
+   "excess_explained_by_cda_gap_g": -0.014,
+   "tyre_part_model_g": 3.946
+  },
+  {
+   "bin": 200,
+   "meas_p95": [
+    3.894,
+    3.753,
+    4.0
+   ],
+   "model_p95": [
+    4.782,
+    4.643,
+    4.839
+   ],
+   "model_drag_g_at_top": 0.33,
+   "drag_g_cda_shipped": 0.331,
+   "drag_g_cda_prior_1_35": 0.349,
+   "excess_g": 0.888,
+   "drag_share_of_model": 0.069,
+   "excess_explained_by_cda_gap_g": -0.018,
+   "tyre_part_model_g": 4.452
+  },
+  {
+   "bin": 220,
+   "meas_p95": [
+    4.136,
+    3.951,
+    4.325
+   ],
+   "model_p95": [
+    5.27,
+    5.157,
+    5.364
+   ],
+   "model_drag_g_at_top": 0.403,
+   "drag_g_cda_shipped": 0.397,
+   "drag_g_cda_prior_1_35": 0.418,
+   "excess_g": 1.134,
+   "drag_share_of_model": 0.076,
+   "excess_explained_by_cda_gap_g": -0.021,
+   "tyre_part_model_g": 4.867
+  },
+  {
+   "bin": 240,
+   "meas_p95": [
+    4.394,
+    4.172,
+    4.633
+   ],
+   "model_p95": [
+    5.729,
+    5.58,
+    5.857
+   ],
+   "model_drag_g_at_top": 0.458,
+   "drag_g_cda_shipped": 0.469,
+   "drag_g_cda_prior_1_35": 0.494,
+   "excess_g": 1.335,
+   "drag_share_of_model": 0.08,
+   "excess_explained_by_cda_gap_g": -0.025,
+   "tyre_part_model_g": 5.271
+  },
+  {
+   "bin": 260,
+   "meas_p95": [
+    4.459,
+    4.254,
+    4.632
+   ],
+   "model_p95": [
+    6.08,
+    5.886,
+    6.213
+   ],
+   "model_drag_g_at_top": 0.51,
+   "drag_g_cda_shipped": 0.547,
+   "drag_g_cda_prior_1_35": 0.576,
+   "excess_g": 1.621,
+   "drag_share_of_model": 0.084,
+   "excess_explained_by_cda_gap_g": -0.029,
+   "tyre_part_model_g": 5.57
+  },
+  {
+   "bin": 280,
+   "meas_p95": [
+    4.306,
+    3.968,
+    4.533
+   ],
+   "model_p95": [
+    5.862,
+    5.325,
+    5.967
+   ],
+   "model_drag_g_at_top": 0.571,
+   "drag_g_cda_shipped": 0.631,
+   "drag_g_cda_prior_1_35": 0.665,
+   "excess_g": 1.556,
+   "drag_share_of_model": 0.097,
+   "excess_explained_by_cda_gap_g": -0.034,
+   "tyre_part_model_g": 5.291
+  }
+ ],
+ "traction": [
+  {
+   "bin": 100,
+   "meas_p95": [
+    1.337,
+    1.269,
+    1.436
+   ],
+   "model_p95": [
+    1.521,
+    1.48,
+    1.552
+   ]
+  },
+  {
+   "bin": 120,
+   "meas_p95": [
+    1.576,
+    1.51,
+    1.65
+   ],
+   "model_p95": [
+    1.634,
+    1.592,
+    1.659
+   ]
+  },
+  {
+   "bin": 140,
+   "meas_p95": [
+    1.597,
+    1.527,
+    1.654
+   ],
+   "model_p95": [
+    1.564,
+    1.54,
+    1.588
+   ]
+  },
+  {
+   "bin": 160,
+   "meas_p95": [
+    1.462,
+    1.41,
+    1.503
+   ],
+   "model_p95": [
+    1.347,
+    1.333,
+    1.361
+   ]
+  },
+  {
+   "bin": 180,
+   "meas_p95": [
+    1.271,
+    1.231,
+    1.299
+   ],
+   "model_p95": [
+    1.124,
+    1.114,
+    1.139
+   ]
+  },
+  {
+   "bin": 200,
+   "meas_p95": [
+    1.091,
+    1.057,
+    1.127
+   ],
+   "model_p95": [
+    0.94,
+    0.927,
+    0.957
+   ]
+  },
+  {
+   "bin": 220,
+   "meas_p95": [
+    0.904,
+    0.874,
+    0.935
+   ],
+   "model_p95": [
+    0.799,
+    0.777,
+    0.815
+   ]
+  }
+ ],
+ "rows": [
+  {
+   "key": "2023|Abu Dhabi Grand Prix",
+   "track": "yas-marina-circuit",
+   "year": 2023,
+   "apex_rms": 30.372067210953333,
+   "n_apex": 3,
+   "entry_rms": 0.18828473112989016,
+   "exit_rms": 0.3907472630979619,
+   "n_corner": 6,
+   "lap_err": 0.25382879779355977
+  },
+  {
+   "key": "2023|Australian Grand Prix",
+   "track": "melbourne",
+   "year": 2023,
+   "apex_rms": 58.629446952875135,
+   "n_apex": 2,
+   "entry_rms": 0.21136078369676128,
+   "exit_rms": 0.4798342550238508,
+   "n_corner": 6,
+   "lap_err": 2.31433558306805
+  },
+  {
+   "key": "2023|Azerbaijan Grand Prix",
+   "track": "baku",
+   "year": 2023,
+   "apex_rms": 24.665612702708202,
+   "n_apex": 2,
+   "entry_rms": 0.18283690794607135,
+   "exit_rms": 0.43160133254064126,
+   "n_corner": 9,
+   "lap_err": 1.350155055936601
+  },
+  {
+   "key": "2023|Bahrain Grand Prix",
+   "track": "sakhir",
+   "year": 2023,
+   "apex_rms": 20.619125102680762,
+   "n_apex": 5,
+   "entry_rms": 0.1692233431343012,
+   "exit_rms": 0.3061353549903784,
+   "n_corner": 8,
+   "lap_err": -3.350824719918684
+  },
+  {
+   "key": "2023|Hungarian Grand Prix",
+   "track": "hungaroring",
+   "year": 2023,
+   "apex_rms": 19.864419951259592,
+   "n_apex": 5,
+   "entry_rms": 0.16010954705802277,
+   "exit_rms": 0.3007801538940917,
+   "n_corner": 9,
+   "lap_err": -5.530379639190525
+  },
+  {
+   "key": "2023|Italian Grand Prix",
+   "track": "monza",
+   "year": 2023,
+   "apex_rms": 25.282251185367173,
+   "n_apex": 4,
+   "entry_rms": 0.08283778452087215,
+   "exit_rms": 0.3136519311090744,
+   "n_corner": 6,
+   "lap_err": -1.9712510882157448
+  },
+  {
+   "key": "2023|Japanese Grand Prix",
+   "track": "suzuka",
+   "year": 2023,
+   "apex_rms": 9.501003894326123,
+   "n_apex": 4,
+   "entry_rms": 0.19046115631208585,
+   "exit_rms": 0.4090873481343932,
+   "n_corner": 6,
+   "lap_err": -0.701864553359085
+  },
+  {
+   "key": "2023|Las Vegas Grand Prix",
+   "track": "las-vegas",
+   "year": 2023,
+   "apex_rms": null,
+   "n_apex": 0,
+   "entry_rms": 0.2756674489305732,
+   "exit_rms": 0.4420524536366035,
+   "n_corner": 5,
+   "lap_err": -2.328957250920855
+  },
+  {
+   "key": "2023|Mexico City Grand Prix",
+   "track": "mexico-city",
+   "year": 2023,
+   "apex_rms": 19.0423974330965,
+   "n_apex": 2,
+   "entry_rms": 0.4962650014386886,
+   "exit_rms": 0.6201918977226424,
+   "n_corner": 5,
+   "lap_err": -6.581683181474515
+  },
+  {
+   "key": "2023|Miami Grand Prix",
+   "track": "miami",
+   "year": 2023,
+   "apex_rms": 5.979168002322735,
+   "n_apex": 2,
+   "entry_rms": 0.30036106987539324,
+   "exit_rms": 0.5585908961532285,
+   "n_corner": 6,
+   "lap_err": -2.9263277814109263
+  },
+  {
+   "key": "2023|Monaco Grand Prix",
+   "track": "monte-carlo",
+   "year": 2023,
+   "apex_rms": 24.45574506464006,
+   "n_apex": 3,
+   "entry_rms": 0.2914788536556229,
+   "exit_rms": 0.5500270271055487,
+   "n_corner": 7,
+   "lap_err": -4.628074375013426
+  },
+  {
+   "key": "2023|Qatar Grand Prix",
+   "track": "lusail",
+   "year": 2023,
+   "apex_rms": 14.627440455722741,
+   "n_apex": 7,
+   "entry_rms": 0.17490497550677406,
+   "exit_rms": 0.2639512443154967,
+   "n_corner": 9,
+   "lap_err": -2.4567248255974623
+  },
+  {
+   "key": "2023|Singapore Grand Prix",
+   "track": "singapore",
+   "year": 2023,
+   "apex_rms": 26.82308893472189,
+   "n_apex": 2,
+   "entry_rms": 0.19323412670287485,
+   "exit_rms": 0.4017139528672171,
+   "n_corner": 9,
+   "lap_err": -4.459317755383391
+  },
+  {
+   "key": "2023|Spanish Grand Prix",
+   "track": "catalunya",
+   "year": 2023,
+   "apex_rms": 21.25597857074569,
+   "n_apex": 4,
+   "entry_rms": 0.09605588965934325,
+   "exit_rms": 0.19371161522388317,
+   "n_corner": 7,
+   "lap_err": -1.556805150627211
+  },
+  {
+   "key": "2023|S\u00e3o Paulo Grand Prix",
+   "track": "interlagos",
+   "year": 2023,
+   "apex_rms": 21.5399837511545,
+   "n_apex": 2,
+   "entry_rms": 0.15303668082196195,
+   "exit_rms": 0.3567385688852893,
+   "n_corner": 6,
+   "lap_err": -3.2029906653288323
+  },
+  {
+   "key": "2023|United States Grand Prix",
+   "track": "austin",
+   "year": 2023,
+   "apex_rms": 23.697008249988013,
+   "n_apex": 2,
+   "entry_rms": 0.1935125024179787,
+   "exit_rms": 0.4469299000339905,
+   "n_corner": 8,
+   "lap_err": -3.9440973008609994
+  },
+  {
+   "key": "2024|Abu Dhabi Grand Prix",
+   "track": "yas-marina-circuit",
+   "year": 2024,
+   "apex_rms": 36.19973250361573,
+   "n_apex": 3,
+   "entry_rms": 0.24056476830168583,
+   "exit_rms": 0.33228770756313863,
+   "n_corner": 6,
+   "lap_err": 1.3456479545243578
+  },
+  {
+   "key": "2024|Australian Grand Prix",
+   "track": "melbourne",
+   "year": 2024,
+   "apex_rms": 55.884726893848196,
+   "n_apex": 3,
+   "entry_rms": 0.15406141168989113,
+   "exit_rms": 0.4587327108623265,
+   "n_corner": 6,
+   "lap_err": 3.4154461958766635
+  },
+  {
+   "key": "2024|Austrian Grand Prix",
+   "track": "spielberg",
+   "year": 2024,
+   "apex_rms": 27.627454642076597,
+   "n_apex": 4,
+   "entry_rms": 0.20574617527879374,
+   "exit_rms": 0.3220412595119995,
+   "n_corner": 6,
+   "lap_err": -0.09839378355055016
+  },
+  {
+   "key": "2024|Azerbaijan Grand Prix",
+   "track": "baku",
+   "year": 2024,
+   "apex_rms": 20.489325269515348,
+   "n_apex": 2,
+   "entry_rms": 0.16390707331447388,
+   "exit_rms": 0.43869590012181053,
+   "n_corner": 9,
+   "lap_err": 0.07110684309654279
+  },
+  {
+   "key": "2024|Bahrain Grand Prix",
+   "track": "sakhir",
+   "year": 2024,
+   "apex_rms": 23.705684972174918,
+   "n_apex": 5,
+   "entry_rms": 0.16450677088912724,
+   "exit_rms": 0.242055897595636,
+   "n_corner": 8,
+   "lap_err": -2.7622473389162345
+  },
+  {
+   "key": "2024|Canadian Grand Prix",
+   "track": "montreal",
+   "year": 2024,
+   "apex_rms": 28.93199094428173,
+   "n_apex": 3,
+   "entry_rms": 0.21887726393381748,
+   "exit_rms": 0.2650078643573871,
+   "n_corner": 6,
+   "lap_err": -1.3352958158892256
+  },
+  {
+   "key": "2024|Chinese Grand Prix",
+   "track": "shanghai",
+   "year": 2024,
+   "apex_rms": 98.53,
+   "n_apex": 1,
+   "entry_rms": 0.4661758028512626,
+   "exit_rms": 0.6915548168381902,
+   "n_corner": 6,
+   "lap_err": 0.6011482242786832
+  },
+  {
+   "key": "2024|Dutch Grand Prix",
+   "track": "zandvoort",
+   "year": 2024,
+   "apex_rms": 23.622854047158093,
+   "n_apex": 3,
+   "entry_rms": 0.2556611533328406,
+   "exit_rms": 0.2972870696805101,
+   "n_corner": 7,
+   "lap_err": 0.8176700762317799
+  },
+  {
+   "key": "2024|Emilia Romagna Grand Prix",
+   "track": "imola",
+   "year": 2024,
+   "apex_rms": 49.66678447413322,
+   "n_apex": 5,
+   "entry_rms": 0.3000560083941757,
+   "exit_rms": 0.19346207010645822,
+   "n_corner": 7,
+   "lap_err": 4.204094152668726
+  },
+  {
+   "key": "2024|Hungarian Grand Prix",
+   "track": "hungaroring",
+   "year": 2024,
+   "apex_rms": 14.493939538073608,
+   "n_apex": 6,
+   "entry_rms": 0.13681628512801583,
+   "exit_rms": 0.23340914385051117,
+   "n_corner": 9,
+   "lap_err": -3.7948722370790784
+  },
+  {
+   "key": "2024|Italian Grand Prix",
+   "track": "monza",
+   "year": 2024,
+   "apex_rms": 22.132147433089262,
+   "n_apex": 4,
+   "entry_rms": 0.06151412581282918,
+   "exit_rms": 0.2925352926131005,
+   "n_corner": 6,
+   "lap_err": -0.925647260136098
+  },
+  {
+   "key": "2024|Japanese Grand Prix",
+   "track": "suzuka",
+   "year": 2024,
+   "apex_rms": 4.441587554017148,
+   "n_apex": 4,
+   "entry_rms": 0.14569539748037966,
+   "exit_rms": 0.37791675401583463,
+   "n_corner": 6,
+   "lap_err": 0.06372534316477724
+  },
+  {
+   "key": "2024|Las Vegas Grand Prix",
+   "track": "las-vegas",
+   "year": 2024,
+   "apex_rms": null,
+   "n_apex": 0,
+   "entry_rms": 0.25625206019271046,
+   "exit_rms": 0.3164721982192198,
+   "n_corner": 6,
+   "lap_err": -1.8909230657865397
+  },
+  {
+   "key": "2024|Mexico City Grand Prix",
+   "track": "mexico-city",
+   "year": 2024,
+   "apex_rms": 13.679334779147704,
+   "n_apex": 2,
+   "entry_rms": 0.30459140758199454,
+   "exit_rms": 0.5396856509394773,
+   "n_corner": 5,
+   "lap_err": -4.9973369667333465
+  },
+  {
+   "key": "2024|Miami Grand Prix",
+   "track": "miami",
+   "year": 2024,
+   "apex_rms": 1.9283671849520785,
+   "n_apex": 2,
+   "entry_rms": 0.28640759758124434,
+   "exit_rms": 0.5245898087912266,
+   "n_corner": 6,
+   "lap_err": -3.4014536744811363
+  },
+  {
+   "key": "2024|Monaco Grand Prix",
+   "track": "monte-carlo",
+   "year": 2024,
+   "apex_rms": 24.76026251880217,
+   "n_apex": 2,
+   "entry_rms": 0.23523358868922412,
+   "exit_rms": 0.4974560002505438,
+   "n_corner": 6,
+   "lap_err": -3.141917287218347
+  },
+  {
+   "key": "2024|Qatar Grand Prix",
+   "track": "lusail",
+   "year": 2024,
+   "apex_rms": 17.482409254257064,
+   "n_apex": 6,
+   "entry_rms": 0.1444210301592456,
+   "exit_rms": 0.18397019942143333,
+   "n_corner": 9,
+   "lap_err": 1.6295222604835962
+  },
+  {
+   "key": "2024|Saudi Arabian Grand Prix",
+   "track": "jeddah",
+   "year": 2024,
+   "apex_rms": 50.162576439014764,
+   "n_apex": 4,
+   "entry_rms": 0.454533249017623,
+   "exit_rms": 0.5316410336169667,
+   "n_corner": 7,
+   "lap_err": 5.959113481102425
+  },
+  {
+   "key": "2024|Singapore Grand Prix",
+   "track": "singapore",
+   "year": 2024,
+   "apex_rms": 24.859674173246933,
+   "n_apex": 3,
+   "entry_rms": 0.178359883230935,
+   "exit_rms": 0.26628795782860193,
+   "n_corner": 9,
+   "lap_err": -3.275817672491222
+  },
+  {
+   "key": "2024|Spanish Grand Prix",
+   "track": "catalunya",
+   "year": 2024,
+   "apex_rms": 23.971720005039266,
+   "n_apex": 5,
+   "entry_rms": 0.16365686758458164,
+   "exit_rms": 0.22582197025589207,
+   "n_corner": 7,
+   "lap_err": -0.12607199180016912
+  },
+  {
+   "key": "2025|Abu Dhabi Grand Prix",
+   "track": "yas-marina-circuit",
+   "year": 2025,
+   "apex_rms": 34.24071699015662,
+   "n_apex": 3,
+   "entry_rms": 0.25879008917736185,
+   "exit_rms": 0.40087102855192774,
+   "n_corner": 6,
+   "lap_err": 1.823978405779798
+  },
+  {
+   "key": "2025|Australian Grand Prix",
+   "track": "melbourne",
+   "year": 2025,
+   "apex_rms": 58.6257830082749,
+   "n_apex": 3,
+   "entry_rms": 0.19805635219191556,
+   "exit_rms": 0.5816467262310028,
+   "n_corner": 6,
+   "lap_err": 4.543299216469282
+  },
+  {
+   "key": "2025|Austrian Grand Prix",
+   "track": "spielberg",
+   "year": 2025,
+   "apex_rms": 29.68314041674162,
+   "n_apex": 4,
+   "entry_rms": 0.22894680569321899,
+   "exit_rms": 0.2567105354901282,
+   "n_corner": 6,
+   "lap_err": 0.43725910498084386
+  },
+  {
+   "key": "2025|Azerbaijan Grand Prix",
+   "track": "baku",
+   "year": 2025,
+   "apex_rms": 7.47999999999999,
+   "n_apex": 1,
+   "entry_rms": 0.18129205388532785,
+   "exit_rms": 0.3815781523920224,
+   "n_corner": 9,
+   "lap_err": 0.31654168092882606
+  },
+  {
+   "key": "2025|Belgian Grand Prix",
+   "track": "spa-francorchamps",
+   "year": 2025,
+   "apex_rms": 12.37540403380835,
+   "n_apex": 4,
+   "entry_rms": 0.14863864780529476,
+   "exit_rms": 0.23838614842594658,
+   "n_corner": 8,
+   "lap_err": 0.1326131261139642
+  },
+  {
+   "key": "2025|British Grand Prix",
+   "track": "silverstone",
+   "year": 2025,
+   "apex_rms": 37.00611435965683,
+   "n_apex": 2,
+   "entry_rms": 0.19795442909945188,
+   "exit_rms": 0.3167930562800889,
+   "n_corner": 6,
+   "lap_err": -2.9870053133052843
+  },
+  {
+   "key": "2025|Canadian Grand Prix",
+   "track": "montreal",
+   "year": 2025,
+   "apex_rms": 30.0601535813331,
+   "n_apex": 3,
+   "entry_rms": 0.19655969283306077,
+   "exit_rms": 0.169283055060927,
+   "n_corner": 6,
+   "lap_err": -0.16215732836181726
+  },
+  {
+   "key": "2025|Chinese Grand Prix",
+   "track": "shanghai",
+   "year": 2025,
+   "apex_rms": 77.5401834534843,
+   "n_apex": 2,
+   "entry_rms": 0.38350644147773066,
+   "exit_rms": 0.6755018647364595,
+   "n_corner": 6,
+   "lap_err": 3.8546357720726125
+  },
+  {
+   "key": "2025|Dutch Grand Prix",
+   "track": "zandvoort",
+   "year": 2025,
+   "apex_rms": 30.925110347418332,
+   "n_apex": 4,
+   "entry_rms": 0.287695107086813,
+   "exit_rms": 0.3363817605959532,
+   "n_corner": 7,
+   "lap_err": 2.3021398622425266
+  },
+  {
+   "key": "2025|Hungarian Grand Prix",
+   "track": "hungaroring",
+   "year": 2025,
+   "apex_rms": 12.681411593351894,
+   "n_apex": 5,
+   "entry_rms": 0.1342198520672365,
+   "exit_rms": 0.20559428592407705,
+   "n_corner": 9,
+   "lap_err": -3.3619555852416547
+  },
+  {
+   "key": "2025|Italian Grand Prix",
+   "track": "monza",
+   "year": 2025,
+   "apex_rms": 21.093865221907524,
+   "n_apex": 4,
+   "entry_rms": 0.07238108250346663,
+   "exit_rms": 0.28075829795259594,
+   "n_corner": 6,
+   "lap_err": -0.2529294878263858
+  },
+  {
+   "key": "2025|Japanese Grand Prix",
+   "track": "suzuka",
+   "year": 2025,
+   "apex_rms": 13.093194797298333,
+   "n_apex": 4,
+   "entry_rms": 0.21178652194103542,
+   "exit_rms": 0.34394447942409173,
+   "n_corner": 6,
+   "lap_err": 1.4602897588161332
+  },
+  {
+   "key": "2025|Miami Grand Prix",
+   "track": "miami",
+   "year": 2025,
+   "apex_rms": 9.099999999999994,
+   "n_apex": 1,
+   "entry_rms": 0.2872703982126037,
+   "exit_rms": 0.4659823139478449,
+   "n_corner": 6,
+   "lap_err": -2.352081123836887
+  },
+  {
+   "key": "2025|Monaco Grand Prix",
+   "track": "monte-carlo",
+   "year": 2025,
+   "apex_rms": 28.78627624407158,
+   "n_apex": 2,
+   "entry_rms": 0.32627241681187874,
+   "exit_rms": 0.46534658155917935,
+   "n_corner": 5,
+   "lap_err": -2.704384706704878
+  },
+  {
+   "key": "2025|Qatar Grand Prix",
+   "track": "lusail",
+   "year": 2025,
+   "apex_rms": 17.242788830890053,
+   "n_apex": 6,
+   "entry_rms": 0.18062753607082677,
+   "exit_rms": 0.2243542783642328,
+   "n_corner": 9,
+   "lap_err": 3.0799643822557687
+  },
+  {
+   "key": "2025|Saudi Arabian Grand Prix",
+   "track": "jeddah",
+   "year": 2025,
+   "apex_rms": 51.10945778424968,
+   "n_apex": 4,
+   "entry_rms": 0.33036681491389147,
+   "exit_rms": 0.6455785649475368,
+   "n_corner": 7,
+   "lap_err": 6.175173258402537
+  },
+  {
+   "key": "2025|Singapore Grand Prix",
+   "track": "singapore",
+   "year": 2025,
+   "apex_rms": 24.493298403168716,
+   "n_apex": 3,
+   "entry_rms": 0.1108368808693324,
+   "exit_rms": 0.2986389732847414,
+   "n_corner": 9,
+   "lap_err": -2.8776730874377647
+  },
+  {
+   "key": "2025|Spanish Grand Prix",
+   "track": "catalunya",
+   "year": 2025,
+   "apex_rms": 25.367965034665275,
+   "n_apex": 4,
+   "entry_rms": 0.16107239317098224,
+   "exit_rms": 0.28900570446420043,
+   "n_corner": 7,
+   "lap_err": -0.3536102226633573
+  },
+  {
+   "key": "2025|S\u00e3o Paulo Grand Prix",
+   "track": "interlagos",
+   "year": 2025,
+   "apex_rms": 20.447974227292057,
+   "n_apex": 2,
+   "entry_rms": 0.20414585451116118,
+   "exit_rms": 0.4379437112199936,
+   "n_corner": 5,
+   "lap_err": -2.492794081181247
+  },
+  {
+   "key": "2025|United States Grand Prix",
+   "track": "austin",
+   "year": 2025,
+   "apex_rms": 25.638387234769663,
+   "n_apex": 2,
+   "entry_rms": 0.17129108329646278,
+   "exit_rms": 0.29711801059864135,
+   "n_corner": 8,
+   "lap_err": -1.551145718713652
+  }
+ ]
+}
