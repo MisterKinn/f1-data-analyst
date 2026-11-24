@@ -110,6 +110,20 @@ export function lapsimKernel() {
     return pMax; // 2014–2025 rules: no speed taper, only the power cap
   }
 
+  // car.lateralCap → a_y(v) in m/s², v in m/s: 'quad' a0 + k·v²; 'table' PCHIP (Fritsch–Carlson) through (kph, ay), flat outside
+  function lateralCapFn(c) {
+    if (c.kind !== 'table') return v => c.a0 + c.k * v * v;
+    const x = c.kph.map(k => k / 3.6), y = c.ay, n = x.length, h = [], d = [], m = new Array(n).fill(0);
+    for (let j = 0; j < n - 1; j++) { h[j] = x[j + 1] - x[j]; d[j] = (y[j + 1] - y[j]) / h[j]; }
+    if (n > 1) { m[0] = d[0]; m[n - 1] = d[n - 2]; }
+    for (let j = 1; j < n - 1; j++) m[j] = d[j - 1] * d[j] <= 0 ? 0 : 3 * (h[j - 1] + h[j]) / ((2 * h[j] + h[j - 1]) / d[j - 1] + (h[j] + 2 * h[j - 1]) / d[j]);
+    return v => {
+      if (n === 1 || v <= x[0]) return y[0]; if (v >= x[n - 1]) return y[n - 1];
+      let j = 0; while (v > x[j + 1]) j++;
+      const s = (v - x[j]) / h[j], s2 = s * s, s3 = s2 * s;
+      return (2 * s3 - 3 * s2 + 1) * y[j] + (s3 - 2 * s2 + s) * h[j] * m[j] + (-2 * s3 + 3 * s2) * y[j + 1] + (s3 - s2) * h[j] * m[j + 1];
+    };
+  }
   function makeTyre(car) {
     const m = car.mass, wb = car.wheelbase ?? 3.6, h = car.cogHeight ?? 0.3;
     return {
@@ -158,7 +172,7 @@ export function lapsimKernel() {
   // Plug-in hooks (docs/lapsim-hooks.md): env.gripHook, env.windAt, car.ers.law. Unset = today's lap, byte for byte. Functions do not
   // survive the cache key, so a lap with a hook is never cached. env.hookPasses (default 1): with more, the lap is run again and the
   // hooks see the previous run's speed and time (state.v, state.t).
-  const hooked = (car, env) => !!(env.gripHook || env.windAt || car.ers?.law);
+  const hooked = (car, env) => !!(env.gripHook || env.windAt || (car.ers?.law && typeof car.ers.law === 'object'));
   function simulateLap(track, car, env = {}, opts = {}) {
     if (hooked(car, env)) { let r = null; for (let p = 0; p < Math.max(1, env.hookPasses || 1); p++) r = simulateLapRaw(track, car, env, opts, r); return r; }
     const key = lapKey(track, car, env, opts), hit = lapCache.get(key);
@@ -170,8 +184,8 @@ export function lapsimKernel() {
   }
   // Kernel step (pre-registration claude/gate-kernel-step1-prereg-2026-11-23.md): 1 = one explicit step per point (today);
   // 2 = Heun on v², substeps where the rate changes fast, event points inside a step, exact per-step energy and time account.
-  // opts.kernelStep, else env LAPSIM_KERNEL_STEP (Node), else 2 (step-1 gate attempt 2 passed, 2026-11-23). Until step 10b (strategy B)
-  // merges, the 2026 cut-off / super-clip search does not start with exact accounting.
+  // opts.kernelStep, else env LAPSIM_KERNEL_STEP (Node), else 2 (step-1 gate attempt 2 passed, 2026-11-23). With exact accounting the
+  // 2026 cut-off / super-clip search starts only for cars with car.ers.law = 'b' (strategy B, step 10b).
   const STEP_DEFAULT = 2, stepOf = opts => opts.kernelStep ?? (+(globalThis.process?.env?.LAPSIM_KERNEL_STEP) || STEP_DEFAULT);
   function simulateLapRaw(track, car, env = {}, opts = {}, prev = null) {
     const n = track.kappa.length, ds = track.ds, STEP = stepOf(opts);
@@ -203,7 +217,14 @@ export function lapsimKernel() {
     // hooks: env.windAt(s, t) → {speed m/s, fromDeg} replaces the session wind; env.gripHook(i, state) → grip multiplier per point
     const hs = i => ({s: i * ds, ds, n, v: prev ? prev.v[i] : null, t: prev ? prev.time[i] : null});
     const windAt = env.windAt, gh = env.gripHook ? Float64Array.from({length: n}, (_, i) => env.gripHook(i, hs(i))) : null;
-    const law = car.ers?.law || null;
+    // car.ers.law = 'b' (data, step 10b, claude/gate-ers-law-prereg-2026-11-23.md §9): regen from the tyres' braking force above drag and
+    // rolling resistance, P = min(regenMax, share·max(0, m·a − D − R)·v·η) (corner-mode aero); 2014–25 deploy at every full-throttle
+    // point (the lap budget does not bind, budget()); causal 2026 laps always search a cut-off / super-clip plan (strategy B).
+    // Same law as worker/lapsim/ers-law.js ersLaw(); a function object in car.ers.law is the plug-in hook (docs/lapsim-hooks.md).
+    const lawB = car.ers?.law === 'b';
+    const law = lawB ? (car.ers.regenMax ? {regen: c => { if (!(c.pBrake > 0) || !(c.v > 0)) return 0;
+      const f = c.pBrake / c.v - (aeroFactor * car.cdA * c.v * c.v + cRoll * (mg + aeroFactor * car.clA * c.v * c.v));
+      return Math.min(c.regenMax, c.share * Math.max(0, f) * c.v * c.eta); }} : null) : (car.ers?.law || null);
     for (let i = 0; i < n; i++) {
       if (windAt) { const w = windAt(i * ds, prev ? prev.time[i] : null) || {}; tail[i] = heading ? tailwind(heading[i], w.speed || 0, w.fromDeg || 0) : 0; } else
       tail[i] = heading && windSpeed ? tailwind(heading[i], windSpeed, windFrom) : 0;
@@ -217,8 +238,15 @@ export function lapsimKernel() {
     const bankLat = (v, i) => { const ay = v * v * Math.abs(kapX[i]); if (!bank || !bank[i]) return t.m * ay; const c = Math.cos(bank[i]), s = Math.sin(bank[i]); return Math.max(0, t.m * (ay * c - G * s)); };
     const bankN = (v, i) => { if (!bank || !bank[i]) return 0; const ay = v * v * Math.abs(kapX[i]), c = Math.cos(bank[i]), s = Math.sin(bank[i]); return mg * cosG[i] * (c - 1) + t.m * ay * s; };
     const normalAt = (v, i, L) => Math.max(0.1 * mg, mg * cosG[i] + L + (kv ? t.m * v * v * kv[i] : 0) + (bank ? bankN(v, i) : 0));
+    // car.lateralCap (step 14a hand-off, claude/handoff-14a-to-10b-lateralcap-hook-2026-11-23.md; unset = today): measured lateral
+    // capacity a_y(v) of the car at grip 1, as data — {kind: 'quad', a0 m/s², k 1/m} or {kind: 'table', kph: [...], ay: [...]} (PCHIP,
+    // flat outside), rhoRef (kg/m³), braking (also the braking capacity). Speed is the air speed scaled to the density, ve = va·√(ρ/ρref);
+    // the weight part keeps grade, vertical curvature and banking: F = m·(a_w·N_w/(m·g) + a_y(ve) − a_w), a_w = a_y(0). Still × grip.
+    const lc = car.lateralCap || null, capAt = lc ? lateralCapFn(lc) : null, aW = lc ? capAt(0) : 0, rhoS = lc ? Math.sqrt(rho / (lc.rhoRef ?? 1.2)) : 1;
+    const lcCap = (v, i, L) => t.m * (aW * (normalAt(v, i, L) - L) / mg + capAt(vAir(v, i) * rhoS) - aW);
     // Lateral capacity (N) at speed v on point i with aero load L (axle model or point mass)
     const latCap = (v, i, L) => {
+      if (lc) return lcCap(v, i, L);
       const N = normalAt(v, i, L);
       if (!t.axle) return capacity(t.muY0, t.dmu, t.fz0, N);
       const W = N - L; // weight part (incl. grade and vertical curvature)
@@ -267,7 +295,7 @@ export function lapsimKernel() {
     //    Straight Mode is closed under braking: corner-mode aero.
     const brakeAcc = (v, i) => {
       const va = vAir(v, i), L = aeroFactor * car.clA * va * va, N = normalAt(v, i, L);
-      const fx = muAt(i) * (t.muX0 / t.muY0) * pureCap(i, N) * ellipse(v, i);
+      const fx = muAt(i) * (t.muX0 / t.muY0) * (lc?.braking ? latCap(v, i, L) : pureCap(i, N)) * ellipse(v, i);
       const drag = aeroFactor * car.cdA * va * va, roll = cRoll * N;
       let a = (fx + drag + roll) / t.m + G * sinG[i];
       if (car.brakeDecelMax) a = Math.min(a, car.brakeDecelMax);
@@ -279,13 +307,13 @@ export function lapsimKernel() {
     const ellN = (v, i, L, N) => {
       const kap = Math.abs(kapX[i]); if (kap < 1e-6) return 1;
       const ay = bank ? bankLat(v, i) / t.m : v * v * kap, W = N - L;
-      const lc = !t.axle ? capacity(t.muY0, t.dmu, t.fz0, N) : axleLateral(t, t.muY0, W * (1 - t.rearStatic) + L * (1 - t.rearAero), W * t.rearStatic + L * t.rearAero, v * v * kap);
-      const r = Math.min(1, ay / (muAt(i) * lc / t.m));
+      const lcN = lc ? lcCap(v, i, L) : !t.axle ? capacity(t.muY0, t.dmu, t.fz0, N) : axleLateral(t, t.muY0, W * (1 - t.rearStatic) + L * (1 - t.rearAero), W * t.rearStatic + L * t.rearAero, v * v * kap);
+      const r = Math.min(1, ay / (muAt(i) * lcN / t.m));
       return k === 2 ? Math.sqrt(Math.max(0, 1 - r * r)) : Math.pow(Math.max(0, 1 - Math.pow(r, k)), 1 / k);
     };
     const brakeAcc2 = (v, i) => {
       const va = vAir(v, i), L = aeroFactor * car.clA * va * va, N = normalAt(v, i, L);
-      const fx = muAt(i) * (t.muX0 / t.muY0) * pureCap(i, N) * ellN(v, i, L, N);
+      const fx = muAt(i) * (t.muX0 / t.muY0) * (lc?.braking ? latCap(v, i, L) : pureCap(i, N)) * ellN(v, i, L, N);
       const drag = aeroFactor * car.cdA * va * va, roll = cRoll * N;
       let a = (fx + drag + roll) / t.m + G * sinG[i];
       if (car.brakeDecelMax) a = Math.min(a, car.brakeDecelMax);
@@ -610,7 +638,7 @@ export function lapsimKernel() {
       if (ers.rule === 'hypercar') return eRegen + (ers.socWindow ?? 0.5e6);
       if (!ers.pMax) return 0;
       if (ers.rule === 'f1-2026') return (ers.socWindow ?? 4e6) + Math.min(eRegen, env.rechargeMax ?? ers.rechargeMax ?? 8.5e6);
-      return ers.deployMax ?? 4e6;
+      return lawB ? Infinity : ers.deployMax ?? 4e6; // law (b): MGU-H → MGU-K is not limited, the 4 MJ ES rule does not bind
     };
     // runs already made at this vH: a cut-off inside a recorded band gives the identical lap, so its account is reused. top = the
     // profile's top speed, read later from the shared buffer (vTopA) as it was left by the last run of the search
@@ -621,13 +649,15 @@ export function lapsimKernel() {
         const mid = 0.5 * (lo + hi); let r = null; for (const b of list) if (mid > b.lo && mid <= b.hi) { r = b; break; }
         if (!r) { const fv = forward(mid, vH); r = {lo: cLo, hi: cHi, a: account(fv), top: maxOf(fv)}; list.push(r); }
         const a = r.a; lastTop = r.top;
-        if (a.eDeploy > (fixedBudget ?? budget(a.eRegen))) hi = mid; else lo = mid;
+        // law (b) on a causal lap: the battery caps deploy, so deploy equals the budget to rounding; 1 J is not an overspend (a strict
+        // test flipped the plan on 1e-8 J noise and the lap moved 0.13 % with the track step, mesh test 2026-11-24)
+        if (a.eDeploy > (fixedBudget ?? budget(a.eRegen)) + (lawB && causal ? 1 : 0)) hi = mid; else lo = mid;
       }
       return lo;
     };
     let vCut = vMaxCar + 1, vH = Infinity, v = forward(vCut), acc = account(v);
     // step 2 tracks the battery exactly, so a causal lap overspends only by rounding: 1 J is not an overspend
-    if ((ers.pMax || ers.rule === 'hypercar') && acc.eDeploy > budget(acc.eRegen) + (STEP === 2 ? 1 : 0)) {
+    if ((ers.pMax || ers.rule === 'hypercar') && ((causal && lawB) || acc.eDeploy > budget(acc.eRegen) + (STEP === 2 ? 1 : 0))) {
       vCut = fitCut(Infinity); v = forward(vCut); acc = account(v);
       // super-clipping: if the lap is short of the recharge limit, harvest at full throttle at the top of
       // the straights (above vH) and spend the energy lower down, when that is faster
@@ -642,7 +672,12 @@ export function lapsimKernel() {
           for (const b of list) if (vh >= b.lo && vh < b.hi) return b.a;
           const a = account(forward(cut, vh)); list.push({lo: vhLo, hi: vhHi, a}); return a; };
         const vTopA = lastTop; // cut-offs from the top speed down (the full-recharge cut-off is often above it: no cut-off at all)
-        for (const cut of [cutB, ...[1, 0.98, 0.96, 0.94, 0.92, 0.9, 0.87, 0.84].map(f => Math.min(cutB, vTopA) * f)]) {
+        // law (b): the same cut-offs on every track step (2 % steps down from the car's top speed, the 8 below the lap's top speed).
+        // Fractions of the lap's top speed moved with the step (0.8 % under the C5.12 ramp) and so did the plan: 0.13 % lap change
+        // when ds halved (mesh test 2026-11-24). shortcut: a 2 % grid can miss a narrow optimum (Silverstone ramp: 0.07 s); refine
+        // around the best point if law (b) ships
+        const fixed = []; for (let c = vMaxCar; fixed.length < 8 && c > 0.5 * vMaxCar; c *= 0.98) if (c <= Math.min(cutB, vTopA)) fixed.push(c);
+        for (const cut of [cutB, ...(lawB ? fixed : [1, 0.98, 0.96, 0.94, 0.92, 0.9, 0.87, 0.84].map(f => Math.min(cutB, vTopA) * f))]) {
           for (const tol of [0, 1.5e3]) { let lo = 5, hi = vMaxCar + 1; // strict search (the earlier plan) and the tolerant one; the faster legal plan wins
           for (let it = 0; it < 20; it++) { const mid = 0.5 * (lo + hi), a = runAt(cut, mid); if (a.eDeploy > budget(a.eRegen) + tol) hi = mid; else lo = mid; }
           const b = runAt(cut, lo);

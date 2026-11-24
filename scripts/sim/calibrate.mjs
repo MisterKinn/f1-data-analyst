@@ -159,6 +159,10 @@ for (const year of [...new Set(traces.map(t => t.year))].sort()) {
   if (laps.length < 4) { report.push(`${year}: not enough laps (${laps.length})`); continue; }
   const base = {...structuredClone(prior), linkMu: true, ...AXLE(1.55)};
   if (process.env.LAPSIM_THROTTLE_HARVEST === 'off' && base.ers) base.ers.throttleHarvest = false;
+  // LAPSIM_ERS_LAW=b (step 10b, claude/gate-ers-law-prereg-2026-11-23.md §9; off by default): ERS law (b) on the F1 cars (kernel
+  // car.ers.law = 'b': brake-force regen, 2014–25 deploy at every full-throttle point, 2026 strategy B) and the 2023–25 pIce prior
+  // 540 kW (P_wheel 628 ± 21 kW measured, §8; the relative bounds move with it)
+  if (E.LAPSIM_ERS_LAW === 'b' && base.ers) { base.ers = {...base.ers, law: 'b'}; if (year <= 2025) base.pIce = 540e3; }
   const cdM = CDA_MEASURED?.seasons?.[year]?.cdA?.value;
   if (cdM) { base.cdA = cdM; base.cdALow = cdM * CDA_MEASURED.seasons[year].drsRatio.value; }
   const params = PARAMS.filter(k => !(cdM && (k === 'cdA' || k === 'cdALow'))).map(k => {
