@@ -81,3 +81,12 @@ test('a3: a split build merges to the same bytes as one job (canonical order, an
   // the groups cover every track once
   const all = [1, 2, 3, 4, 5, 6].flatMap(k => groupIds(k, 6)); assert.equal(all.length, canonicalIds().length); assert.equal(new Set(all).size, all.length);
 });
+
+// unseen-season gate (claude/gate-geometry-f1-unseen-seasons-prereg-2026-11-24.md rev 2): both flags off change nothing; the 2025 slot
+// that holds the 2022 laps has the requested PRIOR[2022] = {...PRIOR[2023]} in every value
+import {PRIOR} from '../worker/lapsim/cars.js';
+test('unseen seasons: flags off do nothing; the 2025 slot prior equals PRIOR[2023]', () => {
+  assert.match(execFileSync(process.execPath, ['scripts/sim/geom-indep/apply-2022.mjs', '/nonexistent'], {env: {...process.env, LAPSIM_F1_2022: ''}}).toString(), /not on: nothing changed/);
+  assert.match(execFileSync(process.execPath, ['scripts/sim/geom-indep/apply.mjs'], {env: {...process.env, LAPSIM_GEOM_INDEP: ''}}).toString(), /nothing changed/);
+  assert.deepEqual({...PRIOR[2023], label: ''}, {...PRIOR[2025], label: ''});
+});
