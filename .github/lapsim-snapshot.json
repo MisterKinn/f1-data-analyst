@@ -5,7 +5,7 @@
     "tag": "lapsim-inputs-r45123509702",
     "source_run": 45123509702,
     "source": "lapsim-prep of Lap simulator data run 45123509702 (branch lapsim/step1a2-base-2026-11-23, c4792765): the build of the shipped fit, run 45152363645",
-    "sha256": "",
+    "sha256": "88fbb3bceb4519c73371941e0faa2f8aee85b4f27f15109b5a13f5a0863823ca",
     "pin_runs": [
       45191678721
     ]
@@ -14,7 +14,9 @@
     "repo": "kangjeongmin1229/f1-data-analyst-deploy",
     "tag": "track-state-inputs-2026-11-24",
     "source": "scripts/sim/track-state.mjs ti 2018-2026 at one TracingInsights commit per season (ti-refs.json) + fia 2019-2026 (fia.com; missing years in fia-missing.json)",
-    "sha256": ""
+    "sha256": "763c100601ed577bdb354e9b7feb77ab5da898ced513dafefe8df71a771a9c22",
+    "made_by_run": 45402981435,
+    "fia_missing": "fia-missing.json in the asset: fia.com errors (rate limit) for 2021 yas-marina-circuit, imola, lusail; 2024 mexico-city, interlagos, yas-marina-circuit, imola, lusail, las-vegas; 2025 melbourne, shanghai, suzuka, sakhir, jeddah. No archive failed. Stored notes (track-changes-data.js) cover these where they have the section."
   },
   "delta": {
     "note": "Frozen Δ case CSVs (central 2026-11-24, step 24 close): the pinned source of the Δ benchmarks; a rebuild from TracingInsights is a check, not the source. Provenance: Project claude/status-2026-11-24-step24-close.md.",
