@@ -14,14 +14,19 @@ export function officialUrl(url) {
   return u.href;
 }
 
+// fia.com answers HTTP 429 to bursts: keep 2 s between requests and back off (Retry-After when given)
+let last = 0;
 async function fetchBytes(url) {
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; ; i++) {
+    await new Promise(f => setTimeout(f, Math.max(0, last + 2000 - Date.now()))); last = Date.now();
+    let wait = 5000 * (i + 1);
     try {
       const r = await fetch(url, {headers: {Accept: 'application/pdf, text/html'}, signal: AbortSignal.timeout(60000)});
+      if (r.status === 429) wait = 1000 * (+r.headers.get('retry-after') || 30 * (i + 1));
       if (!r.ok) throw Error(`HTTP ${r.status}`);
       if (!HOSTS.has(new URL(r.url).hostname)) throw Error(`redirected off the official hosts: ${r.url}`);
       return new Uint8Array(await r.arrayBuffer());
-    } catch (e) { if (i === 2) throw Error(`${url}: ${e.message}`); await new Promise(f => setTimeout(f, 5000 * (i + 1))); }
+    } catch (e) { if (i === 4 || /HTTP 404|off the official/.test(e.message)) throw Error(`${url}: ${e.message}`); await new Promise(f => setTimeout(f, wait)); }
   }
 }
 
