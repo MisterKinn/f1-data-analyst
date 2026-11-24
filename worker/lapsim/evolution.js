@@ -10,6 +10,7 @@
 // that has run is reproduced; the formula with pooled coefficients covers everything else.
 // All inputs 0 (the default) → lap0 unchanged.
 import {lapsimEvolution} from './evolution-data.js';
+import {EVOLUTION_WARMUP_MEASURED, lapsimEvolutionWarmup} from './evolution-warmup-data.js';
 
 // Default coefficients per series (lap-time fractions, minutes). Uncalibrated until fitted.
 // P: lap-time penalty of a fully wet track on each tyre (slicks lose most, wets least).
@@ -24,8 +25,16 @@ export const EVOLUTION_DEFAULTS = {
 // Session type scales the rubber gain (a race lays down more rubber per minute than practice)
 export const SESSION_SCALE = {practice: 1, qualifying: 0.8, sprint: 1.1, race: 1.3};
 
-// Coefficients for a series/track/session: fitted track value > fitted series value > default
-export function evolutionCoeffs(series = 'f1', track = null, session = 'qualifying') {
+// Coefficients for a series/track/session: fitted track value > fitted series value > default.
+// With the measured warm-up flag on (evolution-warmup-data.js) and a class given, the WEC warm-up term is the measured
+// first-lap gap of that class and session type, on lap 1 only (warmupLaps 1). Flag off → unchanged.
+export function evolutionCoeffs(series = 'f1', track = null, session = 'qualifying', {cls = null, measuredWarmup = EVOLUTION_WARMUP_MEASURED, table = lapsimEvolutionWarmup} = {}) {
+  const c = baseCoeffs(series, track, session), m = measuredWarmup && cls ? table?.[series]?.[cls] : null, w = m?.[session] ?? m?.all;
+  return w ? {...c, warmupPct: w.pct, warmupLaps: 1, warmupBasis: 'measured'} : c;
+}
+// Car class → measured warm-up class (WEC Hypercar LMH/LMDH, WEC LMGT3 also as the ACO GT3 car); others none
+export const warmupClassOf = cls => cls === 'lmh' || cls === 'lmdh' ? 'hypercar' : cls === 'lmgt3' || cls === 'gt3-aco' ? 'lmgt3' : cls === 'lmp2' ? 'lmp2' : null;
+function baseCoeffs(series, track, session) {
   const fit = lapsimEvolution?.series?.[series], def = EVOLUTION_DEFAULTS[series] || EVOLUTION_DEFAULTS.f1;
   // a pooled fit that does worse than "no change" on held-out sessions is not used
   const tr = track ? fit?.tracks?.[track]?.[session] : null, s0 = fit?.sessions?.[session];
