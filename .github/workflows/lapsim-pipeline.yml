@@ -26,6 +26,10 @@ on:
         description: 'yes: fit and report; no: only make/check the snapshots'
         required: false
         default: 'yes'
+      wec_only:
+        description: 'yes: refit the WEC classes only (~15 min, F1 kept from the committed calibration); no: the full fit'
+        required: false
+        default: 'no'
       score_locked:
         description: 'Score the 2022 LOCKED Δ set: the approved step-28 final run named in delta.locked2022.approved_run (empty: never)'
         required: false
@@ -147,6 +151,7 @@ jobs:
     uses: ./.github/workflows/lapsim-data.yml
     with:
       pinned: true
+      wec_only: ${{ inputs.wec_only == 'yes' }}
 
   report:
     needs: [snapshot, track-state, fit]

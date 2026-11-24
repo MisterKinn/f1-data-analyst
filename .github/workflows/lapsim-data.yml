@@ -43,11 +43,19 @@ on:
         type: boolean
         required: false
         default: false
+      wec_only:
+        description: 'true: refit the WEC classes only (LAPSIM_ONLY=wec, ~15 min); F1 seasons kept from the committed calibration'
+        type: boolean
+        required: false
+        default: false
   # step 27 pipeline (lapsim-pipeline.yml): the same fit on a pinned input snapshot. pinned = this run already holds the lapsim-prep
   # artifact (from the snapshot release), and nothing reads the network (FIA documents, circuit changes) or commits
   workflow_call:
     inputs:
       pinned:
+        type: boolean
+        default: false
+      wec_only:
         type: boolean
         default: false
 
@@ -181,7 +189,7 @@ jobs:
         continue-on-error: true
         run: node scripts/sim/energy-docs.mjs && node scripts/sim/rule-params.mjs
       - name: Calibrate (F1 joint fit)
-        if: needs.plan.outputs.parts_run == ''
+        if: needs.plan.outputs.parts_run == '' && !inputs.wec_only
         run: set -a; . .github/lapsim-fit.env; set +a; LAPSIM_PART=f1-joint node scripts/sim/calibrate.mjs
       # reuse (a part job timed out, rerun the rest): the joint fit and documents of the earlier run on the same code and build
       - if: needs.plan.outputs.parts_run != ''
@@ -233,8 +241,11 @@ jobs:
       - name: Calibrate (${{ matrix.part }})
         run: |
           if [ -f .cache/lapsim/parts/${{ matrix.part }}.json ]; then echo "reused from run ${{ needs.plan.outputs.parts_run }}"; exit 0; fi
+          # WEC-only fit: the F1 parts are not needed (the F1 seasons come from the committed calibration)
+          if [ "${{ inputs.wec_only }}" = true ]; then case "${{ matrix.part }}" in f1-*) echo "WEC-only fit: ${{ matrix.part }} not needed"; exit 0;; esac; export LAPSIM_ONLY=wec; fi
           set -a; . .github/lapsim-fit.env; set +a; LAPSIM_PART=${{ matrix.part }} node scripts/sim/calibrate.mjs
       - uses: actions/upload-artifact@v4
+        if: ${{ !(inputs.wec_only && startsWith(matrix.part, 'f1-')) }}
         with:
           name: lapsim-part-${{ matrix.part }}
           path: .cache/lapsim/parts/${{ matrix.part }}.json
@@ -269,7 +280,7 @@ jobs:
       # piece comes from the part jobs
       - name: Calibrate cars (F1 and WEC; merge of the parts)
         if: inputs.calibrate != 'false'
-        run: set -a; . .github/lapsim-fit.env; set +a; LAPSIM_PART=merge node scripts/sim/calibrate.mjs
+        run: set -a; . .github/lapsim-fit.env; set +a; LAPSIM_PART=merge LAPSIM_ONLY=${{ inputs.wec_only && 'wec' || '' }} node scripts/sim/calibrate.mjs
       # TracingInsights race laps 2018 on; reference = mean of the best 8 qualifying laps (script defaults)
       # Hypercar per maker (LapSim × BoPSim × SetupSim, owner 2026-11-21): the residuals are learned on the class cars just fitted
       - name: Hypercar per maker

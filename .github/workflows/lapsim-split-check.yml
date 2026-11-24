@@ -48,3 +48,12 @@ jobs:
           diff <(mask /tmp/one/lapsim-report.md) <(mask docs/lapsim-report.md) && echo "lapsim-report.md: identical (fit time masked)"
           node -e "const c=require('fs').readFileSync('worker/lapsim/calibration-data.js','utf8');const j=JSON.parse(c.slice(c.indexOf('=')+1).replace(/;\s*$/,''));const w=j.series.wec?.lmgt3?.[2025];console.log('lmgt3 2025 held-out', w?.holdout?.rmsPct, 'noise', w?.holdout?.noise?.rmsPct, 'rule', w?.holdout?.rule, '| F1 2026 held-out', j.seasons?.[2026]?.holdout?.rmsPct)" | tee -a "$GITHUB_STEP_SUMMARY"
           sha256sum /tmp/one/calibration-data.js worker/lapsim/calibration-data.js | tee -a "$GITHUB_STEP_SUMMARY"
+      # WEC-only fit (lapsim-data.yml wec_only, LAPSIM_ONLY=wec): the F1 seasons come from the committed calibration, which differs from
+      # the small F1 fit above; the WEC block must still be identical, because WEC uses its own frozen track grip
+      - name: WEC-only equals the full run (WEC block)
+        run: |
+          set -a; . .github/lapsim-fit.env; set +a
+          git checkout -- worker/lapsim/calibration-data.js docs/lapsim-report.md
+          export LAPSIM_PARTS_DIR=/tmp/wparts LAPSIM_ONLY=wec
+          for p in wec-lmh wec-lmdh wec-lmgt3 merge; do echo "== $p"; LAPSIM_PART=$p node scripts/sim/calibrate.mjs > /tmp/w-$p.log; done
+          node scripts/sim/wec-only-check.mjs /tmp/one/calibration-data.js worker/lapsim/calibration-data.js | tee -a "$GITHUB_STEP_SUMMARY"
