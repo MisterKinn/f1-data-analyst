@@ -7,15 +7,16 @@ const G = 9.81;
 export const med = a => { const s = a.filter(Number.isFinite).sort((x, y) => x - y); return s.length ? (s[(s.length - 1) >> 1] + s[s.length >> 1]) / 2 : NaN; };
 export const BIN = kph => kph < 90 ? 0 : kph < 160 ? 1 : 2;
 const PROD_F1 = 'const DRV = {f1: {off: -0.598, up: 0.771, down: 0.675}';
-const views = new Map();
+let V0 = null; // one compiled page script; DRV.f1 is read from globalThis.__kbDrvF1 on every lapChannels call (one view per table kept ~5 MB per track and table)
 function view(drvF1) {
-  const key = drvF1 ? JSON.stringify(drvF1) : '';
-  if (!views.has(key)) {
+  if (!V0) {
     const js = lapsimScript(); let body = js.slice('(()=>{'.length, js.lastIndexOf(';('));
-    if (drvF1) { if (!body.includes(PROD_F1)) throw new Error('DRV.f1 literal not found: production table changed'); body = body.replace(PROD_F1, 'const DRV = {f1: ' + JSON.stringify(drvF1)); }
-    views.set(key, new Function(body + ';return {K,computeView,R:{renderMap,renderTrace,evolutionDelta,evolutionCurve,lineTrack,brakeZones,lapChannels,blendLine,blendOff}};')());
+    if (!body.includes(PROD_F1)) throw new Error('DRV.f1 literal not found: production table changed');
+    body = body.replace(PROD_F1, 'const DRV = {f1: globalThis.__kbDrvF1 || {off: -0.598, up: 0.771, down: 0.675}');
+    V0 = new Function(body + ';return {K,computeView,R:{renderMap,renderTrace,evolutionDelta,evolutionCurve,lineTrack,brakeZones,lapChannels,blendLine,blendOff}};')();
   }
-  return views.get(key);
+  globalThis.__kbDrvF1 = drvF1 || undefined;
+  return V0;
 }
 const pages = new Map();
 export function page(track, car, drvF1 = null) {
