@@ -129,7 +129,7 @@ jobs:
         run: |
           # no silent drops: every group must be there and every track fetched completely, else stop and list them
           n=$(ls -d /tmp/art/geom-a3-parts-* | wc -l); [ "$n" = "$GROUPS" ] || { echo "::error::only $n of $GROUPS groups"; exit 1; }
-          python3 -c "import json,glob,sys; s={k:v for f in glob.glob('/tmp/art/geom-a3-parts-*/fetch-status-*.json') for k,v in json.load(open(f)).items()}; bad={k:v for k,v in s.items() if v!='ok'}; print(len(s),'tracks fetched'); bad and sys.exit('::error::fetch incomplete: '+json.dumps(bad))"
+          python3 -c "import json,glob,sys; s={k:v for f in glob.glob('/tmp/art/geom-a3-parts-*/fetch-status-*.json') for k,v in json.load(open(f)).items()}; bad={k:v for k,v in s.items() if not v.startswith('ok')}; print(len(s),'tracks fetched'); bad and sys.exit('::error::fetch incomplete: '+json.dumps(bad))"
           node scripts/sim/geom-indep/build-a3.mjs merge $(ls -d /tmp/art/geom-a3-parts-*) --out /tmp/out
           cat /tmp/art/geom-a3-parts-*/raw-sha256-*.txt | sort -k2 > /tmp/out/inputs-sha256.txt
           echo "raw inputs: $(wc -l < /tmp/out/inputs-sha256.txt) files, manifest sha256 $(sha256sum /tmp/out/inputs-sha256.txt | cut -c1-16)" >> /tmp/out/split-check.txt

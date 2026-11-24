@@ -26,6 +26,9 @@ US = {'austin', 'barber', 'daytona', 'indianapolis', 'laguna-seca', 'las-vegas',
 NL = {'zandvoort'}
 ES = {'aragon', 'catalunya', 'fe-valencia', 'jarama-2025', 'jarama', 'jerez', 'madring', 'ricardo-tormo'}
 say = F.say
+# No open elevation source exists (owner 2026-11-24 12:36, application of the pre-registered "source incomplete" rule, not a new rule):
+# the track is source incomplete for its OSM anyway, so B and G3 both keep production geometry. Elevation is not fetched or retried.
+NO_DEM = {'baku': 'no GLO-30 tiles for Azerbaijan; source incomplete; production geometry in B and G3'}
 
 def overpass(id_, lat, lon, date=None):
     head = f'[out:json][timeout:120]' + (f'[date:"{date}T00:00:00Z"]' if date else '') + ';'
@@ -129,6 +132,9 @@ def main():
             h = overpass(id_, lat, lon, e['date'])
             if not h: status[id_] = f"no OSM for era {e['date']} after retries"; return
             json.dump(h, open(f"{OUT}/{id_}-osm-{e['date']}.json", 'w'))
+        if id_ in NO_DEM:
+            say(id_, 'elevation not fetched:', NO_DEM[id_]); json.dump({'id': id_}, open(f'{OUT}/{id_}-done.json', 'w'))
+            status[id_] = 'ok, no elevation: ' + NO_DEM[id_]; return
         bb = F.bbox(j, lat, lon)
         dem = (F.gsi(id_, bb) if id_ in JP else usgs(id_, bb) if id_ in US else ahn(id_, bb) if id_ in NL else pnoa(id_, bb) if id_ in ES else None)
         if dem is None or dem.get('validShare', 0) < 0.6: dem = glo30m(id_, bb)
