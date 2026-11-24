@@ -94,17 +94,19 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     const key = r => [r.source_url, r.event, norm(r.car_model)].join('|'), canon = r => ({...r, other: JSON.stringify(Object.fromEntries(Object.entries(JSON.parse(r.other || '{}')).sort()))});
     report('WEC BoP', diffRows(pub.map(canon), latest(rebuilt).map(canon), key, head));
   } else {
-    // weekly: decisions in the Al Kamel committee folders (results_noticeboard manifest) that are not in the CSV
-    const known = new Set(old.map(r => r.source_url)), year = new Date().getUTCFullYear(), add = [];
-    for (const y of [...new Set([year - 1, year])]) {
-      const m = await fetch(`https://files.alkamelcloud.com/wec/manifests/results_noticeboard_${y}.json`).then(r => r.ok ? r.json() : null).catch(() => null);
-      const files = JSON.stringify(m || '').match(/[^"\\]*committee[^"\\]*BOP[^"\\]*\.pdf/gi) || [];
-      for (const f of new Set(files)) {
-        const url = new URL(f, 'https://files.alkamelcloud.com/wec/results_noticeboard/').href, cls = /LMGT3/i.test(f) ? 'LMGT3' : /hypercar/i.test(f) ? 'Hypercar' : null;
+    // weekly: committee BoP decisions in the Al Kamel noticeboard manifests (the season index of worker/wec.js names the season manifests;
+    // shortcut: the noticeboard manifest is assumed to sit next to the results one as results_noticeboard_<season>.json, as the CSV URLs do)
+    const known = new Set(old.map(r => r.source_url)), year = new Date().getUTCFullYear(), add = [], O = 'https://files.alkamelcloud.com/';
+    const index = await fetch(O + 'wec/manifests/results.json').then(r => r.json());
+    for (const season of index.seasons.filter(x => [year - 1, year].some(y => String(x.name).includes(y)))) {
+      const y = String(season.name).match(/20\d\d/)[0], m = await fetch(new URL(season.manifestUrl.replace(/results_(?!noticeboard)/, 'results_noticeboard_'), O)).then(r => r.ok ? r.json() : null).catch(() => null);
+      if (!m) { console.log(`WEC BoP: no noticeboard manifest for ${season.name}`); continue; }
+      for (const f of new Set(JSON.stringify(m).match(/[^"\\]*committee[^"\\]*BOP[^"\\]*\.pdf/gi) || [])) {
+        const url = new URL(f, O + 'wec/results_noticeboard/').href, cls = /LMGT3/i.test(f) ? 'LMGT3' : /hypercar/i.test(f) ? 'Hypercar' : null;
         if (!cls || known.has(url)) continue;
         const recs = parseDecision(await pdfPages(url), cls);
         if (!recs.length) { console.log(`${url}: no BoP table read (image?); check it by hand`); continue; }
-        add.push(...toRows(url, String(y), cls, recs));
+        add.push(...toRows(url, y, cls, recs));
       }
     }
     if (!add.length) { console.log('WEC BoP: no new decisions'); process.exit(0); }
