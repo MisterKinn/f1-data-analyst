@@ -1,6 +1,7 @@
 // lapsim_simulate: the lap simulator as a connector tool. Same engine, tracks and calibration as
 // the /simulation page (worker/lapsim/scenario.js), so the page and the tool agree.
 import {withZones, simulateWithOptions, slotOf, puRampOf, PU_RAMP} from './zones.js';
+import {erskKnots} from './event-energy.js';
 import {lapsimF1Zones} from './f1-zones-data.js';
 import {lapsimKernel} from './kernel.js';
 import {lapsimAllTracks as lapsimTracks} from './tracks.js';
@@ -134,7 +135,8 @@ export function simulate(args = {}, opts = {}) {
   // per-event ERS recharge limit (2026 values; 2027/2028 reuse them), ignored by older rule sets
   const rechargeMJ = rechargeLimitMJ(id, 2026);
   const w = {airTempC, trackTempC, humidityPct, pressureHpa, windSpeed, windFromDeg, rechargeMJ: rechargeMJ ?? undefined};
-  const env = K.conditionsFromWeather(w);
+  const env = K.conditionsFromWeather(w), knots = erskKnots(id, sel.year);
+  if (knots) env.erskKnots = knots; // flag LAPSIM_EVENT_ENERGY (off by default): the event's printed taper (Rev 1)
   // FIA changes
   const ch = latestChanges(id);
   let track = base, applied = [];

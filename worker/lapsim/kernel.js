@@ -96,8 +96,13 @@ export function lapsimKernel() {
   // ERS-K DC power limit (W) as a function of speed (m/s) for each rule set.
   // 2026–2028: Section C, Article C5.2.7/C5.2.8i (Overtake not active). Issue 21, 19 Oct 2026.
   // 2027/2028 cap the deploy power at 300 kW (WMSC, June 2026); the speed taper is unchanged.
-  function erskLimitW(rule, v, pMax, ot) {
+  // knots (flag LAPSIM_EVENT_ENERGY, off by default; event-energy.js): the event's printed curve {std, ot} as [[kph, kW], ...], full power
+  // below the first knot, linear between knots, the last value above (2026 Monaco/Singapore "Rev 1")
+  function erskLimitW(rule, v, pMax, ot, knots) {
     const kph = v * 3.6;
+    if (rule === 'f1-2026' && knots) { const k = ot ? knots.ot : knots.std; let p = k[0][1];
+      for (let j = 1; j < k.length; j++) if (kph > k[j - 1][0]) p = kph >= k[j][0] ? k[j][1] : k[j - 1][1] + (k[j][1] - k[j - 1][1]) * (kph - k[j - 1][0]) / (k[j][0] - k[j - 1][0]);
+      return Math.max(0, Math.min(pMax / 1000, p)) * 1000; }
     // C5.2.8 ii (Overtake active): 7100 - 20 * kph below 355 kph, under the 350 kW cap of C5.2.7
     if (rule === 'f1-2026' && ot) return Math.max(0, Math.min(pMax / 1000, kph < 355 ? 7100 - 20 * kph : 0)) * 1000;
     if (rule === 'f1-2026') {
@@ -388,7 +393,7 @@ export function lapsimKernel() {
           const i = (start + c) % n, j = (i + 1) % n;
           const vi = Math.max(v[i], 1);
           const va = vAir(vi, i), L = aeroFactor * clF[i] * va * va, N = normalAt(vi, i, L);
-          const lim = erskLimitW(ers.rule, vi, ers.pMax || 0, otOn === true || !!(otOn && otOn[i]));
+          const lim = erskLimitW(ers.rule, vi, ers.pMax || 0, otOn === true || !!(otOn && otOn[i]), env.erskKnots);
           let pErs = below(vi, vCut) && (!track || soc > 0) ? Math.min(lim, ersCap ? ersCap[i] : Infinity) : 0;
           // C5.12 (2026 PU documents): a voluntary cut of ERS-K power while accelerating is one step of at most 150 kW (the event's
           // value in a listed corner zone) held 1 s, then a ramp at rateKWs down to 100 kW; below 100 kW it may stop at once
@@ -470,8 +475,8 @@ export function lapsimKernel() {
       const va = vAir(vv, i), L = aeroFactor * clF[i] * va * va, N = normalAt(vv, i, L);
       let pErs = 0;
       const q = i === n ? vSrc : i, ot = otOn === true || !!(otOn && otOn[q]);
-      if (mode) { const lim = erskLimitW(ers.rule, vv, ers.pMax || 0, ot); pErs = mode === 2 ? Math.min(lim, al) : Math.min(lim, ersCap ? ersCap[q] : Infinity); }
-      if (law && law.deploy) pErs = law.deploy({i: q, s: i * ds, v: vv, lim: erskLimitW(ers.rule, vv, ers.pMax || 0, ot), pErs, soc: null});
+      if (mode) { const lim = erskLimitW(ers.rule, vv, ers.pMax || 0, ot, env.erskKnots); pErs = mode === 2 ? Math.min(lim, al) : Math.min(lim, ersCap ? ersCap[q] : Infinity); }
+      if (law && law.deploy) pErs = law.deploy({i: q, s: i * ds, v: vv, lim: erskLimitW(ers.rule, vv, ers.pMax || 0, ot, env.erskKnots), pErs, soc: null});
       const pI = pAt(vv), fPow = (pI * etaD + pErs * etaK * etaD) / vv;
       const nRear = t.rearStatic * (kv ? N - L : mg * cosG[i]) + t.rearAero * L;
       const muX = muXF[i] * pureCap(i, N) / N;
@@ -518,7 +523,7 @@ export function lapsimKernel() {
           const i = (start + c) % n, j = (i + 1) % n;
           const vi = Math.max(v[i], 1), wi = vi * vi;
           // decisions at the step start (same rules and order as step 1)
-          const lim = erskLimitW(ers.rule, vi, ers.pMax || 0, otOn === true || !!(otOn && otOn[i]));
+          const lim = erskLimitW(ers.rule, vi, ers.pMax || 0, otOn === true || !!(otOn && otOn[i]), env.erskKnots);
           let mode = below(vi, vCut) && (!track || soc > 0) ? 1 : 0, al = 0;
           const pErs = mode ? Math.min(lim, ersCap ? ersCap[i] : Infinity) : 0;
           if (ramp) {
