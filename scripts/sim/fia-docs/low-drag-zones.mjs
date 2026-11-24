@@ -54,7 +54,7 @@ export async function rowsFor(src) {
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
-  const {head, rows: old} = readCsv(FILE);
+  const {head, rows: old, format} = readCsv(FILE);
   const docs = [...new Map(old.filter(r => /^https:.*\.pdf/i.test(r.source_url)).map(r => [r.source_url, r])).values()];
   if (process.argv.includes('--check')) {
     const rebuilt = [], image = [];
@@ -79,7 +79,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     if (!add.length) { console.log('low-drag zones: no new maps'); process.exit(0); }
     // a new map replaces the "scheduled"/pending row of its event
     const events = new Set(add.map(r => r.year + r.event)), keep = old.filter(r => !(events.has(r.year + r.event) && r.status === 'not found'));
-    writeCsv(FILE, head, [...keep, ...add].map(r => Object.fromEntries(head.map(h => [h, String(r[h] ?? '')]))), {bom: true});
+    writeCsv(FILE, head, [...keep, ...add].map(r => Object.fromEntries(head.map(h => [h, String(r[h] ?? '')]))), format);
     console.log(`low-drag zones: ${add.length} row(s) from ${new Set(add.map(r => r.source_url)).size} new map(s)`);
   }
 }

@@ -63,7 +63,7 @@ export function lines(page, tol = 2) {
 }
 
 export function readCsv(file) {
-  const t = readFileSync(file, 'utf8').replace(/^﻿/, ''), rows = []; let row = [], f = '', q = false;
+  const raw = readFileSync(file, 'utf8'), t = raw.replace(/^﻿/, ''), rows = []; let row = [], f = '', q = false;
   for (let i = 0; i < t.length; i++) {
     const c = t[i];
     if (q) { if (c === '"' && t[i + 1] === '"') { f += '"'; i++; } else if (c === '"') q = false; else f += c; }
@@ -73,12 +73,13 @@ export function readCsv(file) {
   }
   if (f || row.length) { row.push(f); rows.push(row); }
   const [head, ...body] = rows.filter(r => r.length > 1 || r[0]);
-  return {head, rows: body.map(r => Object.fromEntries(head.map((h, i) => [h, r[i] ?? ''])))};
+  // format: the file's own BOM and line ending, so a rewrite changes only the rows
+  return {head, rows: body.map(r => Object.fromEntries(head.map((h, i) => [h, r[i] ?? '']))), format: {bom: raw !== t, eol: raw.includes('\r\n') ? '\r\n' : '\n'}};
 }
 
 const cell = v => { v = v == null ? '' : String(v); return /[",\n\r]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v; };
-export function writeCsv(file, head, rows, {bom = false} = {}) {
-  writeFileSync(file, (bom ? '﻿' : '') + [head, ...rows.map(r => head.map(h => r[h]))].map(r => r.map(cell).join(',')).join('\n') + '\n');
+export function writeCsv(file, head, rows, {bom = false, eol = '\n'} = {}) {
+  writeFileSync(file, (bom ? '﻿' : '') + [head, ...rows.map(r => head.map(h => r[h]))].map(r => r.map(cell).join(',')).join(eol) + eol);
 }
 
 // row-level diff on a key; reports added, removed and changed fields (used to compare a rebuild with the committed CSV)

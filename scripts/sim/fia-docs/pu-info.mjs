@@ -156,7 +156,7 @@ function newMeta(listed) {
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
-  const {head, rows: old} = readCsv(FILE);
+  const {head, rows: old, format} = readCsv(FILE);
   const known = [...new Set(old.map(r => r.source.split('#')[0]))], metaFrom = new Map(old.map(r => [r.source.split('#')[0], r]));
   const fromCsv = s => metaFrom.get(s.url);
   if (process.argv.includes('--check')) {
@@ -178,7 +178,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     const meta = s => fromCsv(s) || newMeta(found.find(f => f.url === s.url))(s);
     const rebuilt = await build(sources, meta);
     const rows = [...old.filter(r => !rounds.has(+r.round)), ...rebuilt.map(r => Object.fromEntries(head.map(h => [h, String(r[h] ?? '')])))].sort((a, b) => a.round - b.round);
-    writeCsv(FILE, head, rows, {bom: true});
+    writeCsv(FILE, head, rows, format);
     console.log(`PU information: ${found.length} new sheet(s): ${found.map(f => f.url).join(', ')}`);
   }
 }
