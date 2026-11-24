@@ -19,7 +19,8 @@ for (const f of files(DIR)) { const text = f.endsWith('.gz') ? gunzipSync(readFi
     const k0 = r.series + '|' + (r.cls || ''); seen[k0] = (seen[k0] || 0) + 1; if (!samples[r.series] || samples[r.series].length < 3) (samples[r.series] ||= []).push({...r, q: undefined, wx: undefined});
     const wec = r.source === 'alkamel' && r.series === 'wec'; if (wec) r.cls = WEC_CLS[String(r.cls || '').toLowerCase()] || String(r.cls || '').toUpperCase();
     if (!wec) { const m = modelOf(r.carModel, r.season, 'GT3'); if (!m || !/GT3|GTD/.test(m.base)) continue; } // Timing71: GT3 models only (GT4, Cup and others are not matched)
-    const k = [r.series, r.season, r.session, r.entry].join('|'), c = cars.get(k) || cars.set(k, {r, laps: 0, clean: [], best: null, trap: 0, w: {a: [], t: [], h: [], p: []}, rain: 0}).get(k);
+    // event in the key: without it one season's same-named sessions merged into one row (Lusail bug 2026-11-24)
+    const k = [r.series, r.season, r.event, r.session, r.entry].join('|'), c = cars.get(k) || cars.set(k, {r, laps: 0, clean: [], best: null, trap: 0, w: {a: [], t: [], h: [], p: []}, rain: 0}).get(k);
     c.laps++; if (r.rain === 1) c.rain++;
     for (const [x, y] of [['a', r.airC], ['t', r.trackC], ['h', r.humidityPct], ['p', r.pressureHpa]]) if (Number.isFinite(y) && y !== 0 && y !== 255) c.w[x].push(y);
     if ((r.q || []).some(q => HARD.includes(q)) || !(r.time > 20)) continue;
