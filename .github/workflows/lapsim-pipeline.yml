@@ -153,6 +153,9 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: {node-version: '22'}
+      # f1-delta-report.py needs numpy; runs with -I, so it must be in the interpreter's own site-packages, not the user site
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
       - name: Pipeline tests (report, track-state guard, Δ pins and the LOCKED guard)
         run: node --test tests/lapsim-pipeline-report.test.mjs tests/lapsim-track-state-guard.test.mjs tests/lapsim-delta-locked.test.mjs
       - run: mkdir -p /tmp/shipped out && cp worker/lapsim/calibration-data.js docs/lapsim-level-c.json docs/lapsim-forward.json /tmp/shipped/
@@ -174,13 +177,13 @@ jobs:
           [ -f fit/worker/lapsim/calibration-data.js ] && cp fit/worker/lapsim/calibration-data.js worker/lapsim/ && cp fit/docs/lapsim-level-c.json fit/docs/lapsim-forward.json docs/ 2>/dev/null || true
           P=.github/lapsim-snapshot.json
           jq -r '.delta | (.v1, .v2pooled, .locked2022) | "\(.sha256)  \(.path)"' $P | sha256sum --check
-          pip install -q numpy
+          python -m pip install -q numpy
           mkdir -p dl && node scripts/sim/f1-delta-bench.mjs zones > dl/zones.csv
           echo "$(jq -r .delta.zones_sha256 $P)  dl/zones.csv" | sha256sum --check || echo "::warning::zone table differs from the pinned build (zone code or FIA zone CSV changed)"
           for k in v1 v2pooled; do mkdir -p dl/$k && cp dl/zones.csv dl/$k/ && cp "$(jq -r .delta.$k.path $P)" dl/$k/f1-delta-cases-2026-11-24.csv && node scripts/sim/f1-delta-bench.mjs model dl/$k; done
-          python3 -I scripts/sim/f1-delta-report.py dl/v2pooled/baseline.csv dl/v2pooled/f1-delta-cases-2026-11-24.csv dl/v2pooled/report.json > /dev/null
+          python -I scripts/sim/f1-delta-report.py dl/v2pooled/baseline.csv dl/v2pooled/f1-delta-cases-2026-11-24.csv dl/v2pooled/report.json > /dev/null
           if [ -n "${F1_DELTA_LOCKED_APPROVED}" ]; then mkdir -p dl/locked2022 && cp dl/zones.csv dl/locked2022/ && cp "$(jq -r .delta.locked2022.path $P)" dl/locked2022/f1-delta-cases-2026-11-24.csv \
-            && node scripts/sim/f1-delta-bench.mjs model dl/locked2022 && python3 -I scripts/sim/f1-delta-report.py dl/locked2022/baseline.csv dl/locked2022/f1-delta-cases-2026-11-24.csv dl/locked2022/report.json > /dev/null; fi
+            && node scripts/sim/f1-delta-bench.mjs model dl/locked2022 && python -I scripts/sim/f1-delta-report.py dl/locked2022/baseline.csv dl/locked2022/f1-delta-cases-2026-11-24.csv dl/locked2022/report.json > /dev/null; fi
       - name: Report
         env:
           SHIPPED_DIR: /tmp/shipped
