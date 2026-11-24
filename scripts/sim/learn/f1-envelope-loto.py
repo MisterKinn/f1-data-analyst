@@ -1,9 +1,16 @@
 # Step 28 verdict (pre-reg 6e944cd1… + A1) from the leave-one-track-out fold files. No 2022 data.
-# usage: python3 -I scripts/sim/learn/f1-envelope-loto.py <folds dir> <out.json>
+# usage: python3 -I scripts/sim/learn/f1-envelope-loto.py <folds dir> <out.json> [<a2-baseline.json>]
+# With the A2 file (amendment A2), every baseline value (speed, lap, DRS) is taken from the A2 rows, so old folds are re-scored too.
 import json, sys, os, math, numpy as np
 from scipy.stats import binom, t as tdist
 d, out = sys.argv[1:3]
 F = [json.load(open(os.path.join(d, f))) for f in sorted(os.listdir(d)) if f.endswith('.json')]
+if len(sys.argv) > 3:  # A2 baseline override
+    A2 = json.load(open(sys.argv[3])); ar = {r['key']: r for r in A2['rows']}; ad = {x['id']: x['pred'] for x in A2['drs']}
+    for f in F:
+        for h in f['heldScores']: h['base'] = {**h['base'], 'bin': ar[h['key']]['rms_bin_kph'], 'lapErr': ar[h['key']]['lap_err_pct']}
+        for c in f['drs']: c['base'] = ad[c['id']]
+        f['baseline'] = 'A2'
 rng = np.random.default_rng(28); A = 0.05 / 3
 
 def flip_p(x):  # paired sign-flip, two-sided (exact up to 2^16 patterns, else 100,000 draws seed 28)
@@ -38,8 +45,13 @@ lap_h = np.array(lap_h); ub = float(lap_h.mean() + tdist.ppf(0.95, len(lap_h) - 
 g = {'n_tracks': len(lap_h), 'mean_harm_pp': float(lap_h.mean()), 'upper95_one_sided_pp': ub, 'boot_ci95': boot(lap_h), 'paired_sd_pp': float(lap_h.std(ddof=1)),
      'paired_mde_pp': float(3.236 * lap_h.std(ddof=1) / math.sqrt(len(lap_h))), 'pass': ub <= 0.10}
 off = sorted({(o['season'], o['key']) for f in F for o in f['offPrior']})
-res = {'variant': F[0]['variant'] if F else None, 'folds': len(F), 'a_speed': a, 'b_drs': b, 'guard_lap': g,
+res = {'variant': F[0]['variant'] if F else None, 'baseline': F[0].get('baseline', 'in-sample') if F else None, 'folds': len(F), 'a_speed': a, 'b_drs': b, 'guard_lap': g,
        'params_off_prior_2sigma': [list(x) for x in off], 'verdict': 'PASS' if (a['pass'] and b['pass'] and g['pass']) else 'FAIL', 'per_track': per,
-       'params_by_fold': {f['held']: f['params'] for f in F}}
+       'params_by_fold': {f['held']: f['params'] for f in F}, 'prior_z_by_fold': {f['held']: f.get('priorZ') for f in F}}
 json.dump(res, open(out, 'w'), indent=1)
-print(json.dumps({k: v for k, v in res.items() if k not in ('per_track', 'params_by_fold')}, indent=1))
+print(json.dumps({k: v for k, v in res.items() if k not in ('per_track', 'params_by_fold', 'prior_z_by_fold')}, indent=1))
+P = res['params_by_fold']  # per-parameter summary over folds (median, min, max) for the report
+for y in sorted({y for p in P.values() for y in p}):
+    for k in sorted({k for p in P.values() for k in p[y]}):
+        v = sorted(p[y][k] for p in P.values()); print('param', y, k, 'median %.4g min %.4g max %.4g' % (v[len(v) // 2], v[0], v[-1]))
+print('per_track', json.dumps({t: [None if v['gain_kph'] is None else round(v['gain_kph'], 2), round(v['harm_pp'], 3)] for t, v in res['per_track'].items()}))
