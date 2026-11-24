@@ -42,7 +42,7 @@ def overpass(id_, lat, lon, date=None):
                     say(id_, 'osm', date or 'now', len(j.get('elements', [])), 'elements'); return j
                 say(id_, 'osm', url, 'HTTP', r.status_code)
             except Exception as e: say(id_, 'osm', url, 'error', e)
-            time.sleep(15 * (k + 1))
+            time.sleep(15 * 2 ** k)  # backoff 15, 30, 60 s
     return None
 
 def warp_tif(raw, meta, bb):
@@ -118,25 +118,32 @@ def glo30m(id_, bb):  # Copernicus GLO-30 over any bbox (several 1° tiles if ne
 def main():
     r = requests.get('https://raw.githubusercontent.com/bacinger/f1-circuits/master/f1-circuits.geojson', headers=F.UA, timeout=60)
     open(f'{OUT}/f1-circuits.geojson', 'wb').write(r.content); say('bacinger/f1-circuits (MIT)', r.status_code, len(r.content))
+    status = {}  # id -> 'ok' or the reason; a track that is not 'ok' stops the merge (no silent drops)
     def one(item):
         id_, (lat, lon) = item
+        if os.path.exists(f'{OUT}/{id_}-done.json'): status[id_] = 'ok'; say(id_, 'cached raw input, not fetched again'); return
         j = overpass(id_, lat, lon)
-        if not j: say(id_, 'NO OSM'); return
+        if not j: say(id_, 'NO OSM'); status[id_] = 'no OSM after retries'; return
         json.dump(j, open(f'{OUT}/{id_}-osm.json', 'w'))
         for e in ERAS.get(id_, []):
             h = overpass(id_, lat, lon, e['date'])
-            if h: json.dump(h, open(f"{OUT}/{id_}-osm-{e['date']}.json", 'w'))
+            if not h: status[id_] = f"no OSM for era {e['date']} after retries"; return
+            json.dump(h, open(f"{OUT}/{id_}-osm-{e['date']}.json", 'w'))
         bb = F.bbox(j, lat, lon)
         dem = (F.gsi(id_, bb) if id_ in JP else usgs(id_, bb) if id_ in US else ahn(id_, bb) if id_ in NL else pnoa(id_, bb) if id_ in ES else None)
         if dem is None or dem.get('validShare', 0) < 0.6: dem = glo30m(id_, bb)
-        if dem: json.dump(dem, open(f'{OUT}/{id_}-dem.json', 'w'))
-        else: say(id_, 'NO ELEVATION')
+        if not dem: say(id_, 'NO ELEVATION'); status[id_] = 'no elevation after retries'; return
+        json.dump(dem, open(f'{OUT}/{id_}-dem.json', 'w'))
+        json.dump({'id': id_}, open(f'{OUT}/{id_}-done.json', 'w')); status[id_] = 'ok'
     from concurrent.futures import ThreadPoolExecutor
+    todo = [(k, v) for k, v in SEEDS.items() if not ONLY or k in ONLY]
     with ThreadPoolExecutor(2) as ex:  # Overpass allows about two slots per address
-        list(ex.map(one, [(k, v) for k, v in SEEDS.items() if not ONLY or k in ONLY]))
-    # one more pass, one at a time, for tracks whose Overpass calls all timed out
-    for k, v in SEEDS.items():
-        if (not ONLY or k in ONLY) and not os.path.exists(f'{OUT}/{k}-osm.json'): time.sleep(30); one((k, v))
+        list(ex.map(one, todo))
+    # two more passes, one track at a time with a growing pause, for tracks that are not complete
+    for wait in (60, 180):
+        for k, v in todo:
+            if status.get(k) != 'ok': time.sleep(wait); one((k, v))
+    json.dump(status, open(f'{OUT}/fetch-status.json', 'w'), indent=1, sort_keys=True)
     json.dump({'log': F.log, 'fetched': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())}, open(f'{OUT}/fetch-log.json', 'w'), indent=1)
 
 if __name__ == '__main__':
