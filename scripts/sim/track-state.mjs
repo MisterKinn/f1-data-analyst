@@ -206,6 +206,9 @@ export const FULL = {
   melbourne: [{year: 2022, ...src('https://www.grandprix.com.au/community/circuit-modifications', null, 'first resurfacing since 1995, part of the modifications project')}],
   lusail: [{year: 2023, ...src('https://www.motogp.com/en/news/2023/08/24/ein-blick-auf-das-renovierte-lusail/476496', '2023-08-24', 'resurfaced track (series page)')}],
   miami: [{year: 2023, ...src('https://www.formula1.com/en/latest/article.track-to-be-resurfaced-and-paddock-moved-inside-hard-rock-stadium-for-2023.1Oei1J5s4KM2IDWY1YhTdC.html', '2023-01-18', 'track to be resurfaced for 2023')}],
+  // step 25 (2026-11-24): FIA Race Director's notes 2024, "Changes to the Circuit"; data only, no lap effect
+  montreal: [{year: 2024, ...src("https://www.fia.com/sites/default/files/decision-document/2024%20Canadian%20Grand%20Prix%20-%20Race%20Director%27s%20Event%20Notes%20V2.pdf", null, '"The track has been fully resurfaced." (p6)'), read: '2026-11-24'}],
+  interlagos: [{year: 2024, ...src("https://www.fia.com/sites/default/files/decision-document/2024%20S%C3%A3o%20Paulo%20Grand%20Prix%20-%20Race%20Director%27s%20Event%20Notes%20V2.pdf", null, '"The track and the pit lane have been fully resurfaced." (p7)'), read: '2026-11-24'}],
   monza: [{year: 2024, ...src('https://www.formula1.com/en/latest/article/need-to-know-the-most-important-facts-stats-trivia-2024-italian-grand-prix.1aWNaICxFMmzFSmKBuOZBg', '2024-08-29', 'new asphalt (Pirelli preview quoted by F1)')}],
   shanghai: [{year: 2025, ...src('https://www.formula1.com/en/latest/article/circuit-guide-everything-you-need-to-know-about-the-shanghai-international.1b0f0ghbsPMRsHJoHTt6eB', null, 'resurfaced ahead of the 2025 event (2024: sealant only)')}],
   'laguna-seca': [{year: 2024, ...src('https://imsa.com/news/2024/may/06/when-old-becomes-new-imsa-approaching-spate-of-new-track-surfaces', '2024-05-06', 'full resurfacing after the 2023 IMSA weekend, first since 2006/07')}],
