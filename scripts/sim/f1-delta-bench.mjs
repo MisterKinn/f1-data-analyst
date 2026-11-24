@@ -63,7 +63,7 @@ if (mode === 'zones') {
 
 // model stage: production 2025 car (grip, timeScale, production weather), the case's own season zone set (pre-reg "Model")
 if (mode === 'model') {
-  const rd = f => readFileSync(f, 'utf8').trim().split('\n').map(splitCsv), [zh, ...zr] = rd(dir + '/zones.csv'), [ch, ...cr] = rd(dir + '/f1-delta-cases-2026-11-24.csv');
+  const rd = f => readFileSync(f, 'utf8').trim().split(/\r?\n/).map(splitCsv), [zh, ...zr] = rd(dir + '/zones.csv'), [ch, ...cr] = rd(dir + '/f1-delta-cases-2026-11-24.csv');
   const obj = (h, r) => Object.fromEntries(h.map((k, i) => [k, r[i]])), zones = zr.map(r => obj(zh, r)), cases = cr.map(r => obj(ch, r)).filter(c => c.kept === '1');
   const withGrip = (tr, g) => ({...tr, mu: Float64Array.from(tr.mu, m => m * g)}), memo = new Map();
   const lapOf = (id, list) => { const k = id + JSON.stringify(list); if (memo.has(k)) return memo.get(k);

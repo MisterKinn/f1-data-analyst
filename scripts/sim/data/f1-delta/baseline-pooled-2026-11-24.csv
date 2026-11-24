@@ -1,0 +1,126 @@
+case_id,use,year,event,track,driver,stint,zone,meas_delta_s,sigma_meas_s,pred_delta_s
+pooled-000,drs_zone_pooled,2023,Abu Dhabi Grand Prix,yas-marina-circuit,pooled,,1,-0.2384,0.0575,-0.7178
+pooled-001,drs_zone_pooled,2023,Abu Dhabi Grand Prix,yas-marina-circuit,pooled,,2,-0.1659,0.0216,-0.4731
+pooled-002,drs_zone_pooled,2023,Australian Grand Prix,melbourne,pooled,,2,-0.1409,0.0407,-0.3558
+pooled-003,drs_zone_pooled,2023,Australian Grand Prix,melbourne,pooled,,3,-0.2623,0.0418,-0.4962
+pooled-004,drs_zone_pooled,2023,Australian Grand Prix,melbourne,pooled,,4,-0.1616,0.0445,-0.2913
+pooled-005,drs_zone_pooled,2023,Austrian Grand Prix,spielberg,pooled,,1,-0.1875,0.0353,-0.4654
+pooled-006,drs_zone_pooled,2023,Austrian Grand Prix,spielberg,pooled,,2,-0.0477,0.037,-0.3228
+pooled-007,drs_zone_pooled,2023,Austrian Grand Prix,spielberg,pooled,,3,-0.1493,0.026,-0.3438
+pooled-008,drs_zone_pooled,2023,Azerbaijan Grand Prix,baku,pooled,,1,-0.1146,0.0491,-0.4341
+pooled-009,drs_zone_pooled,2023,Azerbaijan Grand Prix,baku,pooled,,2,-0.1302,0.0549,-0.5631
+pooled-010,drs_zone_pooled,2023,Bahrain Grand Prix,sakhir,pooled,,1,-0.081,0.0384,-0.2520
+pooled-011,drs_zone_pooled,2023,Bahrain Grand Prix,sakhir,pooled,,2,-0.0853,0.0425,-0.2333
+pooled-012,drs_zone_pooled,2023,Bahrain Grand Prix,sakhir,pooled,,3,-0.146,0.0386,-0.6865
+pooled-013,drs_zone_pooled,2023,British Grand Prix,silverstone,pooled,,1,-0.1663,0.0177,-0.3326
+pooled-014,drs_zone_pooled,2023,British Grand Prix,silverstone,pooled,,2,-0.2935,0.0265,-0.5835
+pooled-015,drs_zone_pooled,2023,Canadian Grand Prix,montreal,pooled,,1,-0.0685,0.0169,-0.2829
+pooled-016,drs_zone_pooled,2023,Canadian Grand Prix,montreal,pooled,,2,-0.2417,0.0389,-0.6170
+pooled-017,drs_zone_pooled,2023,Canadian Grand Prix,montreal,pooled,,3,-0.0136,0.0351,-0.2767
+pooled-018,drs_zone_pooled,2023,Hungarian Grand Prix,hungaroring,pooled,,1,-0.2571,0.0593,-0.4751
+pooled-019,drs_zone_pooled,2023,Hungarian Grand Prix,hungaroring,pooled,,2,0.0375,0.0436,-0.0441
+pooled-023,drs_zone_pooled,2023,Las Vegas Grand Prix,las-vegas,pooled,,1,-0.117,0.0375,-0.4345
+pooled-024,drs_zone_pooled,2023,Las Vegas Grand Prix,las-vegas,pooled,,2,-0.109,0.0621,-0.5871
+pooled-025,drs_zone_pooled,2023,Mexico City Grand Prix,mexico-city,pooled,,1,-0.0422,0.0193,-0.1504
+pooled-027,drs_zone_pooled,2023,Mexico City Grand Prix,mexico-city,pooled,,3,-0.0439,0.039,-0.2012
+pooled-028,drs_zone_pooled,2023,Miami Grand Prix,miami,pooled,,1,-0.2062,0.0377,-0.5903
+pooled-029,drs_zone_pooled,2023,Miami Grand Prix,miami,pooled,,2,-0.1579,0.0794,-0.4697
+pooled-030,drs_zone_pooled,2023,Miami Grand Prix,miami,pooled,,3,-0.0422,0.0314,-0.2210
+pooled-031,drs_zone_pooled,2023,Monaco Grand Prix,monte-carlo,pooled,,1,0.002,0.0413,-0.0938
+pooled-032,drs_zone_pooled,2023,Qatar Grand Prix,lusail,pooled,,1,-0.3594,0.0421,-0.8256
+pooled-033,drs_zone_pooled,2023,Singapore Grand Prix,singapore,pooled,,1,-0.1752,0.0244,-0.4513
+pooled-034,drs_zone_pooled,2023,Singapore Grand Prix,singapore,pooled,,2,0.0051,0.0233,-0.1506
+pooled-035,drs_zone_pooled,2023,Singapore Grand Prix,singapore,pooled,,3,-0.0747,0.0819,-0.2187
+pooled-036,drs_zone_pooled,2023,Spanish Grand Prix,catalunya,pooled,,1,-0.0106,0.025,-0.1959
+pooled-037,drs_zone_pooled,2023,Spanish Grand Prix,catalunya,pooled,,2,-0.3785,0.0333,-0.9775
+pooled-038,drs_zone_pooled,2023,São Paulo Grand Prix,interlagos,pooled,,1,-0.0788,0.0224,-0.3671
+pooled-039,drs_zone_pooled,2023,São Paulo Grand Prix,interlagos,pooled,,2,-0.0972,0.0529,-0.4500
+pooled-040,drs_zone_pooled,2023,United States Grand Prix,austin,pooled,,1,-0.3186,0.0368,-0.6084
+pooled-041,drs_zone_pooled,2023,United States Grand Prix,austin,pooled,,2,-0.1133,0.0453,-0.3232
+pooled-042,drs_zone_pooled,2024,Abu Dhabi Grand Prix,yas-marina-circuit,pooled,,1,-0.1853,0.0729,-0.6767
+pooled-043,drs_zone_pooled,2024,Abu Dhabi Grand Prix,yas-marina-circuit,pooled,,2,-0.1946,0.0327,-0.4731
+pooled-044,drs_zone_pooled,2024,Australian Grand Prix,melbourne,pooled,,2,-0.1169,0.0611,-0.3558
+pooled-045,drs_zone_pooled,2024,Australian Grand Prix,melbourne,pooled,,3,-0.2372,0.032,-0.4962
+pooled-046,drs_zone_pooled,2024,Australian Grand Prix,melbourne,pooled,,4,-0.0051,0.03,-0.2913
+pooled-047,drs_zone_pooled,2024,Austrian Grand Prix,spielberg,pooled,,1,-0.1984,0.03,-0.4654
+pooled-048,drs_zone_pooled,2024,Austrian Grand Prix,spielberg,pooled,,2,-0.0733,0.0227,-0.3228
+pooled-049,drs_zone_pooled,2024,Austrian Grand Prix,spielberg,pooled,,3,-0.1253,0.0226,-0.3438
+pooled-050,drs_zone_pooled,2024,Azerbaijan Grand Prix,baku,pooled,,1,0.0502,0.0459,-0.4341
+pooled-052,drs_zone_pooled,2024,Bahrain Grand Prix,sakhir,pooled,,1,-0.0129,0.0278,-0.2520
+pooled-053,drs_zone_pooled,2024,Bahrain Grand Prix,sakhir,pooled,,2,-0.0614,0.0309,-0.2333
+pooled-054,drs_zone_pooled,2024,Bahrain Grand Prix,sakhir,pooled,,3,-0.1803,0.0347,-0.6865
+pooled-055,drs_zone_pooled,2024,Belgian Grand Prix,spa-francorchamps,pooled,,1,-0.1316,0.039,-0.5585
+pooled-056,drs_zone_pooled,2024,Belgian Grand Prix,spa-francorchamps,pooled,,2,0.0018,0.0234,-0.1596
+pooled-057,drs_zone_pooled,2024,Canadian Grand Prix,montreal,pooled,,1,-0.1718,0.0317,-0.2829
+pooled-058,drs_zone_pooled,2024,Canadian Grand Prix,montreal,pooled,,2,-0.3385,0.0633,-0.6170
+pooled-060,drs_zone_pooled,2024,Chinese Grand Prix,shanghai,pooled,,1,-0.268,0.0593,-0.6424
+pooled-061,drs_zone_pooled,2024,Chinese Grand Prix,shanghai,pooled,,2,-0.2541,0.0465,-0.4384
+pooled-062,drs_zone_pooled,2024,Dutch Grand Prix,zandvoort,pooled,,1,0.0622,0.0419,-0.2401
+pooled-063,drs_zone_pooled,2024,Dutch Grand Prix,zandvoort,pooled,,2,-0.3651,0.0452,-0.6900
+pooled-064,drs_zone_pooled,2024,Emilia Romagna Grand Prix,imola,pooled,,1,-0.1944,0.0443,-0.8238
+pooled-065,drs_zone_pooled,2024,Hungarian Grand Prix,hungaroring,pooled,,1,-0.1782,0.0399,-0.4751
+pooled-066,drs_zone_pooled,2024,Hungarian Grand Prix,hungaroring,pooled,,2,-0.0059,0.0261,-0.0441
+pooled-067,drs_zone_pooled,2024,Italian Grand Prix,monza,pooled,,1,-0.2041,0.0501,-0.5713
+pooled-068,drs_zone_pooled,2024,Italian Grand Prix,monza,pooled,,2,-0.0588,0.0491,-0.5964
+pooled-069,drs_zone_pooled,2024,Japanese Grand Prix,suzuka,pooled,,1,-0.1676,0.0653,-0.7078
+pooled-070,drs_zone_pooled,2024,Las Vegas Grand Prix,las-vegas,pooled,,1,-0.0637,0.0342,-0.4345
+pooled-071,drs_zone_pooled,2024,Las Vegas Grand Prix,las-vegas,pooled,,2,-0.1417,0.0618,-0.5871
+pooled-072,drs_zone_pooled,2024,Mexico City Grand Prix,mexico-city,pooled,,1,-0.0745,0.0127,-0.1498
+pooled-073,drs_zone_pooled,2024,Mexico City Grand Prix,mexico-city,pooled,,2,-0.2696,0.0392,-0.6529
+pooled-074,drs_zone_pooled,2024,Mexico City Grand Prix,mexico-city,pooled,,3,-0.0703,0.0371,-0.2012
+pooled-075,drs_zone_pooled,2024,Miami Grand Prix,miami,pooled,,1,-0.2504,0.0351,-0.5903
+pooled-076,drs_zone_pooled,2024,Miami Grand Prix,miami,pooled,,2,-0.2663,0.0541,-0.4697
+pooled-077,drs_zone_pooled,2024,Miami Grand Prix,miami,pooled,,3,-0.0065,0.0395,-0.2210
+pooled-078,drs_zone_pooled,2024,Monaco Grand Prix,monte-carlo,pooled,,1,-0.0303,0.0295,-0.0938
+pooled-079,drs_zone_pooled,2024,Qatar Grand Prix,lusail,pooled,,1,-0.2248,0.0829,-0.7205
+pooled-080,drs_zone_pooled,2024,Singapore Grand Prix,singapore,pooled,,1,-0.1969,0.0236,-0.4455
+pooled-081,drs_zone_pooled,2024,Singapore Grand Prix,singapore,pooled,,2,0.0304,0.0282,-0.1507
+pooled-082,drs_zone_pooled,2024,Singapore Grand Prix,singapore,pooled,,3,-0.0518,0.0227,-0.3169
+pooled-083,drs_zone_pooled,2024,Singapore Grand Prix,singapore,pooled,,4,-0.0918,0.0254,-0.2238
+pooled-084,drs_zone_pooled,2024,Spanish Grand Prix,catalunya,pooled,,1,0.0231,0.0321,-0.1959
+pooled-085,drs_zone_pooled,2024,Spanish Grand Prix,catalunya,pooled,,2,-0.3304,0.0285,-0.8322
+pooled-086,drs_zone_pooled,2024,United States Grand Prix,austin,pooled,,1,-0.3209,0.0637,-0.5182
+pooled-088,drs_zone_pooled,2025,Abu Dhabi Grand Prix,yas-marina-circuit,pooled,,1,-0.3377,0.0722,-0.6767
+pooled-089,drs_zone_pooled,2025,Abu Dhabi Grand Prix,yas-marina-circuit,pooled,,2,-0.1772,0.0317,-0.4731
+pooled-090,drs_zone_pooled,2025,Austrian Grand Prix,spielberg,pooled,,1,-0.2623,0.0568,-0.4654
+pooled-091,drs_zone_pooled,2025,Austrian Grand Prix,spielberg,pooled,,2,-0.0732,0.0251,-0.3228
+pooled-092,drs_zone_pooled,2025,Austrian Grand Prix,spielberg,pooled,,3,-0.1272,0.0258,-0.3438
+pooled-093,drs_zone_pooled,2025,Azerbaijan Grand Prix,baku,pooled,,1,-0.0194,0.022,-0.4341
+pooled-094,drs_zone_pooled,2025,Azerbaijan Grand Prix,baku,pooled,,2,-0.1383,0.04,-0.6821
+pooled-095,drs_zone_pooled,2025,Bahrain Grand Prix,sakhir,pooled,,1,-0.067,0.024,-0.2520
+pooled-096,drs_zone_pooled,2025,Bahrain Grand Prix,sakhir,pooled,,2,-0.0485,0.0414,-0.2333
+pooled-097,drs_zone_pooled,2025,Bahrain Grand Prix,sakhir,pooled,,3,-0.2503,0.0473,-0.6865
+pooled-098,drs_zone_pooled,2025,Belgian Grand Prix,spa-francorchamps,pooled,,1,-0.163,0.072,-0.5585
+pooled-099,drs_zone_pooled,2025,Belgian Grand Prix,spa-francorchamps,pooled,,2,0.0561,0.051,-0.1596
+pooled-100,drs_zone_pooled,2025,Canadian Grand Prix,montreal,pooled,,1,-0.0775,0.0359,-0.2829
+pooled-101,drs_zone_pooled,2025,Canadian Grand Prix,montreal,pooled,,2,-0.1884,0.0378,-0.6170
+pooled-102,drs_zone_pooled,2025,Canadian Grand Prix,montreal,pooled,,3,-0.0176,0.0316,-0.2767
+pooled-103,drs_zone_pooled,2025,Chinese Grand Prix,shanghai,pooled,,1,-0.3178,0.0694,-0.7311
+pooled-104,drs_zone_pooled,2025,Chinese Grand Prix,shanghai,pooled,,2,-0.2558,0.0377,-0.4384
+pooled-105,drs_zone_pooled,2025,Dutch Grand Prix,zandvoort,pooled,,1,-0.0003,0.0347,-0.2401
+pooled-106,drs_zone_pooled,2025,Dutch Grand Prix,zandvoort,pooled,,2,-0.3698,0.0382,-0.6900
+pooled-107,drs_zone_pooled,2025,Emilia Romagna Grand Prix,imola,pooled,,1,-0.2919,0.0488,-0.8238
+pooled-108,drs_zone_pooled,2025,Hungarian Grand Prix,hungaroring,pooled,,1,-0.2165,0.0454,-0.4751
+pooled-109,drs_zone_pooled,2025,Hungarian Grand Prix,hungaroring,pooled,,2,0.026,0.0265,-0.0441
+pooled-110,drs_zone_pooled,2025,Italian Grand Prix,monza,pooled,,1,-0.1077,0.0505,-0.5713
+pooled-111,drs_zone_pooled,2025,Italian Grand Prix,monza,pooled,,2,-0.1264,0.0374,-0.5964
+pooled-112,drs_zone_pooled,2025,Japanese Grand Prix,suzuka,pooled,,1,-0.1218,0.0521,-0.7078
+pooled-113,drs_zone_pooled,2025,Las Vegas Grand Prix,las-vegas,pooled,,1,-0.0619,0.0322,-0.4345
+pooled-114,drs_zone_pooled,2025,Las Vegas Grand Prix,las-vegas,pooled,,2,-0.0384,0.0639,-0.5871
+pooled-115,drs_zone_pooled,2025,Mexico City Grand Prix,mexico-city,pooled,,1,-0.07,0.0206,-0.1498
+pooled-116,drs_zone_pooled,2025,Mexico City Grand Prix,mexico-city,pooled,,2,-0.2665,0.0379,-0.6529
+pooled-117,drs_zone_pooled,2025,Mexico City Grand Prix,mexico-city,pooled,,3,-0.0938,0.0561,-0.2012
+pooled-118,drs_zone_pooled,2025,Miami Grand Prix,miami,pooled,,1,-0.4492,0.0748,-0.6872
+pooled-119,drs_zone_pooled,2025,Miami Grand Prix,miami,pooled,,2,-0.2255,0.0889,-0.4697
+pooled-121,drs_zone_pooled,2025,Monaco Grand Prix,monte-carlo,pooled,,1,0.0878,0.0377,-0.0938
+pooled-122,drs_zone_pooled,2025,Qatar Grand Prix,lusail,pooled,,1,-0.2603,0.0503,-0.7205
+pooled-123,drs_zone_pooled,2025,Singapore Grand Prix,singapore,pooled,,1,-0.1731,0.0248,-0.4455
+pooled-124,drs_zone_pooled,2025,Singapore Grand Prix,singapore,pooled,,2,0.0446,0.039,-0.1507
+pooled-125,drs_zone_pooled,2025,Singapore Grand Prix,singapore,pooled,,3,-0.058,0.0516,-0.3169
+pooled-126,drs_zone_pooled,2025,Singapore Grand Prix,singapore,pooled,,4,-0.0944,0.0313,-0.2238
+pooled-127,drs_zone_pooled,2025,Spanish Grand Prix,catalunya,pooled,,1,-0.0292,0.0372,-0.1959
+pooled-128,drs_zone_pooled,2025,Spanish Grand Prix,catalunya,pooled,,2,-0.3155,0.0354,-0.8322
+pooled-129,drs_zone_pooled,2025,São Paulo Grand Prix,interlagos,pooled,,1,-0.11,0.0289,-0.3671
+pooled-130,drs_zone_pooled,2025,São Paulo Grand Prix,interlagos,pooled,,2,-0.0174,0.0462,-0.4500
+pooled-131,drs_zone_pooled,2025,United States Grand Prix,austin,pooled,,1,-0.2531,0.0413,-0.5182
+pooled-132,drs_zone_pooled,2025,United States Grand Prix,austin,pooled,,2,-0.0874,0.0358,-0.3280

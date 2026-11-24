@@ -1,0 +1,772 @@
+{
+ "2023|Abu Dhabi Grand Prix": {
+  "track": "yas-marina-circuit",
+  "laps": 60,
+  "lag_m": 0.0,
+  "corr": 0.965,
+  "lag_thirds_m": [
+   4.9995034582863545,
+   0.0,
+   -4.9995034582863545
+  ]
+ },
+ "2023|Australian Grand Prix": {
+  "track": "melbourne",
+  "laps": 52,
+  "lag_m": -14.999066764697178,
+  "corr": 0.947,
+  "lag_thirds_m": [
+   -14.999066764697178,
+   -14.999066764697178,
+   -14.999066764697178
+  ]
+ },
+ "2023|Austrian Grand Prix": {
+  "track": "spielberg",
+  "laps": 58,
+  "lag_m": -20.00208837947774,
+  "corr": 0.958,
+  "lag_thirds_m": [
+   -15.001566284608305,
+   -20.00208837947774,
+   -30.00313256921661
+  ]
+ },
+ "2023|Azerbaijan Grand Prix": {
+  "track": "baku",
+  "laps": 58,
+  "lag_m": 5.001517783380489,
+  "corr": 0.976,
+  "lag_thirds_m": [
+   5.001517783380489,
+   5.001517783380489,
+   -5.001517783380489
+  ]
+ },
+ "2023|Bahrain Grand Prix": {
+  "track": "sakhir",
+  "laps": 58,
+  "lag_m": 5.00230055790896,
+  "corr": 0.967,
+  "lag_thirds_m": [
+   5.00230055790896,
+   10.00460111581792,
+   -5.00230055790896
+  ]
+ },
+ "2023|Belgian Grand Prix": {
+  "track": "spa-francorchamps",
+  "laps": 56,
+  "lag_m": 0.0,
+  "corr": 0.929,
+  "lag_thirds_m": [
+   5.001645717207083,
+   0.0,
+   0.0
+  ]
+ },
+ "2023|British Grand Prix": {
+  "track": "silverstone",
+  "laps": 57,
+  "lag_m": -5.001030313941138,
+  "corr": 0.955,
+  "lag_thirds_m": [
+   0.0,
+   10.002060627882276,
+   -10.002060627882276
+  ]
+ },
+ "2023|Canadian Grand Prix": {
+  "track": "montreal",
+  "laps": 57,
+  "lag_m": 5.001601062720641,
+  "corr": 0.975,
+  "lag_thirds_m": [
+   10.003202125441282,
+   10.003202125441282,
+   -5.001601062720641
+  ]
+ },
+ "2023|Dutch Grand Prix": {
+  "track": "zandvoort",
+  "laps": 58,
+  "lag_m": 160.05430599831266,
+  "corr": 0.916,
+  "lag_thirds_m": [
+   170.0577001232072,
+   155.05260893586538,
+   145.04921481097085
+  ]
+ },
+ "2023|Hungarian Grand Prix": {
+  "track": "hungaroring",
+  "laps": 54,
+  "lag_m": 5.000891127240799,
+  "corr": 0.951,
+  "lag_thirds_m": [
+   5.000891127240799,
+   5.000891127240799,
+   5.000891127240799
+  ]
+ },
+ "2023|Italian Grand Prix": {
+  "track": "monza",
+  "laps": 57,
+  "lag_m": -9.999129568248716,
+  "corr": 0.95,
+  "lag_thirds_m": [
+   -4.999564784124358,
+   -9.999129568248716,
+   -14.998694352373073
+  ]
+ },
+ "2023|Japanese Grand Prix": {
+  "track": "suzuka",
+  "laps": 52,
+  "lag_m": 0.0,
+  "corr": 0.962,
+  "lag_thirds_m": [
+   -10.000925933201374,
+   0.0,
+   0.0
+  ]
+ },
+ "2023|Las Vegas Grand Prix": {
+  "track": "las-vegas",
+  "laps": 57,
+  "lag_m": 5.000488557430201,
+  "corr": 0.971,
+  "lag_thirds_m": [
+   10.000977114860403,
+   20.001954229720806,
+   -15.001465672290603
+  ]
+ },
+ "2023|Mexico City Grand Prix": {
+  "track": "mexico-city",
+  "laps": 57,
+  "lag_m": -4.9973008135676285,
+  "corr": 0.957,
+  "lag_thirds_m": [
+   -19.989203254270514,
+   -4.9973008135676285,
+   -4.9973008135676285
+  ]
+ },
+ "2023|Miami Grand Prix": {
+  "track": "miami",
+  "laps": 60,
+  "lag_m": 5.000554196265649,
+  "corr": 0.963,
+  "lag_thirds_m": [
+   10.001108392531298,
+   10.001108392531298,
+   0.0
+  ]
+ },
+ "2023|Monaco Grand Prix": {
+  "track": "monte-carlo",
+  "laps": 60,
+  "lag_m": 0.0,
+  "corr": 0.965,
+  "lag_thirds_m": [
+   -10.007602123167509,
+   5.003801061583754,
+   -5.003801061583754
+  ]
+ },
+ "2023|Qatar Grand Prix": {
+  "track": "lusail",
+  "laps": 54,
+  "lag_m": 5.002280997421548,
+  "corr": 0.961,
+  "lag_thirds_m": [
+   5.002280997421548,
+   0.0,
+   5.002280997421548
+  ]
+ },
+ "2023|Saudi Arabian Grand Prix": {
+  "track": "jeddah",
+  "laps": 57,
+  "lag_m": 19.99838834948863,
+  "corr": 0.923,
+  "lag_thirds_m": [
+   29.997582524232943,
+   4.999597087372157,
+   9.999194174744314
+  ]
+ },
+ "2023|Singapore Grand Prix": {
+  "track": "singapore",
+  "laps": 54,
+  "lag_m": 14.99856451328588,
+  "corr": 0.954,
+  "lag_thirds_m": [
+   14.99856451328588,
+   14.99856451328588,
+   9.999043008857253
+  ]
+ },
+ "2023|Spanish Grand Prix": {
+  "track": "catalunya",
+  "laps": 60,
+  "lag_m": 10.00175313659695,
+  "corr": 0.969,
+  "lag_thirds_m": [
+   -5.000876568298475,
+   10.00175313659695,
+   15.002629704895424
+  ]
+ },
+ "2023|S\u00e3o Paulo Grand Prix": {
+  "track": "interlagos",
+  "laps": 50,
+  "lag_m": -5.000419160848654,
+  "corr": 0.953,
+  "lag_thirds_m": [
+   -10.000838321697309,
+   0.0,
+   -5.000419160848654
+  ]
+ },
+ "2023|United States Grand Prix": {
+  "track": "austin",
+  "laps": 55,
+  "lag_m": 4.997966908963683,
+  "corr": 0.968,
+  "lag_thirds_m": [
+   9.995933817927366,
+   4.997966908963683,
+   0.0
+  ]
+ },
+ "2024|Abu Dhabi Grand Prix": {
+  "track": "yas-marina-circuit",
+  "laps": 56,
+  "lag_m": 0.0,
+  "corr": 0.964,
+  "lag_thirds_m": [
+   4.9995034582863545,
+   -4.9995034582863545,
+   -4.9995034582863545
+  ]
+ },
+ "2024|Australian Grand Prix": {
+  "track": "melbourne",
+  "laps": 52,
+  "lag_m": -14.999066764697178,
+  "corr": 0.949,
+  "lag_thirds_m": [
+   -14.999066764697178,
+   -14.999066764697178,
+   -9.999377843131452
+  ]
+ },
+ "2024|Austrian Grand Prix": {
+  "track": "spielberg",
+  "laps": 60,
+  "lag_m": -20.00208837947774,
+  "corr": 0.958,
+  "lag_thirds_m": [
+   -15.001566284608305,
+   -20.00208837947774,
+   -35.00365466408604
+  ]
+ },
+ "2024|Azerbaijan Grand Prix": {
+  "track": "baku",
+  "laps": 58,
+  "lag_m": -5.001517783380489,
+  "corr": 0.974,
+  "lag_thirds_m": [
+   0.0,
+   0.0,
+   -10.003035566760978
+  ]
+ },
+ "2024|Bahrain Grand Prix": {
+  "track": "sakhir",
+  "laps": 60,
+  "lag_m": 0.0,
+  "corr": 0.972,
+  "lag_thirds_m": [
+   0.0,
+   5.00230055790896,
+   -10.00460111581792
+  ]
+ },
+ "2024|Belgian Grand Prix": {
+  "track": "spa-francorchamps",
+  "laps": 57,
+  "lag_m": -5.001645717207083,
+  "corr": 0.939,
+  "lag_thirds_m": [
+   0.0,
+   -5.001645717207083,
+   -5.001645717207083
+  ]
+ },
+ "2024|British Grand Prix": {
+  "track": "silverstone",
+  "laps": 57,
+  "lag_m": -10.002060627882276,
+  "corr": 0.929,
+  "lag_thirds_m": [
+   -5.001030313941138,
+   5.001030313941138,
+   -20.004121255764552
+  ]
+ },
+ "2024|Canadian Grand Prix": {
+  "track": "montreal",
+  "laps": 59,
+  "lag_m": -5.001601062720641,
+  "corr": 0.946,
+  "lag_thirds_m": [
+   0.0,
+   0.0,
+   -20.006404250882564
+  ]
+ },
+ "2024|Chinese Grand Prix": {
+  "track": "shanghai",
+  "laps": 58,
+  "lag_m": -40.002950318061664,
+  "corr": 0.953,
+  "lag_thirds_m": [
+   -35.002581528303956,
+   -45.00331910781937,
+   -40.002950318061664
+  ]
+ },
+ "2024|Dutch Grand Prix": {
+  "track": "zandvoort",
+  "laps": 60,
+  "lag_m": 20.006788249789082,
+  "corr": 0.956,
+  "lag_thirds_m": [
+   20.006788249789082,
+   30.010182374683623,
+   15.005091187341812
+  ]
+ },
+ "2024|Emilia Romagna Grand Prix": {
+  "track": "imola",
+  "laps": 60,
+  "lag_m": 5.001806493532864,
+  "corr": 0.956,
+  "lag_thirds_m": [
+   -10.003612987065727,
+   5.001806493532864,
+   10.003612987065727
+  ]
+ },
+ "2024|Hungarian Grand Prix": {
+  "track": "hungaroring",
+  "laps": 60,
+  "lag_m": 0.0,
+  "corr": 0.951,
+  "lag_thirds_m": [
+   0.0,
+   5.000891127240799,
+   0.0
+  ]
+ },
+ "2024|Italian Grand Prix": {
+  "track": "monza",
+  "laps": 57,
+  "lag_m": -9.999129568248716,
+  "corr": 0.955,
+  "lag_thirds_m": [
+   -4.999564784124358,
+   -9.999129568248716,
+   -19.99825913649743
+  ]
+ },
+ "2024|Japanese Grand Prix": {
+  "track": "suzuka",
+  "laps": 52,
+  "lag_m": -5.000462966600687,
+  "corr": 0.965,
+  "lag_thirds_m": [
+   -15.001388899802063,
+   0.0,
+   -5.000462966600687
+  ]
+ },
+ "2024|Las Vegas Grand Prix": {
+  "track": "las-vegas",
+  "laps": 57,
+  "lag_m": 40.00390845944161,
+  "corr": 0.973,
+  "lag_thirds_m": [
+   45.00439701687181,
+   50.004885574302016,
+   20.001954229720806
+  ]
+ },
+ "2024|Mexico City Grand Prix": {
+  "track": "mexico-city",
+  "laps": 52,
+  "lag_m": -9.994601627135257,
+  "corr": 0.963,
+  "lag_thirds_m": [
+   -24.98650406783814,
+   -4.9973008135676285,
+   -4.9973008135676285
+  ]
+ },
+ "2024|Miami Grand Prix": {
+  "track": "miami",
+  "laps": 59,
+  "lag_m": 0.0,
+  "corr": 0.959,
+  "lag_thirds_m": [
+   5.000554196265649,
+   5.000554196265649,
+   -5.000554196265649
+  ]
+ },
+ "2024|Monaco Grand Prix": {
+  "track": "monte-carlo",
+  "laps": 48,
+  "lag_m": -5.003801061583754,
+  "corr": 0.957,
+  "lag_thirds_m": [
+   -10.007602123167509,
+   0.0,
+   -5.003801061583754
+  ]
+ },
+ "2024|Qatar Grand Prix": {
+  "track": "lusail",
+  "laps": 51,
+  "lag_m": 5.002280997421548,
+  "corr": 0.962,
+  "lag_thirds_m": [
+   5.002280997421548,
+   5.002280997421548,
+   10.004561994843096
+  ]
+ },
+ "2024|Saudi Arabian Grand Prix": {
+  "track": "jeddah",
+  "laps": 54,
+  "lag_m": 9.999194174744314,
+  "corr": 0.925,
+  "lag_thirds_m": [
+   24.997985436860787,
+   0.0,
+   4.999597087372157
+  ]
+ },
+ "2024|Singapore Grand Prix": {
+  "track": "singapore",
+  "laps": 58,
+  "lag_m": 9.999043008857253,
+  "corr": 0.967,
+  "lag_thirds_m": [
+   9.999043008857253,
+   14.99856451328588,
+   9.999043008857253
+  ]
+ },
+ "2024|Spanish Grand Prix": {
+  "track": "catalunya",
+  "laps": 60,
+  "lag_m": 10.00175313659695,
+  "corr": 0.961,
+  "lag_thirds_m": [
+   -5.000876568298475,
+   10.00175313659695,
+   10.00175313659695
+  ]
+ },
+ "2024|S\u00e3o Paulo Grand Prix": {
+  "track": "interlagos",
+  "laps": 54,
+  "lag_m": -15.001257482545963,
+  "corr": 0.903,
+  "lag_thirds_m": [
+   -30.002514965091926,
+   -5.000419160848654,
+   -15.001257482545963
+  ]
+ },
+ "2024|United States Grand Prix": {
+  "track": "austin",
+  "laps": 57,
+  "lag_m": 0.0,
+  "corr": 0.971,
+  "lag_thirds_m": [
+   9.995933817927366,
+   4.997966908963683,
+   0.0
+  ]
+ },
+ "2025|Abu Dhabi Grand Prix": {
+  "track": "yas-marina-circuit",
+  "laps": 60,
+  "lag_m": 0.0,
+  "corr": 0.965,
+  "lag_thirds_m": [
+   9.999006916572709,
+   0.0,
+   -4.9995034582863545
+  ]
+ },
+ "2025|Australian Grand Prix": {
+  "track": "melbourne",
+  "laps": 51,
+  "lag_m": -19.998755686262903,
+  "corr": 0.914,
+  "lag_thirds_m": [
+   -24.99844460782863,
+   -29.998133529394355,
+   -14.999066764697178
+  ]
+ },
+ "2025|Austrian Grand Prix": {
+  "track": "spielberg",
+  "laps": 49,
+  "lag_m": -25.002610474347176,
+  "corr": 0.954,
+  "lag_thirds_m": [
+   -20.00208837947774,
+   -30.00313256921661,
+   -40.00417675895548
+  ]
+ },
+ "2025|Azerbaijan Grand Prix": {
+  "track": "baku",
+  "laps": 57,
+  "lag_m": 0.0,
+  "corr": 0.977,
+  "lag_thirds_m": [
+   5.001517783380489,
+   5.001517783380489,
+   -10.003035566760978
+  ]
+ },
+ "2025|Bahrain Grand Prix": {
+  "track": "sakhir",
+  "laps": 60,
+  "lag_m": 0.0,
+  "corr": 0.967,
+  "lag_thirds_m": [
+   5.00230055790896,
+   5.00230055790896,
+   -10.00460111581792
+  ]
+ },
+ "2025|Belgian Grand Prix": {
+  "track": "spa-francorchamps",
+  "laps": 60,
+  "lag_m": -5.001645717207083,
+  "corr": 0.941,
+  "lag_thirds_m": [
+   0.0,
+   0.0,
+   -5.001645717207083
+  ]
+ },
+ "2025|British Grand Prix": {
+  "track": "silverstone",
+  "laps": 48,
+  "lag_m": -15.003090941823414,
+  "corr": 0.868,
+  "lag_thirds_m": [
+   -15.003090941823414,
+   0.0,
+   -15.003090941823414
+  ]
+ },
+ "2025|Canadian Grand Prix": {
+  "track": "montreal",
+  "laps": 60,
+  "lag_m": 10.003202125441282,
+  "corr": 0.982,
+  "lag_thirds_m": [
+   10.003202125441282,
+   10.003202125441282,
+   -5.001601062720641
+  ]
+ },
+ "2025|Chinese Grand Prix": {
+  "track": "shanghai",
+  "laps": 57,
+  "lag_m": -35.002581528303956,
+  "corr": 0.952,
+  "lag_thirds_m": [
+   -30.00221273854625,
+   -40.002950318061664,
+   -35.002581528303956
+  ]
+ },
+ "2025|Dutch Grand Prix": {
+  "track": "zandvoort",
+  "laps": 59,
+  "lag_m": 15.005091187341812,
+  "corr": 0.956,
+  "lag_thirds_m": [
+   15.005091187341812,
+   25.008485312236353,
+   10.003394124894541
+  ]
+ },
+ "2025|Emilia Romagna Grand Prix": {
+  "track": "imola",
+  "laps": 59,
+  "lag_m": 0.0,
+  "corr": 0.948,
+  "lag_thirds_m": [
+   -15.00541948059859,
+   0.0,
+   5.001806493532864
+  ]
+ },
+ "2025|Hungarian Grand Prix": {
+  "track": "hungaroring",
+  "laps": 60,
+  "lag_m": 0.0,
+  "corr": 0.963,
+  "lag_thirds_m": [
+   0.0,
+   5.000891127240799,
+   5.000891127240799
+  ]
+ },
+ "2025|Italian Grand Prix": {
+  "track": "monza",
+  "laps": 55,
+  "lag_m": -4.999564784124358,
+  "corr": 0.959,
+  "lag_thirds_m": [
+   -4.999564784124358,
+   -4.999564784124358,
+   -19.99825913649743
+  ]
+ },
+ "2025|Japanese Grand Prix": {
+  "track": "suzuka",
+  "laps": 60,
+  "lag_m": 0.0,
+  "corr": 0.971,
+  "lag_thirds_m": [
+   -10.000925933201374,
+   0.0,
+   0.0
+  ]
+ },
+ "2025|Las Vegas Grand Prix": {
+  "track": "las-vegas",
+  "laps": 54,
+  "lag_m": 5.000488557430201,
+  "corr": 0.976,
+  "lag_thirds_m": [
+   10.000977114860403,
+   15.001465672290603,
+   -15.001465672290603
+  ]
+ },
+ "2025|Mexico City Grand Prix": {
+  "track": "mexico-city",
+  "laps": 56,
+  "lag_m": -9.994601627135257,
+  "corr": 0.964,
+  "lag_thirds_m": [
+   -24.98650406783814,
+   -9.994601627135257,
+   -4.9973008135676285
+  ]
+ },
+ "2025|Miami Grand Prix": {
+  "track": "miami",
+  "laps": 56,
+  "lag_m": 0.0,
+  "corr": 0.964,
+  "lag_thirds_m": [
+   5.000554196265649,
+   5.000554196265649,
+   -5.000554196265649
+  ]
+ },
+ "2025|Monaco Grand Prix": {
+  "track": "monte-carlo",
+  "laps": 57,
+  "lag_m": -5.003801061583754,
+  "corr": 0.968,
+  "lag_thirds_m": [
+   -10.007602123167509,
+   0.0,
+   -5.003801061583754
+  ]
+ },
+ "2025|Qatar Grand Prix": {
+  "track": "lusail",
+  "laps": 57,
+  "lag_m": 0.0,
+  "corr": 0.96,
+  "lag_thirds_m": [
+   0.0,
+   0.0,
+   5.002280997421548
+  ]
+ },
+ "2025|Saudi Arabian Grand Prix": {
+  "track": "jeddah",
+  "laps": 54,
+  "lag_m": 14.998791262116471,
+  "corr": 0.924,
+  "lag_thirds_m": [
+   24.997985436860787,
+   4.999597087372157,
+   9.999194174744314
+  ]
+ },
+ "2025|Singapore Grand Prix": {
+  "track": "singapore",
+  "laps": 60,
+  "lag_m": 14.99856451328588,
+  "corr": 0.97,
+  "lag_thirds_m": [
+   14.99856451328588,
+   14.99856451328588,
+   9.999043008857253
+  ]
+ },
+ "2025|Spanish Grand Prix": {
+  "track": "catalunya",
+  "laps": 56,
+  "lag_m": 0.0,
+  "corr": 0.966,
+  "lag_thirds_m": [
+   -10.00175313659695,
+   5.000876568298475,
+   5.000876568298475
+  ]
+ },
+ "2025|S\u00e3o Paulo Grand Prix": {
+  "track": "interlagos",
+  "laps": 54,
+  "lag_m": 0.0,
+  "corr": 0.954,
+  "lag_thirds_m": [
+   -5.000419160848654,
+   5.000419160848654,
+   0.0
+  ]
+ },
+ "2025|United States Grand Prix": {
+  "track": "austin",
+  "laps": 57,
+  "lag_m": 0.0,
+  "corr": 0.972,
+  "lag_thirds_m": [
+   9.995933817927366,
+   4.997966908963683,
+   -4.997966908963683
+  ]
+ }
+}
