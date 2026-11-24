@@ -58,6 +58,9 @@ import {lapsimMapShape} from './lapsim/map-shape-data.js';
 import {lapsimKerbUse} from './lapsim/kerb-use-data.js';
 import {lapsimTrackBumps} from './lapsim/track-bumps-data.js';
 import {viewHash, canonJson, viewBuildKey, carStartOptions, firstViewState} from './lapsim/view-keys.js';
+import {deltaPmOn, deltaPmData} from './lapsim/delta-intervals.js';
+const DPM_T = {ko: {lap: '랩 범위(90 %, 홀드아웃)', cmp: '차량 간 차이 검증', drs: 'DRS 차이 검증', sm: '스트레이트 모드 차이 검증', checked: '검증됨', unchecked: '검증 안 됨', stale: '재계산 필요(캘리브레이션 변경)', ratio: '실측/모델 비율'},
+  en: {lap: 'Lap range (90 %, held-out)', cmp: 'Car-vs-car Δ check', drs: 'DRS Δ check', sm: 'Straight Mode Δ check', checked: 'checked', unchecked: 'unchecked', stale: 'stale (calibration changed)', ratio: 'measured / model ratio'}};
 
 const K = lapsimKernel();
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -349,6 +352,7 @@ export function simulationPage(query = {}, lang = 'ko', liveEnergy = null, first
     // measured WEC warm-up per class (step 15); only sent with the flag on, so the page data is unchanged with it off
     ...(EVOLUTION_WARMUP_MEASURED ? {evoCls: Object.fromEntries(['hypercar', 'lmgt3'].map(c => [c, Object.fromEntries(['practice', 'qualifying'].map(ty => [ty, evolutionCoeffs('wec', id, ty, {cls: c})]))]))} : {}),
     zones: lapsimF1Zones?.tracks?.[id] || null, feZones: lapsimFeZones?.tracks?.[id] || null, zonesOn: ZONES_ON ? (DRS_ONLY ? 'drs' : 'all') : '', puQuali: PU_QUALI, realState: !!lapsimCalibration?.realState, puRamp: !!lapsimCalibration?.puRamp, otChoice: lapsimCalibration?.otChoice?.[id] ?? null, surface: surfaceOf(id, td, changes), mapRot0: (Number.isFinite(view0?.openDeg) ? view0.openDeg : landscapeRot(td.map, lapsimTrackNorth?.[id], VIEW[id], td.corners, td.length)) + (VIEW[id]?.flip ? 180 : 0), cornersEstimated: !!td.cornersEstimated, cornerNames: td.cornersEstimated ? lapsimCornerNames?.[id]?.names?.map(c => ({...c, name: /* 'Curva 1' is only a number */ /^(Turn|Curva|Corner)\s*\d+$/i.test(c.name) ? c.name.replace(/\D+/, '') : lang === 'en' ? c.name : lapsimNamesKo[c.name] || c.name})) || null : null, straights: straightsOf(id, td, lang), north: lapsimTrackNorth?.[id] || null, ui: UI[lang],
+    ...(deltaPmOn() ? {deltaPm: {...deltaPmData(cars), t: DPM_T[lang === 'en' ? 'en' : 'ko']}} : {}),
     calibration: {generatedAt: lapsimCalibration?.generatedAt || null, seasons: Object.fromEntries(Object.entries(lapsimCalibration?.seasons || {}).map(([y, s]) => [y, s.tracks?.[id] || null]))}};
   // first render on the server with the same code the browser uses
   // firstView (first-view job, stage 4): the stored view of this car's first view, so the page arrives as the browser will show it
@@ -958,6 +962,12 @@ function computeView(K, data, state, R) {
   const fact = (k, v) => '<div><dt>' + k + '</dt><dd data-no-translate>' + v + '</dd></div>';
   let factsHtml = '';
   if (sel.unc) factsHtml += fact(t.errRange, (sel.unc.pct ? '±' + (res.lapTime * sel.unc.pct / 100).toFixed(2) + ' s · ' : '') + t.conf[sel.unc.confidence]);
+  // step 29b (flag LAPSIM_DELTA_PM, data.deltaPm sent only with it on): lap range and the check status of the shown Δ
+  if (data.deltaPm) { const P = data.deltaPm, q = P.lap[state.carId], D = P.t;
+    factsHtml += fact(D.lap, q ? fmt(res.lapTime / (1 + q.q95)) + ' – ' + fmt(res.lapTime / (1 + q.q05)) + ' · ' + D.checked + ' (n ' + q.n + ')' : P.stale ? D.stale : D.unchecked);
+    if (cmp) factsHtml += fact(D.cmp, D.unchecked);
+    if (!sel.series && sel.year < 2026 && state.drs === false) factsHtml += fact(D.drs, !P.drs ? D.stale : D.checked + ' · ' + D.ratio + ' ' + P.drs.q50.toFixed(2) + ' (90 % ' + P.drs.q05.toFixed(2) + ' – ' + P.drs.q95.toFixed(2) + ', n ' + P.drs.n + ')');
+    if (!sel.series && sel.year >= 2026 && (state.sm && state.sm !== 'normal' || state.ot === false)) factsHtml += fact(D.sm, D.unchecked); }
   // error of predictions stored before the session (AGENTS.md v3.1 prediction log); none resolved yet = "not logged yet"
   if (sel.unc && data.fwdLog) { const L = data.fwdLog[state.carId]; factsHtml += fact(t.fwdLog, L && L.n ? '±' + L.rmsPct.toFixed(2) + ' % RMS · ' + L.n + ' ' + t.fwdN : t.fwdNone + (L && L.waiting ? ' (' + L.waiting + ' ' + t.fwdWait + ')' : '')); }
   if (sectors) sectors.forEach((x, i) => { factsHtml += fact(t.sector + ' ' + (i + 1), x.toFixed(3)); });
