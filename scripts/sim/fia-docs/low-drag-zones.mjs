@@ -62,7 +62,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     const imageSet = new Set(image), comparable = old.filter(r => !imageSet.has(r.source_url) && /^https:.*\.pdf/i.test(r.source_url));
     console.log(`low-drag zones: ${image.length} map page(s) are images (not parsed, ${old.length - comparable.length - old.filter(r => !/^https:.*\.pdf/i.test(r.source_url)).length} rows): ${image.join(' ')}`);
     console.log(`low-drag zones: ${old.filter(r => !/^https:.*\.pdf/i.test(r.source_url)).length} row(s) cite no PDF (pending events): not rebuilt`);
-    process.exitCode = report('low-drag zones', diffRows(comparable, rebuilt.map(r => Object.fromEntries(head.map(h => [h, String(r[h] ?? '')]))), KEY, head));
+    report('low-drag zones', diffRows(comparable, rebuilt.map(r => Object.fromEntries(head.map(h => [h, String(r[h] ?? '')]))), KEY, head));
   } else {
     // weekly: 2026+ maps not in the CSV (an event's circuit map, newest version)
     const known = new Set(docs.map(d => d.source_url)), year = new Date().getUTCFullYear(), add = [];

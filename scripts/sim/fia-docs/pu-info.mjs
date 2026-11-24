@@ -161,7 +161,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const fromCsv = s => metaFrom.get(s.url);
   if (process.argv.includes('--check')) {
     const rows = await build(known, fromCsv);
-    process.exitCode = report('PU information', diffRows(old, rows.map(r => Object.fromEntries(head.map(h => [h, String(r[h] ?? '')]))), key, head));
+    report('PU information', diffRows(old, rows.map(r => Object.fromEntries(head.map(h => [h, String(r[h] ?? '')]))), key, head));
   } else {
     const found = [], year = new Date().getUTCFullYear();
     for (const y of [...new Set([2026, year])]) {

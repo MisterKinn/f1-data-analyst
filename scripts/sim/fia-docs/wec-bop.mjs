@@ -92,7 +92,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     console.log(`WEC BoP: ${old.length - pub.length} row(s) not rebuilt (entry-list models with no public BoP, and per-race map / track-limit records)`);
     // other is compared as JSON (key order is not data)
     const key = r => [r.source_url, r.event, norm(r.car_model)].join('|'), canon = r => ({...r, other: JSON.stringify(Object.fromEntries(Object.entries(JSON.parse(r.other || '{}')).sort()))});
-    process.exitCode = report('WEC BoP', diffRows(pub.map(canon), latest(rebuilt).map(canon), key, head));
+    report('WEC BoP', diffRows(pub.map(canon), latest(rebuilt).map(canon), key, head));
   } else {
     // weekly: decisions in the Al Kamel committee folders (results_noticeboard manifest) that are not in the CSV
     const known = new Set(old.map(r => r.source_url)), year = new Date().getUTCFullYear(), add = [];

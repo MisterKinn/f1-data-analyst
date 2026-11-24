@@ -1,0 +1,47 @@
+name: FIA / WEC document tables (weekly)
+
+# Step 22 (2026-11-24): the collectors in scripts/sim/fia-docs/ add rows for official documents that are not in the
+# scripts/sim/data/fia-docs/*.csv tables yet (2026 PU information, low-drag zones, circuit changes / track limits, WEC BoP).
+# Rows already in a CSV are never rewritten. A pull request opens only when a CSV changed; a person reviews it before merge.
+# Needs the repository setting "Allow GitHub Actions to create and approve pull requests".
+on:
+  schedule:
+    - cron: '17 4 * * 2'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: fia-docs-refresh
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    if: github.repository == 'MisterKinn/f1-data-analyst'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - run: npm ci --ignore-scripts
+      - name: Run the collectors
+        run: |
+          for s in pu-info low-drag-zones circuit-changes wec-bop; do
+            node scripts/sim/fia-docs/$s.mjs 2>&1 | tee -a /tmp/collect.log || echo "::warning::$s failed; its CSV is unchanged"
+          done
+      - name: Open a pull request when a CSV changed
+        env: {GH_TOKEN: '${{ github.token }}'}
+        run: |
+          if git diff --quiet -- scripts/sim/data/fia-docs; then echo "No CSV changed." >> "$GITHUB_STEP_SUMMARY"; exit 0; fi
+          b=auto/fia-docs-$(date -u +%Y-%m-%d)
+          git config user.name "github-actions[bot]"; git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$b" && git add scripts/sim/data/fia-docs/*.csv
+          git commit -qm "fia-docs: weekly rows from new official documents" && git push -f origin "$b"
+          { echo "No model change: data tables only; nothing reads scripts/sim/data/fia-docs."; echo
+            echo "Rows added by the weekly collectors (scripts/sim/fia-docs/). Check new rows against the PDFs before merge."
+            echo "Circuit-change rows use the official wording; curated rows use a paraphrase."; echo; echo '```'
+            grep -v '^$' /tmp/collect.log | tail -40; echo '```'; } > /tmp/body.md
+          gh pr view "$b" >/dev/null 2>&1 || gh pr create --base main --head "$b" --title "FIA/WEC document tables: new rows ($(date -u +%Y-%m-%d))" --body-file /tmp/body.md
