@@ -16,6 +16,7 @@ import {wetGap} from './wet-gap.js';
 import {lapsimWetGap} from './wet-gap-data.js';
 import {driveEnergyJ} from './stint-energy.js';
 import {climatePreset} from './climate.js';
+import {deltaPmOn, deltaCheck, lapCheck, deltaRule, DELTA_TYPES} from './delta-intervals.js';
 
 const K = lapsimKernel();
 const SITE = 'https://kongboda-motorsports.vercel.app';
@@ -169,10 +170,10 @@ export function simulate(args = {}, opts = {}) {
   };
   // zone options (owner 2026-11-16); none given = the fitted lap, as before
   const opt = ['straight_mode', 'overtake', 'drs'].some(k => args[k] !== undefined) ? {sm: args.straight_mode || 'normal', ot: args.overtake !== false, drs: args.drs !== false} : realM(sel);
-  const run = c => {
+  const run = (c, op = opt) => {
     // options run with the C5.12 rule; the fit's own setup (scale) without it until the fit includes it (same as the page)
     const envP = {...env, puRamp: puRampOf(d, id)}, sim = tr => K.simulateLap(withGrip(tr, c.grip || 1), c.car, envP), simFit = tr => K.simulateLap(withGrip(tr, c.grip || 1), c.car, PU_RAMP ? envP : env);
-    const o = opt && simulateWithOptions(K, d, track, c, opt, sim, simFit);
+    const o = op && simulateWithOptions(K, d, track, c, op, sim, simFit);
     const r = scaled(o || simFit(withZones(K, d, track, c)), c.timeScale), k = corrOf(c), sec = secOf(r);
     return k && sec ? {...r, lapTime: r.lapTime + k[0] + k[1] + k[2], sectors: sec.map((x, i) => x + k[i]), sectorCorrection: k} : k ? {...r, lapTime: r.lapTime + k.reduce((a, b) => a + b, 0), sectorCorrection: k} : r;
   };
@@ -269,8 +270,28 @@ export function simulate(args = {}, opts = {}) {
     out.wet_qualifying = {session: sel.fix.session, real_pole_s: w.realLap, driver: w.driver, tyre: w.tyre, rain_minutes: w.rainMinutes,
       note: 'The dry fit leaves this session out (rain fell). The lap shown is the real pole in that session\'s weather; real laps are never changed.',
       ...(w.dry ? {dry_pole_estimate: {lap_s: w.dry.lap, error_pct_1sigma: w.dry.pct, method: `model: ${Math.round((1 - w.dry.wRace) * 100)} % simulator prediction (${w.dry.model}) + ${Math.round(w.dry.wRace * 100)} % fastest dry race lap of that weekend (${w.dry.raceLap}) x season median pole/race-best ${w.dry.ratio}; weights from held-out errors`}} : {})}; }
+  if (deltaPmOn()) addDeltaChecks(out, sel, res, run, opt, realM(sel));
   out.page = `${SITE}/simulation?track=${encodeURIComponent(id)}&car=${selKey}`;
   return out;
+}
+
+// step 29b (flag LAPSIM_DELTA_PM): a ± range or a check status beside every Δ the tool returns
+const SENS_TYPE = {mass: 'mass_fuel', tyre_grip: 'tyre', downforce_clA: 'aero', drag_cdA: 'aero', engine_power: 'power_energy'};
+function addDeltaChecks(out, sel, res, run, opt, opt0) {
+  out.uncertainty.lap_check = lapCheck(sel, res.lapTime);
+  // zone options given: the Δ against the default zones (DRS checked, Straight Mode / Overtake unchecked)
+  if (opt && JSON.stringify(opt) !== JSON.stringify(opt0)) {
+    const dl = res.lapTime - run(sel, opt0).lapTime, type = sel.year >= 2026 ? 'straight_mode' : 'drs';
+    out.option_delta = {delta_s: r3(dl), note: 'lap with the given zone options minus the default lap', check: deltaCheck(type, dl)};
+  }
+  out.sensitivity_check = Object.fromEntries(Object.keys(out.sensitivity_s_per_plus_10pct).map(k => [k, deltaCheck(SENS_TYPE[k])]));
+  if (out.compare) out.compare.delta_check = deltaCheck('car_vs_car');
+  if (out.evolution) out.evolution.change_check = deltaCheck(out.wet ? 'tyre' : 'evolution');
+  if (out.wet) out.wet.gap_check = deltaCheck('tyre');
+  if (out.fia_changes) out.fia_changes.delta_check = deltaCheck('track_change');
+  // for a Δ the user builds from two calls (e.g. weather): the status of every type
+  out.delta_checks = {...deltaRule(), types: Object.fromEntries(Object.keys(DELTA_TYPES).map(k => [k, deltaCheck(k)])),
+    note: 'checked = a 90 % range from measured cases; unchecked = no measured check, give the Δ without a range and say so; data limit = the measured data are too noisy to check (see reason)'};
 }
 
 export async function lapsimCall(name, args) {
