@@ -1,0 +1,224 @@
+{
+ "rules_sha256": "4e024f79525f7cac766308204893ba7537cdd5c3bae779960eb225bd0d60a5bd",
+ "ti_commits": {
+  "2023": "737c84d3ae14b9883a671ca248d015b69cf1cb58",
+  "2024": "d1543a71370d9b617b627319f8ad80b2f85dfd5e",
+  "2025": "dfb3ea3f50b69857fe8e40cabe5e899743c59f6a"
+ },
+ "ref_laps": 20,
+ "bootstrap": 2000,
+ "seed": 29,
+ "gap_s": 2.0,
+ "dropped": [
+  {
+   "season": 2023,
+   "event": "Australian Grand Prix",
+   "reason": "not separable (1 drivers with 2+ stints)"
+  },
+  {
+   "season": 2023,
+   "event": "Azerbaijan Grand Prix",
+   "reason": "not separable (1 drivers with 2+ stints)"
+  },
+  {
+   "season": 2023,
+   "event": "Belgian Grand Prix",
+   "reason": "rain"
+  },
+  {
+   "season": 2023,
+   "event": "British Grand Prix",
+   "reason": "not separable (2 drivers with 2+ stints)"
+  },
+  {
+   "season": 2023,
+   "event": "Canadian Grand Prix",
+   "reason": "not separable (5 drivers with 2+ stints)"
+  },
+  {
+   "season": 2023,
+   "event": "Dutch Grand Prix",
+   "reason": "rain"
+  },
+  {
+   "season": 2023,
+   "event": "Italian Grand Prix",
+   "reason": "not separable (3 drivers with 2+ stints)"
+  },
+  {
+   "season": 2023,
+   "event": "Japanese Grand Prix",
+   "reason": "rank"
+  },
+  {
+   "season": 2023,
+   "event": "Las Vegas Grand Prix",
+   "reason": "not separable (0 drivers with 2+ stints)"
+  },
+  {
+   "season": 2023,
+   "event": "Miami Grand Prix",
+   "reason": "not separable (3 drivers with 2+ stints)"
+  },
+  {
+   "season": 2023,
+   "event": "Monaco Grand Prix",
+   "reason": "rain"
+  },
+  {
+   "season": 2023,
+   "event": "Qatar Grand Prix",
+   "reason": "not separable (3 drivers with 2+ stints)"
+  },
+  {
+   "season": 2023,
+   "event": "Saudi Arabian Grand Prix",
+   "reason": "not separable (4 drivers with 2+ stints)"
+  },
+  {
+   "season": 2023,
+   "event": "Singapore Grand Prix",
+   "reason": "not separable (3 drivers with 2+ stints)"
+  },
+  {
+   "season": 2024,
+   "event": "Abu Dhabi Grand Prix",
+   "reason": "rank"
+  },
+  {
+   "season": 2024,
+   "event": "Azerbaijan Grand Prix",
+   "reason": "not separable (1 drivers with 2+ stints)"
+  },
+  {
+   "season": 2024,
+   "event": "Belgian Grand Prix",
+   "reason": "not separable (1 drivers with 2+ stints)"
+  },
+  {
+   "season": 2024,
+   "event": "British Grand Prix",
+   "reason": "rain"
+  },
+  {
+   "season": 2024,
+   "event": "Canadian Grand Prix",
+   "reason": "rain"
+  },
+  {
+   "season": 2024,
+   "event": "Chinese Grand Prix",
+   "reason": "not separable (2 drivers with 2+ stints)"
+  },
+  {
+   "season": 2024,
+   "event": "Italian Grand Prix",
+   "reason": "not separable (3 drivers with 2+ stints)"
+  },
+  {
+   "season": 2024,
+   "event": "Japanese Grand Prix",
+   "reason": "not separable (5 drivers with 2+ stints)"
+  },
+  {
+   "season": 2024,
+   "event": "Las Vegas Grand Prix",
+   "reason": "not separable (4 drivers with 2+ stints)"
+  },
+  {
+   "season": 2024,
+   "event": "Miami Grand Prix",
+   "reason": "not separable (2 drivers with 2+ stints)"
+  },
+  {
+   "season": 2024,
+   "event": "Monaco Grand Prix",
+   "reason": "not separable (0 drivers with 2+ stints)"
+  },
+  {
+   "season": 2024,
+   "event": "Qatar Grand Prix",
+   "reason": "not separable (3 drivers with 2+ stints)"
+  },
+  {
+   "season": 2024,
+   "event": "Saudi Arabian Grand Prix",
+   "reason": "not separable (2 drivers with 2+ stints)"
+  },
+  {
+   "season": 2024,
+   "event": "Spanish Grand Prix",
+   "reason": "rain"
+  },
+  {
+   "season": 2024,
+   "event": "S\u00e3o Paulo Grand Prix",
+   "reason": "rain"
+  },
+  {
+   "season": 2025,
+   "event": "Australian Grand Prix",
+   "reason": "rain"
+  },
+  {
+   "season": 2025,
+   "event": "Azerbaijan Grand Prix",
+   "reason": "not separable (4 drivers with 2+ stints)"
+  },
+  {
+   "season": 2025,
+   "event": "Bahrain Grand Prix",
+   "reason": "not separable (5 drivers with 2+ stints)"
+  },
+  {
+   "season": 2025,
+   "event": "Belgian Grand Prix",
+   "reason": "inter/wet"
+  },
+  {
+   "season": 2025,
+   "event": "British Grand Prix",
+   "reason": "rain"
+  },
+  {
+   "season": 2025,
+   "event": "Chinese Grand Prix",
+   "reason": "not separable (3 drivers with 2+ stints)"
+  },
+  {
+   "season": 2025,
+   "event": "Dutch Grand Prix",
+   "reason": "not separable (5 drivers with 2+ stints)"
+  },
+  {
+   "season": 2025,
+   "event": "Emilia Romagna Grand Prix",
+   "reason": "not separable (4 drivers with 2+ stints)"
+  },
+  {
+   "season": 2025,
+   "event": "Italian Grand Prix",
+   "reason": "not separable (2 drivers with 2+ stints)"
+  },
+  {
+   "season": 2025,
+   "event": "Miami Grand Prix",
+   "reason": "rain"
+  },
+  {
+   "season": 2025,
+   "event": "Qatar Grand Prix",
+   "reason": "not separable (5 drivers with 2+ stints)"
+  },
+  {
+   "season": 2025,
+   "event": "Saudi Arabian Grand Prix",
+   "reason": "not separable (4 drivers with 2+ stints)"
+  },
+  {
+   "season": 2025,
+   "event": "Singapore Grand Prix",
+   "reason": "not separable (5 drivers with 2+ stints)"
+  }
+ ]
+}
