@@ -15,7 +15,19 @@ jobs:
     if: github.repository == 'kangjeongmin1229/f1-data-analyst-deploy'
     runs-on: ubuntu-latest
     steps:
-      - name: Fast-forward main to MisterKinn/f1-data-analyst main
+      # main must equal upstream main. Commits made only on the fork's main (2026-11-24: step 11a) blocked the fast-forward for a
+      # day; they are kept on a fork-keep/ branch first, then main is synced with --force.
+      - name: Make main equal MisterKinn/f1-data-analyst main
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh repo sync "$GITHUB_REPOSITORY" --source MisterKinn/f1-data-analyst --branch main
+        run: |
+          set -euo pipefail
+          ahead=$(gh api "repos/$GITHUB_REPOSITORY/compare/MisterKinn:main...main" --jq .ahead_by)
+          if [ "$ahead" -gt 0 ]; then
+            keep="fork-keep/main-$(date -u +%Y%m%d-%H%M)" sha=$(gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq .sha)
+            gh api -X POST "repos/$GITHUB_REPOSITORY/git/refs" -f ref="refs/heads/$keep" -f sha="$sha" > /dev/null
+            echo "::warning::fork main had $ahead commit(s) not in upstream; kept on branch $keep, then synced with --force"
+            gh repo sync "$GITHUB_REPOSITORY" --source MisterKinn/f1-data-analyst --branch main --force
+          else
+            gh repo sync "$GITHUB_REPOSITORY" --source MisterKinn/f1-data-analyst --branch main
+          fi
