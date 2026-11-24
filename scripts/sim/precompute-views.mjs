@@ -1,7 +1,7 @@
 // First-view job (owner 2026-11-18), stage 2: store the lap simulator's first view of every track × car, so the page can show it at
 // once. The views come from the page's own worker code path (lapsimScript() run with no document), from the page data the server
 // sends, for the state the page builds for a car's first view (worker/lapsim/view-keys.js). GT3 cars are left out: they compute in
-// about 0.1 s. Output (not committed; published to the fork's GitHub Pages by .github/workflows/lapsim-views.yml, which checks out
+// about 0.1 s; so are the per-maker Hypercars (size, see `cars`). Output (not committed; published to the fork's GitHub Pages by .github/workflows/lapsim-views.yml, which checks out
 // upstream main every hour and runs this script):
 //   <out>/<build>/<state hash>.json = {build, state, v}    build = script version + hash of the page data without carId
 //   <out>/manifest-<shard>.json     = [{track, lang, car, build, file, ms}]
@@ -20,7 +20,9 @@ let posted = null; globalThis.self = {postMessage: m => { posted = structuredClo
 (0, eval)(lapsimScript());
 const version = lapsimScriptVersion();
 const viewOf = (data, state) => { posted = null; self.onmessage({data: {id: 1, state: structuredClone(state)}}); if (!posted || posted.err) throw new Error(posted?.err || 'no answer'); return posted.v; };
-const cars = data => Object.keys(data.cars).filter(k => !k.startsWith('gt3-'));
+// stored for the cars a first visit opens most (F1, the WEC class cars, FE); the per-maker Hypercars (hyper-*) are left out to keep
+// the Pages site under 800 MB (1.11 GB with them, limit 1 GB): the page computes those on demand like any view not stored
+const cars = data => Object.keys(data.cars).filter(k => !k.startsWith('gt3-') && !k.startsWith('hyper-'));
 // JSON writes -0 as 0 (telemetry lanes hold -0): keep it, so the file parses back to the exact numbers
 const exactJson = x => JSON.stringify(x, (k, y) => Object.is(y, -0) ? '\u0000NEG0' : y).replaceAll('"\\u0000NEG0"', '-0');
 
