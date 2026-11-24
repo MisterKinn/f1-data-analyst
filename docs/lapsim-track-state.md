@@ -28,10 +28,11 @@ A pair is selectable only with a layout change or a full resurfacing that has a 
 |---|---|---|---|---|
 | catalunya | 2020 | 2021 | layout | [link](https://www.formula1.com/en/latest/article/circuit-de-barcelona-catalunya-complete-remodelling-of-turn-10.giY8HxbKVmtub2ZjyvI1B) |
 | catalunya | 2022 | 2023 | layout | [link](https://www.fia.com/news/fia-homologates-updated-layout-2023-fia-formula-1-spanish-grand-prix) |
+| jeddah | 2022 | 2023 | layout | [link](https://www.fia.com/sites/default/files/decision-document/2023%20Saudi%20Arabian%20Grand%20Prix%20-%20Race%20Director%27s%20Event%20Notes%20V3.pdf) |
 | laguna-seca | – | 2024 | full_resurfacing | [link](https://imsa.com/news/2024/may/06/when-old-becomes-new-imsa-approaching-spate-of-new-track-surfaces) |
 | lusail | 2021 | 2023 | full_resurfacing | [link](https://www.motogp.com/en/news/2023/08/24/ein-blick-auf-das-renovierte-lusail/476496) |
 | melbourne | 2019 | 2022 | layout, full_resurfacing | [link](https://www.grandprix.com.au/community/circuit-modifications) [link](https://www.grandprix.com.au/community/circuit-modifications) |
-| miami | 2022 | 2023 | full_resurfacing | [link](https://www.formula1.com/en/latest/article.track-to-be-resurfaced-and-paddock-moved-inside-hard-rock-stadium-for-2023.1Oei1J5s4KM2IDWY1YhTdC.html) |
+| miami | 2022 | 2023 | layout, full_resurfacing | [link](https://www.fia.com/sites/default/files/decision-document/2023%20Miami%20Grand%20Prix%20-%20Race%20Director%27s%20Event%20Notes%20V2.pdf) [link](https://www.formula1.com/en/latest/article.track-to-be-resurfaced-and-paddock-moved-inside-hard-rock-stadium-for-2023.1Oei1J5s4KM2IDWY1YhTdC.html) |
 | mid-ohio | – | 2024 | full_resurfacing | [link](https://www.midohio.com/news-m/938-full-repave-of-racing-surface-completed-at-mid-ohio-sports-car-course) |
 | monza | 2023 | 2024 | full_resurfacing | [link](https://www.formula1.com/en/latest/article/need-to-know-the-most-important-facts-stats-trivia-2024-italian-grand-prix.1aWNaICxFMmzFSmKBuOZBg) |
 | road-america | – | 2023 | full_resurfacing | [link](https://www.indycar.com/news/2022/11/11-15-ra-repave) |
@@ -39,7 +40,7 @@ A pair is selectable only with a layout change or a full resurfacing that has a 
 | singapore | 2022 | 2023 | layout | [link](https://www.formula1.com/en/latest/article/singapore-grand-prix-set-to-feature-revised-track-layout-in-2023.6KsrU6hQw3hxrVJ6zKeJ74) |
 | yas-marina-circuit | 2020 | 2021 | layout | [link](https://www.formula1.com/en/latest/article/revealed-the-track-changes-aimed-at-improving-overtaking-at-abu-dhabis-yas.rejS8Xxbgoom5yPUInsek) |
 
-Information only: every other pair (115 pairs, 82 with partial FIA changes: kerbs, patches, run-off). They are listed in `track-state-data.js` (`tracks.<id>.years`).
+Information only: every other pair (114 pairs, 81 with partial FIA changes: kerbs, patches, run-off). They are listed in `track-state-data.js` (`tracks.<id>.years`).
 
 ## Change effects with 2019–2026 (descriptive, prereg section 2 rule)
 

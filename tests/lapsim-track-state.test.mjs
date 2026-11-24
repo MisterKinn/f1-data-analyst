@@ -55,6 +55,14 @@ test('every hand-entered event has an official URL and a read date', () => {
   }
 });
 
+test('layout eras in the data match the hand-entered layout years (step 25: Jeddah 2023, Miami 2023)', () => {
+  for (const [id, list] of Object.entries(LAYOUT)) {
+    assert.deepEqual(S.tracks[id].layoutEras, list.map(e => e.year).sort((a, b) => a - b), id);
+    for (const e of list) if (S.tracks[id].years[e.year]) assert.equal(S.tracks[id].years[e.year].layoutSrc, e.url, `${id} ${e.year}`);
+  }
+  for (const id of Object.keys(S.tracks)) if (!LAYOUT[id]) assert.deepEqual(S.tracks[id].layoutEras, [], id);
+});
+
 test('full resurfacing in FIA notes needs the whole circuit and no corner', () => {
   assert.ok(isFullResurfacing({type: 'resurfacing', corners: [], text: 'The entire circuit has been resurfaced.'}));
   assert.ok(!isFullResurfacing({type: 'resurfacing', corners: [], text: 'Resurfaced the main straight'}));

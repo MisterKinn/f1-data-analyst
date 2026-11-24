@@ -588,7 +588,7 @@
    "streetSrc": "https://www.williamsf1.com/articles/b0625f34-0ae6-4aec-a00a-34d327bce4b6/explained-why-f1-has-more-street-circuits-than-ever-before",
    "altitudeM": 2,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
-   "layoutEra": "first in range",
+   "layoutEra": 2023,
    "coverage": "fia-documented"
   },
   {
@@ -602,7 +602,7 @@
    "streetSrc": "https://www.williamsf1.com/articles/b0625f34-0ae6-4aec-a00a-34d327bce4b6/explained-why-f1-has-more-street-circuits-than-ever-before",
    "altitudeM": 2,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
-   "layoutEra": "first in range",
+   "layoutEra": 2023,
    "coverage": "fia-documented"
   },
   {
@@ -616,7 +616,7 @@
    "streetSrc": "https://www.williamsf1.com/articles/b0625f34-0ae6-4aec-a00a-34d327bce4b6/explained-why-f1-has-more-street-circuits-than-ever-before",
    "altitudeM": 2,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
-   "layoutEra": "first in range",
+   "layoutEra": 2023,
    "coverage": "fia-documented"
   },
   {
@@ -952,7 +952,7 @@
    "streetSrc": "https://www.williamsf1.com/articles/b0625f34-0ae6-4aec-a00a-34d327bce4b6/explained-why-f1-has-more-street-circuits-than-ever-before",
    "altitudeM": 5,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
-   "layoutEra": "first in range",
+   "layoutEra": 2023,
    "coverage": "fia-documented"
   },
   {
@@ -966,7 +966,7 @@
    "streetSrc": "https://www.williamsf1.com/articles/b0625f34-0ae6-4aec-a00a-34d327bce4b6/explained-why-f1-has-more-street-circuits-than-ever-before",
    "altitudeM": 5,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
-   "layoutEra": "first in range",
+   "layoutEra": 2023,
    "coverage": "fia-documented"
   },
   {
@@ -980,7 +980,7 @@
    "streetSrc": "https://www.williamsf1.com/articles/b0625f34-0ae6-4aec-a00a-34d327bce4b6/explained-why-f1-has-more-street-circuits-than-ever-before",
    "altitudeM": 5,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
-   "layoutEra": "first in range",
+   "layoutEra": 2023,
    "coverage": "no-history"
   },
   {
@@ -994,7 +994,7 @@
    "streetSrc": "https://www.williamsf1.com/articles/b0625f34-0ae6-4aec-a00a-34d327bce4b6/explained-why-f1-has-more-street-circuits-than-ever-before",
    "altitudeM": 5,
    "altitudeSrc": "https://open-meteo.com/en/docs/elevation-api (Open-Meteo elevation API (Copernicus DEM GLO-90, 90 m), at worker/lapsim/track-coords.js; read 2026-11-23)",
-   "layoutEra": "first in range",
+   "layoutEra": 2023,
    "coverage": "fia-documented"
   },
   {

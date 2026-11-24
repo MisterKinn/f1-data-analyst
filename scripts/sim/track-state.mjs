@@ -195,6 +195,9 @@ export const LAYOUT = {
     {year: 2023, ...src('https://www.fia.com/news/fia-homologates-updated-layout-2023-fia-formula-1-spanish-grand-prix', '2023-02-27', 'final chicane (T14–T15) removed')}],
   melbourne: [{year: 2022, ...src('https://www.grandprix.com.au/community/circuit-modifications', null, 'geometric circuit modifications (AGPC)')}],
   'yas-marina-circuit': [{year: 2021, ...src('https://www.formula1.com/en/latest/article/revealed-the-track-changes-aimed-at-improving-overtaking-at-abu-dhabis-yas.rejS8Xxbgoom5yPUInsek', '2021-06-24', 'reconfigured (hairpin, T17–T20 radii)')}],
+  // step 25 (2026-11-24): FIA Race Director's notes, "Changes to the Circuit"; the geometry (2025/2026 positions) is the later layout
+  jeddah: [{year: 2023, ...src("https://www.fia.com/sites/default/files/decision-document/2023%20Saudi%20Arabian%20Grand%20Prix%20-%20Race%20Director%27s%20Event%20Notes%20V3.pdf", null, 'T22 starts ~10 m later, T23 moved ~5 m ("the only layout modification", p6)'), read: '2026-11-24'}],
+  miami: [{year: 2023, ...src("https://www.fia.com/sites/default/files/decision-document/2023%20Miami%20Grand%20Prix%20-%20Race%20Director%27s%20Event%20Notes%20V2.pdf", null, '"Adjusted layout of Turn 15" (p6)'), read: '2026-11-24'}],
   singapore: [{year: 2023, ...src('https://www.formula1.com/en/latest/article/singapore-grand-prix-set-to-feature-revised-track-layout-in-2023.6KsrU6hQw3hxrVJ6zKeJ74', '2022-10', 'T16–T19 replaced by a straight')}],
 };
 export const FULL = {
