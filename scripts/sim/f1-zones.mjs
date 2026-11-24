@@ -10,11 +10,13 @@ import {lapsimKernel} from '../../worker/lapsim/kernel.js';
 import {carsFor} from '../../worker/lapsim/scenario.js';
 import {lapsimPitLanes} from '../../worker/lapsim/pit-lane-data.js';
 
-const raw = JSON.parse(readFileSync(new URL('./data/learn/f1-zones-raw.json', import.meta.url), 'utf8'));
+// F1_ZONES_RAW=<file> (step 3 unseen-season gate): read only that raw file, without the extra years, map pictures or drop-in starts below
+const RAW = process.env.F1_ZONES_RAW;
+const raw = JSON.parse(readFileSync(RAW || new URL('./data/learn/f1-zones-raw.json', import.meta.url), 'utf8'));
 // earlier years for circuits whose map of the wanted year is an image (fetch-f1-zones-extra.mjs); the 2025 slot keeps the newest year found
-try { raw.events.push(...JSON.parse(readFileSync(new URL('./data/learn/f1-zones-raw-extra.json', import.meta.url), 'utf8')).events); } catch (e) { /* optional */ }
+if (!RAW) try { raw.events.push(...JSON.parse(readFileSync(new URL('./data/learn/f1-zones-raw-extra.json', import.meta.url), 'utf8')).events); } catch (e) { /* optional */ }
 // zones read from the FIA map pictures (their legend is part of the picture, not text): scripts/sim/data/learn/f1-zones-visual.json
-try { raw.events.push(...JSON.parse(readFileSync(new URL('./data/learn/f1-zones-visual.json', import.meta.url), 'utf8')).events.map(e => ({...e, docs: [{title: e.doc + ' (read from the map picture)', url: e.url || '', lines: e.lines.map(text => ({text}))}]}))); } catch (e) { /* optional */ }
+if (!RAW) try { raw.events.push(...JSON.parse(readFileSync(new URL('./data/learn/f1-zones-visual.json', import.meta.url), 'utf8')).events.map(e => ({...e, docs: [{title: e.doc + ' (read from the map picture)', url: e.url || '', lines: e.lines.map(text => ({text}))}]}))); } catch (e) { /* optional */ }
 // DRS numbers: a digit glued to 'm' is a distance, not the zone number (Lusail 2025 'DRS Activation 305m After Turn 16' read as zone 3)
 // one FIA position: "90m after T15", "40m before T3", "12m after finish line", "Entry/Apex/Mid/Exit (of) T11", "T3 exit", "T1A-entry", "T11"
 // 'entry to turn 10' (Zandvoort 2025) reads as 'entry of T10'
@@ -182,7 +184,7 @@ for (const id of Object.keys(T)) {
 // Corrected official starts (G4, owner 2026-11-21): starts measured on the FIA maps (W7-F drop-in) replace the text-read starts; the
 // site's zone ends of main 378a10a are kept (Sepang 2026 zones 2 and 3 had none: the W7-F ends). Sepang and Madring 2026 have no
 // official turn numbers on the simulator track, so their FIA text cannot be placed: the drop-in makes them documented slots.
-try { const D = JSON.parse(readFileSync(new URL('./data/learn/f1-zones-raw-starts.json', import.meta.url), 'utf8')).zones;
+if (!RAW) try { const D = JSON.parse(readFileSync(new URL('./data/learn/f1-zones-raw-starts.json', import.meta.url), 'utf8')).zones;
   const slots = {}; for (const d of D) (slots[d.track + '|' + d.year] ||= []).push(d);
   for (const [k, ds] of Object.entries(slots)) { const [id, yr] = k.split('|'), y = Number(yr) >= 2026 ? yr : '2025', cur = out[id]?.[y]; if (!T[id] || (cur && cur.year !== Number(yr))) continue;
     const was = cur?.est;

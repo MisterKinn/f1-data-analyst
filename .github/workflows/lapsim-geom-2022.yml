@@ -1,0 +1,53 @@
+name: Lap simulator unseen-season gate, step 0 (F1 2022 inputs)
+
+# claude/gate-geometry-f1-unseen-seasons-prereg-2026-11-24.md (rev 2), step 0: reads the F1 2022 qualifying data (TracingInsights 2022,
+# FastF1) and the 2022 FIA circuit maps, writes the eligible list (layout, wet and DRS rules) before any fit. Raw inputs are saved as
+# the artifact geom-2022-raw (30 days) with a sha256 list; derived output goes to probe/geom-2022-out. No fit runs here.
+on:
+  push:
+    branches: ['probe/geom-2022-step0']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: lapsim-geom-2022
+  cancel-in-progress: true
+
+jobs:
+  step0:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci --ignore-scripts
+      - name: TracingInsights 2022 qualifying (sparse clone)
+        run: |
+          git clone -q --filter=blob:none --no-checkout https://github.com/TracingInsights/2022 .cache/ti/2022
+          git -C .cache/ti/2022 sparse-checkout set --no-cone '/*/Qualifying/*.json' '/*/Qualifying/*/laptimes.json'
+          git -C .cache/ti/2022 checkout -q HEAD
+      - name: FIA 2022 circuit maps (zone text)
+        run: mkdir -p /tmp/raw && LAPSIM_ZONE_YEARS=2022 LAPSIM_ZONES_RAW_OUT=/tmp/raw/f1-zones-raw-2022.json node scripts/sim/learn/fetch-f1-zones.mjs
+      - name: Eligible list (layout, wet and DRS rules; no fit)
+        run: |
+          set -o pipefail; mkdir -p /tmp/out
+          LAPSIM_TI_DIR=.cache/ti F1_ZONES_RAW=/tmp/raw/f1-zones-raw-2022.json node scripts/sim/geom-indep/ti-2022.mjs /tmp/out/ti-2022.json | tee /tmp/out/eligible.txt
+      - name: Raw inputs and sha256 list
+        run: |
+          mkdir -p /tmp/raw/ti && (cd .cache/ti/2022 && git rev-parse HEAD > /tmp/raw/ti/COMMIT && true) && rsync -a --exclude .git .cache/ti/2022/ /tmp/raw/ti/
+          (cd /tmp/raw && find . -type f -print0 | sort -z | xargs -0 sha256sum) > /tmp/out/inputs-sha256.txt
+          echo "raw inputs: $(wc -l < /tmp/out/inputs-sha256.txt) files, list sha256 $(sha256sum /tmp/out/inputs-sha256.txt | cut -c1-16)" | tee -a /tmp/out/eligible.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: geom-2022-raw
+          path: /tmp/raw
+          retention-days: 30
+      - name: Push derived output to the probe branch
+        run: |
+          cd /tmp/out && git init -q -b probe/geom-2022-out && git add -A
+          git -c user.name="kongboda-lapsim[bot]" -c user.email="lapsim@users.noreply.github.com" commit -qm "Unseen-season gate step 0, run ${{ github.run_id }}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" HEAD:refs/heads/probe/geom-2022-out

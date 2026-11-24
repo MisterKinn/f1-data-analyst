@@ -7,9 +7,10 @@ import {lapsimTracks} from '../../../worker/lapsim/tracks-data.js';
 import {eventDocuments, fiaCall} from '../../../worker/fia.js';
 import {eventFor} from '../../../worker/lapsim/names.js';
 
-const FILE = 'scripts/sim/data/learn/f1-zones-raw.json';
-const raw = JSON.parse(await readFile(FILE, 'utf8'));
-const now = new Date().getUTCFullYear(), years = [now, now + 1].filter(y => y >= 2026);
+// LAPSIM_ZONE_YEARS=2022 LAPSIM_ZONES_RAW_OUT=<file> (step 3 unseen-season gate): those seasons into a separate raw file
+const FILE = process.env.LAPSIM_ZONES_RAW_OUT || 'scripts/sim/data/learn/f1-zones-raw.json';
+const raw = process.env.LAPSIM_ZONES_RAW_OUT ? {source: 'FIA event documents (circuit map)', events: []} : JSON.parse(await readFile(FILE, 'utf8'));
+const now = new Date().getUTCFullYear(), years = process.env.LAPSIM_ZONE_YEARS ? process.env.LAPSIM_ZONE_YEARS.split(',').map(Number) : [now, now + 1].filter(y => y >= 2026);
 let changed = 0;
 for (const year of years) for (const id of Object.keys(lapsimTracks)) {
   const name = id === 'madring' ? 'Spanish Grand Prix' : eventFor(id, year); if (!name) continue;
@@ -31,5 +32,5 @@ for (const year of years) for (const id of Object.keys(lapsimTracks)) {
     changed++; console.log(`${year} ${id}: ${doc.title} (${lines.length} rows)`);
   } catch (err) { console.log(`${year} ${id}: ${err.message}`); }
 }
-if (changed) await writeFile(FILE, JSON.stringify(raw) + '\n');
+if (changed || process.env.LAPSIM_ZONES_RAW_OUT) await writeFile(FILE, JSON.stringify(raw) + '\n');
 console.log(`${changed} event(s) updated`);

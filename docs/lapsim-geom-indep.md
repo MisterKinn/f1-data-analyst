@@ -137,6 +137,6 @@ through `.github/lapsim-geom-indep` (read in `lapsim-setup`); no such file = no 
 | Corner bands (median r) | <120 0.971 → 0.892; 120–180 0.862 → 0.784 (+0.079 > 0.068); 180–240 0.906 → 0.891; ≥240 0.978 → 0.969 | **✗** (120–180) |
 
 Reported: F1 median |error| level C 2.62 → 1.37 %, forward-chaining 1.32 → 0.91 %; WEC forward-chaining RMS 0.84 → 2.30 %; grip
-bound hits B Jeddah, Imola → G3 Yas Marina; WEC fold bound hits 30 → 25. Not run: KERB_M ±0.5 m sensitivity, level A.
+bound hits none in either run (BCD bracket 0.7–1.3); drag at its 1.15 bound on 4 → 3 tracks; WEC fold bound hits 30 → 25. Not run: KERB_M ±0.5 m sensitivity, level A.
 Numbers: `scripts/sim/data/geom-indep/results-a3.json`. Third rejection: the idea stops; the flag data stays as a record.
 

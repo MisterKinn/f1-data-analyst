@@ -223,13 +223,19 @@
    "G3": 0.0566
   },
   "boundHits": {
-   "B": [
-    "jeddah",
-    "imola"
+   "gripBracket": [
+    0.7,
+    1.3
    ],
-   "G3": [
-    "yas-marina-circuit"
-   ]
+   "gripB": [],
+   "gripG3": [],
+   "dragBracket": [
+    0.85,
+    1.15
+   ],
+   "dragAtUpperB": 4,
+   "dragAtUpperG3": 3,
+   "note": "corrected 2026-11-24: the first report used the Nelder-Mead bracket 0.85-1.15; the production BCD fitter uses 0.7-1.3"
   }
  },
  "P2": {
