@@ -34,12 +34,12 @@ jobs:
         run: mkdir -p /tmp/raw && LAPSIM_ZONE_YEARS=2022 LAPSIM_ZONES_RAW_OUT=/tmp/raw/f1-zones-raw-2022.json node scripts/sim/learn/fetch-f1-zones.mjs
       - name: Eligible list (layout, wet and DRS rules; no fit)
         run: |
-          mkdir -p /tmp/out
+          set -o pipefail; mkdir -p /tmp/out
           LAPSIM_TI_DIR=.cache/ti F1_ZONES_RAW=/tmp/raw/f1-zones-raw-2022.json node scripts/sim/geom-indep/ti-2022.mjs /tmp/out/ti-2022.json | tee /tmp/out/eligible.txt
       - name: Raw inputs and sha256 list
         run: |
           mkdir -p /tmp/raw/ti && (cd .cache/ti/2022 && git rev-parse HEAD > /tmp/raw/ti/COMMIT && true) && rsync -a --exclude .git .cache/ti/2022/ /tmp/raw/ti/
-          (cd /tmp/raw && find . -type f | sort | xargs sha256sum) > /tmp/out/inputs-sha256.txt
+          (cd /tmp/raw && find . -type f -print0 | sort -z | xargs -0 sha256sum) > /tmp/out/inputs-sha256.txt
           echo "raw inputs: $(wc -l < /tmp/out/inputs-sha256.txt) files, list sha256 $(sha256sum /tmp/out/inputs-sha256.txt | cut -c1-16)" | tee -a /tmp/out/eligible.txt
       - uses: actions/upload-artifact@v4
         with:

@@ -24,7 +24,8 @@ const G3 = Object.keys(lapsimTracks).filter(id => { const e = A3[id]?.eras.find(
 const doc22 = process.env.F1_ZONES_RAW ? (process.env.F1_ZONES_NO_WRITE = '1', (await import('../f1-zones.mjs')).documented) : {};
 const J = f => JSON.parse(readFileSync(f, 'utf8'));
 // a file of the sparse TI checkout; fetched from the repository on first use (git, so the raw input is the commit's blob)
-const file = p => { const f = join(ROOT, p); if (!existsSync(f)) try { execFileSync('git', ['-C', ROOT, 'checkout', 'HEAD', '--', p], {stdio: 'ignore'}); } catch { return null; } return existsSync(f) ? J(f) : null; };
+// (no silent drops: a file that cannot be read is listed and the run stops at the end)
+const failed = [], file = p => { const f = join(ROOT, p); if (!existsSync(f)) try { execFileSync('git', ['-C', ROOT, 'checkout', 'HEAD', '--', p], {stdio: 'ignore'}); } catch { failed.push(p); return null; } return existsSync(f) ? J(f) : (failed.push(p), null); };
 const num = v => v === 'None' || v == null || !Number.isFinite(+v) ? null : +v;
 const eraOf = (id, y) => (lapsimTrackState.tracks[id]?.layoutEras || []).filter(s => s <= y).length;
 const len = id => lapsimTracks[id].kappa.length * lapsimTracks[id].ds;
@@ -39,7 +40,7 @@ for (const id of G3) {
   if (eraOf(id, Y) !== eraOf(id, 2026)) { r.reason = 'layout: 2022 era differs from the G3 source (5a registry)'; continue; }
   const Q = `${ev}/Qualifying`, info = file(`${Q}/session_info.json`), W = file(`${Q}/weather.json`), D = file(`${Q}/drivers.json`)?.drivers || [];
   if (!info || !W || !D.length) { r.reason = 'TI session files missing'; continue; }
-  const laps = D.map(d => ({d, T: file(`${Q}/${d.driver}/laptimes.json`)})).filter(x => x.T);
+  const laps = D.filter(d => existsSync(join(ROOT, Q, d.driver, 'laptimes.json'))).map(d => ({d, T: file(`${Q}/${d.driver}/laptimes.json`)})); // sparse checkout: every driver with laps
   r.rain = W.wR.some(Boolean);
   r.q3Compounds = [...new Set(laps.flatMap(({T}) => T.qs.map((q, i) => q === 'Q3' ? T.compound[i] : null).filter(Boolean)))];
   const wet = r.rain || r.q3Compounds.some(c => /INTER|WET/i.test(c));
@@ -75,15 +76,17 @@ for (const id of G3) {
   if (wet) { r.reason = 'wet: ' + (r.rain ? 'rain in the session' : 'Q3 on ' + r.q3Compounds.join('/')); continue; }
   // DRS zones: 2022 FIA document, else the 2025 FIA zones when the measured 2022 openings match them
   const d = doc22[id]?.['2025'], z25 = lapsimF1Zones.tracks?.[id]?.['2025'], circ = (a, b) => { const x = Math.abs(a - b) % L; return Math.min(x, L - x); };
-  const matches = z => z && !z.est && z.zones.length === r.drsOpen.length && r.drsOpen.every(([a]) => z.zones.some(q => circ(q.from, a) <= DRS_TOL_M));
+  const op = r.drsOpen || [], matches = z => !!z?.zones?.length && !z.est && z.zones.length === op.length && op.every(([a]) => z.zones.some(q => circ(q.from, a) <= DRS_TOL_M));
   if (d && d.year === Y && !d.est) { out.zones[id] = {...d, source: `FIA ${Y} ${d.doc}`}; r.zoneSource = `FIA ${Y} document`; r.zoneCheck = matches(d) ? 'measured openings match' : 'measured openings differ (report only)'; }
   else if (matches(z25)) { out.zones[id] = {...z25, source: `FIA ${z25.year} ${z25.doc}, kept: 2022 measured DRS openings match (count ${z25.zones.length}, starts within ${DRS_TOL_M} m)`}; r.zoneSource = `FIA ${z25.year} (matched by 2022 measured DRS)`; }
-  else { r.reason = `DRS: no 2022 FIA zones and the 2022 openings (${r.drsOpen.length}) do not match the 2025 zones (${z25?.zones.length ?? 0}${z25?.est ? ', estimated' : ''})`; continue; }
+  else { r.reason = `DRS: no 2022 FIA zones and the 2022 openings (${r.drsOpen?.length ?? 'no pole telemetry'}) do not match the 2025 zones (${z25?.zones.length ?? 0}${z25?.est ? ', estimated' : ''})`; continue; }
   if (!trace.length) { r.reason = 'no telemetry'; continue; }
   r.eligible = true; r.laps = trace.length; out.traces.push(...trace);
 }
 out.eligible = Object.keys(out.tracks).filter(id => out.tracks[id].eligible); out.n = out.eligible.length;
 for (const id of Object.keys(out.realTel)) if (!out.tracks[id].eligible) delete out.realTel[id];
+out.failedFiles = failed;
 writeFileSync(OUT, JSON.stringify(out));
 for (const [id, r] of Object.entries(out.tracks)) console.log(id.padEnd(20), r.eligible ? `eligible (${r.laps} laps, pole ${r.pole.driver} ${r.pole.lap}, zones ${r.zoneSource}${r.zoneCheck ? '; ' + r.zoneCheck : ''})` : 'out: ' + r.reason);
 console.log(`n = ${out.n} eligible tracks: ${out.eligible.join(', ')}`);
+if (failed.length) { console.log(`STOP: ${failed.length} TI file(s) could not be read:\n` + failed.join('\n')); process.exit(1); }
