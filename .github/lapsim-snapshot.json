@@ -63,6 +63,11 @@
       {
         "path": "scripts/sim/data/learn/sro-pdf-cars.csv.gz",
         "sha256": "044b56cd306bc2afa85e9f46a0bf15245225d27cfb5eb12b9404269da5ad21d4"
+      },
+      {
+        "path": "scripts/sim/data/learn/noise-split.json.gz",
+        "sha256": "e6aab4fd0c8bcf71e92a234a938ce23d81ae8f83901ae1360e47a4eb37388b44",
+        "source": "github.com/tobi/imsa_data commit 1d7cee75654db2e22d7abf46fbb66ddfb1ae7439 via scripts/sim/learn/noise-split.mjs"
       }
     ]
   }
