@@ -77,7 +77,7 @@ const pdfText = (buf, dir) => { const f = join(dir, 'x.pdf'); writeFileSync(f, b
 export const SESSIONS = {t: ['Qualifying', 'qualifying', 'tl'], r: ['Race', 'race', 'rl']};
 
 if (process.argv[1]?.endsWith('fetch-nls.mjs')) {
-  const TMP = mkdtempSync(join(tmpdir(), 'nls-')), page = await get(ARCHIVE) || '', out = [];
+  const TMP = mkdtempSync(join(tmpdir(), 'nls-')), page = await get(ARCHIVE) || '', out = [], lapsOut = [];
   console.log(`archive page ${page.length} chars, ${(page.match(/ergebnisse\/\d{4}-/g) || []).length} result links`);
   const pdfs = new Set([...page.matchAll(/href=["']([^"']*?\/wp-content\/uploads\/ergebnisse\/(\d{4}-\d{2}-\d{2})([a-z]+)\.pdf)["']/g)].map(m => m[2] + m[3]));
   const dates = [...new Set([...pdfs].map(p => p.slice(0, 10)))].sort();
@@ -88,6 +88,11 @@ if (process.argv[1]?.endsWith('fetch-nls.mjs')) {
     const rt = rb ? pdfText(rb, TMP) : '', event = squeeze(rt.split('\n').find(l => l.trim()) || date), rows = carRows(pdfText(lb, TMP), rt);
     const missing = rows.filter(r => r.officialBest != null && Math.abs(r.lapBest - r.officialBest) > 0.0005).length, del = rows.reduce((a, r) => a + r.deleted, 0), noResult = rows.filter(r => r.pos == null).length;
     for (const r of rows) out.push({series: 'nls', season: +date.slice(0, 4), date, event, session, kind, ...r});
+    // step 36: every listed lap for σ_meas (NLS_LAPS_OUT; raw laps, never committed). Clock = the car's running sum of lap times.
+    if (process.env.NLS_LAPS_OUT) { const cls = new Map(rows.map(r => [r.car, r.cls])), off = new Map(rows.map(r => [r.car, r.officialBest])), laps = [];
+      for (const c of lapByLap(pdfText(lb, TMP))) { let clock = 0, stint = 1, k = 0;
+        for (const l of c.laps) { clock += l.t; k++; laps.push({who: c.car + '|' + l.driver, cls: cls.get(c.car) ?? null, clock, stint, k, y: l.t, pit: !!l.pit, deleted: off.get(c.car) != null && l.t < off.get(c.car) - 0.0005}); if (l.pit) { stint++; k = 0; } } }
+      lapsOut.push({series: 'nls', season: +date.slice(0, 4), event, session, kind, laps}); }
     console.log(`${date} ${event} ${session}: ${rows.length} cars, no result row ${noResult}, deleted laps ${del}, official fastest missing from the lap file ${missing}`);
   }
   // Nürburgring 24h (same timing, 24h-rennen.de results page): the race has a result and a lap-by-lap file
@@ -107,5 +112,6 @@ if (process.argv[1]?.endsWith('fetch-nls.mjs')) {
     source: 'NLS results archive (nuerburgring-langstrecken-serie.de) and the Nürburgring 24h results page (24h-rennen.de), wige SOLUTIONS timing PDFs. Derived numbers only, one row per car and session; the PDFs are not stored.',
     fields: 'best = official fastest lap (result), else quickest listed lap; deleted = listed laps quicker than it (dropped); cleanMedian = median of kept laps within 107% of best; drivers = best and laps per driver',
     fetched: new Date().toISOString().slice(0, 10), rows: out})));
+  if (process.env.NLS_LAPS_OUT) writeFileSync(process.env.NLS_LAPS_OUT, gzipSync(JSON.stringify({source: 'wige SOLUTIONS lap-by-lap PDFs (NLS); raw laps for σ_meas (step 36), never committed', sessions: lapsOut})));
   console.log('rows', out.length);
 }

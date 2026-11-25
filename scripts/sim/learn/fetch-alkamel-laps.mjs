@@ -62,7 +62,7 @@ const csvLinks = (html, base) => [...new Set([...html.matchAll(/href=["']([^"']+
 
 if (process.argv[1]?.endsWith('fetch-alkamel-laps.mjs')) {
   const years = (process.argv.find(a => a.startsWith('--years='))?.slice(8) || '2023,2024,2025,2026').split(',');
-  const out = [], log = [];
+  const out = [], log = [], lapsOut = [], LAPS_OUT = process.env.ALKAMEL_LAPS_OUT, {typedLaps} = await import('./alkamel-full-laps.mjs');
   // every (season, event, CSV links) of a site, from its index pages or its JSON manifests
   async function* eventsOf(s) {
     if (s.manifest) {
@@ -89,6 +89,9 @@ if (process.argv[1]?.endsWith('fetch-alkamel-laps.mjs')) {
           const [a, r, w] = await Promise.all([an, pick(/^03_(Results|Classification)_/i), pick(/^26_Weather/i)].map(u => u ? get(u).then(parseCsv) : []));
           const name = session.replace(/^\d{12}_/, ''), rows = carRows(a, r, w);
           for (const c of rows) out.push({site, season: +season.slice(-4), event: event.replace(/^\d+_/, ''), championship: champ.replace(/^\d+_/, ''), session: name, kind: sessionKind(name), start: session.slice(0, 12), ...c});
+          // step 36: every lap of the session for σ_meas (ALKAMEL_LAPS_OUT; raw laps, kept out of git: draft release only)
+          if (LAPS_OUT) lapsOut.push({series: site, season: +season.slice(-4), event: event.replace(/^\d+_/, ''), session: name, kind: sessionKind(name),
+            laps: typedLaps(a, w).map(l => ({who: l.car + '|' + (l.driverNumber ?? l.driver), cls: l.cls, clock: l.elapsed, stint: l.stint, k: l.stintLap, y: l.time, pit: l.pitIn || l.pitOut, flag: l.flag, rain: l.rain}))});
           log.push(`${season} ${event} ${champ} ${name}: ${rows.length} cars`);
         }
       }
@@ -98,5 +101,6 @@ if (process.argv[1]?.endsWith('fetch-alkamel-laps.mjs')) {
     source: 'Al Kamel Systems published timing (usac.alkamelsystems.com: GT World Challenge America, IGTC Indianapolis 8 Hour; elms.alkamelsystems.com: European Le Mans Series; lemanscup.alkamelsystems.com: Michelin Le Mans Cup; files.alkamelcloud.com manifests: Asian Le Mans Series). One row per car and session; raw files not stored.',
     fields: 'best = fastest lap of any kind; clean = fastest green/finish-flag lap not into the pit lane, with sectors (s) and top speed; officialBest = 03_Results classification',
     fetched: new Date().toISOString().slice(0, 10), rows: out})));
+  if (LAPS_OUT) writeFileSync(LAPS_OUT, gzipSync(JSON.stringify({source: 'Al Kamel analysis CSVs (every lap), sites as above; raw laps for σ_meas (step 36), never committed', sessions: lapsOut})));
   console.log(log.join('\n')); console.log('rows', out.length);
 }

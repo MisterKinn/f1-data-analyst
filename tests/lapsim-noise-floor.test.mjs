@@ -48,3 +48,13 @@ test('σ_meas v2: lap-in-stint and evolution are removed before the spread; laps
   assert.equal(withinDriverV2(L.filter(l => l.who !== 'C')), null);
   assert.equal(checkAlkamel('/nonexistent', 'scripts/sim/data/learn/alkamel-full-laps-manifest.json').ok, 0);
 });
+
+test('per-lap files (NLS, Al Kamel USAC): qualifying first, pit and deleted laps out, SP9 only for NLS', async () => {
+  const {lapFiles} = await import('../scripts/sim/noise-floor.mjs'), {gzipSync} = await import('node:zlib'), {writeFileSync} = await import('node:fs');
+  const laps = ['1', '2', '3'].flatMap(car => [1, 2, 3, 4].map(k => ({who: car + '|A', cls: 'SP9 PRO', clock: 500 * k, stint: 1, k, y: 500 + (k % 2 ? 0.5 : -0.5) + (k === 3 ? 0.3 : 0)})));
+  laps.push({who: '1|A', cls: 'SP9 PRO', clock: 2500, stint: 1, k: 5, y: 480, deleted: true}, {who: '9|B', cls: 'SP3T', clock: 500, stint: 1, k: 1, y: 600});
+  const f = join(mkdtempSync(join(tmpdir(), 'nl-')), 'l.json.gz');
+  writeFileSync(f, gzipSync(JSON.stringify({sessions: [{series: 'nls', season: 2026, event: 'X', session: 'Qualifying', kind: 'qualifying', laps}]})));
+  const r = lapFiles([f]);
+  assert.deepEqual(Object.keys(r).filter(k => k !== 'note'), ['nls gt3 v2']); assert.equal(r['nls gt3 v2'].source.qualifying, 1);
+});
