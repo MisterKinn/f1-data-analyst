@@ -32,6 +32,28 @@ Browser scripts accept `CHROMIUM_EXECUTABLE` and save reports under ignored `.ca
 
 Local Node 22 first-view warm-miss benchmark, 200 repeated Monza/Korean requests: before CPU 2130.688 ms / wall 2219.532 ms; after CPU 0.206 ms / wall 0.216 ms; one fetch in each case. This isolates descriptor preparation and is not a site-wide speedup or a billing forecast. Repeat without other heavy workloads for performance comparisons.
 
+## Public result cache follow-up (2026-11-25)
+
+`cachedPublished` now shares the storage read as well as the upstream load for
+concurrent requests with the same storage binding, key and freshness policy.
+Warm instances retain up to 64 serialized records / 4 MiB (not a process heap
+limit), with an 840,000-byte per-record limit. The existing five-minute TTL is
+unchanged; independent instances do not share memory. Out-of-band public data
+changes may take that TTL to appear. Account data is never cached here.
+
+During a storage outage, verified in-memory data can substitute for the stored
+record. Failed upstream refreshes retain the original timestamp and expire at
+24 hours, including when that boundary is crossed while waiting for upstream.
+Responses are copied so callers cannot mutate another request's cached data.
+This is used by `/api/race-results`, not all website or MCP requests.
+
+Reproduce with `node scripts/benchmark-public-cache.mjs /path/to/baseline`
+using baseline `170670e` (or unchanged cache module at `40e4032`). With a
+synthetic 5ms storage read, 100 warm calls required 100 → 0 storage reads;
+20 simultaneous cold calls required 20 → 1. These are deterministic operation
+counts, not measured production bills or a guarantee of lower latency on every
+request. The cache still needs a storage read on cold starts and TTL expiry.
+
 ## Remaining work, in order
 
 1. Deployment is authorized after regression and browser verification. Check Preview static content types/cache headers, auth rewrites and MCP before merging. After Production, compare Firestore reads/writes and Vercel CPU over equivalent traffic windows. Real Google sign-in/logout needs an authenticated user; unauthenticated browser entry is not equivalent to completing login.
