@@ -24,6 +24,11 @@ jobs:
         with:
           python-version: '3.11'
       - run: npm ci
+      # workflow lint: actionlint (pinned) + shellcheck at error level (19 info/style/warning findings in 5 lapsim workflows are known, not blocking)
+      - name: actionlint
+        run: |
+          curl -sSL https://github.com/rhysd/actionlint/releases/download/v1.7.7/actionlint_1.7.7_linux_amd64.tar.gz | tar xz actionlint
+          SHELLCHECK_OPTS=--severity=error ./actionlint -color && rm actionlint
       - run: python -m pip install -r collector/requirements.txt
       - run: python -m pip install -r discord-bot/requirements.txt
       - run: node --test tests/*.test.mjs

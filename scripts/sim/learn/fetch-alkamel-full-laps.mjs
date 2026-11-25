@@ -5,7 +5,7 @@
 // Raw files stay out of git (physics rule 9): each is gzipped into .cache/alkamel-full-laps/ and the workflow uploads the folder as a
 // draft release asset. Committed: the manifest (URL, fetch date, checksum, rows, columns, laps per car) and the coverage table.
 // Polite: robots.txt is read per host, one request at a time, at least GAP ms apart; files already in the manifest are not fetched again.
-//   node scripts/sim/learn/fetch-alkamel-full-laps.mjs [--years=2023,2024,2025] [--series=wec,elms,imsa]
+//   node scripts/sim/learn/fetch-alkamel-full-laps.mjs [--years=2023,2024,2025] [--series=wec,elms,imsa] [--imsa=daytona|all]
 import {mkdirSync, writeFileSync, readFileSync, existsSync} from 'node:fs';
 import {gzipSync, gunzipSync} from 'node:zlib';
 import {createHash} from 'node:crypto';
@@ -68,7 +68,9 @@ async function* candidates(series, years) {
       yield a.files.filter(f => f.folders[1] === 'FIA WEC' && f.format === 'csv').map(f => ({series, season: +y, event: f.folders[0], title: f.title, url: alkamelUrl(f.url)})); }
     return;
   }
-  const champ = series === 'elms' ? /European Le Mans Series/i : /WeatherTech/i, event = series === 'elms' ? () => true : n => /daytona/i.test(n) && !/roar|test/i.test(n);
+  // IMSA: Daytona 24 by default; --imsa=all adds every WeatherTech event (step 34/36 σ_meas: qualifying and practice only, see below)
+  const imsaAll = arg('imsa', 'daytona')[0] === 'all';
+  const champ = series === 'elms' ? /European Le Mans Series/i : /WeatherTech/i, event = series === 'elms' ? () => true : n => (imsaAll || /daytona/i.test(n)) && !/roar|test/i.test(n);
   for (const s of (await officialArchive(series)).seasons) { const y = inYears(s.id + ' ' + s.name); if (!y) continue;
     for (const ev of (await officialArchive(series, s.id)).events.filter(e => event(e.name))) {
       const {files} = await officialArchive(series, s.id, ev.id);
@@ -84,6 +86,7 @@ if (process.argv[1]?.endsWith('fetch-alkamel-full-laps.mjs')) {
     try {
       for await (const batch of candidates(series, years)) for (const f of pickFiles(batch)) {
         if (have.has(f.url)) continue;
+        if (f.series === 'imsa' && !/daytona/i.test(f.event) && sessionKind(f.session) === 'race') continue;   // σ_meas never reads races
         try {
           const {bytes, lastModified, etag} = await get(f.url), rows = csvRows(bytes.toString('utf8'));
           const path = [f.series, f.season, f.event, f.start + '_' + f.session, f.file + '.csv.gz'].join('/').replace(/[^\w./ -]/g, '_');

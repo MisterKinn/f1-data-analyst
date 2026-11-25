@@ -157,6 +157,29 @@ export async function alkamel(store) {
   return {note: 'within-driver σ per event (practice + qualifying, dry, green, no pit laps); bands by FIA rating of the lap\'s driver (driver-ratings.json.gz, name match): PG Platinum/Gold, SB Silver/Bronze; codriver = best laps of drivers of one car (contains skill)', ...out};
 }
 
+// ---------- Timing71 per-lap rows (SRO GT World Challenge, DTM, NLS, … ; artifacts laps-t71-* of lapsim-laps run 42927630531) ----------
+// σ_meas v2 with the same rule as Al Kamel: per series key × class, per event qualifying if it gives a value, else practice
+// (driver × stint, lap-in-stint covariate); t = tEnd (session clock), dry, green, no pit laps (row flags q).
+const T71_BAD = /^(no_time|pit_in|pit_out|not_green|deleted|wet_lap|wet_session|inaccurate|sim)$/;
+export function t71(dir) {
+  if (!dir || !existsSync(dir)) return {note: 'Timing71 lap rows not present in this run: not measured'};
+  const files = d => readdirSync(d, {withFileTypes: true}).flatMap(e => e.isDirectory() ? files(join(d, e.name)) : /\.ndjson(\.gz)?$/.test(e.name) ? [join(d, e.name)] : []);
+  const ses = new Map();
+  for (const f of files(dir)) { const text = f.endsWith('.gz') ? gunzipSync(readFileSync(f)).toString() : readFileSync(f, 'utf8');
+    for (const line of text.split('\n')) { if (!line) continue; let r; try { r = JSON.parse(line); } catch { continue; }
+      if (!['Q', 'P'].includes(r.sessionType) || !(r.time > 0) || !Number.isFinite(r.tEnd) || (r.q || []).some(x => T71_BAD.test(x))) continue;
+      const k = [r.series, r.cls || '–', r.season, r.event, r.sessionType, r.rid || r.session].join('|'); (ses.get(k) || ses.set(k, []).get(k)).push(r); } }
+  const ev = new Map();
+  for (const [k, rows] of ses) { const [ser, cls, season, event, type] = k.split('|'), q = type === 'Q', t0 = Math.min(...rows.map(r => r.tEnd));
+    const w = withinDriverV2(rows.map(r => ({who: r.entry + '|' + (r.driver || '') + (q ? '' : '|' + r.stint), t: r.tEnd - t0, k: q ? 0 : r.stintLap, y: r.time})));
+    if (w) { const e = [ser, cls, season, event].join('|'), slot = ev.get(e) || ev.set(e, {Q: [], P: []}).get(e); slot[type].push(...w.res); } }
+  const out = {}, keys = new Set([...ev.keys()].map(e => e.split('|').slice(0, 2).join(' ')));
+  for (const key of keys) { const v = [], src = {qualifying: 0, practice: 0};
+    for (const [e, s] of ev) { if (e.split('|').slice(0, 2).join(' ') !== key) continue; const r = s.Q.length ? s.Q : s.P; if (!r.length) continue; src[s.Q.length ? 'qualifying' : 'practice']++; v.push(robustSd(r)); }
+    if (v.length) out[`${key} v2`] = {...summary(v), source: src}; }
+  return {note: 'σ_meas v2 per Timing71 series key × class (median over events, % lap); rows from the laps-t71-* artifacts of run 42927630531', ...out};
+}
+
 // ---------- WEC / IMSA / ELMS / Asian LMS without lap files: best ÷ ideal (own best sectors) − 1 per car-session (endurance-cars.csv.gz) ----------
 // A one-sided proxy. σ_meas is estimated by the F1 ratio σ ÷ proxy measured on the same quantities (assumption: the ratio transfers).
 export function idealProxy(dir = 'scripts/sim/data/learn') {
@@ -197,7 +220,7 @@ if (process.argv[1]?.endsWith('noise-floor.mjs')) {
   if (arg('--check-alkamel')) { const c = checkAlkamel(arg('--check-alkamel')); console.log(`Al Kamel content check: ${c.ok}/${c.files} files match the manifest sha256`); if (c.bad.length) { console.error(c.bad.slice(0, 20).join('\n')); process.exit(1); } process.exit(0); }
   const out = arg('--out', 'out/noise'), ti = arg('--ti'); mkdirSync(out, {recursive: true});
   const res = {generated: new Date().toISOString(), definition: 'σ_meas = within-driver robust SD of push laps (≤102 % of own best) in one session after a linear evolution slope; % of lap; median over events, 90 % CI by event bootstrap (seed 7)',
-    f1: ti ? f1(ti) : {note: 'no --ti: not measured'}, f1Sectors: await f1Sectors(), fe: fe(), nls: nls(), alkamel: await alkamel(arg('--alkamel')), idealProxy: idealProxy(), gt3Bop: gt3Bop()};
+    f1: ti ? f1(ti) : {note: 'no --ti: not measured'}, f1Sectors: await f1Sectors(), fe: fe(), nls: nls(), alkamel: await alkamel(arg('--alkamel')), t71: t71(arg('--t71')), idealProxy: idealProxy(), gt3Bop: gt3Bop()};
   writeFileSync(join(out, 'noise-floor.json'), JSON.stringify(res, null, 1));
   const line = (n, s) => s?.n ? `| ${n} | ${s.median} | ${s.ci90.join(' – ')} | ${s.n} |` : `| ${n} | – | – | 0 |`, L = ['| Quantity | median | 90 % CI | events |', '|---|---|---|---|'];
   if (res.f1.sigmaPct) L.push(line('F1 within-driver σ v1 (% lap)', res.f1.sigmaPct), line('F1 within-driver σ v2 (% lap)', res.f1.sigmaPctV2), line('F1 within-driver σ (s)', res.f1.sigmaS), ...['s1', 's2', 's3'].map(s => line(`F1 ${s} σ (% lap)`, res.f1.sectorPctOfLap[s])), line('F1 team-mate σ (% lap, contains skill)', res.f1.teammatePct));
@@ -206,6 +229,7 @@ if (process.argv[1]?.endsWith('noise-floor.mjs')) {
   L.push(`| F1 sector share error RMS s1/s2/s3 (% lap, diagnostic; held-out n ${res.f1Sectors.heldOut.n}) | ${res.f1Sectors.heldOut.rmsSharePctOfLap.join(' / ')} | all n ${res.f1Sectors.all.n}: ${res.f1Sectors.all.rmsSharePctOfLap.join(' / ')} | – |`);
   L.push(line('FE within-driver σ v1 (duels, % lap)', res.fe.sigmaPct), line('FE within-driver σ v2 (duels, % lap)', res.fe.sigmaPctV2), line('FE team-mate σ (% lap, contains skill)', res.fe.teammatePct));
   for (const k of ['SP9 PRO', 'SP9 PRO-AM', 'SP9 all']) L.push(line(`NLS ${k} co-driver σ (% lap, contains skill)`, res.nls[k].codriverPct), line(`NLS ${k} clean median ÷ best − 1 (%)`, res.nls[k].cleanMedianOverBestPct));
+  for (const [k, v] of Object.entries(res.t71)) if (v?.n) L.push(line(`Timing71 ${k} (q ${v.source.qualifying} / p ${v.source.practice}) (% lap)`, v));
   for (const [k, v] of Object.entries(res.alkamel)) if (v?.n) L.push(line(`Al Kamel ${k}${/v2$/.test(k) ? ` (q ${v.source.qualifying} / p ${v.source.practice})` : / (all|PG|SB)$/.test(k) ? ' v1' : ''} (% lap)`, v));
   L.push('', '| BoP body | cases | σ_level (s) | σ_Δ (s) | robust σ_Δ (s) | data limit (> 0.1 s) |', '|---|---|---|---|---|---|', ...Object.entries(res.gt3Bop).filter(([k]) => k !== 'note').map(([b, v]) => `| ${b} | ${v.cases} | ${v.sigmaLevelS ?? '–'} | ${v.sigmaDeltaS ?? '–'} | ${v.robustSigmaDeltaS ?? '–'} | ${v.dataLimit ?? '–'} |`));
   writeFileSync(join(out, 'noise-floor.md'), L.join('\n') + '\n'); console.log(L.join('\n'));
