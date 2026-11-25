@@ -162,20 +162,21 @@ export async function alkamel(store) {
 // (driver × stint, lap-in-stint covariate); t = tEnd (session clock), dry, green, no pit laps (row flags q).
 const T71_BAD = /^(no_time|pit_in|pit_out|not_green|deleted|wet_lap|wet_session|inaccurate|sim)$/;
 export function t71(dir) {
+  const SEP = '\u0001'; // event names carry '|' ("Asian Le Mans Series | 4 Hours of Dubai")
   if (!dir || !existsSync(dir)) return {note: 'Timing71 lap rows not present in this run: not measured'};
   const files = d => readdirSync(d, {withFileTypes: true}).flatMap(e => e.isDirectory() ? files(join(d, e.name)) : /\.ndjson(\.gz)?$/.test(e.name) ? [join(d, e.name)] : []);
   const ses = new Map();
   for (const f of files(dir)) { const text = f.endsWith('.gz') ? gunzipSync(readFileSync(f)).toString() : readFileSync(f, 'utf8');
     for (const line of text.split('\n')) { if (!line) continue; let r; try { r = JSON.parse(line); } catch { continue; }
       if (!['Q', 'P'].includes(r.sessionType) || !(r.time > 0) || !Number.isFinite(r.tEnd) || (r.q || []).some(x => T71_BAD.test(x))) continue;
-      const k = [r.series, r.cls || '–', r.season, r.event, r.sessionType, r.rid || r.session].join('|'); (ses.get(k) || ses.set(k, []).get(k)).push(r); } }
+      const k = [r.series, r.cls || '–', r.season, r.event, r.sessionType, r.rid || r.session].join(SEP); (ses.get(k) || ses.set(k, []).get(k)).push(r); } }
   const ev = new Map();
-  for (const [k, rows] of ses) { const [ser, cls, season, event, type] = k.split('|'), q = type === 'Q', t0 = Math.min(...rows.map(r => r.tEnd));
+  for (const [k, rows] of ses) { const [ser, cls, season, event, type] = k.split(SEP), q = type === 'Q', t0 = Math.min(...rows.map(r => r.tEnd));
     const w = withinDriverV2(rows.map(r => ({who: r.entry + '|' + (r.driver || '') + (q ? '' : '|' + r.stint), t: r.tEnd - t0, k: q ? 0 : r.stintLap, y: r.time})));
-    if (w) { const e = [ser, cls, season, event].join('|'), slot = ev.get(e) || ev.set(e, {Q: [], P: []}).get(e); slot[type].push(...w.res); } }
-  const out = {}, keys = new Set([...ev.keys()].map(e => e.split('|').slice(0, 2).join(' ')));
+    if (w) { const e = [ser, cls, season, event].join(SEP), slot = ev.get(e) || ev.set(e, {Q: [], P: []}).get(e); slot[type].push(...w.res); } }
+  const out = {}, keys = new Set([...ev.keys()].map(e => e.split(SEP).slice(0, 2).join(' ')));
   for (const key of keys) { const v = [], src = {qualifying: 0, practice: 0};
-    for (const [e, s] of ev) { if (e.split('|').slice(0, 2).join(' ') !== key) continue; const r = s.Q.length ? s.Q : s.P; if (!r.length) continue; src[s.Q.length ? 'qualifying' : 'practice']++; v.push(robustSd(r)); }
+    for (const [e, s] of ev) { if (e.split(SEP).slice(0, 2).join(' ') !== key) continue; const r = s.Q.length ? s.Q : s.P; if (!r.length) continue; src[s.Q.length ? 'qualifying' : 'practice']++; v.push(robustSd(r)); }
     if (v.length) out[`${key} v2`] = {...summary(v), source: src}; }
   return {note: 'σ_meas v2 per Timing71 series key × class (median over events, % lap); rows from the laps-t71-* artifacts of run 42927630531', ...out};
 }
@@ -213,11 +214,21 @@ export function gt3Bop(dir = 'scripts/sim/data/learn') {
 
 // content pin (central 2026-11-25): every manifest file present with the sha256 of its raw bytes; the tarball hash is not the pin
 export function checkAlkamel(store, manifest = 'scripts/sim/data/learn/alkamel-full-laps-manifest.json') {
-  const files = JSON.parse(readFileSync(manifest, 'utf8')).files, bad = files.filter(f => !existsSync(join(store, f.path)) || createHash('sha256').update(gunzipSync(readFileSync(join(store, f.path)))).digest('hex') !== f.sha256);
+  // a file the copy holds must match its sha256 (else the job fails); a file it does not hold yet (a copy not refetched after a
+  // manifest addition) is listed and its sessions are not measured, so a copy never runs against content other than the pin
+  const files = JSON.parse(readFileSync(manifest, 'utf8')).files, missing = files.filter(f => !existsSync(join(store, f.path)));
+  const bad = files.filter(f => existsSync(join(store, f.path)) && createHash('sha256').update(gunzipSync(readFileSync(join(store, f.path)))).digest('hex') !== f.sha256);
+  return {files: files.length, ok: files.length - bad.length - missing.length, bad: bad.map(f => f.path), missing: missing.map(f => f.path)};
+}
+// all-laps copy (step 36): every manifest file under <prefix> present in <dir> with the sha256 of its bytes
+export function checkFiles(dir, manifest, prefix = '') {
+  const files = JSON.parse(readFileSync(manifest, 'utf8')).manifest.filter(f => f.path.startsWith(prefix));
+  const bad = files.filter(f => !existsSync(join(dir, f.path)) || createHash('sha256').update(readFileSync(join(dir, f.path))).digest('hex') !== f.sha256);
   return {files: files.length, ok: files.length - bad.length, bad: bad.map(f => f.path)};
 }
 if (process.argv[1]?.endsWith('noise-floor.mjs')) {
-  if (arg('--check-alkamel')) { const c = checkAlkamel(arg('--check-alkamel')); console.log(`Al Kamel content check: ${c.ok}/${c.files} files match the manifest sha256`); if (c.bad.length) { console.error(c.bad.slice(0, 20).join('\n')); process.exit(1); } process.exit(0); }
+  if (arg('--check-alkamel')) { const c = checkAlkamel(arg('--check-alkamel')); console.log(`Al Kamel content check: ${c.ok}/${c.files} files match the manifest sha256${c.missing.length ? `; ${c.missing.length} not in this copy yet (their sessions are not measured): ${c.missing.slice(0, 5).join(', ')}…` : ''}`); if (c.bad.length) { console.error(c.bad.slice(0, 20).join('\n')); process.exit(1); } process.exit(0); }
+  if (arg('--check-files')) { const c = checkFiles(arg('--check-files'), arg('--manifest'), arg('--prefix', '')); console.log(`content check: ${c.ok}/${c.files} files match ${arg('--manifest')}`); if (c.bad.length || !c.files) { console.error(c.bad.slice(0, 20).join('\n') || 'no file of the manifest under this prefix'); process.exit(1); } process.exit(0); }
   const out = arg('--out', 'out/noise'), ti = arg('--ti'); mkdirSync(out, {recursive: true});
   const res = {generated: new Date().toISOString(), definition: 'σ_meas = within-driver robust SD of push laps (≤102 % of own best) in one session after a linear evolution slope; % of lap; median over events, 90 % CI by event bootstrap (seed 7)',
     f1: ti ? f1(ti) : {note: 'no --ti: not measured'}, f1Sectors: await f1Sectors(), fe: fe(), nls: nls(), alkamel: await alkamel(arg('--alkamel')), t71: t71(arg('--t71')), idealProxy: idealProxy(), gt3Bop: gt3Bop()};

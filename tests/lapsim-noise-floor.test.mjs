@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtempSync, mkdirSync, writeFileSync} from 'node:fs';
+import {mkdtempSync, mkdirSync, writeFileSync, readFileSync} from "node:fs";
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
 import {withinDriver, robustSd, pairSigma, summary, f1} from '../scripts/sim/noise-floor.mjs';
@@ -59,4 +59,23 @@ test('Timing71 σ_meas v2: per series × class, qualifying first, pit and wet la
   const r = t71(d)['gtwce PRO v2'];
   assert.equal(r.n, 3); assert.deepEqual(r.source, {qualifying: 3, practice: 0}); assert.ok(r.median > 0 && r.median < 0.2);
   assert.match(t71(join(d, 'none')).note, /not measured/);
+});
+
+test('content checks: a changed file is "bad" (job fails), a file a copy does not hold yet is "missing" (listed, not measured)', async () => {
+  const {checkAlkamel, checkFiles} = await import('../scripts/sim/noise-floor.mjs'), {gzipSync} = await import('node:zlib'), {dirname} = await import('node:path');
+  const M = JSON.parse(readFileSync('scripts/sim/data/learn/alkamel-full-laps-manifest.json', 'utf8')).files, store = mkdtempSync(join(tmpdir(), 'ak-'));
+  mkdirSync(dirname(join(store, M[0].path)), {recursive: true}); writeFileSync(join(store, M[0].path), gzipSync('not the file'));
+  const c = checkAlkamel(store); assert.deepEqual(c.bad, [M[0].path]); assert.equal(c.missing.length, M.length - 1); assert.equal(c.ok, 0);
+  // all-laps copy: every file under the prefix must be there with its sha256
+  const A = JSON.parse(readFileSync('scripts/sim/data/learn/all-laps-2026-11-11-manifest.json', 'utf8')), t71 = A.manifest.filter(f => f.path.startsWith('laps-t71-'));
+  assert.ok(t71.length > 0 && A.tars.length === A.artifacts);
+  const r = checkFiles(store, 'scripts/sim/data/learn/all-laps-2026-11-11-manifest.json', 'laps-t71-'); assert.equal(r.files, t71.length); assert.equal(r.ok, 0);
+});
+
+test('Timing71 rows: an event name with "|" does not break the session keys', async () => {
+  const {t71} = await import('../scripts/sim/noise-floor.mjs'), dir = mkdtempSync(join(tmpdir(), 't71-'));
+  const rows = ['1', '2', '3'].flatMap(entry => [1, 2, 3].map(i => ({series: 'alms', cls: 'GT', season: 2026, event: 'Asian Le Mans Series | 4 Hours of Dubai', sessionType: 'Q', rid: 'x',
+    entry, driver: 'D' + entry, tEnd: 100 * i, time: 120 + (i === 2 ? 0.1 : -0.05), stint: 1, stintLap: i, q: []})));
+  writeFileSync(join(dir, 'a.ndjson'), rows.map(r => JSON.stringify(r)).join('\n'));
+  const r = t71(dir); assert.deepEqual(Object.keys(r).filter(k => k !== 'note'), ['alms GT v2']);
 });

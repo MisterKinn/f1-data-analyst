@@ -202,8 +202,14 @@ jobs:
           if [ -n "$id" ]; then mkdir -p .cache && gh api -H 'Accept: application/octet-stream' "repos/${{ github.repository }}/releases/assets/$id" > .cache/alkamel-full-laps.tar
             tar -xf .cache/alkamel-full-laps.tar -C .cache && node scripts/sim/noise-floor.mjs --check-alkamel .cache/alkamel-full-laps && A='--alkamel .cache/alkamel-full-laps'
           else echo "::notice::no data-alkamel-full-laps release here: Al Kamel within-driver σ not measured"; fi
-          # Timing71 per-lap rows (SRO GT3, DTM, NLS …): artifacts laps-t71-* of the lapsim-laps run 42927630531 on the fork (research copy; expire 2026-12-11; upstream has none and says so)
-          T=''; if gh run download 42927630531 -R kangjeongmin1229/f1-data-analyst-deploy -p 'laps-t71-*' -D .cache/t71-rows 2>/dev/null; then T='--t71 .cache/t71-rows'; else echo "::notice::Timing71 lap rows not downloadable: not measured"; fi
+          # Timing71 per-lap rows (SRO GT3, DTM, NLS …): the laps-t71-* artifacts of run 42927630531, kept in the draft release allLaps.tag (they
+          # expired as artifacts on 2026-12-11); every file checked against the per-file manifest. A repo that cannot see the draft says not measured.
+          T=''; AL=$(jq -r .allLaps.repo $P); mkdir -p .cache/t71-rows
+          echo "$(jq -r .allLaps.manifest_sha256 $P)  $(jq -r .allLaps.manifest $P)" | sha256sum --check
+          ids=$(gh api "repos/$AL/releases?per_page=100" -q ".[] | select(.tag_name==\"$(jq -r .allLaps.tag $P)\") | .assets[] | select(.name|test(\"^laps-t71-.*[.]tar$\")) | .id" 2>/dev/null || true)
+          if [ -n "$ids" ]; then for id in $ids; do gh api -H 'Accept: application/octet-stream' "repos/$AL/releases/assets/$id" | tar -x -C .cache/t71-rows; done
+            node scripts/sim/noise-floor.mjs --check-files .cache/t71-rows --manifest "$(jq -r .allLaps.manifest $P)" --prefix laps-t71- && T='--t71 .cache/t71-rows'
+          else echo "::notice::Timing71 lap rows (release $(jq -r .allLaps.tag $P) of $AL) not readable here: not measured"; fi
           node scripts/sim/noise-floor.mjs --ti ti/ti $A $T --out noise | tee -a "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         with: {name: noise-floor, path: noise/, retention-days: 90}

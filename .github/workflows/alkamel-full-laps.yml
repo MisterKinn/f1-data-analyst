@@ -50,7 +50,9 @@ jobs:
           { echo "### Al Kamel full laps"; tail -1 .cache/alkamel-full.log; du -h .cache/alkamel-full-laps.tar; } >> "$GITHUB_STEP_SUMMARY"
       - name: Publish the manifest and coverage table (checks first)
         run: |
+          # the noise job's content pin moves in the same commit as the manifest (step 36)
+          node scripts/sim/learn/pin-alkamel-manifest.mjs
           scripts/publish-refresh.sh -k -m "Al Kamel full lap files: manifest and coverage (raw files in the draft release)" \
-            -g "node scripts/sim/learn/fetch-alkamel-full-laps.mjs" -b lapsim-learn/alkamel-full-laps \
+            -g "node scripts/sim/learn/fetch-alkamel-full-laps.mjs && node scripts/sim/learn/pin-alkamel-manifest.mjs" -b lapsim-learn/alkamel-full-laps \
             -c "node scripts/refresh-changed.mjs scripts/sim/data/learn/alkamel-full-laps-manifest.json" \
-            -- scripts/sim/data/learn/alkamel-full-laps-manifest.json docs/lapsim-alkamel-laps.md
+            -- scripts/sim/data/learn/alkamel-full-laps-manifest.json docs/lapsim-alkamel-laps.md .github/lapsim-snapshot.json

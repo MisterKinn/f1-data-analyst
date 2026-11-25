@@ -65,23 +65,34 @@
     "alkamel": {
       "pin": "content: every file of the manifest must match its sha256 (raw bytes, before gzip); the tarball hash is not the pin",
       "manifest": "scripts/sim/data/learn/alkamel-full-laps-manifest.json",
-      "manifest_sha256": "9100f1f65f7726514e90f46760e7b91ed28525889043e9ba5d461d8c54dae3cb",
+      "manifest_sha256": "13f6b3eb3540bee9f20bd5fc8e561c491167665fe776aa169717e260217d22f4",
       "tag": "data-alkamel-full-laps",
       "copies": {
         "production": {
           "repo": "MisterKinn/f1-data-analyst",
           "draft": true,
           "tar_sha256": "6656d16e8fc7e0a1b00de5817b79f2256641db2bc9cbc92cea56fac9e608f375",
-          "made_by": "alkamel-full-laps.yml, 2026-11-23"
+          "made_by": "alkamel-full-laps.yml, 2026-11-23",
+          "note": "refetched with every IMSA WeatherTech event by alkamel-full-laps.yml (commit fe425be): 912 files"
         },
         "research": {
           "repo": "kangjeongmin1229/f1-data-analyst-deploy",
           "draft": true,
-          "tar_sha256": "333810e1778b571b954403008b15312e709fb2aa087064c6b79f1fdfd1cf0ab0",
-          "made_by_run": 45533609115
+          "tar_sha256": "8a3ca2daf8a49ab9229336755a279c609090f57111da2d694dbd11cbdc268801",
+          "made_by_run": 45549362083,
+          "note": "912 files; every file has the sha256 of the upstream manifest (checked 912/912)"
         }
       },
       "note": "Each repo reads its own draft (upstream = production, fork = research). Raw files, drafts only (physics rule 9)."
     }
+  },
+  "allLaps": {
+    "note": "step 36 (central 14:27 item 1): the per-lap artifacts of 'Lap simulator all-laps dataset' run 42927630531 (laps-t71-*, laps-wec, laps-f1; expiry 2026-12-11) copied to a DRAFT release before expiry; one tar per artifact. Pin = content: per-file sha256 manifest (6117 files, 43 artifacts) checked after extraction.",
+    "repo": "kangjeongmin1229/f1-data-analyst-deploy",
+    "tag": "data-all-laps-2026-11-11",
+    "made_by_run": 45554266327,
+    "manifest": "scripts/sim/data/learn/all-laps-2026-11-11-manifest.json",
+    "manifest_sha256": "2edd51b284e384f517b83f69b1d20e029b51773338ef5d0861554eca7dc8c33c",
+    "upstream": "no upstream copy yet (this session has no upstream token): an upstream run reports Timing71 σ_meas as not measured until the owner copies the draft assets upstream; the manifest check is the same"
   }
 }
