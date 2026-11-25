@@ -213,11 +213,21 @@ export function gt3Bop(dir = 'scripts/sim/data/learn') {
 
 // content pin (central 2026-11-25): every manifest file present with the sha256 of its raw bytes; the tarball hash is not the pin
 export function checkAlkamel(store, manifest = 'scripts/sim/data/learn/alkamel-full-laps-manifest.json') {
-  const files = JSON.parse(readFileSync(manifest, 'utf8')).files, bad = files.filter(f => !existsSync(join(store, f.path)) || createHash('sha256').update(gunzipSync(readFileSync(join(store, f.path)))).digest('hex') !== f.sha256);
+  // a file the copy holds must match its sha256 (else the job fails); a file it does not hold yet (a copy not refetched after a
+  // manifest addition) is listed and its sessions are not measured, so a copy never runs against content other than the pin
+  const files = JSON.parse(readFileSync(manifest, 'utf8')).files, missing = files.filter(f => !existsSync(join(store, f.path)));
+  const bad = files.filter(f => existsSync(join(store, f.path)) && createHash('sha256').update(gunzipSync(readFileSync(join(store, f.path)))).digest('hex') !== f.sha256);
+  return {files: files.length, ok: files.length - bad.length - missing.length, bad: bad.map(f => f.path), missing: missing.map(f => f.path)};
+}
+// all-laps copy (step 36): every manifest file under <prefix> present in <dir> with the sha256 of its bytes
+export function checkFiles(dir, manifest, prefix = '') {
+  const files = JSON.parse(readFileSync(manifest, 'utf8')).manifest.filter(f => f.path.startsWith(prefix));
+  const bad = files.filter(f => !existsSync(join(dir, f.path)) || createHash('sha256').update(readFileSync(join(dir, f.path))).digest('hex') !== f.sha256);
   return {files: files.length, ok: files.length - bad.length, bad: bad.map(f => f.path)};
 }
 if (process.argv[1]?.endsWith('noise-floor.mjs')) {
-  if (arg('--check-alkamel')) { const c = checkAlkamel(arg('--check-alkamel')); console.log(`Al Kamel content check: ${c.ok}/${c.files} files match the manifest sha256`); if (c.bad.length) { console.error(c.bad.slice(0, 20).join('\n')); process.exit(1); } process.exit(0); }
+  if (arg('--check-alkamel')) { const c = checkAlkamel(arg('--check-alkamel')); console.log(`Al Kamel content check: ${c.ok}/${c.files} files match the manifest sha256${c.missing.length ? `; ${c.missing.length} not in this copy yet (their sessions are not measured): ${c.missing.slice(0, 5).join(', ')}…` : ''}`); if (c.bad.length) { console.error(c.bad.slice(0, 20).join('\n')); process.exit(1); } process.exit(0); }
+  if (arg('--check-files')) { const c = checkFiles(arg('--check-files'), arg('--manifest'), arg('--prefix', '')); console.log(`content check: ${c.ok}/${c.files} files match ${arg('--manifest')}`); if (c.bad.length || !c.files) { console.error(c.bad.slice(0, 20).join('\n') || 'no file of the manifest under this prefix'); process.exit(1); } process.exit(0); }
   const out = arg('--out', 'out/noise'), ti = arg('--ti'); mkdirSync(out, {recursive: true});
   const res = {generated: new Date().toISOString(), definition: 'σ_meas = within-driver robust SD of push laps (≤102 % of own best) in one session after a linear evolution slope; % of lap; median over events, 90 % CI by event bootstrap (seed 7)',
     f1: ti ? f1(ti) : {note: 'no --ti: not measured'}, f1Sectors: await f1Sectors(), fe: fe(), nls: nls(), alkamel: await alkamel(arg('--alkamel')), t71: t71(arg('--t71')), idealProxy: idealProxy(), gt3Bop: gt3Bop()};
