@@ -1,3 +1,4 @@
+import {storageDomain} from './storage-domains.js';
 const ROOT='live/diagnostics/';
 const ID=/^[0-9]{1,12}$/,RUN=/^[a-f0-9-]{36}$/i;
 export const METRICS=['process_cpu_percent_one_core','cgroup_cpu_percent_of_quota','cpu_quota_cores','cgroup_throttled_seconds','rss_bytes','callback_count','callback_mean_ms','callback_max_ms','timing_source_lag_seconds','clock_source_lag_seconds','out_of_order_packets','telemetry_write_errors','diagnostics_write_errors'];
@@ -17,6 +18,7 @@ export function validateDiagnostics(value,sessionKey){
   history_limit_samples:720};
 }
 export async function saveDiagnostics(env,value){
+ env={...env,BUCKET:storageDomain(env.BUCKET,'diagnostics')};
  const key=`${ROOT}${value.session_key}/${value.run_id}.json`;
  for(let attempt=0;attempt<4;attempt++){
   const object=await env.BUCKET.get(key),previous=object?await object.json():null;
@@ -29,11 +31,12 @@ export async function saveDiagnostics(env,value){
  throw Error('Concurrent diagnostics update; retry synchronization');
 }
 export async function readDiagnostics(env,params){
+ const diagnostics=storageDomain(env.BUCKET,'diagnostics');
  if(params.get('scope')==='vercel'){
   const date=params.get('date');
   if(!/^20\d\d-\d\d-\d\d$/.test(date??''))return {available:false,reason:'Provide the UTC date as YYYY-MM-DD.'};
-  const page=await env.BUCKET.list({prefix:`${ROOT}vercel/${date}/`,limit:100,cursor:params.get('cursor')||undefined});
-  const samples=await Promise.all(page.objects.map(async item=>{const object=await env.BUCKET.get(item.key);return object?await object.json():null;}));
+  const page=await diagnostics.list({prefix:`${ROOT}vercel/${date}/`,limit:100,cursor:params.get('cursor')||undefined});
+  const samples=await Promise.all(page.objects.map(async item=>{const object=await diagnostics.get(item.key);return object?await object.json():null;}));
   return {available:samples.some(Boolean),scope:'Vercel process during requests; not host saturation or collector CPU',samples:samples.filter(Boolean).sort((a,b)=>a.at.localeCompare(b.at)),next_cursor:page.truncated?page.cursor:null};
  }
  const session=params.get('session_key'),run=params.get('run_id');
@@ -42,6 +45,6 @@ export async function readDiagnostics(env,params){
  if(selected!==null&&!RUN.test(selected))return {available:false,reason:'Invalid run_id.'};
  if(!selected){const object=await env.BUCKET.get(`live/sessions/${session}.json`);selected=object?(await object.json()).snapshot?.diagnostics?.run_id:null;}
  if(!RUN.test(selected??''))return {available:false,reason:'No collector CPU history has been synchronized for this session.'};
- const object=await env.BUCKET.get(`${ROOT}${session}/${selected}.json`);
+ const object=await diagnostics.get(`${ROOT}${session}/${selected}.json`);
  return object?{available:true,...await object.json(),durability:'Stored in the website bucket at the last successful snapshot synchronization. Local collector JSONL also records between synchronizations.'}:{available:false,reason:'No saved measurements for this collector run.'};
 }

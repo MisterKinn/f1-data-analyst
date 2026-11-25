@@ -53,6 +53,14 @@ export function createFirestoreBucket(db,{collection='objectStore'}={}){
    if(Buffer.byteLength(body)>MAX_BODY_BYTES)throw new Error(`Firestore object exceeds ${MAX_BODY_BYTES} bytes`);
    const contentType=options.httpMetadata?.contentType||'application/json; charset=utf-8';
    listed.delete(key);
+   // An unconditional replacement needs no previous value. Keep compare-and-set
+   // writes transactional so concurrent account updates retain their guarantees.
+   if(options.onlyIf?.etagMatches===undefined&&options.onlyIf?.etagDoesNotMatch===undefined){
+    const etag=digest(`${key}\0${body}\0${Date.now()}\0${Math.random()}`);
+    await ref(key).set({key,body,contentType,etag,updatedAt:Date.now()});
+    listed.delete(key);
+    return {key,etag};
+   }
    return db.runTransaction(async transaction=>{
     const target=ref(key),snap=await transaction.get(target),current=snap.exists?snap.data():null,condition=options.onlyIf;
     if(condition?.etagMatches!==undefined&&current?.etag!==condition.etagMatches)return null;

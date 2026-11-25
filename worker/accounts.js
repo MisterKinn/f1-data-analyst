@@ -1,4 +1,5 @@
 import {invalidateAccountOAuth} from './oauth-account-state.js';
+import {storageDomain} from './storage-domains.js';
 import {readMemberCrew} from './crew.js';
 import {queueCrewEvent,deliverCrewEvents} from './deploy_events.js';
 import {revokeMcpToken,EXTERNAL_MCP_UNAVAILABLE} from './external-mcp.js';
@@ -93,6 +94,7 @@ const nameNeedsUpdate=(account,identity,chatgpt)=>{
  return !!(name&&(account.name!==name||(/[A-Za-z]/.test(nameEn)&&!/[가-힣]/.test(nameEn)&&account.nameEn!==nameEn)));
 };
 export async function accountIdentity(request,env,google,{create=false}={}){
+ env={...env,BUCKET:storageDomain(env.BUCKET,'accounts')};
  if(create&&env.BUCKET?.atomic){
   // Most requests come from an existing account with nothing to change. Read it
   // without a Firestore transaction first; fall back to the transaction only when

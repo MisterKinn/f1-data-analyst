@@ -3,7 +3,14 @@
   "framework": null,
   "installCommand": "npm ci",
   "buildCommand": "npm run build",
-  "outputDirectory": "dist",
+  "outputDirectory": "dist/public",
+  "headers": [
+    {"source":"/assets/:path*","headers":[{"key":"Cache-Control","value":"public, max-age=300, must-revalidate, s-maxage=31536000"},{"key":"X-Content-Type-Options","value":"nosniff"}]},
+    {"source":"/assets/fonts/:path*","headers":[{"key":"Cache-Control","value":"public, max-age=86400, s-maxage=31536000"}]},
+    {"source":"/assets/:name-official:ext(\\.svg|\\.png)?","headers":[{"key":"Content-Type","value":"image/svg+xml"}]},
+    {"source":"/assets/schedule/:name","headers":[{"key":"Content-Type","value":"image/svg+xml"}]},
+    {"source":"/favicon.ico","headers":[{"key":"Content-Type","value":"image/png"},{"key":"Cache-Control","value":"private, no-store"},{"key":"X-Content-Type-Options","value":"nosniff"}]}
+  ],
   "functions": {
     "api/index.js": {
       "maxDuration": 300

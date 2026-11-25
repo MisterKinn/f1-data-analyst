@@ -77,3 +77,4 @@ export function plainIdentityAsset(path){
  const slug=match[1]||match[2]||match[3],name=names[slug]||slug.replace(/^gt-/,'').replace(/-/g,' '),safe=name.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
  return `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="70" viewBox="0 0 300 70" role="img" aria-label="${safe}"><title>${safe}</title><text x="0" y="45" fill="#f1f5f6" font-family="sans-serif" font-size="26" font-weight="700">${safe}</text></svg>`;
 }
+export const identityAssetNames=()=>Object.keys(names);

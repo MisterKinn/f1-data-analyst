@@ -8,7 +8,7 @@ import{calendarReviewedAt}from'../worker/race-calendar-data.js';
 
 function database(){
  const rows=new Map();let tail=Promise.resolve(),fail=false;
- const ref=id=>({id,get:async()=>({exists:rows.has(id),data:()=>rows.get(id)}),delete:async()=>rows.delete(id)});
+ const ref=id=>({id,get:async()=>({exists:rows.has(id),data:()=>rows.get(id)}),set:async value=>rows.set(id,value),delete:async()=>rows.delete(id)});
  return{rows,failNext(){fail=true;},collection:()=>({doc:ref,where(){return this;},orderBy(){return this;},limit(){return this;},get:async()=>({docs:[...rows].map(([id,data])=>({id,data:()=>data})).filter(doc=>doc.data().key.startsWith('website-auth/google/session/'))})}),runTransaction(callback){
   const run=tail.then(async()=>{const writes=new Map();const value=await callback({get:target=>target.get(),set:(target,data)=>writes.set(target.id,data),delete:target=>writes.set(target.id,null)});if(fail){fail=false;throw Error('fixture commit failed');}for(const[id,data]of writes){if(data===null)rows.delete(id);else rows.set(id,data);}return value;});tail=run.catch(()=>{});return run;
  }};
