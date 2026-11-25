@@ -302,11 +302,21 @@ export function lapsimKernel() {
     const awdTrac = (awd, muX, N, nRear, v) => !awd ? rearTrac(muX, nRear) : car.frontMaxW == null ? muX * N : Math.min(muX * N, rearTrac(muX, nRear) + car.frontMaxW / Math.max(v, 0.5));
     // 2) Backward pass (braking): independent of the ERS strategy, so computed once.
     //    Straight Mode is closed under braking: corner-mode aero.
+    // car.brakeAxle = {rearMaxW, eta} (step 35 E; unset = today): the rear axle is braked by its motor only (Formula E Gen3/Gen3 Evo:
+    // no rear friction brakes), so its braking force is capped at rearMaxW / (eta·v); the tyre force splits by axle load with braking
+    // load transfer (h/wb); the front keeps friction + regen, no power cap.
+    const ba = car.brakeAxle || null, axleCap = (a, v, i, fx, drag, roll, L, N) => {
+      let aa = a; const pCap = ba.rearMaxW / (ba.eta * Math.max(v, 1));
+      for (let k = 0; k < 3; k++) { const nr = Math.min(N, Math.max(0, (N - L) * t.rearStatic + L * t.rearAero - t.m * aa * t.hOverWb)), fr = fx * nr / N;
+        aa = (fx - fr + Math.min(fr, pCap) + drag + roll) / t.m + G * sinG[i]; }
+      return Math.min(a, aa);
+    };
     const brakeAcc = (v, i) => {
       const va = vAir(v, i), L = aeroFactor * car.clA * va * va, N = normalAt(v, i, L);
       const fx = muAt(i) * (t.muX0 / t.muY0) * (lc?.braking ? latCap(v, i, L) : pureCap(i, N)) * ellipse(v, i);
       const drag = aeroFactor * car.cdA * va * va, roll = cRoll * N;
       let a = (fx + drag + roll) / t.m + G * sinG[i];
+      if (ba) a = axleCap(a, v, i, fx, drag, roll, L, N);
       if (car.brakeDecelMax) a = Math.min(a, car.brakeDecelMax);
       // speed-dependent peak deceleration [a0 m/s², a2 1/m]: a ≤ a0 + a2·v² (Hypercar: the iRacing GTP envelope, owner rule 14, "model"; unset = no cap)
       if (car.brakeEnv) a = Math.min(a, car.brakeEnv[0] + car.brakeEnv[1] * v * v);
@@ -325,6 +335,7 @@ export function lapsimKernel() {
       const fx = muAt(i) * (t.muX0 / t.muY0) * (lc?.braking ? latCap(v, i, L) : pureCap(i, N)) * ellN(v, i, L, N);
       const drag = aeroFactor * car.cdA * va * va, roll = cRoll * N;
       let a = (fx + drag + roll) / t.m + G * sinG[i];
+      if (ba) a = axleCap(a, v, i, fx, drag, roll, L, N);
       if (car.brakeDecelMax) a = Math.min(a, car.brakeDecelMax);
       if (car.brakeEnv) a = Math.min(a, car.brakeEnv[0] + car.brakeEnv[1] * v * v);
       return a;

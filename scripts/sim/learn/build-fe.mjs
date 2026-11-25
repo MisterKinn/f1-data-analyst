@@ -88,7 +88,7 @@ for (const r of used.filter(r => FE_GENS[r.key])) { const a = (real[r.layout] ||
 
 // 5. Fit rows: best qualifying lap per layout, season and rule set
 const simCache = new Map(), trk = id => trk[id] ||= K.trackFromData(tracks[id] || lapsimAllTracks[id]);
-const simAt = (id, key, car, r) => { const k = [id, key, car.pIce, car.awdAboveKph, car.frontMaxW, Math.round(+r.airC || 25), Math.round(+r.trackC || 35)].join('|'); if (simCache.has(k)) return simCache.get(k);
+const simAt = (id, key, car, r) => { const k = [id, key, car.pIce, car.awdAboveKph, car.frontMaxW, car.brakeAxle?.rearMaxW, Math.round(+r.airC || 25), Math.round(+r.trackC || 35)].join('|'); if (simCache.has(k)) return simCache.get(k);
   const env = K.conditionsFromWeather({pressureHpa: +r.hpa || 1013.25, airTempC: +r.airC || 25, humidityPct: +r.hum || 50, trackTempC: +r.trackC || 35, windSpeed: 0, windFromDeg: 0});
   const v = K.simulateLap(trk(id), car, env).lapTime; simCache.set(k, v); return v; };
 // a lap below full power (qualifying group): full-power lap + the realised share of the simulated power gain (W12, FE_QUALI_REALIZATION)
