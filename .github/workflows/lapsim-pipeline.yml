@@ -301,6 +301,7 @@ jobs:
       - name: Build the ranges from this run
         run: |
           [ -f fit/worker/lapsim/calibration-data.js ] && cp fit/worker/lapsim/calibration-data.js worker/lapsim/ || true
+          mkdir -p ranges
           node scripts/sim/delta-intervals.mjs --run "$RUN" --mode "$MODE" --out "ranges/delta-intervals-data-$RUN.js" | tee -a "$GITHUB_STEP_SUMMARY"
           sha256sum worker/lapsim/calibration-data.js | cut -c1-64 > ranges/calibration.sha256
       - uses: actions/upload-artifact@v4
