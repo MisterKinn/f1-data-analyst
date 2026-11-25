@@ -55,3 +55,9 @@ Owner 2026-11-16: "add the pit lane on every track". Drawing and pit-lane length
   selected series and names them in the map note. Le Mans, Nürburgring, Daytona and Indianapolis share one pit lane.
 - Input: probe/osm-pits-all (every non-FE track) plus probe/osm-pits-fe. Against the older probe this also adds Brands Hatch
   (560 m) and moves Kuala Lumpur's lane (991 → 1012 m); Hockenheim and Monza only gain path detail.
+
+## Jarama 2025 refit (2026-11-25, data fix)
+
+PR #524 rebuilt the Formula E maps (step 35), so the stored `jarama-2025` pit lane sat 35–68 m off the new line and
+`tests/lapsim-pit-lanes.test.mjs` failed on main. Refitted with `PIT_ONLY=jarama-2025 pit-lanes-osm.py` on probe/osm-pits-all +
+probe/osm-pits-fe: 854 m, entry 2049 m, exit 2879 m, fit median 2.3 m, both ends 0.0–0.1 m from the line. No other track changed.

@@ -40,5 +40,26 @@
       "sha256": "59adb10aae47e35887e2ad4971e1376795ee820b0fd9152c8d3f56456d17dfa9",
       "note": "step 29a F1 race stint cases 2023-25 (report-only, PR #511); pinned by central 2026-11-25"
     }
+  },
+  "endurance": {
+    "note": "step 36: fit-endurance.mjs inputs (GT3 SRO / IMSA GTD / WEC LMGT3 / DTM records / Nürburgring, plus the Hypercar class learning). Committed derived tables, pinned by sha256; the job reruns the fit on them and compares with the shipped endurance-fit.json and learned-data.js.",
+    "files": {
+      "scripts/sim/data/learn/endurance-cars.csv.gz": "8bb4f55190b311f1f7b63f7d8bd8143dab76cdfcb9a7f1f6419996312d8b4336",
+      "scripts/sim/data/learn/wec-alkamel-cars.csv.gz": "a15626ee9bcd0a2b0f399957265fff5f53a88a1fc4be5b8c49e09afa27c4e2ae",
+      "scripts/sim/data/learn/t71-gt3-cars.csv.gz": "1557ec7c0805fcce37549494f69a3b99ee0d31b72ef015f71dd331b16e1be55b",
+      "scripts/sim/data/learn/sro-gt3-cars.csv.gz": "cbd3016336e76084f2d9fd7e882a6d72007423a36d40b9faf2de12e690eb912e",
+      "scripts/sim/data/learn/sro-pdf-cars.csv.gz": "044b56cd306bc2afa85e9f46a0bf15245225d27cfb5eb12b9404269da5ad21d4",
+      "scripts/sim/data/track-registry.json": "09e5bf8e7d61f8ea10653bfcfed65fcca5fe3d4ca0a89e0ae5a5eef53b830db4"
+    }
+  },
+  "noise": {
+    "note": "step 36 (report-only): noise-floor.mjs inputs. F1 = TracingInsights qualifying laps 2023-2026 from ti-raw.tgz of the pinned trackState release (2022 LOCKED is not extracted and not read); Al Kamel full laps = draft release data-alkamel-full-laps of the repo running the job (fork only; skipped where absent).",
+    "files": {
+      "scripts/sim/data/learn/nls-laps.json.gz": "74358a115355ce936d033da3ec2e52b9a85eb54fab92fc95ce96f57a27ad1c9c",
+      "scripts/sim/data/learn/fe-duels.csv": "7c041983f99f596eca3b621e12c33b2ad351015aaff6971521c105297fee41c1",
+      "scripts/sim/data/learn/fe-cars.csv.gz": "9cdc95548d97629f51250de8ab963e97a891205639836a6a9c989682a871875b",
+      "scripts/sim/data/learn/driver-ratings.json.gz": "5b790386225a7d93d4ad70e851de634b18431d5aac74c95c5e978f592858d2ca"
+    },
+    "tiRaw": "13fb2343015d0113582cb480afce22bced751e03e6fc3ef8345e58025b25f7e9"
   }
 }
