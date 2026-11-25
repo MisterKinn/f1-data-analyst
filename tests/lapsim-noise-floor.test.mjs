@@ -34,3 +34,17 @@ test('F1 2022 (LOCKED) is never read', () => {
   const r = f1(dir, [2022, 2023]);
   assert.equal(r.events, 1); assert.deepEqual(r.perEvent.map(e => e.event), ['2023 Test GP']);
 });
+
+test('σ_meas v2: lap-in-stint and evolution are removed before the spread; laps past the 1.5 % window are not kept', async () => {
+  const {withinDriverV2, checkAlkamel} = await import('../scripts/sim/noise-floor.mjs');
+  // three drivers, one stint each: +0.3 s per lap in stint (fuel / tyre), −1 s/h track, ±0.05 s scatter, one slow lap at 101.8 %
+  const L = ['A', 'B', 'C'].flatMap((who, j) => [1, 2, 3, 4, 5, 6].map(k => ({who, k, t: 600 + 120 * k, y: 100 + j * 0.5 + 0.3 * k - (600 + 120 * k) / 3600 + (k % 2 ? 0.05 : -0.05) * (k > 3 ? -1 : 1)})));
+  L.push({who: 'A', k: 7, t: 1440, y: 100 + 0.3 * 7 - 0.4 + 1.8});
+  const w = withinDriverV2(L);
+  // inside one stint the clock and lap-in-stint are collinear: the joint linear trend is removed (here it lands on the clock term)
+  assert.equal(w.groups, 3); assert.ok(Math.abs(w.slopeSPerH - (0.3 / 120 * 3600 - 1)) < 0.5, `trend ${w.slopeSPerH}`);
+  assert.equal(w.laps, 18); // the slow lap is outside 101.5 % after the correction
+  const s = robustSd(w.res); assert.ok(s > 0.03 && s < 0.1, `σ ${s}`);
+  assert.equal(withinDriverV2(L.filter(l => l.who !== 'C')), null);
+  assert.equal(checkAlkamel('/nonexistent', 'scripts/sim/data/learn/alkamel-full-laps-manifest.json').ok, 0);
+});

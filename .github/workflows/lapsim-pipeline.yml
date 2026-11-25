@@ -195,10 +195,11 @@ jobs:
           # only the seasons used; 2022 is the LOCKED set and is never extracted (noise-floor.mjs skips it as well)
           tar xzf ti-raw.tgz -C ti ti/2023 ti/2024 ti/2025 ti/2026
           # a draft release has no tag lookup: find the asset in the release list (drafts are listed for this repo's token)
-          A=''; AR=$(jq -r .noise.alkamel.repo $P); id=$(gh api "repos/$AR/releases?per_page=100" -q '.[] | select(.tag_name=="data-alkamel-full-laps") | .assets[] | select(.name=="alkamel-full-laps.tar") | .id' 2>/dev/null | head -1 || true)
-          if [ -n "$id" ]; then mkdir -p .cache && gh api -H 'Accept: application/octet-stream' "repos/$AR/releases/assets/$id" > .cache/alkamel-full-laps.tar
-            echo "$(jq -r .noise.alkamel.sha256 $P)  .cache/alkamel-full-laps.tar" | sha256sum --check
-            tar -xf .cache/alkamel-full-laps.tar -C .cache && A='--alkamel .cache/alkamel-full-laps'
+          # each repo reads its own draft (upstream: production copy, fork: research copy); the pin is the content: every file of the manifest
+          A=''; echo "$(jq -r .noise.alkamel.manifest_sha256 $P)  $(jq -r .noise.alkamel.manifest $P)" | sha256sum --check
+          id=$(gh api "repos/${{ github.repository }}/releases?per_page=100" -q '.[] | select(.tag_name=="data-alkamel-full-laps") | .assets[] | select(.name=="alkamel-full-laps.tar") | .id' 2>/dev/null | head -1 || true)
+          if [ -n "$id" ]; then mkdir -p .cache && gh api -H 'Accept: application/octet-stream' "repos/${{ github.repository }}/releases/assets/$id" > .cache/alkamel-full-laps.tar
+            tar -xf .cache/alkamel-full-laps.tar -C .cache && node scripts/sim/noise-floor.mjs --check-alkamel .cache/alkamel-full-laps && A='--alkamel .cache/alkamel-full-laps'
           else echo "::notice::no data-alkamel-full-laps release here: Al Kamel within-driver σ not measured"; fi
           node scripts/sim/noise-floor.mjs --ti ti/ti $A --out noise | tee -a "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
