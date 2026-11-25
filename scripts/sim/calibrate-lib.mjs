@@ -81,10 +81,16 @@ export function withGrip(track, g) {
 
 // Error for one lap, common to every series. Observations: a speed trace (obs: {s, v}) and/or a
 // speed trap (trapKph, compared with the top speed), always the lap time. Units: m/s and s.
-export function lapError(track, car, env, obs, lapTime, {wTime = 2, trapKph = null, wTrap = 0.5} = {}) {
+// trapAtM (WEC, step 34 data fix): the trap position in metres from s = 0 (Al Kamel map). The simulated trap speed is the peak of the
+// straight the trap sits on (within ±TRAP_WIN_M of the printed point), not the lap maximum. The window, not the point: our s = 0 and
+// centreline differ from the event map by tens of metres, and a trap sits just before a braking zone (point reading: RMS 60 km/h).
+export const TRAP_WIN_M = 300;
+export const trapSpeed = (v, ds, atM, win = TRAP_WIN_M) => { const i0 = Math.round(atM / ds), w = Math.round(win / ds); let m = 0; for (let j = i0 - w; j <= i0 + w; j++) m = Math.max(m, v[((j % v.length) + v.length) % v.length]); return m; };
+export function lapError(track, car, env, obs, lapTime, {wTime = 2, trapKph = null, trapAtM = null, wTrap = 0.5} = {}) {
   const res = simulateLap(track, car, env);
   const rms = !obs ? 0 : obs.ext ? extremaRms(res.v, track.ds, obs.ext) : rmsSpeed(res.v, track.ds, obs);
-  const trap = trapKph ? (res.vMaxKph - trapKph) / 3.6 : 0;
+  if (trapAtM != null) res.vTrapKph = trapSpeed(res.v, track.ds, trapAtM) * 3.6;
+  const trap = trapKph ? ((res.vTrapKph ?? res.vMaxKph) - trapKph) / 3.6 : 0;
   const dt = res.lapTime - lapTime;
   return {score: rms * rms + wTime * dt * dt + wTrap * trap * trap, rms, dt, trap: trap * 3.6, res};
 }
@@ -181,15 +187,15 @@ export function fitSeason(laps, base, params, {iters = 120, wTime = 2, wGrip = 5
   };
   // l.patch(car) → car for this lap (e.g. per-event BoP weight and power); no patch = season car
   const evalLap = (l, car) => (car = l.patch ? l.patch(car) : car, l.grip != null
-    ? {grip: l.grip, ...lapError(withGrip(l.track, l.grip), car, l.env, l.obs, l.lapSeconds, {wTime, trapKph: l.trapKph})}
-    : fitGrip(l.track, car, l.env, l.obs, l.lapSeconds, 0.85, 1.15, {wTime, trapKph: l.trapKph}));
+    ? {grip: l.grip, ...lapError(withGrip(l.track, l.grip), car, l.env, l.obs, l.lapSeconds, {wTime, trapKph: l.trapKph, trapAtM: l.trapAtM})}
+    : fitGrip(l.track, car, l.env, l.obs, l.lapSeconds, 0.85, 1.15, {wTime, trapKph: l.trapKph, trapAtM: l.trapAtM}));
   const x0 = params.map(() => 0);
   const result = nelderMead(objective, x0, {step: params.map(p => step0 ?? p.step ?? 0.08), iters, ...nm});
   const car = build(result.x);
   const perTrack = prepared.map(l => {
     const r = evalLap(l, car);
     return {name: l.name, grip: r.grip, rmsKph: r.rms * 3.6, dt: r.dt, simLap: r.res.lapTime, realLap: l.lapSeconds,
-      shift: l.shift, rho: l.env.rho, vMaxSim: r.res.vMaxKph, vMaxReal: l.obs ? Math.max(...l.obs.v) * 3.6 : l.trapKph ?? null, meta: l.meta};
+      shift: l.shift, rho: l.env.rho, vMaxSim: r.res.vTrapKph ?? r.res.vMaxKph, vMaxReal: l.obs ? Math.max(...l.obs.v) * 3.6 : l.trapKph ?? null, meta: l.meta};
   });
   log({score: result.value});
   // parameters on a bound (rule 3.4: a value at its bound is a finding)
@@ -251,7 +257,7 @@ export function fitJoint(groups, {iters = 90, wTime = 2, wGrip = 50, lo = 0.85, 
   // best shared grip for one track, given the cars
   const trackFit = (name, cars) => {
     const laps = prep.flatMap((g, k) => g.laps.filter(l => l.name === name).map(l => ({l, car: cars[k]})));
-    const f = gr => { let s = 0; const r = laps.map(({l, car}) => { const e = lapError(withGrip(l.track, gr), car, l.env, l.obs, l.lapSeconds, {wTime, trapKph: l.trapKph}); s += (l.weight ?? 1) * e.score; return e; }); return {grip: gr, score: s, r}; };
+    const f = gr => { let s = 0; const r = laps.map(({l, car}) => { const e = lapError(withGrip(l.track, gr), car, l.env, l.obs, l.lapSeconds, {wTime, trapKph: l.trapKph, trapAtM: l.trapAtM}); s += (l.weight ?? 1) * e.score; return e; }); return {grip: gr, score: s, r}; };
     let a = lo, b = hi, c = f(b - phi * (b - a)), d = f(a + phi * (b - a));
     for (let it = 0; it < 14; it++) { if (c.score < d.score) { b = d.grip; d = c; c = f(b - phi * (b - a)); } else { a = c.grip; c = d; d = f(a + phi * (b - a)); } }
     const best = c.score < d.score ? c : d;

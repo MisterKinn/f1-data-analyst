@@ -40,5 +40,30 @@
       "sha256": "59adb10aae47e35887e2ad4971e1376795ee820b0fd9152c8d3f56456d17dfa9",
       "note": "step 29a F1 race stint cases 2023-25 (report-only, PR #511); pinned by central 2026-11-25"
     }
+  },
+  "endurance": {
+    "note": "Committed learning tables read by scripts/sim/learn/fit-endurance.mjs and noise-floor.mjs (step 34: endurance-fit and σ_meas in the pipeline, C4). Pinned by sha256; changing one is a reviewed data change.",
+    "files": [
+      {
+        "path": "scripts/sim/data/learn/endurance-cars.csv.gz",
+        "sha256": "8bb4f55190b311f1f7b63f7d8bd8143dab76cdfcb9a7f1f6419996312d8b4336"
+      },
+      {
+        "path": "scripts/sim/data/learn/wec-alkamel-cars.csv.gz",
+        "sha256": "a15626ee9bcd0a2b0f399957265fff5f53a88a1fc4be5b8c49e09afa27c4e2ae"
+      },
+      {
+        "path": "scripts/sim/data/learn/t71-gt3-cars.csv.gz",
+        "sha256": "1557ec7c0805fcce37549494f69a3b99ee0d31b72ef015f71dd331b16e1be55b"
+      },
+      {
+        "path": "scripts/sim/data/learn/sro-gt3-cars.csv.gz",
+        "sha256": "cbd3016336e76084f2d9fd7e882a6d72007423a36d40b9faf2de12e690eb912e"
+      },
+      {
+        "path": "scripts/sim/data/learn/sro-pdf-cars.csv.gz",
+        "sha256": "044b56cd306bc2afa85e9f46a0bf15245225d27cfb5eb12b9404269da5ad21d4"
+      }
+    ]
   }
 }

@@ -153,8 +153,41 @@ jobs:
       pinned: true
       wec_only: ${{ inputs.wec_only == 'yes' }}
 
+  # step 34: endurance learning (fit-endurance → endurance-fit.json + learned-data.js) and σ_meas (noise-floor) on the committed tables,
+  # pinned by sha256 in .github/lapsim-snapshot.json "endurance"; reads this run's calibration (the WEC class cars) when the fit ran.
+  # Outputs are an artifact and a release asset; nothing is committed.
+  endurance:
+    needs: [snapshot, fit]
+    if: ${{ !cancelled() && needs.snapshot.result == 'success' && github.event_name != 'push' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - run: npm ci --omit=dev --ignore-scripts
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with: {name: calibration-output, path: fit}
+      - name: Pinned tables, endurance fit, noise floor
+        run: |
+          set -euo pipefail
+          jq -r '.endurance.files[] | "\(.sha256)  \(.path)"' .github/lapsim-snapshot.json | sha256sum --check
+          [ -f fit/worker/lapsim/calibration-data.js ] && cp fit/worker/lapsim/calibration-data.js worker/lapsim/ || true
+          mkdir -p end && cp worker/lapsim/learned-data.js end/learned-data-shipped.js
+          node scripts/sim/learn/noise-floor.mjs end/noise-floor.json | tee end/noise-floor.log
+          node scripts/sim/learn/fit-endurance.mjs end/endurance-fit.json > end/fit-endurance.log 2>&1
+          cp worker/lapsim/learned-data.js end/learned-data.js; sha256sum worker/lapsim/calibration-data.js end/* > end/SHA256SUMS
+          { echo '### Endurance learning and noise floor'; echo '```'; cat end/noise-floor.log; tail -n 40 end/fit-endurance.log; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          tar czf "endurance-${{ github.run_id }}.tgz" end
+      - uses: actions/upload-artifact@v4
+        with: {name: endurance, path: end/, retention-days: 90}
+      - run: gh release upload "${{ needs.snapshot.outputs.tag }}" -R ${{ github.repository }} "endurance-${{ github.run_id }}.tgz" --clobber
+
   report:
-    needs: [snapshot, track-state, fit]
+    needs: [snapshot, track-state, fit, endurance]
     if: ${{ !cancelled() && needs.snapshot.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -178,6 +211,9 @@ jobs:
       - uses: actions/download-artifact@v4
         continue-on-error: true
         with: {name: track-state-check, path: ts}
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with: {name: endurance, path: end}
       # the run's fit becomes the working calibration, so the Δ benchmark and level C / forward read this run's numbers
       # frozen case CSVs (pinned by sha256) → model Δ on this run's calibration (the shipped one when the fit was skipped); seconds, not hours
       - name: Δ benchmarks on this run's calibration
@@ -205,6 +241,7 @@ jobs:
           SNAPSHOT_SUMS: snap/SHA256SUMS
           DELTA_DIR: dl
           TRACK_STATE_DIFF: ts/track-state-diff.json
+          ENDURANCE_DIR: end
         run: |
           node scripts/sim/pipeline-report.mjs fit/worker/lapsim/calibration-data.js /tmp/shipped/calibration-data.js out > /dev/null
           cp -r dl out/delta

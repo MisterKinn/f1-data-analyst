@@ -1,6 +1,7 @@
 // LapSim pipeline report (step 27, .github/workflows/lapsim-pipeline.yml): one JSON + markdown per run, tying every number to the run id,
 // the input snapshot hashes, the code commit and the settings. No model code here: it only reads the fit outputs.
 //   node scripts/sim/pipeline-report.mjs <new calibration-data.js> <shipped calibration-data.js> <out dir>
+// Env (step 34): ENDURANCE_DIR (endurance job output: endurance-fit.json, noise-floor.json).
 // Env: GITHUB_RUN_ID, GITHUB_SHA, SHIPPED_DIR, FIT_RESULT, TRACK_STATE_DIFF (track-state-diff.mjs JSON), SNAPSHOT_TAG, SNAPSHOT_SHA256, SNAPSHOT_SUMS (path of SHA256SUMS), DELTA_DIR (Δ benchmark output dir).
 import {readFileSync, writeFileSync, existsSync} from 'node:fs';
 import {pathToFileURL} from 'node:url';
@@ -20,6 +21,21 @@ export function diff(shipped, cand) {
   return {heldOut: compare(shipped, cand), changedRows: rows, changedCarParams: cars, identical: rows.length === 0 && cars.length === 0};
 }
 
+// WEC speed-trap residual per class-season: sim top (or, with a known trap position, the straight peak there) − real trap, km/h
+export function trapRms(cal) { const o = {}; for (const [c, ys] of Object.entries(cal?.series?.wec || {})) for (const [y, s] of Object.entries(ys)) { const e = Object.values(s.tracks || {}).filter(t => Number.isFinite(t.trapKph) && Number.isFinite(t.simTopKph)).map(t => t.simTopKph - t.trapKph);
+  if (e.length) o[`wec-${c}/${y}`] = {n: e.length, rmsKph: r4(Math.sqrt(e.reduce((a, x) => a + x * x, 0) / e.length)), biasKph: r4(e.reduce((a, x) => a + x, 0) / e.length), atPosition: Object.values(s.tracks).filter(t => t.trapAtM != null).length}; } return o; }
+// endurance job (fit-endurance + noise-floor): held-out class-best RMS per group and per group × series, and σ_meas
+export function endurance(dir) {
+  if (!dir || !existsSync(`${dir}/endurance-fit.json`)) return null;
+  const f = JSON.parse(readFileSync(`${dir}/endurance-fit.json`, 'utf8')), n = existsSync(`${dir}/noise-floor.json`) ? JSON.parse(readFileSync(`${dir}/noise-floor.json`, 'utf8')) : null;
+  const pick = t => Object.fromEntries(Object.entries(t || {}).map(([k, v]) => [k, {events: v.events, eventOutClass: v.eventOutClass, beforeClass: v.beforeClass}]));
+  return {rows: f.rows, events: f.events, byGroup: pick(f.byGroup), byGroupSeries: pick(f.byGroupSeries), noiseFloor: n?.floors ?? null};
+}
+const endMd = e => !e ? ['No endurance-job output in this run.', ''] : ['## Endurance learning (fit-endurance, leave one event out) and σ_meas', '', `${e.rows} rows, ${e.events} events.`, '',
+  '| group | events | held-out class-best RMS % | before % |', '|---|---|---|---|', ...Object.entries({...e.byGroup, ...e.byGroupSeries}).map(([k, v]) => `| ${k} | ${v.events ?? '–'} | ${v.eventOutClass ?? '–'} | ${v.beforeClass ?? '–'} |`), '',
+  ...(e.noiseFloor ? ['| class series | σ_rep lap % [90 %] | pairs | σ_rep s1 / s2 / s3 (s) | ses median % |', '|---|---|---|---|---|', ...Object.entries(e.noiseFloor).map(([k, o]) => `| ${k} | ${o.rep.lap.sigmaPct ?? '–'} ${o.rep.lap.pi90Pct ? '[' + o.rep.lap.pi90Pct.join(', ') + ']' : ''} | ${o.rep.lap.pairs} | ${['s1', 's2', 's3'].map(x => o.rep[x].sigmaS ?? '–').join(' / ')} | ${o.ses.medianPct ?? '–'} |`), ''] : [])];
+const trapMd = r => !r.traps ? [] : ['## WEC speed trap (sim − real, km/h; shipped → this run)', '', '| class-season | n | at position | RMS shipped | RMS | bias shipped | bias |', '|---|---|---|---|---|---|---|',
+  ...Object.keys({...r.traps.shipped, ...r.traps.new}).map(k => `| ${k} | ${r.traps.new[k]?.n ?? '–'} | ${r.traps.new[k]?.atPosition ?? 0} | ${r.traps.shipped[k]?.rmsKph ?? '–'} | ${r.traps.new[k]?.rmsKph ?? '–'} | ${r.traps.shipped[k]?.biasKph ?? '–'} | ${r.traps.new[k]?.biasKph ?? '–'} |`), ''];
 const sum = f => existsSync(f) ? JSON.parse(readFileSync(f, 'utf8')).summary ?? null : null;
 const md = r => [
   `# LapSim pipeline report — run ${r.run.id}`, '',
@@ -30,6 +46,7 @@ const md = r => [
   '## Change-effects table (track-state build on the pinned inputs)', '',
   ...(r.trackState ? [`Effects ${r.trackState.identical ? '**identical** to the shipped table' : `**${r.trackState.effects.length} fields differ**`}; registry tracks changed: ${r.trackState.registryTracksChanged.join(', ') || 'none'}; year pairs changed: ${r.trackState.pairsChanged}.` + (r.trackState.cases ? ` Cases ${r.trackState.cases.n} on ${r.trackState.cases.circuits} circuits, skipped ${r.trackState.cases.skipped} (${Object.entries(r.trackState.cases.skippedWhy).map(([k, v]) => `${k} ${v}`).join(', ')}).` : ''), '',
     ...(r.trackState.effects.length ? ['| type | field | shipped | this run |', '|---|---|---|---|', ...r.trackState.effects.map(e => `| ${e.type} | ${e.field} | ${JSON.stringify(e.shipped)} | ${JSON.stringify(e.new)} |`), ''] : [])] : ['Not run.', '']),
+  ...trapMd(r), ...endMd(r.endurance),
   '## Δ benchmarks', '', ...r.delta.map(d => `- ${d.name}: ${d.result}`), '',
   '## Inputs (SHA256SUMS of the snapshot)', '', '```', r.inputs.sums.trim(), '```', ''].join('\n');
 const fitMd = r => [
@@ -57,6 +74,8 @@ if (process.argv[1]?.endsWith('pipeline-report.mjs')) {
     settings, seeds: 'fit: none (deterministic Nelder–Mead / BCD); condition-report bootstrap seed 7; gate.mjs sign-flip / bootstrap seed 1',
     fit: E.FIT_RESULT || 'local',
     diff: existsSync(newF) ? diff(await load(shippedF), await load(newF)) : null,
+    traps: existsSync(newF) ? {shipped: trapRms(await load(shippedF)), new: trapRms(await load(newF))} : null,
+    endurance: endurance(E.ENDURANCE_DIR),
     trackState: E.TRACK_STATE_DIFF && existsSync(E.TRACK_STATE_DIFF) ? JSON.parse(readFileSync(E.TRACK_STATE_DIFF, 'utf8')) : null,
     // SHIPPED_DIR: the committed level C / forward files, copied before the run's outputs overwrite docs/
     levelC: {shipped: sum(`${E.SHIPPED_DIR}/lapsim-level-c.json`), new: sum('docs/lapsim-level-c.json')},
