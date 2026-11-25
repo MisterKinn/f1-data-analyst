@@ -1,0 +1,461 @@
+{
+ "label": "model (race energy, lift-and-coast as a speed cap); not fitted",
+ "cars": {
+  "gen3evo": {
+   "raceKW": "rule 300 kW (SR 2024-25)",
+   "regen": "rule 600 kW (TR 7.5)",
+   "energy": "assumption 38.5 kWh (event note value not stored)",
+   "laps": "measured (Al Kamel race rows)"
+  },
+  "gen4": {
+   "raceKW": "rule ≤ 450 kW (SR 27.3 b), Bulletin may lower it",
+   "regen": "rule 700 kW (TR 7.5)",
+   "energy": "rule 51.25 kWh (TR 7.5) or event note",
+   "aero": "assumption LDF in E-Prix (FE_GEN4_MODES)"
+  }
+ },
+ "summary": {
+  "n": 24,
+  "biasPp": -2.62,
+  "rmsPp": 4.04,
+  "band90Pp": [
+   -5.61,
+   4.21
+  ],
+  "energySens2kWhPp": 0.89,
+  "measRatioSdPp": 2.57
+ },
+ "rows": [
+  {
+   "event": "S11-R01",
+   "track": "fe-sao-paulo",
+   "laps": 36,
+   "measRatio": 1.0861,
+   "predRatio": 1.1391,
+   "errPp": 5.3,
+   "capKph": 172.2,
+   "sensPp": [
+    -1.67,
+    2.07
+   ]
+  },
+  {
+   "event": "S11-R02",
+   "track": "fe-mexico-2023",
+   "laps": 36,
+   "measRatio": 1.0706,
+   "predRatio": 1.046,
+   "errPp": -2.47,
+   "capKph": 181.2,
+   "sensPp": [
+    -0.87,
+    1.02
+   ]
+  },
+  {
+   "event": "S11-R03",
+   "track": "fe-jeddah",
+   "laps": 31,
+   "measRatio": 1.0708,
+   "predRatio": 1.0624,
+   "errPp": -0.85,
+   "capKph": 181.6,
+   "sensPp": [
+    -1.05,
+    1.13
+   ]
+  },
+  {
+   "event": "S11-R04",
+   "track": "fe-jeddah",
+   "laps": 31,
+   "measRatio": 1.1058,
+   "predRatio": 1.0624,
+   "errPp": -4.35,
+   "capKph": 181.6,
+   "sensPp": [
+    -1.05,
+    1.13
+   ]
+  },
+  {
+   "event": "S11-R05",
+   "track": "fe-miami-2025",
+   "laps": 26,
+   "measRatio": 1.1275,
+   "predRatio": 1.0731,
+   "errPp": -5.45,
+   "capKph": 182.8,
+   "sensPp": [
+    -1.12,
+    1.32
+   ]
+  },
+  {
+   "event": "S11-R06",
+   "track": "monte-carlo",
+   "laps": 30,
+   "measRatio": 1.0347,
+   "predRatio": 1.0546,
+   "errPp": 1.98,
+   "capKph": 173.2,
+   "sensPp": [
+    -0.99,
+    1.28
+   ]
+  },
+  {
+   "event": "S11-R09",
+   "track": "fe-tokyo",
+   "laps": 32,
+   "measRatio": 1.0709,
+   "predRatio": 1.0265,
+   "errPp": -4.43,
+   "capKph": 207.9,
+   "sensPp": [
+    -0.25,
+    0.37
+   ]
+  },
+  {
+   "event": "S11-R10",
+   "track": "fe-shanghai",
+   "laps": 29,
+   "measRatio": 1.0865,
+   "predRatio": 1.0427,
+   "errPp": -4.38,
+   "capKph": 202.5,
+   "sensPp": [
+    -0.84,
+    0.88
+   ]
+  },
+  {
+   "event": "S11-R12",
+   "track": "fe-jakarta",
+   "laps": 38,
+   "measRatio": 1.0551,
+   "predRatio": 1.036,
+   "errPp": -1.91,
+   "capKph": 189.1,
+   "sensPp": [
+    -0.63,
+    0.76
+   ]
+  },
+  {
+   "event": "S11-R14",
+   "track": "fe-berlin",
+   "laps": 41,
+   "measRatio": 1.0988,
+   "predRatio": 1.0758,
+   "errPp": -2.29,
+   "capKph": 180.3,
+   "sensPp": [
+    -1.08,
+    1.35
+   ]
+  },
+  {
+   "event": "S11-R15",
+   "track": "fe-london",
+   "laps": 38,
+   "measRatio": 1.08,
+   "predRatio": 1.0246,
+   "errPp": -5.54,
+   "capKph": null,
+   "sensPp": [
+    0,
+    0
+   ]
+  },
+  {
+   "event": "S11-R16",
+   "track": "fe-london",
+   "laps": 36,
+   "measRatio": 1.0726,
+   "predRatio": 1.0246,
+   "errPp": -4.8,
+   "capKph": null,
+   "sensPp": [
+    0,
+    0
+   ]
+  },
+  {
+   "event": "S12-R01",
+   "track": "fe-sao-paulo",
+   "laps": 31,
+   "measRatio": 1.0933,
+   "predRatio": 1.094,
+   "errPp": 0.07,
+   "capKph": 189.6,
+   "sensPp": [
+    -1.21,
+    1.46
+   ]
+  },
+  {
+   "event": "S12-R02",
+   "track": "fe-mexico",
+   "laps": 38,
+   "measRatio": 1.0916,
+   "predRatio": 1.0682,
+   "errPp": -2.35,
+   "capKph": 178.5,
+   "sensPp": [
+    -1.21,
+    1.37
+   ]
+  },
+  {
+   "event": "S12-R04",
+   "track": "fe-jeddah",
+   "laps": 32,
+   "measRatio": 1.065,
+   "predRatio": 1.0692,
+   "errPp": 0.42,
+   "capKph": 177,
+   "sensPp": [
+    -1.11,
+    1.22
+   ]
+  },
+  {
+   "event": "S12-R05",
+   "track": "fe-jeddah",
+   "laps": 30,
+   "measRatio": 1.0872,
+   "predRatio": 1.055,
+   "errPp": -3.22,
+   "capKph": 187.4,
+   "sensPp": [
+    -0.84,
+    1.16
+   ]
+  },
+  {
+   "event": "S12-R06",
+   "track": "jarama",
+   "laps": 23,
+   "measRatio": 1.0086,
+   "predRatio": 1.0545,
+   "errPp": 4.6,
+   "capKph": 188.7,
+   "sensPp": [
+    -0.87,
+    1.05
+   ]
+  },
+  {
+   "event": "S12-R07",
+   "track": "fe-berlin",
+   "laps": 39,
+   "measRatio": 1.0923,
+   "predRatio": 1.0653,
+   "errPp": -2.7,
+   "capKph": 186.5,
+   "sensPp": [
+    -0.92,
+    1.15
+   ]
+  },
+  {
+   "event": "S12-R08",
+   "track": "fe-berlin",
+   "laps": 37,
+   "measRatio": 1.0939,
+   "predRatio": 1.0557,
+   "errPp": -3.82,
+   "capKph": 193.4,
+   "sensPp": [
+    -0.86,
+    0.98
+   ]
+  },
+  {
+   "event": "S12-R09",
+   "track": "monte-carlo",
+   "laps": 29,
+   "measRatio": 1.0986,
+   "predRatio": 1.0479,
+   "errPp": -5.07,
+   "capKph": 177.8,
+   "sensPp": [
+    -0.93,
+    1.1
+   ]
+  },
+  {
+   "event": "S12-R10",
+   "track": "monte-carlo",
+   "laps": 28,
+   "measRatio": 1.09,
+   "predRatio": 1.0412,
+   "errPp": -4.88,
+   "capKph": 183.4,
+   "sensPp": [
+    -0.82,
+    1.02
+   ]
+  },
+  {
+   "event": "S12-R11",
+   "track": "fe-sanya",
+   "laps": 40,
+   "measRatio": 1.1361,
+   "predRatio": 1.0866,
+   "errPp": -4.95,
+   "capKph": 168.6,
+   "sensPp": [
+    -1.18,
+    1.44
+   ]
+  },
+  {
+   "event": "S12-R16",
+   "track": "fe-london",
+   "laps": 39,
+   "measRatio": 1.0808,
+   "predRatio": 1.0246,
+   "errPp": -5.62,
+   "capKph": null,
+   "sensPp": [
+    0,
+    0.1
+   ]
+  },
+  {
+   "event": "S12-R17",
+   "track": "fe-london",
+   "laps": 35,
+   "measRatio": 1.0861,
+   "predRatio": 1.0246,
+   "errPp": -6.15,
+   "capKph": null,
+   "sensPp": [
+    0,
+    0
+   ]
+  }
+ ],
+ "gen4": {
+  "fe-sao-paulo": {
+   "lapsAssumed": 31,
+   "ratio": 1.1151,
+   "capKph": 203.3,
+   "band90Pp": [
+    -5.61,
+    4.21
+   ]
+  },
+  "fe-mexico-2023": {
+   "lapsAssumed": 36,
+   "ratio": 1.0858,
+   "capKph": 193.7,
+   "band90Pp": [
+    -5.61,
+    4.21
+   ]
+  },
+  "fe-jeddah": {
+   "lapsAssumed": 30,
+   "ratio": 1.0877,
+   "capKph": 197.9,
+   "band90Pp": [
+    -5.61,
+    4.21
+   ]
+  },
+  "fe-miami-2025": {
+   "lapsAssumed": 26,
+   "ratio": 1.115,
+   "capKph": 195.4,
+   "band90Pp": [
+    -5.61,
+    4.21
+   ]
+  },
+  "monte-carlo": {
+   "lapsAssumed": 28,
+   "ratio": 1.0847,
+   "capKph": 194.2,
+   "band90Pp": [
+    -5.61,
+    4.21
+   ]
+  },
+  "fe-tokyo": {
+   "lapsAssumed": 32,
+   "ratio": 1.0628,
+   "capKph": 217.7,
+   "band90Pp": [
+    -5.61,
+    4.21
+   ]
+  },
+  "fe-shanghai": {
+   "lapsAssumed": 29,
+   "ratio": 1.0935,
+   "capKph": 218.9,
+   "band90Pp": [
+    -5.61,
+    4.21
+   ]
+  },
+  "fe-jakarta": {
+   "lapsAssumed": 38,
+   "ratio": 1.0704,
+   "capKph": 198.8,
+   "band90Pp": [
+    -5.61,
+    4.21
+   ]
+  },
+  "fe-berlin": {
+   "lapsAssumed": 37,
+   "ratio": 1.0874,
+   "capKph": 205.4,
+   "band90Pp": [
+    -5.61,
+    4.21
+   ]
+  },
+  "fe-london": {
+   "lapsAssumed": 35,
+   "ratio": 1.0483,
+   "capKph": null,
+   "band90Pp": [
+    -5.61,
+    4.21
+   ]
+  },
+  "fe-mexico": {
+   "lapsAssumed": 38,
+   "ratio": 1.1061,
+   "capKph": 192.8,
+   "band90Pp": [
+    -5.61,
+    4.21
+   ]
+  },
+  "jarama": {
+   "lapsAssumed": 23,
+   "ratio": 1.1023,
+   "capKph": 201,
+   "band90Pp": [
+    -5.61,
+    4.21
+   ]
+  },
+  "fe-sanya": {
+   "lapsAssumed": 40,
+   "ratio": 1.1134,
+   "capKph": 182.1,
+   "band90Pp": [
+    -5.61,
+    4.21
+   ]
+  }
+ }
+}

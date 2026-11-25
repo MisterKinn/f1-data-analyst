@@ -1,0 +1,344 @@
+{
+ "note": "Gen4 prior prediction, not fitted to any Gen4 lap; labels: power/axles/mass/regen = rule, grip/aero/eta/G/T carry-over = assumption",
+ "car": {
+  "mode": "Qualifying",
+  "powerKW": 600,
+  "aero": "hdf",
+  "mass": 1046,
+  "frontMaxW": 250000,
+  "brakeAxle": {
+   "rearMaxW": 350000,
+   "eta": 0.95
+  },
+  "muY": 1.6,
+  "clA": 4.4,
+  "cdA": 1.1
+ },
+ "G_gen3evo": 0.0181,
+ "bandModelPct": [
+  -2.22,
+  3.44
+ ],
+ "tracks": {
+  "fe-london": {
+   "venue": "London",
+   "lengthM": 2077,
+   "predS": 61.72,
+   "bandS": [
+    59.628,
+    64.486
+   ],
+   "bandPct": [
+    -3.39,
+    4.48
+   ],
+   "priorPct": {
+    "gripLo": 2.87,
+    "gripHi": -2.56,
+    "aeroTender": 1.47
+   },
+   "gen3evoBestS": 66.925,
+   "gainVsGen3EvoPct": -7.78
+  },
+  "fe-tokyo": {
+   "venue": "Tokyo",
+   "lengthM": 2575,
+   "predS": 66.912,
+   "bandS": [
+    64.672,
+    69.876
+   ],
+   "bandPct": [
+    -3.35,
+    4.43
+   ],
+   "priorPct": {
+    "gripLo": 2.79,
+    "gripHi": -2.5,
+    "aeroTender": 1.75
+   },
+   "gen3evoBestS": 71.863,
+   "gainVsGen3EvoPct": -6.89
+  },
+  "fe-shanghai": {
+   "venue": "Shanghai",
+   "lengthM": 3051,
+   "predS": 62.582,
+   "bandS": [
+    60.416,
+    65.417
+   ],
+   "bandPct": [
+    -3.46,
+    4.53
+   ],
+   "priorPct": {
+    "gripLo": 2.95,
+    "gripHi": -2.65,
+    "aeroTender": 2.47
+   },
+   "gen3evoBestS": 68.234,
+   "gainVsGen3EvoPct": -8.28
+  },
+  "fe-sanya": {
+   "venue": "Sanya",
+   "lengthM": 2520,
+   "predS": 59.218,
+   "bandS": [
+    57.409,
+    61.703
+   ],
+   "bandPct": [
+    -3.06,
+    4.2
+   ],
+   "priorPct": {
+    "gripLo": 2.4,
+    "gripHi": -2.1,
+    "aeroTender": 1.13
+   },
+   "gen3evoBestS": 65.095,
+   "gainVsGen3EvoPct": -9.03
+  },
+  "monte-carlo": {
+   "venue": "Monaco",
+   "lengthM": 3337,
+   "predS": 78.016,
+   "bandS": [
+    75.327,
+    81.556
+   ],
+   "bandPct": [
+    -3.45,
+    4.54
+   ],
+   "priorPct": {
+    "gripLo": 2.96,
+    "gripHi": -2.64,
+    "aeroTender": 2.25
+   },
+   "gen3evoBestS": 86.217,
+   "gainVsGen3EvoPct": -9.51
+  },
+  "fe-berlin": {
+   "venue": "Berlin",
+   "lengthM": 2374,
+   "predS": 52.684,
+   "bandS": [
+    51.075,
+    54.889
+   ],
+   "bandPct": [
+    -3.06,
+    4.18
+   ],
+   "priorPct": {
+    "gripLo": 2.38,
+    "gripHi": -2.1,
+    "aeroTender": 1.09
+   },
+   "gen3evoBestS": 57.357,
+   "gainVsGen3EvoPct": -8.15
+  },
+  "jarama": {
+   "venue": "Jarama",
+   "lengthM": 3934,
+   "predS": 87.956,
+   "bandS": [
+    85.078,
+    91.807
+   ],
+   "bandPct": [
+    -3.27,
+    4.38
+   ],
+   "priorPct": {
+    "gripLo": 2.71,
+    "gripHi": -2.4,
+    "aeroTender": 2.12
+   },
+   "gen3evoBestS": 89.403,
+   "gainVsGen3EvoPct": -1.62
+  },
+  "fe-jeddah": {
+   "venue": "Jeddah",
+   "lengthM": 3001,
+   "predS": 68.604,
+   "bandS": [
+    66.477,
+    71.528
+   ],
+   "bandPct": [
+    -3.1,
+    4.26
+   ],
+   "priorPct": {
+    "gripLo": 2.52,
+    "gripHi": -2.16,
+    "aeroTender": 1.39
+   },
+   "gen3evoBestS": 74.804,
+   "gainVsGen3EvoPct": -8.29
+  },
+  "fe-miami": {
+   "venue": "Miami",
+   "lengthM": 2320,
+   "predS": 50.636,
+   "bandS": [
+    49.053,
+    52.785
+   ],
+   "bandPct": [
+    -3.13,
+    4.25
+   ],
+   "priorPct": {
+    "gripLo": 2.49,
+    "gripHi": -2.2,
+    "aeroTender": 1.46
+   },
+   "gen3evoBestS": 55.503,
+   "gainVsGen3EvoPct": -8.77
+  },
+  "fe-mexico": {
+   "venue": "Mexico",
+   "lengthM": 2608,
+   "predS": 59.582,
+   "bandS": [
+    57.599,
+    62.256
+   ],
+   "bandPct": [
+    -3.33,
+    4.49
+   ],
+   "priorPct": {
+    "gripLo": 2.88,
+    "gripHi": -2.48,
+    "aeroTender": 1.93
+   },
+   "gen3evoBestS": 65.049,
+   "gainVsGen3EvoPct": -8.41
+  },
+  "fe-sao-paulo": {
+   "venue": "São Paulo",
+   "lengthM": 2933,
+   "predS": 63.848,
+   "bandS": [
+    62.004,
+    66.424
+   ],
+   "bandPct": [
+    -2.89,
+    4.04
+   ],
+   "priorPct": {
+    "gripLo": 2.11,
+    "gripHi": -1.85,
+    "aeroTender": 0.47
+   },
+   "gen3evoBestS": 69.617,
+   "gainVsGen3EvoPct": -8.29
+  },
+  "fe-valencia": {
+   "venue": "Valencia",
+   "lengthM": 3376,
+   "predS": 75.432,
+   "bandS": [
+    73.037,
+    78.654
+   ],
+   "bandPct": [
+    -3.17,
+    4.27
+   ],
+   "priorPct": {
+    "gripLo": 2.53,
+    "gripHi": -2.27,
+    "aeroTender": 1.54
+   },
+   "gen3evoBestS": 81.493,
+   "gainVsGen3EvoPct": -7.44
+  },
+  "fe-jakarta": {
+   "venue": "Jakarta",
+   "lengthM": 2370,
+   "predS": 60.109,
+   "bandS": [
+    58.074,
+    62.82
+   ],
+   "bandPct": [
+    -3.38,
+    4.51
+   ],
+   "priorPct": {
+    "gripLo": 2.92,
+    "gripHi": -2.55,
+    "aeroTender": 1.81
+   },
+   "gen3evoBestS": 66.05,
+   "gainVsGen3EvoPct": -9
+  },
+  "fe-miami-2025": {
+   "venue": "Miami",
+   "lengthM": 3551,
+   "predS": 75.428,
+   "bandS": [
+    73.052,
+    78.638
+   ],
+   "bandPct": [
+    -3.15,
+    4.26
+   ],
+   "priorPct": {
+    "gripLo": 2.51,
+    "gripHi": -2.24,
+    "aeroTender": 1.66
+   },
+   "gen3evoBestS": 83,
+   "gainVsGen3EvoPct": -9.12
+  },
+  "fe-mexico-2023": {
+   "venue": "Mexico",
+   "lengthM": 2630,
+   "predS": 64.142,
+   "bandS": [
+    61.973,
+    67.049
+   ],
+   "bandPct": [
+    -3.38,
+    4.53
+   ],
+   "priorPct": {
+    "gripLo": 2.95,
+    "gripHi": -2.55,
+    "aeroTender": 1.94
+   },
+   "gen3evoBestS": 70.739,
+   "gainVsGen3EvoPct": -9.33
+  },
+  "jarama-2025": {
+   "venue": "Jarama",
+   "lengthM": 3915,
+   "predS": 80.034,
+   "bandS": [
+    77.439,
+    83.496
+   ],
+   "bandPct": [
+    -3.24,
+    4.33
+   ],
+   "priorPct": {
+    "gripLo": 2.62,
+    "gripHi": -2.36,
+    "aeroTender": 1.84
+   },
+   "gen3evoBestS": 87.461,
+   "gainVsGen3EvoPct": -8.49
+  }
+ }
+}
