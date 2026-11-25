@@ -60,6 +60,14 @@
       "scripts/sim/data/learn/fe-cars.csv.gz": "9cdc95548d97629f51250de8ab963e97a891205639836a6a9c989682a871875b",
       "scripts/sim/data/learn/driver-ratings.json.gz": "5b790386225a7d93d4ad70e851de634b18431d5aac74c95c5e978f592858d2ca"
     },
-    "tiRaw": "13fb2343015d0113582cb480afce22bced751e03e6fc3ef8345e58025b25f7e9"
+    "tiRaw": "13fb2343015d0113582cb480afce22bced751e03e6fc3ef8345e58025b25f7e9",
+    "alkamel": {
+      "repo": "kangjeongmin1229/f1-data-analyst-deploy",
+      "tag": "data-alkamel-full-laps",
+      "draft": true,
+      "sha256": "333810e1778b571b954403008b15312e709fb2aa087064c6b79f1fdfd1cf0ab0",
+      "made_by_run": 45533609115,
+      "source": "fork copy of the upstream draft (sha256 6656d16e… of its tar): rebuilt with fetch-alkamel-full-laps.mjs; all 698 files match the sha256 in scripts/sim/data/learn/alkamel-full-laps-manifest.json (copy-check.json in the release). Raw files, draft only (physics rule 9)."
+    }
   }
 }
