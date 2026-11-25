@@ -23,6 +23,22 @@ Read AGENTS.md and docs/answer-principles.md first; they are the product rules.
 - Check the live result with Firecrawl (owner rule), e.g. the changed page or `/api/rules/state`, `/api/...` JSON.
 - Rules and race-document monitor: Actions → "Rules and race-document monitor" → Run workflow (optional `source`, `force`). Docs: knowledge/RULES.md.
 
+## Model honesty (owner rule, permanent; 2026-11-26)
+
+LapSim model changes follow these rules. Source: claude.ai Project `claude/decision-central-0838-real-aero-no-lap-tuning-2026-11-26.md`.
+
+1. **No lap-only tuning.** No parameter may be moved just to lower lap-time error. Every fitted value must also match its physical source (measured, rule, press) within its stated window. Lap time is a check, not the target.
+2. **Real aero is fixed by its source.** F1: measured power and CdA (step 2a), ClA from a physical window (L/D 2.5–4.5). WEC Hypercar: ClA ≈ 4.15 m² (press window 4.05–4.25, tight prior), CdA from traps, BoP power at the wheel. LMGT3: rule wheel power, iRacing-derived priors (labelled). A fit that pushes an aero value out of its window is a FAIL, whatever the lap error.
+3. **Leftover error is explained by physics or labelled.** It is never absorbed by aero. What can't be explained becomes a data limit with ±.
+4. **Shipping.** The page keeps the shipped model until the honest model passes the gate. Then the honest model replaces it.
+5. Every session and every future change follows this section.
+
+Related rules (details in the Project):
+- **Honest gate** (central 2026-11-25 19:35, `claude/decision-central-gate-honest-2026-11-25.md`): paired held-out lap harm one-sided 95 % UB ≤ 0.15 pp, no row worse than +1.0 pp, no fitted parameter at a bound (within 0.5 %). `LAPSIM_GATE=honest` in `scripts/sim/pipeline-report.mjs` where present.
+- **Lane C** (central 2026-11-26 05:50, `claude/decision-central-0550-scoring-rules-2026-11-26.md`): kernel-fix-only changes ship with 0 new test failures, lap UB ≤ 0.10 pp per series and class, no track > +1.0 pp, no new bound hit vs shipped.
+- **Rule A** (same doc): a scoreboard row whose shipped car has a fitted parameter at a bound scores at most 50 % of its weight.
+- **Measured-derived = measured** (07:31, restored 08:35, `claude/decision-central-0835-merge-old-central-2026-11-26.md`): published timing/telemetry channels and values computed from them by a fixed, documented method (deceleration from speed, line radius from x/y, flap-open point, utilisation ratios such as the 0.66–0.73 band) are never changed, tuned or dropped; changing the method needs a pre-registration and the old values stay stored. Brake on/off timing is measured; brake amount inside "on", brake bias, disc temperature and fitted kernel parameters (μx/μy, ClA, k …) are model and labelled "model". Report-only screens may scan model parameters.
+
 ## Owner preferences
 
 - Chat replies in English (B1–B2, concise) even when the content is Korean.
