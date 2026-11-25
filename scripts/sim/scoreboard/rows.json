@@ -21,7 +21,7 @@
   {"series": "IMSA GTP", "use": "Lap", "w": 3, "parts": [[0.71, 0.351], [0.83, 0.351]], "unit": "%", "owner": "34b", "run": "45562051769"},
   {"series": "LMP2 (WEC/ELMS/IMSA)", "use": "Lap", "w": 2, "parts": [[1.07, 0.263], [1.24, 0.409], [0.82, 0.465]], "unit": "%", "owner": "34b", "run": "45542849325; 45562051769"},
   {"series": "IMSA GTD", "use": "Lap", "w": 2, "parts": [[0.88, 0.359]], "unit": "%", "owner": "34b", "run": "45562051769"},
-  {"series": "FE Gen3 Evo", "use": "Lap", "w": 6, "parts": [[1.61, 0.308]], "unit": "%", "owner": "35", "run": "45515240754; σ 45542849325"},
+  {"series": "FE Gen3 Evo", "use": "Lap", "w": 6, "status": "limit", "note": "data limit (35 ledger 4cb369ef): 1.61 % / σ 0.40 % = 4.0; no telemetry or traps, sector split unexplained", "owner": "35 (stopped)", "run": "45515240754; σ 45542849325"},
   {"series": "FE", "use": "Sectors", "w": 2, "parts": [[2.28, 1.11], [3.55, 0.70], [3.23, 0.69]], "unit": "% (σ = group A vs B)", "owner": "35", "run": "45519708810"},
   {"series": "FE", "use": "Straights", "w": 1, "status": "limit", "note": "no trap in any FE file", "owner": "–", "run": "45520478642"},
   {"series": "FE", "use": "Energy", "w": 2, "status": "nj", "owner": "35", "run": "–"},
