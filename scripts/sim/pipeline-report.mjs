@@ -38,6 +38,15 @@ const endMd = e => !e ? ['Not run.', ''] : [
   '| group / series | models | before | raw | eventOut | eventOutClass | layoutOut | modelOut |', '|---|---|---|---|---|---|---|---|',
   ...Object.entries({...e.byGroup, ...e.byGroupSeries}).map(([g, x]) => `| ${g} | ${x.models} | ${x.before ?? '–'} | ${x.raw ?? '–'} | ${x.eventOut ?? '–'} | ${x.eventOutClass ?? '–'} | ${x.layoutOut ?? '–'} | ${x.modelOut ?? '–'} |`), ''];
 
+// WEC speed-trap residual per class-season: sim top (or, with a known trap position, the straight peak there) − real trap, km/h
+export function trapRms(cal) { const o = {}; for (const [c, ys] of Object.entries(cal?.series?.wec || {})) for (const [y, s] of Object.entries(ys)) { const e = Object.values(s.tracks || {}).filter(t => Number.isFinite(t.trapKph) && Number.isFinite(t.simTopKph)).map(t => t.simTopKph - t.trapKph);
+  if (e.length) o[`wec-${c}/${y}`] = {n: e.length, rmsKph: r4(Math.sqrt(e.reduce((a, x) => a + x * x, 0) / e.length)), biasKph: r4(e.reduce((a, x) => a + x, 0) / e.length), atPosition: Object.values(s.tracks).filter(t => t.trapAtM != null).length}; } return o; }
+const trapMd = r => !r.traps ? [] : ['## WEC speed trap (sim − real, km/h; shipped → this run)', '', '| class-season | n | at position | RMS shipped | RMS | bias shipped | bias |', '|---|---|---|---|---|---|---|',
+  ...Object.keys({...r.traps.shipped, ...r.traps.new}).map(k => `| ${k} | ${r.traps.new[k]?.n ?? '–'} | ${r.traps.new[k]?.atPosition ?? 0} | ${r.traps.shipped[k]?.rmsKph ?? '–'} | ${r.traps.new[k]?.rmsKph ?? '–'} | ${r.traps.shipped[k]?.biasKph ?? '–'} | ${r.traps.new[k]?.biasKph ?? '–'} |`), ''];
+// step 34: Q → Hyperpole repeat σ_rep per WEC class and the IMSA split-half σ (scripts/sim/learn/noise-floor.mjs → noise-floor-rep.json)
+const repMd = n => !n ? [] : ['## σ_meas per class (step 34: Q → Hyperpole repeat; IMSA split-half)', '', '| class series | σ_rep lap % [90 %] | pairs |', '|---|---|---|',
+  ...Object.entries(n.floors || {}).map(([k, o]) => `| ${k} | ${o.rep.lap.sigmaPct ?? '–'} ${o.rep.lap.pi90Pct ? '[' + o.rep.lap.pi90Pct.join(', ') + ']' : ''} | ${o.rep.lap.pairs} |`),
+  ...Object.entries(n.split || {}).map(([k, o]) => `| ${k} (split-half) | ${o.lap?.sigmaPct ?? '–'} | ${o.cars ?? o.n ?? '–'} cars |`), ''];
 const sum = f => existsSync(f) ? JSON.parse(readFileSync(f, 'utf8')).summary ?? null : null;
 const md = r => [
   `# LapSim pipeline report — run ${r.run.id}`, '',
@@ -48,6 +57,7 @@ const md = r => [
   '## Change-effects table (track-state build on the pinned inputs)', '',
   ...(r.trackState ? [`Effects ${r.trackState.identical ? '**identical** to the shipped table' : `**${r.trackState.effects.length} fields differ**`}; registry tracks changed: ${r.trackState.registryTracksChanged.join(', ') || 'none'}; year pairs changed: ${r.trackState.pairsChanged}.` + (r.trackState.cases ? ` Cases ${r.trackState.cases.n} on ${r.trackState.cases.circuits} circuits, skipped ${r.trackState.cases.skipped} (${Object.entries(r.trackState.cases.skippedWhy).map(([k, v]) => `${k} ${v}`).join(', ')}).` : ''), '',
     ...(r.trackState.effects.length ? ['| type | field | shipped | this run |', '|---|---|---|---|', ...r.trackState.effects.map(e => `| ${e.type} | ${e.field} | ${JSON.stringify(e.shipped)} | ${JSON.stringify(e.new)} |`), ''] : [])] : ['Not run.', '']),
+  ...trapMd(r), ...repMd(r.rep),
   '## Endurance / GT3 learning (fit-endurance.mjs, pinned committed tables; RMS %)', '', ...endMd(r.endurance),
   '## Noise floors σ_meas (noise-floor.mjs, report-only)', '', r.noise || 'Not run.', '',
   '## Δ benchmarks', '', ...r.delta.map(d => `- ${d.name}: ${d.result}`), '',
@@ -82,6 +92,7 @@ if (process.argv[1]?.endsWith('pipeline-report.mjs')) {
     levelC: {shipped: sum(`${E.SHIPPED_DIR}/lapsim-level-c.json`), new: sum('docs/lapsim-level-c.json')},
     forward: {shipped: sum(`${E.SHIPPED_DIR}/lapsim-forward.json`), new: sum('docs/lapsim-forward.json')},
     endurance: endurance(E.ENDURANCE_DIR),
+    rep: E.ENDURANCE_DIR && existsSync(`${E.ENDURANCE_DIR}/noise-floor-rep.json`) ? JSON.parse(readFileSync(`${E.ENDURANCE_DIR}/noise-floor-rep.json`, 'utf8')) : null,
     noise: E.NOISE_DIR && existsSync(`${E.NOISE_DIR}/noise-floor.md`) ? readFileSync(`${E.NOISE_DIR}/noise-floor.md`, 'utf8') : null,
     noiseJson: E.NOISE_DIR && existsSync(`${E.NOISE_DIR}/noise-floor.json`) ? JSON.parse(readFileSync(`${E.NOISE_DIR}/noise-floor.json`, 'utf8')) : null,
     delta: [

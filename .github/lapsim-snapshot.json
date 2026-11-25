@@ -49,7 +49,8 @@
       "scripts/sim/data/learn/t71-gt3-cars.csv.gz": "1557ec7c0805fcce37549494f69a3b99ee0d31b72ef015f71dd331b16e1be55b",
       "scripts/sim/data/learn/sro-gt3-cars.csv.gz": "cbd3016336e76084f2d9fd7e882a6d72007423a36d40b9faf2de12e690eb912e",
       "scripts/sim/data/learn/sro-pdf-cars.csv.gz": "044b56cd306bc2afa85e9f46a0bf15245225d27cfb5eb12b9404269da5ad21d4",
-      "scripts/sim/data/track-registry.json": "09e5bf8e7d61f8ea10653bfcfed65fcca5fe3d4ca0a89e0ae5a5eef53b830db4"
+      "scripts/sim/data/track-registry.json": "09e5bf8e7d61f8ea10653bfcfed65fcca5fe3d4ca0a89e0ae5a5eef53b830db4",
+      "scripts/sim/data/learn/noise-split.json.gz": "e6aab4fd0c8bcf71e92a234a938ce23d81ae8f83901ae1360e47a4eb37388b44"
     }
   },
   "noise": {

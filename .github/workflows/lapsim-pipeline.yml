@@ -171,6 +171,7 @@ jobs:
           node scripts/sim/learn/fit-endurance.mjs > end/fit-endurance.log 2>&1 || { tail -50 end/fit-endurance.log; exit 1; }
           cp scripts/sim/data/learn/endurance-fit.json worker/lapsim/learned-data.js end/
           tail -40 end/fit-endurance.log
+          node scripts/sim/learn/noise-floor.mjs end/noise-floor-rep.json | tee end/noise-floor-rep.log  # step 34: σ_rep (Q → HP) and IMSA split-half
       - uses: actions/upload-artifact@v4
         with: {name: endurance-fit, path: end/, retention-days: 90}
 
@@ -185,6 +186,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: {node-version: '22'}
+      - run: npm ci --omit=dev --ignore-scripts
       - run: |
           set -euo pipefail
           P=.github/lapsim-snapshot.json; mkdir -p ti noise

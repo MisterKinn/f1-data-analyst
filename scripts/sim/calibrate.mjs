@@ -5,6 +5,7 @@ import {readFile, writeFile, mkdir} from 'node:fs/promises';
 import {medianKappa} from './kappa-median.mjs';
 import {existsSync} from 'node:fs';
 import {gate} from './gate.mjs';
+import {trapAt} from './wec-trap-pos.mjs';
 import {join} from 'node:path';
 import {lapsimTracks} from '../../worker/lapsim/tracks-data.js';
 import {trackFromData} from '../../worker/lapsim/tracks.js';
@@ -301,6 +302,7 @@ if (s26 && !ONLY_WEC) {
 // qualifying/Hyperpole laps (lap time + speed trap). Track factors are shared from the F1 fit.
 const series = {};
 // LAPSIM_WEC_SEL=lmgt3:2025,... keeps only those class-seasons (small checks, e.g. the split-run equality check)
+const TRAP_POS = E.LAPSIM_WEC_TRAP_POS !== 'off';
 const WEC_SEL = E.LAPSIM_WEC_SEL ? new Set(E.LAPSIM_WEC_SEL.split(',')) : null;
 const wec = process.env.LAPSIM_SKIP_WEC ? [] : JSON.parse(await readFile(join(CACHE, 'wec.json'), 'utf8').catch(() => '[]')).filter(w => !WEC_SEL || WEC_SEL.has(`${w.cls}:${w.year}`));
 const t71Extra = existsSync('scripts/sim/data/t71-wec-extra.json') ? JSON.parse(await readFile('scripts/sim/data/t71-wec-extra.json', 'utf8')).rows : [];
@@ -329,7 +331,10 @@ for (const [cls, def] of Object.entries(SERIES.wec.classes)) {
     // speed traps sit at different places on each track: use one only when it looks like a top speed
     const traps = sessions.flatMap(w => w.laps.map(l => l.topSpeedKph)).filter(Number.isFinite).sort((a, b) => a - b);
     const medTrap = traps[Math.floor(traps.length / 2)];
-    const lapsWith = gf => sessions.flatMap(w => w.laps.map((l, i) => ({name: w.track, track: tracks[w.track], lapSeconds: l.lap, trapKph: l.topSpeedKph >= 0.92 * medTrap ? l.topSpeedKph : null,
+    // step 34 data fix: where the trap position is known (Al Kamel maps), the trap is compared with the simulated speed there and
+    // kept whatever its value; elsewhere the old lap-maximum rule. LAPSIM_WEC_TRAP_POS=off = before the fix.
+    const tPos = id => TRAP_POS ? trapAt(id, year) : null;
+    const lapsWith = gf => sessions.flatMap(w => w.laps.map((l, i) => ({name: w.track, track: tracks[w.track], lapSeconds: l.lap, ...(tPos(w.track) ? {trapAtM: tPos(w.track).m, trapKph: Number.isFinite(l.topSpeedKph) ? l.topSpeedKph : null} : {trapKph: l.topSpeedKph >= 0.92 * medTrap ? l.topSpeedKph : null}),
       weight: i === 0 ? 1 : 0.5, grip: gf(w.track), weather: w.weather || {}, meta: {event: w.event, car: l.car, manufacturer: l.manufacturer, session: l.session}})));
     let laps = lapsWith(f1Grip);
     if (new Set(laps.map(l => l.name)).size < 3) { report.push(`WEC ${cls} ${year}: not enough tracks (${new Set(laps.map(l => l.name)).size})`); continue; }
@@ -354,7 +359,7 @@ for (const [cls, def] of Object.entries(SERIES.wec.classes)) {
     // Timing71 rows of the two seasons before (only seasons with no Al Kamel data), half weight; kept only if the
     // leave-one-track-out error on this season improves beyond noise (gate, docs/lapsim-t71.md)
     const extra = t71Extra.filter(r => r.cls === cls && r.year < +year && r.year >= +year - 2 && !wecYears.has(r.year) && tracks[r.track] && f1Grip(r.track) != null)
-      .map(r => ({name: r.track, track: tracks[r.track], lapSeconds: r.lap, trapKph: r.trapKph, weight: 0.5, grip: f1Grip(r.track), weather: r.weather || {}, meta: {event: 'Timing71', car: '', manufacturer: '', session: ''}}));
+      .map(r => ({name: r.track, track: tracks[r.track], lapSeconds: r.lap, trapKph: r.trapKph, ...(TRAP_POS && trapAt(r.track, r.year) ? {trapAtM: trapAt(r.track, r.year).m} : {}), weight: 0.5, grip: f1Grip(r.track), weather: r.weather || {}, meta: {event: 'Timing71', car: '', manufacturer: '', session: ''}}));
     let pooled = null;
     if (extra.length) {
       const h2 = holdout([...laps, ...extra], base, params, {...WEC_HO, folds: 99, gripFor: l => l.grip});
@@ -388,7 +393,7 @@ for (const [cls, def] of Object.entries(SERIES.wec.classes)) {
     for (const p of fit.perTrack) if (!perTrack[p.name] && p.meta?.event !== 'Timing71') {
       const w = sessions.find(x => x.track === p.name);
       perTrack[p.name] = {grip: +p.grip.toFixed(4), errorSec: +p.dt.toFixed(3), simLap: +p.simLap.toFixed(3), realLap: p.realLap,
-        trapKph: p.vMaxReal, simTopKph: +p.vMaxSim.toFixed(1), event: p.meta.event, car: p.meta.car, manufacturer: p.meta.manufacturer, weather: w?.weather || null};
+        trapKph: p.vMaxReal, simTopKph: +p.vMaxSim.toFixed(1), ...(tPos(p.name) ? {trapAtM: tPos(p.name).m, trapPos: tPos(p.name).status} : {}), event: p.meta.event, car: p.meta.car, manufacturer: p.meta.manufacturer, weather: w?.weather || null};
     }
     ((series.wec ||= {})[cls] ||= {})[year] = {car, tracks: perTrack, pooled, bop, gripSource, score: +fit.score.toFixed(3), laps: laps.length,
       holdout: {rmsPct: h.rmsPct != null ? +h.rmsPct.toFixed(2) : null, n: h.n, tracks: h.errors.map(e => ({track: e.name, errorSec: +e.dt.toFixed(3)})),
