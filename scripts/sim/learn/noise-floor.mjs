@@ -10,10 +10,11 @@
 //       scale of lap-to-lap execution, not a σ; reported next to rep and used only where rep has no pairs.
 //  Sectors: the same rep estimator on s1, s2, s3 of the best lap (rows whose sectors add up to the lap within 0.06 s).
 // Intervals: 90 % bootstrap over events (seed 20261125, 2000 draws).
-import {readFileSync, writeFileSync, mkdirSync} from 'node:fs';
+import {readFileSync, writeFileSync, mkdirSync, existsSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
 import {dirname} from 'node:path';
 import {SERIES} from '../../../worker/lapsim/series.js';
+import {summary as splitSummary} from './noise-split.mjs';
 
 export const SEED = 20261125, BOOT = 2000, TABLES = ['endurance-cars.csv.gz', 'wec-alkamel-cars.csv.gz'].map(f => 'scripts/sim/data/learn/' + f);
 const LMH = SERIES.wec.classes.lmh.manufacturers;
@@ -69,6 +70,9 @@ export function floors(rows) {
 if (process.argv[1]?.endsWith('noise-floor.mjs')) {
   const out = process.argv[2] || 'probe-out/noise-floor.json', rows = loadQ();
   const res = {note: 'σ_meas per class group and series: rep = one best qualifying lap (repeat-lap estimator), ses = median best − ideal. Measured tables read only.', seed: SEED, draws: BOOT, rows: rows.length, floors: floors(rows)};
+  // step 34 A2 §3: split-half σ from the lap-by-lap archive table (IMSA, WEC, ELMS), when the derived table is present
+  const SPLIT = 'scripts/sim/data/learn/noise-split.json.gz';
+  if (existsSync(SPLIT)) { res.split = splitSummary(JSON.parse(gunzipSync(readFileSync(SPLIT)).toString()).rows); }
   mkdirSync(dirname(out), {recursive: true}); writeFileSync(out, JSON.stringify(res, null, 1));
   for (const [k, o] of Object.entries(res.floors)) console.log(k.padEnd(12), 'lap rep', o.rep.lap.sigmaPct ?? '–', '%', o.rep.lap.pi90Pct ?? '', `(${o.rep.lap.pairs} pairs)`, '| s1/s2/s3', ['s1', 's2', 's3'].map(s => o.rep[s].sigmaS ?? '–').join(' / '), 's | ses', o.ses.medianPct ?? '–', '%');
 }
