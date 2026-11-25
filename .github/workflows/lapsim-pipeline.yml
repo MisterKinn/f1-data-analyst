@@ -202,8 +202,8 @@ jobs:
           if [ -n "$id" ]; then mkdir -p .cache && gh api -H 'Accept: application/octet-stream' "repos/${{ github.repository }}/releases/assets/$id" > .cache/alkamel-full-laps.tar
             tar -xf .cache/alkamel-full-laps.tar -C .cache && node scripts/sim/noise-floor.mjs --check-alkamel .cache/alkamel-full-laps && A='--alkamel .cache/alkamel-full-laps'
           else echo "::notice::no data-alkamel-full-laps release here: Al Kamel within-driver σ not measured"; fi
-          # Timing71 per-lap rows (SRO GT3, DTM, NLS …): artifacts laps-t71-* of the upstream lapsim-laps run 42927630531 (expire 30 days after 2026-11-11)
-          T=''; if gh run download 42927630531 -R MisterKinn/f1-data-analyst -p 'laps-t71-*' -D .cache/t71-rows 2>/dev/null; then T='--t71 .cache/t71-rows'; else echo "::notice::Timing71 lap rows not downloadable: not measured"; fi
+          # Timing71 per-lap rows (SRO GT3, DTM, NLS …): artifacts laps-t71-* of the lapsim-laps run 42927630531 on the fork (research copy; expire 2026-12-11; upstream has none and says so)
+          T=''; if gh run download 42927630531 -R kangjeongmin1229/f1-data-analyst-deploy -p 'laps-t71-*' -D .cache/t71-rows 2>/dev/null; then T='--t71 .cache/t71-rows'; else echo "::notice::Timing71 lap rows not downloadable: not measured"; fi
           node scripts/sim/noise-floor.mjs --ti ti/ti $A $T --out noise | tee -a "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         with: {name: noise-floor, path: noise/, retention-days: 90}
