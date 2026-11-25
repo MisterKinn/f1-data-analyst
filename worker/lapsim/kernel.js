@@ -65,7 +65,12 @@ export function lapsimKernel() {
   }
 
   // One call that turns session weather into simulator conditions.
+  // Weather guard (central 2026-11-25 18:30): an empty or non-numeric cell is missing (the default below), never 0. A finite pressure
+  // outside 500-1100 hPa is a reading error (an empty CSV cell read as 0 gave 0 hPa: no air, no power) and stops the caller; a fit that
+  // needs a measured pressure passes opts.requirePressure and stops when it is missing.
   function conditionsFromWeather(w = {}, opts = {}) {
+    if (Number.isFinite(w.pressureHpa) && (w.pressureHpa < 500 || w.pressureHpa > 1100)) throw new Error(`pressureHpa ${w.pressureHpa} is not a pressure (500-1100 hPa): an empty cell read as a number?`);
+    if (opts.requirePressure && !Number.isFinite(w.pressureHpa)) throw new Error('pressureHpa missing: this fit needs the measured pressure');
     const pressureHpa = Number.isFinite(w.pressureHpa) ? w.pressureHpa
       : Number.isFinite(w.altitudeM) ? pressureFromAltitude(w.altitudeM) : 1013.25;
     const tempC = Number.isFinite(w.airTempC) ? w.airTempC : 25;
