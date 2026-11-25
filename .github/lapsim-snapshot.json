@@ -108,5 +108,14 @@
       },
       "sources": "NLS: wige SOLUTIONS lap-by-lap PDFs (qualifying); Al Kamel USAC (SRO GT World Challenge America, IGTC Indianapolis), ELMS, Le Mans Cup, Asian LMS analysis CSVs; Timing71 archive replays (qualifying since 2024: DTM, GTWC Europe/Asia, IGTC, Nürburgring)"
     }
+  },
+  "allLaps": {
+    "note": "step 36 (central 14:27 item 1): the per-lap artifacts of 'Lap simulator all-laps dataset' run 42927630531 (Timing71 shards laps-t71-*, WEC, F1; expiry 2026-12-11) copied to a DRAFT release before expiry. Pin = content: the per-file sha256 manifest (6117 files in 43 artifacts) plus the sha256 of each artifact tar.",
+    "tag": "data-all-laps-2026-11-11",
+    "repo": "kangjeongmin1229/f1-data-analyst-deploy",
+    "made_by_run": 45554266327,
+    "manifest": "scripts/sim/data/learn/all-laps-2026-11-11-manifest.json",
+    "manifest_sha256": "2edd51b284e384f517b83f69b1d20e029b51773338ef5d0861554eca7dc8c33c",
+    "upstream": "not copied: this session has no upstream token; the owner can copy the draft release assets upstream (gh release download + create --draft) and the manifest check is the same"
   }
 }
