@@ -23,9 +23,12 @@ npm run build
 npm run validate
 git diff --check
 node scripts/verify-runtime-browser.mjs http://localhost:5182 http://localhost:5181
+node scripts/verify-hosted-runtime.mjs https://your-deployment.vercel.app
 ```
 
 The direct comparison covers 36 public/personal page responses, 191 assets and six MCP protocol responses (status, headers and body bytes). Separate simulator tests compare cached and uncached HTML, invalid inputs, language, evolution and race variants; 20 concurrent requests require one preparation and one fetch. Tests cover conditional writes, authentication, OAuth and account isolation. This evidence does not prove all possible inputs or an actual Google browser login on Vercel.
+
+Browser scripts accept `CHROMIUM_EXECUTABLE` and save reports under ignored `.cache/refactor/` (`BROWSER_REPORT_DIR` overrides the report directory). For protected Preview, `BROWSER_COOKIE_JAR` can point to a local Netscape cookie jar obtained through the authorized Vercel CLI. Never commit or share that file. `EXPECT_PREVIEW_AUTH_BLOCK=1` permits only the known Firebase `auth/unauthorized-domain` Preview restriction; never use that flag for the canonical production check. The hosted check validates all generated asset bytes and MIME types, protected-source 404s, auth proxy, OAuth metadata, MCP initialization and the Google popup entry. It does not submit Google credentials or complete an authenticated session.
 
 Local Node 22 first-view warm-miss benchmark, 200 repeated Monza/Korean requests: before CPU 2130.688 ms / wall 2219.532 ms; after CPU 0.206 ms / wall 0.216 ms; one fetch in each case. This isolates descriptor preparation and is not a site-wide speedup or a billing forecast. Repeat without other heavy workloads for performance comparisons.
 

@@ -6,7 +6,7 @@ import {chromium} from 'playwright-core';
 
 const [baseline,candidate]=process.argv.slice(2);
 if(!baseline||!candidate)throw new Error('Usage: node scripts/verify-runtime-browser.mjs BASELINE_URL CANDIDATE_URL');
-const output='.cache/refactor/browser';
+const output=process.env.BROWSER_REPORT_DIR||'.cache/refactor/browser';
 await mkdir(output,{recursive:true});
 const browser=await chromium.launch({executablePath:process.env.CHROMIUM_EXECUTABLE||'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true});
 const results=[];
@@ -14,6 +14,13 @@ const hash=value=>createHash('sha256').update(value).digest('hex');
 try{
  for(const [label,base] of [['baseline',baseline],['candidate',candidate]]){
   const context=await browser.newContext({viewport:{width:1280,height:900},locale:'en-US',reducedMotion:'reduce'});
+  if(process.env.BROWSER_COOKIE_JAR){
+   const jar=await readFile(process.env.BROWSER_COOKIE_JAR,'utf8');
+   await context.addCookies(jar.split('\n').filter(line=>line.includes('\t')).map(line=>{
+    const [domain,,path,secure,,name,value]=line.replace(/^#HttpOnly_/,'').split('\t');
+    return {domain,path,secure:secure==='TRUE',httpOnly:true,name,value};
+   }));
+  }
   const page=await context.newPage();page.setDefaultTimeout(30000);
   const errors=[],badAssets=[],states=[];
   page.on('pageerror',error=>errors.push(error.message));
@@ -58,9 +65,11 @@ try{
   }
   await page.goto(base+'/?lang=en');await page.locator('#language').selectOption('ko');
   await page.waitForFunction(()=>document.documentElement.lang==='ko');
+  // The language control may replace the document after updating its language.
+  await page.waitForTimeout(1000);await page.waitForLoadState('load');
   await page.setViewportSize({width:390,height:844});
   await page.locator('button.menu').click();
-  assert.equal(await page.locator('button.menu').getAttribute('aria-expanded'),'true');
+  await page.waitForFunction(()=>document.querySelector('button.menu')?.getAttribute('aria-expanded')==='true');
   await page.locator('#navigation a[href="/simulation"]').click();
   await page.waitForURL('**/simulation*');await snapshot('mobile-navigation');
   await page.screenshot({path:`${output}/${label}-mobile.png`});

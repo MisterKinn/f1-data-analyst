@@ -27,3 +27,5 @@ wec-status.tmp
 # graphify code map (rebuilt each Claude Code session)
 graphify-out/
 .cache/
+.vercel
+.env*.local
