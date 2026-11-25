@@ -22,7 +22,7 @@ if (process.argv[1]?.endsWith('fetch-wec-lineups.mjs')) {
   const urls = [...new Set([...m.matchAll(/"url":"([^"]+?\.CSV)"/gi)].map(x => x[1].replace(/\\\//g, '/')))].map(u => u.startsWith('http') ? u : `https://files.alkamelcloud.com/${u.replace(/^\//, '')}`);
   const out = {source: `files.alkamelcloud.com/wec/manifests/results_${id}.json`, fetched: new Date().toISOString(), lineups: {}}, log = [];
   for (const ev of WANT) {
-    const re = MATCH[ev], mine = urls.filter(u => re.test(decodeURIComponent(u).split('/')[3] || '') && /Qualifying|Hyperpole/i.test(decodeURIComponent(u)));
+    const re = MATCH[ev], mine = urls.filter(u => { const p = decodeURIComponent(u).split('/'), i = p.findIndex(x => /^\d\d_20\d\d$/.test(x)); return re.test(p[i + 1] || '') && /Qualifying|Hyperpole/i.test(p.slice(i + 2).join('/')); });
     const cars = out.lineups[`wec|${SEASON}|${ev}`] = {};
     for (const u of mine.filter(u => /\/03_Classification[^/]*\.CSV$/i.test(decodeURIComponent(u)))) { const t = await get(encodeURI(decodeURI(u))); if (!t) continue;
       for (const r of csv(t)) { const c = cars[car(r.NUMBER)] ||= {drivers: [], bestLap: [], source: decodeURIComponent(u), date: (/\/(20\d{6})\d{4}_/.exec(decodeURIComponent(u))?.[1] || '').replace(/(\d{4})(\d\d)(\d\d)/, '$1-$2-$3')};
@@ -32,5 +32,6 @@ if (process.argv[1]?.endsWith('fetch-wec-lineups.mjs')) {
       for (const [k, b] of best) (cars[k] ||= {drivers: [], bestLap: [], source: b.source}).bestLap.push(b); }
     log.push(`${ev}: ${mine.length} files, ${Object.keys(cars).length} cars, ${Object.values(cars).filter(c => c.drivers.some(d => d.rating)).length} with a printed category`);
   }
+  if (!log.some(l => !/: 0 files/.test(l))) console.log('url sample', urls.slice(0, 5).join(' '));
   out.log = log; console.log(log.join('\n')); writeFileSync(OUT, JSON.stringify(out, null, 1));
 }
