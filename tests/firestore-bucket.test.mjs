@@ -5,7 +5,7 @@ import {createFirestoreBucket,FIRESTORE_BUCKET_MAX_BODY_BYTES} from '../server/f
 function fakeFirestore(){
  const values=new Map();
  const collection=()=>({
-  doc:id=>({get:async()=>({exists:values.has(id),data:()=>values.get(id)}),delete:async()=>values.delete(id),id}),
+  doc:id=>({get:async()=>({exists:values.has(id),data:()=>values.get(id)}),set:async value=>values.set(id,value),delete:async()=>values.delete(id),id}),
   where(field,op,value){return query().where(field,op,value);}
  });
  const query=(state={prefix:'',after:null,limit:1000})=>({

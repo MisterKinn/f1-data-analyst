@@ -1,8 +1,41 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {simulationPage, lapsimScript} from '../worker/simulation.js';
-import {simulationPageCached, simulationFirstView} from '../worker/simulation-cache.js';
+import {simulationPageCached, simulationFirstView, createFirstViewCache, simulationRequestKey} from '../worker/simulation-cache.js';
 import {canonJson, firstViewState} from '../worker/lapsim/view-keys.js';
+
+test('descriptor cache avoids preparation and coalesces concurrent misses; expiry retries only fetching', async()=>{
+ let renders=0,fetches=0;
+ const data={cars:{'2026':{}},conds:{},carId:'2026'};
+ const view=createFirstViewCache({render:(q,l,e,probe)=>{renders++;probe(data,'2026');},version:()=> 'fixture'});
+ const fetchImpl=async url=>{fetches++;await new Promise(resolve=>setTimeout(resolve,10));return Response.json({build:url.split('/').at(-2),state:canonJson(firstViewState(data,'2026')),v:{lap:1}});};
+ const options={fetchImpl,now:100};
+ const values=await Promise.all(Array.from({length:20},()=>view({track:'monza'},'ko',null,options)));
+ assert.ok(values.every(v=>v?.v.lap===1));assert.equal(renders,1);assert.equal(fetches,1);
+ await view({track:'monza',evo:'1',race:'any'},undefined,null,options);
+ assert.equal(renders,1);assert.equal(fetches,1);
+ await view({track:'monza'},'ko',null,{fetchImpl,now:3600101});
+ assert.equal(renders,1);assert.equal(fetches,2);
+});
+
+test('descriptor LRU is bounded and failed fetches expire without repeating preparation', async()=>{
+ let renders=0,fetches=0;
+ const view=createFirstViewCache({capacity:2,version:()=> 'fixture',render:(q,l,e,probe)=>{renders++;probe({cars:{'2026':{}},conds:{},id:q.track},'2026');}});
+ const fetchImpl=async()=>{fetches++;throw Error('offline');};
+ for(const now of [1,2,60002])assert.equal(await view({track:'a'},'ko',null,{fetchImpl,now}),null);
+ assert.equal(renders,1);assert.equal(fetches,2);
+ for(const track of ['b','c','a'])await view({track},'ko',null,{fetchImpl,now:1});
+ assert.equal(renders,4);
+ assert.notEqual(simulationRequestKey({race:'a'}),simulationRequestKey({race:'b'}));
+});
+
+test('normalized variants and race inputs retain exact uncached HTML',()=>{
+ for(const [q,lang,energy] of [
+  [{track:'invalid',car:'invalid',evo:'yes'},'invalid',{limit:3}],
+  [{track:'monza',car:'2025',evo:'1',race:'2025'},'en',null],
+  [{track:'monza',car:'2025',evo:'0',race:'2026'},'en',null],
+ ])assert.equal(simulationPageCached(q,lang,energy),simulationPage(q,lang,energy));
+});
 
 // speed job 2026-11-18: the /simulation page is cached per instance by its inputs; the cached page is the same text
 test('cached /simulation page equals a fresh render, and a repeat view is served from memory', () => {

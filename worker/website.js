@@ -3,7 +3,7 @@ import {ALERTS_HEAD} from './doc-alerts-web.js';
 import {googleLoginScript} from './google-login-script.js';
 import {appearanceControl,appearanceBoot,appearanceClient,appearanceCss,noScriptAppearanceCss} from './appearance.js';
 import {publicJsonRequest} from './public-request.js';
-import {refinementCss,plainIdentityAsset} from './ui-refinement.js';
+import {refinementCss,plainIdentityAsset,identityAssetNames} from './ui-refinement.js';
 import {aiSetupStep,setupStepCss} from './briefing-guide.js';
 import {applySiteMetadata,createRobotsTxt,createSitemapXml} from './site-metadata.js';
 import './mexico-zones-overlay.js';
@@ -156,6 +156,18 @@ function i18nClient(dict,translateText){
 }
 const scriptBuilders={'ui-motion':()=>'('+uiMotionClient.toString()+')();('+uiSystemClient.toString()+')();('+heroMotionClient.toString()+')();('+nextSessionClient.toString()+')();('+uiPolishClient.toString()+')();('+simulatorUiClient.toString()+')('+JSON.stringify(CORNER_NAMES)+');','lapsim':()=>lapsimScript(),'i18n':()=>'('+i18nClient.toString()+')('+JSON.stringify(translations)+','+translateText.toString()+');','race-features':()=>{let content='(()=>{const publicJsonRequest='+publicJsonRequest.toString()+';('+raceFeaturesClient.toString()+')('+JSON.stringify(translations)+','+translateText.toString()+','+weekBounds.toString()+','+sessionState.toString()+','+weeklyEventVisible.toString()+','+compactSessionName.toString()+','+scheduledSessionStatus.toString()+','+calendarStatusText.toString()+');';content+='})();';return content;},'examples':()=>{let content='('+demoClient.toString()+')('+JSON.stringify(demoCases)+');';return content;},'website':()=>{let content='(()=>{const publicJsonRequest='+publicJsonRequest.toString()+';('+websiteClient.toString()+')('+teamLogoFor.toString()+','+gtTeamLogoFor.toString()+','+koreanStandingName.toString()+','+JSON.stringify(standingsKoreanNames)+');'+'('+raceResultsClient.toString()+')('+teamLogoFor.toString()+','+gtTeamLogoFor.toString()+','+koreanStandingName.toString()+','+JSON.stringify(standingsKoreanNames)+');';content+='('+appearanceClient.toString()+')();})();';return content;}};
 const scriptCache=new Map();
+export function staticAssetPaths(){
+ return [...new Set([
+  ...Object.keys(scriptBuilders).map(name=>`/assets/${name}.js`),
+  '/assets/anime.js','/assets/team-logos.js','/assets/og.png','/assets/og-en.png',
+  '/assets/brand-icon.svg','/assets/brand-icon.png','/assets/brand-mark.svg','/assets/brand-mark-en.svg',
+  '/assets/brand-mark-light.svg','/assets/brand-mark-light-en.svg','/favicon.ico',
+  ...Object.keys(fontAssets).map(name=>`/assets/fonts/${name}.woff2`),
+  ...Object.keys(ciLogos).map(name=>`/assets/ci/${name}.svg`),
+  ...['hypercar','f1-2025','f1-2026'].flatMap(car=>['side','top','front','rear'].map(view=>`/assets/${car}/${view}.webp`)),
+  ...identityAssetNames().flatMap(name=>[`/assets/team/${name}.svg`,`/assets/schedule/${name}`,`/assets/${name}-official`,`/assets/${name}-official.svg`,`/assets/${name}-official.png`]),
+ ])];
+}
 function scriptAsset(name){if(!scriptCache.has(name))scriptCache.set(name,scriptBuilders[name]());return scriptCache.get(name);}
 function scriptVersion(name){const text=scriptAsset(name);let h=2166136261;for(let i=0;i<text.length;i++){h^=text.charCodeAt(i);h=Math.imul(h,16777619);}return (h>>>0).toString(36);}
 export function versionScriptUrls(html){return html.replace(/(src="\/assets\/)(website|race-features|examples)\.js"/g,(_,prefix,name)=>prefix+name+'.js?v='+scriptVersion(name)+'"');}
