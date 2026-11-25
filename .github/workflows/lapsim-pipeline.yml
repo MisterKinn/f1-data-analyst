@@ -178,7 +178,7 @@ jobs:
           [ -f fit/worker/lapsim/calibration-data.js ] && cp fit/worker/lapsim/calibration-data.js worker/lapsim/ || true
           mkdir -p end && cp worker/lapsim/learned-data.js end/learned-data-shipped.js
           node scripts/sim/learn/noise-floor.mjs end/noise-floor.json | tee end/noise-floor.log
-          node scripts/sim/learn/fit-endurance.mjs end/endurance-fit.json > end/fit-endurance.log 2>&1
+          node scripts/sim/learn/fit-endurance.mjs > end/fit-endurance.log 2>&1 && cp scripts/sim/data/learn/endurance-fit.json end/  # one argument is not an out path: fit-endurance takes <tables...> <out>
           cp worker/lapsim/learned-data.js end/learned-data.js; sha256sum worker/lapsim/calibration-data.js end/* > end/SHA256SUMS
           { echo '### Endurance learning and noise floor'; echo '```'; cat end/noise-floor.log; tail -n 40 end/fit-endurance.log; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
           tar czf "endurance-${{ github.run_id }}.tgz" end

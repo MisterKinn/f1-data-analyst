@@ -26,10 +26,10 @@ export function trapRms(cal) { const o = {}; for (const [c, ys] of Object.entrie
   if (e.length) o[`wec-${c}/${y}`] = {n: e.length, rmsKph: r4(Math.sqrt(e.reduce((a, x) => a + x * x, 0) / e.length)), biasKph: r4(e.reduce((a, x) => a + x, 0) / e.length), atPosition: Object.values(s.tracks).filter(t => t.trapAtM != null).length}; } return o; }
 // endurance job (fit-endurance + noise-floor): held-out class-best RMS per group and per group × series, and σ_meas
 export function endurance(dir) {
-  if (!dir || !existsSync(`${dir}/endurance-fit.json`)) return null;
-  const f = JSON.parse(readFileSync(`${dir}/endurance-fit.json`, 'utf8')), n = existsSync(`${dir}/noise-floor.json`) ? JSON.parse(readFileSync(`${dir}/noise-floor.json`, 'utf8')) : null;
+  const rd = f => dir && existsSync(`${dir}/${f}`) ? JSON.parse(readFileSync(`${dir}/${f}`, 'utf8')) : null, f = rd('endurance-fit.json'), n = rd('noise-floor.json');
+  if (!f && !n) return null;
   const pick = t => Object.fromEntries(Object.entries(t || {}).map(([k, v]) => [k, {events: v.events, eventOutClass: v.eventOutClass, beforeClass: v.beforeClass}]));
-  return {rows: f.rows, events: f.events, byGroup: pick(f.byGroup), byGroupSeries: pick(f.byGroupSeries), noiseFloor: n?.floors ?? null};
+  return {rows: f?.rows ?? null, events: f?.events ?? null, byGroup: pick(f?.byGroup), byGroupSeries: pick(f?.byGroupSeries), noiseFloor: n?.floors ?? null, split: n?.split ?? null};
 }
 const endMd = e => !e ? ['No endurance-job output in this run.', ''] : ['## Endurance learning (fit-endurance, leave one event out) and σ_meas', '', `${e.rows} rows, ${e.events} events.`, '',
   '| group | events | held-out class-best RMS % | before % |', '|---|---|---|---|', ...Object.entries({...e.byGroup, ...e.byGroupSeries}).map(([k, v]) => `| ${k} | ${v.events ?? '–'} | ${v.eventOutClass ?? '–'} | ${v.beforeClass ?? '–'} |`), '',
