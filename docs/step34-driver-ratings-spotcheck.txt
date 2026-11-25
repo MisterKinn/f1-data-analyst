@@ -17,3 +17,7 @@
 2026 elms imola car 77 Martin Berry | table B | printed 'B' in data/elms/2026/03-imola/202607041050-free-20practice-202-results.csv | match
 2026 alms sepang car 15 Memo Gidley | table B | printed 'B' in data/alms/2026/03-yas-marina/202602081130-warm-20up-results.csv | match
 17/18 match
+# WEC 2026 events filled from Al Kamel (fetch-wec-lineups.mjs, run 45524017499): 36 learned rows with a best-lap driver rating
+2026 wec interlagos car 10 Antares AU | table B | printed ['B'] | best lap 95.135 driver in analysis file: Antares AU | https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV | match
+2026 wec catalunya car 23 Gray NEWELL | table B | printed ['B'] | best lap 103.513 driver in analysis file: Gray NEWELL | https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV | match
+2026 wec monza car 23 Eduardo BARRICHELLO | table S | printed ['S'] | best lap 107.065 driver in analysis file: Eduardo BARRICHELLO | https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV | match
