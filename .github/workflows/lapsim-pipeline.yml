@@ -6,7 +6,8 @@ name: Lap simulator pipeline (pinned inputs → fit → report)
 # snapshot's release, so it does not expire. AGENTS.md: a model number in a status doc cites this workflow's run id.
 # - release published / manual run (upstream only): the pinned snapshot; manual input prep_run makes a new snapshot from that run's
 #   lapsim-prep artifact (2-day retention: pin it before it expires)
-# - push to lapsim-pipeline/** (any repo): only the short jobs (snapshot check, track-state check on an existing pin, tests, Δ benchmarks
+# - push to lapsim-pipeline/** (any repo): only the short jobs (snapshot check, track-state check on an existing pin, endurance / GT3 learning
+#   and noise floors (step 36), tests, Δ benchmarks
 #   on the committed calibration, report), minutes not hours. The 3 h fit and the long snapshot builds (TI / fia.com fetch) run only
 #   on workflow_dispatch or a release (central 2026-11-24).
 # - mode research (dispatch on the fork): the same jobs for steps 22 / 28; the report is labelled research. Production snapshots and
@@ -153,8 +154,55 @@ jobs:
       pinned: true
       wec_only: ${{ inputs.wec_only == 'yes' }}
 
+  # step 36: GT3 / DTM / Nürburgring / Hypercar class learning (fit-endurance.mjs) on the pinned committed tables, compared with the
+  # shipped endurance-fit.json and learned-data.js; runs on the committed calibration (the class cars the shipped files were built on)
+  endurance:
+    if: github.event_name == 'push' || github.repository == 'MisterKinn/f1-data-analyst' || inputs.mode == 'research'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - run: |
+          set -euo pipefail
+          jq -r '.endurance.files | to_entries[] | "\(.value)  \(.key)"' .github/lapsim-snapshot.json | sha256sum --check
+          mkdir -p end && cp scripts/sim/data/learn/endurance-fit.json end/shipped-endurance-fit.json && cp worker/lapsim/learned-data.js end/shipped-learned-data.js
+          node scripts/sim/learn/fit-endurance.mjs > end/fit-endurance.log 2>&1 || { tail -50 end/fit-endurance.log; exit 1; }
+          cp scripts/sim/data/learn/endurance-fit.json worker/lapsim/learned-data.js end/
+          tail -40 end/fit-endurance.log
+      - uses: actions/upload-artifact@v4
+        with: {name: endurance-fit, path: end/, retention-days: 90}
+
+  # step 36 (report-only): lap-time noise floors σ_meas per series (scripts/sim/noise-floor.mjs)
+  noise:
+    if: github.event_name == 'push' || github.repository == 'MisterKinn/f1-data-analyst' || inputs.mode == 'research'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - run: |
+          set -euo pipefail
+          P=.github/lapsim-snapshot.json; mkdir -p ti noise
+          jq -r '.noise.files | to_entries[] | "\(.value)  \(.key)"' $P | sha256sum --check
+          gh release download "$(jq -r .trackState.tag $P)" -R "$(jq -r .trackState.repo $P)" -p ti-raw.tgz -D .
+          echo "$(jq -r .noise.tiRaw $P)  ti-raw.tgz" | sha256sum --check
+          # only the seasons used; 2022 is the LOCKED set and is never extracted (noise-floor.mjs skips it as well)
+          tar xzf ti-raw.tgz -C ti ti/2023 ti/2024 ti/2025 ti/2026
+          # a draft release has no tag lookup: find the asset in the release list (drafts are listed for this repo's token)
+          A=''; id=$(gh api "repos/${{ github.repository }}/releases?per_page=100" -q '.[] | select(.tag_name=="data-alkamel-full-laps") | .assets[] | select(.name=="alkamel-full-laps.tar") | .id' | head -1 || true)
+          if [ -n "$id" ]; then mkdir -p .cache && gh api -H 'Accept: application/octet-stream' "repos/${{ github.repository }}/releases/assets/$id" > .cache/alkamel-full-laps.tar && tar -xf .cache/alkamel-full-laps.tar -C .cache && A='--alkamel .cache/alkamel-full-laps'
+          else echo "::notice::no data-alkamel-full-laps release here: Al Kamel within-driver σ not measured"; fi
+          node scripts/sim/noise-floor.mjs --ti ti/ti $A --out noise | tee -a "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with: {name: noise-floor, path: noise/, retention-days: 90}
+
   report:
-    needs: [snapshot, track-state, fit]
+    needs: [snapshot, track-state, fit, endurance, noise]
     if: ${{ !cancelled() && needs.snapshot.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -178,6 +226,12 @@ jobs:
       - uses: actions/download-artifact@v4
         continue-on-error: true
         with: {name: track-state-check, path: ts}
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with: {name: endurance-fit, path: end}
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with: {name: noise-floor, path: noise}
       # the run's fit becomes the working calibration, so the Δ benchmark and level C / forward read this run's numbers
       # frozen case CSVs (pinned by sha256) → model Δ on this run's calibration (the shipped one when the fit was skipped); seconds, not hours
       - name: Δ benchmarks on this run's calibration
@@ -205,6 +259,8 @@ jobs:
           SNAPSHOT_SUMS: snap/SHA256SUMS
           DELTA_DIR: dl
           TRACK_STATE_DIFF: ts/track-state-diff.json
+          ENDURANCE_DIR: end
+          NOISE_DIR: noise
         run: |
           node scripts/sim/pipeline-report.mjs fit/worker/lapsim/calibration-data.js /tmp/shipped/calibration-data.js out > /dev/null
           cp -r dl out/delta
@@ -245,6 +301,7 @@ jobs:
       - name: Build the ranges from this run
         run: |
           [ -f fit/worker/lapsim/calibration-data.js ] && cp fit/worker/lapsim/calibration-data.js worker/lapsim/ || true
+          mkdir -p ranges
           node scripts/sim/delta-intervals.mjs --run "$RUN" --mode "$MODE" --out "ranges/delta-intervals-data-$RUN.js" | tee -a "$GITHUB_STEP_SUMMARY"
           sha256sum worker/lapsim/calibration-data.js | cut -c1-64 > ranges/calibration.sha256
       - uses: actions/upload-artifact@v4
