@@ -59,8 +59,29 @@
       "scripts/sim/data/learn/nls-laps.json.gz": "74358a115355ce936d033da3ec2e52b9a85eb54fab92fc95ce96f57a27ad1c9c",
       "scripts/sim/data/learn/fe-duels.csv": "7c041983f99f596eca3b621e12c33b2ad351015aaff6971521c105297fee41c1",
       "scripts/sim/data/learn/fe-cars.csv.gz": "9cdc95548d97629f51250de8ab963e97a891205639836a6a9c989682a871875b",
-      "scripts/sim/data/learn/driver-ratings.json.gz": "5b790386225a7d93d4ad70e851de634b18431d5aac74c95c5e978f592858d2ca"
+      "scripts/sim/data/learn/driver-ratings.json.gz": "6b03a76fb1d3049f0b415a830975fc368ba5f6850d586ca5044f75e077829be9"
     },
-    "tiRaw": "13fb2343015d0113582cb480afce22bced751e03e6fc3ef8345e58025b25f7e9"
+    "tiRaw": "13fb2343015d0113582cb480afce22bced751e03e6fc3ef8345e58025b25f7e9",
+    "alkamel": {
+      "pin": "content: every file of the manifest must match its sha256 (raw bytes, before gzip); the tarball hash is not the pin",
+      "manifest": "scripts/sim/data/learn/alkamel-full-laps-manifest.json",
+      "manifest_sha256": "9100f1f65f7726514e90f46760e7b91ed28525889043e9ba5d461d8c54dae3cb",
+      "tag": "data-alkamel-full-laps",
+      "copies": {
+        "production": {
+          "repo": "MisterKinn/f1-data-analyst",
+          "draft": true,
+          "tar_sha256": "6656d16e8fc7e0a1b00de5817b79f2256641db2bc9cbc92cea56fac9e608f375",
+          "made_by": "alkamel-full-laps.yml, 2026-11-23"
+        },
+        "research": {
+          "repo": "kangjeongmin1229/f1-data-analyst-deploy",
+          "draft": true,
+          "tar_sha256": "333810e1778b571b954403008b15312e709fb2aa087064c6b79f1fdfd1cf0ab0",
+          "made_by_run": 45533609115
+        }
+      },
+      "note": "Each repo reads its own draft (upstream = production, fork = research). Raw files, drafts only (physics rule 9)."
+    }
   }
 }
