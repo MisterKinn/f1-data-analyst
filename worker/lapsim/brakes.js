@@ -16,7 +16,10 @@ export function brakeZones(track, car, env, v, limit, opts = {}) {
     let j = i, peak = 0, dist = 0, time = 0, zf = 0, zr = 0, zg = 0, hd = 0, ht = 0, hs = -1, he = -1, gsum = 0;
     while (limit[j % n] === 3 && j - i < n / 3) {
       const a = j % n, b = (j + 1) % n, vm = 0.5 * (v[a] + v[b]), dec = (v[a] * v[a] - v[b] * v[b]) / (2 * ds); // m/s²
-      const low = track.aeroLow?.[a], drag = 0.5 * rho * (low ? car.cdALow ?? car.cdA : car.cdA) * vm * vm, down = 0.5 * rho * (low ? car.clALow ?? car.clA : car.clA) * vm * vm;
+      const low = Math.min(1, Math.max(0, Number(track.aeroLow?.[a]) || 0));
+      const cd = low === 1 ? car.cdALow ?? car.cdA : car.cdA + low * ((car.cdALow ?? car.cdA) - car.cdA);
+      const cl = low === 1 ? car.clALow ?? car.clA : car.clA + low * ((car.clALow ?? car.clA) - car.clA);
+      const drag = 0.5 * rho * cd * vm * vm, down = 0.5 * rho * cl * vm * vm;
       // stopping force left after drag, shared by the axles in proportion to their dynamic load (static +
       // load transfer + aero balance); regen takes its share on its own axle, friction brakes the rest
       const total = m * dec, need = Math.max(0, total - drag), fz = m * G + down;
