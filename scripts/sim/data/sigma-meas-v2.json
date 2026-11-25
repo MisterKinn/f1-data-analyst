@@ -1,0 +1,11 @@
+{
+ "note": "σ_meas v2 (Project claude/definition-sigma-meas-2026-11-25.md, sha256 7b00840accd8c5eecbc0aae79e56db35cfaae44fcaa87e2c9d9171a1d2ab066d): within-driver spread of near-best laps in one session after track evolution, % of lap; median over events, 90 % CI by event bootstrap. Copied from noise-floor.json of lapsim-pipeline run 45542849325 (step 36). Report-only; update with the run id when the noise job is rerun.",
+ "definitionSha256": "7b00840accd8c5eecbc0aae79e56db35cfaae44fcaa87e2c9d9171a1d2ab066d",
+ "run": "45542849325",
+ "classes": {
+  "f1": {"pct": 0.365, "ci90": [0.354, 0.379], "events": 76, "from": "F1 qualifying 2023-26 (TracingInsights)"},
+  "wec-lmh": {"pct": 0.307, "ci90": [0.289, 0.355], "events": 23, "from": "WEC Hypercar qualifying / Hyperpole (Al Kamel full laps), shared by LMH and LMDh"},
+  "wec-lmdh": {"pct": 0.307, "ci90": [0.289, 0.355], "events": 23, "from": "WEC Hypercar qualifying / Hyperpole (Al Kamel full laps), shared by LMH and LMDh"},
+  "wec-lmgt3": {"pct": 0.322, "ci90": [0.318, 0.347], "events": 16, "from": "WEC LMGT3 qualifying (Al Kamel full laps)"}
+ }
+}

@@ -84,3 +84,11 @@ test('a research build never overwrites the production ranges', () => {
   for (const g of ["github.repository == 'MisterKinn/f1-data-analyst'", "github.event_name != 'push'", "github.ref == 'refs/heads/main'", "env.MODE == 'production'"]) assert.ok(pub.split('\n')[1].includes(g), g);
   assert.equal((job.match(/scripts\/publish-refresh\.sh/g) || []).length, 1);
 });
+
+test('gap to floor (step 36, report-only): held-out RMS ÷ σ_meas v2 per class, σ from the pinned table', () => {
+  const g = D.gapToFloor, S = JSON.parse(readFileSync('scripts/sim/data/sigma-meas-v2.json', 'utf8'));
+  assert.equal(g.status, 'report-only'); assert.equal(g.sigma.sha256, sha('scripts/sim/data/sigma-meas-v2.json'));
+  assert.equal(S.definitionSha256, '7b00840accd8c5eecbc0aae79e56db35cfaae44fcaa87e2c9d9171a1d2ab066d');
+  assert.equal(g.rows.f1.n, D.lap.f1.n); assert.ok(Math.abs(g.rows.f1.heldOutPct - D.lap.f1.rmsPct) < 1e-9);
+  for (const [k, r] of Object.entries(g.rows)) { assert.ok(Math.abs(r.ratio - r.heldOutPct / r.sigmaPct) < 0.001, k); assert.equal(r.atFloor, r.ratio <= 1.2, k); }
+});

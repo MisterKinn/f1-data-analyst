@@ -11,6 +11,18 @@ concurrency:
   group: f1-${{ github.event_name == 'pull_request' && github.ref || 'main-tests' }}
   cancel-in-progress: true
 jobs:
+  # every workflow file: actionlint syntax/expression checks block; shellcheck findings on run: scripts are listed only (17 on main,
+  # 2026-11-25, all warning/info/style; fix them file by file)
+  actionlint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash <(curl -sSL https://raw.githubusercontent.com/rhysd/actionlint/v1.7.7/scripts/download-actionlint.bash) 1.7.7
+      - name: actionlint (blocking, without shellcheck)
+        run: ./actionlint -color -shellcheck=
+      - name: shellcheck findings (report only)
+        run: ./actionlint -color || true
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 15

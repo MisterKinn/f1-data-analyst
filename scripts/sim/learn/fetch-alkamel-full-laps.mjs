@@ -68,11 +68,15 @@ async function* candidates(series, years) {
       yield a.files.filter(f => f.folders[1] === 'FIA WEC' && f.format === 'csv').map(f => ({series, season: +y, event: f.folders[0], title: f.title, url: alkamelUrl(f.url)})); }
     return;
   }
-  const champ = series === 'elms' ? /European Le Mans Series/i : /WeatherTech/i, event = series === 'elms' ? () => true : n => /daytona/i.test(n) && !/roar|test/i.test(n);
+  // IMSA: Daytona 24 only by default; --imsa=all adds every other WeatherTech event, practice and qualifying files only (step 36: σ_meas
+  // needs qualifying laps; race files of every event are large and not needed)
+  const champ = series === 'elms' ? /European Le Mans Series/i : /WeatherTech/i, allImsa = arg('imsa', 'daytona')[0] === 'all',
+    event = series === 'elms' ? () => true : n => !/roar|test/i.test(n) && (allImsa || /daytona/i.test(n));
   for (const s of (await officialArchive(series)).seasons) { const y = inYears(s.id + ' ' + s.name); if (!y) continue;
     for (const ev of (await officialArchive(series, s.id)).events.filter(e => event(e.name))) {
       const {files} = await officialArchive(series, s.id, ev.id);
-      yield files.filter(f => f.format === 'csv' && champ.test(f.folders[1] || '')).map(f => ({series, season: +y, event: ev.name.replace(/^\d+_/, ''), title: f.title, url: officialUrl(f.url)}));
+      const short = series === 'imsa' && !/daytona/i.test(ev.name), keep = f => !short || /practice|qualif/i.test(sessionKind(sessionFile(new URL(officialUrl(f.url)).pathname)?.session || '') || '');
+      yield files.filter(f => f.format === 'csv' && champ.test(f.folders[1] || '') && keep(f)).map(f => ({series, season: +y, event: ev.name.replace(/^\d+_/, ''), title: f.title, url: officialUrl(f.url)}));
     } }
 }
 

@@ -15,7 +15,7 @@ import {calFingerprint} from '../../worker/lapsim/delta-intervals.js';
 const root = fileURLToPath(new URL('../../', import.meta.url));
 const sha = p => createHash('sha256').update(readFileSync(p.startsWith('/') ? p : root + p)).digest('hex');
 const CAL = 'worker/lapsim/calibration-data.js', CASES = 'scripts/sim/data/f1-delta/f1-delta-cases-pooled-2026-11-24.csv';
-const RULE = 'docs/prereg/step29b-delta-intervals-2026-11-25.md', OUT = 'worker/lapsim/delta-intervals-data.js';
+const RULE = 'docs/prereg/step29b-delta-intervals-2026-11-25.md', OUT = 'worker/lapsim/delta-intervals-data.js', SIGMA = 'scripts/sim/data/sigma-meas-v2.json';
 // the step-29b calibration and its sources (PR #519): bench baseline = run 45487971969, held-out RMS = run 45402981435 base
 const CAL29B = 'b5cc83df9aab550a2934691a9976a11f1d71d8350b2d331754ce21baff135861', TIE = {all: 0.901, f1: 0.823, wec: 0.977};
 
@@ -59,6 +59,12 @@ export async function build({run, mode} = {}) {
   if (own) for (const g of ['all', 'f1', 'wec']) if (Math.abs(rms(e[g]) - TIE[g]) > 0.001 + 5e-4) throw Error(`R3 tie failed: ${g} RMS ${rms(e[g]).toFixed(4)} % vs run 45402981435 ${TIE[g]} %`);
   const lap = g => ({n: e[g].length, q05: r4(quantile(e[g], 0.05)), q50: r4(quantile(e[g], 0.5)), q95: r4(quantile(e[g], 0.95)), rmsPct: r4(rms(e[g]))});
   const drsRun = run || '45487971969', lapRun = run || '45402981435';
+  // step 36 (report-only): gap to the noise floor = held-out RMS ÷ σ_meas v2 per class and season (definition-100 criterion 1: ≤ 1.2)
+  const S = JSON.parse(readFileSync(root + SIGMA, 'utf8')), r3 = x => +x.toFixed(3), gap = (xs, k) => { const h = rms(xs), s = S.classes[k];
+    return {n: xs.length, heldOutPct: r4(h), sigmaPct: s.pct, ratio: r3(h / s.pct), ratio90: [r3(h / s.ci90[1]), r3(h / s.ci90[0])], atFloor: h / s.pct <= 1.2}; };
+  const gr = {}; for (const y of ['2025', '2026']) gr[`f1/${y}`] = gap(c.seasons[y].holdout.tracks.map(t => t.errorSec / c.seasons[y].tracks[t.track].realLap), 'f1');
+  for (const cls of ['lmh', 'lmdh', 'lmgt3']) for (const y of ['2025', '2026']) { const s = c.series.wec[cls][y]; gr[`wec-${cls}/${y}`] = gap(s.holdout.tracks.map(t => t.errorSec / s.tracks[t.track].realLap), 'wec-' + cls); }
+  gr.f1 = gap(e.f1, 'f1');
   return {
     rule: {path: RULE, sha256: sha(RULE)}, level: 0.9, quantile: 'empirical, type 7 (numpy default); no normal assumption',
     built: {run: run || null, mode: run ? mode || 'production' : 'step 29b PR #519'},
@@ -68,6 +74,8 @@ export async function build({run, mode} = {}) {
       unit: 'ratio measured Δ / model Δ per pooled event × zone case, 2023–25 races'},
     lap: {status: 'checked', f1: lap('f1'), wec: lap('wec'), source: {run: lapRun, note: `held-out rows of this calibration (run ${lapRun})`},
       unit: 'e = simulated / real − 1 per held-out row'},
+    gapToFloor: {status: 'report-only', unit: 'held-out RMS ÷ σ_meas v2 (criterion 1 of the definition of 100: ≤ 1.2 = at the floor)',
+      sigma: {path: SIGMA, sha256: sha(SIGMA), definitionSha256: S.definitionSha256, run: S.run}, rows: gr},
   };
 }
 
