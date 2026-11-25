@@ -83,6 +83,30 @@
         }
       },
       "note": "Each repo reads its own draft (upstream = production, fork = research). Raw files, drafts only (physics rule 9)."
+    },
+    "seriesLaps": {
+      "pin": "content: sha256 of each gunzipped JSON",
+      "tag": "data-series-laps",
+      "files": {
+        "nls-laps-full.json.gz": "27e5800ed10ba7d4ebcae90e31c02b47f27d707bc58f07e0228d3cba726c8e49",
+        "alkamel-laps-full.json.gz": "248d721b6b8debfcf45e3efe444c3e0771c8ea21620998f8d7b2503c9c02715e",
+        "t71-laps-full.json.gz": "0a4ab5e37bedc028c6a0177b7b903c47ec11e1ec5c25b508fd2088aff0f31a4e"
+      },
+      "copies": {
+        "research": {
+          "repo": "kangjeongmin1229/f1-data-analyst-deploy",
+          "draft": true,
+          "made_by_runs": [
+            45550020158,
+            45550088589
+          ]
+        },
+        "production": {
+          "repo": "MisterKinn/f1-data-analyst",
+          "note": "not made yet: run fetch-nls.mjs (NLS_LAPS_OUT), fetch-alkamel-laps.mjs (ALKAMEL_LAPS_OUT) and t71-collect.mjs (T71_LAPS_OUT, T71_KEYS=dtm,gtwc,igtc,nur, T71_FROM=2024) upstream and store the files as a draft release data-series-laps"
+        }
+      },
+      "sources": "NLS: wige SOLUTIONS lap-by-lap PDFs (qualifying); Al Kamel USAC (SRO GT World Challenge America, IGTC Indianapolis), ELMS, Le Mans Cup, Asian LMS analysis CSVs; Timing71 archive replays (qualifying since 2024: DTM, GTWC Europe/Asia, IGTC, Nürburgring)"
     }
   }
 }

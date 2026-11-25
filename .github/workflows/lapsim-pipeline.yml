@@ -202,7 +202,14 @@ jobs:
           if [ -n "$id" ]; then mkdir -p .cache && gh api -H 'Accept: application/octet-stream' "repos/${{ github.repository }}/releases/assets/$id" > .cache/alkamel-full-laps.tar
             tar -xf .cache/alkamel-full-laps.tar -C .cache && node scripts/sim/noise-floor.mjs --check-alkamel .cache/alkamel-full-laps && A=(--alkamel .cache/alkamel-full-laps)
           else echo "::notice::no data-alkamel-full-laps release here: Al Kamel within-driver σ not measured"; fi
-          node scripts/sim/noise-floor.mjs --ti ti/ti "${A[@]}" --out noise | tee -a "$GITHUB_STEP_SUMMARY"
+          # per-lap files of NLS, SRO/ELMS/ALMS (Al Kamel) and DTM/GTWC/IGTC/Nürburgring (Timing71): this repo's draft data-series-laps, checked by content
+          L=(); for f in $(jq -r '.noise.seriesLaps.files | keys[]' $P); do
+            id=$(gh api "repos/${{ github.repository }}/releases?per_page=100" -q ".[] | select(.tag_name==\"data-series-laps\") | .assets[] | select(.name==\"$f\") | .id" 2>/dev/null | head -1 || true)
+            if [ -z "$id" ]; then echo "::notice::$f not in data-series-laps here: σ_meas of its series not measured"; continue; fi
+            gh api -H 'Accept: application/octet-stream' "repos/${{ github.repository }}/releases/assets/$id" > "$f"
+            [ "$(gunzip -c "$f" | sha256sum | cut -c1-64)" = "$(jq -r ".noise.seriesLaps.files[\"$f\"]" $P)" ] || { echo "::error::$f content differs from the pin"; exit 1; }
+            L+=(--laps "$f"); done
+          node scripts/sim/noise-floor.mjs --ti ti/ti "${A[@]}" "${L[@]}" --out noise | tee -a "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         with: {name: noise-floor, path: noise/, retention-days: 90}
 
