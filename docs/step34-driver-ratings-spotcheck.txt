@@ -1,0 +1,23 @@
+2021 imsa roar-before-the-24 car 52 Ben Keating | table B | printed 'Bronze' in data/imsa/2021/22-road-atlanta/202111130915-warm-up-results.csv | match
+2021 imsa weathertech-240---wgi car 76 Mario Farnbacher | table G | printed 'Gold' in data/imsa/2021/19-virginia-international-raceway/202110091210-race-results.csv | match
+2021 imsa road-america car 76 Jeff Kingsley | table S | printed 'Silver' in data/imsa/2021/15-road-america/202108080900-warm-up-results.csv | match
+2022 imsa canadian-tire-motorsport-park car 3 Jordan Taylor | table P | printed 'Platinum' in data/imsa/2022/19-road-atlanta/202210010915-warm-up-results.csv | match
+2022 imsa roar-before-the-24 car 59 Jon Miller | table S | printed 'Silver' in data/imsa/2022/11-watkins-glen-international/202206260800-warm-up-results.csv | match
+2022 imsa road-atlanta car 70 Brendan Iribe | table B | printed 'Bronze' in data/imsa/2022/19-road-atlanta/202210010915-warm-up-results.csv | match
+2023 imsa watkins-glen-international car 3 Jordan Taylor | table P | printed 'Platinum' in data/imsa/2023/21-road-atlanta/202310140845-warm-up-results.csv | match
+2023 alms dubai-autodrome car 99 Ralf Bohn | table B | printed 'B' in data/alms/2023/02-yas-marina/202302191315-warm-20up-results.csv | match
+2023 imsa weathertech-raceway-laguna-seca car 52 Ben Keating | table B | printed 'Bronze' in data/imsa/2023/21-road-atlanta/202310140845-warm-up-results.csv | match
+2024 imsa canadian-tire-motorsport-park car 77 Seb Priaulx | table G | printed 'Gold' in data/imsa/2024/24-daytona-international-speedway/202411170900-session-6-results.csv | match
+2024 alms dubai-autodrome car 7 Anthony LIU | table B | printed 'B' in data/alms/2024/03-yas-marina/202402111055-warm-20up-results.csv | match
+2024 wec le-mans car 82 Daniel Juncadella | table P | printed 'P' in data/wec/2024/08-bahrain-international-circuit/202411011200-free-20practice-203-results.csv | match
+2025 wec imola car 46 Valentino ROSSI | table S | printed 'S' in data/wec/2025/08-bahrain-international-circuit/202511071200-free-20practice-203-results.csv | match
+2025 elms autodromo-do-algarve car 85 Célia MARTIN | table B | printed None in data/wec/2025/08-bahrain-international-circuit/202511071200-free-20practice-203-results.csv | MISMATCH
+2025 elms imola car 57 Takeshi Kimura | table B | printed 'B' in data/elms/2025/06-autodromo-do-algarve/202510191000-morning-20test-results.csv | match
+2026 imsa sebring-international-raceway car 1 Neil Verhagen | table G | printed 'Gold' in data/imsa/2026/21-road-atlanta/202610031210-race-hour-10-results.csv | match
+2026 elms imola car 77 Martin Berry | table B | printed 'B' in data/elms/2026/03-imola/202607041050-free-20practice-202-results.csv | match
+2026 alms sepang car 15 Memo Gidley | table B | printed 'B' in data/alms/2026/03-yas-marina/202602081130-warm-20up-results.csv | match
+17/18 match
+# WEC 2026 events filled from Al Kamel (fetch-wec-lineups.mjs, run 45524017499): 36 learned rows with a best-lap driver rating
+2026 wec interlagos car 10 Antares AU | table B | printed ['B'] | best lap 95.135 driver in analysis file: Antares AU | https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV | match
+2026 wec catalunya car 23 Gray NEWELL | table B | printed ['B'] | best lap 103.513 driver in analysis file: Gray NEWELL | https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV | match
+2026 wec monza car 23 Eduardo BARRICHELLO | table S | printed ['S'] | best lap 107.065 driver in analysis file: Eduardo BARRICHELLO | https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV | match

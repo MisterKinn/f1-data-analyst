@@ -1,0 +1,4339 @@
+{
+ "source": "files.alkamelcloud.com/wec/manifests/results_15_2026.json",
+ "fetched": "2026-11-25T01:12:45.486Z",
+ "lineups": {
+  "wec|2026|interlagos": {
+   "7": {
+    "drivers": [
+     {
+      "name": "Harry TINCKNELL",
+      "rating": "P"
+     },
+     {
+      "name": "Tom GAMBLE",
+      "rating": "G"
+     },
+     {
+      "name": "Mike CONWAY",
+      "rating": "P"
+     },
+     {
+      "name": "Kamui KOBAYASHI",
+      "rating": "P"
+     },
+     {
+      "name": "Nyck DE VRIES",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Harry TINCKNELL",
+      "lap": 83.773,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111510_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Harry TINCKNELL",
+      "lap": 83.578,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111530_Hyperpole HYPERCAR/23_Analysis_Hyperpole HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111510_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR.CSV",
+    "date": "2026-07-11"
+   },
+   "8": {
+    "drivers": [
+     {
+      "name": "Sébastien BUEMI",
+      "rating": "P"
+     },
+     {
+      "name": "Brendon HARTLEY",
+      "rating": "P"
+     },
+     {
+      "name": "Ryo HIRAKAWA",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Ryo HIRAKAWA",
+      "lap": 84.048,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111510_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111510_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR.CSV",
+    "date": "2026-07-11"
+   },
+   "9": {
+    "drivers": [
+     {
+      "name": "Alex RIBERAS",
+      "rating": "G"
+     },
+     {
+      "name": "Marco SØRENSEN",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Marco SØRENSEN",
+      "lap": 84.151,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111510_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111510_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR.CSV",
+    "date": "2026-07-11"
+   },
+   "10": {
+    "drivers": [
+     {
+      "name": "Antares AU",
+      "rating": "B"
+     },
+     {
+      "name": "Thomas FLEMING",
+      "rating": "S"
+     },
+     {
+      "name": "Marvin KIRCHHÖFER",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Antares AU",
+      "lap": 95.135,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV",
+    "date": "2026-07-11"
+   },
+   "12": {
+    "drivers": [
+     {
+      "name": "Will STEVENS",
+      "rating": "P"
+     },
+     {
+      "name": "Norman NATO",
+      "rating": "G"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Will STEVENS",
+      "lap": 83.603,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111510_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Will STEVENS",
+      "lap": 83.041,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111530_Hyperpole HYPERCAR/23_Analysis_Hyperpole HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111510_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR.CSV",
+    "date": "2026-07-11"
+   },
+   "15": {
+    "drivers": [
+     {
+      "name": "Kevin MAGNUSSEN",
+      "rating": "P"
+     },
+     {
+      "name": "Raffaele MARCIELLO",
+      "rating": "P"
+     },
+     {
+      "name": "Dries VANTHOOR",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Dries VANTHOOR",
+      "lap": 83.695,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111510_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Dries VANTHOOR",
+      "lap": 83.135,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111530_Hyperpole HYPERCAR/23_Analysis_Hyperpole HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111510_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR.CSV",
+    "date": "2026-07-11"
+   },
+   "17": {
+    "drivers": [
+     {
+      "name": "André LOTTERER",
+      "rating": "P"
+     },
+     {
+      "name": "Luis Felipe DERANI",
+      "rating": "P"
+     },
+     {
+      "name": "Mathys JAUBERT",
+      "rating": "S"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Luis Felipe DERANI",
+      "lap": 83.984,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111510_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111510_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR.CSV",
+    "date": "2026-07-11"
+   },
+   "19": {
+    "drivers": [
+     {
+      "name": "Mathieu JAMINET",
+      "rating": "P"
+     },
+     {
+      "name": "Paul-Loup CHATIN",
+      "rating": "G"
+     },
+     {
+      "name": "Daniel JUNCADELLA",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Mathieu JAMINET",
+      "lap": 83.491,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111510_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Mathieu JAMINET",
+      "lap": 83.341,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111530_Hyperpole HYPERCAR/23_Analysis_Hyperpole HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111510_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR.CSV",
+    "date": "2026-07-11"
+   },
+   "20": {
+    "drivers": [
+     {
+      "name": "Robin FRIJNS",
+      "rating": "P"
+     },
+     {
+      "name": "René RAST",
+      "rating": "P"
+     },
+     {
+      "name": "Sheldon VAN DER LINDE",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Sheldon VAN DER LINDE",
+      "lap": 84.221,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111510_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111510_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR.CSV",
+    "date": "2026-07-11"
+   },
+   "21": {
+    "drivers": [
+     {
+      "name": "François HÉRIAU",
+      "rating": "B"
+     },
+     {
+      "name": "Simon MANN",
+      "rating": "S"
+     },
+     {
+      "name": "Alessio ROVERA",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "François HÉRIAU",
+      "lap": 95.231,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV",
+    "date": "2026-07-11"
+   },
+   "23": {
+    "drivers": [
+     {
+      "name": "Gray NEWELL",
+      "rating": "B"
+     },
+     {
+      "name": "Kobe PAUWELS",
+      "rating": "S"
+     },
+     {
+      "name": "Jonny ADAM",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Gray NEWELL",
+      "lap": 94.527,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Kobe PAUWELS",
+      "lap": 93.35,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111450_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV",
+    "date": "2026-07-11"
+   },
+   "27": {
+    "drivers": [
+     {
+      "name": "Ian JAMES",
+      "rating": "B"
+     },
+     {
+      "name": "Zacharie ROBICHON",
+      "rating": "S"
+     },
+     {
+      "name": "Mattia DRUDI",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Ian JAMES",
+      "lap": 95.206,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV",
+    "date": "2026-07-11"
+   },
+   "32": {
+    "drivers": [
+     {
+      "name": "Darren LEUNG",
+      "rating": "B"
+     },
+     {
+      "name": "Sean GELAEL",
+      "rating": "S"
+     },
+     {
+      "name": "Augusto FARFUS",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Darren LEUNG",
+      "lap": 94.676,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Sean GELAEL",
+      "lap": 94.208,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111450_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV",
+    "date": "2026-07-11"
+   },
+   "33": {
+    "drivers": [
+     {
+      "name": "Ben KEATING",
+      "rating": "B"
+     },
+     {
+      "name": "Jonny EDGAR",
+      "rating": "S"
+     },
+     {
+      "name": "Nicolás VARRONE",
+      "rating": "G"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Ben KEATING",
+      "lap": 95.003,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV",
+    "date": "2026-07-11"
+   },
+   "34": {
+    "drivers": [
+     {
+      "name": "Peter DEMPSEY",
+      "rating": "B"
+     },
+     {
+      "name": "Salih YOLUÇ",
+      "rating": "S"
+     },
+     {
+      "name": "Charlie EASTWOOD",
+      "rating": "G"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Peter DEMPSEY",
+      "lap": 93.808,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Salih YOLUÇ",
+      "lap": 94.612,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111450_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV",
+    "date": "2026-07-11"
+   },
+   "35": {
+    "drivers": [
+     {
+      "name": "António FÉLIX DA COSTA",
+      "rating": "P"
+     },
+     {
+      "name": "Charles MILESI",
+      "rating": "G"
+     },
+     {
+      "name": "Ferdinand HABSBURG",
+      "rating": "G"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Charles MILESI",
+      "lap": 83.546,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111510_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Charles MILESI",
+      "lap": 83.168,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111530_Hyperpole HYPERCAR/23_Analysis_Hyperpole HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111510_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR.CSV",
+    "date": "2026-07-11"
+   },
+   "36": {
+    "drivers": [
+     {
+      "name": "Frédéric MAKOWIECKI",
+      "rating": "P"
+     },
+     {
+      "name": "Jules GOUNON",
+      "rating": "P"
+     },
+     {
+      "name": "Victor MARTINS",
+      "rating": "G"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Victor MARTINS",
+      "lap": 83.616,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111510_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Victor MARTINS",
+      "lap": 83.108,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111530_Hyperpole HYPERCAR/23_Analysis_Hyperpole HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111510_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR.CSV",
+    "date": "2026-07-11"
+   },
+   "38": {
+    "drivers": [
+     {
+      "name": "Earl BAMBER",
+      "rating": "P"
+     },
+     {
+      "name": "Sébastien BOURDAIS",
+      "rating": "P"
+     },
+     {
+      "name": "Jack AITKEN",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Jack AITKEN",
+      "lap": 83.482,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111510_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Jack AITKEN",
+      "lap": 83.089,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111530_Hyperpole HYPERCAR/23_Analysis_Hyperpole HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111510_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR.CSV",
+    "date": "2026-07-11"
+   },
+   "50": {
+    "drivers": [
+     {
+      "name": "Antonio FUOCO",
+      "rating": "P"
+     },
+     {
+      "name": "Miguel MOLINA",
+      "rating": "P"
+     },
+     {
+      "name": "Nicklas NIELSEN",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Antonio FUOCO",
+      "lap": 83.524,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111510_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Antonio FUOCO",
+      "lap": 83.387,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111530_Hyperpole HYPERCAR/23_Analysis_Hyperpole HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111510_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR.CSV",
+    "date": "2026-07-11"
+   },
+   "51": {
+    "drivers": [
+     {
+      "name": "Alessandro PIER GUIDI",
+      "rating": "P"
+     },
+     {
+      "name": "James CALADO",
+      "rating": "P"
+     },
+     {
+      "name": "Antonio GIOVINAZZI",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Antonio GIOVINAZZI",
+      "lap": 83.832,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111510_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111510_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR.CSV",
+    "date": "2026-07-11"
+   },
+   "54": {
+    "drivers": [
+     {
+      "name": "Thomas FLOHR",
+      "rating": "B"
+     },
+     {
+      "name": "Francesco CASTELLACCI",
+      "rating": "S"
+     },
+     {
+      "name": "Davide RIGON",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Thomas FLOHR",
+      "lap": 95.112,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV",
+    "date": "2026-07-11"
+   },
+   "58": {
+    "drivers": [
+     {
+      "name": "Alexander WEST",
+      "rating": "B"
+     },
+     {
+      "name": "Finn GEHRSITZ",
+      "rating": "S"
+     },
+     {
+      "name": "Benjamin GOETHE",
+      "rating": "G"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Alexander WEST",
+      "lap": 95.262,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV",
+    "date": "2026-07-11"
+   },
+   "61": {
+    "drivers": [
+     {
+      "name": "Martin BERRY",
+      "rating": "B"
+     },
+     {
+      "name": "Rui ANDRADE",
+      "rating": "S"
+     },
+     {
+      "name": "Maxime MARTIN",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Martin BERRY",
+      "lap": 94.57,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Rui ANDRADE",
+      "lap": 93.873,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111450_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV",
+    "date": "2026-07-11"
+   },
+   "69": {
+    "drivers": [
+     {
+      "name": "Anthony MCINTOSH",
+      "rating": "B"
+     },
+     {
+      "name": "Parker THOMPSON",
+      "rating": "S"
+     },
+     {
+      "name": "Daniel HARPER",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Anthony MCINTOSH",
+      "lap": 94.19,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Parker THOMPSON",
+      "lap": 93.766,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111450_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV",
+    "date": "2026-07-11"
+   },
+   "77": {
+    "drivers": [
+     {
+      "name": "Eric POWELL",
+      "rating": "B"
+     },
+     {
+      "name": "Ben TUCK",
+      "rating": "S"
+     },
+     {
+      "name": "Sebastian PRIAULX",
+      "rating": "G"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Eric POWELL",
+      "lap": 94.501,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Ben TUCK",
+      "lap": 93.773,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111450_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV",
+    "date": "2026-07-11"
+   },
+   "78": {
+    "drivers": [
+     {
+      "name": "Tom VAN ROMPUY",
+      "rating": "B"
+     },
+     {
+      "name": "Hadrien DAVID",
+      "rating": "S"
+     },
+     {
+      "name": "Esteban MASSON",
+      "rating": "G"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Tom VAN ROMPUY",
+      "lap": 95.211,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV",
+    "date": "2026-07-11"
+   },
+   "79": {
+    "drivers": [
+     {
+      "name": "Johannes ZELGER",
+      "rating": "B"
+     },
+     {
+      "name": "Matteo CRESSONI",
+      "rating": "S"
+     },
+     {
+      "name": "Lin HODENIUS",
+      "rating": "S"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Johannes ZELGER",
+      "lap": 94.662,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Lin HODENIUS",
+      "lap": 93.549,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111450_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV",
+    "date": "2026-07-11"
+   },
+   "83": {
+    "drivers": [
+     {
+      "name": "Yifei YE",
+      "rating": "G"
+     },
+     {
+      "name": "Robert KUBICA",
+      "rating": "P"
+     },
+     {
+      "name": "Philip HANSON",
+      "rating": "G"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Robert KUBICA",
+      "lap": 83.683,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111510_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Robert KUBICA",
+      "lap": 83.625,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111530_Hyperpole HYPERCAR/23_Analysis_Hyperpole HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111510_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR.CSV",
+    "date": "2026-07-11"
+   },
+   "87": {
+    "drivers": [
+     {
+      "name": "Petru UMBRÄRESCU",
+      "rating": "B"
+     },
+     {
+      "name": "Clemens SCHMID",
+      "rating": "S"
+     },
+     {
+      "name": "José María LÓPEZ",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Petru UMBRÄRESCU",
+      "lap": 94.537,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Clemens SCHMID",
+      "lap": 93.764,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111450_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV",
+    "date": "2026-07-11"
+   },
+   "88": {
+    "drivers": [
+     {
+      "name": "Stefano GATTUSO",
+      "rating": "B"
+     },
+     {
+      "name": "Giammarco LEVORATO",
+      "rating": "S"
+     },
+     {
+      "name": "Logan SARGEANT",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Stefano GATTUSO",
+      "lap": 94.566,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Giammarco LEVORATO",
+      "lap": 94.281,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111450_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV",
+    "date": "2026-07-11"
+   },
+   "91": {
+    "drivers": [
+     {
+      "name": "James COTTINGHAM",
+      "rating": "B"
+     },
+     {
+      "name": "Timur BOGUSLAVSKIY",
+      "rating": "S"
+     },
+     {
+      "name": "Ayhancan GÜVEN",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "James COTTINGHAM",
+      "lap": 94.913,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV",
+    "date": "2026-07-11"
+   },
+   "92": {
+    "drivers": [
+     {
+      "name": "Yasser SHAHIN",
+      "rating": "B"
+     },
+     {
+      "name": "Riccardo PERA",
+      "rating": "S"
+     },
+     {
+      "name": "Richard LIETZ",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Yasser SHAHIN",
+      "lap": 94.558,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Riccardo PERA",
+      "lap": 94.069,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111450_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111430_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV",
+    "date": "2026-07-11"
+   },
+   "93": {
+    "drivers": [
+     {
+      "name": "Paul DI RESTA",
+      "rating": "P"
+     },
+     {
+      "name": "Stoffel VANDOORNE",
+      "rating": "P"
+     },
+     {
+      "name": "Nick CASSIDY",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Paul DI RESTA",
+      "lap": 84.01,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111510_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111510_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR.CSV",
+    "date": "2026-07-11"
+   },
+   "94": {
+    "drivers": [
+     {
+      "name": "Loïc DUVAL",
+      "rating": "P"
+     },
+     {
+      "name": "Malthe JAKOBSEN",
+      "rating": "G"
+     },
+     {
+      "name": "Théo POURCHAIRE",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Malthe JAKOBSEN",
+      "lap": 83.598,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111510_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Malthe JAKOBSEN",
+      "lap": 83.402,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111530_Hyperpole HYPERCAR/23_Analysis_Hyperpole HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/04_SAO PAULO/666_FIA WEC/202607111510_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR.CSV",
+    "date": "2026-07-11"
+   }
+  },
+  "wec|2026|austin": {
+   "2": {
+    "drivers": [],
+    "bestLap": [
+     {
+      "name": "Nick Pearson",
+      "lap": 133.299,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+   },
+   "4": {
+    "drivers": [],
+    "bestLap": [
+     {
+      "name": "Andy Lowe",
+      "lap": 133.316,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+   },
+   "7": {
+    "drivers": [
+     {
+      "name": "Harry TINCKNELL",
+      "rating": "P"
+     },
+     {
+      "name": "Tom GAMBLE",
+      "rating": "G"
+     },
+     {
+      "name": "Mike CONWAY",
+      "rating": "P"
+     },
+     {
+      "name": "Kamui KOBAYASHI",
+      "rating": "P"
+     },
+     {
+      "name": "Nyck DE VRIES",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Harry TINCKNELL",
+      "lap": 112.663,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051540_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Harry TINCKNELL",
+      "lap": 112.495,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051600_Hyperpole HYPERCAR/23_Analysis_Hyperpole  HYPERCAR.CSV"
+     },
+     {
+      "name": "Josh Holtz",
+      "lap": 132.148,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051540_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR_Final.CSV",
+    "date": "2026-09-05"
+   },
+   "8": {
+    "drivers": [
+     {
+      "name": "Sébastien BUEMI",
+      "rating": "P"
+     },
+     {
+      "name": "Brendon HARTLEY",
+      "rating": "P"
+     },
+     {
+      "name": "Ryo HIRAKAWA",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Ryo HIRAKAWA",
+      "lap": 112.671,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051540_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Ryo HIRAKAWA",
+      "lap": 112.985,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051600_Hyperpole HYPERCAR/23_Analysis_Hyperpole  HYPERCAR.CSV"
+     },
+     {
+      "name": "Sam McDougall",
+      "lap": 132.219,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051540_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR_Final.CSV",
+    "date": "2026-09-05"
+   },
+   "9": {
+    "drivers": [
+     {
+      "name": "Alex RIBERAS",
+      "rating": "G"
+     },
+     {
+      "name": "Marco SØRENSEN",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Marco SØRENSEN",
+      "lap": 113.507,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051540_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Alain Derzie",
+      "lap": 130.314,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051540_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR_Final.CSV",
+    "date": "2026-09-05"
+   },
+   "10": {
+    "drivers": [
+     {
+      "name": "Antares AU",
+      "rating": "B"
+     },
+     {
+      "name": "Thomas FLEMING",
+      "rating": "S"
+     },
+     {
+      "name": "Marvin KIRCHHÖFER",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Antares AU",
+      "lap": 127.559,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051500_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Dennis Kelly",
+      "lap": 135.265,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051500_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV",
+    "date": "2026-09-05"
+   },
+   "12": {
+    "drivers": [
+     {
+      "name": "Will STEVENS",
+      "rating": "P"
+     },
+     {
+      "name": "Norman NATO",
+      "rating": "G"
+     },
+     {
+      "name": "Ricky TAYLOR",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Norman NATO",
+      "lap": 113.08,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051540_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051540_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR_Final.CSV",
+    "date": "2026-09-05"
+   },
+   "15": {
+    "drivers": [
+     {
+      "name": "Kevin MAGNUSSEN",
+      "rating": "P"
+     },
+     {
+      "name": "Raffaele MARCIELLO",
+      "rating": "P"
+     },
+     {
+      "name": "Dries VANTHOOR",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Dries VANTHOOR",
+      "lap": 112.841,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051540_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051540_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR_Final.CSV",
+    "date": "2026-09-05"
+   },
+   "17": {
+    "drivers": [
+     {
+      "name": "André LOTTERER",
+      "rating": "P"
+     },
+     {
+      "name": "Luis Felipe DERANI",
+      "rating": "P"
+     },
+     {
+      "name": "Mathys JAUBERT",
+      "rating": "S"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Mathys JAUBERT",
+      "lap": 112.735,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051540_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Mathys JAUBERT",
+      "lap": 112.683,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051600_Hyperpole HYPERCAR/23_Analysis_Hyperpole  HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051540_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR_Final.CSV",
+    "date": "2026-09-05"
+   },
+   "18": {
+    "drivers": [],
+    "bestLap": [
+     {
+      "name": "Ross Wolf",
+      "lap": 135.401,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+   },
+   "19": {
+    "drivers": [
+     {
+      "name": "Mathieu JAMINET",
+      "rating": "P"
+     },
+     {
+      "name": "Paul-Loup CHATIN",
+      "rating": "G"
+     },
+     {
+      "name": "Daniel JUNCADELLA",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Mathieu JAMINET",
+      "lap": 112.457,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051540_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Mathieu JAMINET",
+      "lap": 113.495,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051600_Hyperpole HYPERCAR/23_Analysis_Hyperpole  HYPERCAR.CSV"
+     },
+     {
+      "name": "Valen Venkatesh",
+      "lap": 132.386,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051540_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR_Final.CSV",
+    "date": "2026-09-05"
+   },
+   "20": {
+    "drivers": [
+     {
+      "name": "Robin FRIJNS",
+      "rating": "P"
+     },
+     {
+      "name": "René RAST",
+      "rating": "P"
+     },
+     {
+      "name": "Sheldon VAN DER LINDE",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Sheldon VAN DER LINDE",
+      "lap": 112.998,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051540_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Ryan George",
+      "lap": 141.605,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051540_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR_Final.CSV",
+    "date": "2026-09-05"
+   },
+   "21": {
+    "drivers": [
+     {
+      "name": "François HÉRIAU",
+      "rating": "B"
+     },
+     {
+      "name": "Simon MANN",
+      "rating": "S"
+     },
+     {
+      "name": "Alessio ROVERA",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "François HÉRIAU",
+      "lap": 126.826,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051500_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Simon MANN",
+      "lap": 125.765,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051520_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     },
+     {
+      "name": "Jack Yang",
+      "lap": 132.754,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051500_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV",
+    "date": "2026-09-05"
+   },
+   "22": {
+    "drivers": [],
+    "bestLap": [
+     {
+      "name": "Joe Nuxoll",
+      "lap": 137.247,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+   },
+   "23": {
+    "drivers": [
+     {
+      "name": "Gray NEWELL",
+      "rating": "B"
+     },
+     {
+      "name": "Eduardo BARRICHELLO",
+      "rating": "S"
+     },
+     {
+      "name": "Jonny ADAM",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Gray NEWELL",
+      "lap": 127.148,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051500_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Eduardo BARRICHELLO",
+      "lap": 125.103,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051520_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051500_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV",
+    "date": "2026-09-05"
+   },
+   "27": {
+    "drivers": [
+     {
+      "name": "Ian JAMES",
+      "rating": "B"
+     },
+     {
+      "name": "Zacharie ROBICHON",
+      "rating": "S"
+     },
+     {
+      "name": "Mattia DRUDI",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Ian JAMES",
+      "lap": 126.805,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051500_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Zacharie ROBICHON",
+      "lap": 125.284,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051520_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     },
+     {
+      "name": "Reid Stewart",
+      "lap": 133.426,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051500_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV",
+    "date": "2026-09-05"
+   },
+   "28": {
+    "drivers": [],
+    "bestLap": [
+     {
+      "name": "David Mason",
+      "lap": 138.848,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+   },
+   "32": {
+    "drivers": [
+     {
+      "name": "Darren LEUNG",
+      "rating": "B"
+     },
+     {
+      "name": "Sean GELAEL",
+      "rating": "S"
+     },
+     {
+      "name": "Augusto FARFUS",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Darren LEUNG",
+      "lap": 127.068,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051500_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Sean GELAEL",
+      "lap": 125.888,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051520_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     },
+     {
+      "name": "Jonas Axboe",
+      "lap": 131.042,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051500_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV",
+    "date": "2026-09-05"
+   },
+   "33": {
+    "drivers": [
+     {
+      "name": "Ben KEATING",
+      "rating": "B"
+     },
+     {
+      "name": "Jonny EDGAR",
+      "rating": "S"
+     },
+     {
+      "name": "Nicky CATSBURG",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Ben KEATING",
+      "lap": 128.864,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051500_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Nico Balkissoon",
+      "lap": 135.847,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051500_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV",
+    "date": "2026-09-05"
+   },
+   "34": {
+    "drivers": [
+     {
+      "name": "Peter DEMPSEY",
+      "rating": "B"
+     },
+     {
+      "name": "Salih YOLUÇ",
+      "rating": "S"
+     },
+     {
+      "name": "Charlie EASTWOOD",
+      "rating": "G"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Peter DEMPSEY",
+      "lap": 127.443,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051500_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051500_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV",
+    "date": "2026-09-05"
+   },
+   "35": {
+    "drivers": [
+     {
+      "name": "António FÉLIX DA COSTA",
+      "rating": "P"
+     },
+     {
+      "name": "Charles MILESI",
+      "rating": "G"
+     },
+     {
+      "name": "Ferdinand HABSBURG",
+      "rating": "G"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Charles MILESI",
+      "lap": 112.552,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051540_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Charles MILESI",
+      "lap": 112.474,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051600_Hyperpole HYPERCAR/23_Analysis_Hyperpole  HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051540_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR_Final.CSV",
+    "date": "2026-09-05"
+   },
+   "36": {
+    "drivers": [
+     {
+      "name": "Frédéric MAKOWIECKI",
+      "rating": "P"
+     },
+     {
+      "name": "Jules GOUNON",
+      "rating": "P"
+     },
+     {
+      "name": "Victor MARTINS",
+      "rating": "G"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Victor MARTINS",
+      "lap": 112.074,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051540_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Victor MARTINS",
+      "lap": 112.886,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051600_Hyperpole HYPERCAR/23_Analysis_Hyperpole  HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051540_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR_Final.CSV",
+    "date": "2026-09-05"
+   },
+   "38": {
+    "drivers": [
+     {
+      "name": "Earl BAMBER",
+      "rating": "P"
+     },
+     {
+      "name": "Sébastien BOURDAIS",
+      "rating": "P"
+     },
+     {
+      "name": "Jack AITKEN",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Jack AITKEN",
+      "lap": 112.598,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051540_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Jack AITKEN",
+      "lap": 112.445,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051600_Hyperpole HYPERCAR/23_Analysis_Hyperpole  HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051540_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR_Final.CSV",
+    "date": "2026-09-05"
+   },
+   "50": {
+    "drivers": [
+     {
+      "name": "Antonio FUOCO",
+      "rating": "P"
+     },
+     {
+      "name": "Miguel MOLINA",
+      "rating": "P"
+     },
+     {
+      "name": "Nicklas NIELSEN",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Nicklas NIELSEN",
+      "lap": 112.02,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051540_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Nicklas NIELSEN",
+      "lap": 112.873,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051600_Hyperpole HYPERCAR/23_Analysis_Hyperpole  HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051540_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR_Final.CSV",
+    "date": "2026-09-05"
+   },
+   "51": {
+    "drivers": [
+     {
+      "name": "Alessandro PIER GUIDI",
+      "rating": "P"
+     },
+     {
+      "name": "James CALADO",
+      "rating": "P"
+     },
+     {
+      "name": "Antonio GIOVINAZZI",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Antonio GIOVINAZZI",
+      "lap": 112.105,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051540_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Antonio GIOVINAZZI",
+      "lap": 112.445,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051600_Hyperpole HYPERCAR/23_Analysis_Hyperpole  HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051540_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR_Final.CSV",
+    "date": "2026-09-05"
+   },
+   "53": {
+    "drivers": [],
+    "bestLap": [
+     {
+      "name": "Chris Huhn",
+      "lap": 132.426,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+   },
+   "54": {
+    "drivers": [
+     {
+      "name": "Thomas FLOHR",
+      "rating": "B"
+     },
+     {
+      "name": "Francesco CASTELLACCI",
+      "rating": "S"
+     },
+     {
+      "name": "Davide RIGON",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Thomas FLOHR",
+      "lap": 127.262,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051500_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Luke Kendall",
+      "lap": 130.377,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051500_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV",
+    "date": "2026-09-05"
+   },
+   "57": {
+    "drivers": [],
+    "bestLap": [
+     {
+      "name": "Wayne Williams",
+      "lap": 132.005,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+   },
+   "58": {
+    "drivers": [
+     {
+      "name": "Alexander WEST",
+      "rating": "B"
+     },
+     {
+      "name": "Finn GEHRSITZ",
+      "rating": "S"
+     },
+     {
+      "name": "Benjamin GOETHE",
+      "rating": "G"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Alexander WEST",
+      "lap": 126.739,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051500_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Finn GEHRSITZ",
+      "lap": 125.654,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051520_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051500_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV",
+    "date": "2026-09-05"
+   },
+   "60": {
+    "drivers": [],
+    "bestLap": [
+     {
+      "name": "Mike D'Ambrose",
+      "lap": 134.995,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+   },
+   "61": {
+    "drivers": [
+     {
+      "name": "Martin BERRY",
+      "rating": "B"
+     },
+     {
+      "name": "Rui ANDRADE",
+      "rating": "S"
+     },
+     {
+      "name": "Maxime MARTIN",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Martin BERRY",
+      "lap": 126.714,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051500_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Rui ANDRADE",
+      "lap": 125.969,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051520_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     },
+     {
+      "name": "Mike Anzaldi",
+      "lap": 133.466,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051500_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV",
+    "date": "2026-09-05"
+   },
+   "64": {
+    "drivers": [],
+    "bestLap": [
+     {
+      "name": "Judd Miller",
+      "lap": 130.495,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+   },
+   "69": {
+    "drivers": [
+     {
+      "name": "Anthony MCINTOSH",
+      "rating": "B"
+     },
+     {
+      "name": "Parker THOMPSON",
+      "rating": "S"
+     },
+     {
+      "name": "Daniel HARPER",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Anthony MCINTOSH",
+      "lap": 128.128,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051500_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Mike Dardin",
+      "lap": 135.994,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051500_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV",
+    "date": "2026-09-05"
+   },
+   "72": {
+    "drivers": [],
+    "bestLap": [
+     {
+      "name": "Dan Decker",
+      "lap": 139.85,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+   },
+   "77": {
+    "drivers": [
+     {
+      "name": "Eric POWELL",
+      "rating": "B"
+     },
+     {
+      "name": "Ben TUCK",
+      "rating": "S"
+     },
+     {
+      "name": "Sebastian PRIAULX",
+      "rating": "G"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Eric POWELL",
+      "lap": 126.877,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051500_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Ben TUCK",
+      "lap": 125.483,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051520_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051500_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV",
+    "date": "2026-09-05"
+   },
+   "78": {
+    "drivers": [
+     {
+      "name": "Tom VAN ROMPUY",
+      "rating": "B"
+     },
+     {
+      "name": "Hadrien DAVID",
+      "rating": "S"
+     },
+     {
+      "name": "Esteban MASSON",
+      "rating": "G"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Tom VAN ROMPUY",
+      "lap": 127.622,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051500_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051500_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV",
+    "date": "2026-09-05"
+   },
+   "79": {
+    "drivers": [
+     {
+      "name": "Johannes ZELGER",
+      "rating": "B"
+     },
+     {
+      "name": "Matteo CRESSONI",
+      "rating": "S"
+     },
+     {
+      "name": "Lin HODENIUS",
+      "rating": "S"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Johannes ZELGER",
+      "lap": 127.879,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051500_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051500_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV",
+    "date": "2026-09-05"
+   },
+   "83": {
+    "drivers": [
+     {
+      "name": "Yifei YE",
+      "rating": "G"
+     },
+     {
+      "name": "Robert KUBICA",
+      "rating": "P"
+     },
+     {
+      "name": "Philip HANSON",
+      "rating": "G"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Robert KUBICA",
+      "lap": 113.043,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051540_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051540_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR_Final.CSV",
+    "date": "2026-09-05"
+   },
+   "86": {
+    "drivers": [],
+    "bestLap": [
+     {
+      "name": "Steve Jenks",
+      "lap": 129.079,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+   },
+   "87": {
+    "drivers": [
+     {
+      "name": "Petru UMBRÄRESCU",
+      "rating": "B"
+     },
+     {
+      "name": "Clemens SCHMID",
+      "rating": "S"
+     },
+     {
+      "name": "José María LÓPEZ",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Petru UMBRÄRESCU",
+      "lap": 127.095,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051500_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Clemens SCHMID",
+      "lap": 126.265,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051520_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051500_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV",
+    "date": "2026-09-05"
+   },
+   "88": {
+    "drivers": [
+     {
+      "name": "Stefano GATTUSO",
+      "rating": "B"
+     },
+     {
+      "name": "Giammarco LEVORATO",
+      "rating": "S"
+     },
+     {
+      "name": "Logan SARGEANT",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Stefano GATTUSO",
+      "lap": 126.331,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051500_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Giammarco LEVORATO",
+      "lap": 126.193,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051520_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     },
+     {
+      "name": "Dermot Ennis",
+      "lap": 140.713,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051500_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV",
+    "date": "2026-09-05"
+   },
+   "91": {
+    "drivers": [
+     {
+      "name": "James COTTINGHAM",
+      "rating": "B"
+     },
+     {
+      "name": "Timur BOGUSLAVSKIY",
+      "rating": "S"
+     },
+     {
+      "name": "Ayhancan GÜVEN",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "James COTTINGHAM",
+      "lap": 126.789,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051500_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Timur BOGUSLAVSKIY",
+      "lap": 125.483,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051520_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     },
+     {
+      "name": "Kenny Naill",
+      "lap": 141.845,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051500_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV",
+    "date": "2026-09-05"
+   },
+   "92": {
+    "drivers": [
+     {
+      "name": "Yasser SHAHIN",
+      "rating": "B"
+     },
+     {
+      "name": "Riccardo PERA",
+      "rating": "S"
+     },
+     {
+      "name": "Richard LIETZ",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Yasser SHAHIN",
+      "lap": 127.479,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051500_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051500_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV",
+    "date": "2026-09-05"
+   },
+   "93": {
+    "drivers": [
+     {
+      "name": "Paul DI RESTA",
+      "rating": "P"
+     },
+     {
+      "name": "Stoffel VANDOORNE",
+      "rating": "P"
+     },
+     {
+      "name": "Nick CASSIDY",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Stoffel VANDOORNE",
+      "lap": 113.22,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051540_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051540_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR_Final.CSV",
+    "date": "2026-09-05"
+   },
+   "94": {
+    "drivers": [
+     {
+      "name": "Loïc DUVAL",
+      "rating": "P"
+     },
+     {
+      "name": "Malthe JAKOBSEN",
+      "rating": "G"
+     },
+     {
+      "name": "Théo POURCHAIRE",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Malthe JAKOBSEN",
+      "lap": 112.947,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051540_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/673_FIA WEC/202609051540_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR_Final.CSV",
+    "date": "2026-09-05"
+   },
+   "99": {
+    "drivers": [],
+    "bestLap": [
+     {
+      "name": "Lucian Pancea",
+      "lap": 134.974,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+   },
+   "200": {
+    "drivers": [],
+    "bestLap": [
+     {
+      "name": "Chris McMurry",
+      "lap": 133.596,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+   },
+   "333": {
+    "drivers": [],
+    "bestLap": [
+     {
+      "name": "Omar Balkissoon",
+      "lap": 136.477,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+   },
+   "611": {
+    "drivers": [],
+    "bestLap": [
+     {
+      "name": "Robert Rossi",
+      "lap": 130.05,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/05_CIRCUIT OF THE AMERICAS/797_Radical Cup North America/202609041745_Qualifying/23_AnalysisEnduranceWithSections_Qualifying.CSV"
+   }
+  },
+  "wec|2026|catalunya": {
+   "7": {
+    "drivers": [
+     {
+      "name": "Mike CONWAY",
+      "rating": "P"
+     },
+     {
+      "name": "Kamui KOBAYASHI",
+      "rating": "P"
+     },
+     {
+      "name": "Nyck DE VRIES",
+      "rating": "P"
+     },
+     {
+      "name": "Harry TINCKNELL",
+      "rating": "P"
+     },
+     {
+      "name": "Tom GAMBLE",
+      "rating": "G"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Nyck DE VRIES",
+      "lap": 91.355,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171555_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Nyck DE VRIES",
+      "lap": 90.953,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171615_Hyperpole HYPERCAR/23_Analysis_Hyperpole HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171555_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR_Final.CSV",
+    "date": "2026-10-17"
+   },
+   "8": {
+    "drivers": [
+     {
+      "name": "Sébastien BUEMI",
+      "rating": "P"
+     },
+     {
+      "name": "Brendon HARTLEY",
+      "rating": "P"
+     },
+     {
+      "name": "Ryo HIRAKAWA",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Ryo HIRAKAWA",
+      "lap": 90.623,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171555_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Ryo HIRAKAWA",
+      "lap": 90.336,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171615_Hyperpole HYPERCAR/23_Analysis_Hyperpole HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171555_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR_Final.CSV",
+    "date": "2026-10-17"
+   },
+   "9": {
+    "drivers": [
+     {
+      "name": "Alex RIBERAS",
+      "rating": "G"
+     },
+     {
+      "name": "Marco SØRENSEN",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Alex RIBERAS",
+      "lap": 91.443,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171555_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171555_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR_Final.CSV",
+    "date": "2026-10-17"
+   },
+   "10": {
+    "drivers": [
+     {
+      "name": "Antares AU",
+      "rating": "B"
+     },
+     {
+      "name": "Thomas FLEMING",
+      "rating": "S"
+     },
+     {
+      "name": "Marvin KIRCHHÖFER",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Antares AU",
+      "lap": 103.032,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Thomas FLEMING",
+      "lap": 100.933,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171210_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV",
+    "date": "2026-10-17"
+   },
+   "12": {
+    "drivers": [
+     {
+      "name": "Will STEVENS",
+      "rating": "P"
+     },
+     {
+      "name": "Norman NATO",
+      "rating": "G"
+     },
+     {
+      "name": "Alex LYNN",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Will STEVENS",
+      "lap": 91.116,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171555_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Will STEVENS",
+      "lap": 90.784,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171615_Hyperpole HYPERCAR/23_Analysis_Hyperpole HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171555_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR_Final.CSV",
+    "date": "2026-10-17"
+   },
+   "15": {
+    "drivers": [
+     {
+      "name": "Kevin MAGNUSSEN",
+      "rating": "P"
+     },
+     {
+      "name": "Raffaele MARCIELLO",
+      "rating": "P"
+     },
+     {
+      "name": "Dries VANTHOOR",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Dries VANTHOOR",
+      "lap": 91.65,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171555_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171555_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR_Final.CSV",
+    "date": "2026-10-17"
+   },
+   "17": {
+    "drivers": [
+     {
+      "name": "André LOTTERER",
+      "rating": "P"
+     },
+     {
+      "name": "Luis Felipe DERANI",
+      "rating": "P"
+     },
+     {
+      "name": "Mathys JAUBERT",
+      "rating": "S"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Mathys JAUBERT",
+      "lap": 90.658,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171555_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Mathys JAUBERT",
+      "lap": 90.166,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171615_Hyperpole HYPERCAR/23_Analysis_Hyperpole HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171555_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR_Final.CSV",
+    "date": "2026-10-17"
+   },
+   "19": {
+    "drivers": [
+     {
+      "name": "Mathieu JAMINET",
+      "rating": "P"
+     },
+     {
+      "name": "Paul-Loup CHATIN",
+      "rating": "G"
+     },
+     {
+      "name": "Daniel JUNCADELLA",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Mathieu JAMINET",
+      "lap": 90.479,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171555_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Mathieu JAMINET",
+      "lap": 90.49,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171615_Hyperpole HYPERCAR/23_Analysis_Hyperpole HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171555_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR_Final.CSV",
+    "date": "2026-10-17"
+   },
+   "20": {
+    "drivers": [
+     {
+      "name": "Robin FRIJNS",
+      "rating": "P"
+     },
+     {
+      "name": "René RAST",
+      "rating": "P"
+     },
+     {
+      "name": "Sheldon VAN DER LINDE",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Sheldon VAN DER LINDE",
+      "lap": 91.571,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171555_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171555_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR_Final.CSV",
+    "date": "2026-10-17"
+   },
+   "21": {
+    "drivers": [
+     {
+      "name": "François HÉRIAU",
+      "rating": "B"
+     },
+     {
+      "name": "Simon MANN",
+      "rating": "S"
+     },
+     {
+      "name": "Alessio ROVERA",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "François HÉRIAU",
+      "lap": 102.678,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Simon MANN",
+      "lap": 101.398,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171210_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV",
+    "date": "2026-10-17"
+   },
+   "23": {
+    "drivers": [
+     {
+      "name": "Gray NEWELL",
+      "rating": "B"
+     },
+     {
+      "name": "Eduardo BARRICHELLO",
+      "rating": "S"
+     },
+     {
+      "name": "Jonny ADAM",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Gray NEWELL",
+      "lap": 103.513,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV",
+    "date": "2026-10-17"
+   },
+   "27": {
+    "drivers": [
+     {
+      "name": "Ian JAMES",
+      "rating": "B"
+     },
+     {
+      "name": "Zacharie ROBICHON",
+      "rating": "S"
+     },
+     {
+      "name": "Mattia DRUDI",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Ian JAMES",
+      "lap": 104.388,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV",
+    "date": "2026-10-17"
+   },
+   "32": {
+    "drivers": [
+     {
+      "name": "Darren LEUNG",
+      "rating": "B"
+     },
+     {
+      "name": "Sean GELAEL",
+      "rating": "S"
+     },
+     {
+      "name": "Augusto FARFUS",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Darren LEUNG",
+      "lap": 102.971,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Sean GELAEL",
+      "lap": 101.698,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171210_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV",
+    "date": "2026-10-17"
+   },
+   "33": {
+    "drivers": [
+     {
+      "name": "Ben KEATING",
+      "rating": "B"
+     },
+     {
+      "name": "Jonny EDGAR",
+      "rating": "S"
+     },
+     {
+      "name": "Nicky CATSBURG",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Ben KEATING",
+      "lap": 102.92,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Jonny EDGAR",
+      "lap": 101.447,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171210_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV",
+    "date": "2026-10-17"
+   },
+   "34": {
+    "drivers": [
+     {
+      "name": "Peter DEMPSEY",
+      "rating": "B"
+     },
+     {
+      "name": "Salih YOLUÇ",
+      "rating": "S"
+     },
+     {
+      "name": "Charlie EASTWOOD",
+      "rating": "G"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Peter DEMPSEY",
+      "lap": 102.082,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Salih YOLUÇ",
+      "lap": 102.774,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171210_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV",
+    "date": "2026-10-17"
+   },
+   "35": {
+    "drivers": [
+     {
+      "name": "Charles MILESI",
+      "rating": "G"
+     },
+     {
+      "name": "Ferdinand HABSBURG",
+      "rating": "G"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Charles MILESI",
+      "lap": 91.365,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171555_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Charles MILESI",
+      "lap": 90.722,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171615_Hyperpole HYPERCAR/23_Analysis_Hyperpole HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171555_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR_Final.CSV",
+    "date": "2026-10-17"
+   },
+   "36": {
+    "drivers": [
+     {
+      "name": "Jules GOUNON",
+      "rating": "P"
+     },
+     {
+      "name": "Victor MARTINS",
+      "rating": "G"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Victor MARTINS",
+      "lap": 91.161,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171555_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Victor MARTINS",
+      "lap": 90.814,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171615_Hyperpole HYPERCAR/23_Analysis_Hyperpole HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171555_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR_Final.CSV",
+    "date": "2026-10-17"
+   },
+   "38": {
+    "drivers": [
+     {
+      "name": "Earl BAMBER",
+      "rating": "P"
+     },
+     {
+      "name": "Sébastien BOURDAIS",
+      "rating": "P"
+     },
+     {
+      "name": "Jack AITKEN",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Jack AITKEN",
+      "lap": 90.983,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171555_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Jack AITKEN",
+      "lap": 91.065,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171615_Hyperpole HYPERCAR/23_Analysis_Hyperpole HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171555_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR_Final.CSV",
+    "date": "2026-10-17"
+   },
+   "50": {
+    "drivers": [
+     {
+      "name": "Antonio FUOCO",
+      "rating": "P"
+     },
+     {
+      "name": "Miguel MOLINA",
+      "rating": "P"
+     },
+     {
+      "name": "Nicklas NIELSEN",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Antonio FUOCO",
+      "lap": 91.149,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171555_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Antonio FUOCO",
+      "lap": 90.552,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171615_Hyperpole HYPERCAR/23_Analysis_Hyperpole HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171555_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR_Final.CSV",
+    "date": "2026-10-17"
+   },
+   "51": {
+    "drivers": [
+     {
+      "name": "Alessandro PIER GUIDI",
+      "rating": "P"
+     },
+     {
+      "name": "James CALADO",
+      "rating": "P"
+     },
+     {
+      "name": "Antonio GIOVINAZZI",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Antonio GIOVINAZZI",
+      "lap": 91.508,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171555_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171555_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR_Final.CSV",
+    "date": "2026-10-17"
+   },
+   "54": {
+    "drivers": [
+     {
+      "name": "Thomas FLOHR",
+      "rating": "B"
+     },
+     {
+      "name": "Francesco CASTELLACCI",
+      "rating": "S"
+     },
+     {
+      "name": "Davide RIGON",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Thomas FLOHR",
+      "lap": 103.332,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV",
+    "date": "2026-10-17"
+   },
+   "58": {
+    "drivers": [
+     {
+      "name": "Alexander WEST",
+      "rating": "B"
+     },
+     {
+      "name": "Finn GEHRSITZ",
+      "rating": "S"
+     },
+     {
+      "name": "Benjamin GOETHE",
+      "rating": "G"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Alexander WEST",
+      "lap": 103.518,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV",
+    "date": "2026-10-17"
+   },
+   "61": {
+    "drivers": [
+     {
+      "name": "Martin BERRY",
+      "rating": "B"
+     },
+     {
+      "name": "Rui ANDRADE",
+      "rating": "S"
+     },
+     {
+      "name": "Maxime MARTIN",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Martin BERRY",
+      "lap": 102.968,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Rui ANDRADE",
+      "lap": 101.625,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171210_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV",
+    "date": "2026-10-17"
+   },
+   "69": {
+    "drivers": [
+     {
+      "name": "Anthony MCINTOSH",
+      "rating": "B"
+     },
+     {
+      "name": "Parker THOMPSON",
+      "rating": "S"
+     },
+     {
+      "name": "Daniel HARPER",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Anthony MCINTOSH",
+      "lap": 103.975,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV",
+    "date": "2026-10-17"
+   },
+   "77": {
+    "drivers": [
+     {
+      "name": "Eric POWELL",
+      "rating": "B"
+     },
+     {
+      "name": "Ben TUCK",
+      "rating": "S"
+     },
+     {
+      "name": "Sebastian PRIAULX",
+      "rating": "G"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Eric POWELL",
+      "lap": 103.106,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Ben TUCK",
+      "lap": 101.956,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171210_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV",
+    "date": "2026-10-17"
+   },
+   "78": {
+    "drivers": [
+     {
+      "name": "Tom VAN ROMPUY",
+      "rating": "B"
+     },
+     {
+      "name": "Hadrien DAVID",
+      "rating": "S"
+     },
+     {
+      "name": "Esteban MASSON",
+      "rating": "G"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Tom VAN ROMPUY",
+      "lap": 103.124,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV",
+    "date": "2026-10-17"
+   },
+   "79": {
+    "drivers": [
+     {
+      "name": "Johannes ZELGER",
+      "rating": "B"
+     },
+     {
+      "name": "Matteo CRESSONI",
+      "rating": "S"
+     },
+     {
+      "name": "Lin HODENIUS",
+      "rating": "S"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Johannes ZELGER",
+      "lap": 104.655,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV",
+    "date": "2026-10-17"
+   },
+   "83": {
+    "drivers": [
+     {
+      "name": "Yifei YE",
+      "rating": "G"
+     },
+     {
+      "name": "Robert KUBICA",
+      "rating": "P"
+     },
+     {
+      "name": "Philip HANSON",
+      "rating": "G"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Robert KUBICA",
+      "lap": 91.411,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171555_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Robert KUBICA",
+      "lap": 90.804,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171615_Hyperpole HYPERCAR/23_Analysis_Hyperpole HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171555_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR_Final.CSV",
+    "date": "2026-10-17"
+   },
+   "87": {
+    "drivers": [
+     {
+      "name": "Petru UMBRÄRESCU",
+      "rating": "B"
+     },
+     {
+      "name": "Clemens SCHMID",
+      "rating": "S"
+     },
+     {
+      "name": "José María LÓPEZ",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Petru UMBRÄRESCU",
+      "lap": 102.922,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Clemens SCHMID",
+      "lap": 101.894,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171210_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV",
+    "date": "2026-10-17"
+   },
+   "88": {
+    "drivers": [
+     {
+      "name": "Stefano GATTUSO",
+      "rating": "B"
+     },
+     {
+      "name": "Giammarco LEVORATO",
+      "rating": "S"
+     },
+     {
+      "name": "Logan SARGEANT",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Stefano GATTUSO",
+      "lap": 102.624,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Giammarco LEVORATO",
+      "lap": 102.222,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171210_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV",
+    "date": "2026-10-17"
+   },
+   "91": {
+    "drivers": [
+     {
+      "name": "James COTTINGHAM",
+      "rating": "B"
+     },
+     {
+      "name": "Timur BOGUSLAVSKIY",
+      "rating": "S"
+     },
+     {
+      "name": "Ayhancan GÜVEN",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "James COTTINGHAM",
+      "lap": 103.169,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV",
+    "date": "2026-10-17"
+   },
+   "92": {
+    "drivers": [
+     {
+      "name": "Yasser SHAHIN",
+      "rating": "B"
+     },
+     {
+      "name": "Riccardo PERA",
+      "rating": "S"
+     },
+     {
+      "name": "Richard LIETZ",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Yasser SHAHIN",
+      "lap": 102.954,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Riccardo PERA",
+      "lap": 101.055,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171210_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171150_Qualifying LMGT3/03_Classification_Qualifying LMGT3_Final.CSV",
+    "date": "2026-10-17"
+   },
+   "93": {
+    "drivers": [
+     {
+      "name": "Paul DI RESTA",
+      "rating": "P"
+     },
+     {
+      "name": "Nick CASSIDY",
+      "rating": "P"
+     },
+     {
+      "name": "Alex QUINN",
+      "rating": "G"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Paul DI RESTA",
+      "lap": 91.713,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171555_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171555_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR_Final.CSV",
+    "date": "2026-10-17"
+   },
+   "94": {
+    "drivers": [
+     {
+      "name": "Loïc DUVAL",
+      "rating": "P"
+     },
+     {
+      "name": "Malthe JAKOBSEN",
+      "rating": "G"
+     },
+     {
+      "name": "Théo POURCHAIRE",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Théo POURCHAIRE",
+      "lap": 91.628,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171555_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/07_BARCELONA-CATALUNYA/688_FIA WEC/202610171555_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR_Final.CSV",
+    "date": "2026-10-17"
+   }
+  },
+  "wec|2026|monza": {
+   "5": {
+    "drivers": [
+     {
+      "name": "Michel FREY",
+      "rating": ""
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Michel FREY",
+      "lap": 108.096,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611061625_Qualifying Practice 1/23_Analysis_Qualifying Practice 1.CSV"
+     },
+     {
+      "name": "Michel FREY",
+      "lap": 120.232,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611070930_Qualifying Practice 2/23_Analysis_Qualifying Practice 2.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611061625_Qualifying Practice 1/03_Classification_Qualifying Practice 1.CSV",
+    "date": "2026-11-06"
+   },
+   "7": {
+    "drivers": [
+     {
+      "name": "Harry TINCKNELL",
+      "rating": "P"
+     },
+     {
+      "name": "Tom GAMBLE",
+      "rating": "G"
+     },
+     {
+      "name": "Mike CONWAY",
+      "rating": "P"
+     },
+     {
+      "name": "Kamui KOBAYASHI",
+      "rating": "P"
+     },
+     {
+      "name": "Nyck DE VRIES",
+      "rating": "P"
+     },
+     {
+      "name": "Werner D'ANSEMBOURG",
+      "rating": ""
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Harry TINCKNELL",
+      "lap": 94.627,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071505_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Werner D'ANSEMBOURG",
+      "lap": 111.714,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611061625_Qualifying Practice 1/23_Analysis_Qualifying Practice 1.CSV"
+     },
+     {
+      "name": "Werner D'ANSEMBOURG",
+      "lap": 122.447,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611070930_Qualifying Practice 2/23_Analysis_Qualifying Practice 2.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071505_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR.CSV",
+    "date": "2026-11-07"
+   },
+   "8": {
+    "drivers": [
+     {
+      "name": "Sébastien BUEMI",
+      "rating": "P"
+     },
+     {
+      "name": "Brendon HARTLEY",
+      "rating": "P"
+     },
+     {
+      "name": "Ryo HIRAKAWA",
+      "rating": "P"
+     },
+     {
+      "name": "Christian ALBRECHT",
+      "rating": ""
+     },
+     {
+      "name": "Kriton LENTOUDIS",
+      "rating": ""
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Ryo HIRAKAWA",
+      "lap": 94.734,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071505_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Christian ALBRECHT",
+      "lap": 106.992,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611061625_Qualifying Practice 1/23_Analysis_Qualifying Practice 1.CSV"
+     },
+     {
+      "name": "Christian ALBRECHT",
+      "lap": 119.089,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611070930_Qualifying Practice 2/23_Analysis_Qualifying Practice 2.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071505_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR.CSV",
+    "date": "2026-11-07"
+   },
+   "9": {
+    "drivers": [
+     {
+      "name": "Alex RIBERAS",
+      "rating": "G"
+     },
+     {
+      "name": "Marco SØRENSEN",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Marco SØRENSEN",
+      "lap": 94.492,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071505_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071505_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR.CSV",
+    "date": "2026-11-07"
+   },
+   "10": {
+    "drivers": [
+     {
+      "name": "Antares AU",
+      "rating": "B"
+     },
+     {
+      "name": "Thomas FLEMING",
+      "rating": "S"
+     },
+     {
+      "name": "Marvin KIRCHHÖFER",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Antares AU",
+      "lap": 111.583,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV",
+    "date": "2026-11-07"
+   },
+   "12": {
+    "drivers": [
+     {
+      "name": "Will STEVENS",
+      "rating": "P"
+     },
+     {
+      "name": "Norman NATO",
+      "rating": "G"
+     },
+     {
+      "name": "Alex LYNN",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Norman NATO",
+      "lap": 94.351,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071505_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Norman NATO",
+      "lap": 93.9,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071525_Hyperpole HYPERCAR/23_Analysis_Hyperpole HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071505_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR.CSV",
+    "date": "2026-11-07"
+   },
+   "15": {
+    "drivers": [
+     {
+      "name": "Kevin MAGNUSSEN",
+      "rating": "P"
+     },
+     {
+      "name": "Raffaele MARCIELLO",
+      "rating": "P"
+     },
+     {
+      "name": "Dries VANTHOOR",
+      "rating": "P"
+     },
+     {
+      "name": "Christophe D'ANSEMBOURG",
+      "rating": ""
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Dries VANTHOOR",
+      "lap": 95.15,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071505_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Christophe D'ANSEMBOURG",
+      "lap": 116.445,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611061625_Qualifying Practice 1/23_Analysis_Qualifying Practice 1.CSV"
+     },
+     {
+      "name": "Christophe D'ANSEMBOURG",
+      "lap": 125.438,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611070930_Qualifying Practice 2/23_Analysis_Qualifying Practice 2.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071505_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR.CSV",
+    "date": "2026-11-07"
+   },
+   "16": {
+    "drivers": [
+     {
+      "name": "Steve BROOKS",
+      "rating": ""
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Steve BROOKS",
+      "lap": 109.48,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611061625_Qualifying Practice 1/23_Analysis_Qualifying Practice 1.CSV"
+     },
+     {
+      "name": "Steve BROOKS",
+      "lap": 123.526,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611070930_Qualifying Practice 2/23_Analysis_Qualifying Practice 2.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611061625_Qualifying Practice 1/03_Classification_Qualifying Practice 1.CSV",
+    "date": "2026-11-06"
+   },
+   "17": {
+    "drivers": [
+     {
+      "name": "André LOTTERER",
+      "rating": "P"
+     },
+     {
+      "name": "Luis Felipe DERANI",
+      "rating": "P"
+     },
+     {
+      "name": "Mathys JAUBERT",
+      "rating": "S"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Mathys JAUBERT",
+      "lap": 94.567,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071505_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071505_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR.CSV",
+    "date": "2026-11-07"
+   },
+   "18": {
+    "drivers": [
+     {
+      "name": "Michael DOPPELMAYR",
+      "rating": ""
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Michael DOPPELMAYR",
+      "lap": 121.204,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611061625_Qualifying Practice 1/23_Analysis_Qualifying Practice 1.CSV"
+     },
+     {
+      "name": "Michael DOPPELMAYR",
+      "lap": 131.114,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611070930_Qualifying Practice 2/23_Analysis_Qualifying Practice 2.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611061625_Qualifying Practice 1/03_Classification_Qualifying Practice 1.CSV",
+    "date": "2026-11-06"
+   },
+   "19": {
+    "drivers": [
+     {
+      "name": "Mathieu JAMINET",
+      "rating": "P"
+     },
+     {
+      "name": "Paul-Loup CHATIN",
+      "rating": "G"
+     },
+     {
+      "name": "Daniel JUNCADELLA",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Mathieu JAMINET",
+      "lap": 93.792,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071505_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Mathieu JAMINET",
+      "lap": 93.46,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071525_Hyperpole HYPERCAR/23_Analysis_Hyperpole HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071505_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR.CSV",
+    "date": "2026-11-07"
+   },
+   "20": {
+    "drivers": [
+     {
+      "name": "Robin FRIJNS",
+      "rating": "P"
+     },
+     {
+      "name": "René RAST",
+      "rating": "P"
+     },
+     {
+      "name": "Sheldon VAN DER LINDE",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Sheldon VAN DER LINDE",
+      "lap": 94.255,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071505_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Sheldon VAN DER LINDE",
+      "lap": 94.415,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071525_Hyperpole HYPERCAR/23_Analysis_Hyperpole HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071505_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR.CSV",
+    "date": "2026-11-07"
+   },
+   "21": {
+    "drivers": [
+     {
+      "name": "François HÉRIAU",
+      "rating": "B"
+     },
+     {
+      "name": "Simon MANN",
+      "rating": "S"
+     },
+     {
+      "name": "Alessio ROVERA",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV",
+    "date": "2026-11-07"
+   },
+   "23": {
+    "drivers": [
+     {
+      "name": "Gray NEWELL",
+      "rating": "B"
+     },
+     {
+      "name": "Eduardo BARRICHELLO",
+      "rating": "S"
+     },
+     {
+      "name": "Jonny ADAM",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Gray NEWELL",
+      "lap": 109.49,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Eduardo BARRICHELLO",
+      "lap": 107.065,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071448_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV",
+    "date": "2026-11-07"
+   },
+   "25": {
+    "drivers": [
+     {
+      "name": "Franz WUNDERLICH",
+      "rating": ""
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Franz WUNDERLICH",
+      "lap": 122.118,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611061625_Qualifying Practice 1/23_Analysis_Qualifying Practice 1.CSV"
+     },
+     {
+      "name": "Franz WUNDERLICH",
+      "lap": 132.519,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611070930_Qualifying Practice 2/23_Analysis_Qualifying Practice 2.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611061625_Qualifying Practice 1/03_Classification_Qualifying Practice 1.CSV",
+    "date": "2026-11-06"
+   },
+   "26": {
+    "drivers": [
+     {
+      "name": "Jacques NICOLET",
+      "rating": ""
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Jacques NICOLET",
+      "lap": 112.776,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611061625_Qualifying Practice 1/23_Analysis_Qualifying Practice 1.CSV"
+     },
+     {
+      "name": "Jacques NICOLET",
+      "lap": 125.78,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611070930_Qualifying Practice 2/23_Analysis_Qualifying Practice 2.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611061625_Qualifying Practice 1/03_Classification_Qualifying Practice 1.CSV",
+    "date": "2026-11-06"
+   },
+   "27": {
+    "drivers": [
+     {
+      "name": "Ian JAMES",
+      "rating": "B"
+     },
+     {
+      "name": "Zacharie ROBICHON",
+      "rating": "S"
+     },
+     {
+      "name": "Mattia DRUDI",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Ian JAMES",
+      "lap": 110.131,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Zacharie ROBICHON",
+      "lap": 107.76,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071448_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV",
+    "date": "2026-11-07"
+   },
+   "32": {
+    "drivers": [
+     {
+      "name": "Darren LEUNG",
+      "rating": "B"
+     },
+     {
+      "name": "Sean GELAEL",
+      "rating": "S"
+     },
+     {
+      "name": "Augusto FARFUS",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Darren LEUNG",
+      "lap": 111.047,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV",
+    "date": "2026-11-07"
+   },
+   "33": {
+    "drivers": [
+     {
+      "name": "Ben KEATING",
+      "rating": "B"
+     },
+     {
+      "name": "Jonny EDGAR",
+      "rating": "S"
+     },
+     {
+      "name": "Nicky CATSBURG",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Ben KEATING",
+      "lap": 110.647,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Jonny EDGAR",
+      "lap": 107.537,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071448_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV",
+    "date": "2026-11-07"
+   },
+   "34": {
+    "drivers": [
+     {
+      "name": "Peter DEMPSEY",
+      "rating": "B"
+     },
+     {
+      "name": "Salih YOLUÇ",
+      "rating": "S"
+     },
+     {
+      "name": "Charlie EASTWOOD",
+      "rating": "G"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Peter DEMPSEY",
+      "lap": 108.44,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Salih YOLUÇ",
+      "lap": 109.363,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071448_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV",
+    "date": "2026-11-07"
+   },
+   "35": {
+    "drivers": [
+     {
+      "name": "Charles MILESI",
+      "rating": "G"
+     },
+     {
+      "name": "Ferdinand HABSBURG",
+      "rating": "G"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Charles MILESI",
+      "lap": 94.438,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071505_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071505_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR.CSV",
+    "date": "2026-11-07"
+   },
+   "36": {
+    "drivers": [
+     {
+      "name": "Jules GOUNON",
+      "rating": "P"
+     },
+     {
+      "name": "Victor MARTINS",
+      "rating": "G"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Victor MARTINS",
+      "lap": 94.265,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071505_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Victor MARTINS",
+      "lap": 93.858,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071525_Hyperpole HYPERCAR/23_Analysis_Hyperpole HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071505_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR.CSV",
+    "date": "2026-11-07"
+   },
+   "37": {
+    "drivers": [
+     {
+      "name": "Marcel AEBI",
+      "rating": ""
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Marcel AEBI",
+      "lap": 110.202,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611061625_Qualifying Practice 1/23_Analysis_Qualifying Practice 1.CSV"
+     },
+     {
+      "name": "Marcel AEBI",
+      "lap": 155.569,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611070930_Qualifying Practice 2/23_Analysis_Qualifying Practice 2.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611061625_Qualifying Practice 1/03_Classification_Qualifying Practice 1.CSV",
+    "date": "2026-11-06"
+   },
+   "38": {
+    "drivers": [
+     {
+      "name": "Earl BAMBER",
+      "rating": "P"
+     },
+     {
+      "name": "Sébastien BOURDAIS",
+      "rating": "P"
+     },
+     {
+      "name": "Jack AITKEN",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Earl BAMBER",
+      "lap": 94.177,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071505_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Earl BAMBER",
+      "lap": 93.541,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071525_Hyperpole HYPERCAR/23_Analysis_Hyperpole HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071505_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR.CSV",
+    "date": "2026-11-07"
+   },
+   "41": {
+    "drivers": [
+     {
+      "name": "David CHENG",
+      "rating": ""
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "David CHENG",
+      "lap": 434.916,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611061625_Qualifying Practice 1/23_Analysis_Qualifying Practice 1.CSV"
+     },
+     {
+      "name": "David CHENG",
+      "lap": 164.82,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611070930_Qualifying Practice 2/23_Analysis_Qualifying Practice 2.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611061625_Qualifying Practice 1/03_Classification_Qualifying Practice 1.CSV",
+    "date": "2026-11-06"
+   },
+   "46": {
+    "drivers": [
+     {
+      "name": "Evgeny KIREEV",
+      "rating": ""
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Evgeny KIREEV",
+      "lap": 114.141,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611061625_Qualifying Practice 1/23_Analysis_Qualifying Practice 1.CSV"
+     },
+     {
+      "name": "Evgeny KIREEV",
+      "lap": 127.282,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611070930_Qualifying Practice 2/23_Analysis_Qualifying Practice 2.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611061625_Qualifying Practice 1/03_Classification_Qualifying Practice 1.CSV",
+    "date": "2026-11-06"
+   },
+   "50": {
+    "drivers": [
+     {
+      "name": "Antonio FUOCO",
+      "rating": "P"
+     },
+     {
+      "name": "Miguel MOLINA",
+      "rating": "P"
+     },
+     {
+      "name": "Nicklas NIELSEN",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Antonio FUOCO",
+      "lap": 93.4,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071505_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Antonio FUOCO",
+      "lap": 93.364,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071525_Hyperpole HYPERCAR/23_Analysis_Hyperpole HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071505_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR.CSV",
+    "date": "2026-11-07"
+   },
+   "51": {
+    "drivers": [
+     {
+      "name": "Alessandro PIER GUIDI",
+      "rating": "P"
+     },
+     {
+      "name": "James CALADO",
+      "rating": "P"
+     },
+     {
+      "name": "Antonio GIOVINAZZI",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Antonio GIOVINAZZI",
+      "lap": 94.077,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071505_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Antonio GIOVINAZZI",
+      "lap": 93.573,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071525_Hyperpole HYPERCAR/23_Analysis_Hyperpole HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071505_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR.CSV",
+    "date": "2026-11-07"
+   },
+   "54": {
+    "drivers": [
+     {
+      "name": "Thomas FLOHR",
+      "rating": "B"
+     },
+     {
+      "name": "Francesco CASTELLACCI",
+      "rating": "S"
+     },
+     {
+      "name": "Davide RIGON",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Thomas FLOHR",
+      "lap": 111.315,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV",
+    "date": "2026-11-07"
+   },
+   "58": {
+    "drivers": [
+     {
+      "name": "Alexander WEST",
+      "rating": "B"
+     },
+     {
+      "name": "Finn GEHRSITZ",
+      "rating": "S"
+     },
+     {
+      "name": "Benjamin GOETHE",
+      "rating": "G"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Alexander WEST",
+      "lap": 111.285,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV",
+    "date": "2026-11-07"
+   },
+   "61": {
+    "drivers": [
+     {
+      "name": "Martin BERRY",
+      "rating": "B"
+     },
+     {
+      "name": "Rui ANDRADE",
+      "rating": "S"
+     },
+     {
+      "name": "Maxime MARTIN",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Martin BERRY",
+      "lap": 110.275,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Rui ANDRADE",
+      "lap": 108.037,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071448_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV",
+    "date": "2026-11-07"
+   },
+   "69": {
+    "drivers": [
+     {
+      "name": "Anthony MCINTOSH",
+      "rating": "B"
+     },
+     {
+      "name": "Parker THOMPSON",
+      "rating": "S"
+     },
+     {
+      "name": "Daniel HARPER",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Anthony MCINTOSH",
+      "lap": 110.242,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV",
+    "date": "2026-11-07"
+   },
+   "77": {
+    "drivers": [
+     {
+      "name": "Eric POWELL",
+      "rating": "B"
+     },
+     {
+      "name": "Ben TUCK",
+      "rating": "S"
+     },
+     {
+      "name": "Sebastian PRIAULX",
+      "rating": "G"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Eric POWELL",
+      "lap": 109.384,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Ben TUCK",
+      "lap": 107.595,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071448_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV",
+    "date": "2026-11-07"
+   },
+   "78": {
+    "drivers": [
+     {
+      "name": "Tom VAN ROMPUY",
+      "rating": "B"
+     },
+     {
+      "name": "Hadrien DAVID",
+      "rating": "S"
+     },
+     {
+      "name": "Esteban MASSON",
+      "rating": "G"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Tom VAN ROMPUY",
+      "lap": 110.356,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Hadrien DAVID",
+      "lap": 107.523,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071448_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV",
+    "date": "2026-11-07"
+   },
+   "79": {
+    "drivers": [
+     {
+      "name": "Johannes ZELGER",
+      "rating": "B"
+     },
+     {
+      "name": "Matteo CRESSONI",
+      "rating": "S"
+     },
+     {
+      "name": "Lin HODENIUS",
+      "rating": "S"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Johannes ZELGER",
+      "lap": 111.19,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV",
+    "date": "2026-11-07"
+   },
+   "83": {
+    "drivers": [
+     {
+      "name": "Yifei YE",
+      "rating": "G"
+     },
+     {
+      "name": "Robert KUBICA",
+      "rating": "P"
+     },
+     {
+      "name": "Philip HANSON",
+      "rating": "G"
+     },
+     {
+      "name": "François PERRODO",
+      "rating": ""
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Robert KUBICA",
+      "lap": 93.88,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071505_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Robert KUBICA",
+      "lap": 93.922,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071525_Hyperpole HYPERCAR/23_Analysis_Hyperpole HYPERCAR.CSV"
+     },
+     {
+      "name": "François PERRODO",
+      "lap": 109.502,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611061625_Qualifying Practice 1/23_Analysis_Qualifying Practice 1.CSV"
+     },
+     {
+      "name": "François PERRODO",
+      "lap": 123.07,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611070930_Qualifying Practice 2/23_Analysis_Qualifying Practice 2.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071505_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR.CSV",
+    "date": "2026-11-07"
+   },
+   "87": {
+    "drivers": [
+     {
+      "name": "Petru UMBRÄRESCU",
+      "rating": "B"
+     },
+     {
+      "name": "Clemens SCHMID",
+      "rating": "S"
+     },
+     {
+      "name": "José María LÓPEZ",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Petru UMBRÄRESCU",
+      "lap": 110.147,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Clemens SCHMID",
+      "lap": 107.733,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071448_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV",
+    "date": "2026-11-07"
+   },
+   "88": {
+    "drivers": [
+     {
+      "name": "Stefano GATTUSO",
+      "rating": "B"
+     },
+     {
+      "name": "Giammarco LEVORATO",
+      "rating": "S"
+     },
+     {
+      "name": "Logan SARGEANT",
+      "rating": "P"
+     },
+     {
+      "name": "Horst FELBERMAYR",
+      "rating": ""
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Stefano GATTUSO",
+      "lap": 108.889,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Giammarco LEVORATO",
+      "lap": 107.768,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071448_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     },
+     {
+      "name": "Horst FELBERMAYR",
+      "lap": 116.579,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611061625_Qualifying Practice 1/23_Analysis_Qualifying Practice 1.CSV"
+     },
+     {
+      "name": "Horst FELBERMAYR",
+      "lap": 125.418,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611070930_Qualifying Practice 2/23_Analysis_Qualifying Practice 2.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV",
+    "date": "2026-11-07"
+   },
+   "91": {
+    "drivers": [
+     {
+      "name": "James COTTINGHAM",
+      "rating": "B"
+     },
+     {
+      "name": "Timur BOGUSLAVSKIY",
+      "rating": "S"
+     },
+     {
+      "name": "Ayhancan GÜVEN",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "James COTTINGHAM",
+      "lap": 110.742,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     },
+     {
+      "name": "Timur BOGUSLAVSKIY",
+      "lap": 108.084,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071448_Hyperpole LMGT3/23_Analysis_Hyperpole LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV",
+    "date": "2026-11-07"
+   },
+   "92": {
+    "drivers": [
+     {
+      "name": "Yasser SHAHIN",
+      "rating": "B"
+     },
+     {
+      "name": "Riccardo PERA",
+      "rating": "S"
+     },
+     {
+      "name": "Richard LIETZ",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Yasser SHAHIN",
+      "lap": 110.82,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/23_Analysis_Qualifying LMGT3.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071420_Qualifying LMGT3/03_Classification_Qualifying LMGT3.CSV",
+    "date": "2026-11-07"
+   },
+   "93": {
+    "drivers": [
+     {
+      "name": "Paul DI RESTA",
+      "rating": "P"
+     },
+     {
+      "name": "Nick CASSIDY",
+      "rating": "P"
+     },
+     {
+      "name": "Alex QUINN",
+      "rating": "G"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Nick CASSIDY",
+      "lap": 94.364,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071505_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Nick CASSIDY",
+      "lap": 94.084,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071525_Hyperpole HYPERCAR/23_Analysis_Hyperpole HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071505_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR.CSV",
+    "date": "2026-11-07"
+   },
+   "94": {
+    "drivers": [
+     {
+      "name": "Loïc DUVAL",
+      "rating": "P"
+     },
+     {
+      "name": "Malthe JAKOBSEN",
+      "rating": "G"
+     },
+     {
+      "name": "Théo POURCHAIRE",
+      "rating": "P"
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Théo POURCHAIRE",
+      "lap": 94.235,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071505_Qualifying HYPERCAR/23_Analysis_Qualifying HYPERCAR.CSV"
+     },
+     {
+      "name": "Théo POURCHAIRE",
+      "lap": 93.617,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071525_Hyperpole HYPERCAR/23_Analysis_Hyperpole HYPERCAR.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/689_FIA WEC/202611071505_Qualifying HYPERCAR/03_Classification_Qualifying HYPERCAR.CSV",
+    "date": "2026-11-07"
+   },
+   "116": {
+    "drivers": [
+     {
+      "name": "Alfie BRIGGS",
+      "rating": ""
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Alfie BRIGGS",
+      "lap": 107.072,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611061625_Qualifying Practice 1/23_Analysis_Qualifying Practice 1.CSV"
+     },
+     {
+      "name": "Alfie BRIGGS",
+      "lap": 120.877,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611070930_Qualifying Practice 2/23_Analysis_Qualifying Practice 2.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611061625_Qualifying Practice 1/03_Classification_Qualifying Practice 1.CSV",
+    "date": "2026-11-06"
+   },
+   "183": {
+    "drivers": [
+     {
+      "name": "Charles-Henri SAMANI",
+      "rating": ""
+     }
+    ],
+    "bestLap": [
+     {
+      "name": "Charles-Henri SAMANI",
+      "lap": 111.382,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611061625_Qualifying Practice 1/23_Analysis_Qualifying Practice 1.CSV"
+     },
+     {
+      "name": "Charles-Henri SAMANI",
+      "lap": 127.457,
+      "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611070930_Qualifying Practice 2/23_Analysis_Qualifying Practice 2.CSV"
+     }
+    ],
+    "source": "https://files.alkamelcloud.com/wec/results/15_2026/08_AUTODROMO NAZIONALE DI MONZA/690_Legends of Le Mans/202611061625_Qualifying Practice 1/03_Classification_Qualifying Practice 1.CSV",
+    "date": "2026-11-06"
+   }
+  }
+ },
+ "log": [
+  "interlagos: 16 files, 34 cars, 34 with a printed category",
+  "austin: 30 files, 49 cars, 34 with a printed category",
+  "catalunya: 17 files, 34 cars, 34 with a printed category",
+  "monza: 23 files, 44 cars, 34 with a printed category"
+ ]
+}

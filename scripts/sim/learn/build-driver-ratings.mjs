@@ -232,7 +232,7 @@ export function build(root, extras = [], learned = null, sro = null, fia = null,
     const cup = cupOf(L?.cls || clsTable.get(`${r.series}|${r.season}|${r.event}|${r.entry}`)), m = modeOf([`${r.series}|${cup}|*`, `${r.series}|${r.season}|*`, `${r.series}|*`, `all|*`]);
     return m ? {lineupEstimated: m.lineup, estimatedSeats: m.lineup.length, estimate: `no line-up: most common ${m.key.replace(/\|\*$/, '')} line-up (${m.n} cars)`} : {lineupEstimated: null}; }
   for (const r of rows) { const k = `${r.series}|${r.season}|${r.event}`, L = lineups[k]?.[String(r.entry)];
-    const xb = extraBest.get(`${k}|${r.entry}`), b = xb && Math.abs(xb.lap - r.real) < 0.0006 ? {name: xb.name, file: xb.source}
+    const xb = [extraBest.get(`${k}|${r.entry}`)].flat().find(x => x && Math.abs(x.lap - r.real) < 0.0006), b = xb ? {name: xb.name, file: xb.source} // bestLap: one or a list (one per session, fetch-wec-lineups.mjs)
       : L && SITE[r.series] ? bestLapDriver(root, r, lapCache) : {name: null, why: 'no Al Kamel lap file for this source'};
     const id = b.name ? idOf(b.name) ?? null : null;
     learnedOut.push({series: r.series, season: r.season, event: r.event, session: r.session, group: r.group, model: r.model, entry: String(r.entry), lap: r.real,
