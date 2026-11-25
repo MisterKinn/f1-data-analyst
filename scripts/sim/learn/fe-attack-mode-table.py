@@ -20,6 +20,11 @@ def bulletins(docs):  # latest version (AMENDED wins) of each numbered bulletin,
         k = bnum(x)
         if k is not None and (k not in b or 'AMENDED' in x['note'].upper()): b[k] = x
     return [b[k] for k in sorted(b)]
+def label(n, pick, docs, via):
+    naming = {x['amTimeS'] for x in docs if x.get('amTimeS') and n in (x.get('roundsNamed') or [])}
+    if len(naming) > 1: return 'assumption (double-header split: documents naming this round disagree)'
+    if n in (pick.get('roundsNamed') or []): return 'document names this round'
+    return 'own folder document' if via == 'own' else 'assumption (double-header split)'
 table = []
 for (s, n), e in sorted(events.items()):
     docs, via, second = e['docs'], 'own', False
@@ -33,7 +38,9 @@ for (s, n), e in sorted(events.items()):
     pick = (bl[-1] if second else bl[0]) if bl else notes[-1]
     table.append({'season': s, 'year': 2014 + s, 'round': n, 'event': e['event'], 'covered': True, 'via': via, 'amKW': pick['amKW'],
                   'amTimeS': pick['amTimeS'], 'activations': pick['activations'], 'armingsMax': pick['armingsMax'],
-                  'doc': pick['note'], 'kind': pick['kind'], 'url': pick['url'],
+                  'doc': pick['note'], 'kind': pick['kind'], 'url': pick['url'], 'roundsNamed': pick.get('roundsNamed'),
+                  # label (central 19:20): the double-header split is an assumption unless the chosen document names this round
+                  'label': label(n, pick, docs, via),
                   'agreesWithEventNote': all((x['amTimeS'], x['activations']) == (pick['amTimeS'], pick['activations']) for x in docs if x.get('amTimeS'))})
 cov = [t for t in table if t['covered']]
 out = {'source': d['source'] + ' (parsed facts only)', 'rule': 'latest document stating Attack Mode per round; double-header note covers round n+1',

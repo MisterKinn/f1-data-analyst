@@ -9,7 +9,9 @@ export function parseNote(text) { // facts from one Race Information note
   const t = text.replace(/\s+/g, ' '), m = (re, f = num) => { const x = t.match(re); return x ? f(x[1]) : null; };
   const am = t.match(/ATTACK MODE[^]*?(?=PIT BOOST|ENERGY|$)/i)?.[0] || t;
   const g = (re, src = am) => { const x = src.match(re); return x ? num(x[1]) : null; };
-  return {amKW: g(/(\d{3})\s*kW\s*Power Mode/i), amTimeS: g(/Power Mode time:?\s*(\d+)\s*seconds/i) ?? (g(/Power Mode time:?\s*(\d+(?:[.,]\d+)?)\s*min/i) * 60 || null),
+  const docDate = t.match(/Date:?\s*(\d{2}\/\d{2}\/\d{4})/i)?.[1] ?? null, rounds = [...new Set([...t.matchAll(/\bR(\d{2})\b|Round\s*(\d{1,2})\b/gi)].map(x => +(x[1] || x[2])))];
+  const raceTag = [...new Set([...t.matchAll(/\b(Race\s*[12]|Saturday|Sunday)\b/gi)].map(x => x[1].replace(/\s+/g, ' ').toLowerCase()))];
+  return {docDate, roundsNamed: rounds, raceTag, amKW: g(/(\d{3})\s*kW\s*Power Mode/i), amTimeS: g(/Power Mode time:?\s*(\d+)\s*seconds/i) ?? (g(/Power Mode time:?\s*(\d+(?:[.,]\d+)?)\s*min/i) * 60 || null),
     activations: g(/Number of activations:?\s*(\d+)/i), armingsMax: g(/Number of armings:?\s*(?:Maximum\s*)?(\d+)/i),
     energyKWh: m(/Energy[^0-9]{0,60}(\d+[.,]\d+)\s*kWh/i), pitBoost: /PIT BOOST/i.test(t), pitBoostKWh: m(/PIT BOOST[^]{0,300}?(\d+[.,]\d+)\s*kWh/i),
     lapAt80pct: m(/80%\s*of Race \(Lap\):?\s*(\d+)/i), raceDistanceLaps: m(/Race (?:Distance|Laps)[^0-9]{0,20}(\d+)\s*Laps/i), raceMinutes: m(/Race (?:Duration|Time)[^0-9]{0,20}(\d+)\s*min/i)}; }

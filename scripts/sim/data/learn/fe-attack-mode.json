@@ -36,6 +36,10 @@
    "doc": "Doc 7 - Event Note S09-R01 Mexico",
    "kind": "event note",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/08_Season%209%20-%202022-23/01_R01%20Mexico/007_Doc%207%20-%20Event%20Note%20S09-R01%20Mexico.pdf",
+   "roundsNamed": [
+    1
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -52,6 +56,11 @@
    "doc": "Doc 26 - Bulletin No. 5",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/08_Season%209%20-%202022-23/02_R02%20Diriyah/026_Doc%2026%20-%20Bulletin%20No.%205.pdf",
+   "roundsNamed": [
+    2,
+    3
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -68,6 +77,11 @@
    "doc": "Doc 26 - Bulletin No. 5",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/08_Season%209%20-%202022-23/02_R02%20Diriyah/026_Doc%2026%20-%20Bulletin%20No.%205.pdf",
+   "roundsNamed": [
+    2,
+    3
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -84,6 +98,10 @@
    "doc": "Doc 8 - Bulletin No. 3",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/08_Season%209%20-%202022-23/04_R04%20Hyderabad/008_Doc%208%20-%20Bulletin%20No.%203.pdf",
+   "roundsNamed": [
+    4
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -100,6 +118,10 @@
    "doc": "Doc 11 - Bulletin No. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/08_Season%209%20-%202022-23/05_R05%20Cape%20Town/011_Doc%2011%20-%20Bulletin%20No.%202.pdf",
+   "roundsNamed": [
+    5
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -116,6 +138,10 @@
    "doc": "Doc 9 - Bulletin No. 3",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/08_Season%209%20-%202022-23/06_R06%20Sao%20Paulo/009_Doc%209%20-%20Bulletin%20No.%203.pdf",
+   "roundsNamed": [
+    6
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -132,6 +158,11 @@
    "doc": "Doc 9 - Bulletin No. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/08_Season%209%20-%202022-23/07_R07%20Berlin/009_Doc%209%20-%20Bulletin%20No.%202.pdf",
+   "roundsNamed": [
+    7,
+    8
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -148,6 +179,11 @@
    "doc": "Doc 9 - Bulletin No. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/08_Season%209%20-%202022-23/07_R07%20Berlin/009_Doc%209%20-%20Bulletin%20No.%202.pdf",
+   "roundsNamed": [
+    7,
+    8
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -164,6 +200,10 @@
    "doc": "Doc 11 - Bulletin No. 3",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/08_Season%209%20-%202022-23/09_R09%20Monaco/011_Doc%2011%20-%20Bulletin%20No.%203.pdf",
+   "roundsNamed": [
+    9
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -180,6 +220,10 @@
    "doc": "Doc 8 - Bulletin No. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/08_Season%209%20-%202022-23/10_R10%20Jakarta/008_Doc%208%20-%20Bulletin%20No.%202.pdf",
+   "roundsNamed": [
+    10
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -196,6 +240,11 @@
    "doc": "Doc 9 - Bulletin No. 3",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/08_Season%209%20-%202022-23/10_R10%20Jakarta/009_Doc%209%20-%20Bulletin%20No.%203.pdf",
+   "roundsNamed": [
+    10,
+    11
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -212,6 +261,10 @@
    "doc": "Doc 8 - Bulletin No. 3",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/08_Season%209%20-%202022-23/12_R12%20Portland/008_Doc%208%20-%20Bulletin%20No.%203.pdf",
+   "roundsNamed": [
+    12
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -228,6 +281,10 @@
    "doc": "Doc 11 - Bulletin No. 3",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/08_Season%209%20-%202022-23/12_R13%20Rome/011_Doc%2011%20-%20Bulletin%20No.%203.pdf",
+   "roundsNamed": [
+    13
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -244,6 +301,11 @@
    "doc": "Doc 12 - Bulletin No. 4",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/08_Season%209%20-%202022-23/12_R13%20Rome/012_Doc%2012%20-%20Bulletin%20No.%204.pdf",
+   "roundsNamed": [
+    13,
+    14
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -260,6 +322,10 @@
    "doc": "Doc 8 - Bulletin No. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/08_Season%209%20-%202022-23/15_R15%20London/008_Doc%208%20-%20Bulletin%20No.%202.pdf",
+   "roundsNamed": [
+    15
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -276,6 +342,11 @@
    "doc": "Doc 9 - Bulletin No. 3",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/08_Season%209%20-%202022-23/15_R15%20London/009_Doc%209%20-%20Bulletin%20No.%203.pdf",
+   "roundsNamed": [
+    15,
+    16
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -292,6 +363,10 @@
    "doc": "Doc 10 - Bulletin No. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/09_Season%2010%20-%202023-24/01_R01%20Mexico/010_Doc%2010%20-%20Bulletin%20No.%202.pdf",
+   "roundsNamed": [
+    1
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -308,6 +383,11 @@
    "doc": "Doc 8 - Bulletin No. 3",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/09_Season%2010%20-%202023-24/02_R02%20Diriyah/008_Doc%208%20-%20Bulletin%20No.%203.pdf",
+   "roundsNamed": [
+    2,
+    3
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -324,6 +404,11 @@
    "doc": "Doc 8 - Bulletin No. 3",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/09_Season%2010%20-%202023-24/02_R02%20Diriyah/008_Doc%208%20-%20Bulletin%20No.%203.pdf",
+   "roundsNamed": [
+    2,
+    3
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -340,6 +425,10 @@
    "doc": "Doc 8 - Bulletin No. 3",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/09_Season%2010%20-%202023-24/04_R04%20Sao%20Paulo/008_Doc%208%20-%20Bulletin%20No.%203.pdf",
+   "roundsNamed": [
+    4
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -356,6 +445,10 @@
    "doc": "Doc 7 - Bulletin No. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/09_Season%2010%20-%202023-24/05_R05%20Tokyo/007_Doc%207%20-%20Bulletin%20No.%202.pdf",
+   "roundsNamed": [
+    5
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -372,6 +465,11 @@
    "doc": "Doc 8 - Bulletin No. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/09_Season%2010%20-%202023-24/06_R06%20Misano/008_Doc%208%20-%20Bulletin%20No.%202.pdf",
+   "roundsNamed": [
+    6,
+    7
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -388,6 +486,11 @@
    "doc": "Doc 8 - Bulletin No. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/09_Season%2010%20-%202023-24/06_R06%20Misano/008_Doc%208%20-%20Bulletin%20No.%202.pdf",
+   "roundsNamed": [
+    6,
+    7
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -404,6 +507,10 @@
    "doc": "Doc 6 - Bulletin No. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/09_Season%2010%20-%202023-24/08_R08%20Monaco/006_Doc%206%20-%20Bulletin%20No.%202.pdf",
+   "roundsNamed": [
+    8
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -420,6 +527,10 @@
    "doc": "Doc 11 - Bulletin No. 2 AMENDED",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/09_Season%2010%20-%202023-24/09_R09%20Berlin/011_Doc%2011%20-%20Bulletin%20No.%202%20AMENDED.pdf",
+   "roundsNamed": [
+    9
+   ],
+   "label": "assumption (double-header split: documents naming this round disagree)",
    "agreesWithEventNote": false
   },
   {
@@ -436,6 +547,11 @@
    "doc": "Doc 12 - Bulletin No. 3 AMENDED",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/09_Season%2010%20-%202023-24/09_R09%20Berlin/012_Doc%2012%20-%20Bulletin%20No.%203%20AMENDED.pdf",
+   "roundsNamed": [
+    9,
+    10
+   ],
+   "label": "assumption (double-header split: documents naming this round disagree)",
    "agreesWithEventNote": false
   },
   {
@@ -452,6 +568,11 @@
    "doc": "Doc 7 - Bulletin No. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/09_Season%2010%20-%202023-24/11_R11%20Shanghai/007_Doc%207%20-%20Bulletin%20No.%202.pdf",
+   "roundsNamed": [
+    11,
+    12
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -468,6 +589,11 @@
    "doc": "Doc 7 - Bulletin No. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/09_Season%2010%20-%202023-24/11_R11%20Shanghai/007_Doc%207%20-%20Bulletin%20No.%202.pdf",
+   "roundsNamed": [
+    11,
+    12
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -484,6 +610,11 @@
    "doc": "Doc 9 - Bulletin No. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/09_Season%2010%20-%202023-24/13_R13%20Portland/009_Doc%209%20-%20Bulletin%20No.%202.pdf",
+   "roundsNamed": [
+    13,
+    14
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -500,6 +631,11 @@
    "doc": "Doc 9 - Bulletin No. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/09_Season%2010%20-%202023-24/13_R13%20Portland/009_Doc%209%20-%20Bulletin%20No.%202.pdf",
+   "roundsNamed": [
+    13,
+    14
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -516,6 +652,11 @@
    "doc": "Doc 8 - Bulletin No. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/09_Season%2010%20-%202023-24/15_R15%20London/008_Doc%208%20-%20Bulletin%20No.%202.pdf",
+   "roundsNamed": [
+    15,
+    16
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -532,6 +673,11 @@
    "doc": "Doc 8 - Bulletin No. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/09_Season%2010%20-%202023-24/15_R15%20London/008_Doc%208%20-%20Bulletin%20No.%202.pdf",
+   "roundsNamed": [
+    15,
+    16
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -548,6 +694,10 @@
    "doc": "Doc 7 - Bulletin no. 3",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/10_Season%2011%20-%202024-25/01_R01%20Sao%20Paulo/007_Doc%207%20-%20Bulletin%20no.%203.pdf",
+   "roundsNamed": [
+    1
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -564,6 +714,10 @@
    "doc": "Doc 7 - Bulletin no. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/10_Season%2011%20-%202024-25/02_R02%20Mexico%20City/007_Doc%207%20-%20Bulletin%20no.%202.pdf",
+   "roundsNamed": [
+    2
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -580,6 +734,11 @@
    "doc": "Doc 8 - Bulletin no. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/10_Season%2011%20-%202024-25/03_R03%20Jeddah/008_Doc%208%20-%20Bulletin%20no.%202.pdf",
+   "roundsNamed": [
+    3,
+    4
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -596,6 +755,11 @@
    "doc": "Doc 8 - Bulletin no. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/10_Season%2011%20-%202024-25/03_R03%20Jeddah/008_Doc%208%20-%20Bulletin%20no.%202.pdf",
+   "roundsNamed": [
+    3,
+    4
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -612,6 +776,10 @@
    "doc": "Doc 7 - Bulletin no. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/10_Season%2011%20-%202024-25/05_R05%20Miami/007_Doc%207%20-%20Bulletin%20no.%202.pdf",
+   "roundsNamed": [
+    5
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -628,6 +796,11 @@
    "doc": "Doc 6 - Bulletin no. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/10_Season%2011%20-%202024-25/06_R06%20Monaco/006_Doc%206%20-%20Bulletin%20no.%202.pdf",
+   "roundsNamed": [
+    6,
+    7
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -644,6 +817,11 @@
    "doc": "Doc 6 - Bulletin no. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/10_Season%2011%20-%202024-25/06_R06%20Monaco/006_Doc%206%20-%20Bulletin%20no.%202.pdf",
+   "roundsNamed": [
+    6,
+    7
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -660,6 +838,11 @@
    "doc": "Doc 6 - Bulletin no. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/10_Season%2011%20-%202024-25/08_R08%20Tokyo/006_Doc%206%20-%20Bulletin%20no.%202.pdf",
+   "roundsNamed": [
+    8,
+    9
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -676,6 +859,11 @@
    "doc": "Doc 6 - Bulletin no. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/10_Season%2011%20-%202024-25/08_R08%20Tokyo/006_Doc%206%20-%20Bulletin%20no.%202.pdf",
+   "roundsNamed": [
+    8,
+    9
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -692,6 +880,11 @@
    "doc": "Doc 7 - Bulletin no. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/10_Season%2011%20-%202024-25/10_R10%20Shanghai/007_Doc%207%20-%20Bulletin%20no.%202.pdf",
+   "roundsNamed": [
+    10,
+    11
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -708,6 +901,11 @@
    "doc": "Doc 7 - Bulletin no. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/10_Season%2011%20-%202024-25/10_R10%20Shanghai/007_Doc%207%20-%20Bulletin%20no.%202.pdf",
+   "roundsNamed": [
+    10,
+    11
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -724,6 +922,10 @@
    "doc": "Doc 7 - Bulletin no. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/10_Season%2011%20-%202024-25/12_R12%20Jakarta/007_Doc%207%20-%20Bulletin%20no.%202.pdf",
+   "roundsNamed": [
+    12
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -740,6 +942,11 @@
    "doc": "Doc 7 - Bulletin no. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/10_Season%2011%20-%202024-25/13_R13%20Berlin/007_Doc%207%20-%20Bulletin%20no.%202.pdf",
+   "roundsNamed": [
+    13,
+    14
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -756,6 +963,11 @@
    "doc": "Doc 7 - Bulletin no. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/10_Season%2011%20-%202024-25/13_R13%20Berlin/007_Doc%207%20-%20Bulletin%20no.%202.pdf",
+   "roundsNamed": [
+    13,
+    14
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -772,6 +984,11 @@
    "doc": "Doc 7 - Bulletin no. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/10_Season%2011%20-%202024-25/15_R15%20London/007_Doc%207%20-%20Bulletin%20no.%202.pdf",
+   "roundsNamed": [
+    15,
+    16
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -788,6 +1005,11 @@
    "doc": "Doc 7 - Bulletin no. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/10_Season%2011%20-%202024-25/15_R15%20London/007_Doc%207%20-%20Bulletin%20no.%202.pdf",
+   "roundsNamed": [
+    15,
+    16
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -804,6 +1026,10 @@
    "doc": "Doc 9 - Bulletin no. 3",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/11_Season%2012%20-%202025-26/01_R01%20Sao%20Paulo/009_Doc%209%20-%20Bulletin%20no.%203.pdf",
+   "roundsNamed": [
+    1
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -820,6 +1046,10 @@
    "doc": "Doc 8 - Bulletin no. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/11_Season%2012%20-%202025-26/02_R02%20Mexico%20City/008_Doc%208%20-%20Bulletin%20no.%202.pdf",
+   "roundsNamed": [
+    2
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -836,6 +1066,10 @@
    "doc": "Doc 10 - Bulletin no. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/11_Season%2012%20-%202025-26/03_R03%20Miami/010_Doc%2010%20-%20Bulletin%20no.%202.pdf",
+   "roundsNamed": [
+    3
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -852,6 +1086,11 @@
    "doc": "Doc 7 - Bulletin no. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/11_Season%2012%20-%202025-26/04_R04%20Jeddah/007_Doc%207%20-%20Bulletin%20no.%202.pdf",
+   "roundsNamed": [
+    4,
+    5
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -868,6 +1107,11 @@
    "doc": "Doc 7 - Bulletin no. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/11_Season%2012%20-%202025-26/04_R04%20Jeddah/007_Doc%207%20-%20Bulletin%20no.%202.pdf",
+   "roundsNamed": [
+    4,
+    5
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -884,6 +1128,10 @@
    "doc": "Doc 6 - Bulletin no. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/11_Season%2012%20-%202025-26/06_R06%20Madrid/006_Doc%206%20-%20Bulletin%20no.%202.pdf",
+   "roundsNamed": [
+    6
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -900,6 +1148,11 @@
    "doc": "Doc 10 - Bulletin no. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/11_Season%2012%20-%202025-26/07_R07%20Berlin/010_Doc%2010%20-%20Bulletin%20no.%202.pdf",
+   "roundsNamed": [
+    7,
+    8
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -916,6 +1169,11 @@
    "doc": "Doc 10 - Bulletin no. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/11_Season%2012%20-%202025-26/07_R07%20Berlin/010_Doc%2010%20-%20Bulletin%20no.%202.pdf",
+   "roundsNamed": [
+    7,
+    8
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -932,6 +1190,11 @@
    "doc": "Doc 8 - Bulletin no. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/11_Season%2012%20-%202025-26/09_R09%20Monaco/008_Doc%208%20-%20Bulletin%20no.%202.pdf",
+   "roundsNamed": [
+    9,
+    10
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -948,6 +1211,11 @@
    "doc": "Doc 8 - Bulletin no. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/11_Season%2012%20-%202025-26/09_R09%20Monaco/008_Doc%208%20-%20Bulletin%20no.%202.pdf",
+   "roundsNamed": [
+    9,
+    10
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -964,6 +1232,10 @@
    "doc": "Doc 8 - Bulletin no. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/11_Season%2012%20-%202025-26/11_R11%20Sanya/008_Doc%208%20-%20Bulletin%20no.%202.pdf",
+   "roundsNamed": [
+    11
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -980,6 +1252,11 @@
    "doc": "Doc 8 - Bulletin no. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/11_Season%2012%20-%202025-26/12_R12%20Shanghai/008_Doc%208%20-%20Bulletin%20no.%202.pdf",
+   "roundsNamed": [
+    12,
+    13
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -996,6 +1273,11 @@
    "doc": "Doc 8 - Bulletin no. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/11_Season%2012%20-%202025-26/12_R12%20Shanghai/008_Doc%208%20-%20Bulletin%20no.%202.pdf",
+   "roundsNamed": [
+    12,
+    13
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -1012,6 +1294,11 @@
    "doc": "Doc 6 - Bulletin no. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/11_Season%2012%20-%202025-26/14_R14%20Tokyo/006_Doc%206%20-%20Bulletin%20no.%202.pdf",
+   "roundsNamed": [
+    14,
+    15
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -1028,6 +1315,11 @@
    "doc": "Doc 6 - Bulletin no. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/11_Season%2012%20-%202025-26/14_R14%20Tokyo/006_Doc%206%20-%20Bulletin%20no.%202.pdf",
+   "roundsNamed": [
+    14,
+    15
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -1044,6 +1336,11 @@
    "doc": "Doc 6 - Bulletin no. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/11_Season%2012%20-%202025-26/16_R16%20London/006_Doc%206%20-%20Bulletin%20no.%202.pdf",
+   "roundsNamed": [
+    16,
+    17
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   },
   {
@@ -1060,6 +1357,11 @@
    "doc": "Doc 6 - Bulletin no. 2",
    "kind": "bulletin",
    "url": "https://results.formulae.fia.com/api/getfile/formula-e/files/noticeboard/11_Season%2012%20-%202025-26/16_R16%20London/006_Doc%206%20-%20Bulletin%20no.%202.pdf",
+   "roundsNamed": [
+    16,
+    17
+   ],
+   "label": "document names this round",
    "agreesWithEventNote": true
   }
  ]
