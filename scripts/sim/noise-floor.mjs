@@ -174,7 +174,7 @@ const LAP_CLASS = (series, cls) => series === 'nls' ? (/^SP ?9/i.test(cls || '')
 export function lapFiles(files) {
   const ev = new Map();
   for (const f of files) for (const s of JSON.parse(gunzipSync(readFileSync(f))).sessions) {
-    if (!/practice|qualifying/.test(s.kind) || s.laps.some(l => l.rain)) continue;
+    if (!/practice|qualifying/.test(s.kind) || s.rain || s.laps.some(l => l.rain)) continue;
     const q = s.kind === 'qualifying', by = new Map();
     for (const l of s.laps) { const c = LAP_CLASS(s.series, l.cls); if (!c || l.pit || l.deleted || !Number.isFinite(l.y) || !/^(GF|GREEN|FF|FINISH)?$/i.test(l.flag || '')) continue; (by.get(c) || by.set(c, []).get(c)).push(l); }
     for (const [c, L] of by) { const w = withinDriverV2(L.map(l => ({who: l.who + (q ? '' : '|' + l.stint), t: l.clock, k: q ? 0 : l.k, y: l.y}))); if (!w) continue;

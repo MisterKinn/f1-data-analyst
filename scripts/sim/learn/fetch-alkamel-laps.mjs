@@ -58,11 +58,19 @@ export function sessionFile(path) {
   if (i < 1) return null;
   return {champ: p[i - 1], session: p[i], hour: +(p.slice(i + 1, -1).join(' ').match(/\d+/)?.[0] || 0), file: p.at(-1)};
 }
+// every analysis row as a lap for σ_meas: stint = pit-ins before it + 1, lap in stint, pit-in / pit-out laps marked
+export function lapRows(a) {
+  const byCar = new Map(); for (const r of a) { const n = String(r.NUMBER ?? '').trim(); if (n) (byCar.get(n) || byCar.set(n, []).get(n)).push(r); }
+  const out = []; for (const [car, rows] of byCar) { rows.sort((x, y) => +x.LAP_NUMBER - +y.LAP_NUMBER); let stint = 1, k = 0;
+    rows.forEach((r, i) => { const pitIn = !!r.CROSSING_FINISH_LINE_IN_PIT, pitOut = i === 0 || !!rows[i - 1].CROSSING_FINISH_LINE_IN_PIT; if (i > 0 && pitOut) { stint++; k = 0; } k++;
+      out.push({who: car + '|' + (r.DRIVER_NUMBER || r.DRIVER_NAME || ''), cls: r.CLASS || null, clock: secs(r.ELAPSED), stint, k, y: secs(r.LAP_TIME), pit: pitIn || pitOut, flag: r.FLAG_AT_FL || null}); }); }
+  return out;
+}
 const csvLinks = (html, base) => [...new Set([...html.matchAll(/href=["']([^"']+\.CSV)["']/gi)].map(m => new URL(m[1].replace(/&amp;/g, '&'), base).href))];
 
 if (process.argv[1]?.endsWith('fetch-alkamel-laps.mjs')) {
   const years = (process.argv.find(a => a.startsWith('--years='))?.slice(8) || '2023,2024,2025,2026').split(',');
-  const out = [], log = [], lapsOut = [], LAPS_OUT = process.env.ALKAMEL_LAPS_OUT, {typedLaps} = await import('./alkamel-full-laps.mjs');
+  const out = [], log = [], lapsOut = [], LAPS_OUT = process.env.ALKAMEL_LAPS_OUT;
   // every (season, event, CSV links) of a site, from its index pages or its JSON manifests
   async function* eventsOf(s) {
     if (s.manifest) {
@@ -91,7 +99,7 @@ if (process.argv[1]?.endsWith('fetch-alkamel-laps.mjs')) {
           for (const c of rows) out.push({site, season: +season.slice(-4), event: event.replace(/^\d+_/, ''), championship: champ.replace(/^\d+_/, ''), session: name, kind: sessionKind(name), start: session.slice(0, 12), ...c});
           // step 36: every lap of the session for σ_meas (ALKAMEL_LAPS_OUT; raw laps, kept out of git: draft release only)
           if (LAPS_OUT) lapsOut.push({series: site, season: +season.slice(-4), event: event.replace(/^\d+_/, ''), session: name, kind: sessionKind(name),
-            laps: typedLaps(a, w).map(l => ({who: l.car + '|' + (l.driverNumber ?? l.driver), cls: l.cls, clock: l.elapsed, stint: l.stint, k: l.stintLap, y: l.time, pit: l.pitIn || l.pitOut, flag: l.flag, rain: l.rain}))});
+            laps: lapRows(a), rain: w.some(r => num(r.RAIN) > 0)});
           log.push(`${season} ${event} ${champ} ${name}: ${rows.length} cars`);
         }
       }
