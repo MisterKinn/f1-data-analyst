@@ -296,6 +296,10 @@ export function lapsimKernel() {
     // per-point values of the passes that do not depend on speed (step 1: forward(), worked out once with the same operations)
     const clF = new Float64Array(N1), cdF = new Float64Array(N1), muXF = new Float64Array(N1);
     for (let i = 0; i < n; i++) { const low = lowAt(i); clF[i] = clAt(i, low); cdF[i] = cdAt(i, low); muXF[i] = muAt(i) * (t.muXTrac / t.muY0); }
+    // traction limit: rear axle, or four tyres when the front drives; car.frontMaxW caps the front axle's share (FE Gen3 Evo duels,
+    // SR 2024-25 33.6: front powertrain ≤ 50 kW; step 35 D, flag LAPSIM_FE_AXLE). Unset = four-tyre limit, as before.
+    const rearTrac = (muX, nRear) => muX * nRear / Math.max(0.2, 1 - muX * t.hOverWb);
+    const awdTrac = (awd, muX, N, nRear, v) => !awd ? rearTrac(muX, nRear) : car.frontMaxW == null ? muX * N : Math.min(muX * N, rearTrac(muX, nRear) + car.frontMaxW / Math.max(v, 0.5));
     // 2) Backward pass (braking): independent of the ERS strategy, so computed once.
     //    Straight Mode is closed under braking: corner-mode aero.
     const brakeAcc = (v, i) => {
@@ -412,7 +416,7 @@ export function lapsimKernel() {
           const muX = muXF[i] * pureCap(i, N) / N;
           // LMH hybrids also drive the front axle above a set speed (awdAboveKph): all four tyres
           const awd = t.awdAbove != null && vi > t.awdAbove;
-          const fTrac = (awd ? muX * N : muX * nRear / Math.max(0.2, 1 - muX * t.hOverWb)) * ellipse(vi, i);
+          const fTrac = awdTrac(awd, muX, N, nRear, vi) * ellipse(vi, i);
           let fDrive = Math.min(fPow, fTrac);
           powerLimited[i] = fPow <= fTrac ? 1 : 0;
           harv[i] = 0;
@@ -481,7 +485,7 @@ export function lapsimKernel() {
       const nRear = t.rearStatic * (kv ? N - L : mg * cosG[i]) + t.rearAero * L;
       const muX = muXF[i] * pureCap(i, N) / N;
       const awd = t.awdAbove != null && vv > t.awdAbove;
-      dEl = clF[i] === car.clA ? ellN(vv, i, L, N) : ellipse(vv, i); const fTrac = (awd ? muX * N : muX * nRear / Math.max(0.2, 1 - muX * t.hOverWb)) * dEl;
+      dEl = clF[i] === car.clA ? ellN(vv, i, L, N) : ellipse(vv, i); const fTrac = awdTrac(awd, muX, N, nRear, vv) * dEl;
       let fDrive = Math.min(fPow, fTrac); dPl = fPow <= fTrac ? 1 : 0; dHarv = 0;
       if (throttleHarvest) {
         const spare = pI * etaD - fDrive * vv;
