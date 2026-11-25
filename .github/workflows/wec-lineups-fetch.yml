@@ -1,0 +1,26 @@
+name: WEC line-ups for driver ratings (step 34, data fix)
+
+# Al Kamel classification + analysis files of WEC events the tobi/imsa_data archive lacks (scripts/sim/learn/fetch-wec-lineups.mjs).
+# The session cannot reach Al Kamel, so this runs here. Output: release asset (prerelease data-wec-lineups-<run>) + artifact; no commit.
+on:
+  push:
+    branches: ['data/driver-ratings-*']
+    paths: ['.github/workflows/wec-lineups-fetch.yml', 'scripts/sim/learn/fetch-wec-lineups.mjs']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env: {GH_TOKEN: '${{ github.token }}'}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - run: node scripts/sim/learn/fetch-wec-lineups.mjs 2026 interlagos,austin,catalunya,monza wec-2026-lineups.json | tee -a "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with: {name: wec-2026-lineups, path: wec-2026-lineups.json, retention-days: 30}
+      - run: gh release create "data-wec-lineups-${{ github.run_id }}" -R ${{ github.repository }} --prerelease --title "WEC 2026 line-ups (run ${{ github.run_id }})" --notes "fetch-wec-lineups.mjs, Al Kamel WEC manifest 2026" wec-2026-lineups.json
