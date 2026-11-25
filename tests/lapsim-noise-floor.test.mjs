@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtempSync, mkdirSync, writeFileSync} from 'node:fs';
+import {mkdtempSync, mkdirSync, writeFileSync, readFileSync} from "node:fs";
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
 import {withinDriver, robustSd, pairSigma, summary, f1} from '../scripts/sim/noise-floor.mjs';
@@ -46,7 +46,7 @@ test('σ_meas v2: lap-in-stint and evolution are removed before the spread; laps
   assert.equal(w.laps, 18); // the slow lap is outside 101.5 % after the correction
   const s = robustSd(w.res); assert.ok(s > 0.03 && s < 0.1, `σ ${s}`);
   assert.equal(withinDriverV2(L.filter(l => l.who !== 'C')), null);
-  assert.equal(checkAlkamel('/nonexistent', 'scripts/sim/data/learn/alkamel-full-laps-manifest.json').ok, 0);
+  { const c = checkAlkamel('/nonexistent', 'scripts/sim/data/learn/alkamel-full-laps-manifest.json'); assert.equal(c.ok, 0); assert.equal(c.bad.length, 0); assert.equal(c.missing.length, c.files); }
 });
 
 test('per-lap files (NLS, Al Kamel USAC): qualifying first, pit and deleted laps out, SP9 only for NLS', async () => {
@@ -57,4 +57,11 @@ test('per-lap files (NLS, Al Kamel USAC): qualifying first, pit and deleted laps
   writeFileSync(f, gzipSync(JSON.stringify({sessions: [{series: 'nls', season: 2026, event: 'X', session: 'Qualifying', kind: 'qualifying', laps}]})));
   const r = lapFiles([f]);
   assert.deepEqual(Object.keys(r).filter(k => k !== 'note'), ['nls gt3 v2']); assert.equal(r['nls gt3 v2'].source.qualifying, 1);
+});
+
+test('Al Kamel content check: a changed file is "bad" (job fails), a file the copy does not hold is "missing" (listed, not measured)', async () => {
+  const {checkAlkamel} = await import('../scripts/sim/noise-floor.mjs'), {gzipSync} = await import('node:zlib'), {dirname} = await import('node:path');
+  const M = JSON.parse(readFileSync('scripts/sim/data/learn/alkamel-full-laps-manifest.json', 'utf8')).files, store = mkdtempSync(join(tmpdir(), 'ak-'));
+  mkdirSync(dirname(join(store, M[0].path)), {recursive: true}); writeFileSync(join(store, M[0].path), gzipSync('not the file'));
+  const c = checkAlkamel(store); assert.deepEqual(c.bad, [M[0].path]); assert.equal(c.missing.length, M.length - 1); assert.equal(c.ok, 0);
 });
