@@ -19,6 +19,8 @@ Before any change to the lap simulator physics model or its calibration (`worker
 - Inputs come only from the release assets pinned in `.github/lapsim-snapshot.json` (sha256 + SHA256SUMS). A local workspace, a
   patch or an Actions artifact is not an input; a build that is still only an artifact (2-day `lapsim-prep`) is pinned with the
   workflow's `prep_run` input or `pin_runs` before it expires. Changing a pin is a reviewed data change.
+- Endurance / GT3 learning (fit-endurance.mjs: GT3 SRO, IMSA GTD, WEC LMGT3, DTM records, Nürburgring) runs in the pipeline's `endurance` job on the
+  tables pinned in `.github/lapsim-snapshot.json` (`endurance`), and lap-time noise floors σ_meas in its `noise` job (step 36, report-only).
 - The fit in the pipeline is `lapsim-data.yml` in pinned mode (same code path as production, no network reads, no commit). Gate
   branches may still use `lapsim-data.yml` directly; their numbers are diagnostics until a pipeline run reproduces them.
 

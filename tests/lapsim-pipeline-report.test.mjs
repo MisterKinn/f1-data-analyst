@@ -17,3 +17,9 @@ test('pipeline report: a moved car parameter and held-out row are listed', () =>
   assert.deepEqual(d.changedCarParams.map(x => x.where + ' ' + x.param), [`f1 ${y} cdA`]);
   assert.equal(d.changedRows.length, 1);
 });
+
+test('pipeline report (step 36): endurance outputs compared without the date field', async () => {
+  const {jsonDiff} = await import('../scripts/sim/pipeline-report.mjs');
+  assert.deepEqual(jsonDiff({generated: '2026-11-21', a: {b: 1, c: [1, 2]}}, {generated: '2026-11-25', a: {b: 1, c: [1, 2]}}), []);
+  assert.deepEqual(jsonDiff({a: {b: 1, c: [1, 2]}}, {a: {b: 2, c: [1, 3], d: 0}}).map(x => x.path), ['a.b', 'a.c.1', 'a.d']);
+});

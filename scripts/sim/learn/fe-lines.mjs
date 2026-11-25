@@ -44,7 +44,19 @@ export function orientLine(line, map, lengthM) {
   const reversed = back > fwd; if (reversed) P = [...P].reverse();
   const w = map.words.find(x => x.t === 'FINISH' || x.t === 'START/FINISH') || map.words.find(x => /^finish$/i.test(x.t)) || map.words.find(x => x.t === 'START');
   let start = 'first point of the map line (not verified)', startVerified = false;
-  if (w) { const q = near(P, w), off = Math.round(q.d * scale); P = [...P.slice(q.k), ...P.slice(0, q.k)];
+  // step 35 (data fix): the lap starts at the foot of the perpendicular from the label to the line, not at the nearest vertex (a straight
+  // drawn with two vertices put the start up to ~130 m off, e.g. London S12)
+  if (w) { const q = near(P, w), lx = w.x, ly = w.y - w.h / 2, n = P.length; let best = {d: q.d, i: q.k, t: 0};
+    for (const i of [(q.k - 1 + n) % n, q.k]) { const a = P[i], b = P[(i + 1) % n], dx = b[0] - a[0], dy = b[1] - a[1], L2 = dx * dx + dy * dy; if (!L2) continue;
+      const t = Math.max(0, Math.min(1, ((lx - a[0]) * dx + (ly - a[1]) * dy) / L2)), d = Math.hypot(a[0] + t * dx - lx, a[1] + t * dy - ly); if (d < best.d) best = {d, i, t}; }
+    const a = P[best.i], b = P[(best.i + 1) % n], F = [a[0] + best.t * (b[0] - a[0]), a[1] + best.t * (b[1] - a[1])], off = Math.round(best.d * scale);
+    P = best.t > 0 && best.t < 1 ? [F, ...P.slice(best.i + 1), ...P.slice(0, best.i + 1)] : best.t >= 1 ? [...P.slice(best.i + 1), ...P.slice(0, best.i + 1)] : [...P.slice(best.i), ...P.slice(0, best.i)];
     start = `"${w.t}" label on the official circuit map, ${off} m from the line`; startVerified = off <= 60 ? true : 'label far from the line'; }
   return {line: {...line, pts: P}, reversed, turnVotes: {fwd, back}, start, startVerified};
 }
+// Arc length (map points) from P[0] to the foot of the perpendicular from label w to the closed polyline P, and that distance.
+export function footArc(P, w) { const lx = w.x, ly = w.y - w.h / 2, n = P.length; let best = {d: Infinity, s: 0}, s = 0;
+  for (let i = 0; i < n; i++) { const a = P[i], b = P[(i + 1) % n], dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy);
+    if (L) { const t = Math.max(0, Math.min(1, ((lx - a[0]) * dx + (ly - a[1]) * dy) / (L * L))), d = Math.hypot(a[0] + t * dx - lx, a[1] + t * dy - ly); if (d < best.d) best = {d, s: s + t * L}; }
+    s += L; }
+  return {...best, total: s}; }
