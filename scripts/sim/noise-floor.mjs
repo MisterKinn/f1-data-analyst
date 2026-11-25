@@ -169,7 +169,7 @@ export function idealProxy(dir = 'scripts/sim/data/learn') {
 
 // ---------- per-lap files of other series (step 36 round 3: NLS wige PDFs, Al Kamel USAC = SRO GT World Challenge America / IGTC,
 // Asian LMS): {sessions: [{series, season, event, session, kind, laps: [{who, cls, clock, stint, k, y, pit, deleted, flag, rain}]}]} ----------
-const LAP_CLASS = (series, cls) => series === 'nls' ? (/^SP ?9/i.test(cls || '') ? 'gt3' : null)
+const LAP_CLASS = (series, cls) => series === 'nls' || series === 'nur' ? (/SP ?9/i.test(cls || '') ? 'gt3' : null)
   : /GT4|TCX|GTC|CUP|LMP3/i.test(cls || '') ? null : /LMP2/i.test(cls || '') ? 'lmp2' : 'gt3';
 export function lapFiles(files) {
   const ev = new Map();

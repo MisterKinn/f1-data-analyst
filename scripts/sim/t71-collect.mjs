@@ -104,7 +104,7 @@ async function collect() {
   const EVO = process.env.T71_EVO === '1', KEYS = process.env.T71_KEYS ? process.env.T71_KEYS.split(',') : null;
   const pick = all.map(r => ({...r, key: Object.keys(SERIES).find(k => SERIES[k].test(r.series))}))
     .map(r => ({...r, kind: kind(r.description || '') || (EVO && r.key === 'wec' && /practice|\bfp\d/i.test(r.description || '') ? 'P' : null)}))
-    .filter(r => r.key && r.kind && r.startTime >= Date.UTC(2018, 0, 1) / 1e3 && (!KEYS || KEYS.includes(r.key)));
+    .filter(r => r.key && r.kind && r.startTime >= Date.UTC(+(process.env.T71_FROM || 2018), 0, 1) / 1e3 && (!KEYS || KEYS.includes(r.key)));
   const only = process.env.T71_MATCH ? new RegExp(process.env.T71_MATCH, 'i') : null;
   const mine = pick.filter((r, i) => only ? only.test(r.description) : i % shards === shard);
   mkdirSync(join(CACHE, 'sessions'), {recursive: true});
@@ -117,6 +117,10 @@ async function collect() {
       writeFileSync(zip, Buffer.from(await (await get(r.filename)).arrayBuffer()));
       const analysis = r.analysisFilename ? await (await get(r.analysisFilename)).json().catch(() => null) : null;
       const rep = readReplay(zip);
+      // step 36: every qualifying lap for σ_meas (T71_LAPS_OUT dir; raw laps, never committed)
+      if (process.env.T71_LAPS_OUT && r.kind === 'Q') { mkdirSync(process.env.T71_LAPS_OUT, {recursive: true});
+        writeFileSync(join(process.env.T71_LAPS_OUT, id(r) + '.json'), JSON.stringify({series: r.key, season: new Date(r.startTime * 1e3).getUTCFullYear(), event: r.description, session: r.description, kind: 'qualifying',
+          laps: rep.laps.map(l => ({who: l.car + '|' + (l.driver ?? ''), cls: l.cls, clock: l.t, stint: 1, k: 0, y: l.time, pit: l.pit, flag: l.flag}))})); }
       writeFileSync(f, JSON.stringify({key: r.key, series: r.series, description: r.description, kind: r.kind, start: r.startTime,
         duration: r.duration, cols: rep.manifest.colSpec, weather: weatherOf(rep.manifest.trackDataSpec, rep.weather),
         frameLaps: rep.laps.length, endFlag: rep.endFlag, analysis: !!analysis, cars: summarise(rep, analysis)}));
