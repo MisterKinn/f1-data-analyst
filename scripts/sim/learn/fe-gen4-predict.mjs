@@ -32,5 +32,14 @@ for (const [id, t] of Object.entries(FE.tracks)) { if (!ALL[id] || !t.seasons?.s
   out.tracks[id] = {venue: t.venue, lengthM: t.lengthM, predS: r(p), bandS: [r(p * (1 + bLo / 100)), r(p * (1 + bHi / 100))], bandPct: [r(bLo, 2), r(bHi, 2)],
     priorPct: Object.fromEntries(Object.entries(pr).map(([k, v]) => [k, r(v, 2)])), gen3evoBestS: t.real?.['fe-gen3evo']?.lap ?? null,
     gainVsGen3EvoPct: t.real?.['fe-gen3evo']?.lap ? r((p / t.real['fe-gen3evo'].lap - 1) * 100, 2) : null}; }
+// Jarama both ways (central 19:00): the only Gen3 Evo row (Madrid 2026 qualifying, cold) stays in the fit; shown with and without its T.
+// The official Gen4 test best (83.838 s, Al Kamel S13 test) is a check, not a target.
+if (out.tracks.jarama) { const j = out.tracks.jarama, T = FE.tracks.jarama.T || 0, noT = j.predS / Math.exp(T);
+  out.jaramaBothWays = {withMadrid2026T: {T, predS: j.predS, bandS: j.bandS}, withoutT: {T: 0, predS: r(noT), bandS: [r(noT * (1 + j.bandPct[0] / 100)), r(noT * (1 + j.bandPct[1] / 100))]},
+    officialTestBestS: 83.838, note: 'check only; label: the with-T value is the model, the without-T value is a sensitivity'}; }
+// Race pace (central 19:00): primary = constant ratio (Gen3 Evo dry races, n 24, mean race lap / pole 1.0826, leave-one-race-out RMS 2.68 pp,
+// 90 % −4.68 … +4.35 pp; assumption: the ratio carries to Gen4). The physics energy model (fe-race-energy.mjs) stays report-only until it beats this.
+const RATIO = 1.0826, RB = [-4.68, 4.35];
+for (const t of Object.values(out.tracks)) t.racePace = {method: 'constant ratio (primary)', lapS: r(t.predS * RATIO), bandS: [r(t.predS * (RATIO + RB[0] / 100)), r(t.predS * (RATIO + RB[1] / 100))]};
 if (OUTF) writeFileSync(OUTF, JSON.stringify(out, null, 1));
 console.log(JSON.stringify(out, null, 1));

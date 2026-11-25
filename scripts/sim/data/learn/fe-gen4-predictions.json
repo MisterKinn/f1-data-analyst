@@ -38,7 +38,15 @@
     "aeroTender": 1.47
    },
    "gen3evoBestS": 66.925,
-   "gainVsGen3EvoPct": -7.78
+   "gainVsGen3EvoPct": -7.78,
+   "racePace": {
+    "method": "constant ratio (primary)",
+    "lapS": 66.818,
+    "bandS": [
+     63.93,
+     69.503
+    ]
+   }
   },
   "fe-tokyo": {
    "venue": "Tokyo",
@@ -58,7 +66,15 @@
     "aeroTender": 1.75
    },
    "gen3evoBestS": 71.863,
-   "gainVsGen3EvoPct": -6.89
+   "gainVsGen3EvoPct": -6.89,
+   "racePace": {
+    "method": "constant ratio (primary)",
+    "lapS": 72.439,
+    "bandS": [
+     69.307,
+     75.35
+    ]
+   }
   },
   "fe-shanghai": {
    "venue": "Shanghai",
@@ -78,7 +94,15 @@
     "aeroTender": 2.47
    },
    "gen3evoBestS": 68.234,
-   "gainVsGen3EvoPct": -8.28
+   "gainVsGen3EvoPct": -8.28,
+   "racePace": {
+    "method": "constant ratio (primary)",
+    "lapS": 67.751,
+    "bandS": [
+     64.822,
+     70.474
+    ]
+   }
   },
   "fe-sanya": {
    "venue": "Sanya",
@@ -98,7 +122,15 @@
     "aeroTender": 1.13
    },
    "gen3evoBestS": 65.095,
-   "gainVsGen3EvoPct": -9.03
+   "gainVsGen3EvoPct": -9.03,
+   "racePace": {
+    "method": "constant ratio (primary)",
+    "lapS": 64.109,
+    "bandS": [
+     61.338,
+     66.685
+    ]
+   }
   },
   "monte-carlo": {
    "venue": "Monaco",
@@ -118,7 +150,15 @@
     "aeroTender": 2.25
    },
    "gen3evoBestS": 86.217,
-   "gainVsGen3EvoPct": -9.51
+   "gainVsGen3EvoPct": -9.51,
+   "racePace": {
+    "method": "constant ratio (primary)",
+    "lapS": 84.46,
+    "bandS": [
+     80.809,
+     87.854
+    ]
+   }
   },
   "fe-berlin": {
    "venue": "Berlin",
@@ -138,7 +178,15 @@
     "aeroTender": 1.09
    },
    "gen3evoBestS": 57.357,
-   "gainVsGen3EvoPct": -8.15
+   "gainVsGen3EvoPct": -8.15,
+   "racePace": {
+    "method": "constant ratio (primary)",
+    "lapS": 57.036,
+    "bandS": [
+     54.57,
+     59.327
+    ]
+   }
   },
   "jarama": {
    "venue": "Jarama",
@@ -158,7 +206,15 @@
     "aeroTender": 2.12
    },
    "gen3evoBestS": 89.403,
-   "gainVsGen3EvoPct": -1.62
+   "gainVsGen3EvoPct": -1.62,
+   "racePace": {
+    "method": "constant ratio (primary)",
+    "lapS": 95.221,
+    "bandS": [
+     91.105,
+     99.047
+    ]
+   }
   },
   "fe-jeddah": {
    "venue": "Jeddah",
@@ -178,7 +234,15 @@
     "aeroTender": 1.39
    },
    "gen3evoBestS": 74.804,
-   "gainVsGen3EvoPct": -8.29
+   "gainVsGen3EvoPct": -8.29,
+   "racePace": {
+    "method": "constant ratio (primary)",
+    "lapS": 74.271,
+    "bandS": [
+     71.06,
+     77.255
+    ]
+   }
   },
   "fe-miami": {
    "venue": "Miami",
@@ -198,7 +262,15 @@
     "aeroTender": 1.46
    },
    "gen3evoBestS": 55.503,
-   "gainVsGen3EvoPct": -8.77
+   "gainVsGen3EvoPct": -8.77,
+   "racePace": {
+    "method": "constant ratio (primary)",
+    "lapS": 54.819,
+    "bandS": [
+     52.449,
+     57.021
+    ]
+   }
   },
   "fe-mexico": {
    "venue": "Mexico",
@@ -218,7 +290,15 @@
     "aeroTender": 1.93
    },
    "gen3evoBestS": 65.049,
-   "gainVsGen3EvoPct": -8.41
+   "gainVsGen3EvoPct": -8.41,
+   "racePace": {
+    "method": "constant ratio (primary)",
+    "lapS": 64.503,
+    "bandS": [
+     61.715,
+     67.095
+    ]
+   }
   },
   "fe-sao-paulo": {
    "venue": "São Paulo",
@@ -238,7 +318,15 @@
     "aeroTender": 0.47
    },
    "gen3evoBestS": 69.617,
-   "gainVsGen3EvoPct": -8.29
+   "gainVsGen3EvoPct": -8.29,
+   "racePace": {
+    "method": "constant ratio (primary)",
+    "lapS": 69.122,
+    "bandS": [
+     66.134,
+     71.899
+    ]
+   }
   },
   "fe-valencia": {
    "venue": "Valencia",
@@ -258,7 +346,15 @@
     "aeroTender": 1.54
    },
    "gen3evoBestS": 81.493,
-   "gainVsGen3EvoPct": -7.44
+   "gainVsGen3EvoPct": -7.44,
+   "racePace": {
+    "method": "constant ratio (primary)",
+    "lapS": 81.663,
+    "bandS": [
+     78.132,
+     84.944
+    ]
+   }
   },
   "fe-jakarta": {
    "venue": "Jakarta",
@@ -278,7 +374,15 @@
     "aeroTender": 1.81
    },
    "gen3evoBestS": 66.05,
-   "gainVsGen3EvoPct": -9
+   "gainVsGen3EvoPct": -9,
+   "racePace": {
+    "method": "constant ratio (primary)",
+    "lapS": 65.074,
+    "bandS": [
+     62.261,
+     67.689
+    ]
+   }
   },
   "fe-miami-2025": {
    "venue": "Miami",
@@ -298,7 +402,15 @@
     "aeroTender": 1.66
    },
    "gen3evoBestS": 83,
-   "gainVsGen3EvoPct": -9.12
+   "gainVsGen3EvoPct": -9.12,
+   "racePace": {
+    "method": "constant ratio (primary)",
+    "lapS": 81.658,
+    "bandS": [
+     78.128,
+     84.939
+    ]
+   }
   },
   "fe-mexico-2023": {
    "venue": "Mexico",
@@ -318,7 +430,15 @@
     "aeroTender": 1.94
    },
    "gen3evoBestS": 70.739,
-   "gainVsGen3EvoPct": -9.33
+   "gainVsGen3EvoPct": -9.33,
+   "racePace": {
+    "method": "constant ratio (primary)",
+    "lapS": 69.44,
+    "bandS": [
+     66.438,
+     72.23
+    ]
+   }
   },
   "jarama-2025": {
    "venue": "Jarama",
@@ -338,7 +458,35 @@
     "aeroTender": 1.84
    },
    "gen3evoBestS": 87.461,
-   "gainVsGen3EvoPct": -8.49
+   "gainVsGen3EvoPct": -8.49,
+   "racePace": {
+    "method": "constant ratio (primary)",
+    "lapS": 86.645,
+    "bandS": [
+     82.899,
+     90.126
+    ]
+   }
   }
+ },
+ "jaramaBothWays": {
+  "withMadrid2026T": {
+   "T": 0.0303,
+   "predS": 87.956,
+   "bandS": [
+    85.078,
+    91.807
+   ]
+  },
+  "withoutT": {
+   "T": 0,
+   "predS": 85.331,
+   "bandS": [
+    82.541,
+    89.068
+   ]
+  },
+  "officialTestBestS": 83.838,
+  "note": "check only; label: the with-T value is the model, the without-T value is a sensitivity"
  }
 }
