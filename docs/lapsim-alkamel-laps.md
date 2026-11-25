@@ -50,7 +50,7 @@ session); deleted laps (track limits) are not marked, use `LAP_IMPROVEMENT` logi
 Written by the fetch script after every run.
 
 <!-- coverage:start -->
-698 files (manifest: scripts/sim/data/learn/alkamel-full-laps-manifest.json).
+912 files (manifest: scripts/sim/data/learn/alkamel-full-laps-manifest.json).
 
 | Season | Series | Event | Class | Sessions | Race cars | Race file rows (all classes) | Weather |
 |---|---|---|---|---|---|---|---|
@@ -74,11 +74,51 @@ Written by the fetch script after every run.
 | 2023 | elms | SPA FRANCORCHAMPS | LMP2 | 4 | 7 | 3158 | yes |
 | 2023 | elms | SPA FRANCORCHAMPS | LMP2 Pro/Am | 5 | 10 | 3158 | yes |
 | 2023 | elms | SPA FRANCORCHAMPS | LMP3 | 5 | 11 | 3158 | yes |
+| 2023 | imsa | Canadian Tire Motorsport Park | GTD | 4 | – | – | yes |
+| 2023 | imsa | Canadian Tire Motorsport Park | GTDPRO | 4 | – | – | yes |
+| 2023 | imsa | Canadian Tire Motorsport Park | GTP | 4 | – | – | yes |
+| 2023 | imsa | Canadian Tire Motorsport Park | LMP3 | 4 | – | – | yes |
 | 2023 | imsa | Daytona International Speedway | GTD | 5 | 23 | 39736 | yes |
 | 2023 | imsa | Daytona International Speedway | GTDPRO | 5 | 10 | 39736 | yes |
 | 2023 | imsa | Daytona International Speedway | GTP | 6 | 9 | 39736 | yes |
 | 2023 | imsa | Daytona International Speedway | LMP2 | 5 | 10 | 39736 | yes |
 | 2023 | imsa | Daytona International Speedway | LMP3 | 5 | 9 | 39736 | yes |
+| 2023 | imsa | Indianapolis Motor Speedway RC | GTD | 4 | – | – | yes |
+| 2023 | imsa | Indianapolis Motor Speedway RC | GTDPRO | 4 | – | – | yes |
+| 2023 | imsa | Indianapolis Motor Speedway RC | GTP | 4 | – | – | yes |
+| 2023 | imsa | Indianapolis Motor Speedway RC | LMP2 | 4 | – | – | yes |
+| 2023 | imsa | Indianapolis Motor Speedway RC | LMP3 | 4 | – | – | yes |
+| 2023 | imsa | Lime Rock Park | GTD | 3 | – | – | yes |
+| 2023 | imsa | Lime Rock Park | GTDPRO | 3 | – | – | yes |
+| 2023 | imsa | Long Beach Street Circuit | GTD | 3 | – | – | yes |
+| 2023 | imsa | Long Beach Street Circuit | GTDPRO | 3 | – | – | yes |
+| 2023 | imsa | Long Beach Street Circuit | GTP | 3 | – | – | yes |
+| 2023 | imsa | Road America | GTD | 4 | – | – | yes |
+| 2023 | imsa | Road America | GTDPRO | 4 | – | – | yes |
+| 2023 | imsa | Road America | GTP | 4 | – | – | yes |
+| 2023 | imsa | Road America | LMP2 | 4 | – | – | yes |
+| 2023 | imsa | Road America | LMP3 | 4 | – | – | yes |
+| 2023 | imsa | Road Atlanta | GTD | 5 | – | – | yes |
+| 2023 | imsa | Road Atlanta | GTDPRO | 5 | – | – | yes |
+| 2023 | imsa | Road Atlanta | GTP | 5 | – | – | yes |
+| 2023 | imsa | Road Atlanta | LMP2 | 5 | – | – | yes |
+| 2023 | imsa | Road Atlanta | LMP3 | 5 | – | – | yes |
+| 2023 | imsa | Sebring International Raceway | GTD | 6 | – | – | yes |
+| 2023 | imsa | Sebring International Raceway | GTDPRO | 6 | – | – | yes |
+| 2023 | imsa | Sebring International Raceway | GTP | 6 | – | – | yes |
+| 2023 | imsa | Sebring International Raceway | LMP2 | 6 | – | – | yes |
+| 2023 | imsa | Sebring International Raceway | LMP3 | 6 | – | – | yes |
+| 2023 | imsa | VIRginia International Raceway | GTD | 4 | – | – | yes |
+| 2023 | imsa | VIRginia International Raceway | GTDPRO | 4 | – | – | yes |
+| 2023 | imsa | Watkins Glen International | GTD | 4 | – | – | yes |
+| 2023 | imsa | Watkins Glen International | GTDPRO | 4 | – | – | yes |
+| 2023 | imsa | Watkins Glen International | GTP | 3 | – | – | yes |
+| 2023 | imsa | Watkins Glen International | LMP2 | 4 | – | – | yes |
+| 2023 | imsa | Watkins Glen International | LMP3 | 4 | – | – | yes |
+| 2023 | imsa | Weathertech Raceway Laguna Seca | GTD | 4 | – | – | yes |
+| 2023 | imsa | Weathertech Raceway Laguna Seca | GTDPRO | 4 | – | – | yes |
+| 2023 | imsa | Weathertech Raceway Laguna Seca | GTP | 4 | – | – | yes |
+| 2023 | imsa | Weathertech Raceway Laguna Seca | LMP2 | 4 | – | – | yes |
 | 2023 | wec | AUTODROMO DO ALGARVE | HYPERCAR | 5 | 11 | 7596 | yes |
 | 2023 | wec | AUTODROMO DO ALGARVE | LMGTE Am | 5 | 14 | 7596 | yes |
 | 2023 | wec | AUTODROMO DO ALGARVE | LMP2 | 5 | 12 | 7596 | yes |
@@ -129,10 +169,42 @@ Written by the fetch script after every run.
 | 2024 | elms | SPA FRANCORCHAMPS | LMP2 | 4 | 14 | 3562 | yes |
 | 2024 | elms | SPA FRANCORCHAMPS | LMP2 Pro/Am | 5 | 8 | 3562 | yes |
 | 2024 | elms | SPA FRANCORCHAMPS | LMP3 | 5 | 10 | 3562 | yes |
+| 2024 | imsa | Canadian Tire Motorsport Park | GTD | 3 | – | – | yes |
+| 2024 | imsa | Canadian Tire Motorsport Park | GTDPRO | 3 | – | – | yes |
+| 2024 | imsa | Canadian Tire Motorsport Park | LMP2 | 3 | – | – | yes |
 | 2024 | imsa | Daytona International Speedway | GTD | 10 | 23 | 36628 | yes |
 | 2024 | imsa | Daytona International Speedway | GTDPRO | 10 | 13 | 36628 | yes |
 | 2024 | imsa | Daytona International Speedway | GTP | 10 | 10 | 36628 | yes |
 | 2024 | imsa | Daytona International Speedway | LMP2 | 10 | 13 | 36628 | yes |
+| 2024 | imsa | Detroit Street Course | GTDPRO | 4 | – | – | yes |
+| 2024 | imsa | Detroit Street Course | GTP | 4 | – | – | yes |
+| 2024 | imsa | Long Beach Street Circuit | GTD | 3 | – | – | yes |
+| 2024 | imsa | Long Beach Street Circuit | GTP | 3 | – | – | yes |
+| 2024 | imsa | Road America | GTD | 3 | – | – | yes |
+| 2024 | imsa | Road America | GTDPRO | 3 | – | – | yes |
+| 2024 | imsa | Road America | GTP | 3 | – | – | yes |
+| 2024 | imsa | Road America | LMP2 | 3 | – | – | yes |
+| 2024 | imsa | Road Atlanta | GTD | 4 | – | – | yes |
+| 2024 | imsa | Road Atlanta | GTDPRO | 4 | – | – | yes |
+| 2024 | imsa | Road Atlanta | GTP | 4 | – | – | yes |
+| 2024 | imsa | Road Atlanta | LMP2 | 4 | – | – | yes |
+| 2024 | imsa | Sebring International Raceway | GTD | 4 | – | – | yes |
+| 2024 | imsa | Sebring International Raceway | GTDPRO | 4 | – | – | yes |
+| 2024 | imsa | Sebring International Raceway | GTP | 4 | – | – | yes |
+| 2024 | imsa | Sebring International Raceway | LMP2 | 4 | – | – | yes |
+| 2024 | imsa | Tire Rack.com Battle On The Bricks | GTD | 3 | – | – | yes |
+| 2024 | imsa | Tire Rack.com Battle On The Bricks | GTDPRO | 3 | – | – | yes |
+| 2024 | imsa | Tire Rack.com Battle On The Bricks | GTP | 3 | – | – | yes |
+| 2024 | imsa | Tire Rack.com Battle On The Bricks | LMP2 | 3 | – | – | yes |
+| 2024 | imsa | VIRginia International Raceway | GTD | 3 | – | – | yes |
+| 2024 | imsa | VIRginia International Raceway | GTDPRO | 3 | – | – | yes |
+| 2024 | imsa | Watkins Glen International | GTD | 3 | – | – | yes |
+| 2024 | imsa | Watkins Glen International | GTDPRO | 3 | – | – | yes |
+| 2024 | imsa | Watkins Glen International | GTP | 3 | – | – | yes |
+| 2024 | imsa | Watkins Glen International | LMP2 | 3 | – | – | yes |
+| 2024 | imsa | Weathertech Raceway Laguna Seca | GTD | 3 | – | – | yes |
+| 2024 | imsa | Weathertech Raceway Laguna Seca | GTDPRO | 3 | – | – | yes |
+| 2024 | imsa | Weathertech Raceway Laguna Seca | GTP | 3 | – | – | yes |
 | 2024 | wec | BAHRAIN INTERNATIONAL CIRCUIT | HYPERCAR | 6 | 18 | 7486 | yes |
 | 2024 | wec | BAHRAIN INTERNATIONAL CIRCUIT | LMGT3 | 6 | 18 | 7486 | yes |
 | 2024 | wec | CIRCUIT OF THE AMERICAS | HYPERCAR | 6 | 18 | 5675 | yes |
@@ -178,10 +250,42 @@ Written by the fetch script after every run.
 | 2025 | elms | SPA FRANCORCHAMPS | LMP2 | 4 | 13 | 3524 | yes |
 | 2025 | elms | SPA FRANCORCHAMPS | LMP2 Pro/Am | 5 | 8 | 3524 | yes |
 | 2025 | elms | SPA FRANCORCHAMPS | LMP3 | 5 | 10 | 3524 | yes |
+| 2025 | imsa | Canadian Tire Motorsport Park | GTD | 3 | – | – | yes |
+| 2025 | imsa | Canadian Tire Motorsport Park | GTDPRO | 3 | – | – | yes |
+| 2025 | imsa | Canadian Tire Motorsport Park | LMP2 | 3 | – | – | yes |
 | 2025 | imsa | Daytona International Speedway | GTD | 5 | 22 | 37885 | yes |
 | 2025 | imsa | Daytona International Speedway | GTDPRO | 5 | 15 | 37885 | yes |
 | 2025 | imsa | Daytona International Speedway | GTP | 5 | 12 | 37885 | yes |
 | 2025 | imsa | Daytona International Speedway | LMP2 | 5 | 12 | 37885 | yes |
+| 2025 | imsa | Detroit Street Course | GTDPRO | 4 | – | – | yes |
+| 2025 | imsa | Detroit Street Course | GTP | 4 | – | – | yes |
+| 2025 | imsa | Indianapolis Motor Speedway RC | GTD | 3 | – | – | yes |
+| 2025 | imsa | Indianapolis Motor Speedway RC | GTDPRO | 3 | – | – | yes |
+| 2025 | imsa | Indianapolis Motor Speedway RC | GTP | 3 | – | – | yes |
+| 2025 | imsa | Indianapolis Motor Speedway RC | LMP2 | 3 | – | – | yes |
+| 2025 | imsa | Long Beach Street Circuit | GTD | 3 | – | – | yes |
+| 2025 | imsa | Long Beach Street Circuit | GTP | 3 | – | – | yes |
+| 2025 | imsa | Road America | GTD | 3 | – | – | yes |
+| 2025 | imsa | Road America | GTDPRO | 3 | – | – | yes |
+| 2025 | imsa | Road America | GTP | 3 | – | – | yes |
+| 2025 | imsa | Road America | LMP2 | 3 | – | – | yes |
+| 2025 | imsa | Road Atlanta | GTD | 4 | – | – | yes |
+| 2025 | imsa | Road Atlanta | GTDPRO | 4 | – | – | yes |
+| 2025 | imsa | Road Atlanta | GTP | 4 | – | – | yes |
+| 2025 | imsa | Road Atlanta | LMP2 | 4 | – | – | yes |
+| 2025 | imsa | Sebring International Raceway | GTD | 4 | – | – | yes |
+| 2025 | imsa | Sebring International Raceway | GTDPRO | 4 | – | – | yes |
+| 2025 | imsa | Sebring International Raceway | GTP | 4 | – | – | yes |
+| 2025 | imsa | Sebring International Raceway | LMP2 | 4 | – | – | yes |
+| 2025 | imsa | VIRginia International Raceway | GTD | 3 | – | – | yes |
+| 2025 | imsa | VIRginia International Raceway | GTDPRO | 3 | – | – | yes |
+| 2025 | imsa | Watkins Glen International | GTD | 3 | – | – | yes |
+| 2025 | imsa | Watkins Glen International | GTDPRO | 3 | – | – | yes |
+| 2025 | imsa | Watkins Glen International | GTP | 3 | – | – | yes |
+| 2025 | imsa | Watkins Glen International | LMP2 | 3 | – | – | yes |
+| 2025 | imsa | Weathertech Raceway Laguna Seca | GTD | 3 | – | – | yes |
+| 2025 | imsa | Weathertech Raceway Laguna Seca | GTDPRO | 3 | – | – | yes |
+| 2025 | imsa | Weathertech Raceway Laguna Seca | GTP | 3 | – | – | yes |
 | 2025 | wec | BAHRAIN INTERNATIONAL CIRCUIT | HYPERCAR | 6 | 18 | 7795 | yes |
 | 2025 | wec | BAHRAIN INTERNATIONAL CIRCUIT | LMGT3 | 6 | 18 | 7795 | yes |
 | 2025 | wec | CIRCUIT OF THE AMERICAS | HYPERCAR | 6 | 18 | 3964 | yes |

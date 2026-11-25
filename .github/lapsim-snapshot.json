@@ -65,20 +65,21 @@
     "alkamel": {
       "pin": "content: every file of the manifest must match its sha256 (raw bytes, before gzip); the tarball hash is not the pin",
       "manifest": "scripts/sim/data/learn/alkamel-full-laps-manifest.json",
-      "manifest_sha256": "9100f1f65f7726514e90f46760e7b91ed28525889043e9ba5d461d8c54dae3cb",
+      "manifest_sha256": "c3365c1fffb8b1f920ab4d959ce78b2d6149455a19d114cc0fbc6f6cab9dd319",
       "tag": "data-alkamel-full-laps",
       "copies": {
         "production": {
           "repo": "MisterKinn/f1-data-analyst",
           "draft": true,
           "tar_sha256": "6656d16e8fc7e0a1b00de5817b79f2256641db2bc9cbc92cea56fac9e608f375",
-          "made_by": "alkamel-full-laps.yml, 2026-11-23"
+          "made_by": "alkamel-full-laps.yml, 2026-11-23",
+          "note": "needs alkamel-full-laps.yml rerun on upstream (input imsa: all) after this change: the manifest now lists 912 files (+214 IMSA practice/qualifying files of every WeatherTech event 2023-25)"
         },
         "research": {
           "repo": "kangjeongmin1229/f1-data-analyst-deploy",
           "draft": true,
-          "tar_sha256": "333810e1778b571b954403008b15312e709fb2aa087064c6b79f1fdfd1cf0ab0",
-          "made_by_run": 45533609115
+          "tar_sha256": "8a3ca2daf8a49ab9229336755a279c609090f57111da2d694dbd11cbdc268801",
+          "made_by_run": 45549362083
         }
       },
       "note": "Each repo reads its own draft (upstream = production, fork = research). Raw files, drafts only (physics rule 9)."
