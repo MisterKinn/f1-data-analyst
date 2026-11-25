@@ -1,4 +1,15 @@
-# 상태
+# 2026-11-25 공개 결과 캐시 최적화 인계
+
+- 상태: `perf/public-request-isolation`에서 공개 경기 결과 캐시만 변경. 아래 과거 기록과 구분할 것. 배포 여부는 이 브랜치의 PR/Production 상태로 확인.
+- 결정: 동일 저장소 인스턴스에서 5분간 메모리 재사용, 저장소 읽기부터 동시 요청 병합. 최대 64개/직렬화 4MiB(실제 프로세스 메모리는 별도). 저장소별 격리. 장애 대체 데이터는 원래 검증 시각부터 24시간 미만만 제공.
+- 변경 위치: `worker/published-cache.js`, `tests/public-request-costs.test.mjs`, `scripts/benchmark-public-cache.mjs`.
+- 검증: 초기 전체 테스트 857 통과/0 실패/1 선택적 skip. 이후 MCP 경로 실험과 그 테스트는 제거하여 계정 초기화 동작 유지. 최종 표적 테스트 12개 통과, 빌드/산출물 검증 통과. Playwright PC/모바일 6개 시나리오 및 CSV 해시가 기존 버전과 동일.
+- 측정: 모의 저장소 5ms 지연에서 warm 100회 읽기 100→0, 동시 20회 읽기 20→1. 네트워크/실제 Firestore 사용량 측정이 아니며 전체 사이트 성능·요금 절감률로 일반화하지 말 것.
+- 최종 검증: main `e47daf9` 통합 후 전체 860개 중 859 통과/0 실패/1 선택적 skip. 동일 main 기준 직접 동등성 4개 및 PC/모바일 6개 시나리오 재검증 PASS. 기능 OFF 테스트 PASS. 운영 배포 전 정적 191개·OAuth/MCP·Google 팝업 점검 PASS.
+- 다음 작업: PR/배포 검증 후 운영 요청량이 비슷한 구간에서 Firestore 읽기·Vercel CPU를 비교. 직전 Production은 `dpl_4mE9V6ZVw3GSyRJL5UjCVRmi3KLA`.
+- 제약: 로그인/권한/계정 개인화·물리 모델·수집기·Sites·요금제는 변경하지 않음. 메모리는 인스턴스 간 공유되지 않음. 공개 데이터 외부 변경은 기존 5분 TTL 범위에서 지연 반영될 수 있음. 실제 Google 계정 로그인은 이번 브라우저 테스트 대상 아님.
+
+# 과거 상태
 
 - 2026-11-01 `migration/vercel-firebase` 브랜치에 Vercel + Firebase 이전 구조를 구현했습니다.
 - 기존 ChatGPT Sites 프로덕션과 DNS는 변경하지 않았습니다.
