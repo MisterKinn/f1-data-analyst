@@ -48,15 +48,16 @@ export function f1(dir, years = [2023, 2024, 2025, 2026]) {
           if (!(best.get(d) <= y0)) best.set(d, y0); team.set(d, L.team?.[i]); }); }
       if (wet) continue; // a session with rain laps is not a dry noise sample
       const w = withinDriver(laps.lap); if (!w) continue;
+      const ideal = d => ['s1', 's2', 's3'].reduce((a, s) => a + Math.min(...laps[s].filter(l => l.who === d).map(l => l.y)), 0), prox = med([...best].map(([d, b]) => 100 * (b / ideal(d) - 1)));
       const pole = Math.min(...best.values()), sec = {};
       for (const s of ['s1', 's2', 's3']) { // sector residuals only on laps that are push laps of the whole lap, in % of the pole lap
         const keep = new Set(laps.lap.filter(l => l.y <= PUSH * best.get(l.who)).map(l => l.who + '|' + l.t)), ws = withinDriver(laps[s].filter(l => keep.has(l.who + '|' + l.t)), Infinity);
         if (ws) sec[s] = robustSd(ws.res) * med(laps[s].filter(l => l.lap === best.get(l.who)).map(l => l.y)) / pole; }
       const teams = new Map(); for (const [d, b] of best) (teams.get(team.get(d)) || teams.set(team.get(d), []).get(team.get(d))).push(b);
-      ev.push({event: `${y} ${e}`, pole, sigmaPct: robustSd(w.res), drivers: w.drivers, laps: w.laps, slopeSPerH: w.slopeSPerH, sectorPctOfLap: sec, teammate: pairSigma([...teams.values()])}); } }
+      ev.push({event: `${y} ${e}`, pole, bestOverIdealPct: prox, sigmaPct: robustSd(w.res), drivers: w.drivers, laps: w.laps, slopeSPerH: w.slopeSPerH, sectorPctOfLap: sec, teammate: pairSigma([...teams.values()])}); } }
   return {events: ev.length, sigmaPct: summary(ev.map(e => e.sigmaPct)), sigmaS: summary(ev.map(e => e.sigmaPct * e.pole / 100)),
     sectorPctOfLap: Object.fromEntries(['s1', 's2', 's3'].map(s => [s, summary(ev.map(e => e.sectorPctOfLap[s]))])),
-    teammatePct: summary(ev.map(e => e.teammate?.sigma)), perEvent: ev.map(({event, sigmaPct, drivers, laps, slopeSPerH, teammate}) => ({event, sigmaPct: +sigmaPct.toFixed(3), drivers, laps, slopeSPerH, teammatePct: teammate && +teammate.sigma.toFixed(3)}))};
+    teammatePct: summary(ev.map(e => e.teammate?.sigma)), bestOverIdealPct: summary(ev.map(e => e.bestOverIdealPct)), perEvent: ev.map(({event, sigmaPct, drivers, laps, slopeSPerH, teammate}) => ({event, sigmaPct: +sigmaPct.toFixed(3), drivers, laps, slopeSPerH, teammatePct: teammate && +teammate.sigma.toFixed(3)}))};
 }
 
 // ---------- F1 sector shape diagnostic: model sector shares vs the real pole lap's shares (calibration rows 2023–2026) ----------
@@ -126,6 +127,16 @@ export async function alkamel(store) {
   return {note: 'within-driver σ per event (practice + qualifying, dry, green, no pit laps); bands by FIA rating of the lap\'s driver (driver-ratings.json.gz, name match): PG Platinum/Gold, SB Silver/Bronze; codriver = best laps of drivers of one car (contains skill)', ...out};
 }
 
+// ---------- WEC / IMSA / ELMS / Asian LMS without lap files: best ÷ ideal (own best sectors) − 1 per car-session (endurance-cars.csv.gz) ----------
+// A one-sided proxy. σ_meas is estimated by the F1 ratio σ ÷ proxy measured on the same quantities (assumption: the ratio transfers).
+export function idealProxy(dir = 'scripts/sim/data/learn') {
+  const G = c => /^(HYPERCAR|GTP)$/.test(c) ? 'proto' : /^(GTD|GTDPRO|LMGT3)$/.test(c) ? 'gt3' : /^LMP2/.test(c) ? 'lmp2' : null, ev = new Map();
+  for (const r of csv(join(dir, 'endurance-cars.csv.gz'))) { const g = G(r.cls); if (!g || !['P', 'Q'].includes(r.type) || !(+r.ideal > 0) || !(+r.best > 0) || +r.rainShare > 0.02) continue;
+    const k = `${r.series} ${g}|${r.season} ${r.event}`; (ev.get(k) || ev.set(k, []).get(k)).push(100 * (+r.best / +r.ideal - 1)); }
+  const out = {}; for (const k of new Set([...ev.keys()].map(k => k.split('|')[0]))) out[k] = summary([...ev].filter(([q]) => q.startsWith(k + '|')).map(([, a]) => med(a)));
+  return {note: 'best ÷ sum of own best sectors − 1, % (dry FP + Q, event median); a one-sided proxy, not σ_meas', ...out};
+}
+
 // ---------- GT3 BoP Δ split-half noise per BoP body (as step 21 v2): class-relative model level per event, sessions alternate A/B ----------
 export function gt3Bop(dir = 'scripts/sim/data/learn') {
   const rows = [...csv(join(dir, 'endurance-cars.csv.gz')), ...csv(join(dir, 't71-gt3-cars.csv.gz')), ...csv(join(dir, 'sro-gt3-cars.csv.gz'))]
@@ -150,10 +161,12 @@ export function gt3Bop(dir = 'scripts/sim/data/learn') {
 if (process.argv[1]?.endsWith('noise-floor.mjs')) {
   const out = arg('--out', 'out/noise'), ti = arg('--ti'); mkdirSync(out, {recursive: true});
   const res = {generated: new Date().toISOString(), definition: 'σ_meas = within-driver robust SD of push laps (≤102 % of own best) in one session after a linear evolution slope; % of lap; median over events, 90 % CI by event bootstrap (seed 7)',
-    f1: ti ? f1(ti) : {note: 'no --ti: not measured'}, f1Sectors: await f1Sectors(), fe: fe(), nls: nls(), alkamel: await alkamel(arg('--alkamel')), gt3Bop: gt3Bop()};
+    f1: ti ? f1(ti) : {note: 'no --ti: not measured'}, f1Sectors: await f1Sectors(), fe: fe(), nls: nls(), alkamel: await alkamel(arg('--alkamel')), idealProxy: idealProxy(), gt3Bop: gt3Bop()};
   writeFileSync(join(out, 'noise-floor.json'), JSON.stringify(res, null, 1));
   const line = (n, s) => s?.n ? `| ${n} | ${s.median} | ${s.ci90.join(' – ')} | ${s.n} |` : `| ${n} | – | – | 0 |`, L = ['| Quantity | median | 90 % CI | events |', '|---|---|---|---|'];
   if (res.f1.sigmaPct) L.push(line('F1 within-driver σ (% lap)', res.f1.sigmaPct), line('F1 within-driver σ (s)', res.f1.sigmaS), ...['s1', 's2', 's3'].map(s => line(`F1 ${s} σ (% lap)`, res.f1.sectorPctOfLap[s])), line('F1 team-mate σ (% lap, contains skill)', res.f1.teammatePct));
+  L.push(line('F1 best ÷ ideal − 1 (%, proxy)', res.f1.bestOverIdealPct));
+  for (const [k, v] of Object.entries(res.idealProxy)) if (v?.n) L.push(line(`${k} best ÷ ideal − 1 (%, proxy)`, v));
   L.push(`| F1 sector share error RMS s1/s2/s3 (% lap, diagnostic; held-out n ${res.f1Sectors.heldOut.n}) | ${res.f1Sectors.heldOut.rmsSharePctOfLap.join(' / ')} | all n ${res.f1Sectors.all.n}: ${res.f1Sectors.all.rmsSharePctOfLap.join(' / ')} | – |`);
   L.push(line('FE within-driver σ (duels, % lap)', res.fe.sigmaPct), line('FE team-mate σ (% lap, contains skill)', res.fe.teammatePct));
   for (const k of ['SP9 PRO', 'SP9 PRO-AM', 'SP9 all']) L.push(line(`NLS ${k} co-driver σ (% lap, contains skill)`, res.nls[k].codriverPct), line(`NLS ${k} clean median ÷ best − 1 (%)`, res.nls[k].cleanMedianOverBestPct));
