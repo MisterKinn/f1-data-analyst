@@ -71,3 +71,11 @@ test('content checks: a changed file is "bad" (job fails), a file a copy does no
   assert.ok(t71.length > 0 && A.tars.length === A.artifacts);
   const r = checkFiles(store, 'scripts/sim/data/learn/all-laps-2026-11-11-manifest.json', 'laps-t71-'); assert.equal(r.files, t71.length); assert.equal(r.ok, 0);
 });
+
+test('Timing71 rows: an event name with "|" does not break the session keys', async () => {
+  const {t71} = await import('../scripts/sim/noise-floor.mjs'), dir = mkdtempSync(join(tmpdir(), 't71-'));
+  const rows = ['1', '2', '3'].flatMap(entry => [1, 2, 3].map(i => ({series: 'alms', cls: 'GT', season: 2026, event: 'Asian Le Mans Series | 4 Hours of Dubai', sessionType: 'Q', rid: 'x',
+    entry, driver: 'D' + entry, tEnd: 100 * i, time: 120 + (i === 2 ? 0.1 : -0.05), stint: 1, stintLap: i, q: []})));
+  writeFileSync(join(dir, 'a.ndjson'), rows.map(r => JSON.stringify(r)).join('\n'));
+  const r = t71(dir); assert.deepEqual(Object.keys(r).filter(k => k !== 'note'), ['alms GT v2']);
+});

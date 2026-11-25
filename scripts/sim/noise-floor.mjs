@@ -162,20 +162,21 @@ export async function alkamel(store) {
 // (driver × stint, lap-in-stint covariate); t = tEnd (session clock), dry, green, no pit laps (row flags q).
 const T71_BAD = /^(no_time|pit_in|pit_out|not_green|deleted|wet_lap|wet_session|inaccurate|sim)$/;
 export function t71(dir) {
+  const SEP = '\u0001'; // event names carry '|' ("Asian Le Mans Series | 4 Hours of Dubai")
   if (!dir || !existsSync(dir)) return {note: 'Timing71 lap rows not present in this run: not measured'};
   const files = d => readdirSync(d, {withFileTypes: true}).flatMap(e => e.isDirectory() ? files(join(d, e.name)) : /\.ndjson(\.gz)?$/.test(e.name) ? [join(d, e.name)] : []);
   const ses = new Map();
   for (const f of files(dir)) { const text = f.endsWith('.gz') ? gunzipSync(readFileSync(f)).toString() : readFileSync(f, 'utf8');
     for (const line of text.split('\n')) { if (!line) continue; let r; try { r = JSON.parse(line); } catch { continue; }
       if (!['Q', 'P'].includes(r.sessionType) || !(r.time > 0) || !Number.isFinite(r.tEnd) || (r.q || []).some(x => T71_BAD.test(x))) continue;
-      const k = [r.series, r.cls || '–', r.season, r.event, r.sessionType, r.rid || r.session].join('|'); (ses.get(k) || ses.set(k, []).get(k)).push(r); } }
+      const k = [r.series, r.cls || '–', r.season, r.event, r.sessionType, r.rid || r.session].join(SEP); (ses.get(k) || ses.set(k, []).get(k)).push(r); } }
   const ev = new Map();
-  for (const [k, rows] of ses) { const [ser, cls, season, event, type] = k.split('|'), q = type === 'Q', t0 = Math.min(...rows.map(r => r.tEnd));
+  for (const [k, rows] of ses) { const [ser, cls, season, event, type] = k.split(SEP), q = type === 'Q', t0 = Math.min(...rows.map(r => r.tEnd));
     const w = withinDriverV2(rows.map(r => ({who: r.entry + '|' + (r.driver || '') + (q ? '' : '|' + r.stint), t: r.tEnd - t0, k: q ? 0 : r.stintLap, y: r.time})));
-    if (w) { const e = [ser, cls, season, event].join('|'), slot = ev.get(e) || ev.set(e, {Q: [], P: []}).get(e); slot[type].push(...w.res); } }
-  const out = {}, keys = new Set([...ev.keys()].map(e => e.split('|').slice(0, 2).join(' ')));
+    if (w) { const e = [ser, cls, season, event].join(SEP), slot = ev.get(e) || ev.set(e, {Q: [], P: []}).get(e); slot[type].push(...w.res); } }
+  const out = {}, keys = new Set([...ev.keys()].map(e => e.split(SEP).slice(0, 2).join(' ')));
   for (const key of keys) { const v = [], src = {qualifying: 0, practice: 0};
-    for (const [e, s] of ev) { if (e.split('|').slice(0, 2).join(' ') !== key) continue; const r = s.Q.length ? s.Q : s.P; if (!r.length) continue; src[s.Q.length ? 'qualifying' : 'practice']++; v.push(robustSd(r)); }
+    for (const [e, s] of ev) { if (e.split(SEP).slice(0, 2).join(' ') !== key) continue; const r = s.Q.length ? s.Q : s.P; if (!r.length) continue; src[s.Q.length ? 'qualifying' : 'practice']++; v.push(robustSd(r)); }
     if (v.length) out[`${key} v2`] = {...summary(v), source: src}; }
   return {note: 'σ_meas v2 per Timing71 series key × class (median over events, % lap); rows from the laps-t71-* artifacts of run 42927630531', ...out};
 }
