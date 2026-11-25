@@ -1,0 +1,656 @@
+{
+ "source": "official FIA Formula E circuit maps (Al Kamel Systems): printed \"I1 @ … m / I2 @ … m\" and the IP1 / IP2 labels",
+ "tracks": {
+  "fe-london": {
+   "map": "Season 12 - 2025-26 R17 London",
+   "i1M": 680,
+   "i2M": 1542,
+   "lengthM": 2077,
+   "f1": 0.3274,
+   "f2": 0.7424,
+   "labelCheck": {
+    "ip1": {
+     "frac": 0.3251,
+     "labelOffM": 47
+    },
+    "ip2": {
+     "frac": 0.7293,
+     "labelOffM": 45
+    },
+    "startVerified": true
+   },
+   "labelVsPrintedM": 27,
+   "ipShiftM": -16
+  },
+  "fe-tokyo": {
+   "map": "Season 11 - 2024-25 R09 Tokyo",
+   "i1M": 852,
+   "i2M": 1687,
+   "lengthM": 2575,
+   "f1": 0.3309,
+   "f2": 0.6551,
+   "labelCheck": {
+    "ip1": {
+     "frac": 0.3001,
+     "labelOffM": 42
+    },
+    "ip2": {
+     "frac": 0.6138,
+     "labelOffM": 50
+    },
+    "startVerified": "label far from the line"
+   },
+   "labelVsPrintedM": 106,
+   "ipShiftM": -93
+  },
+  "fe-shanghai": {
+   "map": "Season 12 - 2025-26 R13 Shanghai",
+   "i1M": 1020,
+   "i2M": 2095,
+   "lengthM": 3051,
+   "f1": 0.3343,
+   "f2": 0.6867,
+   "labelCheck": null,
+   "labelVsPrintedM": null,
+   "ipShiftM": null
+  },
+  "fe-sanya": {
+   "map": "Season 12 - 2025-26 R11 Sanya",
+   "i1M": 924,
+   "i2M": 1779,
+   "lengthM": 2520,
+   "f1": 0.3667,
+   "f2": 0.706,
+   "labelCheck": {
+    "ip1": {
+     "frac": 0.3625,
+     "labelOffM": 41
+    },
+    "ip2": {
+     "frac": 0.7333,
+     "labelOffM": 21
+    },
+    "startVerified": true
+   },
+   "labelVsPrintedM": 69,
+   "ipShiftM": 29
+  },
+  "monte-carlo": {
+   "map": "Season 12 - 2025-26 R10 Monaco",
+   "i1M": 1089,
+   "i2M": 2419,
+   "lengthM": 3337,
+   "f1": 0.3263,
+   "f2": 0.7249,
+   "labelCheck": {
+    "ip1": {
+     "frac": 0.33,
+     "labelOffM": 62
+    },
+    "ip2": {
+     "frac": 0.7441,
+     "labelOffM": 19
+    },
+    "startVerified": "label far from the line"
+   },
+   "labelVsPrintedM": 64,
+   "ipShiftM": 38
+  },
+  "fe-berlin": {
+   "map": "Season 12 - 2025-26 R08 Berlin",
+   "i1M": 660,
+   "i2M": 1631,
+   "lengthM": 2374,
+   "f1": 0.278,
+   "f2": 0.687,
+   "labelCheck": {
+    "ip1": {
+     "frac": 0.2734,
+     "labelOffM": 19
+    },
+    "ip2": {
+     "frac": 0.7013,
+     "labelOffM": 19
+    },
+    "startVerified": true
+   },
+   "labelVsPrintedM": 34,
+   "ipShiftM": 11
+  },
+  "jarama": {
+   "map": "Season 12 - 2025-26 R06 Madrid",
+   "i1M": 1152,
+   "i2M": 2567,
+   "lengthM": 3934,
+   "f1": 0.2928,
+   "f2": 0.6525,
+   "labelCheck": {
+    "ip1": {
+     "frac": 0.3143,
+     "labelOffM": 73
+    },
+    "ip2": {
+     "frac": 0.6729,
+     "labelOffM": 21
+    },
+    "startVerified": true
+   },
+   "labelVsPrintedM": 84,
+   "ipShiftM": 82
+  },
+  "fe-jeddah": {
+   "map": "Season 12 - 2025-26 R05 Jeddah",
+   "i1M": 780,
+   "i2M": 1845,
+   "lengthM": 3001,
+   "f1": 0.2599,
+   "f2": 0.6148,
+   "labelCheck": {
+    "ip1": {
+     "frac": 0.2569,
+     "labelOffM": 34
+    },
+    "ip2": {
+     "frac": 0.5899,
+     "labelOffM": 39
+    },
+    "startVerified": "label far from the line"
+   },
+   "labelVsPrintedM": 75,
+   "ipShiftM": -42
+  },
+  "fe-miami": {
+   "map": "Season 12 - 2025-26 R03 Miami",
+   "i1M": 895,
+   "i2M": 1720,
+   "lengthM": 2320,
+   "f1": 0.3858,
+   "f2": 0.7414,
+   "labelCheck": {
+    "ip1": {
+     "frac": 0.4772,
+     "labelOffM": 387
+    },
+    "ip2": {
+     "frac": 0.8955,
+     "labelOffM": 60
+    },
+    "startVerified": true
+   },
+   "labelVsPrintedM": 358,
+   "ipShiftM": 285
+  },
+  "fe-mexico": {
+   "map": "Season 12 - 2025-26 R02 Mexico",
+   "i1M": 947,
+   "i2M": 1815,
+   "lengthM": 2608,
+   "f1": 0.3631,
+   "f2": 0.6959,
+   "labelCheck": {
+    "ip1": {
+     "frac": 0.4855,
+     "labelOffM": 106
+    },
+    "ip2": {
+     "frac": 0.9809,
+     "labelOffM": 216
+    },
+    "startVerified": "label far from the line"
+   },
+   "labelVsPrintedM": 743,
+   "ipShiftM": 531
+  },
+  "fe-sao-paulo": {
+   "map": "Season 12 - 2025-26 R01 São Paulo",
+   "i1M": 980,
+   "i2M": 2160,
+   "lengthM": 2933,
+   "f1": 0.3341,
+   "f2": 0.7364,
+   "labelCheck": null,
+   "labelVsPrintedM": null,
+   "ipShiftM": null
+  },
+  "fe-valencia": {
+   "map": "Season 12 - 2025-26 R00 Valencia",
+   "i1M": 1334,
+   "i2M": 2464,
+   "lengthM": 3376,
+   "f1": 0.3951,
+   "f2": 0.7299,
+   "labelCheck": {
+    "ip1": {
+     "frac": 0.4523,
+     "labelOffM": 58
+    },
+    "ip2": {
+     "frac": 0.7218,
+     "labelOffM": 49
+    },
+    "startVerified": "label far from the line"
+   },
+   "labelVsPrintedM": 193,
+   "ipShiftM": 83
+  },
+  "fe-jakarta": {
+   "map": "Season 11 - 2024-25 R12 Jakarta",
+   "i1M": 740,
+   "i2M": 1490,
+   "lengthM": 2370,
+   "f1": 0.3122,
+   "f2": 0.6287,
+   "labelCheck": {
+    "ip1": {
+     "frac": 0.3039,
+     "labelOffM": 46
+    },
+    "ip2": {
+     "frac": 0.6205,
+     "labelOffM": 44
+    },
+    "startVerified": true
+   },
+   "labelVsPrintedM": 20,
+   "ipShiftM": -20
+  },
+  "fe-miami-2025": {
+   "map": "Season 11 - 2024-25 R05 Miami",
+   "i1M": 1185,
+   "i2M": 2530,
+   "lengthM": 3551,
+   "f1": 0.3337,
+   "f2": 0.7125,
+   "labelCheck": {
+    "ip1": {
+     "frac": 0.3258,
+     "labelOffM": 25
+    },
+    "ip2": {
+     "frac": 0.7048,
+     "labelOffM": 31
+    },
+    "startVerified": true
+   },
+   "labelVsPrintedM": 28,
+   "ipShiftM": -28
+  },
+  "fe-mexico-2023": {
+   "map": "Season 11 - 2024-25 R02 Mexico",
+   "i1M": 947,
+   "i2M": 1846,
+   "lengthM": 2630,
+   "f1": 0.3601,
+   "f2": 0.7019,
+   "labelCheck": {
+    "ip1": {
+     "frac": 0.4845,
+     "labelOffM": 109
+    },
+    "ip2": {
+     "frac": 0.9799,
+     "labelOffM": 210
+    },
+    "startVerified": "label far from the line"
+   },
+   "labelVsPrintedM": 731,
+   "ipShiftM": 529
+  },
+  "jarama-2025": {
+   "map": "Season 11 - 2024-25 R00 Jarama",
+   "i1M": 1450,
+   "i2M": 2840,
+   "lengthM": 3915,
+   "f1": 0.3704,
+   "f2": 0.7254,
+   "labelCheck": {
+    "ip1": {
+     "frac": 0.9661,
+     "labelOffM": 77
+    },
+    "ip2": {
+     "frac": 0.031,
+     "labelOffM": 47
+    },
+    "startVerified": true
+   },
+   "labelVsPrintedM": 2719,
+   "ipShiftM": -193
+  },
+  "fe-portland": {
+   "map": "Season 10 - 2023-24 R14 Portland",
+   "i1M": 1093,
+   "i2M": 1760,
+   "lengthM": 3190,
+   "f1": 0.3426,
+   "f2": 0.5517,
+   "labelCheck": {
+    "ip1": {
+     "frac": 0.3065,
+     "labelOffM": 49
+    },
+    "ip2": {
+     "frac": 0.5499,
+     "labelOffM": 114
+    },
+    "startVerified": "label far from the line"
+   },
+   "labelVsPrintedM": 115,
+   "ipShiftM": -61
+  },
+  "fe-berlin-2024": {
+   "map": "Season 10 - 2023-24 R10 Berlin",
+   "i1M": 680,
+   "i2M": 1600,
+   "lengthM": 2345,
+   "f1": 0.29,
+   "f2": 0.6823,
+   "labelCheck": {
+    "ip1": {
+     "frac": 0.2842,
+     "labelOffM": 16
+    },
+    "ip2": {
+     "frac": 0.6985,
+     "labelOffM": 17
+    },
+    "startVerified": true
+   },
+   "labelVsPrintedM": 38,
+   "ipShiftM": 12
+  },
+  "fe-misano": {
+   "map": "Season 10 - 2023-24 R07 Misano",
+   "i1M": 1210,
+   "i2M": 2210,
+   "lengthM": 3382,
+   "f1": 0.3578,
+   "f2": 0.6535,
+   "labelCheck": {
+    "ip1": {
+     "frac": 0.1552,
+     "labelOffM": 8
+    },
+    "ip2": {
+     "frac": 0.4531,
+     "labelOffM": 82
+    },
+    "startVerified": true
+   },
+   "labelVsPrintedM": 685,
+   "ipShiftM": -681
+  },
+  "fe-diriyah": {
+   "map": "Season 10 - 2023-24 R03 Diriyah",
+   "i1M": 772,
+   "i2M": 1486,
+   "lengthM": 2495,
+   "f1": 0.3094,
+   "f2": 0.5956,
+   "labelCheck": null,
+   "labelVsPrintedM": null,
+   "ipShiftM": null
+  },
+  "fe-london-2023": {
+   "map": "Season 10 - 2023-24 R16 London",
+   "i1M": 680,
+   "i2M": 1542,
+   "lengthM": 2086,
+   "f1": 0.326,
+   "f2": 0.7392,
+   "labelCheck": {
+    "ip1": {
+     "frac": 0.3252,
+     "labelOffM": 48
+    },
+    "ip2": {
+     "frac": 0.7292,
+     "labelOffM": 45
+    },
+    "startVerified": true
+   },
+   "labelVsPrintedM": 21,
+   "ipShiftM": -11
+  },
+  "fe-rome": {
+   "map": "Season 9 - 2022-23 R14 Rome",
+   "i1M": 985,
+   "i2M": 2154,
+   "lengthM": 3380,
+   "f1": 0.2914,
+   "f2": 0.6373,
+   "labelCheck": {
+    "ip1": {
+     "frac": 0.6503,
+     "labelOffM": 45
+    },
+    "ip2": {
+     "frac": 0.3299,
+     "labelOffM": 57
+    },
+    "startVerified": true
+   },
+   "labelVsPrintedM": 1213,
+   "ipShiftM": 87
+  },
+  "fe-berlin-2023": {
+   "map": "Season 9 - 2022-23 R08 Berlin",
+   "i1M": 740,
+   "i2M": 1590,
+   "lengthM": 2355,
+   "f1": 0.3142,
+   "f2": 0.6752,
+   "labelCheck": {
+    "ip1": {
+     "frac": 0.2948,
+     "labelOffM": 44
+    },
+    "ip2": {
+     "frac": 0.3483,
+     "labelOffM": 3
+    },
+    "startVerified": true
+   },
+   "labelVsPrintedM": 770,
+   "ipShiftM": -408
+  },
+  "fe-cape-town": {
+   "map": "Season 9 - 2022-23 R05 Cape Town",
+   "i1M": 1160,
+   "i2M": 2099,
+   "lengthM": 2921,
+   "f1": 0.3971,
+   "f2": 0.7186,
+   "labelCheck": {
+    "ip1": {
+     "frac": 0.3578,
+     "labelOffM": 43
+    },
+    "ip2": {
+     "frac": 0.6664,
+     "labelOffM": 44
+    },
+    "startVerified": "label far from the line"
+   },
+   "labelVsPrintedM": 152,
+   "ipShiftM": -134
+  },
+  "fe-hyderabad": {
+   "map": "Season 9 - 2022-23 R04 Hyderabad",
+   "i1M": 1071,
+   "i2M": 1934,
+   "lengthM": 2835,
+   "f1": 0.3778,
+   "f2": 0.6822,
+   "labelCheck": null,
+   "labelVsPrintedM": null,
+   "ipShiftM": null
+  },
+  "fe-seoul": {
+   "map": "Season 8 - 2021-22 R16 Seoul",
+   "i1M": 720,
+   "i2M": 1740,
+   "lengthM": 2621,
+   "f1": 0.2747,
+   "f2": 0.6639,
+   "labelCheck": null,
+   "labelVsPrintedM": null,
+   "ipShiftM": null
+  },
+  "fe-london-2022": {
+   "map": "Season 8 - 2021-22 R14 London",
+   "i1M": 680,
+   "i2M": 1542,
+   "lengthM": 2141,
+   "f1": 0.3176,
+   "f2": 0.7202,
+   "labelCheck": null,
+   "labelVsPrintedM": null,
+   "ipShiftM": null
+  },
+  "fe-new-york": {
+   "map": "Season 8 - 2021-22 R12 New York City",
+   "i1M": 851,
+   "i2M": 1635,
+   "lengthM": 2320,
+   "f1": 0.3668,
+   "f2": 0.7047,
+   "labelCheck": null,
+   "labelVsPrintedM": null,
+   "ipShiftM": null
+  },
+  "fe-marrakesh": {
+   "map": "Season 8 - 2021-22 R10 Marrakesh",
+   "i1M": 1144,
+   "i2M": 2363,
+   "lengthM": 2971,
+   "f1": 0.3851,
+   "f2": 0.7954,
+   "labelCheck": null,
+   "labelVsPrintedM": null,
+   "ipShiftM": null
+  },
+  "fe-london-2021": {
+   "map": "Season 7 - 2020-21 R13 London",
+   "i1M": 680,
+   "i2M": 1650,
+   "lengthM": 2252,
+   "f1": 0.302,
+   "f2": 0.7327,
+   "labelCheck": null,
+   "labelVsPrintedM": null,
+   "ipShiftM": null
+  },
+  "fe-monaco-2021": {
+   "map": "Season 7 - 2020-21 R07 Monaco",
+   "i1M": 1079,
+   "i2M": 2407,
+   "lengthM": 3318,
+   "f1": 0.3252,
+   "f2": 0.7254,
+   "labelCheck": null,
+   "labelVsPrintedM": null,
+   "ipShiftM": null
+  },
+  "fe-valencia-2021": {
+   "map": "Season 7 - 2020-21 Valencia Testing",
+   "i1M": 1067,
+   "i2M": 2035,
+   "lengthM": 3138,
+   "f1": 0.34,
+   "f2": 0.6485,
+   "labelCheck": null,
+   "labelVsPrintedM": null,
+   "ipShiftM": null
+  },
+  "fe-berlin-2020": null,
+  "fe-santiago": {
+   "map": "Season 6 - 2019-20 R03 Santiago",
+   "i1M": 747,
+   "i2M": 1600,
+   "lengthM": 2287,
+   "f1": 0.3266,
+   "f2": 0.6996,
+   "labelCheck": null,
+   "labelVsPrintedM": null,
+   "ipShiftM": null
+  },
+  "fe-bern": {
+   "map": "Season 5 - 2018-19 R11 Bern",
+   "i1M": 940,
+   "i2M": 1790,
+   "lengthM": 2750,
+   "f1": 0.3418,
+   "f2": 0.6509,
+   "labelCheck": null,
+   "labelVsPrintedM": null,
+   "ipShiftM": null
+  },
+  "fe-monaco-2019": {
+   "map": "Season 5 - 2018-19 R09 Monaco",
+   "i1M": 590,
+   "i2M": 1180,
+   "lengthM": 1765,
+   "f1": 0.3343,
+   "f2": 0.6686,
+   "labelCheck": null,
+   "labelVsPrintedM": null,
+   "ipShiftM": null
+  },
+  "fe-paris": {
+   "map": "Season 5 - 2018-19 R08 Paris",
+   "i1M": 620,
+   "i2M": 1260,
+   "lengthM": 1920,
+   "f1": 0.3229,
+   "f2": 0.6563,
+   "labelCheck": null,
+   "labelVsPrintedM": null,
+   "ipShiftM": null
+  },
+  "fe-rome-2019": {
+   "map": "Season 5 - 2018-19 R07 Rome",
+   "i1M": 950,
+   "i2M": 1925,
+   "lengthM": 2870,
+   "f1": 0.331,
+   "f2": 0.6707,
+   "labelCheck": null,
+   "labelVsPrintedM": null,
+   "ipShiftM": null
+  },
+  "fe-sanya-2019": {
+   "map": "Season 5 - 2018-19 R06 Sanya",
+   "i1M": 714,
+   "i2M": 1585,
+   "lengthM": 2236,
+   "f1": 0.3193,
+   "f2": 0.7089,
+   "labelCheck": null,
+   "labelVsPrintedM": null,
+   "ipShiftM": null
+  },
+  "fe-hong-kong": {
+   "map": "Season 5 - 2018-19 R05 Hong Kong",
+   "i1M": 625,
+   "i2M": 1250,
+   "lengthM": 1860,
+   "f1": 0.336,
+   "f2": 0.672,
+   "labelCheck": null,
+   "labelVsPrintedM": null,
+   "ipShiftM": null
+  },
+  "fe-mexico-2019": {
+   "map": "Season 5 - 2018-19 R04 Mexico City",
+   "i1M": 680,
+   "i2M": 1460,
+   "lengthM": 2093,
+   "f1": 0.3249,
+   "f2": 0.6976,
+   "labelCheck": null,
+   "labelVsPrintedM": null,
+   "ipShiftM": null
+  }
+ }
+}
