@@ -202,7 +202,9 @@ jobs:
           if [ -n "$id" ]; then mkdir -p .cache && gh api -H 'Accept: application/octet-stream' "repos/${{ github.repository }}/releases/assets/$id" > .cache/alkamel-full-laps.tar
             tar -xf .cache/alkamel-full-laps.tar -C .cache && node scripts/sim/noise-floor.mjs --check-alkamel .cache/alkamel-full-laps && A='--alkamel .cache/alkamel-full-laps'
           else echo "::notice::no data-alkamel-full-laps release here: Al Kamel within-driver σ not measured"; fi
-          node scripts/sim/noise-floor.mjs --ti ti/ti $A --out noise | tee -a "$GITHUB_STEP_SUMMARY"
+          # Timing71 per-lap rows (SRO GT3, DTM, NLS …): artifacts laps-t71-* of the upstream lapsim-laps run 42927630531 (expire 30 days after 2026-11-11)
+          T=''; if gh run download 42927630531 -R MisterKinn/f1-data-analyst -p 'laps-t71-*' -D .cache/t71-rows 2>/dev/null; then T='--t71 .cache/t71-rows'; else echo "::notice::Timing71 lap rows not downloadable: not measured"; fi
+          node scripts/sim/noise-floor.mjs --ti ti/ti $A $T --out noise | tee -a "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         with: {name: noise-floor, path: noise/, retention-days: 90}
 
@@ -284,7 +286,7 @@ jobs:
   # calibration is main's (a research or push run never touches the production ranges: delta-intervals.mjs refuses, test in
   # tests/lapsim-delta-intervals.test.mjs). A refit that is not on main yet carries its ranges in the same commit (lapsim-data.yml).
   delta-ranges:
-    needs: [snapshot, fit, report]
+    needs: [snapshot, fit, report, noise]
     if: ${{ !cancelled() && needs.report.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
@@ -303,11 +305,15 @@ jobs:
       - uses: actions/download-artifact@v4
         continue-on-error: true
         with: {name: calibration-output, path: fit}
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with: {name: noise-floor, path: noise}
       - name: Build the ranges from this run
         run: |
           [ -f fit/worker/lapsim/calibration-data.js ] && cp fit/worker/lapsim/calibration-data.js worker/lapsim/ || true
           mkdir -p ranges
-          node scripts/sim/delta-intervals.mjs --run "$RUN" --mode "$MODE" --out "ranges/delta-intervals-data-$RUN.js" | tee -a "$GITHUB_STEP_SUMMARY"
+          N=""; [ -f noise/noise-floor.json ] && N="--noise noise/noise-floor.json"  # gap to floor (report-only)
+          node scripts/sim/delta-intervals.mjs --run "$RUN" --mode "$MODE" --out "ranges/delta-intervals-data-$RUN.js" $N | tee -a "$GITHUB_STEP_SUMMARY"
           sha256sum worker/lapsim/calibration-data.js | cut -c1-64 > ranges/calibration.sha256
       - uses: actions/upload-artifact@v4
         with: {name: delta-ranges, path: ranges/, retention-days: 90}
@@ -316,11 +322,12 @@ jobs:
       - name: Publish to main (production run on main, calibration = main's)
         if: github.repository == 'MisterKinn/f1-data-analyst' && github.event_name != 'push' && github.ref == 'refs/heads/main' && env.MODE == 'production'
         run: |
+          N=""; [ -f noise/noise-floor.json ] && N="--noise $PWD/noise/noise-floor.json"
           git fetch -q origin main && git checkout -q --detach origin/main
           if [ "$(sha256sum worker/lapsim/calibration-data.js | cut -c1-64)" != "$(cat ranges/calibration.sha256)" ]; then
             echo "Calibration of run $RUN is not on main: ranges kept in the artifact and release (commit them with the calibration)" | tee -a "$GITHUB_STEP_SUMMARY"; exit 0; fi
           cp "ranges/delta-intervals-data-$RUN.js" worker/lapsim/delta-intervals-data.js
           # main moved: rebuild on the new main only if its calibration is still this run's
           scripts/publish-refresh.sh -m "LapSim Δ ranges from lapsim-pipeline run $RUN (step 29b)" -b lapsim-learn/delta-ranges \
-            -g "[ \"\$(sha256sum worker/lapsim/calibration-data.js | cut -c1-64)\" = $(cat ranges/calibration.sha256) ] && node scripts/sim/delta-intervals.mjs --run $RUN --mode production" \
+            -g "[ \"\$(sha256sum worker/lapsim/calibration-data.js | cut -c1-64)\" = $(cat ranges/calibration.sha256) ] && node scripts/sim/delta-intervals.mjs --run $RUN --mode production $N" \
             -- worker/lapsim/delta-intervals-data.js

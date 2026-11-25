@@ -84,3 +84,11 @@ test('a research build never overwrites the production ranges', () => {
   for (const g of ["github.repository == 'MisterKinn/f1-data-analyst'", "github.event_name != 'push'", "github.ref == 'refs/heads/main'", "env.MODE == 'production'"]) assert.ok(pub.split('\n')[1].includes(g), g);
   assert.equal((job.match(/scripts\/publish-refresh\.sh/g) || []).length, 1);
 });
+
+test('gap to floor: held-out RMS ÷ σ_meas v2 per class, null where σ_meas is missing (report-only)', async () => {
+  const {gapToFloor} = await import('../scripts/sim/delta-intervals.mjs');
+  const g = gapToFloor(lapsimCalibration, {f1: {sigmaPctV2: {n: 9, median: 0.2, ci90: [0.15, 0.25]}}, alkamel: {'wec proto v2': {n: 5, median: 0.25, ci90: [0.2, 0.3]}}}, '1');
+  assert.equal(g.status, 'report-only');
+  for (const k of ["f1", "lmh", "lmdh"]) assert.ok(Math.abs(g.classes[k].ratio - g.classes[k].heldOutRmsPct / g.classes[k].sigmaMeasPct) < 1e-3);
+  assert.equal(g.classes.lmgt3.ratio, null); assert.equal(g.classes.lmh.sigmaSource, 'Al Kamel wec proto v2');
+});

@@ -13,6 +13,7 @@ on:
     inputs:
       years: {description: 'Seasons', default: '2023,2024,2025'}
       series: {description: 'wec, imsa (Daytona 24), elms', default: 'wec,imsa,elms'}
+      imsa: {description: 'IMSA events: daytona (Daytona 24 only) or all (every WeatherTech event; practice and qualifying, races only at Daytona)', default: 'daytona'}
 
 permissions:
   contents: write   # draft release asset + manifest commit
@@ -38,8 +39,8 @@ jobs:
           mkdir -p .cache
           if gh release download "$TAG" -p alkamel-full-laps.tar -D .cache 2>/dev/null; then tar -xf .cache/alkamel-full-laps.tar -C .cache; else echo "no stored archive yet"; fi
       - name: Fetch the missing lap and weather files
-        env: {YEARS: "${{ inputs.years || '2023,2024,2025' }}", SERIES: "${{ inputs.series || 'wec,imsa,elms' }}"}
-        run: node scripts/sim/learn/fetch-alkamel-full-laps.mjs "--years=$YEARS" "--series=$SERIES" | tee .cache/alkamel-full.log | tail -60
+        env: {YEARS: "${{ inputs.years || '2023,2024,2025' }}", SERIES: "${{ inputs.series || 'wec,imsa,elms' }}", IMSA: "${{ inputs.imsa || 'daytona' }}"}
+        run: node scripts/sim/learn/fetch-alkamel-full-laps.mjs "--years=$YEARS" "--series=$SERIES" "--imsa=$IMSA" | tee .cache/alkamel-full.log | tail -60
       - name: Store the files as a draft release asset
         run: |
           tar -cf .cache/alkamel-full-laps.tar -C .cache alkamel-full-laps

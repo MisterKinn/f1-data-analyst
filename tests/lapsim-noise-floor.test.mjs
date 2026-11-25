@@ -48,3 +48,15 @@ test('σ_meas v2: lap-in-stint and evolution are removed before the spread; laps
   assert.equal(withinDriverV2(L.filter(l => l.who !== 'C')), null);
   assert.equal(checkAlkamel('/nonexistent', 'scripts/sim/data/learn/alkamel-full-laps-manifest.json').ok, 0);
 });
+
+test('Timing71 σ_meas v2: per series × class, qualifying first, pit and wet laps dropped', async () => {
+  const {t71} = await import('../scripts/sim/noise-floor.mjs');
+  const d = mkdtempSync(join(tmpdir(), 't71-')), rows = [];
+  for (const ev of ['A', 'B', 'C']) for (let c = 0; c < 5; c++) for (let l = 1; l <= 6; l++)
+    rows.push({series: 'gtwce', cls: 'PRO', season: 2025, event: ev, sessionType: 'Q', rid: ev, entry: String(c), driver: 'd' + c, stint: 1, stintLap: l, tEnd: 100 * l + c, time: 100 + c * 0.3 + 0.1 * ((l * 7 + c) % 3 - 1), q: l === 6 ? ['pit_in'] : []});
+  rows.push({series: 'gtwce', cls: 'PRO', season: 2025, event: 'A', sessionType: 'Q', rid: 'A', entry: '0', driver: 'd0', stint: 1, stintLap: 7, tEnd: 700, time: 100.001, q: ['wet_session']});
+  writeFileSync(join(d, 'x.ndjson'), rows.map(r => JSON.stringify(r)).join('\n'));
+  const r = t71(d)['gtwce PRO v2'];
+  assert.equal(r.n, 3); assert.deepEqual(r.source, {qualifying: 3, practice: 0}); assert.ok(r.median > 0 && r.median < 0.2);
+  assert.match(t71(join(d, 'none')).note, /not measured/);
+});
