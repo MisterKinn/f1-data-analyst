@@ -3,6 +3,16 @@
 One line per Gate G run (AGENTS.md "Gate G v3 additions"). Add the line before the run with result "pending"; fill in the result after.
 No line, no ship.
 
+2026-11-26 partial aero consistency: `docs/prereg/partial-aero-consistency-2026-11-26.md`;
+deterministic derived-output bug fix, one candidate, no model fit/trajectory change;
+synthetic interpolation and compatibility checks **PASS** (8 new tests; 15 related tests).
+Pre-fix: all 7 original new checks failed. Post-fix: partial shares 0.25/0.5/0.75,
+clamping, browser serialization, and exact binary/absent golden outputs pass.
+Build/artifact validation pass. Real-browser baseline/candidate parity passes in six
+scenarios, including 2025/2026 and identical downloaded telemetry CSV. Full CI-mode
+Node 22 suite: 868 tests, 866 pass, 0 fail, 2 skipped. Features-OFF check passes.
+No F1 accuracy claim.
+
 - **Type:** acc (accuracy claim), corr (rule or physics correctness, non-inferiority), data (data fix, no gate), prov (provisional
   display or unraced-track estimate, AGENTS.md v3.2: plausibility check, wide ±, re-judged when n ≥ 5).
 - **Idea:** one quantity on one set of held-out rows. **Attempt:** the n-th try at that idea; m counts every candidate of every attempt.

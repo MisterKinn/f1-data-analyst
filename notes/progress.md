@@ -1,3 +1,12 @@
+# 2026-11-26 부분 공력 계산 일관성 수정
+
+- 상태: `fix/lapsim-partial-aero-20261126`, 기준 main `ce99c9ada5fdc42ef42ec6703cdb93cae0383710`. 과거 연구 작업은 별도 worktree에 보존하고 이번 변경에 포함하지 않음.
+- 결정: 목표를 전체 F1 정확도 개선에서 재현 가능한 계산 오류 수정으로 축소. 부분 개방률을 완전 개방으로 잘못 처리하던 제동/스틴트 에너지 계산을 기존 커널과 같은 선형 보간으로 수정. 커널·차량·피팅·실측 데이터는 그대로 유지.
+- 변경 위치: `worker/lapsim/brakes.js`, `worker/lapsim/stint-energy.js`, `tests/lapsim-partial-aero.test.mjs`, `docs/prereg/partial-aero-consistency-2026-11-26.md`, `docs/gate-ledger.md`.
+- 검증: 수정 전 신규 7개 실패 → 수정 후 통과. 최종 신규 8개 포함 관련 15개 PASS. 0/1/미지정 기존 출력의 golden 해시 일치. 빌드/산출물 검사 PASS. Playwright 수정 전후 6개 시나리오 표시값·CSV 동일. 기능 OFF 검사 PASS. 전체 CI-mode Node 22: 868개 중 866 PASS, 0 FAIL, 2 skip.
+- 다음 작업: PR/CI 및 Vercel Production 검증. 이후 작업은 이 인계를 바탕으로 새 세션에서 시작할 것을 권장.
+- 제약: 이번 수정은 고속 코너 오차 감소의 증거가 아님. 인증·요금제·Sites·수집기와 과거의 부적합 물리 후보를 변경하거나 배포하지 않음. 새 피팅 없이 실제 차량 정확도를 주장하지 말 것.
+
 # 2026-11-25 공개 결과 캐시 최적화 인계
 
 - 상태: `perf/public-request-isolation`에서 공개 경기 결과 캐시만 변경. 아래 과거 기록과 구분할 것. 배포 여부는 이 브랜치의 PR/Production 상태로 확인.
