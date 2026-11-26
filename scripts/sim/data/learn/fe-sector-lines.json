@@ -20,7 +20,18 @@
     "startVerified": true
    },
    "labelVsPrintedM": 27,
-   "ipShiftM": -16
+   "ipShiftM": -16,
+   "f1Proj": 0.3208,
+   "f2Proj": 0.7455,
+   "projShiftM": [
+    -13,
+    6
+   ],
+   "projOffM": [
+    1,
+    1
+   ],
+   "lineRatio": 1.0167
   },
   "fe-tokyo": {
    "map": "Season 11 - 2024-25 R09 Tokyo",
@@ -41,7 +52,18 @@
     "startVerified": "label far from the line"
    },
    "labelVsPrintedM": 106,
-   "ipShiftM": -93
+   "ipShiftM": -93,
+   "f1Proj": 0.3273,
+   "f2Proj": 0.6572,
+   "projShiftM": [
+    -9,
+    5
+   ],
+   "projOffM": [
+    3,
+    4
+   ],
+   "lineRatio": 1.0208
   },
   "fe-shanghai": {
    "map": "Season 12 - 2025-26 R13 Shanghai",
@@ -52,7 +74,18 @@
    "f2": 0.6867,
    "labelCheck": null,
    "labelVsPrintedM": null,
-   "ipShiftM": null
+   "ipShiftM": null,
+   "f1Proj": 0.3369,
+   "f2Proj": 0.6885,
+   "projShiftM": [
+    8,
+    5
+   ],
+   "projOffM": [
+    3,
+    4
+   ],
+   "lineRatio": 1.0238
   },
   "fe-sanya": {
    "map": "Season 12 - 2025-26 R11 Sanya",
@@ -73,7 +106,18 @@
     "startVerified": true
    },
    "labelVsPrintedM": 69,
-   "ipShiftM": 29
+   "ipShiftM": 29,
+   "f1Proj": 0.3681,
+   "f2Proj": 0.7049,
+   "projShiftM": [
+    3,
+    -3
+   ],
+   "projOffM": [
+    1,
+    2
+   ],
+   "lineRatio": 1.009
   },
   "monte-carlo": {
    "map": "Season 12 - 2025-26 R10 Monaco",
@@ -94,7 +138,11 @@
     "startVerified": "label far from the line"
    },
    "labelVsPrintedM": 64,
-   "ipShiftM": 38
+   "ipShiftM": 38,
+   "f1Proj": null,
+   "f2Proj": null,
+   "projShiftM": null,
+   "projOffM": null
   },
   "fe-berlin": {
    "map": "Season 12 - 2025-26 R08 Berlin",
@@ -115,7 +163,18 @@
     "startVerified": true
    },
    "labelVsPrintedM": 34,
-   "ipShiftM": 11
+   "ipShiftM": 11,
+   "f1Proj": 0.2768,
+   "f2Proj": 0.6854,
+   "projShiftM": [
+    -3,
+    -4
+   ],
+   "projOffM": [
+    2,
+    1
+   ],
+   "lineRatio": 1.0141
   },
   "jarama": {
    "map": "Season 12 - 2025-26 R06 Madrid",
@@ -136,7 +195,18 @@
     "startVerified": true
    },
    "labelVsPrintedM": 84,
-   "ipShiftM": 82
+   "ipShiftM": 82,
+   "f1Proj": 0.2918,
+   "f2Proj": 0.6515,
+   "projShiftM": [
+    -4,
+    -4
+   ],
+   "projOffM": [
+    2,
+    3
+   ],
+   "lineRatio": 1.0151
   },
   "fe-jeddah": {
    "map": "Season 12 - 2025-26 R05 Jeddah",
@@ -157,7 +227,18 @@
     "startVerified": "label far from the line"
    },
    "labelVsPrintedM": 75,
-   "ipShiftM": -42
+   "ipShiftM": -42,
+   "f1Proj": 0.2618,
+   "f2Proj": 0.6194,
+   "projShiftM": [
+    6,
+    14
+   ],
+   "projOffM": [
+    4,
+    3
+   ],
+   "lineRatio": 1.016
   },
   "fe-miami": {
    "map": "Season 12 - 2025-26 R03 Miami",
@@ -178,7 +259,18 @@
     "startVerified": true
    },
    "labelVsPrintedM": 358,
-   "ipShiftM": 285
+   "ipShiftM": 285,
+   "f1Proj": 0.3853,
+   "f2Proj": 0.74,
+   "projShiftM": [
+    -1,
+    -3
+   ],
+   "projOffM": [
+    4,
+    1
+   ],
+   "lineRatio": 1.0168
   },
   "fe-mexico": {
    "map": "Season 12 - 2025-26 R02 Mexico",
@@ -199,7 +291,18 @@
     "startVerified": "label far from the line"
    },
    "labelVsPrintedM": 743,
-   "ipShiftM": 531
+   "ipShiftM": 531,
+   "f1Proj": 0.3655,
+   "f2Proj": 0.6978,
+   "projShiftM": [
+    6,
+    5
+   ],
+   "projOffM": [
+    2,
+    4
+   ],
+   "lineRatio": 1.018
   },
   "fe-sao-paulo": {
    "map": "Season 12 - 2025-26 R01 São Paulo",
@@ -210,7 +313,18 @@
    "f2": 0.7364,
    "labelCheck": null,
    "labelVsPrintedM": null,
-   "ipShiftM": null
+   "ipShiftM": null,
+   "f1Proj": 0.336,
+   "f2Proj": 0.7394,
+   "projShiftM": [
+    6,
+    9
+   ],
+   "projOffM": [
+    1,
+    4
+   ],
+   "lineRatio": 1.006
   },
   "fe-valencia": {
    "map": "Season 12 - 2025-26 R00 Valencia",
@@ -231,7 +345,18 @@
     "startVerified": "label far from the line"
    },
    "labelVsPrintedM": 193,
-   "ipShiftM": 83
+   "ipShiftM": 83,
+   "f1Proj": 0.3955,
+   "f2Proj": 0.7293,
+   "projShiftM": [
+    1,
+    -2
+   ],
+   "projOffM": [
+    4,
+    3
+   ],
+   "lineRatio": 1.0136
   },
   "fe-jakarta": {
    "map": "Season 11 - 2024-25 R12 Jakarta",
@@ -252,7 +377,18 @@
     "startVerified": true
    },
    "labelVsPrintedM": 20,
-   "ipShiftM": -20
+   "ipShiftM": -20,
+   "f1Proj": 0.3185,
+   "f2Proj": 0.6329,
+   "projShiftM": [
+    15,
+    10
+   ],
+   "projOffM": [
+    1,
+    1
+   ],
+   "lineRatio": 1.0167
   },
   "fe-miami-2025": {
    "map": "Season 11 - 2024-25 R05 Miami",
@@ -273,7 +409,18 @@
     "startVerified": true
    },
    "labelVsPrintedM": 28,
-   "ipShiftM": -28
+   "ipShiftM": -28,
+   "f1Proj": 0.334,
+   "f2Proj": 0.7105,
+   "projShiftM": [
+    1,
+    -7
+   ],
+   "projOffM": [
+    1,
+    4
+   ],
+   "lineRatio": 1.0125
   },
   "fe-mexico-2023": {
    "map": "Season 11 - 2024-25 R02 Mexico",
@@ -294,7 +441,18 @@
     "startVerified": "label far from the line"
    },
    "labelVsPrintedM": 731,
-   "ipShiftM": 529
+   "ipShiftM": 529,
+   "f1Proj": 0.3637,
+   "f2Proj": 0.7057,
+   "projShiftM": [
+    9,
+    10
+   ],
+   "projOffM": [
+    3,
+    3
+   ],
+   "lineRatio": 1.0208
   },
   "jarama-2025": {
    "map": "Season 11 - 2024-25 R00 Jarama",
@@ -315,7 +473,18 @@
     "startVerified": true
    },
    "labelVsPrintedM": 2719,
-   "ipShiftM": -193
+   "ipShiftM": -193,
+   "f1Proj": 0.3737,
+   "f2Proj": 0.7266,
+   "projShiftM": [
+    13,
+    5
+   ],
+   "projOffM": [
+    0,
+    4
+   ],
+   "lineRatio": 1.0188
   },
   "fe-portland": {
    "map": "Season 10 - 2023-24 R14 Portland",
@@ -336,7 +505,11 @@
     "startVerified": "label far from the line"
    },
    "labelVsPrintedM": 115,
-   "ipShiftM": -61
+   "ipShiftM": -61,
+   "f1Proj": null,
+   "f2Proj": null,
+   "projShiftM": null,
+   "projOffM": null
   },
   "fe-berlin-2024": {
    "map": "Season 10 - 2023-24 R10 Berlin",
@@ -357,7 +530,11 @@
     "startVerified": true
    },
    "labelVsPrintedM": 38,
-   "ipShiftM": 12
+   "ipShiftM": 12,
+   "f1Proj": null,
+   "f2Proj": null,
+   "projShiftM": null,
+   "projOffM": null
   },
   "fe-misano": {
    "map": "Season 10 - 2023-24 R07 Misano",
@@ -378,7 +555,11 @@
     "startVerified": true
    },
    "labelVsPrintedM": 685,
-   "ipShiftM": -681
+   "ipShiftM": -681,
+   "f1Proj": null,
+   "f2Proj": null,
+   "projShiftM": null,
+   "projOffM": null
   },
   "fe-diriyah": {
    "map": "Season 10 - 2023-24 R03 Diriyah",
@@ -389,7 +570,11 @@
    "f2": 0.5956,
    "labelCheck": null,
    "labelVsPrintedM": null,
-   "ipShiftM": null
+   "ipShiftM": null,
+   "f1Proj": null,
+   "f2Proj": null,
+   "projShiftM": null,
+   "projOffM": null
   },
   "fe-london-2023": {
    "map": "Season 10 - 2023-24 R16 London",
@@ -410,7 +595,11 @@
     "startVerified": true
    },
    "labelVsPrintedM": 21,
-   "ipShiftM": -11
+   "ipShiftM": -11,
+   "f1Proj": null,
+   "f2Proj": null,
+   "projShiftM": null,
+   "projOffM": null
   },
   "fe-rome": {
    "map": "Season 9 - 2022-23 R14 Rome",
@@ -431,7 +620,11 @@
     "startVerified": true
    },
    "labelVsPrintedM": 1213,
-   "ipShiftM": 87
+   "ipShiftM": 87,
+   "f1Proj": null,
+   "f2Proj": null,
+   "projShiftM": null,
+   "projOffM": null
   },
   "fe-berlin-2023": {
    "map": "Season 9 - 2022-23 R08 Berlin",
@@ -452,7 +645,11 @@
     "startVerified": true
    },
    "labelVsPrintedM": 770,
-   "ipShiftM": -408
+   "ipShiftM": -408,
+   "f1Proj": null,
+   "f2Proj": null,
+   "projShiftM": null,
+   "projOffM": null
   },
   "fe-cape-town": {
    "map": "Season 9 - 2022-23 R05 Cape Town",
@@ -473,7 +670,11 @@
     "startVerified": "label far from the line"
    },
    "labelVsPrintedM": 152,
-   "ipShiftM": -134
+   "ipShiftM": -134,
+   "f1Proj": null,
+   "f2Proj": null,
+   "projShiftM": null,
+   "projOffM": null
   },
   "fe-hyderabad": {
    "map": "Season 9 - 2022-23 R04 Hyderabad",
@@ -484,7 +685,11 @@
    "f2": 0.6822,
    "labelCheck": null,
    "labelVsPrintedM": null,
-   "ipShiftM": null
+   "ipShiftM": null,
+   "f1Proj": null,
+   "f2Proj": null,
+   "projShiftM": null,
+   "projOffM": null
   },
   "fe-seoul": {
    "map": "Season 8 - 2021-22 R16 Seoul",
@@ -495,7 +700,11 @@
    "f2": 0.6639,
    "labelCheck": null,
    "labelVsPrintedM": null,
-   "ipShiftM": null
+   "ipShiftM": null,
+   "f1Proj": null,
+   "f2Proj": null,
+   "projShiftM": null,
+   "projOffM": null
   },
   "fe-london-2022": {
    "map": "Season 8 - 2021-22 R14 London",
@@ -506,7 +715,11 @@
    "f2": 0.7202,
    "labelCheck": null,
    "labelVsPrintedM": null,
-   "ipShiftM": null
+   "ipShiftM": null,
+   "f1Proj": null,
+   "f2Proj": null,
+   "projShiftM": null,
+   "projOffM": null
   },
   "fe-new-york": {
    "map": "Season 8 - 2021-22 R12 New York City",
@@ -517,7 +730,11 @@
    "f2": 0.7047,
    "labelCheck": null,
    "labelVsPrintedM": null,
-   "ipShiftM": null
+   "ipShiftM": null,
+   "f1Proj": null,
+   "f2Proj": null,
+   "projShiftM": null,
+   "projOffM": null
   },
   "fe-marrakesh": {
    "map": "Season 8 - 2021-22 R10 Marrakesh",
@@ -528,7 +745,11 @@
    "f2": 0.7954,
    "labelCheck": null,
    "labelVsPrintedM": null,
-   "ipShiftM": null
+   "ipShiftM": null,
+   "f1Proj": null,
+   "f2Proj": null,
+   "projShiftM": null,
+   "projOffM": null
   },
   "fe-london-2021": {
    "map": "Season 7 - 2020-21 R13 London",
@@ -539,7 +760,11 @@
    "f2": 0.7327,
    "labelCheck": null,
    "labelVsPrintedM": null,
-   "ipShiftM": null
+   "ipShiftM": null,
+   "f1Proj": null,
+   "f2Proj": null,
+   "projShiftM": null,
+   "projOffM": null
   },
   "fe-monaco-2021": {
    "map": "Season 7 - 2020-21 R07 Monaco",
@@ -550,7 +775,11 @@
    "f2": 0.7254,
    "labelCheck": null,
    "labelVsPrintedM": null,
-   "ipShiftM": null
+   "ipShiftM": null,
+   "f1Proj": null,
+   "f2Proj": null,
+   "projShiftM": null,
+   "projOffM": null
   },
   "fe-valencia-2021": {
    "map": "Season 7 - 2020-21 Valencia Testing",
@@ -561,7 +790,11 @@
    "f2": 0.6485,
    "labelCheck": null,
    "labelVsPrintedM": null,
-   "ipShiftM": null
+   "ipShiftM": null,
+   "f1Proj": null,
+   "f2Proj": null,
+   "projShiftM": null,
+   "projOffM": null
   },
   "fe-berlin-2020": null,
   "fe-santiago": {
@@ -573,7 +806,11 @@
    "f2": 0.6996,
    "labelCheck": null,
    "labelVsPrintedM": null,
-   "ipShiftM": null
+   "ipShiftM": null,
+   "f1Proj": null,
+   "f2Proj": null,
+   "projShiftM": null,
+   "projOffM": null
   },
   "fe-bern": {
    "map": "Season 5 - 2018-19 R11 Bern",
@@ -584,7 +821,11 @@
    "f2": 0.6509,
    "labelCheck": null,
    "labelVsPrintedM": null,
-   "ipShiftM": null
+   "ipShiftM": null,
+   "f1Proj": null,
+   "f2Proj": null,
+   "projShiftM": null,
+   "projOffM": null
   },
   "fe-monaco-2019": {
    "map": "Season 5 - 2018-19 R09 Monaco",
@@ -595,7 +836,11 @@
    "f2": 0.6686,
    "labelCheck": null,
    "labelVsPrintedM": null,
-   "ipShiftM": null
+   "ipShiftM": null,
+   "f1Proj": null,
+   "f2Proj": null,
+   "projShiftM": null,
+   "projOffM": null
   },
   "fe-paris": {
    "map": "Season 5 - 2018-19 R08 Paris",
@@ -606,7 +851,11 @@
    "f2": 0.6563,
    "labelCheck": null,
    "labelVsPrintedM": null,
-   "ipShiftM": null
+   "ipShiftM": null,
+   "f1Proj": null,
+   "f2Proj": null,
+   "projShiftM": null,
+   "projOffM": null
   },
   "fe-rome-2019": {
    "map": "Season 5 - 2018-19 R07 Rome",
@@ -617,7 +866,11 @@
    "f2": 0.6707,
    "labelCheck": null,
    "labelVsPrintedM": null,
-   "ipShiftM": null
+   "ipShiftM": null,
+   "f1Proj": null,
+   "f2Proj": null,
+   "projShiftM": null,
+   "projOffM": null
   },
   "fe-sanya-2019": {
    "map": "Season 5 - 2018-19 R06 Sanya",
@@ -628,7 +881,11 @@
    "f2": 0.7089,
    "labelCheck": null,
    "labelVsPrintedM": null,
-   "ipShiftM": null
+   "ipShiftM": null,
+   "f1Proj": null,
+   "f2Proj": null,
+   "projShiftM": null,
+   "projOffM": null
   },
   "fe-hong-kong": {
    "map": "Season 5 - 2018-19 R05 Hong Kong",
@@ -639,7 +896,11 @@
    "f2": 0.672,
    "labelCheck": null,
    "labelVsPrintedM": null,
-   "ipShiftM": null
+   "ipShiftM": null,
+   "f1Proj": null,
+   "f2Proj": null,
+   "projShiftM": null,
+   "projOffM": null
   },
   "fe-mexico-2019": {
    "map": "Season 5 - 2018-19 R04 Mexico City",
@@ -650,7 +911,12 @@
    "f2": 0.6976,
    "labelCheck": null,
    "labelVsPrintedM": null,
-   "ipShiftM": null
+   "ipShiftM": null,
+   "f1Proj": null,
+   "f2Proj": null,
+   "projShiftM": null,
+   "projOffM": null
   }
- }
+ },
+ "projMethod": "printed I1/I2 on the map centre line (scaled to the printed length), nearest driven-line point within ±10 % of the lap (step 35 G); f1/f2 = old same-fraction method, kept"
 }
