@@ -26,5 +26,14 @@ export const FE_QUALI_REALIZATION = {'fe-gen3': 0.6925, 'fe-gen3evo': 0.7737};
 export const feIsGroup = session => /qualifying[ -]group/i.test(session || '');
 // power of the session a lap was set in (kW), or null when it is the full power of the rule-set car
 export function feSessionKW(season, session, type) { const q = FE_QUALI_KW(season); if (!q || type !== 'Q') return null; return feIsGroup(session) ? q.group : q.duel; }
-export function feCarFor(key, season, session, type) { const car = (FE_GENS[key] || FE_FIT_ONLY[key]).car, kw = feSessionKW(season, session, type);
+// Step 35 D (research flag, unset = today): Gen3 Evo axle mode by rule, SR 2024-25 33.5/33.6. v1: groups rear drive, duels 4WD with the
+// front axle ≤ 50 kW; v2: rear drive in every qualifying lap. Only the fit scripts read it.
+const FE_AXLE = typeof process !== 'undefined' ? process.env?.LAPSIM_FE_AXLE : undefined;
+const axleMode = (key, car, session) => { if (key !== 'fe-gen3evo' || !FE_AXLE) return car;
+  if (FE_AXLE === 'v2' || feIsGroup(session)) return {...car, awdAboveKph: null};
+  return FE_AXLE === 'v1' ? {...car, frontMaxW: 50e3} : car; };
+// Step 35 E (research flag, unset = today): rear axle braked by regen only, ≤ 350 kW at the battery (TR 2024-25 7.5), eta 0.95 (assumption)
+const FE_BRAKE = typeof process !== 'undefined' ? process.env?.LAPSIM_FE_BRAKE : undefined;
+const brakeMode = (key, car) => FE_BRAKE === 'on' && (key === 'fe-gen3evo' || key === 'fe-gen3') ? {...car, brakeAxle: {rearMaxW: 350e3, eta: 0.95}} : car;
+export function feCarFor(key, season, session, type) { const car0 = (FE_GENS[key] || FE_FIT_ONLY[key]).car, kw = feSessionKW(season, session, type), car = type === 'Q' ? brakeMode(key, axleMode(key, car0, session)) : car0;
   return kw == null || kw * 1e3 === car.pIce ? car : {...car, pIce: kw * 1e3, label: car.label.replace(/\d+ kW/, kw + ' kW')}; }

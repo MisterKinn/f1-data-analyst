@@ -3,6 +3,7 @@
 // tyre grip are priors with bounds and get fitted once test and race laps arrive. Sources and page numbers:
 // docs/lapsim-fe-gen4-prep.md. TR = FIA Formula E Technical Regulations 2026-2027 V4, SR = Sporting Regulations.
 
+const GEN4_RULES = typeof process !== 'undefined' && process.env?.LAPSIM_FE_GEN4_RULES === 'on';
 export const FE_GEN4_FIXED = {
   mass: 1046,            // kg with driver, TR 5.1
   wheelbase: 3.08,       // m, middle of 3070-3090 mm, TR 4.4.5
@@ -74,6 +75,9 @@ export function gen4Car({aero = 'ldf', powerKW = 600, overrides = {}} = {}) {
     etaDrive: p.etaDrive, pIce: powerKW * 1e3, vMax: p.vMaxKph / 3.6, inertiaFactor: 1.06, vSubtractCorner: 0.3,
     awdAboveKph: 0, ers: {},
     regen: {maxW: f.regenMaxKW * 1e3, share: p.regenShare, eta: p.etaRegen},
+    // Step 35 (research flag LAPSIM_FE_GEN4_RULES=on, unset = today): drive front axle ≤ 250 kW (TR 7.5, rule); rear axle braked by regen
+    // ≤ 350 kW (TR 7.5, rule) with no rear friction brake (assumption: as Gen3 / Gen3 Evo), eta 0.95 (assumption)
+    ...(GEN4_RULES ? {frontMaxW: f.frontCapKW * 1e3, brakeAxle: {rearMaxW: f.regenRearCapKW * 1e3, eta: p.etaRegen}} : {}),
     ...overrides,
   };
 }
@@ -122,8 +126,9 @@ export function lapEnergy(result, car, track, {rho = 1.225} = {}) {
 // Gen3 Evo reference car (seasons 2024-25 and 2025-26) for checking the method on real laps: 350 kW with all four
 // wheels driven in qualifying duels, 859 kg with driver, wheelbase 2970.5 mm. Aero is the Gen3 tender range middle
 // (SCz 1.5-2.0, SCx 0.60-0.65); grip is the value to solve for.
+// (the Gen4 axle hooks are cleared: they are not Gen3 Evo rules)
 export function gen3EvoCar(muY, {clA = 1.75, cdA = 0.62} = {}) {
-  return {...gen4Car({aero: 'ldf', powerKW: 350}), label: 'Gen3 Evo 350 kW (reference)', mass: 859, wheelbase: 2.9705,
+  return {...gen4Car({aero: 'ldf', powerKW: 350}), frontMaxW: undefined, brakeAxle: undefined, label: 'Gen3 Evo 350 kW (reference)', mass: 859, wheelbase: 2.9705,
     clA, cdA, clALow: clA, cdALow: cdA, vMax: 322 / 3.6, ...gripSet(muY)};
 }
 // The three grip values move together, in the ratio of the prior.

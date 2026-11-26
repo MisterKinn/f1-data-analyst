@@ -1,0 +1,353 @@
+{
+ "prereg": "docs/prereg/step35-fe-G-sector-proj-2026-11-26.md",
+ "laneC": {
+  "fitByteIdentical": true,
+  "harmMeanPp": 0,
+  "harmUB95Pp": 0,
+  "worstTrackPp": 0,
+  "noNewBoundHit": true,
+  "pass": true
+ },
+ "sectors": {
+  "nSectorRows": 81,
+  "nLayouts": 11,
+  "rmsOld": 1.377,
+  "rmsProj": 1.219,
+  "dRms90": [
+   -0.332,
+   0.087
+  ],
+  "lapSumUnchanged": true,
+  "layouts": [
+   {
+    "layout": "fe-london",
+    "projected": true,
+    "shiftM": [
+     -13,
+     6
+    ],
+    "old": [
+     -0.88,
+     2,
+     -1.06
+    ],
+    "proj": [
+     -0.14,
+     1.01,
+     -0.8
+    ]
+   },
+   {
+    "layout": "fe-tokyo",
+    "projected": true,
+    "shiftM": [
+     -9,
+     5
+    ],
+    "old": [
+     -0.4,
+     0.22,
+     0.38
+    ],
+    "proj": [
+     -0.27,
+     -0.04,
+     0.51
+    ]
+   },
+   {
+    "layout": "fe-shanghai",
+    "projected": true,
+    "shiftM": [
+     8,
+     5
+    ],
+    "old": [
+     -0.29,
+     0.42,
+     -0.12
+    ],
+    "proj": [
+     -0.67,
+     0.66,
+     0.02
+    ]
+   },
+   {
+    "layout": "fe-sanya",
+    "projected": true,
+    "shiftM": [
+     3,
+     -3
+    ],
+    "old": [
+     -0.95,
+     1.41,
+     0.39
+    ],
+    "proj": [
+     -1.22,
+     1.83,
+     0.24
+    ]
+   },
+   {
+    "layout": "monte-carlo",
+    "projected": false,
+    "shiftM": null,
+    "old": [
+     0.68,
+     -0.55,
+     -0.2
+    ],
+    "proj": [
+     0.68,
+     -0.55,
+     -0.2
+    ]
+   },
+   {
+    "layout": "fe-berlin",
+    "projected": true,
+    "shiftM": [
+     -3,
+     -4
+    ],
+    "old": [
+     0.4,
+     0.28,
+     -0.78
+    ],
+    "proj": [
+     0.4,
+     0.28,
+     -0.78
+    ]
+   },
+   {
+    "layout": "jarama",
+    "projected": true,
+    "shiftM": [
+     -4,
+     -4
+    ],
+    "old": [
+     3.15,
+     -0.91,
+     1.09
+    ],
+    "proj": [
+     3.47,
+     -1.13,
+     0.98
+    ]
+   },
+   {
+    "layout": "fe-jeddah",
+    "projected": true,
+    "shiftM": [
+     6,
+     14
+    ],
+    "old": [
+     -0.78,
+     -0.69,
+     1.36
+    ],
+    "proj": [
+     -1.09,
+     -0.67,
+     1.65
+    ]
+   },
+   {
+    "layout": "fe-sao-paulo",
+    "projected": true,
+    "shiftM": [
+     6,
+     9
+    ],
+    "old": [
+     -0.71,
+     3.04,
+     -2.32
+    ],
+    "proj": [
+     -0.84,
+     2.32,
+     -1.46
+    ]
+   },
+   {
+    "layout": "fe-jakarta",
+    "projected": true,
+    "shiftM": [
+     15,
+     10
+    ],
+    "old": [
+     -0.36,
+     0.14,
+     0.13
+    ],
+    "proj": [
+     -0.82,
+     0.33,
+     0.41
+    ]
+   },
+   {
+    "layout": "fe-miami-2025",
+    "projected": true,
+    "shiftM": [
+     1,
+     -7
+    ],
+    "old": [
+     -0.11,
+     1.22,
+     -0.61
+    ],
+    "proj": [
+     -0.11,
+     1.37,
+     -0.76
+    ]
+   }
+  ]
+ },
+ "placementFloor": {
+  "fe-london": {
+   "uM": 27,
+   "vAtLinesKph": [
+    104,
+    117
+   ],
+   "sectorPlacementPct": [
+    0.81,
+    1.08,
+    0.72
+   ]
+  },
+  "fe-tokyo": {
+   "uM": 106,
+   "vAtLinesKph": [
+    200,
+    204
+   ],
+   "sectorPlacementPct": [
+    1.53,
+    2.14,
+    1.5
+   ]
+  },
+  "fe-shanghai": {
+   "uM": 30,
+   "vAtLinesKph": [
+    133,
+    175
+   ],
+   "sectorPlacementPct": [
+    0.68,
+    0.86,
+    0.52
+   ]
+  },
+  "fe-sanya": {
+   "uM": 69,
+   "vAtLinesKph": [
+    111,
+    189
+   ],
+   "sectorPlacementPct": [
+    1.98,
+    2.29,
+    1.16
+   ]
+  },
+  "monte-carlo": {
+   "uM": 64,
+   "vAtLinesKph": [
+    96,
+    147
+   ],
+   "sectorPlacementPct": [
+    1.61,
+    1.92,
+    1.05
+   ]
+  },
+  "fe-berlin": {
+   "uM": 34,
+   "vAtLinesKph": [
+    106,
+    180
+   ],
+   "sectorPlacementPct": [
+    1.14,
+    1.33,
+    0.67
+   ]
+  },
+  "jarama": {
+   "uM": 84,
+   "vAtLinesKph": [
+    58,
+    181
+   ],
+   "sectorPlacementPct": [
+    3.1,
+    3.26,
+    1
+   ]
+  },
+  "fe-jeddah": {
+   "uM": 75,
+   "vAtLinesKph": [
+    77,
+    245
+   ],
+   "sectorPlacementPct": [
+    2.69,
+    2.82,
+    0.85
+   ]
+  },
+  "fe-sao-paulo": {
+   "uM": 30,
+   "vAtLinesKph": [
+    198,
+    68
+   ],
+   "sectorPlacementPct": [
+    0.45,
+    1.39,
+    1.32
+   ]
+  },
+  "fe-jakarta": {
+   "uM": 20,
+   "vAtLinesKph": [
+    174,
+    192
+   ],
+   "sectorPlacementPct": [
+    0.36,
+    0.48,
+    0.32
+   ]
+  },
+  "fe-miami-2025": {
+   "uM": 28,
+   "vAtLinesKph": [
+    206,
+    146
+   ],
+   "sectorPlacementPct": [
+    0.34,
+    0.59,
+    0.48
+   ]
+  }
+ }
+}
