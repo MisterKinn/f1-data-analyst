@@ -1,6 +1,6 @@
 {
  "source": "FIA F1 event documents \"Power Unit Information\" (2026)",
- "generatedAt": "2026-11-21T12:56:46.841Z",
+ "generatedAt": "2026-11-26T06:48:54.634Z",
  "events": {
   "interlagos": {
    "event": "São Paulo Grand Prix",
@@ -1577,6 +1577,120 @@
     "title": "Doc 3 - Power Unit Information",
     "url": "https://www.fia.com/system/files/decision-document/2026_las_vegas_grand_prix_-_power_unit_information.pdf",
     "published": "Published on 18.11.26 00:42 CET"
+   }
+  },
+  "lusail": {
+   "event": "Qatar Grand Prix",
+   "raceMJ": 8,
+   "raceOvertakeMJ": 8.5,
+   "qualiMJ": 6.5,
+   "practiceMJ": 8.5,
+   "outLapMJ": 9,
+   "round": 22,
+   "centrelineKm": 5.419,
+   "alt": [
+    {
+     "sector": "T1-T2",
+     "from": 750,
+     "to": 1050,
+     "qOnly": false
+    },
+    {
+     "sector": "T4-T10",
+     "from": 1700,
+     "to": 3100,
+     "qOnly": false
+    },
+    {
+     "sector": "T12-T14",
+     "from": 3750,
+     "to": 4150,
+     "qOnly": false
+    }
+   ],
+   "bigCut": [
+    {
+     "sector": "T1-T2",
+     "from": 750,
+     "to": 1050,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "T4-T6",
+     "from": 1700,
+     "to": 2150,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "T9-T10",
+     "from": 2880,
+     "to": 3100,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "T12-T16",
+     "from": 3750,
+     "to": 4800,
+     "qOnly": false,
+     "maxKW": 350
+    },
+    {
+     "sector": "[Exit T16]",
+     "from": 4900,
+     "to": 5300,
+     "qOnly": true,
+     "maxKW": 350
+    }
+   ],
+   "reset": [
+    {
+     "sector": "Exit T12",
+     "from": 3750,
+     "to": 4050,
+     "qOnly": false
+    },
+    {
+     "sector": "Exit T14",
+     "from": 4150,
+     "to": 4300,
+     "qOnly": false
+    },
+    {
+     "sector": "Exit T15",
+     "from": 4500,
+     "to": 4650,
+     "qOnly": false
+    },
+    {
+     "sector": "[Exit T16]",
+     "from": 5050,
+     "to": 5400,
+     "qOnly": true
+    }
+   ],
+   "speed": [
+    {
+     "sector": "T12-T14",
+     "from": 3650,
+     "to": 4200,
+     "qOnly": false,
+     "kph": 310
+    }
+   ],
+   "overtake": {
+    "detectionM": 5020,
+    "activationM": 5078,
+    "tbc": false
+   },
+   "powerLimitedDistanceM": 3108,
+   "rampKWs": 100,
+   "document": {
+    "title": "Doc 3 - Power Unit Information",
+    "url": "https://www.fia.com/system/files/decision-document/2026_qatar_grand_prix_-_power_unit_information.pdf",
+    "published": "Published on 25.11.26 15:05 CET"
    }
   }
  }
