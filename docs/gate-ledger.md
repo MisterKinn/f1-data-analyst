@@ -3,6 +3,18 @@
 One line per Gate G run (AGENTS.md "Gate G v3 additions"). Add the line before the run with result "pending"; fill in the result after.
 No line, no ship.
 
+2026-11-27 ERS reserve algebra: `docs/prereg/ers-reserve-algebra-2026-11-27.md`;
+baseline `468e817`; one arithmetic-only candidate, no strategy or fit change;
+boundary tests 7 PASS; final CI-mode Node 22 suite 881 tests, 879 pass, 0 fail,
+2 existing optional skips. Features-OFF, build/artifact and diff review PASS.
+Full-result JSON parity: 32 cases, SHA256
+`96ab06ff6f4be3a1b56be700fb2268c2f6f8a4803fa91de0edeb6116c3a4a969`.
+Playwright 6 states and downloaded CSV parity PASS, no browser errors.
+Validated kernel SHA256 `952287c7627ab1554a22ae5d31bd7883bd00edf59a05472254a919e235eb90f2`.
+Local arithmetic compatibility only, not full C5.12 compliance or an accuracy
+claim. Release requested after local validation; PR/CI/Production confirmation
+is tracked in `notes/progress.md` and the release PR.
+
 2026-11-27 speed provenance display: `docs/prereg/speed-provenance-release-2026-11-27.md`;
 one display-only candidate, no model/data change; latest-main regression PASS (Node 22: 874 tests,
 872 pass, 0 fail, 2 skipped); feature-OFF PASS; build/artifact PASS. Browser parity PASS:
