@@ -21,6 +21,27 @@
     "trackTempC": 32.1
    },
    "sensor": null
+  },
+  {
+   "key": "f1-2026-11-27-lusail|FP2",
+   "track": "lusail",
+   "series": "f1",
+   "session": "FP2",
+   "start": "2026-11-27T20:00:00+03:00",
+   "model": "global models (ECMWF IFS, GFS, ICON)",
+   "issued": "2026-11-27T00:00:00.000Z",
+   "retrieved": "2026-11-27T11:27:16.150Z",
+   "leadH": 5.55,
+   "step": "hourly",
+   "forecast": {
+    "airTempC": 24.7,
+    "humidityPct": 72,
+    "pressureHpa": 1018.2,
+    "windSpeed": 0.4,
+    "windFromDeg": 236,
+    "trackTempC": 29.5
+   },
+   "sensor": null
   }
  ]
 }
