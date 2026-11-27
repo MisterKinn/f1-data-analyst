@@ -16,6 +16,17 @@
 
 공동 개발 시작 및 배포 절차: [한국어 협업 안내](CONTRIBUTING_KO.md)
 
+## 랩 시뮬레이터 속도 비교
+
+`/simulation`의 실측 랩에서는 기존 실측 속도와 별도의 **모델 속도** 채널을 비교할 수 있습니다.
+모델 속도는 같은 차량·조건·DRS 옵션으로 계산한 커널 출력이며, 실측이나 정확도 개선 결과가 아닙니다.
+실측 속도는 옵션 변경으로 바뀌지 않습니다. 채널 숨김·공유 커서·텔레메트리 CSV에서도 두 채널을 구분합니다.
+실측이 없는 조합이나 수동 조건에서는 기존 모델 속도 채널만 표시합니다.
+
+개발 검증: 로컬 preview 실행 후 `node scripts/verify-speed-provenance-browser.mjs http://127.0.0.1:5178`.
+현재 Production의 스크립트와 수정본을 동일한 로컬 입력에서 비교하며, 운영 데이터에는 쓰지 않습니다.
+This comparison separates recorded telemetry from model speed; it does not claim improved physical accuracy.
+
 ## Vercel + Firebase 이전
 
 기존 ChatGPT Sites 운영 서비스는 DNS를 바꾸기 전까지 그대로 유지합니다. 새 경로는 Vercel Node 함수, Firebase Authentication, 서버 전용 Firestore 저장소로 구성하며 Firebase 웹 로그인을 ChatGPT MCP 인증으로 승격하지 않습니다. 현재 이전 상태, 사람이 해야 할 콘솔 설정, 전환 조건은 [Vercel + Firebase 이전 문서](docs/vercel-firebase-migration.md)를 따릅니다.
