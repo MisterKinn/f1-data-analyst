@@ -3,6 +3,17 @@
 One line per Gate G run (AGENTS.md "Gate G v3 additions"). Add the line before the run with result "pending"; fill in the result after.
 No line, no ship.
 
+2026-11-27 acceptance-rule audit: `docs/prereg/acceptance-audit-2026-11-27.md`;
+baseline `be21f7a`; report-only statistical tooling and documentation, no physics,
+fit, data or acceptance-policy change. Node 22 local checks: 895 tests, 893 pass,
+0 fail, 2 existing optional skips; features-OFF and build/artifact PASS. Nine new
+audit tests PASS; 100 Student-t quantiles agree with SciPy 1.18.0 within 4e-11;
+noncentral-t power reproduced by `scripts/sim/acceptance-power.py`. Runtime source
+unchanged and local/Production lapsim asset byte-identical, SHA256
+`d04a017f55e01aa4bdb054a9363bb3689b6871d4282e228394e033e81955783a`.
+User-supplied F1/WEC gate results are not pipeline reproductions; no new model
+shipping decision. PR/CI/release evidence is recorded separately.
+
 2026-11-27 race-data source audit: `docs/prereg/race-data-evidence-2026-11-27.md`;
 baseline `8a9c2e0`; report-only source/statistics and comment clarification,
 no physics variant, fitting or measured-derived input change. Local Node 22 checks:
