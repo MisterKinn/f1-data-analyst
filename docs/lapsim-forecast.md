@@ -51,5 +51,7 @@ sensor mean over the session is added (F1: OpenF1 weather; WEC / Al Kamel: not y
 ≥ 5 sessions. It never changes a real lap, the fit, the shown ± or a gate.
 
 <!-- forecast-log:start -->
-No session verified yet.
+| Model | Sessions | Air °C bias / RMS | Track °C (estimate) bias / RMS | Humidity % bias / RMS | Wind m/s bias / RMS |
+|---|---:|---|---|---|---|
+| global models (ECMWF IFS, GFS, ICON) | 1 | not enough data (n < 5) | | | |
 <!-- forecast-log:end -->

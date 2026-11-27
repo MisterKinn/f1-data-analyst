@@ -20,7 +20,15 @@
     "windFromDeg": 79,
     "trackTempC": 32.1
    },
-   "sensor": null
+   "sensor": {
+    "source": "OpenF1 weather, session 11421",
+    "n": 82,
+    "airTempC": 26.14,
+    "trackTempC": 30.6,
+    "humidityPct": 60.22,
+    "pressureHpa": 1016.65,
+    "windSpeed": 1.49
+   }
   },
   {
    "key": "f1-2026-11-27-lusail|FP2",
