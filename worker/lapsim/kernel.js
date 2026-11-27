@@ -98,6 +98,33 @@ export function lapsimKernel() {
 
   const G = 9.81;
 
+  // ASSUMED electrical strategy envelope, not the full C5.12 controller: constant ICE,
+  // a post-cut power held for holdS, then a linear ramp to 100 kW. W, W/s, s -> J.
+  // C5.12.4 concerns the reduction in total PU power, not necessarily flat ERS-K power.
+  function ersRampParameters(rateWPerS, holdS) {
+    if (!Number.isFinite(rateWPerS) || rateWPerS <= 0) throw new RangeError('rateWPerS must be finite and positive');
+    if (!Number.isFinite(holdS) || holdS <= 0) throw new RangeError('holdS must be finite and positive');
+  }
+
+  function ersRampEnergyJ(postCutW, rateWPerS, holdS = 1) {
+    ersRampParameters(rateWPerS, holdS);
+    if (!Number.isFinite(postCutW)) throw new TypeError('postCutW must be finite');
+    const p = Math.max(0, postCutW), lo = Math.min(p, 100e3);
+    // Retain the existing kernel's operation order for its one-second reserve.
+    return holdS * p + 0.5 * (p - lo) * (p + lo) / rateWPerS;
+  }
+
+  // Inverse of the envelope above, NOT a deploy command/350 kW or speed-limit override.
+  // Below holdS * 100 kW, the reserve supports less than 100 kW during the hold.
+  function ersRampPostCutLimitW(energyJ, rateWPerS, holdS = 1) {
+    ersRampParameters(rateWPerS, holdS);
+    if (!Number.isFinite(energyJ)) throw new TypeError('energyJ must be finite');
+    if (energyJ < 0) throw new RangeError('energyJ must be non-negative');
+    if (energyJ <= holdS * 100e3) return energyJ / holdS;
+    const rh = rateWPerS * holdS;
+    return Math.sqrt(rh * rh + 1e10 + 2 * rateWPerS * energyJ) - rh;
+  }
+
   // ERS-K DC power limit (W) as a function of speed (m/s) for each rule set.
   // 2026–2028: Section C, Article C5.2.7/C5.2.8i (Overtake not active). Issue 21, 19 Oct 2026.
   // 2027/2028 cap the deploy power at 300 kW (WMSC, June 2026); the speed taper is unchanged.
@@ -422,7 +449,7 @@ export function lapsimKernel() {
           if (ramp) {
             // an empty battery is no excuse: the ramp starts when the charge left is what the ramp itself will use
             // (at any speed: the cut it avoids may fall above the rule's speed)
-            if (!rp && pPrev > 100e3) { const P1 = pPrev - rampStep(i), lo = Math.min(P1, 100e3), eR = P1 + 0.5 * (P1 - lo) * (P1 + lo) / ramp.R;
+            if (!rp && pPrev > 100e3) { const P1 = pPrev - rampStep(i), eR = ersRampEnergyJ(P1, ramp.R);
               if (P1 > HOLD_MIN && ((pErs < pPrev - 1e3 && vi >= rampVMin(i)) || (track && soc <= eR))) rp = {P1, t: 0}; }
             if (rp) { const al = rp.t < 1 ? rp.P1 : rp.P1 - ramp.R * (rp.t - 1); if (rp.t >= 1 && al <= 100e3) rp = null; else if (!track || soc > 0) pErs = Math.min(lim, al); }
           }
@@ -547,7 +574,7 @@ export function lapsimKernel() {
           let mode = below(vi, vCut) && (!track || soc > 0) ? 1 : 0, al = 0;
           const pErs = mode ? Math.min(lim, ersCap ? ersCap[i] : Infinity) : 0;
           if (ramp) {
-            if (!rp && pPrev > 100e3) { const P1 = pPrev - rampStep(i), lo = Math.min(P1, 100e3), eR = P1 + 0.5 * (P1 - lo) * (P1 + lo) / ramp.R;
+            if (!rp && pPrev > 100e3) { const P1 = pPrev - rampStep(i), eR = ersRampEnergyJ(P1, ramp.R);
               const cut = pErs < pPrev - 200 * ds && vi >= rampVMin(i);
               // event point: the cut happened inside the previous step (where the battery emptied, or where the limit crossed the
               // threshold), so the hold clock starts with the time since then
@@ -617,7 +644,7 @@ export function lapsimKernel() {
           let rpNew = null;
           if (ramp && track && !rp && mode === 1 && e1 > 100e3 && dep > 0) {
             // C5.12 event point: the charge left reaches the ramp's own energy inside this step, so the hold starts there
-            const eRof = P1 => { const lo = Math.min(P1, 100e3); return P1 + 0.5 * (P1 - lo) * (P1 + lo) / ramp.R; };
+            const eRof = P1 => ersRampEnergyJ(P1, ramp.R);
             let P1 = e1 - rampStep(i), eR = eRof(P1);
             if (P1 > HOLD_MIN && soc > eR && soc - dep < eR) {
               // the cut is taken from the deploy power at the event point
@@ -861,7 +888,7 @@ export function lapsimKernel() {
 
   return {
     RD, RV, RHO_REF, saturationVapourPressure, pressureFromAltitude, airDensity, tailwind, gripFromTrackTemp, icePowerFactor, conditionsFromWeather,
-    erskLimitW, makeTyre, capacity, simulateLap,
+    erskLimitW, ersRampEnergyJ, ersRampPostCutLimitW, makeTyre, capacity, simulateLap,
     autoStraights, trackFromData,
     CHANGE_EFFECTS, PART_WINDOW, windowFor, applyTrackChanges,
   };

@@ -1,3 +1,12 @@
+# 2026-11-27 ERS 산술 정리 — 배포 준비 단계
+
+- 상태: 별도 `f1-data-analyst-ers-fix` worktree, 기준 `origin/main` `468e817e80266870bae1b9363a78da1971cadbbb`. 사용자가 PR·Production 배포 진행을 요청하여 최종 CI 및 배포 확인 중. 실제 완료 증거는 릴리스 PR의 커밋·체크·배포 확인 기록을 볼 것. 아래 과거 인계와 구분할 것.
+- 결정: 요청의 잘못된 역산식은 운영 코드에 없음. 세 곳의 잔여에너지 계산을 공통화하고 음수 예약에너지를 차단. 올바른 구간별 역함수는 검증 API로만 제공하며 운용 전략에는 연결하지 않음. 차량·피팅·실측·기본 전략 불변.
+- 변경 위치: `worker/lapsim/kernel.js`, `tests/lapsim-ers-reserve.test.mjs`, `scripts/sim/check-ers-reserve-parity.mjs`, `docs/lapsim-ers-reserve.md`, 사전등록, gate ledger.
+- 검증: Node 22.23.5 최종 CI 설정 전체 881개 중 879 PASS, 0 FAIL, 2 선택적 skip(replay bundle/외부 baseline fixture 부재). 신규 산술 7개 PASS. 기준 커널과 전체 출력 JSON 32건 정확히 일치, SHA256 `96ab06ff6f4be3a1b56be700fb2268c2f6f8a4803fa91de0edeb6116c3a4a969`. Playwright PC/모바일 6상태·CSV 동일, 브라우저 오류 없음. 기능 OFF·빌드·산출물·diff/비밀값 패턴 검사 PASS. 검증 커널 SHA256 `952287c7627ab1554a22ae5d31bd7883bd00edf59a05472254a919e235eb90f2`. 기존 `simulation.js` 중복 번역 키 빌드 경고 4개는 미수정. 전체 테스트 로그 `/tmp/kongboda-ers-reserve-final-20261127.log`, 브라우저 결과 `.cache/ers-reserve-browser/results.json` (로컬 전용).
+- 다음 작업: PR CI 통과 후 병합, 기존 `kinn/kongboda-motorsports` 자동 Production 배포의 Ready·소스 커밋·공개 사이트를 확인. 완료 후 다음 단계는 이 인계를 바탕으로 새 세션에서 시작할 것을 권장.
+- 제약: 100 kW 이하 홀드 생략과 총 PU 출력 제어기를 해결한 것이 아님. FIA 전체 규정 준수·F1 정확도 향상을 주장하지 말 것. 이전 미통과 물리 후보·다른 dirty worktree·인증·Sites·요금제는 변경하지 않음. 로컬 검증이며 pipeline reproduction 아님.
+
 # 2026-11-27 실측/모델 속도 분리 표시 배포
 
 - 상태: 최신 main `da61e761868891db2cc50967f27e8ce62a0002fc` 기준 별도 `release/speed-provenance-20261127` 작업공간. 기존 연구 변경은 원래 작업공간에 보존. 현재 PR/CI 및 Production 검증 전.
