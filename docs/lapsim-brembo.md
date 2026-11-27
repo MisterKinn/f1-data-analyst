@@ -1,5 +1,8 @@
 # Brembo braking data (F1 2024-2026, WEC, IMSA)
 
+Source interpretation audit: [race-data evidence](lapsim-race-data-evidence.md).
+Zone-peak g is not instantaneous g at entry speed; GTD is not measured LMGT3.
+
 Collected 2026-11-08 with WebSearch/WebFetch. Only values a source states. `-` = not stated.
 2026 figures are Brembo pre-race simulations. Bounds like '<13 s' are kept as the number; see notes.
 
