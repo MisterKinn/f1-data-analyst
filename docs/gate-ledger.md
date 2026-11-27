@@ -3,6 +3,16 @@
 One line per Gate G run (AGENTS.md "Gate G v3 additions"). Add the line before the run with result "pending"; fill in the result after.
 No line, no ship.
 
+2026-11-27 race-data source audit: `docs/prereg/race-data-evidence-2026-11-27.md`;
+baseline `8a9c2e0`; report-only source/statistics and comment clarification,
+no physics variant, fitting or measured-derived input change. Local Node 22 checks:
+886 tests, 884 pass, 0 fail, 2 existing optional skips; features-OFF and build/artifact
+validation PASS. Minified series executable code equals baseline; production/local
+lapsim asset byte-identical, SHA256
+`d04a017f55e01aa4bdb054a9363bb3689b6871d4282e228394e033e81955783a`.
+No accuracy/within-driver-repeatability claim; not a pipeline reproduction.
+CI/repository release status is recorded in the handoff and PR.
+
 2026-11-27 ERS reserve algebra: `docs/prereg/ers-reserve-algebra-2026-11-27.md`;
 baseline `468e817`; one arithmetic-only candidate, no strategy or fit change;
 boundary tests 7 PASS; final CI-mode Node 22 suite 881 tests, 879 pass, 0 fail,

@@ -13,9 +13,12 @@ export const SERIES = {
       // Hypercar split by architecture: same BoP power and weight window, different hybrids.
       // LMH: own chassis, optional front-axle motor (up to 200 kW) that may only drive above a BoP
       // speed (about 190 km/h in the dry), so 4WD traction only on fast exits; total power capped.
-      // LMDh: spec chassis (Dallara/Ligier/Multimatic/Oreca), spec Bosch rear motor (50 kW) and
-      // Williams battery, usable at any speed; total power capped. Both run a per-stint energy
-      // budget (Virtual Energy Tank).
+      // LMDh: spec chassis (Dallara/Ligier/Multimatic/Oreca), Bosch rear hybrid and Williams battery.
+      // Bosch (2023) stated 50 kW drive / up to 200 kW recuperation. This is NOT a verified
+      // 2025–26 Equity Model map: FIA LMDh 5.3.10 makes both conditional on that model.
+      // The prior below keeps regenMax=50 kW as ASSUMED, not a published regeneration limit;
+      // regenShare/etaRegen are ASSUMED too. See docs/lapsim-race-data-evidence.md.
+      // Total power and per-stint energy (Virtual Energy Tank) remain capped.
       lmh: {
         label: {ko: '하이퍼카 LMH', en: 'Hypercar LMH'},
         manufacturers: /toyota|ferrari|peugeot|aston|glickenhaus|isotta|vanwall/i,
