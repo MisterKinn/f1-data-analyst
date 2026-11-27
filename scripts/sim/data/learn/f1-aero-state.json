@@ -1,6 +1,6 @@
 {
  "source": "OpenF1 race control (copies of F1 race-control messages)",
- "generatedAt": "2026-11-27T00:54:39.696Z",
+ "generatedAt": "2026-11-27T18:46:57.950Z",
  "sessions": {
   "9684": {
    "year": 2025,
@@ -4096,6 +4096,35 @@
    },
    "ot": {
     "start": "off",
+    "end": "on"
+   }
+  },
+  "11422": {
+   "year": 2026,
+   "track": "lusail",
+   "circuit": "Lusail",
+   "session": "Practice 2",
+   "start": "2026-11-27T17:00:00+00:00",
+   "end": "2026-11-27T18:00:00+00:00",
+   "events": [
+    {
+     "t": "2026-11-27T17:30:33+00:00",
+     "kind": "ot",
+     "state": "on"
+    },
+    {
+     "t": "2026-11-27T17:39:45+00:00",
+     "kind": "ot",
+     "state": "on"
+    }
+   ],
+   "grip": {
+    "start": "normal",
+    "end": "normal",
+    "changes": 0
+   },
+   "ot": {
+    "start": "on",
     "end": "on"
    }
   },
