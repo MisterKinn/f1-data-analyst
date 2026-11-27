@@ -1197,6 +1197,8 @@ function computeView(K, data, state, R) {
     return Math.max(...b.filter(x => x != null)) <= 150 ? b : null; })() : null;
   const rGear = RT ? realAt('gear', nP, true, ch[0].gear) : null, rShifts = rGear ? rGear.filter((g, i) => i && g != null && rGear[i - 1] != null && g !== rGear[i - 1]).length : 0;
   const lanes = [['speed', mk(TL.speed, true), 'km/h', d.ds, series.map(x => x.v), cOpt('km/h', 50, 230, null, {bands})]]
+    // Keep the measured channel intact; expose the selected kernel trace separately, not as a fitted measurement.
+    .concat(RT ? [['speedModel', mk(TL.speed), 'km/h', d.ds, [Array.from(res.v, x => x * 3.6)], cOpt('km/h', 50, 230, null, {bands})]] : [])
     .concat(delta ? [['delta', TL.delta.replace('{car}', sel.label), 's', d.ds, delta, cOpt('s', 0.5, 140)]] : [])
     .concat(motorLane.length ? [['motor', mk(TL.motor), 'kW', d.ds, motorLane, cOpt('kW', 50, 160, null, {bands: altBands, bandCls: 'ls-alt'})]] : [])
     .concat(socLane.length ? [['soc', mk(TL.soc), 'MJ', d.ds, socLane, cOpt('MJ', 0.5, 140, 0)]] : [])
@@ -1218,10 +1220,12 @@ function computeView(K, data, state, R) {
   if (IR) for (const l of lanes) if (l[0] === 'throttle' || (hy && ['brake', 'gear', 'rpm'].includes(l[0]))) l[1] += irL + (hy && l[0] === 'throttle' ? prov : '');
   // each lane in its own box, so the channel tick boxes can hide it (owner 2026-11-15)
   const traceSvg = '<div class="ls-cursor-read" data-ls="cursor">' + TL.hover + '</div>' + lanes.map(([key, title, , ds, ser, o]) => '<div class="ls-lane" data-lane="' + key + '"><h3 class="ls-ch-h">' + title + '</h3>' + R.renderTrace(ds, ser.map(v => Array.isArray(v) ? {v} : v), o) + '</div>').join('')
-    + (puNote ? '<p class="fine">' + puNote + '</p>' : '') + puChart + '<p class="fine">' + TL.note + ' ' + TL.risk + '</p>';
+    + (puNote ? '<p class="fine">' + puNote + '</p>' : '') + puChart + '<p class="fine">' + (RT ? (data.lang === 'en'
+      ? 'Measured channels are labelled measured; the separate model speed is the simulator output, not a measurement. Changing model options does not change the recorded lap. Compared cars use model traces. Other model channels are estimates, not measured telemetry.'
+      : '실측 채널은 실측으로 표시합니다. 별도의 모델 속도는 시뮬레이터 계산값이며 실측이 아닙니다. 모델 옵션을 바꿔도 기록된 실측 랩은 바뀌지 않습니다. 비교 차량은 모델 그래프를 사용합니다. 나머지 모델 채널도 실측이 아닌 추정값입니다.') : TL.note) + ' ' + TL.risk + '</p>';
   // telemetry for the cursor read-out and the CSV export: each series keeps its car (index into cars) or 'cap' (regulation limit)
   const carIdx = s0 => { const m = /ls-line-(\d)/.exec(s0.cls || ''); return m ? +m[1] : s0.cls === 'ls-cap' ? 'cap' : 0; };
-  const tel = {len: nP * d.ds, cars: [sel.label].concat(cmpIds.map(k => data.cars[k].label)), lanes: lanes.map(([key, title, unit, ds, ser]) => ({key, title, name: TL.short[key], unit, ds, ser: ser.map(v => Array.isArray(v) ? {v, car: 0} : {v: v.v, car: carIdx(v)})}))};
+  const tel = {len: nP * d.ds, cars: [sel.label].concat(cmpIds.map(k => data.cars[k].label)), lanes: lanes.map(([key, title, unit, ds, ser]) => ({key, title, name: key === 'speedModel' ? (data.lang === 'en' ? 'Model speed' : '모델 속도') : TL.short[key], unit, ds, ser: ser.map(v => Array.isArray(v) ? {v, car: 0} : {v: v.v, car: carIdx(v)})}))};
   // compare table: lap, gap, sectors and speeds of every car, also exported as CSV
   const allIds = [state.carId].concat(cmpIds), allRes = [{r: res, f: fixd}].concat(cmps.map((c, j) => ({r: c, f: cmpFix[j]})));
   const cmpRows = allIds.map((k, j) => { const {r, f} = allRes[j]; return {car: data.cars[k].label, lap: r.lapTime, gap: r.lapTime - res.lapTime, sectors: f.sectors, vmax: r.vMaxKph, vmin: r.vMinKph}; });

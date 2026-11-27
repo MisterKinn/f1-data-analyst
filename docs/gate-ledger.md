@@ -3,6 +3,14 @@
 One line per Gate G run (AGENTS.md "Gate G v3 additions"). Add the line before the run with result "pending"; fill in the result after.
 No line, no ship.
 
+2026-11-27 speed provenance display: `docs/prereg/speed-provenance-release-2026-11-27.md`;
+one display-only candidate, no model/data change; latest-main regression PASS (Node 22: 874 tests,
+872 pass, 0 fail, 2 skipped); feature-OFF PASS; build/artifact PASS. Browser parity PASS:
+9 states, 3 CSV comparisons, no page errors. Production baseline asset SHA256
+`8f7308cb81e1463e59789242f8b56da5b8129f61f1486b05b0eefcff29feff8c`;
+candidate asset SHA256 `7e67105b56bb27909f1ad2120ff6c30d6b7f95e64d58a8daf7b726a6b2e079db`.
+Local display checks, not a pipeline reproduction or physical accuracy claim. CI/release pending.
+
 2026-11-26 partial aero consistency: `docs/prereg/partial-aero-consistency-2026-11-26.md`;
 deterministic derived-output bug fix, one candidate, no model fit/trajectory change;
 synthetic interpolation and compatibility checks **PASS** (8 new tests; 15 related tests).

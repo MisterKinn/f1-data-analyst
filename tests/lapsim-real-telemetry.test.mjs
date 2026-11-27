@@ -11,6 +11,32 @@ const view = (d, extra = {}) => V.computeView(V.K, d, {carId: d.carId, compareId
 const REAL = {driver: 'RUS', lap: 78.518, f: [0, 2500, 5000, 7500], speed: [300, 100, 320, 120], throttle: [100, 0, 100, 40], brake: [0, 1, 0, 1], gear: [8, 2, 8, 3], rpm: [11000, 9000, 11500, 9500]};
 const lane = (v, key) => v.tel.lanes.find(l => l.key === key);
 
+test('measured speed and kernel speed remain separate, with identical physics and explicit provenance', () => {
+  const d = page(); d.realTel = {2026: REAL};
+  const measured = view(d), model = view({...d, realTel: null});
+  assert.deepEqual(lane(measured, 'speedModel').ser, lane(model, 'speed').ser);
+  assert.equal(lane(measured, 'speedModel').name, 'Model speed');
+  assert.match(lane(measured, 'speedModel').title, /· model$/);
+  assert.equal(lane(model, 'speedModel'), undefined, 'no duplicate when the primary speed is already model');
+  assert.equal(measured.lap, model.lap);
+  assert.deepEqual(measured.mapArgs, model.mapArgs);
+  assert.match(measured.traceSvg, /Changing model options does not change the recorded lap/);
+  assert.doesNotMatch(measured.traceSvg, /All channels are simulated, not measured/);
+  assert.equal(lane(view(d, {mode: 'manual'}), 'speedModel'), undefined);
+});
+
+test('aero options change model speed without overwriting recorded speed, in both languages', () => {
+  for (const lang of ['en', 'ko']) {
+    const d = JSON.parse(simulationPage({track: 'monza', car: '2025'}, lang).match(/id="lapsim-data">([\s\S]*?)<\/script>/)[1]);
+    assert.ok(d.realTel?.[2025], 'real recorded production input');
+    const on = view(d), off = view(d, {drs: false});
+    assert.deepEqual(lane(on, 'speed').ser, lane(off, 'speed').ser);
+    assert.notDeepEqual(lane(on, 'speedModel').ser, lane(off, 'speedModel').ser);
+    assert.equal(lane(on, 'speedModel').name, lang === 'en' ? 'Model speed' : '모델 속도');
+    assert.match(lane(on, 'speedModel').title, lang === 'en' ? /· model$/ : /· 모델$/);
+  }
+});
+
 test('raced F1 lap: speed, throttle, brake, gear and rpm are the measured lap, labelled measured; motor and battery stay model', () => {
   const d = page(); d.realTel = {2026: REAL};
   const v = view(d), sp = lane(v, 'speed'), n = sp.ser[0].v.length;

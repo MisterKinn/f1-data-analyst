@@ -1,3 +1,12 @@
+# 2026-11-27 실측/모델 속도 분리 표시 배포
+
+- 상태: 최신 main `da61e761868891db2cc50967f27e8ce62a0002fc` 기준 별도 `release/speed-provenance-20261127` 작업공간. 기존 연구 변경은 원래 작업공간에 보존. 현재 PR/CI 및 Production 검증 전.
+- 결정: 검증된 표시 변경만 배포. 기존 실측 속도를 유지하고 원시 커널 속도를 별도 모델 채널로 표시. 물리 개선·정확도 향상이라고 표현하지 않음.
+- 변경 위치: `worker/simulation.js`, `tests/lapsim-real-telemetry.test.mjs`, `scripts/verify-speed-provenance-browser.mjs`, README, 사전등록 및 gate ledger.
+- 검증: Node 22 전체 874개 중 872 PASS, 0 FAIL, 2 skip; 기능 OFF PASS; build/validate PASS. Production 스크립트와 동일 로컬 입력으로 비교한 브라우저 9상태/CSV 3개 PASS, pageerror 0. 기존 랩·지도·채널·CSV 동일. 검증한 asset SHA256은 ledger 참조.
+- 다음 작업: PR/CI → main 병합 → Vercel Ready 및 Production asset hash·실제 브라우저 확인. 단계 종료 후 이 인계로 새 세션에서 다음 연구를 시작할 것을 권장.
+- 제약: 커널·차량·피팅·실측 데이터 변경 없음. 미통과 물리 후보와 비교 기준 복구 연구는 배포하지 않음. 인증·수집기·Sites 변경 없음. 로그인/개인 계정 흐름은 이번 브라우저 검증 대상이 아님.
+
 # 2026-11-26 부분 공력 계산 일관성 수정
 
 - 상태: `fix/lapsim-partial-aero-20261126`, 기준 main `ce99c9ada5fdc42ef42ec6703cdb93cae0383710`. 과거 연구 작업은 별도 worktree에 보존하고 이번 변경에 포함하지 않음.
