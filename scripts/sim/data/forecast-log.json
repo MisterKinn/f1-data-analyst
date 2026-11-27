@@ -1,4 +1,26 @@
 {
  "note": "Forecast vs trackside sensor (diagnostic only; never used for a lap or the fit). docs/lapsim-forecast.md",
- "entries": []
+ "entries": [
+  {
+   "key": "f1-2026-11-27-lusail|FP1",
+   "track": "lusail",
+   "series": "f1",
+   "session": "FP1",
+   "start": "2026-11-27T16:30:00+03:00",
+   "model": "global models (ECMWF IFS, GFS, ICON)",
+   "issued": "2026-11-27T00:00:00.000Z",
+   "retrieved": "2026-11-27T08:31:01.815Z",
+   "leadH": 4.98,
+   "step": "hourly",
+   "forecast": {
+    "airTempC": 25.6,
+    "humidityPct": 65,
+    "pressureHpa": 1016.5,
+    "windSpeed": 2.4,
+    "windFromDeg": 79,
+    "trackTempC": 32.1
+   },
+   "sensor": null
+  }
+ ]
 }
