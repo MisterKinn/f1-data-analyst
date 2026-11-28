@@ -1,6 +1,6 @@
 {
  "source": "FIA F1 event documents \"Power Unit Information\" (2026)",
- "generatedAt": "2026-11-26T06:48:54.634Z",
+ "generatedAt": "2026-11-28T16:18:43.249Z",
  "events": {
   "interlagos": {
    "event": "São Paulo Grand Prix",
@@ -1678,6 +1678,13 @@
      "to": 4200,
      "qOnly": false,
      "kph": 310
+    },
+    {
+     "sector": "T8-T9",
+     "from": 2835,
+     "to": 3010,
+     "qOnly": false,
+     "kph": 270
     }
    ],
    "overtake": {
@@ -1688,9 +1695,9 @@
    "powerLimitedDistanceM": 3108,
    "rampKWs": 100,
    "document": {
-    "title": "Doc 3 - Power Unit Information",
-    "url": "https://www.fia.com/system/files/decision-document/2026_qatar_grand_prix_-_power_unit_information.pdf",
-    "published": "Published on 25.11.26 15:05 CET"
+    "title": "Doc 30 - Power Unit Information V2",
+    "url": "https://www.fia.com/system/files/decision-document/2026_qatar_grand_prix_-_power_unit_information_v2.pdf",
+    "published": "Published on 28.11.26 17:05 CET"
    }
   }
  }
