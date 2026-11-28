@@ -78,7 +78,15 @@
     "windFromDeg": 108,
     "trackTempC": 30
    },
-   "sensor": null
+   "sensor": {
+    "source": "OpenF1 weather, session 11423",
+    "n": 82,
+    "airTempC": 25.52,
+    "trackTempC": 29.4,
+    "humidityPct": 60.39,
+    "pressureHpa": 1016.84,
+    "windSpeed": 1.25
+   }
   },
   {
    "key": "f1-2026-11-27-lusail|Qualifying",
