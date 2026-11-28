@@ -58,6 +58,27 @@
     "pressureHpa": 1017.73,
     "windSpeed": 0.53
    }
+  },
+  {
+   "key": "f1-2026-11-27-lusail|FP3",
+   "track": "lusail",
+   "series": "f1",
+   "session": "FP3",
+   "start": "2026-11-28T17:30:00+03:00",
+   "model": "global models (ECMWF IFS, GFS, ICON)",
+   "issued": "2026-11-28T00:00:00.000Z",
+   "retrieved": "2026-11-28T09:27:02.285Z",
+   "leadH": 5.05,
+   "step": "hourly",
+   "forecast": {
+    "airTempC": 25,
+    "humidityPct": 61,
+    "pressureHpa": 1016.2,
+    "windSpeed": 2.1,
+    "windFromDeg": 108,
+    "trackTempC": 30
+   },
+   "sensor": null
   }
  ]
 }
