@@ -107,7 +107,15 @@
     "windFromDeg": 279,
     "trackTempC": 27
    },
-   "sensor": null
+   "sensor": {
+    "source": "OpenF1 weather, session 11424",
+    "n": 76,
+    "airTempC": 22.31,
+    "trackTempC": 26.29,
+    "humidityPct": 64.57,
+    "pressureHpa": 1017.8,
+    "windSpeed": 1.22
+   }
   }
  ]
 }

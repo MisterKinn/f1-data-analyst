@@ -53,5 +53,5 @@ sensor mean over the session is added (F1: OpenF1 weather; WEC / Al Kamel: not y
 <!-- forecast-log:start -->
 | Model | Sessions | Air °C bias / RMS | Track °C (estimate) bias / RMS | Humidity % bias / RMS | Wind m/s bias / RMS |
 |---|---:|---|---|---|---|
-| global models (ECMWF IFS, GFS, ICON) | 3 | not enough data (n < 5) | | | |
+| global models (ECMWF IFS, GFS, ICON) | 4 | not enough data (n < 5) | | | |
 <!-- forecast-log:end -->
